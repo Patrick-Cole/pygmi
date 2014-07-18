@@ -1,0 +1,7 @@
+include *.txt
+include *.py
+include *.cmd
+include pygmi/raster/IGRF11.COF
+recursive-include pygmi *.pyd *.py *.pyx *.png *.ico *.emf
+prune pygmi/seis
+
