@@ -1,6 +1,6 @@
 #PyGMI Readme
 
-For licence information see the file LICENSE.txt
+For license information see the file LICENSE.txt
 
 ##Requirements
 PyGMI will run on both Windows and Linux, as well as Python 2.7 and Python 3.3. 
