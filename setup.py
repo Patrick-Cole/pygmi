@@ -26,15 +26,18 @@
 
 from distutils.core import setup
 
+pver = '2.1.0'
+
 setup(name='pygmi',
-      version='2.1.0',
+      version=pver,
       description='Python Geophysical Modelling and Interpretation',
       author='Patrick Cole',
       author_email='pcole@geoscience.org.za',
-      url='https://code.google.com/p/pygmi/',
+      url='https://github.com/Patrick-Cole/pygmi',
+      download_url='https://github.com/Patrick-Cole/pygmi/archive/v'+pver+'.tar.gz',
       license='GNU General Public License v3 (GPLv3)',
       platforms=['Windows', 'Linux'],
-      long_description=open('README.txt').read(),
+      long_description=open('README.md').read(),
       packages=['pygmi', 'pygmi.raster', 'pygmi.clust', 'pygmi.pfmod',
                 'pygmi.test', 'pygmi.point'],
       package_data={'pygmi': ['pfmod/*.pyd', 'pfmod/*.pyx',

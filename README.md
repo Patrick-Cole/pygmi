@@ -18,7 +18,6 @@ GDAL 1.10.1
 numexpr 2.3.1
 
 ##Installation
-Please check the internet for the most detailed installation instructions
 
 ###Installation - Windows
 On Windows, the simplest is to either use WinPython or download an installer which includes WinPython.
