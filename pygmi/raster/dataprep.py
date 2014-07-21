@@ -26,10 +26,11 @@
 
 # pylint: disable=E1101, C0103
 from PySide import QtGui, QtCore
+import os
 import numpy as np
 from osgeo import gdal, osr, ogr
-import pygmi.datatypes as dt
-import os
+from .datatypes import Data
+from pygmi.point.datatypes import PData
 from PIL import Image, ImageDraw
 import copy
 import scipy.ndimage as ndimage
@@ -73,7 +74,7 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
 
 def gdal_to_dat(dest, bandid='Data'):
     """ Gdal to dat format """
-    dat = dt.Data()
+    dat = Data()
     gtr = dest.GetGeoTransform()
 
     rtmp = dest.GetRasterBand(1)
@@ -109,19 +110,17 @@ def gdal_to_dat(dest, bandid='Data'):
     return dat
 
 
-def merge(self, dat):
-    """ Merge datasets """
+def merge(dat):
+    """ Merges datasets found in a single PyGMI data object. The aim is to
+    ensure that all datasets have the same number of rows and columns. """
     needsmerge = False
     for i in dat:
         if i.rows != dat[0].rows or i.cols != dat[0].cols:
             needsmerge = True
 
     if needsmerge is False:
-#        self.parent.showprocesslog('No resampling: Already has same ' +
-#                                   'rows and columns...')
         return dat
 
-    self.parent.showprocesslog('Merging datasets...')
     mrg = DataMerge()
     mrg.indata['Raster'] = dat
     data = dat[0]
@@ -131,11 +130,10 @@ def merge(self, dat):
 
     mrg.dsb_dxy.setValue(dxy)
     mrg.acceptall()
-    self.parent.showprocesslog('Merge complete')
     return mrg.outdata['Raster']
 
 
-def clustertoraster(indata):
+def cluster_to_raster(indata):
     """ Converts cluster datasets to raster datasets """
     if 'Cluster' not in indata:
         return indata
@@ -147,22 +145,6 @@ def clustertoraster(indata):
         indata['Raster'][-1].data += 1
 
     return indata
-
-
-def check_for_merge(self):
-    """ This checks the indata file to see if the bands have differences
-    and therefore would need the merge routine """
-    if self.indata is None:
-        return
-
-    if 'Raster' not in self.indata:
-        return
-
-    rows = self.indata['Raster'][0].cols
-    cols = self.indata['Raster'][0].cols
-    for dat in self.indata['Raster']:
-        if dat.rows != rows or dat.cols != cols:
-            return True
 
 
 class DataMerge(QtGui.QDialog):
@@ -927,63 +909,72 @@ class DataCut(object):
 
         self.ifile = str(filename)
         self.ext = filename[-3:]
-
-        shapef = ogr.Open(self.ifile)
-        lyr = shapef.GetLayer()
-        poly = lyr.GetNextFeature()
-        if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
-            self.parent.showprocesslog('You need polygons in that shape file')
-            return
-
-        for idata in data:
-            # Convert the layer extent to image pixel coordinates
-            minX, maxX, minY, maxY = lyr.GetExtent()
-            ulX = max(0, int((minX - idata.tlx) / idata.xdim))
-            ulY = max(0, int((idata.tly - maxY) / idata.ydim))
-            lrX = int((maxX - idata.tlx) / idata.xdim)
-            lrY = int((idata.tly - minY) / idata.ydim)
-
-            # Map points to pixels for drawing the
-            # boundary on a mas image
-            points = []
-            pixels = []
-            geom = poly.GetGeometryRef()
-
-            ifin = 0
-            imax = 0
-            if geom.GetGeometryName() == 'MULTIPOLYGON':
-                for i in range(geom.GetGeometryCount()):
-                    geom.GetGeometryRef(i)
-                    itmp = geom.GetGeometryRef(i)
-                    itmp = itmp.GetGeometryRef(0).GetPointCount()
-                    if itmp > imax:
-                        imax = itmp
-                        ifin = i
-                geom = geom.GetGeometryRef(ifin)
-
-            pts = geom.GetGeometryRef(0)
-            for p in range(pts.GetPointCount()):
-                points.append((pts.GetX(p), pts.GetY(p)))
-            for p in points:
-                tmpx = int((p[0] - idata.tlx) / idata.xdim)
-                tmpy = int((idata.tly - p[1]) / idata.ydim)
-                pixels.append((tmpx, tmpy))
-            rasterPoly = Image.new("L", (idata.cols, idata.rows), 1)
-            rasterize = ImageDraw.Draw(rasterPoly)
-            rasterize.polygon(pixels, 0)
-            mask = np.array(rasterPoly)
-
-            idata.data.mask = mask
-            idata.data = idata.data[ulY:lrY, ulX:lrX]
-            idata.cols = idata.data.shape[1]
-            idata.rows = idata.data.shape[0]
-            idata.tlx = ulX*idata.xdim + idata.tlx  # minX
-            idata.tly = idata.tly - ulY*idata.ydim  # maxY
-
-        data = trim_raster(data)
+        data = cut_raster(data, self.ifile)
+#        data = trim_raster(data)
         self.outdata['Raster'] = data
 
         return True
+
+
+def cut_raster(data, ifile):
+    """
+    Cuts a raster dataset using a shape file,
+    data = PyGMI Dataset
+    ifile = shapefile used to cut data
+    """
+    shapef = ogr.Open(ifile)
+    lyr = shapef.GetLayer()
+    poly = lyr.GetNextFeature()
+    if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
+        # self.parent.showprocesslog('You need polygons in that shape file')
+        return
+
+    for idata in data:
+        # Convert the layer extent to image pixel coordinates
+        minX, maxX, minY, maxY = lyr.GetExtent()
+        ulX = max(0, int((minX - idata.tlx) / idata.xdim))
+        ulY = max(0, int((idata.tly - maxY) / idata.ydim))
+        lrX = int((maxX - idata.tlx) / idata.xdim)
+        lrY = int((idata.tly - minY) / idata.ydim)
+
+        # Map points to pixels for drawing the
+        # boundary on a mas image
+        points = []
+        pixels = []
+        geom = poly.GetGeometryRef()
+
+        ifin = 0
+        imax = 0
+        if geom.GetGeometryName() == 'MULTIPOLYGON':
+            for i in range(geom.GetGeometryCount()):
+                geom.GetGeometryRef(i)
+                itmp = geom.GetGeometryRef(i)
+                itmp = itmp.GetGeometryRef(0).GetPointCount()
+                if itmp > imax:
+                    imax = itmp
+                    ifin = i
+            geom = geom.GetGeometryRef(ifin)
+
+        pts = geom.GetGeometryRef(0)
+        for p in range(pts.GetPointCount()):
+            points.append((pts.GetX(p), pts.GetY(p)))
+        for p in points:
+            tmpx = int((p[0] - idata.tlx) / idata.xdim)
+            tmpy = int((idata.tly - p[1]) / idata.ydim)
+            pixels.append((tmpx, tmpy))
+        rasterPoly = Image.new("L", (idata.cols, idata.rows), 1)
+        rasterize = ImageDraw.Draw(rasterPoly)
+        rasterize.polygon(pixels, 0)
+        mask = np.array(rasterPoly)
+
+        idata.data.mask = mask
+        idata.data = idata.data[ulY:lrY, ulX:lrX]
+        idata.cols = idata.data.shape[1]
+        idata.rows = idata.data.shape[0]
+        idata.tlx = ulX*idata.xdim + idata.tlx  # minX
+        idata.tly = idata.tly - ulY*idata.ydim  # maxY
+    data = trim_raster(data)
+    return data
 
 
 def trim_raster(olddata):
@@ -996,25 +987,25 @@ def trim_raster(olddata):
 
         rowstart = 0
         for i in range(mask.shape[0]):
-            if mask[i].min() == False:
+            if bool(mask[i].min()) is False:
                 break
             rowstart += 1
 
         rowend = mask.shape[0]
         for i in range(mask.shape[0]-1, -1, -1):
-            if mask[i].min() == False:
+            if bool(mask[i].min()) is False:
                 break
             rowend -= 1
 
         colstart = 0
         for i in range(mask.shape[1]):
-            if mask[:, i].min() == False:
+            if bool(mask[:, i].min()) is False:
                 break
             colstart += 1
 
         colend = mask.shape[1]
         for i in range(mask.shape[1]-1, -1, -1):
-            if mask[:, i].min() == False:
+            if bool(mask[:, i].min()) is False:
                 break
             colend -= 1
 
@@ -1028,7 +1019,7 @@ def trim_raster(olddata):
 
 
 class GetProf(object):
-    """ Cut Data using shapefiles """
+    """ Get Prof """
     def __init__(self, parent):
         self.ifile = ""
         self.name = "Get Profile: "
@@ -1095,7 +1086,7 @@ class GetProf(object):
             xxx = xxx*idata.xdim+idata.tlx
             yyy = yyy*idata.ydim+bly
 #            allpoints.append(np.array([xxx, yyy, tmpprof]))
-            allpoints.append(dt.PData())
+            allpoints.append(PData())
             allpoints[-1].xdata = xxx
             allpoints[-1].ydata = yyy
             allpoints[-1].zdata = tmpprof
@@ -1107,7 +1098,7 @@ class GetProf(object):
 
 
 class Metadata(QtGui.QDialog):
-    """ Reprojections """
+    """ Metadata """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
@@ -1321,7 +1312,7 @@ class Metadata(QtGui.QDialog):
         bandid = []
         for i in self.indata['Raster']:
             bandid.append(i.bandid)
-            self.banddata[i.bandid] = dt.Data()
+            self.banddata[i.bandid] = Data()
             tmp = self.banddata[i.bandid]
             self.bandid[i.bandid] = i.bandid
             tmp.tlx = i.tlx
@@ -1482,7 +1473,7 @@ class DataGrid(QtGui.QDialog):
 #            gdat = rbf(xnew, ynew)
 
     # Create dataset
-            dat = dt.Data()
+            dat = Data()
             dat.data = np.ma.masked_invalid(gdat[::-1])
             dat.data.mask = mask[::-1]
             dat.rows, dat.cols = gdat.shape

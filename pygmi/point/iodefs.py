@@ -28,7 +28,7 @@
 from PySide import QtGui
 import numpy as np
 from osgeo import gdal
-import pygmi.datatypes as dt
+from .datatypes import PData
 import os
 
 
@@ -67,7 +67,7 @@ class ImportLEMI417Data(object):
                   'E4 ('+chr(956)+'V/m)']
 
         for i in range(datatmp.shape[0]):
-            dat.append(dt.PData())
+            dat.append(PData())
             dat[i].zdata = datatmp[i]
             dat[i].dataid = dataid[i]
 
@@ -139,14 +139,14 @@ class ImportPointData(object):
         dat = []
         if tmp == QtGui.QMessageBox.Yes:
             for i in range(2, datatmp.shape[0]):
-                dat.append(dt.PData())
+                dat.append(PData())
                 dat[-1].xdata = datatmp[0]
                 dat[-1].ydata = datatmp[1]
                 dat[-1].zdata = datatmp[i]
                 dat[-1].dataid = ltmp[i]
         else:
             for i in range(datatmp.shape[0]):
-                dat.append(dt.PData())
+                dat.append(PData())
                 dat[i].zdata = datatmp[i]
                 dat[i].dataid = ltmp[i]
 
@@ -166,7 +166,7 @@ class ImportPointData(object):
 
         for i in range(dataset.RasterCount):
             rtmp = dataset.GetRasterBand(i+1)
-            dat.append(dt.Data())
+            dat.append(Data())
             dat[i].data = np.ma.array(rtmp.ReadAsArray())
             dat[i].data[dat[i].data == rtmp.GetNoDataValue()] = np.nan
             dat[i].data = np.ma.masked_invalid(dat[i].data)

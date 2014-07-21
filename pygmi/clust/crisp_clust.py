@@ -28,7 +28,7 @@
 from PySide import QtGui, QtCore
 import numpy as np
 import copy
-import pygmi.datatypes as dt
+from .datatypes import Clust
 import pygmi.clust.var_ratio as vr
 import os
 
@@ -292,7 +292,7 @@ class CrispClust(QtGui.QDialog):
                     startmfix = {i: smtmp}
 
         cnt = -1
-        dat_out = [dt.Clust() for i in range(no_clust[0], no_clust[1]+1)]
+        dat_out = [Clust() for i in range(no_clust[0], no_clust[1]+1)]
 
         for i in range(no_clust[0], no_clust[1]+1):
             self.reportback('Number of Clusters:'+str(i))

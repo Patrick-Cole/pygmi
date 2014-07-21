@@ -26,72 +26,7 @@
 
 # pylint: disable=E1101, C0103
 import numpy as np
-
-
-class Data(object):
-    """ Class Data """
-    def __init__(self):
-        self.data = np.ma.array([])
-        self.tlx = 0.0  # Top Left X coordinate
-        self.tly = 0.0  # Top Left Y coordinate
-        self.xdim = 1.0
-        self.ydim = 1.0
-        self.nrofbands = 1
-        self.bandid = ""
-        self.rows = -1
-        self.cols = -1
-        self.nullvalue = -9999.0
-        self.norm = {}
-        self.gtr = (0.0, 1.0, 0.0, 0.0, -1.0)
-        self.wkt = ''
-        self.units = ''
-
-
-class PData(object):
-    """ Class for point data """
-    def __init__(self):
-        self.xdata = np.array([])
-        self.ydata = np.array([])
-        self.zdata = np.array([])
-        self.dataid = ""
-
-
-class Clust(Data):
-    """ Class Clust """
-    def __init__(self):
-        Data.__init__(self)
-
-        self.input_type = []
-        self.no_clusters = 0
-        self.center = []
-        self.center_std = []
-        self.memdat = []
-        self.vrc = None
-        self.nce = None
-        self.xbi = None
-        self.obj_fcn = None
-
-#        self.proc_history = []
-#        self.type = "cluster"
-#        self.algorithm = 0
-#        self.initialization = 0
-#        self.init_mod = 0
-#        self.init_constrains = 0
-#        self.runs = 0
-#        self.max_iterations = 0
-#        self.denormalize = 0
-#        self.term_threshold = 0
-#        self.shape_constrain = 0
-#        self.zonal = 0
-#        self.alpha = 0
-#        self.xxx = np.array([])
-#        self.yyy = np.array([])
-#        self.obj_fcn = 0
-#        self.denorm_center = 0
-#        self.denorm_center_stdup = 0
-#        self.denorm_center_stdlow = 0
-#        self.iterations = 0
-#        self.fuzziness_exp = 0
+from pygmi.raster.datatypes import Data
 
 
 class LithModel(object):

@@ -1040,10 +1040,25 @@ class IGRF(QtGui.QDialog):
             self.dtemp = d
 
 
-# def main():
-#    """ Main """
-#    aaa = IGRF()
-#    aaa.settings()
+def get_igrf(dat):
+    """ Merges datasets found in a single PyGMI data object. The aim is to
+    ensure that all datasets have the same number of rows and columns. """
+    needsmerge = False
+    for i in dat:
+        if i.rows != dat[0].rows or i.cols != dat[0].cols:
+            needsmerge = True
+
+    if needsmerge is False:
+        return dat
+
+#    mrg = DataMerge()
+#    mrg.indata['Raster'] = dat
+#    data = dat[0]
+#    dxy0 = min(data.xdim, data.ydim)
+#    for data in dat:
+#        dxy = min(dxy0, data.xdim, data.ydim)
 #
-# if __name__ == '__main__':
-#    main()
+#    mrg.dsb_dxy.setValue(dxy)
+#    mrg.acceptall()
+#    return mrg.outdata['Raster']
+

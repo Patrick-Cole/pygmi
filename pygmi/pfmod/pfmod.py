@@ -37,7 +37,7 @@ import pygmi.pfmod.tab_pview as tab_pview
 import pygmi.pfmod.tab_param as tab_param
 import pygmi.pfmod.tab_mext as tab_mext
 import pygmi.pfmod.grvmag3d as grvmag3d
-import pygmi.datatypes as dt
+from .datatypes import LithModel
 
 
 class MainWidget(QtGui.QMainWindow):
@@ -65,8 +65,8 @@ class MainWidget(QtGui.QMainWindow):
 
         self.setupui()
 
-        self.lmod1 = dt.LithModel()  # actual model
-        self.lmod2 = dt.LithModel()  # regional model
+        self.lmod1 = LithModel()  # actual model
+        self.lmod2 = LithModel()  # regional model
         self.tabwidget.setCurrentIndex(0)
         self.oldtab = self.tabwidget.tabText(0)
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)

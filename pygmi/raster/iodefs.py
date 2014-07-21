@@ -26,11 +26,12 @@
 
 # pylint: disable=E1101, C0103
 from PySide import QtGui
-import pygmi.datatypes as dt
+from .datatypes import Data
+from pygmi.clust.datatypes import Clust
 import numpy as np
 from osgeo import gdal, osr
 import struct
-import pygmi.raster.dataprep as dataprep
+from .dataprep import merge
 import os
 
 
@@ -65,85 +66,85 @@ class ImportData(object):
         self.ifile = str(filename)
         self.ext = filename[-3:]
 
-        self.gdal()
+        dat = get_raster(self.ifile)
+
+        output_type = 'Raster'
+        if 'Cluster' in dat[0].bandid:
+            output_type = 'Cluster'
+
+        self.outdata[output_type] = dat
         return True
 
-    def gdal(self):
-        """ Process """
-        dat = []
-        bname = self.ifile.split('/')[-1].rpartition('.')[0]+': '
-        ifile = self.ifile[:]
-        if self.ext == 'hdr':
-            ifile = self.ifile[:-4]
 
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-        gtr = dataset.GetGeoTransform()
-        output_type = 'Raster'
+def get_raster(ifile):
+    """ This function loads a raster dataset off the disk using the GDAL
+    libraries. It returns the data in a PyGMI data object. """
+    dat = []
+    bname = ifile.split('/')[-1].rpartition('.')[0]+': '
+    ifile = ifile[:]
+    ext = ifile[-3:]
+    if ext == 'hdr':
+        ifile = ifile[:-4]
 
-        for i in range(dataset.RasterCount):
-            rtmp = dataset.GetRasterBand(i+1)
-            bandid = rtmp.GetDescription()
-            nval = rtmp.GetNoDataValue()
-            if 'Cluster' in bandid:
-                output_type = 'Cluster'
-                dat.append(dt.Clust())
-            else:
-                dat.append(dt.Data())
-            dat[i].data = rtmp.ReadAsArray()
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    gtr = dataset.GetGeoTransform()
+#    output_type = 'Raster'
+
+    for i in range(dataset.RasterCount):
+        rtmp = dataset.GetRasterBand(i+1)
+        bandid = rtmp.GetDescription()
+        nval = rtmp.GetNoDataValue()
+        if 'Cluster' in bandid:
+            # output_type = 'Cluster'
+            dat.append(Clust())
+        else:
+            dat.append(Data())
+        dat[i].data = rtmp.ReadAsArray()
 #            dtype = dat[i].data.dtype
 #            if dtype != np.float64 and dtype != np.float32:
 #                dat[i].data = dat[i].data.astype(np.float32)
 #            if dtype == np.float64 or dtype == np.float32:
 #                dat[i].data[dat[i].data == nval] = np.nan
-            if self.ext == 'ers' and nval == -1.0e+32:
-                dat[i].data[np.ma.less_equal(dat[i].data, nval)] = -1.0e+32
+        if ext == 'ers' and nval == -1.0e+32:
+            dat[i].data[np.ma.less_equal(dat[i].data, nval)] = -1.0e+32
 #                dat[i].data[np.ma.less_equal(dat[i].data, nval)] = np.nan
 
 #            dat[i].data = np.ma.masked_invalid(dat[i].data)
 # Note that because the data is stored in a masked array, the array ends up
 # being double the size that it was on the disk.
 
-            dat[i].data = np.ma.masked_equal(dat[i].data, nval)
-            if dat[i].data.mask.size == 1:
-                dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                    dat[i].data.mask)
+        dat[i].data = np.ma.masked_equal(dat[i].data, nval)
+        if dat[i].data.mask.size == 1:
+            dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
+                                dat[i].data.mask)
 
-            dat[i].nrofbands = dataset.RasterCount
-            dat[i].tlx = gtr[0]
-            dat[i].tly = gtr[3]
-            if bandid == '':
-                bandid = bname+str(i+1)
-            dat[i].bandid = bandid
-            if bandid[-1] == ')':
-                dat[i].units = bandid[bandid.rfind('(')+1:-1]
+        dat[i].nrofbands = dataset.RasterCount
+        dat[i].tlx = gtr[0]
+        dat[i].tly = gtr[3]
+        if bandid == '':
+            bandid = bname+str(i+1)
+        dat[i].bandid = bandid
+        if bandid[-1] == ')':
+            dat[i].units = bandid[bandid.rfind('(')+1:-1]
 
-            dat[i].nullvalue = nval
-            dat[i].rows = dataset.RasterYSize
-            dat[i].cols = dataset.RasterXSize
-            dat[i].xdim = abs(gtr[1])
-            dat[i].ydim = abs(gtr[5])
-            dat[i].gtr = gtr
-            dat[i].wkt = self.setproj(dataset.GetProjection())
+        dat[i].nullvalue = nval
+        dat[i].rows = dataset.RasterYSize
+        dat[i].cols = dataset.RasterXSize
+        dat[i].xdim = abs(gtr[1])
+        dat[i].ydim = abs(gtr[5])
+        dat[i].gtr = gtr
 
-            if 'Cluster' in bandid:
-                dat[i].no_clusters = int(dat[i].data.max()+1)
-#                dat[i].no_clusters = np.unique(dat[i].data).count()
-
-        self.outdata[output_type] = dat
-
-    def setproj(self, wkt):
-        """ This routine corrects problems with projections specific to
-            the original ER Mapper """
         srs = osr.SpatialReference()
-        srs.ImportFromWkt(wkt)
+        srs.ImportFromWkt(dataset.GetProjection())
         srs.AutoIdentifyEPSG()
 
-#        if 'STMLO' in wkt:
-#            tmp = wkt.index('STMLO')
-#            tmp2 = wkt.index(' ',tmp)
-#            cm = int(wkt[tmp+5:tmp2])
+        dat[i].wkt = srs.ExportToWkt()
 
-        return srs.ExportToWkt()
+        if 'Cluster' in bandid:
+            dat[i].no_clusters = int(dat[i].data.max()+1)
+#                dat[i].no_clusters = np.unique(dat[i].data).count()
+
+    return dat
 
 
 class ExportData(object):
@@ -207,31 +208,10 @@ class ExportData(object):
 
         self.parent.showprocesslog('Finished!')
 
-#    def check_for_merge(self):
-#        """ This checks the indata file to see if the bands have differences
-#        and therefore would need the merge routine """
-#        if self.indata == {}:
-#            return
-#
-#        if 'Raster' not in self.indata:
-#            return
-#
-#        rows = self.indata['Raster'][0].cols
-#        cols = self.indata['Raster'][0].cols
-#        for dat in self.indata['Raster']:
-#            if dat.rows != rows or dat.cols != cols:
-#                return True
-
     def export_gdal(self, dat, drv):
         """ Export to GDAL format"""
 
-#        needsmerge = self.check_for_merge()
-#        if needsmerge:
-#            data = dataprep.merge(self, dat)
-#        else:
-#            data = dat
-
-        data = dataprep.merge(self, dat)
+        data = merge(dat)
         xmin = data[0].tlx
         ymax = data[0].tly
 

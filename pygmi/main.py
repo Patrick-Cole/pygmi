@@ -31,13 +31,51 @@ matplotlib.rcParams['backend.qt4'] = 'PySide'
 
 from PySide import QtGui, QtCore
 import pygmi
-import pygmi.startup as startup
 import pygmi.menu_default as menu_default
 import sys
 import importlib
 import numpy as np
 import math
 import pkgutil
+
+
+class Startup(QtGui.QDialog):
+    """ Gradients """
+    def __init__(self, pbarmax, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+#        self.setWindowFlags(QtCore.Qt.SplashScreen)
+        self.setWindowFlags(QtCore.Qt.ToolTip)
+
+        self.gridlayout_main = QtGui.QVBoxLayout(self)
+        self.label_info = QtGui.QLabel(self)
+        self.label_pic = QtGui.QLabel(self)
+        self.label_pic.setPixmap(QtGui.QPixmap('images/logo256.ico'))
+        self.label_info.setScaledContents(True)
+        self.pbar = QtGui.QProgressBar(self)
+
+        labelText = "<font color='red'>Py</font><font color='blue'>GMI</font>"
+
+        fnt = QtGui.QFont("Arial", 72, QtGui.QFont.Bold)
+        self.label_info.setFont(fnt)
+        self.label_info.setText(labelText)
+#            'Python Geophysical Modelling and Interpretation\n' +
+#            '------------------------------------------------------------')
+        self.gridlayout_main.addWidget(self.label_info)
+        self.gridlayout_main.addWidget(self.label_pic)
+
+        self.pbar.setMaximum(pbarmax - 1)
+        self.gridlayout_main.addWidget(self.pbar)
+
+        self.open()
+
+    def update(self, text):
+        """ Updates the text on the dialog """
+        oldtext = self.label_info.text()
+        newtext = oldtext + '\n' + text
+#        self.label_info.setText(newtext)
+        self.pbar.setValue(self.pbar.value() + 1)
+        QtGui.QApplication.processEvents()
+
 
 
 class Arrow(QtGui.QGraphicsLineItem):
@@ -544,7 +582,7 @@ class MainWidget(QtGui.QMainWindow):
 #        menus = [i+'.menu' for i in menus]
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         menus = [raster_menu]+menus
-        start = startup.Startup(len(menus))
+        start = Startup(len(menus))
         menuimports = []
         for i in menus:
             if i == 'pygmi.__pycache__.menu':

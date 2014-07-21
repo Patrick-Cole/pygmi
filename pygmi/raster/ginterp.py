@@ -995,7 +995,7 @@ class PlotInterp(QtGui.QDialog):
 
         if 'Cluster' in self.indata:
             self.indata = copy.deepcopy(self.indata)
-            self.indata = dataprep.clustertoraster(self.indata)
+            self.indata = dataprep.cluster_to_raster(self.indata)
         self.indata['Raster'] = dataprep.merge(self, self.indata['Raster'])
 
         data = self.indata['Raster']

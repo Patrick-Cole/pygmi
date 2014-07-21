@@ -29,7 +29,7 @@ from PySide import QtGui, QtCore
 from osgeo import osr, gdal
 import os
 import numpy as np
-import pygmi.datatypes as dt
+from .datatypes import Data, LithModel
 import matplotlib.pyplot as plt
 import zipfile
 import pygmi.pfmod.grvmag3d as grvmag3d
@@ -40,7 +40,7 @@ class ImportMod3D(object):
     """ Import Data """
     def __init__(self, parent):
         self.parent = parent
-        self.lmod = dt.LithModel()
+        self.lmod = LithModel()
 
         self.ifile = ""
         self.name = "Import 3D Model: "
@@ -976,7 +976,7 @@ class ImportPicture(QtGui.QDialog):
         QtGui.QDialog.__init__(self, parent)
 
         self.parent = parent
-        self.lmod = dt.LithModel()
+        self.lmod = LithModel()
 
         self.ifile = ""
         self.name = "Import 3D Model: "
@@ -1155,7 +1155,7 @@ def gtiff(filename):
     itmp = np.uint32(nred*65536+ngreen*256+nblue+int('FF000000', 16))
 
     gtr = dataset.GetGeoTransform()
-    dat = [dt.Data()]
+    dat = [Data()]
 
     dat[0].tlx = gtr[0]
     dat[0].tly = gtr[3]
