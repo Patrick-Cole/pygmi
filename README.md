@@ -30,4 +30,4 @@ WinPython does not by default install itself into your registry, so it will not 
 PyGMI can be imported simply by using the following commands:
 	
 	import pygmi
-	pygmi.main.main()
+	pygmi.main()
