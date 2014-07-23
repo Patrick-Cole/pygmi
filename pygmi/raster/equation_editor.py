@@ -360,7 +360,7 @@ class EquationEditor(QtGui.QDialog):
         if 'Raster' not in self.indata:
             return
 
-        indata = dataprep.merge(self, self.indata['Raster'])
+        indata = dataprep.merge(self.indata['Raster'])
 
         for i in indata:
             self.bands[i.bandid] = i.data

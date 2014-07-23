@@ -37,6 +37,7 @@ import importlib
 import numpy as np
 import math
 import pkgutil
+import os
 
 
 class Startup(QtGui.QDialog):
@@ -75,7 +76,6 @@ class Startup(QtGui.QDialog):
 #        self.label_info.setText(newtext)
         self.pbar.setValue(self.pbar.value() + 1)
         QtGui.QApplication.processEvents()
-
 
 
 class Arrow(QtGui.QGraphicsLineItem):
@@ -521,7 +521,7 @@ class MainWidget(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
 
-        ipth = pygmi.__path__[0]+r'/images/'
+        ipth = os.path.dirname(menu_default.__file__)+r'/images/'
 
         self.pdlg = []
 #        self.local_menu = QtGui.QMenu()

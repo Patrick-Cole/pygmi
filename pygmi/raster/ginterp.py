@@ -47,35 +47,33 @@
 """ Plot Raster Data """
 
 # pylint: disable=C0103, W0612, E1101
+import os
+import copy
 import numpy as np
 import numexpr as ne
 from math import cos, sin, tan
 from PySide import QtGui, QtCore
-import copy
 from scipy import ndimage
+from matplotlib.figure import Figure
 import matplotlib.gridspec as gridspec
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
+import matplotlib.image as mi
+import matplotlib.colors as mcolors
+import matplotlib.colorbar as mcolorbar
+from matplotlib import rcParams
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
     FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as \
     NavigationToolbar
-import matplotlib as mpl
-import os
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
-import matplotlib.image as mi
-import matplotlib.colors as mcolors
-
-import pygmi.ptimer as ptimer
-
-rcParams = mpl.rcParams
 
 
 class MySunCanvas(FigureCanvas):
     """Canvas for the sunshading tool."""
     def __init__(self, parent):
-        fig = plt.figure()
+        fig = Figure()
         super(MySunCanvas, self).__init__(fig)
 
         self.sun = None
@@ -102,13 +100,12 @@ class MySunCanvas(FigureCanvas):
 class MyMplCanvas(FigureCanvas):
     """Canvas for the actual plot"""
     def __init__(self, parent):
-        fig = plt.figure()
+        fig = Figure()
         super(MyMplCanvas, self).__init__(fig)
 
         # figure stuff
         self.htype = 'Linear'
         self.hstype = 'Linear'
-        self.pt = ptimer.PTime()
         self.cbar = cm.jet
         self.data = []
         self.sdata = []
@@ -845,14 +842,14 @@ class PlotInterp(QtGui.QDialog):
         cmap = plt.get_cmap(txt)
         cmin = self.mmc.data[0].data.min()
         cmax = self.mmc.data[0].data.max()
-        norm = mpl.colors.Normalize(vmin=cmin, vmax=cmax)
+        norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
 # Horizontal Bar
         fig = plt.figure(figsize=(blen, (bwid+0.75)), tight_layout=True)
         ax = fig.add_subplot(111)
 
-        cb = mpl.colorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                       orientation='horizontal')
+        cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
+                                    orientation='horizontal')
         cb.set_label(text)
 
         fname = filename[:-4]+'_hcbar.tif'
@@ -862,8 +859,8 @@ class PlotInterp(QtGui.QDialog):
         fig = plt.figure(figsize=((bwid + 1), blen), tight_layout=True)
         ax = fig.add_subplot(111)
 
-        cb = mpl.colorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                       orientation='vertical')
+        cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
+                                    orientation='vertical')
         cb.set_label(text)
 
         fname = filename[:-4]+'_vcbar.tif'
@@ -996,7 +993,7 @@ class PlotInterp(QtGui.QDialog):
         if 'Cluster' in self.indata:
             self.indata = copy.deepcopy(self.indata)
             self.indata = dataprep.cluster_to_raster(self.indata)
-        self.indata['Raster'] = dataprep.merge(self, self.indata['Raster'])
+        self.indata['Raster'] = dataprep.merge(self.indata['Raster'])
 
         data = self.indata['Raster']
         sdata = self.indata['Raster']
@@ -1482,3 +1479,4 @@ def histcomp(img, nbr_bins=256):
 
 # use linear interpolation of cdf to find new pixel values
     return img2
+    

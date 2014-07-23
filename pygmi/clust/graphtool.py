@@ -28,6 +28,7 @@
 
 import numpy as np
 from PySide import QtGui, QtCore
+from matplotlib.figure import Figure
 import matplotlib.pylab as plt
 from matplotlib.path import Path
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
@@ -37,7 +38,7 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
 class GraphHist(FigureCanvas):
     """Plots several lines in distinct colors."""
     def __init__(self, parent):
-        self.figure = plt.figure()
+        self.figure = Figure()
 
         FigureCanvas.__init__(self, self.figure)
         self.setParent(parent)
@@ -180,7 +181,7 @@ class GraphHist(FigureCanvas):
 class GraphMap(FigureCanvas):
     """Plots several lines in distinct colors."""
     def __init__(self, parent):
-        self.figure = plt.figure()
+        self.figure = Figure()
 
         FigureCanvas.__init__(self, self.figure)
         self.setParent(parent)

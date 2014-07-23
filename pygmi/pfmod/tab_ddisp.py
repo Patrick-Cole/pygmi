@@ -27,6 +27,7 @@
 # pylint: disable=E1101
 from PySide import QtGui, QtCore
 import numpy as np
+from matplotlib.figure import Figure
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.colors as clrs
@@ -242,7 +243,7 @@ class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
     def __init__(self):
         # figure stuff
-        fig = plt.figure()
+        fig = Figure()
 
         self.cbar = cm.jet
         self.gmode = None

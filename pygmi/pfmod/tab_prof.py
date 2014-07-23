@@ -32,6 +32,7 @@ import pygmi.pfmod.misc as misc
 import pygmi.raster.iodefs as ir
 import os
 
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
     FigureCanvas
@@ -621,7 +622,7 @@ class LithBound(QtGui.QDialog):
 class MyMplCanvas(FigureCanvas):
     """This is a QWidget"""
     def __init__(self, parent, lmod):
-        fig = plt.figure()
+        fig = Figure()
         FigureCanvas.__init__(self, fig)
 
         self.parent = parent

@@ -28,6 +28,7 @@
 from PySide import QtGui, QtCore
 import numpy as np
 import pygmi.pfmod.misc as misc
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
     FigureCanvas
@@ -233,7 +234,7 @@ class LayerDisplay(object):
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
     def __init__(self, parent, lmod):
-        fig = plt.figure()
+        fig = Figure()
         FigureCanvas.__init__(self, fig)
 
         self.parent = parent
