@@ -256,10 +256,10 @@ class MyMplCanvas(FigureCanvas):
 
         FigureCanvas.__init__(self, fig)
 
-        FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+#        FigureCanvas.setSizePolicy(self,
+#                                   QtGui.QSizePolicy.Expanding,
+#                                   QtGui.QSizePolicy.Expanding)
+#        FigureCanvas.updateGeometry(self)
 
         dat = np.zeros([100, 100])
 

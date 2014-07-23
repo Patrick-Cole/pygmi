@@ -2,13 +2,13 @@
 CHANGES.txt
 LICENSE.txt
 README.md
+quickstart.py
 setup.cfg
 setup.py
 pygmi\__init__.py
 pygmi\main.py
 pygmi\menu_default.py
 pygmi\ptimer.py
-pygmi\start.py
 pygmi\clust\__init__.py
 pygmi\clust\crisp_clust.py
 pygmi\clust\datatypes.py
