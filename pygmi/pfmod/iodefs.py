@@ -29,11 +29,17 @@ from PySide import QtGui, QtCore
 from osgeo import osr, gdal
 import os
 import numpy as np
+import sys
 from .datatypes import Data, LithModel
 import matplotlib.pyplot as plt
 import zipfile
 import pygmi.pfmod.grvmag3d as grvmag3d
 import pygmi.pfmod.mvis3d as mvis3d
+
+# This is necessary for loading npz files, since I moved the location of
+# datatypes.
+import pygmi.pfmod.datatypes as datatypes
+sys.modules['datatypes'] = datatypes
 
 
 class ImportMod3D(object):
@@ -177,12 +183,7 @@ class ImportMod3D(object):
 
         lmod.mlut = np.asscalar(indict[pre+'mlut'])
         lmod.init_calc_grids()
-        try:
-            lmod.griddata = np.asscalar(indict[pre+'griddata'])
-        except:
-            self.parent.showprocesslog('The raster data in the 3D model is '
-                                       'not compatible. \nPlease load it '
-                                       'manually.')
+        lmod.griddata = np.asscalar(indict[pre+'griddata'])
 #        self.pbars.incr()
 
 # Section to load lithologies.
