@@ -265,7 +265,7 @@ class PolygonInteractor(QtCore.QObject):
     """ Polygon Interactor """
     showverts = True
     epsilon = 5  # max pixel distance to count as a vertex hit
-    polyi_changed = QtCore.Signal(list)
+    polyi_changed = QtCore.pyqtSignal(list)
 
     def __init__(self, axtmp, pntxy):
         QtCore.QObject.__init__(self)

@@ -25,9 +25,12 @@
 """ This is the main program for the modelling package """
 
 # pylint: disable=E1101, C0103
-# import matplotlib
-# matplotlib.use('Qt4Agg')
-# matplotlib.rcParams['backend.qt4'] = 'PySide'
+import sip
+sip.setapi('QString', 2)
+
+import matplotlib
+matplotlib.use('Qt4Agg')
+matplotlib.rcParams['backend.qt4'] = 'PyQt4'
 
 from PyQt4 import QtGui, QtCore
 import pygmi

@@ -1,6 +1,7 @@
 ##Notice at 24 July 2014
 Since bringing PyGMI across to GitHub, which more importantly coincided with me changing some of the file structure so that I can start exposing some of the code for people to use as a library, PyGMI is being a bit petulant and I am finding new bugs on a daily basis. I ask for your understanding while I sort out these teething problems. Hopefully I can catch them all in the next week or so.
 
+I have also moved back to PyQt4 from PySide. I was experiencing a few glitches and I am hoping this will help.
 
 #PyGMI Readme
 
@@ -24,8 +25,7 @@ Python 3.3.5 or 2.7.6
 NumPy 1.8.1
 SciPy 0.13.3
 Matplotlib 1.3.1
-PySide 1.2.1
-QtOpenGL for PySide (1.1.0 or greater)
+PyQt 4.9.6
 GDAL 1.10.1
 numexpr 2.3.1
 

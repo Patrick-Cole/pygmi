@@ -304,7 +304,7 @@ class GraphWindow(QtGui.QDialog):
         vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtGui.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self)
+        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
 
         self.combobox1 = QtGui.QComboBox(self)
         self.combobox2 = QtGui.QComboBox(self)
