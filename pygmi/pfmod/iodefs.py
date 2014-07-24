@@ -25,7 +25,7 @@
 # pylint: disable=E1101
 
 """ Import Data """
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 from osgeo import osr, gdal
 import os
 import numpy as np
@@ -59,7 +59,7 @@ class ImportMod3D(object):
         """ Settings """
         filename = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.',
-            'npz (*.npz);;csv (*.csv);; txt (*.txt)')[0]
+            'npz (*.npz);;csv (*.csv);; txt (*.txt)')
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -248,7 +248,7 @@ class ExportMod3D(object):
 
         filename = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.',
-            'npz (*.npz);;kmz (*.kmz);;xyz (*.xyz)')[0]
+            'npz (*.npz);;kmz (*.kmz);;xyz (*.xyz)')
 
         if filename == '':
             return
@@ -337,7 +337,7 @@ class ExportMod3D(object):
 #        self.pbars.resetall(maximum = self.lmod1.numx, mmax = 2)
 
         filename = QtGui.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'xyz Files (*.xyz)')[0]
+            self.parent, 'Save File', '.', 'xyz Files (*.xyz)')
         if filename == '':
             return
         os.chdir(filename.rpartition('/')[0])
@@ -1123,7 +1123,7 @@ class ImportPicture(QtGui.QDialog):
             return
 
         filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', '*.jpg *.tif *.bmp')[0]
+            self.parent, 'Open File', '.', '*.jpg *.tif *.bmp')
 
         if filename == '':
             return False

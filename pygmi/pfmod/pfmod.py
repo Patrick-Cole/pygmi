@@ -26,7 +26,7 @@
 
 # pylint: disable=E1101
 import sys
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 
 # Other dependancies
 import pygmi.pfmod.misc as misc

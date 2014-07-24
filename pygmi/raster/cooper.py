@@ -25,7 +25,7 @@
 """ This is a collection of routines by Gordon Cooper """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.signal as si
 import copy

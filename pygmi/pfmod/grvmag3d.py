@@ -41,7 +41,7 @@ single lithology. This includes the final calculated field for that lithology
 only """
 
 # pylint: disable=E1101, W0612, W0613
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import scipy.interpolate as si
 import numpy as np
 import pylab as plt

@@ -25,7 +25,7 @@
 """ Normalisation function """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.stats as sstat
 import copy

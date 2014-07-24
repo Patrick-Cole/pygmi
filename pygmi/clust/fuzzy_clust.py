@@ -25,7 +25,7 @@
 """ Fuzzy clustering """
 
 # pylint: disable=E1101
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import copy
 from .datatypes import Clust
@@ -253,7 +253,7 @@ class FuzzyClust(QtGui.QDialog):
                 "ASCII matrix (*.asc);;" + \
                 "ASCII matrix (*.dat)"
             filename = QtGui.QFileDialog.getOpenFileName(
-                self.parent, 'Read Cluster Centers', '.', ext)[0]
+                self.parent, 'Read Cluster Centers', '.', ext)
             if filename == '':
                 return False
 
@@ -280,7 +280,7 @@ class FuzzyClust(QtGui.QDialog):
                 startmfix = {i: []}
 
             filename = QtGui.QFileDialog.getOpenFileName(
-                self.parent, 'Read Cluster Center Constraints', '.', ext)[0]
+                self.parent, 'Read Cluster Center Constraints', '.', ext)
             if filename == '':
                 QtGui.QMessageBox.warning(
                     self.parent, 'Warning',

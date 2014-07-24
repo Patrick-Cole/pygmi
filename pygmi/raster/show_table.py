@@ -25,7 +25,7 @@
 """ This is a routine which displays a table graphically with various stats """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui
+from PyQt4 import QtGui
 import numpy as np
 import scipy.stats.mstats as st
 
@@ -98,7 +98,7 @@ class BasicStats(QtGui.QDialog):
         """ Save """
         ext = "CSV Format (*.csv)"
         filename = QtGui.QFileDialog.getSaveFileName(
-            self, 'Save Table', '.', ext)[0]
+            self, 'Save Table', '.', ext)
         if filename == '':
             return False
 
@@ -214,7 +214,7 @@ class ClusterStats(QtGui.QDialog):
         """ Save """
         ext = "CSV Format (*.csv)"
         filename = QtGui.QFileDialog.getSaveFileName(
-            self, 'Save Table', '.', ext)[0]
+            self, 'Save Table', '.', ext)
         if filename == '':
             return False
 

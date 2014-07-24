@@ -46,7 +46,7 @@ setup(name='pygmi',
       requires={"numpy": [">=1.8.1"],
                 "scipy": [">=0.13.3"],
                 "matplotlib": [">=1.3.1"],
-                "PySide": [">=1.2.1"],
+                "PyQt4": [">=4.9.6"],
                 "GDAL": [">=1.11.1"],
                 "numexpr": [">=2.3.1"]},
       classifiers=[

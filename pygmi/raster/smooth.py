@@ -25,7 +25,7 @@
 """ Smooth Data """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.signal as ssig
 from scipy.stats import mode

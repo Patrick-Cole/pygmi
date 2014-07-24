@@ -52,7 +52,7 @@ import copy
 import numpy as np
 import numexpr as ne
 from math import cos, sin, tan
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
 import matplotlib.gridspec as gridspec
@@ -1012,7 +1012,7 @@ class PlotInterp(QtGui.QDialog):
             self.cbox_band1.currentIndexChanged.disconnect()
             self.cbox_band2.currentIndexChanged.disconnect()
             self.cbox_band3.currentIndexChanged.disconnect()
-        except RuntimeError:
+        except TypeError:
             pass
 
         self.cbox_band1.clear()
@@ -1171,8 +1171,14 @@ class ModestImage(mi.AxesImage):
 
         y0, y1, x0, x1 = [int(i) for i in [y0, y1, x0, x1]]
 
-        sy = int(np.ceil(dy/(ddy*ext[1])))
-        sx = int(np.ceil(dx/(ddx*ext[0])))
+        # This divisor is to slightly increase the resolution of sunshaded
+        # images to get optimal detail.
+        divtmp = 1.0
+        if self.dtype == 'Sunshade':
+            divtmp = 1.5
+
+        sy = int(np.ceil(dy/(ddy*ext[1]))/divtmp)
+        sx = int(np.ceil(dx/(ddx*ext[0]))/divtmp)
 
         if self._sx is None:
             pass

@@ -25,11 +25,11 @@
 """ This is the main program for the modelling package """
 
 # pylint: disable=E1101, C0103
-import matplotlib
-matplotlib.use('Qt4Agg')
-matplotlib.rcParams['backend.qt4'] = 'PySide'
+# import matplotlib
+# matplotlib.use('Qt4Agg')
+# matplotlib.rcParams['backend.qt4'] = 'PySide'
 
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import pygmi
 import pygmi.menu_default as menu_default
 import sys
@@ -133,7 +133,7 @@ class Arrow(QtGui.QGraphicsLineItem):
         for i in end_polygon:
             p2 = i + my_end_item.pos()
             poly_line = QtCore.QLineF(p1, p2)
-            intersect_type, intersect_point = poly_line.intersect(center_line)
+            intersect_type = poly_line.intersect(center_line, intersect_point)
             if intersect_type == QtCore.QLineF.BoundedIntersection:
                 break
             p1 = p2
@@ -191,8 +191,8 @@ class Arrow(QtGui.QGraphicsLineItem):
 
 class DiagramTextItem(QtGui.QGraphicsTextItem):
     """ Diagram Text Item """
-    lostFocus = QtCore.Signal(QtGui.QGraphicsTextItem)
-    selectedChange = QtCore.Signal(QtGui.QGraphicsItem)
+    lostFocus = QtCore.pyqtSignal(QtGui.QGraphicsTextItem)
+    selectedChange = QtCore.pyqtSignal(QtGui.QGraphicsItem)
 
     def __init__(self, parent=None, scene=None):
         super(DiagramTextItem, self).__init__(parent, scene)
@@ -381,9 +381,9 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
 
 class DiagramScene(QtGui.QGraphicsScene):
     """ Diagram Scene """
-    itemInserted = QtCore.Signal(DiagramItem)
-    textInserted = QtCore.Signal(QtGui.QGraphicsTextItem)
-    itemSelected = QtCore.Signal(QtGui.QGraphicsItem)
+    itemInserted = QtCore.pyqtSignal(DiagramItem)
+    textInserted = QtCore.pyqtSignal(QtGui.QGraphicsTextItem)
+    itemSelected = QtCore.pyqtSignal(QtGui.QGraphicsItem)
 
     def __init__(self, item_menu, parent):
         super(DiagramScene, self).__init__(parent)

@@ -26,7 +26,7 @@
 
 # pylint: disable=E1101, C0103
 import numpy as np
-from PySide import QtCore, QtGui, QtOpenGL
+from PyQt4 import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 from OpenGL import GLU
 import pygmi.pfmod.misc as misc
@@ -132,7 +132,7 @@ class Mod3dDisplay(QtGui.QDialog):
     def save(self):
         """ This saves a jpg """
         filename = QtGui.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'JPG (*.jpg);;PNG (*.png)')[0]
+            self.parent, 'Save File', '.', 'JPG (*.jpg);;PNG (*.png)')
         if filename == '':
             return
         os.chdir(filename.rpartition('/')[0])

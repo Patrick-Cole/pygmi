@@ -25,7 +25,7 @@
 """ Data Display Routines found on Data Display Tab"""
 
 # pylint: disable=E1101
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 from matplotlib.figure import Figure
 import matplotlib.cm as cm

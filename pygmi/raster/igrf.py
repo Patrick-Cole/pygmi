@@ -138,7 +138,7 @@ translated into Python from the  Geomag code.
 """
 # pylint: disable=E1101, C0103
 
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 from math import sin
 from math import cos

@@ -25,7 +25,7 @@
 """ File Menu Routines """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import webbrowser
 
 

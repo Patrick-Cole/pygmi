@@ -25,7 +25,7 @@
 """ Raster Menu Routines """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui
+from PyQt4 import QtGui
 import pygmi.raster.equation_editor as equation_editor
 import pygmi.raster.smooth as smooth
 import pygmi.raster.normalisation as normalisation

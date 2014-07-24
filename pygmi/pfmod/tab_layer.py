@@ -25,7 +25,7 @@
 """ Layer Display Tab Routines """
 
 # pylint: disable=E1101
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import pygmi.pfmod.misc as misc
 from matplotlib.figure import Figure

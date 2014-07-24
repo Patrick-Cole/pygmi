@@ -25,7 +25,7 @@
 """ Potential Field Modelling """
 
 # pylint: disable=E1101
-from PySide import QtGui
+from PyQt4 import QtGui
 import pygmi.pfmod.pfmod as pfmod
 import pygmi.pfmod.mvis3d as mvis3d
 import pygmi.pfmod.iodefs as iodefs

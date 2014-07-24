@@ -25,7 +25,7 @@
 """ Import Data """
 
 # pylint: disable=E1101
-from PySide import QtGui
+from PyQt4 import QtGui
 import numpy as np
 from osgeo import gdal
 from .datatypes import PData
@@ -49,7 +49,7 @@ class ImportLEMI417Data(object):
             "LEMI-417 Text DataAll Files (*.t*)"
 
         filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)[0]
+            self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -96,7 +96,7 @@ class ImportPointData(object):
             "All Files (*.*)"
 
         filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)[0]
+            self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -210,7 +210,7 @@ class ExportPoint(object):
         data = self.indata['Point']
 
         filename = QtGui.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'csv (*.csv)')[0]
+            self.parent, 'Save File', '.', 'csv (*.csv)')
 
         if filename == '':
             return

@@ -25,7 +25,7 @@
 """ This is the main Data Preparation set of routines """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import os
 import numpy as np
 from osgeo import gdal, osr, ogr
@@ -902,7 +902,7 @@ class DataCut(object):
         ext = "Shape file (*.shp)"
 
         filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open Shape File', '.', ext)[0]
+            self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -1043,7 +1043,7 @@ class GetProf(object):
         ext = "Shape file (*.shp)"
 
         filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open Shape File', '.', ext)[0]
+            self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])

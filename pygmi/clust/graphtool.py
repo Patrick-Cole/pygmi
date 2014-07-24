@@ -27,7 +27,7 @@
 # pylint: disable=E1101
 
 import numpy as np
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 from matplotlib.figure import Figure
 import matplotlib.pylab as plt
 from matplotlib.path import Path

@@ -25,7 +25,7 @@
 """ These are miscellaneous functions for the program """
 
 # pylint: disable=E1101
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 
 
 def update_lith_lw(lmod, lwidget):

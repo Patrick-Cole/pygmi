@@ -25,7 +25,7 @@
 """ Import Data """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui
+from PyQt4 import QtGui
 from .datatypes import Data
 from pygmi.clust.datatypes import Clust
 import numpy as np
@@ -59,7 +59,7 @@ class ImportData(object):
             "ArcGIS BIL (*.bil)"
 
         filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)[0]
+            self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -180,7 +180,7 @@ class ExportData(object):
             "ArcGIS BIL (*.bil)"
 
         filename = QtGui.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext)[0]
+            self.parent, 'Save File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])

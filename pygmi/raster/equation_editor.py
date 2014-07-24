@@ -25,7 +25,7 @@
 """ This is the function which calls the equation editor """
 
 # pylint: disable=E1101, C0103
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import copy
 import pygmi.raster.dataprep as dataprep

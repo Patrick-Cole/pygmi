@@ -25,7 +25,7 @@
 """ Point Menu Routines """
 
 # pylint: disable=E1101
-from PySide import QtGui
+from PyQt4 import QtGui
 import pygmi.point.iodefs as iodefs
 
 

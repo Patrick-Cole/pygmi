@@ -25,7 +25,7 @@
 """ Profile Display Tab Routines """
 
 # pylint: disable=E1101
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.interpolate as si
 import pygmi.pfmod.misc as misc
@@ -222,7 +222,7 @@ class ProfileDisplay(object):
         """ Export Profile to csv """
         self.parent.pbars.resetall()
         filename = QtGui.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'Comma separated values (*.csv)')[0]
+            self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
         if filename == '':
             return
         os.chdir(filename.rpartition('/')[0])

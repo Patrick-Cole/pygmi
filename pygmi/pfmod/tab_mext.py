@@ -25,7 +25,7 @@
 """ Model Extension Display Tab Routines """
 
 # pylint: disable=E1101
-from PySide import QtGui
+from PyQt4 import QtGui
 import numpy as np
 import scipy.interpolate as si
 
