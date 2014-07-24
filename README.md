@@ -1,3 +1,7 @@
+##Notice at 24 July 2014
+Since bringing PyGMI across to GitHub, which more importantly coincided with me changing some of the file structure so that I can start exposing some of the code for people to use as a library, PyGMI is being a bit petulant and I am finding new bugs on a daily basis. I ask for your understanding while I sort out these teething problems. Hopefully I can catch them all in the next week or so.
+
+
 #PyGMI Readme
 
 PyGMI stands for *Python Geophysical Modelling and Interpretation*. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets. It includes:
