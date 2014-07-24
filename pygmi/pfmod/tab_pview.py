@@ -467,7 +467,8 @@ class ProfileDisplay(object):
 class MyMplCanvas(FigureCanvas):
     """This is a QWidget"""
     def __init__(self, parent, lmod):
-        fig = Figure()
+        #fig = Figure()
+        fig = plt.figure()
         FigureCanvas.__init__(self, fig)
 
         self.parent = parent

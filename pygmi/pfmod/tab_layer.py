@@ -234,7 +234,8 @@ class LayerDisplay(object):
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
     def __init__(self, parent, lmod):
-        fig = Figure()
+        # fig = Figure()
+        fig = plt.figure()
         FigureCanvas.__init__(self, fig)
 
         self.parent = parent

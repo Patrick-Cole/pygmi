@@ -243,7 +243,8 @@ class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
     def __init__(self):
         # figure stuff
-        fig = Figure()
+        # fig = Figure()
+        fig = plt.figure()
 
         self.cbar = cm.jet
         self.gmode = None
