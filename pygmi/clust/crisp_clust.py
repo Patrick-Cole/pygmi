@@ -153,7 +153,7 @@ class CrispClust(QtGui.QDialog):
 
     def combo(self):
         """ Combo box """
-        i = self.combobox_alg.currentText()
+        i = str(self.combobox_alg.currentText())
         if i == 'w-means':
             self.label_7.show()
             self.doublespinbox_constraincluster.show()

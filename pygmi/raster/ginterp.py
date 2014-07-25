@@ -686,7 +686,7 @@ class PlotInterp(QtGui.QDialog):
             return
 
         img = self.mmc.image.get_array()
-        dtype = self.cbox_dtype.currentText()
+        dtype = str(self.cbox_dtype.currentText())
         htype = str(self.cbox_htype.currentText())
         hstype = str(self.cbox_hstype.currentText())
         cell = self.mmc.cell
@@ -885,7 +885,7 @@ class PlotInterp(QtGui.QDialog):
 
     def change_dtype(self):
         """ Combo box to change display type """
-        txt = self.cbox_dtype.currentText()
+        txt = str(self.cbox_dtype.currentText())
         self.mmc.gmode = txt
         self.cbox_band1.show()
 

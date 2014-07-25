@@ -137,7 +137,7 @@ class LayerDisplay(object):
         if i == -1:
             misc.update_lith_lw(self.lmod, self.lw_editor_defs)
             i = 0
-        itxt = self.lw_editor_defs.item(i).text()
+        itxt = str(self.lw_editor_defs.item(i).text())
         if itxt not in self.lmod.lith_list.keys():
             return
 
@@ -146,7 +146,7 @@ class LayerDisplay(object):
 
     def combo(self):
         """ Combo box to choose grid 3 """
-        ctxt = self.combo_grid3.currentText()
+        ctxt = str(self.combo_grid3.currentText())
         if ctxt == '':
             return
         self.grid3txt = ctxt

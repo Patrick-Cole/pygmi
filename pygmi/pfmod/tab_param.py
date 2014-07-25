@@ -405,7 +405,7 @@ class ParamDisplay(object):
         itxt = item.text()
         itxtlist = []
         for i in range(self.lw_param_defs.count()):
-            itxtlist.append(self.lw_param_defs.item(i).text())
+            itxtlist.append(str(self.lw_param_defs.item(i).text()))
 
         for i in self.lmod1.lith_list.keys():
             if i not in itxtlist:
@@ -427,7 +427,7 @@ class ParamDisplay(object):
         i = self.lw_param_defs.currentRow()
         if i == -1:
             i = 0
-        itxt = self.lw_param_defs.item(i).text()
+        itxt = str(self.lw_param_defs.item(i).text())
         lith = self.lmod1.lith_list[itxt]
         return lith
 
@@ -455,7 +455,7 @@ class ParamDisplay(object):
 
     def lw_color_change(self):
         """ Routine to allow lithologies to have their colors changed """
-        ctxt = self.lw_param_defs.currentItem().text()
+        ctxt = str(self.lw_param_defs.currentItem().text())
         col = QtGui.QColorDialog.getColor()
 
         lithi = self.lmod1.lith_list[ctxt].lith_index
@@ -468,7 +468,7 @@ class ParamDisplay(object):
         i = self.lw_param_defs.currentRow()
         if i == -1:
             i = 0
-        itxt = self.lw_param_defs.item(i).text()
+        itxt = str(self.lw_param_defs.item(i).text())
         lith = self.lmod1.lith_list[itxt]
 
         self.dsb_hint.setValue(lith.hintn)
@@ -494,7 +494,7 @@ class ParamDisplay(object):
         crow = self.lw_param_defs.currentRow()
         if crow == -1:
             return
-        ctxt = self.lw_param_defs.currentItem().text()
+        ctxt = str(self.lw_param_defs.currentItem().text())
         if ctxt == 'Background':
             self.showtext('You cannot delete the background lithology')
             return
@@ -522,7 +522,7 @@ class ParamDisplay(object):
         if crow == -1:
             return
 
-        ctxt = self.lw_param_defs.currentItem().text()
+        ctxt = str(self.lw_param_defs.currentItem().text())
 
         (skey, isokay) = QtGui.QInputDialog.getText(
             self.parent, 'Rename Definition',

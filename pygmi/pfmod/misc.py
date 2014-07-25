@@ -36,7 +36,7 @@ def update_lith_lw(lmod, lwidget):
 
     for i in range(lwidget.count()):
         tmp = lwidget.item(i)
-        tindex = lmod.lith_list[tmp.text()].lith_index
+        tindex = lmod.lith_list[str(tmp.text())].lith_index
         tcol = lmod.mlut[tindex]
         tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 

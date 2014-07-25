@@ -162,7 +162,7 @@ class FuzzyClust(QtGui.QDialog):
 
     def combo(self):
         """ Combo box """
-        i = self.combobox_alg.currentText()
+        i = str(self.combobox_alg.currentText())
         if i == 'Gath-Geva' or i == 'Gustafson-Kessel':
             self.label_7.show()
             self.doublespinbox_constraincluster.show()

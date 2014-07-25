@@ -235,7 +235,7 @@ class MextDisplay(object):
 
     def choose_combo(self, combo, dtxt):
         """ Combo box choice routine """
-        ctxt = combo.currentText()
+        ctxt = str(combo.currentText())
         if ctxt != 'None' and ctxt != '':
             self.lmod1.griddata[dtxt] = self.parent.inraster[ctxt]
         elif ctxt == 'None' and dtxt in self.lmod1.griddata:
@@ -243,7 +243,7 @@ class MextDisplay(object):
 
     def choose_dtm(self):
         """ Combo box to choose current dataset """
-        ctxt = self.combo_dtm.currentText()
+        ctxt = str(self.combo_dtm.currentText())
         if ctxt != 'None' and ctxt != '':
             curgrid = self.parent.inraster[ctxt]
 
@@ -277,7 +277,7 @@ class MextDisplay(object):
 
     def get_area(self):
         """ Get area """
-        ctxt = self.combo_dataset.currentText()
+        ctxt = str(self.combo_dataset.currentText())
         if ctxt != 'None' and ctxt != u'':
             curgrid = self.parent.inraster[ctxt]
 

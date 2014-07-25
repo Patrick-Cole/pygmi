@@ -1255,7 +1255,7 @@ class Metadata(QtGui.QDialog):
 
     def rename_id(self):
         """ Renames the band name """
-        ctxt = self.combobox_bandid.currentText()
+        ctxt = str(self.combobox_bandid.currentText())
         (skey, isokay) = QtGui.QInputDialog.getText(
             self.parent, 'Rename Band Name',
             'Please type in the new name for the band',

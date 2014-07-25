@@ -462,7 +462,7 @@ class PlotVRCetc(GraphWindow):
         """ Combo box to choose band """
         data = self.indata['Cluster']
 
-        j = self.combobox1.currentText()
+        j = str(self.combobox1.currentText())
 
         if j == 'Objective Function' and data[0].obj_fcn is not None:
             x = len(data)

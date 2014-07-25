@@ -125,7 +125,7 @@ class DataDisplay(object):
     def combo1(self):
         """ Combo box to choose grid 1 """
         self.mpl_toolbar.home()
-        ctxt = self.combo_grid1.currentText()
+        ctxt = str(self.combo_grid1.currentText())
 
         reg = 0
         if ctxt == 'Gravity Dataset':
@@ -139,7 +139,7 @@ class DataDisplay(object):
     def combo2(self):
         """ Combo box to choose grid 2 """
         self.mpl_toolbar.home()
-        ctxt = self.combo_grid2.currentText()
+        ctxt = str(self.combo_grid2.currentText())
 
         reg = 0
         if ctxt == 'Gravity Dataset':
@@ -154,7 +154,7 @@ class DataDisplay(object):
 
     def hs_grid(self):
         """ Horizontal slider used to show grid1 and grid2 """
-        ctxt = self.combo_grid1.currentText()
+        ctxt = str(self.combo_grid1.currentText())
 
         self.grid1 = self.lmod1.griddata[ctxt]
         hsgval = self.hslider_grid.sliderPosition()

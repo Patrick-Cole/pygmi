@@ -203,7 +203,7 @@ class ProfileDisplay(object):
         if i == -1:
             misc.update_lith_lw(self.lmod1, self.lw_prof_defs)
             i = 0
-        itxt = self.lw_prof_defs.item(i).text()
+        itxt = str(self.lw_prof_defs.item(i).text())
 
         if itxt not in self.lmod1.lith_list.keys():
             return
@@ -236,7 +236,7 @@ class ProfileDisplay(object):
 
         extent = (left, right, bottom, top)
 
-        ctxt = self.combo_profpic.currentText()
+        ctxt = str(self.combo_profpic.currentText())
         if len(self.lmod1.profpics) > 0 and ctxt != u'':
             gtmpl = self.lmod1.profpics[ctxt]
             opac = self.hs_ppic_opacity.value()/self.hs_ppic_opacity.maximum()
