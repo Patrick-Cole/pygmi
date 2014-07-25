@@ -26,12 +26,10 @@
 This uses the following algorithms:
 
 Singh, B., Guptasarma, D., 2001. New method for fast computation of gravity
-and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521 – 526.
+and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.
 
 Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
-
-
 
 GravMag - Routine that will calculate the final versions of the field. Other,
 related code is here as well, such as the inversion routines.
