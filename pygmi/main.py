@@ -25,8 +25,8 @@
 """ This is the main program for the modelling package """
 
 # pylint: disable=E1101, C0103
-import sip
-sip.setapi('QString', 2)
+# import sip
+# sip.setapi('QString', 2)
 
 import matplotlib
 matplotlib.use('Qt4Agg')
@@ -41,7 +41,6 @@ import numpy as np
 import math
 import pkgutil
 import os
-
 
 class Startup(QtGui.QDialog):
     """ Gradients """
