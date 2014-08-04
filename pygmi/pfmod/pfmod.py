@@ -25,7 +25,6 @@
 """ This is the main program for the modelling package """
 
 # pylint: disable=E1101
-import sys
 from PyQt4 import QtGui, QtCore
 
 # Other dependancies
@@ -199,12 +198,3 @@ class MainWidget(QtGui.QMainWindow):
         self.oldtab = self.tabwidget.tabText(index)
 
 
-def main():
-    """ Main class of the PyGMI program """
-    app = QtGui.QApplication(sys.argv)
-    wid = MainWidget()
-    wid.show()
-    sys.exit(app.exec_())
-
-if __name__ == "__main__":
-    main()

@@ -22,14 +22,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Class for data types """
+""" Class for raster data types and conversion routines"""
 
 # pylint: disable=E1101, C0103
 import numpy as np
 
 
 def numpy_to_pygmi(data):
-    """ Converts an MxN numpy array into a PyGMI data object """
+    """ Converts an MxN numpy array into a PyGMI data object
+
+    Args:
+        data (numpy array): MxN array
+
+    Return:
+        Data: PyGMI dataset
+    """
     if data.ndim != 2:
         print("Error: you need 2 dimensions")
         return
@@ -44,12 +51,36 @@ def numpy_to_pygmi(data):
 
 
 def pygmi_to_numpy(tmp):
-    """ Converts a PyGMI data object into an MxN numpy array  """
+    """ Converts a PyGMI data object into an MxN numpy array
+
+    Args:
+        tmp (Data): PyGMI Dataset
+
+    Return:
+        array: MxN numpy array
+    """
     return np.array(tmp.data)
 
 
 class Data(object):
-    """ Data Object """
+    """ PyGMI Data Object
+
+    Attributes:
+        data (numpy masked array): array to contain raster data
+        tlx (float): Top Left X coordinate of raster grid
+        tly (float): Top Left Y coordinate of raster grid
+        xdim (float): x-dimension of grid cell
+        ydim (float): y-dimension of grid cell
+        nrofbands (int): number of raster bands
+        bandid (str): band name or id
+        rows (int): number of rows for each raster grid/band
+        cols (int): number of columns for each raster grid/band
+        nullvalue (float): grid null or nodata value
+        norm (dictionary): normalized data
+        gtr (tuple): projection information
+        wkt (str): projection information
+        units (str): description of units to be used with color bars
+    """
     def __init__(self):
         self.data = np.ma.array([])
         self.tlx = 0.0  # Top Left X coordinate

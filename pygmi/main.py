@@ -28,9 +28,9 @@
 # import sip
 # sip.setapi('QString', 2)
 
-import matplotlib
-matplotlib.use('Qt4Agg')
-matplotlib.rcParams['backend.qt4'] = 'PyQt4'
+# import matplotlib
+# matplotlib.use('Qt4Agg')
+# matplotlib.rcParams['backend.qt4'] = 'PyQt4'
 
 from PyQt4 import QtGui, QtCore
 import pygmi
@@ -41,6 +41,7 @@ import numpy as np
 import math
 import pkgutil
 import os
+
 
 class Startup(QtGui.QDialog):
     """ Gradients """

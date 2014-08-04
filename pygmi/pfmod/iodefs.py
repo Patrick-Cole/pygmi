@@ -375,8 +375,9 @@ class ExportMod3D(object):
     def mod3dtokmz(self):
         """ Saves the 3D model and grids in a kmz file.
         Note:
-            Only the boundary of the area is in degrees. The actual coordinates
-            are still in meters. """
+        Only the boundary of the area is in degrees. The actual coordinates
+        are still in meters.
+        """
 
         mvis_3d = mvis3d.Mod3dDisplay()
 

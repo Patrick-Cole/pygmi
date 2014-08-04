@@ -5,6 +5,7 @@ gravmagc_*.html
 
 dist/
 data/
+docs/
 .spyderproject
 c1.cmd
 c2.cmd

@@ -111,8 +111,17 @@ def gdal_to_dat(dest, bandid='Data'):
 
 
 def merge(dat):
-    """ Merges datasets found in a single PyGMI data object. The aim is to
-    ensure that all datasets have the same number of rows and columns. """
+    """ Merges datasets found in a single PyGMI data object.
+
+    The aim is to ensure that all datasets have the same number of rows and
+    columns.
+
+    Args:
+        dat (Data): data object which stores datasets
+
+    Returns:
+        Data: data object which stores datasets
+    """
     needsmerge = False
     for i in dat:
         if i.rows != dat[0].rows or i.cols != dat[0].cols:
@@ -130,11 +139,24 @@ def merge(dat):
 
     mrg.dsb_dxy.setValue(dxy)
     mrg.acceptall()
-    return mrg.outdata['Raster']
+    out = mrg.outdata['Raster']
+    return out
 
 
 def cluster_to_raster(indata):
-    """ Converts cluster datasets to raster datasets """
+    """ Converts cluster datasets to raster datasets
+
+    Some routines will not understand the datasets produced by cluster
+    analysis routines, since they are designated 'Cluster' and not 'Raster'.
+    This provides a work-around for that.
+
+    Args:
+        indata (Data): PyGMI raster dataset
+
+    Return:
+        Data: PyGMI raster dataset
+
+    """
     if 'Cluster' not in indata:
         return indata
     if 'Raster' not in indata:
@@ -917,10 +939,16 @@ class DataCut(object):
 
 
 def cut_raster(data, ifile):
-    """
-    Cuts a raster dataset using a shape file,
-    data = PyGMI Dataset
-    ifile = shapefile used to cut data
+    """Cuts a raster dataset
+
+    Cut a raster dataset using a shapefile
+
+    Parameters:
+        data (Data): PyGMI Dataset
+        ifile (str): shapefile used to cut data
+
+    Return:
+        Data: PyGMI Dataset
     """
     shapef = ogr.Open(ifile)
     lyr = shapef.GetLayer()
@@ -979,11 +1007,19 @@ def cut_raster(data, ifile):
 
 def trim_raster(olddata):
     """ Function to trim nulls from a raster dataset.
-    Data is a masked array """
+
+    This function trims entire rows or columns of data which have only nulls,
+    and are on the edges of the dataset.
+
+    Args:
+        olddata (Data): PyGMI dataset
+    Return:
+        Data: PyGMI dataset
+    """
 
     for data in olddata:
         mask = data.data.mask
-        data.data[mask] = np.nan
+        data.data[mask] = data.nullvalue
 
         rowstart = 0
         for i in range(mask.shape[0]):
@@ -1009,8 +1045,10 @@ def trim_raster(olddata):
                 break
             colend -= 1
 
-        data.data = np.ma.masked_invalid(data.data[rowstart:rowend,
-                                                   colstart:colend])
+        data.data = data.data[rowstart:rowend, colstart:colend]
+        data.data.mask = (data.data.data == data.nullvalue)
+#        data.data = np.ma.masked_invalid(data.data[rowstart:rowend,
+#                                                   colstart:colend])
         data.rows, data.cols = data.data.shape
         data.tlx = data.tlx + colstart*data.xdim
         data.tly = data.tly - rowstart*data.ydim

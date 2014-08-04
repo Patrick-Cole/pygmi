@@ -24,38 +24,30 @@
 # -----------------------------------------------------------------------------
 """
 This code is based on the Geomag software, with information given below. It was
-translated into Python from the  Geomag code.
+translated into Python from the Geomag code.
 
-# *****************************************************************************
-#
-#                             Program Geomag
-#
-# *****************************************************************************
-#
-#      This program, originally written in FORTRAN, was developed using
-#      subroutines written by
-#      A. Zunde
-#      USGS, MS 964, Box 25046 Federal Center, Denver, Co.  80225
-#      and
-#      S.R.C. Malin & D.R. Barraclough
-#      Institute of Geological Sciences, United Kingdom.
-#
-#      Translated
-#      into C by    : Craig H. Shaffer
-#                     29 July, 1988
-#
-#      Rewritten by : David Owens
-#                     For Susan McLean
-#
-#      Maintained by: Stefan Maus
-#      Contact      : stefan.maus@noaa.gov
-#                     National Geophysical Data Center
-#                     World Data Center-A for Solid Earth Geophysics
-#                     NOAA, E/GC1, 325 Broadway,
-#                     Boulder, CO  80303
-#
-#
-#**************************************************************************
+| This program, originally written in FORTRAN, was developed using subroutines
+| written by    : A. Zunde
+|               USGS, MS 964, Box 25046 Federal Center, Denver, Co.  80225
+|               and
+|               S.R.C. Malin & D.R. Barraclough
+|               Institute of Geological Sciences, United Kingdom.
+
+| Translated
+| into C by    : Craig H. Shaffer
+|               29 July, 1988
+
+| Rewritten by : David Owens
+|                For Susan McLean
+
+| Maintained by: Stefan Maus
+| Contact      : stefan.maus@noaa.gov
+|                National Geophysical Data Center
+|                World Data Center-A for Solid Earth Geophysics
+|                NOAA, E/GC1, 325 Broadway,
+|                Boulder, CO  80303
+"""
+# *************************************************************************
 #
 #      Some variables used in this program
 #
@@ -134,8 +126,7 @@ translated into Python from the  Geomag code.
 #
 #   yrmin      Double array of MAXMOD  Min year of model.
 #
-#**************************************************************************
-"""
+# *************************************************************************
 # pylint: disable=E1101, C0103
 
 from PyQt4 import QtGui, QtCore
@@ -149,7 +140,16 @@ import copy
 
 
 class IGRF(QtGui.QDialog):
-    """ Calculate depth and susceptibility"""
+    """ IGRF field calculation
+
+    This produces two datasets. The first is an IGRF dataset for the area of
+    interest, defined by some input magnetic dataset. The second is the IGRF
+    corrected form of that input magnetic dataset.
+
+    To do this, the input dataset must be reprojected from its local projection
+    to degrees, where the IGRF correction will take place. This is done within
+    this class.
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent=None)
 
@@ -322,7 +322,7 @@ class IGRF(QtGui.QDialog):
                                self.accept)
 
     def acceptall(self):
-        """ accept """
+        """ accept button"""
         orig = osr.SpatialReference()
         orig.SetWellKnownGeogCS('WGS84')
         targ = osr.SpatialReference()
@@ -386,7 +386,7 @@ class IGRF(QtGui.QDialog):
             self.dsb_kmz_fnorthing.setValue(10000000.)
 
     def settings(self):
-        """ Settings """
+        """ Settings Dialog"""
 # Variable declaration
 # Control variables
         data = self.indata['Raster']
@@ -571,41 +571,27 @@ class IGRF(QtGui.QDialog):
 
         return True
 
-
-# **************************************************************************
-#
-#                           Subroutine getshc
-#
-# **************************************************************************
-#
-#     Reads spherical harmonic coefficients from the specified
-#     model into an array.
-#
-#     Input:
-#           stream     - Logical unit number
-#           iflag      - Flag for SV equal to ) or not equal to 0
-#                        for designated read statements
-#           strec      - Starting record number to read from model
-#           nmax_of_gh - Maximum degree and order of model
-#
-#     Output:
-#           gh1 or 2   - Schmidt quasi-normal internal spherical
-#                        harmonic coefficients
-#
-#     FORTRAN
-#           Bill Flanagan
-#           NOAA CORPS, DESDIS, NGDC, 325 Broadway, Boulder CO.  80301
-#
-#     C
-#           C. H. Shaffer
-#           Lockheed Missiles and Space Company, Sunnyvale CA
-#           August 15, 1988
-#
-# **************************************************************************
     def getshc(self, file, iflag, strec, nmax_of_gh, gh):
         """ Reads spherical harmonic coefficients from the specified
-            model into an array. """
+            model into an array.
 
+        Args:
+            stream: Logical unit number
+            iflag: Flag for SV equal to ) or not equal to 0 for designated
+                read statements
+            strec: Starting record number to read from model
+            nmax_of_gh: Maximum degree and order of model
+
+        Return:
+            gh1 or gh2 - Schmidt quasi-normal internal spherical harmonic
+                coefficients
+
+        References:
+            FORTRAN: Bill Flanagan, NOAA CORPS, DESDIS, NGDC, 325 Broadway,
+            Boulder CO.  80301
+
+            C: C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+        """
         ii = -1
         cnt = 0
 

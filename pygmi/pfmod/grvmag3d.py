@@ -25,18 +25,13 @@
 """ Gravity and magnetic field calculations.
 This uses the following algorithms:
 
-Singh, B., Guptasarma, D., 2001. New method for fast computation of gravity
-and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.
+References:
+    Singh, B., Guptasarma, D., 2001. New method for fast computation of gravity
+    and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.
 
-Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
-1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
-
-GravMag - Routine that will calculate the final versions of the field. Other,
-related code is here as well, such as the inversion routines.
-
-GeoData - The is a class which contains the geophysical information for a
-single lithology. This includes the final calculated field for that lithology
-only """
+    Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
+    1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
+    """
 
 # pylint: disable=E1101, W0612, W0613
 from PyQt4 import QtGui, QtCore
@@ -47,18 +42,19 @@ import copy
 import tempfile
 import sys
 from scipy.linalg import norm
+from pygmi.pfmod.datatypes import LithModel
 
 if sys.platform.startswith('win'):
     if sys.maxsize > 2**32:
         if sys.version_info.major == 2:
-            import pygmi.pfmod.grvmagc_27_x64 as grvmagc
+            from pygmi.pfmod import grvmagc_27_x64 as grvmagc
         else:
-            import pygmi.pfmod.grvmagc_33_x64 as grvmagc
+            from pygmi.pfmod import grvmagc_33_x64 as grvmagc
     else:
         if sys.version_info.major == 2:
-            import pygmi.pfmod.grvmagc_27_x86 as grvmagc
+            from pygmi.pfmod import grvmagc_27_x86 as grvmagc
         else:
-            import pygmi.pfmod.grvmagc_33_x86 as grvmagc
+            from pygmi.pfmod import grvmagc_33_x86 as grvmagc
 
 else:
     import pyximport
@@ -67,7 +63,11 @@ else:
 
 
 class GravMag(object):
-    """This class holds the generic magnetic and gravity modelling routines """
+    """This class holds the generic magnetic and gravity modelling routines
+
+    Routine that will calculate the final versions of the field. Other,
+    related code is here as well, such as the inversion routines.
+    """
     def __init__(self, parent):
 
         self.parent = parent
@@ -169,7 +169,7 @@ class GravMag(object):
         tmpfiles = self.tmpfiles
 
         for mlist in self.lmod.lith_list.items():
-#            if 'Background' != mlist[0] and mlist[1].modified is True:
+            # if 'Background' != mlist[0] and mlist[1].modified is True:
             if 'Background' != mlist[0]:
                 mlist[1].modified = True
                 self.showtext(mlist[0]+':')
@@ -180,7 +180,7 @@ class GravMag(object):
                     mlist[1].calc_origin2()
                 else:
                     mlist[1].calc_origin()
-                tmpfiles[mlist[0]] = self.save_layer(mlist)
+                tmpfiles[mlist[0]] = __save_layer(mlist)
 
         if showreports is True:
             self.showtext('Summing data')
@@ -248,7 +248,8 @@ class GravMag(object):
             self.lmod.griddata['Calculated Gravity'].data *= 0.
 
         if 'Magnetic Dataset' in self.lmod.griddata:
-            ztmp = self.gridmatch('Magnetic Dataset', 'Calculated Magnetics')
+            ztmp = __gridmatch(self.lmod, 'Magnetic Dataset',
+                               'Calculated Magnetics')
             self.lmod.griddata['Magnetic Residual'] = copy.deepcopy(
                 self.lmod.griddata['Magnetic Dataset'])
             self.lmod.griddata['Magnetic Residual'].data = (
@@ -257,7 +258,8 @@ class GravMag(object):
                 'Magnetic Residual'
 
         if 'Gravity Dataset' in self.lmod.griddata:
-            ztmp = self.gridmatch('Gravity Dataset', 'Calculated Gravity')
+            ztmp = __gridmatch(self.lmod, 'Gravity Dataset',
+                               'Calculated Gravity')
             self.lmod.griddata['Gravity Residual'] = copy.deepcopy(
                 self.lmod.griddata['Gravity Dataset'])
             self.lmod.griddata['Gravity Residual'].data = (
@@ -271,38 +273,16 @@ class GravMag(object):
         if self.pbars is not None:
             self.pbars.maxall()
 
-    def save_layer(self, mlist):
-        """ Routine saves the mlayer and glayer to a file """
-#        self.mfname = self.parent.modelfilename
-
-#        filename = self.mfname+'_'+mlist[0]+'_tmp.npz'
-
-#        self.showtext('Saving '+filename.split('/')[-1] +
-#                      ' (Can be deleted later if you wish)')
-
-        outfile = tempfile.TemporaryFile()
-
-        outdict = {}
-
-        outdict['mlayers'] = mlist[1].mlayers
-        outdict['glayers'] = mlist[1].glayers
-
-        np.savez(outfile, **outdict)
-        outfile.seek(0)
-
-        mlist[1].mlayers = None
-        mlist[1].glayers = None
-
-        return outfile
-
     def calc_regional(self):
-        """ Calculates a gravity regional value based on a single
+        """
+        Calculates a gravity regional value based on a single
         solid lithology model. This gets used in tab_param. The principle is
         that the maximum value for a solid model with fixed extents and depth,
         using the most COMMON lithology, would be the MAXIMUM AVERAGE value for
         any model which we would do. Therefore the regional is simply:
-                    REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
-        This routine calculates the last term """
+        REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
+        This routine calculates the last term
+        """
 
         ltmp = list(self.lmod1.lith_list.keys())
         ltmp.pop(ltmp.index('Background'))
@@ -386,41 +366,8 @@ class GravMag(object):
         """ If there is a gravity regional, then add it """
         if 'Gravity Regional' not in self.lmod.griddata:
             return
-        zfin = self.gridmatch('Calculated Gravity', 'Gravity Regional')
+        zfin = __gridmatch(self.lmod, 'Calculated Gravity', 'Gravity Regional')
         self.lmod.griddata['Calculated Gravity'].data += zfin
-
-    def gridmatch(self, ctxt, rtxt):
-        """ Matches the rows and columns of the second grid to the first
-        grid """
-        rgrv = self.lmod.griddata[rtxt]
-        cgrv = self.lmod.griddata[ctxt]
-        x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
-                      rgrv.xdim)+0.5*rgrv.xdim
-        y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
-                      rgrv.xdim)+0.5*rgrv.ydim
-        x_2, y_2 = np.meshgrid(x, y)
-        z_2 = rgrv.data
-        x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
-        y_i = np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - \
-            cgrv.rows*cgrv.ydim + 0.5*cgrv.ydim
-        xi2, yi2 = np.meshgrid(x_i, y_i)
-
-        zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
-                           (xi2.flatten(), yi2.flatten()))
-        zfin = np.ma.masked_invalid(zfin)
-        zfin.shape = cgrv.data.shape
-
-        return zfin
-
-    def hist_eq(self, img, nbr_bins=256):
-        """ Routine to calculate histogram equalization """
-        imhist, bins = np.histogram(img.flatten(), nbr_bins, normed=True)
-        cdf = imhist.cumsum()  # cumulative distribution function
-        cdf = 255 * cdf / cdf[-1]  # normalize
-    # use linear interpolation of cdf to find new pixel values
-        im2 = np.interp(img.flatten(), bins[:-1], cdf)
-
-        return im2.reshape(img.shape)
 
     def test_pattern(self):
         """ Displays a test pattern of the data - an indication of the edge of
@@ -626,7 +573,12 @@ class GravMag(object):
 class GeoData(object):
     """ Data layer class:
         This class defines each geological type and calculates the field
-        for one cube from the standard definitions. """
+        for one cube from the standard definitions.
+
+        The is a class which contains the geophysical information for a single
+        lithology. This includes the final calculated field for that lithology
+        only.
+        """
     def __init__(self, parent, ncols=10, nrows=10, numz=10, dxy=10.,
                  d_z=10., mht=80., ght=0.):
         self.hintn = 30000.
@@ -646,7 +598,11 @@ class GeoData(object):
             self.pbars = parent.pbars
         else:
             self.pbars = None
-        self.showtext = self.parent.showtext
+
+        if hasattr(parent, 'showtext'):
+            self.showtext = parent.showtext
+        else:
+            self.showtext = print
 
     # ncols and nrows are the smaller dimension of the original grid.
     # numx, numy, numz are the dimensions of the larger grid to be used as a
@@ -841,7 +797,7 @@ class GeoData(object):
         for f in range(nf):
             indx = face[f].tolist() + [face[f, 0]]
             for t in range(4):
-    #            edgeno = sum(face(1:f-1,1))+t
+                # edgeno = sum(face(1:f-1,1))+t
                 edgeno = f*4+t
                 ends = indx[t:t+2]
                 p1 = corner[ends[0]]
@@ -1067,3 +1023,165 @@ class GeoData(object):
         mval = mval*10**-7*10**9
         mval = mval[:, :, :-1]-mval[:, :, 1:]
         self.mlayers = np.transpose(mval, (2, 0, 1))
+
+
+def __save_layer(mlist):
+    """ Routine saves the mlayer and glayer to a file """
+    outfile = tempfile.TemporaryFile()
+
+    outdict = {}
+
+    outdict['mlayers'] = mlist[1].mlayers
+    outdict['glayers'] = mlist[1].glayers
+
+    np.savez(outfile, **outdict)
+    outfile.seek(0)
+
+    mlist[1].mlayers = None
+    mlist[1].glayers = None
+
+    return outfile
+
+
+def __gridmatch(lmod, ctxt, rtxt):
+    """ Matches the rows and columns of the second grid to the first
+    grid """
+    rgrv = lmod.griddata[rtxt]
+    cgrv = lmod.griddata[ctxt]
+    x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
+                  rgrv.xdim)+0.5*rgrv.xdim
+    y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
+                  rgrv.xdim)+0.5*rgrv.ydim
+    x_2, y_2 = np.meshgrid(x, y)
+    z_2 = rgrv.data
+    x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
+    y_i = np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - \
+        cgrv.rows*cgrv.ydim + 0.5*cgrv.ydim
+    xi2, yi2 = np.meshgrid(x_i, y_i)
+
+    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
+                       (xi2.flatten(), yi2.flatten()))
+    zfin = np.ma.masked_invalid(zfin)
+    zfin.shape = cgrv.data.shape
+
+    return zfin
+
+
+def calc_field(lmod):
+    """ Calculate magnetic and gravity field """
+    if np.max(lmod.lith_index) == -1:
+        print('Error: Create a model first')
+        return
+# Init some variables for convenience
+    numx = int(lmod.numx)
+    numy = int(lmod.numy)
+    numz = int(lmod.numz)
+    tmpfiles = {}
+
+    for mlist in lmod.lith_list.items():
+        if 'Background' != mlist[0]:
+            mlist[1].modified = True
+            print(mlist[0]+':')
+
+            mlist[1].calc_origin2()
+
+            tmpfiles[mlist[0]] = __save_layer(mlist)
+
+    print('Summing data')
+
+# get height corrections
+    tmp = np.copy(lmod.lith_index)
+    tmp[tmp > -1] = 0
+    hcor = np.abs(tmp.sum(2))
+
+# model index
+    modind = lmod.lith_index.copy()
+    modind[modind == 0] = -1
+
+# Get mlayers and glayers with correct rho and netmagn
+    magval = np.zeros([numx, numy])
+    grvval = np.zeros([numx, numy])
+
+    mtmp = magval.shape
+    magval = magval.flatten()
+    grvval = grvval.flatten()
+    hcorflat = numz-hcor.flatten()
+
+    for mlist in lmod.lith_list.items():
+        if 'Background' == mlist[0]:
+            continue
+        tmpfiles[mlist[0]].seek(0)
+        mfile = np.load(tmpfiles[mlist[0]])
+        mlayers = mfile['mlayers']
+        glayers = mfile['glayers']*mlist[1].rho()
+        mijk = mlist[1].lith_index
+
+        aaa = np.reshape(np.mgrid[0:mtmp[0], 0:mtmp[1]], [2, magval.size])
+
+        for i in range(numx):
+            grvmagc.calc_field2(i, numx, numy, numz, modind, hcor, aaa[0],
+                                aaa[1], mlayers, glayers, magval, grvval,
+                                hcorflat, mijk)
+
+    magval.resize(mtmp)
+    grvval.resize(mtmp)
+    magval = magval.T
+    grvval = grvval.T
+    magval = magval[::-1]
+    grvval = grvval[::-1]
+
+# Update variables
+    lmod.griddata['Calculated Magnetics'].data = magval
+    lmod.griddata['Calculated Gravity'].data = grvval
+
+    if 'Gravity Regional' in lmod.griddata:
+        zfin = __gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
+        lmod.griddata['Calculated Gravity'].data += zfin
+
+    if lmod.lith_index.max() <= 0:
+        lmod.griddata['Calculated Magnetics'].data *= 0.
+        lmod.griddata['Calculated Gravity'].data *= 0.
+
+    if 'Magnetic Dataset' in lmod.griddata:
+        ztmp = __gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
+        lmod.griddata['Magnetic Residual'] = copy.deepcopy(
+            lmod.griddata['Magnetic Dataset'])
+        lmod.griddata['Magnetic Residual'].data = (
+            lmod.griddata['Magnetic Dataset'].data - ztmp)
+        lmod.griddata['Magnetic Residual'].bandid = \
+            'Magnetic Residual'
+
+    if 'Gravity Dataset' in lmod.griddata:
+        ztmp = __gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
+        lmod.griddata['Gravity Residual'] = copy.deepcopy(
+            lmod.griddata['Gravity Dataset'])
+        lmod.griddata['Gravity Residual'].data = (
+            lmod.griddata['Gravity Dataset'].data - ztmp)
+        lmod.griddata['Gravity Residual'].bandid = 'Gravity Residual'
+
+    print('Calculation Finished')
+    return lmod.griddata
+
+
+def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
+                d_z=100, tlx=0, tly=0, tlz=0, mht=100, ght=0):
+    """ Create a quick model """
+
+    lmod = LithModel()
+    lmod.update(numx, numy, numz, tlx, tly, tlz, dxy, d_z)
+
+    lmod.lith_list['Background'] = GeoData(None, numx, numy, numz, dxy, d_z,
+                                           mht, ght)
+    lmod.lith_list['Background'].susc = 0
+    lmod.lith_list['Background'].density = 2.67
+
+    j = 0
+    for i in inputliths:
+        j += 1
+        lmod.lith_list[i] = GeoData(None, numx, numy, numz, dxy, d_z, mht, ght)
+
+        lmod.lith_list[i].susc = 0.01
+        lmod.lith_list[i].density = 3.0
+        lmod.lith_list[i].lith_index = j
+
+    return lmod

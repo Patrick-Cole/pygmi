@@ -55,6 +55,8 @@ class LithModel(object):
         self.mht = 100.
         self.ght = 0.
         self.gregional = 100
+
+        # Next line calls a function to update the variables above.
         self.update(100, 75, 40, 0, 150000, 0, 1500, 100)
 
         self.olith_index = None
@@ -135,7 +137,7 @@ class LithModel(object):
                         xcrd2 < gcols):
                     alt = curgrid.data.data[ycrd2, xcrd2]
                     if (curgrid.data.mask[ycrd2, xcrd2] is True or
-                            np.isnan(alt) or alt==curgrid.nullvalue):
+                            np.isnan(alt) or alt == curgrid.nullvalue):
                         alt = curgrid.data.mean()
                     k_2 = int((utlz - alt) / self.d_z)
                     self.lith_index[i, j, :k_2] = -1

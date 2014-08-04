@@ -29,7 +29,6 @@ from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.signal as ssig
 from scipy.stats import mode
-import pygmi.raster.filters2d as filters2d
 import copy
 
 
@@ -209,11 +208,11 @@ class Smooth(QtGui.QDialog):
         if self.radiobutton_2dmean.isChecked():
             self.radiobutton_gaussian.setVisible(True)
             if self.radiobutton_box.isChecked():
-                fmat = filters2d.filters2d('average', [box_y, box_x])
+                fmat = filters2d('average', [box_y, box_x])
             elif self.radiobutton_disk.isChecked():
-                fmat = filters2d.filters2d('disc', rad)
+                fmat = filters2d('disc', rad)
             elif self.radiobutton_gaussian.isChecked():
-                fmat = filters2d.filters2d('gaussian', [box_x, box_y], sigma)
+                fmat = filters2d('gaussian', [box_x, box_y], sigma)
         else:
             self.radiobutton_gaussian.setVisible(False)
             if self.radiobutton_gaussian.isChecked():
@@ -221,7 +220,7 @@ class Smooth(QtGui.QDialog):
             if self.radiobutton_box.isChecked():
                 fmat = np.ones((box_y, box_x))
             elif self.radiobutton_disk.isChecked():
-                fmat = filters2d.filters2d('disc', rad)
+                fmat = filters2d('disc', rad)
                 fmat[fmat > 0] = 1
 
         if self.radiobutton_box.isChecked():
@@ -339,3 +338,94 @@ class Smooth(QtGui.QDialog):
         out.mask[:, :colf/2] = True
         out.mask[:, -colf/2:] = True
         return out
+
+
+def filters2d(filtertype, sze, *sigma):
+    """ Filters 2D
+
+    These filter definitions have been translated from the octave function
+    'fspecial'.
+
+    Args:
+        filtertype (str): Type of filter. Can be 'average', 'disc' or
+            'gaussian'.
+        sze (numpy array or integer): This is a integer radius for 'disc' or a
+            vector containing rows and columns otherwize.
+        sigma (numpy array): numpy array containing std deviation. Used in
+            'gaussian'
+
+    Return:
+        numpy array: Returns the filter to be used.
+
+    Copyright (C) 2005 Peter Kovesi
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2, or (at your option)
+    any later version.
+
+    This program is distributed in the hope that it will be useful, but
+    WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, write to the Free Software
+    Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+    02110-1301, USA.
+
+    FSPECIAL - Create spatial filters for image processing
+
+    Usage:  f = fspecial(filtertype, optionalparams)
+
+    filtertype can be
+
+|       'average'   - Rectangular averaging filter
+|       'disc'      - Circular averaging filter.
+|       'gaussian'  - Gaussian filter.
+
+    The parameters that need to be specified depend on the filtertype
+
+    Examples of use and associated default values:
+
+|     f = fspecial('average',sze)           sze can be a 1 or 2 vector
+|                                            default is [3 3].
+|     f = fspecial('disk',radius)           default radius = 5
+|     f = fspecial('gaussian',sze, sigma)   default sigma is 0.5
+
+    Where sze is specified as a single value the filter will be square.
+
+|    Author:   Peter Kovesi <pk@csse.uwa.edu.au>
+|    Keywords: image processing, spatial filters
+|    Created:  August 2005
+    """
+
+    if filtertype == 'disc':
+        radius = sze
+        sze = [2*radius+1, 2*radius+1]
+
+    rows = sze[0]
+    cols = sze[1]
+    r2 = (rows-1)/2
+    c2 = (cols-1)/2
+
+    if filtertype == 'average':
+        rows = sze[0]
+        cols = sze[1]
+        f = np.ones(sze)/(rows*cols)
+
+    elif filtertype == 'disc':
+        [x, y] = np.mgrid[-c2: c2, -r2: r2]
+        rad = np.sqrt(x**2 + y**2)
+        f = rad <= radius
+        f = f/np.sum(f[:])
+
+    elif filtertype == 'gaussian':
+        [x, y] = np.mgrid[-c2: c2, -r2:r2]
+        radsqrd = x**2 + y**2
+        f = np.exp(-radsqrd/(2*sigma[0]**2))
+        f = f/np.sum(f[:])
+    else:
+        print('Unrecognized filter type')
+
+    return f

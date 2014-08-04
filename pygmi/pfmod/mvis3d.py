@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        tab_mvis3d.py (part of PyGMI)
+# Name:        mvis3d.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is code for the 3d model creation tab. """
+""" This is code for the 3d model creation. """
 
 # pylint: disable=E1101, C0103
 import numpy as np

@@ -94,12 +94,17 @@ def get_raster(ifile):
         rtmp = dataset.GetRasterBand(i+1)
         bandid = rtmp.GetDescription()
         nval = rtmp.GetNoDataValue()
+
         if 'Cluster' in bandid:
             # output_type = 'Cluster'
             dat.append(Clust())
         else:
             dat.append(Data())
         dat[i].data = rtmp.ReadAsArray()
+        if dat[i].data.dtype.kind == 'i':
+            nval = int(nval)
+        else:
+            nval = float(nval)
 #            dtype = dat[i].data.dtype
 #            if dtype != np.float64 and dtype != np.float32:
 #                dat[i].data = dat[i].data.astype(np.float32)

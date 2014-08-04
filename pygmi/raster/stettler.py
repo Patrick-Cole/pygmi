@@ -129,6 +129,7 @@ class DepthSusc(QtGui.QDialog):
 
 #     Descending angles
         while (z2-z1) < 0 and cur_ln_nr == line_nr:
+            pass
 #            read(10,'(132A)',end=200) string
 #            call readcsvfrmat(string,line_nr,st_nr,x,y,z,dMdh,dMdz)
 #            write(12,1001) line_nr,st_nr,x,y,z,dMdh,dMdz
@@ -158,7 +159,7 @@ class DepthSusc(QtGui.QDialog):
         xmin = x
         ymin = y
         if flag == 1:
-#        write(12,*) xmin,xmax,ymin,ymax,zmin,zmax
+            # write(12,*) xmin,xmax,ymin,ymax,zmin,zmax
             tilt_depth = sqrt((xmax-xmin)**2+(ymax-ymin)**2)/4.
 
 #     Calculate the mag suseptibility
@@ -185,7 +186,7 @@ class DepthSusc(QtGui.QDialog):
                 mag_suscept = .0001
 
             flag = 0
-#            write(12,1000) line_nr, stloc, xloc, yloc, tilt_depth, 
+#            write(12,1000) line_nr, stloc, xloc, yloc, tilt_depth,
 #                            mag_suscept*100.
 
             zmax = zmin
@@ -195,6 +196,7 @@ class DepthSusc(QtGui.QDialog):
 
 #     Ascending angles
         while (z2-z1) >= 0 and cur_ln_nr == line_nr:
+            pass
 #   80       read(10,'(132A)',end=200) string
 #            call readcsvfrmat(string,line_nr,st_nr,x,y,z,dMdh,dMdz)
 #        write(12,1000) line_nr, st_nr, x, y, z
@@ -221,7 +223,8 @@ class DepthSusc(QtGui.QDialog):
         xmax = x
         ymax = y
         if (flag == 0):
-            goto 60
+            pass
+#            goto 60
 #      write(12,*) xmin,xmax,ymin,ymax,zmin,zmax
         Tilt_depth = sqrt((xmax-xmin)**2+(ymax-ymin)**2)/4.
 
@@ -252,56 +255,56 @@ class DepthSusc(QtGui.QDialog):
         xmin = xmax
         ymin = ymax
 
-        go to 60
+        # goto 60
 
-  200   close (10)
-        close (12)
+#  200   close (10)
+#        close (12)
 
 #**********************************************************************
-      Subroutine readcsvfrmat(string,line_nr,st_nr,x,y,z,dMdh,dMdz)
-      CHARACTER*25 value1
-      Character(132) String
-      INTEGER Line_nr, st_nr
-      INTEGER string_len, variable, prev_i
-      REAL X1
-      Dimension val(7)
-# 1000 format(132a)
-# 1001 format(1x,I12,I6,F13.2,F13.2,F6.1,F6.4,F6.4)
-
-      String_len=LEN_TRIM(string)
-
-#     Set initial conditions
-
-      prev_i=1  ! first char is L, so only from char 2
-      variable=1 !counter of how many variables, should be 7
-
-#      Write(12,1000) string
-      Do 2 i=2,string_len
-      if(string(i:i).EQ.ACHAR(44)) then
-#      write(12,*) i
-      value1=string(prev_i+1:i-1)
-#      write(12,*) value1
-      READ(value1,*,err=10) x1
-      val(variable)=x1
-      variable=variable+1
-      prev_i=i
-      end if
-    2 continue
-      value1=string(prev_i+1:string_len)
-#      write(12,*) prev_i+1, string_len
-#      write(12,*) value1
-      READ(value1,*,err=10) x1
-      val(7)=x1
-
-#     Convert
-
-   10 Line_nr=val(1)
-      St_nr=val(5)
-      X=val(2)
-      Y=val(3)
-      Z=val(4)
-      dMdh=val(6)
-      dMdz=val(7)
-#      write(12,1001) line_nr,st_nr,x,y,z,dMdh,dMdz
-      return
-      end
+#      Subroutine readcsvfrmat(string,line_nr,st_nr,x,y,z,dMdh,dMdz)
+#      CHARACTER*25 value1
+#      Character(132) String
+#      INTEGER Line_nr, st_nr
+#      INTEGER string_len, variable, prev_i
+#      REAL X1
+#      Dimension val(7)
+## 1000 format(132a)
+## 1001 format(1x,I12,I6,F13.2,F13.2,F6.1,F6.4,F6.4)
+#
+#      String_len=LEN_TRIM(string)
+#
+##     Set initial conditions
+#
+#      prev_i=1  ! first char is L, so only from char 2
+#      variable=1 !counter of how many variables, should be 7
+#
+##      Write(12,1000) string
+#      Do 2 i=2,string_len
+#      if(string(i:i).EQ.ACHAR(44)) then
+##      write(12,*) i
+#      value1=string(prev_i+1:i-1)
+##      write(12,*) value1
+#      READ(value1,*,err=10) x1
+#      val(variable)=x1
+#      variable=variable+1
+#      prev_i=i
+#      end if
+#    2 continue
+#      value1=string(prev_i+1:string_len)
+##      write(12,*) prev_i+1, string_len
+##      write(12,*) value1
+#      READ(value1,*,err=10) x1
+#      val(7)=x1
+#
+##     Convert
+#
+#   10 Line_nr=val(1)
+#      St_nr=val(5)
+#      X=val(2)
+#      Y=val(3)
+#      Z=val(4)
+#      dMdh=val(6)
+#      dMdz=val(7)
+##      write(12,1001) line_nr,st_nr,x,y,z,dMdh,dMdz
+#      return
+#      end
