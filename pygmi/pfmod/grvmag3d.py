@@ -180,7 +180,7 @@ class GravMag(object):
                     mlist[1].calc_origin2()
                 else:
                     mlist[1].calc_origin()
-                tmpfiles[mlist[0]] = __save_layer(mlist)
+                tmpfiles[mlist[0]] = save_layer(mlist)
 
         if showreports is True:
             self.showtext('Summing data')
@@ -248,7 +248,7 @@ class GravMag(object):
             self.lmod.griddata['Calculated Gravity'].data *= 0.
 
         if 'Magnetic Dataset' in self.lmod.griddata:
-            ztmp = __gridmatch(self.lmod, 'Magnetic Dataset',
+            ztmp = gridmatch(self.lmod, 'Magnetic Dataset',
                                'Calculated Magnetics')
             self.lmod.griddata['Magnetic Residual'] = copy.deepcopy(
                 self.lmod.griddata['Magnetic Dataset'])
@@ -258,7 +258,7 @@ class GravMag(object):
                 'Magnetic Residual'
 
         if 'Gravity Dataset' in self.lmod.griddata:
-            ztmp = __gridmatch(self.lmod, 'Gravity Dataset',
+            ztmp = gridmatch(self.lmod, 'Gravity Dataset',
                                'Calculated Gravity')
             self.lmod.griddata['Gravity Residual'] = copy.deepcopy(
                 self.lmod.griddata['Gravity Dataset'])
@@ -366,7 +366,7 @@ class GravMag(object):
         """ If there is a gravity regional, then add it """
         if 'Gravity Regional' not in self.lmod.griddata:
             return
-        zfin = __gridmatch(self.lmod, 'Calculated Gravity', 'Gravity Regional')
+        zfin = gridmatch(self.lmod, 'Calculated Gravity', 'Gravity Regional')
         self.lmod.griddata['Calculated Gravity'].data += zfin
 
     def test_pattern(self):
@@ -1025,7 +1025,7 @@ class GeoData(object):
         self.mlayers = np.transpose(mval, (2, 0, 1))
 
 
-def __save_layer(mlist):
+def save_layer(mlist):
     """ Routine saves the mlayer and glayer to a file """
     outfile = tempfile.TemporaryFile()
 
@@ -1043,7 +1043,7 @@ def __save_layer(mlist):
     return outfile
 
 
-def __gridmatch(lmod, ctxt, rtxt):
+def gridmatch(lmod, ctxt, rtxt):
     """ Matches the rows and columns of the second grid to the first
     grid """
     rgrv = lmod.griddata[rtxt]
@@ -1085,7 +1085,7 @@ def calc_field(lmod):
 
             mlist[1].calc_origin2()
 
-            tmpfiles[mlist[0]] = __save_layer(mlist)
+            tmpfiles[mlist[0]] = save_layer(mlist)
 
     print('Summing data')
 
@@ -1135,7 +1135,7 @@ def calc_field(lmod):
     lmod.griddata['Calculated Gravity'].data = grvval
 
     if 'Gravity Regional' in lmod.griddata:
-        zfin = __gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
+        zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
         lmod.griddata['Calculated Gravity'].data += zfin
 
     if lmod.lith_index.max() <= 0:
@@ -1143,7 +1143,7 @@ def calc_field(lmod):
         lmod.griddata['Calculated Gravity'].data *= 0.
 
     if 'Magnetic Dataset' in lmod.griddata:
-        ztmp = __gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
+        ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
         lmod.griddata['Magnetic Residual'] = copy.deepcopy(
             lmod.griddata['Magnetic Dataset'])
         lmod.griddata['Magnetic Residual'].data = (
@@ -1152,7 +1152,7 @@ def calc_field(lmod):
             'Magnetic Residual'
 
     if 'Gravity Dataset' in lmod.griddata:
-        ztmp = __gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
+        ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
         lmod.griddata['Gravity Residual'] = copy.deepcopy(
             lmod.griddata['Gravity Dataset'])
         lmod.griddata['Gravity Residual'].data = (
