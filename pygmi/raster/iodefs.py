@@ -49,8 +49,8 @@ class ImportData(object):
     def settings(self):
         """ Settings """
         ext = \
-            "ENVI (*.hdr);;" + \
             "ERMapper (*.ers);;" + \
+            "ENVI (*.hdr);;" + \
             "GeoTiff (*.tif);;" + \
             "Geosoft (*.gxf);;" + \
             "Surfer grid (v.6) (*.grd);;" + \
@@ -102,8 +102,12 @@ def get_raster(ifile):
             dat.append(Data())
         dat[i].data = rtmp.ReadAsArray()
         if dat[i].data.dtype.kind == 'i':
+            if nval is None:
+                nval = 999999
             nval = int(nval)
         else:
+            if nval is None:
+                nval = 1e+20
             nval = float(nval)
 #            dtype = dat[i].data.dtype
 #            if dtype != np.float64 and dtype != np.float32:
@@ -256,19 +260,31 @@ class ExportData(object):
 #        out.SetProjection(orig.ExportToWkt())
 
         out.SetProjection(data[0].wkt)
-#        out.SetMetadataItem("NODATA_VALUES", "-999.9")
 
         for i in range(len(data)):
             rtmp = out.GetRasterBand(i+1)
             rtmp.SetDescription(data[i].bandid)
             dtmp = np.ma.array(data[i].data).astype(dtype)
-            if dtype == np.float32 or dtype == np.float or dtype == np.float64:
-                data[i].nullvalue = dtmp.fill_value
-                dtmp = dtmp.filled()
+
+            # This section tries to overcome null values with round off error
+            # in 32-bit numbers.
+            if dtype == np.float32:
+                data[i].nullvalue = np.float64(np.float32(data[i].nullvalue))
+                if data[i].data.min() > -1e+10:
+                    data[i].nullvalue = np.float64(np.float32(-1e+10))
+                elif data[i].data.max() < 1e+10:
+                    data[i].nullvalue = np.float64(np.float32(1e+10))
+                
+            elif dtype == np.float or dtype == np.float64:
+                data[i].nullvalue = np.float64(dtmp.fill_value)
+
+            dtmp.set_fill_value(data[i].nullvalue)
+            dtmp = dtmp.filled()
+            
             if drv != 'GTiff':
-                rtmp.SetNoDataValue(np.float64(data[i].nullvalue))
+                rtmp.SetNoDataValue(data[i].nullvalue)
             elif len(data) == 1:
-                rtmp.SetNoDataValue(np.float64(data[i].nullvalue))
+                rtmp.SetNoDataValue(data[i].nullvalue)
             rtmp.WriteArray(dtmp)
 
         out = None  # Close File

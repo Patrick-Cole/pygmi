@@ -1,11 +1,10 @@
 __pycache__/
 seis/
-*.py[cod]
-gravmagc_*.html
-
 dist/
 data/
 docs/
+
+*.py[co]
+*.cmd
+grvmagc_*.html
 .spyderproject
-c1.cmd
-c2.cmd

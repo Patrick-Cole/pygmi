@@ -91,7 +91,7 @@ class Data(object):
         self.bandid = ""
         self.rows = -1
         self.cols = -1
-        self.nullvalue = -9999.0
+        self.nullvalue = 1e+20
         self.norm = {}
         self.gtr = (0.0, 1.0, 0.0, 0.0, -1.0)
         self.wkt = ''
