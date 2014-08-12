@@ -50,7 +50,7 @@ class DataDisplay(object):
 
         mainwindow = QtGui.QWidget()
         self.userint = mainwindow
-        self.mmc = MyMplCanvas()
+        self.mmc = MyMplCanvas(len(self.lmod1.custprofx))
         self.mpl_toolbar = NavigationToolbar(self.mmc, mainwindow)
 
         self.ddisp_plot = self.mmc
@@ -196,11 +196,11 @@ class DataDisplay(object):
         if self.rb_ew.isChecked():
             xys = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy
             self.label_profile_xy.setText('Northing: '+str(xys))
-            self.mmc.init_line(self.lmod1.xrange, [xys, xys])
+            self.mmc.init_line(self.lmod1.xrange, [xys, xys], self.lmod1)
         elif self.rb_ns.isChecked():
             xys = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy
             self.label_profile_xy.setText('Easting: '+str(xys))
-            self.mmc.init_line([xys, xys], self.lmod1.yrange)
+            self.mmc.init_line([xys, xys], self.lmod1.yrange, self.lmod1)
 
     def update_combos(self):
         """ Update the combos """
@@ -224,6 +224,7 @@ class DataDisplay(object):
         """ Runs when the tab is activated """
         self.lmod1 = self.parent.lmod1
         self.mmc.set_limits(self.lmod1)
+        self.mmc.update_ncust(len(self.lmod1.custprofx))
         self.update_combos()
         self.combo2()
         self.combo1()
@@ -237,11 +238,12 @@ class DataDisplay(object):
             self.hslider_profile.setMaximum(self.lmod1.numx-1)
             self.lmod1.is_ew = False
         self.sb_profnum.setValue(self.lmod1.curprof)
+        self.profnum()
 
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
-    def __init__(self):
+    def __init__(self, ncust = 1):
         # figure stuff
         # fig = Figure()
         fig = plt.figure()
@@ -281,9 +283,20 @@ class MyMplCanvas(FigureCanvas):
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
         self.prf = self.axes.plot([0, 1], [0, 1])
+        for i in range(ncust):
+            self.prf += self.axes.plot([0, 1], [0, 1])
+
         self.figure.canvas.draw()
 
         self.gcol1 = self.cbar(dat)
+
+    def update_ncust(self, ncust):
+        """ Updates mumber of custom profiles """
+        diff = ncust-(len(self.prf)-1)
+        if diff < 1:
+            return
+        for i in range(diff):
+            self.prf += self.axes.plot([0, 1], [0, 1])
 
     def init_grid1(self, dat1, reg=0, lbl=''):
         """ Updates the upper single color map """
@@ -322,7 +335,8 @@ class MyMplCanvas(FigureCanvas):
             pass
         self.ibar2.set_label(lbl)
 
-        self.prf[0].set_visible(False)
+        for i in self.prf:
+            i.set_visible(False)
         self.ims.set_visible(False)
 #        self.ims2.set_data(dat2.data[::-1]-reg)
         self.ims2.set_data(dat2.data-reg)
@@ -341,7 +355,8 @@ class MyMplCanvas(FigureCanvas):
         self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.ims.set_visible(True)
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
-        self.prf[0].set_visible(True)
+        for i in self.prf:
+            i.set_visible(True)
 
     def slide_grid1(self, perc=0.0):
         """ Slider """
@@ -352,19 +367,29 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.update()
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
-        self.axes.draw_artist(self.prf[0])
+        for i in self.prf:
+            self.axes.draw_artist(i)
 #        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
-    def init_line(self, xrng, yrng):
+    def init_line(self, xrng, yrng, lmod):
         """ Updates the line position """
+        kmdiv = 1.
         if self.axes.xaxis.get_label_text().find('km') > -1:
             xrng = [xrng[0]/1000., xrng[1]/1000.]
             yrng = [yrng[0]/1000., yrng[1]/1000.]
+            kmdiv = 1000.
 
         self.prf[0].set_data([xrng, yrng])
+        for i in range(len(lmod.custprofx)):
+            self.prf[i+1].set_data([[lmod.custprofx[i][0]/kmdiv,
+                                     lmod.custprofx[i][1]/kmdiv],
+                                    [lmod.custprofy[i][0]/kmdiv,
+                                     lmod.custprofy[i][1]/kmdiv]])
         self.figure.canvas.restore_region(self.lbbox)
         self.axes.draw_artist(self.prf[0])
+        for i in range(len(lmod.custprofx)):
+            self.axes.draw_artist(self.prf[i+1])
         self.figure.canvas.update()
 #        self.figure.canvas.blit(self.axes.bbox)
 

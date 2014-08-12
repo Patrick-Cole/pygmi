@@ -1192,7 +1192,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
 def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
                 d_z=100, tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67,
-                fdec=-17, susc=[0.01], dens=[3.0]):
+                fdec=-17, susc=[0.01], dens=[3.0], minc=[-67], mdec=[-17],
+                mstrength=[0.]):
     """ Create a quick model """
 
     lmod = LithModel()
@@ -1215,6 +1216,8 @@ def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
         lmod.lith_list[i].lith_index = j
         lmod.lith_list[i].finc = finc
         lmod.lith_list[i].fdec = fdec
-        
+        lmod.lith_list[i].minc = minc[j-1]
+        lmod.lith_list[i].mdec = mdec[j-1]
+        lmod.lith_list[i].mstrength = mstrength[j-1]
 
     return lmod
