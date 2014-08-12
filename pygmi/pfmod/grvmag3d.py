@@ -160,7 +160,8 @@ class GravMag(object):
         """ Calculate magnetic and gravity field """
 
         calc_field(self.lmod, pbars=self.pbars, showtext=self.showtext,
-                   parent=self.parent, showreports=False, altcalc=False)
+                   parent=self.parent, showreports=showreports,
+                   altcalc=altcalc)
 
     def calc_regional(self):
         """
