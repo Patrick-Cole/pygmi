@@ -25,4 +25,6 @@
 """ This is a quick start routine to start the GUI form of PyGMI """
 
 import pygmi
-pygmi.main()
+
+if __name__ == "__main__":
+    pygmi.main()

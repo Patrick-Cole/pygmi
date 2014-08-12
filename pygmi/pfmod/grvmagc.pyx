@@ -291,8 +291,6 @@ def calc_field2(int i, int numx, int numy, int numz,
                 np.ndarray[DTYPEI_t, ndim=1] aaa1,
                 np.ndarray[DTYPED_t, ndim=3] mlayers,
                 np.ndarray[DTYPED_t, ndim=3] glayers,
-                np.ndarray[DTYPED_t, ndim=1] magval,
-                np.ndarray[DTYPED_t, ndim=1] grvval,
                 np.ndarray[DTYPEI_t, ndim=1] hcorflat,
                 int mijk):
     """ Calculate magnetic and gravity field """
@@ -327,6 +325,9 @@ def calc_field2(int i, int numx, int numy, int numz,
     cdef int [:] hcorflatv = hcorflat
     cdef int [:,:] hcorv = hcor
     cdef int [:,:,:] modindv = modind
+    cdef np.ndarray[DTYPED_t, ndim=1] magval
+    cdef np.ndarray[DTYPED_t, ndim=1] grvval
+
 #    cdef np.ndarray[DTYPEI_t, ndim = 1] obs2
 #    cdef np.ndarray[DTYPED_t, ndim = 3] m2
 #    cdef np.ndarray[DTYPED_t, ndim = 3] g2
@@ -338,6 +339,8 @@ def calc_field2(int i, int numx, int numy, int numz,
     cdef int b
 
     b = numx*numy
+    magval = np.zeros(b)
+    grvval = np.zeros(b)
 
     xoff = numx-i
     for j in range(numy):
@@ -354,7 +357,7 @@ def calc_field2(int i, int numx, int numy, int numz,
                 hcor2 = hcorflatv[ijk]+k
                 magval[ijk] += mlayersv[hcor2, xoff2, yoff2]
                 grvval[ijk] += glayersv[hcor2, xoff2, yoff2]
-
+    return (magval, grvval)
 
 def gboxmain(np.ndarray[double, ndim=2] gval, np.ndarray[double, ndim=1] xobs,
              np.ndarray[double, ndim=1] yobs, int numx, int numy, double z_0,

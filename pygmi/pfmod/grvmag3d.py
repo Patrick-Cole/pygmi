@@ -44,6 +44,8 @@ import sys
 from scipy.linalg import norm
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.ptimer import PTime
+from functools import partial
+from multiprocessing import Pool
 
 if sys.platform.startswith('win'):
     if sys.maxsize > 2**32:
@@ -1033,12 +1035,28 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
 #        ttt.since_last_call()
         showtext('Summing '+mlist[0])
-        for i in range(numx):
-            if pbars is not None:
-                pbars.incr()
-            grvmagc.calc_field2(i, numx, numy, numz, modind, hcor, aaa[0],
-                                aaa[1], mlayers, glayers, magval, grvval,
-                                hcorflat, mijk)
+        ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy, numz=numz,
+                       modind=modind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
+                       mlayers=mlayers, glayers=glayers,
+                       hcorflat=hcorflat, mijk=mijk)
+
+        pool = Pool()
+        baba = np.array(pool.map(ptmp, range(numx)))
+        pool.close()
+        pool.join()
+
+        baba = baba.sum(0)
+        magval += baba[0]
+        grvval += baba[1]
+
+        showtext('Done')
+#        for i in range(numx):
+#            if pbars is not None:
+#                pbars.incr()
+#                pool.map(ptmp,range[numx])
+#            grvmagc.calc_field2(i, numx, numy, numz, modind, hcor, aaa[0],
+#                                aaa[1], mlayers, glayers, magval, grvval,
+#                                hcorflat, mijk)
 
     magval.resize(mtmp)
     grvval.resize(mtmp)
@@ -1085,6 +1103,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         pbars.maxall()
 
     return lmod.griddata
+
+
+def test(iii):
+    print(iii)
 
 
 def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
