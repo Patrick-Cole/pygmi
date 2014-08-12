@@ -284,7 +284,6 @@ cdef inline double angle(double p1[3], double p2[3], double p3[3],
 
     return ang
 
-
 def calc_field2(int i, int numx, int numy, int numz,
                 np.ndarray[DTYPEI_t, ndim=3] modind,
                 np.ndarray[DTYPEI_t, ndim=2] hcor,
@@ -298,32 +297,63 @@ def calc_field2(int i, int numx, int numy, int numz,
                 int mijk):
     """ Calculate magnetic and gravity field """
 
+#def calc_field2(int i, int numx, int numy, int numz,
+#                np.ndarray[DTYPEI_t, ndim=3] modind,
+#                np.ndarray[DTYPEI_t, ndim=2] hcor,
+#                list aaa0,
+#                list aaa1,
+#                list mlayers,
+#                list glayers,
+#                list magval,
+#                list grvval,
+#                np.ndarray[DTYPEI_t, ndim=1] hcorflat,
+#                int mijk):
+#    """ Calculate magnetic and gravity field """
+
     cdef int xoff
     cdef int yoff
+    cdef int xoff2
+    cdef int yoff2
+    cdef int hcor2
     cdef int j
     cdef int k
     cdef int ijk
     cdef int igrd
     cdef int jgrd
-    cdef np.ndarray[DTYPEI_t, ndim = 1] obs2
-    cdef np.ndarray[DTYPED_t, ndim = 3] m2
-    cdef np.ndarray[DTYPED_t, ndim = 3] g2
+    cdef double [:,:,:] mlayersv = mlayers
+    cdef double [:,:,:] glayersv = glayers
+    cdef int [:] aaa0v = aaa0
+    cdef int [:] aaa1v = aaa1
+    cdef int [:] hcorflatv = hcorflat
+    cdef int [:,:] hcorv = hcor
+    cdef int [:,:,:] modindv = modind
+#    cdef np.ndarray[DTYPEI_t, ndim = 1] obs2
+#    cdef np.ndarray[DTYPED_t, ndim = 3] m2
+#    cdef np.ndarray[DTYPED_t, ndim = 3] g2
+
+#since last call time(s): 76.17784162520235 since last call
+#since last call time(s): 208.5119907340643 since last call
+#since last call time(s): 8.895999144402765 since last call
+
     cdef int b
 
-    b = magval.size
+    b = numx*numy
 
     xoff = numx-i
     for j in range(numy):
         yoff = numy-j
-        m2 = mlayers[:, xoff:xoff+numx, yoff:yoff+numy]
-        g2 = glayers[:, xoff:xoff+numx, yoff:yoff+numy]
-        for k in range(hcor[i, j], numz):
-            if (modind[i, j, k] != mijk):
+#        m2 = mlayers[:, xoff:xoff+numx, yoff:yoff+numy]
+#        g2 = glayers[:, xoff:xoff+numx, yoff:yoff+numy]
+        for k in range(hcorv[i, j], numz):
+            if (modindv[i, j, k] != mijk):
                 continue
-            obs2 = k+hcorflat
+#            obs2 = k+hcorflat
             for ijk in range(b):
-                magval[ijk] += m2[obs2[ijk], aaa0[ijk], aaa1[ijk]]
-                grvval[ijk] += g2[obs2[ijk], aaa0[ijk], aaa1[ijk]]
+                xoff2 = xoff + aaa0v[ijk]
+                yoff2 = aaa1v[ijk]+yoff
+                hcor2 = hcorflatv[ijk]+k
+                magval[ijk] += mlayersv[hcor2, xoff2, yoff2]
+                grvval[ijk] += glayersv[hcor2, xoff2, yoff2]
 
 
 def gboxmain(np.ndarray[double, ndim=2] gval, np.ndarray[double, ndim=1] xobs,

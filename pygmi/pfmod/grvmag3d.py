@@ -43,6 +43,7 @@ import tempfile
 import sys
 from scipy.linalg import norm
 from pygmi.pfmod.datatypes import LithModel
+from pygmi.ptimer import PTime
 
 if sys.platform.startswith('win'):
     if sys.maxsize > 2**32:
@@ -157,121 +158,9 @@ class GravMag(object):
 
     def calc_field2(self, showreports=False, altcalc=False):
         """ Calculate magnetic and gravity field """
-        if self.pbars is not None:
-            self.pbars.resetall(mmax=2*(len(self.lmod.lith_list)-1)+1)
-        if np.max(self.lmod.lith_index) == -1:
-            self.showtext('Error: Create a model first')
-            return
-# Init some variables for convenience
-        numx = int(self.lmod.numx)
-        numy = int(self.lmod.numy)
-        numz = int(self.lmod.numz)
-        tmpfiles = self.tmpfiles
 
-        for mlist in self.lmod.lith_list.items():
-            # if 'Background' != mlist[0] and mlist[1].modified is True:
-            if 'Background' != mlist[0]:
-                mlist[1].modified = True
-                self.showtext(mlist[0]+':')
-                mlist[1].parent = self.parent
-                mlist[1].pbars = self.parent.pbars
-                mlist[1].showtext = self.parent.showtext
-                if altcalc:
-                    mlist[1].calc_origin2()
-                else:
-                    mlist[1].calc_origin()
-                tmpfiles[mlist[0]] = save_layer(mlist)
-
-        if showreports is True:
-            self.showtext('Summing data')
-
-        QtCore.QCoreApplication.processEvents()
-# get height corrections
-        tmp = np.copy(self.lmod.lith_index)
-        tmp[tmp > -1] = 0
-        hcor = np.abs(tmp.sum(2))
-
-# model index
-        modind = self.lmod.lith_index.copy()
-        modind[modind == 0] = -1
-
-# Get mlayers and glayers with correct rho and netmagn
-        magval = np.zeros([numx, numy])
-        grvval = np.zeros([numx, numy])
-
-        if self.pbars is not None:
-            self.pbars.resetsub(maximum=numx*(len(self.lmod.lith_list)-1))
-
-        mtmp = magval.shape
-        magval = magval.flatten()
-        grvval = grvval.flatten()
-        hcorflat = numz-hcor.flatten()
-
-        for mlist in self.lmod.lith_list.items():
-            if 'Background' == mlist[0]:
-                continue
-#            mfile = np.load(self.mfname+'_'+mlist[0]+'_tmp.npz')
-            tmpfiles[mlist[0]].seek(0)
-            mfile = np.load(tmpfiles[mlist[0]])
-            if altcalc:
-                mlayers = mfile['mlayers']
-            elif mfile['mlayers'].size > 1:
-                mlayers = mfile['mlayers']*mlist[1].netmagn()
-            else:
-                mlayers = np.zeros_like(mfile['glayers'])
-            glayers = mfile['glayers']*mlist[1].rho()
-            mijk = mlist[1].lith_index
-
-            aaa = np.reshape(np.mgrid[0:mtmp[0], 0:mtmp[1]], [2, magval.size])
-
-            for i in range(numx):
-                if self.pbars is not None:
-                    self.pbars.incr()
-                grvmagc.calc_field2(i, numx, numy, numz, modind, hcor, aaa[0],
-                                    aaa[1], mlayers, glayers, magval, grvval,
-                                    hcorflat, mijk)
-
-        magval.resize(mtmp)
-        grvval.resize(mtmp)
-        magval = magval.T
-        grvval = grvval.T
-        magval = magval[::-1]
-        grvval = grvval[::-1]
-
-# Update variables
-        self.lmod.griddata['Calculated Magnetics'].data = magval
-        self.lmod.griddata['Calculated Gravity'].data = grvval
-        self.grav_regional()
-
-        if self.lmod.lith_index.max() <= 0:
-            self.lmod.griddata['Calculated Magnetics'].data *= 0.
-            self.lmod.griddata['Calculated Gravity'].data *= 0.
-
-        if 'Magnetic Dataset' in self.lmod.griddata:
-            ztmp = gridmatch(self.lmod, 'Magnetic Dataset',
-                               'Calculated Magnetics')
-            self.lmod.griddata['Magnetic Residual'] = copy.deepcopy(
-                self.lmod.griddata['Magnetic Dataset'])
-            self.lmod.griddata['Magnetic Residual'].data = (
-                self.lmod.griddata['Magnetic Dataset'].data - ztmp)
-            self.lmod.griddata['Magnetic Residual'].bandid = \
-                'Magnetic Residual'
-
-        if 'Gravity Dataset' in self.lmod.griddata:
-            ztmp = gridmatch(self.lmod, 'Gravity Dataset',
-                               'Calculated Gravity')
-            self.lmod.griddata['Gravity Residual'] = copy.deepcopy(
-                self.lmod.griddata['Gravity Dataset'])
-            self.lmod.griddata['Gravity Residual'].data = (
-                self.lmod.griddata['Gravity Dataset'].data - ztmp)
-            self.lmod.griddata['Gravity Residual'].bandid = 'Gravity Residual'
-
-        self.parent.outdata['Raster'] = list(self.lmod1.griddata.values())
-#        self.parent.outdata['Raster'] = \
-#            [self.lmod1.griddata['Calculated Magnetics']]
-        self.showtext('Calculation Finished')
-        if self.pbars is not None:
-            self.pbars.maxall()
+        calc_field(self.lmod, pbars=self.pbars, showtext=self.showtext,
+                   parent=self.parent, showreports=False, altcalc=False)
 
     def calc_regional(self):
         """
@@ -303,7 +192,7 @@ class GravMag(object):
 
         self.lmod2.update(lmod1.numx, lmod1.numy, numlayers, lmod1.xrange[0],
                           lmod1.yrange[1], lmod1.zrange[1], lmod1.dxy,
-                          layerthickness)
+                          layerthickness, lmod1.mht, lmod1.ght)
 
         self.lmod2.lith_index = self.lmod1.lith_index.copy()
         self.lmod2.lith_index[self.lmod2.lith_index != -1] = 1
@@ -361,13 +250,6 @@ class GravMag(object):
                     ndata[j, i] = curgrid.data.data[ycrd2, xcrd2]
 
         return ndata
-
-    def grav_regional(self):
-        """ If there is a gravity regional, then add it """
-        if 'Gravity Regional' not in self.lmod.griddata:
-            return
-        zfin = gridmatch(self.lmod, 'Calculated Gravity', 'Gravity Regional')
-        self.lmod.griddata['Calculated Gravity'].data += zfin
 
     def test_pattern(self):
         """ Displays a test pattern of the data - an indication of the edge of
@@ -1067,12 +949,157 @@ def gridmatch(lmod, ctxt, rtxt):
     return zfin
 
 
-def calc_field(lmod):
+def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
+               altcalc=False):
     """ Calculate magnetic and gravity field """
+    if showtext == None:
+        showtext = print
+    if pbars is not None:
+        pbars.resetall(mmax=2*(len(lmod.lith_list)-1)+1)
     if np.max(lmod.lith_index) == -1:
-        print('Error: Create a model first')
+        showtext('Error: Create a model first')
         return
+
+    # Init some variables for convenience
+    lmod.update_lithlist()
+
+    numx = int(lmod.numx)
+    numy = int(lmod.numy)
+    numz = int(lmod.numz)
+    tmpfiles = {}
+
+    for mlist in lmod.lith_list.items():
+        # if 'Background' != mlist[0] and mlist[1].modified is True:
+        if 'Background' != mlist[0]:
+            mlist[1].modified = True
+            showtext(mlist[0]+':')
+            if parent is not None:
+                mlist[1].parent = parent
+                mlist[1].pbars = parent.pbars
+                mlist[1].showtext = parent.showtext
+            if altcalc:
+                mlist[1].calc_origin2()
+            else:
+                mlist[1].calc_origin()
+            tmpfiles[mlist[0]] = save_layer(mlist)
+
+    if showreports is True:
+        showtext('Summing data')
+
+    QtCore.QCoreApplication.processEvents()
+# get height corrections
+    tmp = np.copy(lmod.lith_index)
+    tmp[tmp > -1] = 0
+    hcor = np.abs(tmp.sum(2))
+
+# model index
+    modind = lmod.lith_index.copy()
+    modind[modind == 0] = -1
+
+# Get mlayers and glayers with correct rho and netmagn
+    magval = np.zeros([numx, numy])
+    grvval = np.zeros([numx, numy])
+
+    if pbars is not None:
+        pbars.resetsub(maximum=numx*(len(lmod.lith_list)-1))
+
+    mtmp = magval.shape
+    magval = magval.flatten()
+    grvval = grvval.flatten()
+#        magval = magval.tolist()
+#        grvval = grvval.tolist()
+    hcorflat = numz-hcor.flatten()
+    aaa = np.reshape(np.mgrid[0:mtmp[0], 0:mtmp[1]], [2, numx*numy])
+#        aaa = aaa.tolist()
+
+    for mlist in lmod.lith_list.items():
+        if 'Background' == mlist[0]:
+            continue
+#            mfile = np.load(self.mfname+'_'+mlist[0]+'_tmp.npz')
+        tmpfiles[mlist[0]].seek(0)
+        mfile = np.load(tmpfiles[mlist[0]])
+        if altcalc:
+            mlayers = mfile['mlayers']
+        elif mfile['mlayers'].size > 1:
+            mlayers = mfile['mlayers']*mlist[1].netmagn()
+        else:
+            mlayers = np.zeros_like(mfile['glayers'])
+        glayers = mfile['glayers']*mlist[1].rho()
+        mijk = mlist[1].lith_index
+
+#            mlayers = mlayers.tolist()
+#            glayers = glayers.tolist()
+
+#        ttt.since_last_call()
+        showtext('Summing '+mlist[0])
+        for i in range(numx):
+            if pbars is not None:
+                pbars.incr()
+            grvmagc.calc_field2(i, numx, numy, numz, modind, hcor, aaa[0],
+                                aaa[1], mlayers, glayers, magval, grvval,
+                                hcorflat, mijk)
+
+    magval.resize(mtmp)
+    grvval.resize(mtmp)
+    magval = magval.T
+    grvval = grvval.T
+    magval = magval[::-1]
+    grvval = grvval[::-1]
+
+# Update variables
+    lmod.griddata['Calculated Magnetics'].data = magval
+    lmod.griddata['Calculated Gravity'].data = grvval
+
+    if 'Gravity Regional' not in lmod.griddata:
+        return
+    zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
+    lmod.griddata['Calculated Gravity'].data += zfin
+
+    if lmod.lith_index.max() <= 0:
+        lmod.griddata['Calculated Magnetics'].data *= 0.
+        lmod.griddata['Calculated Gravity'].data *= 0.
+
+    if 'Magnetic Dataset' in lmod.griddata:
+        ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
+        lmod.griddata['Magnetic Residual'] = copy.deepcopy(
+            lmod.griddata['Magnetic Dataset'])
+        lmod.griddata['Magnetic Residual'].data = (
+            lmod.griddata['Magnetic Dataset'].data - ztmp)
+        lmod.griddata['Magnetic Residual'].bandid = 'Magnetic Residual'
+
+    if 'Gravity Dataset' in lmod.griddata:
+        ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
+        lmod.griddata['Gravity Residual'] = copy.deepcopy(
+            lmod.griddata['Gravity Dataset'])
+        lmod.griddata['Gravity Residual'].data = (
+            lmod.griddata['Gravity Dataset'].data - ztmp)
+        lmod.griddata['Gravity Residual'].bandid = 'Gravity Residual'
+
+    if parent is not None:
+        parent.outdata['Raster'] = list(lmod.griddata.values())
+#        self.parent.outdata['Raster'] = \
+#            [self.lmod1.griddata['Calculated Magnetics']]
+    showtext('Calculation Finished')
+    if pbars is not None:
+        pbars.maxall()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Init some variables for convenience
+    lmod.update_lithlist()
     numx = int(lmod.numx)
     numy = int(lmod.numy)
     numz = int(lmod.numz)
@@ -1164,24 +1191,30 @@ def calc_field(lmod):
 
 
 def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
-                d_z=100, tlx=0, tly=0, tlz=0, mht=100, ght=0):
+                d_z=100, tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67,
+                fdec=-17, susc=[0.01], dens=[3.0]):
     """ Create a quick model """
 
     lmod = LithModel()
-    lmod.update(numx, numy, numz, tlx, tly, tlz, dxy, d_z)
+    lmod.update(numx, numy, numz, tlx, tly, tlz, dxy, d_z, mht, ght)
 
     lmod.lith_list['Background'] = GeoData(None, numx, numy, numz, dxy, d_z,
                                            mht, ght)
     lmod.lith_list['Background'].susc = 0
     lmod.lith_list['Background'].density = 2.67
+    lmod.lith_list['Background'].finc = finc
+    lmod.lith_list['Background'].fdec = fdec
 
     j = 0
     for i in inputliths:
         j += 1
         lmod.lith_list[i] = GeoData(None, numx, numy, numz, dxy, d_z, mht, ght)
 
-        lmod.lith_list[i].susc = 0.01
-        lmod.lith_list[i].density = 3.0
+        lmod.lith_list[i].susc = susc[j-1]
+        lmod.lith_list[i].density = dens[j-1]
         lmod.lith_list[i].lith_index = j
+        lmod.lith_list[i].finc = finc
+        lmod.lith_list[i].fdec = fdec
+        
 
     return lmod

@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\spyder.py", line 2244, in main
+    mainwindow = run_spyder(app, options, args)
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\spyder.py", line 2147, in run_spyder
+    main.post_visible_setup()
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\spyder.py", line 1179, in post_visible_setup
+    self.extconsole.open_interpreter_at_startup()
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\plugins\externalconsole.py", line 1252, in open_interpreter_at_startup
+    self.open_interpreter()
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\plugins\externalconsole.py", line 1261, in open_interpreter
+    interact=True, debug=False, python=True)
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\plugins\externalconsole.py", line 850, in start
+    show_elapsed_time=show_elapsed_time)
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\widgets\externalshell\pythonshell.py", line 208, in __init__
+    show_elapsed_time=show_elapsed_time)
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\widgets\externalshell\baseshell.py", line 73, in __init__
+    self.shell = self.SHELL_CLASS(parent, get_conf_path(history_filename))
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\widgets\externalshell\pythonshell.py", line 38, in __init__
+    PythonShellWidget.__init__(self, parent, history_filename, profile)
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\widgets\shell.py", line 665, in __init__
+    ShellBaseWidget.__init__(self, parent, history_filename, profile)
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\widgets\shell.py", line 62, in __init__
+    self.history = self.load_history()
+  File "C:\WinPython-64bit-3.3.5.0\python-3.3.5.amd64\lib\site-packages\spyderlib\widgets\shell.py", line 498, in load_history
+    if rawhistory[1] != self.INITHISTORY[1]:
+IndexError: list index out of range

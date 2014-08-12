@@ -52,12 +52,12 @@ class LithModel(object):
         self.profpics = {}
         self.lith_list = {}
         self.lith_list_reverse = {}
-        self.mht = 100.
-        self.ght = 0.
+        self.mht = None
+        self.ght = None
         self.gregional = 100
 
         # Next line calls a function to update the variables above.
-        self.update(100, 75, 40, 0, 150000, 0, 1500, 100)
+        self.update(100, 75, 40, 0, 150000, 0, 1500, 100, 100, 0)
 
         self.olith_index = None
         self.odxy = None
@@ -169,8 +169,14 @@ class LithModel(object):
         for i in list(self.lith_list.keys()):
             self.lith_list[i].modified = modified
 
-    def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z):
+    def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht=-1,
+               ght=-1):
         """ Updates the values """
+        if mht != -1:
+            self.mht = mht
+        if ght != -1:
+            self.ght = ght
+        
         self.olith_index = self.lith_index
         self.odxy = self.dxy
         self.od_z = self.d_z

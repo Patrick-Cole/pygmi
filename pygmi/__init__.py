@@ -13,4 +13,5 @@ from . import raster
 from . import clust
 from . import pfmod
 from . import point
+from . import test
 from .main import main
