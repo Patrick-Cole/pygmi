@@ -1034,7 +1034,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 #            glayers = glayers.tolist()
 
 #        ttt.since_last_call()
-        showtext('Summing '+mlist[0])
+        showtext('Summing '+mlist[0]+'(PyGMI may become non-responsive'+
+                 ' during this calculation)')
         ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy, numz=numz,
                        modind=modind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
                        mlayers=mlayers, glayers=glayers,
