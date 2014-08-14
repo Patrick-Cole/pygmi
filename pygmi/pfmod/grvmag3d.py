@@ -1004,7 +1004,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     grvval = np.zeros([numx, numy])
 
     if pbars is not None:
-        pbars.resetsub(maximum=numx*(len(lmod.lith_list)-1))
+        pbars.resetsub(maximum=(len(lmod.lith_list)-1))
 
     mtmp = magval.shape
     magval = magval.flatten()
@@ -1034,8 +1034,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 #            glayers = glayers.tolist()
 
 #        ttt.since_last_call()
-        showtext('Summing '+mlist[0]+'(PyGMI may become non-responsive'+
+        showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
+        QtGui.QApplication.processEvents()
         ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy, numz=numz,
                        modind=modind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
                        mlayers=mlayers, glayers=glayers,
@@ -1051,6 +1052,13 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         grvval += baba[1]
 
         showtext('Done')
+        del pool
+        del baba
+        del ptmp
+        pbars.incr()
+        pbars.incrmain()
+        QtGui.QApplication.processEvents()
+
 #        for i in range(numx):
 #            if pbars is not None:
 #                pbars.incr()
