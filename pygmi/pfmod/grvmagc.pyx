@@ -318,13 +318,13 @@ def calc_field2(int i, int numx, int numy, int numz,
     cdef int ijk
     cdef int igrd
     cdef int jgrd
-    cdef double [:,:,:] mlayersv = mlayers
-    cdef double [:,:,:] glayersv = glayers
-    cdef int [:] aaa0v = aaa0
-    cdef int [:] aaa1v = aaa1
-    cdef int [:] hcorflatv = hcorflat
-    cdef int [:,:] hcorv = hcor
-    cdef int [:,:,:] modindv = modind
+#    cdef double [:,:,:] mlayersv = mlayers
+#    cdef double [:,:,:] glayersv = glayers
+#    cdef int [:] aaa0v = aaa0
+#    cdef int [:] aaa1v = aaa1
+#    cdef int [:] hcorflatv = hcorflat
+#    cdef int [:,:] hcorv = hcor
+#    cdef int [:,:,:] modindv = modind
     cdef np.ndarray[DTYPED_t, ndim=1] magval
     cdef np.ndarray[DTYPED_t, ndim=1] grvval
 
@@ -347,16 +347,16 @@ def calc_field2(int i, int numx, int numy, int numz,
         yoff = numy-j
 #        m2 = mlayers[:, xoff:xoff+numx, yoff:yoff+numy]
 #        g2 = glayers[:, xoff:xoff+numx, yoff:yoff+numy]
-        for k in range(hcorv[i, j], numz):
-            if (modindv[i, j, k] != mijk):
+        for k in range(hcor[i, j], numz):
+            if (modind[i, j, k] != mijk):
                 continue
 #            obs2 = k+hcorflat
             for ijk in range(b):
-                xoff2 = xoff + aaa0v[ijk]
-                yoff2 = aaa1v[ijk]+yoff
-                hcor2 = hcorflatv[ijk]+k
-                magval[ijk] += mlayersv[hcor2, xoff2, yoff2]
-                grvval[ijk] += glayersv[hcor2, xoff2, yoff2]
+                xoff2 = xoff + aaa0[ijk]
+                yoff2 = aaa1[ijk]+yoff
+                hcor2 = hcorflat[ijk]+k
+                magval[ijk] += mlayers[hcor2, xoff2, yoff2]
+                grvval[ijk] += glayers[hcor2, xoff2, yoff2]
     return (magval, grvval)
 
 def gboxmain(np.ndarray[double, ndim=2] gval, np.ndarray[double, ndim=1] xobs,
