@@ -35,3 +35,14 @@ class PData(object):
         self.ydata = np.array([])
         self.zdata = np.array([])
         self.dataid = ""
+
+
+class VData(object):
+    """ Class for Line data """
+    def __init__(self):
+        # Since each line can have variable amount of points, it is best to
+        # store in a list
+        self.crds = []
+        self.attrib = [{}]
+        self.dataid = ""
+        self.dtype = ""

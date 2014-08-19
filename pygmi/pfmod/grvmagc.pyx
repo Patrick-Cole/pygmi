@@ -74,9 +74,9 @@ DEF pi = 3.141592653589793
 ##DEF Gc = 6.6732e-3 # 6.67384?
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.nonecheck(False)
+#@cython.boundscheck(False)
+#@cython.wraparound(False)
+#@cython.nonecheck(False)
 
 
 def gm3d(int npro, int nstn,

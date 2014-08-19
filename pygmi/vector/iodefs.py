@@ -27,8 +27,10 @@
 # pylint: disable=E1101
 from PyQt4 import QtGui
 import numpy as np
-from osgeo import gdal
+# from osgeo import gdal
+from osgeo import ogr
 from .datatypes import PData
+from .datatypes import VData
 import os
 
 
@@ -153,37 +155,37 @@ class ImportPointData(object):
         self.outdata['Point'] = dat
         return True
 
-    def gdal(self):
-        """ Process """
-        dat = []
-        bname = self.ifile.split('/')[-1].rpartition('.')[0]+': '
-        ifile = self.ifile[:]
-        if self.ext == 'hdr':
-            ifile = self.ifile[:-4]
-
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-        gtr = dataset.GetGeoTransform()
-
-        for i in range(dataset.RasterCount):
-            rtmp = dataset.GetRasterBand(i+1)
-            dat.append(Data())
-            dat[i].data = np.ma.array(rtmp.ReadAsArray())
-            dat[i].data[dat[i].data == rtmp.GetNoDataValue()] = np.nan
-            dat[i].data = np.ma.masked_invalid(dat[i].data)
-
-            dat[i].nrofbands = dataset.RasterCount
-            dat[i].tlx = gtr[0]
-            dat[i].tly = gtr[3]
-            dat[i].bandid = bname+str(i+1)
-            dat[i].nullvalue = rtmp.GetNoDataValue()
-            dat[i].rows = dataset.RasterYSize
-            dat[i].cols = dataset.RasterXSize
-            dat[i].xdim = abs(gtr[1])
-            dat[i].ydim = abs(gtr[5])
-            dat[i].gtr = gtr
-            dat[i].wkt = dataset.GetProjection()
-
-        self.outdata['Raster'] = dat
+#    def gdal(self):
+#        """ Process """
+#        dat = []
+#        bname = self.ifile.split('/')[-1].rpartition('.')[0]+': '
+#        ifile = self.ifile[:]
+#        if self.ext == 'hdr':
+#            ifile = self.ifile[:-4]
+#
+#        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+#        gtr = dataset.GetGeoTransform()
+#
+#        for i in range(dataset.RasterCount):
+#            rtmp = dataset.GetRasterBand(i+1)
+#            dat.append(Data())
+#            dat[i].data = np.ma.array(rtmp.ReadAsArray())
+#            dat[i].data[dat[i].data == rtmp.GetNoDataValue()] = np.nan
+#            dat[i].data = np.ma.masked_invalid(dat[i].data)
+#
+#            dat[i].nrofbands = dataset.RasterCount
+#            dat[i].tlx = gtr[0]
+#            dat[i].tly = gtr[3]
+#            dat[i].bandid = bname+str(i+1)
+#            dat[i].nullvalue = rtmp.GetNoDataValue()
+#            dat[i].rows = dataset.RasterYSize
+#            dat[i].cols = dataset.RasterXSize
+#            dat[i].xdim = abs(gtr[1])
+#            dat[i].ydim = abs(gtr[5])
+#            dat[i].gtr = gtr
+#            dat[i].wkt = dataset.GetProjection()
+#
+#        self.outdata['Raster'] = dat
 
 
 class ExportPoint(object):
@@ -230,3 +232,87 @@ class ExportPoint(object):
             ofile2 = ofile+'_'+''.join(x for x in datid if x.isalnum())+'.csv'
 
             np.savetxt(ofile2, dattmp, delimiter=',')
+
+
+class ImportShapeData(object):
+    """ Import Data """
+    def __init__(self, parent=None):
+        self.ifile = ""
+        self.name = "Import Shapefile Data: "
+        self.ext = ""
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+
+    def settings(self):
+        """ Settings """
+        ext = \
+            "Shapefile (*.shp);;" +\
+            "All Files (*.*)"
+
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(filename.rpartition('/')[0])
+
+        self.ifile = str(filename)
+        self.ext = filename[-3:]
+
+        # Line data
+        shapef = ogr.Open(self.ifile)
+        lyr = shapef.GetLayer()
+        dat = VData()
+        attrib = {}
+        allcrds = []
+
+        for i in range(lyr.GetFeatureCount()):
+            feat = lyr.GetFeature(i)
+            ftmp = feat.items()
+            for j in ftmp.keys():
+                if attrib.get(j) is None:
+                    attrib[j] = [ftmp[j]]
+                else:
+                    attrib[j] = attrib[j]+[ftmp[j]]
+
+        if lyr.GetGeomType() is ogr.wkbPoint:
+            for i in range(lyr.GetFeatureCount()):
+                feat = lyr.GetFeature(i)
+                geom = feat.GetGeometryRef()
+                pnts = np.array(geom.GetPoints()).tolist()
+                if pnts[0][0] > -1.e+308:
+                    allcrds.append(pnts)
+            dat.dtype = 'Point'
+
+        if lyr.GetGeomType() is ogr.wkbPolygon:
+            for i in range(lyr.GetFeatureCount()):
+                feat = lyr.GetFeature(i)
+                geom = feat.GetGeometryRef()
+                ifin = 0
+                if geom.GetGeometryName() == 'MULTIPOLYGON':
+                    imax = 0
+                    for i in range(geom.GetGeometryCount()):
+                        geom.GetGeometryRef(i)
+                        itmp = geom.GetGeometryRef(i)
+                        itmp = itmp.GetGeometryRef(0).GetPointCount()
+                        if itmp > imax:
+                            imax = itmp
+                            ifin = i
+                geom = geom.GetGeometryRef(ifin)
+                pnts = np.array(geom.GetPoints()).tolist()
+                allcrds.append(pnts)
+            dat.dtype = 'Poly'
+
+        if lyr.GetGeomType() is ogr.wkbLineString:
+            for i in range(lyr.GetFeatureCount()):
+                feat = lyr.GetFeature(i)
+                geom = feat.GetGeometryRef()
+                pnts = np.array(geom.GetPoints()).tolist()
+                allcrds.append(pnts)
+            dat.dtype = 'Line'
+
+        dat.crds = allcrds
+        dat.attrib = attrib
+        self.outdata['Vector'] = dat
+        return True

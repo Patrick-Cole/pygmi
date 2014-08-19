@@ -30,7 +30,7 @@ import os
 import numpy as np
 from osgeo import gdal, osr, ogr
 from .datatypes import Data
-from pygmi.point.datatypes import PData
+from pygmi.vector.datatypes import PData
 from PIL import Image, ImageDraw
 import copy
 import scipy.ndimage as ndimage

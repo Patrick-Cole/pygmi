@@ -144,11 +144,6 @@ class MainWidget(object):
         context_menu['Raster'].addAction(self.action_show_raster_data)
         self.action_show_raster_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_point_data = QtGui.QAction(self.parent)
-        self.action_show_point_data.setText("Show Point Data")
-        context_menu['Point'].addAction(self.action_show_point_data)
-        self.action_show_point_data.triggered.connect(self.show_point_data)
-
         self.action_show_scatter_plot = QtGui.QAction(self.parent)
         self.action_show_scatter_plot.setText("Show Hexbin Plot")
         context_menu['Raster'].addAction(self.action_show_scatter_plot)
@@ -223,10 +218,6 @@ class MainWidget(object):
     def show_raster_data(self):
         """ Show raster data """
         self.parent.launch_context_item(plot_graphs.PlotRaster)
-
-    def show_point_data(self):
-        """ Show raster data """
-        self.parent.launch_context_item(plot_graphs.PlotPoints)
 
     def show_scatter_plot(self):
         """ Show raster data """

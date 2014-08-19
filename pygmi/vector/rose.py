@@ -33,6 +33,7 @@ import matplotlib.collections as mc
 def main():
     """ Main program """
     ifile = r'C:\Work\Programming\pygmi\data\2329AC_lin_wgs84sutm35.shp'
+    nbins=8
 
     shapef = ogr.Open(ifile)
     lyr = shapef.GetLayer()
@@ -64,51 +65,56 @@ def main():
         fcnt += ftmp.tolist()
         flen += ltmp.tolist()
 
-    allcrds = np.array(allcrds)
     fangle = np.array(fangle)
     fcnt = np.array(fcnt)
     flen = np.array(flen)
+    bwidth = np.pi/nbins
+    bcols = plt.cm.Set1(np.arange(nbins)/nbins)
+    np.random.shuffle(bcols)
 
     # Draw rose diagram base on one angle per linear feature
-    radii, theta = np.histogram(fangle)
+
+    radii, theta = np.histogram(fangle, bins=np.arange(0, np.pi+bwidth,
+                                                       bwidth))
     ax = plt.subplot(221, polar=True)
     ax.set_theta_direction(-1)
     ax.set_theta_zero_location('N')
     ax.yaxis.set_ticklabels([])
-    xtheta = theta[:-1]+(theta[1]-theta[0])/2
-    bcols = (xtheta-fangle.min())/fangle.ptp()
-    bcols = plt.cm.jet(bcols)
-    ax.bar(xtheta, radii, width=np.pi/10, color=bcols)
-    ax.bar(xtheta+np.pi, radii, width=np.pi/10, color=bcols)
+    xtheta = theta[:-1]  # +(theta[1]-theta[0])/2
+    bcols2 = bcols[(xtheta/bwidth).astype(int)]
+    ax.bar(xtheta, radii, width=bwidth, color=bcols2)
+    ax.bar(xtheta+np.pi, radii, width=bwidth, color=bcols2)
 
     ax = plt.subplot(222)
-    bcols = (fangle-fangle.min())/fangle.ptp()
-    bcols = plt.cm.jet(bcols)
-    lc = mc.LineCollection(allcrds, color=bcols)
+    bcols2 = bcols[(fangle/bwidth).astype(int)]
+    lc = mc.LineCollection(allcrds, color=bcols2)
     ax.add_collection(lc)
     ax.autoscale()
     ax.axis('equal')
 
-    radii, theta = histogram(fcnt, y=flen, xmin=0., xmax=2*np.pi)
+    # Draw rose diagram base on one angle per linear segment, normalized
+
+    radii, theta = histogram(fcnt, y=flen, xmin=0., xmax=np.pi, bins=nbins)
     ax = plt.subplot(223, polar=True)
     ax.set_theta_direction(-1)
     ax.set_theta_zero_location('N')
     ax.yaxis.set_ticklabels([])
-    xtheta = theta[:-1]+(theta[1]-theta[0])/2
-    bcols = plt.cm.jet(xtheta/(2*np.pi))
-    ax.bar(xtheta, radii, width=np.pi/10, color=bcols)
-    ax.bar(xtheta+np.pi, radii, width=np.pi/10, color=bcols)
+    xtheta = theta[:-1]  # +(theta[1]-theta[0])/2
+#    bcols = plt.cm.jet(xtheta/(2*np.pi))
+    bcols2 = bcols[(xtheta/bwidth).astype(int)]
+    ax.bar(xtheta, radii, width=bwidth, color=bcols2)
+    ax.bar(xtheta+np.pi, radii, width=bwidth, color=bcols2)
 
-    
-    
-    
     ax = plt.subplot(224)
-    bcols = plt.cm.jet(fcnt/2*np.pi)
-    lc = mc.LineCollection(allcrds, color=bcols)
+#    bcols = plt.cm.jet(fcnt/2*np.pi)
+    bcols2 = bcols[(fcnt/bwidth).astype(int)]
+    lc = mc.LineCollection(allcrds, color=bcols2)
     ax.add_collection(lc)
     ax.autoscale()
-    ax.axis('equal')
+    ax.set_aspect('equal')
+    #ax.axis('equal')
 
+    plt.tight_layout()
     plt.show()
 
 
@@ -136,7 +142,7 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
 
     for i in range(bins):
         radii[i] = y[x2 == i].sum()
-        theta[i] = i*xbin+xbin/2
+        theta[i] = i*xbin
 
     return radii, theta
 

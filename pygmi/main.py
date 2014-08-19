@@ -74,8 +74,8 @@ class Startup(QtGui.QDialog):
 
     def update(self, text):
         """ Updates the text on the dialog """
-        oldtext = self.label_info.text()
-        newtext = oldtext + '\n' + text
+#        oldtext = self.label_info.text()
+#        newtext = oldtext + '\n' + text
 #        self.label_info.setText(newtext)
         self.pbar.setValue(self.pbar.value() + 1)
         QtGui.QApplication.processEvents()
@@ -584,7 +584,8 @@ class MainWidget(QtGui.QMainWindow):
 #        menus = [i.replace('/', '.') for i in menus]  # for linux
 #        menus = [i+'.menu' for i in menus]
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
-        menus = [raster_menu]+menus
+        vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
+        menus = [raster_menu, vector_menu]+menus
         start = Startup(len(menus))
         menuimports = []
         for i in menus:
