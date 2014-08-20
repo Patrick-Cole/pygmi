@@ -29,7 +29,7 @@ from PyQt4 import QtGui
 import pygmi.clust.crisp_clust as crisp_clust
 import pygmi.clust.fuzzy_clust as fuzzy_clust
 import pygmi.clust.graphtool as graphtool
-import pygmi.clust.plot_graphs as plot_graphs
+import pygmi.clust.graphs as graphs
 import pygmi.raster.show_table as show_table
 import pygmi.raster.iodefs as iodefs
 
@@ -119,12 +119,12 @@ class MainWidget(object):
 
     def show_membership_data(self):
         """ Show raster data """
-        self.parent.launch_context_item(plot_graphs.PlotMembership)
+        self.parent.launch_context_item(graphs.PlotMembership)
 
     def show_raster_data(self):
         """ Show raster data """
-        self.parent.launch_context_item(plot_graphs.PlotRaster)
+        self.parent.launch_context_item(graphs.PlotRaster)
 
     def show_vrc_etc(self):
         """ Show vrc, xbi, obj, nce graphs """
-        self.parent.launch_context_item(plot_graphs.PlotVRCetc)
+        self.parent.launch_context_item(graphs.PlotVRCetc)

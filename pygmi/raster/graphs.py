@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        plot_graphs.py (part of PyGMI)
+# Name:        raster/graphs.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -28,7 +28,6 @@
 import numpy as np
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d  # this is used, ignore pylint warning
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
     FigureCanvas
 from matplotlib.figure import Figure
@@ -41,6 +40,7 @@ rcParams = matplotlib.rcParams
 import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.cbook as cbook
+#import matplotlib.tri as mtri
 
 
 class MyMplCanvas(FigureCanvas):
@@ -56,26 +56,11 @@ class MyMplCanvas(FigureCanvas):
 
         FigureCanvas.__init__(self, fig)
 
-#        self.setParent(parent)
-
-#        FigureCanvas.setSizePolicy(self,
-#                                   QtGui.QSizePolicy.Expanding,
-#                                   QtGui.QSizePolicy.Expanding)
-#        FigureCanvas.updateGeometry(self)
-
         self.figure.canvas.mpl_connect('pick_event', self.onpick)
         self.figure.canvas.mpl_connect('button_release_event',
                                        self.button_release_callback)
         self.figure.canvas.mpl_connect('motion_notify_event',
                                        self.motion_notify_callback)
-#        self.figure.canvas.mpl_connect('draw_event', self.draw_callback)
-
-#    def draw_callback(self, event):
-#        """ draw callback """
-#        self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
-#        self.axes.draw_artist(self.line)
-#        self.figure.canvas.blit(self.axes.bbox)
-
     def button_release_callback(self, event):
         """ mouse button release """
         if event.inaxes is None:
@@ -148,7 +133,7 @@ class MyMplCanvas(FigureCanvas):
         for i in range(len(data1)):
             for j in range(len(data1)):
                 self.axes.text(i + .1, j + .4, format(float(dmat[i, j]),
-                               '4.2f'))
+                                                      '4.2f'))
         dat_mat = [i.bandid for i in data1]
         self.axes.set_xticks(np.array(list(range(len(data1)))) + .5)
 
@@ -197,21 +182,6 @@ class MyMplCanvas(FigureCanvas):
         self.axes.imshow(data1.data)
         self.figure.canvas.draw()
 
-    def update_membership(self, data1, mem):
-        """ Update the plot """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
-                  data1.tly - data1.rows * data1.ydim, data1.tly)
-
-        rdata = self.axes.imshow(data1.memdat[mem], extent=extent)
-        self.figure.colorbar(rdata)
-#        self.axes.set_title('Data')
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
-        self.figure.canvas.draw()
-
     def update_hexbin(self, data1, data2):
         """ Update the plot """
         self.figure.clear()
@@ -251,32 +221,37 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_xlabel("Number of Classes")
         self.figure.canvas.draw()
 
-    def update_line(self, data1, data2):
+    def update_wireframe(self, data):
         """ Update the plot """
-        self.figure.clear()
 
-        ax1 = self.figure.add_subplot(2, 1, 1)
-        ax1.set_title(data1.dataid)
-        self.axes = ax1
+        x = data.tlx+np.arange(data.cols)*data.xdim+data.xdim/2
+        y = data.tly-np.arange(data.rows)*data.ydim-data.ydim/2
+        x, y = np.meshgrid(x, y)
+        z = data.data.copy()
 
-        ax2 = self.figure.add_subplot(2, 1, 2, sharex=ax1)
-        ax2.set_title(data2.dataid)
+        x = np.ma.array(x, mask=z.mask)
+        y = np.ma.array(y, mask=z.mask)
 
-        self.figure.canvas.draw()
-        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
+        z[z.mask] = np.nan
+        z.mask = data.data.mask.copy()
+        cmap = plt.cm.jet
+        cmap.set_bad('w', 0.)
+        cmap.set_under('w', 0.)
 
-        ax2.plot(data2.zdata)
-        self.line, = ax1.plot(data1.zdata, '.-', picker=5)
-        self.figure.canvas.draw()
+        lev = np.arange(z.min(), z.max(), 1)
+        norml = mcolors.BoundaryNorm(lev, 256)
 
-    def update_wireframe(self, x, y, z):
-        """ Update the plot """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
-        self.axes.plot_wireframe(x, y, z)
-        self.axes.set_title('log(Objective Function)')
-        self.axes.set_xlabel("Number of Classes")
-        self.axes.set_ylabel("Iteration")
+        ax = self.axes
+        ax.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
+                        shade=True)
+
+        ax.set_title('')
+        ax.set_xlabel("X")
+        ax.set_ylabel("Y")
+        ax.set_zlabel("Z")
+
         self.figure.canvas.draw()
 
     def update_hist(self, data1):
@@ -407,123 +382,31 @@ class PlotRaster(GraphWindow):
         self.change_band()
 
 
-class PlotMembership(GraphWindow):
-    """ Plot Fuzzy Membership data."""
+class PlotSurface(GraphWindow):
+    """ Plot Raster Class """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
-        self.indata = {}
-        self.parent = parent
-
-    def change_band(self):
-        """ Combo box to choose band """
-        data = self.indata['Cluster']
-        i = self.combobox1.currentIndex()
-        self.combobox2.clear()
-        self.combobox2.currentIndexChanged.disconnect()
-
-        for j in range(data[i].no_clusters):
-            self.combobox2.addItem('Membership Map for Cluster ' + str(j + 1))
-
-        self.combobox2.currentIndexChanged.connect(self.change_band_two)
-        self.change_band_two()
-
-    def run(self):
-        """ Run """
-        data = self.indata['Cluster']
-        if len(data[0].memdat) == 0:
-            return
-
-        self.show()
-        for i in data:
-            self.combobox1.addItem(i.bandid)
-
-        self.change_band()
-
-    def change_band_two(self):
-        """ Combo box to choose band """
-        data = self.indata['Cluster']
-
-        i = self.combobox1.currentIndex()
-        j = self.combobox2.currentIndex()
-
-        self.mmc.update_membership(data[i], j)
-
-
-class PlotVRCetc(GraphWindow):
-    """ Plot VRC, NCE, OBJ and XBI """
-    def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
-        self.combobox2.hide()
         self.label2.hide()
-        self.parent = parent
+        self.combobox2.hide()
         self.indata = {}
+        self.parent = parent
 
     def change_band(self):
         """ Combo box to choose band """
-        data = self.indata['Cluster']
-
-        j = str(self.combobox1.currentText())
-
-        if j == 'Objective Function' and data[0].obj_fcn is not None:
-            x = len(data)
-            y = 0
-            for i in data:
-                y = max(y, len(i.obj_fcn))
-
-            z = np.zeros([x, y])
-            x = list(range(x))
-            y = list(range(y))
-
-            for i in x:
-                for j in range(len(data[i].obj_fcn)):
-                    z[i, j] = data[i].obj_fcn[j]
-
-            for i in x:
-                z[i][z[i] == 0] = z[i][z[i] != 0].min()
-
-            x, y = np.meshgrid(x, y)
-            x += data[0].no_clusters
-            self.mmc.update_wireframe(x.T, y.T, np.log(z))
-
-        if j == 'Variance Ratio Criterion' and data[0].vrc is not None:
-            x = [k.no_clusters for k in data]
-            y = [k.vrc for k in data]
-            self.mmc.update_scatter(x, y)
-        if j == 'Normalized Class Entropy' and data[0].nce is not None:
-            x = [k.no_clusters for k in data]
-            y = [k.nce for k in data]
-            self.mmc.update_scatter(x, y)
-        if j == 'Xie-Beni Index' and data[0].xbi is not None:
-            x = [k.no_clusters for k in data]
-            y = [k.xbi for k in data]
-            self.mmc.update_scatter(x, y)
+        i = self.combobox1.currentIndex()
+        if 'Raster' in self.indata:
+            data = self.indata['Raster']
+            self.mmc.update_wireframe(data[i])
 
     def run(self):
         """ Run """
-        items = []
-        data = self.indata['Cluster']
+        if 'Raster' in self.indata:
+            self.show()
+            data = self.indata['Raster']
 
-        if data[0].obj_fcn is not None:
-            items += ['Objective Function']
-
-        if data[0].vrc is not None:
-            items += ['Variance Ratio Criterion']
-
-        if data[0].nce is not None:
-            items += ['Normalized Class Entropy']
-
-        if data[0].xbi is not None:
-            items += ['Xie-Beni Index']
-
-        if len(items) == 0:
-            self.parent.showprocesslog('Your dataset does not qualify')
-            return
-
-        self.combobox1.addItems(items)
-
-        self.label1.setText('Graph Type:')
-        self.combobox1.setCurrentIndex(0)
-        self.show()
+            for i in data:
+                self.combobox1.addItem(i.bandid)
+            self.change_band()
 
 
 class PlotScatter(GraphWindow):
@@ -550,34 +433,6 @@ class PlotScatter(GraphWindow):
 
         self.label1.setText('X Band:')
         self.label2.setText('Y Band:')
-        self.combobox1.setCurrentIndex(0)
-        self.combobox2.setCurrentIndex(1)
-
-
-class PlotPoints(GraphWindow):
-    """ Plot Raster Class """
-    def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
-        self.indata = {}
-        self.parent = parent
-
-    def change_band(self):
-        """ Combo box to choose band """
-        data = self.indata['Point']
-        i = self.combobox1.currentIndex()
-        j = self.combobox2.currentIndex()
-        self.mmc.update_line(data[i], data[j])
-
-    def run(self):
-        """ Run """
-        self.show()
-        data = self.indata['Point']
-        for i in data:
-            self.combobox1.addItem(i.dataid)
-            self.combobox2.addItem(i.dataid)
-
-        self.label1.setText('Top Profile:')
-        self.label2.setText('Bottom Profile:')
         self.combobox1.setCurrentIndex(0)
         self.combobox2.setCurrentIndex(1)
 

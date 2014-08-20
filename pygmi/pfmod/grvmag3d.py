@@ -45,7 +45,7 @@ from scipy.linalg import norm
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.ptimer import PTime
 from functools import partial
-from multiprocessing import Pool
+import multiprocessing as mp
 
 if sys.platform.startswith('win'):
     if sys.maxsize > 2**32:
@@ -955,7 +955,7 @@ def gridmatch(lmod, ctxt, rtxt):
 def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                altcalc=False):
     """ Calculate magnetic and gravity field """
-    if showtext == None:
+    if showtext is None:
         showtext = print
     if pbars is not None:
         pbars.resetall(mmax=2*(len(lmod.lith_list)-1)+1)
@@ -1042,7 +1042,11 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                        mlayers=mlayers, glayers=glayers,
                        hcorflat=hcorflat, mijk=mijk)
 
-        pool = Pool()
+        cpunum = mp.cpu_count()
+        if cpunum > 1:
+            cpunum -= 1
+
+        pool = mp.Pool(processes=cpunum)
         baba = np.array(pool.map(ptmp, range(numx)))
         pool.close()
         pool.join()
@@ -1100,7 +1104,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         lmod.griddata['Gravity Residual'] = copy.deepcopy(
             lmod.griddata['Gravity Dataset'])
         lmod.griddata['Gravity Residual'].data = (
-            lmod.griddata['Gravity Dataset'].data - ztmp)
+            lmod.griddata['Gravity Dataset'].data - ztmp - lmod.gregional)
         lmod.griddata['Gravity Residual'].bandid = 'Gravity Residual'
 
     if parent is not None:

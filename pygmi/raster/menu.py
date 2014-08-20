@@ -31,7 +31,7 @@ import pygmi.raster.smooth as smooth
 import pygmi.raster.normalisation as normalisation
 import pygmi.raster.cooper as cooper
 import pygmi.raster.ginterp as ginterp
-import pygmi.clust.plot_graphs as plot_graphs
+import pygmi.raster.graphs as graphs
 import pygmi.raster.show_table as show_table
 import pygmi.raster.dataprep as dataprep
 import pygmi.raster.iodefs as iodefs
@@ -144,6 +144,11 @@ class MainWidget(object):
         context_menu['Raster'].addAction(self.action_show_raster_data)
         self.action_show_raster_data.triggered.connect(self.show_raster_data)
 
+        self.action_show_surface = QtGui.QAction(self.parent)
+        self.action_show_surface.setText("Show Surface")
+        context_menu['Raster'].addAction(self.action_show_surface)
+        self.action_show_surface.triggered.connect(self.show_surface)
+
         self.action_show_scatter_plot = QtGui.QAction(self.parent)
         self.action_show_scatter_plot.setText("Show Hexbin Plot")
         context_menu['Raster'].addAction(self.action_show_scatter_plot)
@@ -209,19 +214,23 @@ class MainWidget(object):
 
     def show_ccoef(self):
         """ Show 2D correlation coefficients"""
-        self.parent.launch_context_item(plot_graphs.PlotCCoef)
+        self.parent.launch_context_item(graphs.PlotCCoef)
 
     def show_histogram(self):
         """ Show raster data """
-        self.parent.launch_context_item(plot_graphs.PlotHist)
+        self.parent.launch_context_item(graphs.PlotHist)
 
     def show_raster_data(self):
         """ Show raster data """
-        self.parent.launch_context_item(plot_graphs.PlotRaster)
+        self.parent.launch_context_item(graphs.PlotRaster)
+
+    def show_surface(self):
+        """ Show surface """
+        self.parent.launch_context_item(graphs.PlotSurface)
 
     def show_scatter_plot(self):
         """ Show raster data """
-        self.parent.launch_context_item(plot_graphs.PlotScatter)
+        self.parent.launch_context_item(graphs.PlotScatter)
 
     def smoothing(self):
         """ Smoothing of Data"""
