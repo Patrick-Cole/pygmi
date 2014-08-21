@@ -137,6 +137,7 @@ from math import sqrt
 from math import atan2
 from osgeo import osr
 import copy
+import pygmi.raster.dataprep as dp
 
 
 class IGRF(QtGui.QDialog):
@@ -389,7 +390,7 @@ class IGRF(QtGui.QDialog):
         """ Settings Dialog"""
 # Variable declaration
 # Control variables
-        data = self.indata['Raster']
+        data = dp.merge(self.indata['Raster'])
         for i in data:
             self.combobox_dtm.addItem(i.bandid)
             self.combobox_mag.addItem(i.bandid)
@@ -1047,4 +1048,3 @@ def get_igrf(dat):
 #    mrg.dsb_dxy.setValue(dxy)
 #    mrg.acceptall()
 #    return mrg.outdata['Raster']
-
