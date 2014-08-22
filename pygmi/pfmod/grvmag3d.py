@@ -954,7 +954,26 @@ def gridmatch(lmod, ctxt, rtxt):
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                altcalc=False):
-    """ Calculate magnetic and gravity field """
+    """ Calculate magnetic and gravity field
+
+    This function calculates the magnetic and gravity field. It has two
+    different modes of operation, by using the altcalc switch. If atlcalc=True
+    then both magnetic and gravity fields are calculated, otherwize only
+    gravity is calculated.
+
+    Args:
+        lmod (LithModel): PyGMI lithological model
+        pbars: progress bar routine if available. (internal use)
+        showtext: showtext routine if available. (internal use)
+        parent: parent function. (internal use)
+        showreports (bool): show extra reports
+        altcalc (bool): if true, calculate gravity and magnetic data, otherwize
+                        only gravity.
+
+    Return:
+        lmod.griddata (dictionary): dictionary of items of type Data.
+    """
+
     if showtext is None:
         showtext = print
     if pbars is not None:
@@ -1059,8 +1078,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         del pool
         del baba
         del ptmp
-        pbars.incr()
-        pbars.incrmain()
+        if pbars is not None:
+            pbars.incr()
+            pbars.incrmain()
         QtGui.QApplication.processEvents()
 
 #        for i in range(numx):
@@ -1082,10 +1102,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     lmod.griddata['Calculated Magnetics'].data = magval
     lmod.griddata['Calculated Gravity'].data = grvval
 
-    if 'Gravity Regional' not in lmod.griddata:
-        return
-    zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
-    lmod.griddata['Calculated Gravity'].data += zfin
+    if 'Gravity Regional' in lmod.griddata:
+        zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
+        lmod.griddata['Calculated Gravity'].data += zfin
 
     if lmod.lith_index.max() <= 0:
         lmod.griddata['Calculated Magnetics'].data *= 0.
@@ -1116,10 +1135,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         pbars.maxall()
 
     return lmod.griddata
-
-
-def test(iii):
-    print(iii)
 
 
 def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,

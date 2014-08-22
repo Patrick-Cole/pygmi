@@ -248,7 +248,7 @@ class ExportMod3D(object):
 
         filename = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.',
-            'npz (*.npz);;kmz (*.kmz);;xyz (*.xyz)')
+            'npz (*.npz);;kmz (*.kmz);;csv (*.csv)')
 
         if filename == '':
             return
@@ -262,8 +262,8 @@ class ExportMod3D(object):
             self.savemodel()
         if self.ext == 'kmz':
             self.mod3dtokmz()
-        if self.ext == 'xyz':
-            self.mod3dtoxyz()
+        if self.ext == 'csv':
+            self.mod3dtocsv()
 
     def savemodel(self):
         """ Save model """
@@ -331,25 +331,20 @@ class ExportMod3D(object):
 
         return outdict
 
-    def mod3dtoxyz(self):
-        """ Saves the 3D model in an xyz file. """
-# Get Save Name
+    def mod3dtocsv(self):
+        """ Saves the 3D model in a csv file. """
 #        self.pbars.resetall(maximum = self.lmod1.numx, mmax = 2)
 
-        filename = QtGui.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'xyz Files (*.xyz)')
-        if filename == '':
-            return
-        os.chdir(filename.rpartition('/')[0])
-        self.showtext('xyz export starting...')
+        self.showtext('csv export starting...')
 
         self.lmod.update_lith_list_reverse()
         lithname = self.lmod.lith_list_reverse.copy()
         lithlist = self.lmod.lith_list.copy()
 
         tmp = []
+        ltmp = []
         for i in range(self.lmod.numx):
-#            self.pbars.incr()
+            # self.pbars.incr()
             x = self.lmod.xrange[0]+i*self.lmod.dxy
             for j in range(self.lmod.numy):
                 y = self.lmod.yrange[0]+j*self.lmod.dxy
@@ -360,17 +355,30 @@ class ExportMod3D(object):
                         name = lithname[lith]
                         dens = lithlist[name].density
                         susc = lithlist[name].susc
-                        tmp.append([x, y, z, lith, dens, susc])
+                        tmp.append([x, y, z, dens, susc, lith])
+                        ltmp.append(lithname[lith])
 
 #        self.pbars.resetsub(1)
         tmp = np.array(tmp)
-        np.savetxt(filename, tmp, delimiter=',')
-        tmp = np.array(lithname.items())
-        np.savetxt(filename[:filename.rindex('.xyz')]+'_key.csv', tmp, '%s',
-                   delimiter=',')
+        ltmp = np.array(ltmp)
+        stmp = np.zeros(len(tmp), dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4'),
+                                         ('dens', 'f4'), ('susc', 'f4'),
+                                         ('lith', 'i4'), ('lithname', 'a24')])
+
+        stmp['x'] = tmp[:, 0]
+        stmp['y'] = tmp[:, 1]
+        stmp['z'] = tmp[:, 2]
+        stmp['dens'] = tmp[:, 3]
+        stmp['susc'] = tmp[:, 4]
+        stmp['lith'] = tmp[:, 5]
+        stmp['lithname'] = ltmp
+
+        head = 'X, Y, Z, Density, Susceptibility, Lithology Code, Lithology'
+        np.savetxt(self.ifile, stmp, fmt="%f, %f, %f, %f, %f, %i, %s",
+                   header=head)
 #        self.pbars.incr()
 
-        self.showtext('xyz export complete...')
+        self.showtext('csv export complete...')
 
     def mod3dtokmz(self):
         """ Saves the 3D model and grids in a kmz file.

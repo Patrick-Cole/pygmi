@@ -30,8 +30,33 @@ from pygmi.raster.datatypes import Data
 
 
 class LithModel(object):
-    """ Lithological Model Data. This is the main data structure for the
-    program """
+    """ Lithological Model Data.
+
+    This is the main data structure for the modelling program
+
+    Attributes:
+        mlut (dictionary): color table for lithologies
+        numx (int): number of columns per layer in model
+        numy (int): number of rows per layer in model
+        numz (int): number of layers in model
+        dxy (float): dimension of cubes in the x and y directions
+        d_z (float): dimension of cubes in the z direction
+        lith_index (numpy array): 3D array of lithological indices.
+        curlayer (int): Current layer
+        xrange (list): minimum and maximum x coordinates
+        yrange (list): minimum and maximum y coordinates
+        zrange (list): minimum and maximum z coordinates
+        curprof (int): current profile (in x or y direction)
+        griddata (dictionary): dictionary of Data classes with raster data
+        custprofx (dictionary): custom profile x coordinates
+        custprofy (dictionary): custom profile y coordinates
+        profpics (dictionary): = profile pictures
+        lith_list (dictionary): = list of lithologies
+        lith_list_reverse (dictionary): = reverse lookup for lith_list
+        mht (float): height of magnetic sensor
+        ght (float): height of gravity sensor
+        gregional (float): gravity regional correction
+        """
 
     def __init__(self):
         self.mlut = {0: [170, 125, 90], 1: [255, 255, 0]}
@@ -72,7 +97,8 @@ class LithModel(object):
         self.is_ew = True
 
     def lithold_to_lith(self):
-        """ Transfers an old lithology to the new one """
+        """ Transfers an old lithology to the new one, using updates parameters
+        """
         if self.olith_index is None:
             return
         xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy) + \
@@ -104,7 +130,9 @@ class LithModel(object):
                             self.olith_index[o_i, o_j, o_k]
 
     def dtm_to_lith(self):
-        """ Assign the DTM to the model """
+        """ Assign the DTM to the model. This means creating nodata values in
+        areas above the DTM. These values are assigned a lithology of -1."""
+
         if 'DTM Dataset' not in list(self.griddata.keys()):
 
             return
@@ -143,7 +171,11 @@ class LithModel(object):
                     self.lith_index[i, j, :k_2] = -1
 
     def init_grid(self, data):
-        """ Initializes grid variables """
+        """ Initializes raster variables in the Data class
+
+        Args:
+            data (numpy masked array): masked array containing raster data."""
+
         grid = Data()
         grid.data = data
         grid.cols = self.numx
@@ -165,18 +197,35 @@ class LithModel(object):
         self.griddata['Calculated Gravity'].units = 'mgal'
 
     def is_modified(self, modified=True):
-        """ Updates modified flag """
+        """ Updates modified flag
+
+        Args:
+            modified (bool): flag for whether the lithology has been modified
+        """
         for i in list(self.lith_list.keys()):
             self.lith_list[i].modified = modified
 
     def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht=-1,
                ght=-1):
-        """ Updates the values """
+        """ Updates the local variables for the LithModel class
+
+        Args:
+            cols (int): number of columns per layer in model
+            rows (int): number of rows per layer in model
+            layers (int): number of layers in model
+            utlx (float): upper top left (NW) x coordinate
+            utly (float): upper top left (NW) y coordinate
+            utlz (float): upper top left (NW) z coordinate
+            dxy (float): dimension of cubes in the x and y directions
+            d_z (float): dimension of cubes in the z direction
+            mht (float): height of magnetic sensor
+            ght (float): height of gravity sensor
+        """
         if mht != -1:
             self.mht = mht
         if ght != -1:
             self.ght = ght
-        
+
         self.olith_index = self.lith_index
         self.odxy = self.dxy
         self.od_z = self.d_z
@@ -214,7 +263,7 @@ class LithModel(object):
         self.is_modified()
 
     def update_lithlist(self):
-        """ Updates lith_list """
+        """ Updates lith_list from local variables"""
         for i in list(self.lith_list.keys()):
             self.lith_list[i].set_xyz(self.numx, self.numy, self.numz,
                                       self.dxy, self.mht, self.ght, self.d_z,
