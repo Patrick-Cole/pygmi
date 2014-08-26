@@ -26,7 +26,7 @@
 
 from distutils.core import setup
 
-pver = '2.1.0'
+pver = '2.2.1'
 
 setup(name='pygmi',
       version=pver,
@@ -69,4 +69,4 @@ setup(name='pygmi',
           'Topic :: Scientific/Engineering :: Visualization',
           'Topic :: Software Development :: Libraries :: Python Modules',
       ],
-      )
+     )

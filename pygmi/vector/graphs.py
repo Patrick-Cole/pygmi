@@ -37,7 +37,7 @@ from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as \
 
 
 class MyMplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+    """ MPL Canvas class"""
     def __init__(self, parent=None):
         # figure stuff
         fig = Figure()
@@ -56,7 +56,7 @@ class MyMplCanvas(FigureCanvas):
                                        self.motion_notify_callback)
 
     def button_release_callback(self, event):
-        """ mouse button release """
+        """ mouse button release callback """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -64,7 +64,7 @@ class MyMplCanvas(FigureCanvas):
         self.ind = None
 
     def motion_notify_callback(self, event):
-        """ move mouse """
+        """ move mouse callback """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -148,8 +148,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes = ax1
 
         ax2 = self.figure.add_subplot(1, 2, 2)
-#        ax2.set_title('Lineaments')
-        #ax2.axis('equal')
+        # ax2.set_title('Lineaments')
+        # ax2.axis('equal')
         ax2.set_aspect('equal')
 
         fangle = []
@@ -210,7 +210,7 @@ class MyMplCanvas(FigureCanvas):
 
 
 class GraphWindow(QtGui.QDialog):
-    """ Graph Window """
+    """ Graph Window - Main QT Dialog class for graphs."""
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent=None)
         self.parent = parent
@@ -344,7 +344,21 @@ class PlotRose(GraphWindow):
 
 
 def histogram(x, y=None, xmin=None, xmax=None, bins=10):
-    """ histogram """
+    """ Calculate histogram of a set of data. It is different from a
+    conventional histogram in that instead of summing elements of
+    specific values, this allows the sum of weights/probabilities on a per
+    element basis.
+
+    Args:
+        x (numpy array): Input data
+        y (numpy array): Input data weights. A value of 1 is default behaviour
+        xmin (float): Lower value for the bins
+        xmax (float): Upper value for the bins
+        bins (int): number of bins
+
+    Returns:
+        hist (numpy array): The values of the histogram
+        bin_edges (numpy array): bin edges of the histogram"""
 
     radii = np.zeros(bins)
     theta = np.zeros(bins+1)
@@ -369,4 +383,6 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
         radii[i] = y[x2 == i].sum()
         theta[i] = i*xbin
 
-    return radii, theta
+    hist = radii
+    bin_edges = theta
+    return hist, bin_edges

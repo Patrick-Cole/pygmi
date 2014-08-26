@@ -78,7 +78,8 @@ class ImportMod3D(object):
             indict = np.load(filename)
             self.dict2lmod(indict)
 
-        self.outdata['Model3D'] = self.lmod
+        self.outdata['Model3D'] = [self.lmod]
+        self.lmod.name = filename.rpartition('/')[-1]
 
         for i in self.lmod.griddata.keys():
             if self.lmod.griddata[i].bandid == '':
@@ -244,26 +245,25 @@ class ExportMod3D(object):
                 'Error: You need to have a model first!')
             return
 
-        self.lmod = self.indata['Model3D']
+        for self.lmod in self.indata['Model3D']:
+            filename = QtGui.QFileDialog.getSaveFileName(
+                self.parent, 'Save File', '.',
+                'npz (*.npz);;kmz (*.kmz);;csv (*.csv)')
 
-        filename = QtGui.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.',
-            'npz (*.npz);;kmz (*.kmz);;csv (*.csv)')
+            if filename == '':
+                return
 
-        if filename == '':
-            return
+            os.chdir(filename.rpartition('/')[0])
+            self.ifile = str(filename)
+            self.ext = filename[-3:]
 
-        os.chdir(filename.rpartition('/')[0])
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
-
-    # Pop up save dialog box
-        if self.ext == 'npz':
-            self.savemodel()
-        if self.ext == 'kmz':
-            self.mod3dtokmz()
-        if self.ext == 'csv':
-            self.mod3dtocsv()
+        # Pop up save dialog box
+            if self.ext == 'npz':
+                self.savemodel()
+            if self.ext == 'kmz':
+                self.mod3dtokmz()
+            if self.ext == 'csv':
+                self.mod3dtocsv()
 
     def savemodel(self):
         """ Save model """
@@ -1124,7 +1124,7 @@ class ImportPicture(QtGui.QDialog):
     def settings(self):
         """ Load GeoTiff """
         if 'Model3D' in self.indata.keys():
-            self.lmod = self.indata['Model3D']
+            self.lmod = self.indata['Model3D'][0]
             self.lmod2var()
 
         temp = self.exec_()

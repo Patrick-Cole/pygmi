@@ -32,7 +32,7 @@ import pygmi.pfmod.misc as misc
 import pygmi.raster.iodefs as ir
 import os
 
-from matplotlib.figure import Figure
+# from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
     FigureCanvas
@@ -191,7 +191,7 @@ class ProfileDisplay(object):
             left = self.lmod1.xrange[0]
             right = self.lmod1.xrange[1]
         else:
-#            gtmp = self.lmod1.lith_index[newprof,:,:].T.copy()
+            # gtmp = self.lmod1.lith_index[newprof,:,:].T.copy()
             gtmp = self.lmod1.lith_index[newprof, :, ::-1].T.copy()
             left = self.lmod1.yrange[0]
             right = self.lmod1.yrange[1]
@@ -334,7 +334,7 @@ class ProfileDisplay(object):
                 jgrd = int((tly-jmod)/d_y)
 
                 if igrd >= 0 and jgrd >= 0 and igrd < cols and jgrd < rows:
-#                    k_2 = int((regz-fgrid.ev(jmod, imod))/d_z)
+                    # k_2 = int((regz-fgrid.ev(jmod, imod))/d_z)
                     k_2 = int((regz-fgrid(jmod, imod))/d_z)
                     if k_2 < 0:
                         k_2 = 0
@@ -755,7 +755,7 @@ class MyMplCanvas(FigureCanvas):
 
         if xstart < xend and ystart < yend:
             mtmp = self.mdata[ystart:yend, xstart:xend]
-            mtmp[mtmp != -1] = self.curmodel
+            mtmp[np.logical_and(mtmp != -1, mtmp < 900)] = self.curmodel
 
     def luttodat(self, dat):
         """ lut to dat grid """

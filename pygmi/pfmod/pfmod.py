@@ -130,10 +130,12 @@ class MainWidget(QtGui.QMainWindow):
         for i in self.indata['Raster']:
             self.inraster[i.bandid] = i
         if 'Model3D' in self.indata.keys():
-            self.lmod1 = self.indata['Model3D']
-            self.lmod1.init_calc_grids()
+            self.lmod1 = self.indata['Model3D'][0]
+#            self.lmod1.init_calc_grids()
+            self.lmod2 = self.indata['Model3D'][-1]
+#            self.lmod2.init_calc_grids()
 
-        self.outdata['Model3D'] = self.lmod1
+        self.outdata['Model3D'] = [self.lmod1]
         self.mext.update_combos()
         self.mext.tab_activate()
         self.outdata['Raster'] = list(self.lmod1.griddata.values())
@@ -196,5 +198,3 @@ class MainWidget(QtGui.QMainWindow):
             self.ddisp.tab_activate()
 
         self.oldtab = self.tabwidget.tabText(index)
-
-

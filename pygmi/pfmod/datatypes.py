@@ -56,6 +56,7 @@ class LithModel(object):
         mht (float): height of magnetic sensor
         ght (float): height of gravity sensor
         gregional (float): gravity regional correction
+        name (str): name of the model
         """
 
     def __init__(self):
@@ -67,9 +68,9 @@ class LithModel(object):
         self.d_z = None
         self.lith_index = None
         self.curlayer = None
-        self.xrange = None
-        self.yrange = None
-        self.zrange = None
+        self.xrange = [None, None]
+        self.yrange = [None, None]
+        self.zrange = [None, None]
         self.curprof = None
         self.griddata = {}
         self.custprofx = {}
@@ -80,6 +81,7 @@ class LithModel(object):
         self.mht = None
         self.ght = None
         self.gregional = 100
+        self.name = '3D Model'
 
         # Next line calls a function to update the variables above.
         self.update(100, 75, 40, 0, 150000, 0, 1500, 100, 100, 0)
@@ -243,9 +245,9 @@ class LithModel(object):
         self.numx = cols
         self.numy = rows
         self.numz = layers
-        self.xrange = (utlx, utlx + xextent)
-        self.yrange = (utly - yextent, utly)
-        self.zrange = (utlz - zextent, utlz)
+        self.xrange = [utlx, utlx + xextent]
+        self.yrange = [utly - yextent, utly]
+        self.zrange = [utlz - zextent, utlz]
 
         self.custprofx[0] = self.xrange
         self.custprofy[0] = (self.yrange[0], self.yrange[0])

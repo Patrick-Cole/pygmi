@@ -275,7 +275,7 @@ class Mod3dDisplay(QtGui.QDialog):
                                        ' that module first')
             return False
 
-        self.lmod1 = self.indata['Model3D']
+        self.lmod1 = self.indata['Model3D'][0]
         liths = np.unique(self.lmod1.lith_index[::1, ::1, ::-1])
         liths = np.array(liths).astype(int)  # needed for use in faces array
         if liths[0] == -1:
@@ -464,6 +464,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
+        liths = liths[liths<900]
 
         if liths.max() == -1:
             return

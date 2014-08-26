@@ -228,6 +228,8 @@ class MyMplCanvas(FigureCanvas):
         y = data.tly-np.arange(data.rows)*data.ydim-data.ydim/2
         x, y = np.meshgrid(x, y)
         z = data.data.copy()
+        if not np.ma.is_masked(z):
+            z = np.ma.array(z)
 
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)

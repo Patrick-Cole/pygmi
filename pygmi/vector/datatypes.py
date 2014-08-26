@@ -22,14 +22,21 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Class for data types """
+""" Class for vector data types """
 
 # pylint: disable=E1101, C0103
 import numpy as np
 
 
 class PData(object):
-    """ Class for point data """
+    """ Class for point data
+
+    Attributes:
+        xdata (numpy array): array of x coordinates
+        ydata (numpy array): array of y coordinates
+        zdata (numpy array): array of z coordinates
+        dataid (str): data description"""
+
     def __init__(self):
         self.xdata = np.array([])
         self.ydata = np.array([])
@@ -38,7 +45,15 @@ class PData(object):
 
 
 class VData(object):
-    """ Class for Line data """
+    """ Class for Vector data. Typically used for storage of shape files.
+
+    Attributes:
+        crds (list): List of coordinates
+        attrib (list): list of dictionaries, where each dictionary is the
+            column in a table
+        dataid (str): data description
+        dtype (str): type of data - Line, Point, Poly
+    """
     def __init__(self):
         # Since each line can have variable amount of points, it is best to
         # store in a list

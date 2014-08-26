@@ -72,11 +72,8 @@ class Startup(QtGui.QDialog):
 
         self.open()
 
-    def update(self, text):
+    def update(self):
         """ Updates the text on the dialog """
-#        oldtext = self.label_info.text()
-#        newtext = oldtext + '\n' + text
-#        self.label_info.setText(newtext)
         self.pbar.setValue(self.pbar.value() + 1)
         QtGui.QApplication.processEvents()
 
@@ -93,16 +90,16 @@ class Arrow(QtGui.QGraphicsLineItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
         self.my_color = QtCore.Qt.black
         self.setPen(QtGui.QPen(self.my_color, 2, QtCore.Qt.SolidLine,
-                    QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
+                               QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
 
     def boundingRect(self):
         """ Bounding Rectangle """
         extra = (self.pen().width() + 20) / 2.0
         p1 = self.line().p1()
         p2 = self.line().p2()
-        return QtCore.QRectF(p1, QtCore.QSizeF(p2.x() - p1.x(), p2.y() -
-                             p1.y())).normalized().adjusted(-extra, -extra,
-                                                            extra, extra)
+        tmp = QtCore.QRectF(p1, QtCore.QSizeF(p2.x()-p1.x(), p2.y()-p1.y()))
+
+        return tmp.normalized().adjusted(-extra, -extra, extra, extra)
 
     def end_item(self):
         """ End Item """
@@ -110,6 +107,7 @@ class Arrow(QtGui.QGraphicsLineItem):
 
     def paint(self, painter, option, widget=None):
         """ Paint """
+        pi = math.pi
         if self.my_start_item.collidesWithItem(self.my_end_item):
             return
 
@@ -147,13 +145,16 @@ class Arrow(QtGui.QGraphicsLineItem):
 
         angle = math.acos(line.dx() / line.length())
         if line.dy() >= 0:
-            angle = (math.pi * 2.0) - angle
+            angle = (math.pi*2.0) - angle
 
-        arrow_p1 = (line.p1() + QtCore.QPointF(math.sin(angle + math.pi / 3.0)
-                    * arrow_size, math.cos(angle + math.pi / 3) * arrow_size))
-        arrow_p2 = (line.p1() + QtCore.QPointF(math.sin(angle + math.pi -
-                    math.pi / 3.0) * arrow_size, math.cos(angle + math.pi -
-                    math.pi / 3.0) * arrow_size))
+        arrow_p1 = (line.p1() + QtCore.QPointF(math.sin(angle+pi/3) *
+                                               arrow_size,
+                                               math.cos(angle+pi/3) *
+                                               arrow_size))
+        arrow_p2 = (line.p1() + QtCore.QPointF(math.sin(angle+pi-pi/3) *
+                                               arrow_size,
+                                               math.cos(angle+pi-pi/3) *
+                                               arrow_size))
 
         self.arrow_head.clear()
         for point in [line.p1(), arrow_p1, arrow_p2]:
@@ -299,13 +300,10 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
         for i in self.arrows:
             odata = i.start_item().my_class.outdata
             for j in odata.keys():
-                if j == 'Model3D':
-                    data[j] = odata[j]
+                if j in data:
+                    data[j] = data[j] + odata[j]
                 else:
-                    if j in data:
-                        data[j] = data[j] + odata[j]
-                    else:
-                        data[j] = odata[j]
+                    data[j] = odata[j]
 
         self.my_class.indata = data
         if hasattr(self.my_class, 'data_init'):
@@ -450,7 +448,7 @@ class DiagramScene(QtGui.QGraphicsScene):
                 for j in odata[i]:
                     text += '  '+j.bandid + '\n'
             if i == 'Model3D':
-                for j in odata[i].lith_list.keys():
+                for j in odata[i][0].lith_list.keys():
                     text += '  '+j + '\n'
         parent.showdatainfo(text)
 
@@ -592,7 +590,8 @@ class MainWidget(QtGui.QMainWindow):
             if i == 'pygmi.__pycache__.menu':
                 continue
             if i[-5:] == '.menu':
-                start.update("Loading "+i.rsplit('.')[1]+"...")
+                start.update()
+#                start.update("Loading "+i.rsplit('.')[1]+"...")
                 menuimports.append(importlib.import_module(i))
         start.close()
 

@@ -1,5 +1,7 @@
 """
-PyGMI stands for Python Geophysical Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets. It includes:
+PyGMI stands for Python Geophysical Modelling and Interpretation. It is a
+modelling and interpretation suite aimed at magnetic, gravity and other
+datasets. It includes:
 
 Magnetic and Gravity 3D forward modelling
  * Cluster Analysis
@@ -8,7 +10,7 @@ Magnetic and Gravity 3D forward modelling
 
 It is released under the Gnu General Public License version 3.0
 """
-__all__ = ["raster", "clust", "pfmod", "point"]
+__all__ = ["raster", "clust", "pfmod", "vector", "test"]
 from . import raster
 from . import clust
 from . import pfmod

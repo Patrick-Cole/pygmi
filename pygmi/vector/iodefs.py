@@ -35,7 +35,9 @@ import os
 
 
 class ImportLEMI417Data(object):
-    """ Import LEMI-417 MT Data """
+    """ Import LEMI-417 MT Data
+
+    This is a class used to import LEMI-417 MT Data in ASCII format."""
     def __init__(self, parent=None):
         self.ifile = ""
         self.name = "Import LEMI-417 Data: "
@@ -46,7 +48,7 @@ class ImportLEMI417Data(object):
         self.outdata = {}
 
     def settings(self):
-        """ Settings """
+        """ Settings section"""
         ext = \
             "LEMI-417 Text DataAll Files (*.t*)"
 
@@ -81,7 +83,9 @@ class ImportLEMI417Data(object):
 
 
 class ImportPointData(object):
-    """ Import Data """
+    """ Import Point Data
+
+    This class imports ASCII point data."""
     def __init__(self, parent=None):
         self.ifile = ""
         self.name = "Import Point/Line Data: "
@@ -227,7 +231,7 @@ class ExportPoint(object):
                 datid = str(i)
 
             dattmp = np.transpose([data[i].xdata, data[i].ydata,
-                                  data[i].zdata])
+                                   data[i].zdata])
 
             ofile2 = ofile+'_'+''.join(x for x in datid if x.isalnum())+'.csv'
 
