@@ -69,4 +69,4 @@ setup(name='pygmi',
           'Topic :: Scientific/Engineering :: Visualization',
           'Topic :: Software Development :: Libraries :: Python Modules',
       ],
-     )
+      )
