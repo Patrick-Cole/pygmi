@@ -990,9 +990,37 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     numz = int(lmod.numz)
     tmpfiles = {}
 
+    if lmod.caltcalc is not altcalc:
+        lmod.clith_index[:] = 0
+        lmod.caltcalc = altcalc
+
+    if lmod.clith_index.max() == 0:
+        lmod.griddata['Calculated Magnetics'].data[:] = 0
+        lmod.griddata['Calculated Gravity'].data[:] = 0
+
+
+# model index
+    modind = lmod.lith_index.copy()
+    modindcheck = lmod.lith_index.copy()
+    cmodind = lmod.clith_index.copy()
+    tmp = (modind == cmodind)
+    modind[tmp] = -1
+    cmodind[tmp] = -1
+    modind[modind == 0] = -1
+    cmodind[cmodind == 0] = -1
+    modindcheck[modind == 0] = -1
+
+    if abs(np.sum(modind == -1)) == modind.size:
+        showtext('No changes to model!')
+        return
+
+#    if abs(cmodind.sum()) == cmodind.size:
     for mlist in lmod.lith_list.items():
         # if 'Background' != mlist[0] and mlist[1].modified is True:
-        if 'Background' != mlist[0]:
+        mijk = mlist[1].lith_index
+        if mijk not in modind:
+            continue
+        if 'Background' != mlist[0]:  # and 'Penge' in mlist[0]:
             mlist[1].modified = True
             showtext(mlist[0]+':')
             if parent is not None:
@@ -1014,30 +1042,30 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     tmp[tmp > -1] = 0
     hcor = np.abs(tmp.sum(2))
 
-# model index
-    modind = lmod.lith_index.copy()
-    modind[modind == 0] = -1
-
 # Get mlayers and glayers with correct rho and netmagn
-    magval = np.zeros([numx, numy])
-    grvval = np.zeros([numx, numy])
 
     if pbars is not None:
         pbars.resetsub(maximum=(len(lmod.lith_list)-1))
 
+    magval = np.zeros([numx, numy])
+    grvval = np.zeros([numx, numy])
     mtmp = magval.shape
     magval = magval.flatten()
     grvval = grvval.flatten()
-#        magval = magval.tolist()
-#        grvval = grvval.tolist()
     hcorflat = numz-hcor.flatten()
     aaa = np.reshape(np.mgrid[0:mtmp[0], 0:mtmp[1]], [2, numx*numy])
-#        aaa = aaa.tolist()
+    cpunum = mp.cpu_count()
+    if cpunum > 1:
+        cpunum -= 1
 
+    ttt = PTime()
     for mlist in lmod.lith_list.items():
         if 'Background' == mlist[0]:
             continue
-#            mfile = np.load(self.mfname+'_'+mlist[0]+'_tmp.npz')
+        mijk = mlist[1].lith_index
+        if mijk not in modind:
+            continue
+        i, j, k = np.nonzero(modind == mijk)
         tmpfiles[mlist[0]].seek(0)
         mfile = np.load(tmpfiles[mlist[0]])
         if altcalc:
@@ -1047,26 +1075,19 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         else:
             mlayers = np.zeros_like(mfile['glayers'])
         glayers = mfile['glayers']*mlist[1].rho()
-        mijk = mlist[1].lith_index
 
-#            mlayers = mlayers.tolist()
-#            glayers = glayers.tolist()
-
-#        ttt.since_last_call()
         showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
+
         QtGui.QApplication.processEvents()
-        ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy, numz=numz,
+        ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy,
                        modind=modind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
                        mlayers=mlayers, glayers=glayers,
-                       hcorflat=hcorflat, mijk=mijk)
-
-        cpunum = mp.cpu_count()
-        if cpunum > 1:
-            cpunum -= 1
+                       hcorflat=hcorflat, mijk=mijk,
+                       jj=np.unique(j).tolist(), ii=np.unique(i).tolist())
 
         pool = mp.Pool(processes=cpunum)
-        baba = np.array(pool.map(ptmp, range(numx)))
+        baba = np.array(pool.map(ptmp, np.unique(k).tolist()))
         pool.close()
         pool.join()
 
@@ -1074,22 +1095,44 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         magval += baba[0]
         grvval += baba[1]
 
-        showtext('Done')
         del pool
         del baba
         del ptmp
+
+        if abs(np.sum(cmodind == -1)) < cmodind.size:
+            QtGui.QApplication.processEvents()
+            i, j, k = np.nonzero(np.logical_and(cmodind != mijk, cmodind > 0))
+            ptmp = partial(grvmagc.calc_field2,
+                           numx=numx, numy=numy,
+                           modind=cmodind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
+                           mlayers=mlayers, glayers=glayers,
+                           hcorflat=hcorflat, mijk=mijk,
+                           jj=np.unique(j).tolist(), ii=np.unique(i).tolist())
+
+            pool = mp.Pool(processes=cpunum)
+            baba = np.array(pool.map(ptmp, np.unique(k).tolist()))
+            pool.close()
+            pool.join()
+
+            baba = baba.sum(0)
+            magval -= baba[0]
+            grvval -= baba[1]
+
+            del pool
+            del baba
+            del ptmp
+
+        showtext('Done')
+
         if pbars is not None:
             pbars.incr()
             pbars.incrmain()
         QtGui.QApplication.processEvents()
 
-#        for i in range(numx):
-#            if pbars is not None:
-#                pbars.incr()
-#                pool.map(ptmp,range[numx])
-#            grvmagc.calc_field2(i, numx, numy, numz, modind, hcor, aaa[0],
-#                                aaa[1], mlayers, glayers, magval, grvval,
-#                                hcorflat, mijk)
+    ttt.since_last_call('cython')
+    # Old: cython time(s): 41.84219704839284 since last call
+    # numx min max: cython time(s): 35.29413359259356 since last call
+    # all min max cython time(s): 35.38449740644957 since last call
 
     magval.resize(mtmp)
     grvval.resize(mtmp)
@@ -1098,11 +1141,15 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     magval = magval[::-1]
     grvval = grvval[::-1]
 
-# Update variables
-    lmod.griddata['Calculated Magnetics'].data = magval
-    lmod.griddata['Calculated Gravity'].data = grvval
+#    magval += lmod.griddata['Calculated Magnetics'].data
+#    grvval += lmod.griddata['Calculated Gravity'].data
 
-    if 'Gravity Regional' in lmod.griddata:
+# Update variables
+    lmod.griddata['Calculated Magnetics'].data += magval
+    lmod.griddata['Calculated Gravity'].data += grvval
+
+# This addoldcalc has has flaws w.r.t. regional if you change the regional
+    if 'Gravity Regional' in lmod.griddata and lmod.clith_index.max() == 0:
         zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
         lmod.griddata['Calculated Gravity'].data += zfin
 
@@ -1128,13 +1175,37 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
     if parent is not None:
         parent.outdata['Raster'] = list(lmod.griddata.values())
-#        self.parent.outdata['Raster'] = \
-#            [self.lmod1.griddata['Calculated Magnetics']]
     showtext('Calculation Finished')
     if pbars is not None:
         pbars.maxall()
 
+    lmod.clith_index = lmod.lith_index.copy()
+
     return lmod.griddata
+
+
+def sum_field(numx, numy, numz, modind, hcor, mlayers, glayers, mijk):
+    """ Sums field components """
+    b = numx*numy
+    magval = np.zeros(b)
+    grvval = np.zeros(b)
+    aaa0, aaa1 = np.reshape(np.mgrid[0:numx, 0:numy], [2, b])
+    hcorflat = numz - hcor.flatten()
+
+    i, j, k = np.nonzero(modind == mijk)
+    xoff = numx-i
+    yoff = numy-j
+
+    ijk = np.transpose([xoff, yoff, k])
+
+    for i, j, k in ijk:
+        xoff2 = i + aaa0
+        yoff2 = j + aaa1
+        hcor2 = k + hcorflat
+        magval += mlayers[hcor2, xoff2, yoff2]
+        grvval += glayers[hcor2, xoff2, yoff2]
+
+    return (magval, grvval)
 
 
 def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
@@ -1142,7 +1213,6 @@ def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
                 fdec=-17, susc=[0.01], dens=[3.0], minc=[-67], mdec=[-17],
                 mstrength=[0.]):
     """ Create a quick model """
-
     lmod = LithModel()
     lmod.update(numx, numy, numz, tlx, tly, tlz, dxy, d_z, mht, ght)
 

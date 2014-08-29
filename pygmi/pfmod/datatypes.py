@@ -42,6 +42,8 @@ class LithModel(object):
         dxy (float): dimension of cubes in the x and y directions
         d_z (float): dimension of cubes in the z direction
         lith_index (numpy array): 3D array of lithological indices.
+        clith_index (numpy array): 3D array of calculated lithological indices.
+        calt_calc (bool): boolean specifying which calculation was used.
         curlayer (int): Current layer
         xrange (list): minimum and maximum x coordinates
         yrange (list): minimum and maximum y coordinates
@@ -67,6 +69,8 @@ class LithModel(object):
         self.dxy = None
         self.d_z = None
         self.lith_index = None
+        self.clith_index = None
+        self.caltcalc = False
         self.curlayer = None
         self.xrange = [None, None]
         self.yrange = [None, None]
@@ -171,6 +175,7 @@ class LithModel(object):
                         alt = curgrid.data.mean()
                     k_2 = int((utlz - alt) / self.d_z)
                     self.lith_index[i, j, :k_2] = -1
+        self.clith_index = self.lith_index.copy()
 
     def init_grid(self, data):
         """ Initializes raster variables in the Data class
@@ -258,6 +263,8 @@ class LithModel(object):
         self.curprof = 0
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
                                    dtype=int)
+        self.clith_index = np.zeros([self.numx, self.numy, self.numz],
+                                    dtype=int)
         self.init_calc_grids()
         self.dtm_to_lith()
         self.lithold_to_lith()

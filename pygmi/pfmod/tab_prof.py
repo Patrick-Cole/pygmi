@@ -484,7 +484,7 @@ class ProfileDisplay(object):
             data2 = self.lmod1.griddata['Magnetic Dataset']
             regtmp = 0.0
         elif ('Gravity Dataset' in self.lmod1.griddata.keys() and
-                self.rb_gravity.isChecked()):
+              self.rb_gravity.isChecked()):
             data2 = self.lmod1.griddata['Gravity Dataset']
             regtmp = self.lmod1.gregional
 

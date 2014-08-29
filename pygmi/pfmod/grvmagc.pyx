@@ -74,9 +74,9 @@ DEF pi = 3.141592653589793
 ##DEF Gc = 6.6732e-3 # 6.67384?
 
 
-#@cython.boundscheck(False)
-#@cython.wraparound(False)
-#@cython.nonecheck(False)
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.nonecheck(False)
 
 
 def gm3d(int npro, int nstn,
@@ -284,7 +284,7 @@ cdef inline double angle(double p1[3], double p2[3], double p3[3],
 
     return ang
 
-def calc_field2(int i, int numx, int numy, int numz,
+def calc_field2(int k, int numx, int numy,
                 np.ndarray[DTYPEI_t, ndim=3] modind,
                 np.ndarray[DTYPEI_t, ndim=2] hcor,
                 np.ndarray[DTYPEI_t, ndim=1] aaa0,
@@ -292,65 +292,32 @@ def calc_field2(int i, int numx, int numy, int numz,
                 np.ndarray[DTYPED_t, ndim=3] mlayers,
                 np.ndarray[DTYPED_t, ndim=3] glayers,
                 np.ndarray[DTYPEI_t, ndim=1] hcorflat,
-                int mijk):
+                int mijk, list jj, list ii):
     """ Calculate magnetic and gravity field """
-
-#def calc_field2(int i, int numx, int numy, int numz,
-#                np.ndarray[DTYPEI_t, ndim=3] modind,
-#                np.ndarray[DTYPEI_t, ndim=2] hcor,
-#                list aaa0,
-#                list aaa1,
-#                list mlayers,
-#                list glayers,
-#                list magval,
-#                list grvval,
-#                np.ndarray[DTYPEI_t, ndim=1] hcorflat,
-#                int mijk):
-#    """ Calculate magnetic and gravity field """
-
+    cdef int b
     cdef int xoff
     cdef int yoff
     cdef int xoff2
     cdef int yoff2
     cdef int hcor2
     cdef int j
-    cdef int k
+    cdef int i
     cdef int ijk
     cdef int igrd
     cdef int jgrd
-#    cdef double [:,:,:] mlayersv = mlayers
-#    cdef double [:,:,:] glayersv = glayers
-#    cdef int [:] aaa0v = aaa0
-#    cdef int [:] aaa1v = aaa1
-#    cdef int [:] hcorflatv = hcorflat
-#    cdef int [:,:] hcorv = hcor
-#    cdef int [:,:,:] modindv = modind
     cdef np.ndarray[DTYPED_t, ndim=1] magval
     cdef np.ndarray[DTYPED_t, ndim=1] grvval
-
-#    cdef np.ndarray[DTYPEI_t, ndim = 1] obs2
-#    cdef np.ndarray[DTYPED_t, ndim = 3] m2
-#    cdef np.ndarray[DTYPED_t, ndim = 3] g2
-
-#since last call time(s): 76.17784162520235 since last call
-#since last call time(s): 208.5119907340643 since last call
-#since last call time(s): 8.895999144402765 since last call
-
-    cdef int b
 
     b = numx*numy
     magval = np.zeros(b)
     grvval = np.zeros(b)
 
-    xoff = numx-i
-    for j in range(numy):
-        yoff = numy-j
-#        m2 = mlayers[:, xoff:xoff+numx, yoff:yoff+numy]
-#        g2 = glayers[:, xoff:xoff+numx, yoff:yoff+numy]
-        for k in range(hcor[i, j], numz):
+    for i in ii:
+        xoff = numx-i
+        for j in jj:
+            yoff = numy-j
             if (modind[i, j, k] != mijk):
                 continue
-#            obs2 = k+hcorflat
             for ijk in range(b):
                 xoff2 = xoff + aaa0[ijk]
                 yoff2 = aaa1[ijk]+yoff
@@ -358,6 +325,7 @@ def calc_field2(int i, int numx, int numy, int numz,
                 magval[ijk] += mlayers[hcor2, xoff2, yoff2]
                 grvval[ijk] += glayers[hcor2, xoff2, yoff2]
     return (magval, grvval)
+
 
 def gboxmain(np.ndarray[double, ndim=2] gval, np.ndarray[double, ndim=1] xobs,
              np.ndarray[double, ndim=1] yobs, int numx, int numy, double z_0,
