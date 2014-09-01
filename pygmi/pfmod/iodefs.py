@@ -22,7 +22,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-# pylint: disable=E1101
 
 """ Import Data """
 from PyQt4 import QtGui, QtCore
@@ -149,8 +148,8 @@ class ImportMod3D(object):
             col = int((x[i]-lmod.xrange[0])/lmod.dxy)
             row = int((lmod.yrange[1]-y[i])/lmod.dxy)
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
-            lmod.lith_index[col, row, layer] = lmod.lith_list[label[i]
-                                                              ].lith_index
+            lmod.lith_index[col, row, layer] = \
+                lmod.lith_list[label[i]].lith_index
 
     def dict2lmod(self, indict, pre=''):
         """ routine to convert a dictionary to an lmod """
@@ -489,10 +488,10 @@ class ExportMod3D(object):
         lithcnt = -1
 
         for lith in lkey:
-#            self.pbars.incr()
-#            if lith not in self.lmod.lith_list_reverse:
-#                print('problem')
-#                continue
+            # self.pbars.incr()
+            # if lith not in self.lmod.lith_list_reverse:
+            #     print('problem')
+            #     continue
 
             faces = np.array(mvis_3d.gfaces[lith])
             points = [rev, rev, 1]*(mvis_3d.gpoints[lith] - mvis_3d.origin)
@@ -975,10 +974,8 @@ class Exportkmz(QtGui.QDialog):
         self.checkbox_rev_local.setText(
             "Reverse sign of X and Y coordinates (i.e X is now -X)")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
 
 class ImportPicture(QtGui.QDialog):
@@ -1073,10 +1070,8 @@ class ImportPicture(QtGui.QDialog):
         self.label_5.setText('Press Cancel if you wish to connect profile '
                              'information from a 3D model')
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def lmod2var(self):
         """ lmod 2 var """

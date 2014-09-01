@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Plot Raster Data """
 
-# pylint: disable=E1101
 import numpy as np
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt
@@ -511,6 +510,10 @@ class ModestImage(mi.AxesImage):
         self._full_res = None
         self._sx, self._sy = None, None
         self._bounds = (None, None, None, None)
+        self._rgbacache = None
+        self._oldxslice = None
+        self._oldyslice = None
+
         super(ModestImage, self).__init__(*args, **kwargs)
 
     def set_data(self, A):
@@ -685,6 +688,3 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     im._remove_method = lambda h: axes.images.remove(h)
 
     return im
-
-# if __name__ == "__main__":
-#    main()

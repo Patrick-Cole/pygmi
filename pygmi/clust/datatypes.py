@@ -24,8 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Class for data types """
 
-# pylint: disable=E1101, C0103
-# import numpy as np
 from ..raster.datatypes import Data
 
 

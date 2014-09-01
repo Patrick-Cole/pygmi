@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ This is a routine which displays a table graphically with various stats """
 
-# pylint: disable=E1101, C0103
 from PyQt4 import QtGui
 import numpy as np
 import scipy.stats.mstats as st

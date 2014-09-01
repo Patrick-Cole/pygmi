@@ -1,3 +1,0 @@
-"""
-Vector data routines
-"""

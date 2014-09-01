@@ -320,8 +320,8 @@ def visibility2d(data, wsize, dh):
     for J in range(nc):
         for I in range(nr):
             vstd[I, J] = np.std([vn[I, J], vs[I, J], ve[I, J], vw[I, J],
-                                vd1[I, J], vd2[I, J], vd3[I, J],
-                                vd4[I, J]], ddof=1)
+                                 vd1[I, J], vd2[I, J], vd3[I, J],
+                                 vd4[I, J]], ddof=1)
 
     vstd = vstd[w2:nr-w2, w2:nc-w2]
 
@@ -343,7 +343,7 @@ def visibility2d(data, wsize, dh):
     return vtot, vstd, vsum
 
 
-def __visible1(self, d, nr, cp, dh):
+def __visible1(d, nr, cp, dh):
     """ Visible 1 """
     n = 1
 #        d = d[d.nonzero()].tolist()
@@ -361,7 +361,7 @@ def __visible1(self, d, nr, cp, dh):
     return n
 
 
-def __visible2(self, d, nr, cp, dh):
+def __visible2(d, nr, cp, dh):
     """ Visible 2 """
     n = 0
 #        d = d[d.nonzero()].tolist()
@@ -545,7 +545,7 @@ def __nextpow2(n):
     return m_i
 
 
-def __vertical(self, data, npts, nc, nr, xint):
+def __vertical(data, npts, nc, nr, xint):
     """ Vertical """
 
     cdiff = int(np.floor((npts-nc)/2))
@@ -579,8 +579,8 @@ def __taper2d(g, npts, n, m, ndiff, mdiff):
     for J in range(mdiff, mdiff+m):
         for I in range(ndiff):
             gf[I, J] = gf[I, J]*((1+np.sin(-np.pi/2+I*np.pi/ndiff))*0.5)
-            gf[npts2-I, J] = gf[npts2-I, J]*((1+np.sin(
-                                             -np.pi/2+I*np.pi/ndiff))*0.5)
+            gf[npts2-I, J] = gf[npts2-I, J]*((1+np.sin(-np.pi/2 +
+                                                       I*np.pi/ndiff))*0.5)
 
     for J in range(mdiff):
         tmp = ((1+np.sin(-np.pi/2+J*np.pi/(mdiff)))*0.5)

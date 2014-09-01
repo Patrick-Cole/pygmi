@@ -24,10 +24,8 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui
 import numpy as np
-# from osgeo import gdal
 from osgeo import ogr
 from .datatypes import PData
 from .datatypes import VData

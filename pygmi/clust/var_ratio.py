@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Variance Ratio """
 
-# pylint: disable=E1101
 import numpy as np
 import scipy.stats as ss
 

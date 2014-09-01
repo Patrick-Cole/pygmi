@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Model Extension Display Tab Routines """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui
 import numpy as np
 import scipy.interpolate as si
@@ -35,6 +34,7 @@ class MextDisplay(object):
     def __init__(self, parent):
         self.parent = parent
         self.lmod1 = parent.lmod1  # actual model
+        self.lmod2 = parent.lmod2
         self.showtext = parent.showtext
         self.pbars = self.parent.pbars
 

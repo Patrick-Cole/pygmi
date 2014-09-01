@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Normalisation function """
 
-# pylint: disable=E1101, C0103
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.stats as sstat
@@ -82,10 +81,8 @@ class Normalisation(QtGui.QDialog):
             "Median: zero,  Median absolute deviation: unity")
         self.radiobutton_8bit.setText("8-bit histogram equalisation [0 255]")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def settings(self):
         """ Settings """

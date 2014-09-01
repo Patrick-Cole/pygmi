@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Parameter Display Tab Routines """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui
 import numpy as np
 from . import grvmag3d

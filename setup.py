@@ -26,22 +26,22 @@
 
 from distutils.core import setup
 
-pver = '2.2.1'
+PVER = '2.2.1'
 
 setup(name='pygmi',
-      version=pver,
+      version=PVER,
       description='Python Geophysical Modelling and Interpretation',
       author='Patrick Cole',
       author_email='pcole@geoscience.org.za',
       url='https://github.com/Patrick-Cole/pygmi',
-      download_url='https://github.com/Patrick-Cole/pygmi/archive/v' + pver +
-          '.tar.gz',
+      download_url='https://github.com/Patrick-Cole/pygmi/archive/v' + PVER +
+      '.tar.gz',
       license='GNU General Public License v3 (GPLv3)',
       platforms=['Windows', 'Linux'],
       long_description=open('README.md').read(),
       packages=['pygmi', 'pygmi.raster', 'pygmi.clust', 'pygmi.pfmod',
                 'pygmi.test', 'pygmi.vector'],
-      package_data={'pygmi': ['pfmod/*.pyd', 'pfmod/*.pyx',
+      package_data={'pygmi': ['pfmod/*.pyd', 'pfmod/*.pyx', 'raster/*.cof',
                               'images/*.png', 'images/*.emf', 'images/*.ico']},
       requires={"numpy": [">=1.8.1"],
                 "scipy": [">=0.13.3"],
@@ -68,5 +68,4 @@ setup(name='pygmi',
           'Topic :: Scientific/Engineering :: Physics',
           'Topic :: Scientific/Engineering :: Visualization',
           'Topic :: Software Development :: Libraries :: Python Modules',
-      ],
-      )
+          ])

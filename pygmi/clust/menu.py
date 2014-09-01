@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Clustering Menu Routines """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui
 from . import crisp_clust
 from . import fuzzy_clust

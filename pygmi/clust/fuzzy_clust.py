@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Fuzzy clustering """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import copy
@@ -155,10 +154,8 @@ class FuzzyClust(QtGui.QDialog):
         self.radiobutton_manual.setText("Manual")
         self.radiobutton_datadriven.setText("Data Driven")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def combo(self):
         """ Combo box """
@@ -172,7 +169,8 @@ class FuzzyClust(QtGui.QDialog):
 
     def settings(self):
         """ Settings """
-        tst = np.unique([i.data.shape for i in self.indata['Raster']]).shape[0]
+        tst = np.unique([i.data.shape for i in self.indata['Raster']])
+        tst = np.array(tst).shape[0]
         if tst > 1:
             self.reportback('Error: Your input datasets have different ' +
                             'sizes. Merge the data first')
@@ -288,8 +286,7 @@ class FuzzyClust(QtGui.QDialog):
                     QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
             else:
                 ifile = str(filename)
-                dummy_mod = np.ma.array(np.genfromtxt(ifile,
-                                        unpack=True))
+                dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
                 [row, col] = np.shape(dummy_mod)
                 ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
                 if dat_in.shape[1] != col or row != ro1:
@@ -324,8 +321,8 @@ class FuzzyClust(QtGui.QDialog):
                 dat_in1 = dat_in
                 smtmp = np.zeros([i, dat_in.shape[1]])
                 for k in range(dat_in.shape[1]):
-# this is same as matlab sortrows
-#                    dat_in1[dat_in1[:, k].argsort()]
+                    # this is same as matlab sortrows
+                    # dat_in1[dat_in1[:, k].argsort()]
                     for j in range(i):
                         smtmp[j, k] = np.median(dat_in1[idx[j]:idx[j + 1], k])
                 startmdat = {i: smtmp}
@@ -385,7 +382,7 @@ class FuzzyClust(QtGui.QDialog):
             alpha.mask = data[0].data.mask
 
             cent_std = np.array([np.std(dat_in[clidx == k], 0)
-                                for k in range(i)])
+                                 for k in range(i)])
 
             den_cent = clcent
             den_cent_std = np.array(cent_std, copy=True)
@@ -413,7 +410,7 @@ class FuzzyClust(QtGui.QDialog):
                                      data[k].norm[j - 1]['transform'][0, 1]) +
                                     data[k].norm[j - 1]['transform'][0, 1])
                             elif (data[k].norm[j - 1]['type'] == 'meanstd' or
-                                    data[k].norm[j - 1]['type'] == 'medmad'):
+                                  data[k].norm[j - 1]['type'] == 'medmad'):
                                 den_cent[:, k] = (
                                     den_cent[:, k] *
                                     data[k].norm[j - 1]['transform'][1, 1] +
@@ -602,7 +599,7 @@ class FuzzyClust(QtGui.QDialog):
             m_f = uuu ** expo
     # new inital center matrix based on the given membership
             cent = m_f * data / ((np.ones([np.size(data, 2), 1]) *
-                                 (m_f.T).sum()).T)
+                                  (m_f.T).sum()).T)
     # calc distances of each data point to each cluster centre assuming
     # spherical clusters
             edist = self.fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
@@ -621,14 +618,14 @@ class FuzzyClust(QtGui.QDialog):
 #     ' ',num2unicode(info(3)),'] Run: ',num2unicode(info(4)),'/',
 #    num2unicode(info(5))])
         for i in range(maxit):  # loop over all iterations
-#            waitbar(i/maxit,hh)
+            # waitbar(i/maxit,hh)
             cent_prev = cent  # store result of last iteration
             uprev = uuu
             dist_prev = edist
             if i > 0:
-    # calc new centers
+                # calc new centers
                 cent = np.dot(m_f, data) / ((np.ones([data.shape[1], 1]) *
-                                            np.sum(m_f, 1)).T)
+                                             np.sum(m_f, 1)).T)
     # calc distances of each data point to each cluster centre
             edist = self.fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr)
             tmp = edist ** (-2 / (expo - 1))  # calc new uuu, suppose expo != 1
@@ -639,8 +636,8 @@ class FuzzyClust(QtGui.QDialog):
                 self.reportback('Iteration: ' + str(i) + ' Threshold: ' +
                                 str(term_thresh) + ' Current: ' +
                                 '{:.2e}'.format(100 * ((obj_fcn[i - 1] -
-                                                       obj_fcn[i])
-                                                / obj_fcn[i - 1])), True)
+                                                        obj_fcn[i]) /
+                                                       obj_fcn[i - 1])), True)
 
     #        if i > 0:
     # if objective function has increased
@@ -659,10 +656,10 @@ class FuzzyClust(QtGui.QDialog):
                     break  # terminate
     # if improvement less than given termination threshold
                 elif (obj_fcn[i-1]-obj_fcn[i])/obj_fcn[i-1] < term_thresh/100:
-    #             vrc=var_ratio(data, idx, cent, edist)
-    #             nce=(-1*(sum(sum(U.*log10(U)))/length(U(1,:))))/ \
-    #              log10(length(U(:,1)))
-    #             xbi = xie_beni(data, expo, uuu, cent, edist)
+                    # vrc=var_ratio(data, idx, cent, edist)
+                    # nce=(-1*(sum(sum(U.*log10(U)))/length(U(1,:))))/ \
+                    #   log10(length(U(:,1)))
+                    # xbi = xie_beni(data, expo, uuu, cent, edist)
                     break  # terminate
     #        obj_fcn_prev = obj_fcn[i]
 
@@ -685,15 +682,15 @@ class FuzzyClust(QtGui.QDialog):
         if cltype == 'FCM' or cltype == 'fcm':
             for j in range(cent.shape[0]):
                 ddd[j, :] = np.sqrt(np.sum(((data - np.ones([data.shape[0], 1])
-                                    * cent[j]) ** 2), 1))
+                                             * cent[j]) ** 2), 1))
 # determinant criterion see Spath, Helmuth,
 # "Cluster-Formation and Analyse",
 # chapter 3
         elif cltype == 'DET' or cltype == 'det':
             m_f = uuu ** expo
             for j in range(cent.shape[0]):
-# difference between each sample attribute to the corresponding attribute
-# of the j-th cluster
+                # difference between each sample attribute to the corresponding
+                # attribute of the j-th cluster
                 dcent = data - np.ones([data.shape[0], 1]) * cent[j]
                 aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
                              dcent / np.sum(m_f[j], 0))  # Covariance of the
@@ -716,8 +713,8 @@ class FuzzyClust(QtGui.QDialog):
     #  calc new distances using the same covariance matrix for all clusters -->
     # ellisoidal clusters, all clusters use equal ellipsoids
             for j in range(cent.shape[0]):
-#  difference between each sample attribute to the corresponding attribute
-# of the j-th cluster
+                #  difference between each sample attribute to the
+                # corresponding attribute of the j-th cluster
                 dcent = data - np.ones([data.shape[0], 1]) * cent[j]
                 dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
             ddd = np.sqrt(np.array(dtmp))
@@ -725,8 +722,8 @@ class FuzzyClust(QtGui.QDialog):
             m_f = uuu ** expo
             dtmp = []
             for j in range(cent.shape[0]):
-#  difference between each sample attribute to the corresponding attribute
-# of the j-th cluster
+                #  difference between each sample attribute to the
+                # corresponding attribute of the j-th cluster
                 dcent = data - np.ones([data.shape[0], 1]) * cent[j]
                 aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
                              dcent / np.sum(m_f[j], 0))  # Covariance of the
@@ -752,8 +749,8 @@ class FuzzyClust(QtGui.QDialog):
             m_f = uuu ** expo
             dtmp = []
             for j in range(cent.shape[0]):
-#  difference between each sample attribute to the corresponding attribute
-# of the j-th cluster
+                #  difference between each sample attribute to the
+                # corresponding attribute of the j-th cluster
                 dcent = data - np.ones([data.shape[0], 1]) * cent[j]
                 aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
                              dcent / np.sum(m_f[j], 0))  # Covariance of the
@@ -771,10 +768,10 @@ class FuzzyClust(QtGui.QDialog):
                     e_d[1e10 * e_d < edmax] = edmax / 1e10
                     aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
                                  np.linalg.inv(e_v))
-                dtmp.append(np.sum((np.linalg.det(aaa)) ** 0.5 /
-                            ppp * np.exp(np.dot(dcent,
-                                         np.linalg.pinv(aaa)) * dcent * 0.5),
-                            1).T)
+                dtmp.append(np.sum((np.linalg.det(aaa))**0.5 /
+                                   ppp*np.exp(np.dot(dcent,
+                                                     np.linalg.pinv(aaa)) *
+                                              dcent*0.5), 1).T)
             ddd = np.sqrt(np.array(dtmp))
         ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster
 #                                center
@@ -792,20 +789,20 @@ class FuzzyClust(QtGui.QDialog):
         if cltype == 'FCM' or cltype == 'fcm':
             for j in range(no_cent):
                 ddd[j, :] = np.sqrt(np.sum(((data - np.ones([no_samples, 1]) *
-                                    cent[j]) ** 2), 1))
+                                             cent[j])**2), 1))
             # determinant criterion see Spath, Helmuth,
             # "Cluster-Formation and Analyse", chapter 3
         elif cltype == 'DET' or cltype == 'det':
             m_f = uuu ** expo
             for j in range(no_cent):
-# difference between each sample attribute to the corresponding
-# attribute of the j-th cluster
+                # difference between each sample attribute to the corresponding
+                # attribute of the j-th cluster
                 dcent = data - np.ones([no_samples, 1]) * cent[j]
                 aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
                              dcent / np.sum(m_f[j], 0))  # Covar of the j-th
 #                                                          cluster
 
-            # constrain covariance matrix if badly conditioned
+                # constrain covariance matrix if badly conditioned
                 if np.linalg.cond(aaa) > 1e10:
                     e_d, e_v = np.linalg.eig(aaa)
                     edmax = np.max(e_d)
@@ -822,8 +819,8 @@ class FuzzyClust(QtGui.QDialog):
             # clusters --> ellisoidal clusters, all clusters use equal
             # ellipsoids
             for j in range(no_cent):
-            # difference between each sample attribute to the corresponding
-            # attribute of the j-th cluster
+                # difference between each sample attribute to the corresponding
+                # attribute of the j-th cluster
                 dcent = data - np.ones([no_samples, 1]) * cent[j]
                 dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
             ddd = np.sqrt(np.array(dtmp))
@@ -832,17 +829,17 @@ class FuzzyClust(QtGui.QDialog):
             m_f = uuu ** expo
             dtmp = []
             for j in range(no_cent):
-# difference between each sample attribute to the corresponding
-# attribute of the j-th cluster
+                # difference between each sample attribute to the corresponding
+                # attribute of the j-th cluster
                 dcent = data - np.ones([no_samples, 1]) * cent[j]
-            # Covariance of the j-th cluster
+                # Covariance of the j-th cluster
                 aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
                              dcent / np.sum(m_f[j], 0))
                 aaa0 = np.eye(no_datasets)
             # if cov_constr>0, this enforces not to elongated ellipsoids -->
-            # avoid the needle-like cluster
+                # avoid the needle-like cluster
                 aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
-            # constrain covariance matrix if badly conditioned
+                # constrain covariance matrix if badly conditioned
                 if np.linalg.cond(aaa) > 1e10:
                     e_d, e_v = np.linalg.eig(aaa)
                     edmax = np.max(e_d)
@@ -859,17 +856,17 @@ class FuzzyClust(QtGui.QDialog):
             m_f = uuu ** expo
             dtmp = []
             for j in range(no_cent):
-# difference between each sample attribute to the corresponding
-# attribute of the j-th cluster
+                # difference between each sample attribute to the corresponding
+                # attribute of the j-th cluster
                 dcent = data - cent[j]
-            # Covariance of the j-th cluster
+                # Covariance of the j-th cluster
                 aaa = np.dot(m_f[j] * dcent.T, dcent / np.sum(m_f[j], 0))
                 aaa0 = np.eye(no_datasets)
             # if cov_constr>0, this enforces not to elongated ellipsoids -->
-            # avoid the needle-like cluster
+                # avoid the needle-like cluster
                 aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
 
-            # constrain covariance matrix if badly conditioned
+                # constrain covariance matrix if badly conditioned
                 if np.linalg.cond(aaa) > 1e10:
                     e_d, e_v = np.linalg.eig(aaa)
                     edmax = np.max(e_d)

@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ This is the main Crisp Clustering set of routines """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import copy
@@ -146,10 +145,8 @@ class CrispClust(QtGui.QDialog):
         self.radiobutton_manual.setText("Manual")
         self.radiobutton_datadriven.setText("Data Driven")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def combo(self):
         """ Combo box """
@@ -163,7 +160,8 @@ class CrispClust(QtGui.QDialog):
 
     def settings(self):
         """ Settings """
-        tst = np.unique([i.data.shape for i in self.indata['Raster']]).shape[0]
+        tst = np.unique([i.data.shape for i in self.indata['Raster']])
+        tst = np.array(tst).shape[0]
         if tst > 1:
             self.reportback('Error: Your input datasets have different ' +
                             'sizes. Merge the data first')
@@ -359,7 +357,7 @@ class CrispClust(QtGui.QDialog):
             zonal[alpha == 1] = clidx
 
             cent_std = np.array([np.std(dat_in[clidx == k], 0)
-                                for k in range(i)])
+                                 for k in range(i)])
 
             den_cent = clcent
             den_cent_std = np.array(cent_std, copy=True)
@@ -386,7 +384,7 @@ class CrispClust(QtGui.QDialog):
                                      data[k].norm[j-1]['transform'][0, 1]) +
                                     data[k].norm[j-1]['transform'][0, 1])
                             elif (data[k].norm[j-1]['type'] == 'meanstd' or
-                                    data[k].norm[j-1]['type'] == 'medmad'):
+                                  data[k].norm[j-1]['type'] == 'medmad'):
                                 den_cent[:, k] = (
                                     den_cent[:, k] *
                                     data[k].norm[j-1]['transform'][1, 1] +
@@ -528,7 +526,7 @@ class CrispClust(QtGui.QDialog):
 # calculate euclidian distance for initial classification
         onetmp = np.ones([no_samples, 1], int)  # trying this for speed?
         edist = np.array([np.sqrt(np.sum(((data-onetmp*cent[j])**2), 1))
-                         for j in range(no_clust)])  # initial distance -->
+                          for j in range(no_clust)])  # initial distance -->
 #                                                      Euclidian
 
         mindist = edist.min(0)  # 0 means row wize minimum
@@ -547,7 +545,7 @@ class CrispClust(QtGui.QDialog):
             cent, idx = self.gcentroids(data, idx, no_clust, mindist)
     # constrain the cluster center positions to keep it in  the given interval
             if centfix.size > 0:
-# constrain the center positions within the given limits
+                # constrain the center positions within the given limits
                 cent_idx = cent > (cent_orig+centfix)
                 cent[cent_idx == 1] = (cent_orig(cent_idx == 1) +
                                        centfix(cent_idx == 1))
@@ -567,25 +565,25 @@ class CrispClust(QtGui.QDialog):
 
             self.reportback('Iteration: ' + str(i) + ' Threshold: ' +
                             str(term_thresh) + ' Current: ' +
-                            '{:.2e}'.format(100*(
-                                            (obj_fcn_prev-obj_fcn[i]) /
-                                            obj_fcn[i])), True)
+                            '{:.2e}'.format(100 *
+                                            ((obj_fcn_prev-obj_fcn[i]) /
+                                             obj_fcn[i])), True)
     # if no termination threshold provided, ignore this and do all iterations
             if term_thresh > 0:
-    # if the improvement between the last two iterations was less than a
-    # defined threshold in percent
+                # if the improvement between the last two iterations was less
+                # than a defined threshold in percent
                 if (100*((obj_fcn_prev-obj_fcn[i])/obj_fcn[i]) < term_thresh
                         or obj_fcn[i] > obj_fcn_prev):
-    # go back to the results of the previous iteration
+                    # go back to the results of the previous iteration
                     idx = idx_prev
                     cent = cent_prev
                     edist = dist_prev
                     if i == 0:
                         obj_fcn = obj_fcn_prev
                     else:
-    # changed from i-1 to i for w-means
+                        # changed from i-1 to i for w-means
                         obj_fcn = np.delete(obj_fcn, np.s_[i::])
-#                    vrc=vr.var_ratio(data, idx, cent, edist)
+                        # vrc=vr.var_ratio(data, idx, cent, edist)
                     break  # and stop the clustering right now
             obj_fcn_prev = obj_fcn[i]
         vrc = vr.var_ratio(data, idx, cent, edist)
@@ -601,25 +599,25 @@ class CrispClust(QtGui.QDialog):
         if cltype == 'k-means':
             onetmp = np.ones([no_samples, 1])  # trying this for speed?
             for j in range(no_clust):
-    # Euclidian
+                # Euclidian
                 bigd[j] = np.sqrt(np.sum(((data-onetmp*center[j])**2), 1))
-    # determinant criterion see Spath, Helmuth,
-    # "Cluster-Formation and Analyse", chapter 3
+                # determinant criterion see Spath, Helmuth,
+                # "Cluster-Formation and Analyse", chapter 3
         elif cltype == 'advanced k-means':
             for j in range(no_clust):
-    # difference between each sample attribute to the corresponding attribute
-    # of the j-th cluster
+                # difference between each sample attribute to the corresponding
+                # attribute of the j-th cluster
                 dcent = data-np.ones([no_samples, 1])*center[j]
-    # grab the data belonging to cluster j
+                # grab the data belonging to cluster j
                 mod_idx = (index == j)*1
-    # should I use different transpose?
-    # Streuungsmatrix/ covariance of the j-th cluster
+                # should I use different transpose?
+                # Streuungsmatrix/ covariance of the j-th cluster
                 mat_a = np.dot(np.ones([no_datasets, 1])*mod_idx*dcent.T,
                                dcent/np.sum(mod_idx))
-    # constrain covariance matrix if badly conditioned
+                # constrain covariance matrix if badly conditioned
                 if np.linalg.cond(mat_a) > 1e10:
-    #            warning([' Badly conditionend covariance matrix \
-    #                (cond. number > 1e10) of cluster ',num2unicode(j)]);
+                    # warning([' Badly conditionend covariance matrix \
+                    # (cond. number > 1e10) of cluster ',num2unicode(j)]);
                     ed1, ev1 = np.linalg.eig(mat_a)
                     edmax = np.max(ed1)
                     ed1[1e10*ed1 < edmax] = edmax/1e10
@@ -632,10 +630,10 @@ class CrispClust(QtGui.QDialog):
     # calc new distances using the same covariance matrix for all clusters -->
     # ellisoidal clusters, all clusters use equal ellipsoids
             for j in range(no_clust):
-    # difference between each sample attribute to the corresponding attribute
-    # of the j-th cluster
+                # difference between each sample attribute to the corresponding
+                # attribute of the j-th cluster
                 dcent = data-np.ones([no_samples, 1])*center[j]
-    # does this need to be in this loop?
+                # does this need to be in this loop?
                 mbig = (np.linalg.det(mat_a0)**(1.0/no_datasets) *
                         np.linalg.pinv(mat_a0))
                 ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
@@ -645,8 +643,8 @@ class CrispClust(QtGui.QDialog):
     # algorithm
         elif cltype == 'w-means':
             for j in range(no_clust):
-    # difference between each sample attribute to the corresponding attribute
-    # of the j-th cluster
+                # difference between each sample attribute to the corresponding
+                # attribute of the j-th cluster
                 dcent = data-np.ones([no_samples, 1])*center[j]
                 mod_idx = (index == j)*1  # grab data belonging to cluster j
 #    '*dcent/sum(mod_idx); % Streuungsmatrix/ covariance of the j-th cluster
@@ -659,8 +657,8 @@ class CrispClust(QtGui.QDialog):
     # constrain covariance matrix if badly conditioned and cluster contains
     # more than 1 sample
                 if np.linalg.cond(mat_a) > 1e10 and np.sum(mod_idx) > 1:
-    #            warning([' Badly conditionend covariance matrix '+
-    #                '(cond. number > 1e10) of cluster ',num2unicode(j)])
+                    # warning([' Badly conditionend covariance matrix '+
+                    #   '(cond. number > 1e10) of cluster ',num2unicode(j)])
                     ed1, ev1 = np.linalg.eig(mat_a)
                     edmax = np.max(ed1)
                     ed1[1e10*ed1 < edmax] = edmax/1e10
@@ -686,12 +684,12 @@ class CrispClust(QtGui.QDialog):
         no_datatypes = data.shape[1]
         centroids = np.tile(np.nan, (no_clust, no_datatypes))
         for j in range(no_clust):
-    # find all members of the j-th cluster
+            # find all members of the j-th cluster
             members = (index == j).nonzero()[0]
-    # if j is an empty cluster, put one sample into this cluster
+            # if j is an empty cluster, put one sample into this cluster
             if members.size == 0:
-    # take the sample that has the greatest distance to its current cluster and
-    # make this the center of the j-th cluster
+                # take the sample that has the greatest distance to its current
+                # cluster and make this the center of the j-th cluster
                 idx1 = mindist.argmax(0)
                 centroids[j] = data[idx1]
                 index[idx1] = j

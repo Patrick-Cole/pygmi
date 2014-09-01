@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-# pylint: disable=E1101, C0103
 from PyQt4 import QtGui
 from .datatypes import Data
 from ..clust.datatypes import Clust
@@ -274,13 +273,13 @@ class ExportData(object):
                     data[i].nullvalue = np.float64(np.float32(-1e+10))
                 elif data[i].data.max() < 1e+10:
                     data[i].nullvalue = np.float64(np.float32(1e+10))
-                
+
             elif dtype == np.float or dtype == np.float64:
                 data[i].nullvalue = np.float64(dtmp.fill_value)
 
             dtmp.set_fill_value(data[i].nullvalue)
             dtmp = dtmp.filled()
-            
+
             if drv != 'GTiff':
                 rtmp.SetNoDataValue(data[i].nullvalue)
             elif len(data) == 1:

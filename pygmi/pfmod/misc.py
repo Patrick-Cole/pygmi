@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ These are miscellaneous functions for the program """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui, QtCore
 
 
@@ -97,10 +96,8 @@ class RangedCopy(QtGui.QDialog):
         self.label_4.setText("Lithologies To Overwrite")
         self.label_5.setText("Range End")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
 
 def rcopy_dialog(lmod1, islayer=True, is_ew=True):

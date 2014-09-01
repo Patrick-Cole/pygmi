@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Profile Display Tab Routines """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.interpolate as si
@@ -612,10 +611,9 @@ class LithBound(QtGui.QDialog):
         self.label_3.setText("Lithologies Above Layer")
         self.label_4.setText("Lithologies Below Layer")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
 #        QtCore.QMetaObject.connectSlotsByName(Dialog)
 
 

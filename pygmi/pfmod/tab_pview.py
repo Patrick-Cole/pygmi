@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Profile Display Tab Routines """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.ndimage as ndimage
@@ -223,8 +222,8 @@ class ProfileDisplay(object):
         tmp = np.transpose([xxx, yyy]).astype(int)
         self.mmc.crd = tmp
 
-        x = xxx.astype(int)
-        y = yyy.astype(int)
+        x = np.array(xxx).astype(int)
+        y = np.array(yyy).astype(int)
 
         gtmp = []
         for i in range(self.lmod1.numz):
@@ -432,7 +431,7 @@ class ProfileDisplay(object):
             data2 = self.lmod1.griddata['Magnetic Dataset']
             regtmp = 0.0
         elif ('Gravity Dataset' in self.lmod1.griddata.keys() and
-                self.rb_gravity.isChecked()):
+              self.rb_gravity.isChecked()):
             data2 = self.lmod1.griddata['Gravity Dataset']
             regtmp = self.lmod1.gregional
 

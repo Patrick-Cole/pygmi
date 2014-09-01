@@ -1,7 +1,7 @@
 """
 Raster Routines
 """
-__all__ = ["dataprep", "datatypes"]
+__all__ = ["dataprep", "datatypes", "iodefs"]
 from . import datatypes
 from . import dataprep
 from . import iodefs

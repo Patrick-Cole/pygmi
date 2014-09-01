@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Class for raster data types and conversion routines"""
 
-# pylint: disable=E1101, C0103
 import numpy as np
 
 

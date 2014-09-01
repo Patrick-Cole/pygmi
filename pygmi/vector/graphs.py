@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Plot Vector Data """
 
-# pylint: disable=E1101
 import numpy as np
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt
@@ -118,20 +117,18 @@ class MyMplCanvas(FigureCanvas):
         """ Update the plot """
         self.figure.clear()
 
-        ax = self.figure.add_subplot(1, 1, 1)
-#        ax1.set_title(data1.dataid)
-        self.axes = ax
+        self.axes = self.figure.add_subplot(1, 1, 1)
 
         if data.dtype == 'Line' or data.dtype == 'Poly':
-            lc = mc.LineCollection(data.crds)
-            ax.add_collection(lc)
-            ax.autoscale()
-            ax.axis('equal')
+            lcol = mc.LineCollection(data.crds)
+            self.axes.add_collection(lcol)
+            self.axes.autoscale()
+            self.axes.axis('equal')
 
         elif data.dtype == 'Point':
             tmp = np.array(data.crds)
             tmp.shape = (tmp.shape[0], tmp.shape[-1])
-            ax.plot(tmp[:, 0], tmp[:, 1], 'go')
+            self.axes.plot(tmp[:, 0], tmp[:, 1], 'go')
 
         self.figure.canvas.draw()
 
@@ -188,8 +185,8 @@ class MyMplCanvas(FigureCanvas):
             ax1.bar(xtheta+np.pi, radii, width=bwidth, color=bcols2)
 
             bcols2 = bcols[(fangle/bwidth).astype(int)]
-            lc = mc.LineCollection(allcrds, color=bcols2)
-            ax2.add_collection(lc)
+            lcol = mc.LineCollection(allcrds, color=bcols2)
+            ax2.add_collection(lcol)
             ax2.autoscale(enable=True, tight=True)
 
         else:
@@ -202,8 +199,8 @@ class MyMplCanvas(FigureCanvas):
             ax1.bar(xtheta+np.pi, radii, width=bwidth, color=bcols2)
 
             bcols2 = bcols[(fcnt/bwidth).astype(int)]
-            lc = mc.LineCollection(allcrds, color=bcols2)
-            ax2.add_collection(lc)
+            lcol = mc.LineCollection(allcrds, color=bcols2)
+            ax2.add_collection(lcol)
             ax2.autoscale(enable=True, tight=True)
 
         self.figure.canvas.draw()
@@ -376,11 +373,11 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
 
     xrange = xmax-xmin
     xbin = xrange/bins
-    x2 = x/xbin
-    x2 = x2.astype(int)
+    x_2 = x/xbin
+    x_2 = x_2.astype(int)
 
     for i in range(bins):
-        radii[i] = y[x2 == i].sum()
+        radii[i] = y[x_2 == i].sum()
         theta[i] = i*xbin
 
     hist = radii

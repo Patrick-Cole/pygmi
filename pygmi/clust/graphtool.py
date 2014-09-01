@@ -24,8 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Graph tool is a multi-function graphing tool """
 
-# pylint: disable=E1101
-
 import numpy as np
 from PyQt4 import QtGui, QtCore
 from matplotlib.figure import Figure
@@ -619,7 +617,7 @@ class ScatterPlot(QtGui.QDialog):
         polymask = np.array(polymask)
         dattmp = self.hist.csp.get_array()
         atmp = np.array([self.hist.xcoord[polymask],
-                        self.hist.ycoord[polymask]]).T
+                         self.hist.ycoord[polymask]]).T
         dattmp.mask = np.ones_like(dattmp.mask)
         for i in atmp:
             dattmp.mask[i[1], i[0]] = False

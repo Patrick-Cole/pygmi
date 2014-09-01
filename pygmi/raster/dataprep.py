@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ This is the main Data Preparation set of routines """
 
-# pylint: disable=E1101, C0103
 from PyQt4 import QtGui, QtCore
 import os
 import numpy as np
@@ -211,12 +210,13 @@ class DataMerge(QtGui.QDialog):
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
         self.gridlayout_main.addWidget(self.buttonbox, 3, 0, 1, 4)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
+#                               self.reject)
+#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
+#                               self.accept)
 
-#        self.buttonbox.accepted.connect(self.acceptall)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
     def dxy_change(self):
@@ -522,10 +522,13 @@ class DataReproj(QtGui.QDialog):
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
         self.gridlayout_main.addWidget(self.buttonbox, 4, 0, 1, 4)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
+#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
+#                               self.reject)
+#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
+#                               self.accept)
 
         datums = ['WGS84', 'Cape (Clarke1880)']
         proj = ['Geodetic', 'UTM (South)', 'UTM (North)',
@@ -612,8 +615,8 @@ class DataReproj(QtGui.QDialog):
 
             if cols == 0 or rows == 0:
                 self.parent.showprocesslog("Your rows or cols are zero. " +
-                                           "Your input projection may be wrong"
-                                           )
+                                           "Your input projection may be " +
+                                           "wrong")
                 return
 
 # top left x, w-e pixel size, rotation, top left y, rotation, n-s pixel size
@@ -1259,10 +1262,13 @@ class Metadata(QtGui.QDialog):
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
         self.gridlayout_main.addWidget(self.buttonbox, 4, 0, 1, 4)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
+#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
+#                               self.reject)
+#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
+#                               self.accept)
 
         self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
@@ -1440,10 +1446,13 @@ class DataGrid(QtGui.QDialog):
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
         self.gridlayout_main.addWidget(self.buttonbox, 3, 0, 1, 4)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
+#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
+#                               self.reject)
+#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
+#                               self.accept)
 
 #        self.buttonbox.accepted.connect(self.acceptall)
         self.dsb_dxy.valueChanged.connect(self.dxy_change)

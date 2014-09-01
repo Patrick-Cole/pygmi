@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Raster Menu Routines """
 
-# pylint: disable=E1101, C0103
 from PyQt4 import QtGui
 from . import equation_editor
 from . import smooth

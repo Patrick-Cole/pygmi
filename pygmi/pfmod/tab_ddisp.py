@@ -24,10 +24,9 @@
 # -----------------------------------------------------------------------------
 """ Data Display Routines found on Data Display Tab"""
 
-# pylint: disable=E1101
 from PyQt4 import QtGui, QtCore
 import numpy as np
-from matplotlib.figure import Figure
+# from matplotlib.figure import Figure
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.colors as clrs
@@ -243,7 +242,7 @@ class DataDisplay(object):
 
 class MyMplCanvas(FigureCanvas):
     """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
-    def __init__(self, ncust = 1):
+    def __init__(self, ncust=1):
         # figure stuff
         # fig = Figure()
         fig = plt.figure()
@@ -283,7 +282,7 @@ class MyMplCanvas(FigureCanvas):
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
         self.prf = self.axes.plot([0, 1], [0, 1])
-        for i in range(ncust):
+        for _ in range(ncust):
             self.prf += self.axes.plot([0, 1], [0, 1])
 
         self.figure.canvas.draw()
@@ -295,7 +294,7 @@ class MyMplCanvas(FigureCanvas):
         diff = ncust-(len(self.prf)-1)
         if diff < 1:
             return
-        for i in range(diff):
+        for _ in range(diff):
             self.prf += self.axes.plot([0, 1], [0, 1])
 
     def init_grid1(self, dat1, reg=0, lbl=''):

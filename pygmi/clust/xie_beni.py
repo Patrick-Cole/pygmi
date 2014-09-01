@@ -23,7 +23,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """ Xie Beni """
-# pylint: disable=E1101
 
 import numpy as np
 
@@ -40,7 +39,7 @@ def xie_beni(data, expo, uuu, center, edist):
             # squared distance of all data values to the k-th cluster,
             # contains nan for missing values
             dummy = np.dot(((data - np.ones(np.size(data, 1), 1),
-                           center[k]) ** 2).T)
+                             center[k]) ** 2).T)
 # put in zero distances for all missing values, now all nans are replaced
 # by zeros
             dummy[np.isnan(dummy) == 1] = 0

@@ -46,7 +46,6 @@
 # -----------------------------------------------------------------------------
 """ Plot Raster Data """
 
-# pylint: disable=C0103, W0612, E1101
 import os
 import copy
 import numpy as np
@@ -267,10 +266,10 @@ class MyMplCanvas(FigureCanvas):
         self.image.set_data(dat)
         dat = norm2(self.image.smallres)
 
-        xdim = (x2-x1)/dat.shape[1]/2
-        ydim = (y2-y1)/dat.shape[0]/2
-        xi = np.linspace(x1+xdim, x2-xdim, dat.shape[1])
-        yi = np.linspace(y2-ydim, y1+ydim, dat.shape[0])
+        xdim = (x2-x1)/dat.data.shape[1]/2
+        ydim = (y2-y1)/dat.data.shape[0]/2
+        xi = np.linspace(x1+xdim, x2-xdim, dat.data.shape[1])
+        yi = np.linspace(y2-ydim, y1+ydim, dat.data.shape[0])
 
         self.cnt = self.axes.contour(xi, yi, dat, extent=(x1, x2, y1, y2),
                                      linewidths=0.5, colors='k')
@@ -632,11 +631,11 @@ class PlotInterp(QtGui.QDialog):
         hbl_all.addLayout(vbl_right)
 
         self.cbox_dtype.addItems(['Single Color Map', 'Contour', 'RGB Ternary',
-                                 'Sunshade'])
+                                  'Sunshade'])
         self.cbox_htype.addItems(['Linear', '95% Linear, 5% Compact',
-                                 'Histogram Equalization'])
-        self.cbox_hstype.addItems(['Linear', '95% Linear, 5% Compact',
                                   'Histogram Equalization'])
+        self.cbox_hstype.addItems(['Linear', '95% Linear, 5% Compact',
+                                   'Histogram Equalization'])
 
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
@@ -822,15 +821,16 @@ class PlotInterp(QtGui.QDialog):
         newimg[2].nullvalue = 0
         newimg[3].nullvalue = 0
 
-        newimg[0].cols = img.shape[1]
-        newimg[1].cols = img.shape[1]
-        newimg[2].cols = img.shape[1]
-        newimg[3].cols = img.shape[1]
+        imgshape0, imgshape1 = np.shape(img)
+        newimg[0].cols = imgshape1
+        newimg[1].cols = imgshape1
+        newimg[2].cols = imgshape1
+        newimg[3].cols = imgshape1
 
-        newimg[0].rows = img.shape[0]
-        newimg[1].rows = img.shape[0]
-        newimg[2].rows = img.shape[0]
-        newimg[3].rows = img.shape[0]
+        newimg[0].rows = imgshape0
+        newimg[1].rows = imgshape0
+        newimg[2].rows = imgshape0
+        newimg[3].rows = imgshape0
 
         export.ifile = str(filename)
         export.ext = filename[-3:]
@@ -1485,4 +1485,3 @@ def histcomp(img, nbr_bins=256):
 
 # use linear interpolation of cdf to find new pixel values
     return img2
-    

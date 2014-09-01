@@ -141,7 +141,7 @@ class DepthSusc(QtGui.QDialog):
 
 #        write(12,*) xmin,xmax,ymin,ymax,zmin,zmax
 
-            if (z <= zmin):
+            if z <= zmin:
                 zmin = z
                 if(z >= 0 and z_previous <= 0):
                     flag = 1

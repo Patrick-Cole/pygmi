@@ -33,7 +33,6 @@ References:
     1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
     """
 
-# pylint: disable=E1101, W0612, W0613
 from PyQt4 import QtGui, QtCore
 import scipy.interpolate as si
 import numpy as np
@@ -656,7 +655,7 @@ class GeoData(object):
         z1 = 0.0
         z2 = self.d_z
 
-        ncor = 8
+#        ncor = 8
         corner = np.array([[x1, y1, z1],
                            [x1, y2, z1],
                            [x2, y2, z1],
@@ -771,8 +770,8 @@ class GeoData(object):
                 Gx *= Gc
                 Gy *= Gc
                 Gz *= Gc
-                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
-                dt = Htot-self.hintn
+#                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
+#                dt = Htot-self.hintn
                 dta = Hx*cx + Hy*cy + Hz*cz
             else:
                 Gz = np.zeros(X.shape)
@@ -1078,14 +1077,17 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                  ' during this calculation)')
 
         QtGui.QApplication.processEvents()
+        iuni = np.array(np.unique(i)).tolist()
+        juni = np.array(np.unique(j)).tolist()
+        kuni = np.array(np.unique(k)).tolist()
         ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy,
                        modind=modind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
                        mlayers=mlayers, glayers=glayers,
                        hcorflat=hcorflat, mijk=mijk,
-                       jj=np.unique(j).tolist(), ii=np.unique(i).tolist())
+                       jj=juni, ii=iuni)
 
         pool = mp.Pool(processes=cpunum)
-        baba = np.array(pool.map(ptmp, np.unique(k).tolist()))
+        baba = np.array(pool.map(ptmp, kuni))
         pool.close()
         pool.join()
 
@@ -1100,15 +1102,18 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         if abs(np.sum(cmodind == -1)) < cmodind.size:
             QtGui.QApplication.processEvents()
             i, j, k = np.nonzero(np.logical_and(cmodind != mijk, cmodind > 0))
+            iuni = np.array(np.unique(i)).tolist()
+            juni = np.array(np.unique(j)).tolist()
+            kuni = np.array(np.unique(k)).tolist()
             ptmp = partial(grvmagc.calc_field2,
                            numx=numx, numy=numy,
                            modind=cmodind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
                            mlayers=mlayers, glayers=glayers,
                            hcorflat=hcorflat, mijk=mijk,
-                           jj=np.unique(j).tolist(), ii=np.unique(i).tolist())
+                           jj=juni, ii=iuni)
 
             pool = mp.Pool(processes=cpunum)
-            baba = np.array(pool.map(ptmp, np.unique(k).tolist()))
+            baba = np.array(pool.map(ptmp, kuni))
             pool.close()
             pool.join()
 

@@ -24,14 +24,6 @@
 # -----------------------------------------------------------------------------
 """ This is the main program for the modelling package """
 
-# pylint: disable=E1101, C0103
-# import sip
-# sip.setapi('QString', 2)
-
-# import matplotlib
-# matplotlib.use('Qt4Agg')
-# matplotlib.rcParams['backend.qt4'] = 'PyQt4'
-
 from PyQt4 import QtGui, QtCore
 import pygmi
 import pygmi.menu_default as menu_default
@@ -54,15 +46,15 @@ class Startup(QtGui.QDialog):
         self.label_info = QtGui.QLabel(self)
         self.label_pic = QtGui.QLabel(self)
         self.label_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
-                                 r'/images/logo256.ico'))
+                                               r'/images/logo256.ico'))
         self.label_info.setScaledContents(True)
         self.pbar = QtGui.QProgressBar(self)
 
-        labelText = "<font color='red'>Py</font><font color='blue'>GMI</font>"
+        labeltext = "<font color='red'>Py</font><font color='blue'>GMI</font>"
 
         fnt = QtGui.QFont("Arial", 72, QtGui.QFont.Bold)
         self.label_info.setFont(fnt)
-        self.label_info.setText(labelText)
+        self.label_info.setText(labeltext)
 #            'Python Geophysical Modelling and Interpretation\n' +
 #            '------------------------------------------------------------')
         self.gridlayout_main.addWidget(self.label_info)
@@ -910,16 +902,16 @@ class MainWidget(QtGui.QMainWindow):
 
 def main():
     """ Main program loop """
-    APP = QtGui.QApplication(sys.argv)
-    WID = MainWidget()
-    WID.show()
+    app = QtGui.QApplication(sys.argv)
+    wid = MainWidget()
+    wid.show()
 
-    WID.setWindowState(WID.windowState() & ~QtCore.Qt.WindowMinimized |
+    wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
                        QtCore.Qt.WindowActive)
 
     # this will activate the window
-    WID.activateWindow()
-    sys.exit(APP.exec_())
+    wid.activateWindow()
+    sys.exit(app.exec_())
 
 if __name__ == "__main__":
     main()

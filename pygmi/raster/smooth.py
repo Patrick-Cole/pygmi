@@ -24,8 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Smooth Data """
 
-# pylint: disable=E1101, C0103
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 import numpy as np
 import scipy.signal as ssig
 from scipy.stats import mode
@@ -155,10 +154,8 @@ class Smooth(QtGui.QDialog):
         self.radiobutton_disk.setText("Disk Window")
         self.radiobutton_gaussian.setText("Gaussian Window")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def settings(self):
         """ Settings """
@@ -319,7 +316,7 @@ class Smooth(QtGui.QDialog):
                                            str(round(100*i/rowd))+'%', True)
 #                self.progressbar.setValue(100*i/rowd)
                 out.append([dummy[i:i+rowf, j:j+colf]
-                           for j in range(cold)])
+                            for j in range(cold)])
             fmatflat = fmat.flatten()
             out = np.array(out)
             out.shape = (rowd, cold, rowf*colf)

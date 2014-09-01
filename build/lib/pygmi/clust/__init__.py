@@ -1,3 +1,0 @@
-"""
-Cluster analysis routines
-"""

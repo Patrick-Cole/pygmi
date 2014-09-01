@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ This is the main program for the modelling package """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui, QtCore
 
 # Other dependancies

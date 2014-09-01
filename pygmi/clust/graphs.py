@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Plot Cluster Data """
 
-# pylint: disable=E1101
 import numpy as np
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt

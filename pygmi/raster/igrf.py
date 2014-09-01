@@ -127,7 +127,6 @@ translated into Python from the Geomag code.
 #   yrmin      Double array of MAXMOD  Min year of model.
 #
 # *************************************************************************
-# pylint: disable=E1101, C0103
 
 from PyQt4 import QtGui, QtCore
 import numpy as np
@@ -317,10 +316,8 @@ class IGRF(QtGui.QDialog):
         label_22.setText("Digital Elevation Model")
         label_23.setText("Magnetic Data")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejecteded.connect(self.reject)
 
     def acceptall(self):
         """ accept button"""

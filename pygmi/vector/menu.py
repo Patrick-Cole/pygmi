@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Vector Menu Routines """
 
-# pylint: disable=E1101
 from PyQt4 import QtGui
 from . import iodefs
 from . import graphs

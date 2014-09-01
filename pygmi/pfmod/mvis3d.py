@@ -24,14 +24,12 @@
 # -----------------------------------------------------------------------------
 """ This is code for the 3d model creation. """
 
-# pylint: disable=E1101, C0103
 import numpy as np
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 from OpenGL import GLU
 from . import misc
 import os
-# import pygmi.ptimer
 
 
 class Mod3dDisplay(QtGui.QDialog):
@@ -344,7 +342,7 @@ class Mod3dDisplay(QtGui.QDialog):
             liths = liths[1:]
 
         if self.pbars is not None:
-#            self.pbars.resetsub(maximum=liths.size)
+            # self.pbars.resetsub(maximum=liths.size)
             self.pbars.resetall(maximum=liths.size, mmax=2)
 
 #        for lno in liths:
@@ -464,7 +462,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
-        liths = liths[liths<900]
+        liths = liths[liths < 900]
 
         if liths.max() == -1:
             return
