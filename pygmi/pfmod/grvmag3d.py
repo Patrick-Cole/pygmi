@@ -44,18 +44,28 @@ from scipy.linalg import norm
 from .datatypes import LithModel
 from functools import partial
 import multiprocessing as mp
+from ..ptimer import PTime
 
 if sys.platform.startswith('win'):
     if sys.maxsize > 2**32:
-        if sys.version_info.major == 2:
+        if sys.version_info.major == 2 and sys.version_info.minor == 7:
             from . import grvmagc_27_x64 as grvmagc
-        else:
+        elif sys.version_info.major == 3 and sys.version_info.minor == 3:
             from . import grvmagc_33_x64 as grvmagc
-    else:
-        if sys.version_info.major == 2:
-            from . import grvmagc_27_x86 as grvmagc
+        elif sys.version_info.major == 3 and sys.version_info.minor == 4:
+            from . import grvmagc_34_x64 as grvmagc
         else:
+            print('Your version of Python is not supported')
+    else:
+        if sys.version_info.major == 2 and sys.version_info.minor == 7:
+            from . import grvmagc_27_x86 as grvmagc
+        elif sys.version_info.major == 3 and sys.version_info.minor == 3:
             from . import grvmagc_33_x86 as grvmagc
+        elif sys.version_info.major == 3 and sys.version_info.minor == 4:
+            from . import grvmagc_34_x86 as grvmagc
+        else:
+            print('Your version of Python is not supported')
+
 
 else:
     import pyximport
@@ -1056,6 +1066,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     if cpunum > 1:
         cpunum -= 1
 
+    ttt = PTime()
+
     for mlist in lmod.lith_list.items():
         if 'Background' == mlist[0]:
             continue
@@ -1136,6 +1148,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     # numx min max: cython time(s): 35.29413359259356 since last call
     # all min max cython time(s): 35.38449740644957 since last call
 
+    ttt.since_first_call()
     magval.resize(mtmp)
     grvval.resize(mtmp)
     magval = magval.T

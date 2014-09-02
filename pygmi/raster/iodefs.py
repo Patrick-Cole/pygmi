@@ -32,6 +32,7 @@ from osgeo import gdal, osr
 import struct
 from .dataprep import merge
 import os
+# from ..ptimer import PTime
 
 
 class ImportData(object):
@@ -53,7 +54,7 @@ class ImportData(object):
             "GeoTiff (*.tif);;" + \
             "Geosoft (*.gxf);;" + \
             "Surfer grid (v.6) (*.grd);;" + \
-            "ASCII with header (*.asc);;" + \
+            "ASCII with .hdr header (*.asc);;" + \
             "ASCII XYZ (*.xyz);;" + \
             "ArcGIS BIL (*.bil)"
 
@@ -65,7 +66,10 @@ class ImportData(object):
         self.ifile = str(filename)
         self.ext = filename[-3:]
 
-        dat = get_raster(self.ifile)
+        if self.ext == 'asc':
+            dat = get_ascii(self.ifile)
+        else:
+            dat = get_raster(self.ifile)
 
         output_type = 'Raster'
         if 'Cluster' in dat[0].bandid:
@@ -74,6 +78,55 @@ class ImportData(object):
         self.outdata[output_type] = dat
         return True
 
+def get_ascii(ifile):
+    """ Import ascii """
+
+    afile = open(ifile, 'r')
+    adata = afile.read()
+
+    adata = adata.split()
+    adata = np.array(adata, dtype=float)
+
+    hfile = open(ifile[:-3]+'hdr', 'r')
+    tmp = hfile.readlines()
+
+    xdim = float(tmp[0].split()[-1])
+    ydim = float(tmp[1].split()[-1])
+    ncols = int(tmp[2].split()[-1])
+    nrows = int(tmp[3].split()[-1])
+    nbands = int(tmp[4].split()[-1])
+    ulxmap = float(tmp[5].split()[-1])
+    ulymap = float(tmp[6].split()[-1])
+    bandid = ifile[:-4].rsplit('/')[-1]
+
+    adata.shape = (nrows, ncols)
+
+    if nbands > 1:
+        print('PyGMI only supports single band ASCII files')
+
+    dat = [Data()]
+    i = 0
+
+    dat[i].data = adata
+
+    nval = -9999.0
+
+    dat[i].data = np.ma.masked_equal(dat[i].data, nval)
+    if dat[i].data.mask.size == 1:
+        dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
+                            dat[i].data.mask)
+
+    dat[i].nrofbands = nbands
+    dat[i].tlx = ulxmap
+    dat[i].tly = ulymap
+    dat[i].bandid = bandid
+    dat[i].nullvalue = nval
+    dat[i].rows = nrows
+    dat[i].cols = ncols
+    dat[i].xdim = xdim
+    dat[i].ydim = ydim
+
+    return dat
 
 def get_raster(ifile):
     """ This function loads a raster dataset off the disk using the GDAL
@@ -183,7 +236,7 @@ class ExportData(object):
             "GeoTiff (*.tif);;" + \
             "Geosoft (*.gxf);;" + \
             "Surfer grid (v.6) (*.grd);;" + \
-            "ASCII with header (*.asc);;" + \
+            "ArcInfo ASCII (*.asc);;" + \
             "ASCII XYZ (*.xyz);;" + \
             "ArcGIS BIL (*.bil)"
 
