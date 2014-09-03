@@ -48,24 +48,15 @@ from ..ptimer import PTime
 
 if sys.platform.startswith('win'):
     if sys.maxsize > 2**32:
-        if sys.version_info.major == 2 and sys.version_info.minor == 7:
-            from . import grvmagc_27_x64 as grvmagc
-        elif sys.version_info.major == 3 and sys.version_info.minor == 3:
-            from . import grvmagc_33_x64 as grvmagc
-        elif sys.version_info.major == 3 and sys.version_info.minor == 4:
+        if sys.version_info.major == 3 and sys.version_info.minor == 4:
             from . import grvmagc_34_x64 as grvmagc
         else:
             print('Your version of Python is not supported')
     else:
-        if sys.version_info.major == 2 and sys.version_info.minor == 7:
-            from . import grvmagc_27_x86 as grvmagc
-        elif sys.version_info.major == 3 and sys.version_info.minor == 3:
-            from . import grvmagc_33_x86 as grvmagc
-        elif sys.version_info.major == 3 and sys.version_info.minor == 4:
+        if sys.version_info.major == 3 and sys.version_info.minor == 4:
             from . import grvmagc_34_x86 as grvmagc
         else:
             print('Your version of Python is not supported')
-
 
 else:
     import pyximport
@@ -1223,11 +1214,12 @@ def sum_field(numx, numy, numz, modind, hcor, mlayers, glayers, mijk):
     return (magval, grvval)
 
 
-def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
-                d_z=100, tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67,
-                fdec=-17, susc=[0.01], dens=[3.0], minc=[-67], mdec=[-17],
-                mstrength=[0.]):
+def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
+                tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67, fdec=-17,
+                inputliths=['Generic'], susc=[0.01], dens=[3.0],
+                minc=None, mdec=None, mstrength=None):
     """ Create a quick model """
+
     lmod = LithModel()
     lmod.update(numx, numy, numz, tlx, tly, tlz, dxy, d_z, mht, ght)
 
@@ -1237,6 +1229,8 @@ def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
     lmod.lith_list['Background'].density = 2.67
     lmod.lith_list['Background'].finc = finc
     lmod.lith_list['Background'].fdec = fdec
+    lmod.lith_list['Background'].minc = finc
+    lmod.lith_list['Background'].mdec = fdec
 
     j = 0
     for i in inputliths:
@@ -1248,8 +1242,9 @@ def quick_model(inputliths=['Generic'], numx=50, numy=50, numz=50, dxy=1000,
         lmod.lith_list[i].lith_index = j
         lmod.lith_list[i].finc = finc
         lmod.lith_list[i].fdec = fdec
-        lmod.lith_list[i].minc = minc[j-1]
-        lmod.lith_list[i].mdec = mdec[j-1]
-        lmod.lith_list[i].mstrength = mstrength[j-1]
+        if mstrength is not None:
+            lmod.lith_list[i].minc = minc[j-1]
+            lmod.lith_list[i].mdec = mdec[j-1]
+            lmod.lith_list[i].mstrength = mstrength[j-1]
 
     return lmod

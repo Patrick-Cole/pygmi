@@ -296,23 +296,17 @@ class MextDisplay(object):
 
     def apply_regional(self):
         """ Applies the regional model to the current model """
+        self.lmod1.lith_index[self.lmod1.lith_index > 899] = 0
+
         ctxt = str(self.combo_regional.currentText())
         if ctxt == 'None':
-            self.lmod1.lith_index[self.lmod1.lith_index < -1] = 0
             return
 
         self.pbars.resetall(self.lmod1.numx)
         for i in range(self.lmod1.numx):
             self.pbars.incr()
             for j in range(self.lmod1.numy):
-                belowground = False
                 for k in range(self.lmod1.numz):
-                    if self.lmod1.lith_index[i, j, k] < 0 and belowground:
-                        self.lmod1.lith_index[i, j, k] = 0
-                    elif self.lmod1.lith_index[i, j, k] < 0:
-                        continue
-                    else:
-                        belowground = True
                     x = self.lmod1.xrange[0]+(i+0.5)*self.lmod1.dxy
                     y = self.lmod1.yrange[0]+(j+0.5)*self.lmod1.dxy
                     z = self.lmod1.zrange[-1]-(k+0.5)*self.lmod1.d_z
