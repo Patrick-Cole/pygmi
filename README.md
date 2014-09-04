@@ -1,7 +1,5 @@
-##Notice at 24 July 2014
-Since bringing PyGMI across to GitHub, which more importantly coincided with me changing some of the file structure so that I can start exposing some of the code for people to use as a library, PyGMI is being a bit petulant and I am finding new bugs on a daily basis. I ask for your understanding while I sort out these teething problems. Hopefully I can catch them all in the next week or so.
-
-I have also moved back to PyQt4 from PySide. I was experiencing a few glitches and I am hoping this will help.
+##Notice at 4 September 2014
+Note that I have started to use Python 3.4.1. This affects especially windows users, who must now adopt that version of python. Other operating systems should still be fine with whatever they are using, but if you do have problems, you can check the requirements below.
 
 #PyGMI Readme
 
@@ -16,8 +14,7 @@ It is released under the Gnu General Public License version 3.0
 For license information see the file LICENSE.txt
 
 ##Requirements
-PyGMI will run on both Windows and Linux, as well as Python 2.7 and Python 3.3. 
-It should be noted that the main development is done in Python 3.3 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.4 on Windows.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
