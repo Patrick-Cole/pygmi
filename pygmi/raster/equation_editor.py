@@ -357,10 +357,15 @@ class EquationEditor(QtGui.QDialog):
         self.combobox.addItem('all data')
         self.bandsall = []
 
-        if 'Raster' not in self.indata:
+        if 'Cluster' in self.indata:
+            intype = 'Cluster'
+        elif 'Raster' in self.indata:
+            intype = 'Raster'
+        else:
+            self.parent.showprocesslog('No raster data')
             return
 
-        indata = dataprep.merge(self.indata['Raster'])
+        indata = dataprep.merge(self.indata[intype])
 
         for i in indata:
             self.bands[i.bandid] = i.data
@@ -398,7 +403,7 @@ class EquationEditor(QtGui.QDialog):
                 outdata.append(copy.copy(indata[i]))
                 outdata[-1].data = findat[i]
 
-        self.outdata['Raster'] = outdata
+        self.outdata[intype] = outdata
 
         return True
 

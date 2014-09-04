@@ -78,6 +78,7 @@ class ImportData(object):
         self.outdata[output_type] = dat
         return True
 
+
 def get_ascii(ifile):
     """ Import ascii """
 
@@ -127,6 +128,7 @@ def get_ascii(ifile):
     dat[i].ydim = ydim
 
     return dat
+
 
 def get_raster(ifile):
     """ This function loads a raster dataset off the disk using the GDAL
