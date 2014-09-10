@@ -821,7 +821,9 @@ class PlotInterp(QtGui.QDialog):
         newimg[2].nullvalue = 0
         newimg[3].nullvalue = 0
 
-        imgshape0, imgshape1 = np.shape(img)
+        imgshape0 = img.shape[0]
+        imgshape1 = img.shape[1]
+
         newimg[0].cols = imgshape1
         newimg[1].cols = imgshape1
         newimg[2].cols = imgshape1

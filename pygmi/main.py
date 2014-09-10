@@ -36,7 +36,7 @@ import os
 
 
 class Startup(QtGui.QDialog):
-    """ Gradients """
+    """ Class to provide a startup display while PyGMI loads into memory """
     def __init__(self, pbarmax, parent=None):
         QtGui.QDialog.__init__(self, parent)
 #        self.setWindowFlags(QtCore.Qt.SplashScreen)
@@ -901,7 +901,7 @@ class MainWidget(QtGui.QMainWindow):
 
 
 def main():
-    """ Main program loop """
+    """ Main program loop for the PyGMI software. """
     app = QtGui.QApplication(sys.argv)
     wid = MainWidget()
     wid.show()

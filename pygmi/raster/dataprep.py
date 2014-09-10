@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the main Data Preparation set of routines """
+""" This is the main raster Data Preparation set of routines """
 
 from PyQt4 import QtGui, QtCore
 import os
@@ -115,11 +115,15 @@ def merge(dat):
     The aim is to ensure that all datasets have the same number of rows and
     columns.
 
-    Args:
-        dat (Data): data object which stores datasets
+    Parameters
+    ----------
+    dat : Data
+        data object which stores datasets
 
-    Returns:
-        Data: data object which stores datasets
+    Returns
+    -------
+    Data
+        data object which stores datasets
     """
     needsmerge = False
     for i in dat:
@@ -149,11 +153,15 @@ def cluster_to_raster(indata):
     analysis routines, since they are designated 'Cluster' and not 'Raster'.
     This provides a work-around for that.
 
-    Args:
-        indata (Data): PyGMI raster dataset
+    Parameters
+    ----------
+    indata : Data
+        PyGMI raster dataset
 
-    Return:
-        Data: PyGMI raster dataset
+    Returns
+    -------
+    Data
+        PyGMI raster dataset
 
     """
     if 'Cluster' not in indata:
@@ -946,12 +954,17 @@ def cut_raster(data, ifile):
 
     Cut a raster dataset using a shapefile
 
-    Parameters:
-        data (Data): PyGMI Dataset
-        ifile (str): shapefile used to cut data
+    Parameters
+    ----------
+    data : Data
+        PyGMI Dataset
+    ifile : str
+        shapefile used to cut data
 
-    Return:
-        Data: PyGMI Dataset
+    Returns
+    -------
+    Data
+        PyGMI Dataset
     """
     shapef = ogr.Open(ifile)
     lyr = shapef.GetLayer()
@@ -1014,10 +1027,15 @@ def trim_raster(olddata):
     This function trims entire rows or columns of data which have only nulls,
     and are on the edges of the dataset.
 
-    Args:
-        olddata (Data): PyGMI dataset
-    Return:
-        Data: PyGMI dataset
+    Parameters
+    ----------
+    olddata : Data
+        PyGMI dataset
+
+    Returns
+    -------
+    Data
+        PyGMI dataset
     """
 
     for data in olddata:
