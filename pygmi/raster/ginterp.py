@@ -160,6 +160,9 @@ class MyMplCanvas(FigureCanvas):
         self.n = 2.
         self.alpha = .0
 
+# cmyk stuff
+        self.kval = 0.01
+
     def dat_extent(self, dat):
         """ Gets the extend of the dat variable """
         left = dat.tlx
@@ -224,7 +227,7 @@ class MyMplCanvas(FigureCanvas):
                 self.argb[0].draw_artist(self.hhist[0][2][bnum])
                 self.figure.canvas.update()
 
-            if self.gmode == 'RGB Ternary':
+            if 'Ternary' in self.gmode:
                 bnum = self.update_hist_rgb(zval)
                 self.figure.canvas.restore_region(self.bbox_hist_red)
                 self.figure.canvas.restore_region(self.bbox_hist_green)
@@ -290,6 +293,7 @@ class MyMplCanvas(FigureCanvas):
         self.image.cell = self.cell
         self.image.theta = self.theta
         self.image.phi = self.phi
+        self.image.kval = self.kval
 
         for i in range(3):
             self.argb[i].clear()
@@ -300,7 +304,7 @@ class MyMplCanvas(FigureCanvas):
         if self.gmode == 'Contour':
             self.update_contour()
 
-        if self.gmode == 'RGB Ternary':
+        if 'Ternary' in self.gmode:
             self.update_rgb()
 
         if self.gmode == 'Sunshade':
@@ -383,7 +387,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_rgb(self):
         """ Updates the RGB Ternary Map """
-        self.image.dtype = 'RGB Ternary'
+        self.image.dtype = self.gmode
         dat = [None, None, None]
         for i in self.data:
             for j in range(3):
@@ -536,12 +540,14 @@ class PlotInterp(QtGui.QDialog):
         self.cbox_htype = QtGui.QComboBox(self)
         self.cbox_hstype = QtGui.QComboBox(self)
         self.cbox_cbar = QtGui.QComboBox(self)
+        self.kslider = QtGui.QSlider(QtCore.Qt.Horizontal, self)  # cmyK
         self.sslider = QtGui.QSlider(QtCore.Qt.Horizontal, self)  # sunshade
         self.aslider = QtGui.QSlider(QtCore.Qt.Horizontal, self)
         self.slabel = QtGui.QLabel(self)
         self.labels = QtGui.QLabel(self)
         self.labela = QtGui.QLabel(self)
         self.labelc = QtGui.QLabel(self)
+        self.labelk = QtGui.QLabel(self)
 
         self.setupui()
 
@@ -560,9 +566,11 @@ class PlotInterp(QtGui.QDialog):
         self.cbox_band3.hide()
         self.sslider.hide()
         self.aslider.hide()
+        self.kslider.hide()
         self.msc.hide()
         self.labela.hide()
         self.labels.hide()
+        self.labelk.hide()
 
     def setupui(self):
         """ Setup UI """
@@ -602,6 +610,8 @@ class PlotInterp(QtGui.QDialog):
         vbl_raster.addWidget(self.labelc)
         vbl_raster.addWidget(self.cbox_cbar)
 
+        self.labelk.setText('K value:')
+
         self.labels.setText('Sunshade Detail')
         self.labela.setText('Light Reflectance')
         vbl_raster.addWidget(self.msc)
@@ -609,6 +619,8 @@ class PlotInterp(QtGui.QDialog):
         vbl_raster.addWidget(self.sslider)
         vbl_raster.addWidget(self.labela)
         vbl_raster.addWidget(self.aslider)
+        vbl_raster.addWidget(self.labelk)
+        vbl_raster.addWidget(self.kslider)
 
         spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
                                    QtGui.QSizePolicy.Expanding)
@@ -631,7 +643,7 @@ class PlotInterp(QtGui.QDialog):
         hbl_all.addLayout(vbl_right)
 
         self.cbox_dtype.addItems(['Single Color Map', 'Contour', 'RGB Ternary',
-                                  'Sunshade'])
+                                  'CMY Ternary', 'Sunshade'])
         self.cbox_htype.addItems(['Linear', '95% Linear, 5% Compact',
                                   'Histogram Equalization'])
         self.cbox_hstype.addItems(['Linear', '95% Linear, 5% Compact',
@@ -645,6 +657,10 @@ class PlotInterp(QtGui.QDialog):
         self.aslider.setSingleStep(1)
         self.aslider.setValue(75)
 
+        self.kslider.setMinimum(1)
+        self.kslider.setMaximum(100)
+        self.kslider.setValue(1)
+
         tmp = sorted(cm.datad.keys())
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
@@ -656,6 +672,7 @@ class PlotInterp(QtGui.QDialog):
 
         self.sslider.sliderReleased.connect(self.change_dtype)
         self.aslider.sliderReleased.connect(self.change_dtype)
+        self.kslider.sliderReleased.connect(self.change_dtype)
         self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
         self.btn_saveimg.clicked.connect(self.save_img)
 
@@ -694,7 +711,14 @@ class PlotInterp(QtGui.QDialog):
         theta = self.mmc.theta
 
         if dtype == 'Single Color Map':
-            pseudo = self.mmc.image._full_res
+            pseudo = self.mmc.image._full_res.copy()
+            psmall = self.mmc.image.smallres
+            pmask = pseudo.mask.copy()
+
+            pseudo[pseudo < psmall.min()] = psmall.min()
+            pseudo[pseudo > psmall.max()] = psmall.max()
+            pseudo.mask = pmask
+
 #            mask = np.logical_not(pseudo.mask)
 #            pseudo += pseudo.min()
 
@@ -705,7 +729,7 @@ class PlotInterp(QtGui.QDialog):
                 pseudo = histeq(pseudo)
 
             # The function below normalizes as well.
-            img = img2rgb(pseudo, self.mmc.cbar, self.mmc.image.smallres)
+            img = img2rgb(pseudo, self.mmc.cbar)
 
             pseudo = None
 
@@ -729,8 +753,7 @@ class PlotInterp(QtGui.QDialog):
             snorm = norm2(sunshader)
 #            pnorm = norm2(pseudo)
 
-            img = img2rgb(pseudo, self.mmc.cbar,
-                          self.mmc.image.smallres[:, :, 0])
+            img = img2rgb(pseudo, self.mmc.cbar)
             pseudo = None
             sunshader = None
 
@@ -742,7 +765,7 @@ class PlotInterp(QtGui.QDialog):
 #            mask = np.logical_not(mask)
 #            img[:, :, 3] = mask
 
-        elif dtype == 'RGB Ternary':
+        elif 'Ternary' in dtype:
             red = self.mmc.image._full_res[0]
             green = self.mmc.image._full_res[1]
             blue = self.mmc.image._full_res[2]
@@ -761,10 +784,16 @@ class PlotInterp(QtGui.QDialog):
                 blue = histeq(blue)
 
             colormap = np.ones((red.shape[0], red.shape[1], 4), dtype=np.uint8)
-            colormap[:, :, 0] = norm255(red)
-            colormap[:, :, 1] = norm255(green)
-            colormap[:, :, 2] = norm255(blue)
             colormap[:, :, 3] = mask*254+1
+
+            if 'CMY' in dtype:
+                colormap[:, :, 0] = (1-norm2(red))*254+1
+                colormap[:, :, 1] = (1-norm2(green))*254+1
+                colormap[:, :, 2] = (1-norm2(blue))*254+1
+            else:
+                colormap[:, :, 0] = norm255(red)
+                colormap[:, :, 1] = norm255(green)
+                colormap[:, :, 2] = norm255(blue)
 
             img = colormap
 
@@ -894,6 +923,7 @@ class PlotInterp(QtGui.QDialog):
         if txt == 'Single Color Map':
             self.slabel.hide()
             self.labelc.show()
+            self.labelk.hide()
             self.cbox_hstype.hide()
             self.cbox_band2.hide()
             self.cbox_band3.hide()
@@ -903,12 +933,14 @@ class PlotInterp(QtGui.QDialog):
             self.mmc.argb[2].set_visible(False)
             self.sslider.hide()
             self.aslider.hide()
+            self.kslider.hide()
             self.msc.hide()
             self.labela.hide()
             self.labels.hide()
             self.mmc.init_graph()
 
         if txt == 'Contour':
+            self.labelk.hide()
             self.slabel.hide()
             self.labelc.show()
             self.cbox_hstype.hide()
@@ -920,12 +952,14 @@ class PlotInterp(QtGui.QDialog):
             self.mmc.argb[2].set_visible(False)
             self.sslider.hide()
             self.aslider.hide()
+            self.kslider.hide()
             self.msc.hide()
             self.labela.hide()
             self.labels.hide()
             self.mmc.init_graph()
 
-        if txt == 'RGB Ternary':
+        if 'Ternary' in txt:
+            self.labelk.hide()
             self.slabel.hide()
             self.labelc.hide()
             self.cbox_hstype.hide()
@@ -937,6 +971,11 @@ class PlotInterp(QtGui.QDialog):
             self.mmc.argb[2].set_visible(True)
             self.sslider.hide()
             self.aslider.hide()
+            self.kslider.hide()
+            if 'CMY' in txt:
+                self.kslider.show()
+                self.labelk.show()
+                self.mmc.kval = float(self.kslider.value())/100.
             self.msc.hide()
             self.labela.hide()
             self.labels.hide()
@@ -944,9 +983,11 @@ class PlotInterp(QtGui.QDialog):
 
         if txt == 'Sunshade':
             self.labelc.show()
+            self.labelk.hide()
             self.msc.show()
             self.sslider.show()
             self.aslider.show()
+            self.kslider.hide()
             self.labela.show()
             self.labels.show()
             self.slabel.show()
@@ -1106,6 +1147,7 @@ class ModestImage(mi.AxesImage):
         self.phi = -np.pi/4.
         self.theta = np.pi/4.
         self.alpha = .0
+        self.kval = 0.01
 
     def set_data(self, A):
         """
@@ -1242,7 +1284,7 @@ class ModestImage(mi.AxesImage):
 
             self._A = colormap
 
-        elif self.dtype == 'RGB Ternary':
+        elif 'Ternary' in self.dtype:
             red = self._full_res[0][(rows-y1):(rows-y0):sy, x0:x1:sx]
             green = self._full_res[1][(rows-y1):(rows-y0):sy, x0:x1:sx]
             blue = self._full_res[2][(rows-y1):(rows-y0):sy, x0:x1:sx]
@@ -1269,6 +1311,11 @@ class ModestImage(mi.AxesImage):
             colormap[:, :, 1] = norm2(green)
             colormap[:, :, 2] = norm2(blue)
             colormap[:, :, 3] = np.logical_not(mask)
+
+            if 'CMY' in self.dtype:
+                colormap[:, :, 0] = (1-colormap[:, :, 0])*(1-self.kval)
+                colormap[:, :, 1] = (1-colormap[:, :, 1])*(1-self.kval)
+                colormap[:, :, 2] = (1-colormap[:, :, 2])*(1-self.kval)
 
             self._A = colormap
 
@@ -1412,18 +1459,19 @@ def norm255(dat):
     datmin = float(dat.min())
     datptp = float(dat.ptp())
     out = ne.evaluate('254*(dat-datmin)/datptp+1')
+    out = out.round()
     out = out.astype(np.uint8)
     return out
 
 
-def img2rgb(img, cbar, imgold):
+def img2rgb(img, cbar):
     """ convert img to color img """
     im2 = img.copy()
-    im2[im2 < imgold.min()] = imgold.min()
-    im2[im2 > imgold.max()] = imgold.max()
     im2 = norm255(im2)
-    cbartmp = cbar(range(256))
-    cbartmp[:, :-1] *= 255
+    cbartmp = cbar(range(255))
+    cbartmp = np.array([[0., 0., 0., 1.]]+cbartmp.tolist())*255
+#    cbartmp[:, :-1] *= 255
+    cbartmp = cbartmp.round()
     cbartmp = cbartmp.astype(np.uint8)
     im2 = cbartmp[im2]
     im2[:, :, 3] = np.logical_not(img.mask)*254+1
@@ -1431,7 +1479,7 @@ def img2rgb(img, cbar, imgold):
     return im2
 
 
-def histeq(img, nbr_bins=2048):
+def histeq(img, nbr_bins=32768):
     """ Histogram Equalization """
 # get image histogram
     imhist, bins = np.histogram(img.compressed(), nbr_bins)
@@ -1452,6 +1500,7 @@ def histeq(img, nbr_bins=2048):
 def histcomp(img, nbr_bins=256):
     """ Histogram Compaction """
 # get image histogram
+    imask = img.mask
     tmp = img.compressed()
 #        if tmp.mask.size > 1:
 #            tmp = tmp.data[tmp.mask == 0]
@@ -1485,5 +1534,6 @@ def histcomp(img, nbr_bins=256):
     filt = np.ma.greater(img2, evalue)
     img2[filt] = evalue
 
+    img2 = np.ma.array(img2, mask=imask)
 # use linear interpolation of cdf to find new pixel values
     return img2

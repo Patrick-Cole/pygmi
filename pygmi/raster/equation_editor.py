@@ -372,7 +372,7 @@ class EquationEditor(QtGui.QDialog):
             self.bandsall.append(i.data)
             self.combobox.addItem(i.bandid)
 
-        self.bandsall = np.array(self.bandsall)
+        self.bandsall = np.ma.array(self.bandsall)
 
         temp = self.exec_()
 
