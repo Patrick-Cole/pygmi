@@ -1411,7 +1411,7 @@ def norm255(dat):
     """ Normalise vector between 1 and 255"""
     datmin = float(dat.min())
     datptp = float(dat.ptp())
-    out = ne.evaluate('255*(dat-datmin)/datptp+1')
+    out = ne.evaluate('254*(dat-datmin)/datptp+1')
     out = out.astype(np.uint8)
     return out
 
