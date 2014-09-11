@@ -28,8 +28,8 @@
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import copy
+#import numexpr as ne
 from . import dataprep
-
 
 class EquationEditor(QtGui.QDialog):
     """ Class to call up a dialog """

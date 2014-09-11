@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" setup script for packaging PyGMI """
+""" Setup script for packaging PyGMI """
 
 from distutils.core import setup
 

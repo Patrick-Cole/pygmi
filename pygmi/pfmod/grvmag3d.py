@@ -1104,10 +1104,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
         if abs(np.sum(cmodind == -1)) < cmodind.size:
             QtGui.QApplication.processEvents()
-            i, j, k = np.nonzero(np.logical_and(cmodind != mijk, cmodind > 0))
-            iuni = np.array(np.unique(i)).tolist()
-            juni = np.array(np.unique(j)).tolist()
-            kuni = np.array(np.unique(k)).tolist()
+#            i, j, k = np.nonzero(np.logical_and(modind == mijk, cmodind > 0))
+#            iuni = np.array(np.unique(i)).tolist()
+#            juni = np.array(np.unique(j)).tolist()
+#            kuni = np.array(np.unique(k)).tolist()
             ptmp = partial(grvmagc.calc_field2,
                            numx=numx, numy=numy,
                            modind=cmodind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
