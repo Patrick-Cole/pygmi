@@ -1224,8 +1224,8 @@ class ModestImage(mi.AxesImage):
         if self.dtype == 'Sunshade':
             divtmp = 1.5
 
-        sy = int(np.ceil(dy/(ddy*ext[1]))/divtmp)
-        sx = int(np.ceil(dx/(ddx*ext[0]))/divtmp)
+        sy = max(int(np.ceil(dy/(ddy*ext[1]))/divtmp), 1)
+        sx = max(int(np.ceil(dx/(ddx*ext[0]))/divtmp), 1)
 
         if self._sx is None:
             pass
