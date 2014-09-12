@@ -103,9 +103,10 @@ def main():
     tlz = zpos.max()
 
     # quick model initialises a model with all the variables we have defined.
-    lmod = quick_model(['Generic'], numx, numy, numz, dxy, d_z, tlx, tly, tlz,
-                       0, 0, finc, fdec, [susc], [dens], [minc], [mdec],
-                       [mstrength])
+    lmod = quick_model(numx, numy, numz, dxy, d_z,
+                       tlx, tly, tlz, 0, 0, finc, fdec,
+                       ['Generic'], [susc], [dens],
+                       [minc], [mdec], [mstrength])
 
     # Create the actual model. It is a 3 dimensional vector with '1' where the
     # body lies

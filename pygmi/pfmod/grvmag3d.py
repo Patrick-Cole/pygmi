@@ -960,17 +960,25 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     then both magnetic and gravity fields are calculated, otherwize only
     gravity is calculated.
 
-    Args:
-        lmod (LithModel): PyGMI lithological model
-        pbars: progress bar routine if available. (internal use)
-        showtext: showtext routine if available. (internal use)
-        parent: parent function. (internal use)
-        showreports (bool): show extra reports
-        altcalc (bool): if true, calculate gravity and magnetic data, otherwize
-                        only gravity.
+    Parameters
+    ----------
+    lmod : LithModel
+        PyGMI lithological model
+    pbars : module
+        progress bar routine if available. (internal use)
+    showtext : module
+        showtext routine if available. (internal use)
+    parent : parent
+        parent function. (internal use)
+    showreports : bool
+        show extra reports
+    altcalc : bool
+        if true, calculate gravity and magnetic data, otherwize only gravity.
 
-    Return:
-        lmod.griddata (dictionary): dictionary of items of type Data.
+    Returns
+    -------
+    lmod.griddata : dictionary
+        dictionary of items of type Data.
     """
 
     if showtext is None:
@@ -996,7 +1004,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     if lmod.clith_index.max() == 0:
         lmod.griddata['Calculated Magnetics'].data[:] = 0
         lmod.griddata['Calculated Gravity'].data[:] = 0
-
 
 # model index
     modind = lmod.lith_index.copy()
@@ -1063,7 +1070,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         if 'Background' == mlist[0]:
             continue
         mijk = mlist[1].lith_index
-        if mijk not in modind:
+        if mijk not in modind and mijk not in cmodind:
             continue
         tmpfiles[mlist[0]].seek(0)
         mfile = np.load(tmpfiles[mlist[0]])
@@ -1104,6 +1111,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             del ptmp
 
         if abs(np.sum(cmodind == -1)) < cmodind.size:
+            print('subtracting')
             QtGui.QApplication.processEvents()
             i, j, k = np.nonzero(cmodind == mijk)
             iuni = np.array(np.unique(i)).tolist()
