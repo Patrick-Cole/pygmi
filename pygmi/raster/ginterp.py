@@ -679,232 +679,6 @@ class PlotInterp(QtGui.QDialog):
         self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
         self.btn_saveimg.clicked.connect(self.save_img)
 
-    def save_img(self):
-        """Save GeoTiff """
-        ext = "GeoTiff (*.tif)"
-        filename = QtGui.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', ext)
-        if filename == '':
-            return False
-
-        text, ok = QtGui.QInputDialog.getText(
-            self, "Colorbar", "Enter length in inches:",
-            QtGui.QLineEdit.Normal, "8")
-
-        if not ok:
-            return
-
-        blen = float(text)
-        bwid = blen/16.
-
-        text, ok = QtGui.QInputDialog.getText(
-            self, "Colorbar", "Enter colorbar unit label:",
-            QtGui.QLineEdit.Normal, "Some Units")
-
-        if not ok:
-            return
-
-        img = self.mmc.image.get_array()
-        dtype = str(self.cbox_dtype.currentText())
-        htype = str(self.cbox_htype.currentText())
-        hstype = str(self.cbox_hstype.currentText())
-        cell = self.mmc.cell
-        alpha = self.mmc.alpha
-        phi = self.mmc.phi
-        theta = self.mmc.theta
-
-        if dtype == 'Single Color Map':
-            pseudo = self.mmc.image._full_res.copy()
-            psmall = self.mmc.image.smallres
-            pmask = pseudo.mask.copy()
-
-            pseudo[pseudo < psmall.min()] = psmall.min()
-            pseudo[pseudo > psmall.max()] = psmall.max()
-            pseudo.mask = pmask
-
-#            mask = np.logical_not(pseudo.mask)
-#            pseudo += pseudo.min()
-
-            if htype == '95% Linear, 5% Compact':
-                pseudo = histcomp(pseudo)
-
-            if htype == 'Histogram Equalization':
-                pseudo = histeq(pseudo)
-
-            # The function below normalizes as well.
-            img = img2rgb(pseudo, self.mmc.cbar)
-
-            pseudo = None
-
-        elif dtype == 'Sunshade':
-            pseudo = self.mmc.image._full_res[0]
-            sun = self.mmc.image._full_res[1]
-
-            if htype == '95% Linear, 5% Compact':
-                pseudo = histcomp(pseudo)
-
-            if htype == 'Histogram Equalization':
-                pseudo = histeq(pseudo)
-
-            if hstype == '95% Linear, 5% Compact':
-                sun = histcomp(sun)
-
-            if hstype == 'Histogram Equalization':
-                sun = histeq(sun)
-
-            sunshader = currentshader(sun.data, cell, theta, phi, alpha)
-            snorm = norm2(sunshader)
-#            pnorm = norm2(pseudo)
-
-            img = img2rgb(pseudo, self.mmc.cbar)
-            pseudo = None
-            sunshader = None
-
-            img[:, :, 0] = img[:, :, 0]*snorm  # red
-            img[:, :, 1] = img[:, :, 1]*snorm  # green
-            img[:, :, 2] = img[:, :, 2]*snorm  # blue
-            img = img.astype(np.uint8)
-#            mask = np.logical_or(pseudo.mask, sun.mask)
-#            mask = np.logical_not(mask)
-#            img[:, :, 3] = mask
-
-        elif 'Ternary' in dtype:
-            red = self.mmc.image._full_res[0]
-            green = self.mmc.image._full_res[1]
-            blue = self.mmc.image._full_res[2]
-            mask = np.logical_or(red.mask, green.mask)
-            mask = np.logical_or(mask, blue.mask)
-            mask = np.logical_not(mask)
-
-            if htype == '95% Linear, 5% Compact':
-                red = histcomp(red)
-                green = histcomp(green)
-                blue = histcomp(blue)
-
-            if htype == 'Histogram Equalization':
-                red = histeq(red)
-                green = histeq(green)
-                blue = histeq(blue)
-
-            colormap = np.ones((red.shape[0], red.shape[1], 4), dtype=np.uint8)
-            colormap[:, :, 3] = mask*254+1
-
-            if 'CMY' in dtype:
-                colormap[:, :, 0] = (1-norm2(red))*254+1
-                colormap[:, :, 1] = (1-norm2(green))*254+1
-                colormap[:, :, 2] = (1-norm2(blue))*254+1
-            else:
-                colormap[:, :, 0] = norm255(red)
-                colormap[:, :, 1] = norm255(green)
-                colormap[:, :, 2] = norm255(blue)
-
-            img = colormap
-
-        elif dtype == 'Contour':
-            self.mmc.figure.set_frameon(False)
-            self.mmc.axes.set_axis_off()
-            self.mmc.figure.canvas.draw()
-#            fcol = int(self.mmc.figure.get_facecolor()[0]*255)
-            img = np.fromstring(self.mmc.figure.canvas.tostring_argb(),
-                                dtype=np.uint8, sep='')
-            self.mmc.figure.set_frameon(True)
-            self.mmc.axes.set_axis_on()
-            self.mmc.figure.canvas.draw()
-
-            w, h = self.mmc.figure.canvas.get_width_height()
-            img.shape = (h, w, 4)
-            img = np.roll(img, 3, axis=2)
-
-            cmask = np.ones(img.shape[1], dtype=bool)
-            for i in range(img.shape[1]):
-                if img[:, i, 3].mean() == 0:
-                    cmask[i] = False
-            img = img[:, cmask]
-            rmask = np.ones(img.shape[0], dtype=bool)
-            for i in range(img.shape[0]):
-                if img[i, :, 3].mean() == 0:
-                    rmask[i] = False
-            img = img[rmask]
-
-            mask = img[:, :, 3]
-
-        export = iodefs.ExportData(self.parent)
-
-        os.chdir(filename.rpartition('/')[0])
-
-        newimg = [copy.deepcopy(self.mmc.data[0]),
-                  copy.deepcopy(self.mmc.data[0]),
-                  copy.deepcopy(self.mmc.data[0]),
-                  copy.deepcopy(self.mmc.data[0])]
-
-        newimg[0].data = img[:, :, 0]
-        newimg[1].data = img[:, :, 1]
-        newimg[2].data = img[:, :, 2]
-        newimg[3].data = img[:, :, 3]
-
-        mask = img[:, :, 3]
-        newimg[0].data[mask <= 1] = 0
-        newimg[1].data[mask <= 1] = 0
-        newimg[2].data[mask <= 1] = 0
-#        newimg[3].data[mask == 0] = 0
-
-        newimg[0].nullvalue = 0
-        newimg[1].nullvalue = 0
-        newimg[2].nullvalue = 0
-        newimg[3].nullvalue = 0
-
-        imgshape0 = img.shape[0]
-        imgshape1 = img.shape[1]
-
-        newimg[0].cols = imgshape1
-        newimg[1].cols = imgshape1
-        newimg[2].cols = imgshape1
-        newimg[3].cols = imgshape1
-
-        newimg[0].rows = imgshape0
-        newimg[1].rows = imgshape0
-        newimg[2].rows = imgshape0
-        newimg[3].rows = imgshape0
-
-        export.ifile = str(filename)
-        export.ext = filename[-3:]
-        export.export_gdal(newimg, 'GTiff')
-
-# Section for colorbars
-
-        txt = str(self.cbox_cbar.currentText())
-        cmap = plt.get_cmap(txt)
-        cmin = self.mmc.data[0].data.min()
-        cmax = self.mmc.data[0].data.max()
-        norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
-
-# Horizontal Bar
-        fig = plt.figure(figsize=(blen, (bwid+0.75)), tight_layout=True)
-        ax = fig.add_subplot(111)
-
-        cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                    orientation='horizontal')
-        cb.set_label(text)
-
-        fname = filename[:-4]+'_hcbar.tif'
-        fig.savefig(fname, dpi=300)
-
-# Vertical Bar
-        fig = plt.figure(figsize=((bwid + 1), blen), tight_layout=True)
-        ax = fig.add_subplot(111)
-
-        cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                    orientation='vertical')
-        cb.set_label(text)
-
-        fname = filename[:-4]+'_vcbar.tif'
-        fig.savefig(fname, dpi=300)
-
-        QtGui.QMessageBox.information(self, "Information",
-                                      "Save to GeoTiff is complete!",
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
-
     def change_blue(self):
         """ Combo box to change display bands """
         txt = str(self.cbox_band3.currentText())
@@ -1084,6 +858,256 @@ class PlotInterp(QtGui.QDialog):
             self.mmc.phi = phi
             self.mmc.theta = theta
             self.mmc.update_graph()
+
+    def save_img(self):
+        """Save GeoTiff """
+        ext = "GeoTiff (*.tif)"
+        filename = QtGui.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', ext)
+        if filename == '':
+            return False
+
+        text, ok = QtGui.QInputDialog.getText(
+            self, "Colorbar", "Enter length in inches:",
+            QtGui.QLineEdit.Normal, "8")
+
+        if not ok:
+            return
+
+        blen = float(text)
+        bwid = blen/16.
+
+        text, ok = QtGui.QInputDialog.getText(
+            self, "Colorbar", "Enter colorbar unit label:",
+            QtGui.QLineEdit.Normal, "Some Units")
+
+        if not ok:
+            return
+
+        img = self.mmc.image.get_array()
+        dtype = str(self.cbox_dtype.currentText())
+        htype = str(self.cbox_htype.currentText())
+        hstype = str(self.cbox_hstype.currentText())
+        cell = self.mmc.cell
+        alpha = self.mmc.alpha
+        phi = self.mmc.phi
+        theta = self.mmc.theta
+
+        if dtype == 'Single Color Map':
+            pseudo = self.mmc.image._full_res.copy()
+            psmall = self.mmc.image.smallres
+            pmask = pseudo.mask.copy()
+
+            pseudo[pseudo < psmall.min()] = psmall.min()
+            pseudo[pseudo > psmall.max()] = psmall.max()
+            pseudo.mask = pmask
+
+#            mask = np.logical_not(pseudo.mask)
+#            pseudo += pseudo.min()
+
+            if htype == '95% Linear, 5% Compact':
+                pseudo = histcomp(pseudo)
+
+            if htype == 'Histogram Equalization':
+                pseudo = histeq(pseudo)
+
+            cmin = pseudo.min()
+            cmax = pseudo.max()
+
+            # The function below normalizes as well.
+            img = img2rgb(pseudo, self.mmc.cbar)
+
+            pseudo = None
+
+        elif dtype == 'Sunshade':
+            pseudo = self.mmc.image._full_res[0]
+            sun = self.mmc.image._full_res[1]
+
+            if htype == '95% Linear, 5% Compact':
+                pseudo = histcomp(pseudo)
+
+            if htype == 'Histogram Equalization':
+                pseudo = histeq(pseudo)
+
+            if hstype == '95% Linear, 5% Compact':
+                sun = histcomp(sun)
+
+            if hstype == 'Histogram Equalization':
+                sun = histeq(sun)
+
+            cmin = pseudo.min()
+            cmax = pseudo.max()
+
+            sunshader = currentshader(sun.data, cell, theta, phi, alpha)
+            snorm = norm2(sunshader)
+#            pnorm = norm2(pseudo)
+
+            img = img2rgb(pseudo, self.mmc.cbar)
+            pseudo = None
+            sunshader = None
+
+            img[:, :, 0] = img[:, :, 0]*snorm  # red
+            img[:, :, 1] = img[:, :, 1]*snorm  # green
+            img[:, :, 2] = img[:, :, 2]*snorm  # blue
+            img = img.astype(np.uint8)
+#            mask = np.logical_or(pseudo.mask, sun.mask)
+#            mask = np.logical_not(mask)
+#            img[:, :, 3] = mask
+
+        elif 'Ternary' in dtype:
+            red = self.mmc.image._full_res[0]
+            green = self.mmc.image._full_res[1]
+            blue = self.mmc.image._full_res[2]
+            mask = np.logical_or(red.mask, green.mask)
+            mask = np.logical_or(mask, blue.mask)
+            mask = np.logical_not(mask)
+
+            if htype == '95% Linear, 5% Compact':
+                red = histcomp(red)
+                green = histcomp(green)
+                blue = histcomp(blue)
+
+            if htype == 'Histogram Equalization':
+                red = histeq(red)
+                green = histeq(green)
+                blue = histeq(blue)
+
+            cmin = red.min()
+            cmax = red.max()
+
+            colormap = np.ones((red.shape[0], red.shape[1], 4), dtype=np.uint8)
+            colormap[:, :, 3] = mask*254+1
+
+            if 'CMY' in dtype:
+                colormap[:, :, 0] = (1-norm2(red))*254+1
+                colormap[:, :, 1] = (1-norm2(green))*254+1
+                colormap[:, :, 2] = (1-norm2(blue))*254+1
+            else:
+                colormap[:, :, 0] = norm255(red)
+                colormap[:, :, 1] = norm255(green)
+                colormap[:, :, 2] = norm255(blue)
+
+            img = colormap
+
+        elif dtype == 'Contour':
+            pseudo = self.mmc.image._full_res.copy()
+            psmall = self.mmc.image.smallres
+            pmask = pseudo.mask.copy()
+
+            pseudo[pseudo < psmall.min()] = psmall.min()
+            pseudo[pseudo > psmall.max()] = psmall.max()
+            pseudo.mask = pmask
+
+            if htype == '95% Linear, 5% Compact':
+                pseudo = histcomp(pseudo)
+
+            if htype == 'Histogram Equalization':
+                pseudo = histeq(pseudo)
+
+            cmin = pseudo.min()
+            cmax = pseudo.max()
+
+            self.mmc.figure.set_frameon(False)
+            self.mmc.axes.set_axis_off()
+            self.mmc.figure.canvas.draw()
+#            fcol = int(self.mmc.figure.get_facecolor()[0]*255)
+            img = np.fromstring(self.mmc.figure.canvas.tostring_argb(),
+                                dtype=np.uint8, sep='')
+            self.mmc.figure.set_frameon(True)
+            self.mmc.axes.set_axis_on()
+            self.mmc.figure.canvas.draw()
+
+            w, h = self.mmc.figure.canvas.get_width_height()
+            img.shape = (h, w, 4)
+            img = np.roll(img, 3, axis=2)
+
+            cmask = np.ones(img.shape[1], dtype=bool)
+            for i in range(img.shape[1]):
+                if img[:, i, 3].mean() == 0:
+                    cmask[i] = False
+            img = img[:, cmask]
+            rmask = np.ones(img.shape[0], dtype=bool)
+            for i in range(img.shape[0]):
+                if img[i, :, 3].mean() == 0:
+                    rmask[i] = False
+            img = img[rmask]
+
+            mask = img[:, :, 3]
+
+        export = iodefs.ExportData(self.parent)
+
+        os.chdir(filename.rpartition('/')[0])
+
+        newimg = [copy.deepcopy(self.mmc.data[0]),
+                  copy.deepcopy(self.mmc.data[0]),
+                  copy.deepcopy(self.mmc.data[0]),
+                  copy.deepcopy(self.mmc.data[0])]
+
+        newimg[0].data = img[:, :, 0]
+        newimg[1].data = img[:, :, 1]
+        newimg[2].data = img[:, :, 2]
+        newimg[3].data = img[:, :, 3]
+
+        mask = img[:, :, 3]
+        newimg[0].data[mask <= 1] = 0
+        newimg[1].data[mask <= 1] = 0
+        newimg[2].data[mask <= 1] = 0
+#        newimg[3].data[mask == 0] = 0
+
+        newimg[0].nullvalue = 0
+        newimg[1].nullvalue = 0
+        newimg[2].nullvalue = 0
+        newimg[3].nullvalue = 0
+
+        imgshape0 = img.shape[0]
+        imgshape1 = img.shape[1]
+
+        newimg[0].cols = imgshape1
+        newimg[1].cols = imgshape1
+        newimg[2].cols = imgshape1
+        newimg[3].cols = imgshape1
+
+        newimg[0].rows = imgshape0
+        newimg[1].rows = imgshape0
+        newimg[2].rows = imgshape0
+        newimg[3].rows = imgshape0
+
+        export.ifile = str(filename)
+        export.ext = filename[-3:]
+        export.export_gdal(newimg, 'GTiff')
+
+# Section for colorbars
+
+        txt = str(self.cbox_cbar.currentText())
+        cmap = plt.get_cmap(txt)
+        norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
+
+# Horizontal Bar
+        fig = plt.figure(figsize=(blen, (bwid+0.75)), tight_layout=True)
+        ax = fig.add_subplot(111)
+
+        cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
+                                    orientation='horizontal')
+        cb.set_label(text)
+
+        fname = filename[:-4]+'_hcbar.tif'
+        fig.savefig(fname, dpi=300)
+
+# Vertical Bar
+        fig = plt.figure(figsize=((bwid + 1), blen), tight_layout=True)
+        ax = fig.add_subplot(111)
+
+        cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
+                                    orientation='vertical')
+        cb.set_label(text)
+
+        fname = filename[:-4]+'_vcbar.tif'
+        fig.savefig(fname, dpi=300)
+
+        QtGui.QMessageBox.information(self, "Information",
+                                      "Save to GeoTiff is complete!",
+                                      QtGui.QMessageBox.Ok,
+                                      QtGui.QMessageBox.Ok)
 
     def settings(self):
         """ run """

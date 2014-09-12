@@ -73,7 +73,13 @@ class Arrow(QtGui.QGraphicsLineItem):
                                QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
 
     def boundingRect(self):
-        """ Bounding Rectangle """
+        """
+        Overloaded bounding rectangle
+
+        Returns
+        -------
+        tmp : QtCore.QRectF
+        """
         extra = (self.pen().width() + 20) / 2.0
         p1 = self.line().p1()
         p2 = self.line().p2()
@@ -82,11 +88,25 @@ class Arrow(QtGui.QGraphicsLineItem):
         return tmp.normalized().adjusted(-extra, -extra, extra, extra)
 
     def end_item(self):
-        """ End Item """
+        """
+        End item reference
+
+        Returns
+        -------
+        my_end_item : object
+        """
         return self.my_end_item
 
     def paint(self, painter, option, widget=None):
-        """ Paint """
+        """
+        Overloaded paint method.
+
+        Parameters
+        ----------
+        painter : QPainter
+        option : QStyleOptionGraphicsItem
+        widget : QWidget, optional
+        """
         pi = math.pi
         if self.my_start_item.collidesWithItem(self.my_end_item):
             return
@@ -151,21 +171,39 @@ class Arrow(QtGui.QGraphicsLineItem):
             painter.drawLine(my_line)
 
     def set_color(self, color):
-        """ Set Color """
+        """
+        Set color
+
+        Parameters
+        ----------
+        color : QtCore color
+        """
         self.my_color = color
 
     def shape(self):
-        """ Shape """
+        """
+        Overloaded QGraphicsLineItem Shape.
+
+        Returns
+        -------
+        path : QPainterPath
+        """
         path = super(Arrow, self).shape()
         path.addPolygon(self.arrow_head)
         return path
 
     def start_item(self):
-        """ Start Item """
+        """
+        Start item reference.
+
+        Returns
+        -------
+        my_start_item : object
+        """
         return self.my_start_item
 
     def update_position(self):
-        """ Update Position """
+        """Update the position of the line joining the two items."""
         x0, y0 = np.mean(self.my_start_item.np_poly, 0)
         x1, y1 = np.mean(self.my_end_item.np_poly, 0)
         line = QtCore.QLineF(self.mapFromItem(self.my_start_item, x0, y0),
@@ -174,7 +212,25 @@ class Arrow(QtGui.QGraphicsLineItem):
 
 
 class DiagramItem(QtGui.QGraphicsPolygonItem):
-    """ Diagram Item """
+    """
+    Diagram Item
+
+    Attributes
+    ----------
+    arrows : list
+        list of Arrow objects
+    diagram_type : str
+        string denoting the diagram type. Can be 'StartEnd', 'Conditional' or
+        'Step'
+    context_menu = context_menu
+    my_class : object
+        Class that the diagram item is linked to.
+    is_import : bool
+        Flags whether my_class is used to import data
+    text_item : None
+    my_class_name : str
+        Class name
+    """
     def __init__(self, diagram_type, context_menu, my_class, parent=None,
                  scene=None):
         super(DiagramItem, self).__init__(parent, scene)

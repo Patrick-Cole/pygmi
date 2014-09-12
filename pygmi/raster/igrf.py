@@ -558,8 +558,9 @@ class IGRF(QtGui.QDialog):
             igrf_F[i] = self.f
 
         self.outdata['Raster'] = copy.deepcopy(self.indata['Raster'])
-        igrf_F = np.array(igrf_F)
+        igrf_F = np.ma.array(igrf_F)
         igrf_F.shape = data.data.shape
+        igrf_F.mask = data.data.mask
         self.outdata['Raster'].append(copy.deepcopy(data))
         self.outdata['Raster'][-1].data = igrf_F
         self.outdata['Raster'][-1].bandid = 'IGRF'
