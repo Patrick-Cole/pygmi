@@ -317,7 +317,7 @@ class IGRF(QtGui.QDialog):
         label_23.setText("Magnetic Data")
 
         self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejecteded.connect(self.reject)
+        self.buttonbox.rejected.connect(self.reject)
 
     def acceptall(self):
         """ accept button"""

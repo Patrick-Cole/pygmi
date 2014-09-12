@@ -45,42 +45,6 @@ import pkgutil
 import os
 
 
-class Startup(QtGui.QDialog):
-    """ Class to provide a startup display while PyGMI loads into memory """
-    def __init__(self, pbarmax, parent=None):
-        QtGui.QDialog.__init__(self, parent)
-#        self.setWindowFlags(QtCore.Qt.SplashScreen)
-        self.setWindowFlags(QtCore.Qt.ToolTip)
-
-        self.gridlayout_main = QtGui.QVBoxLayout(self)
-        self.label_info = QtGui.QLabel(self)
-        self.label_pic = QtGui.QLabel(self)
-        self.label_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
-                                               r'/images/logo256.ico'))
-        self.label_info.setScaledContents(True)
-        self.pbar = QtGui.QProgressBar(self)
-
-        labeltext = "<font color='red'>Py</font><font color='blue'>GMI</font>"
-
-        fnt = QtGui.QFont("Arial", 72, QtGui.QFont.Bold)
-        self.label_info.setFont(fnt)
-        self.label_info.setText(labeltext)
-#            'Python Geophysical Modelling and Interpretation\n' +
-#            '------------------------------------------------------------')
-        self.gridlayout_main.addWidget(self.label_info)
-        self.gridlayout_main.addWidget(self.label_pic)
-
-        self.pbar.setMaximum(pbarmax - 1)
-        self.gridlayout_main.addWidget(self.pbar)
-
-        self.open()
-
-    def update(self):
-        """ Updates the text on the dialog """
-        self.pbar.setValue(self.pbar.value() + 1)
-        QtGui.QApplication.processEvents()
-
-
 class Arrow(QtGui.QGraphicsLineItem):
     """
     Class responsible for drawing arrows on the main interface.
@@ -576,7 +540,6 @@ class MainWidget(QtGui.QMainWindow):
         self.action_send_to_back.setIcon(QtGui.QIcon(ipth+'sendtoback.png'))
         self.action_pointer.setIcon(QtGui.QIcon(ipth+'pointer.png'))
         self.action_linepointer.setIcon(QtGui.QIcon(ipth+'linepointer.png'))
-#        self.setWindowIcon(QtGui.QIcon('images/pygmi.png'))
         self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
 
         self.setupui()
@@ -593,10 +556,6 @@ class MainWidget(QtGui.QMainWindow):
                 onerror=lambda x: None):
             menus.append(modname)
 
-#        menus = [i for i in glob.glob(r'packages/*') if i.find('.') == -1]
-#        menus = [i.replace('\\', '.') for i in menus]  # for windows
-#        menus = [i.replace('/', '.') for i in menus]  # for linux
-#        menus = [i+'.menu' for i in menus]
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
         menus = [raster_menu, vector_menu]+menus
@@ -624,7 +583,6 @@ class MainWidget(QtGui.QMainWindow):
 
         self.view = self.graphics_view
         self.view.setScene(self.scene)
-
 
 # Menus
         self.action_pointer.triggered.connect(self.pointer)
@@ -689,31 +647,28 @@ class MainWidget(QtGui.QMainWindow):
         item_menu.addAction(self.action_delete)
         item_menu.addAction(self.action_bring_to_front)
         item_menu.addAction(self.action_send_to_back)
-#        item_menu.addSeparator()
 
     def add_to_context(self, txt):
-        """ Adds to a context menu """
+        """
+        Adds to a context menu.
+
+        Each dataset type which PyGMI uses can have its own context menu. This
+        method allows for the definition of each group of context menu items
+        under a user defined text label.
+
+        Parameters
+        ----------
+        txt : str
+            Label for a group of context menu items
+        """
+
         if self.context_menu.get(txt) is not None:
             return
         self.context_menu[txt] = QtGui.QMenu()
 
-    def launch_context_item(self, newitem):
-        """ Launches a context menu item """
-        outdata = self.get_outdata()
-
-        if outdata[0] == {}:
-            self.run()
-            outdata = self.get_outdata()
-
-        for odata in outdata:
-            if odata is not None and odata != {}:
-                dlg = newitem(self)
-                dlg.indata = odata
-                dlg.run()
-                self.update_pdlg(dlg)
-
     def bring_to_front(self):
-        """ bring item to front """
+        """Bring the selected item to front."""
+
         if not self.scene.selectedItems():
             return
 
@@ -726,8 +681,12 @@ class MainWidget(QtGui.QMainWindow):
                 zvalue = item.zValue() + 0.1
         selected_item.setZValue(zvalue)
 
+    def clearprocesslog(self):
+        """Clears the process log."""
+        self.textbrowser_processlog.setPlainText('')
+
     def delete_item(self):
-        """ delete item """
+        """Delete the selected item from main interface."""
         for item in self.scene.selectedItems():
             if isinstance(item, DiagramItem):
                 item.remove_arrows()
@@ -739,24 +698,59 @@ class MainWidget(QtGui.QMainWindow):
                 if item.my_class.indata == {}:
                     item.setBrush(self.scene.my_item_color)
 
-    def get_outdata(self):
-        """ gets outdata """
-        odata = []
-        for item in self.scene.selectedItems():
-            if isinstance(item, DiagramItem):
-                odata.append(item.my_class.outdata)
-        return odata
-
     def get_indata(self):
-        """ gets outdata """
+        """
+        Gets input data from the selected item on the main interface.
+
+        Returns
+        -------
+        idata : list
+            Input list of PyGMI dataset
+        """
+
         idata = []
         for item in self.scene.selectedItems():
             if isinstance(item, DiagramItem):
                 idata.append(item.my_class.outdata)
         return idata
 
+    def get_outdata(self):
+        """
+        Gets output data from the selected item on the main interface.
+
+        Returns
+        -------
+        odata : list
+            Output list of PyGMI dataset
+        """
+        odata = []
+        for item in self.scene.selectedItems():
+            if isinstance(item, DiagramItem):
+                odata.append(item.my_class.outdata)
+        return odata
+
     def item_insert(self, item_type, item_name, class_name):
-        """ Item insert """
+        """
+        Item insert.
+
+        Insert an item on the main interface. The item is an object passed by
+        one of the menu.py routines and is one of the algorithims chosen on
+        the main PyGMI menu.
+
+        Parameters
+        ----------
+        item_type : str
+            str describing the shape of the graphic used to describe the item.
+        item_name : str
+            str describing the name of the item to be displayed.
+        class_name : object
+            class to be called when double clicking on the item.
+
+        Returns
+        -------
+        item : DiagramItem
+            Return a DiagramItem object
+        """
         item = DiagramItem(item_type, self.scene.my_item_menu, class_name)
         item_color = self.scene.my_item_color
 
@@ -828,16 +822,45 @@ class MainWidget(QtGui.QMainWindow):
         self.scene.set_mode("MoveItem")
         return item
 
+    def launch_context_item(self, newitem):
+        """
+        Launches a context menu item
+
+        Parameters
+        ----------
+        newitem : custom class
+            newitem is the class to be called by the context menu item
+        """
+        outdata = self.get_outdata()
+
+        if outdata[0] == {}:
+            self.run()
+            outdata = self.get_outdata()
+
+        for odata in outdata:
+            if odata is not None and odata != {}:
+                dlg = newitem(self)
+                dlg.indata = odata
+                dlg.run()
+                self.update_pdlg(dlg)
+
     def linepointer(self):
-        """ Select line pointer """
+        """Select line pointer."""
         self.scene.set_mode("InsertLine")
 
     def pointer(self):
-        """ Select Pointer """
+        """Select pointer."""
         self.scene.set_mode("MoveItem")
 
     def process_is_active(self, isactive=True):
-        """ Changes process log color when active """
+        """
+        Changes process log color when a process is active.
+
+        Parameters
+        ----------
+        isactive : bool, optional
+            boolean variable indicating if a process is active.
+        """
         if isactive:
             self.textbrowser_processlog.setStyleSheet(
                 "* { background-color: rgba(255, 0, 0, 127); }")
@@ -846,7 +869,7 @@ class MainWidget(QtGui.QMainWindow):
                 "* { background-color: rgb(255, 255, 255); }")
 
     def run(self):
-        """ Runs program to end """
+        """Runs program to end. Currently this is unused."""
         item_list = []
 
         # First get the data import items
@@ -866,7 +889,7 @@ class MainWidget(QtGui.QMainWindow):
                     item_list.append(newitem)
 
     def send_to_back(self):
-        """ send item to back """
+        """Send the selected item to the back."""
         if not self.scene.selectedItems():
             return
 
@@ -879,24 +902,46 @@ class MainWidget(QtGui.QMainWindow):
                 zvalue = item.zValue() - 0.1
         selected_item.setZValue(zvalue)
 
-    def showprocesslog(self, txt, replacelast=False):
-        """ Process log """
-        self.showtext(self.textbrowser_processlog, txt, replacelast)
-        QtGui.QApplication.processEvents()
-
-    def clearprocesslog(self):
-        """ Clears Process log """
-        self.textbrowser_processlog.setPlainText('')
-
     def showdatainfo(self, txt):
-        """ Dataset Information """
+        """ Show text in the dataset information panel
+
+        Parameters
+        ----------
+        txt : str
+            Message to be displayed in the datainfo panel
+        """
         self.textbrowser_datainfo.setPlainText(txt)
         tmp = self.textbrowser_datainfo.verticalScrollBar()
         tmp.setValue(tmp.maximumHeight())
         self.repaint()
 
+    def showprocesslog(self, txt, replacelast=False):
+        """
+        Show text on the process log.
+
+        Parameters
+        ----------
+        txt : str
+            Message to be displayed in the process log
+        replacelast : bool, optional
+            flag to indicate whether the last row on the log should be
+            overwritten.
+        """
+        self.showtext(self.textbrowser_processlog, txt, replacelast)
+        QtGui.QApplication.processEvents()
+
     def showtext(self, txtobj, txt, replacelast=False):
-        """ Show text on the text panel"""
+        """
+        Show text on the text panel
+
+        Parameters
+        ----------
+        txt : str
+            Message to be displayed in the text panel
+        replacelast : bool, optional
+            flag to indicate whether the last row on the log should be
+            overwritten.
+        """
         txtmsg = str(txtobj.toPlainText())
         if replacelast is True:
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
@@ -909,8 +954,16 @@ class MainWidget(QtGui.QMainWindow):
         self.repaint()
 
     def update_pdlg(self, dlg):
-        """ Cleans deleted objects in pdlg. pdlg allows for modeless dialogs to
-        remain in existance until they are closed """
+        """ Cleans deleted objects in self.pdlg and appends a new object.
+
+        self.pdlg allows for modeless dialogs to remain in existance until they
+        are closed
+
+        Parameters
+        ----------
+        dlg : object
+            Object to be appended to self.pdlg
+        """
         for i in range(len(self.pdlg)-1, -1, -1):
             try:
                 if not self.pdlg[i].isVisible():
@@ -923,8 +976,43 @@ class MainWidget(QtGui.QMainWindow):
         self.pdlg.append(dlg)
 
 
+class Startup(QtGui.QDialog):
+    """ Class to provide a startup display while PyGMI loads into memory """
+    def __init__(self, pbarmax, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+#        self.setWindowFlags(QtCore.Qt.SplashScreen)
+        self.setWindowFlags(QtCore.Qt.ToolTip)
+
+        self.gridlayout_main = QtGui.QVBoxLayout(self)
+        self.label_info = QtGui.QLabel(self)
+        self.label_pic = QtGui.QLabel(self)
+        self.label_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
+                                               r'/images/logo256.ico'))
+        self.label_info.setScaledContents(True)
+        self.pbar = QtGui.QProgressBar(self)
+
+        labeltext = "<font color='red'>Py</font><font color='blue'>GMI</font>"
+
+        fnt = QtGui.QFont("Arial", 72, QtGui.QFont.Bold)
+        self.label_info.setFont(fnt)
+        self.label_info.setText(labeltext)
+#            'Python Geophysical Modelling and Interpretation\n' +
+#            '------------------------------------------------------------')
+        self.gridlayout_main.addWidget(self.label_info)
+        self.gridlayout_main.addWidget(self.label_pic)
+
+        self.pbar.setMaximum(pbarmax - 1)
+        self.gridlayout_main.addWidget(self.pbar)
+
+        self.open()
+
+    def update(self):
+        """ Updates the text on the dialog """
+        self.pbar.setValue(self.pbar.value() + 1)
+        QtGui.QApplication.processEvents()
+
 def main():
-    """ Main program loop for the PyGMI software. """
+    """ Main entry point for the PyGMI software. """
     app = QtGui.QApplication(sys.argv)
     wid = MainWidget()
     wid.show()
