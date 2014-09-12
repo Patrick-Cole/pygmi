@@ -1009,15 +1009,15 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     cmodind[cmodind == 0] = -1
     modindcheck[modind == 0] = -1
 
-    if abs(np.sum(modind == -1)) == modind.size:
+    if (abs(np.sum(modind == -1)) == modind.size and
+            abs(np.sum(cmodind == -1)) == cmodind.size):
         showtext('No changes to model!')
         return
 
-#    if abs(cmodind.sum()) == cmodind.size:
     for mlist in lmod.lith_list.items():
         # if 'Background' != mlist[0] and mlist[1].modified is True:
         mijk = mlist[1].lith_index
-        if mijk not in modind:
+        if mijk not in modind and mijk not in cmodind:
             continue
         if 'Background' != mlist[0]:  # and 'Penge' in mlist[0]:
             mlist[1].modified = True
@@ -1065,7 +1065,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         mijk = mlist[1].lith_index
         if mijk not in modind:
             continue
-        i, j, k = np.nonzero(modind == mijk)
         tmpfiles[mlist[0]].seek(0)
         mfile = np.load(tmpfiles[mlist[0]])
         if altcalc:
@@ -1079,35 +1078,37 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
 
-        QtGui.QApplication.processEvents()
-        iuni = np.array(np.unique(i)).tolist()
-        juni = np.array(np.unique(j)).tolist()
-        kuni = np.array(np.unique(k)).tolist()
-        ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy,
-                       modind=modind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
-                       mlayers=mlayers, glayers=glayers,
-                       hcorflat=hcorflat, mijk=mijk,
-                       jj=juni, ii=iuni)
+        if abs(np.sum(modind == -1)) < modind.size:
+            QtGui.QApplication.processEvents()
+            i, j, k = np.nonzero(modind == mijk)
+            iuni = np.array(np.unique(i)).tolist()
+            juni = np.array(np.unique(j)).tolist()
+            kuni = np.array(np.unique(k)).tolist()
+            ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy,
+                           modind=modind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
+                           mlayers=mlayers, glayers=glayers,
+                           hcorflat=hcorflat, mijk=mijk,
+                           jj=juni, ii=iuni)
 
-        pool = mp.Pool(processes=cpunum)
-        baba = np.array(pool.map(ptmp, kuni))
-        pool.close()
-        pool.join()
+            pool = mp.Pool(processes=cpunum)
+            baba = np.array(pool.map(ptmp, kuni))
+            pool.close()
+            pool.join()
 
-        baba = baba.sum(0)
-        magval += baba[0]
-        grvval += baba[1]
+            baba = baba.sum(0)
+            magval += baba[0]
+            grvval += baba[1]
 
-        del pool
-        del baba
-        del ptmp
+            del pool
+            del baba
+            del ptmp
 
         if abs(np.sum(cmodind == -1)) < cmodind.size:
             QtGui.QApplication.processEvents()
-#            i, j, k = np.nonzero(np.logical_and(modind == mijk, cmodind > 0))
-#            iuni = np.array(np.unique(i)).tolist()
-#            juni = np.array(np.unique(j)).tolist()
-#            kuni = np.array(np.unique(k)).tolist()
+            i, j, k = np.nonzero(cmodind == mijk)
+            iuni = np.array(np.unique(i)).tolist()
+            juni = np.array(np.unique(j)).tolist()
+            kuni = np.array(np.unique(k)).tolist()
             ptmp = partial(grvmagc.calc_field2,
                            numx=numx, numy=numy,
                            modind=cmodind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],

@@ -22,7 +22,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the main program for the modelling package """
+""" This is the main module for PyGMI.
+
+This module comprises a series of classes which are responsible for the primary
+interface to the software. Credit must go to PyQt's examples, upon which some
+of this was originally based.
+
+Although the main interface is controlled here, the content of the menus and
+routines is not. The menus and corresponding classes are found within the
+pygmi packages.
+
+"""
 
 from PyQt4 import QtGui, QtCore
 import pygmi
@@ -72,7 +82,20 @@ class Startup(QtGui.QDialog):
 
 
 class Arrow(QtGui.QGraphicsLineItem):
-    """ Class Arrow """
+    """
+    Class responsible for drawing arrows on the main interface.
+
+    Attributes
+    ----------
+    arrow_head : QPolygonF
+        Arrow head polygon.
+    my_start_item : DiagramItem
+        Starting DiagramItem object. This will be send info to my_end_item
+    my_end_item : DiagramItem
+        End DiagramItem object. This will get information from my_start_item
+    my_color : QtCore color (default is QtCore.Qt.black)
+        Color
+    """
     def __init__(self, start_item, end_item, parent=None, scene=None):
         super(Arrow, self).__init__(parent, scene)
 

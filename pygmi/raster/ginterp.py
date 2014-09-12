@@ -319,6 +319,9 @@ class MyMplCanvas(FigureCanvas):
     def update_hist_rgb(self, zval):
         """ updates the rgb histograms """
         hcol = ['r', 'g', 'b']
+        if 'CMY' in self.gmode:
+            hcol = ['c', 'm', 'y']
+
         hst = self.hhist
         bnum = []
 
