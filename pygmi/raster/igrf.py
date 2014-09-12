@@ -388,6 +388,8 @@ class IGRF(QtGui.QDialog):
 # Variable declaration
 # Control variables
         data = dp.merge(self.indata['Raster'])
+        self.combobox_dtm.clear()
+        self.combobox_mag.clear()
         for i in data:
             self.combobox_dtm.addItem(i.bandid)
             self.combobox_mag.addItem(i.bandid)

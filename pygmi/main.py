@@ -173,36 +173,6 @@ class Arrow(QtGui.QGraphicsLineItem):
         self.setLine(line)
 
 
-class DiagramTextItem(QtGui.QGraphicsTextItem):
-    """ Diagram Text Item """
-    lostFocus = QtCore.pyqtSignal(QtGui.QGraphicsTextItem)
-    selectedChange = QtCore.pyqtSignal(QtGui.QGraphicsItem)
-
-    def __init__(self, parent=None, scene=None):
-        super(DiagramTextItem, self).__init__(parent, scene)
-
-#        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-#        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
-
-    def focus_out_event(self, event):
-        """ Focus Out Event """
-        self.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
-        self.lostFocus.emit(self)
-        super(DiagramTextItem, self).focusOutEvent(event)
-
-    def item_change(self, change, value):
-        """ Item Change """
-        if change == QtGui.QGraphicsItem.ItemSelectedChange:
-            self.selectedChange.emit(self)
-        return value
-
-    def mouse_double_click_event(self, event):
-        """ Mouse Double Click Event """
-        if self.textInteractionFlags() == QtCore.Qt.NoTextInteraction:
-            self.setTextInteractionFlags(QtCore.Qt.TextEditorInteraction)
-        super(DiagramTextItem, self).mouseDoubleClickEvent(event)
-
-
 class DiagramItem(QtGui.QGraphicsPolygonItem):
     """ Diagram Item """
     def __init__(self, diagram_type, context_menu, my_class, parent=None,
@@ -495,6 +465,36 @@ class DiagramScene(QtGui.QGraphicsScene):
     def set_mode(self, mode):
         """ Set Mode """
         self.my_mode = mode
+
+
+class DiagramTextItem(QtGui.QGraphicsTextItem):
+    """ Diagram Text Item """
+    lostFocus = QtCore.pyqtSignal(QtGui.QGraphicsTextItem)
+    selectedChange = QtCore.pyqtSignal(QtGui.QGraphicsItem)
+
+    def __init__(self, parent=None, scene=None):
+        super(DiagramTextItem, self).__init__(parent, scene)
+
+#        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
+#        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
+
+    def focus_out_event(self, event):
+        """ Focus Out Event """
+        self.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
+        self.lostFocus.emit(self)
+        super(DiagramTextItem, self).focusOutEvent(event)
+
+    def item_change(self, change, value):
+        """ Item Change """
+        if change == QtGui.QGraphicsItem.ItemSelectedChange:
+            self.selectedChange.emit(self)
+        return value
+
+    def mouse_double_click_event(self, event):
+        """ Mouse Double Click Event """
+        if self.textInteractionFlags() == QtCore.Qt.NoTextInteraction:
+            self.setTextInteractionFlags(QtCore.Qt.TextEditorInteraction)
+        super(DiagramTextItem, self).mouseDoubleClickEvent(event)
 
 
 class MainWidget(QtGui.QMainWindow):
