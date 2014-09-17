@@ -30,7 +30,6 @@
 |    http://www.wits.ac.za/science/geophysics/gc.htm
 """
 
-# pylint: disable=E1101, C0103
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.signal as si
@@ -48,15 +47,31 @@ import copy
 
 
 class Gradients(QtGui.QDialog):
-    """ Gradients """
+    """
+    Class used to gather information via a GUI, for function gradients
+
+    Attributes
+    ----------
+    parent : parent
+    indata : dictionary
+        PyGMI input data in a dictionary
+    outdata :
+        PyGMI input data in a dictionary
+    azi : float
+        Azimuth/filter direction (degrees)
+    elev : float
+        Elevation (for sunshading, degrees from horizontal)
+    order : int
+        Order of DR filter - see paper. Try 1 first.
+    """
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.azi = 45
-        self.elev = 45
+        self.azi = 45.
+        self.elev = 45.
         self.order = 1
 
         self.gridlayout = QtGui.QGridLayout(self)
@@ -98,10 +113,8 @@ class Gradients(QtGui.QDialog):
         self.label_2.setText("Azimuth")
         self.label_3.setText("Order")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def settings(self):
         """ Settings """
@@ -127,14 +140,21 @@ class Gradients(QtGui.QDialog):
 def gradients(data, azi, elev, order):
     """Compute different gradients of image data
 
-    Args:
-        data (numpy array): input data array
-        azi (float): Filter direction (degrees)
-        elev (float): Elevation (for sunshading, degrees from horizontal)
-        order (int): Order of DR filter - see paper. Try 1 first.
+    Parameters
+    ----------
+    data - numpy array
+        input data array
+    azi - float
+        Filter direction (degrees)
+    elev - float
+        Elevation (for sunshading, degrees from horizontal)
+    order - int
+        Order of DR filter - see paper. Try 1 first.
 
-    Return:
-        float: returns derivative ratio
+    Returns
+    -------
+    dr : float
+        returns derivative ratio
     """
     # Directional derivative
 
@@ -161,7 +181,21 @@ def gradients(data, azi, elev, order):
 
 
 class Visibility2d(QtGui.QDialog):
-    """ Compute visibility as a textural measure """
+    """
+    Class used to gather information via a GUI, for function visibility2d
+
+    Attributes
+    ----------
+    parent : parent
+    indata : dictionary
+        PyGMI input data in a dictionary
+    outdata :
+        PyGMI input data in a dictionary
+    wsize : int
+        window size, must be odd
+    dh : float
+        height of observer above surface
+    """
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
 
@@ -208,10 +242,8 @@ class Visibility2d(QtGui.QDialog):
         self.label.setText("Viewing Height (% std dev)")
         self.label_2.setText("Window Size (Odd)")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def settings(self):
         """ Settings """
@@ -254,18 +286,26 @@ class Visibility2d(QtGui.QDialog):
 
 
 def visibility2d(data, wsize, dh):
-    """Compute visibility as a textural measure
+    """
+    Compute visibility as a textural measure
 
     Compute vertical derivatives by calculating the visibility at different
     heights above the surface (see paper)
 
-    Args:
-        data (numpy array): numpy MxN array
-        wsize (int): window size, must be odd
-        dh (float): height of observer above surface
+    Parameters
+    ----------
+    data : numpy array
+        input dataset - numpy MxN array
+    wsize : int
+        window size, must be odd
+    dh : float
+        height of observer above surface
 
-    Returns:
-        numpy arrays: vtot, vstd, vsum
+    Returns
+    -------
+    vtot : numpy array
+    vstd : numpy array
+    vsum : numpy array
     """
 
     nr, nc = np.shape(data)
@@ -379,7 +419,21 @@ def __visible2(d, nr, cp, dh):
 
 
 class Tilt1(QtGui.QDialog):
-    """ Tilt angle calculations """
+    """
+    Class used to gather information via a GUI, for function tilt1
+
+    Attributes
+    ----------
+    parent : parent
+    indata : dictionary
+        PyGMI input data in a dictionary
+    outdata :
+        PyGMI input data in a dictionary
+    azi : float
+        directional filter azimuth in degrees from East
+    smooth : int
+        size of smoothing matrix to use - must be odd input 0 for no smoothing
+    """
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
 
@@ -427,10 +481,8 @@ class Tilt1(QtGui.QDialog):
         self.label.setText("Azimuth (degrees from east)")
         self.label_2.setText("Smoothing Matrix Size (Odd, 0 for None)")
 
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def settings(self):
         """ Settings """
@@ -474,17 +526,30 @@ class Tilt1(QtGui.QDialog):
 
 
 def tilt1(data, azi, s):
-    """Tilt angle calculations
+    """
+    Tilt angle calculations
 
-    Args:
-        data (numpy array): matrix of double to be filtered
-        azi (float): directional filter azimuth in degrees from East
-        s  (int): size of smoothing matrix to use - must be odd input 0 for
-        no smoothing
+    Parameters
+    ----------
+    data : numpy array
+        matrix of double to be filtered
+    azi : float
+        directional filter azimuth in degrees from East
+    s : int
+        size of smoothing matrix to use - must be odd input 0 for no smoothing
 
-    Return:
-        Standard tilt angle, hyperbolic tilt angle, 2nd order tilt angle,
-        Tilt Based Directional Derivative, Total Derivative
+    Returns
+    -------
+    t1 : numpy masked array
+        Standard tilt angle
+    th : numpy masked array
+        Hyperbolic tilt angle
+    t2 : numpy masked array
+        2nd order tilt angle
+    ta : numpy masked array
+        Tilt Based Directional Derivative
+    tdx : numpy masked array
+        Total Derivative
     """
 
     dmin = data.min()

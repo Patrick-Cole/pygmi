@@ -33,8 +33,18 @@ from ..raster import show_table
 from ..raster import iodefs
 
 
-class MainWidget(object):
-    """ Widget class to call the main interface """
+class MenuWidget(object):
+    """
+    Widget class to call the main interface
+
+    This widget class creates the clustering menus to be found on the main
+    interface. Normal as well as context menus are defined here.
+
+    Attributes
+    ----------
+    parent : MainWidget
+        Reference to MainWidget class found in main.py
+    """
     def __init__(self, parent):
 
         self.parent = parent

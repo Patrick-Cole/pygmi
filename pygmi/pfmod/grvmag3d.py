@@ -45,6 +45,7 @@ from .datatypes import LithModel
 from functools import partial
 import multiprocessing as mp
 from ..ptimer import PTime
+import pdb
 
 if sys.platform.startswith('win'):
     if sys.maxsize > 2**32:
@@ -1085,7 +1086,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
 
-        if abs(np.sum(modind == -1)) < modind.size:
+        if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
             QtGui.QApplication.processEvents()
             i, j, k = np.nonzero(modind == mijk)
             iuni = np.array(np.unique(i)).tolist()
@@ -1110,7 +1111,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             del baba
             del ptmp
 
-        if abs(np.sum(cmodind == -1)) < cmodind.size:
+        if abs(np.sum(cmodind == -1)) < cmodind.size and mijk in cmodind:
             print('subtracting')
             QtGui.QApplication.processEvents()
             i, j, k = np.nonzero(cmodind == mijk)
@@ -1195,6 +1196,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         pbars.maxall()
 
     lmod.clith_index = lmod.lith_index.copy()
+#    pdb.set_trace()
 
     return lmod.griddata
 

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Plot Vector Data """
+""" Plot Vector Data using Matplotlib """
 
 import numpy as np
 from PyQt4 import QtGui, QtCore
@@ -35,8 +35,56 @@ from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as \
     NavigationToolbar
 
 
+class GraphWindow(QtGui.QDialog):
+    """Graph Window - Main QT Dialog class for graphs."""
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent=None)
+        self.parent = parent
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle("Graph Window")
+
+        vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
+        self.hbl = QtGui.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
+
+        self.combobox1 = QtGui.QComboBox(self)
+        self.combobox2 = QtGui.QComboBox(self)
+        self.spinbox = QtGui.QSpinBox(self)
+        self.label1 = QtGui.QLabel(self)
+        self.label2 = QtGui.QLabel(self)
+        self.label3 = QtGui.QLabel(self)
+        self.label1.setText('Bands:')
+        self.label2.setText('Bands:')
+        self.label3.setText('Value:')
+        self.hbl.addWidget(self.label1)
+        self.hbl.addWidget(self.combobox1)
+        self.hbl.addWidget(self.label2)
+        self.hbl.addWidget(self.combobox2)
+        self.hbl.addWidget(self.label3)
+        self.hbl.addWidget(self.spinbox)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(self.hbl)
+
+        self.setFocus()
+
+        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.spinbox.valueChanged.connect(self.change_band)
+
+    def change_band(self):
+        """Combo box to choose band """
+        pass
+
+
 class MyMplCanvas(FigureCanvas):
-    """ MPL Canvas class"""
+    """
+    MPL Canvas class.
+
+    This routine will also allow the pciking and movement of nodes of data."""
     def __init__(self, parent=None):
         # figure stuff
         fig = Figure()
@@ -55,7 +103,7 @@ class MyMplCanvas(FigureCanvas):
                                        self.motion_notify_callback)
 
     def button_release_callback(self, event):
-        """ mouse button release callback """
+        """mouse button release callback """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -63,7 +111,7 @@ class MyMplCanvas(FigureCanvas):
         self.ind = None
 
     def motion_notify_callback(self, event):
-        """ move mouse callback """
+        """move mouse callback """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -82,7 +130,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.update()
 
     def onpick(self, event):
-        """ Picker event """
+        """Picker event """
         if event.mouseevent.inaxes is None:
             return
         if event.mouseevent.button != 1:
@@ -96,7 +144,16 @@ class MyMplCanvas(FigureCanvas):
         return True
 
     def update_line(self, data1, data2):
-        """ Update the plot """
+        """
+        Update the plot from point data.
+
+        Parameters
+        ----------
+        data1 : PData object
+            Point data
+        data2 : PData object
+            Point Data
+        """
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(2, 1, 1)
@@ -114,7 +171,15 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_vector(self, data):
-        """ Update the plot """
+        """
+        Update the plot from vactor data
+
+        Parameters
+        ----------
+        data : VData
+            Vector data. It can either be 'Line' or 'Poly' and typically is
+            imported from a shapefile.
+        """
         self.figure.clear()
 
         self.axes = self.figure.add_subplot(1, 1, 1)
@@ -133,7 +198,18 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_rose(self, data, rtype, nbins=8):
-        """ Update the plot """
+        """
+        Update the rose diagram plot using vector data.
+
+        Parameters
+        ----------
+        data : VData
+            Vector data. It should be 'Line'
+        rtype : int
+            Rose diagram type. Can be either 0 or 1.
+        nbins : int, optional
+            Number of bins used in rose diagram.
+        """
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(121, polar=True)
@@ -206,51 +282,6 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
 
-class GraphWindow(QtGui.QDialog):
-    """ Graph Window - Main QT Dialog class for graphs."""
-    def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent=None)
-        self.parent = parent
-
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Graph Window")
-
-        vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtGui.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
-
-        self.combobox1 = QtGui.QComboBox(self)
-        self.combobox2 = QtGui.QComboBox(self)
-        self.spinbox = QtGui.QSpinBox(self)
-        self.label1 = QtGui.QLabel(self)
-        self.label2 = QtGui.QLabel(self)
-        self.label3 = QtGui.QLabel(self)
-        self.label1.setText('Bands:')
-        self.label2.setText('Bands:')
-        self.label3.setText('Value:')
-        self.hbl.addWidget(self.label1)
-        self.hbl.addWidget(self.combobox1)
-        self.hbl.addWidget(self.label2)
-        self.hbl.addWidget(self.combobox2)
-        self.hbl.addWidget(self.label3)
-        self.hbl.addWidget(self.spinbox)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(self.hbl)
-
-        self.setFocus()
-
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
-        self.spinbox.valueChanged.connect(self.change_band)
-
-    def change_band(self):
-        """ Combo box to choose band """
-        pass
-
-
 class PlotPoints(GraphWindow):
     """ Plot Raster Class """
     def __init__(self, parent):
@@ -279,34 +310,6 @@ class PlotPoints(GraphWindow):
         self.label2.setText('Bottom Profile:')
         self.combobox1.setCurrentIndex(0)
         self.combobox2.setCurrentIndex(1)
-
-
-class PlotVector(GraphWindow):
-    """ Plot Raster Class """
-    def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
-        self.indata = {}
-        self.parent = parent
-        self.combobox1.hide()
-        self.label1.hide()
-        self.combobox2.hide()
-        self.label2.hide()
-        self.spinbox.hide()
-        self.label3.hide()
-
-    def run(self):
-        """ Run """
-        self.show()
-        data = self.indata['Vector']
-        self.mmc.update_vector(data)
-#        for i in data:
-#            self.combobox1.addItem(i.dataid)
-#            self.combobox2.addItem(i.dataid)
-
-#        self.label1.setText('Top Profile:')
-#        self.label2.setText('Bottom Profile:')
-#        self.combobox1.setCurrentIndex(0)
-#        self.combobox2.setCurrentIndex(1)
 
 
 class PlotRose(GraphWindow):
@@ -340,22 +343,61 @@ class PlotRose(GraphWindow):
         self.combobox1.setCurrentIndex(0)
 
 
+class PlotVector(GraphWindow):
+    """ Plot Raster Class """
+    def __init__(self, parent):
+        GraphWindow.__init__(self, parent)
+        self.indata = {}
+        self.parent = parent
+        self.combobox1.hide()
+        self.label1.hide()
+        self.combobox2.hide()
+        self.label2.hide()
+        self.spinbox.hide()
+        self.label3.hide()
+
+    def run(self):
+        """ Run """
+        self.show()
+        data = self.indata['Vector']
+        self.mmc.update_vector(data)
+#        for i in data:
+#            self.combobox1.addItem(i.dataid)
+#            self.combobox2.addItem(i.dataid)
+
+#        self.label1.setText('Top Profile:')
+#        self.label2.setText('Bottom Profile:')
+#        self.combobox1.setCurrentIndex(0)
+#        self.combobox2.setCurrentIndex(1)
+
+
 def histogram(x, y=None, xmin=None, xmax=None, bins=10):
-    """ Calculate histogram of a set of data. It is different from a
+    """
+    Calculate histogram of a set of data. It is different from a
     conventional histogram in that instead of summing elements of
     specific values, this allows the sum of weights/probabilities on a per
     element basis.
 
-    Args:
-        x (numpy array): Input data
-        y (numpy array): Input data weights. A value of 1 is default behaviour
-        xmin (float): Lower value for the bins
-        xmax (float): Upper value for the bins
-        bins (int): number of bins
+    Parameters
+    ----------
+    x : numpy array
+        Input data
+    y : numpy array
+        Input data weights. A value of 1 is default behaviour
+    xmin : float
+        Lower value for the bins
+    xmax : float
+        Upper value for the bins
+    bins : int
+        number of bins
 
-    Returns:
-        hist (numpy array): The values of the histogram
-        bin_edges (numpy array): bin edges of the histogram"""
+    Returns
+    -------
+    hist : numpy array
+        The values of the histogram
+    bin_edges : numpy array
+        bin edges of the histogram
+    """
 
     radii = np.zeros(bins)
     theta = np.zeros(bins+1)

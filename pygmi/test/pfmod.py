@@ -33,7 +33,16 @@ import matplotlib.pyplot as plt
 
 
 def main():
-    """ Main test function """
+    """
+    Main test function
+
+    This test function compares the calculations performed by PyGMI to
+    calculations performed by a external software - namely mag2dc and grav2dc
+    by G.R.J Cooper.
+
+    A series of graphs are produced. If the test is successful, points and
+    lines on the graphs will coincide.
+    """
     print('Testing modelling of gravity and potential field data')
 
     # First initialise variables
@@ -129,7 +138,7 @@ def main():
     mdata = lmod.griddata['Calculated Magnetics'].data[20]
 
     # Display results
-    fig, ax1 = plt.subplots()
+    _, ax1 = plt.subplots()
     ax1.set_xlabel('Distance (m)')
     ax1.plot(xpos+dxy/2, gdata, 'r', label='PyGMI')
     ax1.plot(xpos, g2dc, 'r.', label='Grav2DC')
@@ -145,12 +154,44 @@ def main():
 
 
 def get_int(tmp, row, word):
-    """ gets an int from a list of strings. First row or word is zero """
+    """
+    Gets an int from a list of strings.
+
+    Parameters
+    ----------
+    tmp : list
+        list of strings
+    row : int
+        row in list to extract. First row is 0
+    word : int
+        word to extract from row. First word is 0
+
+    Returns
+    -------
+     output : int
+         return an integer from the row.
+    """
     return int(tmp[row].split()[word])
 
 
 def get_float(tmp, row, word):
-    """ gets a float from a list of strings. First row or word is zero """
+    """
+    Gets a float from a list of strings.
+
+    Parameters
+    ----------
+    tmp : list
+        list of strings
+    row : int
+        row in list to extract. First row is 0
+    word : int
+        word to extract from row. First word is 0
+
+    Returns
+    -------
+     output : float
+         return a float from the row.
+    """
     return float(tmp[row].split()[word])
 
 

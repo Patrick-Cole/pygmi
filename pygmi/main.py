@@ -54,7 +54,7 @@ class Arrow(QtGui.QGraphicsLineItem):
     arrow_head : QPolygonF
         Arrow head polygon.
     my_start_item : DiagramItem
-        Starting DiagramItem object. This will be send info to my_end_item
+        Starting DiagramItem object. This will send information to my_end_item
     my_end_item : DiagramItem
         End DiagramItem object. This will get information from my_start_item
     my_color : QtCore color (default is QtCore.Qt.black)
@@ -74,7 +74,8 @@ class Arrow(QtGui.QGraphicsLineItem):
 
     def boundingRect(self):
         """
-        Overloaded bounding rectangle
+        Overloaded bounding rectangle. This is necessary to ensure that the
+        line and arrowhead are cleaned properly when moving.
 
         Returns
         -------
@@ -86,16 +87,6 @@ class Arrow(QtGui.QGraphicsLineItem):
         tmp = QtCore.QRectF(p1, QtCore.QSizeF(p2.x()-p1.x(), p2.y()-p1.y()))
 
         return tmp.normalized().adjusted(-extra, -extra, extra, extra)
-
-    def end_item(self):
-        """
-        End item reference
-
-        Returns
-        -------
-        my_end_item : object
-        """
-        return self.my_end_item
 
     def paint(self, painter, option, widget=None):
         """
@@ -170,46 +161,6 @@ class Arrow(QtGui.QGraphicsLineItem):
             my_line.translate(0, -8.0)
             painter.drawLine(my_line)
 
-    def set_color(self, color):
-        """
-        Set color
-
-        Parameters
-        ----------
-        color : QtCore color
-        """
-        self.my_color = color
-
-    def shape(self):
-        """
-        Overloaded QGraphicsLineItem Shape.
-
-        Returns
-        -------
-        path : QPainterPath
-        """
-        path = super(Arrow, self).shape()
-        path.addPolygon(self.arrow_head)
-        return path
-
-    def start_item(self):
-        """
-        Start item reference.
-
-        Returns
-        -------
-        my_start_item : object
-        """
-        return self.my_start_item
-
-    def update_position(self):
-        """Update the position of the line joining the two items."""
-        x0, y0 = np.mean(self.my_start_item.np_poly, 0)
-        x1, y1 = np.mean(self.my_end_item.np_poly, 0)
-        line = QtCore.QLineF(self.mapFromItem(self.my_start_item, x0, y0),
-                             self.mapFromItem(self.my_end_item, x1, y1))
-        self.setLine(line)
-
 
 class DiagramItem(QtGui.QGraphicsPolygonItem):
     """
@@ -229,7 +180,7 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
         Flags whether my_class is used to import data
     text_item : None
     my_class_name : str
-        Class name
+        Class name being referenced
     """
     def __init__(self, diagram_type, context_menu, my_class, parent=None,
                  scene=None):
@@ -297,14 +248,20 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
         self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
 
     def add_arrow(self, arrow):
-        """ Add Arrow """
+        """Add Arrow
+
+        Parameters
+        ----------
+        arrow : Arrow
+            Arrow object to add.
+        """
         self.arrows.append(arrow)
 
     def update_indata(self):
-        """ Routine to add datasets """
+        """Routine to add datasets"""
         data = {}
         for i in self.arrows:
-            odata = i.start_item().my_class.outdata
+            odata = i.my_start_item.my_class.outdata
             for j in odata.keys():
                 if j in data:
                     data[j] = data[j] + odata[j]
@@ -316,7 +273,13 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
             self.my_class.data_init()
 
     def contextMenuEvent(self, event):
-        """ Context Menu Event """
+        """
+        Overloaded context menu event
+
+        Parameters
+        ----------
+        event : N/A
+        """
         self.scene().clearSelection()
         self.setSelected(True)
 
@@ -333,16 +296,14 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
         local_menu.addActions(tmp)
         local_menu.exec_(event.screenPos())
 
-    def item_change(self, change, value):
-        """ Item Change """
-        if change == QtGui.QGraphicsItem.ItemPositionChange:
-            for arrow in self.arrows:
-                arrow.update_position()
-
-        return value
-
     def mouseDoubleClickEvent(self, event):
-        """ mouse double click event """
+        """
+        Mouse double click event
+
+        This event is used to activate an item. It does this by calling the
+        settings() method of the item. The event also changes the color of the
+        item to reflect whether it is busy working.
+        """
         self.setBrush(QtGui.QColor(255, 0, 0, 127))
         temp = self.settings()
         if temp is True:
@@ -351,26 +312,36 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
             self.setBrush(self.scene().my_item_color)
 
     def remove_arrow(self, arrow):
-        """ Remove Arrow """
+        """
+        Remove a single Arrow
+
+        Parameters
+        ----------
+        arrow : Arrow
+            Arrow object to remove.
+        """
         try:
             self.arrows.remove(arrow)
         except ValueError:
             pass
 
     def remove_arrows(self):
-        """ Remove Arrows """
+        """Remove Arrows. Uses the remove_arrow method."""
         for arrow in self.arrows[:]:
-            arrow.start_item().remove_arrow(arrow)
-            arrow.end_item().remove_arrow(arrow)
+            arrow.my_start_item.remove_arrow(arrow)
+            arrow.my_end_item.remove_arrow(arrow)
             self.scene().removeItem(arrow)
 
-    def run(self):
-        """ Run this routine """
-        isrun = self.my_class.run()
-        return isrun
-
     def settings(self):
-        """ Routine Settings """
+        """
+        Routine Settings.
+
+        Returns
+        -------
+        iflag : bool
+            Returns a boolean reflecting success of the my_class.settings()
+            method.
+        """
         if self.my_class.indata == {} and self.is_import is False:
             QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Warning',
                                       ' You need to connect data first!',
@@ -388,10 +359,6 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
 
 class DiagramScene(QtGui.QGraphicsScene):
     """ Diagram Scene """
-    itemInserted = QtCore.pyqtSignal(DiagramItem)
-    textInserted = QtCore.pyqtSignal(QtGui.QGraphicsTextItem)
-    itemSelected = QtCore.pyqtSignal(QtGui.QGraphicsItem)
-
     def __init__(self, item_menu, parent):
         super(DiagramScene, self).__init__(parent)
 
@@ -406,25 +373,14 @@ class DiagramScene(QtGui.QGraphicsScene):
         self.my_font = QtGui.QFont()
         self.parent = parent
 
-    def editor_lost_focus(self, item):
-        """ Editor Lost Focus """
-        cursor = item.textCursor()
-        cursor.clearSelection()
-        item.setTextCursor(cursor)
-
-        if item.toPlainText():
-            self.removeItem(item)
-            item.deleteLater()
-
-    def is_item_change(self, ttype):
-        """ Is Item Change """
-        for item in self.selectedItems():
-            if isinstance(item, ttype):
-                return True
-        return False
-
     def mousePressEvent(self, mouse_event):
-        """ Mouse Press Event """
+        """
+        Overloaded Mouse Press Event
+        Parameters
+        ----------
+        mouse_event: QGraphicsSceneMouseEvent
+            mouse event.
+        """
         if mouse_event.button() != QtCore.Qt.LeftButton:
             return
         if self.my_mode == "InsertItem":
@@ -445,7 +401,10 @@ class DiagramScene(QtGui.QGraphicsScene):
         tmp = self.selectedItems()
         if len(tmp) == 0:
             return
-        odata = tmp[0].my_class.outdata
+        try:
+            odata = tmp[0].my_class.outdata
+        except AttributeError:
+            return
         parent = self.parent
         text = ''
         for i in odata.keys():
@@ -459,7 +418,14 @@ class DiagramScene(QtGui.QGraphicsScene):
         parent.showdatainfo(text)
 
     def mouseMoveEvent(self, mouse_event):
-        """ Mouse Move Event """
+        """
+        Overloaded Mouse Move Event
+
+        Parameters
+        ----------
+        mouse_event: QGraphicsSceneMouseEvent
+            mouse event.
+        """
         if self.my_mode == "InsertLine" and self.line:
             new_line = QtCore.QLineF(self.line.line().p1(),
                                      mouse_event.scenePos())
@@ -468,7 +434,14 @@ class DiagramScene(QtGui.QGraphicsScene):
             super(DiagramScene, self).mouseMoveEvent(mouse_event)
 
     def mouseReleaseEvent(self, mouse_event):
-        """ Mouse Release Event """
+        """
+        Overloaded Mouse Release Event
+
+        Parameters
+        ----------
+        mouse_event: QGraphicsSceneMouseEvent
+            mouse event.
+        """
         if self.line and self.my_mode == "InsertLine":
             start_items = self.items(self.line.line().p1())
             if len(start_items) and start_items[0] == self.line:
@@ -487,12 +460,10 @@ class DiagramScene(QtGui.QGraphicsScene):
                 start_item = start_items[-1]
                 end_item = end_items[-1]
                 arrow = Arrow(start_item, end_item)
-                arrow.set_color(self.my_line_color)
                 start_item.add_arrow(arrow)
                 end_item.add_arrow(arrow)
                 arrow.setZValue(-1000.0)
                 self.addItem(arrow)
-                arrow.update_position()
                 end_item.update_indata()
 
         self.line = None
@@ -500,68 +471,22 @@ class DiagramScene(QtGui.QGraphicsScene):
         self.parent.action_pointer.setChecked(True)
         super(DiagramScene, self).mouseReleaseEvent(mouse_event)
 
-    def set_font(self, font):
-        """ Set Font """
-        self.my_font = font
-        if self.isItemChange(DiagramTextItem):
-            item = self.selectedItems()[0]
-            item.setFont(self.my_font)
-
-    def set_item_color(self, color):
-        """ Set Item Color """
-        self.my_item_color = color
-        if self.isItemChange(DiagramItem):
-            item = self.selectedItems()[0]
-            item.setBrush(color)
-
-    def set_item_type(self, ttype):
-        """ Set Item Type """
-        self.my_item_type = ttype
-
-    def set_mode(self, mode):
-        """ Set Mode """
-        self.my_mode = mode
-
-
-class DiagramTextItem(QtGui.QGraphicsTextItem):
-    """ Diagram Text Item """
-    lostFocus = QtCore.pyqtSignal(QtGui.QGraphicsTextItem)
-    selectedChange = QtCore.pyqtSignal(QtGui.QGraphicsItem)
-
-    def __init__(self, parent=None, scene=None):
-        super(DiagramTextItem, self).__init__(parent, scene)
-
-#        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable)
-#        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable)
-
-    def focus_out_event(self, event):
-        """ Focus Out Event """
-        self.setTextInteractionFlags(QtCore.Qt.NoTextInteraction)
-        self.lostFocus.emit(self)
-        super(DiagramTextItem, self).focusOutEvent(event)
-
-    def item_change(self, change, value):
-        """ Item Change """
-        if change == QtGui.QGraphicsItem.ItemSelectedChange:
-            self.selectedChange.emit(self)
-        return value
-
-    def mouse_double_click_event(self, event):
-        """ Mouse Double Click Event """
-        if self.textInteractionFlags() == QtCore.Qt.NoTextInteraction:
-            self.setTextInteractionFlags(QtCore.Qt.TextEditorInteraction)
-        super(DiagramTextItem, self).mouseDoubleClickEvent(event)
-
 
 class MainWidget(QtGui.QMainWindow):
-    """ Widget class to call the main interface """
+    """
+    Widget class to call the main interface
+
+    Attributes
+    ----------
+    pdlg : list
+    context_menu : dictionary
+    """
     def __init__(self, parent=None):
         QtGui.QMainWindow.__init__(self, parent)
 
         ipth = os.path.dirname(menu_default.__file__)+r'/images/'
 
         self.pdlg = []
-#        self.local_menu = QtGui.QMenu()
         self.context_menu = {}
         self.add_to_context('Basic')
 
@@ -577,7 +502,6 @@ class MainWidget(QtGui.QMainWindow):
         self.label = QtGui.QLabel(self.centralwidget)
         self.label_2 = QtGui.QLabel(self.centralwidget)
 
-#        self.action_run = QtGui.QAction(self)
         self.action_delete = QtGui.QAction(self)
         self.action_bring_to_front = QtGui.QAction(self)
         self.action_send_to_back = QtGui.QAction(self)
@@ -600,12 +524,6 @@ class MainWidget(QtGui.QMainWindow):
 
         self.setupui()
 
-#        menus = ['packages.clust.menu',
-#                 'packages.raster.menu',
-#                 'packages.pfmod.menu',
-#                 'packages.point.menu',
-#                 'packages.seis.menu']
-
         menus = []
         for _, modname, _ in pkgutil.walk_packages(
                 path=pygmi.__path__, prefix=pygmi.__name__+'.',
@@ -622,20 +540,16 @@ class MainWidget(QtGui.QMainWindow):
                 continue
             if i[-5:] == '.menu':
                 start.update()
-#                start.update("Loading "+i.rsplit('.')[1]+"...")
                 menuimports.append(importlib.import_module(i))
         start.close()
 
         self.menus = []
         self.menus.append(menu_default.FileMenu(self))
         for i in menuimports:
-            self.menus.append(i.MainWidget(self))
+            self.menus.append(i.MenuWidget(self))
         self.menus.append(menu_default.HelpMenu(self))
 
         self.scene = DiagramScene(self.context_menu['Basic'], self)
-#        self.scene.itemSelected.connect(self.item_selected)
-#        self.scene.itemInserted.connect(self.item_inserted)
-#        self.scene.addPixmap(QtGui.QPixmap('images/logo256.png'))
 
         self.view = self.graphics_view
         self.view.setScene(self.scene)
@@ -646,7 +560,6 @@ class MainWidget(QtGui.QMainWindow):
         self.action_delete.triggered.connect(self.delete_item)
         self.action_bring_to_front.triggered.connect(self.bring_to_front)
         self.action_send_to_back.triggered.connect(self.send_to_back)
-#        self.action_run.triggered.connect(self.run)
 
 # Start of Functions
     def setupui(self):
@@ -685,8 +598,6 @@ class MainWidget(QtGui.QMainWindow):
         self.toolbar.addSeparator()
         self.toolbar.addAction(self.action_pointer)
         self.toolbar.addAction(self.action_linepointer)
-#        self.toolbar.addSeparator()
-#        self.toolbar.addAction(self.action_run)
 
         self.setWindowTitle(
             "PyGMI - Python Geophysical Modelling and Interpretation")
@@ -697,7 +608,6 @@ class MainWidget(QtGui.QMainWindow):
         self.action_send_to_back.setText("Send to Back")
         self.action_pointer.setText("Pointer")
         self.action_linepointer.setText("LinePointer")
-#        self.action_run.setText("Run")
 
         item_menu = self.context_menu['Basic']
         item_menu.addAction(self.action_delete)
@@ -825,20 +735,15 @@ class MainWidget(QtGui.QMainWindow):
                 ifile = ifile[:len(item_name)]+'\n'+ifile[len(item_name):]
             if len(ifile) > 2*len(item_name):
                 ifile = ifile[:2*len(item_name)]+'...\n'
-#            +ifile[len(item_name):]
-#            stmp = '\n'.join(re.findall('.'*18, ifile))
-#            stmp2 = ''.join(re.findall('.'*18, ifile))
-#            item_name += ':\n'+stmp+'\n'+re.split(stmp2, ifile)[-1]
             item_name += ':\n'+ifile
             item_color = QtGui.QColor(0, 255, 0, 127)
 
 # Do text first, since this determines size of polygon
-        text_item = DiagramTextItem()
+#        text_item = DiagramTextItem()
+        text_item = QtGui.QGraphicsTextItem()
         text_item.setPlainText(item_name)
         text_item.setFont(self.scene.my_font)
         text_item.setZValue(1000.0)
-        text_item.lostFocus.connect(self.scene.editor_lost_focus)
-        text_item.selectedChange.connect(self.scene.itemSelected)
         text_item.setDefaultTextColor(self.scene.my_text_color)
 
 # Rectangle for text label
@@ -875,7 +780,7 @@ class MainWidget(QtGui.QMainWindow):
         rect_item.setParentItem(item)
 
 # Enable moving
-        self.scene.set_mode("MoveItem")
+        self.scene.my_mode = "MoveItem"
         return item
 
     def launch_context_item(self, newitem):
@@ -902,11 +807,11 @@ class MainWidget(QtGui.QMainWindow):
 
     def linepointer(self):
         """Select line pointer."""
-        self.scene.set_mode("InsertLine")
+        self.scene.my_mode = "InsertLine"
 
     def pointer(self):
         """Select pointer."""
-        self.scene.set_mode("MoveItem")
+        self.scene.my_mode = "MoveItem"
 
     def process_is_active(self, isactive=True):
         """
@@ -940,7 +845,7 @@ class MainWidget(QtGui.QMainWindow):
             if item.is_import is False:
                 item.settings()
             for i in item.arrows:
-                newitem = i.end_item()
+                newitem = i.my_end_item
                 if newitem != item and newitem not in item_list:
                     item_list.append(newitem)
 
@@ -1036,7 +941,6 @@ class Startup(QtGui.QDialog):
     """ Class to provide a startup display while PyGMI loads into memory """
     def __init__(self, pbarmax, parent=None):
         QtGui.QDialog.__init__(self, parent)
-#        self.setWindowFlags(QtCore.Qt.SplashScreen)
         self.setWindowFlags(QtCore.Qt.ToolTip)
 
         self.gridlayout_main = QtGui.QVBoxLayout(self)
@@ -1052,8 +956,6 @@ class Startup(QtGui.QDialog):
         fnt = QtGui.QFont("Arial", 72, QtGui.QFont.Bold)
         self.label_info.setFont(fnt)
         self.label_info.setText(labeltext)
-#            'Python Geophysical Modelling and Interpretation\n' +
-#            '------------------------------------------------------------')
         self.gridlayout_main.addWidget(self.label_info)
         self.gridlayout_main.addWidget(self.label_pic)
 
@@ -1066,6 +968,7 @@ class Startup(QtGui.QDialog):
         """ Updates the text on the dialog """
         self.pbar.setValue(self.pbar.value() + 1)
         QtGui.QApplication.processEvents()
+
 
 def main():
     """ Main entry point for the PyGMI software. """

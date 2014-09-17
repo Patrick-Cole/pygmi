@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the main raster Data Preparation set of routines """
+""" This is a set of Raster Data Preparation routines """
 
 from PyQt4 import QtGui, QtCore
 import os
@@ -37,7 +37,28 @@ import scipy.interpolate as si
 
 
 def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
-    """ data to gdal mem format """
+    """
+    Data to GDAL mem format
+
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI Dataset
+    gtr : tuple
+        Geotransform
+    wkt : str
+        Projection in wkt (well known text) format
+    cols : int
+        columns
+    rows : int
+        rows
+    nodata : bool, optional
+        no data
+
+    Returns
+    -------
+    src - GDAL mem format
+    """
     data.data = np.ma.array(data.data)
     dtype = data.data.dtype
 # Get rid of array() which can break driver.create later
@@ -72,7 +93,16 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
 
 
 def gdal_to_dat(dest, bandid='Data'):
-    """ Gdal to dat format """
+    """
+    GDAL to Data format
+
+    Parameters
+    ----------
+    dest - GDAL format
+        GDAL format
+    bandid - str
+        band identity
+    """
     dat = Data()
     gtr = dest.GetGeoTransform()
 

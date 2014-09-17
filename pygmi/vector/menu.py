@@ -29,8 +29,18 @@ from . import iodefs
 from . import graphs
 
 
-class MainWidget(object):
-    """ Widget class to call the main interface """
+class MenuWidget(object):
+    """
+    Widget class to call the main interface
+
+    This widget class creates the vector menus to be found on the main
+    interface. Normal as well as context menus are defined here.
+
+    Attributes
+    ----------
+    parent : MainWidget
+        Reference to MainWidget class found in main.py
+    """
     def __init__(self, parent):
 
         self.parent = parent
@@ -86,16 +96,16 @@ class MainWidget(object):
         self.action_show_rose_diagram.triggered.connect(self.show_rose_diagram)
 
     def export_point(self):
-        """ Show raster data """
+        """ Export point data """
         self.parent.launch_context_item(iodefs.ExportPoint)
 
     def import_point_data(self):
-        """ Imports data"""
+        """ Import point data"""
         fnc = iodefs.ImportPointData(self.parent)
         self.parent.item_insert("Io", "Import Point/Line Data", fnc)
 
     def import_shape_data(self):
-        """ Imports data"""
+        """ Import shape data"""
         fnc = iodefs.ImportShapeData(self.parent)
         self.parent.item_insert("Io", "Import Shapefile Data", fnc)
 
@@ -105,13 +115,13 @@ class MainWidget(object):
         self.parent.item_insert("Io", "Import LEMI-417 Data", fnc)
 
     def show_point_data(self):
-        """ Show raster data """
+        """ Show point data """
         self.parent.launch_context_item(graphs.PlotPoints)
 
     def show_vector_data(self):
-        """ Show raster data """
+        """ Show vector data """
         self.parent.launch_context_item(graphs.PlotVector)
 
     def show_rose_diagram(self):
-        """ Show raster data """
+        """ Show rose diagram """
         self.parent.launch_context_item(graphs.PlotRose)

@@ -33,31 +33,37 @@ import os
 
 
 class ImportLEMI417Data(object):
-    """ Import LEMI-417 MT Data
+    """
+    Import LEMI-417 ASCII MT Data
 
-    This is a class used to import LEMI-417 MT Data in ASCII format."""
+    This is a class used to import LEMI-417 MT Data in ASCII format.
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
-        self.ifile = ""
         self.name = "Import LEMI-417 Data: "
-        self.ext = ""
         self.pbar = None
         self.parent = parent
-        self.indata = {}
         self.outdata = {}
 
     def settings(self):
-        """ Settings section"""
-        ext = \
-            "LEMI-417 Text DataAll Files (*.t*)"
+        """Entry point into item. Data imported from here."""
+        ext = "LEMI-417 Text DataAll Files (*.t*)"
 
         filename = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
-
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
 
         datatmp = np.loadtxt(filename, unpack=True)
 
@@ -81,32 +87,38 @@ class ImportLEMI417Data(object):
 
 
 class ImportPointData(object):
-    """ Import Point Data
+    """
+    Import Point Data
 
-    This class imports ASCII point data."""
+    This class imports ASCII point data.
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
-        self.ifile = ""
         self.name = "Import Point/Line Data: "
-        self.ext = ""
         self.pbar = None
         self.parent = parent
-        self.indata = {}
         self.outdata = {}
 
     def settings(self):
-        """ Settings """
-        ext = \
-            "Common Formats (*.csv *.dat *.xyz *.txt);;" +\
-            "All Files (*.*)"
+        """Entry point into item. Data imported from here."""
+        ext = ("Common Formats (*.csv *.dat *.xyz *.txt);;"
+               "All Files (*.*)")
 
         filename = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
-
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
 
         tmp = QtGui.QMessageBox.question(self.parent, 'Data Query',
                                          'Are the first two columns X and Y?',
@@ -157,58 +169,36 @@ class ImportPointData(object):
         self.outdata['Point'] = dat
         return True
 
-#    def gdal(self):
-#        """ Process """
-#        dat = []
-#        bname = self.ifile.split('/')[-1].rpartition('.')[0]+': '
-#        ifile = self.ifile[:]
-#        if self.ext == 'hdr':
-#            ifile = self.ifile[:-4]
-#
-#        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-#        gtr = dataset.GetGeoTransform()
-#
-#        for i in range(dataset.RasterCount):
-#            rtmp = dataset.GetRasterBand(i+1)
-#            dat.append(Data())
-#            dat[i].data = np.ma.array(rtmp.ReadAsArray())
-#            dat[i].data[dat[i].data == rtmp.GetNoDataValue()] = np.nan
-#            dat[i].data = np.ma.masked_invalid(dat[i].data)
-#
-#            dat[i].nrofbands = dataset.RasterCount
-#            dat[i].tlx = gtr[0]
-#            dat[i].tly = gtr[3]
-#            dat[i].bandid = bname+str(i+1)
-#            dat[i].nullvalue = rtmp.GetNoDataValue()
-#            dat[i].rows = dataset.RasterYSize
-#            dat[i].cols = dataset.RasterXSize
-#            dat[i].xdim = abs(gtr[1])
-#            dat[i].ydim = abs(gtr[5])
-#            dat[i].gtr = gtr
-#            dat[i].wkt = dataset.GetProjection()
-#
-#        self.outdata['Raster'] = dat
-
 
 class ExportPoint(object):
-    """ Export Data """
+    """
+    Export Point Data
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    showtext : text output
+        reference to the show process log text output on the main interface
+    """
+
     def __init__(self, parent):
-        self.ifile = ""
         self.name = "Export Point: "
-        self.ext = ""
         self.pbar = None
         self.parent = parent
         self.indata = {}
-        self.outdata = {}
-        self.lmod = None
-#        self.dirname = ""
         self.showtext = self.parent.showprocesslog
 
     def run(self):
-        """ Show Info """
+        """ Runs routine """
         if 'Point' not in self.indata:
-            self.parent.showprocesslog(
-                'Error: You need to have a point data first!')
+            self.showtext('Error: You need to have a point data first!')
             return
 
         data = self.indata['Point']
@@ -221,7 +211,7 @@ class ExportPoint(object):
 
         os.chdir(filename.rpartition('/')[0])
         ofile = str(filename.rpartition('/')[-1][:-4])
-        self.ext = filename[-3:]
+#        self.ext = filename[-3:]
 
         for i in range(len(data)):
             datid = data[i].dataid
@@ -237,18 +227,28 @@ class ExportPoint(object):
 
 
 class ImportShapeData(object):
-    """ Import Data """
+    """
+    Import Shapefile Data
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
-        self.ifile = ""
         self.name = "Import Shapefile Data: "
-        self.ext = ""
         self.pbar = None
         self.parent = parent
-        self.indata = {}
         self.outdata = {}
 
     def settings(self):
-        """ Settings """
+        """Entry point into item. Data imported from here."""
         ext = \
             "Shapefile (*.shp);;" +\
             "All Files (*.*)"
@@ -259,11 +259,10 @@ class ImportShapeData(object):
             return False
         os.chdir(filename.rpartition('/')[0])
 
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
+        ifile = str(filename)
 
         # Line data
-        shapef = ogr.Open(self.ifile)
+        shapef = ogr.Open(ifile)
         lyr = shapef.GetLayer()
         dat = VData()
         attrib = {}

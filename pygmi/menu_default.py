@@ -83,40 +83,32 @@ class HelpMenu(object):
         self.action_help.triggered.connect(self.help)
 
     def about(self):
-        """ About Box """
+        """ PyGMI About Box """
 
-        msg = (' Name:         PyGMI - Python Geophysical Modelling and '
-               'Interpretation \r\n'
-               ' Author:       Patrick Cole\r\n'
-               ' E-Mail:        pcole@geoscience.org.za\r\n'
-               '\r\n'
-               ' Copyright:    (c) 2013 Council for Geoscience\r\n'
-               ' Licence:       GPL-3.0\r\n'
-               '\r\n'
-               ' PyGMI is free software: you can redistribute it and/or '
-               'modify\r\n'
-               ' it under the terms of the GNU General Public License as '
-               'published by\r\n'
-               ' the Free Software Foundation, either version 3 of the '
-               'License, or\r\n'
-               ' (at your option) any later version.\r\n'
-               '\r\n'
-               ' PyGMI is distributed in the hope that it will be '
-               'useful,\r\n'
-               ' but WITHOUT ANY WARRANTY; without even the implied '
-               'warranty of\r\n'
-               ' MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  '
-               'See the\r\n'
-               ' GNU General Public License for more details.\r\n'
-               '\r\n'
-               ' You should have received a copy of the GNU General '
-               'Public License\r\n'
-               ' along with this program.  If not, see '
-               'http://www.gnu.org/licenses/')
+        msg = '''\
+Name:         PyGMI - Python Geophysical Modelling and Interpretation
+Author:       Patrick Cole
+E-Mail:       pcole@geoscience.org.za
+
+Copyright:    (c) 2013 Council for Geoscience
+Licence:      GPL-3.0
+
+PyGMI is free software: you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option)
+any later version.
+
+PyGMI is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along
+with this program. If not, see http://www.gnu.org/licenses/'''
 
         QtGui.QMessageBox.about(self.parent, 'PyGMI', msg)
 
     def help(self):
         """ Help File"""
-        webbrowser.open(r'https://code.google.com/p/pygmi/wiki/' +
+        webbrowser.open(r'https://code.google.com/p/pygmi/wiki/'
                         'TableOfContents')
