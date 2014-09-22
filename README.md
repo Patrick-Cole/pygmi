@@ -1,5 +1,5 @@
-##Notice at 4 September 2014
-Note that I have started to use Python 3.4.1. This affects especially windows users, who must now adopt that version of python. Other operating systems should still be fine with whatever they are using, but if you do have problems, you can check the requirements below.
+##Notice at 22 September 2014
+PyGMI release 2.2.2 is now out! It contains numerous bugfixes including some relating to the multiprocessing modifications to the potential field calculations. Please make sure you are using this version.
 
 #PyGMI Readme
 

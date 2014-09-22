@@ -9,3 +9,4 @@ build/
 *.cmd
 grvmagc_*.html
 .spyderproject
+log.txt
