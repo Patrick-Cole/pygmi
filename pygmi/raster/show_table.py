@@ -111,17 +111,18 @@ class BasicStats(QtGui.QDialog):
         stats = []
         for i in data:
             srow = []
-            srow.append(i.data.min())
-            srow.append(i.data.max())
-            srow.append(i.data.mean())
-            srow.append(i.data.std())
-            srow.append(np.median(i.data))
-            srow.append(np.median(abs(i.data - srow[-1])))
+            dtmp = i.data.compressed()
+            srow.append(dtmp.min())
+            srow.append(dtmp.max())
+            srow.append(dtmp.mean())
+            srow.append(dtmp.std())
+            srow.append(np.median(dtmp))
+            srow.append(np.median(abs(dtmp - srow[-1])))
             srow.append(i.data.size)
             srow.append(i.data.shape[1])
             srow.append(i.data.shape[0])
-            srow.append(st.skew(i.data.flatten()))
-            srow.append(st.kurtosis(i.data.flatten()))
+            srow.append(st.skew(dtmp))
+            srow.append(st.kurtosis(dtmp))
             srow = np.array(srow).tolist()
             stats.append([i.bandid] + srow)
 

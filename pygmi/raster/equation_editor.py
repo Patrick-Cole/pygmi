@@ -109,6 +109,11 @@ class EquationEditor(QtGui.QDialog):
         self.pushbutton_lbracket.clicked.connect(self.lbracket)
         self.pushbutton_useband.clicked.connect(self.useband)
 #        self.combobox.currentIndexChanged.connect(self.combo)
+        self.textbrowser.textChanged.connect(self.textchanged)
+
+    def textchanged(self):
+        """ Text Changed """
+        self.equation = self.textbrowser.toPlainText()
 
     def setupui(self):
         """ Setup UI """
@@ -209,6 +214,7 @@ class EquationEditor(QtGui.QDialog):
         """ backspace """
         self.equation = self.equation[:-1]
         self.textbrowser.setText(self.equation)
+        print('backspace')
 
     def useband(self):
         """ use band """
@@ -378,6 +384,8 @@ class EquationEditor(QtGui.QDialog):
 
         if temp == 0:
             return
+
+        self.equation = self.textbrowser.toPlainText()
 
         if self.equation == '':
             return
