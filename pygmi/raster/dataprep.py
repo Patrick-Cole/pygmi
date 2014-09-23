@@ -207,7 +207,21 @@ def cluster_to_raster(indata):
 
 
 class DataMerge(QtGui.QDialog):
-    """ Merge """
+    """
+    Data Merge
+
+    This class merges datasets which have different rows and columns. It
+    resamples them so that they have the same rows and columns.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
@@ -248,17 +262,14 @@ class DataMerge(QtGui.QDialog):
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
         self.gridlayout_main.addWidget(self.buttonbox, 3, 0, 1, 4)
-#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-#                               self.reject)
-#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-#                               self.accept)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
     def dxy_change(self):
-        """ update dxy """
+        """ Update dxy - which is the size of a grid cell in the x and y
+        directions."""
         data = self.indata['Raster'][0]
         dxy = self.dsb_dxy.value()
 
@@ -296,7 +307,10 @@ class DataMerge(QtGui.QDialog):
         return tmp
 
     def acceptall(self):
-        """ accept """
+        """
+        This routine is called by settings() if accept is pressed. It contains
+        the main merge routine.
+        """
         dxy = self.dsb_dxy.value()
         data = self.indata['Raster'][0]
         orig_wkt = data.wkt
@@ -349,7 +363,20 @@ class DataMerge(QtGui.QDialog):
 
 
 class DataReproj(QtGui.QDialog):
-    """ Reprojections """
+    """
+    Reprojections
+
+    This class reprojects datasets using the GDAL routines.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
@@ -593,7 +620,10 @@ class DataReproj(QtGui.QDialog):
         self.out_epsg()
 
     def acceptall(self):
-        """ accept """
+        """
+        This routine is called by settings() if accept is pressed. It contains
+        the main routine.
+        """
 
 # Input stuff
         if self.cb_inp_epsg.isChecked():
@@ -941,10 +971,32 @@ class DataReproj(QtGui.QDialog):
 
 
 class DataCut(object):
-    """ Cut Data using shapefiles """
+    """
+    Cut Data using shapefiles
+
+    This class cuts raster datasets using a boundary defined by a polygon
+    shapefile.
+
+    Attributes
+    ----------
+    ifile : str
+        input file name.
+    name : str
+        item name
+    ext : str
+        file name extension.
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent):
         self.ifile = ""
-        self.name = "Cut Data: "
+        self.name = "Cut Data:"
         self.ext = ""
         self.pbar = None
         self.parent = parent
@@ -1108,7 +1160,28 @@ def trim_raster(olddata):
 
 
 class GetProf(object):
-    """ Get Prof """
+    """
+    Get a Profile
+
+    This class extracts a profile from a raster dataset using a line shapefile.
+
+    Attributes
+    ----------
+    ifile : str
+        input file name.
+    name : str
+        item name
+    ext : str
+        file name extension.
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent):
         self.ifile = ""
         self.name = "Get Profile: "
@@ -1187,7 +1260,27 @@ class GetProf(object):
 
 
 class Metadata(QtGui.QDialog):
-    """ Metadata """
+    """
+    Edit Metadata
+
+    This class allows the editing of teh metadata for a raster dataset using a
+    GUI.
+
+    Attributes
+    ----------
+    name : oldtxt
+        old text
+    banddata : dictionary
+        band data
+    bandid : dictionary
+        dictionary of strings containing band names.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
@@ -1313,16 +1406,14 @@ class Metadata(QtGui.QDialog):
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
-#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-#                               self.reject)
-#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-#                               self.accept)
-
         self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
-        """ accept """
+        """
+        This routine is called by settings() if accept is pressed. It contains
+        the main routine.
+        """
         self.update_vals()
         for tmp in self.indata['Raster']:
             for j in self.bandid.items():
@@ -1400,7 +1491,7 @@ class Metadata(QtGui.QDialog):
         self.led_units.setText(str(idata.units))
 
     def run(self):
-        """ Settings """
+        """ Entrypoint to start this routine """
         bandid = []
         for i in self.indata['Raster']:
             bandid.append(i.bandid)
@@ -1453,7 +1544,20 @@ class Metadata(QtGui.QDialog):
 
 
 class DataGrid(QtGui.QDialog):
-    """ Grid Point Data """
+    """
+    Grid Point Data
+
+    This class grids point data using a nearest neighbourhood technique.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
@@ -1496,11 +1600,6 @@ class DataGrid(QtGui.QDialog):
         self.gridlayout_main.addWidget(self.buttonbox, 3, 0, 1, 4)
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
-
-#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-#                               self.reject)
-#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-#                               self.accept)
 
 #        self.buttonbox.accepted.connect(self.acceptall)
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
@@ -1582,4 +1681,3 @@ class DataGrid(QtGui.QDialog):
 
         self.outdata['Raster'] = newdat
         self.outdata['Point'] = self.indata['Point']
-#        self.accept()
