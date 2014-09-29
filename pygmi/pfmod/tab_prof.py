@@ -124,6 +124,8 @@ class ProfileDisplay(object):
         self.dsb_axis_custmax.setValue(50.)
         self.dsb_axis_custmin.setMinimum(-1000000.)
         self.dsb_axis_custmin.setMaximum(1000000.)
+        self.dsb_axis_custmax.setMinimum(-1000000.)
+        self.dsb_axis_custmax.setMaximum(1000000.)
 
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
