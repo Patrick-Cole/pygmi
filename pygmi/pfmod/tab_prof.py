@@ -68,6 +68,10 @@ class ProfileDisplay(object):
         self.rb_axis_datamax = QtGui.QRadioButton(self.groupbox)
         self.rb_axis_profmax = QtGui.QRadioButton(self.groupbox)
         self.rb_axis_calcmax = QtGui.QRadioButton(self.groupbox)
+        self.rb_axis_custmax = QtGui.QRadioButton(self.groupbox)
+
+        self.dsb_axis_custmin = QtGui.QDoubleSpinBox(self.groupbox)
+        self.dsb_axis_custmax = QtGui.QDoubleSpinBox(self.groupbox)
 
         self.groupbox3 = QtGui.QGroupBox(self.toolboxpage1)
         self.sb_profile_linethick = QtGui.QSpinBox(self.toolboxpage1)
@@ -113,6 +117,14 @@ class ProfileDisplay(object):
         self.verticallayout.addWidget(self.rb_axis_datamax)
         self.verticallayout.addWidget(self.rb_axis_profmax)
         self.verticallayout.addWidget(self.rb_axis_calcmax)
+        self.verticallayout.addWidget(self.rb_axis_custmax)
+        self.verticallayout.addWidget(self.dsb_axis_custmin)
+        self.verticallayout.addWidget(self.dsb_axis_custmax)
+        self.dsb_axis_custmin.setValue(0.)
+        self.dsb_axis_custmax.setValue(50.)
+        self.dsb_axis_custmin.setMinimum(-1000000.)
+        self.dsb_axis_custmin.setMaximum(1000000.)
+
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
 
@@ -136,6 +148,7 @@ class ProfileDisplay(object):
         self.rb_axis_datamax.setText("Scale to dataset maximum")
         self.rb_axis_profmax.setText("Scale to profile maximum")
         self.rb_axis_calcmax.setText("Scale to calculated maximum")
+        self.rb_axis_custmax.setText("Scale to custom maximum")
         self.sb_profile_linethick.setPrefix("Line Thickness: ")
         self.toolbox.setItemText(self.toolbox.indexOf(self.toolboxpage1),
                                  "General")
@@ -157,6 +170,9 @@ class ProfileDisplay(object):
         self.rb_axis_calcmax.clicked.connect(self.rb_plot_scale)
         self.rb_axis_profmax.clicked.connect(self.rb_plot_scale)
         self.rb_axis_datamax.clicked.connect(self.rb_plot_scale)
+        self.rb_axis_custmax.clicked.connect(self.rb_plot_scale)
+        self.dsb_axis_custmin.valueChanged.connect(self.rb_plot_scale)
+        self.dsb_axis_custmax.valueChanged.connect(self.rb_plot_scale)
         self.pb_export_csv.clicked.connect(self.export_csv)
         self.hs_ppic_opacity.valueChanged.connect(self.profpic_hs)
         self.combo_profpic.currentIndexChanged.connect(self.profpic_hs)
@@ -469,10 +485,13 @@ class ProfileDisplay(object):
 #            self.mmc.update_line(self.lmod1.yrange, [alt, alt])
             extent = self.lmod1.yrange
 
-        if self.rb_axis_datamax.isChecked():
-            extent = list(extent)+[data.min(), data.max()]
-        else:
+        if self.rb_axis_calcmax.isChecked():
             extent = list(extent)+[tmpprof.min(), tmpprof.max()]
+        elif self.rb_axis_custmax.isChecked():
+            extent = list(extent)+[self.dsb_axis_custmin.value(),
+                                   self.dsb_axis_custmax.value()]
+        else:
+            extent = list(extent)+[data.min(), data.max()]
 
 # Load in observed data - if there is any
         data2 = None
