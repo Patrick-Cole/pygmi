@@ -342,7 +342,9 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
             Returns a boolean reflecting success of the my_class.settings()
             method.
         """
-        if self.my_class.indata == {} and self.is_import is False:
+        if self.is_import is True:
+            pass
+        elif self.my_class.indata == {} and self.is_import is False:
             QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Warning',
                                       ' You need to connect data first!',
                                       QtGui.QMessageBox.Ok,

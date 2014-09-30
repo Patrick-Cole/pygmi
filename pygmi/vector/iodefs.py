@@ -48,12 +48,15 @@ class ImportLEMI417Data(object):
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
     """
     def __init__(self, parent=None):
         self.name = "Import LEMI-417 Data: "
         self.pbar = None
         self.parent = parent
         self.outdata = {}
+        self.ifile = ""
 
     def settings(self):
         """Entry point into item. Data imported from here."""
@@ -64,6 +67,7 @@ class ImportLEMI417Data(object):
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
+        self.ifile = str(filename)
 
         datatmp = np.loadtxt(filename, unpack=True)
 
@@ -102,12 +106,17 @@ class ImportPointData(object):
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
     """
     def __init__(self, parent=None):
         self.name = "Import Point/Line Data: "
         self.pbar = None
         self.parent = parent
+        self.indata = {}
         self.outdata = {}
+        self.ifile = ""
+
 
     def settings(self):
         """Entry point into item. Data imported from here."""
@@ -119,6 +128,7 @@ class ImportPointData(object):
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
+        self.ifile = str(filename)
 
         tmp = QtGui.QMessageBox.question(self.parent, 'Data Query',
                                          'Are the first two columns X and Y?',
@@ -142,15 +152,17 @@ class ImportPointData(object):
         else:
             ltmp = [str(c) for c in range(len(ltmp))]
 
-        try:
-            datatmp = np.loadtxt(filename, unpack=True, delimiter=dlim,
-                                 skiprows=srows)
-        except ValueError:
-            QtGui.QMessageBox.critical(self.parent, 'Import Error',
-                                       'There was a problem loading the file.'
-                                       ' You may have a text character in one'
-                                       ' of your columns.')
-            return False
+        datatmp = np.genfromtxt(filename, unpack=True, delimiter=dlim,
+                                skiprows=srows, usemask=True)
+#        try:
+#            datatmp = np.loadtxt(filename, unpack=True, delimiter=dlim,
+#                                 skiprows=srows)
+#        except ValueError:
+#            QtGui.QMessageBox.critical(self.parent, 'Import Error',
+#                                       'There was a problem loading the file.'
+#                                       ' You may have a text character in one'
+#                                       ' of your columns.')
+#            return False
 
         dat = []
         if tmp == QtGui.QMessageBox.Yes:
@@ -240,12 +252,15 @@ class ImportShapeData(object):
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
     """
     def __init__(self, parent=None):
         self.name = "Import Shapefile Data: "
         self.pbar = None
         self.parent = parent
         self.outdata = {}
+        self.ifile = ""
 
     def settings(self):
         """Entry point into item. Data imported from here."""
@@ -258,6 +273,7 @@ class ImportShapeData(object):
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
+        self.ifile = str(filename)
 
         ifile = str(filename)
 

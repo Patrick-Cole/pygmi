@@ -1570,6 +1570,7 @@ class DataGrid(QtGui.QDialog):
         self.dsb_dxy = QtGui.QDoubleSpinBox(self)
         self.label_rows = QtGui.QLabel(self)
         self.label_cols = QtGui.QLabel(self)
+        self.bandid = QtGui.QComboBox(self)
 
         self.setupui()
 
@@ -1592,12 +1593,17 @@ class DataGrid(QtGui.QDialog):
         self.dsb_dxy.setDecimals(5)
         self.gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
 
+        label_band = QtGui.QLabel(self)
+        label_band.setText("Column to Grid:")
+        self.gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
+        self.gridlayout_main.addWidget(self.bandid, 3, 1, 1, 1)
+
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setCenterButtons(True)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
-        self.gridlayout_main.addWidget(self.buttonbox, 3, 0, 1, 4)
+        self.gridlayout_main.addWidget(self.buttonbox, 4, 0, 1, 4)
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
@@ -1619,18 +1625,25 @@ class DataGrid(QtGui.QDialog):
 
     def settings(self):
         """ Settings """
+        tmp = []
+        for i in self.indata['Point']:
+            tmp.append(i.dataid)
+
+        self.bandid.addItems(tmp)
+
         data = self.indata['Point'][0]
         x = data.xdata
         y = data.ydata
-        xy = np.transpose([x, y])
-        xy = xy.tolist()
-#        xy.sort()
-        xy = np.array(xy)
-        xy = xy[:-1]-xy[1:]
-        dxy = np.median(np.sqrt(np.sum(xy**2, 1)))/3
 
-#        pd = sd.pdist(xy)
-#        dxy = np.median(pd)/3
+        dx = x.ptp()/np.sqrt(x.size)
+        dy = y.ptp()/np.sqrt(y.size)
+        dxy = max(dx, dy)
+
+#        xy = np.transpose([x, y])
+#        xy = xy.tolist()
+#        xy = np.array(xy)
+#        xy = xy[:-1]-xy[1:]
+#        dxy = np.median(np.sqrt(np.sum(xy**2, 1)))/3
 
         self.dsb_dxy.setValue(dxy)
         self.dxy_change()
@@ -1647,37 +1660,114 @@ class DataGrid(QtGui.QDialog):
         dxy = self.dsb_dxy.value()
         data = self.indata['Point'][0]
 
-        x = data.xdata
-        y = data.ydata
-
-        xy = np.transpose([x, y])
-        x2 = np.arange(x.min(), x.max(), dxy)
-        y2 = np.arange(y.min(), y.max(), dxy)
-
-        xnew, ynew = np.meshgrid(x2, y2)
-
         newdat = []
         for data in self.indata['Point']:
+            if data.dataid != self.bandid.currentText():
+                continue
+            x = data.xdata
+            y = data.ydata
             z = data.zdata
-            tmp = si.griddata(xy, z, (xnew, ynew))
-            tmp = np.ma.masked_invalid(tmp)
+            self.parent.showprocesslog
+            tmp = quickgrid(x, y, z, dxy, showtext=self.parent.showprocesslog)
             mask = tmp.mask
             gdat = tmp.data
-#            rbf = si.Rbf(x, y, z, epsilon=dxy)
-#            gdat = rbf(xnew, ynew)
 
     # Create dataset
             dat = Data()
             dat.data = np.ma.masked_invalid(gdat[::-1])
             dat.data.mask = mask[::-1]
             dat.rows, dat.cols = gdat.shape
-            dat.nullvalue = np.nan
+            dat.nullvalue = dat.data.fill_value
             dat.bandid = data.dataid
-            dat.tlx = x2[0]-dxy/2
-            dat.tly = y2[-1]+dxy/2
+            dat.tlx = x.min()
+            dat.tly = y.max()
             dat.xdim = dxy
             dat.ydim = dxy
             newdat.append(dat)
 
         self.outdata['Raster'] = newdat
         self.outdata['Point'] = self.indata['Point']
+
+
+def quickgrid(x, y, z, dxy, showtext=None, numits=4):
+    """
+    Do a quick grid
+
+    Parameters
+    ----------
+    x : numpy array
+        array of x coordinates
+    y : numpy array
+        array of y coordinates
+    z : numpy array
+        array of z values - this is the column being gridded
+    dxy : float
+        cell size for the grid, in both the x and y direction.
+    showtext : module, optional
+        showtext provided an alternative to print
+    numits : int
+        number of iterations. By default its 4. If this is negative, a maximum
+        numits will be calculated and used.
+
+    Returns
+    -------
+    newz : numpy array
+        M x N array of z values
+    """
+
+    if showtext is None:
+        showtext = print
+
+    showtext('Creating Grid')
+
+    xmin = x.min()
+    xmax = x.max()
+    ymin = y.min()
+    ymax = y.max()
+    newmask = np.array([1])
+    j = -1
+    rows = int((ymax-ymin)/dxy)+1
+    cols = int((xmax-xmin)/dxy)+1
+
+    if numits < 1:
+        numits = int(max(np.log2(cols), np.log2(rows)))
+
+    while newmask.max() > 0 and j < (numits-1):
+        j += 1
+        jj = 2**j
+        dxy2 = dxy*jj
+        rows = int((ymax-ymin)/dxy2)+1
+        cols = int((xmax-xmin)/dxy2)+1
+
+        newz = np.zeros([rows, cols])
+        zdiv = np.zeros([rows, cols])
+
+        xindex = ((x-xmin)/dxy2).astype(int)
+        yindex = ((y-ymin)/dxy2).astype(int)
+
+        for i in range(z.size):
+            newz[yindex[i], xindex[i]] += z[i]
+            zdiv[yindex[i], xindex[i]] += 1
+
+        filt = zdiv > 0
+        newz[filt] = newz[filt]/zdiv[filt]
+
+        if j == 0:
+            newmask = np.ones([rows, cols])
+            for i in range(z.size):
+                newmask[yindex[i], xindex[i]] = 0
+            zfin = newz
+        else:
+            xx, yy = np.nonzero(newmask)
+            xx2 = xx//jj
+            yy2 = yy//jj
+            zfin[xx, yy] = newz[xx2, yy2]
+            newmask[xx, yy] = np.logical_not(zdiv[xx2, yy2])
+
+        showtext('Iteration done: '+str(j+1)+' of '+str(numits))
+
+    showtext('Finished!')
+
+    newz = np.ma.array(zfin)
+    newz.mask = newmask
+    return newz
