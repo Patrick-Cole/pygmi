@@ -267,7 +267,7 @@ class PlotRaster(GraphWindow):
             data = self.indata['ProfPic']
 
         for i in data:
-            self.combobox1.addItem(i.bandid)
+            self.combobox1.addItem(i.dataid)
         self.change_band()
 
 
@@ -299,7 +299,7 @@ class PlotMembership(GraphWindow):
 
         self.show()
         for i in data:
-            self.combobox1.addItem(i.bandid)
+            self.combobox1.addItem(i.dataid)
 
         self.change_band()
 

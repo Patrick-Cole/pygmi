@@ -127,7 +127,7 @@ def gdal_to_dat(dest, bandid='Data'):
     dat.nrofbands = dest.RasterCount
     dat.tlx = gtr[0]
     dat.tly = gtr[3]
-    dat.bandid = bandid
+    dat.dataid = bandid
     dat.nullvalue = nval
     dat.rows = dest.RasterYSize
     dat.cols = dest.RasterXSize
@@ -348,7 +348,7 @@ class DataMerge(QtGui.QDialog):
             gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt,
                                 gdal.GRA_Bilinear)
 
-            dat.append(gdal_to_dat(dest, data.bandid))
+            dat.append(gdal_to_dat(dest, data.dataid))
             dat[-1].data += doffset
 
 #        mask = dat[-1].data.mask
@@ -698,7 +698,7 @@ class DataReproj(QtGui.QDialog):
             gdal.ReprojectImage(src, dest, orig_wkt, targ_wkt,
                                 gdal.GRA_Bilinear)
 
-            data2 = gdal_to_dat(dest, data.bandid)
+            data2 = gdal_to_dat(dest, data.dataid)
             if datamin <= 0:
                 data2.data = data2.data+(datamin-1)
             mask = data2.data.mask
@@ -1252,7 +1252,7 @@ class GetProf(object):
             allpoints[-1].xdata = xxx
             allpoints[-1].ydata = yyy
             allpoints[-1].zdata = tmpprof
-            allpoints[-1].dataid = idata.bandid
+            allpoints[-1].dataid = idata.dataid
 
         self.outdata['Point'] = allpoints
 
@@ -1287,7 +1287,7 @@ class Metadata(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.banddata = {}
-        self.bandid = {}
+        self.dataid = {}
         self.oldtxt = ''
         self.parent = parent
 
@@ -1416,10 +1416,10 @@ class Metadata(QtGui.QDialog):
         """
         self.update_vals()
         for tmp in self.indata['Raster']:
-            for j in self.bandid.items():
-                if j[1] == tmp.bandid:
+            for j in self.dataid.items():
+                if j[1] == tmp.dataid:
                     i = self.banddata[j[0]]
-                    tmp.bandid = j[0]
+                    tmp.dataid = j[0]
                     tmp.tlx = i.tlx
                     tmp.tly = i.tly
                     tmp.xdim = i.xdim
@@ -1429,10 +1429,10 @@ class Metadata(QtGui.QDialog):
                     tmp.nullvalue = i.nullvalue
                     tmp.wkt = i.wkt
                     tmp.units = i.units
-                    if tmp.bandid[-1] == ')':
-                        tmp.bandid = tmp.bandid[:tmp.bandid.rfind(' (')]
+                    if tmp.dataid[-1] == ')':
+                        tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
                     if i.units != '':
-                        tmp.bandid += ' ('+i.units+')'
+                        tmp.dataid += ' ('+i.units+')'
 #                    tmp.data.data[tmp.data.data == i.nullvalue] = np.nan
                     tmp.data.mask = (tmp.data.data == i.nullvalue)
 
@@ -1449,7 +1449,7 @@ class Metadata(QtGui.QDialog):
             indx = self.combobox_bandid.currentIndex()
             txt = self.combobox_bandid.itemText(indx)
             self.banddata[skey] = self.banddata.pop(txt)
-            self.bandid[skey] = self.bandid.pop(txt)
+            self.dataid[skey] = self.dataid.pop(txt)
             self.oldtxt = skey
             self.combobox_bandid.setItemText(indx, skey)
             self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
@@ -1494,10 +1494,10 @@ class Metadata(QtGui.QDialog):
         """ Entrypoint to start this routine """
         bandid = []
         for i in self.indata['Raster']:
-            bandid.append(i.bandid)
-            self.banddata[i.bandid] = Data()
-            tmp = self.banddata[i.bandid]
-            self.bandid[i.bandid] = i.bandid
+            bandid.append(i.dataid)
+            self.banddata[i.dataid] = Data()
+            tmp = self.banddata[i.dataid]
+            self.dataid[i.dataid] = i.dataid
             tmp.tlx = i.tlx
             tmp.tly = i.tly
             tmp.xdim = i.xdim
@@ -1570,7 +1570,7 @@ class DataGrid(QtGui.QDialog):
         self.dsb_dxy = QtGui.QDoubleSpinBox(self)
         self.label_rows = QtGui.QLabel(self)
         self.label_cols = QtGui.QLabel(self)
-        self.bandid = QtGui.QComboBox(self)
+        self.dataid = QtGui.QComboBox(self)
 
         self.setupui()
 
@@ -1596,7 +1596,7 @@ class DataGrid(QtGui.QDialog):
         label_band = QtGui.QLabel(self)
         label_band.setText("Column to Grid:")
         self.gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.bandid, 3, 1, 1, 1)
+        self.gridlayout_main.addWidget(self.dataid, 3, 1, 1, 1)
 
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setCenterButtons(True)
@@ -1629,7 +1629,7 @@ class DataGrid(QtGui.QDialog):
         for i in self.indata['Point']:
             tmp.append(i.dataid)
 
-        self.bandid.addItems(tmp)
+        self.dataid.addItems(tmp)
 
         data = self.indata['Point'][0]
         x = data.xdata
@@ -1662,7 +1662,7 @@ class DataGrid(QtGui.QDialog):
 
         newdat = []
         for data in self.indata['Point']:
-            if data.dataid != self.bandid.currentText():
+            if data.dataid != self.dataid.currentText():
                 continue
             x = data.xdata
             y = data.ydata
@@ -1678,7 +1678,7 @@ class DataGrid(QtGui.QDialog):
             dat.data.mask = mask[::-1]
             dat.rows, dat.cols = gdat.shape
             dat.nullvalue = dat.data.fill_value
-            dat.bandid = data.dataid
+            dat.dataid = data.dataid
             dat.tlx = x.min()
             dat.tly = y.max()
             dat.xdim = dxy

@@ -391,8 +391,8 @@ class IGRF(QtGui.QDialog):
         self.combobox_dtm.clear()
         self.combobox_mag.clear()
         for i in data:
-            self.combobox_dtm.addItem(i.bandid)
-            self.combobox_mag.addItem(i.bandid)
+            self.combobox_dtm.addItem(i.dataid)
+            self.combobox_mag.addItem(i.dataid)
 
         tmp = self.exec_()
 
@@ -563,10 +563,10 @@ class IGRF(QtGui.QDialog):
         igrf_F.mask = data.data.mask
         self.outdata['Raster'].append(copy.deepcopy(data))
         self.outdata['Raster'][-1].data = igrf_F
-        self.outdata['Raster'][-1].bandid = 'IGRF'
+        self.outdata['Raster'][-1].dataid = 'IGRF'
         self.outdata['Raster'].append(copy.deepcopy(maggrid))
         self.outdata['Raster'][-1].data -= igrf_F
-        self.outdata['Raster'][-1].bandid = 'Magnetic Data: IGRF Corrected'
+        self.outdata['Raster'][-1].dataid = 'Magnetic Data: IGRF Corrected'
 
         self.reportback('Calculation: Completed', True)
 

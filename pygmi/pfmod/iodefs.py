@@ -81,8 +81,12 @@ class ImportMod3D(object):
         self.lmod.name = filename.rpartition('/')[-1]
 
         for i in self.lmod.griddata.keys():
-            if self.lmod.griddata[i].bandid == '':
-                self.lmod.griddata[i].bandid = i
+            if self.lmod.griddata[i].dataid == '':
+                self.lmod.griddata[i].dataid = i
+#            try:
+#            except AttributeError:
+#                if self.lmod.griddata[i].bandid == '':
+#                    self.lmod.griddata[i].dataid = i
 
         self.outdata['Raster'] = list(self.lmod.griddata.values())
 
@@ -185,6 +189,10 @@ class ImportMod3D(object):
         lmod.mlut = np.asscalar(indict[pre+'mlut'])
         lmod.init_calc_grids()
         lmod.griddata = np.asscalar(indict[pre+'griddata'])
+        if hasattr(list(lmod.griddata.values())[0], 'bandid'):
+            for i in lmod.griddata.keys():
+                lmod.griddata[i].dataid = lmod.griddata[i].bandid
+
 #        self.pbars.incr()
 
 # Section to load lithologies.
@@ -1094,9 +1102,9 @@ class ImportPicture(QtGui.QDialog):
         self.is_eastwest = self.rb_picimp_westeast.isChecked()
 
         if self.is_eastwest:
-            self.grid.bandid = r'West to East'
+            self.grid.dataid = r'West to East'
         else:
-            self.grid.bandid = r'South to North'
+            self.grid.dataid = r'South to North'
 
         self.grid.xdim = (self.max_coord-self.min_coord)/self.grid.cols
         self.grid.ydim = (self.max_alt-self.min_alt)/self.grid.rows
@@ -1165,7 +1173,7 @@ def gtiff(filename):
 
     dat[0].tlx = gtr[0]
     dat[0].tly = gtr[3]
-    dat[0].bandid = "Image"
+    dat[0].dataid = "Image"
     dat[0].rows = dataset.RasterYSize
     dat[0].cols = dataset.RasterXSize
     dat[0].xdim = abs(gtr[1])

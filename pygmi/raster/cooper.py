@@ -262,7 +262,7 @@ class Visibility2d(QtGui.QDialog):
 
         for i in range(len(data)):
             self.pbar.setValue(i+1)
-            self.parent.showprocesslog(data[i].bandid+':')
+            self.parent.showprocesslog(data[i].dataid+':')
 
             vtot, vstd, vsum = visibility2d(data[i].data, self.wsize,
                                             self.dh*data[i].data.std()/100.)
@@ -273,9 +273,9 @@ class Visibility2d(QtGui.QDialog):
             data2[-3].data = vtot
             data2[-2].data = vstd
             data2[-1].data = vsum
-            data2[-3].bandid += ' Total Visibility'
-            data2[-2].bandid += ' Visibility Variation'
-            data2[-1].bandid += ' Visibility Vector Resultant'
+            data2[-3].dataid += ' Total Visibility'
+            data2[-2].dataid += ' Visibility Variation'
+            data2[-1].dataid += ' Visibility Vector Resultant'
 
         self.pbar.setValue(self.pbar.maximum())
 
@@ -513,11 +513,11 @@ class Tilt1(QtGui.QDialog):
             data2[-3].data = t2
             data2[-2].data = ta
             data2[-1].data = tdx
-            data2[-5].bandid += ' Standard Tilt Angle'
-            data2[-4].bandid += ' Hyperbolic Tilt Angle'
-            data2[-3].bandid += ' 2nd Order Tilt Angle'
-            data2[-2].bandid += ' Tilt Based Directional Derivative'
-            data2[-1].bandid += ' Total Derivative'
+            data2[-5].dataid += ' Standard Tilt Angle'
+            data2[-4].dataid += ' Hyperbolic Tilt Angle'
+            data2[-3].dataid += ' 2nd Order Tilt Angle'
+            data2[-2].dataid += ' Tilt Based Directional Derivative'
+            data2[-1].dataid += ' Total Derivative'
 
         self.pbar.setValue(self.pbar.maximum())
 

@@ -173,17 +173,17 @@ class Smooth(QtGui.QDialog):
         if self.radiobutton_2dmean.isChecked():
             for i in range(len(data)):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
-                                                 '2D Mean', data[i].bandid)
+                                                 '2D Mean', data[i].dataid)
 
         if self.radiobutton_2dmedian.isChecked():
             for i in range(len(data)):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
-                                                 '2D Median', data[i].bandid)
+                                                 '2D Median', data[i].dataid)
 
         if self.radiobutton_2dmode.isChecked():
             for i in range(len(data)):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
-                                                 '2D Mode', data[i].bandid)
+                                                 '2D Mode', data[i].dataid)
 
         self.parent.process_is_active(False)
         self.outdata['Raster'] = data

@@ -1179,7 +1179,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             lmod.griddata['Magnetic Dataset'])
         lmod.griddata['Magnetic Residual'].data = (
             lmod.griddata['Magnetic Dataset'].data - ztmp)
-        lmod.griddata['Magnetic Residual'].bandid = 'Magnetic Residual'
+        lmod.griddata['Magnetic Residual'].dataid = 'Magnetic Residual'
 
     if 'Gravity Dataset' in lmod.griddata:
         ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
@@ -1187,7 +1187,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             lmod.griddata['Gravity Dataset'])
         lmod.griddata['Gravity Residual'].data = (
             lmod.griddata['Gravity Dataset'].data - ztmp - lmod.gregional)
-        lmod.griddata['Gravity Residual'].bandid = 'Gravity Residual'
+        lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
 
     if parent is not None:
         parent.outdata['Raster'] = list(lmod.griddata.values())

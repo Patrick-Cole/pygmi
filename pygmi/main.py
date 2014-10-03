@@ -268,6 +268,21 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
                 else:
                     data[j] = odata[j]
 
+        if 'Model3D' not in data.keys():
+            for j in data.keys():
+                tmp = []
+                for i in data[j]:
+                    tmp.append(i.dataid)
+                tmp = ComboBoxBasic(txt='Select Datasets', dlist=tmp)
+                atmp = [i.text() for i in tmp.combo.selectedItems()]
+        #        aa.show()
+                if len(atmp) > 0:
+                    dtmp = []
+                    for i in data[j]:
+                        if i.dataid in atmp:
+                            dtmp.append(i)
+                    data[j] = dtmp
+
         self.my_class.indata = data
         if hasattr(self.my_class, 'data_init'):
             self.my_class.data_init()
@@ -413,7 +428,7 @@ class DiagramScene(QtGui.QGraphicsScene):
             text += '\n' + i + ' dataset:\n'
             if i == 'Raster' or i == 'Cluster':
                 for j in odata[i]:
-                    text += '  '+j.bandid + '\n'
+                    text += '  '+j.dataid + '\n'
             if i == 'Model3D':
                 for j in odata[i][0].lith_list.keys():
                     text += '  '+j + '\n'
@@ -970,6 +985,47 @@ class Startup(QtGui.QDialog):
         """ Updates the text on the dialog """
         self.pbar.setValue(self.pbar.value() + 1)
         QtGui.QApplication.processEvents()
+
+
+class ComboBoxBasic(QtGui.QDialog):
+    """
+    A basic combo box application
+    """
+
+    def __init__(self, parent=None, txt='', dlist=[]):
+        QtGui.QDialog.__init__(self, parent)
+
+        # create GUI
+        QtGui.QMainWindow.__init__(self)
+        self.setWindowTitle(txt)
+#        self.resize(250, 50)
+
+        self.vbox = QtGui.QVBoxLayout()
+        self.setLayout(self.vbox)
+
+        self.combo = QtGui.QListWidget()
+        self.combo.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+
+        self.vbox.addWidget(self.combo)
+
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setCenterButtons(True)
+        self.buttonbox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+
+        self.vbox.addWidget(self.buttonbox)
+
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
+        distrolist = ['Linux Mint', 'Gentoo', 'Mandriva']
+        self.combo.addItems(dlist)
+
+        tmp = self.exec_()
+#        if tmp == 1:
+#            self.acceptall()
+#            tmp = True
 
 
 def main():

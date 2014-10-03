@@ -490,19 +490,19 @@ class MextDisplay(object):
 
             lkeys = list(self.lmod1.griddata.keys())
             if 'DTM Dataset' in lkeys:
-                tmp = self.lmod1.griddata['DTM Dataset'].bandid
+                tmp = self.lmod1.griddata['DTM Dataset'].dataid
                 self.combo_dtm.setCurrentIndex(gkeys.index(tmp))
 
             if 'Magnetic Dataset' in lkeys:
-                tmp = self.lmod1.griddata['Magnetic Dataset'].bandid
+                tmp = self.lmod1.griddata['Magnetic Dataset'].dataid
                 self.combo_mag.setCurrentIndex(gkeys.index(tmp))
 
             if 'Gravity Dataset' in lkeys:
-                tmp = self.lmod1.griddata['Gravity Dataset'].bandid
+                tmp = self.lmod1.griddata['Gravity Dataset'].dataid
                 self.combo_grv.setCurrentIndex(gkeys.index(tmp))
 
             if 'Gravity Regional' in lkeys:
-                tmp = self.lmod1.griddata['Gravity Regional'].bandid
+                tmp = self.lmod1.griddata['Gravity Regional'].dataid
                 self.combo_reggrv.setCurrentIndex(gkeys.index(tmp))
 
     def update_vals(self):

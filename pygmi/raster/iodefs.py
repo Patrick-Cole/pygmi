@@ -72,7 +72,7 @@ class ImportData(object):
             dat = get_raster(self.ifile)
 
         output_type = 'Raster'
-        if 'Cluster' in dat[0].bandid:
+        if 'Cluster' in dat[0].dataid:
             output_type = 'Cluster'
 
         self.outdata[output_type] = dat
@@ -120,7 +120,7 @@ def get_ascii(ifile):
     dat[i].nrofbands = nbands
     dat[i].tlx = ulxmap
     dat[i].tly = ulymap
-    dat[i].bandid = bandid
+    dat[i].dataid = bandid
     dat[i].nullvalue = nval
     dat[i].rows = nrows
     dat[i].cols = ncols
@@ -186,7 +186,7 @@ def get_raster(ifile):
         dat[i].tly = gtr[3]
         if bandid == '':
             bandid = bname+str(i+1)
-        dat[i].bandid = bandid
+        dat[i].dataid = bandid
         if bandid[-1] == ')':
             dat[i].units = bandid[bandid.rfind('(')+1:-1]
 
@@ -317,7 +317,7 @@ class ExportData(object):
 
         for i in range(len(data)):
             rtmp = out.GetRasterBand(i+1)
-            rtmp.SetDescription(data[i].bandid)
+            rtmp.SetDescription(data[i].dataid)
             dtmp = np.ma.array(data[i].data).astype(dtype)
 
             # This section tries to overcome null values with round off error
@@ -465,7 +465,7 @@ class ExportData(object):
 
     def get_filename(self, data, ext):
         """ Gets a valid filename """
-        file_band = data.bandid.split('_')[0].strip('"')
+        file_band = data.dataid.split('_')[0].strip('"')
         file_band = file_band.replace('/', '')
         file_band = file_band.replace(':', '')
         file_out = self.ifile.rpartition(".")[0]+"_"+file_band+'.'+ext

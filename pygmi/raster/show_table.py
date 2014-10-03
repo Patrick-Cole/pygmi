@@ -124,7 +124,7 @@ class BasicStats(QtGui.QDialog):
             srow.append(st.skew(dtmp))
             srow.append(st.kurtosis(dtmp))
             srow = np.array(srow).tolist()
-            stats.append([i.bandid] + srow)
+            stats.append([i.dataid] + srow)
 
         bands = ['Data Column']
         cols = ['Band', 'Minimum', 'Maximum', 'Mean', 'Std Dev', 'Median',

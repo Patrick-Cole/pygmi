@@ -215,7 +215,7 @@ class MyMplCanvas(FigureCanvas):
 
             for i in self.data:
                 for j in range(3):
-                    if i.bandid == self.hband[j]:
+                    if i.dataid == self.hband[j]:
                         col = int((event.xdata - i.tlx)/i.xdim)
                         row = int((i.tly - event.ydata)/i.ydim)
                         zval[j] = i.data[row, col]
@@ -242,7 +242,7 @@ class MyMplCanvas(FigureCanvas):
             if self.gmode == 'Sunshade':
                 for i in self.sdata:
                     for j in [1]:
-                        if i.bandid == self.hband[j]:
+                        if i.dataid == self.hband[j]:
                             col = int((event.xdata - i.tlx)/i.xdim)
                             row = int((i.tly - event.ydata)/i.ydim)
                             zval[j] = i.data[row, col]
@@ -263,7 +263,7 @@ class MyMplCanvas(FigureCanvas):
         self.image.set_visible(False)
 
         for i in self.data:
-            if i.bandid == self.hband[0]:
+            if i.dataid == self.hband[0]:
                 dat = i.data
 
         self.image.set_data(dat)
@@ -394,7 +394,7 @@ class MyMplCanvas(FigureCanvas):
         dat = [None, None, None]
         for i in self.data:
             for j in range(3):
-                if i.bandid == self.hband[j]:
+                if i.dataid == self.hband[j]:
                     dat[j] = i.data
 
         self.image.set_data(dat)
@@ -441,7 +441,7 @@ class MyMplCanvas(FigureCanvas):
         """ Updates the single color map """
         self.image.dtype = 'Single Color Map'
         for i in self.data:
-            if i.bandid == self.hband[0]:
+            if i.dataid == self.hband[0]:
                 dat = i.data
 
         self.image.set_data(dat)
@@ -475,11 +475,11 @@ class MyMplCanvas(FigureCanvas):
         data = [None, None]
 
         for i in self.data:
-            if i.bandid == self.hband[0]:
+            if i.dataid == self.hband[0]:
                 data[0] = i.data
 
         for i in self.sdata:
-            if i.bandid == self.hband[1]:
+            if i.dataid == self.hband[1]:
                 data[1] = i.data
 
         self.image.set_data(data)
@@ -820,13 +820,13 @@ class PlotInterp(QtGui.QDialog):
 
         self.mmc.data = data
         self.mmc.sdata = sdata
-        self.mmc.hband[0] = data[0].bandid
-        self.mmc.hband[1] = data[0].bandid
-        self.mmc.hband[2] = data[0].bandid
+        self.mmc.hband[0] = data[0].dataid
+        self.mmc.hband[1] = data[0].dataid
+        self.mmc.hband[2] = data[0].dataid
 
         blist = []
         for i in data:
-            blist.append(i.bandid)
+            blist.append(i.dataid)
 
         try:
             self.cbox_band1.currentIndexChanged.disconnect()

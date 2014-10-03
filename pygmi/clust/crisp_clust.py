@@ -416,7 +416,7 @@ class CrispClust(QtGui.QDialog):
                 den_cent_std1 = np.array([])
 
             for k in data:
-                dat_out[cnt].input_type.append(k.bandid)
+                dat_out[cnt].input_type.append(k.dataid)
 #                dat_out[cnt].proc_history.append(k.proc)
 
             dat_out[cnt].data = zonal
@@ -456,7 +456,7 @@ class CrispClust(QtGui.QDialog):
             i.xdim = data[0].xdim
             i.ydim = data[0].ydim
             i.nrofbands = 1
-            i.bandid = 'Crisp Cluster: '+str(i.no_clusters)
+            i.dataid = 'Crisp Cluster: '+str(i.no_clusters)
             i.rows = data[0].rows
             i.cols = data[0].cols
             i.nullvalue = data[0].nullvalue

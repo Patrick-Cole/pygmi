@@ -374,9 +374,9 @@ class EquationEditor(QtGui.QDialog):
         indata = dataprep.merge(self.indata[intype])
 
         for i in indata:
-            self.bands[i.bandid] = i.data
+            self.bands[i.dataid] = i.data
             self.bandsall.append(i.data)
-            self.combobox.addItem(i.bandid)
+            self.combobox.addItem(i.dataid)
 
         self.bandsall = np.ma.array(self.bandsall)
 
@@ -405,7 +405,7 @@ class EquationEditor(QtGui.QDialog):
         elif len(findat.shape) == 2:
             outdata = [copy.copy(indata[0])]
             outdata[0].data = findat
-            outdata[0].bandid = 'equation output'
+            outdata[0].dataid = 'equation output'
         else:
             for i in range(len(findat)):
                 outdata.append(copy.copy(indata[i]))

@@ -133,7 +133,7 @@ class MyMplCanvas(FigureCanvas):
             for j in range(len(data1)):
                 self.axes.text(i + .1, j + .4, format(float(dmat[i, j]),
                                                       '4.2f'))
-        dat_mat = [i.bandid for i in data1]
+        dat_mat = [i.dataid for i in data1]
         self.axes.set_xticks(np.array(list(range(len(data1)))) + .5)
 
         self.axes.set_xticklabels(dat_mat, rotation='vertical')
@@ -262,7 +262,7 @@ class MyMplCanvas(FigureCanvas):
 
         dattmp = data1.data[data1.data.mask == 0].flatten()
         self.axes.hist(dattmp, 50)
-        self.axes.set_title(data1.bandid, fontsize=12)
+        self.axes.set_title(data1.dataid, fontsize=12)
         self.axes.set_xlabel("Data Value", fontsize=8)
         self.axes.set_ylabel("Counts", fontsize=8)
         self.figure.canvas.draw()
@@ -379,7 +379,7 @@ class PlotRaster(GraphWindow):
             data = self.indata['ProfPic']
 
         for i in data:
-            self.combobox1.addItem(i.bandid)
+            self.combobox1.addItem(i.dataid)
         self.change_band()
 
 
@@ -406,7 +406,7 @@ class PlotSurface(GraphWindow):
             data = self.indata['Raster']
 
             for i in data:
-                self.combobox1.addItem(i.bandid)
+                self.combobox1.addItem(i.dataid)
             self.change_band()
 
 
@@ -429,8 +429,8 @@ class PlotScatter(GraphWindow):
         self.show()
         data = self.indata['Raster']
         for i in data:
-            self.combobox1.addItem(i.bandid)
-            self.combobox2.addItem(i.bandid)
+            self.combobox1.addItem(i.dataid)
+            self.combobox2.addItem(i.dataid)
 
         self.label1.setText('X Band:')
         self.label2.setText('Y Band:')
@@ -458,7 +458,7 @@ class PlotHist(GraphWindow):
         self.show()
         data = self.indata['Raster']
         for i in data:
-            self.combobox1.addItem(i.bandid)
+            self.combobox1.addItem(i.dataid)
 
         self.label1.setText('Band:')
         self.combobox1.setCurrentIndex(0)

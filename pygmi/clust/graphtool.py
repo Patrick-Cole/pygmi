@@ -553,7 +553,7 @@ class ScatterPlot(QtGui.QDialog):
         self.map.data = self.indata['Raster']
         self.hist.data = self.indata['Raster']
 
-        bands = [i.bandid for i in self.indata['Raster']]
+        bands = [i.dataid for i in self.indata['Raster']]
 
         self.cp_combo.clear()
         self.cp_combo2.clear()

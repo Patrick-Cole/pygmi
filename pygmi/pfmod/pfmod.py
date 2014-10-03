@@ -127,7 +127,7 @@ class MainWidget(QtGui.QMainWindow):
             self.indata['Raster'] = list(self.lmod1.griddata.values())
 
         for i in self.indata['Raster']:
-            self.inraster[i.bandid] = i
+            self.inraster[i.dataid] = i
         if 'Model3D' in self.indata.keys():
             self.lmod1 = self.indata['Model3D'][0]
 #            self.lmod1.init_calc_grids()

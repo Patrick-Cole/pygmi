@@ -85,6 +85,7 @@ class LithModel(object):
         self.ght = None
         self.gregional = 100
         self.name = '3D Model'
+        self.dataid = '3D Model'
 
         # Next line calls a function to update the variables above.
         self.update(100, 75, 40, 0, 150000, 0, 1500, 100, 100, 0)
@@ -196,10 +197,10 @@ class LithModel(object):
         """ Initializes mag and gravity from the model """
         tmp = np.ma.zeros([self.numy, self.numx])
         self.griddata['Calculated Magnetics'] = self.init_grid(tmp.copy())
-        self.griddata['Calculated Magnetics'].bandid = 'Calculated Magnetics'
+        self.griddata['Calculated Magnetics'].dataid = 'Calculated Magnetics'
         self.griddata['Calculated Magnetics'].units = 'nT'
         self.griddata['Calculated Gravity'] = self.init_grid(tmp.copy())
-        self.griddata['Calculated Gravity'].bandid = 'Calculated Gravity'
+        self.griddata['Calculated Gravity'].dataid = 'Calculated Gravity'
         self.griddata['Calculated Gravity'].units = 'mgal'
 
     def is_modified(self, modified=True):
