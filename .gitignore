@@ -1,0 +1,12 @@
+__pycache__/
+seis/
+dist/
+data/
+build/
+pygmi/
+
+*.py[co]
+*.cmd
+grvmagc_*.html
+.spyderproject
+log.txt

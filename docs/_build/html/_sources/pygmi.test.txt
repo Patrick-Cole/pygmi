@@ -1,0 +1,22 @@
+pygmi.test package
+==================
+
+Submodules
+----------
+
+pygmi.test.pfmod module
+-----------------------
+
+.. automodule:: pygmi.test.pfmod
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pygmi.test
+    :members:
+    :undoc-members:
+    :show-inheritance:
