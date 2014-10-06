@@ -27,15 +27,15 @@ This code is based on the Geomag software, with information given below. It was
 translated into Python from the Geomag code.
 
 | This program, originally written in FORTRAN, was developed using subroutines
-| written by    : A. Zunde
-|               USGS, MS 964, Box 25046 Federal Center, Denver, Co.  80225
-|               and
-|               S.R.C. Malin & D.R. Barraclough
-|               Institute of Geological Sciences, United Kingdom.
+| written by   : A. Zunde
+|                USGS, MS 964, Box 25046 Federal Center, Denver, Co.  80225
+|                and
+|                S.R.C. Malin & D.R. Barraclough
+|                Institute of Geological Sciences, United Kingdom.
 
 | Translated
 | into C by    : Craig H. Shaffer
-|               29 July, 1988
+|                29 July, 1988
 
 | Rewritten by : David Owens
 |                For Susan McLean
@@ -47,86 +47,6 @@ translated into Python from the Geomag code.
 |                NOAA, E/GC1, 325 Broadway,
 |                Boulder, CO  80303
 """
-# *************************************************************************
-#
-#      Some variables used in this program
-#
-#    Name         Type                    Usage
-# ------------------------------------------------------------------------
-#
-#   a2,b2      Scalar Double          Squares of semi-major and semi-minor
-#                                     axes of the reference spheroid used
-#                                     for transforming between geodetic or
-#                                     geocentric coordinates.
-#
-#   minalt     Double array of MAXMOD Minimum height of model.
-#
-#   altmin     Double                 Minimum height of selected model.
-#
-#   altmax     Double array of MAXMOD Maximum height of model.
-#
-#   maxalt     Double                 Maximum height of selected model.
-#
-#   d          Scalar Double          Declination of the field from the
-#                                     geographic north (deg).
-#
-#   sdate      Scalar Double          start date inputted
-#
-#   ddot       Scalar Double          annual rate of change of decl.
-#                                     (arc-min/yr)
-#
-#   alt        Scalar Double          altitude above WGS84 Ellipsoid
-#
-#   epoch      Double array of MAXMOD epoch of model.
-#
-#   ext        Scalar Double          Three 1st-degree external coeff.
-#
-#   latitude   Scalar Double          Latitude.
-#
-#   longitude  Scalar Double          Longitude.
-#
-#   gh1        Double array           Schmidt quasi-normal internal
-#                                     spherical harmonic coeff.
-#
-#   gh2        Double array           Schmidt quasi-normal internal
-#                                     spherical harmonic coeff.
-#
-#   gha        Double array           Coefficients of resulting model.
-#
-#   ghb        Double array           Coefficients of rate of change model.
-#
-#   i          Scalar Double          Inclination (deg).
-#
-#   idot       Scalar Double          Rate of change of i (arc-min/yr).
-#
-#   igdgc      Integer                Flag for geodetic or geocentric
-#                                     coordinate choice.
-#
-#   inbuff     Char a of MAXINBUF     Input buffer.
-#
-#   irec_pos   Integer array of MAXMOD Record counter for header
-#
-#   stream  Integer                   File handles for an opened file.
-#
-#   fileline   Integer                Current line in file (for errors)
-#
-#   max1       Integer array of MAXMOD Main field coefficient.
-#
-#   max2       Integer array of MAXMOD Secular variation coefficient.
-#
-#   max3       Integer array of MAXMOD Acceleration coefficient.
-#
-#   mdfile     Character array of PATH  Model file name.
-#
-#   minyr      Double                  Min year of all models
-#
-#   maxyr      Double                  Max year of all models
-#
-#   yrmax      Double array of MAXMOD  Max year of model.
-#
-#   yrmin      Double array of MAXMOD  Min year of model.
-#
-# *************************************************************************
 
 from PyQt4 import QtGui, QtCore
 import numpy as np
@@ -140,7 +60,8 @@ from . import dataprep as dp
 
 
 class IGRF(QtGui.QDialog):
-    """ IGRF field calculation
+    """
+    IGRF field calculation
 
     This produces two datasets. The first is an IGRF dataset for the area of
     interest, defined by some input magnetic dataset. The second is the IGRF
@@ -149,6 +70,67 @@ class IGRF(QtGui.QDialog):
     To do this, the input dataset must be reprojected from its local projection
     to degrees, where the IGRF correction will take place. This is done within
     this class.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+
+    Parameters
+    ----------
+    altmin : Double
+        Minimum height of selected model.
+    altmax : Double array
+        array of MAXMOD Maximum height of model.
+    maxalt : Double
+        Maximum height of selected model.
+    d : float
+        Declination of the field from the geographic north (deg).
+    sdate : float
+        start date inputted
+    ddot : float
+        annual rate of change of decl. (arc-min/yr)
+    alt : float
+        altitude above WGS84 Ellipsoid
+    epoch : list
+        list of MAXMOD epoch of model.
+    latitude : float
+        Latitude.
+    longitude : float
+        Longitude.
+    gh : numpy array
+        Schmidt quasi-normal internal spherical harmonic coeff.
+        Schmidt quasi-normal internal spherical harmonic coeff.
+        Coefficients of resulting model.
+        Coefficients of rate of change model.
+    i : float
+        Inclination (deg).
+    idot : float
+        Rate of change of i (arc-min/yr).
+    igdgc : int
+        Flag for geodetic or geocentric coordinate choice.
+    irec_pos : int array
+        array of MAXMOD Record counter for header
+    fileline : int
+        Current line in file (for errors)
+    max1 : list, int
+        array of MAXMOD Main field coefficient.
+    max2 : list, int
+        array of MAXMOD Secular variation coefficient.
+    max3 : list, int
+        array of MAXMOD Acceleration coefficient.
+    minyr : float
+        Min year of all models
+    maxyr : float
+        Max year of all models
+    yrmax : list, float
+        array of MAXMOD  Max year of model.
+    yrmin : list, float
+        array of MAXMOD  Min year of model.
     """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent=None)
@@ -320,7 +302,7 @@ class IGRF(QtGui.QDialog):
         self.buttonbox.rejected.connect(self.reject)
 
     def acceptall(self):
-        """ accept button"""
+        """ Accept button"""
         orig = osr.SpatialReference()
         orig.SetWellKnownGeogCS('WGS84')
         targ = osr.SpatialReference()
@@ -384,7 +366,10 @@ class IGRF(QtGui.QDialog):
             self.dsb_kmz_fnorthing.setValue(10000000.)
 
     def settings(self):
-        """ Settings Dialog"""
+        """
+        Settings Dialog. This is the main entrypoint into this routine. It also
+        contains the main IGRF code.
+        """
 # Variable declaration
 # Control variables
         data = dp.merge(self.indata['Raster'])
@@ -573,25 +558,30 @@ class IGRF(QtGui.QDialog):
         return True
 
     def getshc(self, file, iflag, strec, nmax_of_gh, gh):
-        """ Reads spherical harmonic coefficients from the specified
-            model into an array.
+        """
+        Reads spherical harmonic coefficients from the specified model into an
+        array.
 
-        Args:
-            stream: Logical unit number
-            iflag: Flag for SV equal to ) or not equal to 0 for designated
-                read statements
-            strec: Starting record number to read from model
-            nmax_of_gh: Maximum degree and order of model
+        | FORTRAN: Bill Flanagan, NOAA CORPS, DESDIS, NGDC, 325 Broadway,
+        | Boulder CO.  80301
+        | C: C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
 
-        Return:
-            gh1 or gh2 - Schmidt quasi-normal internal spherical harmonic
-                coefficients
+        Parameters
+        ----------
+        file : file
+            reference to a file object
+        iflag :
+            Flag for SV equal to 1 or not equal to 1 for designated read
+            statements
+        strec : int
+            Starting record number to read from model
+        nmax_of_gh : int
+            Maximum degree and order of model
 
-        References:
-            FORTRAN: Bill Flanagan, NOAA CORPS, DESDIS, NGDC, 325 Broadway,
-            Boulder CO.  80301
-
-            C: C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+        Returns
+        -------
+        gh : list
+            Schmidt quasi-normal internal spherical harmonic coefficients
         """
         ii = -1
         cnt = 0
@@ -620,44 +610,36 @@ class IGRF(QtGui.QDialog):
 
         return
 
-# **************************************************************************
-#
-#                           Subroutine extrapsh
-#
-# **************************************************************************
-#
-#     Extrapolates linearly a spherical harmonic model with a
-#     rate-of-change model.
-#
-#     Input:
-#           date     - date of resulting model (in decimal year)
-#           dte1     - date of base model
-#           nmax1    - maximum degree and order of base model
-#           gh1      - Schmidt quasi-normal internal spherical
-#                      harmonic coefficients of base model
-#           nmax2    - maximum degree and order of rate-of-change model
-#           gh2      - Schmidt quasi-normal internal spherical
-#                      harmonic coefficients of rate-of-change model
-#
-#     Output:
-#           gha or b - Schmidt quasi-normal internal spherical
-#                    harmonic coefficients
-#           nmax   - maximum degree and order of resulting model
-#
-#     FORTRAN
-#           A. Zunde
-#           USGS, MS 964, box 25046 Federal Center, Denver, CO.  80225
-#
-#     C
-#           C. H. Shaffer
-#           Lockheed Missiles and Space Company, Sunnyvale CA
-#           August 16, 1988
-#
-# **************************************************************************
-
     def extrapsh(self, date, dte1, nmax1, nmax2, gh):
-        """  Extrapolates linearly a spherical harmonic model with a
-             rate-of-change model. """
+        """
+        Extrapolates linearly a spherical harmonic model with a
+        rate-of-change model.
+
+        | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
+        | CO. 80225
+        | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+        Parameters
+        ----------
+        date : float
+            date of resulting model (in decimal year)
+        dte1 : float
+            date of base model
+        nmax1 : int
+            maximum degree and order of base model
+        gh  : numpy array
+            Schmidt quasi-normal internal spherical harmonic coefficients of
+            base model and rate-of-change model
+        nmax2 : int
+            maximum degree and order of rate-of-change model
+
+        Returns
+        -------
+        gh : numpy array
+            Schmidt quasi-normal internal spherical harmonic coefficients
+        nmax : int
+            maximum degree and order of resulting model
+        """
         factor = date - dte1
         if nmax1 == nmax2:
             k = nmax1 * (nmax1 + 2)
@@ -683,44 +665,38 @@ class IGRF(QtGui.QDialog):
 
         return nmax
 
-# **************************************************************************
-#
-#                           Subroutine interpsh
-#
-# **************************************************************************
-#
-#     Interpolates linearly, in time, between two spherical harmonic
-#     models.
-#
-#     Input:
-#           date     - date of resulting model (in decimal year)
-#           dte1     - date of earlier model
-#           nmax1    - maximum degree and order of earlier model
-#           gh1      - Schmidt quasi-normal internal spherical
-#                      harmonic coefficients of earlier model
-#           dte2     - date of later model
-#           nmax2    - maximum degree and order of later model
-#           gh2      - Schmidt quasi-normal internal spherical
-#                      harmonic coefficients of internal model
-#
-#     Output:
-#           gha or b - coefficients of resulting model
-#           nmax     - maximum degree and order of resulting model
-#
-#     FORTRAN
-#           A. Zunde
-#           USGS, MS 964, box 25046 Federal Center, Denver, CO.  80225
-#
-#     C
-#           C. H. Shaffer
-#           Lockheed Missiles and Space Company, Sunnyvale CA
-#           August 17, 1988
-#
-# **************************************************************************
-
     def interpsh(self, date, dte1, nmax1, dte2, nmax2, gh):
-        """ Interpolates linearly, in time, between two spherical harmonic
-            models. """
+        """
+        Interpolates linearly, in time, between two spherical harmonic
+        models.
+
+        | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
+        | CO. 80225
+        | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+        Parameters
+        ----------
+        date : float
+            date of resulting model (in decimal year)
+        dte1 : float
+            date of earlier model
+        nmax1 : int
+            maximum degree and order of earlier model
+        gh : numpy array
+            Schmidt quasi-normal internal spherical harmonic coefficients of
+            earlier model and internal model
+        dte2 : float
+            date of later model
+        nmax2 : int
+            maximum degree and order of later model
+
+        Returns
+        -------
+        gh : numpy array
+            coefficients of resulting model
+        nmax : int
+            maximum degree and order of resulting model
+        """
         factor = (date - dte1) / (dte2 - dte1)
         if nmax1 == nmax2:
             k = nmax1 * (nmax1 + 2)
@@ -746,52 +722,45 @@ class IGRF(QtGui.QDialog):
 
         return nmax
 
-# **************************************************************************
-#
-#                           Subroutine shval3
-#
-# **************************************************************************
-#
-#     Calculates field components from spherical harmonic (sh)
-#     models.
-#
-#     Input:
-#           igdgc     - indicates coordinate system used set equal
-#                       to 1 if geodetic, 2 if geocentric
-#           latitude  - north latitude, in degrees
-#           longitude - east longitude, in degrees
-#           elev      - WGS84 altitude above ellipsoid (igdgc=1), or
-#                       radial distance from earth's center (igdgc=2)
-#           a2,b2     - squares of semi-major and semi-minor axes of
-#                       the reference spheroid used for transforming
-#                       between geodetic and geocentric coordinates
-#                       or components
-#           nmax      - maximum degree and order of coefficients
-#           iext      - external coefficients flag (=0 if none)
-#           ext1,2,3  - the three 1st-degree external coefficients
-#                       (not used if iext = 0)
-#
-#     Output:
-#           x         - northward component
-#           y         - eastward component
-#           z         - vertically-downward component
-#
-#     based on subroutine 'igrf' by D. R. Barraclough and S. R. C. Malin,
-#     report no. 71/1, institute of geological sciences, U.K.
-#
-#     FORTRAN
-#           Norman W. Peddie
-#           USGS, MS 964, box 25046 Federal Center, Denver, CO.  80225
-#
-#     C
-#           C. H. Shaffer
-#           Lockheed Missiles and Space Company, Sunnyvale CA
-#           August 17, 1988
-#
-# **************************************************************************
-
     def shval3(self, igdgc, flat, flon, elev, nmax, gh):
-        """Calculates field components from spherical harmonic (sh) models."""
+        """
+        Calculates field components from spherical harmonic (sh) models.
+
+        Based on subroutine 'igrf' by D. R. Barraclough and S. R. C. Malin,
+        report no. 71/1, institute of geological sciences, U.K.
+
+        | FORTRAN : Norman W. Peddie, USGS, MS 964, box 25046 Federal Center,
+        | Denver, CO. 80225
+        | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+        Parameters
+        ----------
+        igdgc : int
+            indicates coordinate system used set equal to 1 if geodetic, 2 if
+            geocentric
+        latitude : float
+            north latitude, in degrees
+        longitude : float
+            east longitude, in degrees
+        elev : float
+            WGS84 altitude above ellipsoid (igdgc=1), or radial distance from
+            earth's center (igdgc=2)
+        a2,b2 : float
+            squares of semi-major and semi-minor axes of the reference spheroid
+            used for transforming between geodetic and geocentric coordinates
+            or components
+        nmax : int
+            maximum degree and order of coefficients
+
+        Returns
+        -------
+        x : float
+            northward component
+        y : float
+            eastward component
+        z : float
+            vertically-downward component
+        """
 
         sl = np.zeros(14)
         cl = np.zeros(14)
@@ -940,38 +909,34 @@ class IGRF(QtGui.QDialog):
             self.xtemp = self.xtemp * cd + self.ztemp * sd
             self.ztemp = self.ztemp * cd - aa * sd
 
-# **************************************************************************
-#
-#                           Subroutine dihf
-#
-# **************************************************************************
-#
-#     Computes the geomagnetic d, i, h, and f from x, y, and z.
-#
-#     Input:
-#           x  - northward component
-#           y  - eastward component
-#           z  - vertically-downward component
-#
-#     Output:
-#           d  - declination
-#           i  - inclination
-#           h  - horizontal intensity
-#           f  - total intensity
-#
-#     FORTRAN
-#           A. Zunde
-#           USGS, MS 964, box 25046 Federal Center, Denver, CO.  80225
-#
-#     C
-#           C. H. Shaffer
-#           Lockheed Missiles and Space Company, Sunnyvale CA
-#           August 22, 1988
-#
-# **************************************************************************
-
     def dihf(self, gh):
-        """ Computes the geomagnetic d, i, h, and f from x, y, and z. """
+        """
+        Computes the geomagnetic d, i, h, and f from x, y, and z.
+
+        | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
+        | CO. 80225
+        | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+        Parameters
+        ----------
+        x : float
+            northward component
+        y : float
+            eastward component
+        z : float
+            vertically-downward component
+
+        Returns
+        -------
+        d : float
+            declination
+        i : float
+            inclination
+        h : float
+            horizontal intensity
+        f : float
+            total intensity
+        """
         sn = 0.0001
 
         if gh == 3:
@@ -1025,26 +990,3 @@ class IGRF(QtGui.QDialog):
             self.ftemp = f
             self.itemp = i
             self.dtemp = d
-
-
-def get_igrf(dat):
-    """ Merges datasets found in a single PyGMI data object. The aim is to
-    ensure that all datasets have the same number of rows and columns. """
-    needsmerge = False
-    for i in dat:
-        if i.rows != dat[0].rows or i.cols != dat[0].cols:
-            needsmerge = True
-
-    if needsmerge is False:
-        return dat
-
-#    mrg = DataMerge()
-#    mrg.indata['Raster'] = dat
-#    data = dat[0]
-#    dxy0 = min(data.xdim, data.ydim)
-#    for data in dat:
-#        dxy = min(dxy0, data.xdim, data.ydim)
-#
-#    mrg.dsb_dxy.setValue(dxy)
-#    mrg.acceptall()
-#    return mrg.outdata['Raster']

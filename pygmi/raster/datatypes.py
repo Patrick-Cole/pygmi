@@ -89,7 +89,7 @@ class Data(object):
         y-dimension of grid cell
     nrofbands : int
         number of raster bands
-    bandid : str
+    dataid : str
         band name or id
     rows : int
         number of rows for each raster grid/band

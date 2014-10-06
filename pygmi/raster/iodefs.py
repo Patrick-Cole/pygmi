@@ -36,7 +36,24 @@ import os
 
 
 class ImportData(object):
-    """ Import Data """
+    """
+    Import Data - Interfaces with GDAL routines
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
+    ext : str
+        filename extension
+    """
     def __init__(self, parent=None):
         self.ifile = ""
         self.name = "Import Data: "
@@ -80,7 +97,19 @@ class ImportData(object):
 
 
 def get_ascii(ifile):
-    """ Import ascii """
+    """
+    Import ascii raster dataset
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
 
     afile = open(ifile, 'r')
     adata = afile.read()
@@ -131,8 +160,20 @@ def get_ascii(ifile):
 
 
 def get_raster(ifile):
-    """ This function loads a raster dataset off the disk using the GDAL
-    libraries. It returns the data in a PyGMI data object. """
+    """
+    This function loads a raster dataset off the disk using the GDAL
+    libraries. It returns the data in a PyGMI data object.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
     dat = []
     bname = ifile.split('/')[-1].rpartition('.')[0]+': '
     ifile = ifile[:]
@@ -211,7 +252,24 @@ def get_raster(ifile):
 
 
 class ExportData(object):
-    """ Export Data """
+    """
+    Export Data
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
+    ext : str
+        filename extension
+    """
     def __init__(self, parent):
         self.ifile = ""
         self.name = "Export Data: "
@@ -272,7 +330,16 @@ class ExportData(object):
         self.parent.showprocesslog('Finished!')
 
     def export_gdal(self, dat, drv):
-        """ Export to GDAL format"""
+        """
+        Export to GDAL format
+
+        Parameters
+        ----------
+        dat : PyGMI raster Data
+            dataset to export
+        drv : str
+            name of the GDAL driver to use
+        """
 
         data = merge(dat)
         xmin = data[0].tlx
@@ -344,7 +411,14 @@ class ExportData(object):
         out = None  # Close File
 
     def export_gxf(self, data):
-        """ Export GXF data """
+        """
+        Export GXF data
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+        """
         for k in data:
             file_out = self.get_filename(k, 'gxf')
             fno = open(file_out, 'w')
@@ -390,7 +464,14 @@ class ExportData(object):
             fno.close()
 
     def export_surfer(self, data):
-        """ Export a surfer binary grid """
+        """
+        Export a surfer binary grid
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+        """
         for k in data:
             file_out = self.get_filename(k, 'grd')
             fno = open(file_out, 'wb')
@@ -416,7 +497,14 @@ class ExportData(object):
             fno.close()
 
     def export_ascii(self, data):
-        """ Export Ascii file """
+        """
+        Export Ascii file
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+        """
         for k in data:
             file_out = self.get_filename(k, 'asc')
             fno = open(file_out, 'w')
@@ -444,7 +532,14 @@ class ExportData(object):
             fno.close()
 
     def export_ascii_xyz(self, data):
-        """ Export and xyz file """
+        """
+        Export and xyz file
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to export
+        """
         for k in data:
             file_out = self.get_filename(k, 'xyz')
             fno = open(file_out, 'w')
@@ -464,7 +559,16 @@ class ExportData(object):
             fno.close()
 
     def get_filename(self, data, ext):
-        """ Gets a valid filename """
+        """
+        Gets a valid filename
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            dataset to get filename from
+        ext : str
+            filename extension to use
+        """
         file_band = data.dataid.split('_')[0].strip('"')
         file_band = file_band.replace('/', '')
         file_band = file_band.replace(':', '')

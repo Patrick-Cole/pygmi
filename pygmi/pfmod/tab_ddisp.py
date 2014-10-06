@@ -241,7 +241,12 @@ class DataDisplay(object):
 
 
 class MyMplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+    """
+    Canvas for the actual plot
+
+    Attributes
+    ----------
+    """
     def __init__(self, ncust=1):
         # figure stuff
         # fig = Figure()

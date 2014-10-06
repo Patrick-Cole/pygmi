@@ -33,7 +33,7 @@ from ..vector.datatypes import PData
 from PIL import Image, ImageDraw
 import copy
 import scipy.ndimage as ndimage
-import scipy.interpolate as si
+# import scipy.interpolate as si
 
 
 def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):

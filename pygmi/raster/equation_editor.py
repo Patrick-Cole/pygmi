@@ -28,11 +28,33 @@
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import copy
-#import numexpr as ne
+# import numexpr as ne
 from . import dataprep
 
+
 class EquationEditor(QtGui.QDialog):
-    """ Class to call up a dialog """
+    """
+    Equation Editor
+
+    This class allows the input of equations using raster datasets as
+    variables. This is commonly done in remote sensing applications, where
+    there is a requirement for band ratioing etc.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    equation : str
+        string with the equation in it
+    bands : dictionary
+        dictionary of bands
+    bandsall : list
+        list of all bands
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 

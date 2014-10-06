@@ -43,64 +43,72 @@ import matplotlib.cbook as cbook
 
 
 class MyMplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+    """
+    Canvas for the actual plot
+
+    Attributes
+    ----------
+    axes : matplotlib subplot
+    parent : parent
+        reference to the parent routine
+    """
     def __init__(self, parent=None):
         # figure stuff
         fig = Figure()
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
-        self.background = None
+#        self.background = None
         self.parent = parent
 
         FigureCanvas.__init__(self, fig)
 
-        self.figure.canvas.mpl_connect('pick_event', self.onpick)
-        self.figure.canvas.mpl_connect('button_release_event',
-                                       self.button_release_callback)
-        self.figure.canvas.mpl_connect('motion_notify_event',
-                                       self.motion_notify_callback)
+#        self.figure.canvas.mpl_connect('pick_event', self.onpick)
+#        self.figure.canvas.mpl_connect('button_release_event',
+#                                       self.button_release_callback)
+#        self.figure.canvas.mpl_connect('motion_notify_event',
+#                                       self.motion_notify_callback)
 
-    def button_release_callback(self, event):
-        """ mouse button release """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        self.ind = None
+#    def button_release_callback(self, event):
+#        """ mouse button release """
+#        if event.inaxes is None:
+#            return
+#        if event.button != 1:
+#            return
+#        self.ind = None
 
-    def motion_notify_callback(self, event):
-        """ move mouse """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        if self.ind is None:
-            return
+#    def motion_notify_callback(self, event):
+#        """ move mouse """
+#        if event.inaxes is None:
+#            return
+#        if event.button != 1:
+#            return
+#        if self.ind is None:
+#            return
+#
+#        y = event.ydata
+#        dtmp = self.line.get_data()
+#        dtmp[1][self.ind] = y
+#        self.line.set_data(dtmp[0], dtmp[1])
+#
+##        self.figure.canvas.restore_region(self.background)
+#        self.axes.draw_artist(self.line)
+##        self.figure.canvas.blit(self.axes.bbox)
+#        self.figure.canvas.update()
 
-        y = event.ydata
-        dtmp = self.line.get_data()
-        dtmp[1][self.ind] = y
-        self.line.set_data(dtmp[0], dtmp[1])
-
-        self.figure.canvas.restore_region(self.background)
-        self.axes.draw_artist(self.line)
-#        self.figure.canvas.blit(self.axes.bbox)
-        self.figure.canvas.update()
-
-    def onpick(self, event):
-        """ Picker event """
-        if event.mouseevent.inaxes is None:
-            return
-        if event.mouseevent.button != 1:
-            return
-        if event.artist != self.line:
-            return True
-
-        self.ind = event.ind
-        self.ind = self.ind[len(self.ind) / 2]  # get center-ish value
-
-        return True
+#    def onpick(self, event):
+#        """ Picker event """
+#        if event.mouseevent.inaxes is None:
+#            return
+#        if event.mouseevent.button != 1:
+#            return
+#        if event.artist != self.line:
+#            return True
+#
+#        self.ind = event.ind
+#        self.ind = self.ind[len(self.ind) / 2]  # get center-ish value
+#
+#        return True
 
     def update_contour(self, data1):
         """ Update the plot """

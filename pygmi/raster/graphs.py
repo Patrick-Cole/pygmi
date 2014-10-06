@@ -22,7 +22,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Plot Raster Data """
+"""
+Plot Raster Data
+
+This module provides a variety of methods to plot raster data via the context
+menu. The following are supported:
+
+ * Correlation coefficients
+ * Images
+ * Surfaces
+ * Histograms
+"""
 
 import numpy as np
 from PyQt4 import QtGui, QtCore
@@ -39,91 +49,36 @@ rcParams = matplotlib.rcParams
 import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.cbook as cbook
-# import matplotlib.tri as mtri
 
 
 class MyMplCanvas(FigureCanvas):
-    """Ultimately, this is a QWidget (as well as a FigureCanvasAgg, etc.)."""
+    """
+    Canvas for the actual plot
+
+    Attributes
+    ----------
+    axes : matplotlib subplot
+    parent : parent
+        reference to the parent routine
+    """
     def __init__(self, parent=None):
-        # figure stuff
         fig = Figure()
         self.axes = fig.add_subplot(111)
-        self.line = None
-        self.ind = None
-        self.background = None
         self.parent = parent
 
         FigureCanvas.__init__(self, fig)
 
-        self.figure.canvas.mpl_connect('pick_event', self.onpick)
-        self.figure.canvas.mpl_connect('button_release_event',
-                                       self.button_release_callback)
-        self.figure.canvas.mpl_connect('motion_notify_event',
-                                       self.motion_notify_callback)
-    def button_release_callback(self, event):
-        """ mouse button release """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        self.ind = None
-
-    def motion_notify_callback(self, event):
-        """ move mouse """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        if self.ind is None:
-            return
-
-        y = event.ydata
-        dtmp = self.line.get_data()
-        dtmp[1][self.ind] = y
-        self.line.set_data(dtmp[0], dtmp[1])
-
-        self.figure.canvas.restore_region(self.background)
-        self.axes.draw_artist(self.line)
-#        self.figure.canvas.blit(self.axes.bbox)
-        self.figure.canvas.update()
-
-    def onpick(self, event):
-        """ Picker event """
-        if event.mouseevent.inaxes is None:
-            return
-        if event.mouseevent.button != 1:
-            return
-        if event.artist != self.line:
-            return True
-
-        self.ind = event.ind
-        self.ind = self.ind[len(self.ind) / 2]  # get center-ish value
-
-        return True
-
-    def update_contour(self, data1):
-        """ Update the plot """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
-                  data1.tly - data1.rows * data1.ydim, data1.tly)
-
-        cdat = data1.data + 1
-        csp = self.axes.imshow(cdat, cmap=plt.cm.jet, extent=extent)
-        vals = np.unique(cdat)
-        vals = vals.compressed()
-        bnds = (vals - 0.5).tolist() + [vals.max() + .5]
-        self.axes.figure.colorbar(csp, boundaries=bnds, values=vals,
-                                  ticks=vals)
-
-#        self.axes.set_title('Data')
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
-        self.figure.canvas.draw()
-
     def update_pcolor(self, data1, dmat):
-        """ Update the plot """
+        """
+        Update the correlation coefficient plot
+
+        Parameters
+        ----------
+        data1 : PyGMI raster Data
+            raster dataset to be used in contouring
+        dmat : numpy array
+            dummy matrix of numbers to be plotted using pcolor
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         self.axes.pcolor(dmat)
@@ -146,7 +101,16 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_raster(self, data1, data2=None):
-        """ Update the plot """
+        """
+        Update the raster plot
+
+        Parameters
+        ----------
+        data1 : PyGMI raster Data
+            raster dataset to be used in contouring
+        data2 : PyGMI point PData
+            points to be plotted over raster image
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -174,7 +138,14 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_rgb(self, data1):
-        """ Update the plot """
+        """
+        Update the RGB plot
+
+        Parameters
+        ----------
+        data1 : PyGMI raster Data
+            raster dataset to be used
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -182,7 +153,16 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_hexbin(self, data1, data2):
-        """ Update the plot """
+        """
+        Update the hexbin plot
+
+        Parameters
+        ----------
+        data1 : PyGMI raster Data
+            raster dataset to be used
+        data2 : PyGMI raster Data
+            raster dataset to be used
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         x = data1.copy()
@@ -205,23 +185,15 @@ class MyMplCanvas(FigureCanvas):
         cbar.set_label('log10(N)')
         self.figure.canvas.draw()
 
-    def update_scatter(self, x, y):
-        """ Update the plot """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        xmin = min(x) - 0.1 * np.ptp(x)
-        xmax = max(x) + 0.1 * np.ptp(x)
-        ymin = min(y) - 0.1 * np.ptp(y)
-        ymax = max(y) + 0.1 * np.ptp(y)
-
-        self.axes.scatter(x, y)
-        self.axes.axis([xmin, xmax, ymin, ymax])
-        self.axes.set_xlabel("Number of Classes")
-        self.figure.canvas.draw()
-
     def update_wireframe(self, data):
-        """ Update the plot """
+        """
+        Update the surface wireframe plot
+
+        Parameters
+        ----------
+        data : PyGMI raster Data
+            raster dataset to be used
+        """
 
         x = data.tlx+np.arange(data.cols)*data.xdim+data.xdim/2
         y = data.tly-np.arange(data.rows)*data.ydim-data.ydim/2
@@ -256,7 +228,14 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_hist(self, data1):
-        """ Update the plot """
+        """
+        Update the hiostogram plot
+
+        Parameters
+        ----------
+        data1 : PyGMI raster Data
+            raster dataset to be used
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -269,7 +248,14 @@ class MyMplCanvas(FigureCanvas):
 
 
 class GraphWindow(QtGui.QDialog):
-    """ Graph Window """
+    """
+    Graph Window - The QDialog window which will contain our image
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent=None)
         self.parent = parent
@@ -308,7 +294,24 @@ class GraphWindow(QtGui.QDialog):
 
 
 class PlotCCoef(GraphWindow):
-    """ Plot 2D Correlation Coeffiecients """
+    """
+    Plot 2D Correlation Coeffiecients
+
+    Attributes
+    ----------
+    label1 : QLabel
+        reference to GraphWindow's label1
+    combobox1 : QComboBox
+        reference to GraphWindow's combobox1
+    label2 : QLabel
+        reference to GraphWindow's label2
+    combobox2 : QComboBox
+        reference to GraphWindow's combobox2
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.label1.hide()
@@ -333,18 +336,48 @@ class PlotCCoef(GraphWindow):
         self.mmc.update_pcolor(data, dummy_mat)
 
     def corr2d(self, dat1, dat2):
-        """ Calculate the 2D correlation """
+        """
+        Calculate the 2D correlation
+
+        Parameters
+        ----------
+        dat1 : numpy array
+            dataset 1 for use in correlation calculation
+        dat2 : numpy array
+            dataset 2 for use in correlation calculation
+
+        Returns
+        -------
+        out : numpy array
+            array of correlation coefficients
+        """
+
+        out = None
         if dat1.shape == dat2.shape:
             mdat1 = dat1 - dat1.mean()
             mdat2 = dat2 - dat2.mean()
             numerator = (mdat1 * mdat2).sum()
             denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
             out = numerator / denominator
-            return out
+
+        return out
 
 
 class PlotRaster(GraphWindow):
-    """ Plot Raster Class """
+    """
+    Plot Raster Class
+
+    Attributes
+    ----------
+    label2 : QLabel
+        reference to GraphWindow's label2
+    combobox2 : QComboBox
+        reference to GraphWindow's combobox2
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.label2.hide()
@@ -361,9 +394,6 @@ class PlotRaster(GraphWindow):
         if 'Raster' in self.indata:
             data = self.indata['Raster']
             self.mmc.update_raster(data[i], data2)
-        elif 'Cluster' in self.indata:
-            data = self.indata['Cluster']
-            self.mmc.update_contour(data[i])
         elif 'ProfPic' in self.indata:
             data = self.indata['ProfPic']
             self.mmc.update_rgb(data[i])
@@ -384,7 +414,20 @@ class PlotRaster(GraphWindow):
 
 
 class PlotSurface(GraphWindow):
-    """ Plot Raster Class """
+    """
+    Plot Raster Class
+
+    Attributes
+    ----------
+    label2 : QLabel
+        reference to GraphWindow's label2
+    combobox2 : QComboBox
+        reference to GraphWindow's combobox2
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.label2.hide()
@@ -411,7 +454,16 @@ class PlotSurface(GraphWindow):
 
 
 class PlotScatter(GraphWindow):
-    """ Plot Raster Class """
+    """
+    Plot Hexbin Class. A Hexbin is a type of scatter plot which is raster.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent=None)
         self.indata = {}
@@ -439,7 +491,20 @@ class PlotScatter(GraphWindow):
 
 
 class PlotHist(GraphWindow):
-    """ Plot Hist Class """
+    """
+    Plot Hist Class
+
+    Attributes
+    ----------
+    label2 : QLabel
+        reference to GraphWindow's label2
+    combobox2 : QComboBox
+        reference to GraphWindow's combobox2
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.label2.hide()
@@ -610,38 +675,6 @@ class ModestImage(mi.AxesImage):
     def draw(self, renderer, *args, **kwargs):
         self._scale_to_res()
         super(ModestImage, self).draw(renderer, *args, **kwargs)
-
-
-# def main():
-#    from time import time
-#    import matplotlib.pyplot as plt
-#    import numpy as np
-#    x, y = np.mgrid[0:2000, 0:2000]
-#    data = np.sin(x / 10.) * np.cos(y / 30.)
-#
-#    f = plt.figure()
-#    ax = f.add_subplot(111)
-#
-#    #try switching between
-#    artist = ModestImage(ax, data=data)
-#    #artist = mi.AxesImage(ax, data=data)
-#
-#    ax.set_aspect('equal')
-#    artist.norm.vmin = -1
-#    artist.norm.vmax = 1
-#
-#    ax.add_artist(artist)
-#    ax.set_xlim(0, 1000)
-#    ax.set_ylim(0, 1000)
-#
-#    t0 = time()
-#    plt.gcf().canvas.draw()
-#    t1 = time()
-#
-#    print "Draw time for %s: %0.1f ms" % (artist.__class__.__name__,
-#                                          (t1 - t0) * 1000)
-#
-#    plt.show()
 
 
 def imshow(axes, X, cmap=None, norm=None, aspect=None,
