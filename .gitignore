@@ -4,6 +4,7 @@ seis/
 dist/
 data/
 build/
+docs/
 
 *.py[co]
 *.cmd
