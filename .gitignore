@@ -3,7 +3,6 @@ _modules/
 seis/
 dist/
 data/
-docs/
 build/
 
 *.py[co]
