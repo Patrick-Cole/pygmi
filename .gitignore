@@ -4,6 +4,7 @@ dist/
 data/
 build/
 pygmi/
+docs/
 
 *.py[co]
 *.cmd
