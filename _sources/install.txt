@@ -9,24 +9,43 @@ PyGMI can be downloaded through `GitHub <https://github.com/Patrick-Cole/pygmi/r
 
 Requirements
 ------------
-PyGMI will run on both Windows and Linux, as well as Python 2.7 and Python 3.3. It should be noted that the main development is done in Python 3.3 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.4 on Windows.
 
-PyGMI requires the following libraries in order to function:
+PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.3.5 or 2.7.6
-* Numpy 1.8.1
-* Scipy 0.13.3
+* Python 3.4.1
+* NumPy 1.8.2
+* SciPy 0.14.0
 * Matplotlib 1.3.1
-* PyQt 4.9.6
-* GDAL 1.10.1
-* numexpr 2.3.1
+* PyQt 4.10.4
+* GDAL 1.11.0
+* numexpr 2.4
+
+It is possible that it might work on earlier versions, especially on non-windows operating systems. Under windows, there are compiled .pyd files (python version of a dll) which require the NumPy and Python version to match. However, for actual releases, I do post windows binaries which include a standalone python distribution (that will not interfere with existing installations), so this should not be a problem.
+
+Installation
+------------
+
+General
+^^^^^^^
+If you satisfy the requirements, and wish to run PyGMI from within your python environment, you can install PyGMI as a library using the following command from within the root of the PyGMI directory::
+
+   python setup.py install
+
+Once you are in python, you can run PyGMI by using the following commands::
+
+   import pygmi
+   pygmi.main()
+
 
 Windows
--------
-I have now made available convenient installers for PyGMI, thanks to `Cyrille Rossant <http://cyrille.rossant.net/tag/winpython/>`_. If you have already installed PyGMI using this installer, you can simply update it using the smaller pygmi_update.exe file. This smaller update file contains all the python code, if you are only interested in that.
+^^^^^^^
+I have now made available convenient installers for PyGMI, thanks to `Cyrille Rossant <http://cyrille.rossant.net/tag/winpython/>`_. If you have already installed PyGMI using this installer, you can simply update it using the smaller pygmi_update.exe file. This smaller update file contains only the python code, if you are only interested in that.
+
+Running the software can be acheived through the shortcut on your desktop.
 
 Linux
------
+^^^^^
 Linux normally comes with python installed, but the additional libraries will still need to be installed. The software has been tested on Ubuntu 13.10 linux, using Python 2.7
 
 * Install libraries (shown below for Ubuntu 13.10)::
@@ -47,6 +66,7 @@ Linux normally comes with python installed, but the additional libraries will st
 
    python quickstart.py
 
+* Alternatively you can install it as a library as shown above.
 
 Troubleshooting
 ---------------
