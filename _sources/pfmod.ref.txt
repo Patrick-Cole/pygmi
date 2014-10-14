@@ -1,0 +1,6 @@
+References
+----------
+
+ Singh, B., Guptasarma, D., 2001. New method for fast computation of gravity and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.
+
+ Blakely, R.J., Potential Theory in Gravity and Magnetic Applications (1996), pp 200-201

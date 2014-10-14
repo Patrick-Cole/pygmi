@@ -1,0 +1,17 @@
+==========
+PyGMI Wiki
+==========
+The wiki will be where you can find information about how to use PyGMI. Please make sure you check out teh quick start, since some important operational issues are covered there.
+
+Contents:
+
+.. toctree::
+   :maxdepth: 1
+
+   install
+   qstart
+   raster
+   cluster
+   pfmod
+
+

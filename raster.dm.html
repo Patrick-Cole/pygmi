@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Raster Analysis: Description of Modules &mdash; PyGMI 2.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="PyGMI 2.2.2 documentation" href="index.html" />
+    <link rel="up" title="Raster Data Analysis" href="raster.html" />
+    <link rel="next" title="References" href="raster.ref.html" />
+    <link rel="prev" title="Raster Analysis: Context Menu" href="raster.cm.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+<a href="index.html">
+<img src="_static/logo.png" border="0" alt="py4sci"/>
+</a>
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+</a>
+
+</div>
+
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="raster.ref.html" title="References"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="raster.cm.html" title="Raster Analysis: Context Menu"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li><a href="wiki.html" >PyGMI Wiki</a> &raquo;</li>
+          <li><a href="raster.html" accesskey="U">Raster Data Analysis</a> &raquo;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Raster Analysis: Description of Modules</a><ul>
+<li><a class="reference internal" href="#import-raster">Import Raster</a></li>
+<li><a class="reference internal" href="#equation-editor">Equation Editor</a></li>
+<li><a class="reference internal" href="#smoothing">Smoothing</a></li>
+<li><a class="reference internal" href="#normalisation">Normalisation</a></li>
+<li><a class="reference internal" href="#horizontal-gradients">Horizontal Gradients</a></li>
+<li><a class="reference internal" href="#visibility">Visibility</a></li>
+<li><a class="reference internal" href="#tilt">Tilt</a></li>
+<li><a class="reference internal" href="#merge-and-resampling">Merge and Resampling</a></li>
+<li><a class="reference internal" href="#reprojection">Reprojection</a></li>
+<li><a class="reference internal" href="#cut-data">Cut Data</a></li>
+<li><a class="reference internal" href="#get-profile">Get Profile</a></li>
+<li><a class="reference internal" href="#grid-point-data">Grid Point Data</a></li>
+<li><a class="reference internal" href="#calculate-igrf-corrected-data">Calculate IGRF Corrected Data</a></li>
+<li><a class="reference internal" href="#raster-data-interpretation">Raster Data Interpretation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="raster.cm.html"
+                        title="previous chapter">Raster Analysis: Context Menu</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="raster.ref.html"
+                        title="next chapter">References</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/raster.dm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="raster-analysis-description-of-modules">
+<h1>Raster Analysis: Description of Modules<a class="headerlink" href="#raster-analysis-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="import-raster">
+<h2>Import Raster<a class="headerlink" href="#import-raster" title="Permalink to this headline">¶</a></h2>
+<p>This module imports raster data using the GDAL library, including ENVI, ER Mapper, Geotiff, Geosoft GXF and Surfer. It is possible to connect multiple imports to another module, thereby creating a &#8216;merged&#8217; dataset.</p>
+<a class="reference internal image-reference" href="_images/rasterimport.png"><img alt="_images/rasterimport.png" src="_images/rasterimport.png" style="width: 100%;" /></a>
+</div>
+<div class="section" id="equation-editor">
+<h2>Equation Editor<a class="headerlink" href="#equation-editor" title="Permalink to this headline">¶</a></h2>
+<p>The equation editor allows for operations to be performed on either single or multiple bands of data. It works like a calculator.</p>
+<a class="reference internal image-reference" href="_images/rasterequation.png"><img alt="_images/rasterequation.png" src="_images/rasterequation.png" style="width: 100%;" /></a>
+</div>
+<div class="section" id="smoothing">
+<h2>Smoothing<a class="headerlink" href="#smoothing" title="Permalink to this headline">¶</a></h2>
+<p>Allows for the smoothing of data using mean, median and mode filters. These filters can have either a box window or a disk window. In addition, the mean filter can be defined by a Gaussian window.</p>
+<a class="reference internal image-reference" href="_images/rastersmooth.png"><img alt="_images/rastersmooth.png" src="_images/rastersmooth.png" style="width: 100%;" /></a>
+</div>
+<div class="section" id="normalisation">
+<h2>Normalisation<a class="headerlink" href="#normalisation" title="Permalink to this headline">¶</a></h2>
+<p>Allows for the normalisation of data. It can be normalised to either:</p>
+<ol class="arabic simple">
+<li>Interval of between zero and one</li>
+<li>Mean of zero, with standard deviation of unity</li>
+<li>Median of zero, with absolute deviation of unity</li>
+<li>8 bit histogram equalisation</li>
+</ol>
+</div>
+<div class="section" id="horizontal-gradients">
+<h2>Horizontal Gradients<a class="headerlink" href="#horizontal-gradients" title="Permalink to this headline">¶</a></h2>
+<p>Calculates the raster gradients (Cooper 2007) by azimuth, elevation and order.</p>
+</div>
+<div class="section" id="visibility">
+<h2>Visibility<a class="headerlink" href="#visibility" title="Permalink to this headline">¶</a></h2>
+<p>Computes visibility (Cooper 2005) as a textural measure using window size and viewing height (% standard deviation)</p>
+</div>
+<div class="section" id="tilt">
+<h2>Tilt<a class="headerlink" href="#tilt" title="Permalink to this headline">¶</a></h2>
+<p>Calculates the tilt angle (Cooper 2006) of the raster data.</p>
+</div>
+<div class="section" id="merge-and-resampling">
+<h2>Merge and Resampling<a class="headerlink" href="#merge-and-resampling" title="Permalink to this headline">¶</a></h2>
+<p>This tool is used to merge and resample datasets. It is only necessary when raster data must have the same extents and sample or cell size.</p>
+</div>
+<div class="section" id="reprojection">
+<h2>Reprojection<a class="headerlink" href="#reprojection" title="Permalink to this headline">¶</a></h2>
+<p>This module reprojects the data using the GDAL libraries. The interface allows for either Transverse Mercator, or UTM projections, or EPSG code input for full flexibility.</p>
+<p>EPSG codes are available online at either:</p>
+<ul class="simple">
+<li><a class="reference external" href="http://www.epsg-registry.org/">http://www.epsg-registry.org/</a></li>
+<li><a class="reference external" href="http://spatialreference.org/ref/epsg/">http://spatialreference.org/ref/epsg/</a></li>
+<li>In the gcs.csv and pcs.csv files in your python GDAL\data directory.</li>
+</ul>
+<a class="reference internal image-reference" href="_images/rasterreproj.png"><img alt="_images/rasterreproj.png" src="_images/rasterreproj.png" style="width: 100%;" /></a>
+</div>
+<div class="section" id="cut-data">
+<h2>Cut Data<a class="headerlink" href="#cut-data" title="Permalink to this headline">¶</a></h2>
+<p>This tool provided an quick way to cut out raster data, using a shape file as the boundary for the cut, and a larger raster file to cut from. You will need to prepare the shape file in another package first.</p>
+</div>
+<div class="section" id="get-profile">
+<h2>Get Profile<a class="headerlink" href="#get-profile" title="Permalink to this headline">¶</a></h2>
+<p>This tool provided an quick way to extract a 1D profile from a raster dataset, using a shape file for the coordinates of the profile. You will need to prepare the shape file in another package first. Profiles can be exported or displayed via the context menu.</p>
+</div>
+<div class="section" id="grid-point-data">
+<h2>Grid Point Data<a class="headerlink" href="#grid-point-data" title="Permalink to this headline">¶</a></h2>
+<p>This module grids point data using the !SciPy griddata routine. It used default settings (linear interpolation), and is meant as a convenience function only. This routine takes as input Point Data which is imported via the Point Data menu.</p>
+</div>
+<div class="section" id="calculate-igrf-corrected-data">
+<h2>Calculate IGRF Corrected Data<a class="headerlink" href="#calculate-igrf-corrected-data" title="Permalink to this headline">¶</a></h2>
+<p>This module calculates the IGRF and subtracts it from your magnetic data. It will also store the IGRF field as an additional dataset. Please pay careful attention to define the input raster projection correctly, as this will affect results. The IGRF corrected is a translated version of the correction supplied at: <a class="reference external" href="http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html">http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html</a></p>
+</div>
+<div class="section" id="raster-data-interpretation">
+<h2>Raster Data Interpretation<a class="headerlink" href="#raster-data-interpretation" title="Permalink to this headline">¶</a></h2>
+<p>This module allows for the flexible display of data using either a single colour map to data, a ternary of three data bands, or a sun shading image. The shader used is Blinn’s formula (Horn, 1981).</p>
+<p>The sun shading image in particular differs from traditional sun shading in that it also includes two additional parameters:</p>
+<ul class="simple">
+<li>Sunshade detail</li>
+<li>Light reflectance</li>
+</ul>
+<a class="reference internal image-reference" href="_images/rasterinterp.png"><img alt="_images/rasterinterp.png" src="_images/rasterinterp.png" style="width: 100%;" /></a>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="raster.ref.html" title="References"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="raster.cm.html" title="Raster Analysis: Context Menu"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li><a href="wiki.html" >PyGMI Wiki</a> &raquo;</li>
+          <li><a href="raster.html" >Raster Data Analysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

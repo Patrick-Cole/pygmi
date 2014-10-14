@@ -1,0 +1,23 @@
+Raster Data Analysis
+====================
+
+Introduction
+------------
+The Raster Menu is a where operations on raster or grid data reside. Here, gridded data can be imported, filtered and displayed. If another menu requires raster data, then it should be imported through this menu.
+
+All raster modules, once activated (module will be green) have a context menu which allows the display of the data as well as its statistics. The context menu is accessed by right clicking on the module. 
+
+.. image:: _static/rasterintro.png
+   :width: 100%	
+
+
+Subpackages
+-----------
+
+.. toctree::
+
+    raster.cm
+    raster.dm
+    raster.ref
+
+ 

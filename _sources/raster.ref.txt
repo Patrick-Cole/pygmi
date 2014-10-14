@@ -1,0 +1,11 @@
+References
+----------
+ Horn, B. K. P., 1981. Hill shading and the reflectance map. Proceedings of the IEEE, 69(1), 14-47. doi:10.1109/PROC.1981.11918
+
+ Cooper,G.R.J. 2005. Analysing potential field data using visibility. Computers and Geosciences, 31, p.877-881
+
+ Cooper,G.R.J.,Cowan, D.R.  2006. Enhancing potential field data using filters based on the local phase. Computers and Geosciences,32, p.1585-1591 
+ 
+ Cooper,G.R.J., Cowan, D.R. 2007. Enhancing linear features in image data using horizontal orthogonal gradient ratios. Computers and Geosciences, 33, p.981-984 
+
+ IGRF Code (Accessed 28 March, 2014, http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html), originally written in FORTRAN, was developed using subroutines written by A. Zunde (USGS), S.R.C. Malin & D.R. Barraclough (Institute of Geological Sciences, United Kingdom). Translated into C by Craig H. Shaffer. Rewritten by David Owens and maintained by: Stefan Maus (NOAA)

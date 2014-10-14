@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Multivariate Statistical Techniques: Description of Modules &mdash; PyGMI 2.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="PyGMI 2.2.2 documentation" href="index.html" />
+    <link rel="up" title="Multivariate statistical techniques" href="cluster.html" />
+    <link rel="next" title="References" href="cluster.ref.html" />
+    <link rel="prev" title="Multivariate Statistical Techniques: Context Menu" href="cluster.cm.html" /> 
+  </head>
+  <body>
+
+<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+<a href="index.html">
+<img src="_static/logo.png" border="0" alt="py4sci"/>
+</a>
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+</a>
+
+</div>
+
+
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cluster.ref.html" title="References"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="cluster.cm.html" title="Multivariate Statistical Techniques: Context Menu"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li><a href="wiki.html" >PyGMI Wiki</a> &raquo;</li>
+          <li><a href="cluster.html" accesskey="U">Multivariate statistical techniques</a> &raquo;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Multivariate Statistical Techniques: Description of Modules</a><ul>
+<li><a class="reference internal" href="#crisp-clustering">Crisp Clustering</a></li>
+<li><a class="reference internal" href="#fuzzy-clustering">Fuzzy Clustering</a></li>
+<li><a class="reference internal" href="#scatter-plot-tool">Scatter Plot Tool</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="cluster.cm.html"
+                        title="previous chapter">Multivariate Statistical Techniques: Context Menu</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="cluster.ref.html"
+                        title="next chapter">References</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/cluster.dm.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="multivariate-statistical-techniques-description-of-modules">
+<h1>Multivariate Statistical Techniques: Description of Modules<a class="headerlink" href="#multivariate-statistical-techniques-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="crisp-clustering">
+<h2>Crisp Clustering<a class="headerlink" href="#crisp-clustering" title="Permalink to this headline">¶</a></h2>
+<p>The following crisp clustering (Paasche 2009) techniques are supported:</p>
+<ul class="simple">
+<li>k-means</li>
+<li>advanced k-means</li>
+<li>w-means</li>
+</ul>
+</div>
+<div class="section" id="fuzzy-clustering">
+<h2>Fuzzy Clustering<a class="headerlink" href="#fuzzy-clustering" title="Permalink to this headline">¶</a></h2>
+<p>The following fuzzy clustering (Paasche 2009) techniques are supported:
+* fuzzy c-means
+* advanced fuzzy c-means
+* Gustafson-Kessel</p>
+</div>
+<div class="section" id="scatter-plot-tool">
+<h2>Scatter Plot Tool<a class="headerlink" href="#scatter-plot-tool" title="Permalink to this headline">¶</a></h2>
+<p>The scatter plot tool is used for scatter plot analysis. By supplying the results of a cluster analysis, in addition to the raster data input into the cluster analysis, it is also possible to see where the clusters are located within the scatter plots.</p>
+<p>The scatter plot tool shows both a scatter plot and a view of the raster data. A polygon can be drawn on either view, and the corresponding pixels will be displayed in the other view.</p>
+<a class="reference internal image-reference" href="_images/clustscatter.png"><img alt="_images/clustscatter.png" src="_images/clustscatter.png" style="width: 100%;" /></a>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cluster.ref.html" title="References"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="cluster.cm.html" title="Multivariate Statistical Techniques: Context Menu"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li><a href="wiki.html" >PyGMI Wiki</a> &raquo;</li>
+          <li><a href="cluster.html" >Multivariate statistical techniques</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
