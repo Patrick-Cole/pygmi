@@ -373,7 +373,6 @@ class ExportData(object):
         out = driver.Create(tmpfile, int(data[0].cols),
                             int(data[0].rows), len(data), fmt)
         out.SetGeoTransform([xmin, data[0].xdim, 0, ymax, 0, -data[0].ydim])
-
 #        orig = osr.SpatialReference()
 #        orig.SetWellKnownGeogCS('WGS84')
 #        orig.ImportFromEPSG(4222)  # Cape
@@ -385,6 +384,7 @@ class ExportData(object):
         for i in range(len(data)):
             rtmp = out.GetRasterBand(i+1)
             rtmp.SetDescription(data[i].dataid)
+
             dtmp = np.ma.array(data[i].data).astype(dtype)
 
             # This section tries to overcome null values with round off error
@@ -409,6 +409,9 @@ class ExportData(object):
             rtmp.WriteArray(dtmp)
 
         out = None  # Close File
+        if drv == 'ENVI':
+            with open(tmpfile+'.hdr', 'a') as myfile:
+                myfile.write('data ignore value = ' + str(data[0].nullvalue))
 
     def export_gxf(self, data):
         """
