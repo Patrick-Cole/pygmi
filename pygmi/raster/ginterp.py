@@ -1765,4 +1765,3 @@ def norm255(dat):
     out = out.round()
     out = out.astype(np.uint8)
     return out
-

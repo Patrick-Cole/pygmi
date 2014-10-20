@@ -1667,7 +1667,7 @@ class DataGrid(QtGui.QDialog):
             x = data.xdata
             y = data.ydata
             z = data.zdata
-            self.parent.showprocesslog
+#            self.parent.showprocesslog
             tmp = quickgrid(x, y, z, dxy, showtext=self.parent.showprocesslog)
             mask = tmp.mask
             gdat = tmp.data

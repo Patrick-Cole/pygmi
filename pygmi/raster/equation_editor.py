@@ -370,7 +370,7 @@ class EquationEditor(QtGui.QDialog):
         neweq = neweq.replace('log10', 'np.log10')
         neweq = neweq.replace('mean', 'np.mean')
         neweq = neweq.replace('median', 'np.median')
-        neweq = neweq.replace('mode', 'self.hmode')
+        neweq = neweq.replace('mode', 'hmode')
         neweq = neweq.replace('abs', 'np.abs')
         neweq = neweq.replace('bands', 'self.bands')
         neweq = neweq.replace('all data', 'self.bandsall')
@@ -437,18 +437,31 @@ class EquationEditor(QtGui.QDialog):
 
         return True
 
-    def hmode(self, data):
-        """ Mode - this uses a histogram to generate a fast mode estimate """
-        mmin = np.min(data)
-        mmax = np.max(data)
-        for _ in range(2):
-            mhist = np.histogram(data, 255, range=(mmin, mmax))
-            mtmp = mhist[0].tolist()
-            mind = mtmp.index(max(mtmp))
-            mmin = mhist[1][mind]
-            mmax = mhist[1][mind+1]
 
-        mode2 = (mmax-mmin)/2 + mmin
+def hmode(data):
+    """
+    Mode - this uses a histogram to generate a fast mode estimate
+
+    Parameters
+    ----------
+    data : list
+        list of values to generate the mode from.
+
+    Returns
+    -------
+    mode2 : float
+        mode value
+    """
+    mmin = np.min(data)
+    mmax = np.max(data)
+    for _ in range(2):
+        mhist = np.histogram(data, 255, range=(mmin, mmax))
+        mtmp = mhist[0].tolist()
+        mind = mtmp.index(max(mtmp))
+        mmin = mhist[1][mind]
+        mmax = mhist[1][mind+1]
+
+    mode2 = (mmax-mmin)/2 + mmin
 #        mcnt = mhist[0][mind]
 
-        return mode2
+    return mode2

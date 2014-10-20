@@ -992,13 +992,13 @@ class ComboBoxBasic(QtGui.QDialog):
     A basic combo box application
     """
 
-    def __init__(self, parent=None, txt='', dlist=[]):
+    def __init__(self, parent=None, txt='', dlist=None):
         QtGui.QDialog.__init__(self, parent)
 
+        if dlist is None:
+            dlist = []
         # create GUI
-        QtGui.QMainWindow.__init__(self)
         self.setWindowTitle(txt)
-#        self.resize(250, 50)
 
         self.vbox = QtGui.QVBoxLayout()
         self.setLayout(self.vbox)
@@ -1019,7 +1019,6 @@ class ComboBoxBasic(QtGui.QDialog):
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
-        distrolist = ['Linux Mint', 'Gentoo', 'Mandriva']
         self.combo.addItems(dlist)
 
         tmp = self.exec_()

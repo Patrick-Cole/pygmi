@@ -117,7 +117,6 @@ class ImportPointData(object):
         self.outdata = {}
         self.ifile = ""
 
-
     def settings(self):
         """Entry point into item. Data imported from here."""
         ext = ("Common Formats (*.csv *.dat *.xyz *.txt);;"
