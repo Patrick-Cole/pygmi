@@ -268,7 +268,7 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
                 else:
                     data[j] = odata[j]
 
-        if 'Model3D' not in data.keys():
+        if 'Model3D' not in data.keys() and 'Seis' not in data.keys():
             for j in data.keys():
                 tmp = []
                 for i in data[j]:

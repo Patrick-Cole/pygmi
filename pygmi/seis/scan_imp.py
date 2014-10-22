@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        ginterp.py (part of PyGMI)
+# Name:        scan_imp.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -27,6 +27,46 @@
 import numpy as np
 from PyQt4 import QtGui
 import os
+import re
+from . import datatypes as sdt
+
+
+def str2float(inp):
+    """
+    Converts a set number of columns to float, or returns None
+
+    Parameters
+    ----------
+    inp : str
+        string with a list of floats in it
+
+    Returns
+    -------
+    output : float
+        all columns returned as floats
+    """
+    if inp.strip() == '':
+        return None
+    return float(inp)
+
+
+def str2int(inp):
+    """
+    Converts a set number of columns to integer, or returns None
+
+    Parameters
+    ----------
+    inp : str
+        string with a list of floats in it
+
+    Returns
+    -------
+    output : float
+        all columns returned as integers
+    """
+    if inp.strip() == '':
+        return None
+    return int(inp)
 
 
 class SIMP(object):
@@ -78,6 +118,7 @@ class SIMP(object):
         self.ofile = None
         self.parent = parent
         self.showtext = self.parent.showprocesslog
+        self.event = {}
 
     def settings(self):
         """ Settings """
@@ -86,8 +127,8 @@ class SIMP(object):
 
         ext = "Scanned Bulletin Text File (*.txt)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)[0]
+        filename = QtGui.QFileDialog.getOpenFileName(self.parent, 'Open File',
+                                                     '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -100,11 +141,11 @@ class SIMP(object):
         self.showtext('Input File: '+ifile)
 
 # Read entire file
-        idata = self.read_ifile(ifile)
+        idata = read_ifile(ifile)
         mrecs, monconv = self.get_record_info(idata)
 
 # Start main loop
-        dat = ''
+        dat = []
         for i in mrecs:
             self.reset_vars(i[0], monconv[i[0]])
 
@@ -139,23 +180,17 @@ class SIMP(object):
                 self.minute = self.datamins[0]
                 self.sec = self.datasecs[0]
 
-# Now write out results to file
-            dat += self.write_record_type_1()
-            dat += self.write_record_type_e()
-            dat += self.write_record_type_i()
-            dat += self.write_record_type_3()
-            dat += self.write_record_type_7()
-            dat += ' \n'
+# Put data into seisan structures
+            self.event = {}
+            self.get_record_type_1()
+            self.get_record_type_e()
+            self.get_record_type_i()
+            self.get_record_type_3()
+            self.get_record_type_7()
+
+            dat.append(self.event)
 
 # Open output files
-        ofile = ifile[:-3]+'sei'
-        self.ofile = open(ofile, 'w')
-
-        self.showtext('Output File: '+ofile)
-
-        self.ofile.write(dat)
-        self.ofile.close()
-
         ofile = ifile[:-3]+'err'
         self.ofile = open(ofile, 'w')
 
@@ -163,9 +198,6 @@ class SIMP(object):
 
         self.ofile.write(self.parent.textbrowser_processlog.toPlainText())
         self.ofile.close()
-
-        self.outdata['Seis'] = dat
-        self.showtext('\nCompleted!')
 
         self.outdata['Seis'] = dat
         self.showtext('\nCompleted!')
@@ -275,26 +307,21 @@ class SIMP(object):
     def look_for_origin(self, tmp):
         """ Looks for origin """
         if tmp.find('ORIGIN') > -1:
-            self.hour = int(self.ncor(tmp.partition('h')[0][-2:]))
-            self.minute = int(self.ncor(tmp.partition('m')[0][-2:]))
-            self.sec = float(self.ncor(tmp.partition('+-')[0][-5:]))
-            self.secerr = float(self.ncor(tmp.partition('s')[0][-5:]))
-
-    def ncor(self, tmp):
-        """ Correct number problems """
-        tmp = tmp.replace('I', '1')
-        return tmp
+            self.hour = int(ncor(tmp.partition('h')[0][-2:]))
+            self.minute = int(ncor(tmp.partition('m')[0][-2:]))
+            self.sec = float(ncor(tmp.partition('+-')[0][-5:]))
+            self.secerr = float(ncor(tmp.partition('s')[0][-5:]))
 
     def get_data_record_a(self, tmp):
         """ gets record type A """
         did_alt_phase = False
         self.reset_data_vars()
 # Get rid of spaces
-        tmp = self.clean_string(tmp)
+        tmp = clean_string(tmp)
 
         self.distanceindicator = 'D'
         for i in tmp[0:]:
-            station = self.is_stat(i)
+            station = is_stat(i)
             if i.find('LZ') == -1:
                 tmp2 = i.split()
                 self.init_data_var_row()
@@ -321,11 +348,11 @@ class SIMP(object):
         """ Gets record type B"""
         self.reset_data_vars()
 # Get rid of spaces
-        tmp = self.clean_string(tmp)
+        tmp = clean_string(tmp)
 
         self.distanceindicator = 'R'
         for i in tmp[0:]:
-            station = self.is_stat(i)
+            station = is_stat(i)
             tmp2 = i.split()
             self.init_data_var_row()
             try:
@@ -347,11 +374,11 @@ class SIMP(object):
         """ Gets record type C """
         self.reset_data_vars()
 # Get rid of spaces
-        tmp = self.clean_string(tmp)
+        tmp = clean_string(tmp)
 
         self.distanceindicator = 'R'
         for i in tmp[0:]:
-            station = self.is_stat(i)
+            station = is_stat(i)
             tmp2 = i.split()
             self.init_data_var_row()
             try:
@@ -392,7 +419,7 @@ class SIMP(object):
             self.datadist[-1] = self.datadist[-2]
         elif station == '' and len(self.datastat) < 2:
             self.datadist[-1] = -999
-        if (station != '' and self.isfloat(tmp[0]) is True and
+        if (station != '' and isfloat(tmp[0]) is True and
                 tmp[0].isdigit() is False):
             self.datadist[-1] = float(tmp[0])
             tmp.pop(0)
@@ -407,7 +434,7 @@ class SIMP(object):
             self.data_azim[-1] = self.data_azim[-2]
         elif station == '' and len(self.data_azim) < 2:
             self.data_azim[-1] = -999
-        if (station != '' and self.isfloat(tmp[0]) is True and
+        if (station != '' and isfloat(tmp[0]) is True and
                 tmp[0].isdigit() is False):
             self.data_azim[-1] = float(tmp[0])
             tmp.pop(0)
@@ -476,7 +503,7 @@ class SIMP(object):
         """ Gets the data residual """
         if len(tmp) == 0:
             return tmp
-        if (station != '' and self.isfloat(tmp[0]) is True and
+        if (station != '' and isfloat(tmp[0]) is True and
                 tmp[0].isdigit() is False):
             self.dataresid[-1] = float(tmp[0])
             tmp.pop(0)
@@ -510,237 +537,124 @@ class SIMP(object):
             else:
                 self.datarms = 0
 
-    def write_record_type_1(self):
+    def get_record_type_1(self):
         """ Writes record type 1"""
-# Record Type 1
-# 1 Free
-# 2- 5 I4 Year
-# 6 Free
-# 7 - 8; I2; month
-# 9-10 I2 Day of Month
-# 11 Fix o. time Normally blank,  an F fixes origin Time
-# 12-13 I2 Hour
-# 14-15 I2 Minutes
-# 16 Free
-# 17-20 F4.1 Seconds
-# 21 Location model indicator Any character
-# 22 A1 Distance Indicator L = Local,  R = Regional,  etc.
-# 23 A1 Event ID E = Explosion,  etc. P = Probable explosion V = volcanic
-#   Q = Probable volcanic
-# 24 - 30; F7.3; Latitude; Degrees(N)
-# 31-38 F8.3 Longitude Degrees (+ E)
-# 39-43 F5.1 Depth Km
-# 44 A1 Depth Indicator F = Fixed,  S = Starting value
-# 45 A1 Locating indicator ----------------------------,  * do not locate
-# 46-48 A3 Hypocenter Reporting Agency
-# 49-51 Number of Stations Used
-# 52-55 RMS of Time Residuals
-# 56-59 F4.1 Magnitude No. 1
-# 60 A1 Type of Magnitude L=ML,  B=mb,  S=Ms,  W=MW,  G=MbLg,  C=Mc
-# 61-63 A3 Magnitude Reporting Agency
-# 64-67 F4.1 Magnitude No. 2
-# 68 A1 Type of Magnitude
-# 69-71 A3 Magnitude Reporting Agency
-# 72-75 F4.1 Magnitude No. 3
-# 76 A1 Type of Magnitude
-# 77-79 A3 Magnitude Reporting Agency
-# 80 A1 Type of this line ('1'),  can be blank if first
+        tmp = sdt.seisan_1()
+        tmp.year = self.year
+        tmp.month = self.mondec
+        tmp.day = self.day
+#        tmp.fixed_origin_time = i[10]
+        tmp.hour = self.hour
+        tmp.minutes = self.minute
+        tmp.seconds = self.sec
+#        tmp.location_model_indicator = i[20]
+        tmp.distance_indicator = self.distanceindicator
+#        tmp.event_id = i[22]
+        tmp.latitude = self.lat  # -999 means none
+        tmp.longitude = self.lon  # -999 means none
+        tmp.depth = self.depth  # -999 means none
+#        tmp.depth_indicator = i[43]
+#        tmp.locating_indicator = i[44]
+        tmp.hypocenter_reporting_agency = 'PRE'
+        tmp.number_of_stations_used = self.numstations
+        tmp.rms_of_time_residuals = self.datarms
+        tmp.magnitude_1 = self.magnitude
+        tmp.type_of_magnitude_1 = 'L'
+        tmp.magnitude_reporting_agency_1 = 'PRE'
+#        tmp.magnitude_2 = str2float(i[63:67])
+#        tmp.type_of_magnitude_2 = i[67]
+#        tmp.magnitude_reporting_agency_2 = i[68:71]
+#        tmp.magnitude_3 = str2float(i[71:75])
+#        tmp.type_of_magnitude_3 = i[75]
+#        tmp.magnitude_reporting_agency_3 = i[76:79]
+        self.event['1'] = tmp
 
-        tmp = ' {0:4d} {0:2d}{0:2d} '.format(self.year, self.mondec, self.day)
-        tmp += str(self.hour).zfill(2)
-        tmp += str(self.minute).zfill(2)
-        tmp += ' {0:4.1f} '.format(self.sec)
-        tmp += self.distanceindicator
-        tmp += ' '
-
-        if self.lat != -999:
-            tmp += '{0:7.3f}'.format(self.lat)
-        else:
-            tmp += ' '*7
-
-        if self.lon != -999:
-            tmp += '{0:8.3f}'.format(self.lon)
-        else:
-            tmp += ' '*8
-
-        if self.depth != -999:
-            tmp += '{0:5.1f}F'.format(self.depth)
-        else:
-            tmp += ' '*6
-
-        tmp += ' PRE'
-
-        if self.numstations != -999:
-            tmp += '{0:3d}'.format(self.numstations)
-        else:
-            tmp += '  1'
-
-        if self.datarms > 0:
-            tmp += '{0:4.1f}'.format(self.datarms)
-        else:
-            tmp += ' '*4
-
-        if self.magnitude != -999:
-            tmp += '{0:4.1f}'.format(self.magnitude)
-            tmp += 'LPRE'
-        else:
-            tmp += ' '*8
-
-        tmp += ' '*16
-        tmp += '1\n'
-
-        return tmp
-#        self.ofile.write(tmp)
-
-    def write_record_type_e(self):
-        """ Writes record type E"""
-# Type E Line (Optional): Hyp error estimates
-# 1 Free
-# 2 - 5 A4 The text GAP=
-# 6 - 8 I3 Gap
-# 15-20 F6.2 Origin time error
-# 25-30 F6.1 Latitude (y) error
-# 31-32 Free
-# 33-38 F6.1 Longitude (x) error (km)
-# 39-43 F5.1 Depth (z) error (km)
-# 44-55 E12.4 Covariance (x, y) km*km
-# 56-67 E12.4 Covarience (x, z) km*km
-# 68-79 E14.4 Covariance (y, z) km*km
-
-        tmp = ''
+    def get_record_type_e(self):
+        """ Get record type E"""
         if self.laterr != -999:
-            tmp += ' '
-            tmp += 'GAP='
-            tmp += '000'
-            tmp += ' '*6
-            tmp += '{0:6.2f}'.format(float(self.secerr))
-            tmp += ' '*4
-            tmp += '{0:6.1f}'.format(self.laterr)
-            tmp += ' '*2
-            tmp += '{0:6.1f}'.format(self.lonerr)
-            tmp += '  0.0'
-            tmp += '  0.0000E+00'
-            tmp += '  0.0000E+00'
-            tmp += '  0.0000E+00'
-            tmp += 'E\n'
+            tmp = sdt.seisan_1()
+            tmp.gap = 0
+            tmp.origin_time_error = self.secerr
+            tmp.latitude_error = self.laterr
+            tmp.longitude_error = self.lonerr
+            tmp.depth_error = 0
+            tmp.cov_xy = 0
+            tmp.cov_xz = 0
+            tmp.cov_yz = 0
 
-        return tmp
-#            self.ofile.write(tmp)
+            self.event['E'] = tmp
 
-    def write_record_type_i(self):
-        """ Writes record type I"""
-#    Type I Line,  ID line
-# 1 Free
-# 2:8 Help text for the action indicator
-# 9:11 Last action done,  so far defined:
-# SPL: Split
-# REG: Register
-# ARG: AUTO Register,  AUTOREG
-# UPD: Update
-# UP : Update only from EEV
-# REE: Register from EEV
-# DUB: Duplicated event
-# NEW: New event
-# 12 Free
-# 13:26 Date and time of last action
-# 27 Free
-# 28:30 Help text for operator
-# 31:34 Operater code
-# 35 Free
-# 36:42 Help text for status
-# 43:56 Status flags,  not yet defined
-# 57 Free
-# 58:60 Help text for ID
-# 61:74 ID,  year to second
-# 75 if d,  this indicate that a new file id had to be created which was one or
-#      more seconds different from an existing ID to avoid overwrite.
-# 76 Indicate if ID is locked. Blank means not locked,  L means locked.
+    def get_record_type_i(self):
+        """ Get record type I"""
+        tmp = sdt.seisan_I()
 
-        tmp = ''
-        tmp += ' '
-        tmp += 'ACTION:'
-        tmp += 'SPL'
-        tmp += ' '
-        tmp += '09-02-11 11:35'
-        tmp += ' '
-        tmp += 'OP:'
-        tmp += 'ian '
-        tmp += ' '
-        tmp += 'STATUS:'
-        tmp += '              '
-        tmp += ' '
-        tmp += 'ID:'
-        tmp += str(self.year).zfill(4)+str(self.mondec).zfill(2) +    \
-            str(self.day).zfill(2)+str(self.hour).zfill(2) +         \
-            str(self.minute).zfill(2)+str(int(round(self.sec)))
-        tmp += ' '
-        tmp += 'L'
-        tmp += '   I\n'
-        return tmp
-#        self.ofile.write(tmp)
+        tmp.last_action_done = 'SPL'
+        tmp.date_time_of_last_action = '09-02-11 11:35'
+        tmp.operator = 'ian '
+        tmp.status = ' '
+        tmp.id = (str(self.year).zfill(4)+str(self.mondec).zfill(2) +
+                  str(self.day).zfill(2)+str(self.hour).zfill(2) +
+                  str(self.minute).zfill(2)+str(int(round(self.sec))))
+        tmp.new_id_created = ' '
+        tmp.id_locked = 'L'
 
-    def write_record_type_3(self):
-        """ Writes record type 3 """
-# Type 3 Line (Optional):
-# 1 Free
-# 2-79 A Text Anything
-# 80 A1 Type of this line ("3")
+        self.event['I'] = tmp
 
-        tmp = ''
+    def get_record_type_3(self):
+        """ Get record type 3"""
+
         if len(self.region) > 0:
-            tmp += ' '
-            tmp += 'Bul:Region: '
-            tmp += self.region
-            tmp += ' '*(78-len(self.region)-12)
-            tmp += '3\n'
-#            self.ofile.write(tmp)
-        return tmp
+            tmp = sdt.seisan_3()
+            tmp.text = ' Bul:Region: '+self.region+' '*(78-len(self.region)-12)
+            self.event['3'] = tmp
 
-    # Type 7 line
-    def write_record_type_7(self):
-        """ Writes record type 7 """
-        tmp = ' STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO' + \
-            ' AIN AR TRES W  DIS CAZ7\n'
-#        self.ofile.write(tmp)
+    def get_record_type_7(self):
+        """ Get record type 7"""
+        tmp2 = []
         for i in range(self.datanum):
-            tmp += ' {0:4s}'.format(self.datastat[i])
-            tmp += ' SZ {0:5s} '.format(self.dataphase[i])
+            tmp = sdt.seisan_7()
+            tmp.stat = self.datastat[i]
+            tmp.sp = 'SZ'
+            tmp.iphas = self.dataphase[i]
             if self.dataw[i] != 1:
-                tmp = tmp[:-1]+'{0:1d}'.format(self.dataw[i])
-            tmp += ' ' + self.datad[i] + ' '*11
-            if self.datahours[i] != 0 or self.datamins[i] != 0 or   \
-                    self.datasecs[i] != 0:
-                tmp = tmp[:-9]+'{0:02d}{0:02d}{0:5.2f}'.format(
-                    self.datahours[i], self.datamins[i], self.datasecs[i])
-            tmp += ' '*12
-            if self.dataamplitude[i] != 0 and self.dataamplitude[i] < 10000:
-                tmp = tmp[:-6]+'{0:6.1f}'.format(self.dataamplitude[i])
-            elif self.dataamplitude[i] != 0:
-                tmp = tmp[:-6]+'{0:6.0f}'.format(self.dataamplitude[i])
-            tmp += ' '*5
+                tmp.phase_weight = self.dataw[i]
+            tmp.d = self.datad[i]
+            if (self.datahours[i] != 0 or self.datamins[i] != 0 or
+                    self.datasecs[i] != 0):
+                tmp.hour = self.datahours[i]
+                tmp.minutes = self.datamins[i]
+                tmp.seconds = self.datasecs[i]
+            tmp.coda = None
+
+            if self.dataamplitude[i] != 0:
+                tmp.amplitude = self.dataamplitude[i]
+
             if self.dataperiod[i] != 0:
-                tmp = tmp[:-5]+' {0:4.2f}'.format(self.dataperiod[i])
-            tmp += ' '*23
-            if abs(self.dataresid[i]) < 10 and self.dataresid[i] != 0:
-                tmp = tmp[:-5]+'{0:5.2f}'.format(self.dataresid[i])
-            elif self.dataresid[i] != 0:
-                tmp = tmp[:-5]+'{0:5.1f}'.format(self.dataresid[i])
-            tmp += ' '*7
-            if self.datadist[i] < 100 and self.datadist[i] > 0:
-                tmp = tmp[:-4]+'{0:4.1f}'.format(self.datadist[i])
-            elif self.datadist[i] != 0:
-                tmp = tmp[:-4]+'{0:4.0f}'.format(self.datadist[i], 4, 0)
-            tmp += ' '*4
+                tmp.period = self.dataperiod[i]
+
+#            tmp.azimuth = None
+#            tmp.velocity = None
+#            tmp.angle_incidence = None
+#            tmp.azimuth_residual = None
+#            tmp.time_residual = None
+
+            if self.dataresid[i] != 0:
+                tmp.location_weight = self.dataresid[i]
+
+            if self.datadist[i] != 0:
+                tmp.distance = self.datadist[i]
+
             if self.data_azim[i] != 0:
-                tmp = tmp[:-3]+' {0:3.0f}'.format(self.data_azim[i])
-            tmp += '\n'
-#            self.ofile.write(tmp)
-        return tmp
+                tmp.caz = self.data_azim[i]
+
+            tmp2.append(tmp)
+
+        self.event['7'] = tmp2
 
     def inerror(self, eline):
         """ Writes an error to the error file """
         if eline[0:3].isalpha():
-            station = self.is_stat(eline)
+            station = is_stat(eline)
             if station == '':
                 self.showtext('\nStation does not exist:')
         self.showtext('\nCharacter recognition error:')
@@ -776,112 +690,107 @@ class SIMP(object):
             mrecs[i].append(dtype)
         return mrecs, monconv
 
-    def read_ifile(self, ifile):
-        """ Routine to read and clean some of the input file """
-        # Read entire file
-        inputf = open(ifile)
-        idata = inputf.read()
 
-    # Fix bad characters
-        idata = idata.replace('\xb1', '+-')
-        idata = idata.replace('\xba', ' ')
-        idata = idata.replace('(P)', 'P')
-        idata = idata.replace('(S)', 'S')
-        idata = idata.replace(',', '.')
-        idata = self.nohex(idata)
-        inputf.close()
+def read_ifile(ifile):
+    """ Routine to read and clean some of the input file """
+    # Read entire file
+    inputf = open(ifile)
+    idata = inputf.read()
 
-    # Split into lines
-        idata = idata.splitlines()
+# Fix bad characters
+    idata = idata.replace('\xb1', '+-')
+    idata = idata.replace('\xba', ' ')
+    idata = idata.replace('(P)', 'P')
+    idata = idata.replace('(S)', 'S')
+    idata = idata.replace(',', '.')
+    idata = re.sub(r'[^\x21-x7E\n]', ' ', idata)
+#    idata = nohex(idata)
+    inputf.close()
 
-    # Strip spaces from front of lines
-        idata = [i.lstrip() for i in idata]
-        return idata
+# Split into lines
+    idata = idata.splitlines()
 
-    def is_stat(self, tmp):
-        """Check if the string is a station """
-        station = ''
-        stationlist = ['SNA', 'BEW', 'SNA', 'BEW', 'BPI', 'BFT', 'BLE', 'BLF',
-                       'BOSA', 'BFS', 'CVN', 'CER', 'ERS', 'FRS', 'GRM', 'HVD',
-                       'KSR', 'KSD', 'MSN', 'NWL', 'PRY', 'PHA', 'POF', 'POG',
-                       'PKA', 'SLR', 'SEK', 'SOE', 'SBO', 'SUR', 'SWZ', 'UPI',
-                       'WIN', 'KTS', 'KT1', 'KT2', 'KT3', 'KIM', 'TUH', 'CAV',
-                       'BUL', 'BOS', 'SME', 'CAV', 'NCA', 'SPB', 'JOZ', 'EVA',
-                       'KIM', 'VIR', 'BPI', 'UMT', 'ZOM', 'LLO', 'MZU', 'VPT',
-                       'CGY', 'PRE', 'MDN', 'MDL', 'PSD', 'QUA']
+# Strip spaces from front of lines
+    idata = [i.lstrip() for i in idata]
+    return idata
 
-        for i in stationlist:
-            if tmp.find(i) > -1:
-                station = i
+
+def isfloat(tmp):
+    """Check if a number is a float. Can take decimal point"""
+    try:
+        float(tmp)
+        return True
+    except ValueError:
+        return False
+
+
+def clean_string(tmp):
+    """ Cleans string of illegal characters """
+    tmp = np.copy(tmp)
+    tmp = tmp[tmp != '']
+    tmp = tmp.tolist()
+# remove header
+    while tmp[0].find('STA') == -1 or (tmp[0].find('INST') == -1 and
+                                       tmp[0].find('RESID') == -1 and
+                                       tmp[0].find('MAGNITUDE') == -1):
+        tmp.pop(0)
+    tmp.pop(0)
+
+# remove extra illegal characters
+    tmp2 = []
+    for j in tmp:
+        tmp2.append('')
+        for i in j:
+            if i.isalnum() or i == '.' or i == '-':
+                tmp2[-1] += i
+            else:
+                tmp2[-1] += ' '
+
+# remove page numbers
+    for j in range(len(tmp2)):
+        tmp3 = tmp2[j].replace(' ', '')
+        if tmp3[0] == '-' and tmp3[-1] == '-'and len(tmp3) <= 5:
+            tmp2[j] = ''
+
+# remove some records
+    tmp2 = np.copy(tmp2)
+    tmp2 = tmp2[tmp2 != '']
+    tmp2 = tmp2[tmp2 != ' ']
+    tmp2 = tmp2[tmp2 != '- ']
+    tmp2 = tmp2[tmp2 != ' -']
+    tmp2 = tmp2[tmp2 != '-']
+    tmp2 = tmp2.tolist()
+
+    return tmp2
+
+
+def is_stat(tmp):
+    """Check if the string is a station """
+    station = ''
+    stationlist = ['SNA', 'BEW', 'SNA', 'BEW', 'BPI', 'BFT', 'BLE', 'BLF',
+                   'BOSA', 'BFS', 'CVN', 'CER', 'ERS', 'FRS', 'GRM', 'HVD',
+                   'KSR', 'KSD', 'MSN', 'NWL', 'PRY', 'PHA', 'POF', 'POG',
+                   'PKA', 'SLR', 'SEK', 'SOE', 'SBO', 'SUR', 'SWZ', 'UPI',
+                   'WIN', 'KTS', 'KT1', 'KT2', 'KT3', 'KIM', 'TUH', 'CAV',
+                   'BUL', 'BOS', 'SME', 'CAV', 'NCA', 'SPB', 'JOZ', 'EVA',
+                   'KIM', 'VIR', 'BPI', 'UMT', 'ZOM', 'LLO', 'MZU', 'VPT',
+                   'CGY', 'PRE', 'MDN', 'MDL', 'PSD', 'QUA']
+
+    for i in stationlist:
+        if tmp.find(i) > -1:
+            station = i
 
 # This section checked if any stations have mis-identifies P's or F's
-        if station == '':
-            tmp2 = tmp.replace('P', 'F')
-            for i in stationlist:
-                if tmp2.find(i) > -1:
-                    station = i
+    if station == '':
+        tmp2 = tmp.replace('P', 'F')
+        for i in stationlist:
+            if tmp2.find(i) > -1:
+                station = i
 
-        return station
+    return station
 
-    def clean_string(self, tmp):
-        """ Cleans string of illegal characters """
-        tmp = np.copy(tmp)
-        tmp = tmp[tmp != '']
-        tmp = tmp.tolist()
-    # remove header
-        while tmp[0].find('STA') == -1 or (tmp[0].find('INST') == -1 and
-                                           tmp[0].find('RESID') == -1 and
-                                           tmp[0].find('MAGNITUDE') == -1):
-            tmp.pop(0)
-        tmp.pop(0)
 
-    # remove extra illegal characters
-        tmp2 = []
-        for j in tmp:
-            tmp2.append('')
-            for i in j:
-                if i.isalnum() or i == '.' or i == '-':
-                    tmp2[-1] += i
-                else:
-                    tmp2[-1] += ' '
-
-    # remove page numbers
-        for j in range(len(tmp2)):
-            tmp3 = tmp2[j].replace(' ', '')
-            if tmp3[0] == '-' and tmp3[-1] == '-'and len(tmp3) <= 5:
-                tmp2[j] = ''
-
-    # remove some records
-        tmp2 = np.copy(tmp2)
-        tmp2 = tmp2[tmp2 != '']
-        tmp2 = tmp2[tmp2 != ' ']
-        tmp2 = tmp2[tmp2 != '- ']
-        tmp2 = tmp2[tmp2 != ' -']
-        tmp2 = tmp2[tmp2 != '-']
-        tmp2 = tmp2.tolist()
-
-        return tmp2
-
-    def isfloat(self, tmp):
-        """Check if a number is a float. Can take decimal point"""
-        try:
-            float(tmp)
-            return True
-        except ValueError:
-            return False
-
-    def nohex(self, tmp):
-        """Get rid of hex characters in a string"""
-        tmp = repr(tmp)
-        while tmp.find('\\x') > -1:
-            hpos = tmp.find('\\x')
-            tmp = tmp[:hpos]+' '+tmp[hpos+4:]
-        tmp = eval(tmp)
-#        tmp = tmp.encode('unicode-escape')
-#
-#        while tmp.find('\\x') > -1:
-#            hpos = tmp.find('\\x')
-#            tmp = tmp[:hpos]+' '+tmp[hpos+4:]
-#        tmp = tmp.decode('unicode-escape')
-
-        return tmp
+def ncor(tmp):
+    """ Correct number problems """
+    tmp = tmp.replace('I', '1')
+    return tmp

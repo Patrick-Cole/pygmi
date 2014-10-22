@@ -176,15 +176,22 @@ class BeachBall(QtGui.QDialog):
 
         self.cbox_alg.currentIndexChanged.connect(self.change_alg)
 
-        tmpxy = []
-        tmpmag = []
-        for i in data:
-            if i['F'].get(self.algorithm) is not None:
-                tmp = [i['1'].longitude, i['1'].latitude, i['1'].magnitude_1]
-            tmpxy.append([tmp[0], tmp[1]])
-            tmpmag.append(tmp[2])
+        pwidth = 1.
 
-        pwidth = sdist.pdist(tmpxy).min()/(2*max(tmpmag))
+        for j in alist:
+            tmpxy = []
+            tmpmag = []
+            for i in data:
+                if i['F'].get(j) is not None:
+                    tmp = [i['1'].longitude,
+                           i['1'].latitude,
+                           i['1'].magnitude_1]
+                    tmpxy.append([tmp[0], tmp[1]])
+                    tmpmag.append(tmp[2])
+
+            if len(tmpmag) > 1:
+                pwidth = min(sdist.pdist(tmpxy).min()/(2*max(tmpmag)), pwidth)
+
         self.dsb_dist.setValue(pwidth)
 
         self.change_alg()
@@ -351,7 +358,7 @@ class BeachBall(QtGui.QDialog):
                        i['F'][self.algorithm].dip,
                        i['F'][self.algorithm].rake,
                        i['1'].magnitude_1]
-            indata.append(tmp)
+                indata.append(tmp)
 
         self.mmc.data = np.array(indata)
         self.mmc.pwidth = self.dsb_dist.value()
