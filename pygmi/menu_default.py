@@ -110,5 +110,5 @@ with this program. If not, see http://www.gnu.org/licenses/'''
 
     def help(self):
         """ Help File"""
-        webbrowser.open(r'https://code.google.com/p/pygmi/wiki/'
-                        'TableOfContents')
+        webbrowser.open(r'http://patrick-cole.github.io/pygmi/')
+
