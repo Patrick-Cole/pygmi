@@ -37,10 +37,9 @@ menu. The following are supported:
 import numpy as np
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
-    FigureCanvas
+from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QTAgg as \
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
 
 import matplotlib

@@ -30,10 +30,9 @@ import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.colors as clrs
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
-    FigureCanvas
+from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import \
-    NavigationToolbar2QTAgg as NavigationToolbar
+    NavigationToolbar2QT as NavigationToolbar
 
 
 class DataDisplay(object):

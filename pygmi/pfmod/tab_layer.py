@@ -29,10 +29,9 @@ import numpy as np
 import pygmi.pfmod.misc as misc
 # from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
-    FigureCanvas
+from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import \
-    NavigationToolbar2QTAgg as NavigationToolbar
+    NavigationToolbar2QT as NavigationToolbar
 
 
 class LayerDisplay(object):

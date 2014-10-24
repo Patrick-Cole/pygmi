@@ -41,7 +41,6 @@ import copy
 import tempfile
 from scipy.linalg import norm
 from .datatypes import LithModel
-import multiprocessing as mp
 from ..ptimer import PTime
 import pdb
 from numba import jit
@@ -858,9 +857,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     grvval = grvval.flatten()
     hcorflat = numz-hcor.flatten()
     aaa = np.reshape(np.mgrid[0:mtmp[0], 0:mtmp[1]], [2, numx*numy])
-    cpunum = mp.cpu_count()
-    if cpunum > 1:
-        cpunum -= 1
 
     ttt = PTime()
     mgval = np.zeros([2, magval.size])
@@ -996,30 +992,6 @@ def calc_fieldb(k, mgval, numx, numy, modind, hcor, aaa0, aaa1, mlayers,
                 mgval[1, ijk] += glayers[hcor2, xoff2, yoff2]
 
     return mgval
-
-
-def sum_field(numx, numy, numz, modind, hcor, mlayers, glayers, mijk):
-    """ Sums field components """
-    b = numx*numy
-    magval = np.zeros(b)
-    grvval = np.zeros(b)
-    aaa0, aaa1 = np.reshape(np.mgrid[0:numx, 0:numy], [2, b])
-    hcorflat = numz - hcor.flatten()
-
-    i, j, k = np.nonzero(modind == mijk)
-    xoff = numx-i
-    yoff = numy-j
-
-    ijk = np.transpose([xoff, yoff, k])
-
-    for i, j, k in ijk:
-        xoff2 = i + aaa0
-        yoff2 = j + aaa1
-        hcor2 = k + hcorflat
-        magval += mlayers[hcor2, xoff2, yoff2]
-        grvval += glayers[hcor2, xoff2, yoff2]
-
-    return (magval, grvval)
 
 
 def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,

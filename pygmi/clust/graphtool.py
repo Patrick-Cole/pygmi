@@ -29,8 +29,7 @@ from PyQt4 import QtGui, QtCore
 from matplotlib.figure import Figure
 import matplotlib.pylab as plt
 from matplotlib.path import Path
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
-    FigureCanvas
+from matplotlib.backends.backend_qt4agg import FigureCanvas
 
 
 class GraphHist(FigureCanvas):

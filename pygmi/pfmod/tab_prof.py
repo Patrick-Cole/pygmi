@@ -31,12 +31,10 @@ from . import misc
 from ..raster import iodefs as ir
 import os
 
-# from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
-    FigureCanvas
+from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import \
-    NavigationToolbar2QTAgg as NavigationToolbar
+    NavigationToolbar2QT as NavigationToolbar
 
 
 class ProfileDisplay(object):
