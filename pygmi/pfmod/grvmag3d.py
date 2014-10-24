@@ -39,30 +39,12 @@ import numpy as np
 import pylab as plt
 import copy
 import tempfile
-import sys
 from scipy.linalg import norm
 from .datatypes import LithModel
-from functools import partial
 import multiprocessing as mp
 from ..ptimer import PTime
 import pdb
-
-if sys.platform.startswith('win'):
-    if sys.maxsize > 2**32:
-        if sys.version_info.major == 3 and sys.version_info.minor == 4:
-            from . import grvmagc_34_x64 as grvmagc
-        else:
-            print('Your version of Python is not supported')
-    else:
-        if sys.version_info.major == 3 and sys.version_info.minor == 4:
-            from . import grvmagc_34_x86 as grvmagc
-        else:
-            print('Your version of Python is not supported')
-
-else:
-    import pyximport
-    pyximport.install()
-    from . import grvmagc
+from numba import jit
 
 
 class GravMag(object):
@@ -89,8 +71,6 @@ class GravMag(object):
         self.actionregionaltest = QtGui.QAction(self.parent)
         self.actioncalculate = QtGui.QAction(self.parent)
         self.actioncalculate2 = QtGui.QAction(self.parent)
-        self.actioninvgrav = QtGui.QAction(self.parent)
-        self.actioninvmag = QtGui.QAction(self.parent)
         self.setupui()
 
     def setupui(self):
@@ -99,19 +79,13 @@ class GravMag(object):
         self.actioncalculate.setText("Calculate Gravity at Gravity Height")
         self.actioncalculate2.setText(
             "Calculate Magnetics and Gravity at Magnetic Height")
-        self.actioninvgrav.setText("Auto Model Gravity")
-        self.actioninvmag.setText("Auto Model Magnetics")
         self.parent.toolbar.addAction(self.actionregionaltest)
         self.parent.toolbar.addAction(self.actioncalculate)
         self.parent.toolbar.addAction(self.actioncalculate2)
-#        self.parent.toolbar.addAction(self.actioninvgrav)
-#        self.parent.toolbar.addAction(self.actioninvmag)
 
         self.actionregionaltest.triggered.connect(self.test_pattern)
         self.actioncalculate.triggered.connect(self.calc_field)
         self.actioncalculate2.triggered.connect(self.calc_field_new)
-#        self.actioninvgrav.triggered.connect(self.invgrav)
-#        self.actioninvmag.triggered.connect(self.invmag)
 
     def calc_field_new(self):
         """ Pre field-calculation routine """
@@ -318,127 +292,6 @@ class GravMag(object):
             axes.yaxis.set_label_text("Northings (m)")
 
         return (left, right, bottom, top)
-
-    def calc_field_only(self, modindo, mijk):
-        """ Calculates only the field """
-        numx = int(self.lmod.numx)
-        numy = int(self.lmod.numy)
-        numz = int(self.lmod.numz)
-
-# get height corrections
-        tmp = np.copy(self.lmod.lith_index)
-        tmp[tmp > -1] = 0
-        hcor = np.abs(tmp.sum(2))
-
-# model index
-        modind = modindo.copy()
-        modind[modind == 0] = -1
-
-        magval = np.zeros([numx, numy])
-        grvval = np.zeros([numx, numy])
-
-#        if self.pbars != None:
-#           self.pbars.resetall(maximum=numx*(len(self.lmod.lith_list)-1),
-#                      mmax=1)
-
-        for mlist in self.lmod.lith_list.items():
-            if 'Background' == mlist[0]:
-                continue
-            mfile = np.load(self.mfname+'_'+mlist[0]+'_tmp.npz')
-            mlayers = mfile['mlayers']*mlist[1].netmagn()
-            glayers = mfile['glayers']*mlist[1].rho()
-            mijk = mlist[1].lith_index
-
-            for i in range(numx):
-                grvmagc.calc_field2(i, numx, numy, numz, modind, hcor,
-                                    mlayers, glayers, magval, grvval, mijk)
-#                calc_field2(i, numx, numy, numz, modind, hcor,
-#                        mlayers, glayers, magval, grvval, mijk)
-
-        return magval, grvval
-
-    def invgrav(self):
-        """ Calculate magnetic and gravity field """
-        self.lmod1 = self.parent.lmod1
-        self.lmod2 = self.parent.lmod2
-        self.lmod = self.lmod1
-
-        ltmp = list(self.lmod1.lith_list.keys())
-        ltmp.pop(ltmp.index('Background'))
-
-        text, okay = QtGui.QInputDialog.getItem(
-            self.parent, 'Auto Model Gravity',
-            'Please choose the lithology to use:', ltmp)
-
-        if not okay:
-            return
-
-        # Update the model from the view
-        # get height corrections
-        tmp = np.copy(self.lmod.lith_index)
-        tmp[tmp > -1] = 0
-#        hcor = np.abs(tmp.sum(2))
-
-        indx = self.parent.tabwidget.currentIndex()
-        tlabel = self.parent.tabwidget.tabText(indx)
-
-        if tlabel == 'Layer Editor':
-            self.parent.layer.update_model()
-
-        if tlabel == 'Profile Editor':
-            self.parent.profile.update_model()
-
-        self.calc_field2(True)
-
-# Init some variables
-#        numx = int(self.lmod.numx)
-#        numy = int(self.lmod.numy)
-        numz = int(self.lmod.numz)
-        modind = self.lmod.lith_index.copy()
-        modindo = self.lmod.lith_index.copy()
-
-        gdata = self.grd_to_lith(self.lmod1.griddata['Gravity Dataset'])
-        gdata = gdata.T - self.lmod1.gregional
-
-        self.showtext('Beginning Inversion')
-        mlist = [text, self.lmod.lith_list[text]]
-#        for mlist in self.lmod.lith_list.items():
-        modindo = modind.copy()
-        self.showtext(mlist[0])
-#        mfile = np.load(self.mfname+'_'+mlist[0]+'_tmp.npz')
-#        mlayers = mfile['mlayers']*mlist[1].netmagn()
-#        glayers = mfile['glayers']*mlist[1].rho()
-        mijk = mlist[1].lith_index
-        if self.pbars is not None:
-            self.pbars.resetall(maximum=numz, mmax=2)
-
-        for k in range(numz):
-            if self.pbars is not None:
-                self.pbars.incr()
-            magvalo, grvvalo = self.calc_field_only(modind, mijk)
-            modind[:, :, k] = mijk
-            magval, grvval = self.calc_field_only(modind, mijk)
-            tmp = modind[:, :, k]
-            tmp2 = modindo[:, :, k]
-            tmp[abs(grvval-gdata) > abs(grvvalo-gdata)] = tmp2[
-                abs(grvval-gdata) > abs(grvvalo-gdata)]
-            tmp[grvval > gdata] = tmp2[grvval > gdata]
-
-            magval, grvval = self.calc_field_only(modind, mijk)
-            self.update_graph(grvval, magval, modind)
-
-        for k in range(numz):
-            if self.pbars is not None:
-                self.pbars.incr()
-            magval, grvval = self.calc_field_only(modind, mijk)
-            tmp = modind[:, :, k]
-            tmp2 = modindo[:, :, k]
-            tmp[grvval > gdata] = tmp2[grvval > gdata]
-
-            magval, grvval = self.calc_field_only(modind, mijk)
-            self.update_graph(grvval, magval, modind)
-
-        self.showtext('Calculation Finished')
 
     def update_graph(self, grvval, magval, modind):
         """ Updates the graph """
@@ -743,8 +596,8 @@ class GeoData(object):
         if self.pbars is not None:
             self.pbars.resetsub(len(self.z12)-1)
 
-        face = face.tolist()
-        un = un.tolist()
+#        face = face.tolist()
+#        un = un.tolist()
         gval = []
         mval = []
         newdepth = self.z12+abs(self.zobsm)
@@ -753,11 +606,11 @@ class GeoData(object):
             if self.pbars is not None:
                 self.pbars.incr()
             if depth == 0.0:
-                cor = (corner + [0., 0., depth+self.d_z/10000.]).tolist()
+                cor = (corner + [0., 0., depth+self.d_z/10000.])
             elif depth == -self.d_z:
-                cor = (corner + [0., 0., depth-self.d_z/10000.]).tolist()
+                cor = (corner + [0., 0., depth-self.d_z/10000.])
             else:
-                cor = (corner + [0., 0., depth]).tolist()
+                cor = (corner + [0., 0., depth])
 
             if depth in newdepth:
                 Gx = np.zeros(X.shape)
@@ -767,11 +620,27 @@ class GeoData(object):
                 Hy = Hx.copy()
                 Hz = Hx.copy()
 
-                grvmagc.gm3d(npro, nstn, X, Y, edge, cor, face, Gx, Gy, Gz,
-                             Hx, Hy, Hz, Pd, un)
-                Gx *= Gc
-                Gy *= Gc
-                Gz *= Gc
+                indx = np.array([0, 1, 2, 3, 0, 1])
+                V = np.zeros([nedges, 8])
+                crs = np.zeros([4, 3])
+                p1 = np.zeros(3)
+                p2 = np.zeros(3)
+                p3 = np.zeros(3)
+                unf = np.zeros(3)
+                mgval = np.zeros([6, npro, nstn])
+
+                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, Gx, Gy, Gz,
+                             Hx, Hy, Hz, Pd, un, indx, V, crs, p1, p2, p3, unf,
+                             mgval)
+
+#                pdb.set_trace()
+                Hx = mgval[0]
+                Hy = mgval[1]
+                Hz = mgval[2]
+                Gx = mgval[3] * Gc
+                Gy = mgval[4] * Gc
+                Gz = mgval[5] * Gc
+
 #                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
 #                dt = Htot-self.hintn
                 dta = Hx*cx + Hy*cy + Hz*cz
@@ -814,7 +683,6 @@ class GeoData(object):
         x_2 = float(self.x12[1])
         y_2 = float(self.y12[1])
         z_0 = float(zobs)
-        pi = np.pi
         numx = int(self.g_cols)
         numy = int(self.g_rows)
 
@@ -830,84 +698,13 @@ class GeoData(object):
             z_1 = float(z12[0])
             z_2 = float(z12[1])
             gval = np.zeros([self.g_cols, self.g_rows])
-            grvmagc.gboxmain(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1,
-                             x_2, y_2, z_2, pi)
-#            gboxmain(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1,
-#                    x_2, y_2, z_2, pi)
+            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1,
+                             x_2, y_2, z_2, np.ones(2), np.ones(2), np.ones(2),
+                             np.array([-1, 1]))
 
             gval *= 6.6732e-3
             glayers.append(gval)
         self.glayers = np.array(glayers)
-#        self.glayers = np.array(glayers, dtype=np.float32)
-
-    def mboxmain(self, xobs, yobs, zobs):
-
-        """Subroutine MBOX computes the total field anomaly of an infinitely
-      extended rectangular prism.  Sides of prism are parallel to x,y,z
-      axes, and z is vertical down.  Bottom of prism extends to infinity.
-      Two calls to mbox can provide the anomaly of a prism with finite
-      thickness; e.g.,
-
-         call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
-         call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
-         t=t1-t2
-
-      Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).
-
-      Input parameters:
-        Observation point is (x0,y0,z0).  Prism extends from x1 to
-        x2, y1 to y2, and z1 to infinity in x, y, and z directions,
-        respectively.  Magnetization defined by inclination mi,
-        declination md, intensity m.  Ambient field defined by
-        inclination fi and declination fd.  X axis has declination
-        theta. Distance units are irrelevant but must be consistent.
-        Angles are in degrees, with inclinations positive below
-        horizontal and declinations positive east of true north.
-        Magnetization in A/m.
-
-        Note that in the case of no remanence: mi=fi and md=fd.
-
-      Output paramters:
-        Total field anomaly t, in nT. """
-
-        mma, mmb, mmc = self.dircos(self.minc, self.mdec, self.theta)
-        ffa, ffb, ffc = self.dircos(self.finc, self.fdec, self.theta)
-        fm1 = mma*ffb+mmb*ffa
-        fm2 = (mma*ffc+mmc*ffa)/2
-        fm3 = (mmb*ffc+mmc*ffb)/2
-        fm4 = mma*ffa
-        fm5 = mmb*ffb
-        fm6 = mmc*ffc
-
-        x_1 = float(self.x12[0])
-        y_1 = float(self.y12[0])
-        x_2 = float(self.x12[1])
-        y_2 = float(self.y12[1])
-        z1mz0 = self.z12 - zobs
-        fm1 = float(fm1)
-        fm2 = float(fm2)
-        fm3 = float(fm3)
-        fm4 = float(fm4)
-        fm5 = float(fm5)
-        fm6 = float(fm6)
-
-#        theta = self.theta
-        numx = int(self.g_cols)
-        numy = int(self.g_rows)
-        numz = len(z1mz0)
-        mval = np.zeros([numx, numy, numz])
-
-        if self.pbars is not None:
-            self.pbars.resetsub(numx)
-        for icnt in range(numx):
-            if self.pbars is not None:
-                self.pbars.incr()
-            grvmagc.mboxmain(icnt, z1mz0, mval, xobs, yobs, numx, numy, numz,
-                             x_1, y_1, x_2, y_2, fm1, fm2, fm3, fm4, fm5, fm6)
-
-        mval = mval*10**-7*10**9
-        mval = mval[:, :, :-1]-mval[:, :, 1:]
-        self.mlayers = np.transpose(mval, (2, 0, 1))
 
 
 def save_layer(mlist):
@@ -1066,6 +863,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         cpunum -= 1
 
     ttt = PTime()
+    mgval = np.zeros([2, magval.size])
 
     for mlist in lmod.lith_list.items():
         if 'Background' == mlist[0]:
@@ -1089,54 +887,31 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
             QtGui.QApplication.processEvents()
             i, j, k = np.nonzero(modind == mijk)
-            iuni = np.array(np.unique(i)).tolist()
-            juni = np.array(np.unique(j)).tolist()
-            kuni = np.array(np.unique(k)).tolist()
-            ptmp = partial(grvmagc.calc_field2, numx=numx, numy=numy,
-                           modind=modind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
-                           mlayers=mlayers, glayers=glayers,
-                           hcorflat=hcorflat, mijk=mijk,
-                           jj=juni, ii=iuni)
+            iuni = np.array(np.unique(i), dtype=np.int32)
+            juni = np.array(np.unique(j), dtype=np.int32)
+            kuni = np.array(np.unique(k), dtype=np.int32)
 
-            pool = mp.Pool(processes=cpunum)
-            baba = np.array(pool.map(ptmp, kuni))
-            pool.close()
-            pool.join()
-
-            baba = baba.sum(0)
-            magval += baba[0]
-            grvval += baba[1]
-
-            del pool
-            del baba
-            del ptmp
+            for k in kuni:
+                baba = calc_fieldb(k, mgval, numx, numy, modind, hcor, aaa[0],
+                                   aaa[1], mlayers, glayers, hcorflat, mijk,
+                                   juni, iuni)
+                magval += baba[0]
+                grvval += baba[1]
 
         if abs(np.sum(cmodind == -1)) < cmodind.size and mijk in cmodind:
             print('subtracting')
             QtGui.QApplication.processEvents()
             i, j, k = np.nonzero(cmodind == mijk)
-            iuni = np.array(np.unique(i)).tolist()
-            juni = np.array(np.unique(j)).tolist()
-            kuni = np.array(np.unique(k)).tolist()
-            ptmp = partial(grvmagc.calc_field2,
-                           numx=numx, numy=numy,
-                           modind=cmodind, hcor=hcor, aaa0=aaa[0], aaa1=aaa[1],
-                           mlayers=mlayers, glayers=glayers,
-                           hcorflat=hcorflat, mijk=mijk,
-                           jj=juni, ii=iuni)
+            iuni = np.array(np.unique(i), dtype=np.int32)
+            juni = np.array(np.unique(j), dtype=np.int32)
+            kuni = np.array(np.unique(k), dtype=np.int32)
 
-            pool = mp.Pool(processes=cpunum)
-            baba = np.array(pool.map(ptmp, kuni))
-            pool.close()
-            pool.join()
-
-            baba = baba.sum(0)
-            magval -= baba[0]
-            grvval -= baba[1]
-
-            del pool
-            del baba
-            del ptmp
+            for k in kuni:
+                baba = calc_fieldb(k, mgval, numx, numy, modind, hcor, aaa[0],
+                                   aaa[1], mlayers, glayers, hcorflat, mijk,
+                                   juni, iuni)
+                magval += baba[0]
+                grvval += baba[1]
 
         showtext('Done')
 
@@ -1144,10 +919,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             pbars.incr()
             pbars.incrmain()
         QtGui.QApplication.processEvents()
-
-    # Old: cython time(s): 41.84219704839284 since last call
-    # numx min max: cython time(s): 35.29413359259356 since last call
-    # all min max cython time(s): 35.38449740644957 since last call
 
     ttt.since_first_call()
     magval.resize(mtmp)
@@ -1196,9 +967,35 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         pbars.maxall()
 
     lmod.clith_index = lmod.lith_index.copy()
-#    pdb.set_trace()
 
     return lmod.griddata
+
+
+@jit("f8[:,:](i4, f8[:,:], i4, i4, i4[:,:,:], i4[:,:], i4[:], i4[:], " +
+     "f8[:,:,:], f8[:,:,:], i4[:], i4, i4[:], i4[:])", nopython=True)
+def calc_fieldb(k, mgval, numx, numy, modind, hcor, aaa0, aaa1, mlayers,
+                glayers, hcorflat, mijk, jj, ii):
+    """ Calculate magnetic and gravity field """
+
+    b = numx*numy
+    for i in range(2):
+        for j in range(b):
+            mgval[i, j] = 0.
+
+    for i in ii:
+        xoff = numx-i
+        for j in jj:
+            yoff = numy-j
+            if (modind[i, j, k] != mijk):
+                continue
+            for ijk in range(b):
+                xoff2 = xoff + aaa0[ijk]
+                yoff2 = aaa1[ijk]+yoff
+                hcor2 = hcorflat[ijk]+k
+                mgval[0, ijk] += mlayers[hcor2, xoff2, yoff2]
+                mgval[1, ijk] += glayers[hcor2, xoff2, yoff2]
+
+    return mgval
 
 
 def sum_field(numx, numy, numz, modind, hcor, mlayers, glayers, mijk):
@@ -1259,3 +1056,190 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
             lmod.lith_list[i].mstrength = mstrength[j-1]
 
     return lmod
+
+
+@jit("f8[:,:](f8[:,:], f8[:], f8[:], i4, i4, f8, f8, f8, f8, f8, f8, f8, " +
+     "f8[:], f8[:], f8[:], i4[:])", nopython=True)
+def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
+              x, y, z, isign):
+    """ Gbox routine by Blakely
+        Note: xobs, yobs and zobs must be floats or there will be problems
+        later.
+
+    Subroutine GBOX computes the vertical attraction of a
+    rectangular prism.  Sides of prism are parallel to x,y,z axes,
+    and z axis is vertical down.
+
+    Input parameters:
+        Observation point is (x0,y0,z0).  The prism extends from x1
+        to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
+        directions, respectively.  Density of prism is rho.  All
+        distance parameters in units of m;
+
+    Output parameters:
+        Vertical attraction of gravity, g, in mGal/rho.
+        Must still be multiplied by rho outside routine.
+        Done this way for speed. """
+
+    z[0] = z_0-z_1
+    z[1] = z_0-z_2
+
+    for ii in range(numx):
+        x[0] = xobs[ii]-x_1
+        x[1] = xobs[ii]-x_2
+        for jj in range(numy):
+            y[0] = yobs[jj]-y_1
+            y[1] = yobs[jj]-y_2
+            sumi = 0.
+            for i in range(2):
+                for j in range(2):
+                    for k in range(2):
+                        rijk = np.sqrt(x[i]*x[i]+y[j]*y[j]+z[k]*z[k])
+                        ijk = isign[i]*isign[j]*isign[k]
+                        arg1 = np.arctan2(x[i]*y[j], z[k]*rijk)
+
+                        if (arg1 < 0.):
+                            arg1 = arg1 + 2 * np.pi
+                        arg2 = rijk+y[j]
+                        arg3 = rijk+x[i]
+                        arg2 = np.log(arg2)
+                        arg3 = np.log(arg3)
+                        sumi += ijk*(z[k]*arg1-x[i]*arg2-y[j]*arg3)
+            gval[ii, jj] = sumi
+
+    return gval
+
+
+@jit("f8[:,:,:](i4, i4, f8[:,:], f8[:,:], f8[:,:], f8[:,:], i4[:,:], " +
+     "f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
+     "i4[:], f8[:,:], f8[:,:], f8[:], f8[:], f8[:], f8[:], f8[:,:,:])",
+     nopython=True)
+def gm3d(npro, nstn, X, Y, Edge, Corner, Face, Gx, Gy, Gz, Hx, Hy, Hz, Pd, Un,
+         indx, V, crs, p1, p2, p3, Unf, mgval):
+    """ grvmag 3d """
+
+    flimit = 64*np.spacing(1)
+    Omega = 0.0
+    dp1 = 1.0
+    I = 1.0
+
+    for pr in range(npro):
+        for st in range(nstn):
+            x = X[pr, st]
+            y = Y[pr, st]
+            for f in range(6):
+                for g in range(4):
+                    cindx = Face[f, g]
+                    crs[g, 0] = Corner[cindx, 0] - x
+                    crs[g, 1] = Corner[cindx, 1] - y
+                    crs[g, 2] = Corner[cindx, 2]
+
+                p = 0
+                q = 0
+                r = 0
+                eno1 = 4*f
+                W = -2*np.pi
+                l = Un[f, 0]
+                m = Un[f, 1]
+                n = Un[f, 2]
+
+                for t in range(4):
+                    p1[0] = crs[indx[t], 0]
+                    p1[1] = crs[indx[t], 1]
+                    p1[2] = crs[indx[t], 2]
+                    p2[0] = crs[indx[t+1], 0]
+                    p2[1] = crs[indx[t+1], 1]
+                    p2[2] = crs[indx[t+1], 2]
+                    p3[0] = crs[indx[t+2], 0]
+                    p3[1] = crs[indx[t+2], 1]
+                    p3[2] = crs[indx[t+2], 2]
+###############################################################################
+                    ang = 0
+                    anout = p1[0]*l+p1[1]*m+p1[2]*n
+
+                    if anout > flimit:
+                        n10 = p2[1]*p3[2] - p2[2]*p3[1]
+                        n11 = p2[2]*p3[0] - p2[0]*p3[2]
+                        n12 = p2[0]*p3[1] - p2[1]*p3[0]
+
+                        n20 = p2[1]*p1[2] - p2[2]*p1[1]
+                        n21 = p2[2]*p1[0] - p2[0]*p1[2]
+                        n22 = p2[0]*p1[1] - p2[1]*p1[0]
+
+                    else:
+                        n10 = p2[1]*p1[2] - p2[2]*p1[1]
+                        n11 = p2[2]*p1[0] - p2[0]*p1[2]
+                        n12 = p2[0]*p1[1] - p2[1]*p1[0]
+
+                        n20 = p2[1]*p3[2] - p2[2]*p3[1]
+                        n21 = p2[2]*p3[0] - p2[0]*p3[2]
+                        n22 = p2[0]*p3[1] - p2[1]*p3[0]
+
+                    pn1 = np.sqrt(n10*n10+n11*n11+n12*n12)
+                    pn2 = np.sqrt(n20*n20+n21*n21+n22*n22)
+
+                    if (pn1 <= flimit) or (pn2 <= flimit):
+                        ang = np.nan
+                    else:
+                        n10 = n10/pn1
+                        n11 = n11/pn1
+                        n12 = n12/pn1
+                        n20 = n20/pn2
+                        n21 = n21/pn2
+                        n22 = n22/pn2
+
+                        rrr = n10*n20+n11*n21+n12*n22
+                        ang = np.arccos(rrr)
+
+                        perp = n10*p3[0]+n11*p3[1]+n12*p3[2]
+                        if anout > flimit:
+                            perp = n10*p1[0]+n11*p1[1]+n12*p1[2]
+
+                        if perp < -flimit:        # points p1,p2,p3 in cw order
+                            ang = 2*np.pi-ang
+
+                    if abs(anout) <= flimit:
+                        ang = 0
+###############################################################################
+                    W += ang
+
+                    eno2 = eno1+t   # Edge no
+                    L = Edge[eno2, 3]
+
+                    r12 = (np.sqrt(p1[0]*p1[0]+p1[1]*p1[1]+p1[2]*p1[2]) +
+                           np.sqrt(p2[0]*p2[0]+p2[1]*p2[1]+p2[2]*p2[2]))
+                    I = (1/L)*np.log((r12+L)/(r12-L))
+
+                    p += I*Edge[eno2, 0]
+                    q += I*Edge[eno2, 1]
+                    r += I*Edge[eno2, 2]
+
+        #        From Omega, l, m, n PQR get components of field due to face f
+                dp1 = l*crs[0, 0]+m*crs[0, 1]+n*crs[0, 2]
+                if dp1 < 0.:
+                    Omega = W
+                else:
+                    Omega = -W
+
+                gmtf1 = l*Omega+n*q-m*r
+                gmtf2 = m*Omega+l*r-n*p
+                gmtf3 = n*Omega+m*p-l*q
+
+                Hx[pr, st] = Hx[pr, st]+Pd[f]*gmtf1
+                Hy[pr, st] = Hy[pr, st]+Pd[f]*gmtf2
+                Hz[pr, st] = Hz[pr, st]+Pd[f]*gmtf3
+
+                Gx[pr, st] = Gx[pr, st]-dp1*gmtf1
+                Gy[pr, st] = Gy[pr, st]-dp1*gmtf2
+                Gz[pr, st] = Gz[pr, st]-dp1*gmtf3
+
+    for pr in range(npro):
+        for st in range(nstn):
+            mgval[0, pr, st] = Hx[pr, st]
+            mgval[1, pr, st] = Hy[pr, st]
+            mgval[2, pr, st] = Hz[pr, st]
+            mgval[3, pr, st] = Gx[pr, st]
+            mgval[4, pr, st] = Gy[pr, st]
+            mgval[5, pr, st] = Gz[pr, st]
+
+    return mgval

@@ -1,5 +1,5 @@
-##Notice at 22 September 2014
-PyGMI release 2.2.2 is now out! It contains numerous bugfixes including some relating to the multiprocessing modifications to the potential field calculations. Please make sure you are using this version.
+##Notice at 24 October 2014
+I will be releasing PyGMI 2.2.3 soon. In the meantime I must warn people using the latest Git repository version that I have started to use numba 0.15.1. I am versy impressed with the results and I think that I will be using this in future as opposed to cython.
 
 #PyGMI Readme
 
@@ -18,26 +18,55 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.4.1
+* Python 3.4.2
 * NumPy 1.8.2
 * SciPy 0.14.0
-* Matplotlib 1.3.1
+* Matplotlib 1.4.1
 * PyQt 4.10.4
-* GDAL 1.11.0
+* GDAL 1.11.1
 * numexpr 2.4
+* numba 0.15.1
 
 It is possible that it migt work on earlier versions, especially on non-windows operating systems. Under windows, there are compiled .pyd files (python version of a dll) which require the NumPy and Python version to match. However, for actual releases, I do post windows binaries which include a standalone python distribution (that will not interfere with existing installations), so this should not be a problem.
 
 ##Installation
+###General
+If you satisfy the requirements, and wish to run PyGMI from within your python environment, you can install PyGMI as a library using the following command from within the root of the PyGMI directory:
 
-In general, if you satisfy the requirements, and have installed PyGMI as a library (python setup.py install), you can run PyGMI by using the following commands:
+python setup.py install
+Once you are in python, you can run PyGMI by using the following commands:
 
 	import pygmi
 	pygmi.main()
 
-###Installation - Windows (Fast)
-On Windows, the simplest is to either use WinPython or download an installer which includes WinPython.
 
-The installer can be found on [Google Drive](https://209f493642c7e79b2a878320662bfff73a2946cf.googledrive.com/host/0B6BP_95afhWzN01tZzh5VG1aNk0/) and under the release section of github.
+###Windows
+I have now made available convenient installers for PyGMI, thanks to Cyrille Rossant. If you have already installed PyGMI using this installer, you can simply update it using the smaller pygmi_update.exe file. This smaller update file contains only the python code, if you are only interested in that.
 
-WinPython does not by default install itself into your registry, so it will not conflict with other versions of python.
+Running the software can be acheived through the shortcut on your desktop.
+
+###Linux
+Linux normally comes with python installed, but the additional libraries will still need to be installed. The software has been tested on Ubuntu 13.10 linux, using Python 2.7
+
+Install libraries (shown below for Ubuntu 13.10):
+
+	sudo apt-get upgrade
+	sudo apt-get install python-numpy
+	sudo apt-get install python-scipy
+	sudo apt-get install python-qt4
+	sudo apt-get install python-matplotlib
+	sudo apt-get install python-gdal
+	sudo apt-get install python-numexpr
+	sudo apt-get install cython
+	sudo apt-get install libqt4-opengl
+	sudo apt-get install python-qt4-gl
+
+Extract the zip file.
+
+Execute the following command from within the root of the PyGMI directory to run the program:
+
+	python quickstart.py
+
+Alternatively you can install it as a library as shown above.
+
+
