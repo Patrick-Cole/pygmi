@@ -4,6 +4,7 @@ dist/
 data/
 build/
 docs/
+.doctrees/
 
 *.py[co]
 *.cmd
