@@ -99,15 +99,11 @@ class ImportSeisan(object):
         ltmp = pntfile.readlines()
         pntfile.close()
 
-        event = {}
-        dat = []
-
+        # This constructs a dictionary of functions
         read_record_type = {}
         read_record_type['1'] = read_record_type_1
         read_record_type['2'] = read_record_type_2
-        read_record_type['3'] = read_record_type_3
         read_record_type['4'] = read_record_type_4
-        read_record_type[' '] = read_record_type_4
         read_record_type['5'] = read_record_type_5
         read_record_type['6'] = read_record_type_6
         read_record_type['E'] = read_record_type_e
@@ -116,6 +112,11 @@ class ImportSeisan(object):
         read_record_type['I'] = read_record_type_i
         read_record_type['M'] = read_record_type_m
         read_record_type['P'] = read_record_type_p
+
+        event = {}
+        event['4'] = []
+        event['F'] = {}
+        dat = []
 
         for i in ltmp:
             if i.strip() == '':
@@ -126,10 +127,16 @@ class ImportSeisan(object):
                     event['F'] = {}
                 continue
 
-            if event.get('1') is not None:
+            ltype = i[79]
+
+            if ltype == '1' and event.get('1') is not None:
                 continue
 
-            ltype = i[79]
+            if ltype == '7' or ltype == '3':
+                continue
+
+            if ltype == ' ':
+                ltype = '4'
 
             if ltype == 'F':
                 event[ltype].update(read_record_type[ltype](i))
@@ -208,14 +215,6 @@ def read_record_type_2(i):
     dat.reporting_agency = i[72:75]
 
     return dat
-
-
-def read_record_type_3(i):
-    """ Reads record type 3"""
-
-    tmp = sdt.seisan_3()
-
-    return tmp
 
 
 def read_record_type_4(i):
@@ -308,7 +307,12 @@ def read_record_type_f(i):
     tmp.agency_code = i[66:69]
     tmp.solution_quality = i[77]
 
-    return {prg: tmp}
+    if prg == '':
+        out = {}
+    else:
+        out = {prg: tmp}
+
+    return out
 
 
 def read_record_type_h(i):
@@ -352,33 +356,33 @@ def read_record_type_m(i, vtmp=None):
     if i[1:3] is not 'MT':
         tmp = sdt.seisan_M()
         tmp.year = i[1:5]
-        tmp.month = i[6, 8]
-        tmp.day = i[8, 10]
-        tmp.hour = i[11, 13]
-        tmp.minutes = i[13, 15]
-        tmp.seconds = i[16, 20]
-        tmp.latitude = i[23, 30]
-        tmp.longitude = i[30, 38]
-        tmp.depth = i[38, 43]
-        tmp.reporting_agency = i[45, 48]
-        tmp.magnitude = i[55, 59]
+        tmp.month = i[6:8]
+        tmp.day = i[8:10]
+        tmp.hour = i[11:13]
+        tmp.minutes = i[13:15]
+        tmp.seconds = i[16:20]
+        tmp.latitude = i[23:30]
+        tmp.longitude = i[30:38]
+        tmp.depth = i[38:43]
+        tmp.reporting_agency = i[45:48]
+        tmp.magnitude = i[55:59]
         tmp.magnitude_type = i[59]
-        tmp.magnitude_reporting_agency = i[60, 63]
-        tmp.method_used = i[70, 77]
+        tmp.magnitude_reporting_agency = i[60:63]
+        tmp.method_used = i[70:77]
         tmp.quality = i[77]
     else:
         tmp = vtmp['M']
-        tmp.mrr_mzz = i[3, 9]
-        tmp.mtt_mxx = i[10, 16]
-        tmp.mpp_myy = i[17, 23]
-        tmp.mrt_mzx = i[24, 30]
-        tmp.mrp_mzy = i[31, 37]
-        tmp.mtp_mxy = i[38, 44]
-        tmp.reporting_agency2 = i[45, 48]
+        tmp.mrr_mzz = i[3:9]
+        tmp.mtt_mxx = i[10:16]
+        tmp.mpp_myy = i[17:23]
+        tmp.mrt_mzx = i[24:30]
+        tmp.mrp_mzy = i[31:37]
+        tmp.mtp_mxy = i[38:44]
+        tmp.reporting_agency2 = i[45:48]
         tmp.mt_coordinate_system = i[48]
-        tmp.exponential = i[49, 51]
-        tmp.scalar_moment = i[52, 62]
-        tmp.method_used_2 = i[70, 77]
+        tmp.exponential = i[49:51]
+        tmp.scalar_moment = i[52:62]
+        tmp.method_used_2 = i[70:77]
         tmp.quality_2 = i[77]
 
     return tmp
@@ -708,10 +712,12 @@ class ExportSeisan(object):
             tmp = sform('{0:5.1f}', dat.err2, tmp, 36, 40)
             tmp = sform('{0:5.1f}', dat.err3, tmp, 41, 45)
             tmp = sform('{0:5.1f}', dat.fit_error, tmp, 46, 50)
-            tmp = sform('{0:5.1f}', dat.station_distribution_ratio, tmp, 51, 55)
+            tmp = sform('{0:5.1f}', dat.station_distribution_ratio, tmp, 51,
+                        55)
             tmp = sform('{0:5.1f}', dat.amplitude_ratio, tmp, 56, 60)
             tmp = sform('{0:2d}', dat.number_of_bad_polarities, tmp, 61, 62)
-            tmp = sform('{0:2d}', dat.number_of_bad_amplitude_ratios, tmp, 64, 65)
+            tmp = sform('{0:2d}', dat.number_of_bad_amplitude_ratios, tmp, 64,
+                        65)
             tmp = sform('{0:3s}', dat.agency_code, tmp, 67, 69)
             tmp = sform('{0:7s}', dat.program_used, tmp, 71, 77)
             tmp = sform('{0:1s}', dat.solution_quality, tmp, 78)
@@ -863,10 +869,10 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
 
     slen = int(re.findall("[0-9]+", strform)[1])
 
-    if 's' in sform:
-        tmp2 = strform.format(val[:slen])
-    elif val == nval or val is None:
+    if val == nval or val is None:
         tmp2 = slen*' '
+    elif 's' in strform:
+        tmp2 = strform.format(val[:slen])
     else:
         tmp2 = strform.format(val)
 

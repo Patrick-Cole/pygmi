@@ -34,6 +34,7 @@ class FileMenu(object):
     def __init__(self, parent):
 
         self.parent = parent
+        context_menu = self.parent.context_menu
 
 # File Menu
 
@@ -56,6 +57,96 @@ class FileMenu(object):
 
         QtCore.QObject.connect(self.action_exit, QtCore.SIGNAL("triggered()"),
                                parent.close)
+
+# Context menus
+        context_menu['Basic'].addSeparator()
+
+        self.action_bandselect = QtGui.QAction(self.parent)
+        self.action_bandselect.setText("Select Bands")
+        context_menu['Basic'].addAction(self.action_bandselect)
+        self.action_bandselect.triggered.connect(self.bandselect)
+
+    def bandselect(self):
+        """ Select bands """
+        self.parent.launch_context_item_indata(ComboBoxBasic)
+
+
+class ComboBoxBasic(QtGui.QDialog):
+    """
+    A basic combo box application
+    """
+
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+
+        # create GUI
+        self.setWindowTitle('Band Selection')
+
+        self.vbox = QtGui.QVBoxLayout()
+        self.setLayout(self.vbox)
+
+        self.combo = QtGui.QListWidget()
+        self.combo.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+
+        self.vbox.addWidget(self.combo)
+
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setCenterButtons(True)
+        self.buttonbox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+
+        self.vbox.addWidget(self.buttonbox)
+
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
+    def run(self):
+        """ runs class """
+        self.parent.scene.selectedItems()[0].update_indata()
+        my_class = self.parent.scene.selectedItems()[0].my_class
+
+        data = my_class.indata.copy()
+
+        for j in data.keys():
+            if j is 'Model3D' or j is 'Seis':
+                continue
+
+            tmp = []
+            for i in data[j]:
+                tmp.append(i.dataid)
+            self.combo.addItems(tmp)
+
+        if len(tmp) == 0:
+            return
+
+        tmp = self.exec_()
+
+        if tmp != 1:
+            return
+
+        for j in data.keys():
+            if j is 'Model3D' or j is 'Seis':
+                continue
+            atmp = [i.text() for i in self.combo.selectedItems()]
+
+            if len(atmp) > 0:
+                dtmp = []
+                for i in data[j]:
+                    if i.dataid in atmp:
+                        dtmp.append(i)
+                data[j] = dtmp
+
+        my_class.indata = data
+
+        if hasattr(my_class, 'data_init'):
+            my_class.data_init()
+
+        return True
 
 
 class HelpMenu(object):

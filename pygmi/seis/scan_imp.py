@@ -185,8 +185,7 @@ class SIMP(object):
             self.get_record_type_1()
             self.get_record_type_e()
             self.get_record_type_i()
-            self.get_record_type_3()
-            self.get_record_type_7()
+            self.get_record_type_4()
 
             dat.append(self.event)
 
@@ -553,7 +552,8 @@ class SIMP(object):
         tmp.latitude = self.lat  # -999 means none
         tmp.longitude = self.lon  # -999 means none
         tmp.depth = self.depth  # -999 means none
-#        tmp.depth_indicator = i[43]
+        if self.depth != -999:
+            tmp.depth_indicator = 'F'
 #        tmp.locating_indicator = i[44]
         tmp.hypocenter_reporting_agency = 'PRE'
         tmp.number_of_stations_used = self.numstations
@@ -598,27 +598,26 @@ class SIMP(object):
         tmp.new_id_created = ' '
         tmp.id_locked = 'L'
 
+        if self.region is not '':
+            tmp.region = self.region
+
         self.event['I'] = tmp
 
-    def get_record_type_3(self):
-        """ Get record type 3"""
-
-        if len(self.region) > 0:
-            tmp = sdt.seisan_3()
-            tmp.text = ' Bul:Region: '+self.region+' '*(78-len(self.region)-12)
-            self.event['3'] = tmp
-
-    def get_record_type_7(self):
-        """ Get record type 7"""
+    def get_record_type_4(self):
+        """ Get record type 4"""
         tmp2 = []
         for i in range(self.datanum):
-            tmp = sdt.seisan_7()
-            tmp.stat = self.datastat[i]
-            tmp.sp = 'SZ'
-            tmp.iphas = self.dataphase[i]
+            tmp = sdt.seisan_4()
+
+            tmp.station_name = self.datastat[i]
+            tmp.instrument_type = 'S'
+            tmp.component = 'Z'
+            if self.dataphase[i] is not '':
+                tmp.quality = self.dataphase[i][0]
+                tmp.phase_id = self.dataphase[i][1:]
             if self.dataw[i] != 1:
-                tmp.phase_weight = self.dataw[i]
-            tmp.d = self.datad[i]
+                tmp.weighting_indicator = self.dataw[i]
+            tmp.first_motion = self.datad[i]
             if (self.datahours[i] != 0 or self.datamins[i] != 0 or
                     self.datasecs[i] != 0):
                 tmp.hour = self.datahours[i]
@@ -632,24 +631,24 @@ class SIMP(object):
             if self.dataperiod[i] != 0:
                 tmp.period = self.dataperiod[i]
 
-#            tmp.azimuth = None
-#            tmp.velocity = None
-#            tmp.angle_incidence = None
-#            tmp.azimuth_residual = None
-#            tmp.time_residual = None
+            tmp.direction_of_approach = None
+            tmp.phase_velocity = None
+            tmp.angle_of_incidence = None
+            tmp.azimuth_residual = None
+            tmp.travel_time_residual = None
 
             if self.dataresid[i] != 0:
-                tmp.location_weight = self.dataresid[i]
+                tmp.time_residual = self.dataresid[i]
 
             if self.datadist[i] != 0:
-                tmp.distance = self.datadist[i]
+                tmp.epicentral_distance = self.datadist[i]
 
             if self.data_azim[i] != 0:
-                tmp.caz = self.data_azim[i]
+                tmp.azimuth_at_source = int(self.data_azim[i])
 
             tmp2.append(tmp)
 
-        self.event['7'] = tmp2
+        self.event['4'] = tmp2
 
     def inerror(self, eline):
         """ Writes an error to the error file """

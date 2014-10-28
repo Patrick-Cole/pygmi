@@ -268,20 +268,20 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
                 else:
                     data[j] = odata[j]
 
-        if 'Model3D' not in data.keys() and 'Seis' not in data.keys():
-            for j in data.keys():
-                tmp = []
-                for i in data[j]:
-                    tmp.append(i.dataid)
-                tmp = ComboBoxBasic(txt='Select Datasets', dlist=tmp)
-                atmp = [i.text() for i in tmp.combo.selectedItems()]
-        #        aa.show()
-                if len(atmp) > 0:
-                    dtmp = []
-                    for i in data[j]:
-                        if i.dataid in atmp:
-                            dtmp.append(i)
-                    data[j] = dtmp
+#        if 'Model3D' not in data.keys() and 'Seis' not in data.keys():
+#            for j in data.keys():
+#                tmp = []
+#                for i in data[j]:
+#                    tmp.append(i.dataid)
+#                tmp = ComboBoxBasic(txt='Select Datasets', dlist=tmp)
+#                atmp = [i.text() for i in tmp.combo.selectedItems()]
+#        #        aa.show()
+#                if len(atmp) > 0:
+#                    dtmp = []
+#                    for i in data[j]:
+#                        if i.dataid in atmp:
+#                            dtmp.append(i)
+#                    data[j] = dtmp
 
         self.my_class.indata = data
         if hasattr(self.my_class, 'data_init'):
@@ -694,7 +694,7 @@ class MainWidget(QtGui.QMainWindow):
         idata = []
         for item in self.scene.selectedItems():
             if isinstance(item, DiagramItem):
-                idata.append(item.my_class.outdata)
+                idata.append(item.my_class.indata)
         return idata
 
     def get_outdata(self):
@@ -802,7 +802,7 @@ class MainWidget(QtGui.QMainWindow):
 
     def launch_context_item(self, newitem):
         """
-        Launches a context menu item
+        Launches a context menu item, using output data
 
         Parameters
         ----------
@@ -811,14 +811,32 @@ class MainWidget(QtGui.QMainWindow):
         """
         outdata = self.get_outdata()
 
-        if outdata[0] == {}:
-            self.run()
-            outdata = self.get_outdata()
+#        if outdata[0] == {}:
+#            self.run()
+#            outdata = self.get_outdata()
 
         for odata in outdata:
             if odata is not None and odata != {}:
                 dlg = newitem(self)
                 dlg.indata = odata
+                dlg.run()
+                self.update_pdlg(dlg)
+
+    def launch_context_item_indata(self, newitem):
+        """
+        Launches a context menu item, using input data.
+
+        Parameters
+        ----------
+        newitem : custom class
+            newitem is the class to be called by the context menu item
+        """
+        indata = self.get_indata()
+
+        for idata in indata:
+            if idata is not None and idata != {}:
+                dlg = newitem(self)
+                dlg.indata = idata
                 dlg.run()
                 self.update_pdlg(dlg)
 
@@ -846,25 +864,25 @@ class MainWidget(QtGui.QMainWindow):
             self.textbrowser_processlog.setStyleSheet(
                 "* { background-color: rgb(255, 255, 255); }")
 
-    def run(self):
-        """Runs program to end. Currently this is unused."""
-        item_list = []
-
-        # First get the data import items
-        for item in self.scene.items():
-            if isinstance(item, DiagramItem):
-                if item.is_import is True:
-                    item_list.append(item)
-
-        # Then get the rest of the items in sequence, while running them
-        while len(item_list) > 0:
-            item = item_list.pop(0)
-            if item.is_import is False:
-                item.settings()
-            for i in item.arrows:
-                newitem = i.my_end_item
-                if newitem != item and newitem not in item_list:
-                    item_list.append(newitem)
+#    def run(self):
+#        """Runs program to end. Currently this is unused."""
+#        item_list = []
+#
+#        # First get the data import items
+#        for item in self.scene.items():
+#            if isinstance(item, DiagramItem):
+#                if item.is_import is True:
+#                    item_list.append(item)
+#
+#        # Then get the rest of the items in sequence, while running them
+#        while len(item_list) > 0:
+#            item = item_list.pop(0)
+#            if item.is_import is False:
+#                item.settings()
+#            for i in item.arrows:
+#                newitem = i.my_end_item
+#                if newitem != item and newitem not in item_list:
+#                    item_list.append(newitem)
 
     def send_to_back(self):
         """Send the selected item to the back."""
@@ -986,45 +1004,6 @@ class Startup(QtGui.QDialog):
         self.pbar.setValue(self.pbar.value() + 1)
         QtGui.QApplication.processEvents()
 
-
-class ComboBoxBasic(QtGui.QDialog):
-    """
-    A basic combo box application
-    """
-
-    def __init__(self, parent=None, txt='', dlist=None):
-        QtGui.QDialog.__init__(self, parent)
-
-        if dlist is None:
-            dlist = []
-        # create GUI
-        self.setWindowTitle(txt)
-
-        self.vbox = QtGui.QVBoxLayout()
-        self.setLayout(self.vbox)
-
-        self.combo = QtGui.QListWidget()
-        self.combo.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
-
-        self.vbox.addWidget(self.combo)
-
-        self.buttonbox = QtGui.QDialogButtonBox()
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-
-        self.vbox.addWidget(self.buttonbox)
-
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
-
-        self.combo.addItems(dlist)
-
-        tmp = self.exec_()
-#        if tmp == 1:
-#            self.acceptall()
-#            tmp = True
 
 
 def main():

@@ -508,7 +508,9 @@ Columns Format description1 Free
         self.id = ' '
         self.new_id_created = ' '
         self.id_locked = ' '
-        self.dataid = ""
+        self.dataid = ''
+# This is used in a type 3 line
+        self.region = ''
 
 
 class seisan_M(object):

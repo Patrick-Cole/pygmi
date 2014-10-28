@@ -53,7 +53,6 @@ class MenuWidget(object):
 
         self.parent = parent
         self.parent.add_to_context('Raster')
-        self.parent.add_to_context('Point')
         context_menu = self.parent.context_menu
 
 # Normal menus
