@@ -5,6 +5,7 @@ data/
 build/
 pygmi/
 docs/
+.doctrees/
 
 *.py[co]
 *.cmd
