@@ -268,13 +268,6 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="pygmi.main.ComboBoxBasic">
-<em class="property">class </em><tt class="descclassname">pygmi.main.</tt><tt class="descname">ComboBoxBasic</tt><big>(</big><em>parent=None</em>, <em>txt=''</em>, <em>dlist=</em><span class="optional">[</span><span class="optional">]</span><big>)</big><a class="headerlink" href="#pygmi.main.ComboBoxBasic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
-<p>A basic combo box application</p>
-</dd></dl>
-
-<dl class="class">
 <dt id="pygmi.main.DiagramItem">
 <em class="property">class </em><tt class="descclassname">pygmi.main.</tt><tt class="descname">DiagramItem</tt><big>(</big><em>diagram_type</em>, <em>context_menu</em>, <em>my_class</em>, <em>parent=None</em>, <em>scene=None</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QGraphicsPolygonItem</span></tt></p>
@@ -573,7 +566,21 @@ Return a DiagramItem object</p>
 <dl class="method">
 <dt id="pygmi.main.MainWidget.launch_context_item">
 <tt class="descname">launch_context_item</tt><big>(</big><em>newitem</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item" title="Permalink to this definition">¶</a></dt>
-<dd><p>Launches a context menu item</p>
+<dd><p>Launches a context menu item, using output data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>newitem</strong> (<em>custom class</em>) &#8211; newitem is the class to be called by the context menu item</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.main.MainWidget.launch_context_item_indata">
+<tt class="descname">launch_context_item_indata</tt><big>(</big><em>newitem</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item_indata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Launches a context menu item, using input data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -608,12 +615,6 @@ Return a DiagramItem object</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.main.MainWidget.run">
-<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Runs program to end. Currently this is unused.</p>
 </dd></dl>
 
 <dl class="method">
@@ -722,10 +723,29 @@ are closed</p>
 <span id="pygmi-menu-default-module"></span><h2>pygmi.menu_default module<a class="headerlink" href="#module-pygmi.menu_default" title="Permalink to this headline">¶</a></h2>
 <p>File Menu Routines</p>
 <dl class="class">
+<dt id="pygmi.menu_default.ComboBoxBasic">
+<em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">ComboBoxBasic</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
+<p>A basic combo box application</p>
+<dl class="method">
+<dt id="pygmi.menu_default.ComboBoxBasic.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs class</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pygmi.menu_default.FileMenu">
 <em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">FileMenu</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.FileMenu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
 <p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.menu_default.FileMenu.bandselect">
+<tt class="descname">bandselect</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.FileMenu.bandselect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select bands</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -847,7 +867,7 @@ datasets. It includes:</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>
