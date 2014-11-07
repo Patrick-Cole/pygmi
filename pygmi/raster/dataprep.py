@@ -33,6 +33,7 @@ from ..vector.datatypes import PData
 from PIL import Image, ImageDraw
 import copy
 import scipy.ndimage as ndimage
+from collections import Counter
 # import scipy.interpolate as si
 
 
@@ -161,6 +162,7 @@ def merge(dat):
             needsmerge = True
 
     if needsmerge is False:
+        dat = check_dataid(dat)
         return dat
 
     mrg = DataMerge()
@@ -173,6 +175,26 @@ def merge(dat):
     mrg.dsb_dxy.setValue(dxy)
     mrg.acceptall()
     out = mrg.outdata['Raster']
+
+    out = check_dataid(out)
+
+    return out
+
+
+def check_dataid(out):
+    """ Checks dataid for duplicates and renames where necessary """
+    tmplist = []
+    for i in out:
+        tmplist.append(i.dataid)
+
+    tmpcnt = Counter(tmplist)
+    for elt, count in tmpcnt.items():
+        j = 1
+        for i in out:
+            if elt == i.dataid and count > 1:
+                i.dataid += '('+str(j)+')'
+                j += 1
+
     return out
 
 

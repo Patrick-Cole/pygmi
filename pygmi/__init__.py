@@ -10,10 +10,11 @@ Magnetic and Gravity 3D forward modelling
 
 It is released under the Gnu General Public License version 3.0
 """
-__all__ = ["raster", "clust", "pfmod", "vector", "test"]
+__all__ = ["raster", "clust", "pfmod", "vector", "test", "seis"]
 from . import raster
 from . import clust
 from . import pfmod
 from . import vector
 from . import test
+from . import seis
 from .main import main

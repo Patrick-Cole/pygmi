@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        quickstart.py (part of PyGMI)
+# Name:        pfmod.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -22,14 +22,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is a quick start routine to start the GUI form of PyGMI
+""" These are tests. Run this file from within this directory to do the
+tests """
 
-This routine is used as a convenience function, typically if you do NOT
-formally install PyGMI as a library and prefer to run it from within the
-default extracted directory structure.
-"""
+import numpy as np
+import pfmod
+import nose
 
-import pygmi
+
+def test():
+    """ Test Routine """
+    pfmod.test()
 
 if __name__ == "__main__":
-    pygmi.main()
+    # doctest.testmod(pygmi.raster)
+    nose.run()

@@ -212,8 +212,6 @@ class ExportPoint(object):
             self.showtext('Error: You need to have a point data first!')
             return
 
-        data = self.indata['Point']
-
         filename = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'csv (*.csv)')
 
@@ -223,6 +221,7 @@ class ExportPoint(object):
         os.chdir(filename.rpartition('/')[0])
         ofile = str(filename.rpartition('/')[-1][:-4])
 #        self.ext = filename[-3:]
+        data = self.indata['Point']
 
         for i in range(len(data)):
             datid = data[i].dataid

@@ -238,6 +238,7 @@ class ParamDisplay(object):
     def autoregional(self):
         """ Automatically estimates the regional """
         if 'Gravity Dataset' not in self.lmod1.griddata.keys():
+            self.showtext('No gravity dataset!')
             return
 
         self.parent.grvmag.calc_regional()
@@ -245,6 +246,8 @@ class ParamDisplay(object):
         grvmean = self.lmod1.griddata['Gravity Dataset'].data.mean()
         grvreg = grvmean-grvmax
         self.dsb_gregional.setValue(grvreg)
+
+        self.showtext('Regional estimated.')
         # self.apply_prop_changes()
 
     def add_defs(self, deftxt='', getcol=False, lmod=None):
@@ -326,6 +329,7 @@ class ParamDisplay(object):
             lith.finc = self.dsb_hinc.value()
             lith.fdec = self.dsb_hdec.value()
             lith.modified = True
+        self.showtext('Geophysical properties applied.')
 
     def apply_lith_changes(self):
         """ Applies lithological changes """
@@ -342,6 +346,7 @@ class ParamDisplay(object):
         lith.minc = self.dsb_minc.value()
         lith.qratio = self.dsb_qratio.value()
         lith.modified = True
+        self.showtext('Lithological changes applied.')
 
     def change_rmi(self):
         """ update spinboxes when rmi is changed """

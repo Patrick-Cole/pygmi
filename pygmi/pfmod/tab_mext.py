@@ -292,7 +292,7 @@ class MextDisplay(object):
 
         self.pbars.incr()
         self.parent.outdata['Raster'] = list(self.lmod1.griddata.values())
-        self.showtext('Changes applied!')
+        self.showtext('Changes applied.')
 
     def apply_regional(self):
         """ Applies the regional model to the current model """
@@ -300,6 +300,7 @@ class MextDisplay(object):
 
         ctxt = str(self.combo_regional.currentText())
         if ctxt == 'None':
+            self.showtext('No regional model selected!')
             return
 
         self.pbars.resetall(self.lmod1.numx)
@@ -320,6 +321,8 @@ class MextDisplay(object):
         for i in np.unique(self.lmod1.lith_index):
             if i > 900:
                 self.lmod1.mlut[i] = self.lmod2.mlut[i-900]
+
+        self.showtext('Regional model applied.')
 
     def choose_combo(self, combo, dtxt):
         """ Combo box choice routine """

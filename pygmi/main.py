@@ -1005,7 +1005,6 @@ class Startup(QtGui.QDialog):
         QtGui.QApplication.processEvents()
 
 
-
 def main():
     """ Main entry point for the PyGMI software. """
     app = QtGui.QApplication(sys.argv)

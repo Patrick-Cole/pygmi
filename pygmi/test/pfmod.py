@@ -31,7 +31,7 @@ from pygmi.pfmod.grvmag3d import calc_field
 import matplotlib.pyplot as plt
 
 
-def main():
+def test(doplt=False):
     """
     Main test function
 
@@ -100,10 +100,11 @@ def main():
 
     # for testing purposes the cube being modelled should have dxy = d_z to
     # keep things simple
-    dxy = xpos[1]-xpos[0]
-    d_z = dxy
+    dxy = (xpos[1]-xpos[0])
+    d_z = 50
     ypos = np.arange(-strike, strike, dxy)
     zpos = np.arange(z.min(), 0, d_z)
+    xpos2 = np.arange(xpos.min(), xpos.max(), dxy)
     numy = ypos.size
     numz = zpos.size
     tlx = xpos.min()
@@ -111,7 +112,7 @@ def main():
     tlz = zpos.max()
 
     # quick model initialises a model with all the variables we have defined.
-    lmod = quick_model(numx, numy, numz, dxy, d_z,
+    lmod = quick_model(xpos2.size, numy, numz, dxy, d_z,
                        tlx, tly, tlz, 0, 0, finc, fdec,
                        ['Generic'], [susc], [dens],
                        [minc], [mdec], [mstrength])
@@ -120,7 +121,7 @@ def main():
     # body lies
     for i in np.arange(x.min(), x.max(), dxy):
         for j in np.arange(0, 2*strike, dxy):
-            for k in np.arange(1, numz):
+            for k in np.arange(abs(z).min()/d_z, abs(z).max()/d_z):
                 i2 = int(i/dxy)
                 j2 = int(j/dxy)
                 k2 = int(k)
@@ -128,28 +129,33 @@ def main():
 
     # Calculate the gravity
     calc_field(lmod)
-    gdata = lmod.griddata['Calculated Gravity'].data[20].copy()
+    gdata = lmod.griddata['Calculated Gravity'].data[numy/2].copy()
 
     # Change to observation height to 100 meters and calculate magnetics
     lmod.mht = mht
     calc_field(lmod, altcalc=True)
 
-    mdata = lmod.griddata['Calculated Magnetics'].data[20]
+    mdata = lmod.griddata['Calculated Magnetics'].data[numy/2]
 
-    # Display results
-    _, ax1 = plt.subplots()
-    ax1.set_xlabel('Distance (m)')
-    ax1.plot(xpos+dxy/2, gdata, 'r', label='PyGMI')
-    ax1.plot(xpos, g2dc, 'r.', label='Grav2DC')
-    ax1.set_ylabel('mGal')
-    ax1.legend(loc='upper left', shadow=True)
+    if doplt:
+        # Display results
+        _, ax1 = plt.subplots()
+        ax1.set_xlabel('Distance (m)')
+        ax1.plot(xpos2+dxy/2, gdata, 'r', label='PyGMI')
+        ax1.plot(xpos, g2dc, 'r.', label='Grav2DC')
+        ax1.set_ylabel('mGal')
+        ax1.legend(loc='upper left', shadow=True)
 
-    ax2 = ax1.twinx()
-    ax2.plot(xpos+dxy/2, mdata, 'b', label='PyGMI')
-    ax2.plot(xpos, m2dc, 'b.', label='Mag2DC')
-    ax2.set_ylabel('nT')
-    ax2.legend(loc='upper right', shadow=True)
-    plt.show()
+        ax2 = ax1.twinx()
+        ax2.plot(xpos2+dxy/2, mdata, 'b', label='PyGMI')
+        ax2.plot(xpos, m2dc, 'b.', label='Mag2DC')
+        ax2.set_ylabel('nT')
+        ax2.legend(loc='upper right', shadow=True)
+        plt.show()
+
+#    print(mdata[:-1]-m2dc[2::2])
+#    np.testing.assert_almost_equal(gdata[:-1], g2dc[2::2], 1)
+#    np.testing.assert_almost_equal(mdata[:-1], m2dc[2::2], 1)
 
 
 def get_int(tmp, row, word):
@@ -195,4 +201,4 @@ def get_float(tmp, row, word):
 
 
 if __name__ == "__main__":
-    main()
+    test(True)

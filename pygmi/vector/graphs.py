@@ -118,9 +118,8 @@ class MyMplCanvas(FigureCanvas):
         if self.ind is None:
             return
 
-        y = event.ydata
         dtmp = self.line.get_data()
-        dtmp[1][self.ind] = y
+        dtmp[1][self.ind] = event.ydata
         self.line.set_data(dtmp[0], dtmp[1])
 
         self.figure.canvas.restore_region(self.background)

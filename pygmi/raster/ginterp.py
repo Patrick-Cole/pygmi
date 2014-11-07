@@ -1574,30 +1574,33 @@ def currentshader(data, cell, theta, phi, alpha):
         array containg the shaded results
     """
     asp = aspect2(data)
-    pinit = asp[1]
-    qinit = asp[2]
+    n = 2
+    ldict = locals()
+    ldict['pinit'] = asp[1]
+    ldict['qinit'] = asp[2]
 
 # Update cell
-    p = ne.evaluate('pinit/cell')
-    q = ne.evaluate('qinit/cell')
-    sqrt_1p2q2 = ne.evaluate('sqrt(1+p**2+q**2)')
+    ldict['p'] = ne.evaluate('pinit/cell', ldict)
+    ldict['q'] = ne.evaluate('qinit/cell', ldict)
+    ldict['sqrt_1p2q2'] = ne.evaluate('sqrt(1+p**2+q**2)', ldict)
 
 # Update angle
-    cosg2 = cos(theta/2)
-    p0 = -cos(phi)*tan(theta)
-    q0 = -sin(phi)*tan(theta)
-    sqrttmp = (1+np.sqrt(1+p0**2+q0**2))
-    p1 = p0 / sqrttmp
-    q1 = q0 / sqrttmp
+    ldict['cosg2'] = cos(theta/2)
+    ldict['p0'] = -cos(phi)*tan(theta)
+    ldict['q0'] = -sin(phi)*tan(theta)
+    ldict['sqrttmp'] = ne.evaluate('(1+sqrt(1+p0**2+q0**2))', ldict)
+    ldict['p1'] = ne.evaluate('p0 / sqrttmp', ldict)
+    ldict['q1'] = ne.evaluate('q0 / sqrttmp', ldict)
 
 
 #     n: how compact the bright patch is
-    n = 2.0
-
-    cosi = ne.evaluate('((1+p0*p+q0*q)/(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))')
-    coss = ne.evaluate('((1+p1*p+q1*q)/(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))')
-    Ps = ne.evaluate('coss**n')
-    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2'))
+    ldict['cosi'] = ne.evaluate('((1+p0*p+q0*q)/'
+                                '(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))', ldict)
+    ldict['coss'] = ne.evaluate('((1+p1*p+q1*q)/'
+                                '(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))', ldict)
+    ldict['Ps'] = ne.evaluate('coss**n', ldict)
+    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2',
+                                         ldict))
 
     return R
 
