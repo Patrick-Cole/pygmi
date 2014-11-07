@@ -141,7 +141,7 @@ class MyMplCanvas(FigureCanvas):
 
         return True
 
-    def update_line(self, data1, data2):
+    def update_line(self, data, ival):
         """
         Update the plot from point data.
 
@@ -152,20 +152,34 @@ class MyMplCanvas(FigureCanvas):
         data2 : PData object
             Point Data
         """
+
+        data1 = data[ival]
+
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(2, 1, 1)
+        ax1 = self.figure.add_subplot(3, 1, 1)
         ax1.set_title(data1.dataid)
         self.axes = ax1
 
-        ax2 = self.figure.add_subplot(2, 1, 2, sharex=ax1)
-        ax2.set_title(data2.dataid)
+        ax2 = self.figure.add_subplot(3, 1, 2, sharex=ax1)
+        ax2.set_title('Normalised stacked graphs')
+        ax2.set_xlabel('sample number')
+        ax2.set_ylabel('normalised value')
+
+        ax1.set_xlabel('sample number')
+        ax1.set_ylabel('value')
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
-        ax2.plot(data2.zdata)
+        for i in data:
+            tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
+            ax2.plot(tmp, label=i.dataid)
+        ax2.set_ylim([-.1, 1.1])
+        ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
+                   mode='expand', borderaxespad=0., title='Legend')
         self.line, = ax1.plot(data1.zdata, '.-', picker=5)
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_vector(self, data):
@@ -288,13 +302,15 @@ class PlotPoints(GraphWindow):
         self.parent = parent
         self.spinbox.hide()
         self.label3.hide()
+        self.combobox2.hide()
+        self.label2.hide()
 
     def change_band(self):
         """ Combo box to choose band """
         data = self.indata['Point']
         i = self.combobox1.currentIndex()
-        j = self.combobox2.currentIndex()
-        self.mmc.update_line(data[i], data[j])
+#        j = self.combobox2.currentIndex()
+        self.mmc.update_line(data, i)
 
     def run(self):
         """ Run """
@@ -304,8 +320,8 @@ class PlotPoints(GraphWindow):
             self.combobox1.addItem(i.dataid)
             self.combobox2.addItem(i.dataid)
 
-        self.label1.setText('Top Profile:')
-        self.label2.setText('Bottom Profile:')
+        self.label1.setText('Editable Profile:')
+        self.label2.setText('Normalised Stacked Profile:')
         self.combobox1.setCurrentIndex(0)
         self.combobox2.setCurrentIndex(1)
 

@@ -678,7 +678,7 @@ class MainWidget(QtGui.QMainWindow):
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
                 item.update_indata()
-                if item.my_class.indata == {}:
+                if item.my_class.indata == {} and item.is_import is False:
                     item.setBrush(self.scene.my_item_color)
 
     def get_indata(self):

@@ -97,6 +97,13 @@ class MenuWidget(object):
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
 
+        self.action_igrf = QtGui.QAction(self.parent)
+        self.action_igrf.setText("Calculate IGRF Corrected Data")
+        self.menu.addAction(self.action_igrf)
+        self.action_igrf.triggered.connect(self.igrf)
+
+        self.menu.addSeparator()
+
         self.action_merge = QtGui.QAction(self.parent)
         self.action_merge.setText("Merge and Resampling")
         self.menu.addAction(self.action_merge)
@@ -108,12 +115,14 @@ class MenuWidget(object):
         self.action_reproj.triggered.connect(self.reproj)
 
         self.action_cut_data = QtGui.QAction(self.parent)
-        self.action_cut_data.setText("Cut Data")
+        self.action_cut_data.setText("Cut Raster using Polygon")
         self.menu.addAction(self.action_cut_data)
         self.action_cut_data.triggered.connect(self.cut_data)
 
+        self.menu.addSeparator()
+
         self.action_get_prof = QtGui.QAction(self.parent)
-        self.action_get_prof.setText("Get Profile")
+        self.action_get_prof.setText("Extract Profile from Raster")
         self.menu.addAction(self.action_get_prof)
         self.action_get_prof.triggered.connect(self.get_prof)
 
@@ -121,11 +130,6 @@ class MenuWidget(object):
         self.action_grid.setText("Grid Point Data (Linear)")
         self.menu.addAction(self.action_grid)
         self.action_grid.triggered.connect(self.grid)
-
-        self.action_igrf = QtGui.QAction(self.parent)
-        self.action_igrf.setText("Calculate IGRF Corrected Data")
-        self.menu.addAction(self.action_igrf)
-        self.action_igrf.triggered.connect(self.igrf)
 
         self.menu.addSeparator()
 
