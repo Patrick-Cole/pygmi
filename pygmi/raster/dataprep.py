@@ -726,7 +726,11 @@ class DataReproj(QtGui.QDialog):
             mask = data2.data.mask
             data2.data = np.ma.array(data2.data.filled(data.nullvalue))
             data2.data.mask = mask
+            data2.data.set_fill_value(data.nullvalue)
             data2.nullvalue = data.nullvalue
+            data2.data = np.ma.masked_invalid(data2.data)
+            data2.data = np.ma.masked_less(data2.data, data.data.min())
+            data2.data = np.ma.masked_greater(data2.data, data.data.max())
 
             dat.append(data2)
 
