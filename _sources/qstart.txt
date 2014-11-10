@@ -3,22 +3,27 @@ Quick Start to use PyGMI
 Introduction
 ------------
 
-The new PyGMI interface allows for a flow chart approach to performing various geophysical tasks, of which only one of them is the modelling of potential field data in 3D
+The new PyGMI interface allows for a flow chart approach to performing various
+geophysical tasks, of which only one of them is the modelling of potential
+field data in 3D.
 
 
 Details
 -------
 
-The menus in PyGMI group tasks into categories. By clicking on a menu item, you will see that the item appears as a flow chart element on the main interface. 
+The menus in PyGMI group tasks into categories. By clicking on a menu item, you
+will see that the item appears as a flow chart element on the main interface.
 
 .. image:: _static/main.png
-   :width: 100%	
+   :width: 100%
 
-* By clicking on the line pointer icon on the menubar, it is possible to connect two tasks on the flow chart.
-* Double clicking on a task activates the task.
-* Right clicking on the task allows for the display of any data and results associated with that task.
+* By clicking on the line connector icon on the menubar, it is possible to
+  connect two tasks on the flow chart.
+* **Double clicking** on a task activates the task.
+* **Right clicking** on the task allows for the display of any data and results
+  associated with that task.
 * Blue tasks still need to be activated
-* Green tasks have been activated and show a more complete context menu
+* Green tasks have been activated and show a more complete context menu.
 * Red tasks are in the process of running.
 
 Example
@@ -26,16 +31,21 @@ Example
 
 1. In the Raster menu click on 'Import Raster Data'
 2. Select a dataset to be imported
-3. Right Click on the flow chart symbol which has appeared, and select 'Show Raster Data'
+3. Right Click on the flow chart symbol which has appeared, and select
+   'Show Raster Data'
 
-A window should now pop up displaying the raster data which was imported. Close this window.
+A window should now pop up displaying the raster data which was imported. Close
+this window.
 
 1. In the Raster menu click on 'Smoothing'
 2. Click on the Line Pointer tool on the menubar
-3. Draw a line between the import symbol and the smoothing symbol. I line with an arrowhead should appear
+3. Draw a line between the import symbol and the smoothing symbol. I line with
+   an arrowhead should appear
 4. Double-click on the smoothing symbol.
 5. A dialog will pop up. You can leave the defaults for now and press 'OK'
 
-The process log will now turn red indicating that an activity is happening. Once it is complete it will turn right again.
+The process log will now turn red indicating that an activity is happening.
+Once it is complete it will turn right again.
 
-1. Right click on the smoothing  symbol and select 'Show Raster Data' to see the smoothing results.
+1. Right click on the smoothing  symbol and select 'Show Raster Data' to see
+   the smoothing results.

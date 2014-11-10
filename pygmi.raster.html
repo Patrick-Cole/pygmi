@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.raster package &mdash; PyGMI 2.2.2 documentation</title>
+    <title>pygmi.raster package &mdash; PyGMI 2.2.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.2',
+        VERSION:     '2.2.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.2 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.3 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.test package" href="pygmi.test.html" />
     <link rel="prev" title="pygmi.pfmod package" href="pygmi.pfmod.html" /> 
@@ -832,6 +832,12 @@ the main routine.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pygmi.raster.dataprep.check_dataid">
+<tt class="descclassname">pygmi.raster.dataprep.</tt><tt class="descname">check_dataid</tt><big>(</big><em>out</em><big>)</big><a class="headerlink" href="#pygmi.raster.dataprep.check_dataid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks dataid for duplicates and renames where necessary</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pygmi.raster.dataprep.cluster_to_raster">
 <tt class="descclassname">pygmi.raster.dataprep.</tt><tt class="descname">cluster_to_raster</tt><big>(</big><em>indata</em><big>)</big><a class="headerlink" href="#pygmi.raster.dataprep.cluster_to_raster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts cluster datasets to raster datasets</p>
@@ -1148,7 +1154,7 @@ MxN numpy array</td>
 <p>Equation Editor</p>
 <p>This class allows the input of equations using raster datasets as
 variables. This is commonly done in remote sensing applications, where
-there is a requirement for band ratioing etc.</p>
+there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.equation_editor.EquationEditor.parent">
 <tt class="descname">parent</tt><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.parent" title="Permalink to this definition">¶</a></dt>
@@ -1192,109 +1198,15 @@ there is a requirement for band ratioing etc.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.abs">
-<tt class="descname">abs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.abs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.add">
-<tt class="descname">add</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.add" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.backspace">
-<tt class="descname">backspace</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.backspace" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.decpnt">
-<tt class="descname">decpnt</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.decpnt" title="Permalink to this definition">¶</a></dt>
-<dd><p>decimal point</p>
+<dt id="pygmi.raster.equation_editor.EquationEditor.combo">
+<tt class="descname">combo</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>update combo information</p>
 </dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.divide">
-<tt class="descname">divide</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.divide" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.eight">
-<tt class="descname">eight</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.eight" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.eq_fix">
 <tt class="descname">eq_fix</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.eq_fix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Corrects names in equation to variable names</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.five">
-<tt class="descname">five</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.five" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.four">
-<tt class="descname">four</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.four" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.lbracket">
-<tt class="descname">lbracket</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.lbracket" title="Permalink to this definition">¶</a></dt>
-<dd><p>left bracket</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.log">
-<tt class="descname">log</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.log" title="Permalink to this definition">¶</a></dt>
-<dd><p>base 10 logarithm</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.mean">
-<tt class="descname">mean</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.mean" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.median">
-<tt class="descname">median</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.median" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.mode">
-<tt class="descname">mode</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.mode" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.multiply">
-<tt class="descname">multiply</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.multiply" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.natlog">
-<tt class="descname">natlog</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.natlog" title="Permalink to this definition">¶</a></dt>
-<dd><p>natural logarithm</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.nine">
-<tt class="descname">nine</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.nine" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.one">
-<tt class="descname">one</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.one" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.power">
-<tt class="descname">power</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.power" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.rbracket">
-<tt class="descname">rbracket</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.rbracket" title="Permalink to this definition">¶</a></dt>
-<dd><p>right bracket</p>
 </dd></dl>
 
 <dl class="method">
@@ -1310,46 +1222,16 @@ there is a requirement for band ratioing etc.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.seven">
-<tt class="descname">seven</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.seven" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.six">
-<tt class="descname">six</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.six" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.subtract">
-<tt class="descname">subtract</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.subtract" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.textchanged">
 <tt class="descname">textchanged</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.textchanged" title="Permalink to this definition">¶</a></dt>
 <dd><p>Text Changed</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.three">
-<tt class="descname">three</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.three" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.two">
-<tt class="descname">two</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.two" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.useband">
 <tt class="descname">useband</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.useband" title="Permalink to this definition">¶</a></dt>
 <dd><p>use band</p>
 </dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.zero">
-<tt class="descname">zero</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.zero" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </dd></dl>
 

@@ -1,7 +1,16 @@
 ==========
 PyGMI Wiki
 ==========
-The wiki will be where you can find information about how to use PyGMI. Please make sure you check out teh quick start, since some important operational issues are covered there.
+The wiki will be where you can find information about how to use PyGMI. Please
+make sure you check out the quick start, since some important operational
+issues and fundamental principles are covered there.
+
+Remember the following:
+
+* Use the menus to insert an object.
+* Use the line connector on the toolbar to connect objects.
+* **Double-click** to run or activate an object.
+* **Right-click** to query an object, displaying graphs, images and statistics.
 
 Contents:
 
@@ -11,7 +20,9 @@ Contents:
    install
    qstart
    raster
+   vector
    cluster
    pfmod
+   seis
 
 
