@@ -45,7 +45,7 @@
 # DEALINGS IN THE SOFTWARE.
 # -----------------------------------------------------------------------------
 """ Plot fault plane solutions.
-The code below is translated from bb.m writtenby Andy Michael and Oliver Boyd
+The code below is translated from bb.m written by Andy Michael and Oliver Boyd
 at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html"""
 
 import numpy as np
