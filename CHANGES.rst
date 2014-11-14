@@ -2,6 +2,22 @@
 Changelog
 =========
 
+v2.2.3, 10 November 2014
+------------------------
+* Fix for bad values in reprojections.
+* New display of point data.
+* Equation editor improved to use numexpr.
+* Fixed a bug regarding duplicate data names in interpretation module.
+* Added a few reports in 3D modelling module.
+* Improved the multi-band select by making it a context menu.
+* Update help reference.
+* Update to python 3.4.2 - includes a dependency on numba. No longer use cython
+* Added some seismology routines.
+* Fixed writing of null value to file when exporting ENVI format.
+* Query for which datasets to connect added.
+* Added new gridding technique. and fixed bugs related to vector imports.
+* Add a custom data range to the profile view on the modelling module.
+
 v2.2.2, 22 September 2014
 -------------------------
 * Fixed problems with the potential field calculations

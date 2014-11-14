@@ -27,7 +27,6 @@
 from PyQt4 import QtGui
 import numpy as np
 import scipy.signal as ssig
-from scipy.stats import mode
 import copy
 
 
@@ -54,8 +53,6 @@ class Smooth(QtGui.QDialog):
         self.spinbox_stddev = QtGui.QSpinBox(self.groupbox)
         self.groupbox_2 = QtGui.QGroupBox(self)
         self.verticallayout = QtGui.QVBoxLayout(self.groupbox_2)
-        self.radiobutton_2dmode = QtGui.QRadioButton(self.groupbox_2)
-        self.verticallayout.addWidget(self.radiobutton_2dmode)
         self.radiobutton_2dmedian = QtGui.QRadioButton(self.groupbox_2)
         self.verticallayout.addWidget(self.radiobutton_2dmedian)
         self.radiobutton_2dmean = QtGui.QRadioButton(self.groupbox_2)
@@ -91,7 +88,6 @@ class Smooth(QtGui.QDialog):
 
         self.radiobutton_2dmean.clicked.connect(self.choosefilter)
         self.radiobutton_2dmedian.clicked.connect(self.choosefilter)
-        self.radiobutton_2dmode.clicked.connect(self.choosefilter)
         self.radiobutton_box.clicked.connect(self.choosefilter)
         self.radiobutton_disk.clicked.connect(self.choosefilter)
         self.radiobutton_gaussian.clicked.connect(self.choosefilter)
@@ -131,7 +127,7 @@ class Smooth(QtGui.QDialog):
         self.spinbox_stddev.setMinimum(1)
         self.spinbox_stddev.setMaximum(99999)
         self.spinbox_stddev.setProperty("value", 5)
-        self.radiobutton_2dmode.setChecked(True)
+        self.radiobutton_2dmean.setChecked(True)
         self.radiobutton_box.setChecked(True)
         self.tablewidget.setRowCount(5)
         self.tablewidget.setColumnCount(5)
@@ -146,7 +142,6 @@ class Smooth(QtGui.QDialog):
         self.label_3.setText("Radius in Samples:")
         self.label_4.setText("Standard Deviation:")
         self.groupbox_2.setTitle("Filter Type")
-        self.radiobutton_2dmode.setText("2D Mode")
         self.radiobutton_2dmedian.setText("2D Median")
         self.radiobutton_2dmean.setText("2D Mean")
         self.groupbox_3.setTitle("Filter Shape")
@@ -179,11 +174,6 @@ class Smooth(QtGui.QDialog):
             for i in range(len(data)):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
                                                  '2D Median', data[i].dataid)
-
-        if self.radiobutton_2dmode.isChecked():
-            for i in range(len(data)):
-                data[i].data = self.mov_win_filt(data[i].data, self.fmat,
-                                                 '2D Mode', data[i].dataid)
 
         self.parent.process_is_active(False)
         self.outdata['Raster'] = data
@@ -302,31 +292,24 @@ class Smooth(QtGui.QDialog):
         dummy = np.ma.masked_invalid(dummy)
         dummy.mask[drr-1:drr-1+rowd, dcc-1:dcc-1+cold] = dat.mask
 
-        dat.data[dat.mask == 1] = np.nan
+        dat.data[dat.mask] = np.nan
 
         if itype == '2D Mean':
             out = ssig.correlate(dat, fmat, 'same')
             self.progressbar.setValue(100)
 
-        else:
-            fmat[fmat != 1] = np.nan
-            out = []
+        elif itype == '2D Median':
+            self.parent.showprocesslog('Calculating Median...')
+            out = np.ma.zeros([rowd, cold])
+            out.mask = dat.mask
+
             for i in range(rowd):
                 self.parent.showprocesslog(title+' Progress: ' +
                                            str(round(100*i/rowd))+'%', True)
-#                self.progressbar.setValue(100*i/rowd)
-                out.append([dummy[i:i+rowf, j:j+colf]
-                            for j in range(cold)])
-            fmatflat = fmat.flatten()
-            out = np.array(out)
-            out.shape = (rowd, cold, rowf*colf)
-            out = out*fmatflat
-            if itype == '2D Median':
-                self.parent.showprocesslog('Calculating Median...')
-                out = np.median(out, 2)
-            if itype == '2D Mode':
-                self.parent.showprocesslog('Calculating Mode...')
-                out = mode(out, 2)[0]
+                for j in range(cold):
+                    tmp1 = dummy[i:i+rowf, j:j+colf]
+                    tmp1.mask = np.logical_and(tmp1.mask, fmat)
+                    out[i, j] = np.ma.median(tmp1)
 
         out = np.ma.masked_invalid(out)
         out.shape = out.shape[0:2]
