@@ -113,12 +113,12 @@ class LithModel(object):
             .5 * self.dxy
         zvals = np.arange(self.zrange[0], self.zrange[1], self.d_z) + \
             .5 * self.d_z
-        xvals = xvals[self.oxrng[0] <= xvals]
-        xvals = xvals[xvals <= self.oxrng[1]]
-        yvals = yvals[self.oyrng[0] <= yvals]
-        yvals = yvals[yvals <= self.oyrng[1]]
-        zvals = zvals[self.ozrng[0] <= zvals]
-        zvals = zvals[zvals <= self.ozrng[1]]
+        xvals = xvals[self.oxrng[0] < xvals]
+        xvals = xvals[xvals < self.oxrng[1]]
+        yvals = yvals[self.oyrng[0] < yvals]
+        yvals = yvals[yvals < self.oyrng[1]]
+        zvals = zvals[self.ozrng[0] < zvals]
+        zvals = zvals[zvals < self.ozrng[1]]
 
         for x_i in xvals:
             o_i = int((x_i - self.oxrng[0]) / self.odxy)

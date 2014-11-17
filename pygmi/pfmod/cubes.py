@@ -9,7 +9,6 @@ from OpenGL import GL
 from OpenGL import GLU
 import misc
 import os
-from math import cos, exp, atan2
 import sys
 from pygmi.pfmod.grvmag3d import quick_model
 from pygmi.pfmod.grvmag3d import calc_field
@@ -719,249 +718,8 @@ class GLWidget(QtOpenGL.QGLWidget):
         return angle
 
 
-class Vector:  # struct XYZ
-    """ Vector Class """
-    def __init__(self, x, y, z):
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def __str__(self):
-        return str(self.x)+" "+str(self.y)+" "+str(self.z)
-
-
-class Gridcell:  # struct GRIDCELL
-    """ Gridcell """
-    def __init__(self, p, n, val):
-        self.p = p   # p=[8]
-        self.n = n   # n=[8]
-        self.val = val  # val=[8]
-
-
-class Triangle:  # struct TRIANGLE
-    """ Triangle """
-    def __init__(self, p1, p2, p3):
-        self.p = [p1, p2, p3]  # vertices
-
-# return triangle as an ascii STL facet
-    def __str__(self):
-        return """facet normal 0 0 0
-outer loop
-vertex %s
-vertex %s
-vertex %s
-endloop
-endfacet""" % (self.p[0], self.p[1], self.p[2])
-
-
-# return a 3d list of values
-def readdata(f=lambda x, y, z: x*x+y*y+z*z, size=5.0, steps=11):
-    """ Readdata """
-    m = int(steps/2)
-    ki = []
-    for i in range(steps):
-        kj = []
-        for j in range(steps):
-            kd = []
-            for k in range(steps):
-                kd.append(f(size*(i-m)/m, size*(j-m)/m, size*(k-m)/m))
-            kj.append(kd)
-        ki.append(kj)
-    return ki
-
-
-def lobes(x, y, z):
-    """ Lobes """
-    try:
-        theta = atan2(x, y)         # sin t = o
-    except:
-        theta = 0
-    try:
-        phi = atan2(z, y)
-    except:
-        phi = 0
-    r = x*x+y*y+z*z
-    ct = cos(theta)
-    cp = cos(phi)
-    return ct*ct*cp*cp*exp(-r/10)
-
-
-def trimain(data=None, isolevel=0.1):
-    """ Tri Main """
-
-    if data is None:
-        data = readdata(lobes, 5, 41)
-
-    # print(data)
-
-    triangles = []
-    for i in range(len(data)-1):
-        for j in range(len(data[i])-1):
-            for k in range(len(data[i][j])-1):
-                p = [None]*8
-                val = [None]*8
-                # print(i,j,k)
-                p[0] = Vector(i, j, k)
-                val[0] = data[i][j][k]
-                p[1] = Vector(i+1, j, k)
-                val[1] = data[i+1][j][k]
-                p[2] = Vector(i+1, j+1, k)
-                val[2] = data[i+1][j+1][k]
-                p[3] = Vector(i, j+1, k)
-                val[3] = data[i][j+1][k]
-                p[4] = Vector(i, j, k+1)
-                val[4] = data[i][j][k+1]
-                p[5] = Vector(i+1, j, k+1)
-                val[5] = data[i+1][j][k+1]
-                p[6] = Vector(i+1, j+1, k+1)
-                val[6] = data[i+1][j+1][k+1]
-                p[7] = Vector(i, j+1, k+1)
-                val[7] = data[i][j+1][k+1]
-
-                grid = Gridcell(p, [], val)
-                triangles.extend(PolygoniseTri(grid, isolevel, 0, 2, 3, 7))
-                triangles.extend(PolygoniseTri(grid, isolevel, 0, 2, 6, 7))
-                triangles.extend(PolygoniseTri(grid, isolevel, 0, 4, 6, 7))
-                triangles.extend(PolygoniseTri(grid, isolevel, 0, 6, 1, 2))
-                triangles.extend(PolygoniseTri(grid, isolevel, 0, 6, 1, 4))
-                triangles.extend(PolygoniseTri(grid, isolevel, 5, 6, 1, 4))
-
-    faces = []
-    norms = []
-    corners = []
-
-    j = 0
-    for i in triangles:
-        faces.append([j+2, j+1, j])
-        corners.append([i.p[0].x, i.p[0].y, i.p[0].z])
-        corners.append([i.p[1].x, i.p[1].y, i.p[1].z])
-        corners.append([i.p[2].x, i.p[2].y, i.p[2].z])
-        v1 = np.subtract(corners[-1], corners[-2])
-        v2 = np.subtract(corners[-2], corners[-3])
-        n1 = np.cross(v1, v2)
-        n1 /= np.sqrt(np.dot(n1, n1))
-
-        norms.append(n1)
-        norms.append(n1)
-        norms.append(n1)
-        j += 3
-
-    faces = np.array(faces)
-    norms = np.array(norms)
-    corners = np.array(corners)
-
-    return faces, norms, corners
-
-
-def t000F(g, iso, v0, v1, v2, v3):
-    """t000F"""
-    return []
-
-
-def t0E01(g, iso, v0, v1, v2, v3):
-    """t0E01"""
-    tri = Triangle(VertexInterp(iso, g.p[v0], g.p[v1], g.val[v0], g.val[v1]),
-                   VertexInterp(iso, g.p[v0], g.p[v2], g.val[v0], g.val[v2]),
-                   VertexInterp(iso, g.p[v0], g.p[v3], g.val[v0], g.val[v3]))
-    return [tri]
-
-
-def t0D02(g, iso, v0, v1, v2, v3):
-    """t0D02"""
-    tri = Triangle(VertexInterp(iso, g.p[v1], g.p[v0], g.val[v1], g.val[v0]),
-                   VertexInterp(iso, g.p[v1], g.p[v3], g.val[v1], g.val[v3]),
-                   VertexInterp(iso, g.p[v1], g.p[v2], g.val[v1], g.val[v2]))
-    return [tri]
-
-
-def t0C03(g, iso, v0, v1, v2, v3):
-    """t0C03"""
-    tri = Triangle(VertexInterp(iso, g.p[v0], g.p[v3], g.val[v0], g.val[v3]),
-                   VertexInterp(iso, g.p[v0], g.p[v2], g.val[v0], g.val[v2]),
-                   VertexInterp(iso, g.p[v1], g.p[v3], g.val[v1], g.val[v3]))
-    return [tri,
-            Triangle(tri.p[2],
-                     VertexInterp(iso, g.p[v1], g.p[v2], g.val[v1], g.val[v2]),
-                     tri.p[1])]
-
-
-def t0B04(g, iso, v0, v1, v2, v3):
-    """t0B04"""
-    tri = Triangle(VertexInterp(iso, g.p[v2], g.p[v0], g.val[v2], g.val[v0]),
-                   VertexInterp(iso, g.p[v2], g.p[v1], g.val[v2], g.val[v1]),
-                   VertexInterp(iso, g.p[v2], g.p[v3], g.val[v2], g.val[v3]))
-    return [tri]
-
-
-def t0A05(g, iso, v0, v1, v2, v3):
-    """t0A05"""
-    tri = Triangle(VertexInterp(iso, g.p[v0], g.p[v1], g.val[v0], g.val[v1]),
-                   VertexInterp(iso, g.p[v2], g.p[v3], g.val[v2], g.val[v3]),
-                   VertexInterp(iso, g.p[v0], g.p[v3], g.val[v0], g.val[v3]))
-    tri2 = Triangle(tri.p[0],
-                    VertexInterp(iso, g.p[v1], g.p[v2], g.val[v1], g.val[v2]),
-                    tri.p[1])
-    return [tri, tri2]
-
-
-def t0906(g, iso, v0, v1, v2, v3):
-    """t0906"""
-    tri = Triangle(VertexInterp(iso, g.p[v0], g.p[v1], g.val[v0], g.val[v1]),
-                   VertexInterp(iso, g.p[v1], g.p[v3], g.val[v1], g.val[v3]),
-                   VertexInterp(iso, g.p[v2], g.p[v3], g.val[v2], g.val[v3]))
-    return [tri,
-            Triangle(tri.p[0],
-                     VertexInterp(iso, g.p[v0], g.p[v2], g.val[v0], g.val[v2]),
-                     tri.p[2])]
-
-
-def t0708(g, iso, v0, v1, v2, v3):
-    """t0708"""
-    tri = Triangle(VertexInterp(iso, g.p[v3], g.p[v0], g.val[v3], g.val[v0]),
-                   VertexInterp(iso, g.p[v3], g.p[v2], g.val[v3], g.val[v2]),
-                   VertexInterp(iso, g.p[v3], g.p[v1], g.val[v3], g.val[v1]))
-    return [tri]
-
-trianglefs = {7: t0708, 8: t0708, 9: t0906, 6: t0906, 10: t0A05, 5: t0A05,
-              11: t0B04, 4: t0B04, 12: t0C03, 3: t0C03, 13: t0D02, 2: t0D02,
-              14: t0E01, 1: t0E01, 0: t000F, 15: t000F}
-
-
-def PolygoniseTri(g, iso, v0, v1, v2, v3):
-    """Polygonise Tri"""
-#    triangles = []
-
-    #   Determine which of the 16 cases we have given which vertices
-    #   are above or below the isosurface
-
-    triindex = 0
-    if g.val[v0] < iso:
-        triindex |= 1
-    if g.val[v1] < iso:
-        triindex |= 2
-    if g.val[v2] < iso:
-        triindex |= 4
-    if g.val[v3] < iso:
-        triindex |= 8
-
-    return trianglefs[triindex](g, iso, v0, v1, v2, v3)
-
-
-def VertexInterp(isolevel, p1, p2, valp1, valp2):
-    """ Vertex Interp """
-    if abs(isolevel-valp1) < 0.00001:
-        return p1
-    if abs(isolevel-valp2) < 0.00001:
-        return p2
-    if abs(valp1-valp2) < 0.00001:
-        return p1
-    mu = (isolevel - valp1) / (valp2 - valp1)
-    return Vector(p1.x + mu * (p2.x - p1.x),
-                  p1.y + mu * (p2.y - p1.y),
-                  p1.z + mu * (p2.z - p1.z))
-
-
 def MarchingCubes(x, y, z, c, iso, colors=None):
+    """
     # function [F,V,col] = MarchingCubes(x,y,z,c,iso,colors)
 
     # [F,V] = MarchingCubes(X,Y,Z,C,ISO)
@@ -992,6 +750,7 @@ def MarchingCubes(x, y, z, c, iso, colors=None):
     #    error('grid size must be at least 2x2x2')
     #    error('iso needs to be scalar value')
     #    error( 'color must be matrix of same size as c')
+    """
 
     calc_cols = False
     lindex = 4
@@ -1040,17 +799,17 @@ def MarchingCubes(x, y, z, c, iso, colors=None):
         return F, V, col
 
     # calculate the list of intersection points
-    xyz_off = [[1, 1, 1],
-               [2, 1, 1],
-               [2, 2, 1],
-               [1, 2, 1],
-               [1, 1, 2],
-               [2, 1, 2],
-               [2, 2, 2],
-               [1, 2, 2]]
-    edges = [[1, 2], [2, 3], [3, 4], [4, 1],
-             [5, 6], [6, 7], [7, 8], [8, 5],
-             [1, 5], [2, 6], [3, 7], [4, 8]]
+    xyz_off = np.array([[1, 1, 1],
+                        [2, 1, 1],
+                        [2, 2, 1],
+                        [1, 2, 1],
+                        [1, 1, 2],
+                        [2, 1, 2],
+                        [2, 2, 2],
+                        [1, 2, 2]])
+    edges = np.array([[1, 2], [2, 3], [3, 4], [4, 1],
+                      [5, 6], [6, 7], [7, 8], [8, 5],
+                      [1, 5], [2, 6], [3, 7], [4, 8]])
 
     offset = sub2ind(c.shape, xyz_off[:, 1], xyz_off[:, 2], xyz_off[:, 3]) - 1
     pp = np.zeros(iden.size, lindex, 12)
@@ -1065,22 +824,23 @@ def MarchingCubes(x, y, z, c, iso, colors=None):
         id2 = id_c + offset(edges(jj, 2))
         if calc_cols:
             pp[id__, 0:5, jj] = [InterpolateVertices(iso, x(id1), y(id1),
-                                 z(id1), x(id2), y(id2), z(id2), c(id1),
-                                 c(id2), colors(id1), colors(id2)),
+                                                     z(id1), x(id2), y(id2),
+                                                     z(id2), c(id1), c(id2),
+                                                     colors(id1), colors(id2)),
                                  np.arange(id_.shape[0]).T + ix_offset]
         else:
             pp[id__, 0:4, jj] = [InterpolateVertices(iso, x(id1), y(id1),
-                                 z(id1), x(id2), y(id2), z(id2), c(id1),
-                                 c(id2)), np.arange(id_.shape[9]).T +
-                                 ix_offset]
-            ix_offset = ix_offset + np.shape(id_, 1)
+                                                     z(id1), x(id2), y(id2),
+                                                     z(id2), c(id1), c(id2)),
+                                 np.arange(id_.shape[9]).T + ix_offset]
+            ix_offset = ix_offset + id_.shape[0]
 
     # calculate the triangulation from the point list
     F = []
     tri = triTable[cc[iden]+1, :]
     for jj in range(0, 15, 3):
         id_ = np.nonzero(tri[:, jj] > 0)
-        V = [id_, lindex*np.ones(np.shape(id_, 1), 1), tri[id_, jj:jj+2]]
+        V = np.array([id_, lindex*np.ones(id_.shape[0], 1), tri[id_, jj:jj+2]])
         if V.size > 0:
             p1 = sub2ind(pp.shape, V[:, 1], V[:, 2], V[:, 3])
             p2 = sub2ind(pp.shape, V[:, 1], V[:, 2], V[:, 4])
@@ -1148,14 +908,14 @@ def bitset(byteval, idx):
 
 def sub2ind(msize, row, col, layer):
     """ Sub2ind """
-    nrows, ncols, nlayers = msize
+    _, ncols, nlayers = msize
     tmp = row*ncols*nlayers+col*nlayers+layer
     return tmp
 
 
 def ind2sub(msize, idx):
     """ Sub2ind """
-    nrows, ncols, nlayers = msize
+    nrows, ncols, _ = msize
     layer = int(idx/(nrows*ncols))
     idx = idx - layer*nrows*ncols
     row = int(idx/ncols)
@@ -1165,38 +925,39 @@ def ind2sub(msize, idx):
 
 
 def GetTables():
-    edgeTable = np.array([0,     265,  515,  778, 1030, 1295, 1541, 1804,
+    """ Get Tables """
+    edgeTable = np.array([0, 265, 515, 778, 1030, 1295, 1541, 1804,
                           2060, 2309, 2575, 2822, 3082, 3331, 3593, 3840,
-                          400,   153,  915,  666, 1430, 1183, 1941, 1692,
+                          400, 153, 915, 666, 1430, 1183, 1941, 1692,
                           2460, 2197, 2975, 2710, 3482, 3219, 3993, 3728,
-                          560,   825,   51,  314, 1590, 1855, 1077, 1340,
+                          560, 825, 51, 314, 1590, 1855, 1077, 1340,
                           2620, 2869, 2111, 2358, 3642, 3891, 3129, 3376,
-                          928,   681,  419,  170, 1958, 1711, 1445, 1196,
+                          928, 681, 419, 170, 1958, 1711, 1445, 1196,
                           2988, 2725, 2479, 2214, 4010, 3747, 3497, 3232,
-                          1120, 1385, 1635, 1898,  102,  367,  613,  876,
+                          1120, 1385, 1635, 1898, 102, 367, 613, 876,
                           3180, 3429, 3695, 3942, 2154, 2403, 2665, 2912,
-                          1520, 1273, 2035, 1786,  502,  255, 1013,  764,
+                          1520, 1273, 2035, 1786, 502, 255, 1013, 764,
                           3580, 3317, 4095, 3830, 2554, 2291, 3065, 2800,
-                          1616, 1881, 1107, 1370,  598,  863,   85,  348,
+                          1616, 1881, 1107, 1370, 598, 863, 85, 348,
                           3676, 3925, 3167, 3414, 2650, 2899, 2137, 2384,
-                          1984, 1737, 1475, 1226,  966,  719,  453,  204,
+                          1984, 1737, 1475, 1226, 966, 719, 453, 204,
                           4044, 3781, 3535, 3270, 3018, 2755, 2505, 2240,
                           2240, 2505, 2755, 3018, 3270, 3535, 3781, 4044,
-                          204,   453,  719,  966, 1226, 1475, 1737, 1984,
+                          204, 453, 719, 966, 1226, 1475, 1737, 1984,
                           2384, 2137, 2899, 2650, 3414, 3167, 3925, 3676,
-                          348,    85,  863,  598, 1370, 1107, 1881, 1616,
+                          348, 85, 863, 598, 1370, 1107, 1881, 1616,
                           2800, 3065, 2291, 2554, 3830, 4095, 3317, 3580,
-                          764,  1013,  255,  502, 1786, 2035, 1273, 1520,
+                          764, 1013, 255, 502, 1786, 2035, 1273, 1520,
                           2912, 2665, 2403, 2154, 3942, 3695, 3429, 3180,
-                          876,   613,  367,  102, 1898, 1635, 1385, 1120,
+                          876, 613, 367, 102, 1898, 1635, 1385, 1120,
                           3232, 3497, 3747, 4010, 2214, 2479, 2725, 2988,
-                          1196, 1445, 1711, 1958,  170,  419,  681,  928,
+                          1196, 1445, 1711, 1958, 170, 419, 681, 928,
                           3376, 3129, 3891, 3642, 2358, 2111, 2869, 2620,
-                          1340, 1077, 1855, 1590,  314,   51,  825,  560,
+                          1340, 1077, 1855, 1590, 314, 51, 825, 560,
                           3728, 3993, 3219, 3482, 2710, 2975, 2197, 2460,
-                          1692, 1941, 1183, 1430,  666,  915,  153,  400,
+                          1692, 1941, 1183, 1430, 666, 915, 153, 400,
                           3840, 3593, 3331, 3082, 2822, 2575, 2309, 2060,
-                          1804, 1541, 1295, 1030,  778,  515,  265,    0])
+                          1804, 1541, 1295, 1030, 778, 515, 265, 0])
 
     triTable = np.array([
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -1459,8 +1220,8 @@ def GetTables():
     return [edgeTable, triTable]
 
 
-if __name__ == "__main__":
-
+def main():
+    """ Main routine """
     x = np.linspace(0, 2, 20)
     y = np.linspace(0, 2, 20)
     z = np.linspace(0, 2, 20)
@@ -1468,42 +1229,48 @@ if __name__ == "__main__":
     c = (xx-.5)**2 + (yy-.5)**2 + (zz-.5)**2
     [T, p] = MarchingCubes(xx, yy, zz, c, 0.5)
 
-
-
-
-    lmod = quick_model(numx=3, numy=3, numz=3, dxy=100, d_z=100,
-                       tlx=0, tly=0, tlz=0, mht=100, ght=45, finc=90, fdec=0,
-                       inputliths=['Generic'], susc=[0.01], dens=[3.0])
-
-    lmod.lith_index[2, 2, 2] = 1
-
-    app = QtGui.QApplication(sys.argv)
-    wid = Mod3dDisplay()
-
-    wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
-                       QtCore.Qt.WindowActive)
-
-    faces, norms, corners = trimain(lmod.lith_index, 0.1)
-
-    vtx = corners
-    cptp = vtx.ptp(0).max()/100.
-    cmin = vtx.min(0)
-    cptpd2 = vtx.ptp(0)/2.
-    vtx = (vtx-cmin-cptpd2)/cptp
-
-    wid.glwidget.cubeVtxArray = vtx
-    wid.glwidget.cubeClrArray = (np.zeros([corners.shape[0], 4]) +
-                                 np.array([0.9, 0.4, 0.0, 1.0]))
-    wid.glwidget.cubeNrmArray = np.ones([corners.shape[0], 4])
-    wid.glwidget.cubeIdxArray = faces.flatten()
+#    app = QtGui.QApplication(sys.argv)
+#    wid = Mod3dDisplay()
+#
+#    wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
+#                       QtCore.Qt.WindowActive)
 
     # this will activate the window
-    wid.show()
-    wid.activateWindow()
+#    wid.show()
+#    wid.activateWindow()
 
-    wid.glwidget.updatelist()
-    wid.glwidget.updateGL()
+# Create model
+
+#    lmod = quick_model(numx=3, numy=3, numz=3, dxy=100, d_z=100,
+#                       tlx=0, tly=0, tlz=0, mht=100, ght=45, finc=90, fdec=0,
+#                       inputliths=['Generic'], susc=[0.01], dens=[3.0])
+#
+#    lmod.lith_index[2, 2, 2] = 1
+
+
+#    faces, norms, corners = trimain(lmod.lith_index, 0.1)
+#
+#    vtx = corners
+#    cptp = vtx.ptp(0).max()/100.
+#    cmin = vtx.min(0)
+#    cptpd2 = vtx.ptp(0)/2.
+#    vtx = (vtx-cmin-cptpd2)/cptp
+#
+#    wid.glwidget.cubeVtxArray = vtx
+#    wid.glwidget.cubeClrArray = (np.zeros([corners.shape[0], 4]) +
+#                                 np.array([0.9, 0.4, 0.0, 1.0]))
+#    wid.glwidget.cubeNrmArray = np.ones([corners.shape[0], 4])
+#    wid.glwidget.cubeIdxArray = faces.flatten()
+
+# This activates the opengl stuff
+
+#    wid.glwidget.updatelist()
+#    wid.glwidget.updateGL()
 
 #    wid.run()
 
-    sys.exit(app.exec_())
+#    sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    main()
