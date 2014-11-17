@@ -189,9 +189,13 @@ class ImportMod3D(object):
         lmod.mlut = np.asscalar(indict[pre+'mlut'])
         lmod.init_calc_grids()
         lmod.griddata = np.asscalar(indict[pre+'griddata'])
-        if hasattr(list(lmod.griddata.values())[0], 'bandid'):
-            for i in lmod.griddata.keys():
-                lmod.griddata[i].dataid = lmod.griddata[i].bandid
+
+        # This gets rid of a legacy variable name
+        for i in lmod.griddata.keys():
+            if hasattr(lmod.griddata[i], 'bandid'):
+                if lmod.griddata[i].dataid is '':
+                    lmod.griddata[i].dataid = lmod.griddata[i].bandid
+                del lmod.griddata[i].bandid
 
 #        self.pbars.incr()
 
