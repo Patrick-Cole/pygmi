@@ -192,6 +192,8 @@ class ImportMod3D(object):
 
         # This gets rid of a legacy variable name
         for i in lmod.griddata.keys():
+            if not hasattr(lmod.griddata[i], 'dataid'):
+                lmod.griddata[i].dataid = ''
             if hasattr(lmod.griddata[i], 'bandid'):
                 if lmod.griddata[i].dataid is '':
                     lmod.griddata[i].dataid = lmod.griddata[i].bandid

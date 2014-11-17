@@ -1,6 +1,3 @@
-""" From http://michelanders.blogspot.com/2012/02/
-               marching-tetrahedrons-in-python.html, accessed on 2014/11/13"""
-
 # pylint: disable=C0103
 
 import numpy as np
@@ -789,10 +786,11 @@ def MarchingCubes(x, y, z, c, iso, colors=None):
 #        cc[idx] = np.bitwise_or(cc[idx], int(str(10**ii), 2))
 
     # intersected edges for each cube ([n1 x n2 x n3] mtx)
-    cedge = edgeTable[cc+1]
+    cedge = edgeTable[cc]
     # voxels which are intersected (col of indcs into cedge)
-    iden = np.nonzero(cedge)
-    if iden[0].size == 0:          # all voxels are above or below iso
+    iden = np.nonzero(cedge.flatten())[0]
+
+    if iden.size == 0:          # all voxels are above or below iso
         F = []
         V = []
         col = []
@@ -806,62 +804,79 @@ def MarchingCubes(x, y, z, c, iso, colors=None):
                         [1, 1, 2],
                         [2, 1, 2],
                         [2, 2, 2],
-                        [1, 2, 2]])
+                        [1, 2, 2]])-1
     edges = np.array([[1, 2], [2, 3], [3, 4], [4, 1],
                       [5, 6], [6, 7], [7, 8], [8, 5],
-                      [1, 5], [2, 6], [3, 7], [4, 8]])
+                      [1, 5], [2, 6], [3, 7], [4, 8]])-1
 
-    offset = sub2ind(c.shape, xyz_off[:, 1], xyz_off[:, 2], xyz_off[:, 3]) - 1
-    pp = np.zeros(iden.size, lindex, 12)
-    ccedge = np.array([cedge(iden), iden])
+    offset = sub2ind(c.shape, xyz_off[:, 0], xyz_off[:, 1], xyz_off[:, 2])
+    pp = np.zeros([iden.size, lindex, 12])
+    ccedge = [cedge.flatten(order='F')[iden], iden]  # uses vec
     ix_offset = 0
+
+    x = x.flatten()
+    y = y.flatten()
+    z = z.flatten()
+    cp = c.flatten()
+    if calc_cols:
+        colors = colors.flatten()
+
     for jj in range(12):
-        id__ = bool(bitget(ccedge[:, 1], jj))  # used for logical indexing
-        id_ = ccedge[id__, 2]
+        id__ = bitget(ccedge[0], jj)  # used for logical indexing
+        id_ = ccedge[1][id__]
         [ix, iy, iz] = ind2sub(cc.shape, id_)
         id_c = sub2ind(c.shape, ix, iy, iz)
-        id1 = id_c + offset(edges(jj, 1))
-        id2 = id_c + offset(edges(jj, 2))
+        id1 = id_c + offset[edges[jj, 0]]
+        id2 = id_c + offset[edges[jj, 1]]
         if calc_cols:
-            pp[id__, 0:5, jj] = [InterpolateVertices(iso, x(id1), y(id1),
-                                                     z(id1), x(id2), y(id2),
-                                                     z(id2), c(id1), c(id2),
-                                                     colors(id1), colors(id2)),
-                                 np.arange(id_.shape[0]).T + ix_offset]
+            pp[id__, :4, jj] = InterpolateVertices(iso,
+                                                   x[id1], y[id1], z[id1],
+                                                   x[id2], y[id2], z[id2],
+                                                   cp[id1], cp[id2],
+                                                   colors(id1), colors(id2))
+            pp[id__, 4, jj] = np.arange(id_.shape[0]) + ix_offset
         else:
-            pp[id__, 0:4, jj] = [InterpolateVertices(iso, x(id1), y(id1),
-                                                     z(id1), x(id2), y(id2),
-                                                     z(id2), c(id1), c(id2)),
-                                 np.arange(id_.shape[9]).T + ix_offset]
-            ix_offset = ix_offset + id_.shape[0]
+            pp[id__, :3, jj] = InterpolateVertices(iso,
+                                                   x[id1], y[id1], z[id1],
+                                                   x[id2], y[id2], z[id2],
+                                                   cp[id1], cp[id2])
+            pp[id__, 3, jj] = np.arange(id_.shape[0]) + ix_offset
+        ix_offset = ix_offset + id_.shape[0]
 
+    pp = pp.astype(int)
     # calculate the triangulation from the point list
     F = []
-    tri = triTable[cc[iden]+1, :]
+    tri = triTable[cc.flatten()[iden]]  # +1
     for jj in range(0, 15, 3):
-        id_ = np.nonzero(tri[:, jj] > 0)
-        V = np.array([id_, lindex*np.ones(id_.shape[0], 1), tri[id_, jj:jj+2]])
-        if V.size > 0:
-            p1 = sub2ind(pp.shape, V[:, 1], V[:, 2], V[:, 3])
-            p2 = sub2ind(pp.shape, V[:, 1], V[:, 2], V[:, 4])
-            p3 = sub2ind(pp.shape, V[:, 1], V[:, 2], V[:, 5])
-            F = [[F], [pp[p1], pp[p2], pp[p3]]]
+        id_ = np.nonzero(tri[:, jj] > 0)[0]
+        if id_.size > 0:
+            V = np.zeros([id_.size, 5])
+            V[:, 0] = id_
+            V[:, 1] = (lindex-1)*np.ones(id_.shape[0])
+            V[:, 2] = tri[id_, jj]
+            V[:, 3] = tri[id_, jj+1]
+            V[:, 4] = tri[id_, jj+2]
 
-    V = []
+            p1 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 2])
+            p2 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 3])
+            p3 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 4])
+            F.append([pp.flatten(order='F')[p1], pp.flatten(order='F')[p2], pp.flatten(order='F')[p3]])
+
     col = []
+    V = np.zeros([pp.max()+1, 4])
     for jj in range(12):
-        idp = pp[:, lindex, jj] > 0
+        idp = pp[:, lindex-1, jj] > 0
         if any(idp):
-            V[pp[idp, lindex, jj], 0:3] = pp[idp, 1:3, jj]
+            V[pp[idp, lindex-1, jj], :3] = pp[idp, :3, jj]
             if calc_cols:
-                col[pp[idp, lindex, jj], 1] = pp[idp, 4, jj]
+                col[pp[idp, lindex, jj], 0] = pp[idp, 3, jj]
 
     # Remove duplicate vertices (by Oliver Woodford)
-    [V, I] = V.sort(1)
-    M = [[True], [any(np.diff(V), 2)]]
-    V = V[M, :]
-    I[I] = np.cumsum(M)
-    F = I[F]
+#    [V, I] = V.sort(1)
+#    M = [[True], [any(np.diff(V), 2)]]
+#    V = V[M, :]
+#    I[I] = np.cumsum(M)
+#    F = I[F]
 
     return F, V, col
 # ============================================================
@@ -873,32 +888,35 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2,
                         col1=None, col2=None):
     """Interpolate vertices """
     if col1 is None:
-        p = np.zeros(len(p1x), 3)
+        p = np.zeros([len(p1x), 3])
     else:
-        p = np.zeros(len(p1x), 4)
+        p = np.zeros([len(p1x), 4])
 
     eps = np.spacing(1)
-    mu = np.zeros(len(p1x), 1)
+    mu = np.zeros(len(p1x))
     iden = abs(valp1-valp2) < (10*eps) * (abs(valp1) + abs(valp2))
     if any(iden):
-        p[iden, 0:3] = [p1x(iden), p1y(iden), p1z(iden)]
-        if col1 is not None:
-            p[iden, ] = col1[iden]
+        p[iden, 0] = p1x[iden]
+        p[iden, 1] = p1y[iden]
+        p[iden, 2] = p1z[iden]
 
-    nid = not iden
+        if col1 is not None:
+            p[iden, 3] = col1[iden]
+
+    nid = np.logical_not(iden)
     if any(nid):
         mu[nid] = (isolevel - valp1[nid]) / (valp2[nid] - valp1[nid])
-        p[nid, 0:3] = ([p1x[nid] + mu[nid] * (p2x[nid] - p1x[nid]),
-                        p1y[nid] + mu[nid] * (p2y[nid] - p1y[nid]),
-                        p1z[nid] + mu[nid] * (p2z[nid] - p1z[nid])])
+        p[nid, 0] = p1x[nid] + mu[nid] * (p2x[nid] - p1x[nid])
+        p[nid, 1] = p1y[nid] + mu[nid] * (p2y[nid] - p1y[nid])
+        p[nid, 2] = p1z[nid] + mu[nid] * (p2z[nid] - p1z[nid])
         if col1 is not None:
-            p[nid, 4] = col1[nid] + mu[nid] * (col2[nid] - col1[nid])
+            p[nid, 3] = col1[nid] + mu[nid] * (col2[nid] - col1[nid])
     return p
 
 
 def bitget(byteval, idx):
     """ bitget """
-    return np.bitwise_and(byteval, (1 << idx))
+    return np.bitwise_and(byteval, (1 << idx)).astype(bool)
 
 
 def bitset(byteval, idx):
@@ -908,18 +926,21 @@ def bitset(byteval, idx):
 
 def sub2ind(msize, row, col, layer):
     """ Sub2ind """
-    _, ncols, nlayers = msize
-    tmp = row*ncols*nlayers+col*nlayers+layer
-    return tmp
+    nrows, ncols, nlayers = msize
+#    tmp = layer*ncols*nrows+row*ncols+col
+    tmp = layer*ncols*nrows+nrows*col+row
+    return tmp.astype(int)
 
 
 def ind2sub(msize, idx):
     """ Sub2ind """
     nrows, ncols, _ = msize
-    layer = int(idx/(nrows*ncols))
+    layer = idx/(nrows*ncols)
+    layer = layer.astype(int)
     idx = idx - layer*nrows*ncols
-    row = int(idx/ncols)
-    col = idx - row*ncols
+    col = idx/nrows
+    col = col.astype(int)
+    row = idx - col*nrows
 
     return row, col, layer
 
@@ -1215,7 +1236,7 @@ def GetTables():
         [1, 3, 8, 9, 1, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
         [0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
         [0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-        [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]])+1
+        [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]])  # +1
 
     return [edgeTable, triTable]
 
@@ -1225,9 +1246,12 @@ def main():
     x = np.linspace(0, 2, 20)
     y = np.linspace(0, 2, 20)
     z = np.linspace(0, 2, 20)
-    xx, yy, zz = np.meshgrid(x, y, z)
+    xx, zz, yy = np.meshgrid(x, y, z)
     c = (xx-.5)**2 + (yy-.5)**2 + (zz-.5)**2
-    [T, p] = MarchingCubes(xx, yy, zz, c, 0.5)
+    [T, p, col] = MarchingCubes(xx, yy, zz, c, 0.5)
+
+
+    print('Finished')
 
 #    app = QtGui.QApplication(sys.argv)
 #    wid = Mod3dDisplay()
