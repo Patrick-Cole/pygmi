@@ -331,7 +331,7 @@ class ProfileDisplay(object):
 # This section gets rid of null values quickly
         xt, yt = np.meshgrid(gxrng, gyrng)
         zt = curgrid.data.data
-        msk = np.logical_not(np.isnan(zt))
+        msk = np.logical_not(np.logical_or(curgrid.data.mask, np.isnan(zt)))
         zt = zt[msk]
         xy = np.transpose([xt[msk], yt[msk]])
         xy2 = np.transpose([xt, yt])

@@ -1,3 +1,6 @@
+""" From http://michelanders.blogspot.com/2012/02/
+               marching-tetrahedrons-in-python.html, accessed on 2014/11/13"""
+
 # pylint: disable=C0103
 
 import numpy as np
@@ -6,6 +9,7 @@ from OpenGL import GL
 from OpenGL import GLU
 import misc
 import os
+from math import cos, exp, atan2
 import sys
 from pygmi.pfmod.grvmag3d import quick_model
 from pygmi.pfmod.grvmag3d import calc_field
@@ -597,17 +601,17 @@ class GLWidget(QtOpenGL.QGLWidget):
 #        GL.glShadeModel(GL.GL_FLAT)
 
 #############
-#        GL.glEnable(GL.GL_BLEND)
-#        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-#        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
-#        GL.glEnable(GL.GL_ALPHA_TEST)
-#        GL.glEnable(GL.GL_DEPTH_TEST)
-#        GL.glDepthMask(GL.GL_TRUE)
-#        GL.glDepthFunc(GL.GL_LEQUAL)
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
+        GL.glEnable(GL.GL_ALPHA_TEST)
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glDepthMask(GL.GL_TRUE)
+        GL.glDepthFunc(GL.GL_LEQUAL)
 #        GL.glEnable(GL.GL_CULL_FACE)
 
-#        GL.glEnable(GL.GL_COLOR_MATERIAL)
-#        GL.glEnable(GL.GL_LIGHTING)
+        GL.glEnable(GL.GL_COLOR_MATERIAL)
+        GL.glEnable(GL.GL_LIGHTING)
 #        GL.glEnable(GL.GL_LIGHT0)
 #        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [1., 1., 1., 0.])
 
@@ -642,7 +646,6 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         GL.glNewList(self.glist, GL.GL_COMPILE)
 
-#        GL.glDrawElementsui(GL.GL_QUADS, self.cubeIdxArray)
         GL.glDrawElementsui(GL.GL_TRIANGLES, self.cubeIdxArray)
 
         GL.glEndList()
@@ -716,8 +719,249 @@ class GLWidget(QtOpenGL.QGLWidget):
         return angle
 
 
-def MarchingCubes(x, y, z, c, iso):
-    """
+class Vector:  # struct XYZ
+    """ Vector Class """
+    def __init__(self, x, y, z):
+        self.x = x
+        self.y = y
+        self.z = z
+
+    def __str__(self):
+        return str(self.x)+" "+str(self.y)+" "+str(self.z)
+
+
+class Gridcell:  # struct GRIDCELL
+    """ Gridcell """
+    def __init__(self, p, n, val):
+        self.p = p   # p=[8]
+        self.n = n   # n=[8]
+        self.val = val  # val=[8]
+
+
+class Triangle:  # struct TRIANGLE
+    """ Triangle """
+    def __init__(self, p1, p2, p3):
+        self.p = [p1, p2, p3]  # vertices
+
+# return triangle as an ascii STL facet
+    def __str__(self):
+        return """facet normal 0 0 0
+outer loop
+vertex %s
+vertex %s
+vertex %s
+endloop
+endfacet""" % (self.p[0], self.p[1], self.p[2])
+
+
+# return a 3d list of values
+def readdata(f=lambda x, y, z: x*x+y*y+z*z, size=5.0, steps=11):
+    """ Readdata """
+    m = int(steps/2)
+    ki = []
+    for i in range(steps):
+        kj = []
+        for j in range(steps):
+            kd = []
+            for k in range(steps):
+                kd.append(f(size*(i-m)/m, size*(j-m)/m, size*(k-m)/m))
+            kj.append(kd)
+        ki.append(kj)
+    return ki
+
+
+def lobes(x, y, z):
+    """ Lobes """
+    try:
+        theta = atan2(x, y)         # sin t = o
+    except:
+        theta = 0
+    try:
+        phi = atan2(z, y)
+    except:
+        phi = 0
+    r = x*x+y*y+z*z
+    ct = cos(theta)
+    cp = cos(phi)
+    return ct*ct*cp*cp*exp(-r/10)
+
+
+def trimain(data=None, isolevel=0.1):
+    """ Tri Main """
+
+    if data is None:
+        data = readdata(lobes, 5, 41)
+
+    # print(data)
+
+    triangles = []
+    for i in range(len(data)-1):
+        for j in range(len(data[i])-1):
+            for k in range(len(data[i][j])-1):
+                p = [None]*8
+                val = [None]*8
+                # print(i,j,k)
+                p[0] = Vector(i, j, k)
+                val[0] = data[i][j][k]
+                p[1] = Vector(i+1, j, k)
+                val[1] = data[i+1][j][k]
+                p[2] = Vector(i+1, j+1, k)
+                val[2] = data[i+1][j+1][k]
+                p[3] = Vector(i, j+1, k)
+                val[3] = data[i][j+1][k]
+                p[4] = Vector(i, j, k+1)
+                val[4] = data[i][j][k+1]
+                p[5] = Vector(i+1, j, k+1)
+                val[5] = data[i+1][j][k+1]
+                p[6] = Vector(i+1, j+1, k+1)
+                val[6] = data[i+1][j+1][k+1]
+                p[7] = Vector(i, j+1, k+1)
+                val[7] = data[i][j+1][k+1]
+
+                grid = Gridcell(p, [], val)
+                triangles.extend(PolygoniseTri(grid, isolevel, 0, 2, 3, 7))
+                triangles.extend(PolygoniseTri(grid, isolevel, 0, 2, 6, 7))
+                triangles.extend(PolygoniseTri(grid, isolevel, 0, 4, 6, 7))
+                triangles.extend(PolygoniseTri(grid, isolevel, 0, 6, 1, 2))
+                triangles.extend(PolygoniseTri(grid, isolevel, 0, 6, 1, 4))
+                triangles.extend(PolygoniseTri(grid, isolevel, 5, 6, 1, 4))
+
+    faces = []
+    norms = []
+    corners = []
+
+    j = 0
+    for i in triangles:
+        faces.append([j+2, j+1, j])
+        corners.append([i.p[0].x, i.p[0].y, i.p[0].z])
+        corners.append([i.p[1].x, i.p[1].y, i.p[1].z])
+        corners.append([i.p[2].x, i.p[2].y, i.p[2].z])
+        v1 = np.subtract(corners[-1], corners[-2])
+        v2 = np.subtract(corners[-2], corners[-3])
+        n1 = np.cross(v1, v2)
+        n1 /= np.sqrt(np.dot(n1, n1))
+
+        norms.append(n1)
+        norms.append(n1)
+        norms.append(n1)
+        j += 3
+
+    faces = np.array(faces)
+    norms = np.array(norms)
+    corners = np.array(corners)
+
+    return faces, norms, corners
+
+
+def t000F(g, iso, v0, v1, v2, v3):
+    """t000F"""
+    return []
+
+
+def t0E01(g, iso, v0, v1, v2, v3):
+    """t0E01"""
+    tri = Triangle(VertexInterp(iso, g.p[v0], g.p[v1], g.val[v0], g.val[v1]),
+                   VertexInterp(iso, g.p[v0], g.p[v2], g.val[v0], g.val[v2]),
+                   VertexInterp(iso, g.p[v0], g.p[v3], g.val[v0], g.val[v3]))
+    return [tri]
+
+
+def t0D02(g, iso, v0, v1, v2, v3):
+    """t0D02"""
+    tri = Triangle(VertexInterp(iso, g.p[v1], g.p[v0], g.val[v1], g.val[v0]),
+                   VertexInterp(iso, g.p[v1], g.p[v3], g.val[v1], g.val[v3]),
+                   VertexInterp(iso, g.p[v1], g.p[v2], g.val[v1], g.val[v2]))
+    return [tri]
+
+
+def t0C03(g, iso, v0, v1, v2, v3):
+    """t0C03"""
+    tri = Triangle(VertexInterp(iso, g.p[v0], g.p[v3], g.val[v0], g.val[v3]),
+                   VertexInterp(iso, g.p[v0], g.p[v2], g.val[v0], g.val[v2]),
+                   VertexInterp(iso, g.p[v1], g.p[v3], g.val[v1], g.val[v3]))
+    return [tri,
+            Triangle(tri.p[2],
+                     VertexInterp(iso, g.p[v1], g.p[v2], g.val[v1], g.val[v2]),
+                     tri.p[1])]
+
+
+def t0B04(g, iso, v0, v1, v2, v3):
+    """t0B04"""
+    tri = Triangle(VertexInterp(iso, g.p[v2], g.p[v0], g.val[v2], g.val[v0]),
+                   VertexInterp(iso, g.p[v2], g.p[v1], g.val[v2], g.val[v1]),
+                   VertexInterp(iso, g.p[v2], g.p[v3], g.val[v2], g.val[v3]))
+    return [tri]
+
+
+def t0A05(g, iso, v0, v1, v2, v3):
+    """t0A05"""
+    tri = Triangle(VertexInterp(iso, g.p[v0], g.p[v1], g.val[v0], g.val[v1]),
+                   VertexInterp(iso, g.p[v2], g.p[v3], g.val[v2], g.val[v3]),
+                   VertexInterp(iso, g.p[v0], g.p[v3], g.val[v0], g.val[v3]))
+    tri2 = Triangle(tri.p[0],
+                    VertexInterp(iso, g.p[v1], g.p[v2], g.val[v1], g.val[v2]),
+                    tri.p[1])
+    return [tri, tri2]
+
+
+def t0906(g, iso, v0, v1, v2, v3):
+    """t0906"""
+    tri = Triangle(VertexInterp(iso, g.p[v0], g.p[v1], g.val[v0], g.val[v1]),
+                   VertexInterp(iso, g.p[v1], g.p[v3], g.val[v1], g.val[v3]),
+                   VertexInterp(iso, g.p[v2], g.p[v3], g.val[v2], g.val[v3]))
+    return [tri,
+            Triangle(tri.p[0],
+                     VertexInterp(iso, g.p[v0], g.p[v2], g.val[v0], g.val[v2]),
+                     tri.p[2])]
+
+
+def t0708(g, iso, v0, v1, v2, v3):
+    """t0708"""
+    tri = Triangle(VertexInterp(iso, g.p[v3], g.p[v0], g.val[v3], g.val[v0]),
+                   VertexInterp(iso, g.p[v3], g.p[v2], g.val[v3], g.val[v2]),
+                   VertexInterp(iso, g.p[v3], g.p[v1], g.val[v3], g.val[v1]))
+    return [tri]
+
+trianglefs = {7: t0708, 8: t0708, 9: t0906, 6: t0906, 10: t0A05, 5: t0A05,
+              11: t0B04, 4: t0B04, 12: t0C03, 3: t0C03, 13: t0D02, 2: t0D02,
+              14: t0E01, 1: t0E01, 0: t000F, 15: t000F}
+
+
+def PolygoniseTri(g, iso, v0, v1, v2, v3):
+    """Polygonise Tri"""
+#    triangles = []
+
+    #   Determine which of the 16 cases we have given which vertices
+    #   are above or below the isosurface
+
+    triindex = 0
+    if g.val[v0] < iso:
+        triindex |= 1
+    if g.val[v1] < iso:
+        triindex |= 2
+    if g.val[v2] < iso:
+        triindex |= 4
+    if g.val[v3] < iso:
+        triindex |= 8
+
+    return trianglefs[triindex](g, iso, v0, v1, v2, v3)
+
+
+def VertexInterp(isolevel, p1, p2, valp1, valp2):
+    """ Vertex Interp """
+    if abs(isolevel-valp1) < 0.00001:
+        return p1
+    if abs(isolevel-valp2) < 0.00001:
+        return p2
+    if abs(valp1-valp2) < 0.00001:
+        return p1
+    mu = (isolevel - valp1) / (valp2 - valp1)
+    return Vector(p1.x + mu * (p2.x - p1.x),
+                  p1.y + mu * (p2.y - p1.y),
+                  p1.z + mu * (p2.z - p1.z))
+
+
+def MarchingCubes(x, y, z, c, iso, colors=None):
     # function [F,V,col] = MarchingCubes(x,y,z,c,iso,colors)
 
     # [F,V] = MarchingCubes(X,Y,Z,C,ISO)
@@ -748,9 +992,13 @@ def MarchingCubes(x, y, z, c, iso):
     #    error('grid size must be at least 2x2x2')
     #    error('iso needs to be scalar value')
     #    error( 'color must be matrix of same size as c')
-    """
 
+    calc_cols = False
     lindex = 4
+
+    if colors is not None:
+        calc_cols = True
+        lindex = 5
 
     [edgeTable, triTable] = GetTables()
 
@@ -782,96 +1030,80 @@ def MarchingCubes(x, y, z, c, iso):
 #        cc[idx] = np.bitwise_or(cc[idx], int(str(10**ii), 2))
 
     # intersected edges for each cube ([n1 x n2 x n3] mtx)
-    cedge = edgeTable[cc]
+    cedge = edgeTable[cc+1]
     # voxels which are intersected (col of indcs into cedge)
-    iden = np.nonzero(cedge.flatten(order='F'))[0]
-
-    if iden.size == 0:          # all voxels are above or below iso
+    iden = np.nonzero(cedge)
+    if iden[0].size == 0:          # all voxels are above or below iso
         F = []
         V = []
         col = []
         return F, V, col
 
     # calculate the list of intersection points
-    xyz_off = np.array([[1, 1, 1],
-                        [2, 1, 1],
-                        [2, 2, 1],
-                        [1, 2, 1],
-                        [1, 1, 2],
-                        [2, 1, 2],
-                        [2, 2, 2],
-                        [1, 2, 2]])-1
-    edges = np.array([[1, 2], [2, 3], [3, 4], [4, 1],
-                      [5, 6], [6, 7], [7, 8], [8, 5],
-                      [1, 5], [2, 6], [3, 7], [4, 8]])-1
+    xyz_off = [[1, 1, 1],
+               [2, 1, 1],
+               [2, 2, 1],
+               [1, 2, 1],
+               [1, 1, 2],
+               [2, 1, 2],
+               [2, 2, 2],
+               [1, 2, 2]]
+    edges = [[1, 2], [2, 3], [3, 4], [4, 1],
+             [5, 6], [6, 7], [7, 8], [8, 5],
+             [1, 5], [2, 6], [3, 7], [4, 8]]
 
-    offset = sub2ind(c.shape, xyz_off[:, 0], xyz_off[:, 1], xyz_off[:, 2])
-    pp = np.zeros([iden.size, lindex, 12])
-    ccedge = np.array([cedge.flatten(order='F')[iden], iden])  # uses vec
-    ccedge = ccedge.T
+    offset = sub2ind(c.shape, xyz_off[:, 1], xyz_off[:, 2], xyz_off[:, 3]) - 1
+    pp = np.zeros(iden.size, lindex, 12)
+    ccedge = np.array([cedge(iden), iden])
     ix_offset = 0
-
-    x = x.flatten(order='F')
-    y = y.flatten(order='F')
-    z = z.flatten(order='F')
-    cp = c.flatten(order='F')
-
     for jj in range(12):
-        id__ = bitget(ccedge[:, 0], jj)  # used for logical indexing
-        id_ = ccedge[id__, 1]
-        ix, iy, iz = ind2sub(cc.shape, id_)
+        id__ = bool(bitget(ccedge[:, 1], jj))  # used for logical indexing
+        id_ = ccedge[id__, 2]
+        [ix, iy, iz] = ind2sub(cc.shape, id_)
         id_c = sub2ind(c.shape, ix, iy, iz)
-        id1 = id_c + offset[edges[jj, 0]]
-        id2 = id_c + offset[edges[jj, 1]]
+        id1 = id_c + offset(edges(jj, 1))
+        id2 = id_c + offset(edges(jj, 2))
+        if calc_cols:
+            pp[id__, 0:5, jj] = [InterpolateVertices(iso, x(id1), y(id1),
+                                 z(id1), x(id2), y(id2), z(id2), c(id1),
+                                 c(id2), colors(id1), colors(id2)),
+                                 np.arange(id_.shape[0]).T + ix_offset]
+        else:
+            pp[id__, 0:4, jj] = [InterpolateVertices(iso, x(id1), y(id1),
+                                 z(id1), x(id2), y(id2), z(id2), c(id1),
+                                 c(id2)), np.arange(id_.shape[9]).T +
+                                 ix_offset]
+            ix_offset = ix_offset + np.shape(id_, 1)
 
-        pp[id__, :3, jj] = InterpolateVertices(iso,
-                                               x[id1], y[id1], z[id1],
-                                               x[id2], y[id2], z[id2],
-                                               cp[id1], cp[id2])
-        pp[id__, 3, jj] = np.arange(1, id_.shape[0]+1) + ix_offset
-
-        ix_offset = ix_offset + id_.shape[0]
-
-    pp2 = pp.astype(int)
     # calculate the triangulation from the point list
-    F1 = []
-    F2 = []
-    F3 = []
-    tri = triTable[cc.flatten(order='F')[iden]]  # +1
-#    for jj in range(0, 15, 3):
-    for jj in [0, 3, 6, 9, 12]:
-        id_ = np.nonzero(tri[:, jj] > 0)[0]
-        if id_.size > 0:
-            V = np.zeros([id_.size, 5])
-            V[:, 0] = id_
-            V[:, 1] = (lindex-1)*np.ones(id_.shape[0])
-            V[:, 2] = tri[id_, jj] - 1
-            V[:, 3] = tri[id_, jj+1] - 1
-            V[:, 4] = tri[id_, jj+2] - 1
+    F = []
+    tri = triTable[cc[iden]+1, :]
+    for jj in range(0, 15, 3):
+        id_ = np.nonzero(tri[:, jj] > 0)
+        V = [id_, lindex*np.ones(np.shape(id_, 1), 1), tri[id_, jj:jj+2]]
+        if V.size > 0:
+            p1 = sub2ind(pp.shape, V[:, 1], V[:, 2], V[:, 3])
+            p2 = sub2ind(pp.shape, V[:, 1], V[:, 2], V[:, 4])
+            p3 = sub2ind(pp.shape, V[:, 1], V[:, 2], V[:, 5])
+            F = [[F], [pp[p1], pp[p2], pp[p3]]]
 
-            p1 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 2])
-            p2 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 3])
-            p3 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 4])
-            F1 = F1 + pp2.flatten(order='F')[p1].tolist()
-            F2 = F2 + pp2.flatten(order='F')[p2].tolist()
-            F3 = F3 + pp2.flatten(order='F')[p3].tolist()
-
-    F = np.transpose([F1, F2, F3])-1
-    V = np.zeros([pp2.max()+1, 3])
-
+    V = []
+    col = []
     for jj in range(12):
-        idp = pp[:, lindex-1, jj] > 0
+        idp = pp[:, lindex, jj] > 0
         if any(idp):
-            V[pp2[idp, lindex-1, jj]-1, :3] = pp[idp, :3, jj]
+            V[pp[idp, lindex, jj], 0:3] = pp[idp, 1:3, jj]
+            if calc_cols:
+                col[pp[idp, lindex, jj], 1] = pp[idp, 4, jj]
 
     # Remove duplicate vertices (by Oliver Woodford)
-#    [V, I] = V.sort(1)
-#    M = [[True], [any(np.diff(V), 2)]]
-#    V = V[M, :]
-#    I[I] = np.cumsum(M)
-#    F = I[F]
+    [V, I] = V.sort(1)
+    M = [[True], [any(np.diff(V), 2)]]
+    V = V[M, :]
+    I[I] = np.cumsum(M)
+    F = I[F]
 
-    return F, V
+    return F, V, col
 # ============================================================
 # ==================  SUBFUNCTIONS ===========================
 # ============================================================
@@ -881,35 +1113,32 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2,
                         col1=None, col2=None):
     """Interpolate vertices """
     if col1 is None:
-        p = np.zeros([len(p1x), 3])
+        p = np.zeros(len(p1x), 3)
     else:
-        p = np.zeros([len(p1x), 4])
+        p = np.zeros(len(p1x), 4)
 
     eps = np.spacing(1)
-    mu = np.zeros(len(p1x))
+    mu = np.zeros(len(p1x), 1)
     iden = abs(valp1-valp2) < (10*eps) * (abs(valp1) + abs(valp2))
     if any(iden):
-        p[iden, 0] = p1x[iden]
-        p[iden, 1] = p1y[iden]
-        p[iden, 2] = p1z[iden]
-
+        p[iden, 0:3] = [p1x(iden), p1y(iden), p1z(iden)]
         if col1 is not None:
-            p[iden, 3] = col1[iden]
+            p[iden, ] = col1[iden]
 
-    nid = np.logical_not(iden)
+    nid = not iden
     if any(nid):
         mu[nid] = (isolevel - valp1[nid]) / (valp2[nid] - valp1[nid])
-        p[nid, 0] = p1x[nid] + mu[nid] * (p2x[nid] - p1x[nid])
-        p[nid, 1] = p1y[nid] + mu[nid] * (p2y[nid] - p1y[nid])
-        p[nid, 2] = p1z[nid] + mu[nid] * (p2z[nid] - p1z[nid])
+        p[nid, 0:3] = ([p1x[nid] + mu[nid] * (p2x[nid] - p1x[nid]),
+                        p1y[nid] + mu[nid] * (p2y[nid] - p1y[nid]),
+                        p1z[nid] + mu[nid] * (p2z[nid] - p1z[nid])])
         if col1 is not None:
-            p[nid, 3] = col1[nid] + mu[nid] * (col2[nid] - col1[nid])
+            p[nid, 4] = col1[nid] + mu[nid] * (col2[nid] - col1[nid])
     return p
 
 
 def bitget(byteval, idx):
     """ bitget """
-    return np.bitwise_and(byteval, (1 << idx)).astype(bool)
+    return np.bitwise_and(byteval, (1 << idx))
 
 
 def bitset(byteval, idx):
@@ -920,58 +1149,54 @@ def bitset(byteval, idx):
 def sub2ind(msize, row, col, layer):
     """ Sub2ind """
     nrows, ncols, nlayers = msize
-#    tmp = layer*ncols*nrows+row*ncols+col
-    tmp = layer*ncols*nrows+nrows*col+row
-    return tmp.astype(int)
+    tmp = row*ncols*nlayers+col*nlayers+layer
+    return tmp
 
 
 def ind2sub(msize, idx):
     """ Sub2ind """
-    nrows, ncols, _ = msize
-    layer = idx/(nrows*ncols)
-    layer = layer.astype(int)
+    nrows, ncols, nlayers = msize
+    layer = int(idx/(nrows*ncols))
     idx = idx - layer*nrows*ncols
-    col = idx/nrows
-    col = col.astype(int)
-    row = idx - col*nrows
+    row = int(idx/ncols)
+    col = idx - row*ncols
 
     return row, col, layer
 
 
 def GetTables():
-    """ Get Tables """
-    edgeTable = np.array([0, 265, 515, 778, 1030, 1295, 1541, 1804,
+    edgeTable = np.array([0,     265,  515,  778, 1030, 1295, 1541, 1804,
                           2060, 2309, 2575, 2822, 3082, 3331, 3593, 3840,
-                          400, 153, 915, 666, 1430, 1183, 1941, 1692,
+                          400,   153,  915,  666, 1430, 1183, 1941, 1692,
                           2460, 2197, 2975, 2710, 3482, 3219, 3993, 3728,
-                          560, 825, 51, 314, 1590, 1855, 1077, 1340,
+                          560,   825,   51,  314, 1590, 1855, 1077, 1340,
                           2620, 2869, 2111, 2358, 3642, 3891, 3129, 3376,
-                          928, 681, 419, 170, 1958, 1711, 1445, 1196,
+                          928,   681,  419,  170, 1958, 1711, 1445, 1196,
                           2988, 2725, 2479, 2214, 4010, 3747, 3497, 3232,
-                          1120, 1385, 1635, 1898, 102, 367, 613, 876,
+                          1120, 1385, 1635, 1898,  102,  367,  613,  876,
                           3180, 3429, 3695, 3942, 2154, 2403, 2665, 2912,
-                          1520, 1273, 2035, 1786, 502, 255, 1013, 764,
+                          1520, 1273, 2035, 1786,  502,  255, 1013,  764,
                           3580, 3317, 4095, 3830, 2554, 2291, 3065, 2800,
-                          1616, 1881, 1107, 1370, 598, 863, 85, 348,
+                          1616, 1881, 1107, 1370,  598,  863,   85,  348,
                           3676, 3925, 3167, 3414, 2650, 2899, 2137, 2384,
-                          1984, 1737, 1475, 1226, 966, 719, 453, 204,
+                          1984, 1737, 1475, 1226,  966,  719,  453,  204,
                           4044, 3781, 3535, 3270, 3018, 2755, 2505, 2240,
                           2240, 2505, 2755, 3018, 3270, 3535, 3781, 4044,
-                          204, 453, 719, 966, 1226, 1475, 1737, 1984,
+                          204,   453,  719,  966, 1226, 1475, 1737, 1984,
                           2384, 2137, 2899, 2650, 3414, 3167, 3925, 3676,
-                          348, 85, 863, 598, 1370, 1107, 1881, 1616,
+                          348,    85,  863,  598, 1370, 1107, 1881, 1616,
                           2800, 3065, 2291, 2554, 3830, 4095, 3317, 3580,
-                          764, 1013, 255, 502, 1786, 2035, 1273, 1520,
+                          764,  1013,  255,  502, 1786, 2035, 1273, 1520,
                           2912, 2665, 2403, 2154, 3942, 3695, 3429, 3180,
-                          876, 613, 367, 102, 1898, 1635, 1385, 1120,
+                          876,   613,  367,  102, 1898, 1635, 1385, 1120,
                           3232, 3497, 3747, 4010, 2214, 2479, 2725, 2988,
-                          1196, 1445, 1711, 1958, 170, 419, 681, 928,
+                          1196, 1445, 1711, 1958,  170,  419,  681,  928,
                           3376, 3129, 3891, 3642, 2358, 2111, 2869, 2620,
-                          1340, 1077, 1855, 1590, 314, 51, 825, 560,
+                          1340, 1077, 1855, 1590,  314,   51,  825,  560,
                           3728, 3993, 3219, 3482, 2710, 2975, 2197, 2460,
-                          1692, 1941, 1183, 1430, 666, 915, 153, 400,
+                          1692, 1941, 1183, 1430,  666,  915,  153,  400,
                           3840, 3593, 3331, 3082, 2822, 2575, 2309, 2060,
-                          1804, 1541, 1295, 1030, 778, 515, 265, 0])
+                          1804, 1541, 1295, 1030,  778,  515,  265,    0])
 
     triTable = np.array([
         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
@@ -1229,50 +1454,18 @@ def GetTables():
         [1, 3, 8, 9, 1, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
         [0, 9, 1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
         [0, 3, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1],
-        [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]]) + 1
+        [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]])+1
 
     return [edgeTable, triTable]
 
 
-def main():
-    """ Main routine """
+if __name__ == "__main__":
 
-# Create model
+    lmod = quick_model(numx=5, numy=5, numz=5, dxy=100, d_z=100,
+                       tlx=0, tly=0, tlz=0, mht=100, ght=45, finc=90, fdec=0,
+                       inputliths=['Generic'], susc=[0.01], dens=[3.0])
 
-#    lmod = quick_model(numx=3, numy=3, numz=3, dxy=100, d_z=100,
-#                       tlx=0, tly=0, tlz=0, mht=100, ght=45, finc=90, fdec=0,
-#                       inputliths=['Generic'], susc=[0.01], dens=[3.0])
-#
-#    lmod.lith_index[2, 2, 2] = 1
-
-
-#    faces, norms, corners = trimain(lmod.lith_index, 0.1)
-#
-
-    x = np.arange(5)
-    y = np.arange(5)
-    z = np.arange(5)
-    xx, zz, yy = np.meshgrid(x, y, z)
-    c = np.zeros([5, 5, 5])
-    d = np.array([[[0, 0, 0],
-                   [0, 1, 0],
-                   [0, 0, 0]],
-                  [[0, 1, 0],
-                   [1, 1, 1],
-                   [0, 1, 0]],
-                  [[0, 0, 0],
-                   [0, 1, 0],
-                   [0, 0, 0]]])
-#    c[1:4, 1:4, 1:4] = 1
-    c[1:4, 1:4, 1:4] = d
-
-#    x = np.linspace(0, 2, 20)
-#    y = np.linspace(0, 2, 20)
-#    z = np.linspace(0, 2, 20)
-#    xx, yy, zz = np.meshgrid(x, y, z)
-#    c = (xx-.5)**2 + (yy-.5)**2 + (zz-.5)**2
-
-    faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
+    lmod.lith_index[1:4, 1:4, 1:4] = 1
 
     app = QtGui.QApplication(sys.argv)
     wid = Mod3dDisplay()
@@ -1280,30 +1473,27 @@ def main():
     wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
                        QtCore.Qt.WindowActive)
 
-    # this will activate the window
-    wid.show()
-    wid.activateWindow()
+    faces, norms, corners = trimain(lmod.lith_index, 0.1)
 
+    vtx = corners
     cptp = vtx.ptp(0).max()/100.
     cmin = vtx.min(0)
     cptpd2 = vtx.ptp(0)/2.
     vtx = (vtx-cmin-cptpd2)/cptp
 
     wid.glwidget.cubeVtxArray = vtx
-    wid.glwidget.cubeClrArray = (np.zeros([vtx.shape[0], 4]) +
+    wid.glwidget.cubeClrArray = (np.zeros([corners.shape[0], 4]) +
                                  np.array([0.9, 0.4, 0.0, 1.0]))
-    wid.glwidget.cubeNrmArray = np.ones([vtx.shape[0], 4])
+    wid.glwidget.cubeNrmArray = np.ones([corners.shape[0], 4])
     wid.glwidget.cubeIdxArray = faces.flatten()
 
-# This activates the opengl stuff
+    # this will activate the window
+    wid.show()
+    wid.activateWindow()
 
     wid.glwidget.updatelist()
     wid.glwidget.updateGL()
 
-    wid.run()
+#    wid.run()
 
     sys.exit(app.exec_())
-
-
-if __name__ == "__main__":
-    main()
