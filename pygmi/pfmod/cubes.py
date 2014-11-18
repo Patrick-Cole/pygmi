@@ -840,13 +840,13 @@ def MarchingCubes(x, y, z, c, iso, colors=None):
                                                    x[id1], y[id1], z[id1],
                                                    x[id2], y[id2], z[id2],
                                                    cp[id1], cp[id2])
-            pp[id__, 3, jj] = np.arange(id_.shape[0]) + ix_offset
+            pp[id__, 3, jj] = np.arange(1, id_.shape[0]+1) + ix_offset
         ix_offset = ix_offset + id_.shape[0]
 
-    pp = pp.astype(int)
+    pp2 = pp.astype(int)
     # calculate the triangulation from the point list
     F = []
-    tri = triTable[cc.flatten()[iden]]  # +1
+    tri = triTable[cc.flatten(order='F')[iden]]  # +1
     for jj in range(0, 15, 3):
         id_ = np.nonzero(tri[:, jj] > 0)[0]
         if id_.size > 0:
@@ -860,16 +860,18 @@ def MarchingCubes(x, y, z, c, iso, colors=None):
             p1 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 2])
             p2 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 3])
             p3 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 4])
-            F.append([pp.flatten(order='F')[p1], pp.flatten(order='F')[p2], pp.flatten(order='F')[p3]])
+            F.append([pp2.flatten(order='F')[p1],
+                      pp2.flatten(order='F')[p2],
+                      pp2.flatten(order='F')[p3]])
 
     col = []
-    V = np.zeros([pp.max()+1, 4])
+    V = np.zeros([pp2.max()+1, 4])
     for jj in range(12):
         idp = pp[:, lindex-1, jj] > 0
         if any(idp):
-            V[pp[idp, lindex-1, jj], :3] = pp[idp, :3, jj]
+            V[pp2[idp, lindex-1, jj], :3] = pp[idp, :3, jj]
             if calc_cols:
-                col[pp[idp, lindex, jj], 0] = pp[idp, 3, jj]
+                col[pp2[idp, lindex, jj], 0] = pp[idp, 3, jj]
 
     # Remove duplicate vertices (by Oliver Woodford)
 #    [V, I] = V.sort(1)
@@ -877,6 +879,8 @@ def MarchingCubes(x, y, z, c, iso, colors=None):
 #    V = V[M, :]
 #    I[I] = np.cumsum(M)
 #    F = I[F]
+
+    F = np.array(F)
 
     return F, V, col
 # ============================================================

@@ -195,6 +195,12 @@ class EquationEditor(QtGui.QDialog):
 
         indata = dataprep.merge(self.indata[intype])
 
+        mask = indata[-1].data.mask
+        for i in indata:
+            mask = np.logical_or(mask, i.data.mask)
+        for i in indata:
+            i.data.mask = mask
+
         self.localdict = {}
         j = 0
         for i in indata:
