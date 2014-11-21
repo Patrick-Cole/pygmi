@@ -61,7 +61,7 @@ class Mod3dDisplay(QtGui.QDialog):
 # Back to normal stuff
         self.userint = self
         self.gridlayout = QtGui.QGridLayout(self)
-        self.dial_3dmod = QtGui.QDial(self)
+        self.dial_3dmod = QtGui.QSlider(self)
         self.lw_3dmod_defs = QtGui.QListWidget(self)
         self.label = QtGui.QLabel(self)
         self.label2 = QtGui.QLabel(self)
@@ -79,7 +79,7 @@ class Mod3dDisplay(QtGui.QDialog):
     # Buttons
         self.lw_3dmod_defs.clicked.connect(self.change_defs)
         self.vslider_3dmodel.sliderReleased.connect(self.mod3d_vs)
-        self.dial_3dmod.sliderMoved.connect(self.opacity)
+        self.dial_3dmod.sliderReleased.connect(self.opacity)
         self.pb_save.clicked.connect(self.save)
         self.pb_refresh.clicked.connect(self.run)
         self.checkbox_bg.stateChanged.connect(self.change_defs)
@@ -98,6 +98,7 @@ class Mod3dDisplay(QtGui.QDialog):
 # Column 4
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                        QtGui.QSizePolicy.Fixed)
+
         self.lw_3dmod_defs.setSizePolicy(sizepolicy)
         self.lw_3dmod_defs.setSelectionMode(
             QtGui.QAbstractItemView.MultiSelection)
@@ -107,17 +108,20 @@ class Mod3dDisplay(QtGui.QDialog):
         self.label.setText("Background Model Opacity")
         self.gridlayout.addWidget(self.label, 1, 4, 1, 1)
 
+        self.dial_3dmod.setMaximum(255)
+        self.dial_3dmod.setProperty("value", 127)
+#        self.dial_3dmod.setNotchesVisible(True)
+        self.dial_3dmod.setOrientation(QtCore.Qt.Horizontal)
+        self.gridlayout.addWidget(self.dial_3dmod, 2, 4, 1, 1)
+
         self.checkbox_bg.setText("Include Background")
         self.gridlayout.addWidget(self.checkbox_bg, 3, 4, 1, 1)
 
-        self.dial_3dmod.setMaximum(255)
-        self.dial_3dmod.setProperty("value", 127)
-        self.dial_3dmod.setNotchesVisible(True)
-        self.gridlayout.addWidget(self.dial_3dmod, 2, 4, 1, 1)
-        self.gridlayout.addWidget(self.pb_save, 4, 4, 1, 1)
-        self.gridlayout.addWidget(self.pb_refresh, 5, 4, 1, 1)
         self.pb_save.setText("Save to Image File (JPG or PNG)")
+        self.gridlayout.addWidget(self.pb_save, 4, 4, 1, 1)
+
         self.pb_refresh.setText("Refresh Model")
+        self.gridlayout.addWidget(self.pb_refresh, 5, 4, 1, 1)
 
     def save(self):
         """ This saves a jpg """
@@ -307,6 +311,10 @@ class Mod3dDisplay(QtGui.QDialog):
         self.lut = tmp
 
         self.defs(fcalc=True)
+
+        self.glwidget.xRot = 180*16
+        self.glwidget.zRot = 270*16
+        self.glwidget.updateGL()
 
     def update_plot2(self, fullcalc=True):
         """ Update plot """
