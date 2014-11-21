@@ -11,6 +11,8 @@ except:
 import os
 import sys
 from scipy.ndimage.interpolation import zoom
+import scipy.ndimage.filters as sf
+
 
 class Mod3dDisplay(QtGui.QDialog):
     """ Widget class to call the main interface """
@@ -361,7 +363,7 @@ class Mod3dDisplay(QtGui.QDialog):
 #            newfaces = []
 #            cnrm = np.zeros_like(cloc)
 #
-## Face order may have to be reversed if normal is negative.
+# # Face order may have to be reversed if normal is negative.
 #
 #            ndiff = np.diff(gdat2, 1, 2).astype(int)
 #            nd1 = ndiff[1:, 1:]
@@ -452,6 +454,9 @@ class Mod3dDisplay(QtGui.QDialog):
 
             cc[cc != lno] = 0
             cc[cc == lno] = 1
+            cci = (7, 7, 7)
+            cci = np.minimum(cci, cc.shape)
+            cc = sf.convolve(cc, np.ones(cci))/(cci[0]*cci[1]*cci[2])
 
             c[1:-1, 1:-1, 1:-1] = cc
 
@@ -461,6 +466,12 @@ class Mod3dDisplay(QtGui.QDialog):
             xx, yy, zz = np.meshgrid(x, y, z)
 
             faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
+
+            if vtx == []:
+                self.faces[lno] = []
+                self.corners[lno] = []
+                self.norms[lno] = []
+                continue
 
             self.faces[lno] = faces
             self.corners[lno] = vtx
@@ -509,6 +520,8 @@ class Mod3dDisplay(QtGui.QDialog):
         for lno in self.sliths:
             if lno not in np.unique(self.lmod1.lith_index):
                 continue
+            if self.corners[lno] == []:
+                continue
 
             vtx = np.append(vtx, self.corners[lno])
             clrtmp = lut[lno].tolist()+[1.0]
@@ -523,6 +536,9 @@ class Mod3dDisplay(QtGui.QDialog):
                 continue
             if lno in self.sliths:
                 continue
+            if self.corners[lno] == []:
+                continue
+
             vtx = np.append(vtx, self.corners[lno])
             clrtmp = lut[lno].tolist()+[self.opac]
             clr = np.append(clr,
