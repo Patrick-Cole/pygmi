@@ -456,7 +456,13 @@ class Mod3dDisplay(QtGui.QDialog):
             cc[cc == lno] = 1
             cci = (7, 7, 7)
             cci = np.minimum(cci, cc.shape)
-            cc = sf.convolve(cc, np.ones(cci))/(cci[0]*cci[1]*cci[2])
+            cci = np.ones(cci)
+
+            ix, iy, iz = np.mgrid[-2:3, -2:3, -2:3]
+            sigma = 2
+            cci = np.exp(-(ix**2+iy**2+iz**2)/(3*sigma**2))
+
+            cc = sf.convolve(cc, cci)/(cci.shape[0]*cci.shape[1]*cci.shape[2])
 
             c[1:-1, 1:-1, 1:-1] = cc
 
@@ -465,7 +471,7 @@ class Mod3dDisplay(QtGui.QDialog):
             z = np.arange(c.shape[2])
             xx, yy, zz = np.meshgrid(x, y, z)
 
-            faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
+            faces, vtx = MarchingCubes(xx, yy, zz, c, .1)
 
             if vtx == []:
                 self.faces[lno] = []
