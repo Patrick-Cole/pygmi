@@ -794,6 +794,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     numz = int(lmod.numz)
     tmpfiles = {}
 
+# This forces a full recalc every time.
+    lmod.clith_index[:] = 0
+    lmod.caltcalc = altcalc
+
     if lmod.caltcalc is not altcalc:
         lmod.clith_index[:] = 0
         lmod.caltcalc = altcalc

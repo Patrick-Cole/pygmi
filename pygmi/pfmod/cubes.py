@@ -4,12 +4,13 @@ import numpy as np
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 from OpenGL import GLU
-import misc
+try:
+    from . import misc
+except:
+    import misc
 import os
 import sys
-from pygmi.pfmod.grvmag3d import quick_model
-from pygmi.pfmod.grvmag3d import calc_field
-
+from scipy.ndimage.interpolation import zoom
 
 class Mod3dDisplay(QtGui.QDialog):
     """ Widget class to call the main interface """
@@ -351,96 +352,130 @@ class Mod3dDisplay(QtGui.QDialog):
         tmpdat[1:-1, 1:-1, 1:-1] = self.gdata
 
         for lno in liths:
-            gdat2 = tmpdat.copy()
-            gdat2[gdat2 != lno] = -0.5
-            gdat2[gdat2 == lno] = 0.5
+            if lno not in np.unique(self.lmod1.lith_index):
+                continue
+#            gdat2 = tmpdat.copy()
+#            gdat2[gdat2 != lno] = -0.5
+#            gdat2[gdat2 == lno] = 0.5
+#
+#            newfaces = []
+#            cnrm = np.zeros_like(cloc)
+#
+## Face order may have to be reversed if normal is negative.
+#
+#            ndiff = np.diff(gdat2, 1, 2).astype(int)
+#            nd1 = ndiff[1:, 1:]
+#            nd2 = ndiff[:-1, 1:]
+#            nd3 = ndiff[:-1, :-1]
+#            nd4 = ndiff[1:, :-1]
+#
+#            c_1 = cindx[nd1 == 1]
+#            c_2 = cindx[nd2 == 1]
+#            c_3 = cindx[nd3 == 1]
+#            c_4 = cindx[nd4 == 1]
+#            ccc = np.transpose([c_1, c_4, c_3, c_2])
+#            cnrm[ccc] += [0, 0, -1]
+#            newfaces = np.append(newfaces, ccc)
+#
+#            c_1 = cindx[nd1 == -1]
+#            c_2 = cindx[nd2 == -1]
+#            c_3 = cindx[nd3 == -1]
+#            c_4 = cindx[nd4 == -1]
+#            ccc = np.transpose([c_1, c_2, c_3, c_4])
+#            cnrm[ccc] += [0, 0, 1]
+#            newfaces = np.append(newfaces, ccc)
+#
+#            ndiff = np.diff(gdat2, 1, 1).astype(int)
+#            nd1 = ndiff[1:, :, 1:]
+#            nd2 = ndiff[:-1, :, 1:]
+#            nd3 = ndiff[:-1, :, :-1]
+#            nd4 = ndiff[1:, :, :-1]
+#
+#            c_1 = cindx[nd1 == 1]
+#            c_2 = cindx[nd2 == 1]
+#            c_3 = cindx[nd3 == 1]
+#            c_4 = cindx[nd4 == 1]
+#            ccc = np.transpose([c_1, c_2, c_3, c_4])
+#            cnrm[ccc] += [0, -1, 0]
+#            newfaces = np.append(newfaces, ccc)
+#
+#            c_1 = cindx[nd1 == -1]
+#            c_2 = cindx[nd2 == -1]
+#            c_3 = cindx[nd3 == -1]
+#            c_4 = cindx[nd4 == -1]
+#            ccc = np.transpose([c_1, c_4, c_3, c_2])
+#            cnrm[ccc] += [0, 1, 0]
+#            newfaces = np.append(newfaces, ccc)
+#
+#            ndiff = np.diff(gdat2, 1, 0).astype(int)
+#            nd1 = ndiff[:, 1:, 1:]
+#            nd2 = ndiff[:, 1:, :-1]
+#            nd3 = ndiff[:, :-1, :-1]
+#            nd4 = ndiff[:, :-1, 1:]
+#
+#            c_1 = cindx[nd1 == 1]
+#            c_2 = cindx[nd2 == 1]
+#            c_3 = cindx[nd3 == 1]
+#            c_4 = cindx[nd4 == 1]
+#            ccc = np.transpose([c_1, c_2, c_3, c_4])
+#            cnrm[ccc] += [-1, 0, 0]
+#            newfaces = np.append(newfaces, ccc)
+#
+#            c_1 = cindx[nd1 == -1]
+#            c_2 = cindx[nd2 == -1]
+#            c_3 = cindx[nd3 == -1]
+#            c_4 = cindx[nd4 == -1]
+#            ccc = np.transpose([c_1, c_4, c_3, c_2])
+#            cnrm[ccc] += [1, 0, 0]
+#            newfaces = np.append(newfaces, ccc)
+#
+#            uuu, i = np.unique(newfaces, return_inverse=True)
+#            uuu = uuu.astype(int)
+#            n_f = np.arange(uuu.size)
+#            newfaces = n_f[i]
+#            newcorners = cloc[uuu]
+#            newnorms = cnrm[uuu]
+#            newfaces.shape = (newfaces.size/4, 4)
+#
+#            self.faces[lno] = newfaces
+#            self.corners[lno] = newcorners
+#
+#            aaa = np.sqrt(np.sum(np.square(newnorms), 1))
+#            aaa[aaa == 0] = 1.
+#            newnorms /= aaa[:, np.newaxis]
+#            self.norms[lno] = newnorms
 
-            newfaces = []
-            cnrm = np.zeros_like(cloc)
+            cc = self.lmod1.lith_index.copy()
 
-# Face order may have to be reversed if normal is negative.
+            nshape = np.array(cc.shape)+[2, 2, 2]
+            c = np.zeros(nshape)
 
-            ndiff = np.diff(gdat2, 1, 2).astype(int)
-            nd1 = ndiff[1:, 1:]
-            nd2 = ndiff[:-1, 1:]
-            nd3 = ndiff[:-1, :-1]
-            nd4 = ndiff[1:, :-1]
+            cc[cc != lno] = 0
+            cc[cc == lno] = 1
 
-            c_1 = cindx[nd1 == 1]
-            c_2 = cindx[nd2 == 1]
-            c_3 = cindx[nd3 == 1]
-            c_4 = cindx[nd4 == 1]
-            ccc = np.transpose([c_1, c_4, c_3, c_2])
-            cnrm[ccc] += [0, 0, -1]
-            newfaces = np.append(newfaces, ccc)
+            c[1:-1, 1:-1, 1:-1] = cc
 
-            c_1 = cindx[nd1 == -1]
-            c_2 = cindx[nd2 == -1]
-            c_3 = cindx[nd3 == -1]
-            c_4 = cindx[nd4 == -1]
-            ccc = np.transpose([c_1, c_2, c_3, c_4])
-            cnrm[ccc] += [0, 0, 1]
-            newfaces = np.append(newfaces, ccc)
+            x = np.arange(c.shape[1])
+            y = np.arange(c.shape[0])
+            z = np.arange(c.shape[2])
+            xx, yy, zz = np.meshgrid(x, y, z)
 
-            ndiff = np.diff(gdat2, 1, 1).astype(int)
-            nd1 = ndiff[1:, :, 1:]
-            nd2 = ndiff[:-1, :, 1:]
-            nd3 = ndiff[:-1, :, :-1]
-            nd4 = ndiff[1:, :, :-1]
+            faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
 
-            c_1 = cindx[nd1 == 1]
-            c_2 = cindx[nd2 == 1]
-            c_3 = cindx[nd3 == 1]
-            c_4 = cindx[nd4 == 1]
-            ccc = np.transpose([c_1, c_2, c_3, c_4])
-            cnrm[ccc] += [0, -1, 0]
-            newfaces = np.append(newfaces, ccc)
+            self.faces[lno] = faces
+            self.corners[lno] = vtx
 
-            c_1 = cindx[nd1 == -1]
-            c_2 = cindx[nd2 == -1]
-            c_3 = cindx[nd3 == -1]
-            c_4 = cindx[nd4 == -1]
-            ccc = np.transpose([c_1, c_4, c_3, c_2])
-            cnrm[ccc] += [0, 1, 0]
-            newfaces = np.append(newfaces, ccc)
+            nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
+            tris = vtx[faces]
+            n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] - tris[::, 0])
+            normalize_v3(n)
 
-            ndiff = np.diff(gdat2, 1, 0).astype(int)
-            nd1 = ndiff[:, 1:, 1:]
-            nd2 = ndiff[:, 1:, :-1]
-            nd3 = ndiff[:, :-1, :-1]
-            nd4 = ndiff[:, :-1, 1:]
+            nrm[faces[:, 0]] += n
+            nrm[faces[:, 1]] += n
+            nrm[faces[:, 2]] += n
+            normalize_v3(nrm)
 
-            c_1 = cindx[nd1 == 1]
-            c_2 = cindx[nd2 == 1]
-            c_3 = cindx[nd3 == 1]
-            c_4 = cindx[nd4 == 1]
-            ccc = np.transpose([c_1, c_2, c_3, c_4])
-            cnrm[ccc] += [-1, 0, 0]
-            newfaces = np.append(newfaces, ccc)
-
-            c_1 = cindx[nd1 == -1]
-            c_2 = cindx[nd2 == -1]
-            c_3 = cindx[nd3 == -1]
-            c_4 = cindx[nd4 == -1]
-            ccc = np.transpose([c_1, c_4, c_3, c_2])
-            cnrm[ccc] += [1, 0, 0]
-            newfaces = np.append(newfaces, ccc)
-
-            uuu, i = np.unique(newfaces, return_inverse=True)
-            uuu = uuu.astype(int)
-            n_f = np.arange(uuu.size)
-            newfaces = n_f[i]
-            newcorners = cloc[uuu]
-            newnorms = cnrm[uuu]
-            newfaces.shape = (newfaces.size/4, 4)
-
-            self.faces[lno] = newfaces
-            self.corners[lno] = newcorners
-
-            aaa = np.sqrt(np.sum(np.square(newnorms), 1))
-            aaa[aaa == 0] = 1.
-            newnorms /= aaa[:, np.newaxis]
-            self.norms[lno] = newnorms
+            self.norms[lno] = nrm
 
             if self.pbars is not None:
                 self.pbars.incr()
@@ -472,6 +507,9 @@ class Mod3dDisplay(QtGui.QDialog):
         idxmax = 0
 
         for lno in self.sliths:
+            if lno not in np.unique(self.lmod1.lith_index):
+                continue
+
             vtx = np.append(vtx, self.corners[lno])
             clrtmp = lut[lno].tolist()+[1.0]
             clr = np.append(clr,
@@ -481,6 +519,8 @@ class Mod3dDisplay(QtGui.QDialog):
             idxmax = idx.max()+1
 
         for lno in liths:
+            if lno not in np.unique(self.lmod1.lith_index):
+                continue
             if lno in self.sliths:
                 continue
             vtx = np.append(vtx, self.corners[lno])
@@ -493,6 +533,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
         vtx.shape = (vtx.shape[0]/3, 3)
         clr.shape = (clr.shape[0]/4, 4)
+
         vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
 
         cptp = vtx.ptp(0).max()/100.
@@ -594,28 +635,33 @@ class GLWidget(QtOpenGL.QGLWidget):
 
 #        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
 #        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL)
-#        GL.glShadeModel(GL.GL_FLAT)
+#        GL.glShadeModel(GL.GL_SMOOTH)
 
 #############
-#        GL.glEnable(GL.GL_BLEND)
-#        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-#        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
-#        GL.glEnable(GL.GL_ALPHA_TEST)
-#        GL.glEnable(GL.GL_DEPTH_TEST)
-#        GL.glDepthMask(GL.GL_TRUE)
-#        GL.glDepthFunc(GL.GL_LEQUAL)
-#        GL.glEnable(GL.GL_CULL_FACE)
+#        GL.glEnable(GL.GL_NORMALIZE)
 
-#        GL.glEnable(GL.GL_COLOR_MATERIAL)
-#        GL.glEnable(GL.GL_LIGHTING)
-#        GL.glEnable(GL.GL_LIGHT0)
-#        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [1., 1., 1., 0.])
+        GL.glEnable(GL.GL_BLEND)
+        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+
+        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
+        GL.glEnable(GL.GL_ALPHA_TEST)
+
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glDepthMask(GL.GL_TRUE)
+        GL.glDepthFunc(GL.GL_LEQUAL)
+
+        GL.glEnable(GL.GL_CULL_FACE)
+
+        GL.glEnable(GL.GL_COLOR_MATERIAL)
+        GL.glEnable(GL.GL_LIGHTING)
+        GL.glEnable(GL.GL_LIGHT0)
+        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [2., 2., 2., 0.])
 
 ##################
 #        GL.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, [1.,1.,1.,1.])
 #        GL.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, [1.,1.,1.,1.])
 #        GL.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, [0.,0.,0.,1.])
-
+#
 #        GL.glMaterialfv(GL.GL_FRONT, GL.GL_EMISSION, [0., 1., 0., 1.0])
 #        GL.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, [1., 0., 0., 1.0])
 
@@ -787,10 +833,10 @@ def MarchingCubes(x, y, z, c, iso):
     iden = np.nonzero(cedge.flatten(order='F'))[0]
 
     if iden.size == 0:          # all voxels are above or below iso
+        print('No such lithology')
         F = []
         V = []
-        col = []
-        return F, V, col
+        return F, V
 
     # calculate the list of intersection points
     xyz_off = np.array([[1, 1, 1],
@@ -865,11 +911,22 @@ def MarchingCubes(x, y, z, c, iso):
             V[pp2[idp, lindex-1, jj]-1, :3] = pp[idp, :3, jj]
 
     # Remove duplicate vertices (by Oliver Woodford)
-#    [V, I] = V.sort(1)
-#    M = [[True], [any(np.diff(V), 2)]]
-#    V = V[M, :]
-#    I[I] = np.cumsum(M)
-#    F = I[F]
+
+    v2 = np.zeros((V.shape[0], 4))
+    v2[:, :3] = V
+    v2[:, 3] = np.arange(V.shape[0])
+    v2 = v2.tolist()
+    v2.sort()
+    v2 = np.array(v2)
+
+    V = v2[:, :3]
+    I = v2[:, 3].astype(int)
+
+    M = np.hstack(([True], np.sum(np.abs(V[1:]-V[:-1]), 1).astype(bool)))
+
+    V = V[M]
+    I[I] = np.cumsum(M)-1
+    F = I[F]
 
     return F, V
 # ============================================================
@@ -1249,30 +1306,22 @@ def main():
 #    faces, norms, corners = trimain(lmod.lith_index, 0.1)
 #
 
-    x = np.arange(5)
-    y = np.arange(5)
-    z = np.arange(5)
-    xx, zz, yy = np.meshgrid(x, y, z)
     c = np.zeros([5, 5, 5])
-    d = np.array([[[0, 0, 0],
-                   [0, 1, 0],
-                   [0, 0, 0]],
-                  [[0, 1, 0],
-                   [1, 1, 1],
-                   [0, 1, 0]],
-                  [[0, 0, 0],
-                   [0, 1, 0],
-                   [0, 0, 0]]])
-#    c[1:4, 1:4, 1:4] = 1
-    c[1:4, 1:4, 1:4] = d
+    c[1:4, 1:4, 1:4] = 1
+    c = zoom(c, 10, order=1)
+
+    x = np.arange(c.shape[1])
+    y = np.arange(c.shape[0])
+    z = np.arange(c.shape[2])
+    xx, yy, zz = np.meshgrid(x, y, z)
+    faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
 
 #    x = np.linspace(0, 2, 20)
 #    y = np.linspace(0, 2, 20)
 #    z = np.linspace(0, 2, 20)
 #    xx, yy, zz = np.meshgrid(x, y, z)
 #    c = (xx-.5)**2 + (yy-.5)**2 + (zz-.5)**2
-
-    faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
+#    faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
 
     app = QtGui.QApplication(sys.argv)
     wid = Mod3dDisplay()
@@ -1284,7 +1333,40 @@ def main():
     wid.show()
     wid.activateWindow()
 
-    cptp = vtx.ptp(0).max()/100.
+###############################
+    faces = faces
+# Create a zeroed array with the same type and shape as our vertices i.e.,
+# per vertex normal
+    norm = np.zeros(vtx.shape, dtype=vtx.dtype)
+# Create an indexed view into the vertex array using the array of three indices
+# for triangles
+    tris = vtx[faces]
+# Calculate the normal for all the triangles, by taking the cross product of
+# the vectors v1-v0, and v2-v0 in each triangle
+    n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] - tris[::, 0])
+# n is now an array of normals per triangle. The length of each normal is
+# dependent the vertices, we need to normalize these, so that our next step
+# weights each normal equally.
+    normalize_v3(n)
+#    n[2] *= -1
+# now we have a normalized array of normals, one per triangle, i.e., per
+# triangle normals. But instead of one per triangle (i.e., flat shading), we
+# add to each vertex in that triangle, the triangles' normal. Multiple
+# triangles would then contribute to every vertex, so we need to normalize
+# again afterwards. The cool part, we can actually add the normals through an
+# indexed view of our (zeroed) per vertex normal array.
+
+    norm[faces[:, 0]] += n
+    norm[faces[:, 1]] += n
+    norm[faces[:, 2]] += n
+    normalize_v3(norm)
+
+# Now we have a vertex array, vertices, a normal array, norm, and the index
+# array, faces, and we are ready to pass it on to our rendering algorithm.
+# To render without the index list, we create a flattened array where
+# the triangle indices are replaced with the actual vertices.
+
+    cptp = vtx.ptp(0).max()/100
     cmin = vtx.min(0)
     cptpd2 = vtx.ptp(0)/2.
     vtx = (vtx-cmin-cptpd2)/cptp
@@ -1292,7 +1374,10 @@ def main():
     wid.glwidget.cubeVtxArray = vtx
     wid.glwidget.cubeClrArray = (np.zeros([vtx.shape[0], 4]) +
                                  np.array([0.9, 0.4, 0.0, 1.0]))
-    wid.glwidget.cubeNrmArray = np.ones([vtx.shape[0], 4])
+    wid.glwidget.cubeNrmArray = norm
+#    nnn = n[np.nonzero(faces==1)[0]]
+#    faces = faces[np.nonzero(faces==1)[0]]
+#    faces[0] = faces[0,::-1]
     wid.glwidget.cubeIdxArray = faces.flatten()
 
 # This activates the opengl stuff
@@ -1304,6 +1389,14 @@ def main():
 
     sys.exit(app.exec_())
 
+
+def normalize_v3(arr):
+    ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
+    lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
+    arr[:, 0] /= lens
+    arr[:, 1] /= lens
+    arr[:, 2] /= lens
+    return arr
 
 if __name__ == "__main__":
     main()
