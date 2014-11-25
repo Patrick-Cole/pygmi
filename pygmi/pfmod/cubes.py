@@ -1,3 +1,28 @@
+# -----------------------------------------------------------------------------
+# Name:        cubes.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2013 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+""" This is code for the 3d model creation. """
 # pylint: disable=C0103
 
 import numpy as np
@@ -6,7 +31,7 @@ from OpenGL import GL
 from OpenGL import GLU
 try:
     from . import misc
-except:
+except SystemError:
     import misc
 import os
 import sys
@@ -59,17 +84,21 @@ class Mod3dDisplay(QtGui.QDialog):
         self.opac = 0.5
 
 # Back to normal stuff
-        self.userint = self
-        self.gridlayout = QtGui.QGridLayout(self)
+        self.horizontallayout = QtGui.QHBoxLayout(self)
+        self.vslider_3dmodel = QtGui.QSlider(self)
+        self.vbox_cmodel = QtGui.QVBoxLayout()
+        self.verticallayout = QtGui.QVBoxLayout()
+
         self.dial_3dmod = QtGui.QSlider(self)
         self.lw_3dmod_defs = QtGui.QListWidget(self)
         self.label = QtGui.QLabel(self)
         self.label2 = QtGui.QLabel(self)
-        self.vbox_cmodel = QtGui.QVBoxLayout()
-        self.vslider_3dmodel = QtGui.QSlider(self)
         self.pb_save = QtGui.QPushButton(self)
         self.pb_refresh = QtGui.QPushButton(self)
         self.checkbox_bg = QtGui.QCheckBox(self)
+        self.checkbox_smooth = QtGui.QCheckBox(self)
+        self.pbar = QtGui.QProgressBar(self)
+
         self.setupui()
 
     # GL Widget
@@ -83,6 +112,7 @@ class Mod3dDisplay(QtGui.QDialog):
         self.pb_save.clicked.connect(self.save)
         self.pb_refresh.clicked.connect(self.run)
         self.checkbox_bg.stateChanged.connect(self.change_defs)
+        self.checkbox_smooth.stateChanged.connect(self.update_plot)
 
     def setupui(self):
         """ Setup UI """
@@ -90,38 +120,58 @@ class Mod3dDisplay(QtGui.QDialog):
         self.vslider_3dmodel.setMinimum(1)
         self.vslider_3dmodel.setMaximum(1000)
         self.vslider_3dmodel.setOrientation(QtCore.Qt.Vertical)
-        self.gridlayout.addWidget(self.vslider_3dmodel, 0, 0, 5, 1)
+        self.horizontallayout.addWidget(self.vslider_3dmodel)
 
 # Column 1
-        self.gridlayout.addLayout(self.vbox_cmodel, 0, 1, 5, 1)
+        self.horizontallayout.addLayout(self.vbox_cmodel)
+        self.vbox_cmodel.setSizeConstraint(QtGui.QLayout.SetNoConstraint)
 
-# Column 4
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
+# Column 2
+        self.horizontallayout.addLayout(self.verticallayout)
+        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
                                        QtGui.QSizePolicy.Fixed)
+
+        sizepolicy2 = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
+                                        QtGui.QSizePolicy.Fixed)
+
+        sizepolicy3 = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
+                                        QtGui.QSizePolicy.Fixed)
 
         self.lw_3dmod_defs.setSizePolicy(sizepolicy)
         self.lw_3dmod_defs.setSelectionMode(
             QtGui.QAbstractItemView.MultiSelection)
-        self.gridlayout.addWidget(self.lw_3dmod_defs, 0, 4, 1, 1)
+        self.verticallayout.addWidget(self.lw_3dmod_defs)
 
         self.label.setAlignment(QtCore.Qt.AlignCenter)
         self.label.setText("Background Model Opacity")
-        self.gridlayout.addWidget(self.label, 1, 4, 1, 1)
+        self.label.setSizePolicy(sizepolicy)
+        self.verticallayout.addWidget(self.label)
 
         self.dial_3dmod.setMaximum(255)
         self.dial_3dmod.setProperty("value", 127)
-#        self.dial_3dmod.setNotchesVisible(True)
         self.dial_3dmod.setOrientation(QtCore.Qt.Horizontal)
-        self.gridlayout.addWidget(self.dial_3dmod, 2, 4, 1, 1)
+        self.dial_3dmod.setSizePolicy(sizepolicy2)
+        self.verticallayout.addWidget(self.dial_3dmod)
 
         self.checkbox_bg.setText("Include Background")
-        self.gridlayout.addWidget(self.checkbox_bg, 3, 4, 1, 1)
+        self.checkbox_bg.setSizePolicy(sizepolicy)
+        self.verticallayout.addWidget(self.checkbox_bg)
+
+        self.checkbox_smooth.setText("Smooth Model")
+        self.checkbox_smooth.setSizePolicy(sizepolicy)
+        self.verticallayout.addWidget(self.checkbox_smooth)
 
         self.pb_save.setText("Save to Image File (JPG or PNG)")
-        self.gridlayout.addWidget(self.pb_save, 4, 4, 1, 1)
+        self.pb_save.setSizePolicy(sizepolicy2)
+        self.verticallayout.addWidget(self.pb_save)
 
         self.pb_refresh.setText("Refresh Model")
-        self.gridlayout.addWidget(self.pb_refresh, 5, 4, 1, 1)
+        self.pb_refresh.setSizePolicy(sizepolicy2)
+        self.verticallayout.addWidget(self.pb_refresh)
+
+#        self.pbar.setSizePolicy(sizepolicy3)
+        self.pbar.setOrientation(QtCore.Qt.Vertical)
+        self.horizontallayout.addWidget(self.pbar)
 
     def save(self):
         """ This saves a jpg """
@@ -312,8 +362,12 @@ class Mod3dDisplay(QtGui.QDialog):
 
         self.defs(fcalc=True)
 
-        self.glwidget.xRot = 180*16
-        self.glwidget.zRot = 270*16
+        if self.checkbox_smooth.isChecked():
+            self.glwidget.xRot = 180*16
+            self.glwidget.zRot = 270*16
+        else:
+            self.glwidget.xRot = 0*16
+            self.glwidget.zRot = 0*16
         self.glwidget.updateGL()
 
     def update_plot2(self, fullcalc=True):
@@ -341,9 +395,12 @@ class Mod3dDisplay(QtGui.QDialog):
         if liths[0] == -1:
             liths = liths[1:]
 
-        if self.pbars is not None:
-            # self.pbars.resetsub(maximum=liths.size)
-            self.pbars.resetall(maximum=liths.size, mmax=2)
+        self.pbar.setMaximum(liths.size)
+        self.pbar.setValue(0)
+
+#        if self.pbars is not None:
+#            # self.pbars.resetsub(maximum=liths.size)
+#            self.pbars.resetall(maximum=liths.size, mmax=2)
 
 #        for lno in liths:
 #            self.faces[lno], self.norms[lno], self.corners[lno] = main(
@@ -361,146 +418,152 @@ class Mod3dDisplay(QtGui.QDialog):
         tmpdat = np.zeros([igd+2, jgd+2, kgd+2])-1
         tmpdat[1:-1, 1:-1, 1:-1] = self.gdata
 
+        tmppval = 0
         for lno in liths:
+            tmppval += 1
+            self.pbar.setValue(tmppval)
             if lno not in np.unique(self.lmod1.lith_index):
                 continue
-#            gdat2 = tmpdat.copy()
-#            gdat2[gdat2 != lno] = -0.5
-#            gdat2[gdat2 == lno] = 0.5
-#
-#            newfaces = []
-#            cnrm = np.zeros_like(cloc)
-#
-# # Face order may have to be reversed if normal is negative.
-#
-#            ndiff = np.diff(gdat2, 1, 2).astype(int)
-#            nd1 = ndiff[1:, 1:]
-#            nd2 = ndiff[:-1, 1:]
-#            nd3 = ndiff[:-1, :-1]
-#            nd4 = ndiff[1:, :-1]
-#
-#            c_1 = cindx[nd1 == 1]
-#            c_2 = cindx[nd2 == 1]
-#            c_3 = cindx[nd3 == 1]
-#            c_4 = cindx[nd4 == 1]
-#            ccc = np.transpose([c_1, c_4, c_3, c_2])
-#            cnrm[ccc] += [0, 0, -1]
-#            newfaces = np.append(newfaces, ccc)
-#
-#            c_1 = cindx[nd1 == -1]
-#            c_2 = cindx[nd2 == -1]
-#            c_3 = cindx[nd3 == -1]
-#            c_4 = cindx[nd4 == -1]
-#            ccc = np.transpose([c_1, c_2, c_3, c_4])
-#            cnrm[ccc] += [0, 0, 1]
-#            newfaces = np.append(newfaces, ccc)
-#
-#            ndiff = np.diff(gdat2, 1, 1).astype(int)
-#            nd1 = ndiff[1:, :, 1:]
-#            nd2 = ndiff[:-1, :, 1:]
-#            nd3 = ndiff[:-1, :, :-1]
-#            nd4 = ndiff[1:, :, :-1]
-#
-#            c_1 = cindx[nd1 == 1]
-#            c_2 = cindx[nd2 == 1]
-#            c_3 = cindx[nd3 == 1]
-#            c_4 = cindx[nd4 == 1]
-#            ccc = np.transpose([c_1, c_2, c_3, c_4])
-#            cnrm[ccc] += [0, -1, 0]
-#            newfaces = np.append(newfaces, ccc)
-#
-#            c_1 = cindx[nd1 == -1]
-#            c_2 = cindx[nd2 == -1]
-#            c_3 = cindx[nd3 == -1]
-#            c_4 = cindx[nd4 == -1]
-#            ccc = np.transpose([c_1, c_4, c_3, c_2])
-#            cnrm[ccc] += [0, 1, 0]
-#            newfaces = np.append(newfaces, ccc)
-#
-#            ndiff = np.diff(gdat2, 1, 0).astype(int)
-#            nd1 = ndiff[:, 1:, 1:]
-#            nd2 = ndiff[:, 1:, :-1]
-#            nd3 = ndiff[:, :-1, :-1]
-#            nd4 = ndiff[:, :-1, 1:]
-#
-#            c_1 = cindx[nd1 == 1]
-#            c_2 = cindx[nd2 == 1]
-#            c_3 = cindx[nd3 == 1]
-#            c_4 = cindx[nd4 == 1]
-#            ccc = np.transpose([c_1, c_2, c_3, c_4])
-#            cnrm[ccc] += [-1, 0, 0]
-#            newfaces = np.append(newfaces, ccc)
-#
-#            c_1 = cindx[nd1 == -1]
-#            c_2 = cindx[nd2 == -1]
-#            c_3 = cindx[nd3 == -1]
-#            c_4 = cindx[nd4 == -1]
-#            ccc = np.transpose([c_1, c_4, c_3, c_2])
-#            cnrm[ccc] += [1, 0, 0]
-#            newfaces = np.append(newfaces, ccc)
-#
-#            uuu, i = np.unique(newfaces, return_inverse=True)
-#            uuu = uuu.astype(int)
-#            n_f = np.arange(uuu.size)
-#            newfaces = n_f[i]
-#            newcorners = cloc[uuu]
-#            newnorms = cnrm[uuu]
-#            newfaces.shape = (newfaces.size/4, 4)
-#
-#            self.faces[lno] = newfaces
-#            self.corners[lno] = newcorners
-#
-#            aaa = np.sqrt(np.sum(np.square(newnorms), 1))
-#            aaa[aaa == 0] = 1.
-#            newnorms /= aaa[:, np.newaxis]
-#            self.norms[lno] = newnorms
+            if not self.checkbox_smooth.isChecked():
+                gdat2 = tmpdat.copy()
+                gdat2[gdat2 != lno] = -0.5
+                gdat2[gdat2 == lno] = 0.5
 
-            cc = self.lmod1.lith_index.copy()
+                newfaces = []
+                cnrm = np.zeros_like(cloc)
 
-            nshape = np.array(cc.shape)+[2, 2, 2]
-            c = np.zeros(nshape)
+# Face order may have to be reversed if normal is negative.
 
-            cc[cc != lno] = 0
-            cc[cc == lno] = 1
-            cci = (7, 7, 7)
-            cci = np.minimum(cci, cc.shape)
-            cci = np.ones(cci)
+                ndiff = np.diff(gdat2, 1, 2).astype(int)
+                nd1 = ndiff[1:, 1:]
+                nd2 = ndiff[:-1, 1:]
+                nd3 = ndiff[:-1, :-1]
+                nd4 = ndiff[1:, :-1]
 
-            ix, iy, iz = np.mgrid[-2:3, -2:3, -2:3]
-            sigma = 2
-            cci = np.exp(-(ix**2+iy**2+iz**2)/(3*sigma**2))
+                c_1 = cindx[nd1 == 1]
+                c_2 = cindx[nd2 == 1]
+                c_3 = cindx[nd3 == 1]
+                c_4 = cindx[nd4 == 1]
+                ccc = np.transpose([c_1, c_4, c_3, c_2])
+                cnrm[ccc] += [0, 0, -1]
+                newfaces = np.append(newfaces, ccc)
 
-            cc = sf.convolve(cc, cci)/(cci.shape[0]*cci.shape[1]*cci.shape[2])
+                c_1 = cindx[nd1 == -1]
+                c_2 = cindx[nd2 == -1]
+                c_3 = cindx[nd3 == -1]
+                c_4 = cindx[nd4 == -1]
+                ccc = np.transpose([c_1, c_2, c_3, c_4])
+                cnrm[ccc] += [0, 0, 1]
+                newfaces = np.append(newfaces, ccc)
 
-            c[1:-1, 1:-1, 1:-1] = cc
+                ndiff = np.diff(gdat2, 1, 1).astype(int)
+                nd1 = ndiff[1:, :, 1:]
+                nd2 = ndiff[:-1, :, 1:]
+                nd3 = ndiff[:-1, :, :-1]
+                nd4 = ndiff[1:, :, :-1]
 
-            x = np.arange(c.shape[1])
-            y = np.arange(c.shape[0])
-            z = np.arange(c.shape[2])
-            xx, yy, zz = np.meshgrid(x, y, z)
+                c_1 = cindx[nd1 == 1]
+                c_2 = cindx[nd2 == 1]
+                c_3 = cindx[nd3 == 1]
+                c_4 = cindx[nd4 == 1]
+                ccc = np.transpose([c_1, c_2, c_3, c_4])
+                cnrm[ccc] += [0, -1, 0]
+                newfaces = np.append(newfaces, ccc)
 
-            faces, vtx = MarchingCubes(xx, yy, zz, c, .1)
+                c_1 = cindx[nd1 == -1]
+                c_2 = cindx[nd2 == -1]
+                c_3 = cindx[nd3 == -1]
+                c_4 = cindx[nd4 == -1]
+                ccc = np.transpose([c_1, c_4, c_3, c_2])
+                cnrm[ccc] += [0, 1, 0]
+                newfaces = np.append(newfaces, ccc)
 
-            if vtx == []:
-                self.faces[lno] = []
-                self.corners[lno] = []
-                self.norms[lno] = []
-                continue
+                ndiff = np.diff(gdat2, 1, 0).astype(int)
+                nd1 = ndiff[:, 1:, 1:]
+                nd2 = ndiff[:, 1:, :-1]
+                nd3 = ndiff[:, :-1, :-1]
+                nd4 = ndiff[:, :-1, 1:]
 
-            self.faces[lno] = faces
-            self.corners[lno] = vtx
+                c_1 = cindx[nd1 == 1]
+                c_2 = cindx[nd2 == 1]
+                c_3 = cindx[nd3 == 1]
+                c_4 = cindx[nd4 == 1]
+                ccc = np.transpose([c_1, c_2, c_3, c_4])
+                cnrm[ccc] += [-1, 0, 0]
+                newfaces = np.append(newfaces, ccc)
 
-            nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
-            tris = vtx[faces]
-            n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] - tris[::, 0])
-            normalize_v3(n)
+                c_1 = cindx[nd1 == -1]
+                c_2 = cindx[nd2 == -1]
+                c_3 = cindx[nd3 == -1]
+                c_4 = cindx[nd4 == -1]
+                ccc = np.transpose([c_1, c_4, c_3, c_2])
+                cnrm[ccc] += [1, 0, 0]
+                newfaces = np.append(newfaces, ccc)
 
-            nrm[faces[:, 0]] += n
-            nrm[faces[:, 1]] += n
-            nrm[faces[:, 2]] += n
-            normalize_v3(nrm)
+                uuu, i = np.unique(newfaces, return_inverse=True)
+                uuu = uuu.astype(int)
+                n_f = np.arange(uuu.size)
+                newfaces = n_f[i]
+                newcorners = cloc[uuu]
+                newnorms = cnrm[uuu]
+                newfaces.shape = (newfaces.size/4, 4)
 
-            self.norms[lno] = nrm
+                self.faces[lno] = newfaces
+                self.corners[lno] = newcorners
+
+                aaa = np.sqrt(np.sum(np.square(newnorms), 1))
+                aaa[aaa == 0] = 1.
+                newnorms /= aaa[:, np.newaxis]
+                self.norms[lno] = newnorms
+            else:
+                cc = self.lmod1.lith_index.copy()
+
+                nshape = np.array(cc.shape)+[2, 2, 2]
+                c = np.zeros(nshape)
+
+                cc[cc != lno] = 0
+                cc[cc == lno] = 1
+                cci = (7, 7, 7)
+                cci = np.minimum(cci, cc.shape)
+                cci = np.ones(cci)
+
+                ix, iy, iz = np.mgrid[-2:3, -2:3, -2:3]
+                sigma = 2
+                cci = np.exp(-(ix**2+iy**2+iz**2)/(3*sigma**2))
+
+                cc = sf.convolve(cc, cci)/(cci.shape[0] * cci.shape[1] *
+                                           cci.shape[2])
+
+                c[1:-1, 1:-1, 1:-1] = cc
+
+                x = np.arange(c.shape[1])
+                y = np.arange(c.shape[0])
+                z = np.arange(c.shape[2])
+                xx, yy, zz = np.meshgrid(x, y, z)
+
+                faces, vtx = MarchingCubes(xx, yy, zz, c, .1)
+
+                if vtx == []:
+                    self.faces[lno] = []
+                    self.corners[lno] = []
+                    self.norms[lno] = []
+                    continue
+
+                self.faces[lno] = faces
+                self.corners[lno] = vtx
+
+                nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
+                tris = vtx[faces]
+                n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] -
+                             tris[::, 0])
+                normalize_v3(n)
+
+                nrm[faces[:, 0]] += n
+                nrm[faces[:, 1]] += n
+                nrm[faces[:, 2]] += n
+                normalize_v3(nrm)
+
+                self.norms[lno] = nrm
 
             if self.pbars is not None:
                 self.pbars.incr()
@@ -571,6 +634,7 @@ class Mod3dDisplay(QtGui.QDialog):
         cptpd2 = vtx.ptp(0)/2.
         vtx = (vtx-cmin-cptpd2)/cptp
 
+        self.glwidget.hastriangles = self.checkbox_smooth.isChecked()
         self.glwidget.cubeVtxArray = vtx
         self.glwidget.cubeClrArray = clr
         self.glwidget.cubeNrmArray = nrm
@@ -591,6 +655,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.zoomfactor = 1.0
         self.aspect = 1.
         self.glist = None
+        self.hastriangles = False
 
         self.cubeVtxArray = [[0.0, 0.0, 0.0],
                              [1.0, 0.0, 0.0],
@@ -718,8 +783,10 @@ class GLWidget(QtOpenGL.QGLWidget):
 
         GL.glNewList(self.glist, GL.GL_COMPILE)
 
-#        GL.glDrawElementsui(GL.GL_QUADS, self.cubeIdxArray)
-        GL.glDrawElementsui(GL.GL_TRIANGLES, self.cubeIdxArray)
+        if self.hastriangles:
+            GL.glDrawElementsui(GL.GL_TRIANGLES, self.cubeIdxArray)
+        else:
+            GL.glDrawElementsui(GL.GL_QUADS, self.cubeIdxArray)
 
         GL.glEndList()
         GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
@@ -1401,6 +1468,7 @@ def main():
     cptpd2 = vtx.ptp(0)/2.
     vtx = (vtx-cmin-cptpd2)/cptp
 
+    wid.glwidget.hastriangles = True
     wid.glwidget.cubeVtxArray = vtx
     wid.glwidget.cubeClrArray = (np.zeros([vtx.shape[0], 4]) +
                                  np.array([0.9, 0.4, 0.0, 1.0]))
