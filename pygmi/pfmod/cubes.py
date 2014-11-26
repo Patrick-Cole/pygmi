@@ -44,11 +44,9 @@ class Mod3dDisplay(QtGui.QDialog):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
         self.parent = parent
-#        self.lmod1 = parent.lmod1
         self.lmod1 = None
         self.indata = {}
         self.outdata = self.indata
-#        self.outdata = {}
 
         if hasattr(parent, 'showtext'):
             self.showtext = parent.showtext
@@ -73,7 +71,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.lut = np.ones((255, 4))*255
         self.lut[0] = [255, 0, 0, 255]
         self.lut[1] = [0, 255, 0, 255]
-        self.pbars = None
         self.gfaces = []
         self.gpoints = []
         self.gnorms = []
@@ -134,9 +131,6 @@ class Mod3dDisplay(QtGui.QDialog):
         sizepolicy2 = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                         QtGui.QSizePolicy.Fixed)
 
-        sizepolicy3 = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding,
-                                        QtGui.QSizePolicy.Fixed)
-
         self.lw_3dmod_defs.setSizePolicy(sizepolicy)
         self.lw_3dmod_defs.setSelectionMode(
             QtGui.QAbstractItemView.MultiSelection)
@@ -169,7 +163,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.pb_refresh.setSizePolicy(sizepolicy2)
         self.verticallayout.addWidget(self.pb_refresh)
 
-#        self.pbar.setSizePolicy(sizepolicy3)
         self.pbar.setOrientation(QtCore.Qt.Vertical)
         self.horizontallayout.addWidget(self.pbar)
 
@@ -217,44 +210,11 @@ class Mod3dDisplay(QtGui.QDialog):
         self.gpoints = self.corners
         self.gnorms = self.norms
         self.gfaces = {}
-#        self.gfaces = self.faces
+
         for i in list(self.faces.keys()):
             self.gfaces[i] = np.append(self.faces[i][:, :-1],
                                        self.faces[i][:, [0, 2, 3]])
             self.gfaces[i].shape = (self.gfaces[i].shape[0]/3, 3)
-
-#        self.gpoints = []
-#        self.gnorms = []
-#        self.gfaces = []
-#        self.glutlith = []
-#
-#
-#        for i in list(self.faces.keys()):
-#            self.gfaces = np.append(self.gfaces, self.faces[i])
-#            self.gpoints = np.append(self.gpoints, self.corners[i])
-#            self.gnorms = np.append(self.gnorms, self.norms[i])
-#
-#        self.gfaces.shape = (self.gfaces.shape[0]/4, 4)
-#        self.gpoints.shape = (self.gpoints.shape[0]/3, 3)
-#        self.gnorms.shape = (self.gnorms.shape[0]/3, 3)
-
-#        facestmp = np.array([i[1] for i in self.faces.items() if i[0] != 0])
-#        normstmp = self.norms
-#
-#        nrms = []
-#        crns = []
-#        fcs = []
-#        for i in facestmp:
-#            fmin = np.min(i)
-#            fmax = np.max(i)+1
-#            nrms.append(normstmp[fmin:fmax])
-#            crns.append(self.corners[fmin:fmax])
-#            fnew = i-fmin
-#            fcs.append(fnew)
-#
-#        self.gpoints = crns
-#        self.gfaces = fcs
-#        self.gnorms = nrms
 
         self.glutlith = range(1, len(list(self.gfaces.keys()))+1)
 
@@ -299,7 +259,6 @@ class Mod3dDisplay(QtGui.QDialog):
 
         self.zmult = 1.0 + perc*xy_z_ratio
         self.defs()
-#        self.update_plot(fullcalc=False)
 
     def opacity(self):
         """ Dial to change opacity of background """
@@ -308,9 +267,6 @@ class Mod3dDisplay(QtGui.QDialog):
 
         self.opac = perc
         self.update_model2()
-
-#        self.glwidget.cubeClrArray[:, -1] = perc
-#        self.glwidget.updateGL()
 
     def run(self):
         """ Process data """
@@ -398,16 +354,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.pbar.setMaximum(liths.size)
         self.pbar.setValue(0)
 
-#        if self.pbars is not None:
-#            # self.pbars.resetsub(maximum=liths.size)
-#            self.pbars.resetall(maximum=liths.size, mmax=2)
-
-#        for lno in liths:
-#            self.faces[lno], self.norms[lno], self.corners[lno] = main(
-#                self.gdata, lno)
-#            if self.pbars is not None:
-#                self.pbars.incr()
-
         igd, jgd, kgd = self.gdata.shape
         cloc = np.indices(((kgd+1), (jgd+1), (igd+1))).T.reshape(
             (igd+1)*(jgd+1)*(kgd+1), 3).T[::-1].T
@@ -430,8 +376,6 @@ class Mod3dDisplay(QtGui.QDialog):
                 gdat2[gdat2 == lno] = 0.5
 
                 newfaces = []
-                cnrm = np.zeros_like(cloc)
-
 # Face order may have to be reversed if normal is negative.
 
                 ndiff = np.diff(gdat2, 1, 2).astype(int)
@@ -445,7 +389,6 @@ class Mod3dDisplay(QtGui.QDialog):
                 c_3 = cindx[nd3 == 1]
                 c_4 = cindx[nd4 == 1]
                 ccc = np.transpose([c_1, c_4, c_3, c_2])
-                cnrm[ccc] += [0, 0, -1]
                 newfaces = np.append(newfaces, ccc)
 
                 c_1 = cindx[nd1 == -1]
@@ -453,7 +396,6 @@ class Mod3dDisplay(QtGui.QDialog):
                 c_3 = cindx[nd3 == -1]
                 c_4 = cindx[nd4 == -1]
                 ccc = np.transpose([c_1, c_2, c_3, c_4])
-                cnrm[ccc] += [0, 0, 1]
                 newfaces = np.append(newfaces, ccc)
 
                 ndiff = np.diff(gdat2, 1, 1).astype(int)
@@ -467,7 +409,6 @@ class Mod3dDisplay(QtGui.QDialog):
                 c_3 = cindx[nd3 == 1]
                 c_4 = cindx[nd4 == 1]
                 ccc = np.transpose([c_1, c_2, c_3, c_4])
-                cnrm[ccc] += [0, -1, 0]
                 newfaces = np.append(newfaces, ccc)
 
                 c_1 = cindx[nd1 == -1]
@@ -475,7 +416,6 @@ class Mod3dDisplay(QtGui.QDialog):
                 c_3 = cindx[nd3 == -1]
                 c_4 = cindx[nd4 == -1]
                 ccc = np.transpose([c_1, c_4, c_3, c_2])
-                cnrm[ccc] += [0, 1, 0]
                 newfaces = np.append(newfaces, ccc)
 
                 ndiff = np.diff(gdat2, 1, 0).astype(int)
@@ -489,7 +429,6 @@ class Mod3dDisplay(QtGui.QDialog):
                 c_3 = cindx[nd3 == 1]
                 c_4 = cindx[nd4 == 1]
                 ccc = np.transpose([c_1, c_2, c_3, c_4])
-                cnrm[ccc] += [-1, 0, 0]
                 newfaces = np.append(newfaces, ccc)
 
                 c_1 = cindx[nd1 == -1]
@@ -497,7 +436,6 @@ class Mod3dDisplay(QtGui.QDialog):
                 c_3 = cindx[nd3 == -1]
                 c_4 = cindx[nd4 == -1]
                 ccc = np.transpose([c_1, c_4, c_3, c_2])
-                cnrm[ccc] += [1, 0, 0]
                 newfaces = np.append(newfaces, ccc)
 
                 uuu, i = np.unique(newfaces, return_inverse=True)
@@ -505,16 +443,11 @@ class Mod3dDisplay(QtGui.QDialog):
                 n_f = np.arange(uuu.size)
                 newfaces = n_f[i]
                 newcorners = cloc[uuu]
-                newnorms = cnrm[uuu]
                 newfaces.shape = (newfaces.size/4, 4)
 
                 self.faces[lno] = newfaces
                 self.corners[lno] = newcorners
 
-                aaa = np.sqrt(np.sum(np.square(newnorms), 1))
-                aaa[aaa == 0] = 1.
-                newnorms /= aaa[:, np.newaxis]
-                self.norms[lno] = newnorms
             else:
                 cc = self.lmod1.lith_index.copy()
 
@@ -549,24 +482,14 @@ class Mod3dDisplay(QtGui.QDialog):
                     self.norms[lno] = []
                     continue
 
+                vtx[:, 0] = vtx[:, 0] * self.spacing[1] + self.origin[1]
+                vtx[:, 1] = vtx[:, 1] * self.spacing[0] + self.origin[0]
+                vtx[:, 2] = vtx[:, 2] * self.spacing[2] + self.origin[2]
+
                 self.faces[lno] = faces
                 self.corners[lno] = vtx
 
-                nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
-                tris = vtx[faces]
-                n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] -
-                             tris[::, 0])
-                normalize_v3(n)
-
-                nrm[faces[:, 0]] += n
-                nrm[faces[:, 1]] += n
-                nrm[faces[:, 2]] += n
-                normalize_v3(nrm)
-
-                self.norms[lno] = nrm
-
-            if self.pbars is not None:
-                self.pbars.incr()
+            self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
 
     def update_model2(self):
         """ Update the 3d model. Faces, nodes and face normals are calculated
@@ -583,9 +506,6 @@ class Mod3dDisplay(QtGui.QDialog):
         if not self.checkbox_bg.isChecked() and liths[0] == 0:
             liths = liths[1:]
 
-#        if self.sliths.size > 0:
-#            liths = self.sliths.tolist()
-
         lut = self.lut[:, [0, 1, 2]]/255.
 
         vtx = np.array([])
@@ -594,40 +514,32 @@ class Mod3dDisplay(QtGui.QDialog):
         idx = np.array([])
         idxmax = 0
 
-        for lno in self.sliths:
-            if lno not in np.unique(self.lmod1.lith_index):
-                continue
-            if self.corners[lno] == []:
-                continue
-
-            vtx = np.append(vtx, self.corners[lno])
-            clrtmp = lut[lno].tolist()+[1.0]
-            clr = np.append(clr,
-                            np.zeros([self.corners[lno].shape[0], 4])+clrtmp)
-            nrm = np.append(nrm, self.norms[lno])
-            idx = np.append(idx, self.faces[lno].flatten()+idxmax)
-            idxmax = idx.max()+1
-
         for lno in liths:
             if lno not in np.unique(self.lmod1.lith_index):
                 continue
-            if lno in self.sliths:
-                continue
             if self.corners[lno] == []:
                 continue
+            if lno in self.sliths:
+                clrtmp = lut[lno].tolist()+[1.]
+            else:
+                clrtmp = lut[lno].tolist()+[self.opac]
 
             vtx = np.append(vtx, self.corners[lno])
-            clrtmp = lut[lno].tolist()+[self.opac]
             clr = np.append(clr,
                             np.zeros([self.corners[lno].shape[0], 4])+clrtmp)
-            nrm = np.append(nrm, self.norms[lno])
+
+            nrm2 = calc_norms(self.faces[lno], self.corners[lno] *
+                              [1, 1, self.zmult])
+
+            nrm = np.append(nrm, nrm2)
             idx = np.append(idx, self.faces[lno].flatten()+idxmax)
             idxmax = idx.max()+1
 
         vtx.shape = (vtx.shape[0]/3, 3)
         clr.shape = (clr.shape[0]/4, 4)
 
-        vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
+#        vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
+        vtx[:, -1] = vtx[:, -1]*self.zmult
 
         cptp = vtx.ptp(0).max()/100.
         cmin = vtx.min(0)
@@ -706,21 +618,18 @@ class GLWidget(QtOpenGL.QGLWidget):
         angle = self.normalizeAngle(angle)
         if angle != self.xRot:
             self.xRot = angle
-            self.updateGL()
 
     def setYRotation(self, angle):
         """ set Y rotation """
         angle = self.normalizeAngle(angle)
         if angle != self.yRot:
             self.yRot = angle
-            self.updateGL()
 
     def setZRotation(self, angle):
         """ set Z rotation """
         angle = self.normalizeAngle(angle)
         if angle != self.zRot:
             self.zRot = angle
-            self.updateGL()
 
     def initializeGL(self):
         """ initialize OpenGL """
@@ -734,7 +643,6 @@ class GLWidget(QtOpenGL.QGLWidget):
 
 #############
 #        GL.glEnable(GL.GL_NORMALIZE)
-
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
 
@@ -750,7 +658,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnable(GL.GL_COLOR_MATERIAL)
         GL.glEnable(GL.GL_LIGHTING)
         GL.glEnable(GL.GL_LIGHT0)
-        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [2., 2., 2., 0.])
+        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [1., 1., 1., 0.])
 
 ##################
 #        GL.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, [1.,1.,1.,1.])
@@ -837,6 +745,7 @@ class GLWidget(QtOpenGL.QGLWidget):
             self.setXRotation(self.xRot + 8 * dyy)
             self.setZRotation(self.zRot + 8 * dxx)
 
+        self.updateGL()
         self.lastPos = event.pos()
 
     def wheelEvent(self, event):
@@ -857,6 +766,32 @@ class GLWidget(QtOpenGL.QGLWidget):
         while angle > 360 * 16:
             angle -= 360 * 16
         return angle
+
+
+def calc_norms(faces, vtx):
+    """ Calculates normals """
+
+    nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
+    tris = vtx[faces]
+    n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] -
+                 tris[::, 0])
+    normalize_v3(n)
+
+    nrm[faces[:, 0]] += n
+    nrm[faces[:, 1]] += n
+    nrm[faces[:, 2]] += n
+    normalize_v3(nrm)
+
+    return nrm
+
+
+def normalize_v3(arr):
+    ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
+    lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
+    arr[:, 0] /= lens
+    arr[:, 1] /= lens
+    arr[:, 2] /= lens
+    return arr
 
 
 def MarchingCubes(x, y, z, c, iso):
@@ -1073,7 +1008,7 @@ def bitset(byteval, idx):
 
 def sub2ind(msize, row, col, layer):
     """ Sub2ind """
-    nrows, ncols, nlayers = msize
+    nrows, ncols, _ = msize
 #    tmp = layer*ncols*nrows+row*ncols+col
     tmp = layer*ncols*nrows+nrows*col+row
     return tmp.astype(int)
@@ -1487,14 +1422,6 @@ def main():
 
     sys.exit(app.exec_())
 
-
-def normalize_v3(arr):
-    ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
-    lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
-    arr[:, 0] /= lens
-    arr[:, 1] /= lens
-    arr[:, 2] /= lens
-    return arr
 
 if __name__ == "__main__":
     main()
