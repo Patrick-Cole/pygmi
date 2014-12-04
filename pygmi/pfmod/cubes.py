@@ -30,6 +30,8 @@ from PyQt4 import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL.arrays import vbo
+from OpenGL.GL import shaders
+
 try:
     from . import misc
 except SystemError:
@@ -38,8 +40,9 @@ import os
 import sys
 from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
-import pygmi.ptimer as ptimer
 from numba import jit
+import pygmi.ptimer as ptimer
+import pdb
 
 
 class Mod3dDisplay(QtGui.QDialog):
@@ -90,7 +93,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.vbox_cmodel = QtGui.QVBoxLayout()
         self.verticallayout = QtGui.QVBoxLayout()
 
-        self.dial_3dmod = QtGui.QSlider(self)
         self.lw_3dmod_defs = QtGui.QListWidget(self)
         self.label = QtGui.QLabel(self)
         self.label2 = QtGui.QLabel(self)
@@ -109,7 +111,6 @@ class Mod3dDisplay(QtGui.QDialog):
     # Buttons
         self.lw_3dmod_defs.clicked.connect(self.change_defs)
         self.vslider_3dmodel.sliderReleased.connect(self.mod3d_vs)
-        self.dial_3dmod.sliderReleased.connect(self.opacity)
         self.pb_save.clicked.connect(self.save)
         self.pb_refresh.clicked.connect(self.run)
         self.checkbox_bg.stateChanged.connect(self.change_defs)
@@ -139,17 +140,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.lw_3dmod_defs.setSelectionMode(
             QtGui.QAbstractItemView.MultiSelection)
         self.verticallayout.addWidget(self.lw_3dmod_defs)
-
-        self.label.setAlignment(QtCore.Qt.AlignCenter)
-        self.label.setText("Background Model Opacity")
-        self.label.setSizePolicy(sizepolicy)
-        self.verticallayout.addWidget(self.label)
-
-        self.dial_3dmod.setMaximum(255)
-        self.dial_3dmod.setProperty("value", 127)
-        self.dial_3dmod.setOrientation(QtCore.Qt.Horizontal)
-        self.dial_3dmod.setSizePolicy(sizepolicy2)
-        self.verticallayout.addWidget(self.dial_3dmod)
 
         self.checkbox_bg.setText("Include Background")
         self.checkbox_bg.setSizePolicy(sizepolicy)
@@ -260,12 +250,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
     def opacity(self):
         """ Dial to change opacity of background """
-        perc = (float(self.dial_3dmod.value()) /
-                float(self.dial_3dmod.maximum()))
-
-        self.opac = perc
-
-        ttt = ptimer.PTime()
+        self.opac = 0
 
         liths = np.unique(self.gdata)
         liths = liths[liths < 900]
@@ -297,13 +282,10 @@ class Mod3dDisplay(QtGui.QDialog):
 
         clr.shape = (clr.shape[0]/4, 4)
 
-        ttt.since_last_call('Update Model')
-
         self.glwidget.cubeClrArray = clr
 
         self.glwidget.init_object()
         self.glwidget.updateGL()
-        ttt.since_last_call('Update Model2')
 
     def run(self):
         """ Process data """
@@ -326,6 +308,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
         self.show()
         misc.update_lith_lw(self.lmod1, self.lw_3dmod_defs)
+#        self.lw_3dmod_defs.item(0).setSelected(True)
         self.update_plot()
         return True
 
@@ -358,14 +341,9 @@ class Mod3dDisplay(QtGui.QDialog):
             self.update_model()
             self.update_model2()
 
-        if self.checkbox_smooth.isChecked():
-            self.glwidget.xRot = 0*16
-            self.glwidget.zRot = 0*16
-#            self.glwidget.xRot = 180*16
-#            self.glwidget.zRot = 270*16
-        else:
-            self.glwidget.xRot = 0*16
-            self.glwidget.zRot = 0*16
+        self.glwidget.xRot = 0*16
+        self.glwidget.zRot = 0*16
+
         self.glwidget.updateGL()
 
     def update_model(self):
@@ -527,6 +505,10 @@ class Mod3dDisplay(QtGui.QDialog):
                 self.corners[lno] = vtx[:, [1, 0, 2]]
 
             self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
+
+#            ftmp = np.transpose(self.faces[lno])
+#            I = np.lexsort(ftmp)
+#            self.faces[lno] = self.faces[lno][I]
 
     def update_model2(self):
         """ Update the 3d model. Faces, nodes and face normals are calculated
@@ -691,18 +673,13 @@ class GLWidget(QtOpenGL.QGLWidget):
 #        GL.glEnable(GL.GL_NORMALIZE)
 # Blend allows transparency
 
-        GL.glEnable(GL.GL_BLEND)
-        GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
-#        GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
-#
-#        GL.glEnable(GL.GL_ALPHA_TEST)
-#        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
-##
-#        GL.glEnable(GL.GL_DEPTH_TEST)
-#        GL.glDepthMask(GL.GL_TRUE)
-#        GL.glDepthFunc(GL.GL_LEQUAL)
+        GL.glEnable(GL.GL_ALPHA_TEST)
+        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
+        GL.glEnable(GL.GL_DEPTH_TEST)
+        GL.glDepthMask(GL.GL_TRUE)
+        GL.glDepthFunc(GL.GL_LEQUAL)
 
-#        GL.glEnable(GL.GL_CULL_FACE)
+        GL.glEnable(GL.GL_CULL_FACE)
 
         GL.glEnable(GL.GL_COLOR_MATERIAL)
         GL.glEnable(GL.GL_LIGHTING)
@@ -727,6 +704,18 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def init_object(self):
         """ Initialise VBO """
+
+        VERTEX_SHADER = shaders.compileShader("""#version 120
+        void main() {
+            gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+        }""", GL.GL_VERTEX_SHADER)
+
+        FRAGMENT_SHADER = shaders.compileShader("""#version 120
+        void main() {
+            gl_FragColor = vec4( 0, 1, 0, 1 );
+        }""", GL.GL_FRAGMENT_SHADER)
+
+        self.shader = shaders.compileProgram(VERTEX_SHADER, FRAGMENT_SHADER)
 
         self.cubeNrmArray.shape = self.cubeVtxArray.shape
 
@@ -779,7 +768,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
         GL.glDisableClientState(GL.GL_COLOR_ARRAY)
         GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
-#        GL.glUseProgram(0)
+        GL.glUseProgram(0)
 
     def resizeGL(self, width, height):
         """ Resize OpenGL """
@@ -1484,22 +1473,11 @@ def main():
     wid.glwidget.cubeClrArray = (np.zeros([vtx.shape[0], 4]) +
                                  np.array([0.9, 0.4, 0.0, 0.5]))
     wid.glwidget.cubeNrmArray = norm
-#    nnn = n[np.nonzero(faces==1)[0]]
-#    faces = faces[np.nonzero(faces==1)[0]]
-#    faces[0] = faces[0,::-1]
 
-#    I = np.lexsort(faces.T)
+#    ftmp = np.transpose(faces)
+#    I = np.lexsort(ftmp)
 #    faces = faces[I]
-#    faces = np.vstack((faces[:3], faces[-5:-1]))
-    aaa = faces.copy()
-    nfaces = []
-    for i in range(faces.max()+1):
-        aaa=np.array(bbb)
-        for j in np.nonzero(aaa == i)[::-1]:
-            nfaces.append(aaa.pop(j))
 
-
-    faces = np.array(nfaces)
     wid.glwidget.cubeIdxArray = faces.flatten().astype(np.uint32)
 
 # This activates the opengl stuff
