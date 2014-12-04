@@ -29,6 +29,7 @@ import numpy as np
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 from OpenGL import GLU
+from OpenGL.arrays import vbo
 try:
     from . import misc
 except SystemError:
@@ -37,6 +38,8 @@ import os
 import sys
 from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
+import pygmi.ptimer as ptimer
+from numba import jit
 
 
 class Mod3dDisplay(QtGui.QDialog):
@@ -79,6 +82,7 @@ class Mod3dDisplay(QtGui.QDialog):
         self.qdiv = 0
         self.mesh = {}
         self.opac = 0.5
+        self.cust_z = None
 
 # Back to normal stuff
         self.horizontallayout = QtGui.QHBoxLayout(self)
@@ -220,30 +224,24 @@ class Mod3dDisplay(QtGui.QDialog):
 
     def change_defs(self):
         """ List box routine """
-        self.defs()
+        if len(self.lmod1.lith_list.keys()) == 0:
+            return
+        self.set_selected_liths()
+        self.opacity()
 
     def data_init(self):
         """ Data initialisation routine """
         self.outdata = self.indata
 
-    def defs(self, fcalc=False):
-        """ List box in layer tab for definitions """
-        if len(self.lmod1.lith_list.keys()) == 0:
-            return
+    def set_selected_liths(self):
+        """ Sets the selected lithologies """
+        i = self.lw_3dmod_defs.selectedItems()
 
-        itxt = self.get_selected()
+        itxt = [j.text() for j in i]
         lith = [self.lmod1.lith_list[j] for j in itxt]
         lith3d = [j.lith_index for j in lith]
 
         self.sliths = np.intersect1d(self.gdata, lith3d)
-        self.update_plot2(fullcalc=fcalc)
-
-    def get_selected(self):
-        """ gets selected items on the list widget """
-        i = self.lw_3dmod_defs.selectedItems()
-
-        itxt = [j.text() for j in i]
-        return itxt
 
     def mod3d_vs(self):
         """ Vertical slider used to scale 3d view """
@@ -258,7 +256,7 @@ class Mod3dDisplay(QtGui.QDialog):
         xy_z_ratio = xydist/zdist
 
         self.zmult = 1.0 + perc*xy_z_ratio
-        self.defs()
+        self.update_model2()
 
     def opacity(self):
         """ Dial to change opacity of background """
@@ -266,7 +264,46 @@ class Mod3dDisplay(QtGui.QDialog):
                 float(self.dial_3dmod.maximum()))
 
         self.opac = perc
-        self.update_model2()
+
+        ttt = ptimer.PTime()
+
+        liths = np.unique(self.gdata)
+        liths = liths[liths < 900]
+
+        if liths.max() == -1:
+            return
+        if liths[0] == -1:
+            liths = liths[1:]
+        if not self.checkbox_bg.isChecked() and liths[0] == 0:
+            liths = liths[1:]
+
+        lut = self.lut[:, [0, 1, 2]]/255.
+
+        clr = np.array([])
+        lcheck = np.unique(self.lmod1.lith_index)
+
+        for lno in liths:
+            if lno not in lcheck:
+                continue
+            if self.corners[lno] == []:
+                continue
+            if lno in self.sliths:
+                clrtmp = lut[lno].tolist()+[1.]
+            else:
+                clrtmp = lut[lno].tolist()+[self.opac]
+
+            clr = np.append(clr,
+                            np.zeros([self.corners[lno].shape[0], 4])+clrtmp)
+
+        clr.shape = (clr.shape[0]/4, 4)
+
+        ttt.since_last_call('Update Model')
+
+        self.glwidget.cubeClrArray = clr
+
+        self.glwidget.init_object()
+        self.glwidget.updateGL()
+        ttt.since_last_call('Update Model2')
 
     def run(self):
         """ Process data """
@@ -316,24 +353,20 @@ class Mod3dDisplay(QtGui.QDialog):
 
         self.lut = tmp
 
-        self.defs(fcalc=True)
+        if len(self.lmod1.lith_list.keys()) > 0:
+            self.set_selected_liths()
+            self.update_model()
+            self.update_model2()
 
         if self.checkbox_smooth.isChecked():
-            self.glwidget.xRot = 180*16
-            self.glwidget.zRot = 270*16
+            self.glwidget.xRot = 0*16
+            self.glwidget.zRot = 0*16
+#            self.glwidget.xRot = 180*16
+#            self.glwidget.zRot = 270*16
         else:
             self.glwidget.xRot = 0*16
             self.glwidget.zRot = 0*16
         self.glwidget.updateGL()
-
-    def update_plot2(self, fullcalc=True):
-        """ Update plot """
-
-# Update the model if necessary
-        if fullcalc is True:
-            self.update_model()
-
-        self.update_model2()
 
     def update_model(self):
         """ Update the 3d model. Faces, nodes and face normals are calculated
@@ -346,6 +379,8 @@ class Mod3dDisplay(QtGui.QDialog):
 
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
+        lcheck = np.unique(self.lmod1.lith_index)
+
         if liths.max() == -1:
             return
         if liths[0] == -1:
@@ -354,21 +389,39 @@ class Mod3dDisplay(QtGui.QDialog):
         self.pbar.setMaximum(liths.size)
         self.pbar.setValue(0)
 
-        igd, jgd, kgd = self.gdata.shape
-        cloc = np.indices(((kgd+1), (jgd+1), (igd+1))).T.reshape(
-            (igd+1)*(jgd+1)*(kgd+1), 3).T[::-1].T
-        cloc = cloc * self.spacing + self.origin
-        cindx = np.arange(cloc.size/3, dtype=int)
-        cindx.shape = (igd+1, jgd+1, kgd+1)
+        if not self.checkbox_smooth.isChecked():
+            igd, jgd, kgd = self.gdata.shape
+            cloc = np.indices(((kgd+1), (jgd+1), (igd+1))).T.reshape(
+                (igd+1)*(jgd+1)*(kgd+1), 3).T[::-1].T
+            cloc = cloc * self.spacing
+            cindx = np.arange(cloc.size/3, dtype=int)
+            cindx.shape = (igd+1, jgd+1, kgd+1)
 
-        tmpdat = np.zeros([igd+2, jgd+2, kgd+2])-1
-        tmpdat[1:-1, 1:-1, 1:-1] = self.gdata
+            tmpdat = np.zeros([igd+2, jgd+2, kgd+2])-1
+            tmpdat[1:-1, 1:-1, 1:-1] = self.gdata
+
+        else:
+            # Setup stuff for triangle calcs
+            nshape = np.array(self.lmod1.lith_index.shape)+[2, 2, 2]
+            x = np.arange(nshape[1]) * self.spacing[1]
+            y = np.arange(nshape[0]) * self.spacing[0]
+            if self.cust_z is None:
+                z = np.arange(nshape[2]) * self.spacing[2]
+            else:
+                z = ([self.cust_z[0] - self.cust_z[1]] + self.cust_z.tolist() +
+                     [2*self.cust_z[-1] - self.cust_z[-2]])
+            xx, yy, zz = np.meshgrid(x, y, z)
+
+    # Set up gaussian smoothing filter
+            ix, iy, iz = np.mgrid[-1:2, -1:2, -1:2]
+            sigma = 2
+            cci = np.exp(-(ix**2+iy**2+iz**2)/(3*sigma**2))
 
         tmppval = 0
         for lno in liths:
             tmppval += 1
             self.pbar.setValue(tmppval)
-            if lno not in np.unique(self.lmod1.lith_index):
+            if lno not in lcheck:
                 continue
             if not self.checkbox_smooth.isChecked():
                 gdat2 = tmpdat.copy()
@@ -376,7 +429,6 @@ class Mod3dDisplay(QtGui.QDialog):
                 gdat2[gdat2 == lno] = 0.5
 
                 newfaces = []
-# Face order may have to be reversed if normal is negative.
 
                 ndiff = np.diff(gdat2, 1, 2).astype(int)
                 nd1 = ndiff[1:, 1:]
@@ -449,30 +501,18 @@ class Mod3dDisplay(QtGui.QDialog):
                 self.corners[lno] = newcorners
 
             else:
-                cc = self.lmod1.lith_index.copy()
-
-                nshape = np.array(cc.shape)+[2, 2, 2]
                 c = np.zeros(nshape)
 
+                cc = self.lmod1.lith_index.copy()
                 cc[cc != lno] = 0
                 cc[cc == lno] = 1
-                cci = (7, 7, 7)
-                cci = np.minimum(cci, cc.shape)
-                cci = np.ones(cci)
 
-                ix, iy, iz = np.mgrid[-2:3, -2:3, -2:3]
-                sigma = 2
-                cci = np.exp(-(ix**2+iy**2+iz**2)/(3*sigma**2))
+                cc = sf.convolve(cc, cci)/cci.size
 
-                cc = sf.convolve(cc, cci)/(cci.shape[0] * cci.shape[1] *
-                                           cci.shape[2])
+# shrink cc to match only visible lithology? Origin offset would need to be
+# checked.
 
                 c[1:-1, 1:-1, 1:-1] = cc
-
-                x = np.arange(c.shape[1])
-                y = np.arange(c.shape[0])
-                z = np.arange(c.shape[2])
-                xx, yy, zz = np.meshgrid(x, y, z)
 
                 faces, vtx = MarchingCubes(xx, yy, zz, c, .1)
 
@@ -482,19 +522,15 @@ class Mod3dDisplay(QtGui.QDialog):
                     self.norms[lno] = []
                     continue
 
-                vtx[:, 0] = vtx[:, 0] * self.spacing[1] + self.origin[1]
-                vtx[:, 1] = vtx[:, 1] * self.spacing[0] + self.origin[0]
-                vtx[:, 2] = vtx[:, 2] * self.spacing[2] + self.origin[2]
-
                 self.faces[lno] = faces
-                self.corners[lno] = vtx
+                vtx[:, 2] *= -1
+                self.corners[lno] = vtx[:, [1, 0, 2]]
 
             self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
 
     def update_model2(self):
         """ Update the 3d model. Faces, nodes and face normals are calculated
         here, from the voxel model. """
-
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
         liths = liths[liths < 900]
@@ -513,9 +549,17 @@ class Mod3dDisplay(QtGui.QDialog):
         nrm = np.array([])
         idx = np.array([])
         idxmax = 0
+        lcheck = np.unique(self.lmod1.lith_index)
+
+        self.pbar.setMaximum(liths.size)
+        self.pbar.setValue(0)
+        tmppval = 0
 
         for lno in liths:
-            if lno not in np.unique(self.lmod1.lith_index):
+            tmppval += 1
+            self.pbar.setValue(tmppval)
+
+            if lno not in lcheck:
                 continue
             if self.corners[lno] == []:
                 continue
@@ -538,8 +582,8 @@ class Mod3dDisplay(QtGui.QDialog):
         vtx.shape = (vtx.shape[0]/3, 3)
         clr.shape = (clr.shape[0]/4, 4)
 
-#        vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
-        vtx[:, -1] = vtx[:, -1]*self.zmult
+        vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
+#        vtx[:, -1] = vtx[:, -1]*self.zmult
 
         cptp = vtx.ptp(0).max()/100.
         cmin = vtx.min(0)
@@ -550,9 +594,9 @@ class Mod3dDisplay(QtGui.QDialog):
         self.glwidget.cubeVtxArray = vtx
         self.glwidget.cubeClrArray = clr
         self.glwidget.cubeNrmArray = nrm
-        self.glwidget.cubeIdxArray = idx
+        self.glwidget.cubeIdxArray = idx.astype(np.uint32)
 
-        self.glwidget.updatelist()
+        self.glwidget.init_object()
         self.glwidget.updateGL()
 
 
@@ -561,6 +605,8 @@ class GLWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
         super(GLWidget, self).__init__(parent)
 
+        self.vbo = None
+        self.indx = None
         self.xRot = 0
         self.yRot = 0
         self.zRot = 0
@@ -569,39 +615,39 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.glist = None
         self.hastriangles = False
 
-        self.cubeVtxArray = [[0.0, 0.0, 0.0],
-                             [1.0, 0.0, 0.0],
-                             [1.0, 1.0, 0.0],
-                             [0.0, 1.0, 0.0],
-                             [0.0, 0.0, 1.0],
-                             [1.0, 0.0, 1.0],
-                             [1.0, 1.0, 1.0],
-                             [0.0, 1.0, 1.0]]
+        self.cubeVtxArray = np.array([[0.0, 0.0, 0.0],
+                                      [1.0, 0.0, 0.0],
+                                      [1.0, 1.0, 0.0],
+                                      [0.0, 1.0, 0.0],
+                                      [0.0, 0.0, 1.0],
+                                      [1.0, 0.0, 1.0],
+                                      [1.0, 1.0, 1.0],
+                                      [0.0, 1.0, 1.0]])
 
-        self.cubeIdxArray = [0, 1, 2, 3,
-                             3, 2, 6, 7,
-                             1, 0, 4, 5,
-                             2, 1, 5, 6,
-                             0, 3, 7, 4,
-                             7, 6, 5, 4]
+        self.cubeIdxArray = np.array([0, 1, 2, 3,
+                                      3, 2, 6, 7,
+                                      1, 0, 4, 5,
+                                      2, 1, 5, 6,
+                                      0, 3, 7, 4,
+                                      7, 6, 5, 4])
 
-        self.cubeClrArray = [[0.0, 0.0, 0.0, 0.0],
-                             [1.0, 0.0, 0.0, 0.0],
-                             [1.0, 1.0, 0.0, 0.0],
-                             [0.0, 1.0, 0.0, 0.0],
-                             [0.0, 0.0, 1.0, 0.0],
-                             [1.0, 0.0, 1.0, 0.0],
-                             [1.0, 1.0, 1.0, 0.0],
-                             [0.0, 1.0, 1.0, 0.0]]
+        self.cubeClrArray = np.array([[0.0, 0.0, 0.0, 0.0],
+                                      [1.0, 0.0, 0.0, 0.0],
+                                      [1.0, 1.0, 0.0, 0.0],
+                                      [0.0, 1.0, 0.0, 0.0],
+                                      [0.0, 0.0, 1.0, 0.0],
+                                      [1.0, 0.0, 1.0, 0.0],
+                                      [1.0, 1.0, 1.0, 0.0],
+                                      [0.0, 1.0, 1.0, 0.0]])
 
-        self.cubeNrmArray = [[0.0, 0.0, 0.0],
-                             [1.0, 0.0, 0.0],
-                             [0.0, 1.0, 0.0],
-                             [0.0, 1.0, 0.0],
-                             [0.0, 0.0, 1.0],
-                             [0.0, 0.0, 1.0],
-                             [1.0, 0.0, 0.0],
-                             [0.0, 1.0, 0.0]]
+        self.cubeNrmArray = np.array([[0.0, 0.0, 0.0],
+                                      [1.0, 0.0, 0.0],
+                                      [0.0, 1.0, 0.0],
+                                      [0.0, 1.0, 0.0],
+                                      [0.0, 0.0, 1.0],
+                                      [0.0, 0.0, 1.0],
+                                      [1.0, 0.0, 0.0],
+                                      [0.0, 1.0, 0.0]])
 
         self.lastPos = QtCore.QPoint()
 
@@ -639,21 +685,24 @@ class GLWidget(QtOpenGL.QGLWidget):
 
 #        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
 #        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL)
-#        GL.glShadeModel(GL.GL_SMOOTH)
+        GL.glShadeModel(GL.GL_SMOOTH)
 
 #############
 #        GL.glEnable(GL.GL_NORMALIZE)
+# Blend allows transparency
+
         GL.glEnable(GL.GL_BLEND)
         GL.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA)
+#        GL.glBlendFunc(GL.GL_ZERO, GL.GL_SRC_COLOR)
+#
+#        GL.glEnable(GL.GL_ALPHA_TEST)
+#        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
+##
+#        GL.glEnable(GL.GL_DEPTH_TEST)
+#        GL.glDepthMask(GL.GL_TRUE)
+#        GL.glDepthFunc(GL.GL_LEQUAL)
 
-        GL.glAlphaFunc(GL.GL_GREATER, 0.1)
-        GL.glEnable(GL.GL_ALPHA_TEST)
-
-        GL.glEnable(GL.GL_DEPTH_TEST)
-        GL.glDepthMask(GL.GL_TRUE)
-        GL.glDepthFunc(GL.GL_LEQUAL)
-
-        GL.glEnable(GL.GL_CULL_FACE)
+#        GL.glEnable(GL.GL_CULL_FACE)
 
         GL.glEnable(GL.GL_COLOR_MATERIAL)
         GL.glEnable(GL.GL_LIGHTING)
@@ -674,43 +723,63 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def initGeometry(self):
         """ Initialize Geometry """
-        self.updatelist()
+        self.init_object()
 
-    def updatelist(self):
-        """ Updates the list """
-        if self.glist is not None:
-            GL.glDeleteLists(self.glist, 1)
+    def init_object(self):
+        """ Initialise VBO """
 
-        self.glist = GL.glGenLists(1)
-        GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-        GL.glEnableClientState(GL.GL_COLOR_ARRAY)
-        GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
-        GL.glVertexPointerf(self.cubeVtxArray)
-        GL.glNormalPointerf(self.cubeNrmArray)
-        GL.glColorPointerf(self.cubeClrArray)
+        self.cubeNrmArray.shape = self.cubeVtxArray.shape
 
-        GL.glNewList(self.glist, GL.GL_COMPILE)
+        data = np.hstack((self.cubeVtxArray,
+                          self.cubeClrArray,
+                          self.cubeNrmArray))
 
-        if self.hastriangles:
-            GL.glDrawElementsui(GL.GL_TRIANGLES, self.cubeIdxArray)
+        data = data.astype(np.float32)
+
+        if self.vbo is not None:
+            self.vbo.set_array(data)
         else:
-            GL.glDrawElementsui(GL.GL_QUADS, self.cubeIdxArray)
+            self.vbo = vbo.VBO(data)
 
-        GL.glEndList()
-        GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
-        GL.glDisableClientState(GL.GL_COLOR_ARRAY)
-        GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
+        if self.indx is not None:
+            self.indx.set_array(self.cubeIdxArray.astype(np.uint32))
+        else:
+            self.indx = vbo.VBO(self.cubeIdxArray.astype(np.uint32),
+                                target='GL_ELEMENT_ARRAY_BUFFER')
 
     def paintGL(self):
         """ Paint OpenGL """
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+#        GL.glUseProgram(self.shader)
+        self.vbo.bind()
+        self.indx.bind()
+
         GL.glLoadIdentity()
         GL.glTranslated(0.0, 0.0, -100.0)
         GL.glRotated(self.xRot / 16.0, 1.0, 0.0, 0.0)
         GL.glRotated(self.yRot / 16.0, 0.0, 1.0, 0.0)
         GL.glRotated(self.zRot / 16.0, 0.0, 0.0, 1.0)
 
-        GL.glCallList(self.glist)
+        GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+        GL.glEnableClientState(GL.GL_COLOR_ARRAY)
+        GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
+        GL.glVertexPointer(3, GL.GL_FLOAT, 40, self.vbo)
+        GL.glColorPointer(4, GL.GL_FLOAT, 40, self.vbo+12)
+        GL.glNormalPointer(GL.GL_FLOAT, 40, self.vbo+28)
+
+        if self.hastriangles:
+            GL.glDrawElements(GL.GL_TRIANGLES, int(self.cubeIdxArray.size),
+                              GL.GL_UNSIGNED_INT, self.indx)
+        else:
+            GL.glDrawElements(GL.GL_QUADS, int(self.cubeIdxArray.size),
+                              GL.GL_UNSIGNED_INT, self.indx)
+
+        self.vbo.unbind()
+        self.indx.unbind()
+        GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
+        GL.glDisableClientState(GL.GL_COLOR_ARRAY)
+        GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
+#        GL.glUseProgram(0)
 
     def resizeGL(self, width, height):
         """ Resize OpenGL """
@@ -827,7 +896,6 @@ def MarchingCubes(x, y, z, c, iso):
     #    error('iso needs to be scalar value')
     #    error( 'color must be matrix of same size as c')
     """
-
     lindex = 4
 
     [edgeTable, triTable] = GetTables()
@@ -852,12 +920,14 @@ def MarchingCubes(x, y, z, c, iso):
                            [n1, n2+1, n3+1]])
 
     # loop thru vertices of all cubes
+
+    out = np.zeros(n)
     for ii in range(8):
         # which cubes have vtx ii > iso
-        idx = c[np.ix_(vertex_idx[ii, 0], vertex_idx[ii, 1],
-                       vertex_idx[ii, 2])] > iso
+        tmp2 = fancyindex(out, c, vertex_idx[ii, 0], vertex_idx[ii, 1],
+                          vertex_idx[ii, 2])
+        idx = tmp2 > iso
         cc[idx] = bitset(cc[idx], ii)     # for those cubes, turn bit ii on
-#        cc[idx] = np.bitwise_or(cc[idx], int(str(10**ii), 2))
 
     # intersected edges for each cube ([n1 x n2 x n3] mtx)
     cedge = edgeTable[cc]
@@ -865,7 +935,7 @@ def MarchingCubes(x, y, z, c, iso):
     iden = np.nonzero(cedge.flatten(order='F'))[0]
 
     if iden.size == 0:          # all voxels are above or below iso
-        print('No such lithology')
+        print('No such lithology, or all voxels are above or below iso')
         F = []
         V = []
         return F, V
@@ -912,15 +982,17 @@ def MarchingCubes(x, y, z, c, iso):
 
     pp2 = pp.astype(int)
     # calculate the triangulation from the point list
-    F1 = []
-    F2 = []
-    F3 = []
-    tri = triTable[cc.flatten(order='F')[iden]]  # +1
-#    for jj in range(0, 15, 3):
-    for jj in [0, 3, 6, 9, 12]:
+    F1 = np.array([], dtype=np.int32)
+    F2 = np.array([], dtype=np.int32)
+    F3 = np.array([], dtype=np.int32)
+    tri = triTable[cc.flatten(order='F')[iden]]
+
+    pp2f = pp2.flatten(order='F')
+
+    for jj in range(0, 15, 3):
         id_ = np.nonzero(tri[:, jj] > 0)[0]
         if id_.size > 0:
-            V = np.zeros([id_.size, 5])
+            V = np.zeros([id_.size, 5], dtype=int)
             V[:, 0] = id_
             V[:, 1] = (lindex-1)*np.ones(id_.shape[0])
             V[:, 2] = tri[id_, jj] - 1
@@ -930,12 +1002,13 @@ def MarchingCubes(x, y, z, c, iso):
             p1 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 2])
             p2 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 3])
             p3 = sub2ind(pp.shape, V[:, 0], V[:, 1], V[:, 4])
-            F1 = F1 + pp2.flatten(order='F')[p1].tolist()
-            F2 = F2 + pp2.flatten(order='F')[p2].tolist()
-            F3 = F3 + pp2.flatten(order='F')[p3].tolist()
+
+            F1 = np.hstack((F1, pp2f[p1]))
+            F2 = np.hstack((F2, pp2f[p2]))
+            F3 = np.hstack((F3, pp2f[p3]))
 
     F = np.transpose([F1, F2, F3])-1
-    V = np.zeros([pp2.max()+1, 3])
+    V = np.zeros([pp2.max(), 3])
 
     for jj in range(12):
         idp = pp[:, lindex-1, jj] > 0
@@ -943,22 +1016,15 @@ def MarchingCubes(x, y, z, c, iso):
             V[pp2[idp, lindex-1, jj]-1, :3] = pp[idp, :3, jj]
 
     # Remove duplicate vertices (by Oliver Woodford)
-
-    v2 = np.zeros((V.shape[0], 4))
-    v2[:, :3] = V
-    v2[:, 3] = np.arange(V.shape[0])
-    v2 = v2.tolist()
-    v2.sort()
-    v2 = np.array(v2)
-
-    V = v2[:, :3]
-    I = v2[:, 3].astype(int)
+    I = np.lexsort(V.T)
+    V = V[I]
 
     M = np.hstack(([True], np.sum(np.abs(V[1:]-V[:-1]), 1).astype(bool)))
 
     V = V[M]
-    I[I] = np.cumsum(M)-1
-    F = I[F]
+    newI = np.zeros_like(I)
+    newI[I] = np.cumsum(M)-1
+    F = newI[F]
 
     return F, V
 # ============================================================
@@ -966,13 +1032,9 @@ def MarchingCubes(x, y, z, c, iso):
 # ============================================================
 
 
-def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2,
-                        col1=None, col2=None):
+def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
     """Interpolate vertices """
-    if col1 is None:
-        p = np.zeros([len(p1x), 3])
-    else:
-        p = np.zeros([len(p1x), 4])
+    p = np.zeros([len(p1x), 3])
 
     eps = np.spacing(1)
     mu = np.zeros(len(p1x))
@@ -982,28 +1044,41 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2,
         p[iden, 1] = p1y[iden]
         p[iden, 2] = p1z[iden]
 
-        if col1 is not None:
-            p[iden, 3] = col1[iden]
-
     nid = np.logical_not(iden)
+
     if any(nid):
         mu[nid] = (isolevel - valp1[nid]) / (valp2[nid] - valp1[nid])
         p[nid, 0] = p1x[nid] + mu[nid] * (p2x[nid] - p1x[nid])
         p[nid, 1] = p1y[nid] + mu[nid] * (p2y[nid] - p1y[nid])
         p[nid, 2] = p1z[nid] + mu[nid] * (p2z[nid] - p1z[nid])
-        if col1 is not None:
-            p[nid, 3] = col1[nid] + mu[nid] * (col2[nid] - col1[nid])
     return p
+
+
+@jit("f8[:,:,:](f8[:,:,:], f8[:,:,:], i4[:], i4[:], i4[:])", nopython=True)
+def fancyindex(out, var1, ii, jj, kk):
+    """ fancy """
+
+    i1 = -1
+    for i in ii:
+        i1 += 1
+        j1 = -1
+        for j in jj:
+            j1 += 1
+            k1 = -1
+            for k in kk:
+                k1 += 1
+                out[i1, j1, k1] = var1[i, j, k]
+    return out
 
 
 def bitget(byteval, idx):
     """ bitget """
-    return np.bitwise_and(byteval, (1 << idx)).astype(bool)
+    return (byteval & (1 << idx)) != 0
 
 
 def bitset(byteval, idx):
     """ bitset """
-    return np.bitwise_or(byteval, (1 << idx))
+    return byteval | (1 << idx)
 
 
 def sub2ind(msize, row, col, layer):
@@ -1340,7 +1415,7 @@ def main():
 
     c = np.zeros([5, 5, 5])
     c[1:4, 1:4, 1:4] = 1
-    c = zoom(c, 10, order=1)
+    c = zoom(c, 1, order=1)
 
     x = np.arange(c.shape[1])
     y = np.arange(c.shape[0])
@@ -1366,7 +1441,8 @@ def main():
     wid.activateWindow()
 
 ###############################
-    faces = faces
+    faces = np.array(faces)
+    vtx = np.array(vtx)
 # Create a zeroed array with the same type and shape as our vertices i.e.,
 # per vertex normal
     norm = np.zeros(vtx.shape, dtype=vtx.dtype)
@@ -1406,16 +1482,29 @@ def main():
     wid.glwidget.hastriangles = True
     wid.glwidget.cubeVtxArray = vtx
     wid.glwidget.cubeClrArray = (np.zeros([vtx.shape[0], 4]) +
-                                 np.array([0.9, 0.4, 0.0, 1.0]))
+                                 np.array([0.9, 0.4, 0.0, 0.5]))
     wid.glwidget.cubeNrmArray = norm
 #    nnn = n[np.nonzero(faces==1)[0]]
 #    faces = faces[np.nonzero(faces==1)[0]]
 #    faces[0] = faces[0,::-1]
-    wid.glwidget.cubeIdxArray = faces.flatten()
+
+#    I = np.lexsort(faces.T)
+#    faces = faces[I]
+#    faces = np.vstack((faces[:3], faces[-5:-1]))
+    aaa = faces.copy()
+    nfaces = []
+    for i in range(faces.max()+1):
+        aaa=np.array(bbb)
+        for j in np.nonzero(aaa == i)[::-1]:
+            nfaces.append(aaa.pop(j))
+
+
+    faces = np.array(nfaces)
+    wid.glwidget.cubeIdxArray = faces.flatten().astype(np.uint32)
 
 # This activates the opengl stuff
 
-    wid.glwidget.updatelist()
+    wid.glwidget.init_object()
     wid.glwidget.updateGL()
 
     wid.run()

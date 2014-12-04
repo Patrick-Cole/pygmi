@@ -2,8 +2,15 @@
 Changelog
 =========
 
-v2.2.3, 10 November 2014
+v2.2.3, 31 December 2014
 ------------------------
+* Added extra 3D display functionality
+* Added smooth model
+* Added marching cubes
+* Forced full field recalc to avoid bug
+* Fixed layer import bug
+* Bug Fix in model import
+* Fixed bug when resizing some models
 * Fix for bad values in reprojections.
 * New display of point data.
 * Equation editor improved to use numexpr.

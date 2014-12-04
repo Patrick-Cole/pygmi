@@ -42,8 +42,10 @@ import tempfile
 from scipy.linalg import norm
 from .datatypes import LithModel
 from ..ptimer import PTime
-import pdb
 from numba import jit
+import random
+from matplotlib import cm
+import pdb
 
 
 class GravMag(object):
@@ -1017,8 +1019,14 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
     lmod.lith_list['Background'].mdec = fdec
 
     j = 0
+    clrtmp = np.arange(len(inputliths))/(len(inputliths)-1)
+    clrtmp = cm.jet(clrtmp)[:, :-1]
+    clrtmp *= 255
+    clrtmp = clrtmp.astype(int)
+
     for i in inputliths:
         j += 1
+        lmod.mlut[j] = clrtmp[j-1]
         lmod.lith_list[i] = GeoData(None, numx, numy, numz, dxy, d_z, mht, ght)
 
         lmod.lith_list[i].susc = susc[j-1]

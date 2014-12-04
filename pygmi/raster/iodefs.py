@@ -216,8 +216,9 @@ def get_raster(ifile):
 #            dat[i].data = np.ma.masked_invalid(dat[i].data)
 # Note that because the data is stored in a masked array, the array ends up
 # being double the size that it was on the disk.
-
-        dat[i].data = np.ma.masked_equal(dat[i].data, nval)
+        dat[i].data = np.ma.masked_invalid(dat[0].data)
+        dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
+#        dat[i].data = np.ma.masked_equal(dat[i].data, nval)
         if dat[i].data.mask.size == 1:
             dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                 dat[i].data.mask)
