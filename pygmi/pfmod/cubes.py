@@ -31,7 +31,6 @@ from OpenGL import GL
 from OpenGL import GLU
 from OpenGL.arrays import vbo
 from OpenGL.GL import shaders
-
 try:
     from . import misc
 except SystemError:
@@ -84,7 +83,7 @@ class Mod3dDisplay(QtGui.QDialog):
         self.demsurf = None
         self.qdiv = 0
         self.mesh = {}
-        self.opac = 0.5
+        self.opac = 0.0
         self.cust_z = None
 
 # Back to normal stuff
@@ -98,7 +97,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.label2 = QtGui.QLabel(self)
         self.pb_save = QtGui.QPushButton(self)
         self.pb_refresh = QtGui.QPushButton(self)
-        self.checkbox_bg = QtGui.QCheckBox(self)
         self.checkbox_smooth = QtGui.QCheckBox(self)
         self.pbar = QtGui.QProgressBar(self)
 
@@ -113,7 +111,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.vslider_3dmodel.sliderReleased.connect(self.mod3d_vs)
         self.pb_save.clicked.connect(self.save)
         self.pb_refresh.clicked.connect(self.run)
-        self.checkbox_bg.stateChanged.connect(self.change_defs)
         self.checkbox_smooth.stateChanged.connect(self.update_plot)
 
     def setupui(self):
@@ -141,17 +138,13 @@ class Mod3dDisplay(QtGui.QDialog):
             QtGui.QAbstractItemView.MultiSelection)
         self.verticallayout.addWidget(self.lw_3dmod_defs)
 
-        self.checkbox_bg.setText("Include Background")
-        self.checkbox_bg.setSizePolicy(sizepolicy)
-        self.verticallayout.addWidget(self.checkbox_bg)
-
         self.checkbox_smooth.setText("Smooth Model")
         self.checkbox_smooth.setSizePolicy(sizepolicy)
         self.verticallayout.addWidget(self.checkbox_smooth)
 
-        self.pb_save.setText("Save to Image File (JPG or PNG)")
-        self.pb_save.setSizePolicy(sizepolicy2)
-        self.verticallayout.addWidget(self.pb_save)
+#        self.pb_save.setText("Save to Image File (JPG or PNG)")
+#        self.pb_save.setSizePolicy(sizepolicy2)
+#        self.verticallayout.addWidget(self.pb_save)
 
         self.pb_refresh.setText("Refresh Model")
         self.pb_refresh.setSizePolicy(sizepolicy2)
@@ -191,6 +184,7 @@ class Mod3dDisplay(QtGui.QDialog):
             height = int(regExp.cap(2))
             size = QtCore.QSize(width, height)
 
+#        pdb.set_trace()
         if size.isValid():
             tmp = self.glwidget.renderPixmap(size.width(), size.height())
             if ftype == 'JPG':
@@ -217,7 +211,7 @@ class Mod3dDisplay(QtGui.QDialog):
         if len(self.lmod1.lith_list.keys()) == 0:
             return
         self.set_selected_liths()
-        self.opacity()
+        self.update_color()
 
     def data_init(self):
         """ Data initialisation routine """
@@ -248,10 +242,8 @@ class Mod3dDisplay(QtGui.QDialog):
         self.zmult = 1.0 + perc*xy_z_ratio
         self.update_model2()
 
-    def opacity(self):
-        """ Dial to change opacity of background """
-        self.opac = 0
-
+    def update_color(self):
+        """ Update color only """
         liths = np.unique(self.gdata)
         liths = liths[liths < 900]
 
@@ -259,7 +251,7 @@ class Mod3dDisplay(QtGui.QDialog):
             return
         if liths[0] == -1:
             liths = liths[1:]
-        if not self.checkbox_bg.isChecked() and liths[0] == 0:
+        if liths[0] == 0:
             liths = liths[1:]
 
         lut = self.lut[:, [0, 1, 2]]/255.
@@ -295,6 +287,9 @@ class Mod3dDisplay(QtGui.QDialog):
             return False
 
         self.lmod1 = self.indata['Model3D'][0]
+
+        self.vslider_3dmodel.setValue(1)
+
         liths = np.unique(self.lmod1.lith_index[::1, ::1, ::-1])
         liths = np.array(liths).astype(int)  # needed for use in faces array
         if liths[0] == -1:
@@ -308,13 +303,18 @@ class Mod3dDisplay(QtGui.QDialog):
 
         self.show()
         misc.update_lith_lw(self.lmod1, self.lw_3dmod_defs)
-#        self.lw_3dmod_defs.item(0).setSelected(True)
+        for i in range(self.lw_3dmod_defs.count()-1, -1, -1):
+            if self.lw_3dmod_defs.item(i).text() == 'Background':
+                self.lw_3dmod_defs.takeItem(i)
+
+        for i in range(self.lw_3dmod_defs.count()):
+            self.lw_3dmod_defs.item(i).setSelected(True)
         self.update_plot()
         return True
 
     def update_plot(self):
         """ Update 3D Model """
-
+        QtGui.QApplication.processEvents()
     # Update 3D model
         self.spacing = [self.lmod1.dxy, self.lmod1.dxy, self.lmod1.d_z]
         self.origin = [self.lmod1.xrange[0], self.lmod1.yrange[0],
@@ -521,7 +521,7 @@ class Mod3dDisplay(QtGui.QDialog):
             return
         if liths[0] == -1:
             liths = liths[1:]
-        if not self.checkbox_bg.isChecked() and liths[0] == 0:
+        if liths[0] == 0:
             liths = liths[1:]
 
         lut = self.lut[:, [0, 1, 2]]/255.
@@ -565,7 +565,6 @@ class Mod3dDisplay(QtGui.QDialog):
         clr.shape = (clr.shape[0]/4, 4)
 
         vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
-#        vtx[:, -1] = vtx[:, -1]*self.zmult
 
         cptp = vtx.ptp(0).max()/100.
         cmin = vtx.min(0)
@@ -705,17 +704,17 @@ class GLWidget(QtOpenGL.QGLWidget):
     def init_object(self):
         """ Initialise VBO """
 
-        VERTEX_SHADER = shaders.compileShader("""#version 120
-        void main() {
-            gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-        }""", GL.GL_VERTEX_SHADER)
-
-        FRAGMENT_SHADER = shaders.compileShader("""#version 120
-        void main() {
-            gl_FragColor = vec4( 0, 1, 0, 1 );
-        }""", GL.GL_FRAGMENT_SHADER)
-
-        self.shader = shaders.compileProgram(VERTEX_SHADER, FRAGMENT_SHADER)
+#        VERTEX_SHADER = shaders.compileShader("""#version 120
+#        void main() {
+#            gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+#        }""", GL.GL_VERTEX_SHADER)
+#
+#        FRAGMENT_SHADER = shaders.compileShader("""#version 120
+#        void main() {
+#            gl_FragColor = vec4( 0, 1, 0, 1 );
+#        }""", GL.GL_FRAGMENT_SHADER)
+#
+#        self.shader = shaders.compileProgram(VERTEX_SHADER, FRAGMENT_SHADER)
 
         self.cubeNrmArray.shape = self.cubeVtxArray.shape
 
@@ -726,12 +725,19 @@ class GLWidget(QtOpenGL.QGLWidget):
         data = data.astype(np.float32)
 
         if self.vbo is not None:
-            self.vbo.set_array(data)
+            self.vbo.delete()
+            del self.vbo
+            self.vbo = vbo.VBO(data)
+#            self.vbo.set_array(data)
         else:
             self.vbo = vbo.VBO(data)
 
         if self.indx is not None:
-            self.indx.set_array(self.cubeIdxArray.astype(np.uint32))
+            self.indx.delete()
+            del self.indx
+            self.indx = vbo.VBO(self.cubeIdxArray.astype(np.uint32),
+                                target='GL_ELEMENT_ARRAY_BUFFER')
+#            self.indx.set_array(self.cubeIdxArray.astype(np.uint32))
         else:
             self.indx = vbo.VBO(self.cubeIdxArray.astype(np.uint32),
                                 target='GL_ELEMENT_ARRAY_BUFFER')
@@ -768,7 +774,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
         GL.glDisableClientState(GL.GL_COLOR_ARRAY)
         GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
-        GL.glUseProgram(0)
+#        GL.glUseProgram(0)
 
     def resizeGL(self, width, height):
         """ Resize OpenGL """
