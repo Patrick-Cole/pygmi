@@ -30,7 +30,6 @@ from PyQt4 import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL.arrays import vbo
-from OpenGL.GL import shaders
 try:
     from . import misc
 except SystemError:
@@ -40,8 +39,7 @@ import sys
 from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
 from numba import jit
-import pygmi.ptimer as ptimer
-import pdb
+from PIL import Image
 
 
 class Mod3dDisplay(QtGui.QDialog):
@@ -63,7 +61,6 @@ class Mod3dDisplay(QtGui.QDialog):
         else:
             self.showprocesslog = print
 
-# mayavi vars
         self.corners = []
         self.faces = {}
         self.norms = []
@@ -142,9 +139,9 @@ class Mod3dDisplay(QtGui.QDialog):
         self.checkbox_smooth.setSizePolicy(sizepolicy)
         self.verticallayout.addWidget(self.checkbox_smooth)
 
-#        self.pb_save.setText("Save to Image File (JPG or PNG)")
-#        self.pb_save.setSizePolicy(sizepolicy2)
-#        self.verticallayout.addWidget(self.pb_save)
+        self.pb_save.setText("Save to Image File (JPG or PNG)")
+        self.pb_save.setSizePolicy(sizepolicy2)
+        self.verticallayout.addWidget(self.pb_save)
 
         self.pb_refresh.setText("Refresh Model")
         self.pb_refresh.setSizePolicy(sizepolicy2)
@@ -161,36 +158,17 @@ class Mod3dDisplay(QtGui.QDialog):
             return
         os.chdir(filename.rpartition('/')[0])
 
-        ftype = 'JPG'
+        ftype = 'JPEG'
 
         if 'PNG' in filename:
             ftype = 'PNG'
 
-        text, ok = QtGui.QInputDialog.getText(self, "3D Model",
-                                              "Enter pixmap size:",
-                                              QtGui.QLineEdit.Normal,
-                                              "%d x %d" %
-                                              (self.glwidget.width(),
-                                               self.glwidget.height()))
-
-        if not ok:
-            return
-        size = QtCore.QSize()
-
-        regExp = QtCore.QRegExp("([0-9]+) *x *([0-9]+)")
-
-        if regExp.exactMatch(text):
-            width = int(regExp.cap(1))
-            height = int(regExp.cap(2))
-            size = QtCore.QSize(width, height)
-
-#        pdb.set_trace()
-        if size.isValid():
-            tmp = self.glwidget.renderPixmap(size.width(), size.height())
-            if ftype == 'JPG':
-                tmp.save(filename, ftype, 100)
-            else:
-                tmp.save(filename, ftype)
+        width = self.glwidget.width()
+        height = self.glwidget.height()
+        tmp = self.glwidget.readPixels()
+        image = Image.fromstring('RGB', (width, height), tmp)
+        image = image.transpose(Image.FLIP_TOP_BOTTOM)
+        image.save(filename, ftype)
 
     def update_for_kmz(self):
         """ Updates for the kmz file """
@@ -288,7 +266,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
         self.lmod1 = self.indata['Model3D'][0]
 
-        self.vslider_3dmodel.setValue(1)
+#        self.vslider_3dmodel.setValue(1)
 
         liths = np.unique(self.lmod1.lith_index[::1, ::1, ::-1])
         liths = np.array(liths).astype(int)  # needed for use in faces array
@@ -344,6 +322,7 @@ class Mod3dDisplay(QtGui.QDialog):
         self.glwidget.xRot = 0*16
         self.glwidget.zRot = 0*16
 
+        self.glwidget.init_object()
         self.glwidget.updateGL()
 
     def update_model(self):
@@ -586,8 +565,10 @@ class GLWidget(QtOpenGL.QGLWidget):
     def __init__(self, parent=None):
         super(GLWidget, self).__init__(parent)
 
-        self.vbo = None
-        self.indx = None
+        self.data = None
+        self.idx = None
+        self.data_buffer = None
+        self.indx_buffer = None
         self.xRot = 0
         self.yRot = 0
         self.zRot = 0
@@ -666,7 +647,7 @@ class GLWidget(QtOpenGL.QGLWidget):
 
 #        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
 #        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL)
-        GL.glShadeModel(GL.GL_SMOOTH)
+#        GL.glShadeModel(GL.GL_SMOOTH)
 
 #############
 #        GL.glEnable(GL.GL_NORMALIZE)
@@ -692,7 +673,7 @@ class GLWidget(QtOpenGL.QGLWidget):
 #
 #        GL.glMaterialfv(GL.GL_FRONT, GL.GL_EMISSION, [0., 1., 0., 1.0])
 #        GL.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, [1., 0., 0., 1.0])
-
+#
 #        shininess = 64.
 #        GL.glMaterialfv(GL.GL_FRONT, GL.GL_SPECULAR, [1., 1., 1., 1.0])
 #        GL.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, shininess);
@@ -703,19 +684,6 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def init_object(self):
         """ Initialise VBO """
-
-#        VERTEX_SHADER = shaders.compileShader("""#version 120
-#        void main() {
-#            gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
-#        }""", GL.GL_VERTEX_SHADER)
-#
-#        FRAGMENT_SHADER = shaders.compileShader("""#version 120
-#        void main() {
-#            gl_FragColor = vec4( 0, 1, 0, 1 );
-#        }""", GL.GL_FRAGMENT_SHADER)
-#
-#        self.shader = shaders.compileProgram(VERTEX_SHADER, FRAGMENT_SHADER)
-
         self.cubeNrmArray.shape = self.cubeVtxArray.shape
 
         data = np.hstack((self.cubeVtxArray,
@@ -723,31 +691,34 @@ class GLWidget(QtOpenGL.QGLWidget):
                           self.cubeNrmArray))
 
         data = data.astype(np.float32)
+        idx = self.cubeIdxArray.astype(np.uint32)
 
-        if self.vbo is not None:
-            self.vbo.delete()
-            del self.vbo
-            self.vbo = vbo.VBO(data)
-#            self.vbo.set_array(data)
+        if self.data_buffer is None:
+            self.data_buffer = vbo.VBO(data)
+            self.indx_buffer = vbo.VBO(idx, target='GL_ELEMENT_ARRAY_BUFFER')
         else:
-            self.vbo = vbo.VBO(data)
-
-        if self.indx is not None:
-            self.indx.delete()
-            del self.indx
-            self.indx = vbo.VBO(self.cubeIdxArray.astype(np.uint32),
-                                target='GL_ELEMENT_ARRAY_BUFFER')
-#            self.indx.set_array(self.cubeIdxArray.astype(np.uint32))
-        else:
-            self.indx = vbo.VBO(self.cubeIdxArray.astype(np.uint32),
-                                target='GL_ELEMENT_ARRAY_BUFFER')
+            self.data_buffer.set_array(data)
+            self.indx_buffer.set_array(idx)
 
     def paintGL(self):
         """ Paint OpenGL """
+        float_size = 4
+        voff = 0 * float_size
+        coff = 3 * float_size
+        noff = 7 * float_size
+        record_len = 10 * float_size
+
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-#        GL.glUseProgram(self.shader)
-        self.vbo.bind()
-        self.indx.bind()
+
+        self.data_buffer.bind()
+        self.indx_buffer.bind()
+
+        GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
+        GL.glEnableClientState(GL.GL_COLOR_ARRAY)
+        GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
+        GL.glVertexPointer(3, GL.GL_FLOAT, record_len, self.data_buffer + voff)
+        GL.glColorPointer(4, GL.GL_FLOAT, record_len, self.data_buffer + coff)
+        GL.glNormalPointer(GL.GL_FLOAT, record_len, self.data_buffer + noff)
 
         GL.glLoadIdentity()
         GL.glTranslated(0.0, 0.0, -100.0)
@@ -755,26 +726,19 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glRotated(self.yRot / 16.0, 0.0, 1.0, 0.0)
         GL.glRotated(self.zRot / 16.0, 0.0, 0.0, 1.0)
 
-        GL.glEnableClientState(GL.GL_VERTEX_ARRAY)
-        GL.glEnableClientState(GL.GL_COLOR_ARRAY)
-        GL.glEnableClientState(GL.GL_NORMAL_ARRAY)
-        GL.glVertexPointer(3, GL.GL_FLOAT, 40, self.vbo)
-        GL.glColorPointer(4, GL.GL_FLOAT, 40, self.vbo+12)
-        GL.glNormalPointer(GL.GL_FLOAT, 40, self.vbo+28)
-
         if self.hastriangles:
-            GL.glDrawElements(GL.GL_TRIANGLES, int(self.cubeIdxArray.size),
-                              GL.GL_UNSIGNED_INT, self.indx)
+            GL.glDrawElements(GL.GL_TRIANGLES, self.cubeIdxArray.size,
+                              GL.GL_UNSIGNED_INT, self.indx_buffer)
         else:
-            GL.glDrawElements(GL.GL_QUADS, int(self.cubeIdxArray.size),
-                              GL.GL_UNSIGNED_INT, self.indx)
+            GL.glDrawElements(GL.GL_QUADS, self.cubeIdxArray.size,
+                              GL.GL_UNSIGNED_INT, self.indx_buffer)
 
-        self.vbo.unbind()
-        self.indx.unbind()
+        self.data_buffer.unbind()
+        self.indx_buffer.unbind()
+
         GL.glDisableClientState(GL.GL_VERTEX_ARRAY)
         GL.glDisableClientState(GL.GL_COLOR_ARRAY)
         GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
-#        GL.glUseProgram(0)
 
     def resizeGL(self, width, height):
         """ Resize OpenGL """
@@ -792,6 +756,12 @@ class GLWidget(QtOpenGL.QGLWidget):
         GLU.gluPerspective(70.0*self.zoomfactor, self.aspect, 1.0, 201.0)
 
         GL.glMatrixMode(GL.GL_MODELVIEW)
+
+    def readPixels(self):
+        """ Reads pixels from the window """
+        data = GL.glReadPixels(0, 0, self.width(), self.height(), GL.GL_RGB,
+                               GL.GL_UNSIGNED_BYTE)
+        return data
 
     def mousePressEvent(self, event):
         """ Mouse Press Event """
@@ -1427,13 +1397,10 @@ def main():
 
     app = QtGui.QApplication(sys.argv)
     wid = Mod3dDisplay()
-
     wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
                        QtCore.Qt.WindowActive)
 
     # this will activate the window
-    wid.show()
-    wid.activateWindow()
 
 ###############################
     faces = np.array(faces)
@@ -1488,10 +1455,14 @@ def main():
 
 # This activates the opengl stuff
 
-    wid.glwidget.init_object()
-    wid.glwidget.updateGL()
+#    wid.glwidget.init_object()
+    print('widshow')
+    wid.show()
+#    wid.activateWindow()
 
-    wid.run()
+#    wid.glwidget.updateGL()
+#
+#    wid.run()
 
     sys.exit(app.exec_())
 
