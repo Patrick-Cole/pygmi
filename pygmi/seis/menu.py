@@ -92,9 +92,18 @@ class MenuWidget(object):
         context_menu['Seis'].addAction(self.action_export_seisan)
         self.action_export_seisan.triggered.connect(self.export_seisan)
 
+        self.action_export_csv = QtGui.QAction(self.parent)
+        self.action_export_csv.setText("Export to CSV")
+        context_menu['Seis'].addAction(self.action_export_csv)
+        self.action_export_csv.triggered.connect(self.export_csv)
+
     def export_seisan(self):
         """ Export Seisan data """
         self.parent.launch_context_item(iodefs.ExportSeisan)
+
+    def export_csv(self):
+        """ Export Seisan data to csv"""
+        self.parent.launch_context_item(iodefs.ExportCSV)
 
     def beachball(self):
         """ Create Beachballs from Fault Plane Solutions """

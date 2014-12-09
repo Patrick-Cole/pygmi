@@ -65,7 +65,7 @@ class EquationEditor(QtGui.QDialog):
         self.bandsall = []
         self.localdict = {}
 
-        self.bands['iall'] = 'all data'
+        self.bands['all data'] = 'iall'
 
         self.gridlayout = QtGui.QGridLayout(self)
         self.combobox = QtGui.QComboBox(self)
@@ -73,14 +73,12 @@ class EquationEditor(QtGui.QDialog):
         self.textbrowser = QtGui.QTextEdit(self)
         self.textbrowser2 = QtGui.QTextBrowser(self)
 
-#        self.pushbutton_add = QtGui.QPushButton(self)
         self.buttonbox = QtGui.QDialogButtonBox(self)
         self.label = QtGui.QLabel(self)
         self.label_2 = QtGui.QLabel(self)
 
         self.setupui()
 
-#        self.pushbutton_add.clicked.connect(self.useband)
         self.combobox.currentIndexChanged.connect(self.combo)
         self.textbrowser.textChanged.connect(self.textchanged)
 
@@ -92,11 +90,11 @@ class EquationEditor(QtGui.QDialog):
         """ Setup UI """
         self.textbrowser.setEnabled(True)
 #        self.setFixedWidth(600)
-        self.resize(600 ,480)
+        self.resize(600, 480)
 
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        self.buttonbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
+                                          QtGui.QDialogButtonBox.Ok)
 
         self.gridlayout.addWidget(self.label_2, 0, 0, 1, 2)
         self.gridlayout.addWidget(self.textbrowser, 2, 0, 1, 7)
@@ -110,17 +108,13 @@ class EquationEditor(QtGui.QDialog):
         ptmp.setColor(2, 9, ptmp.color(10))
         self.textbrowser2.setPalette(ptmp)
 
-#        self.textbrowser2.setTextBackgroundColor(QtGui.QColor(1))
         self.textbrowser2.setFrameShape(QtGui.QFrame.NoFrame)
-#        self.textbrowser2.setFrameShadow(QtGui.QFrame.Plain)
         self.gridlayout.addWidget(self.textbrowser2, 5, 0, 1, 7)
 
-#        self.gridlayout.addWidget(self.pushbutton_add, 5, 3, 1, 1)
         self.gridlayout.addWidget(self.buttonbox, 6, 0, 1, 7)
 
         self.setWindowTitle("Equation Editor")
-#        self.pushbutton_add.setText("+")
-        self.label.setText(": all data")
+        self.label.setText(": iall")
         self.label_2.setText("Output Equation:")
 
         QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
@@ -129,8 +123,8 @@ class EquationEditor(QtGui.QDialog):
                                self.reject)
 
         tmp = ('<h1>Instructions:</h1>'
-               '<p>Equation editor uses the numexpr library. Use the variables '
-               'iall, i1, i2 etc in formulas. The combobox above shows which '
+               '<p>Equation editor uses the numexpr library. Use the variables'
+               ' iall, i1, i2 etc in formulas. The combobox above shows which '
                'band is assigned to each variable.</p>'
                '<h2>Examples</h2>'
                '<p>Sum:</p>'
@@ -181,7 +175,7 @@ class EquationEditor(QtGui.QDialog):
     def settings(self):
         """ Settings """
         self.combobox.clear()
-        self.combobox.addItem('iall')
+        self.combobox.addItem('all data')
 
         self.bandsall = []
 
@@ -206,9 +200,9 @@ class EquationEditor(QtGui.QDialog):
         for i in indata:
             j += 1
             self.localdict['i'+str(j)] = i.data
-            self.bands['i'+str(j)] = i.dataid
+            self.bands[i.dataid] = 'i'+str(j)
             self.bandsall.append(i.data)
-            self.combobox.addItem('i'+str(j))
+            self.combobox.addItem(i.dataid)
         self.localdict['iall'] = np.ma.array(self.bandsall)
 
         self.bandsall = np.ma.array(self.bandsall)

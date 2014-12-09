@@ -277,6 +277,15 @@ class ImportShapeData(object):
 
         # Line data
         shapef = ogr.Open(ifile)
+        if shapef is None:
+            err = ('There was a problem importing the shapefile. Please make '
+                   'sure you have at all the individual files which make up '
+                   'the shapefile.')
+            QtGui.QMessageBox.warning(self.parent, 'Error', err,
+                                      QtGui.QMessageBox.Ok,
+                                      QtGui.QMessageBox.Ok)
+            return False
+
         lyr = shapef.GetLayer()
         dat = VData()
         attrib = {}

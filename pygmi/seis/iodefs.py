@@ -836,6 +836,383 @@ class ExportSeisan(object):
         self.fobj.write(tmp)
 
 
+class ExportCSV(object):
+    """ Export Seisan Data """
+    def __init__(self, parent):
+        self.ifile = ""
+        self.name = "Export CSV Data "
+        self.ext = ""
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+        self.lmod = None
+        self.fobj = None
+#        self.dirname = ""
+        self.showtext = self.parent.showprocesslog
+
+    def run(self):
+        """ Show Info """
+        if 'Seis' not in self.indata:
+            self.parent.showprocesslog(
+                'Error: You need to have a Seisan data first!')
+            return
+
+        data = self.indata['Seis']
+
+        filename = QtGui.QFileDialog.getSaveFileName(self.parent, 'Save File',
+                                                     '.', 'csv (*.csv)')
+
+        if filename == '':
+            return
+
+        os.chdir(filename.rpartition('/')[0])
+#        ofile = str(filename.rpartition('/')[-1][:-4])
+        self.ext = filename[-3:]
+
+        self.fobj = open(filename, 'w')
+
+        headi = ('last_action_done, date_time_of_last_action, operator, '
+                 'status, id, new_id_created, id_locked, ')
+
+        head1 = ('year, month, day, fixed_origin_time, hour, minutes, '
+                 'seconds, location_model_indicator, distance_indicator, '
+                 'event_id, latitude, longitude, depth, depth_indicator, '
+                 'locating_indicator, hypocenter_reporting_agency, '
+                 'number_of_stations_used, rms_of_time_residuals, '
+                 'magnitude_1, type_of_magnitude_1, '
+                 'magnitude_reporting_agency_1, magnitude_2, '
+                 'type_of_magnitude_2, magnitude_reporting_agency_2, '
+                 'magnitude_3, type_of_magnitude_3, '
+                 'magnitude_reporting_agency_3, ')
+
+        heade = ('gap, origin_time_error, latitude_error, longitude_error, '
+                 'depth_error, cov_xy, cov_xz, cov_yz, ')
+
+        head4 = ('station_name, instrument_type, dat.component, quality, '
+                 'phase_id, weighting_indicator, flag_auto_pick, '
+                 'first_motion, hour, minutes, seconds, duration, amplitude, '
+                 'period, direction_of_approach, phase_velocity, '
+                 'angle_of_incidence, azimuth_residual, travel_time_residual, '
+                 'weight, epicentral_distance, azimuth_at_source, ')
+
+        self.fobj.write(headi+head1+heade+head4+'\n')
+
+        for i in data:
+            reci = self.write_record_type_i(i)
+            rec1 = self.write_record_type_1(i)
+            rece = self.write_record_type_e(i)
+            rec4 = self.write_record_type_4(i)
+            for j in rec4:
+                self.fobj.write(reci+rec1+rece+j+'\n')
+
+        self.fobj.close()
+
+    def write_record_type_1(self, data):
+        """ Writes record type 1"""
+        if '1' not in data:
+            return ', '*27
+        else:
+            dat = data['1']
+        tmp = str(dat.year)+', '
+        tmp += str(dat.month)+', '
+        tmp += str(dat.day)+', '
+        tmp += str(dat.fixed_origin_time)+', '
+        tmp += str(dat.hour)+', '
+        tmp += str(dat.minutes)+', '
+        tmp += str(dat.seconds)+', '
+        tmp += str(dat.location_model_indicator)+', '
+        tmp += str(dat.distance_indicator)+', '
+        tmp += str(dat.event_id)+', '
+        tmp += str(dat.latitude)+', '
+        tmp += str(dat.longitude)+', '
+        tmp += str(dat.depth)+', '
+        tmp += str(dat.depth_indicator)+', '
+        tmp += str(dat.locating_indicator)+', '
+        tmp += str(dat.hypocenter_reporting_agency)+', '
+        tmp += str(dat.number_of_stations_used)+', '
+        tmp += str(dat.rms_of_time_residuals)+', '
+        tmp += str(dat.magnitude_1)+', '
+        tmp += str(dat.type_of_magnitude_1)+', '
+        tmp += str(dat.magnitude_reporting_agency_1)+', '
+        tmp += str(dat.magnitude_2)+', '
+        tmp += str(dat.type_of_magnitude_2)+', '
+        tmp += str(dat.magnitude_reporting_agency_2)+', '
+        tmp += str(dat.magnitude_3)+', '
+        tmp += str(dat.type_of_magnitude_3)+', '
+        tmp += str(dat.magnitude_reporting_agency_3)+', '
+
+        tmp = tmp.replace('None', '')
+        return tmp
+
+    def write_record_type_2(self, data):
+        """ Writes record type 2"""
+        if '2' not in data:
+            return
+        else:
+            dat = data['2']
+
+        tmp = ' '*80+'\n'
+        tmp = sform('{0:15s}', dat.description, tmp, 6, 20)
+        tmp = sform('{0:1s}', dat.diastrophism_code, tmp, 22)
+        tmp = sform('{0:1s}', dat.tsunami_code, tmp, 23)
+        tmp = sform('{0:1s}', dat.seiche_code, tmp, 24)
+        tmp = sform('{0:1s}', dat.cultural_effects, tmp, 25)
+        tmp = sform('{0:1s}', dat.unusual_events, tmp, 26)
+        tmp = sform('{0:2d}', dat.max_intensity, tmp, 28, 29)
+        tmp = sform('{0:1s}', dat.max_intensity_qualifier, tmp, 30)
+        tmp = sform('{0:2s}', dat.intensity_scale, tmp, 31, 32)
+        tmp = sform('{0:6.2f}', dat.macroseismic_latitude, tmp, 34, 39)
+        tmp = sform('{0:7.2f}', dat.macroseismic_longitude, tmp, 41, 47)
+        tmp = sform('{0:3.1f}', dat.macroseismic_magnitude, tmp, 49, 51)
+        tmp = sform('{0:1s}', dat.type_of_magnitude, tmp, 52)
+        tmp = sform('{0:4.2f}', dat.log_of_felt_area_radius, tmp, 53, 56)
+        tmp = sform('{0:5.2f}', dat.log_of_area_1, tmp, 57, 61)
+        tmp = sform('{0:2d}', dat.intensity_bordering_area_1, tmp, 62, 63)
+        tmp = sform('{0:5.2f}', dat.log_of_area_2, tmp, 64, 68)
+        tmp = sform('{0:2d}', dat.intensity_bordering_area_2, tmp, 69, 70)
+        tmp = sform('{0:1s}', dat.quality_rank, tmp, 72)
+        tmp = sform('{0:3s}', dat.reporting_agency, tmp, 73, 75)
+        tmp = sform('{0:1s}', '2', tmp, 80)
+
+        return tmp
+
+    def write_record_type_3(self, tmp):
+        """ Writes record type 3 - this changes depending on the preceding line
+        """
+        if '3' not in tmp:
+            return
+
+        tmp = ' '*80+'\n'
+        tmp = sform('{0:1s}', '3', tmp, 80)
+
+        return tmp
+
+    def write_record_type_4(self, data):
+        """ Writes record type 4"""
+        if '4' not in data:
+            return [', '*22]
+        else:
+            dat = data['4']
+
+        self.write_record_type_7()
+
+        tmpfin = []
+        for dat in data['4']:
+            tmp = str(dat.station_name)+', '
+            tmp += str(dat.instrument_type)+', '
+            tmp += str(dat.component)+', '
+            tmp += str(dat.quality)+', '
+            tmp += str(dat.phase_id)+', '
+            tmp += str(dat.weighting_indicator)+', '
+            tmp += str(dat.flag_auto_pick)+', '
+            tmp += str(dat.first_motion)+', '
+            tmp += str(dat.hour)+', '
+            tmp += str(dat.minutes)+', '
+            tmp += str(dat.seconds)+', '
+            tmp += str(dat.duration)+', '
+            tmp += str(dat.amplitude)+', '
+            tmp += str(dat.period)+', '
+            tmp += str(dat.direction_of_approach)+', '
+            tmp += str(dat.phase_velocity)+', '
+            tmp += str(dat.angle_of_incidence)+', '
+            tmp += str(dat.azimuth_residual)+', '
+            tmp += str(dat.travel_time_residual)+', '
+            tmp += str(dat.weight)+', '
+            tmp += str(dat.epicentral_distance)+', '
+            tmp += str(dat.azimuth_at_source)+', '
+            tmp = tmp.replace('None', '')
+
+            tmpfin.append(tmp)
+
+        return tmpfin
+
+    def write_record_type_5(self, data):
+        """ Writes record type 5"""
+        if '5' not in data:
+            return
+        else:
+            dat = data['5']
+
+        tmp = ' '*80+'\n'
+        tmp = sform('{0:78s}', dat.text, tmp, 2, 79)
+        tmp = sform('{0:1s}', '5', tmp, 80)
+
+        return tmp
+
+    def write_record_type_6(self, data):
+        """ Writes record type 6"""
+        if '6' not in data:
+            return
+        else:
+            dat = data['6']
+
+        tmp = ' '*80+'\n'
+        tmp = sform('{0:78s}', dat.tracedata_files, tmp, 2, 79)
+        tmp = sform('{0:1s}', '6', tmp, 80)
+
+        return tmp
+
+    def write_record_type_7(self):
+        """ Writes record type 7 """
+        tmp = ' STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO' + \
+            ' AIN AR TRES W  DIS CAZ7\n'
+        return tmp
+
+    def write_record_type_e(self, data):
+        """ Writes record type E"""
+        if 'E' not in data:
+            return ', '*8
+        else:
+            dat = data['E']
+
+        if dat.latitude_error == -999 or dat.latitude_error is None:
+            return ', '*8
+
+        tmp = str(dat.gap)+', '
+        tmp += str(dat.origin_time_error)+', '
+        tmp += str(dat.latitude_error)+', '
+        tmp += str(dat.longitude_error)+', '
+        tmp += str(dat.depth_error)+', '
+        tmp += str(dat.cov_xy)+', '
+        tmp += str(dat.cov_xz)+', '
+        tmp += str(dat.cov_yz)+', '
+        tmp = tmp.replace('None', '')
+
+        return tmp
+
+    def write_record_type_f(self, data):
+        """ Writes record type F"""
+
+        if 'F' not in data:
+            return
+
+        for dat in data['F'].values():
+            tmp = ' '*80+'\n'
+            tmp = sform('{0:10.1f}', dat.strike, tmp, 1, 10)
+            tmp = sform('{0:10.1f}', dat.dip, tmp, 11, 20)
+            tmp = sform('{0:10.1f}', dat.rake, tmp, 21, 30)
+            tmp = sform('{0:5.1f}', dat.err1, tmp, 31, 35)
+            tmp = sform('{0:5.1f}', dat.err2, tmp, 36, 40)
+            tmp = sform('{0:5.1f}', dat.err3, tmp, 41, 45)
+            tmp = sform('{0:5.1f}', dat.fit_error, tmp, 46, 50)
+            tmp = sform('{0:5.1f}', dat.station_distribution_ratio, tmp, 51,
+                        55)
+            tmp = sform('{0:5.1f}', dat.amplitude_ratio, tmp, 56, 60)
+            tmp = sform('{0:2d}', dat.number_of_bad_polarities, tmp, 61, 62)
+            tmp = sform('{0:2d}', dat.number_of_bad_amplitude_ratios, tmp, 64,
+                        65)
+            tmp = sform('{0:3s}', dat.agency_code, tmp, 67, 69)
+            tmp = sform('{0:7s}', dat.program_used, tmp, 71, 77)
+            tmp = sform('{0:1s}', dat.solution_quality, tmp, 78)
+            tmp = sform('{0:1s}', 'F', tmp, 80)
+
+        return tmp
+
+    def write_record_type_h(self, data):
+        """ Writes record type H"""
+
+        if 'H' not in data:
+            return
+        else:
+            dat = data['1']
+
+        tmp = ' '*80+'\n'
+        tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
+        tmp = sform('{0:2d}', dat.month, tmp, 7, 8)
+        tmp = sform('{0:2d}', dat.day, tmp, 9, 10)
+        tmp = sform('{0:1s}', dat.fixed_origin_time, tmp, 11)
+        tmp = sform('{0:2d}', dat.hour, tmp, 12, 13)
+        tmp = sform('{0:2d}', dat.minutes, tmp, 14, 15)
+        tmp = sform('{0:6.3f}', dat.seconds, tmp, 17, 22)
+        tmp = sform('{0:9.5f}', dat.latitude, tmp, 24, 32)
+        tmp = sform('{0:10.5f}', dat.longitude, tmp, 34, 43)
+        tmp = sform('{0:8.3f}', dat.depth, tmp, 45, 52)
+        tmp = sform('{0:6.3f}', dat.depth, tmp, 54, 59)
+        tmp = sform('{0:1s}', 'H', tmp, 80)
+
+        return tmp
+
+    def write_record_type_i(self, data):
+        """ Writes record type I"""
+        if 'I' not in data:
+            return ', '*7
+        else:
+            dat = data['I']
+
+        tmp = str(dat.last_action_done)+', '
+        tmp += str(dat.date_time_of_last_action)+', '
+        tmp += str(dat.operator)+', '
+        tmp += str(dat.status)+', '
+        tmp += str(dat.id)+', '
+        tmp += str(dat.new_id_created)+', '
+        tmp += str(dat.id_locked)+', '
+
+        return tmp
+
+    def write_record_type_m(self, data):
+        """ Writes record type M"""
+
+        if 'M' not in data:
+            return
+        else:
+            dat = data['M']
+
+        tmp = ' '*80+'\n'
+
+        tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
+        tmp = sform('{0:2d}', dat.month, tmp, 7, 8)
+        tmp = sform('{0:2d}', dat.day, tmp, 9, 10)
+        tmp = sform('{0:2d}', dat.hour, tmp, 12, 13)
+        tmp = sform('{0:2d}', dat.minutes, tmp, 14, 15)
+        tmp = sform('{0:4.1f}', dat.seconds, tmp, 17, 20)
+        tmp = sform('{0:7.3f}', dat.latitude, tmp, 24, 30)
+        tmp = sform('{0:8.3f}', dat.longitude, tmp, 31, 38)
+        tmp = sform('{0:5.1f}', dat.depth, tmp, 39, 43)
+        tmp = sform('{0:3s}', dat.reporting_agency, tmp, 46, 48)
+        tmp = sform('{0:4.1f}', dat.magnitude, tmp, 56, 59)
+        tmp = sform('{0:1s}', dat.magnitude_type, tmp, 60)
+        tmp = sform('{0:3s}', dat.magnitude_reporting_agency, tmp, 61, 63)
+        tmp = sform('{0:7s}', dat.method_used, tmp, 71, 77)
+        tmp = sform('{0:1s}', dat.quality, tmp, 78)
+
+        tmp = sform('{0:1s}', 'M', tmp, 80)
+
+#        self.fobj.write(tmp)
+
+        tmp = ' '*80+'\n'
+
+        tmp = sform('{0:2s}', 'MT', tmp, 2, 3)
+        tmp = sform('{0:6.3f}', dat.mrr_mzz, tmp, 4, 9)
+        tmp = sform('{0:6.3f}', dat.mtt_mxx, tmp, 11, 16)
+        tmp = sform('{0:6.3f}', dat.mpp_myy, tmp, 18, 23)
+        tmp = sform('{0:6.3f}', dat.mrt_mzx, tmp, 25, 30)
+        tmp = sform('{0:6.3f}', dat.mrp_mzy, tmp, 32, 37)
+        tmp = sform('{0:6.3f}', dat.mtp_mxy, tmp, 39, 44)
+        tmp = sform('{0:3s}', dat.reporting_agency2, tmp, 46, 48)
+        tmp = sform('{0:1s}', dat.mt_coordinate_system, tmp, 49)
+        tmp = sform('{0:2d}', dat.exponential, tmp, 50, 51)
+        tmp = sform('{0:6.3g}', dat.scalar_moment, tmp, 53, 62)
+        tmp = sform('{0:7s}', dat.method_used_2, tmp, 71, 77)
+        tmp = sform('{0:1s}', dat.quality_2, tmp, 78)
+        tmp = sform('{0:1s}', 'M', tmp, 80)
+
+        return tmp
+
+    def write_record_type_p(self, data):
+        """ Writes record type P"""
+
+        if 'P' not in data:
+            return
+        else:
+            dat = data['P']
+
+        tmp = ' '*80+'\n'
+        tmp = sform('{0:78s}', dat.filename, tmp, 2, 79)
+        tmp = sform('{0:1s}', 'P', tmp, 80)
+
+        return tmp
+
 def sform(strform, val, tmp, col1, col2=None, nval=-999):
     """
     Formats strings

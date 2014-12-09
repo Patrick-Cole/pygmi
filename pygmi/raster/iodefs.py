@@ -88,6 +88,21 @@ class ImportData(object):
         else:
             dat = get_raster(self.ifile)
 
+        if dat is None:
+            if self.ext == 'grd':
+                QtGui.QMessageBox.warning(self.parent, 'Error',
+                                          'Could not import the surfer 6 '
+                                          'grid. Please make sure it not '
+                                          'another format, such as geosoft.',
+                                          QtGui.QMessageBox.Ok,
+                                          QtGui.QMessageBox.Ok)
+            else:
+                QtGui.QMessageBox.warning(self.parent, 'Error',
+                                          'Could not import the grid.',
+                                          QtGui.QMessageBox.Ok,
+                                          QtGui.QMessageBox.Ok)
+            return False
+
         output_type = 'Raster'
         if 'Cluster' in dat[0].dataid:
             output_type = 'Cluster'
@@ -182,6 +197,10 @@ def get_raster(ifile):
         ifile = ifile[:-4]
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    if dataset is None:
+        return None
+
     gtr = dataset.GetGeoTransform()
 #    output_type = 'Raster'
 
@@ -216,7 +235,7 @@ def get_raster(ifile):
 #            dat[i].data = np.ma.masked_invalid(dat[i].data)
 # Note that because the data is stored in a masked array, the array ends up
 # being double the size that it was on the disk.
-        dat[i].data = np.ma.masked_invalid(dat[0].data)
+        dat[i].data = np.ma.masked_invalid(dat[i].data)
         dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
 #        dat[i].data = np.ma.masked_equal(dat[i].data, nval)
         if dat[i].data.mask.size == 1:
