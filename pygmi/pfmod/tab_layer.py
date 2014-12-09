@@ -187,6 +187,7 @@ class LayerDisplay(object):
 
     def update_model_plot(self):
         """ This updates some of the plotting stuff """
+        print('Update model plot')
         self.lmod.curlayer = self.sb_model_layer.value()
         alt = self.lmod.zrange[1]-self.lmod.curlayer*self.lmod.d_z
         self.label_altitude.setText('Altitude: '+str(alt))
@@ -220,6 +221,7 @@ class LayerDisplay(object):
 
     def tab_activate(self):
         """ Runs when the tab is activated """
+        print('tab activate')
         self.lmod = self.parent.lmod1
         self.mmc.set_limits(self.lmod)
         self.mmc.lmod = self.lmod
@@ -374,6 +376,7 @@ class MyMplCanvas(FigureCanvas):
 
     def init_grid(self, dat, dat2, extent, opac):
         """ Updates the single color map """
+        print('init grid')
         left, right, bottom, top = extent
 
         if (right-left) > 10000 or (top-bottom) > 10000:
@@ -411,10 +414,11 @@ class MyMplCanvas(FigureCanvas):
         self.ims.set_visible(True)
         self.figure.canvas.draw()
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
+        self.slide_grid(dat, dat2)  # used to get rid of extra line
 
     def slide_grid(self, dat, dat2=None):
         """ Slider """
-
+        print('slide grid')
         opac = self.opac
 
         tmp = self.luttodat(dat)
@@ -437,6 +441,7 @@ class MyMplCanvas(FigureCanvas):
 
     def init_line(self, xrng, yrng):
         """ Updates the line position """
+        print('init line')
         if self.axes.xaxis.get_label_text().find('km') > -1:
             xrng = [xrng[0]/1000., xrng[1]/1000.]
             yrng = [yrng[0]/1000., yrng[1]/1000.]
