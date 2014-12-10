@@ -113,7 +113,7 @@ class Data(object):
         self.xdim = 1.0
         self.ydim = 1.0
         self.nrofbands = 1
-        self.dataid = ""
+        self.dataid = ''
         self.rows = -1
         self.cols = -1
         self.nullvalue = 1e+20

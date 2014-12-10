@@ -97,6 +97,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_xlim(0, len(data1))
         self.axes.set_ylim(0, len(data1))
 #        self.figure.colorbar()
+
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_raster(self, data1, data2=None):
@@ -134,6 +136,13 @@ class MyMplCanvas(FigureCanvas):
             pass
         self.axes.set_xlabel("Eastings")
         self.axes.set_ylabel("Northings")
+
+        tmp = self.axes.get_yticks()
+        self.axes.set_yticklabels(tmp, rotation='horizontal')
+        tmp = self.axes.get_xticks()
+        self.axes.set_xticklabels(tmp, rotation='vertical')
+
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_rgb(self, data1):
@@ -149,6 +158,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes = self.figure.add_subplot(111)
 
         self.axes.imshow(data1.data)
+
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_hexbin(self, data1, data2):
@@ -182,6 +193,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_title('Hexbin Plot')
         cbar = self.figure.colorbar(hbin)
         cbar.set_label('log10(N)')
+
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_wireframe(self, data):
@@ -243,6 +256,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_title(data1.dataid, fontsize=12)
         self.axes.set_xlabel("Data Value", fontsize=8)
         self.axes.set_ylabel("Counts", fontsize=8)
+
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
 

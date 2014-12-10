@@ -82,6 +82,8 @@ from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
 from . import iodefs
 from . import dataprep
+from matplotlib.path import Path
+from matplotlib.patches import PathPatch
 
 
 class ModestImage(mi.AxesImage):
@@ -917,6 +919,7 @@ class PlotInterp(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.units = {}
 
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
@@ -1207,6 +1210,9 @@ class PlotInterp(QtGui.QDialog):
         data = self.indata['Raster']
         sdata = self.indata['Raster']
 
+        for i in data:
+            self.units[i.dataid] = i.units
+
         self.mmc.data = data
         self.mmc.sdata = sdata
         self.mmc.hband[0] = data[0].dataid
@@ -1273,15 +1279,42 @@ class PlotInterp(QtGui.QDialog):
         blen = float(text)
         bwid = blen/16.
 
-        text, okay = QtGui.QInputDialog.getText(
-            self, "Colorbar", "Enter colorbar unit label:",
-            QtGui.QLineEdit.Normal, "Some Units")
+        dtype = str(self.cbox_dtype.currentText())
 
-        if not okay:
-            return
+        if 'Ternary' not in dtype:
+            text, okay = QtGui.QInputDialog.getText(
+                self, "Colorbar", "Enter colorbar unit label:",
+                QtGui.QLineEdit.Normal,
+                self.units[str(self.cbox_band1.currentText())])
+
+            if not okay:
+                return
+        else:
+            units = str(self.cbox_band1.currentText())
+            rtext, okay = QtGui.QInputDialog.getText(
+                self, "Ternary Colorbar", "Enter red/cyan label:",
+                QtGui.QLineEdit.Normal, units)
+
+            if not okay:
+                return
+
+            units = str(self.cbox_band2.currentText())
+            gtext, okay = QtGui.QInputDialog.getText(
+                self, "Ternary Colorbar", "Enter green/magenta label:",
+                QtGui.QLineEdit.Normal, units)
+
+            if not okay:
+                return
+
+            units = str(self.cbox_band3.currentText())
+            btext, okay = QtGui.QInputDialog.getText(
+                self, "Ternary Colorbar", "Enter blue/yelow label:",
+                QtGui.QLineEdit.Normal, units)
+
+            if not okay:
+                return
 
         img = self.mmc.image.get_array()
-        dtype = str(self.cbox_dtype.currentText())
         htype = str(self.cbox_htype.currentText())
         hstype = str(self.cbox_hstype.currentText())
         cell = self.mmc.cell
@@ -1473,32 +1506,91 @@ class PlotInterp(QtGui.QDialog):
         export.export_gdal(newimg, 'GTiff')
 
 # Section for colorbars
-
-        txt = str(self.cbox_cbar.currentText())
-        cmap = plt.get_cmap(txt)
-        norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
+        if 'Ternary' not in dtype:
+            txt = str(self.cbox_cbar.currentText())
+            cmap = plt.get_cmap(txt)
+            norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
 # Horizontal Bar
-        fig = plt.figure(figsize=(blen, (bwid+0.75)), tight_layout=True)
-        ax = fig.add_subplot(111)
+            fig = plt.figure(figsize=(blen, (bwid+0.75)), tight_layout=True)
+            ax = fig.add_subplot(111)
 
-        cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                    orientation='horizontal')
-        cb.set_label(text)
+            cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
+                                        orientation='horizontal')
+            cb.set_label(text)
 
-        fname = filename[:-4]+'_hcbar.tif'
-        fig.savefig(fname, dpi=300)
+            fname = filename[:-4]+'_hcbar.tif'
+            fig.savefig(fname, dpi=300)
 
 # Vertical Bar
-        fig = plt.figure(figsize=((bwid + 1), blen), tight_layout=True)
-        ax = fig.add_subplot(111)
+            fig = plt.figure(figsize=((bwid + 1), blen), tight_layout=True)
+            ax = fig.add_subplot(111)
 
-        cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
-                                    orientation='vertical')
-        cb.set_label(text)
+            cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
+                                        orientation='vertical')
+            cb.set_label(text)
 
-        fname = filename[:-4]+'_vcbar.tif'
-        fig.savefig(fname, dpi=300)
+            fname = filename[:-4]+'_vcbar.tif'
+            fig.savefig(fname, dpi=300)
+        else:
+            fig = plt.figure(tight_layout=True)
+
+            redlabel = rtext
+            greenlabel = gtext
+            bluelabel = btext
+
+            tmp = np.array([[list(range(255))]*255])
+            tmp.shape = (255, 255)
+            tmp = tmp.T
+
+            red = ndimage.rotate(tmp, 0)
+            green = ndimage.rotate(tmp, 120)
+            blue = ndimage.rotate(tmp, -120)
+
+            tmp = np.zeros((blue.shape[0], 90))
+            blue = np.hstack((tmp, blue))
+            green = np.hstack((green, tmp))
+
+            rtmp = np.zeros_like(blue)
+            j = 92
+            rtmp[:255, j:j+255] = red
+            red = rtmp
+
+            if 'CMY' in dtype:
+                red = red.max()-red
+                green = green.max()-green
+                blue = blue.max()-blue
+
+            data = np.transpose([red.flatten(), green.flatten(),
+                                 blue.flatten()])
+            data.shape = (red.shape[0], red.shape[1], 3)
+
+            data = data[:221, 90:350]
+            plt.xlim((-100, 355))
+            plt.ylim((-100, 322))
+
+            path = Path([[0, 0], [127.5, 222], [254, 0], [0, 0]])
+            patch = PathPatch(path, facecolor='none')
+            plt.gca().add_patch(patch)
+
+            im = plt.imshow(data, extent=(0, 255, 0, 222), clip_path=patch, clip_on=True)
+            im.set_clip_path(patch)
+
+            plt.text(0, -5, greenlabel, horizontalalignment='center',
+                     verticalalignment='top')
+            plt.text(254, -5, bluelabel, horizontalalignment='center',
+                     verticalalignment='top')
+            plt.text(127.5, 225, redlabel, horizontalalignment='center')
+            plt.tick_params(top='off', right='off', bottom='off', left='off',
+                            labelbottom='off', labelleft='off')
+
+            plt.axis('off')
+            fname = filename[:-4]+'_tern.tif'
+            fig.savefig(fname, dpi=300)
+
+#            plt.show()
+
+
 
         QtGui.QMessageBox.information(self, "Information",
                                       "Save to GeoTiff is complete!",
