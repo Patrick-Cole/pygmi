@@ -190,6 +190,7 @@ class ParamDisplay(object):
         label_14.setText("Remanent Magnetization (A/m)")
         self.glayout3.addWidget(label_14, 6, 0, 1, 1)
         self.dsb_magnetization.setEnabled(True)
+        self.dsb_magnetization.setDecimals(3)
         self.dsb_magnetization.setMaximum(999999999.0)
         self.glayout3.addWidget(self.dsb_magnetization, 6, 1, 1, 1)
 

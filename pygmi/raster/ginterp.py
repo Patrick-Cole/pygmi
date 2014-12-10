@@ -84,6 +84,7 @@ from . import iodefs
 from . import dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
+from ..ptimer import PTime
 
 
 class ModestImage(mi.AxesImage):
@@ -1263,6 +1264,7 @@ class PlotInterp(QtGui.QDialog):
 
     def save_img(self):
         """Save image as a GeoTiff"""
+
         ext = "GeoTiff (*.tif)"
         filename = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
@@ -1573,7 +1575,8 @@ class PlotInterp(QtGui.QDialog):
             patch = PathPatch(path, facecolor='none')
             plt.gca().add_patch(patch)
 
-            im = plt.imshow(data, extent=(0, 255, 0, 222), clip_path=patch, clip_on=True)
+            im = plt.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
+                            clip_on=True)
             im.set_clip_path(patch)
 
             plt.text(0, -5, greenlabel, horizontalalignment='center',
@@ -1587,10 +1590,6 @@ class PlotInterp(QtGui.QDialog):
             plt.axis('off')
             fname = filename[:-4]+'_tern.tif'
             fig.savefig(fname, dpi=300)
-
-#            plt.show()
-
-
 
         QtGui.QMessageBox.information(self, "Information",
                                       "Save to GeoTiff is complete!",

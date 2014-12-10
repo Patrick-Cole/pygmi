@@ -249,7 +249,6 @@ class Quarry(object):
 
 #    def calcrq(self, ifile):
 #        """ Calculates the Rq value """
-#        ttt = ptimer.PTime()
 #        ofile = ifile[:-4]+'_new.out'
 #
 #        outputf = open(ofile, 'w')
