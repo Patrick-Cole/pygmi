@@ -390,8 +390,12 @@ class ExportData(object):
         else:
             tmpfile = tmp[0]
 
-        out = driver.Create(tmpfile, int(data[0].cols),
-                            int(data[0].rows), len(data), fmt)
+        if drv == 'GTiff' and dtype == np.uint8:
+            out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
+                                len(data), fmt) #, options=['COMPRESS=JPEG'])
+        else:
+            out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
+                                len(data), fmt)
         out.SetGeoTransform([xmin, data[0].xdim, 0, ymax, 0, -data[0].ydim])
 #        orig = osr.SpatialReference()
 #        orig.SetWellKnownGeogCS('WGS84')

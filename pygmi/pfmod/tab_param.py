@@ -370,7 +370,10 @@ class ParamDisplay(object):
         hintn = self.dsb_hint.value()
 
         rmi = 400*np.pi*mstrength
-        qratio = rmi/(susc*hintn)
+        if susc != 0.0:
+            qratio = rmi/(susc*hintn)
+        else:
+            qratio = 0.0
 
         self.disconnect_spin()
         self.dsb_rmi.setValue(rmi)
@@ -483,7 +486,7 @@ class ParamDisplay(object):
         self.dsb_hdec.setValue(lith.fdec)
         self.dsb_mht.setValue(-lith.zobsm)
         self.dsb_susc.setValue(lith.susc)
-        self.dsb_rmi.setValue(lith.mstrength)
+        self.dsb_magnetization.setValue(lith.mstrength)
         self.dsb_qratio.setValue(lith.qratio)
         self.dsb_minc.setValue(lith.minc)
         self.dsb_mdec.setValue(lith.mdec)

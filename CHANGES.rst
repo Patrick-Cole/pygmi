@@ -4,6 +4,9 @@ Changelog
 
 v2.2.3, 31 December 2014
 ------------------------
+* Added ternary colorbar
+* Fixed ability to save 3D images on new smoothing
+* Bug fix - masking problem with ER Mapper import
 * Added extra 3D display functionality
 * Added smooth model
 * Added marching cubes

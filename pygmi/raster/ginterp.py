@@ -1580,10 +1580,11 @@ class PlotInterp(QtGui.QDialog):
             im.set_clip_path(patch)
 
             plt.text(0, -5, greenlabel, horizontalalignment='center',
-                     verticalalignment='top')
+                     verticalalignment='top', size=20)
             plt.text(254, -5, bluelabel, horizontalalignment='center',
-                     verticalalignment='top')
-            plt.text(127.5, 225, redlabel, horizontalalignment='center')
+                     verticalalignment='top', size=20)
+            plt.text(127.5, 225, redlabel, horizontalalignment='center',
+                     size=20)
             plt.tick_params(top='off', right='off', bottom='off', left='off',
                             labelbottom='off', labelleft='off')
 

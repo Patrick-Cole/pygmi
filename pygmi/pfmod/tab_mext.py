@@ -276,6 +276,7 @@ class MextDisplay(object):
         self.choose_combo(self.combo_mag, 'Magnetic Dataset')
         self.choose_combo(self.combo_grv, 'Gravity Dataset')
         self.choose_combo(self.combo_reggrv, 'Gravity Regional')
+        self.choose_combo(self.combo_dataset, 'Study Area Dataset')
 
         cols = self.sb_cols.value()
         rows = self.sb_rows.value()
@@ -507,6 +508,10 @@ class MextDisplay(object):
             if 'Gravity Regional' in lkeys:
                 tmp = self.lmod1.griddata['Gravity Regional'].dataid
                 self.combo_reggrv.setCurrentIndex(gkeys.index(tmp))
+
+            if 'Study Area Dataset' in lkeys:
+                tmp = self.lmod1.griddata['Study Area Dataset'].dataid
+                self.combo_dataset.setCurrentIndex(gkeys.index(tmp))
 
     def update_vals(self):
         """ Updates the visible model extent parameters"""
