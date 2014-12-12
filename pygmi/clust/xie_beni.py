@@ -28,11 +28,30 @@ import numpy as np
 
 
 def xie_beni(data, expo, uuu, center, edist):
-    """ Xie Beni """
-# calculates the Xie-Beni index
-# accepts missing values when given as nan elements in the data base)
-# min xbi is optimal
+    """
+    Xie Beni
 
+    Calculates the Xie-Beni index
+    accepts missing values when given as nan elements in the data base)
+    min xbi is optimal
+
+    Parameters
+    ----------
+    data : numpy array
+        input dataset
+    expo : float
+    uuu : numpy array
+        membership matrix (FCM) or cluster index values (k-means)
+    center : numpy array
+        cluster centers
+    edist : numpy array
+
+    Returns
+    -------
+    xbi : numpy array
+        xie beni index
+
+    """
     if edist.size == 0:  # calc euclidian distances if no distances are
         #                  provided
         for k in range(center.shape[0]):  # no of clusters
@@ -40,14 +59,15 @@ def xie_beni(data, expo, uuu, center, edist):
             # contains nan for missing values
             dummy = np.dot(((data - np.ones(np.size(data, 1), 1),
                              center[k]) ** 2).T)
-# put in zero distances for all missing values, now all nans are replaced
-# by zeros
+            # put in zero distances for all missing values, now all nans are
+            # replaced by zeros.
             dummy[np.isnan(dummy) == 1] = 0
-# calc distance matrix from dat points to centres (equals distfcm_mv.m)
+            # calc distance matrix from dat points to centres
+            # (equals distfcm_mv.m)
             edist[k] = np.sqrt(np.sum(dummy))
 
     m_f = uuu ** expo
-# equal to objective function without spatial constraints
+    # equal to objective function without spatial constraints
     numerator = np.sum((edist ** 2) * m_f)
 
     min_cdist = np.inf  # set minimal centre distance to infinity
@@ -55,9 +75,9 @@ def xie_beni(data, expo, uuu, center, edist):
     cdist = []
     for i in range(center.shape[0]):  # no of clusters
         dummy_cent = center
-# eliminate the i th row from center
+        # eliminate the i th row from center
         dummy_cent = np.delete(dummy_cent, i, 0)
-# no of cluster minus one row
+        # no of cluster minus one row
         for j in range(dummy_cent.shape[0]):
             #            cnt += 1
             # calc squared distance between the selected two clustercentrs,

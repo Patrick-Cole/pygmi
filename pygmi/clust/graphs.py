@@ -200,7 +200,14 @@ class MyMplCanvas(FigureCanvas):
 
 
 class GraphWindow(QtGui.QDialog):
-    """ Graph Window """
+    """
+    Graph Window
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent=None)
         self.parent = parent
@@ -239,7 +246,16 @@ class GraphWindow(QtGui.QDialog):
 
 
 class PlotRaster(GraphWindow):
-    """ Plot Raster Class """
+    """
+    Plot Raster Class
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.label2.hide()
@@ -279,7 +295,16 @@ class PlotRaster(GraphWindow):
 
 
 class PlotMembership(GraphWindow):
-    """ Plot Fuzzy Membership data."""
+    """
+    Plot Fuzzy Membership data.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.indata = {}
@@ -321,7 +346,16 @@ class PlotMembership(GraphWindow):
 
 
 class PlotVRCetc(GraphWindow):
-    """ Plot VRC, NCE, OBJ and XBI """
+    """
+    Plot VRC, NCE, OBJ and XBI
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.combobox2.hide()

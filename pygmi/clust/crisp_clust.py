@@ -33,7 +33,18 @@ import os
 
 
 class CrispClust(QtGui.QDialog):
-    """ Crisp Cluster Class """
+    """
+    Crisp Cluster Class
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 

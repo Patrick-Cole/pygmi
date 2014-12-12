@@ -22,7 +22,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Graph tool is a multi-function graphing tool """
+"""
+Graph tool is a multi-function graphing tool for use with cluster analysis
+"""
 
 import numpy as np
 from PyQt4 import QtGui, QtCore
@@ -33,7 +35,14 @@ from matplotlib.backends.backend_qt4agg import FigureCanvas
 
 
 class GraphHist(FigureCanvas):
-    """Plots several lines in distinct colors."""
+    """
+    Plots several lines in distinct colors.
+
+    Parameters
+    ----------
+    parent : parent
+        reference to the parent routine.
+    """
     def __init__(self, parent):
         self.figure = Figure()
 
@@ -176,7 +185,19 @@ class GraphHist(FigureCanvas):
 
 
 class GraphMap(FigureCanvas):
-    """Plots several lines in distinct colors."""
+    """
+    Plots several lines in distinct colors.
+
+    Parameters
+    ----------
+    parent : parent
+        reference to the parent routine.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    """
     def __init__(self, parent):
         self.figure = Figure()
 
@@ -259,7 +280,16 @@ class GraphMap(FigureCanvas):
 
 
 class PolygonInteractor(QtCore.QObject):
-    """ Polygon Interactor """
+    """
+    Polygon Interactor
+
+    Parameters
+    ----------
+    axtmp : matplotlib axis
+        matplotlib axis
+    pntxy :
+
+    """
     showverts = True
     epsilon = 5  # max pixel distance to count as a vertex hit
     polyi_changed = QtCore.pyqtSignal(list)
@@ -419,7 +449,23 @@ class PolygonInteractor(QtCore.QObject):
 
 
 class ScatterPlot(QtGui.QDialog):
-    """ Main Graph Tool Routine """
+    """
+    Main Graph Tool Routine
+
+    Parameters
+    ----------
+    parent : parent
+        reference to the parent routine.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent):
         QtGui.QDialog.__init__(self, parent)
         self.indata = {}

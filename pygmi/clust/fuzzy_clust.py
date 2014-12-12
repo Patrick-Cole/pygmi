@@ -34,7 +34,18 @@ import os
 
 
 class FuzzyClust(QtGui.QDialog):
-    """ Fuzzy Clust """
+    """
+    Fuzzy Clust
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
@@ -203,7 +214,7 @@ class FuzzyClust(QtGui.QDialog):
 #        self.init_type = tmp.init_type
 
     def run(self):
-        """ Process """
+        """ Entrypoint into routine """
         data = copy.copy(self.indata['Raster'])
         self.update_vars()
 

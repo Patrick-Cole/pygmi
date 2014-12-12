@@ -2,7 +2,12 @@
 Changelog
 =========
 
-v2.2.3, 31 December 2014
+v2.2.4, 12 December 2014
+------------------------
+* Increased size of font for ternary colorbar. 
+* Corrected issues with modelling information display, especially w.r.t. remanence. 
+
+v2.2.3, 10 December 2014
 ------------------------
 * Added ternary colorbar
 * Fixed ability to save 3D images on new smoothing

@@ -40,6 +40,7 @@ from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
 from numba import jit
 from PIL import Image
+from memory_profiler import profile
 
 
 class Mod3dDisplay(QtGui.QDialog):
@@ -1363,6 +1364,7 @@ def GetTables():
     return [edgeTable, triTable]
 
 
+@profile
 def main():
     """ Main routine """
 

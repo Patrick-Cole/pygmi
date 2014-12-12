@@ -22,7 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" File Menu Routines """
+""" This is the default set of menus for the main interface. It also includes
+the about box """
 
 # pylint: disable=E1101, C0103
 from PyQt4 import QtGui, QtCore
@@ -30,7 +31,17 @@ import webbrowser
 
 
 class FileMenu(object):
-    """ Widget class to call the main interface """
+    """
+    Widget class to call the main interface
+
+    This widget class creates the raster menus to be found on the main
+    interface. Normal as well as context menus are defined here.
+
+    Attributes
+    ----------
+    parent : MainWidget
+        Reference to MainWidget class found in main.py
+    """
     def __init__(self, parent):
 
         self.parent = parent
@@ -74,8 +85,16 @@ class FileMenu(object):
 class ComboBoxBasic(QtGui.QDialog):
     """
     A basic combo box application
-    """
 
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
@@ -150,7 +169,14 @@ class ComboBoxBasic(QtGui.QDialog):
 
 
 class HelpMenu(object):
-    """ Widget class to call the main interface """
+    """
+    Widget class to call the main interface
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    """
     def __init__(self, parent):
 
         self.parent = parent
