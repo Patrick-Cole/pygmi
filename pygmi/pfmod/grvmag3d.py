@@ -33,6 +33,8 @@ References:
     1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
     """
 
+from __future__ import print_function
+
 from PyQt4 import QtGui, QtCore
 import scipy.interpolate as si
 import numpy as np

@@ -24,6 +24,8 @@
 # -----------------------------------------------------------------------------
 """ This is a set of Raster Data Preparation routines """
 
+from __future__ import print_function
+
 from PyQt4 import QtGui, QtCore
 import os
 import numpy as np

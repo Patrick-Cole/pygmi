@@ -25,6 +25,8 @@
 """ This is code for the 3d model creation. """
 # pylint: disable=C0103
 
+from __future__ import print_function
+
 import numpy as np
 from PyQt4 import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
@@ -40,7 +42,6 @@ from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
 from numba import jit
 from PIL import Image
-from memory_profiler import profile
 
 
 class Mod3dDisplay(QtGui.QDialog):
@@ -1364,7 +1365,6 @@ def GetTables():
     return [edgeTable, triTable]
 
 
-@profile
 def main():
     """ Main routine """
 

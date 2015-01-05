@@ -85,7 +85,6 @@ from . import dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from ..ptimer import PTime
-from memory_profiler import memory_usage
 
 
 class ModestImage(mi.AxesImage):

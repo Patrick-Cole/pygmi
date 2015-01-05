@@ -1,6 +1,3 @@
-##Notice at 24 October 2014
-I will be releasing PyGMI 2.2.3 soon. In the meantime I must warn people using the latest Git repository version that I have started to use numba 0.15.1. I am versy impressed with the results and I think that I will be using this in future as opposed to cython.
-
 #PyGMI Readme
 
 PyGMI stands for *Python Geophysical Modelling and Interpretation*. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets. It includes:
