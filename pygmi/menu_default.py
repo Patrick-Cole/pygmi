@@ -25,7 +25,6 @@
 """ This is the default set of menus for the main interface. It also includes
 the about box """
 
-# pylint: disable=E1101, C0103
 from PyQt4 import QtGui, QtCore
 import webbrowser
 
@@ -197,7 +196,7 @@ class HelpMenu(object):
         self.action_about.setText("About")
 
         self.action_about.triggered.connect(self.about)
-        self.action_help.triggered.connect(self.help)
+        self.action_help.triggered.connect(webhelp)
 
     def about(self):
         """ PyGMI About Box """
@@ -225,7 +224,8 @@ with this program. If not, see http://www.gnu.org/licenses/'''
 
         QtGui.QMessageBox.about(self.parent, 'PyGMI', msg)
 
-    def help(self):
-        """ Help File"""
-        webbrowser.open(r'http://patrick-cole.github.io/pygmi/')
+
+def webhelp():
+    """ Help File"""
+    webbrowser.open(r'http://patrick-cole.github.io/pygmi/')
 

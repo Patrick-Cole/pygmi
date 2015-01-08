@@ -400,13 +400,7 @@ class DiagramScene(QtGui.QGraphicsScene):
         """
         if mouse_event.button() != QtCore.Qt.LeftButton:
             return
-        if self.my_mode == "InsertItem":
-            item = DiagramItem(self.my_item_type, self.my_item_menu)
-            item.setBrush(self.my_item_color)
-            self.addItem(item)
-            item.setPos(mouse_event.scenePos())
-            self.itemInserted.emit(item)
-        elif self.my_mode == "InsertLine":
+        if self.my_mode == "InsertLine":
             self.line = QtGui.QGraphicsLineItem(
                 QtCore.QLineF(mouse_event.scenePos(), mouse_event.scenePos()))
             self.line.setPen(QtGui.QPen(self.my_line_color, 2))

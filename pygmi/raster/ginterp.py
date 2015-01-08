@@ -84,7 +84,7 @@ from . import iodefs
 from . import dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
-from ..ptimer import PTime
+#from ..ptimer import PTime
 
 
 class ModestImage(mi.AxesImage):
@@ -143,6 +143,9 @@ class ModestImage(mi.AxesImage):
         self.theta = np.pi/4.
         self.alpha = .0
         self.kval = 0.01
+        self._rgbacache = None
+        self._oldxslice = None
+        self._oldyslice = None
 
     def set_data(self, A):
         """

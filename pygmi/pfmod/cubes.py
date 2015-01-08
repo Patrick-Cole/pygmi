@@ -23,7 +23,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """ This is code for the 3d model creation. """
-# pylint: disable=C0103
 
 from __future__ import print_function
 

@@ -25,7 +25,6 @@
 
 """ This is a collection of routines by Edgar Stettler """
 
-# pylint: disable=E1101, C0103
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.signal as si
@@ -260,7 +259,7 @@ class DepthSusc(QtGui.QDialog):
 #  200   close (10)
 #        close (12)
 
-#**********************************************************************
+# *********************************************************************
 #      Subroutine readcsvfrmat(string,line_nr,st_nr,x,y,z,dMdh,dMdz)
 #      CHARACTER*25 value1
 #      Character(132) String

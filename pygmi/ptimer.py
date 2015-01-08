@@ -25,7 +25,6 @@
 """ ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called. """
 
-# pylint: disable=E1101, C0103
 import time
 
 

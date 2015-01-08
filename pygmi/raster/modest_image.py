@@ -24,6 +24,7 @@
 ModestImage
 Copyright (c) 2013 Chris Beaumont
 """
+
 import matplotlib
 rcParams = matplotlib.rcParams
 
