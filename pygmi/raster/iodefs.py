@@ -32,6 +32,7 @@ from osgeo import gdal, osr
 import struct
 from .dataprep import merge
 import os
+import array
 # from ..ptimer import PTime
 
 
@@ -71,25 +72,29 @@ class ImportData(object):
             "GeoTiff (*.tif);;" + \
             "Geosoft (*.gxf);;" + \
             "Surfer grid (v.6) (*.grd);;" + \
+            "GeoPak grid (*.grd);;" + \
             "ASCII with .hdr header (*.asc);;" + \
             "ASCII XYZ (*.xyz);;" + \
             "ArcGIS BIL (*.bil)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, filt = QtGui.QFileDialog.getOpenFileNameAndFilter(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
         self.ifile = str(filename)
         self.ext = filename[-3:]
+        self.ext = self.ext.lower()
 
-        if self.ext == 'asc':
+        if filt == 'GeoPak grid (*.grd)':
+            dat = get_geopak(self.ifile)
+        elif self.ext == 'asc':
             dat = get_ascii(self.ifile)
         else:
             dat = get_raster(self.ifile)
 
         if dat is None:
-            if self.ext == 'grd':
+            if filt == 'Surfer grid (v.6) (*.grd)':
                 QtGui.QMessageBox.warning(self.parent, 'Error',
                                           'Could not import the surfer 6 '
                                           'grid. Please make sure it not '
@@ -602,3 +607,106 @@ class ExportData(object):
         file_out = self.ifile.rpartition(".")[0]+"_"+file_band+'.'+ext
 
         return file_out
+
+
+def get_geopak(hfile):
+    """ GeoPak Import """
+
+    f = open(hfile, 'rb')
+    fall = f.read()
+    f.close()
+
+    # bof = np.frombuffer(fall, dtype=np.uint8, count=1, offset=0)
+    off = 0
+#    fnew = b''
+    fnew = []
+    while off < len(fall):
+        off += 1
+        breclen = np.frombuffer(fall, dtype=np.uint8, count=1, offset=off)[0]
+
+        if breclen == 130:
+            break
+
+        reclen = breclen
+
+        if breclen == 129:
+            reclen = 128
+
+        off += 1
+
+#        fnew += fall[off:off+reclen]
+        fnew.append(fall[off:off+reclen])
+        off += reclen
+#        ereclen = np.frombuffer(fall, dtype=np.uint8, count=1, offset=off)[0]
+#        print(breclen, ereclen, reclen)
+
+    fnew = b''.join(fnew)
+    header = np.frombuffer(fnew, dtype=np.float32, count=32, offset=0)
+
+#     Lines in grid      1
+#     Points per line    2
+#     Grid factor        3
+#     Grid base value    4
+#     Grid X origin      5
+#     Grid Y origin      6
+#     Grid rotation      7
+#     Grid dummy value   8
+#     Map scale          9
+#     Cell size (X)     10
+#     Cell size (Y)     11
+#     Inches/unit       12
+#     Grid X offset     13
+#     Grid Y offset     14
+#     Grid hdr version  15
+#
+#     Lines in grid     17
+#     Points per line   18
+#     Grid factor       21
+#     Grid base value   22
+#     Z maximum         23
+#     Z minimum         24
+#
+#     Grid dummy value  26
+
+    nrows = int(header[0])
+    ncols = int(header[1])
+    gfactor = header[2]
+    gbase = header[3]
+    x0 = header[4]
+    y0 = header[5]
+#    rotation = header[6]
+    nval = header[7]
+#    mapscale = header[8]
+    dx = header[9]
+    dy = header[10]
+#    inches_per_unit = header[11]
+#    xoffset = header[12]
+#    yoffset = header[13]
+#    hver = header[14]
+#    zmax = header[22]
+#    zmin = header[23]
+
+    data = np.frombuffer(fnew, dtype=np.int16, count=(nrows*ncols), offset=128)
+
+    data = np.ma.masked_equal(data, nval)
+    data = data/gfactor+gbase
+    data.shape = (nrows, ncols)
+    data = data[::-1]
+
+    dat = []
+    dat.append(Data())
+    i = 0
+
+    dat[i].data = data
+    dat[i].nrofbands = 1
+    dat[i].tlx = x0
+    dat[i].tly = y0+dy*nrows
+    dat[i].dataid = hfile[:-4]
+
+    dat[i].nullvalue = nval
+    dat[i].rows = nrows
+    dat[i].cols = ncols
+    dat[i].xdim = dx
+    dat[i].ydim = dy
+
+    return dat

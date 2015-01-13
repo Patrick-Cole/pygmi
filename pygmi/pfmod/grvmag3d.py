@@ -45,9 +45,9 @@ from scipy.linalg import norm
 from .datatypes import LithModel
 from ..ptimer import PTime
 from numba import jit
-import random
+# import random
 from matplotlib import cm
-import pdb
+# import pdb
 
 
 class GravMag(object):
@@ -246,8 +246,7 @@ class GravMag(object):
 
         regplt = plt.figure()
         axes = plt.subplot(1, 2, 1)
-        etmp = self.dat_extent(self.lmod2.griddata['Calculated Magnetics'],
-                               axes)
+        etmp = dat_extent(self.lmod2.griddata['Calculated Magnetics'], axes)
         plt.title('Magnetic Data')
         ims = plt.imshow(magtmp, extent=etmp)
         mmin = magtmp.mean()-2*magtmp.std()
@@ -260,8 +259,7 @@ class GravMag(object):
         cbar.set_label('nT')
 
         axes = plt.subplot(1, 2, 2)
-        etmp = self.dat_extent(self.lmod2.griddata['Calculated Gravity'],
-                               axes)
+        etmp = dat_extent(self.lmod2.griddata['Calculated Gravity'], axes)
         plt.title('Gravity Data')
         ims = plt.imshow(grvtmp, extent=etmp)
         mmin = grvtmp.mean()-2*grvtmp.std()
@@ -275,26 +273,6 @@ class GravMag(object):
         cbar.set_label('mgal')
 
         regplt.show()
-
-    def dat_extent(self, dat, axes):
-        """ Gets the extent of the dat variable """
-        left = dat.tlx
-        top = dat.tly
-        right = left + dat.cols*dat.xdim
-        bottom = top - dat.rows*dat.ydim
-
-        if (right-left) > 10000 or (top-bottom) > 10000:
-            axes.xaxis.set_label_text("Eastings (km)")
-            axes.yaxis.set_label_text("Northings (km)")
-            left /= 1000.
-            right /= 1000.
-            top /= 1000.
-            bottom /= 1000.
-        else:
-            axes.xaxis.set_label_text("Eastings (m)")
-            axes.yaxis.set_label_text("Northings (m)")
-
-        return (left, right, bottom, top)
 
     def update_graph(self, grvval, magval, modind):
         """ Updates the graph """
@@ -408,41 +386,17 @@ class GeoData(object):
 
             self.showtext('   Calculate magnetic and gravity origin field ' +
                           ' at magnetic height')
-            self.gmmain(xdist, ydist, self.zobsm)
+            self.gmmain(xdist, ydist)
 
             self.modified = False
         else:
             pass
 #            self.pbars.incrmain(2)
 
-    def dircos(self, incl, decl, azim):
-
-        """
-    Subroutine DIRCOS computes direction cosines from inclination
-        and declination.
-
-    Input parameters:
-        incl:  inclination in degrees positive below horizontal.
-        decl:  declination in degrees positive east of true north.
-        azim:  azimuth of x axis in degrees positive east of north.
-
-        Output parameters:
-        a,b,c:  the three direction cosines.
-        """
-
-        d2rad = np.pi/180.
-        xincl = incl*d2rad
-        xdecl = decl*d2rad
-        xazim = azim*d2rad
-        aaa = np.cos(xincl)*np.cos(xdecl-xazim)
-        bbb = np.cos(xincl)*np.sin(xdecl-xazim)
-        ccc = np.sin(xincl)
-        return aaa, bbb, ccc
-
     def netmagn(self):
         """ Calculate the net magnetization """
         theta = 0.
-        fcx, fcy, fcz = self.dircos(self.finc, self.fdec, theta)
+        fcx, fcy, fcz = dircos(self.finc, self.fdec, theta)
         unith = np.array([fcx, fcy, fcz])
         hintn = self.hintn * 10**-9          # in Tesla
         mu0 = 4*np.pi*10**-7
@@ -456,7 +410,7 @@ class GeoData(object):
 #   `   B = mu0(H+M)
 #       Q = Jr/Ji = mstrength/hstrength = Jr/kH
 
-        mcx, mcy, mcz = self.dircos(self.minc, self.mdec, theta)
+        mcx, mcy, mcz = dircos(self.minc, self.mdec, theta)
         unitm = np.array([mcx, mcy, mcz])
         rem_magn = self.mstrength*unitm   # Remnant magnetization
         net_magn = rem_magn+ind_magn      # Net magnetization
@@ -499,7 +453,7 @@ class GeoData(object):
         self.y12 = np.array([numy/2-dxy/2, numy/2+dxy/2])
         self.z12 = np.arange(-numz, numz+d_z, d_z)
 
-    def gmmain(self, xobs, yobs, zobs):
+    def gmmain(self, xobs, yobs):
         """ Algorithm for simultaneous computation of gravity and magnetic
             fields is based on the formulation published in GEOPHYSICS v. 66,
             521-526,2001. by Bijendra Singh and D. Guptasarma """
@@ -572,12 +526,12 @@ class GeoData(object):
         Gz = Gx.copy()
 
         # Mag stuff
-        cx, cy, cz = self.dircos(self.finc, self.fdec, 90.0)
+        cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
         uh = np.array([cx, cy, cz])
         H = self.hintn*uh               # The ambient magnetic field (nTesla)
         ind_magn = self.susc*H/(4*np.pi)   # Induced magnetization
 
-        mcx, mcy, mcz = self.dircos(self.minc, self.mdec, 90.0)
+        mcx, mcy, mcz = dircos(self.minc, self.mdec, 90.0)
         um = np.array([mcx, mcy, mcz])
         rem_magn = (400*np.pi*self.mstrength)*um     # Remanent magnetization
 
@@ -624,16 +578,14 @@ class GeoData(object):
                 Hz = Hx.copy()
 
                 indx = np.array([0, 1, 2, 3, 0, 1])
-                V = np.zeros([nedges, 8])
                 crs = np.zeros([4, 3])
                 p1 = np.zeros(3)
                 p2 = np.zeros(3)
                 p3 = np.zeros(3)
-                unf = np.zeros(3)
                 mgval = np.zeros([6, npro, nstn])
 
                 mgval = gm3d(npro, nstn, X, Y, edge, cor, face, Gx, Gy, Gz,
-                             Hx, Hy, Hz, Pd, un, indx, V, crs, p1, p2, p3, unf,
+                             Hx, Hy, Hz, Pd, un, indx, crs, p1, p2, p3,
                              mgval)
 
 #                pdb.set_trace()
@@ -896,7 +848,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             for k in kuni:
-                baba = calc_fieldb(k, mgval, numx, numy, modind, hcor, aaa[0],
+                baba = calc_fieldb(k, mgval, numx, numy, modind, aaa[0],
                                    aaa[1], mlayers, glayers, hcorflat, mijk,
                                    juni, iuni)
                 magval += baba[0]
@@ -911,7 +863,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             for k in kuni:
-                baba = calc_fieldb(k, mgval, numx, numy, modind, hcor, aaa[0],
+                baba = calc_fieldb(k, mgval, numx, numy, modind, aaa[0],
                                    aaa[1], mlayers, glayers, hcorflat, mijk,
                                    juni, iuni)
                 magval += baba[0]
@@ -975,9 +927,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     return lmod.griddata
 
 
-@jit("f8[:,:](i4, f8[:,:], i4, i4, i4[:,:,:], i4[:,:], i4[:], i4[:], " +
+@jit("f8[:,:](i4, f8[:,:], i4, i4, i4[:,:,:], i4[:], i4[:], " +
      "f8[:,:,:], f8[:,:,:], i4[:], i4, i4[:], i4[:])", nopython=True)
-def calc_fieldb(k, mgval, numx, numy, modind, hcor, aaa0, aaa1, mlayers,
+def calc_fieldb(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers,
                 glayers, hcorflat, mijk, jj, ii):
     """ Calculate magnetic and gravity field """
 
@@ -1098,14 +1050,14 @@ def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
 
 @jit("f8[:,:,:](i4, i4, f8[:,:], f8[:,:], f8[:,:], f8[:,:], i4[:,:], " +
      "f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
-     "i4[:], f8[:,:], f8[:,:], f8[:], f8[:], f8[:], f8[:], f8[:,:,:])",
+     "i4[:], f8[:,:], f8[:], f8[:], f8[:], f8[:,:,:])",
      nopython=True)
-def gm3d(npro, nstn, X, Y, Edge, Corner, Face, Gx, Gy, Gz, Hx, Hy, Hz, Pd, Un,
-         indx, V, crs, p1, p2, p3, Unf, mgval):
+def gm3d(npro, nstn, X, Y, edge, corner, face, Gx, Gy, Gz, Hx, Hy, Hz, Pd, Un,
+         indx, crs, p1, p2, p3, mgval):
     """ grvmag 3d """
 
     flimit = 64*np.spacing(1)
-    Omega = 0.0
+    omega = 0.0
     dp1 = 1.0
     I = 1.0
 
@@ -1115,10 +1067,10 @@ def gm3d(npro, nstn, X, Y, Edge, Corner, Face, Gx, Gy, Gz, Hx, Hy, Hz, Pd, Un,
             y = Y[pr, st]
             for f in range(6):
                 for g in range(4):
-                    cindx = Face[f, g]
-                    crs[g, 0] = Corner[cindx, 0] - x
-                    crs[g, 1] = Corner[cindx, 1] - y
-                    crs[g, 2] = Corner[cindx, 2]
+                    cindx = face[f, g]
+                    crs[g, 0] = corner[cindx, 0] - x
+                    crs[g, 1] = corner[cindx, 1] - y
+                    crs[g, 2] = corner[cindx, 2]
 
                 p = 0
                 q = 0
@@ -1190,26 +1142,26 @@ def gm3d(npro, nstn, X, Y, Edge, Corner, Face, Gx, Gy, Gz, Hx, Hy, Hz, Pd, Un,
                     W += ang
 
                     eno2 = eno1+t   # Edge no
-                    L = Edge[eno2, 3]
+                    L = edge[eno2, 3]
 
                     r12 = (np.sqrt(p1[0]*p1[0]+p1[1]*p1[1]+p1[2]*p1[2]) +
                            np.sqrt(p2[0]*p2[0]+p2[1]*p2[1]+p2[2]*p2[2]))
                     I = (1/L)*np.log((r12+L)/(r12-L))
 
-                    p += I*Edge[eno2, 0]
-                    q += I*Edge[eno2, 1]
-                    r += I*Edge[eno2, 2]
+                    p += I*edge[eno2, 0]
+                    q += I*edge[eno2, 1]
+                    r += I*edge[eno2, 2]
 
-        #        From Omega, l, m, n PQR get components of field due to face f
+        #        From omega, l, m, n PQR get components of field due to face f
                 dp1 = l*crs[0, 0]+m*crs[0, 1]+n*crs[0, 2]
                 if dp1 < 0.:
-                    Omega = W
+                    omega = W
                 else:
-                    Omega = -W
+                    omega = -W
 
-                gmtf1 = l*Omega+n*q-m*r
-                gmtf2 = m*Omega+l*r-n*p
-                gmtf3 = n*Omega+m*p-l*q
+                gmtf1 = l*omega+n*q-m*r
+                gmtf2 = m*omega+l*r-n*p
+                gmtf3 = n*omega+m*p-l*q
 
                 Hx[pr, st] = Hx[pr, st]+Pd[f]*gmtf1
                 Hy[pr, st] = Hy[pr, st]+Pd[f]*gmtf2
@@ -1229,3 +1181,48 @@ def gm3d(npro, nstn, X, Y, Edge, Corner, Face, Gx, Gy, Gz, Hx, Hy, Hz, Pd, Un,
             mgval[5, pr, st] = Gz[pr, st]
 
     return mgval
+
+
+def dircos(incl, decl, azim):
+    """
+    Subroutine DIRCOS computes direction cosines from inclination
+        and declination.
+
+    Input parameters:
+        incl:  inclination in degrees positive below horizontal.
+        decl:  declination in degrees positive east of true north.
+        azim:  azimuth of x axis in degrees positive east of north.
+
+        Output parameters:
+        a,b,c:  the three direction cosines.
+    """
+
+    d2rad = np.pi/180.
+    xincl = incl*d2rad
+    xdecl = decl*d2rad
+    xazim = azim*d2rad
+    aaa = np.cos(xincl)*np.cos(xdecl-xazim)
+    bbb = np.cos(xincl)*np.sin(xdecl-xazim)
+    ccc = np.sin(xincl)
+    return aaa, bbb, ccc
+
+
+def dat_extent(dat, axes):
+    """ Gets the extent of the dat variable """
+    left = dat.tlx
+    top = dat.tly
+    right = left + dat.cols*dat.xdim
+    bottom = top - dat.rows*dat.ydim
+
+    if (right-left) > 10000 or (top-bottom) > 10000:
+        axes.xaxis.set_label_text("Eastings (km)")
+        axes.yaxis.set_label_text("Northings (km)")
+        left /= 1000.
+        right /= 1000.
+        top /= 1000.
+        bottom /= 1000.
+    else:
+        axes.xaxis.set_label_text("Eastings (m)")
+        axes.yaxis.set_label_text("Northings (m)")
+
+    return (left, right, bottom, top)
