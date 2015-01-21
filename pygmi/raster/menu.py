@@ -35,6 +35,7 @@ from . import show_table
 from . import dataprep
 from . import iodefs
 from . import igrf
+from . import stettler
 
 
 class MenuWidget(object):
@@ -138,6 +139,11 @@ class MenuWidget(object):
         self.menu.addAction(self.action_raster_data_interp)
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
 
+        self.action_depth_susc = QtGui.QAction(self.parent)
+        self.action_depth_susc.setText("Depth and Susceptibility Interpretation")
+        self.menu.addAction(self.action_depth_susc)
+        self.action_depth_susc.triggered.connect(self.depth_susc)
+
 # Context menus
         context_menu['Raster'].addSeparator()
 
@@ -223,6 +229,11 @@ class MenuWidget(object):
         """ Show raster data """
         fnc = ginterp.PlotInterp(self.parent)
         self.parent.item_insert("Step", "Raster Data \nInterpretation", fnc)
+
+    def depth_susc(self):
+        """ Depth and Susceptibility calculations """
+        fnc = stettler.DepthSusc(self.parent)
+        self.parent.item_insert("Step", "Depth\nSusceptibility\nInterpretation", fnc)
 
     def show_ccoef(self):
         """ Show 2D correlation coefficients"""

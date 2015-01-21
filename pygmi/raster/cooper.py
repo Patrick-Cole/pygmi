@@ -326,42 +326,42 @@ def visibility2d(data, wsize, dh):
     data[mask] = mean
 
 #    self.parent.showprocesslog('NS')
-    for J in range(nc):    # Columns
-        for I in range(w2, nr-w2):
-            d = data[I-w2:I+w2+1, J]
-            vn[I, J] = __visible1(d, wsize, w2+1, dh)
-            vs[I, J] = __visible2(d, wsize, w2+1, dh)
+    for j in range(nc):    # Columns
+        for i in range(w2, nr-w2):
+            dtmp = data[i-w2:i+w2+1, j]
+            vn[i, j] = __visible1(dtmp, wsize, w2+1, dh)
+            vs[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
 #    self.parent.showprocesslog('EW')
-    for J in range(w2, nc-w2):    # Rows
-        for I in range(nr):
-            d = data[I, J-w2:J+w2+1]
-            ve[I, J] = __visible1(d, wsize, w2+1, dh)
-            vw[I, J] = __visible2(d, wsize, w2+1, dh)
+    for j in range(w2, nc-w2):    # Rows
+        for i in range(nr):
+            dtmp = data[i, j-w2:j+w2+1]
+            ve[i, j] = __visible1(dtmp, wsize, w2+1, dh)
+            vw[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
 #    self.parent.showprocesslog('Diag')
-    for J in range(w2, nc-w2):
-        for I in range(w2, nr-w2):
-            d = np.zeros(wsize)
-            for K in range(wsize):
-                d[K] = data[I-w2+K, J-w2+K]
-            vd1[I, J] = __visible1(d, wsize, w2+1, dh)
-            vd2[I, J] = __visible2(d, wsize, w2+1, dh)
-            d = np.zeros(wsize)
-            for K in range(wsize):
-                d[K] = data[I+w2-K, J-w2+K]
-            vd3[I, J] = __visible1(d, wsize, w2+1, dh)
-            vd4[I, J] = __visible2(d, wsize, w2+1, dh)
+    for j in range(w2, nc-w2):
+        for i in range(w2, nr-w2):
+            dtmp = np.zeros(wsize)
+            for k in range(wsize):
+                dtmp[k] = data[i-w2+k, j-w2+k]
+            vd1[i, j] = __visible1(dtmp, wsize, w2+1, dh)
+            vd2[i, j] = __visible2(dtmp, wsize, w2+1, dh)
+            dtmp = np.zeros(wsize)
+            for k in range(wsize):
+                dtmp[k] = data[i+w2-k, j-w2+k]
+            vd3[i, j] = __visible1(dtmp, wsize, w2+1, dh)
+            vd4[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
 #    self.parent.showprocesslog('Computing std of visibility')
     vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
     vtot = vtot[w2:nr-w2, w2:nc-w2]
 
-    for J in range(nc):
-        for I in range(nr):
-            vstd[I, J] = np.std([vn[I, J], vs[I, J], ve[I, J], vw[I, J],
-                                 vd1[I, J], vd2[I, J], vd3[I, J],
-                                 vd4[I, J]], ddof=1)
+    for j in range(nc):
+        for i in range(nr):
+            vstd[i, j] = np.std([vn[i, j], vs[i, j], ve[i, j], vw[i, j],
+                                 vd1[i, j], vd2[i, j], vd3[i, j],
+                                 vd4[i, j]], ddof=1)
 
     vstd = vstd[w2:nr-w2, w2:nc-w2]
 
@@ -383,39 +383,39 @@ def visibility2d(data, wsize, dh):
     return vtot, vstd, vsum
 
 
-def __visible1(d, nr, cp, dh):
+def __visible1(dat, nr, cp, dh):
     """ Visible 1 """
-    n = 1
+    num = 1
 #        d = d[d.nonzero()].tolist()
 
-    if cp < nr-1 and len(d) > 0:
-        n = 2
+    if cp < nr-1 and len(dat) > 0:
+        num = 2
         cpn = cp-1
-        thetamax = float(d[cpn+1]-d[cpn]-dh)
-        for I in range(cpn+2, nr):
-            theta = ((d[I]-d[cpn]-dh)/float(I-cpn))
+        thetamax = float(dat[cpn+1]-dat[cpn]-dh)
+        for i in range(cpn+2, nr):
+            theta = ((dat[i]-dat[cpn]-dh)/float(i-cpn))
             if theta >= thetamax:
-                n = n + 1
+                num = num + 1
                 thetamax = theta
 
-    return n
+    return num
 
 
-def __visible2(d, nr, cp, dh):
+def __visible2(dat, nr, cp, dh):
     """ Visible 2 """
-    n = 0
+    num = 0
 #        d = d[d.nonzero()].tolist()
 
-    if cp > 2 and len(d) > 0:
-        n = 1
+    if cp > 2 and len(dat) > 0:
+        num = 1
         cpn = cp-1
-        thetamax = (d[cpn-1]-d[cpn]-dh)
-        for I in range(cpn-2, -1, -1):
-            theta = ((d[I]-d[cpn]-dh)/(cpn-I))
+        thetamax = (dat[cpn-1]-dat[cpn]-dh)
+        for i in range(cpn-2, -1, -1):
+            theta = ((dat[i]-dat[cpn]-dh)/(cpn-i))
             if theta >= thetamax:
-                n = n + 1
+                num = num + 1
                 thetamax = theta
-    return n
+    return num
 
 
 class Tilt1(QtGui.QDialog):
@@ -521,6 +521,9 @@ class Tilt1(QtGui.QDialog):
 
         self.pbar.setValue(self.pbar.maximum())
 
+        for i in data2:
+            i.data.data[i.data.mask] = i.nullvalue
+
         self.outdata['Raster'] = data2
         return True
 
@@ -555,6 +558,7 @@ def tilt1(data, azi, s):
     dmin = data.min()
     dmax = data.max()
     dm = 0.5*(dmin+dmax)
+    data.data[data.mask] = dm
     data[np.isnan(data)] = dm
     data[np.isinf(data)] = dm
     if s > 0:
@@ -570,7 +574,7 @@ def tilt1(data, azi, s):
     dxtot = np.sqrt(dx*dx+dy*dy)
     nmax = np.max([nr, nc])
     npts = int(2**__nextpow2(nmax))
-    dz = __vertical(data, npts, nc, nr, 1)
+    dz = vertical(data, npts, 1)
     t1 = np.arctan(dz/dxtot)
     th = np.real(np.arctanh(np.nan_to_num(dz/dxtot)+(0+0j)))
     tdx = np.real(np.arctan(dxtot/abs(dz)))
@@ -589,7 +593,7 @@ def tilt1(data, azi, s):
 #        s2 = np.floor(s/2)
     ts = si.convolve2d(t1, se, 'same')
     [dxs, dys] = np.gradient(ts)
-    dzs = __vertical(ts, npts, nc, nr, 1)
+    dzs = vertical(ts, npts, 1)
     dxtots = np.sqrt(dxs*dxs+dys*dys)
     t2 = np.arctan(dzs/dxtots)
 
@@ -597,7 +601,9 @@ def tilt1(data, azi, s):
     # Tilt Based Directional Derivative, Total Derivative
     t1 = np.ma.array(t1)
     th = np.ma.array(th)
+    th.mask = t1.mask
     t2 = np.ma.array(t2)
+    t2.mask = t1.mask
     ta = np.ma.array(ta)
     tdx = np.ma.array(tdx)
 
@@ -610,24 +616,33 @@ def __nextpow2(n):
     return m_i
 
 
-def __vertical(data, npts, nc, nr, xint):
+def vertical(data, npts=None, xint=1):
     """ Vertical """
+
+    nr, nc = data.shape
+
+    if npts is None:
+        nmax = np.max([nr, nc])
+        npts = int(2**__nextpow2(nmax))
 
     cdiff = int(np.floor((npts-nc)/2))
     rdiff = int(np.floor((npts-nr)/2))
     data1 = __taper2d(data, npts, nc, nr, cdiff, rdiff)
+#    data1 = np.pad(data, ((rdiff, cdiff), (rdiff,cdiff)), 'edge')
+
+
     f = np.fft.fft2(data1)
     fz = f
     wn = 2.0*np.pi/(xint*(npts-1))
     f = np.fft.fftshift(f)
     cx = npts/2+1
     cy = cx
-    for I in range(npts):
-        freqx = (I+1-cx)*wn
-        for J in range(npts):
-            freqy = (J+1-cy)*wn
+    for i in range(npts):
+        freqx = (i+1-cx)*wn
+        for j in range(npts):
+            freqy = (j+1-cy)*wn
             freq = np.sqrt(freqx*freqx+freqy*freqy)
-            fz[I, J] = f[I, J]*freq
+            fz[i, j] = f[i, j]*freq
     fz = np.fft.fftshift(fz)
     fzinv = np.fft.ifft2(fz)
     dz = np.real(fzinv[rdiff:nr+rdiff, cdiff:nc+cdiff])
@@ -637,68 +652,74 @@ def __vertical(data, npts, nc, nr, xint):
 def __taper2d(g, npts, n, m, ndiff, mdiff):
     """ Taper 2D """
 
+# n is cols, m is rows
+
     npts2 = npts-1
     gm = g.mean()
-    gf = np.zeros([npts, npts])
+    gf = np.zeros([npts, npts])+np.median(g-gm)
     gf[mdiff:mdiff+m, ndiff:ndiff+n] = g-gm
-    for J in range(mdiff, mdiff+m):
-        for I in range(ndiff):
-            gf[I, J] = gf[I, J]*((1+np.sin(-np.pi/2+I*np.pi/ndiff))*0.5)
-            gf[npts2-I, J] = gf[npts2-I, J]*((1+np.sin(-np.pi/2 +
-                                                       I*np.pi/ndiff))*0.5)
 
-    for J in range(mdiff):
-        tmp = ((1+np.sin(-np.pi/2+J*np.pi/(mdiff)))*0.5)
-        for I in range(ndiff, ndiff+n):
-            gf[I, J] = gf[I, J]*tmp
-            gf[I, npts2-J-1] = gf[I, npts2-J-1]*tmp
+#    gf = np.pad(g-gm, ((mdiff, mdiff), (ndiff, ndiff)), 'median')
 
-    for I in range(ndiff):
-        tmp = ((1+np.sin(-np.pi/2+I*np.pi/(ndiff)))*0.5)
-        for J in range(mdiff):
-            gf[I, J] = gf[I, J]*tmp
-            gf[npts2-I, J] = gf[npts2-I, J]*tmp
+    for j in range(mdiff, mdiff+m):
+        for i in range(ndiff):
+            gf[i, j] = gf[i, j]*((1+np.sin(-np.pi/2+i*np.pi/ndiff))*0.5)
+            gf[npts2-i, j] = gf[npts2-i, j]*((1+np.sin(-np.pi/2 +
+                                                       i*np.pi/ndiff))*0.5)
 
-    for I in range(ndiff):
-        tmp = ((1+np.sin(-np.pi/2+I*np.pi/(ndiff)))*0.5)
-        for J in range(mdiff+m-1, npts):
-            gf[I, J] = gf[I, J]*tmp
-            gf[npts2-I, J] = gf[npts2-I, J]*tmp
+    for j in range(mdiff):
+        tmp = ((1+np.sin(-np.pi/2+j*np.pi/(mdiff)))*0.5)
+        for i in range(ndiff, ndiff+n):
+            gf[i, j] = gf[i, j]*tmp
+            gf[i, npts2-j-1] = gf[i, npts2-j-1]*tmp
 
-    for J in range(mdiff+m-1, npts):  # Corners
-        for I in range(ndiff+n-1, npts):
+    for i in range(ndiff):
+        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(ndiff)))*0.5)
+        for j in range(mdiff):
+            gf[i, j] = gf[i, j]*tmp
+            gf[npts2-i, j] = gf[npts2-i, j]*tmp
+
+    for i in range(ndiff):
+        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(ndiff)))*0.5)
+        for j in range(mdiff+m-1, npts):
+            gf[i, j] = gf[i, j]*tmp
+            gf[npts2-i, j] = gf[npts2-i, j]*tmp
+
+    for j in range(mdiff+m-1, npts):  # Corners
+        for i in range(ndiff+n-1, npts):
             if ndiff == 0 or mdiff == 0:
-                gf[I, J] = np.nan
+                gf[i, j] = np.nan
             else:
-                gf[I, J] = (gf[I, J] *
-                            np.cos((I+1-ndiff-n)*np.pi/(2*ndiff)) *
-                            np.cos((J+1-ndiff-m) * np.pi/(2*mdiff)))
+                gf[i, j] = (gf[i, j] *
+                            np.cos((i+1-ndiff-n)*np.pi/(2*ndiff)) *
+                            np.cos((j+1-ndiff-m)*np.pi/(2*mdiff)))
 
-    for J in range(mdiff):
-        for I in range(ndiff):
+    for j in range(mdiff):
+        for i in range(ndiff):
             if ndiff == 0 or mdiff == 0:
-                gf[I, J] = np.nan
+                gf[i, j] = np.nan
             else:
-                gf[I, J] = (gf[I, J] *
-                            np.cos((I+1-ndiff)*np.pi/(2*ndiff)) *
-                            np.cos((J+1-ndiff)*np.pi/(2*mdiff)))
+                gf[i, j] = (gf[i, j] *
+                            np.cos((i+1-ndiff)*np.pi/(2*ndiff)) *
+                            np.cos((j+1-ndiff)*np.pi/(2*mdiff)))
 
-    for J in range(mdiff):
-        for I in range(ndiff+n-1, npts):
+    for j in range(mdiff):
+        for i in range(ndiff+n-1, npts):
             if ndiff == 0 or mdiff == 0:
-                gf[I, J] = np.nan
+                gf[i, j] = np.nan
             else:
-                gf[I, J] = (gf[I, J] *
-                            np.cos((I+1-ndiff-n)*np.pi/(2*ndiff)) *
-                            np.cos((J+1-ndiff)*np.pi/(2*mdiff)))
+                gf[i, j] = (gf[i, j] *
+                            np.cos((i+1-ndiff-n)*np.pi/(2*ndiff)) *
+                            np.cos((j+1-ndiff)*np.pi/(2*mdiff)))
 
-    for J in range(mdiff+m, npts):
-        for I in range(ndiff):
+    for j in range(mdiff+m, npts):
+        for i in range(ndiff):
             if ndiff == 0 or mdiff == 0:
-                gf[I, J] = np.nan
+                gf[i, j] = np.nan
             else:
-                gf[I, J] = (gf[I, J] *
-                            np.cos((I+1-ndiff)*np.pi/(2*ndiff)) *
-                            np.cos((J+1-ndiff-m)*np.pi/(2*mdiff)))
+                gf[i, j] = (gf[i, j] *
+                            np.cos((i+1-ndiff)*np.pi/(2*ndiff)) *
+                            np.cos((j+1-ndiff-m)*np.pi/(2*mdiff)))
+
 
     return gf

@@ -32,7 +32,6 @@ from osgeo import gdal, osr
 import struct
 from .dataprep import merge
 import os
-import array
 # from ..ptimer import PTime
 
 
@@ -70,6 +69,7 @@ class ImportData(object):
             "ERMapper (*.ers);;" + \
             "ENVI (*.hdr);;" + \
             "GeoTiff (*.tif);;" + \
+            "Geosoft UNCOMPRESSED grid (*.grd);;" + \
             "Geosoft (*.gxf);;" + \
             "Surfer grid (v.6) (*.grd);;" + \
             "GeoPak grid (*.grd);;" + \
@@ -88,7 +88,9 @@ class ImportData(object):
 
         if filt == 'GeoPak grid (*.grd)':
             dat = get_geopak(self.ifile)
-        elif self.ext == 'asc':
+        elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
+            dat = get_geosoft(self.ifile)
+        elif filt == 'ASCII with .hdr header (*.asc)':
             dat = get_ascii(self.ifile)
         else:
             dat = get_raster(self.ifile)
@@ -612,9 +614,9 @@ class ExportData(object):
 def get_geopak(hfile):
     """ GeoPak Import """
 
-    f = open(hfile, 'rb')
-    fall = f.read()
-    f.close()
+    fin = open(hfile, 'rb')
+    fall = fin.read()
+    fin.close()
 
     # bof = np.frombuffer(fall, dtype=np.uint8, count=1, offset=0)
     off = 0
@@ -692,6 +694,77 @@ def get_geopak(hfile):
     data = data/gfactor+gbase
     data.shape = (nrows, ncols)
     data = data[::-1]
+
+    dat = []
+    dat.append(Data())
+    i = 0
+
+    dat[i].data = data
+    dat[i].nrofbands = 1
+    dat[i].tlx = x0
+    dat[i].tly = y0+dy*nrows
+    dat[i].dataid = hfile[:-4]
+
+    dat[i].nullvalue = nval
+    dat[i].rows = nrows
+    dat[i].cols = ncols
+    dat[i].xdim = dx
+    dat[i].ydim = dy
+
+    return dat
+
+
+def get_geosoft(hfile):
+    """ Get geosoft file """
+    f = open(hfile, mode='rb')
+
+    es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
+    sf = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
+    ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol
+    nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow
+    kx = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1
+
+    dx = np.fromfile(f, dtype=np.float64, count=1)[0]  # dx
+    dy = np.fromfile(f, dtype=np.float64, count=1)[0]  # dy
+    x0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # xllcor
+    y0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # yllcor
+    rot = np.fromfile(f, dtype=np.float64, count=1)[0]  # rot
+    zbase = np.fromfile(f, dtype=np.float64, count=1)[0]  # zbase
+    zmult = np.fromfile(f, dtype=np.float64, count=1)[0]  # zmult
+
+    label = np.fromfile(f, dtype='a48', count=1)[0]
+    mapno = np.fromfile(f, dtype='a16', count=1)[0]
+
+    proj = np.fromfile(f, dtype=np.int32, count=1)[0]
+    unitx = np.fromfile(f, dtype=np.int32, count=1)[0]
+    unity = np.fromfile(f, dtype=np.int32, count=1)[0]
+    unitz = np.fromfile(f, dtype=np.int32, count=1)[0]
+    nvpts = np.fromfile(f, dtype=np.int32, count=1)[0]
+    izmin = np.fromfile(f, dtype=np.int32, count=1)[0]
+    izmax = np.fromfile(f, dtype=np.int32, count=1)[0]
+    izmed = np.fromfile(f, dtype=np.int32, count=1)[0]
+    izmea = np.fromfile(f, dtype=np.int32, count=1)[0]
+
+    zvar = np.fromfile(f, dtype=np.float64, count=1)[0]
+
+    prcs = np.fromfile(f, dtype=np.int32, count=1)[0]
+
+    temspc = np.fromfile(f, dtype='a324', count=1)[0]
+
+    if es == 2:
+        nval = -32767
+        data = np.fromfile(f, dtype=np.int16, count=nrows*ncols)
+
+    if es == 4:
+        data = np.fromfile(f, dtype=np.float32, count=nrows*ncols)
+        nval = -1.0E+32
+
+    data = np.ma.masked_equal(data, nval)
+
+    data = data/zmult + zbase
+    data.shape = (ncols, nrows)
+
+    f.close()
 
     dat = []
     dat.append(Data())
