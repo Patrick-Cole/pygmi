@@ -318,6 +318,7 @@ class MyMplCanvas(FigureCanvas):
 
 #        cnorm = clrs.Normalize()(dat1.data[::-1]-reg)
         cnorm = clrs.Normalize()(dat1.data-reg)
+        cnorm.data[cnorm.mask] = 0.0
         tmp = self.cbar(cnorm)
 
         self.ims.set_data(tmp)
@@ -403,7 +404,7 @@ class MyMplCanvas(FigureCanvas):
         right = left + dat.cols*dat.xdim
         bottom = top - dat.rows*dat.ydim
 
-        if (right-left) > 10000 or (top-bottom) > 10000:
+        if False:  # (right-left) > 10000 or (top-bottom) > 10000:
             self.axes.xaxis.set_label_text("Eastings (km)")
             self.axes.yaxis.set_label_text("Northings (km)")
             left /= 1000.
@@ -420,11 +421,11 @@ class MyMplCanvas(FigureCanvas):
         """ Sets limits for the axes """
         left, right = lmod.xrange
         bottom, top = lmod.yrange
-        if (right-left) > 10000 or (top-bottom) > 10000:
-            left /= 1000.
-            right /= 1000.
-            top /= 1000.
-            bottom /= 1000.
+#        if (right-left) > 10000 or (top-bottom) > 10000:
+#            left /= 1000.
+#            right /= 1000.
+#            top /= 1000.
+#            bottom /= 1000.
 
         self.xlims = (left, right)
         self.ylims = (bottom, top)

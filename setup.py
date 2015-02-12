@@ -26,7 +26,7 @@
 
 from distutils.core import setup
 
-PVER = '2.2.4'
+PVER = '2.2.5'
 
 setup(name='pygmi',
       version=PVER,

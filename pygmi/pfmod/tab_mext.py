@@ -565,5 +565,5 @@ class MextDisplay(object):
         self.choose_model()
         self.choose_regional()
 #        self.lmod1 = self.parent.lmod1
-#        self.update_vals()
-#        self.update_combos()
+        self.update_vals()
+        self.update_combos()
