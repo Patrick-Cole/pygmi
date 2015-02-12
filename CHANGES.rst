@@ -1,6 +1,12 @@
 =========
 Changelog
 =========
+v2.2.5, 12 February 2015
+------------------------
+* Fixed a display bug in modeller where data was not visible.
+* Added Geosoft grid import
+* Added Geopak grid import
+* Fixed a python 2.7 print function bug
 
 v2.2.4, 12 December 2014
 ------------------------
