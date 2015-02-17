@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.raster package &mdash; PyGMI 2.2.3 documentation</title>
+    <title>pygmi.raster package &mdash; PyGMI 2.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.3',
+        VERSION:     '2.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.3 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.5 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.test package" href="pygmi.test.html" />
     <link rel="prev" title="pygmi.pfmod package" href="pygmi.pfmod.html" /> 
@@ -358,6 +358,12 @@ Total Derivative</li>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.raster.cooper.vertical">
+<tt class="descclassname">pygmi.raster.cooper.</tt><tt class="descname">vertical</tt><big>(</big><em>data</em>, <em>npts=None</em>, <em>xint=1</em><big>)</big><a class="headerlink" href="#pygmi.raster.cooper.vertical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vertical</p>
 </dd></dl>
 
 <dl class="function">
@@ -2940,6 +2946,18 @@ dataset imported</td>
 </dd></dl>
 
 <dl class="function">
+<dt id="pygmi.raster.iodefs.get_geopak">
+<tt class="descclassname">pygmi.raster.iodefs.</tt><tt class="descname">get_geopak</tt><big>(</big><em>hfile</em><big>)</big><a class="headerlink" href="#pygmi.raster.iodefs.get_geopak" title="Permalink to this definition">¶</a></dt>
+<dd><p>GeoPak Import</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.raster.iodefs.get_geosoft">
+<tt class="descclassname">pygmi.raster.iodefs.</tt><tt class="descname">get_geosoft</tt><big>(</big><em>hfile</em><big>)</big><a class="headerlink" href="#pygmi.raster.iodefs.get_geosoft" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get geosoft file</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pygmi.raster.iodefs.get_raster">
 <tt class="descclassname">pygmi.raster.iodefs.</tt><tt class="descname">get_raster</tt><big>(</big><em>ifile</em><big>)</big><a class="headerlink" href="#pygmi.raster.iodefs.get_raster" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function loads a raster dataset off the disk using the GDAL
@@ -2987,6 +3005,12 @@ interface. Normal as well as context menus are defined here.</p>
 <dt id="pygmi.raster.menu.MenuWidget.cut_data">
 <tt class="descname">cut_data</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.cut_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export raster data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.menu.MenuWidget.depth_susc">
+<tt class="descname">depth_susc</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.depth_susc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Depth and Susceptibility calculations</p>
 </dd></dl>
 
 <dl class="method">
@@ -3332,11 +3356,33 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 <div class="section" id="module-pygmi.raster.stettler">
 <span id="pygmi-raster-stettler-module"></span><h2>pygmi.raster.stettler module<a class="headerlink" href="#module-pygmi.raster.stettler" title="Permalink to this headline">¶</a></h2>
 <p>This is a collection of routines by Edgar Stettler</p>
+<p>What I do is to calculate the RTP from a magnetic data set, then the AS,
+then the VD of the AS, then the x,y and z derivatives of the RTP,
+then the dMdh and then the tiltangle in degrees.</p>
+<p>See the fortran text file for a description of some of the terms.
+Then I display, as a ternary image, the VD of the AS in Cyan, the tilt angle in
+Magenta and the dMdh  in yellow.</p>
 <dl class="class">
 <dt id="pygmi.raster.stettler.DepthSusc">
 <em class="property">class </em><tt class="descclassname">pygmi.raster.stettler.</tt><tt class="descname">DepthSusc</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.raster.stettler.DepthSusc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
 <p>Calculate depth and susceptibility</p>
+<p>Calculation of depth &amp; suscep to the circumference of a vertical! sided
+body from the magnetic tilt angle.</p>
+<dl class="docutils">
+<dt>Algorithm needs the following keyboard input sequence of data:</dt>
+<dd>Incl(deg), decl,line direc (clkwize from G North),
+mag strength in free format (space between values).</dd>
+<dt>The data input file columns are:</dt>
+<dd>Line_nr,X,Y,tilt-angle(deg),Station_nr,dM/dh,dM/dz</dd>
+<dt>RTP total magnetic field (TMF) before calc derivs</dt>
+<dd>dM/dh=SQRT((dM/dx)*(dM/dx)+(dM/dy)*(dM/dy))
+dM/dz=vertical deriv of RTP TMF
+Tilt-angle=ATAN(deg)((dM/dz)/(dM/dh)</dd>
+<dt>Ref:</dt>
+<dd>Nabighian(1972),Geophys37,p507-517
+Salem et al., 2007, Leading Edge, Dec,p1502-5</dd>
+</dl>
 <dl class="method">
 <dt id="pygmi.raster.stettler.DepthSusc.settings">
 <tt class="descname">settings</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.raster.stettler.DepthSusc.settings" title="Permalink to this definition">¶</a></dt>
@@ -3382,7 +3428,7 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2014, Council for Geoscience.
+        &copy; Copyright 2015, Council for Geoscience.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

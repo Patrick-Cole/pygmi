@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.clust package &mdash; PyGMI 2.2.3 documentation</title>
+    <title>pygmi.clust package &mdash; PyGMI 2.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.3',
+        VERSION:     '2.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.3 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.5 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.pfmod package" href="pygmi.pfmod.html" />
     <link rel="prev" title="pygmi package" href="pygmi.html" /> 
@@ -130,6 +130,27 @@
 <em class="property">class </em><tt class="descclassname">pygmi.clust.crisp_clust.</tt><tt class="descname">CrispClust</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
 <p>Crisp Cluster Class</p>
+<dl class="attribute">
+<dt id="pygmi.clust.crisp_clust.CrispClust.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.crisp_clust.CrispClust.indata">
+<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of input datasets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.crisp_clust.CrispClust.outdata">
+<tt class="descname">outdata</tt><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of output datasets</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.clust.crisp_clust.CrispClust.combo">
 <tt class="descname">combo</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.combo" title="Permalink to this definition">¶</a></dt>
@@ -200,6 +221,27 @@
 <em class="property">class </em><tt class="descclassname">pygmi.clust.fuzzy_clust.</tt><tt class="descname">FuzzyClust</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
 <p>Fuzzy Clust</p>
+<dl class="attribute">
+<dt id="pygmi.clust.fuzzy_clust.FuzzyClust.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.fuzzy_clust.FuzzyClust.indata">
+<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of input datasets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.fuzzy_clust.FuzzyClust.outdata">
+<tt class="descname">outdata</tt><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of output datasets</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.combo">
 <tt class="descname">combo</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.combo" title="Permalink to this definition">¶</a></dt>
@@ -227,7 +269,7 @@
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process</p>
+<dd><p>Entrypoint into routine</p>
 </dd></dl>
 
 <dl class="method">
@@ -259,6 +301,13 @@
 <em class="property">class </em><tt class="descclassname">pygmi.clust.graphs.</tt><tt class="descname">GraphWindow</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
 <p>Graph Window</p>
+<dl class="attribute">
+<dt id="pygmi.clust.graphs.GraphWindow.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.clust.graphs.GraphWindow.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.clust.graphs.GraphWindow.change_band">
 <tt class="descname">change_band</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
@@ -375,6 +424,20 @@ DEALINGS IN THE SOFTWARE.</p>
 <em class="property">class </em><tt class="descclassname">pygmi.clust.graphs.</tt><tt class="descname">PlotMembership</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphs.PlotMembership" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.clust.graphs.GraphWindow" title="pygmi.clust.graphs.GraphWindow"><tt class="xref py py-class docutils literal"><span class="pre">pygmi.clust.graphs.GraphWindow</span></tt></a></p>
 <p>Plot Fuzzy Membership data.</p>
+<dl class="attribute">
+<dt id="pygmi.clust.graphs.PlotMembership.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.clust.graphs.PlotMembership.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.graphs.PlotMembership.indata">
+<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.clust.graphs.PlotMembership.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of input datasets</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.clust.graphs.PlotMembership.change_band">
 <tt class="descname">change_band</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.graphs.PlotMembership.change_band" title="Permalink to this definition">¶</a></dt>
@@ -400,6 +463,20 @@ DEALINGS IN THE SOFTWARE.</p>
 <em class="property">class </em><tt class="descclassname">pygmi.clust.graphs.</tt><tt class="descname">PlotRaster</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphs.PlotRaster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.clust.graphs.GraphWindow" title="pygmi.clust.graphs.GraphWindow"><tt class="xref py py-class docutils literal"><span class="pre">pygmi.clust.graphs.GraphWindow</span></tt></a></p>
 <p>Plot Raster Class</p>
+<dl class="attribute">
+<dt id="pygmi.clust.graphs.PlotRaster.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.clust.graphs.PlotRaster.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.graphs.PlotRaster.indata">
+<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.clust.graphs.PlotRaster.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of input datasets</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.clust.graphs.PlotRaster.change_band">
 <tt class="descname">change_band</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.graphs.PlotRaster.change_band" title="Permalink to this definition">¶</a></dt>
@@ -419,6 +496,20 @@ DEALINGS IN THE SOFTWARE.</p>
 <em class="property">class </em><tt class="descclassname">pygmi.clust.graphs.</tt><tt class="descname">PlotVRCetc</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphs.PlotVRCetc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.clust.graphs.GraphWindow" title="pygmi.clust.graphs.GraphWindow"><tt class="xref py py-class docutils literal"><span class="pre">pygmi.clust.graphs.GraphWindow</span></tt></a></p>
 <p>Plot VRC, NCE, OBJ and XBI</p>
+<dl class="attribute">
+<dt id="pygmi.clust.graphs.PlotVRCetc.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.clust.graphs.PlotVRCetc.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.graphs.PlotVRCetc.indata">
+<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.clust.graphs.PlotVRCetc.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of input datasets</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.clust.graphs.PlotVRCetc.change_band">
 <tt class="descname">change_band</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.graphs.PlotVRCetc.change_band" title="Permalink to this definition">¶</a></dt>
@@ -443,12 +534,20 @@ DEALINGS IN THE SOFTWARE.</p>
 </div>
 <div class="section" id="module-pygmi.clust.graphtool">
 <span id="pygmi-clust-graphtool-module"></span><h2>pygmi.clust.graphtool module<a class="headerlink" href="#module-pygmi.clust.graphtool" title="Permalink to this headline">¶</a></h2>
-<p>Graph tool is a multi-function graphing tool</p>
+<p>Graph tool is a multi-function graphing tool for use with cluster analysis</p>
 <dl class="class">
 <dt id="pygmi.clust.graphtool.GraphHist">
 <em class="property">class </em><tt class="descclassname">pygmi.clust.graphtool.</tt><tt class="descname">GraphHist</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg</span></tt></p>
 <p>Plots several lines in distinct colors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<em>parent</em>) &#8211; reference to the parent routine.</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphHist.get_clust_scat">
 <tt class="descname">get_clust_scat</tt><big>(</big><em>bins</em>, <em>dattmp</em>, <em>ctmp</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist.get_clust_scat" title="Permalink to this definition">¶</a></dt>
@@ -498,6 +597,21 @@ DEALINGS IN THE SOFTWARE.</p>
 <em class="property">class </em><tt class="descclassname">pygmi.clust.graphtool.</tt><tt class="descname">GraphMap</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg</span></tt></p>
 <p>Plots several lines in distinct colors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<em>parent</em>) &#8211; reference to the parent routine.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pygmi.clust.graphtool.GraphMap.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphMap.init_graph">
 <tt class="descname">init_graph</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap.init_graph" title="Permalink to this definition">¶</a></dt>
@@ -523,6 +637,18 @@ DEALINGS IN THE SOFTWARE.</p>
 <em class="property">class </em><tt class="descclassname">pygmi.clust.graphtool.</tt><tt class="descname">PolygonInteractor</tt><big>(</big><em>axtmp</em>, <em>pntxy</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtCore.QObject</span></tt></p>
 <p>Polygon Interactor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>axtmp</strong> (<em>matplotlib axis</em>) &#8211; matplotlib axis</li>
+<li><strong>pntxy</strong> &#8211; </li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.button_press_callback">
 <tt class="descname">button_press_callback</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.button_press_callback" title="Permalink to this definition">¶</a></dt>
@@ -593,6 +719,35 @@ DEALINGS IN THE SOFTWARE.</p>
 <em class="property">class </em><tt class="descclassname">pygmi.clust.graphtool.</tt><tt class="descname">ScatterPlot</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
 <p>Main Graph Tool Routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> (<em>parent</em>) &#8211; reference to the parent routine.</td>
+</tr>
+</tbody>
+</table>
+<dl class="attribute">
+<dt id="pygmi.clust.graphtool.ScatterPlot.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.graphtool.ScatterPlot.indata">
+<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of input datasets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.graphtool.ScatterPlot.outdata">
+<tt class="descname">outdata</tt><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of output datasets</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.on_cp_combo">
 <tt class="descname">on_cp_combo</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.on_cp_combo" title="Permalink to this definition">¶</a></dt>
@@ -737,6 +892,30 @@ interface. Normal as well as context menus are defined here.</p>
 <dt id="pygmi.clust.var_ratio.var_ratio">
 <tt class="descclassname">pygmi.clust.var_ratio.</tt><tt class="descname">var_ratio</tt><big>(</big><em>data</em>, <em>uuu</em>, <em>center</em>, <em>dist_orig</em><big>)</big><a class="headerlink" href="#pygmi.clust.var_ratio.var_ratio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Variance Ratio</p>
+<p>Calculates the Variance ratio criterion after Calinski and Harabasz,
+1974. Does not accept missing data.
+Max VRC is optimal.
+U can either be membership matrix (FCM) or cluster index values (k-means)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>numpy array</em>) &#8211; input dataset</li>
+<li><strong>uuu</strong> (<em>numpy array</em>) &#8211; membership matrix (FCM) or cluster index values (k-means)</li>
+<li><strong>center</strong> (<em>numpy array</em>) &#8211; cluster centers</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vrc</strong> &#8211;
+variance ration criterion</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -747,6 +926,30 @@ interface. Normal as well as context menus are defined here.</p>
 <dt id="pygmi.clust.xie_beni.xie_beni">
 <tt class="descclassname">pygmi.clust.xie_beni.</tt><tt class="descname">xie_beni</tt><big>(</big><em>data</em>, <em>expo</em>, <em>uuu</em>, <em>center</em>, <em>edist</em><big>)</big><a class="headerlink" href="#pygmi.clust.xie_beni.xie_beni" title="Permalink to this definition">¶</a></dt>
 <dd><p>Xie Beni</p>
+<p>Calculates the Xie-Beni index
+accepts missing values when given as nan elements in the data base)
+min xbi is optimal</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<em>numpy array</em>) &#8211; input dataset</li>
+<li><strong>expo</strong> (<em>float</em>) &#8211; </li>
+<li><strong>uuu</strong> (<em>numpy array</em>) &#8211; membership matrix (FCM) or cluster index values (k-means)</li>
+<li><strong>center</strong> (<em>numpy array</em>) &#8211; cluster centers</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>xbi</strong> &#8211;
+xie beni index</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -786,7 +989,7 @@ interface. Normal as well as context menus are defined here.</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2014, Council for Geoscience.
+        &copy; Copyright 2015, Council for Geoscience.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi package &mdash; PyGMI 2.2.3 documentation</title>
+    <title>pygmi package &mdash; PyGMI 2.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.3',
+        VERSION:     '2.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.3 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.5 documentation" href="index.html" />
     <link rel="up" title="PyGMI API Documentation" href="api.html" />
     <link rel="next" title="pygmi.clust package" href="pygmi.clust.html" />
     <link rel="prev" title="PyGMI API Documentation" href="api.html" /> 
@@ -721,12 +721,34 @@ are closed</p>
 </div>
 <div class="section" id="module-pygmi.menu_default">
 <span id="pygmi-menu-default-module"></span><h2>pygmi.menu_default module<a class="headerlink" href="#module-pygmi.menu_default" title="Permalink to this headline">¶</a></h2>
-<p>File Menu Routines</p>
+<p>This is the default set of menus for the main interface. It also includes
+the about box</p>
 <dl class="class">
 <dt id="pygmi.menu_default.ComboBoxBasic">
 <em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">ComboBoxBasic</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
 <p>A basic combo box application</p>
+<dl class="attribute">
+<dt id="pygmi.menu_default.ComboBoxBasic.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.menu_default.ComboBoxBasic.indata">
+<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of input datasets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.menu_default.ComboBoxBasic.outdata">
+<tt class="descname">outdata</tt><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of output datasets</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.menu_default.ComboBoxBasic.run">
 <tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.run" title="Permalink to this definition">¶</a></dt>
@@ -740,6 +762,15 @@ are closed</p>
 <em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">FileMenu</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.FileMenu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
 <p>Widget class to call the main interface</p>
+<p>This widget class creates the raster menus to be found on the main
+interface. Normal as well as context menus are defined here.</p>
+<dl class="attribute">
+<dt id="pygmi.menu_default.FileMenu.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.menu_default.FileMenu.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>MainWidget</em></p>
+<p>Reference to MainWidget class found in main.py</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.menu_default.FileMenu.bandselect">
 <tt class="descname">bandselect</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.FileMenu.bandselect" title="Permalink to this definition">¶</a></dt>
@@ -753,18 +784,25 @@ are closed</p>
 <em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">HelpMenu</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpMenu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
 <p>Widget class to call the main interface</p>
+<dl class="attribute">
+<dt id="pygmi.menu_default.HelpMenu.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.menu_default.HelpMenu.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.menu_default.HelpMenu.about">
 <tt class="descname">about</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpMenu.about" title="Permalink to this definition">¶</a></dt>
 <dd><p>PyGMI About Box</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="pygmi.menu_default.HelpMenu.help">
-<tt class="descname">help</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpMenu.help" title="Permalink to this definition">¶</a></dt>
-<dd><p>Help File</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="pygmi.menu_default.webhelp">
+<tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">webhelp</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.webhelp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help File</p>
 </dd></dl>
 
 </div>
@@ -824,15 +862,14 @@ passed since the last call.</p>
 <p>PyGMI stands for Python Geophysical Modelling and Interpretation. It is a
 modelling and interpretation suite aimed at magnetic, gravity and other
 datasets. It includes:</p>
-<dl class="docutils">
-<dt>Magnetic and Gravity 3D forward modelling</dt>
-<dd><ul class="first last simple">
+<blockquote>
+<div><ul class="simple">
+<li>Magnetic and Gravity 3D forward modelling</li>
 <li>Cluster Analysis</li>
 <li>Routines for cutting, reprojecting and doing simple modifications to data</li>
 <li>Convenient display of data using pseudo-color, ternary and sunshaded representation</li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 <p>It is released under the Gnu General Public License version 3.0</p>
 </div>
 </div>
@@ -866,7 +903,7 @@ datasets. It includes:</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2014, Council for Geoscience.
+        &copy; Copyright 2015, Council for Geoscience.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

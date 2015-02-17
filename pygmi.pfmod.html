@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.pfmod package &mdash; PyGMI 2.2.3 documentation</title>
+    <title>pygmi.pfmod package &mdash; PyGMI 2.2.5 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.3',
+        VERSION:     '2.2.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.3 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.5 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
     <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
@@ -425,22 +425,6 @@ only.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.grvmag3d.GeoData.dircos">
-<tt class="descname">dircos</tt><big>(</big><em>incl</em>, <em>decl</em>, <em>azim</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.dircos" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>Subroutine DIRCOS computes direction cosines from inclination</dt>
-<dd>and declination.</dd>
-<dt>Input parameters:</dt>
-<dd><p class="first">incl:  inclination in degrees positive below horizontal.
-decl:  declination in degrees positive east of true north.
-azim:  azimuth of x axis in degrees positive east of north.</p>
-<p class="last">Output parameters:
-a,b,c:  the three direction cosines.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
 <dt id="pygmi.pfmod.grvmag3d.GeoData.gboxmain">
 <tt class="descname">gboxmain</tt><big>(</big><em>xobs</em>, <em>yobs</em>, <em>zobs</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.gboxmain" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">
@@ -466,7 +450,7 @@ Done this way for speed.</dd>
 
 <dl class="method">
 <dt id="pygmi.pfmod.grvmag3d.GeoData.gmmain">
-<tt class="descname">gmmain</tt><big>(</big><em>xobs</em>, <em>yobs</em>, <em>zobs</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.gmmain" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">gmmain</tt><big>(</big><em>xobs</em>, <em>yobs</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.gmmain" title="Permalink to this definition">¶</a></dt>
 <dd><p>Algorithm for simultaneous computation of gravity and magnetic
 fields is based on the formulation published in GEOPHYSICS v. 66,
 521-526,2001. by Bijendra Singh and D. Guptasarma</p>
@@ -536,12 +520,6 @@ This routine calculates the last term</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.grvmag3d.GravMag.dat_extent">
-<tt class="descname">dat_extent</tt><big>(</big><em>dat</em>, <em>axes</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.dat_extent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the extent of the dat variable</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="pygmi.pfmod.grvmag3d.GravMag.grd_to_lith">
 <tt class="descname">grd_to_lith</tt><big>(</big><em>curgrid</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.grd_to_lith" title="Permalink to this definition">¶</a></dt>
 <dd><p>Assign the DTM to the lithology model</p>
@@ -606,6 +584,28 @@ dictionary of items of type Data.</p>
 <dt id="pygmi.pfmod.grvmag3d.calc_fieldb">
 <tt class="descclassname">pygmi.pfmod.grvmag3d.</tt><tt class="descname">calc_fieldb</tt><a class="headerlink" href="#pygmi.pfmod.grvmag3d.calc_fieldb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate magnetic and gravity field</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.dat_extent">
+<tt class="descclassname">pygmi.pfmod.grvmag3d.</tt><tt class="descname">dat_extent</tt><big>(</big><em>dat</em>, <em>axes</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.grvmag3d.dat_extent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the extent of the dat variable</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.dircos">
+<tt class="descclassname">pygmi.pfmod.grvmag3d.</tt><tt class="descname">dircos</tt><big>(</big><em>incl</em>, <em>decl</em>, <em>azim</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.grvmag3d.dircos" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Subroutine DIRCOS computes direction cosines from inclination</dt>
+<dd>and declination.</dd>
+<dt>Input parameters:</dt>
+<dd><p class="first">incl:  inclination in degrees positive below horizontal.
+decl:  declination in degrees positive east of true north.
+azim:  azimuth of x axis in degrees positive east of north.</p>
+<p class="last">Output parameters:
+a,b,c:  the three direction cosines.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
@@ -1018,13 +1018,6 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="pygmi.pfmod.mvis3d.Gridcell">
-<em class="property">class </em><tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">Gridcell</tt><big>(</big><em>p</em>, <em>n</em>, <em>val</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Gridcell" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
-<p>Gridcell class</p>
-</dd></dl>
-
-<dl class="class">
 <dt id="pygmi.pfmod.mvis3d.Mod3dDisplay">
 <em class="property">class </em><tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">Mod3dDisplay</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
@@ -1116,76 +1109,6 @@ here, from the voxel model.</p>
 </dd></dl>
 
 </dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.PolygoniseTri">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">PolygoniseTri</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.PolygoniseTri" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="pygmi.pfmod.mvis3d.Triangle">
-<em class="property">class </em><tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">Triangle</tt><big>(</big><em>p1</em>, <em>p2</em>, <em>p3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Triangle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
-<p>Triangle Class</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="pygmi.pfmod.mvis3d.Vector">
-<em class="property">class </em><tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">Vector</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Vector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
-<p>Vector Class</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.VertexInterp">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">VertexInterp</tt><big>(</big><em>isolevel</em>, <em>p1</em>, <em>p2</em>, <em>valp1</em>, <em>valp2</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.VertexInterp" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.main">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">main</tt><big>(</big><em>data</em>, <em>isolevel</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main class for marching</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.t000F">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">t000F</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.t000F" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.t0708">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">t0708</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.t0708" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.t0906">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">t0906</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.t0906" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.t0A05">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">t0A05</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.t0A05" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.t0B04">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">t0B04</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.t0B04" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.t0C03">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">t0C03</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.t0C03" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.t0D02">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">t0D02</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.t0D02" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.pfmod.mvis3d.t0E01">
-<tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">t0E01</tt><big>(</big><em>g</em>, <em>iso</em>, <em>v0</em>, <em>v1</em>, <em>v2</em>, <em>v3</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.t0E01" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </div>
 <div class="section" id="module-pygmi.pfmod.pfmod">
@@ -2154,7 +2077,7 @@ while doing so - in order to update the blit</p>
       </ul>
     </div>
     <div class="footer">
-        &copy; Copyright 2014, Council for Geoscience.
+        &copy; Copyright 2015, Council for Geoscience.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
