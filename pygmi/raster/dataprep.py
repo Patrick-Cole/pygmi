@@ -37,6 +37,7 @@ import copy
 import scipy.ndimage as ndimage
 from collections import Counter
 # import scipy.interpolate as si
+import pdb
 
 
 def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
@@ -1717,8 +1718,17 @@ class DataGrid(QtGui.QDialog):
             x = data.xdata
             y = data.ydata
             z = data.zdata
+
+            for i in [x, y, z]:
+                filt = np.logical_not(np.isnan(i))
+                x = x[filt]
+                y = y[filt]
+                z = z[filt]
+
 #            self.parent.showprocesslog
+#            pdb.set_trace()
             tmp = quickgrid(x, y, z, dxy, showtext=self.parent.showprocesslog)
+#            pdb.set_trace()
             mask = tmp.mask
             gdat = tmp.data
 

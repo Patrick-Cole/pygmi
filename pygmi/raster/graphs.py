@@ -49,6 +49,8 @@ import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.cbook as cbook
 
+import pdb
+
 
 class MyMplCanvas(FigureCanvas):
     """
@@ -115,19 +117,29 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
+
+#        pdb.set_trace()
+
         extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
                   data1.tly - data1.rows * data1.ydim, data1.tly)
+
+        x_1, x_2, y_1, y_2 = extent
+
+#        self.axes.set_xlim(x_1, x_2)
+#        self.axes.set_ylim(y_1, y_2)
+#        self.axes.set_aspect('equal')
+
 #        extent = (0, data1.cols * data1.xdim,
 #                  0, data1.rows * data1.ydim)
 
-#        rdata = self.axes.imshow(data1.data, extent=extent,
-#                                 interpolation='nearest')
+        rdata = self.axes.imshow(data1.data, extent=extent,
+                                 interpolation='nearest')
 
-        rdata = imshow(self.axes, data1.data.astype(np.float32), extent=extent,
-                       interpolation='nearest')
+#        rdata = imshow(self.axes, data1.data.astype(np.float32), extent=extent,
+#                       interpolation='nearest')
 
-        if data2 is not None:
-            self.axes.plot(data2.xdata, data2.ydata, '.')
+#        if data2 is not None:
+#            self.axes.plot(data2.xdata, data2.ydata, '.')
 
         cbar = self.figure.colorbar(rdata)
         try:

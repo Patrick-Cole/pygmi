@@ -32,6 +32,7 @@ from osgeo import gdal, osr
 import struct
 from .dataprep import merge
 import os
+import pdb
 # from ..ptimer import PTime
 
 
@@ -101,6 +102,16 @@ class ImportData(object):
                                           'Could not import the surfer 6 '
                                           'grid. Please make sure it not '
                                           'another format, such as geosoft.',
+                                          QtGui.QMessageBox.Ok,
+                                          QtGui.QMessageBox.Ok)
+            elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
+                QtGui.QMessageBox.warning(self.parent, 'Error',
+                                          'Could not import the grid. '
+                                          'Please make sure it is a Geosoft '
+                                          'FLOAT grid, and not a compressed '
+                                          'grid. You can export your grid to '
+                                          'this format using the Geosoft '
+                                          'Viewer.',
                                           QtGui.QMessageBox.Ok,
                                           QtGui.QMessageBox.Ok)
             else:
@@ -751,18 +762,23 @@ def get_geosoft(hfile):
 
     temspc = np.fromfile(f, dtype='a324', count=1)[0]
 
+#    pdb.set_trace()
+
     if es == 2:
         nval = -32767
         data = np.fromfile(f, dtype=np.int16, count=nrows*ncols)
 
-    if es == 4:
+    elif es == 4:
         data = np.fromfile(f, dtype=np.float32, count=nrows*ncols)
         nval = -1.0E+32
+    else:
+        return None
 
     data = np.ma.masked_equal(data, nval)
 
     data = data/zmult + zbase
-    data.shape = (ncols, nrows)
+    data.shape = (nrows, ncols)
+    data = data[::-1]
 
     f.close()
 

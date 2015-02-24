@@ -85,7 +85,7 @@ from . import dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 #from ..ptimer import PTime
-
+import pdb
 
 class ModestImage(mi.AxesImage):
     """
@@ -1730,8 +1730,13 @@ def histcomp(img, nbr_bins=256):
     perc = 5
     perc = perc/100.
 
+#    pdb.set_trace()
+
     sindx = np.arange(nbr_bins)[cdf > perc][0]
-    eindx = np.arange(nbr_bins)[cdf < (1-perc)][-1]+1
+    if cdf[0] > (1-perc):
+        eindx = 1
+    else:
+        eindx = np.arange(nbr_bins)[cdf < (1-perc)][-1]+1
     svalue = bins[sindx]
     evalue = bins[eindx]
 
