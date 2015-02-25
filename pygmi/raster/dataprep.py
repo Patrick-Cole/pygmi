@@ -37,7 +37,6 @@ import copy
 import scipy.ndimage as ndimage
 from collections import Counter
 # import scipy.interpolate as si
-import pdb
 
 
 def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):

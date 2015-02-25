@@ -203,10 +203,11 @@ class HelpMenu(object):
 
         msg = '''\
 Name:         PyGMI - Python Geophysical Modelling and Interpretation
+Version:       '''+self.parent.__version__+'''
 Author:       Patrick Cole
-E-Mail:       pcole@geoscience.org.za
+E-Mail:        pcole@geoscience.org.za
 
-Copyright:    (c) 2013 Council for Geoscience
+Copyright:    (c) 2015 Council for Geoscience
 Licence:      GPL-3.0
 
 PyGMI is free software: you can redistribute it and/or modify it under
@@ -228,4 +229,3 @@ with this program. If not, see http://www.gnu.org/licenses/'''
 def webhelp():
     """ Help File"""
     webbrowser.open(r'http://patrick-cole.github.io/pygmi/')
-

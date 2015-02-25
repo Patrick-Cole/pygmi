@@ -25,8 +25,7 @@
 """ Setup script for packaging PyGMI """
 
 from distutils.core import setup
-
-PVER = '2.2.5'
+from pygmi import __version__ as PVER
 
 setup(name='pygmi',
       version=PVER,

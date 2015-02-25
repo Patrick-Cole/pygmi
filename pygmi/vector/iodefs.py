@@ -30,7 +30,6 @@ from osgeo import ogr
 from .datatypes import PData
 from .datatypes import VData
 import os
-import pdb
 
 
 class ImportLEMI417Data(object):

@@ -497,6 +497,7 @@ class MainWidget(QtGui.QMainWindow):
 
         ipth = os.path.dirname(menu_default.__file__)+r'/images/'
 
+        self.__version__ = pygmi.__version__
         self.pdlg = []
         self.context_menu = {}
         self.add_to_context('Basic')
