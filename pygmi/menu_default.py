@@ -27,6 +27,7 @@ the about box """
 
 from PyQt4 import QtGui, QtCore
 import webbrowser
+import os
 
 
 class FileMenu(object):
@@ -196,7 +197,7 @@ class HelpMenu(object):
         self.action_about.setText("About")
 
         self.action_about.triggered.connect(self.about)
-        self.action_help.triggered.connect(webhelp)
+        self.action_help.triggered.connect(self.webhelp)
 
     def about(self):
         """ PyGMI About Box """
@@ -225,7 +226,59 @@ with this program. If not, see http://www.gnu.org/licenses/'''
 
         QtGui.QMessageBox.about(self.parent, 'PyGMI', msg)
 
+    def webhelp(self):
+        """ Help File"""
+        webbrowser.open(r'http://patrick-cole.github.io/pygmi/')
 
-def webhelp():
-    """ Help File"""
-    webbrowser.open(r'http://patrick-cole.github.io/pygmi/')
+
+class HelpDocs(QtGui.QDialog):
+    """
+    A basic combo box application
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+    def __init__(self, parent=None, helptxt=None):
+        QtGui.QDialog.__init__(self, parent)
+
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+
+        ipth = os.path.dirname(__file__)+r'/helpdocs/'
+        if helptxt is None:
+            helptxt = 'No Help Available.'
+        else:
+            itxt = open(ipth+helptxt+'.html')
+            helptxt = itxt.read()
+            itxt.close()
+
+        # create GUI
+        self.setWindowTitle('Help!')
+
+        self.vbox = QtGui.QVBoxLayout()
+        self.setLayout(self.vbox)
+
+        self.text = QtGui.QTextBrowser()
+        self.text.append(helptxt)
+        self.text.setMinimumWidth(640)
+        self.text.setMinimumHeight(480)
+
+        self.vbox.addWidget(self.text)
+
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setCenterButtons(True)
+        self.buttonbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+
+        self.vbox.addWidget(self.buttonbox)
+
+        self.buttonbox.accepted.connect(self.accept)
+
+        self.exec_()

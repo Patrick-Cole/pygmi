@@ -525,6 +525,7 @@ class MainWidget(QtGui.QMainWindow):
         self.action_pointer.setCheckable(True)
         self.action_linepointer.setCheckable(True)
         self.action_pointer.setChecked(True)
+        self.action_help = QtGui.QAction(self)
 
         self.action_delete.setIcon(QtGui.QIcon(ipth+'delete.png'))
         self.action_bring_to_front.setIcon(
@@ -532,6 +533,8 @@ class MainWidget(QtGui.QMainWindow):
         self.action_send_to_back.setIcon(QtGui.QIcon(ipth+'sendtoback.png'))
         self.action_pointer.setIcon(QtGui.QIcon(ipth+'pointer.png'))
         self.action_linepointer.setIcon(QtGui.QIcon(ipth+'linepointer.png'))
+        self.action_help.setIcon(QtGui.QIcon(ipth+'help.png'))
+
         self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
 
         self.setupui()
@@ -572,6 +575,7 @@ class MainWidget(QtGui.QMainWindow):
         self.action_delete.triggered.connect(self.delete_item)
         self.action_bring_to_front.triggered.connect(self.bring_to_front)
         self.action_send_to_back.triggered.connect(self.send_to_back)
+        self.action_help.triggered.connect(self.help_docs)
 
 # Start of Functions
     def setupui(self):
@@ -610,6 +614,8 @@ class MainWidget(QtGui.QMainWindow):
         self.toolbar.addSeparator()
         self.toolbar.addAction(self.action_pointer)
         self.toolbar.addAction(self.action_linepointer)
+        self.toolbar.addSeparator()
+        self.toolbar.addAction(self.action_help)
 
         self.setWindowTitle(
             "PyGMI - Python Geophysical Modelling and Interpretation")
@@ -706,6 +712,13 @@ class MainWidget(QtGui.QMainWindow):
             if isinstance(item, DiagramItem):
                 odata.append(item.my_class.outdata)
         return odata
+
+    def help_docs(self):
+        """
+        Help Routine
+        """
+        menu_default.HelpDocs(self, 'pygmi.main')
+
 
     def item_insert(self, item_type, item_name, class_name):
         """
