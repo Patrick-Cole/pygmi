@@ -34,6 +34,7 @@ from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.signal as si
 import copy
+import pygmi.menu_default as menu_default
 
 #        data = np.array([   [1, 2, 3, 4, 5, 6, 7, 8, 9],
 #                            [1, 2, 3, 4, 5, 7, 6, 8, 9],
@@ -76,17 +77,16 @@ class Gradients(QtGui.QDialog):
 
         self.gridlayout = QtGui.QGridLayout(self)
         self.sb_order = QtGui.QSpinBox(self)
-        self.sb_elev = QtGui.QSpinBox(self)
         self.sb_azi = QtGui.QSpinBox(self)
-        self.label = QtGui.QLabel(self)
         self.label_2 = QtGui.QLabel(self)
         self.label_3 = QtGui.QLabel(self)
         self.buttonbox = QtGui.QDialogButtonBox(self)
+        self.helpdocs = menu_default.HelpButton(self,
+                                                'pygmi.raster.cooper.gradients')
 
         self.setupui()
 
         self.sb_azi.setValue(self.azi)
-        self.sb_elev.setValue(self.elev)
         self.sb_order.setValue(self.order)
 
     def setupui(self):
@@ -94,22 +94,20 @@ class Gradients(QtGui.QDialog):
 #        self.resize(289, 166)
         self.sb_order.setMinimum(1)
         self.gridlayout.addWidget(self.sb_order, 3, 1, 1, 1)
-        self.sb_elev.setMaximum(90)
-        self.gridlayout.addWidget(self.sb_elev, 1, 1, 1, 1)
+
         self.sb_azi.setPrefix("")
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
         self.gridlayout.addWidget(self.sb_azi, 0, 1, 1, 1)
-        self.gridlayout.addWidget(self.label, 1, 0, 1, 1)
         self.gridlayout.addWidget(self.label_2, 0, 0, 1, 1)
         self.gridlayout.addWidget(self.label_3, 3, 0, 1, 1)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
         self.gridlayout.addWidget(self.buttonbox, 4, 1, 1, 1)
+        self.gridlayout.addWidget(self.helpdocs, 4, 0, 1, 1)
 
         self.setWindowTitle("Gradient Calculation")
-        self.label.setText("Elevation")
         self.label_2.setText("Azimuth")
         self.label_3.setText("Order")
 
@@ -123,14 +121,12 @@ class Gradients(QtGui.QDialog):
             return
 
         self.azi = self.sb_azi.value()
-        self.elev = self.sb_elev.value()
         self.order = self.sb_order.value()
 
         data = copy.deepcopy(self.indata['Raster'])
 
         for i in range(len(data)):
-            data[i].data = gradients(data[i].data, self.azi, self.elev,
-                                     self.order)
+            data[i].data = gradients(data[i].data, self.azi, 0., self.order)
 
         self.outdata['Raster'] = data
 
@@ -212,6 +208,8 @@ class Visibility2d(QtGui.QDialog):
         self.label = QtGui.QLabel(self)
         self.label_2 = QtGui.QLabel(self)
         self.pbar = QtGui.QProgressBar(self)
+        self.helpdocs = menu_default.HelpButton(self,
+                                                'pygmi.raster.cooper.visibility')
 
         self.setupui()
 
@@ -228,7 +226,8 @@ class Visibility2d(QtGui.QDialog):
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout.addWidget(self.buttonbox, 3, 0, 1, 2)
+        self.gridlayout.addWidget(self.buttonbox, 3, 1, 1, 1)
+        self.gridlayout.addWidget(self.helpdocs, 3, 0, 1, 1)
         self.sb_wsize.setPrefix("")
         self.sb_wsize.setMinimum(3)
         self.sb_wsize.setMaximum(100000)
@@ -450,6 +449,8 @@ class Tilt1(QtGui.QDialog):
         self.sb_s = QtGui.QSpinBox(self)
         self.label_2 = QtGui.QLabel(self)
         self.pbar = QtGui.QProgressBar(self)
+        self.helpdocs = menu_default.HelpButton(self,
+                                                'pygmi.raster.cooper.tilt')
 
         self.setupui()
 
@@ -463,7 +464,8 @@ class Tilt1(QtGui.QDialog):
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout.addWidget(self.buttonbox, 3, 0, 1, 2)
+        self.gridlayout.addWidget(self.buttonbox, 3, 1, 1, 1)
+        self.gridlayout.addWidget(self.helpdocs, 3, 0, 1, 1)
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
         self.sb_azi.setProperty("value", 0)

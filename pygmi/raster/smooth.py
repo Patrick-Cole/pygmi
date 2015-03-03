@@ -28,6 +28,7 @@ from PyQt4 import QtGui
 import numpy as np
 import scipy.signal as ssig
 import copy
+import pygmi.menu_default as menu_default
 
 
 class Smooth(QtGui.QDialog):
@@ -68,6 +69,7 @@ class Smooth(QtGui.QDialog):
         self.tablewidget = QtGui.QTableWidget(self)
         self.buttonbox = QtGui.QDialogButtonBox(self)
         self.progressbar = QtGui.QProgressBar(self)
+        self.helpdocs = menu_default.HelpButton(self, 'pygmi.raster.smooth')
 
         self.setupui()
 
@@ -151,6 +153,8 @@ class Smooth(QtGui.QDialog):
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
+
+        self.gridlayout.addWidget(self.helpdocs, 4, 0, 1, 1)
 
     def settings(self):
         """ Settings """

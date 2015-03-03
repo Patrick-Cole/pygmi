@@ -36,6 +36,8 @@ from PIL import Image, ImageDraw
 import copy
 import scipy.ndimage as ndimage
 from collections import Counter
+import pygmi.menu_default as menu_default
+
 # import scipy.interpolate as si
 
 
@@ -258,6 +260,8 @@ class DataMerge(QtGui.QDialog):
         self.dsb_dxy = QtGui.QDoubleSpinBox(self)
         self.label_rows = QtGui.QLabel(self)
         self.label_cols = QtGui.QLabel(self)
+        self.helpdocs = menu_default.HelpButton(self,
+                                                'pygmi.raster.dataprep.datamerge')
 
         self.setupui()
 
@@ -285,7 +289,8 @@ class DataMerge(QtGui.QDialog):
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
-        self.gridlayout_main.addWidget(self.buttonbox, 3, 0, 1, 4)
+        self.gridlayout_main.addWidget(self.buttonbox, 3, 1, 1, 1)
+        self.gridlayout_main.addWidget(self.helpdocs, 3, 0, 1, 1)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
@@ -438,10 +443,13 @@ class DataReproj(QtGui.QDialog):
         self.cb_out_epsg = QtGui.QCheckBox(self.groupbox2)
         self.sb_out_epsg = QtGui.QSpinBox(self.groupbox2)
         self.out_epsg_info = QtGui.QLabel(self.groupbox)
+        self.helpdocs = menu_default.HelpButton(self,
+                                                'pygmi.raster.dataprep.datareproj')
 
         self.setupui()
-
         self.ctrans = None
+
+        dcodes, pcodes = getepsgcodes()
 
     def setupui(self):
         """ Setup UI """
@@ -455,7 +463,7 @@ class DataReproj(QtGui.QDialog):
             "EPSG codes are available online at either " +
             "http://www.epsg-registry.org/, " +
             "http://spatialreference.org/ref/epsg/ \n or in the gcs.csv " +
-            "and pcs.csv files in your python GDAL\\data directory.")
+            "and pcs.csv files in your python GDAL data directory.")
         self.gridlayout_main.addWidget(label_help, 3, 0, 1, 4)
 
         label_input = QtGui.QLabel(self.groupbox)
@@ -610,7 +618,9 @@ class DataReproj(QtGui.QDialog):
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
-        self.gridlayout_main.addWidget(self.buttonbox, 4, 0, 1, 4)
+        self.gridlayout_main.addWidget(self.buttonbox, 4, 1, 1, 3)
+        self.gridlayout_main.addWidget(self.helpdocs, 4, 0, 1, 1)
+
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
@@ -1621,6 +1631,8 @@ class DataGrid(QtGui.QDialog):
         self.label_rows = QtGui.QLabel(self)
         self.label_cols = QtGui.QLabel(self)
         self.dataid = QtGui.QComboBox(self)
+        self.helpdocs = menu_default.HelpButton(self,
+                                                'pygmi.raster.dataprep.datagrid')
 
         self.setupui()
 
@@ -1653,7 +1665,8 @@ class DataGrid(QtGui.QDialog):
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
-        self.gridlayout_main.addWidget(self.buttonbox, 4, 0, 1, 4)
+        self.gridlayout_main.addWidget(self.helpdocs, 4, 0, 1, 1)
+        self.gridlayout_main.addWidget(self.buttonbox, 4, 1, 1, 3)
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
@@ -1676,6 +1689,9 @@ class DataGrid(QtGui.QDialog):
     def settings(self):
         """ Settings """
         tmp = []
+        if 'Point' not in self.indata:
+            return False
+
         for i in self.indata['Point']:
             tmp.append(i.dataid)
 
@@ -1830,3 +1846,31 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz = np.ma.array(zfin)
     newz.mask = newmask
     return newz
+
+
+def getepsgcodes():
+    """
+    Convenience function used to get a list of EPSG codes
+    """
+
+    dfile = open(os.environ['GDAL_DATA']+'\\gcs.csv')
+    dlines = dfile.readlines()
+    dfile.close()
+
+    dlines = dlines[1:]
+    dcodes = {}
+    for i in dlines:
+        tmp = i.split(',')
+        dcodes[tmp[1]] = tmp[0]
+
+    pfile = open(os.environ['GDAL_DATA']+'\\pcs.csv')
+    plines = pfile.readlines()
+    pfile.close()
+
+    plines = dlines[1:]
+    pcodes = {}
+    for i in plines:
+        tmp = i.split(',')
+        pcodes[tmp[1]] = tmp[0]
+
+    return dcodes, pcodes

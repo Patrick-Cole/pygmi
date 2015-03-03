@@ -231,6 +231,33 @@ with this program. If not, see http://www.gnu.org/licenses/'''
         webbrowser.open(r'http://patrick-cole.github.io/pygmi/')
 
 
+class HelpButton(QtGui.QPushButton):
+    """
+    Help Button
+
+    Convenience class to add an image to a pushbutton
+    """
+    def __init__(self, parent=None, htmlfile=None):
+        QtGui.QPushButton.__init__(self, parent)
+
+        self.htmlfile = htmlfile
+
+        ipth = os.path.dirname(__file__)+r'/images/'
+        self.setMinimumHeight(48)
+        self.setMinimumWidth(48)
+
+        self.setIcon(QtGui.QIcon(ipth+'help.png'))
+        self.setIconSize(self.minimumSize())
+        self.clicked.connect(self.help_docs)
+        self.setFlat(True)
+
+    def help_docs(self):
+        """
+        Help Routine
+        """
+        HelpDocs(self, self.htmlfile)
+
+
 class HelpDocs(QtGui.QDialog):
     """
     A basic combo box application
@@ -252,10 +279,13 @@ class HelpDocs(QtGui.QDialog):
         self.outdata = {}
 
         ipth = os.path.dirname(__file__)+r'/helpdocs/'
+        opth = os.getcwd()
+
         if helptxt is None:
             helptxt = 'No Help Available.'
         else:
-            itxt = open(ipth+helptxt+'.html')
+            os.chdir(ipth)
+            itxt = open(helptxt+'.html')
             helptxt = itxt.read()
             itxt.close()
 
@@ -267,8 +297,18 @@ class HelpDocs(QtGui.QDialog):
 
         self.text = QtGui.QTextBrowser()
         self.text.append(helptxt)
-        self.text.setMinimumWidth(640)
-        self.text.setMinimumHeight(480)
+        self.text.setMinimumWidth(480)
+        self.text.setMinimumHeight(360)
+        self.text.setFrameShape(QtGui.QFrame.NoFrame)
+        cursor = QtGui.QTextCursor()
+        cursor.setPosition(0)
+        self.text.setTextCursor(cursor)
+
+        ptmp = self.text.palette()
+        ptmp.setColor(0, 9, ptmp.color(10))
+        ptmp.setColor(1, 9, ptmp.color(10))
+        ptmp.setColor(2, 9, ptmp.color(10))
+        self.text.setPalette(ptmp)
 
         self.vbox.addWidget(self.text)
 
@@ -282,3 +322,5 @@ class HelpDocs(QtGui.QDialog):
         self.buttonbox.accepted.connect(self.accept)
 
         self.exec_()
+
+        os.chdir(opth)

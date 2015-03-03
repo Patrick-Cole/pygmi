@@ -84,8 +84,10 @@ from . import iodefs
 from . import dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
+import pygmi.menu_default as menu_default
 #from ..ptimer import PTime
-import pdb
+#import pdb
+
 
 class ModestImage(mi.AxesImage):
     """
@@ -944,6 +946,7 @@ class PlotInterp(QtGui.QDialog):
         self.labela = QtGui.QLabel(self)
         self.labelc = QtGui.QLabel(self)
         self.labelk = QtGui.QLabel(self)
+        self.helpdocs = menu_default.HelpButton(self, 'pygmi.raster.ginterp')
 
         self.setupui()
 
@@ -973,7 +976,7 @@ class PlotInterp(QtGui.QDialog):
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                        QtGui.QSizePolicy.Expanding)
 
-        self.setWindowTitle("Graph Window")
+        self.setWindowTitle("Raster Data Interpretation")
         mpl_toolbar = NavigationToolbar(self.mmc, self)
 
         rwidget = QtGui.QWidget()
@@ -1024,6 +1027,7 @@ class PlotInterp(QtGui.QDialog):
 
         self.btn_saveimg.setText('Save GeoTiff')
         vbl_raster.addWidget(self.btn_saveimg)
+        vbl_raster.addWidget(self.helpdocs)
 
 # Right Vertical Layout
         vbl_right = QtGui.QVBoxLayout()  # self is where layout is assigned

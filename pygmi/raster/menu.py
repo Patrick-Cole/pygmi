@@ -94,7 +94,7 @@ class MenuWidget(object):
         self.action_visibility.triggered.connect(self.visibility)
 
         self.action_tilt = QtGui.QAction(self.parent)
-        self.action_tilt.setText("Tilt")
+        self.action_tilt.setText("Tilt Angle")
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
 

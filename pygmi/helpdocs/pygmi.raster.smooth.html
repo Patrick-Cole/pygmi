@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Smoothing Filters</h1>
+		<p>The smoothing filters work by passing a matrix which contains the filter over your raster dataset. The filter type, filter shape and the filter size can all be specified.</p>
+		<h2>Filter Type</h2>
+		<p>This can be either 2D median or 2D mean. Note that your choice of filter may affect the number of filter shape options you have.</p>
+		<h2>Filter Shape</h2>
+		<ul>
+			<li>Box window - this is a regular square matrix with constant values applied to your dataset.</li>
+			<li>Disk window - this applies a disk of constant values to your dataset</li>
+			<li>Gaussian Window - this applies a gaussian shaped filter to your dataset. This option is only present for the 2D mean filter type.</li>
+		</ul>
+		<h2>Filter Size</h2>
+		The options here are dependant on the option chosen in filter shape. They are as follows:
+		<ul>
+			<li>X and Y for the Box window - this is the number of rows and columns which will make up the box window</li>
+			<li>Radius in samples for the Disk window - this creates a disk of the specified radius. The disk will have 2*radius rows and columns</li>
+			<li>Standard Deviation for the Gaussian Window - this creates the Gaussian box window where the values have the standard deviation specified.</li>
+		</ul>
+	</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Calculate IGRF Corrected Data</h1>
+		<p>This calculates IGRF corrected version of the magnetic data. It requires, as input, a magnetic dataset for an area as well as a digital elevation model. Since the IGRF correction relates to latitude and longitude, the input dataset is first converted to degrees, then corrected, and finally converted back to meters. For this reason, the input projection must also be specified on this dialog.</p>
+		<h2>Options</h2>
+		<h3>Input Projection</h3>
+		<ul>
+			<li>Datum - Can be either WGS84 or Cape</li>
+			<li>Projection - Currently, projections of UTM and Transverse Mercator are supported</li>
+			<li>UTM Zone - This only applies to UTM. Changing this will automatically set the Central Meridian.</li>
+			<li>Latitude of Origin - Latitude from which meters start to be measured. This is normally 0.</li>
+			<li>Central Meridian - Longitude from which meters start to be measured. This is set automatically by UTM zone.</li>
+			<li>Scale Factor - Projection parameter for Transverse Mercator</li>
+			<li>False Easting - A value added to the easting calculated from the central meridian.</li>
+			<li>False Northing - A value added to the northing calculated from the latitude of origin.</li>
+		</ul>
+		<h3>IGRF Options</h3>
+		<ul>
+			<li>Sensor Clearance above ground - This is the height, in meters, of the sensor measuring the magentic field, above the ground.</li>
+			<li>Date - This is the survey date. The IGRF field changes depending on when the magnetic data was collected, so the survey date must be taken into account.</li>
+			<li>Digital Elevation Model - raster grid of the terrain in height above sea level.</li>
+			<li>Magnetic Data - raster grid of the magnetic data to be corrected.</li>
+		</ul>
+	</body>
+</html>

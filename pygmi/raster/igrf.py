@@ -57,6 +57,7 @@ from math import atan2
 from osgeo import osr
 import copy
 from . import dataprep as dp
+import pygmi.menu_default as menu_default
 
 
 class IGRF(QtGui.QDialog):
@@ -182,6 +183,7 @@ class IGRF(QtGui.QDialog):
         self.dateedit = QtGui.QDateEdit(self)
         self.combobox_dtm = QtGui.QComboBox(self)
         self.combobox_mag = QtGui.QComboBox(self)
+        self.helpdocs = menu_default.HelpButton(self, 'pygmi.raster.igrf')
 
         self.setupui()
 
@@ -264,7 +266,8 @@ class IGRF(QtGui.QDialog):
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout_2.addWidget(self.buttonbox, 6, 0, 1, 2)
+        self.gridlayout_2.addWidget(self.buttonbox, 6, 1, 1, 1)
+        self.gridlayout_2.addWidget(self.helpdocs, 6, 0, 1, 1)
 
         label_20 = QtGui.QLabel(self)
         self.gridlayout_2.addWidget(label_20, 2, 0, 1, 1)

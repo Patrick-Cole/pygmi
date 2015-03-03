@@ -29,6 +29,8 @@ import numpy as np
 import scipy.stats as sstat
 import copy
 import warnings
+import pygmi.menu_default as menu_default
+
 
 warnings.simplefilter('always', RuntimeWarning)
 
@@ -44,14 +46,17 @@ class Normalisation(QtGui.QDialog):
         self.reportback = self.parent.showprocesslog
 
         self.verticallayout = QtGui.QVBoxLayout(self)
+
         self.groupbox = QtGui.QGroupBox(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.verticallayout_2 = QtGui.QVBoxLayout(self.groupbox)
         self.radiobutton_interval = QtGui.QRadioButton(self.groupbox)
         self.radiobutton_mean = QtGui.QRadioButton(self.groupbox)
         self.radiobutton_median = QtGui.QRadioButton(self.groupbox)
         self.radiobutton_8bit = QtGui.QRadioButton(self.groupbox)
-        self.verticallayout.addWidget(self.groupbox)
+
+        self.groupbox2 = QtGui.QGroupBox(self)
+        self.helpdocs = menu_default.HelpButton(self.groupbox2,
+                                                'pygmi.raster.normalisation')
+        self.buttonbox = QtGui.QDialogButtonBox(self.groupbox2)
 
         self.setupui()
 
@@ -62,15 +67,22 @@ class Normalisation(QtGui.QDialog):
         """ Setup UI """
 #        self.resize(286, 166)
         self.radiobutton_interval.setChecked(True)
-        self.verticallayout_2.addWidget(self.radiobutton_interval)
-        self.radiobutton_mean = QtGui.QRadioButton(self.groupbox)
-        self.verticallayout_2.addWidget(self.radiobutton_mean)
-        self.verticallayout_2.addWidget(self.radiobutton_median)
-        self.verticallayout_2.addWidget(self.radiobutton_8bit)
+
+        verticallayout_2 = QtGui.QVBoxLayout(self.groupbox)
+        verticallayout_2.addWidget(self.radiobutton_interval)
+        verticallayout_2.addWidget(self.radiobutton_mean)
+        verticallayout_2.addWidget(self.radiobutton_median)
+        verticallayout_2.addWidget(self.radiobutton_8bit)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.verticallayout.addWidget(self.buttonbox)
+
+        horizontallayout = QtGui.QHBoxLayout(self.groupbox2)
+        horizontallayout.addWidget(self.helpdocs)
+        horizontallayout.addWidget(self.buttonbox)
+
+        self.verticallayout.addWidget(self.groupbox)
+        self.verticallayout.addWidget(self.groupbox2)
 
         self.setWindowTitle("Normalisation")
         self.groupbox.setTitle("Normalisation/Scaling")
