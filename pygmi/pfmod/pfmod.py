@@ -109,10 +109,10 @@ class MainWidget(QtGui.QMainWindow):
         self.helpdocs.clicked.disconnect()
         self.helpdocs.clicked.connect(self.help_docs)
 
-        self.actionsave = QtGui.QAction(self)
+        self.actionsave = QtGui.QPushButton(self)
         self.actionsave.setText("Save Model")
-        self.toolbar.addAction(self.actionsave)
-        self.actionsave.triggered.connect(self.savemodel)
+        self.toolbar.addWidget(self.actionsave)
+        self.actionsave.clicked.connect(self.savemodel)
 
     def savemodel(self):
         """ Model Save """
@@ -152,6 +152,7 @@ class MainWidget(QtGui.QMainWindow):
     def setupui(self):
         """ Setup for the GUI """
         self.resize(1024, 768)
+        self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
         self.setCentralWidget(self.centralwidget)
 #        self.setMenuBar(self.menubar)
         self.setStatusBar(self.statusbar)

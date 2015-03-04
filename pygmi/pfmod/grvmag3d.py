@@ -71,9 +71,9 @@ class GravMag(object):
         self.mfname = self.parent.modelfilename
         self.tmpfiles = {}
 
-        self.actionregionaltest = QtGui.QAction(self.parent)
-        self.actioncalculate = QtGui.QAction(self.parent)
-        self.actioncalculate2 = QtGui.QAction(self.parent)
+        self.actionregionaltest = QtGui.QPushButton(self.parent)
+        self.actioncalculate = QtGui.QPushButton(self.parent)
+        self.actioncalculate2 = QtGui.QPushButton(self.parent)
         self.setupui()
 
     def setupui(self):
@@ -82,13 +82,15 @@ class GravMag(object):
         self.actioncalculate.setText("Calculate Gravity at Gravity Height")
         self.actioncalculate2.setText(
             "Calculate Magnetics and Gravity at Magnetic Height")
-        self.parent.toolbar.addAction(self.actionregionaltest)
-        self.parent.toolbar.addAction(self.actioncalculate)
-        self.parent.toolbar.addAction(self.actioncalculate2)
+        self.parent.toolbar.addWidget(self.actionregionaltest)
+        self.parent.toolbar.addSeparator()
+        self.parent.toolbar.addWidget(self.actioncalculate)
+        self.parent.toolbar.addWidget(self.actioncalculate2)
+        self.parent.toolbar.addSeparator()
 
-        self.actionregionaltest.triggered.connect(self.test_pattern)
-        self.actioncalculate.triggered.connect(self.calc_field)
-        self.actioncalculate2.triggered.connect(self.calc_field_new)
+        self.actionregionaltest.clicked.connect(self.test_pattern)
+        self.actioncalculate.clicked.connect(self.calc_field)
+        self.actioncalculate2.clicked.connect(self.calc_field_new)
 
     def calc_field_new(self):
         """ Pre field-calculation routine """
