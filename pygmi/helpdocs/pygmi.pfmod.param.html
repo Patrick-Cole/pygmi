@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Geophysical Parameters</h1>
+		<p>This tab allows for setting all the geophysical parameters for your model. Some are general - such as survey parameters associated with the data, while others are specific to each lithology being modelled.</p>
+		<h2>General Properties</h2>
+		<ul>
+			<li>Gravity Regional - Gravity data needs to have a regional subtracted so that the theroetical and measured anomalies coincide. PyGMI allows you to enter this correction here.</li>
+			<li>Lithology Based regional Estimation - Uses one of your lithologies to automatically estimate a regional. It is meant to be a starting point, and may need to be tweaked.</li>
+			<li>Height of observation - Gravity - This is the gravity sensor height.</li>
+			<li>Height of observation - Magnetic - This is the gravity sensor height.</li>
+			<li>Magnetic Field Intensity - This is the intensity of the magnetic field at the time of the survey. You can get this from <a href="http://www.ngdc.noaa.gov/geomag-web/#igrfwmm">NOAA</a>.</li>
+			<li>Magnetic Inclination - This is the inclination of the magnetic field at the time of the survey. You can get this from <a href="http://www.ngdc.noaa.gov/geomag-web/#igrfwmm">NOAA</a>.</li>
+			<li>Magnetic Declination - This is the declination of the magnetic field at the time of the survey. You can get this from <a href="http://www.ngdc.noaa.gov/geomag-web/#igrfwmm">NOAA</a>.</li>
+			<li>Apply Changes - This must be pressed to apply any changes in the General Properties section.
+		</ul>
+		<h2>Lithological Properties</h2>
+		<p>PyGMI sets up geophysical properties on a lithology basis, and not on a body by body basis.</p>
+		<h3>Lithological Definitions List</h3>
+		<ul>
+			<li>Add New Lithological Definition - allows for adding a new definition. The user will also be able to select the color of the definition.</li>
+			<li>Rename Current Definition - allows for renaming a selected definition.</li>
+			<li>Remove Current Definition - allows for deleting a selected definition.</li>
+		</ul>
+		<h3>Lithological Properties - Lithology Name</h3>
+		<p> By selecting a lithology from the lithology list, its associated properties are shown here. The background lithology denotes properties associated with background (unmodelled) geology. This should be left alone under normal circumstances</p>
+		<ul>
+			<li>Density  - denisty of your lithology. It applies to gravity modelling.</li>
+			<li>Magnetic susceptibility - susceptibility of your lithology. It applies to magnetic modelling.</li>
+			<li>Remanent Magnetization Intensity - Applies to lithologies with remanence.</li>
+			<li>Remanent Magnetization - Applies to lithologies with remanence.</li>
+			<li>Q Ratio - Applies to lithologies with remanence.</li>
+			<li>Remanent Inclination - Applies to lithologies with remanence.</li>
+			<li>Remanent Declination - Applies to lithologies with remanence.</li>
+		</ul>
+		</body>
+</html>

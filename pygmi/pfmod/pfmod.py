@@ -36,6 +36,7 @@ from . import tab_param
 from . import tab_mext
 from . import grvmag3d
 from .datatypes import LithModel
+import pygmi.menu_default as menu_default
 
 
 class MainWidget(QtGui.QMainWindow):
@@ -53,13 +54,17 @@ class MainWidget(QtGui.QMainWindow):
         self.modelfilename = r'./tmp'
 
         self.centralwidget = QtGui.QWidget(self)
-        self.toolbar = QtGui.QToolBar(self)
-        self.statusbar = QtGui.QStatusBar(self)
         self.verticallayout = QtGui.QVBoxLayout(self.centralwidget)
-        self.tabwidget = QtGui.QTabWidget(self.centralwidget)
-        self.pbar_sub = QtGui.QProgressBar(self.centralwidget)
-        self.pbar_main = QtGui.QProgressBar(self.centralwidget)
-        self.textbrowser = QtGui.QTextBrowser(self.centralwidget)
+
+        self.toolbar = QtGui.QToolBar()
+        self.statusbar = QtGui.QStatusBar()
+        self.tabwidget = QtGui.QTabWidget()
+        self.pbar_sub = QtGui.QProgressBar()
+        self.pbar_main = QtGui.QProgressBar()
+
+        self.hlayout = QtGui.QHBoxLayout()
+        self.textbrowser = QtGui.QTextBrowser()
+        self.helpdocs = menu_default.HelpButton()
 
         self.setupui()
 
@@ -93,12 +98,41 @@ class MainWidget(QtGui.QMainWindow):
 
 # Profile Viewer Tab
         self.pview = tab_pview.ProfileDisplay(self)
-        self.tabwidget.addTab(self.pview.userint, "Custom Profile Viewer")
+        self.tabwidget.addTab(self.pview.userint, "Custom Profile Editor")
 
 # Gravity and magnetic modelling routines
         self.grvmag = grvmag3d.GravMag(self)
 
         self.tabwidget.currentChanged.connect(self.tab_change)
+        self.helpdocs.clicked.disconnect()
+        self.helpdocs.clicked.connect(self.help_docs)
+
+    def help_docs(self):
+        """
+        Help Routine
+        """
+        index = self.tabwidget.currentIndex()
+        htmlfile = ''
+
+        if self.tabwidget.tabText(index) == 'Geophysical Parameters':
+            htmlfile += 'pygmi.pfmod.param'
+
+        if self.tabwidget.tabText(index) == 'Model Extent Parameters':
+            htmlfile += 'pygmi.pfmod.mext'
+
+        if self.tabwidget.tabText(index) == 'Profile Editor':
+            htmlfile += 'pygmi.pfmod.prof'
+
+        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
+            htmlfile += 'pygmi.pfmod.pview'
+
+        if self.tabwidget.tabText(index) == 'Layer Editor':
+            htmlfile += 'pygmi.pfmod.layer'
+
+        if self.tabwidget.tabText(index) == 'Data Display':
+            htmlfile += 'pygmi.pfmod.ddisp'
+
+        menu_default.HelpDocs(self, htmlfile)
 
     def setupui(self):
         """ Setup for the GUI """
@@ -110,7 +144,13 @@ class MainWidget(QtGui.QMainWindow):
 
         self.verticallayout.addWidget(self.tabwidget)
         self.textbrowser.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.verticallayout.addWidget(self.textbrowser)
+
+        self.hlayout.addWidget(self.textbrowser)
+        self.hlayout.addWidget(self.helpdocs)
+        self.verticallayout.addLayout(self.hlayout)
+
+
+#        self.verticallayout.addWidget(self.textbrowser)
         self.pbar_sub.setTextVisible(False)
         self.verticallayout.addWidget(self.pbar_sub)
         self.pbar_main.setTextVisible(False)
@@ -175,7 +215,7 @@ class MainWidget(QtGui.QMainWindow):
         if self.oldtab == 'Profile Editor':
             self.profile.update_model()
 
-        if self.oldtab == 'Custom Profile Viewer':
+        if self.oldtab == 'Custom Profile Editor':
             self.pview.update_model()
 
         if self.tabwidget.tabText(index) == 'Geophysical Parameters':
@@ -187,7 +227,7 @@ class MainWidget(QtGui.QMainWindow):
         if self.tabwidget.tabText(index) == 'Profile Editor':
             self.profile.tab_activate()
 
-        if self.tabwidget.tabText(index) == 'Custom Profile Viewer':
+        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
             self.pview.tab_activate()
 
         if self.tabwidget.tabText(index) == 'Layer Editor':

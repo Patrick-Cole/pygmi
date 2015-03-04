@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Model Extents Parameters</h1>
+		<p>This tab sets up the extents of the model. The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, dtm data can be obtained from the SRTM archives.</p>
+		<p>The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.</p>
+		<h2>Current Models</h2>
+		<ul>
+			<li>Current Model - This only applies if you are importing a 3D model. It is the current model which you are working on.</li>
+			<li>Regional Model - This only applies if you are importing a 3D model. It imports applicable parts of the regional model into your current model.</li>
+			<li>Apply Regional Model - This applies the regional model to the current model. Changes will not occur otherwize.</li>
+		</ul>
+		<h2>Dataset Information</h2>
+		<p>This is used to define the data connected to the modelling module. The data is either connected manually or will be embedded withing a 3D model file.</p>
+		<ul>
+			<li>DTM Dataset - This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study. <b>If you are modelling actual data, this is compulsory. If nothing is available, download the SRTM data from NASA.</b> It is not necessary if you are merely doing a theoretical model of, say, a dyke.</li>
+			<li>Magnetic Dataset - This is the magnetic data to be modelled.</li>
+			<li>Gravity Dataset - This is the gravity data to be modelled.</li>
+			<li>Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data.</li>
+		</ul>
+		<h2>Model Extent Properties</h2>
+		<p>The model extents control the area size and depth of your model, as well as its resolution. Typically one of your datasets are used to fill in most of the fields automatically. Because the DTM is compulsory to the modelling, this is normally the default choice.</p>
+		<ul>
+			<li>Get Study Area from following Dataset - Usually the DTM dataset is chosen, but it can be any of your datasets. </li>
+			<li>Upper Top Left X Coordinate - This is the north-west corner X coordinate of your model in meters.</li>
+			<li>Upper Top Left Y Coordinate - This is the north-west corner Y coordinate of your model in meters.</li>
+			<li>Upper Top Left Z Coordinate - This is the north-west corner Z coordinate of your model in meters above sea level.</li>
+			<li>Total X Extent - the distance from east to west in the model.</li>
+			<li>Total Y Extent - the distance from north to south in the model.</li>
+			<li>Total Z Extent - the depth range of the model.</li>
+			<li>X and Y Cell Size - the width of each model cube in the x and y direction.</li>
+			<li>Z Cell Size - the height of each model cube in z direction.</li>
+			<li>Number of Columns (X Direction) - This is calculated automatically from extents and cell sizes.</li>
+			<li>Number of Rows (Y Direction) - This is calculated automatically from extents and cell sizes.</li>
+			<li>Number of Layers (Z Direction) - This is calculated automatically from extents and cell sizes.</li>
+			<li>Accept Proposed Changes - This is calculated automatically from extents and cell sizes.</li>
+		</ul>
+		<h2>Tips</h2>
+		<ul>
+			<li>Start with a low resolution model to get a general model in place first. 20x20x20 should be fine, since any bigger will get slow to model.</li>
+			<li>Once your low resolution model is complete, you can increase the model's resolution to a better resolution. Please note that bigger than 100x100x100 will cause calculations to become very slow (unless you have lots of memory).</li>
+		</ul>
+	</body>
+</html>

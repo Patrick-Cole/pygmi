@@ -418,7 +418,7 @@ class MyMplCanvas(FigureCanvas):
 
     def slide_grid(self, dat, dat2=None):
         """ Slider """
-        print('slide grid')
+#        print('slide grid')
         opac = self.opac
 
         tmp = self.luttodat(dat)

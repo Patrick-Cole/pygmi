@@ -242,11 +242,11 @@ class HelpButton(QtGui.QPushButton):
 
         self.htmlfile = htmlfile
 
-        ipth = os.path.dirname(__file__)+r'/images/'
+        self.ipth = os.path.dirname(__file__)+r'/images/'
         self.setMinimumHeight(48)
         self.setMinimumWidth(48)
 
-        self.setIcon(QtGui.QIcon(ipth+'help.png'))
+        self.setIcon(QtGui.QIcon(self.ipth+'help.png'))
         self.setIconSize(self.minimumSize())
         self.clicked.connect(self.help_docs)
         self.setFlat(True)
@@ -296,6 +296,7 @@ class HelpDocs(QtGui.QDialog):
         self.setLayout(self.vbox)
 
         self.text = QtGui.QTextBrowser()
+        self.text.setOpenExternalLinks(True)
         self.text.append(helptxt)
         self.text.setMinimumWidth(480)
         self.text.setMinimumHeight(360)
