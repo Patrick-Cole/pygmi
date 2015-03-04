@@ -81,8 +81,7 @@ class Gradients(QtGui.QDialog):
         self.label_2 = QtGui.QLabel(self)
         self.label_3 = QtGui.QLabel(self)
         self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.helpdocs = menu_default.HelpButton(self,
-                                                'pygmi.raster.cooper.gradients')
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
         self.setupui()
 
@@ -208,8 +207,7 @@ class Visibility2d(QtGui.QDialog):
         self.label = QtGui.QLabel(self)
         self.label_2 = QtGui.QLabel(self)
         self.pbar = QtGui.QProgressBar(self)
-        self.helpdocs = menu_default.HelpButton(self,
-                                                'pygmi.raster.cooper.visibility')
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
 
         self.setupui()
 
@@ -449,8 +447,7 @@ class Tilt1(QtGui.QDialog):
         self.sb_s = QtGui.QSpinBox(self)
         self.label_2 = QtGui.QLabel(self)
         self.pbar = QtGui.QProgressBar(self)
-        self.helpdocs = menu_default.HelpButton(self,
-                                                'pygmi.raster.cooper.tilt')
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
 
         self.setupui()
 

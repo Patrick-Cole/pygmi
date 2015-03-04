@@ -183,7 +183,7 @@ class IGRF(QtGui.QDialog):
         self.dateedit = QtGui.QDateEdit(self)
         self.combobox_dtm = QtGui.QComboBox(self)
         self.combobox_mag = QtGui.QComboBox(self)
-        self.helpdocs = menu_default.HelpButton(self, 'pygmi.raster.igrf')
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
 
         self.setupui()
 

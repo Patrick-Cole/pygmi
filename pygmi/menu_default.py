@@ -237,7 +237,7 @@ class HelpButton(QtGui.QPushButton):
 
     Convenience class to add an image to a pushbutton
     """
-    def __init__(self, parent=None, htmlfile=None):
+    def __init__(self, htmlfile=None, parent=None):
         QtGui.QPushButton.__init__(self, parent)
 
         self.htmlfile = htmlfile

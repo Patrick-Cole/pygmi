@@ -35,6 +35,7 @@ from . import tab_pview
 from . import tab_param
 from . import tab_mext
 from . import grvmag3d
+from . import iodefs
 from .datatypes import LithModel
 import pygmi.menu_default as menu_default
 
@@ -48,6 +49,7 @@ class MainWidget(QtGui.QMainWindow):
         self.inraster = {}
         self.outdata = {}
         self.parent = parent
+        self.showprocesslog = self.parent.showprocesslog
 
 # General
         self.txtmsg = ''
@@ -106,6 +108,19 @@ class MainWidget(QtGui.QMainWindow):
         self.tabwidget.currentChanged.connect(self.tab_change)
         self.helpdocs.clicked.disconnect()
         self.helpdocs.clicked.connect(self.help_docs)
+
+        self.actionsave = QtGui.QAction(self)
+        self.actionsave.setText("Save Model")
+        self.toolbar.addAction(self.actionsave)
+        self.actionsave.triggered.connect(self.savemodel)
+
+    def savemodel(self):
+        """ Model Save """
+        tmp = iodefs.ExportMod3D(self)
+        tmp.indata = self.outdata
+        tmp.run()
+
+        del tmp
 
     def help_docs(self):
         """

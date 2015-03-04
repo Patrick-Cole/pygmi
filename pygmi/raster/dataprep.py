@@ -260,8 +260,7 @@ class DataMerge(QtGui.QDialog):
         self.dsb_dxy = QtGui.QDoubleSpinBox(self)
         self.label_rows = QtGui.QLabel(self)
         self.label_cols = QtGui.QLabel(self)
-        self.helpdocs = menu_default.HelpButton(self,
-                                                'pygmi.raster.dataprep.datamerge')
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
 
         self.setupui()
 
@@ -443,8 +442,7 @@ class DataReproj(QtGui.QDialog):
         self.cb_out_epsg = QtGui.QCheckBox(self.groupbox2)
         self.sb_out_epsg = QtGui.QSpinBox(self.groupbox2)
         self.out_epsg_info = QtGui.QLabel(self.groupbox)
-        self.helpdocs = menu_default.HelpButton(self,
-                                                'pygmi.raster.dataprep.datareproj')
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
 
         self.setupui()
         self.ctrans = None
@@ -1631,8 +1629,7 @@ class DataGrid(QtGui.QDialog):
         self.label_rows = QtGui.QLabel(self)
         self.label_cols = QtGui.QLabel(self)
         self.dataid = QtGui.QComboBox(self)
-        self.helpdocs = menu_default.HelpButton(self,
-                                                'pygmi.raster.dataprep.datagrid')
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
 
         self.setupui()
 

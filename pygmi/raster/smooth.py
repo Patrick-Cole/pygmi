@@ -41,52 +41,28 @@ class Smooth(QtGui.QDialog):
         self.parent = parent
         self.reportback = self.parent.showprocesslog
 
-        self.gridlayout = QtGui.QGridLayout(self)
-        self.groupbox = QtGui.QGroupBox(self)
-        self.gridlayout_2 = QtGui.QGridLayout(self.groupbox)
-        self.label = QtGui.QLabel(self.groupbox)
-        self.spinbox_x = QtGui.QSpinBox(self.groupbox)
-        self.label_2 = QtGui.QLabel(self.groupbox)
-        self.label_3 = QtGui.QLabel(self.groupbox)
-        self.spinbox_y = QtGui.QSpinBox(self.groupbox)
-        self.spinbox_radius = QtGui.QSpinBox(self.groupbox)
-        self.label_4 = QtGui.QLabel(self.groupbox)
-        self.spinbox_stddev = QtGui.QSpinBox(self.groupbox)
-        self.groupbox_2 = QtGui.QGroupBox(self)
-        self.verticallayout = QtGui.QVBoxLayout(self.groupbox_2)
-        self.radiobutton_2dmedian = QtGui.QRadioButton(self.groupbox_2)
-        self.verticallayout.addWidget(self.radiobutton_2dmedian)
-        self.radiobutton_2dmean = QtGui.QRadioButton(self.groupbox_2)
-        self.verticallayout.addWidget(self.radiobutton_2dmean)
-        self.groupbox_3 = QtGui.QGroupBox(self)
-        self.verticallayout_2 = QtGui.QVBoxLayout(self.groupbox_3)
-        self.radiobutton_box = QtGui.QRadioButton(self.groupbox_3)
-        self.verticallayout_2.addWidget(self.radiobutton_box)
-        self.radiobutton_disk = QtGui.QRadioButton(self.groupbox_3)
-        self.verticallayout_2.addWidget(self.radiobutton_disk)
-        self.radiobutton_gaussian = QtGui.QRadioButton(self.groupbox_3)
-        self.verticallayout_2.addWidget(self.radiobutton_gaussian)
-        self.tablewidget = QtGui.QTableWidget(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.progressbar = QtGui.QProgressBar(self)
-        self.helpdocs = menu_default.HelpButton(self, 'pygmi.raster.smooth')
+        self.label = QtGui.QLabel()
+        self.spinbox_x = QtGui.QSpinBox()
+        self.label_2 = QtGui.QLabel()
+        self.label_3 = QtGui.QLabel()
+        self.spinbox_y = QtGui.QSpinBox()
+        self.spinbox_radius = QtGui.QSpinBox()
+        self.label_4 = QtGui.QLabel()
+        self.spinbox_stddev = QtGui.QSpinBox()
+
+        self.radiobutton_2dmedian = QtGui.QRadioButton()
+        self.radiobutton_2dmean = QtGui.QRadioButton()
+        self.radiobutton_box = QtGui.QRadioButton()
+        self.radiobutton_disk = QtGui.QRadioButton()
+        self.radiobutton_gaussian = QtGui.QRadioButton()
+        self.tablewidget = QtGui.QTableWidget()
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.progressbar = QtGui.QProgressBar()
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.smooth')
 
         self.setupui()
 
         self.fmat = None
-# options : 2dmean, 2dmode, 2dmedian
-#        self.filtertype = "2D Median"
-# options :'box', 'disc' or 'gaussian' (2dmean only)
-#        self.filtershape = "Box Window"
-#        self.filtersize_x = 5
-#        self.filtersize_y = 5
-#        self.filtersize_radius = 5
-#        self.gaussfilterstdev = 5
-#        self.name = "Smoothing"
-#        show_xy = True
-#        show_rad = False
-#        showstddev = False
-#        show_gauss = False
 
         self.radiobutton_2dmean.clicked.connect(self.choosefilter)
         self.radiobutton_2dmedian.clicked.connect(self.choosefilter)
@@ -102,20 +78,38 @@ class Smooth(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        self.gridlayout_2.addWidget(self.label, 0, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.spinbox_x, 0, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.label_2, 1, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.label_3, 2, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.label_4, 3, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.spinbox_y, 1, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.spinbox_radius, 2, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.spinbox_stddev, 3, 1, 1, 1)
-        self.gridlayout.addWidget(self.tablewidget, 1, 0, 1, 3)
-        self.gridlayout.addWidget(self.groupbox_2, 2, 0, 1, 1)
-        self.gridlayout.addWidget(self.progressbar, 3, 0, 1, 3)
-        self.gridlayout.addWidget(self.groupbox_3, 2, 1, 1, 1)
-        self.gridlayout.addWidget(self.buttonbox, 4, 1, 1, 1)
-        self.gridlayout.addWidget(self.groupbox, 2, 2, 1, 1)
+
+        gridlayout = QtGui.QGridLayout(self)
+        groupbox = QtGui.QGroupBox()
+        gridlayout_2 = QtGui.QGridLayout(groupbox)
+
+        groupbox_2 = QtGui.QGroupBox()
+        verticallayout = QtGui.QVBoxLayout(groupbox_2)
+        verticallayout.addWidget(self.radiobutton_2dmean)
+        verticallayout.addWidget(self.radiobutton_2dmedian)
+
+        groupbox_3 = QtGui.QGroupBox()
+        verticallayout_2 = QtGui.QVBoxLayout(groupbox_3)
+        verticallayout_2.addWidget(self.radiobutton_box)
+        verticallayout_2.addWidget(self.radiobutton_disk)
+        verticallayout_2.addWidget(self.radiobutton_gaussian)
+
+        gridlayout_2.addWidget(self.label, 0, 0, 1, 1)
+        gridlayout_2.addWidget(self.spinbox_x, 0, 1, 1, 1)
+        gridlayout_2.addWidget(self.label_2, 1, 0, 1, 1)
+        gridlayout_2.addWidget(self.label_3, 2, 0, 1, 1)
+        gridlayout_2.addWidget(self.label_4, 3, 0, 1, 1)
+        gridlayout_2.addWidget(self.spinbox_y, 1, 1, 1, 1)
+        gridlayout_2.addWidget(self.spinbox_radius, 2, 1, 1, 1)
+        gridlayout_2.addWidget(self.spinbox_stddev, 3, 1, 1, 1)
+
+        gridlayout.addWidget(self.tablewidget, 1, 0, 1, 3)
+        gridlayout.addWidget(groupbox_2, 2, 0, 1, 1)
+        gridlayout.addWidget(self.progressbar, 3, 0, 1, 3)
+        gridlayout.addWidget(groupbox_3, 2, 1, 1, 1)
+        gridlayout.addWidget(self.buttonbox, 4, 1, 1, 1)
+        gridlayout.addWidget(groupbox, 2, 2, 1, 1)
+        gridlayout.addWidget(self.helpdocs, 4, 0, 1, 1)
 
         self.spinbox_x.setMinimum(1)
         self.spinbox_x.setMaximum(999999)
@@ -138,15 +132,15 @@ class Smooth(QtGui.QDialog):
         self.progressbar.setProperty("value", 0)
 
         self.setWindowTitle("Smoothing Filters")
-        self.groupbox.setTitle("Filter Size")
+        groupbox.setTitle("Filter Size")
         self.label.setText("X:")
         self.label_2.setText("Y:")
         self.label_3.setText("Radius in Samples:")
         self.label_4.setText("Standard Deviation:")
-        self.groupbox_2.setTitle("Filter Type")
+        groupbox_2.setTitle("Filter Type")
         self.radiobutton_2dmedian.setText("2D Median")
         self.radiobutton_2dmean.setText("2D Mean")
-        self.groupbox_3.setTitle("Filter Shape")
+        groupbox_3.setTitle("Filter Shape")
         self.radiobutton_box.setText("Box Window")
         self.radiobutton_disk.setText("Disk Window")
         self.radiobutton_gaussian.setText("Gaussian Window")
@@ -154,7 +148,6 @@ class Smooth(QtGui.QDialog):
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
-        self.gridlayout.addWidget(self.helpdocs, 4, 0, 1, 1)
 
     def settings(self):
         """ Settings """

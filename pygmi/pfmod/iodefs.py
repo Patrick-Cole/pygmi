@@ -1024,8 +1024,7 @@ class ImportPicture(QtGui.QDialog):
         self.dsb_picimp_maxalt = QtGui.QDoubleSpinBox(self.groupbox)
         self.label_4 = QtGui.QLabel(self.groupbox)
         self.gridlayout_3 = QtGui.QGridLayout(self.groupbox)
-        self.helpdocs = menu_default.HelpButton(self,
-                                                'pygmi.pfmod.dataprep.importpicture')
+        self.helpdocs = menu_default.HelpButton('pygmi.pfmod.dataprep.importpicture')
 
         self.setupui()
 

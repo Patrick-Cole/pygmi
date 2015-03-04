@@ -946,7 +946,7 @@ class PlotInterp(QtGui.QDialog):
         self.labela = QtGui.QLabel(self)
         self.labelc = QtGui.QLabel(self)
         self.labelk = QtGui.QLabel(self)
-        self.helpdocs = menu_default.HelpButton(self, 'pygmi.raster.ginterp')
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
 
         self.setupui()
 

@@ -45,18 +45,12 @@ class Normalisation(QtGui.QDialog):
         self.parent = parent
         self.reportback = self.parent.showprocesslog
 
-        self.verticallayout = QtGui.QVBoxLayout(self)
-
-        self.groupbox = QtGui.QGroupBox(self)
-        self.radiobutton_interval = QtGui.QRadioButton(self.groupbox)
-        self.radiobutton_mean = QtGui.QRadioButton(self.groupbox)
-        self.radiobutton_median = QtGui.QRadioButton(self.groupbox)
-        self.radiobutton_8bit = QtGui.QRadioButton(self.groupbox)
-
-        self.groupbox2 = QtGui.QGroupBox(self)
-        self.helpdocs = menu_default.HelpButton(self.groupbox2,
-                                                'pygmi.raster.normalisation')
-        self.buttonbox = QtGui.QDialogButtonBox(self.groupbox2)
+        self.radiobutton_interval = QtGui.QRadioButton()
+        self.radiobutton_mean = QtGui.QRadioButton()
+        self.radiobutton_median = QtGui.QRadioButton()
+        self.radiobutton_8bit = QtGui.QRadioButton()
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.helpdocs = menu_default.HelpButton('pygmi.raster.normalisation')
 
         self.setupui()
 
@@ -65,33 +59,36 @@ class Normalisation(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-#        self.resize(286, 166)
         self.radiobutton_interval.setChecked(True)
 
-        verticallayout_2 = QtGui.QVBoxLayout(self.groupbox)
-        verticallayout_2.addWidget(self.radiobutton_interval)
-        verticallayout_2.addWidget(self.radiobutton_mean)
-        verticallayout_2.addWidget(self.radiobutton_median)
-        verticallayout_2.addWidget(self.radiobutton_8bit)
+        verticallayout = QtGui.QVBoxLayout(self)
+        horizontallayout = QtGui.QHBoxLayout()
+
+        groupbox = QtGui.QGroupBox()
+        verticallayout_2 = QtGui.QVBoxLayout(groupbox)
+
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
-        horizontallayout = QtGui.QHBoxLayout(self.groupbox2)
+        verticallayout_2.addWidget(self.radiobutton_interval)
+        verticallayout_2.addWidget(self.radiobutton_mean)
+        verticallayout_2.addWidget(self.radiobutton_median)
+        verticallayout_2.addWidget(self.radiobutton_8bit)
+
         horizontallayout.addWidget(self.helpdocs)
         horizontallayout.addWidget(self.buttonbox)
 
-        self.verticallayout.addWidget(self.groupbox)
-        self.verticallayout.addWidget(self.groupbox2)
+        verticallayout.addWidget(groupbox)
+        verticallayout.addLayout(horizontallayout)
 
         self.setWindowTitle("Normalisation")
-        self.groupbox.setTitle("Normalisation/Scaling")
+        groupbox.setTitle("Normalisation/Scaling")
         self.radiobutton_interval.setText("Interval [0 1]")
-        self.radiobutton_mean.setText(
-            "Mean: zero,  Standard deviation: unity")
+        self.radiobutton_mean.setText("Mean: zero,  Standard deviation: unity")
+        self.radiobutton_8bit.setText("8-bit histogram equalisation [0 255]")
         self.radiobutton_median.setText(
             "Median: zero,  Median absolute deviation: unity")
-        self.radiobutton_8bit.setText("8-bit histogram equalisation [0 255]")
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
@@ -131,7 +128,7 @@ class Normalisation(QtGui.QDialog):
             for i in data:
                 norm_type = 'Normalised-histogram equalisation'
                 if True:
-#                if (i.proc.__contains__(norm_type)) is False:
+                    # if (i.proc.__contains__(norm_type)) is False:
                     nlevels = 256
                     no_pix = i.data.count()
                     dummy_dat = np.sort(i.data[np.isnan(i.data) != 1],
