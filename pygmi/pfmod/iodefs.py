@@ -34,6 +34,7 @@ import matplotlib.pyplot as plt
 import zipfile
 from . import grvmag3d
 from . import mvis3d
+import pygmi.menu_default as menu_default
 
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
@@ -1023,6 +1024,8 @@ class ImportPicture(QtGui.QDialog):
         self.dsb_picimp_maxalt = QtGui.QDoubleSpinBox(self.groupbox)
         self.label_4 = QtGui.QLabel(self.groupbox)
         self.gridlayout_3 = QtGui.QGridLayout(self.groupbox)
+        self.helpdocs = menu_default.HelpButton(self,
+                                                'pygmi.pfmod.dataprep.importpicture')
 
         self.setupui()
 
@@ -1042,7 +1045,9 @@ class ImportPicture(QtGui.QDialog):
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout_2.addWidget(self.buttonbox, 2, 0, 1, 2)
+        self.gridlayout_2.addWidget(self.buttonbox, 2, 1, 1, 1)
+        self.gridlayout_2.addWidget(self.helpdocs, 2, 0, 1, 1)
+
         self.gridlayout_3.addWidget(self.label, 2, 0, 1, 1)
         self.gridlayout_3.addWidget(self.label_2, 4, 0, 1, 1)
         self.gridlayout_3.addWidget(self.label_3, 6, 0, 1, 1)
@@ -1139,7 +1144,7 @@ class ImportPicture(QtGui.QDialog):
 
         temp = self.exec_()
         if temp == 0:
-            return
+            return False
 
         filename = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', '*.jpg *.tif *.bmp')

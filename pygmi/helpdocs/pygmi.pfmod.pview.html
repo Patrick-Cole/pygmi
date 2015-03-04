@@ -2,21 +2,25 @@
 <html>
 	<body>
 		<h1>Custom Profile Editor</h1>
-		<p>The smoothing filters work by passing a matrix which contains the filter over your raster dataset. The filter type, filter shape and the filter size can all be specified.</p>
-		<h2>Filter Type</h2>
-		<p>This can be either 2D median or 2D mean. Note that your choice of filter may affect the number of filter shape options you have.</p>
-		<h2>Filter Shape</h2>
+		<p>The profile editor allows for the voxel model to be edited from any angle the side. A custom profile is added by manually entering in coordinates. Simply select a lithology and draw the model in, as you would in a paint program. Changing the profile allows for the drawing in of lithologies at different custom locations.</p>
+		<h2>Options</h2>
 		<ul>
-			<li>Box window - this is a regular square matrix with constant values applied to your dataset.</li>
-			<li>Disk window - this applies a disk of constant values to your dataset</li>
-			<li>Gaussian Window - this applies a gaussian shaped filter to your dataset. This option is only present for the 2D mean filter type.</li>
+			<li>Profile - allows for the selection of the profile being modelled. A slider provides convenient setting of this parameter.</li>
+			<li>Dataset Drop Box - Allows for a vertical image to be faded in and out of the layer with the aid of a slider. This can help when you need to know where the boundaries of geological units are. The image is specially imported using 'Import Profile Picture' from the 'Potential Field Modelling' Menu on the main PyGMI interface.</li>			<li>Lithology List - Use this to select which lithology that you are currently drawing. To erase, simply select the Background lithology and draw with that.</li>
+			<li>Line Thickness - This allows you to change the pen thickness, which you are drawing with.</li>
+			<li>Profile Data - Use this to select whether magnetic or gravity data should be displayed above the model.</li>
+			<li>Profile Y-Axis Scale - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.</li>
+			<li>Add Custom Profile - Manually anter the coordinates for the custom profile</li>
+			<li>Export Profile - Export an X,Y,Z file of the profile data.</li>
 		</ul>
-		<h2>Filter Size</h2>
-		The options here are dependant on the option chosen in filter shape. They are as follows:
+		<h2>Calculations</h2>
+		<p>Calculations  can be done by choosing one of two options from the menu bar at the top of the program:</p>
 		<ul>
-			<li>X and Y for the Box window - this is the number of rows and columns which will make up the box window</li>
-			<li>Radius in samples for the Disk window - this creates a disk of the specified radius. The disk will have 2*radius rows and columns</li>
-			<li>Standard Deviation for the Gaussian Window - this creates the Gaussian box window where the values have the standard deviation specified.</li>
+			<li>Regional Test - This is used to display a graph showing the regional decay of your model. It is a fast way to see if either your model extents are large enough, or how the calculated field would fall off near the end of your model.</li>
+			<li>Calculate Gravity at Gravity Height - This calculates the gravity at the height specified in the Geophysical Parameters Tab. It is a fast option if you want to calculate gravity only.</li>
+			<li>Calculate Magnetics and Gravity at Magnetic Height - This is used if you want Magnetic and/or Gravity data. It is a combined calculation, so the height chosen is the magnetic height.</li>
 		</ul>
+		<h2>Tips</h2>
+		<p>The ranged copy function can be very useful in getting a starting model going. Draw in your basic lithology boundary and copy it over a range of applicable depths. You can now quickly correct this either in the Layer Editor or the Profile Editor</p>
 	</body>
 </html>
