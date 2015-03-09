@@ -1516,10 +1516,10 @@ class PlotInterp(QtGui.QDialog):
         newimg[2].xdim = (newimg[2].xdim*newimg[2].cols)/imgshape1
         newimg[3].xdim = (newimg[3].xdim*newimg[3].cols)/imgshape1
 
-        newimg[0].ydim = (newimg[0].ydim*newimg[0].cols)/imgshape0
-        newimg[1].ydim = (newimg[1].ydim*newimg[1].cols)/imgshape0
-        newimg[2].ydim = (newimg[2].ydim*newimg[2].cols)/imgshape0
-        newimg[3].ydim = (newimg[3].ydim*newimg[3].cols)/imgshape0
+        newimg[0].ydim = (newimg[0].ydim*newimg[0].rows)/imgshape0
+        newimg[1].ydim = (newimg[1].ydim*newimg[1].rows)/imgshape0
+        newimg[2].ydim = (newimg[2].ydim*newimg[2].rows)/imgshape0
+        newimg[3].ydim = (newimg[3].ydim*newimg[3].rows)/imgshape0
 
 
         newimg[0].cols = imgshape1
