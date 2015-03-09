@@ -85,8 +85,8 @@ from . import dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 import pygmi.menu_default as menu_default
-#from ..ptimer import PTime
-#import pdb
+from ..ptimer import PTime
+import pdb
 
 
 class ModestImage(mi.AxesImage):
@@ -251,6 +251,9 @@ class ModestImage(mi.AxesImage):
             self._A = colormap
 
         elif self.dtype == 'Sunshade':
+            ttt = PTime()
+#            pseudo = self._full_res[0]
+#            sun = self._full_res[1]
             pseudo = self._full_res[0][(rows-y1):(rows-y0):sy, x0:x1:sx]
             sun = self._full_res[1][(rows-y1):(rows-y0):sy, x0:x1:sx]
             mask = np.logical_or(pseudo.mask, sun.mask)
@@ -267,16 +270,19 @@ class ModestImage(mi.AxesImage):
             if self.hstype == 'Histogram Equalization':
                 sun = histeq(sun)
 
+
             self.smallres = np.ma.ones((sun.shape[0], sun.shape[1], 2))
             self.smallres[:, :, 0] = pseudo
             self.smallres[:, :, 1] = sun
 
             sunshader = currentshader(sun.data, self.cell, self.theta,
                                       self.phi, self.alpha)
+
             snorm = norm2(sunshader)
             pnorm = norm2(pseudo)
 
             colormap = self.cbar(pnorm)
+
             colormap[:, :, 0] *= snorm  # red
             colormap[:, :, 1] *= snorm  # green
             colormap[:, :, 2] *= snorm  # blue
@@ -339,7 +345,7 @@ class ModestImage(mi.AxesImage):
             argb.set_xlim(argb.dataLim.x0, argb.dataLim.x1)
             argb.set_ylim(argb.dataLim.y0, argb.dataLim.y1*1.2)
 
-        self._scale_to_res()
+#        self._scale_to_res()
         # The next command runs the original draw for this class.
         super().draw(renderer, *args, **kwargs)
 
@@ -1358,8 +1364,10 @@ class PlotInterp(QtGui.QDialog):
             pseudo = None
 
         elif dtype == 'Sunshade':
-            pseudo = self.mmc.image._full_res[0]
-            sun = self.mmc.image._full_res[1]
+            #            pseudo = self.mmc.image._full_res[0]
+            #            sun = self.mmc.image._full_res[1]
+            pseudo = self.mmc.image.smallres[:, :, 0]
+            sun = self.mmc.image.smallres[:, :, 1]
 
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
@@ -1378,7 +1386,10 @@ class PlotInterp(QtGui.QDialog):
 
             sunshader = currentshader(sun.data, cell, theta, phi, alpha)
             snorm = norm2(sunshader)
+
 #            pnorm = norm2(pseudo)
+#            colormap = self.cbar(pnorm)
+
 
             img = img2rgb(pseudo, self.mmc.cbar)
             pseudo = None
@@ -1674,32 +1685,51 @@ def currentshader(data, cell, theta, phi, alpha):
     """
     asp = aspect2(data)
     n = 2
-    ldict = locals()
-    ldict['pinit'] = asp[1]
-    ldict['qinit'] = asp[2]
+    pinit = asp[1]
+    qinit = asp[2]
+    p = ne.evaluate('pinit/cell')
+    q = ne.evaluate('qinit/cell')
+    sqrt_1p2q2 = ne.evaluate('sqrt(1+p**2+q**2)')
+
+    cosg2 = np.cos(theta/2)
+    p0 = -np.cos(phi)*np.tan(theta)
+    q0 = -np.sin(phi)*np.tan(theta)
+    sqrttmp = ne.evaluate('(1+sqrt(1+p0**2+q0**2))')
+    p1 = ne.evaluate('p0 / sqrttmp')
+    q1 = ne.evaluate('q0 / sqrttmp')
+
+    cosi = ne.evaluate('((1+p0*p+q0*q)/(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))')
+    coss = ne.evaluate('((1+p1*p+q1*q)/(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))')
+    Ps = ne.evaluate('coss**n')
+    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2'))
+
+
+#    ldict = locals()
+#    ldict['pinit'] = asp[1]
+#    ldict['qinit'] = asp[2]
 
 # Update cell
-    ldict['p'] = ne.evaluate('pinit/cell', ldict)
-    ldict['q'] = ne.evaluate('qinit/cell', ldict)
-    ldict['sqrt_1p2q2'] = ne.evaluate('sqrt(1+p**2+q**2)', ldict)
+#    ldict['p'] = ne.evaluate('pinit/cell', ldict)
+#    ldict['q'] = ne.evaluate('qinit/cell', ldict)
+#    ldict['sqrt_1p2q2'] = ne.evaluate('sqrt(1+p**2+q**2)', ldict)
 
 # Update angle
-    ldict['cosg2'] = cos(theta/2)
-    ldict['p0'] = -cos(phi)*tan(theta)
-    ldict['q0'] = -sin(phi)*tan(theta)
-    ldict['sqrttmp'] = ne.evaluate('(1+sqrt(1+p0**2+q0**2))', ldict)
-    ldict['p1'] = ne.evaluate('p0 / sqrttmp', ldict)
-    ldict['q1'] = ne.evaluate('q0 / sqrttmp', ldict)
+#    ldict['cosg2'] = cos(theta/2)
+#    ldict['p0'] = -cos(phi)*tan(theta)
+#    ldict['q0'] = -sin(phi)*tan(theta)
+#    ldict['sqrttmp'] = ne.evaluate('(1+sqrt(1+p0**2+q0**2))', ldict)
+#    ldict['p1'] = ne.evaluate('p0 / sqrttmp', ldict)
+#    ldict['q1'] = ne.evaluate('q0 / sqrttmp', ldict)
 
 
 #     n: how compact the bright patch is
-    ldict['cosi'] = ne.evaluate('((1+p0*p+q0*q)/'
-                                '(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))', ldict)
-    ldict['coss'] = ne.evaluate('((1+p1*p+q1*q)/'
-                                '(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))', ldict)
-    ldict['Ps'] = ne.evaluate('coss**n', ldict)
-    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2',
-                                         ldict))
+#    ldict['cosi'] = ne.evaluate('((1+p0*p+q0*q)/'
+#                                '(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))', ldict)
+#    ldict['coss'] = ne.evaluate('((1+p1*p+q1*q)/'
+#                                '(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))', ldict)
+#    ldict['Ps'] = ne.evaluate('coss**n', ldict)
+#    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2',
+#                                         ldict))
 
     return R
 
