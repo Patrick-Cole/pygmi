@@ -410,7 +410,8 @@ class ExportData(object):
 
         if drv == 'GTiff' and dtype == np.uint8:
             out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
-                                len(data), fmt) #, options=['COMPRESS=JPEG'])
+                                len(data), fmt, options=['COMPRESS=NONE',
+                                                         'TFW=YES'])
         else:
             out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
                                 len(data), fmt)

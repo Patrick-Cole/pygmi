@@ -86,7 +86,7 @@ from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 import pygmi.menu_default as menu_default
 from ..ptimer import PTime
-import pdb
+#import pdb
 
 
 class ModestImage(mi.AxesImage):
@@ -628,7 +628,7 @@ class MyMplCanvas(FigureCanvas):
         yi = np.linspace(y2-ydim, y1+ydim, dat.data.shape[0])
 
         self.cnt = self.axes.contour(xi, yi, dat, extent=(x1, x2, y1, y2),
-                                     linewidths=0.5, colors='k')
+                                     linewidths=1, colors='k')
         self.cntf = self.axes.contourf(xi, yi, dat, extent=(x1, x2, y1, y2),
                                        cmap=self.cbar)
 
@@ -1458,15 +1458,19 @@ class PlotInterp(QtGui.QDialog):
 
             self.mmc.figure.set_frameon(False)
             self.mmc.axes.set_axis_off()
+            tmpsize = self.mmc.figure.get_size_inches()
+            self.mmc.figure.set_size_inches(tmpsize*3)
             self.mmc.figure.canvas.draw()
 #            fcol = int(self.mmc.figure.get_facecolor()[0]*255)
             img = np.fromstring(self.mmc.figure.canvas.tostring_argb(),
                                 dtype=np.uint8, sep='')
+            w, h = self.mmc.figure.canvas.get_width_height()
+
+            self.mmc.figure.set_size_inches(tmpsize)
             self.mmc.figure.set_frameon(True)
             self.mmc.axes.set_axis_on()
             self.mmc.figure.canvas.draw()
 
-            w, h = self.mmc.figure.canvas.get_width_height()
             img.shape = (h, w, 4)
             img = np.roll(img, 3, axis=2)
 
@@ -1702,9 +1706,9 @@ def currentshader(data, cell, theta, phi, alpha):
     q = ne.evaluate('qinit/cell')
     sqrt_1p2q2 = ne.evaluate('sqrt(1+p**2+q**2)')
 
-    cosg2 = np.cos(theta/2)
-    p0 = -np.cos(phi)*np.tan(theta)
-    q0 = -np.sin(phi)*np.tan(theta)
+    cosg2 = cos(theta/2)
+    p0 = -cos(phi)*tan(theta)
+    q0 = -sin(phi)*tan(theta)
     sqrttmp = ne.evaluate('(1+sqrt(1+p0**2+q0**2))')
     p1 = ne.evaluate('p0 / sqrttmp')
     q1 = ne.evaluate('q0 / sqrttmp')
