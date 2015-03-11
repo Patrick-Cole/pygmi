@@ -38,7 +38,7 @@ import scipy.ndimage as ndimage
 from collections import Counter
 import pygmi.menu_default as menu_default
 
-# import scipy.interpolate as si
+gdal.PushErrorHandler('CPLQuietErrorHandler')
 
 
 def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
@@ -260,7 +260,8 @@ class DataMerge(QtGui.QDialog):
         self.dsb_dxy = QtGui.QDoubleSpinBox(self)
         self.label_rows = QtGui.QLabel(self)
         self.label_cols = QtGui.QLabel(self)
-        self.helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
+        self.helpdocs = menu_default.HelpButton(
+            'pygmi.raster.dataprep.datamerge')
 
         self.setupui()
 
@@ -413,41 +414,21 @@ class DataReproj(QtGui.QDialog):
         self.parent = parent
 
         self.gridlayout_main = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
+        self.buttonbox = QtGui.QDialogButtonBox()
 
-        self.groupbox = QtGui.QGroupBox(self)
-        self.groupboxb = QtGui.QGroupBox(self)
-        self.combobox_inp_datum = QtGui.QComboBox(self.groupbox)
-        self.combobox_inp_proj = QtGui.QComboBox(self.groupbox)
-        self.dsb_inp_latorigin = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_inp_cm = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_inp_scalefactor = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_inp_fnorthing = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_inp_feasting = QtGui.QDoubleSpinBox(self.groupbox)
-        self.sb_inp_zone = QtGui.QSpinBox(self.groupbox)
-        self.cb_inp_epsg = QtGui.QCheckBox(self.groupbox)
-        self.sb_inp_epsg = QtGui.QSpinBox(self.groupbox)
-        self.inp_epsg_info = QtGui.QLabel(self.groupbox)
+        self.groupboxb = QtGui.QGroupBox()
 
-        self.groupbox2 = QtGui.QGroupBox(self)
-        self.groupbox2b = QtGui.QGroupBox(self)
-        self.combobox_out_datum = QtGui.QComboBox(self.groupbox2)
-        self.combobox_out_proj = QtGui.QComboBox(self.groupbox2)
-        self.dsb_out_latorigin = QtGui.QDoubleSpinBox(self.groupbox2)
-        self.dsb_out_cm = QtGui.QDoubleSpinBox(self.groupbox2)
-        self.dsb_out_scalefactor = QtGui.QDoubleSpinBox(self.groupbox2)
-        self.dsb_out_fnorthing = QtGui.QDoubleSpinBox(self.groupbox2)
-        self.dsb_out_feasting = QtGui.QDoubleSpinBox(self.groupbox2)
-        self.sb_out_zone = QtGui.QSpinBox(self.groupbox2)
-        self.cb_out_epsg = QtGui.QCheckBox(self.groupbox2)
-        self.sb_out_epsg = QtGui.QSpinBox(self.groupbox2)
-        self.out_epsg_info = QtGui.QLabel(self.groupbox)
-        self.helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
+        self.combobox_inp_epsg = QtGui.QComboBox()
+        self.inp_epsg_info = QtGui.QLabel()
+
+        self.groupbox2b = QtGui.QGroupBox()
+        self.combobox_out_epsg = QtGui.QComboBox()
+        self.out_epsg_info = QtGui.QLabel()
+        self.helpdocs = menu_default.HelpButton(
+            'pygmi.raster.dataprep.datareproj')
 
         self.setupui()
-        self.ctrans = None
-
-        dcodes, pcodes = getepsgcodes()
+        self.epsg_proj = getepsgcodes()
 
     def setupui(self):
         """ Setup UI """
@@ -456,21 +437,9 @@ class DataReproj(QtGui.QDialog):
 
         self.setWindowTitle("Dataset Reprojection")
 
-        label_help = QtGui.QLabel(self.groupbox)
-        label_help.setText(
-            "EPSG codes are available online at either " +
-            "http://www.epsg-registry.org/, " +
-            "http://spatialreference.org/ref/epsg/ \n or in the gcs.csv " +
-            "and pcs.csv files in your python GDAL data directory.")
-        self.gridlayout_main.addWidget(label_help, 3, 0, 1, 4)
-
-        label_input = QtGui.QLabel(self.groupbox)
+        label_input = QtGui.QLabel()
         label_input.setText("Input Projection")
         self.gridlayout_main.addWidget(label_input, 0, 0, 1, 2)
-
-        self.groupbox.setTitle("Manual Entry")
-        self.groupbox.setSizePolicy(sizepolicy)
-        self.gridlayout_main.addWidget(self.groupbox, 2, 0, 1, 2)
 
         self.gridlayout_main.addWidget(self.groupboxb, 2, 0, 1, 2)
 
@@ -479,72 +448,14 @@ class DataReproj(QtGui.QDialog):
         gridlayoutb = QtGui.QGridLayout(self.groupboxb)
         gridlayoutb.addWidget(self.inp_epsg_info, 0, 0, 1, 1)
 
-        gridlayout = QtGui.QGridLayout(self.groupbox)
+        self.gridlayout_main.addWidget(self.combobox_inp_epsg, 1, 1, 1, 1)
 
-        self.cb_inp_epsg.setText("Use EPSG Code:")
-        self.gridlayout_main.addWidget(self.cb_inp_epsg, 1, 0, 1, 1)
-        self.sb_inp_epsg.setMinimum(1000)
-        self.sb_inp_epsg.setMaximum(40000)
-        self.sb_inp_epsg.setValue(32735)
-        self.gridlayout_main.addWidget(self.sb_inp_epsg, 1, 1, 1, 1)
-
-        label_inp_proj = QtGui.QLabel(self.groupbox)
-        label_inp_proj.setText("Projection")
-        gridlayout.addWidget(label_inp_proj, 0, 0, 1, 1)
-        gridlayout.addWidget(self.combobox_inp_proj, 0, 1, 1, 1)
-
-        label_inp_datum = QtGui.QLabel(self.groupbox)
-        label_inp_datum.setText("Datum")
-        gridlayout.addWidget(label_inp_datum, 1, 0, 1, 1)
-        gridlayout.addWidget(self.combobox_inp_datum, 1, 1, 1, 1)
-
-        label_inp_latorigin = QtGui.QLabel(self.groupbox)
-        label_inp_latorigin.setText("Latitude of Origin")
-        gridlayout.addWidget(label_inp_latorigin, 2, 0, 1, 1)
-        self.dsb_inp_latorigin.setMinimum(-90.0)
-        self.dsb_inp_latorigin.setMaximum(90.0)
-        gridlayout.addWidget(self.dsb_inp_latorigin, 2, 1, 1, 1)
-
-        label_inp_cm = QtGui.QLabel(self.groupbox)
-        label_inp_cm.setText("Central Meridian")
-        gridlayout.addWidget(label_inp_cm, 3, 0, 1, 1)
-        self.dsb_inp_cm.setMinimum(-180.0)
-        self.dsb_inp_cm.setMaximum(180.0)
-        gridlayout.addWidget(self.dsb_inp_cm, 3, 1, 1, 1)
-
-        label_inp_scalefactor = QtGui.QLabel(self.groupbox)
-        label_inp_scalefactor.setText("Scale Factor")
-        gridlayout.addWidget(label_inp_scalefactor, 4, 0, 1, 1)
-        self.dsb_inp_scalefactor.setDecimals(4)
-        self.dsb_inp_scalefactor.setMinimum(-100.0)
-        gridlayout.addWidget(self.dsb_inp_scalefactor, 4, 1, 1, 1)
-
-        label_inp_feasting = QtGui.QLabel(self.groupbox)
-        label_inp_feasting.setText("False Easting")
-        gridlayout.addWidget(label_inp_feasting, 5, 0, 1, 1)
-        self.dsb_inp_feasting.setMaximum(1000000000.0)
-        gridlayout.addWidget(self.dsb_inp_feasting, 5, 1, 1, 1)
-
-        label_inp_fnorthing = QtGui.QLabel(self.groupbox)
-        label_inp_fnorthing.setText("False Northing")
-        gridlayout.addWidget(label_inp_fnorthing, 6, 0, 1, 1)
-        self.dsb_inp_fnorthing.setMaximum(1000000000.0)
-        gridlayout.addWidget(self.dsb_inp_fnorthing, 6, 1, 1, 1)
-
-        label_inp_zone = QtGui.QLabel(self.groupbox)
-        label_inp_zone.setText("UTM Zone")
-        gridlayout.addWidget(label_inp_zone, 7, 0, 1, 1)
-        self.sb_inp_zone.setMaximum(60)
-        gridlayout.addWidget(self.sb_inp_zone, 7, 1, 1, 1)
 
 # ############################
-        label_input2 = QtGui.QLabel(self.groupbox2)
+        label_input2 = QtGui.QLabel()
         label_input2.setText("Output Projection")
         self.gridlayout_main.addWidget(label_input2, 0, 2, 1, 2)
 
-        self.groupbox2.setSizePolicy(sizepolicy)
-        self.groupbox2.setTitle("Manual Entry")
-        self.gridlayout_main.addWidget(self.groupbox2, 2, 2, 1, 2)
         self.gridlayout_main.addWidget(self.groupbox2b, 2, 2, 1, 2)
 
         self.groupbox2b.setTitle("EPSG Information")
@@ -552,63 +463,7 @@ class DataReproj(QtGui.QDialog):
         gridlayout2b = QtGui.QGridLayout(self.groupbox2b)
         gridlayout2b.addWidget(self.out_epsg_info, 0, 0, 1, 1)
 
-        gridlayoutb = QtGui.QGridLayout(self.groupbox2)
-
-        self.cb_out_epsg.setText("Use EPSG Code:")
-        self.gridlayout_main.addWidget(self.cb_out_epsg, 1, 2, 1, 1)
-        self.sb_out_epsg.setMinimum(1000)
-        self.sb_out_epsg.setMaximum(40000)
-        self.sb_out_epsg.setValue(32735)
-        self.gridlayout_main.addWidget(self.sb_out_epsg, 1, 3, 1, 1)
-
-        label_out_proj = QtGui.QLabel(self.groupbox2)
-        label_out_proj.setText("Projection")
-        gridlayoutb.addWidget(label_out_proj, 0, 0, 1, 1)
-        gridlayoutb.addWidget(self.combobox_out_proj, 0, 1, 1, 1)
-
-        label_out_datum = QtGui.QLabel(self.groupbox2)
-        label_out_datum.setText("Datum")
-        gridlayoutb.addWidget(label_out_datum, 1, 0, 1, 1)
-        gridlayoutb.addWidget(self.combobox_out_datum, 1, 1, 1, 1)
-
-        label_out_latorigin = QtGui.QLabel(self.groupbox2)
-        label_out_latorigin.setText("Latitude of Origin")
-        gridlayoutb.addWidget(label_out_latorigin, 2, 0, 1, 1)
-        self.dsb_out_latorigin.setMinimum(-90.0)
-        self.dsb_out_latorigin.setMaximum(90.0)
-        gridlayoutb.addWidget(self.dsb_out_latorigin, 2, 1, 1, 1)
-
-        label_out_cm = QtGui.QLabel(self.groupbox2)
-        label_out_cm.setText("Central Meridian")
-        gridlayoutb.addWidget(label_out_cm, 3, 0, 1, 1)
-        self.dsb_out_cm.setMinimum(-180.0)
-        self.dsb_out_cm.setMaximum(180.0)
-        gridlayoutb.addWidget(self.dsb_out_cm, 3, 1, 1, 1)
-
-        label_out_scalefactor = QtGui.QLabel(self.groupbox2)
-        label_out_scalefactor.setText("Scale Factor")
-        gridlayoutb.addWidget(label_out_scalefactor, 4, 0, 1, 1)
-        self.dsb_out_scalefactor.setDecimals(4)
-        self.dsb_out_scalefactor.setMinimum(-100.0)
-        gridlayoutb.addWidget(self.dsb_out_scalefactor, 4, 1, 1, 1)
-
-        label_out_feasting = QtGui.QLabel(self.groupbox2)
-        label_out_feasting.setText("False Easting")
-        gridlayoutb.addWidget(label_out_feasting, 5, 0, 1, 1)
-        self.dsb_out_feasting.setMaximum(1000000000.0)
-        gridlayoutb.addWidget(self.dsb_out_feasting, 5, 1, 1, 1)
-
-        label_out_fnorthing = QtGui.QLabel(self.groupbox2)
-        label_out_fnorthing.setText("False Northing")
-        gridlayoutb.addWidget(label_out_fnorthing, 6, 0, 1, 1)
-        self.dsb_out_fnorthing.setMaximum(1000000000.0)
-        gridlayoutb.addWidget(self.dsb_out_fnorthing, 6, 1, 1, 1)
-
-        label_out_zone = QtGui.QLabel(self.groupbox2)
-        label_out_zone.setText("UTM Zone")
-        gridlayoutb.addWidget(label_out_zone, 7, 0, 1, 1)
-        self.sb_out_zone.setMaximum(60)
-        gridlayoutb.addWidget(self.sb_out_zone, 7, 1, 1, 1)
+        self.gridlayout_main.addWidget(self.combobox_out_epsg, 1, 3, 1, 1)
 
 # #########################
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -622,34 +477,10 @@ class DataReproj(QtGui.QDialog):
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
-#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-#                               self.reject)
-#        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-#                               self.accept)
-
-        datums = ['WGS84', 'Cape (Clarke1880)']
-        proj = ['Geodetic', 'UTM (South)', 'UTM (North)',
-                'Transverse Mercator']
-
-        self.combobox_inp_datum.addItems(datums)
-        self.combobox_inp_proj.addItems(proj)
-        self.combobox_out_datum.addItems(datums)
-        self.combobox_out_proj.addItems(proj)
-        self.zone_inp(35)
-        self.zone_out(35)
-
-        self.combobox_inp_proj.currentIndexChanged.connect(self.proj_inp)
-        self.sb_inp_zone.valueChanged.connect(self.zone_inp)
-        self.combobox_out_proj.currentIndexChanged.connect(self.proj_out)
-        self.sb_out_zone.valueChanged.connect(self.zone_out)
-#        self.buttonbox.accepted.connect(self.acceptall)
-        self.cb_inp_epsg.clicked.connect(self.in_epsg)
-        self.cb_out_epsg.clicked.connect(self.out_epsg)
-        self.sb_inp_epsg.valueChanged.connect(self.change_inp_epsg_info)
-        self.sb_out_epsg.valueChanged.connect(self.change_out_epsg_info)
-
-        self.in_epsg()
-        self.out_epsg()
+        self.combobox_inp_epsg.currentIndexChanged.connect(
+            self.change_inp_epsg_info)
+        self.combobox_out_epsg.currentIndexChanged.connect(
+            self.change_out_epsg_info)
 
     def acceptall(self):
         """
@@ -658,26 +489,22 @@ class DataReproj(QtGui.QDialog):
         """
 
 # Input stuff
-        if self.cb_inp_epsg.isChecked():
-            orig = self.get_epsg_inp_proj()
-        else:
-            orig = self.get_manual_inp_proj()
+        indx = self.combobox_inp_epsg.currentIndex()
+        txt = self.combobox_inp_epsg.itemText(indx)
+        orig_wkt = self.epsg_proj[txt]
 
-        if orig is False:
-            return
+        orig = osr.SpatialReference()
+        orig.ImportFromWkt(orig_wkt)
 
 # Output stuff
-        if self.cb_out_epsg.isChecked():
-            targ = self.get_epsg_out_proj()
-        else:
-            targ = self.get_manual_out_proj()
+        indx = self.combobox_out_epsg.currentIndex()
+        txt = self.combobox_out_epsg.itemText(indx)
+        targ_wkt = self.epsg_proj[txt]
 
-        if targ is False:
-            return
+        targ = osr.SpatialReference()
+        targ.ImportFromWkt(targ_wkt)
 
 # Set transformation
-        orig_wkt = orig.ExportToWkt()
-        targ_wkt = targ.ExportToWkt()
         ctrans = osr.CoordinateTransformation(orig, targ)
 
 # Now create virtual dataset
@@ -746,225 +573,52 @@ class DataReproj(QtGui.QDialog):
 
         self.outdata['Raster'] = dat
 
-#        self.accept()
-
     def change_inp_epsg_info(self):
         """ Input epsg is checked """
-        txt = 'Invalid Code'
-        test = osr.SpatialReference()
-        err = test.ImportFromEPSG(self.sb_inp_epsg.value())
-        if err == 0:
-            txt = test.ExportToPrettyWkt()
 
-        self.inp_epsg_info.setText(txt)
+        indx = self.combobox_inp_epsg.currentIndex()
+        txt = self.combobox_inp_epsg.itemText(indx)
+
+        wkt = self.epsg_proj[txt]
+
+        srs = osr.SpatialReference()
+        srs.ImportFromWkt(wkt)
+        self.inp_epsg_info.setText(srs.ExportToPrettyWkt())
 
     def change_out_epsg_info(self):
         """ Input epsg is checked """
-        txt = 'Invalid Code'
-        test = osr.SpatialReference()
-        err = test.ImportFromEPSG(self.sb_out_epsg.value())
-        if err == 0:
-            txt = test.ExportToPrettyWkt()
+        indx = self.combobox_out_epsg.currentIndex()
+        txt = self.combobox_out_epsg.itemText(indx)
 
-        self.out_epsg_info.setText(txt)
+        wkt = self.epsg_proj[txt]
 
-    def get_manual_inp_proj(self):
-        """ get manual input projection """
-        orig = osr.SpatialReference()
-        orig.SetWellKnownGeogCS('WGS84')
-
-        indx = self.combobox_inp_datum.currentIndex()
-        txt = self.combobox_inp_datum.itemText(indx)
-
-        if 'Cape' in txt:
-            orig.ImportFromEPSG(4222)
-
-        indx = self.combobox_inp_proj.currentIndex()
-        txt = self.combobox_inp_proj.itemText(indx)
-
-        if 'UTM' in txt:
-            utmzone = self.sb_inp_zone.value()
-            if 'North' in txt:
-                orig.SetUTM(utmzone, True)
-            else:
-                orig.SetUTM(utmzone, False)
-
-        if 'Transverse Mercator' in txt:
-            clat = self.dsb_inp_latorigin.value()
-            clong = self.dsb_inp_cm.value()
-            scale = self.dsb_inp_scalefactor.value()
-            f_e = self.dsb_inp_feasting.value()
-            f_n = self.dsb_inp_fnorthing.value()
-            orig.SetTM(clat, clong, scale, f_e, f_n)
-
-        return orig
-
-    def get_manual_out_proj(self):
-        """ get manual input projection """
-        targ = osr.SpatialReference()
-        targ.SetWellKnownGeogCS('WGS84')
-
-        indx = self.combobox_out_datum.currentIndex()
-        txt = self.combobox_out_datum.itemText(indx)
-
-        if 'Cape' in txt:
-            targ.ImportFromEPSG(4222)
-
-        indx = self.combobox_out_proj.currentIndex()
-        txt = self.combobox_out_proj.itemText(indx)
-
-        if 'UTM' in txt:
-            utmzone = self.sb_out_zone.value()
-            if 'North' in txt:
-                targ.SetUTM(utmzone, True)
-            else:
-                targ.SetUTM(utmzone, False)
-
-        if 'Transverse Mercator' in txt:
-            clat = self.dsb_out_latorigin.value()
-            clong = self.dsb_out_cm.value()
-            scale = self.dsb_out_scalefactor.value()
-            f_e = self.dsb_out_feasting.value()
-            f_n = self.dsb_out_fnorthing.value()
-            targ.SetTM(clat, clong, scale, f_e, f_n)
-
-        return targ
-
-    def get_epsg_inp_proj(self):
-        """ get epsg input projection """
-        orig = osr.SpatialReference()
-        orig.SetWellKnownGeogCS('WGS84')
-        err = orig.ImportFromEPSG(self.sb_inp_epsg.value())
-        if err != 0:
-            self.parent.showprocesslog('Problem with EPSG projection code')
-            return False
-        else:
-            return orig
-
-    def get_epsg_out_proj(self):
-        """ get epsg output input projection """
-        targ = osr.SpatialReference()
-        targ.SetWellKnownGeogCS('WGS84')
-        err = targ.ImportFromEPSG(self.sb_out_epsg.value())
-        if err != 0:
-            self.parent.showprocesslog('Problem with EPSG projection code')
-            return False
-        else:
-            return targ
-
-    def in_epsg(self):
-        """ Input epsg is checked """
-        if self.cb_inp_epsg.isChecked():
-            self.inp_epsg_info.show()
-            self.sb_inp_epsg.setEnabled(True)
-            self.groupbox.hide()
-            self.groupboxb.show()
-        else:
-            self.sb_inp_epsg.setEnabled(False)
-            self.inp_epsg_info.hide()
-            self.groupbox.show()
-            self.groupboxb.hide()
-            self.proj_inp()
-
-        self.change_inp_epsg_info()
-        self.change_out_epsg_info()
-
-    def out_epsg(self):
-        """ Input epsg is checked """
-        if self.cb_out_epsg.isChecked():
-            self.out_epsg_info.show()
-            self.sb_out_epsg.setEnabled(True)
-            self.groupbox2.hide()
-            self.groupbox2b.show()
-        else:
-            self.out_epsg_info.hide()
-            self.sb_out_epsg.setEnabled(False)
-            self.groupbox2.show()
-            self.groupbox2b.hide()
-            self.proj_out()
-
-        self.change_out_epsg_info()
-
-    def proj_inp(self):
-        """ used for choosing the projection """
-
-        indx = self.combobox_inp_proj.currentIndex()
-        txt = self.combobox_inp_proj.itemText(indx)
-
-        if 'Geodetic' in txt:
-            self.sb_inp_zone.setEnabled(False)
-            self.dsb_inp_cm.setEnabled(False)
-            self.dsb_inp_feasting.setEnabled(False)
-            self.dsb_inp_fnorthing.setEnabled(False)
-            self.dsb_inp_latorigin.setEnabled(False)
-            self.dsb_inp_scalefactor.setEnabled(False)
-        else:
-            self.sb_inp_zone.setEnabled(True)
-            self.dsb_inp_cm.setEnabled(True)
-            self.dsb_inp_feasting.setEnabled(True)
-            self.dsb_inp_fnorthing.setEnabled(True)
-            self.dsb_inp_latorigin.setEnabled(True)
-            self.dsb_inp_scalefactor.setEnabled(True)
-
-        if 'UTM' in txt:
-            self.sb_inp_zone.setEnabled(True)
-            self.zone_inp(self.sb_inp_zone.value())
-        else:
-            self.sb_inp_zone.setEnabled(False)
-
-        if txt == 'Transverse Mercator':
-            self.dsb_inp_feasting.setValue(0.)
-            self.dsb_inp_fnorthing.setValue(0.)
-            self.dsb_inp_scalefactor.setValue(1.0)
-
-    def proj_out(self):
-        """ used for choosing the projection """
-
-        indx = self.combobox_out_proj.currentIndex()
-        txt = self.combobox_out_proj.itemText(indx)
-
-        if 'Geodetic' in txt:
-            self.sb_out_zone.setEnabled(False)
-            self.dsb_out_cm.setEnabled(False)
-            self.dsb_out_feasting.setEnabled(False)
-            self.dsb_out_fnorthing.setEnabled(False)
-            self.dsb_out_latorigin.setEnabled(False)
-            self.dsb_out_scalefactor.setEnabled(False)
-        else:
-            self.sb_out_zone.setEnabled(True)
-            self.dsb_out_cm.setEnabled(True)
-            self.dsb_out_feasting.setEnabled(True)
-            self.dsb_out_fnorthing.setEnabled(True)
-            self.dsb_out_latorigin.setEnabled(True)
-            self.dsb_out_scalefactor.setEnabled(True)
-
-        if 'UTM' in txt:
-            self.sb_out_zone.setEnabled(True)
-            self.zone_out(self.sb_out_zone.value())
-        else:
-            self.sb_out_zone.setEnabled(False)
-
-        if txt == 'Transverse Mercator':
-            self.dsb_out_feasting.setValue(0.)
-            self.dsb_out_fnorthing.setValue(0.)
-            self.dsb_out_scalefactor.setValue(1.0)
+        srs = osr.SpatialReference()
+        srs.ImportFromWkt(wkt)
+        self.out_epsg_info.setText(srs.ExportToPrettyWkt())
 
     def settings(self):
         """ Settings """
 
-        srs = osr.SpatialReference()
-        wkt = self.indata['Raster'][0].wkt
-        srs.ImportFromWkt(wkt)
-        epsg = srs.GetAttrValue('AUTHORITY', 1)
-        if epsg is not None:
-            epsg = int(epsg)
-            self.sb_inp_epsg.setValue(epsg)
-            self.cb_inp_epsg.setChecked(True)
-            self.in_epsg()
-        else:
-            self.proj_inp()
+        self.epsg_proj['Current'] = self.indata['Raster'][0].wkt
 
-        self.proj_out()
+        tmp = list(self.epsg_proj.keys())
+        tmp.sort(key=lambda c: c.lower())
+        tmp = ['Current']+tmp
+
+        self.combobox_inp_epsg.currentIndexChanged.disconnect()
+        self.combobox_out_epsg.currentIndexChanged.disconnect()
+
+        self.combobox_inp_epsg.addItems(tmp)
+        self.combobox_out_epsg.addItems(tmp)
+
+        self.combobox_inp_epsg.currentIndexChanged.connect(
+            self.change_inp_epsg_info)
+        self.combobox_out_epsg.currentIndexChanged.connect(
+            self.change_out_epsg_info)
+
+#        wkt = self.indata['Raster'][0].wkt
+        self.change_inp_epsg_info()
+        self.change_out_epsg_info()
 
         tmp = self.exec_()
         if tmp == 1:
@@ -972,38 +626,6 @@ class DataReproj(QtGui.QDialog):
             tmp = True
 
         return tmp
-
-    def zone_inp(self, val):
-        """ used for changing UTM zone """
-        c_m = -180.+(val-1)*6+3
-        self.dsb_inp_cm.setValue(c_m)
-        self.dsb_inp_latorigin.setValue(0.)
-        self.dsb_inp_feasting.setValue(500000.)
-        self.dsb_inp_fnorthing.setValue(0.)
-        self.dsb_inp_scalefactor.setValue(0.9996)
-        self.sb_inp_zone.setValue(val)
-
-        indx = self.combobox_inp_proj.currentIndex()
-        txt = self.combobox_inp_proj.itemText(indx)
-
-        if txt == 'UTM (South)':
-            self.dsb_inp_fnorthing.setValue(10000000.)
-
-    def zone_out(self, val):
-        """ used for changing UTM zone """
-        c_m = -180.+(val-1)*6+3
-        self.dsb_out_cm.setValue(c_m)
-        self.dsb_out_latorigin.setValue(0.)
-        self.dsb_out_feasting.setValue(500000.)
-        self.dsb_out_fnorthing.setValue(0.)
-        self.dsb_out_scalefactor.setValue(0.9996)
-        self.sb_out_zone.setValue(val)
-
-        indx = self.combobox_out_proj.currentIndex()
-        txt = self.combobox_out_proj.itemText(indx)
-
-        if txt == 'UTM (South)':
-            self.dsb_out_fnorthing.setValue(10000000.)
 
 
 class DataCut(object):
@@ -1348,6 +970,7 @@ class Metadata(QtGui.QDialog):
         self.dataid = {}
         self.oldtxt = ''
         self.parent = parent
+        self.epsg_proj = {}
 
         self.gridlayout_main = QtGui.QGridLayout(self)
         self.buttonbox = QtGui.QDialogButtonBox(self)
@@ -1355,6 +978,7 @@ class Metadata(QtGui.QDialog):
         self.groupbox = QtGui.QGroupBox(self)
         self.groupboxb = QtGui.QGroupBox(self)
         self.combobox_bandid = QtGui.QComboBox(self)
+        self.combobox_epsg = QtGui.QComboBox(self)
         self.pb_rename_id = QtGui.QPushButton(self)
         self.lbl_rows = QtGui.QLabel(self.groupbox)
         self.lbl_cols = QtGui.QLabel(self.groupbox)
@@ -1370,7 +994,6 @@ class Metadata(QtGui.QDialog):
         self.lbl_mean = QtGui.QLabel(self.groupbox)
 
         self.setupui()
-        self.ctrans = None
 
     def setupui(self):
         """ Setup UI """
@@ -1396,7 +1019,8 @@ class Metadata(QtGui.QDialog):
         self.gridlayout_main.addWidget(self.groupboxb, 2, 2, 1, 2)
 
         gridlayoutb = QtGui.QGridLayout(self.groupboxb)
-        gridlayoutb.addWidget(self.inp_epsg_info, 0, 0, 1, 1)
+        gridlayoutb.addWidget(self.combobox_epsg, 0, 0, 1, 1)
+        gridlayoutb.addWidget(self.inp_epsg_info, 1, 0, 1, 1)
 
         gridlayout = QtGui.QGridLayout(self.groupbox)
 
@@ -1465,6 +1089,7 @@ class Metadata(QtGui.QDialog):
         self.buttonbox.rejected.connect(self.reject)
 
         self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
+        self.combobox_epsg.currentIndexChanged.connect(self.update_proj_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
@@ -1472,6 +1097,10 @@ class Metadata(QtGui.QDialog):
         This routine is called by settings() if accept is pressed. It contains
         the main routine.
         """
+        indx = self.combobox_epsg.currentIndex()
+        txt = self.combobox_epsg.itemText(indx)
+        wkt = self.epsg_proj[txt]
+
         self.update_vals()
         for tmp in self.indata['Raster']:
             for j in self.dataid.items():
@@ -1485,7 +1114,7 @@ class Metadata(QtGui.QDialog):
                     tmp.rows = i.rows
                     tmp.cols = i.cols
                     tmp.nullvalue = i.nullvalue
-                    tmp.wkt = i.wkt
+                    tmp.wkt = wkt
                     tmp.units = i.units
                     if tmp.dataid[-1] == ')':
                         tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
@@ -1531,10 +1160,11 @@ class Metadata(QtGui.QDialog):
         self.oldtxt = txt
         idata = self.banddata[txt]
 
-        srs = osr.SpatialReference()
-        wkt = idata.wkt
-        srs.ImportFromWkt(wkt)
-        self.inp_epsg_info.setText(srs.ExportToPrettyWkt())
+        self.update_proj_vals()
+#        srs = osr.SpatialReference()
+#        wkt = idata.wkt
+#        srs.ImportFromWkt(wkt)
+#        self.inp_epsg_info.setText(srs.ExportToPrettyWkt())
 
         self.lbl_cols.setText(str(idata.cols))
         self.lbl_rows.setText(str(idata.rows))
@@ -1548,9 +1178,39 @@ class Metadata(QtGui.QDialog):
         self.lbl_mean.setText(str(idata.mean))
         self.led_units.setText(str(idata.units))
 
+    def update_proj_vals(self):
+        """ update the projection on the dialog """
+
+#        indx = self.combobox_bandid.currentIndex()
+#        txt = self.combobox_bandid.itemText(indx)
+#        idata = self.banddata[txt]
+
+        indx = self.combobox_epsg.currentIndex()
+        txt = self.combobox_epsg.itemText(indx)
+
+        wkt = self.epsg_proj[txt]
+
+        srs = osr.SpatialReference()
+        srs.ImportFromWkt(wkt)
+        self.inp_epsg_info.setText(srs.ExportToPrettyWkt())
+
     def run(self):
         """ Entrypoint to start this routine """
+
+        self.epsg_proj = getepsgcodes()
+        self.epsg_proj['Current'] = self.indata['Raster'][0].wkt
+
+        self.combobox_epsg.currentIndexChanged.disconnect()
+        tmp = list(self.epsg_proj.keys())
+        tmp.sort(key=lambda c: c.lower())
+        tmp = ['Current']+tmp
+
+        self.combobox_epsg.addItems(tmp)
+        indx = self.combobox_epsg.currentIndex()
+        self.combobox_epsg.currentIndexChanged.connect(self.update_proj_vals)
+
         bandid = []
+
         for i in self.indata['Raster']:
             bandid.append(i.dataid)
             self.banddata[i.dataid] = Data()
@@ -1629,7 +1289,8 @@ class DataGrid(QtGui.QDialog):
         self.label_rows = QtGui.QLabel(self)
         self.label_cols = QtGui.QLabel(self)
         self.dataid = QtGui.QComboBox(self)
-        self.helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
+        self.helpdocs = menu_default.HelpButton(
+            'pygmi.raster.dataprep.datagrid')
 
         self.setupui()
 
@@ -1849,7 +1510,6 @@ def getepsgcodes():
     """
     Convenience function used to get a list of EPSG codes
     """
-
     dfile = open(os.environ['GDAL_DATA']+'\\gcs.csv')
     dlines = dfile.readlines()
     dfile.close()
@@ -1858,16 +1518,54 @@ def getepsgcodes():
     dcodes = {}
     for i in dlines:
         tmp = i.split(',')
-        dcodes[tmp[1]] = tmp[0]
+        if tmp[1][0] == '"':
+            tmp[1] = tmp[1][1:]
+        if tmp[1][-1] == '"':
+            tmp[1] = tmp[1][:-1]
+        wkttmp = epsgtowkt(tmp[0])
+        if wkttmp != '':
+            dcodes[tmp[1]] = wkttmp
 
     pfile = open(os.environ['GDAL_DATA']+'\\pcs.csv')
     plines = pfile.readlines()
     pfile.close()
 
-    plines = dlines[1:]
     pcodes = {}
+    for i in dcodes.keys():
+        pcodes[i+r' / Geodetic/Geographic'] = dcodes[i]
+
+    plines = plines[1:]
     for i in plines:
         tmp = i.split(',')
-        pcodes[tmp[1]] = tmp[0]
+        if tmp[1][0] == '"':
+            tmp[1] = tmp[1][1:]
+        if tmp[1][-1] == '"':
+            tmp[1] = tmp[1][:-1]
+        wkttmp = epsgtowkt(tmp[0])
+        if wkttmp != '':
+            pcodes[tmp[1]] = wkttmp
 
-    return dcodes, pcodes
+    clat = 0.
+    scale = 1.
+    f_e = 0.
+    f_n = 0.
+    orig = osr.SpatialReference()
+
+    for datum in ['Cape', 'Hartebeesthoek94']:
+        orig.ImportFromWkt(dcodes[datum])
+        for clong in range(15, 35, 2):
+            orig.SetTM(clat, clong, scale, f_e, f_n)
+            orig.SetProjCS(datum+r' / TM'+str(clong))
+            pcodes[datum+r' / TM'+str(clong)] = orig.ExportToWkt()
+
+    return pcodes
+
+
+def epsgtowkt(epsg):
+    """ Convenience routine to get a wkt from an epsg code """
+    orig = osr.SpatialReference()
+    err = orig.ImportFromEPSG(int(epsg))
+    if err != 0:
+        return ''
+    out = orig.ExportToWkt()
+    return out

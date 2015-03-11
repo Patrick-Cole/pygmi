@@ -347,6 +347,8 @@ class ExportData(object):
         self.ifile = str(filename)
         self.ext = filename[-3:]
 
+        self.parent.showprocesslog('Export Data Busy...')
+
     # Pop up save dialog box
         if self.ext == 'ers':
             self.export_gdal(data, 'ERS')
@@ -365,7 +367,7 @@ class ExportData(object):
         if self.ext == 'bil':
             self.export_gdal(data, 'EHdr')
 
-        self.parent.showprocesslog('Finished!')
+        self.parent.showprocesslog('Export Data Finished!')
 
     def export_gdal(self, dat, drv):
         """
