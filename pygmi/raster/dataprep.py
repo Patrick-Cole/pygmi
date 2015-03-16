@@ -41,195 +41,237 @@ import pygmi.menu_default as menu_default
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
 
-def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
+class DataCut(object):
     """
-    Data to GDAL mem format
+    Cut Data using shapefiles
 
-    Parameters
+    This class cuts raster datasets using a boundary defined by a polygon
+    shapefile.
+
+    Attributes
     ----------
-    data : PyGMI Data
-        PyGMI Dataset
-    gtr : tuple
-        Geotransform
-    wkt : str
-        Projection in wkt (well known text) format
-    cols : int
-        columns
-    rows : int
-        rows
-    nodata : bool, optional
-        no data
-
-    Returns
-    -------
-    src - GDAL mem format
+    ifile : str
+        input file name.
+    name : str
+        item name
+    ext : str
+        file name extension.
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
     """
-    data.data = np.ma.array(data.data)
-    dtype = data.data.dtype
-# Get rid of array() which can break driver.create later
-    cols = int(cols)
-    rows = int(rows)
+    def __init__(self, parent):
+        self.ifile = ""
+        self.name = "Cut Data:"
+        self.ext = ""
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+#        self.dirname = ""
 
-    if dtype == np.uint8:
-        fmt = gdal.GDT_Byte
-    elif dtype == np.int32:
-        fmt = gdal.GDT_Int32
-    elif dtype == np.float64:
-        fmt = gdal.GDT_Float64
-    else:
-        fmt = gdal.GDT_Float32
+    def settings(self):
+        """ Show Info """
+#        if 'Cluster' in self.indata:
+#            data = self.indata['Cluster']
+        if 'Raster' in self.indata:
+            data = copy.deepcopy(self.indata['Raster'])
+        else:
+            self.parent.showprocesslog('No raster data')
+            return
 
-    driver = gdal.GetDriverByName('MEM')
-    src = driver.Create('', cols, rows, 1, fmt)
+        ext = "Shape file (*.shp)"
 
-    src.SetGeoTransform(gtr)
-    src.SetProjection(wkt)
+        filename = QtGui.QFileDialog.getOpenFileName(
+            self.parent, 'Open Shape File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(filename.rpartition('/')[0])
 
-    if nodata is False:
-        if data.nullvalue is not None:
-            src.GetRasterBand(1).SetNoDataValue(data.nullvalue)
-        src.GetRasterBand(1).WriteArray(data.data)
-    else:
-        tmp = np.ma.masked_all((rows, cols))
-        src.GetRasterBand(1).SetNoDataValue(0)  # Set to this because of Reproj
-        src.GetRasterBand(1).WriteArray(tmp)
+        self.ifile = str(filename)
+        self.ext = filename[-3:]
+        data = cut_raster(data, self.ifile)
 
-    return src
+        if data is None:
+            err = ('There was a problem importing the shapefile. Please make '
+                   'sure you have at all the individual files which make up '
+                   'the shapefile.')
+            QtGui.QMessageBox.warning(self.parent, 'Error', err,
+                                      QtGui.QMessageBox.Ok,
+                                      QtGui.QMessageBox.Ok)
+            return False
 
 
-def gdal_to_dat(dest, bandid='Data'):
+#        data = trim_raster(data)
+        self.outdata['Raster'] = data
+
+        return True
+
+
+class DataGrid(QtGui.QDialog):
     """
-    GDAL to Data format
+    Grid Point Data
 
-    Parameters
+    This class grids point data using a nearest neighbourhood technique.
+
+    Attributes
     ----------
-    dest - GDAL format
-        GDAL format
-    bandid - str
-        band identity
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
     """
-    dat = Data()
-    gtr = dest.GetGeoTransform()
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
 
-    rtmp = dest.GetRasterBand(1)
-    dat.data = rtmp.ReadAsArray()
-    nval = rtmp.GetNoDataValue()
-    dat.data = np.ma.masked_equal(dat.data, nval)
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
 
-#    dtype = dat.data.dtype
-#    nval = np.nan
-#    if dtype == np.float32 or dtype == np.float64:
-#        dat.data[dat.data == 0.] = np.nan
-# #    dat.data[dat.data == rtmp.GetNoDataValue()] = np.nan
-#        dat.data = np.ma.masked_invalid(nval)
-#
-#    if dtype == np.uint8:
-#        dat.data = np.ma.masked_equal(dat.data, 0)
-#        nval = 0
+        self.gridlayout_main = QtGui.QGridLayout(self)
+        self.buttonbox = QtGui.QDialogButtonBox(self)
+        self.dsb_dxy = QtGui.QDoubleSpinBox(self)
+        self.label_rows = QtGui.QLabel(self)
+        self.label_cols = QtGui.QLabel(self)
+        self.dataid = QtGui.QComboBox(self)
+        self.helpdocs = menu_default.HelpButton(
+            'pygmi.raster.dataprep.datagrid')
 
-#    dat.data[dat.data.mask] = rtmp.GetNoDataValue()
+        self.setupui()
 
-    dat.nrofbands = dest.RasterCount
-    dat.tlx = gtr[0]
-    dat.tly = gtr[3]
-    dat.dataid = bandid
-    dat.nullvalue = nval
-    dat.rows = dest.RasterYSize
-    dat.cols = dest.RasterXSize
-    dat.xdim = abs(gtr[1])
-    dat.ydim = abs(gtr[5])
-    dat.wkt = dest.GetProjection()
-    dat.gtr = gtr
+    def setupui(self):
+        """ Setup UI """
+        self.setWindowTitle("Dataset Gridding")
 
-    return dat
+        self.label_rows.setText("Rows: 0")
+        self.gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
 
+        self.label_cols.setText("Columns: 0")
+        self.gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
 
-def merge(dat):
-    """ Merges datasets found in a single PyGMI data object.
+        label_dxy = QtGui.QLabel(self)
+        label_dxy.setText("Cell Size:")
+        self.gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
 
-    The aim is to ensure that all datasets have the same number of rows and
-    columns.
+        self.dsb_dxy.setMaximum(9999999999.0)
+        self.dsb_dxy.setMinimum(0.00001)
+        self.dsb_dxy.setDecimals(5)
+        self.gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
 
-    Parameters
-    ----------
-    dat : Data
-        data object which stores datasets
+        label_band = QtGui.QLabel(self)
+        label_band.setText("Column to Grid:")
+        self.gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
+        self.gridlayout_main.addWidget(self.dataid, 3, 1, 1, 1)
 
-    Returns
-    -------
-    Data
-        data object which stores datasets
-    """
-    needsmerge = False
-    for i in dat:
-        if i.rows != dat[0].rows or i.cols != dat[0].cols:
-            needsmerge = True
+        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setCenterButtons(True)
+        self.buttonbox.setStandardButtons(
+            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
-    if needsmerge is False:
-        dat = check_dataid(dat)
-        return dat
+        self.gridlayout_main.addWidget(self.helpdocs, 4, 0, 1, 1)
+        self.gridlayout_main.addWidget(self.buttonbox, 4, 1, 1, 3)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
-    mrg = DataMerge()
-    mrg.indata['Raster'] = dat
-    data = dat[0]
-    dxy0 = min(data.xdim, data.ydim)
-    for data in dat:
-        dxy = min(dxy0, data.xdim, data.ydim)
+#        self.buttonbox.accepted.connect(self.acceptall)
+        self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
-    mrg.dsb_dxy.setValue(dxy)
-    mrg.acceptall()
-    out = mrg.outdata['Raster']
+    def dxy_change(self):
+        """ update dxy """
+        dxy = self.dsb_dxy.value()
+        data = self.indata['Point'][0]
+        x = data.xdata
+        y = data.ydata
 
-    out = check_dataid(out)
+        cols = int(x.ptp()/dxy)
+        rows = int(y.ptp()/dxy)
 
-    return out
+        self.label_rows.setText("Rows: "+str(rows))
+        self.label_cols.setText("Columns: "+str(cols))
 
+    def settings(self):
+        """ Settings """
+        tmp = []
+        if 'Point' not in self.indata:
+            return False
 
-def check_dataid(out):
-    """ Checks dataid for duplicates and renames where necessary """
-    tmplist = []
-    for i in out:
-        tmplist.append(i.dataid)
+        for i in self.indata['Point']:
+            tmp.append(i.dataid)
 
-    tmpcnt = Counter(tmplist)
-    for elt, count in tmpcnt.items():
-        j = 1
-        for i in out:
-            if elt == i.dataid and count > 1:
-                i.dataid += '('+str(j)+')'
-                j += 1
+        self.dataid.addItems(tmp)
 
-    return out
+        data = self.indata['Point'][0]
+        x = data.xdata
+        y = data.ydata
 
+        dx = x.ptp()/np.sqrt(x.size)
+        dy = y.ptp()/np.sqrt(y.size)
+        dxy = max(dx, dy)
 
-def cluster_to_raster(indata):
-    """ Converts cluster datasets to raster datasets
+#        xy = np.transpose([x, y])
+#        xy = xy.tolist()
+#        xy = np.array(xy)
+#        xy = xy[:-1]-xy[1:]
+#        dxy = np.median(np.sqrt(np.sum(xy**2, 1)))/3
 
-    Some routines will not understand the datasets produced by cluster
-    analysis routines, since they are designated 'Cluster' and not 'Raster'.
-    This provides a work-around for that.
+        self.dsb_dxy.setValue(dxy)
+        self.dxy_change()
+        tmp = self.exec_()
 
-    Parameters
-    ----------
-    indata : Data
-        PyGMI raster dataset
+        if tmp == 1:
+            self.acceptall()
+            tmp = True
 
-    Returns
-    -------
-    Data
-        PyGMI raster dataset
+        return tmp
 
-    """
-    if 'Cluster' not in indata:
-        return indata
-    if 'Raster' not in indata:
-        indata['Raster'] = []
+    def acceptall(self):
+        """ accept """
+        dxy = self.dsb_dxy.value()
+        data = self.indata['Point'][0]
 
-    for i in indata['Cluster']:
-        indata['Raster'].append(i)
-        indata['Raster'][-1].data += 1
+        newdat = []
+        for data in self.indata['Point']:
+            if data.dataid != self.dataid.currentText():
+                continue
+            x = data.xdata
+            y = data.ydata
+            z = data.zdata
 
-    return indata
+            for i in [x, y, z]:
+                filt = np.logical_not(np.isnan(i))
+                x = x[filt]
+                y = y[filt]
+                z = z[filt]
+
+#            self.parent.showprocesslog
+#            pdb.set_trace()
+            tmp = quickgrid(x, y, z, dxy, showtext=self.parent.showprocesslog)
+#            pdb.set_trace()
+            mask = tmp.mask
+            gdat = tmp.data
+
+    # Create dataset
+            dat = Data()
+            dat.data = np.ma.masked_invalid(gdat[::-1])
+            dat.data.mask = mask[::-1]
+            dat.rows, dat.cols = gdat.shape
+            dat.nullvalue = dat.data.fill_value
+            dat.dataid = data.dataid
+            dat.tlx = x.min()
+            dat.tly = y.max()
+            dat.xdim = dxy
+            dat.ydim = dxy
+            newdat.append(dat)
+
+        self.outdata['Raster'] = newdat
+        self.outdata['Point'] = self.indata['Point']
 
 
 class DataMerge(QtGui.QDialog):
@@ -426,61 +468,28 @@ class DataReproj(QtGui.QDialog):
         self.out_epsg_info = QtGui.QLabel()
         self.helpdocs = menu_default.HelpButton(
             'pygmi.raster.dataprep.datareproj')
+        self.in_proj = GroupProj('Input Projection')
+        self.out_proj = GroupProj('Output Projection')
 
         self.setupui()
-        self.epsg_proj = getepsgcodes()
 
     def setupui(self):
         """ Setup UI """
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Expanding)
-
         self.setWindowTitle("Dataset Reprojection")
 
-        label_input = QtGui.QLabel()
-        label_input.setText("Input Projection")
-        self.gridlayout_main.addWidget(label_input, 0, 0, 1, 2)
+        self.gridlayout_main.addWidget(self.in_proj, 0, 0, 1, 1)
+        self.gridlayout_main.addWidget(self.out_proj, 0, 1, 1, 1)
 
-        self.gridlayout_main.addWidget(self.groupboxb, 2, 0, 1, 2)
-
-        self.groupboxb.setTitle("EPSG Information")
-        self.groupboxb.setSizePolicy(sizepolicy)
-        gridlayoutb = QtGui.QGridLayout(self.groupboxb)
-        gridlayoutb.addWidget(self.inp_epsg_info, 0, 0, 1, 1)
-
-        self.gridlayout_main.addWidget(self.combobox_inp_epsg, 1, 1, 1, 1)
-
-
-# ############################
-        label_input2 = QtGui.QLabel()
-        label_input2.setText("Output Projection")
-        self.gridlayout_main.addWidget(label_input2, 0, 2, 1, 2)
-
-        self.gridlayout_main.addWidget(self.groupbox2b, 2, 2, 1, 2)
-
-        self.groupbox2b.setTitle("EPSG Information")
-        self.groupbox2b.setSizePolicy(sizepolicy)
-        gridlayout2b = QtGui.QGridLayout(self.groupbox2b)
-        gridlayout2b.addWidget(self.out_epsg_info, 0, 0, 1, 1)
-
-        self.gridlayout_main.addWidget(self.combobox_out_epsg, 1, 3, 1, 1)
-
-# #########################
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setCenterButtons(True)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
 
-        self.gridlayout_main.addWidget(self.buttonbox, 4, 1, 1, 3)
-        self.gridlayout_main.addWidget(self.helpdocs, 4, 0, 1, 1)
+        self.gridlayout_main.addWidget(self.buttonbox, 1, 1, 1, 1)
+        self.gridlayout_main.addWidget(self.helpdocs, 1, 0, 1, 1)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
-
-        self.combobox_inp_epsg.currentIndexChanged.connect(
-            self.change_inp_epsg_info)
-        self.combobox_out_epsg.currentIndexChanged.connect(
-            self.change_out_epsg_info)
 
     def acceptall(self):
         """
@@ -489,17 +498,13 @@ class DataReproj(QtGui.QDialog):
         """
 
 # Input stuff
-        indx = self.combobox_inp_epsg.currentIndex()
-        txt = self.combobox_inp_epsg.itemText(indx)
-        orig_wkt = self.epsg_proj[txt]
+        orig_wkt = self.in_proj.wkt
 
         orig = osr.SpatialReference()
         orig.ImportFromWkt(orig_wkt)
 
 # Output stuff
-        indx = self.combobox_out_epsg.currentIndex()
-        txt = self.combobox_out_epsg.itemText(indx)
-        targ_wkt = self.epsg_proj[txt]
+        targ_wkt = self.out_proj.wkt
 
         targ = osr.SpatialReference()
         targ.ImportFromWkt(targ_wkt)
@@ -573,52 +578,11 @@ class DataReproj(QtGui.QDialog):
 
         self.outdata['Raster'] = dat
 
-    def change_inp_epsg_info(self):
-        """ Input epsg is checked """
-
-        indx = self.combobox_inp_epsg.currentIndex()
-        txt = self.combobox_inp_epsg.itemText(indx)
-
-        wkt = self.epsg_proj[txt]
-
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(wkt)
-        self.inp_epsg_info.setText(srs.ExportToPrettyWkt())
-
-    def change_out_epsg_info(self):
-        """ Input epsg is checked """
-        indx = self.combobox_out_epsg.currentIndex()
-        txt = self.combobox_out_epsg.itemText(indx)
-
-        wkt = self.epsg_proj[txt]
-
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(wkt)
-        self.out_epsg_info.setText(srs.ExportToPrettyWkt())
-
     def settings(self):
         """ Settings """
 
-        self.epsg_proj['Current'] = self.indata['Raster'][0].wkt
-
-        tmp = list(self.epsg_proj.keys())
-        tmp.sort(key=lambda c: c.lower())
-        tmp = ['Current']+tmp
-
-        self.combobox_inp_epsg.currentIndexChanged.disconnect()
-        self.combobox_out_epsg.currentIndexChanged.disconnect()
-
-        self.combobox_inp_epsg.addItems(tmp)
-        self.combobox_out_epsg.addItems(tmp)
-
-        self.combobox_inp_epsg.currentIndexChanged.connect(
-            self.change_inp_epsg_info)
-        self.combobox_out_epsg.currentIndexChanged.connect(
-            self.change_out_epsg_info)
-
-#        wkt = self.indata['Raster'][0].wkt
-        self.change_inp_epsg_info()
-        self.change_out_epsg_info()
+        self.in_proj.set_current(self.indata['Raster'][0].wkt)
+        self.out_proj.set_current(self.indata['Raster'][0].wkt)
 
         tmp = self.exec_()
         if tmp == 1:
@@ -626,208 +590,6 @@ class DataReproj(QtGui.QDialog):
             tmp = True
 
         return tmp
-
-
-class DataCut(object):
-    """
-    Cut Data using shapefiles
-
-    This class cuts raster datasets using a boundary defined by a polygon
-    shapefile.
-
-    Attributes
-    ----------
-    ifile : str
-        input file name.
-    name : str
-        item name
-    ext : str
-        file name extension.
-    pbar : progressbar
-        reference to a progress bar.
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
-    def __init__(self, parent):
-        self.ifile = ""
-        self.name = "Cut Data:"
-        self.ext = ""
-        self.pbar = None
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-#        self.dirname = ""
-
-    def settings(self):
-        """ Show Info """
-#        if 'Cluster' in self.indata:
-#            data = self.indata['Cluster']
-        if 'Raster' in self.indata:
-            data = copy.deepcopy(self.indata['Raster'])
-        else:
-            self.parent.showprocesslog('No raster data')
-            return
-
-        ext = "Shape file (*.shp)"
-
-        filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open Shape File', '.', ext)
-        if filename == '':
-            return False
-        os.chdir(filename.rpartition('/')[0])
-
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
-        data = cut_raster(data, self.ifile)
-
-        if data is None:
-            err = ('There was a problem importing the shapefile. Please make '
-                   'sure you have at all the individual files which make up '
-                   'the shapefile.')
-            QtGui.QMessageBox.warning(self.parent, 'Error', err,
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
-            return False
-
-
-#        data = trim_raster(data)
-        self.outdata['Raster'] = data
-
-        return True
-
-
-def cut_raster(data, ifile):
-    """Cuts a raster dataset
-
-    Cut a raster dataset using a shapefile
-
-    Parameters
-    ----------
-    data : Data
-        PyGMI Dataset
-    ifile : str
-        shapefile used to cut data
-
-    Returns
-    -------
-    Data
-        PyGMI Dataset
-    """
-    shapef = ogr.Open(ifile)
-    if shapef is None:
-        return None
-    lyr = shapef.GetLayer()
-    poly = lyr.GetNextFeature()
-    if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
-        # self.parent.showprocesslog('You need polygons in that shape file')
-        return
-
-    for idata in data:
-        # Convert the layer extent to image pixel coordinates
-        minX, maxX, minY, maxY = lyr.GetExtent()
-        ulX = max(0, int((minX - idata.tlx) / idata.xdim))
-        ulY = max(0, int((idata.tly - maxY) / idata.ydim))
-        lrX = int((maxX - idata.tlx) / idata.xdim)
-        lrY = int((idata.tly - minY) / idata.ydim)
-
-        # Map points to pixels for drawing the
-        # boundary on a mas image
-        points = []
-        pixels = []
-        geom = poly.GetGeometryRef()
-
-        ifin = 0
-        imax = 0
-        if geom.GetGeometryName() == 'MULTIPOLYGON':
-            for i in range(geom.GetGeometryCount()):
-                geom.GetGeometryRef(i)
-                itmp = geom.GetGeometryRef(i)
-                itmp = itmp.GetGeometryRef(0).GetPointCount()
-                if itmp > imax:
-                    imax = itmp
-                    ifin = i
-            geom = geom.GetGeometryRef(ifin)
-
-        pts = geom.GetGeometryRef(0)
-        for p in range(pts.GetPointCount()):
-            points.append((pts.GetX(p), pts.GetY(p)))
-        for p in points:
-            tmpx = int((p[0] - idata.tlx) / idata.xdim)
-            tmpy = int((idata.tly - p[1]) / idata.ydim)
-            pixels.append((tmpx, tmpy))
-        rasterPoly = Image.new("L", (idata.cols, idata.rows), 1)
-        rasterize = ImageDraw.Draw(rasterPoly)
-        rasterize.polygon(pixels, 0)
-        mask = np.array(rasterPoly)
-
-        idata.data.mask = mask
-        idata.data = idata.data[ulY:lrY, ulX:lrX]
-        idata.cols = idata.data.shape[1]
-        idata.rows = idata.data.shape[0]
-        idata.tlx = ulX*idata.xdim + idata.tlx  # minX
-        idata.tly = idata.tly - ulY*idata.ydim  # maxY
-    data = trim_raster(data)
-    return data
-
-
-def trim_raster(olddata):
-    """ Function to trim nulls from a raster dataset.
-
-    This function trims entire rows or columns of data which have only nulls,
-    and are on the edges of the dataset.
-
-    Parameters
-    ----------
-    olddata : Data
-        PyGMI dataset
-
-    Returns
-    -------
-    Data
-        PyGMI dataset
-    """
-
-    for data in olddata:
-        mask = data.data.mask
-        data.data[mask] = data.nullvalue
-
-        rowstart = 0
-        for i in range(mask.shape[0]):
-            if bool(mask[i].min()) is False:
-                break
-            rowstart += 1
-
-        rowend = mask.shape[0]
-        for i in range(mask.shape[0]-1, -1, -1):
-            if bool(mask[i].min()) is False:
-                break
-            rowend -= 1
-
-        colstart = 0
-        for i in range(mask.shape[1]):
-            if bool(mask[:, i].min()) is False:
-                break
-            colstart += 1
-
-        colend = mask.shape[1]
-        for i in range(mask.shape[1]-1, -1, -1):
-            if bool(mask[:, i].min()) is False:
-                break
-            colend -= 1
-
-        data.data = data.data[rowstart:rowend, colstart:colend]
-        data.data.mask = (data.data.data == data.nullvalue)
-#        data.data = np.ma.masked_invalid(data.data[rowstart:rowend,
-#                                                   colstart:colend])
-        data.rows, data.cols = data.data.shape
-        data.tlx = data.tlx + colstart*data.xdim
-        data.tly = data.tly - rowstart*data.ydim
-
-    return olddata
 
 
 class GetProf(object):
@@ -939,6 +701,56 @@ class GetProf(object):
         return True
 
 
+class GroupProj(QtGui.QWidget):
+    """
+    Help Button
+
+    Convenience class to add an image to a pushbutton
+    """
+    def __init__(self, title='Projection', parent=None):
+        QtGui.QWidget.__init__(self, parent)
+
+        self.wkt = ''
+
+        self.gridlayout = QtGui.QGridLayout(self)
+        self.groupbox = QtGui.QGroupBox()
+        self.combobox = QtGui.QComboBox()
+        self.label = QtGui.QLabel()
+
+        self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
+
+        self.groupbox.setTitle(title)
+        gridlayout = QtGui.QGridLayout(self.groupbox)
+        gridlayout.addWidget(self.combobox, 0, 0, 1, 1)
+        gridlayout.addWidget(self.label, 1, 0, 1, 1)
+
+        self.epsg_proj = getepsgcodes()
+        self.epsg_proj['Current'] = self.wkt
+        tmp = list(self.epsg_proj.keys())
+        tmp.sort(key=lambda c: c.lower())
+        tmp = ['Current']+tmp
+
+        self.combobox.addItems(tmp)
+        self.combobox.currentIndexChanged.connect(self.combo_change)
+
+    def set_current(self, wkt):
+        """ Sets new wkt for current """
+        self.wkt = wkt
+        self.epsg_proj['Current'] = self.wkt
+        self.combo_change()
+
+    def combo_change(self):
+        """ Change Combo """
+        indx = self.combobox.currentIndex()
+        txt = self.combobox.itemText(indx)
+
+        self.wkt = self.epsg_proj[txt]
+
+        srs = osr.SpatialReference()
+        srs.ImportFromWkt(self.wkt)
+        self.label.setText(srs.ExportToPrettyWkt())
+
+
 class Metadata(QtGui.QDialog):
     """
     Edit Metadata
@@ -970,28 +782,27 @@ class Metadata(QtGui.QDialog):
         self.dataid = {}
         self.oldtxt = ''
         self.parent = parent
-        self.epsg_proj = {}
 
         self.gridlayout_main = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
+        self.buttonbox = QtGui.QDialogButtonBox()
 
-        self.groupbox = QtGui.QGroupBox(self)
-        self.groupboxb = QtGui.QGroupBox(self)
-        self.combobox_bandid = QtGui.QComboBox(self)
-        self.combobox_epsg = QtGui.QComboBox(self)
-        self.pb_rename_id = QtGui.QPushButton(self)
-        self.lbl_rows = QtGui.QLabel(self.groupbox)
-        self.lbl_cols = QtGui.QLabel(self.groupbox)
-        self.inp_epsg_info = QtGui.QLabel(self.groupbox)
-        self.txt_null = QtGui.QLineEdit(self.groupbox)
-        self.dsb_tlx = QtGui.QLineEdit(self.groupbox)
-        self.dsb_tly = QtGui.QLineEdit(self.groupbox)
-        self.dsb_xdim = QtGui.QLineEdit(self.groupbox)
-        self.dsb_ydim = QtGui.QLineEdit(self.groupbox)
-        self.led_units = QtGui.QLineEdit(self.groupbox)
-        self.lbl_min = QtGui.QLabel(self.groupbox)
-        self.lbl_max = QtGui.QLabel(self.groupbox)
-        self.lbl_mean = QtGui.QLabel(self.groupbox)
+        self.groupbox = QtGui.QGroupBox()
+        self.combobox_bandid = QtGui.QComboBox()
+        self.pb_rename_id = QtGui.QPushButton()
+        self.lbl_rows = QtGui.QLabel()
+        self.lbl_cols = QtGui.QLabel()
+        self.inp_epsg_info = QtGui.QLabel()
+        self.txt_null = QtGui.QLineEdit()
+        self.dsb_tlx = QtGui.QLineEdit()
+        self.dsb_tly = QtGui.QLineEdit()
+        self.dsb_xdim = QtGui.QLineEdit()
+        self.dsb_ydim = QtGui.QLineEdit()
+        self.led_units = QtGui.QLineEdit()
+        self.lbl_min = QtGui.QLabel()
+        self.lbl_max = QtGui.QLabel()
+        self.lbl_mean = QtGui.QLabel()
+
+        self.proj = GroupProj('Input Projection')
 
         self.setupui()
 
@@ -1001,7 +812,7 @@ class Metadata(QtGui.QDialog):
                                        QtGui.QSizePolicy.Expanding)
 
         self.setWindowTitle("Dataset Metadata")
-        label_bandid = QtGui.QLabel(self)
+        label_bandid = QtGui.QLabel()
         label_bandid.setText('Band Name:')
         self.gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
         self.gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
@@ -1012,15 +823,8 @@ class Metadata(QtGui.QDialog):
         self.groupbox.setTitle("Dataset")
         self.groupbox.setSizePolicy(sizepolicy)
 
-        self.groupboxb.setTitle("WKT Information")
-        self.groupboxb.setSizePolicy(sizepolicy)
-
         self.gridlayout_main.addWidget(self.groupbox, 2, 0, 1, 2)
-        self.gridlayout_main.addWidget(self.groupboxb, 2, 2, 1, 2)
-
-        gridlayoutb = QtGui.QGridLayout(self.groupboxb)
-        gridlayoutb.addWidget(self.combobox_epsg, 0, 0, 1, 1)
-        gridlayoutb.addWidget(self.inp_epsg_info, 1, 0, 1, 1)
+        self.gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
 
         gridlayout = QtGui.QGridLayout(self.groupbox)
 
@@ -1089,7 +893,6 @@ class Metadata(QtGui.QDialog):
         self.buttonbox.rejected.connect(self.reject)
 
         self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
-        self.combobox_epsg.currentIndexChanged.connect(self.update_proj_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)
 
     def acceptall(self):
@@ -1097,9 +900,7 @@ class Metadata(QtGui.QDialog):
         This routine is called by settings() if accept is pressed. It contains
         the main routine.
         """
-        indx = self.combobox_epsg.currentIndex()
-        txt = self.combobox_epsg.itemText(indx)
-        wkt = self.epsg_proj[txt]
+        wkt = self.proj.wkt
 
         self.update_vals()
         for tmp in self.indata['Raster']:
@@ -1160,12 +961,6 @@ class Metadata(QtGui.QDialog):
         self.oldtxt = txt
         idata = self.banddata[txt]
 
-        self.update_proj_vals()
-#        srs = osr.SpatialReference()
-#        wkt = idata.wkt
-#        srs.ImportFromWkt(wkt)
-#        self.inp_epsg_info.setText(srs.ExportToPrettyWkt())
-
         self.lbl_cols.setText(str(idata.cols))
         self.lbl_rows.setText(str(idata.rows))
         self.txt_null.setText(str(idata.nullvalue))
@@ -1178,38 +973,11 @@ class Metadata(QtGui.QDialog):
         self.lbl_mean.setText(str(idata.mean))
         self.led_units.setText(str(idata.units))
 
-    def update_proj_vals(self):
-        """ update the projection on the dialog """
-
-#        indx = self.combobox_bandid.currentIndex()
-#        txt = self.combobox_bandid.itemText(indx)
-#        idata = self.banddata[txt]
-
-        indx = self.combobox_epsg.currentIndex()
-        txt = self.combobox_epsg.itemText(indx)
-
-        wkt = self.epsg_proj[txt]
-
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(wkt)
-        self.inp_epsg_info.setText(srs.ExportToPrettyWkt())
-
     def run(self):
         """ Entrypoint to start this routine """
 
-        self.epsg_proj = getepsgcodes()
-        self.epsg_proj['Current'] = self.indata['Raster'][0].wkt
-
-        self.combobox_epsg.currentIndexChanged.disconnect()
-        tmp = list(self.epsg_proj.keys())
-        tmp.sort(key=lambda c: c.lower())
-        tmp = ['Current']+tmp
-
-        self.combobox_epsg.addItems(tmp)
-        indx = self.combobox_epsg.currentIndex()
-        self.combobox_epsg.currentIndexChanged.connect(self.update_proj_vals)
-
         bandid = []
+        self.proj.set_current(self.indata['Raster'][0].wkt)
 
         for i in self.indata['Raster']:
             bandid.append(i.dataid)
@@ -1261,165 +1029,390 @@ class Metadata(QtGui.QDialog):
         return tmp
 
 
-class DataGrid(QtGui.QDialog):
-    """
-    Grid Point Data
+def check_dataid(out):
+    """ Checks dataid for duplicates and renames where necessary """
+    tmplist = []
+    for i in out:
+        tmplist.append(i.dataid)
 
-    This class grids point data using a nearest neighbourhood technique.
+    tmpcnt = Counter(tmplist)
+    for elt, count in tmpcnt.items():
+        j = 1
+        for i in out:
+            if elt == i.dataid and count > 1:
+                i.dataid += '('+str(j)+')'
+                j += 1
 
-    Attributes
+    return out
+
+
+def cluster_to_raster(indata):
+    """ Converts cluster datasets to raster datasets
+
+    Some routines will not understand the datasets produced by cluster
+    analysis routines, since they are designated 'Cluster' and not 'Raster'.
+    This provides a work-around for that.
+
+    Parameters
     ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
+    indata : Data
+        PyGMI raster dataset
+
+    Returns
+    -------
+    Data
+        PyGMI raster dataset
+
     """
-    def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+    if 'Cluster' not in indata:
+        return indata
+    if 'Raster' not in indata:
+        indata['Raster'] = []
 
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
+    for i in indata['Cluster']:
+        indata['Raster'].append(i)
+        indata['Raster'][-1].data += 1
 
-        self.gridlayout_main = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.dsb_dxy = QtGui.QDoubleSpinBox(self)
-        self.label_rows = QtGui.QLabel(self)
-        self.label_cols = QtGui.QLabel(self)
-        self.dataid = QtGui.QComboBox(self)
-        self.helpdocs = menu_default.HelpButton(
-            'pygmi.raster.dataprep.datagrid')
+    return indata
 
-        self.setupui()
 
-    def setupui(self):
-        """ Setup UI """
-        self.setWindowTitle("Dataset Gridding")
+def cut_raster(data, ifile):
+    """Cuts a raster dataset
 
-        self.label_rows.setText("Rows: 0")
-        self.gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
+    Cut a raster dataset using a shapefile
 
-        self.label_cols.setText("Columns: 0")
-        self.gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
+    Parameters
+    ----------
+    data : Data
+        PyGMI Dataset
+    ifile : str
+        shapefile used to cut data
 
-        label_dxy = QtGui.QLabel(self)
-        label_dxy.setText("Cell Size:")
-        self.gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
+    Returns
+    -------
+    Data
+        PyGMI Dataset
+    """
+    shapef = ogr.Open(ifile)
+    if shapef is None:
+        return None
+    lyr = shapef.GetLayer()
+    poly = lyr.GetNextFeature()
+    if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
+        # self.parent.showprocesslog('You need polygons in that shape file')
+        return
 
-        self.dsb_dxy.setMaximum(9999999999.0)
-        self.dsb_dxy.setMinimum(0.00001)
-        self.dsb_dxy.setDecimals(5)
-        self.gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
+    for idata in data:
+        # Convert the layer extent to image pixel coordinates
+        minX, maxX, minY, maxY = lyr.GetExtent()
+        ulX = max(0, int((minX - idata.tlx) / idata.xdim))
+        ulY = max(0, int((idata.tly - maxY) / idata.ydim))
+        lrX = int((maxX - idata.tlx) / idata.xdim)
+        lrY = int((idata.tly - minY) / idata.ydim)
 
-        label_band = QtGui.QLabel(self)
-        label_band.setText("Column to Grid:")
-        self.gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.dataid, 3, 1, 1, 1)
+        # Map points to pixels for drawing the
+        # boundary on a mas image
+        points = []
+        pixels = []
+        geom = poly.GetGeometryRef()
 
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        ifin = 0
+        imax = 0
+        if geom.GetGeometryName() == 'MULTIPOLYGON':
+            for i in range(geom.GetGeometryCount()):
+                geom.GetGeometryRef(i)
+                itmp = geom.GetGeometryRef(i)
+                itmp = itmp.GetGeometryRef(0).GetPointCount()
+                if itmp > imax:
+                    imax = itmp
+                    ifin = i
+            geom = geom.GetGeometryRef(ifin)
 
-        self.gridlayout_main.addWidget(self.helpdocs, 4, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.buttonbox, 4, 1, 1, 3)
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        pts = geom.GetGeometryRef(0)
+        for p in range(pts.GetPointCount()):
+            points.append((pts.GetX(p), pts.GetY(p)))
+        for p in points:
+            tmpx = int((p[0] - idata.tlx) / idata.xdim)
+            tmpy = int((idata.tly - p[1]) / idata.ydim)
+            pixels.append((tmpx, tmpy))
+        rasterPoly = Image.new("L", (idata.cols, idata.rows), 1)
+        rasterize = ImageDraw.Draw(rasterPoly)
+        rasterize.polygon(pixels, 0)
+        mask = np.array(rasterPoly)
 
-#        self.buttonbox.accepted.connect(self.acceptall)
-        self.dsb_dxy.valueChanged.connect(self.dxy_change)
+        idata.data.mask = mask
+        idata.data = idata.data[ulY:lrY, ulX:lrX]
+        idata.cols = idata.data.shape[1]
+        idata.rows = idata.data.shape[0]
+        idata.tlx = ulX*idata.xdim + idata.tlx  # minX
+        idata.tly = idata.tly - ulY*idata.ydim  # maxY
+    data = trim_raster(data)
+    return data
 
-    def dxy_change(self):
-        """ update dxy """
-        dxy = self.dsb_dxy.value()
-        data = self.indata['Point'][0]
-        x = data.xdata
-        y = data.ydata
 
-        cols = int(x.ptp()/dxy)
-        rows = int(y.ptp()/dxy)
+def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
+    """
+    Data to GDAL mem format
 
-        self.label_rows.setText("Rows: "+str(rows))
-        self.label_cols.setText("Columns: "+str(cols))
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI Dataset
+    gtr : tuple
+        Geotransform
+    wkt : str
+        Projection in wkt (well known text) format
+    cols : int
+        columns
+    rows : int
+        rows
+    nodata : bool, optional
+        no data
 
-    def settings(self):
-        """ Settings """
-        tmp = []
-        if 'Point' not in self.indata:
-            return False
+    Returns
+    -------
+    src - GDAL mem format
+    """
+    data.data = np.ma.array(data.data)
+    dtype = data.data.dtype
+# Get rid of array() which can break driver.create later
+    cols = int(cols)
+    rows = int(rows)
 
-        for i in self.indata['Point']:
-            tmp.append(i.dataid)
+    if dtype == np.uint8:
+        fmt = gdal.GDT_Byte
+    elif dtype == np.int32:
+        fmt = gdal.GDT_Int32
+    elif dtype == np.float64:
+        fmt = gdal.GDT_Float64
+    else:
+        fmt = gdal.GDT_Float32
 
-        self.dataid.addItems(tmp)
+    driver = gdal.GetDriverByName('MEM')
+    src = driver.Create('', cols, rows, 1, fmt)
 
-        data = self.indata['Point'][0]
-        x = data.xdata
-        y = data.ydata
+    src.SetGeoTransform(gtr)
+    src.SetProjection(wkt)
 
-        dx = x.ptp()/np.sqrt(x.size)
-        dy = y.ptp()/np.sqrt(y.size)
-        dxy = max(dx, dy)
+    if nodata is False:
+        if data.nullvalue is not None:
+            src.GetRasterBand(1).SetNoDataValue(data.nullvalue)
+        src.GetRasterBand(1).WriteArray(data.data)
+    else:
+        tmp = np.ma.masked_all((rows, cols))
+        src.GetRasterBand(1).SetNoDataValue(0)  # Set to this because of Reproj
+        src.GetRasterBand(1).WriteArray(tmp)
 
-#        xy = np.transpose([x, y])
-#        xy = xy.tolist()
-#        xy = np.array(xy)
-#        xy = xy[:-1]-xy[1:]
-#        dxy = np.median(np.sqrt(np.sum(xy**2, 1)))/3
+    return src
 
-        self.dsb_dxy.setValue(dxy)
-        self.dxy_change()
-        tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+def epsgtowkt(epsg):
+    """ Convenience routine to get a wkt from an epsg code """
+    orig = osr.SpatialReference()
+    err = orig.ImportFromEPSG(int(epsg))
+    if err != 0:
+        return ''
+    out = orig.ExportToWkt()
+    return out
 
-        return tmp
 
-    def acceptall(self):
-        """ accept """
-        dxy = self.dsb_dxy.value()
-        data = self.indata['Point'][0]
+def gdal_to_dat(dest, bandid='Data'):
+    """
+    GDAL to Data format
 
-        newdat = []
-        for data in self.indata['Point']:
-            if data.dataid != self.dataid.currentText():
-                continue
-            x = data.xdata
-            y = data.ydata
-            z = data.zdata
+    Parameters
+    ----------
+    dest - GDAL format
+        GDAL format
+    bandid - str
+        band identity
+    """
+    dat = Data()
+    gtr = dest.GetGeoTransform()
 
-            for i in [x, y, z]:
-                filt = np.logical_not(np.isnan(i))
-                x = x[filt]
-                y = y[filt]
-                z = z[filt]
+    rtmp = dest.GetRasterBand(1)
+    dat.data = rtmp.ReadAsArray()
+    nval = rtmp.GetNoDataValue()
+    dat.data = np.ma.masked_equal(dat.data, nval)
 
-#            self.parent.showprocesslog
-#            pdb.set_trace()
-            tmp = quickgrid(x, y, z, dxy, showtext=self.parent.showprocesslog)
-#            pdb.set_trace()
-            mask = tmp.mask
-            gdat = tmp.data
+#    dtype = dat.data.dtype
+#    nval = np.nan
+#    if dtype == np.float32 or dtype == np.float64:
+#        dat.data[dat.data == 0.] = np.nan
+# #    dat.data[dat.data == rtmp.GetNoDataValue()] = np.nan
+#        dat.data = np.ma.masked_invalid(nval)
+#
+#    if dtype == np.uint8:
+#        dat.data = np.ma.masked_equal(dat.data, 0)
+#        nval = 0
 
-    # Create dataset
-            dat = Data()
-            dat.data = np.ma.masked_invalid(gdat[::-1])
-            dat.data.mask = mask[::-1]
-            dat.rows, dat.cols = gdat.shape
-            dat.nullvalue = dat.data.fill_value
-            dat.dataid = data.dataid
-            dat.tlx = x.min()
-            dat.tly = y.max()
-            dat.xdim = dxy
-            dat.ydim = dxy
-            newdat.append(dat)
+#    dat.data[dat.data.mask] = rtmp.GetNoDataValue()
 
-        self.outdata['Raster'] = newdat
-        self.outdata['Point'] = self.indata['Point']
+    dat.nrofbands = dest.RasterCount
+    dat.tlx = gtr[0]
+    dat.tly = gtr[3]
+    dat.dataid = bandid
+    dat.nullvalue = nval
+    dat.rows = dest.RasterYSize
+    dat.cols = dest.RasterXSize
+    dat.xdim = abs(gtr[1])
+    dat.ydim = abs(gtr[5])
+    dat.wkt = dest.GetProjection()
+    dat.gtr = gtr
+
+    return dat
+
+
+def getepsgcodes():
+    """
+    Convenience function used to get a list of EPSG codes
+    """
+    dfile = open(os.environ['GDAL_DATA']+'\\gcs.csv')
+    dlines = dfile.readlines()
+    dfile.close()
+
+    dlines = dlines[1:]
+    dcodes = {}
+    for i in dlines:
+        tmp = i.split(',')
+        if tmp[1][0] == '"':
+            tmp[1] = tmp[1][1:]
+        if tmp[1][-1] == '"':
+            tmp[1] = tmp[1][:-1]
+        wkttmp = epsgtowkt(tmp[0])
+        if wkttmp != '':
+            dcodes[tmp[1]] = wkttmp
+
+    pfile = open(os.environ['GDAL_DATA']+'\\pcs.csv')
+    plines = pfile.readlines()
+    pfile.close()
+
+    pcodes = {}
+    for i in dcodes.keys():
+        pcodes[i+r' / Geodetic Geographic'] = dcodes[i]
+
+    plines = plines[1:]
+    for i in plines:
+        tmp = i.split(',')
+        if tmp[1][0] == '"':
+            tmp[1] = tmp[1][1:]
+        if tmp[1][-1] == '"':
+            tmp[1] = tmp[1][:-1]
+        wkttmp = epsgtowkt(tmp[0])
+        if wkttmp != '':
+            pcodes[tmp[1]] = wkttmp
+
+    clat = 0.
+    scale = 1.
+    f_e = 0.
+    f_n = 0.
+    orig = osr.SpatialReference()
+
+    for datum in ['Cape', 'Hartebeesthoek94']:
+        orig.ImportFromWkt(dcodes[datum])
+        for clong in range(15, 35, 2):
+            orig.SetTM(clat, clong, scale, f_e, f_n)
+            orig.SetProjCS(datum+r' / TM'+str(clong))
+            pcodes[datum+r' / TM'+str(clong)] = orig.ExportToWkt()
+
+    return pcodes
+
+
+def merge(dat):
+    """ Merges datasets found in a single PyGMI data object.
+
+    The aim is to ensure that all datasets have the same number of rows and
+    columns.
+
+    Parameters
+    ----------
+    dat : Data
+        data object which stores datasets
+
+    Returns
+    -------
+    Data
+        data object which stores datasets
+    """
+    needsmerge = False
+    for i in dat:
+        if i.rows != dat[0].rows or i.cols != dat[0].cols:
+            needsmerge = True
+
+    if needsmerge is False:
+        dat = check_dataid(dat)
+        return dat
+
+    mrg = DataMerge()
+    mrg.indata['Raster'] = dat
+    data = dat[0]
+    dxy0 = min(data.xdim, data.ydim)
+    for data in dat:
+        dxy = min(dxy0, data.xdim, data.ydim)
+
+    mrg.dsb_dxy.setValue(dxy)
+    mrg.acceptall()
+    out = mrg.outdata['Raster']
+
+    out = check_dataid(out)
+
+    return out
+
+
+def trim_raster(olddata):
+    """ Function to trim nulls from a raster dataset.
+
+    This function trims entire rows or columns of data which have only nulls,
+    and are on the edges of the dataset.
+
+    Parameters
+    ----------
+    olddata : Data
+        PyGMI dataset
+
+    Returns
+    -------
+    Data
+        PyGMI dataset
+    """
+
+    for data in olddata:
+        mask = data.data.mask
+        data.data[mask] = data.nullvalue
+
+        rowstart = 0
+        for i in range(mask.shape[0]):
+            if bool(mask[i].min()) is False:
+                break
+            rowstart += 1
+
+        rowend = mask.shape[0]
+        for i in range(mask.shape[0]-1, -1, -1):
+            if bool(mask[i].min()) is False:
+                break
+            rowend -= 1
+
+        colstart = 0
+        for i in range(mask.shape[1]):
+            if bool(mask[:, i].min()) is False:
+                break
+            colstart += 1
+
+        colend = mask.shape[1]
+        for i in range(mask.shape[1]-1, -1, -1):
+            if bool(mask[:, i].min()) is False:
+                break
+            colend -= 1
+
+        data.data = data.data[rowstart:rowend, colstart:colend]
+        data.data.mask = (data.data.data == data.nullvalue)
+#        data.data = np.ma.masked_invalid(data.data[rowstart:rowend,
+#                                                   colstart:colend])
+        data.rows, data.cols = data.data.shape
+        data.tlx = data.tlx + colstart*data.xdim
+        data.tly = data.tly - rowstart*data.ydim
+
+    return olddata
 
 
 def quickgrid(x, y, z, dxy, showtext=None, numits=4):
@@ -1504,68 +1497,3 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz = np.ma.array(zfin)
     newz.mask = newmask
     return newz
-
-
-def getepsgcodes():
-    """
-    Convenience function used to get a list of EPSG codes
-    """
-    dfile = open(os.environ['GDAL_DATA']+'\\gcs.csv')
-    dlines = dfile.readlines()
-    dfile.close()
-
-    dlines = dlines[1:]
-    dcodes = {}
-    for i in dlines:
-        tmp = i.split(',')
-        if tmp[1][0] == '"':
-            tmp[1] = tmp[1][1:]
-        if tmp[1][-1] == '"':
-            tmp[1] = tmp[1][:-1]
-        wkttmp = epsgtowkt(tmp[0])
-        if wkttmp != '':
-            dcodes[tmp[1]] = wkttmp
-
-    pfile = open(os.environ['GDAL_DATA']+'\\pcs.csv')
-    plines = pfile.readlines()
-    pfile.close()
-
-    pcodes = {}
-    for i in dcodes.keys():
-        pcodes[i+r' / Geodetic/Geographic'] = dcodes[i]
-
-    plines = plines[1:]
-    for i in plines:
-        tmp = i.split(',')
-        if tmp[1][0] == '"':
-            tmp[1] = tmp[1][1:]
-        if tmp[1][-1] == '"':
-            tmp[1] = tmp[1][:-1]
-        wkttmp = epsgtowkt(tmp[0])
-        if wkttmp != '':
-            pcodes[tmp[1]] = wkttmp
-
-    clat = 0.
-    scale = 1.
-    f_e = 0.
-    f_n = 0.
-    orig = osr.SpatialReference()
-
-    for datum in ['Cape', 'Hartebeesthoek94']:
-        orig.ImportFromWkt(dcodes[datum])
-        for clong in range(15, 35, 2):
-            orig.SetTM(clat, clong, scale, f_e, f_n)
-            orig.SetProjCS(datum+r' / TM'+str(clong))
-            pcodes[datum+r' / TM'+str(clong)] = orig.ExportToWkt()
-
-    return pcodes
-
-
-def epsgtowkt(epsg):
-    """ Convenience routine to get a wkt from an epsg code """
-    orig = osr.SpatialReference()
-    err = orig.ImportFromEPSG(int(epsg))
-    if err != 0:
-        return ''
-    out = orig.ExportToWkt()
-    return out

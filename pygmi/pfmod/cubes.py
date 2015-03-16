@@ -41,6 +41,7 @@ from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
 from numba import jit
 from PIL import Image
+import pdb
 
 
 class Mod3dDisplay(QtGui.QDialog):
@@ -177,11 +178,26 @@ class Mod3dDisplay(QtGui.QDialog):
         self.gpoints = self.corners
         self.gnorms = self.norms
         self.gfaces = {}
+#        pdb.set_trace()
 
-        for i in list(self.faces.keys()):
-            self.gfaces[i] = np.append(self.faces[i][:, :-1],
-                                       self.faces[i][:, [0, 2, 3]])
-            self.gfaces[i].shape = (self.gfaces[i].shape[0]/3, 3)
+# (Pdb) self.corners[0].max(0)
+# array([ 505000.,  320000.,   60000.])
+# (Pdb) self.corners[0].min(0)
+# array([     0.,      0.,  31000.])
+
+
+# (Pdb) self.corners[0].max(0)
+# array([ 509386.36363636,  324386.36363636,      -0.        ])
+# (Pdb) self.corners[0].min(0)
+# array([     0.        ,      0.        , -60877.27272727])
+
+        if list(self.faces.values())[0].shape[1] == 4:
+            for i in list(self.faces.keys()):
+                self.gfaces[i] = np.append(self.faces[i][:, :-1],
+                                           self.faces[i][:, [0, 2, 3]])
+                self.gfaces[i].shape = (self.gfaces[i].shape[0]/3, 3)
+        else:
+            self.gfaces = self.faces.copy()
 
         self.glutlith = range(1, len(list(self.gfaces.keys()))+1)
 
@@ -326,10 +342,13 @@ class Mod3dDisplay(QtGui.QDialog):
         self.glwidget.init_object()
         self.glwidget.updateGL()
 
-    def update_model(self):
+    def update_model(self, issmooth=None):
         """ Update the 3d model. Faces, nodes and face normals are calculated
         here, from the voxel model. """
         QtGui.QApplication.processEvents()
+
+        if issmooth is None:
+            issmooth = self.checkbox_smooth.isChecked()
 
         self.faces = {}
         self.norms = {}
@@ -347,11 +366,11 @@ class Mod3dDisplay(QtGui.QDialog):
         self.pbar.setMaximum(liths.size)
         self.pbar.setValue(0)
 
-        if not self.checkbox_smooth.isChecked():
+        if not issmooth:
             igd, jgd, kgd = self.gdata.shape
             cloc = np.indices(((kgd+1), (jgd+1), (igd+1))).T.reshape(
                 (igd+1)*(jgd+1)*(kgd+1), 3).T[::-1].T
-            cloc = cloc * self.spacing
+            cloc = cloc * self.spacing + self.origin
             cindx = np.arange(cloc.size/3, dtype=int)
             cindx.shape = (igd+1, jgd+1, kgd+1)
 
@@ -363,11 +382,12 @@ class Mod3dDisplay(QtGui.QDialog):
             nshape = np.array(self.lmod1.lith_index.shape)+[2, 2, 2]
             x = np.arange(nshape[1]) * self.spacing[1]
             y = np.arange(nshape[0]) * self.spacing[0]
-            if self.cust_z is None:
-                z = np.arange(nshape[2]) * self.spacing[2]
-            else:
-                z = ([self.cust_z[0] - self.cust_z[1]] + self.cust_z.tolist() +
-                     [2*self.cust_z[-1] - self.cust_z[-2]])
+            z = np.arange(nshape[2]) * self.spacing[2]
+#            if self.cust_z is None:
+#                z = np.arange(nshape[2]) * self.spacing[2]
+#            else:
+#                z = ([self.cust_z[0] - self.cust_z[1]] + self.cust_z.tolist()
+#                     + [2*self.cust_z[-1] - self.cust_z[-2]])
             xx, yy, zz = np.meshgrid(x, y, z)
 
     # Set up gaussian smoothing filter
@@ -381,7 +401,7 @@ class Mod3dDisplay(QtGui.QDialog):
             self.pbar.setValue(tmppval)
             if lno not in lcheck:
                 continue
-            if not self.checkbox_smooth.isChecked():
+            if not issmooth:
                 gdat2 = tmpdat.copy()
                 gdat2[gdat2 != lno] = -0.5
                 gdat2[gdat2 == lno] = 0.5
@@ -481,8 +501,11 @@ class Mod3dDisplay(QtGui.QDialog):
                     continue
 
                 self.faces[lno] = faces
+
                 vtx[:, 2] *= -1
-                self.corners[lno] = vtx[:, [1, 0, 2]]
+                vtx[:, 2] += zz.max()
+
+                self.corners[lno] = vtx[:, [1, 0, 2]] + self.origin
 
             self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
 

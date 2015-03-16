@@ -168,101 +168,24 @@ class IGRF(QtGui.QDialog):
         self.ddot = 0
 
         self.gridlayout_2 = QtGui.QGridLayout(self)
-        self.groupbox = QtGui.QGroupBox(self)
         self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.gridlayout = QtGui.QGridLayout(self.groupbox)
-        self.combobox_kmz_datum = QtGui.QComboBox(self.groupbox)
-        self.combobox_kmz_proj = QtGui.QComboBox(self.groupbox)
-        self.dsb_kmz_latorigin = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_kmz_cm = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_kmz_scalefactor = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_kmz_fnorthing = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_kmz_feasting = QtGui.QDoubleSpinBox(self.groupbox)
-        self.sb_kmz_zone = QtGui.QSpinBox(self.groupbox)
         self.dsb_alt = QtGui.QDoubleSpinBox(self)
         self.dateedit = QtGui.QDateEdit(self)
         self.combobox_dtm = QtGui.QComboBox(self)
         self.combobox_mag = QtGui.QComboBox(self)
         self.helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
+        self.proj = dp.GroupProj('Input Projection')
 
         self.setupui()
 
-        self.combobox_kmz_datum.addItem('WGS84')
-        self.combobox_kmz_datum.addItem('Cape (Clarke1880)')
-        self.combobox_kmz_proj.addItem('UTM (South)')
-        self.combobox_kmz_proj.addItem('UTM (North)')
-        self.combobox_kmz_proj.addItem('Transverse Mercator')
-        self.zone(35)
-
-        self.combobox_kmz_proj.currentIndexChanged.connect(self.proj)
-        self.sb_kmz_zone.valueChanged.connect(self.zone)
         self.buttonbox.accepted.connect(self.acceptall)
-
-        self.datum = {}
-        self.datum['Cape'] = (
-            'GEOGCS["Cape",' +
-            'DATUM["D_Cape",' +
-            'SPHEROID["Clarke_1880_Arc",6378249.145,293.4663077]],' +
-            'PRIMEM["Greenwich",0],' +
-            'UNIT["Degree",0.017453292519943295]]')
-        self.datum['Hartebeesthoek94'] = (
-            'GEOGCS["Hartebeesthoek94",' +
-            'DATUM["D_Hartebeesthoek_1994",' +
-            'SPHEROID["WGS_1984",6378137,298.257223563]],' +
-            'PRIMEM["Greenwich",0],' +
-            'UNIT["Degree",0.017453292519943295]]')
 
         self.ctrans = None
 
     def setupui(self):
         """ Setup UI """
 
-        label_3 = QtGui.QLabel(self.groupbox)
-        self.gridlayout.addWidget(label_3, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.combobox_kmz_datum, 0, 1, 1, 1)
-
-        label_4 = QtGui.QLabel(self.groupbox)
-        self.gridlayout.addWidget(label_4, 1, 0, 1, 1)
-        self.gridlayout.addWidget(self.combobox_kmz_proj, 1, 1, 1, 1)
-
-        label_6 = QtGui.QLabel(self.groupbox)
-        self.gridlayout.addWidget(label_6, 3, 0, 1, 1)
-        self.dsb_kmz_latorigin.setMinimum(-90.0)
-        self.dsb_kmz_latorigin.setMaximum(90.0)
-        self.gridlayout.addWidget(self.dsb_kmz_latorigin, 3, 1, 1, 1)
-
-        label_7 = QtGui.QLabel(self.groupbox)
-        self.gridlayout.addWidget(label_7, 4, 0, 1, 1)
-        self.dsb_kmz_cm.setMinimum(-180.0)
-        self.dsb_kmz_cm.setMaximum(180.0)
-        self.dsb_kmz_cm.setProperty("value", 27.0)
-        self.gridlayout.addWidget(self.dsb_kmz_cm, 4, 1, 1, 1)
-
-        label_8 = QtGui.QLabel(self.groupbox)
-        self.gridlayout.addWidget(label_8, 5, 0, 1, 1)
-        self.dsb_kmz_scalefactor.setDecimals(4)
-        self.dsb_kmz_scalefactor.setProperty("value", 0.9996)
-        self.gridlayout.addWidget(self.dsb_kmz_scalefactor, 5, 1, 1, 1)
-
-        label_10 = QtGui.QLabel(self.groupbox)
-        self.gridlayout.addWidget(label_10, 7, 0, 1, 1)
-        self.dsb_kmz_fnorthing.setMaximum(1000000000.0)
-        self.dsb_kmz_fnorthing.setProperty("value", 10000000.0)
-        self.gridlayout.addWidget(self.dsb_kmz_fnorthing, 7, 1, 1, 1)
-
-        label_9 = QtGui.QLabel(self.groupbox)
-        self.gridlayout.addWidget(label_9, 6, 0, 1, 1)
-        self.dsb_kmz_feasting.setMaximum(1000000000.0)
-        self.dsb_kmz_feasting.setProperty("value", 500000.0)
-        self.gridlayout.addWidget(self.dsb_kmz_feasting, 6, 1, 1, 1)
-
-        label_11 = QtGui.QLabel(self.groupbox)
-        self.gridlayout.addWidget(label_11, 2, 0, 1, 1)
-        self.sb_kmz_zone.setMaximum(60)
-        self.sb_kmz_zone.setProperty("value", 35)
-        self.gridlayout.addWidget(self.sb_kmz_zone, 2, 1, 1, 1)
-
-        self.gridlayout_2.addWidget(self.groupbox, 0, 0, 1, 2)
+        self.gridlayout_2.addWidget(self.proj, 0, 0, 1, 2)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
@@ -287,15 +210,6 @@ class IGRF(QtGui.QDialog):
         self.gridlayout_2.addWidget(self.combobox_mag, 5, 1, 1, 1)
 
         self.setWindowTitle("IGRF")
-        self.groupbox.setTitle("Input Projection")
-        label_3.setText("Datum")
-        label_4.setText("Projection")
-        label_6.setText("Latitude of Origin")
-        label_7.setText("Central Meridian")
-        label_8.setText("Scale Factor")
-        label_9.setText("False Easting")
-        label_10.setText("False Northing")
-        label_11.setText("UTM Zone")
         label_20.setText("Sensor clearance above ground")
         label_21.setText("Date")
         label_22.setText("Digital Elevation Model")
@@ -306,67 +220,18 @@ class IGRF(QtGui.QDialog):
 
     def acceptall(self):
         """ Accept button"""
+
+        orig_wkt = self.in_proj.wkt
+
         orig = osr.SpatialReference()
-        orig.SetWellKnownGeogCS('WGS84')
+        orig.ImportFromWkt(orig_wkt)
+
         targ = osr.SpatialReference()
         targ.SetWellKnownGeogCS('WGS84')
 
-        indx = self.combobox_kmz_datum.currentIndex()
-        txt = self.combobox_kmz_datum.itemText(indx)
-
-        if 'Cape' in txt:
-            orig.ImportFromWkt(self.datum['Cape'])
-
-        indx = self.combobox_kmz_proj.currentIndex()
-        txt = self.combobox_kmz_proj.itemText(indx)
-
-        if 'UTM' in txt:
-            utmzone = self.sb_kmz_zone.value()
-            if 'North' in txt:
-                orig.SetUTM(utmzone, True)
-            else:
-                orig.SetUTM(utmzone, False)
-
-        if 'Transverse Mercator' in txt:
-            clat = self.dsb_kmz_latorigin.value()
-            clong = self.dsb_kmz_cm.value()
-            scale = self.dsb_kmz_scalefactor.value()
-            f_e = self.dsb_kmz_feasting.value()
-            f_n = self.dsb_kmz_fnorthing.value()
-            orig.SetTM(clat, clong, scale, f_e, f_n)
-
         self.ctrans = osr.CoordinateTransformation(orig, targ)
 
-        self.accept()
-
-    def proj(self, indx):
-        """ used for choosing the projection """
-        txt = self.combobox_kmz_proj.itemText(indx)
-        if 'UTM' in txt:
-            self.sb_kmz_zone.setEnabled(True)
-            self.zone(self.sb_kmz_zone.value())
-        else:
-            self.sb_kmz_zone.setEnabled(False)
-
-        if txt == 'Transverse Mercator':
-            self.dsb_kmz_feasting.setValue(0.)
-            self.dsb_kmz_fnorthing.setValue(0.)
-            self.dsb_kmz_scalefactor.setValue(1.0)
-
-    def zone(self, val):
-        """ used for changing UTM zone """
-        c_m = -180.+(val-1)*6+3
-        self.dsb_kmz_cm.setValue(c_m)
-        self.dsb_kmz_latorigin.setValue(0.)
-        self.dsb_kmz_feasting.setValue(500000.)
-        self.dsb_kmz_fnorthing.setValue(0.)
-        self.dsb_kmz_scalefactor.setValue(0.9996)
-
-        indx = self.combobox_kmz_proj.currentIndex()
-        txt = self.combobox_kmz_proj.itemText(indx)
-
-        if txt == 'UTM (South)':
-            self.dsb_kmz_fnorthing.setValue(10000000.)
+#        self.accept()
 
     def settings(self):
         """
@@ -375,6 +240,8 @@ class IGRF(QtGui.QDialog):
         """
 # Variable declaration
 # Control variables
+        self.proj.set_current(self.indata['Raster'][0].wkt)
+
         data = dp.merge(self.indata['Raster'])
         self.combobox_dtm.clear()
         self.combobox_mag.clear()

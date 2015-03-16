@@ -27,7 +27,6 @@
 from PyQt4 import QtGui
 from . import pfmod
 from . import cubes as mvis3d
-#from . import mvis3d
 from . import iodefs
 
 

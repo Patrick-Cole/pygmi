@@ -2,21 +2,10 @@
 <html>
 	<body>
 		<h1>Dataset Reprojection</h1>
-		<p>This is a versatile routine allowing for the reprojecting of a dataset between two projections. EPSG codes can be used for maximum versatility, or one can manually enter in parameters relating to geodetic, transverse mercator and UTM. </p>
-		<p>EPSG codes are available online at either http://www.epsg-registry.org/, http://spatialreference.org/ref/epsg/ or in the gcs.csv and pcs.csv files in your python GDAL data directory.</p>
+		<p>This is a versatile routine allowing for the reprojecting of a dataset between two projections. All projections are obtained from EPSG codes. </p>
 
 		<h2>Options</h2>
-		<p> The options are the same for both input and output projections, and will only be explained once.</p>
-		<ul>
-			<li>Use EPSG Code - allows for the use of an EPSG code to define the projection. Selecting this will grey out all other options.</li>
-			<li>Projection - Currently, projections of Geodetic (latitude and longitude), UTM and Transverse Mercator are supported</li>
-			<li>Datum - Can be either WGS84 or Cape</li>
-			<li>Latitude of Origin - Latitude from which meters start to be measured. This is normally 0.</li>
-			<li>Central Meridian - Longitude from which meters start to be measured. This is set automatically by UTM zone.</li>
-			<li>Scale Factor - Projection parameter for Transverse Mercator</li>
-			<li>False Easting - A value added to the easting calculated from the central meridian.</li>
-			<li>False Northing - A value added to the northing calculated from the latitude of origin.</li>
-			<li>UTM Zone - This only applies to UTM. Changing this will automatically set the Central Meridian.</li>
-		</ul>
+		<p>The options are the same for both input and output projections. The choice of projection is obtained through a drop box. The first part of the entry on the drop box shows the datum, and the last part shows the projection.</p>
+		<p>Should you wish to project to or from degrees, the entry will be Datum / Geodetic Geographic, where Datum is your local datum of choice.</p>
 	</body>
 </html>

@@ -33,8 +33,10 @@ from .datatypes import Data, LithModel
 import matplotlib.pyplot as plt
 import zipfile
 from . import grvmag3d
-from . import mvis3d
+from . import cubes as mvis3d
 import pygmi.menu_default as menu_default
+import pygmi.raster.dataprep as dp
+import pdb
 
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
@@ -199,6 +201,19 @@ class ImportMod3D(object):
                 if lmod.griddata[i].dataid is '':
                     lmod.griddata[i].dataid = lmod.griddata[i].bandid
                 del lmod.griddata[i].bandid
+
+        wktfin = None
+        for i in lmod.griddata.keys():
+            wkt = lmod.griddata[i].wkt
+            if wkt != '' and wkt is not None:
+                wktfin = wkt
+
+        if wktfin is not None:
+            for i in lmod.griddata.keys():
+                wkt = lmod.griddata[i].wkt
+                if wkt == '' or wkt is None:
+                    lmod.griddata[i].wkt = wktfin
+
 
 #        self.pbars.incr()
 
@@ -403,6 +418,8 @@ class ExportMod3D(object):
         """
 
         mvis_3d = mvis3d.Mod3dDisplay()
+        mvis_3d.lmod1 = self.lmod
+#        mvis_3d.checkbox_smooth.setChecked(True)
 
         rev = 1  # should be 1 normally
 
@@ -410,37 +427,33 @@ class ExportMod3D(object):
         yrng = np.array(self.lmod.yrange, dtype=float)
         zrng = np.array(self.lmod.zrange, dtype=float)
 
-        prjkmz = Exportkmz()
+        if 'Raster' in self.indata:
+            wkt = self.indata['Raster'][0].wkt
+        else:
+            wkt = ''
+        prjkmz = Exportkmz(wkt)
         tmp = prjkmz.exec_()
-
-        if prjkmz.checkbox_rev_local.isChecked() is True:
-            rev = -1
 
         if tmp == 0:
             return
 
-        if prjkmz.ctrans is None:
-            lonwest = prjkmz.dsb_kmz_longwest.value()
-            loneast = prjkmz.dsb_kmz_longeast.value()
-            latsouth = prjkmz.dsb_kmz_latsouth.value()
-            latnorth = prjkmz.dsb_kmz_latnorth.value()
+        smooth = prjkmz.checkbox_smooth.isChecked()
 
-            if latsouth >= latnorth:
-                self.showtext('Error: Southern Latitude must less '
-                              'than northern latitude.')
-                return
+        orig_wkt = prjkmz.proj.wkt
+        orig = osr.SpatialReference()
+        orig.ImportFromWkt(orig_wkt)
 
-            if lonwest >= loneast:
-                self.showtext('Error: Western Longitude must be less '
-                              'than eastern longitude.')
-                return
-        else:
-            prj = prjkmz.ctrans
+        targ = osr.SpatialReference()
+        targ.SetWellKnownGeogCS('WGS84')
+        prj = osr.CoordinateTransformation(orig, targ)
 
-            res = prj.TransformPoint(xrng[0], yrng[0])
-            lonwest, latsouth = res[0], res[1]
-            res = prj.TransformPoint(xrng[1], yrng[1])
-            loneast, latnorth = res[0], res[1]
+        res = prj.TransformPoint(xrng[0], yrng[0])
+        lonwest, latsouth = res[0], res[1]
+        res = prj.TransformPoint(xrng[1], yrng[1])
+        loneast, latnorth = res[0], res[1]
+
+#        pdb.set_trace()
+
 
 # Get Save Name
         filename = self.ifile
@@ -460,15 +473,15 @@ class ExportMod3D(object):
             tmp[i, :3] = self.lmod.mlut[i]
         mvis_3d.lut = tmp
 #        mvis_3d.update_plot(fullcalc = True)
-        mvis_3d.update_model()
+        mvis_3d.update_model(smooth)
 
         self.showtext('creating kmz file')
         heading = str(0.)
         tilt = str(45.)  # angle from vertical
         lat = str(np.mean([latsouth, latnorth]))  # coord of object
         lon = str(np.mean([lonwest, loneast]))  # coord of object
-        rng = str(10000.)  # range to object (meters)
-        alt = str(50.)  # alt of object eye is looking at (meters)
+        rng = str(max(xrng.ptp(),yrng.ptp(),zrng.ptp()))  # range to object (meters)
+        alt = str(0)  # alt of object eye is looking at (meters)
         lato = str(latsouth)
         lono = str(lonwest)
 
@@ -502,14 +515,23 @@ class ExportMod3D(object):
         lkey.pop(lkey.index(0))
         lithcnt = -1
 
+        alt = 0
         for lith in lkey:
-            # self.pbars.incr()
-            # if lith not in self.lmod.lith_list_reverse:
-            #     print('problem')
-            #     continue
-
             faces = np.array(mvis_3d.gfaces[lith])
-            points = [rev, rev, 1]*(mvis_3d.gpoints[lith] - mvis_3d.origin)
+            # Google wants the model to have origin (0,0)
+
+            points = mvis_3d.gpoints[lith]
+
+            points -= mvis_3d.origin
+
+            x = points[:, 0]
+            y = points[:, 1]
+            earthrad = 6378137.
+            z = earthrad-np.sqrt(earthrad**2-(x**2+y**2))
+            points[:, 2] -= z
+
+#            pdb.set_trace()
+
             if rev == -1:
                 points += [xrng.ptp(), yrng.ptp(), 0]
 
@@ -527,18 +549,17 @@ class ExportMod3D(object):
 
             lithcnt += 1
 
-#            print len(points), curmod
             dockml += (
                 '    <Placemark>\r\n'
                 '      <name>' + curmod + '</name>\r\n'
                 '      <description></description>\r\n'
                 '      <Style id="default"/>\r\n'
                 '      <Model>\r\n'
-                '        <altitudeMode>relativeToGround</altitudeMode>\r\n'
+                '        <altitudeMode>absolute</altitudeMode>\r\n'
                 '        <Location>\r\n'
                 '          <latitude>' + lato + '</latitude>\r\n'
                 '          <longitude>' + lono + '</longitude>\r\n'
-                '          <altitude>' + alt + '</altitude>\r\n'
+                '          <altitude>' + str(alt) + '</altitude>\r\n'
                 '        </Location>\r\n'
                 '        <Orientation>\r\n'
                 '          <heading>0</heading>\r\n'
@@ -691,7 +712,6 @@ class ExportMod3D(object):
             zfile.writestr('models\\mod3d'+str(i)+'.dae', modeldae[i])
 
         for i in self.lmod.griddata.keys():
-            prj = prjkmz.ctrans
             x_1 = self.lmod.griddata[i].tlx
             x_2 = x_1 + self.lmod.griddata[i].xdim*self.lmod.griddata[i].cols
             y_2 = self.lmod.griddata[i].tly
@@ -725,7 +745,7 @@ class ExportMod3D(object):
 
             plt.imshow(self.lmod.griddata[i].data[::-rev, ::rev],
                        extent=(lonwest, loneast, latsouth, latnorth),
-                       aspect='normal',
+                       aspect='auto',
                        interpolation='nearest')
             plt.savefig('tmp930.png')
 #            plt.close('tmp930')
@@ -748,246 +768,34 @@ class ExportMod3D(object):
 
 class Exportkmz(QtGui.QDialog):
     """ Class to call up a dialog """
-    def __init__(self, parent=None):
+    def __init__(self, wkt, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
-        self.gridlayout_2 = QtGui.QGridLayout(self)
-        self.groupbox = QtGui.QGroupBox(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.groupbox_2 = QtGui.QGroupBox(self)
-        self.gridlayout = QtGui.QGridLayout(self.groupbox)
-        self.label_3 = QtGui.QLabel(self.groupbox)
-        self.label_4 = QtGui.QLabel(self.groupbox)
-        self.combobox_kmz_datum = QtGui.QComboBox(self.groupbox)
-        self.combobox_kmz_proj = QtGui.QComboBox(self.groupbox)
-        self.dsb_kmz_latorigin = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_kmz_cm = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_kmz_scalefactor = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_kmz_fnorthing = QtGui.QDoubleSpinBox(self.groupbox)
-        self.label_6 = QtGui.QLabel(self.groupbox)
-        self.label_7 = QtGui.QLabel(self.groupbox)
-        self.label_8 = QtGui.QLabel(self.groupbox)
-        self.label_9 = QtGui.QLabel(self.groupbox)
-        self.label_10 = QtGui.QLabel(self.groupbox)
-        self.label_11 = QtGui.QLabel(self.groupbox)
-        self.dsb_kmz_feasting = QtGui.QDoubleSpinBox(self.groupbox)
-        self.sb_kmz_zone = QtGui.QSpinBox(self.groupbox)
-        self.gridlayout_3 = QtGui.QGridLayout(self.groupbox_2)
-        self.label = QtGui.QLabel(self.groupbox_2)
-        self.dsb_kmz_latnorth = QtGui.QDoubleSpinBox(self.groupbox_2)
-        self.dsb_kmz_longwest = QtGui.QDoubleSpinBox(self.groupbox_2)
-        self.dsb_kmz_longeast = QtGui.QDoubleSpinBox(self.groupbox_2)
-        self.dsb_kmz_latsouth = QtGui.QDoubleSpinBox(self.groupbox_2)
-        self.checkbox_rev_local = QtGui.QCheckBox(self.groupbox_2)
-        self.label_2 = QtGui.QLabel(self.groupbox_2)
-        self.label_5 = QtGui.QLabel(self.groupbox_2)
-        self.label_12 = QtGui.QLabel(self.groupbox_2)
+        self.gridlayout = QtGui.QGridLayout(self)
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.proj = dp.GroupProj('Confirm Model Projection')
+        self.proj.set_current(wkt)
+        self.checkbox_smooth = QtGui.QCheckBox(self)
 
         self.setupui()
 
-        self.combobox_kmz_datum.addItem('WGS84')
-        self.combobox_kmz_datum.addItem('Cape (Clarke1880)')
-        self.combobox_kmz_proj.addItem('UTM (South)')
-        self.combobox_kmz_proj.addItem('UTM (North)')
-        self.combobox_kmz_proj.addItem('Transverse Mercator')
-        self.combobox_kmz_proj.addItem('Local')
-        self.zone(35)
-
-        self.combobox_kmz_proj.currentIndexChanged.connect(self.proj)
-        self.sb_kmz_zone.valueChanged.connect(self.zone)
-        self.buttonbox.accepted.connect(self.acceptall)
-
-        self.datum = {}
-        self.datum['Cape'] = (
-            'GEOGCS["Cape",'
-            'DATUM["D_Cape",'
-            'SPHEROID["Clarke_1880_Arc",6378249.145,293.4663077]],'
-            'PRIMEM["Greenwich",0],'
-            'UNIT["Degree",0.017453292519943295]]')
-        self.datum['Hartebeesthoek94'] = (
-            'GEOGCS["Hartebeesthoek94",'
-            'DATUM["D_Hartebeesthoek_1994",'
-            'SPHEROID["WGS_1984",6378137,298.257223563]],'
-            'PRIMEM["Greenwich",0],'
-            'UNIT["Degree",0.017453292519943295]]')
-
-        self.ctrans = None
-
-    def acceptall(self):
-        """ accept """
-        orig = osr.SpatialReference()
-        orig.SetWellKnownGeogCS('WGS84')
-        targ = osr.SpatialReference()
-        targ.SetWellKnownGeogCS('WGS84')
-
-        indx = self.combobox_kmz_datum.currentIndex()
-        txt = self.combobox_kmz_datum.itemText(indx)
-
-        if 'Cape' in txt:
-            orig.ImportFromWkt(self.datum['Cape'])
-
-        indx = self.combobox_kmz_proj.currentIndex()
-        txt = self.combobox_kmz_proj.itemText(indx)
-
-        if 'Local' in txt:
-            self.ctrans = None
-
-        if 'UTM' in txt:
-            utmzone = self.sb_kmz_zone.value()
-            if 'North' in txt:
-                orig.SetUTM(utmzone, True)
-            else:
-                orig.SetUTM(utmzone, False)
-
-        if 'Transverse Mercator' in txt:
-            clat = self.dsb_kmz_latorigin.value()
-            clong = self.dsb_kmz_cm.value()
-            scale = self.dsb_kmz_scalefactor.value()
-            f_e = self.dsb_kmz_feasting.value()
-            f_n = self.dsb_kmz_fnorthing.value()
-            orig.SetTM(clat, clong, scale, f_e, f_n)
-
-        self.ctrans = osr.CoordinateTransformation(orig, targ)
-
-        if 'Local' in txt:
-            self.ctrans = None
-
-        self.accept()
-
-    def proj(self, indx):
-        """ used for choosing the projection """
-        txt = self.combobox_kmz_proj.itemText(indx)
-        if 'UTM' in txt:
-            self.sb_kmz_zone.setEnabled(True)
-            self.zone(self.sb_kmz_zone.value())
-        else:
-            self.sb_kmz_zone.setEnabled(False)
-
-        if txt == 'Transverse Mercator':
-            self.dsb_kmz_feasting.setValue(0.)
-            self.dsb_kmz_fnorthing.setValue(0.)
-            self.dsb_kmz_scalefactor.setValue(1.0)
-
-        if txt == 'Local':
-            self.dsb_kmz_latnorth.setEnabled(True)
-            self.dsb_kmz_latsouth.setEnabled(True)
-            self.dsb_kmz_longwest.setEnabled(True)
-            self.dsb_kmz_longeast.setEnabled(True)
-            self.dsb_kmz_cm.setEnabled(False)
-            self.dsb_kmz_latorigin.setEnabled(False)
-            self.dsb_kmz_feasting.setEnabled(False)
-            self.dsb_kmz_fnorthing.setEnabled(False)
-            self.dsb_kmz_scalefactor.setEnabled(False)
-        else:
-            self.dsb_kmz_latnorth.setEnabled(False)
-            self.dsb_kmz_latsouth.setEnabled(False)
-            self.dsb_kmz_longwest.setEnabled(False)
-            self.dsb_kmz_longeast.setEnabled(False)
-            self.dsb_kmz_cm.setEnabled(True)
-            self.dsb_kmz_latorigin.setEnabled(True)
-            self.dsb_kmz_feasting.setEnabled(True)
-            self.dsb_kmz_fnorthing.setEnabled(True)
-            self.dsb_kmz_scalefactor.setEnabled(True)
-
-    def zone(self, val):
-        """ used for changing UTM zone """
-        c_m = -180.+(val-1)*6+3
-        self.dsb_kmz_cm.setValue(c_m)
-        self.dsb_kmz_latorigin.setValue(0.)
-        self.dsb_kmz_feasting.setValue(500000.)
-        self.dsb_kmz_fnorthing.setValue(0.)
-        self.dsb_kmz_scalefactor.setValue(0.9996)
-
-        indx = self.combobox_kmz_proj.currentIndex()
-        txt = self.combobox_kmz_proj.itemText(indx)
-
-        if txt == 'UTM (South)':
-            self.dsb_kmz_fnorthing.setValue(10000000.)
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
 
     def setupui(self):
         """ Setup UI """
-        self.gridlayout.addWidget(self.label_3, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.label_4, 1, 0, 1, 1)
-        self.gridlayout.addWidget(self.combobox_kmz_datum, 0, 1, 1, 1)
-        self.gridlayout.addWidget(self.combobox_kmz_proj, 1, 1, 1, 1)
-        self.dsb_kmz_latorigin.setMinimum(-90.0)
-        self.dsb_kmz_latorigin.setMaximum(90.0)
-        self.gridlayout.addWidget(self.dsb_kmz_latorigin, 3, 1, 1, 1)
-        self.dsb_kmz_cm.setMinimum(-180.0)
-        self.dsb_kmz_cm.setMaximum(180.0)
-        self.dsb_kmz_cm.setProperty("value", 27.0)
-        self.gridlayout.addWidget(self.dsb_kmz_cm, 4, 1, 1, 1)
-        self.dsb_kmz_scalefactor.setDecimals(4)
-        self.dsb_kmz_scalefactor.setProperty("value", 0.9996)
-        self.gridlayout.addWidget(self.dsb_kmz_scalefactor, 5, 1, 1, 1)
-        self.dsb_kmz_fnorthing.setMaximum(1000000000.0)
-        self.dsb_kmz_fnorthing.setProperty("value", 10000000.0)
-        self.gridlayout.addWidget(self.dsb_kmz_fnorthing, 7, 1, 1, 1)
-        self.gridlayout.addWidget(self.label_6, 3, 0, 1, 1)
-        self.gridlayout.addWidget(self.label_7, 4, 0, 1, 1)
-        self.gridlayout.addWidget(self.label_8, 5, 0, 1, 1)
-        self.gridlayout.addWidget(self.label_9, 6, 0, 1, 1)
-        self.gridlayout.addWidget(self.label_10, 7, 0, 1, 1)
-        self.gridlayout.addWidget(self.label_11, 2, 0, 1, 1)
-        self.dsb_kmz_feasting.setMaximum(1000000000.0)
-        self.dsb_kmz_feasting.setProperty("value", 500000.0)
-        self.gridlayout.addWidget(self.dsb_kmz_feasting, 6, 1, 1, 1)
-        self.sb_kmz_zone.setMaximum(60)
-        self.sb_kmz_zone.setProperty("value", 35)
-        self.gridlayout.addWidget(self.sb_kmz_zone, 2, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.groupbox, 0, 0, 1, 2)
+
+        self.gridlayout.addWidget(self.proj, 0, 0, 1, 2)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout_2.addWidget(self.buttonbox, 2, 0, 1, 2)
-        self.gridlayout_3.addWidget(self.label, 1, 0, 1, 1)
-        self.gridlayout_3.addWidget(self.label_2, 3, 0, 1, 1)
-        self.gridlayout_3.addWidget(self.label_5, 4, 0, 1, 1)
-        self.gridlayout_3.addWidget(self.label_12, 5, 0, 1, 1)
-        self.dsb_kmz_longwest.setEnabled(False)
-        self.dsb_kmz_longwest.setDecimals(6)
-        self.dsb_kmz_longwest.setMinimum(-180.0)
-        self.dsb_kmz_longwest.setMaximum(180.0)
-        self.dsb_kmz_longwest.setProperty("value", 0.0)
-        self.gridlayout_3.addWidget(self.dsb_kmz_longwest, 1, 1, 1, 1)
-        self.dsb_kmz_longeast.setEnabled(False)
-        self.dsb_kmz_longeast.setDecimals(6)
-        self.dsb_kmz_longeast.setMinimum(-180.0)
-        self.dsb_kmz_longeast.setMaximum(180.0)
-        self.dsb_kmz_longeast.setProperty("value", 0.0)
-        self.gridlayout_3.addWidget(self.dsb_kmz_longeast, 3, 1, 1, 1)
-        self.dsb_kmz_latsouth.setEnabled(False)
-        self.dsb_kmz_latsouth.setDecimals(6)
-        self.dsb_kmz_latsouth.setMinimum(-90.0)
-        self.dsb_kmz_latsouth.setMaximum(90.0)
-        self.dsb_kmz_latsouth.setProperty("value", 0.0)
-        self.gridlayout_3.addWidget(self.dsb_kmz_latsouth, 4, 1, 1, 1)
-        self.dsb_kmz_latnorth.setEnabled(False)
-        self.dsb_kmz_latnorth.setDecimals(6)
-        self.dsb_kmz_latnorth.setMinimum(-90.0)
-        self.dsb_kmz_latnorth.setMaximum(90.0)
-        self.dsb_kmz_latnorth.setProperty("value", 0.0)
-        self.gridlayout_3.addWidget(self.dsb_kmz_latnorth, 5, 1, 1, 1)
-        self.gridlayout_3.addWidget(self.checkbox_rev_local, 0, 0, 1, 2)
-        self.gridlayout_2.addWidget(self.groupbox_2, 1, 0, 1, 2)
+
+        self.checkbox_smooth.setText("Smooth Model")
+        self.gridlayout.addWidget(self.checkbox_smooth, 1, 0, 1, 2)
+
+        self.gridlayout.addWidget(self.buttonbox, 2, 0, 1, 2)
 
         self.setWindowTitle("Google Earth kmz Export")
-        self.groupbox.setTitle("Input Projection")
-        self.label_3.setText("Datum")
-        self.label_4.setText("Projection")
-        self.label_6.setText("Latitude of Origin")
-        self.label_7.setText("Central Meridian")
-        self.label_8.setText("Scale Factor")
-        self.label_9.setText("False Easting")
-        self.label_10.setText("False Northing")
-        self.label_11.setText("UTM Zone")
-        self.groupbox_2.setTitle("Model Boundary (Local Projection Only)")
-        self.label.setText("Longitude West")
-        self.label_2.setText("Longitude East")
-        self.label_5.setText("Latitude South")
-        self.label_12.setText("Latitude North")
-        self.checkbox_rev_local.setText(
-            "Reverse sign of X and Y coordinates (i.e X is now -X)")
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
