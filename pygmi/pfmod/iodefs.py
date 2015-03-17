@@ -742,7 +742,7 @@ class ExportMod3D(object):
             ax1.set_axis_off()
             fig.add_axes(ax1)
 
-            plt.imshow(self.lmod.griddata[i].data[::-rev, ::rev],
+            plt.imshow(self.lmod.griddata[i].data,
                        extent=(lonwest, loneast, latsouth, latnorth),
                        aspect='auto',
                        interpolation='nearest')
