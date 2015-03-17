@@ -436,12 +436,6 @@ class ProfileDisplay(object):
         self.update_plot()
         self.mpl_toolbar.update()
 
-#    def rb_mag_grav(self):
-#        """ Used to change the magnetic and gravity radiobutton """
-#        self.update_model()
-#        self.change_model()
-#        self.update_plot()
-
     def update_plot(self, slide=False):
         """ Update the profile on the model view """
 

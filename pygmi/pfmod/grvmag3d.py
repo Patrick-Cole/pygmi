@@ -96,6 +96,8 @@ class GravMag(object):
         self.lmod1 = self.parent.lmod1
         self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
+        self.parent.pview.viewmagnetics = True
+        self.parent.profile.viewmagnetics = True
 
         # Update the model from the view
         indx = self.parent.tabwidget.currentIndex()
@@ -107,12 +109,17 @@ class GravMag(object):
         if tlabel == 'Profile Editor':
             self.parent.profile.update_model()
 
+        if tlabel == 'Custom Profile Editor':
+            self.parent.pview.update_model()
+
         # now do the calculations
         self.calc_field2(True, True)
 
         if tlabel == 'Profile Editor':
-            self.parent.profile.viewmagnetics = True
             self.parent.profile.update_plot()
+
+        if tlabel == 'Custom Profile Editor':
+            self.parent.pview.update_plot()
 
     def calc_field(self):
         """ Pre field-calculation routine """
@@ -120,6 +127,8 @@ class GravMag(object):
         self.lmod1 = self.parent.lmod1
         self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
+        self.parent.profile.viewmagnetics = False
+        self.parent.pview.viewmagnetics = False
 
         # Update the model from the view
         indx = self.parent.tabwidget.currentIndex()
@@ -129,14 +138,19 @@ class GravMag(object):
             self.parent.layer.update_model()
 
         if tlabel == 'Profile Editor':
-            self.parent.profile.viewmagnetics = False
             self.parent.profile.update_model()
+
+        if tlabel == 'Custom Profile Editor':
+            self.parent.pview.update_model()
 
         # now do the calculations
         self.calc_field2(True)
 
         if tlabel == 'Profile Editor':
             self.parent.profile.update_plot()
+
+        if tlabel == 'Custom Profile Editor':
+            self.parent.pview.update_plot()
 
     def calc_field2(self, showreports=False, altcalc=False):
         """ Calculate magnetic and gravity field """
