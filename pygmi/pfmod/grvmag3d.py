@@ -79,9 +79,8 @@ class GravMag(object):
     def setupui(self):
         """ Setup UI """
         self.actionregionaltest.setText("Regional Test")
-        self.actioncalculate.setText("Calculate Gravity at Gravity Height")
-        self.actioncalculate2.setText(
-            "Calculate Magnetics and Gravity at Magnetic Height")
+        self.actioncalculate.setText("Calculate Gravity")
+        self.actioncalculate2.setText("Calculate Magnetics")
         self.parent.toolbar.addWidget(self.actionregionaltest)
         self.parent.toolbar.addSeparator()
         self.parent.toolbar.addWidget(self.actioncalculate)
@@ -112,6 +111,7 @@ class GravMag(object):
         self.calc_field2(True, True)
 
         if tlabel == 'Profile Editor':
+            self.parent.profile.viewmagnetics = True
             self.parent.profile.update_plot()
 
     def calc_field(self):
@@ -129,6 +129,7 @@ class GravMag(object):
             self.parent.layer.update_model()
 
         if tlabel == 'Profile Editor':
+            self.parent.profile.viewmagnetics = False
             self.parent.profile.update_model()
 
         # now do the calculations
@@ -386,8 +387,7 @@ class GeoData(object):
             ydist = np.arange(numy-self.g_dxy/2, -self.g_dxy/2, -self.g_dxy,
                               dtype=float)
 
-            self.showtext('   Calculate magnetic and gravity origin field ' +
-                          ' at magnetic height')
+            self.showtext('   Calculate magnetic origin field')
             self.gmmain(xdist, ydist)
 
             self.modified = False
@@ -522,10 +522,10 @@ class GeoData(object):
         # Initialise
 
         # Grav stuff
-        Gc = 6.6732e-3            # Universal gravitational constant
-        Gx = np.zeros(X.shape)
-        Gy = Gx.copy()
-        Gz = Gx.copy()
+#        Gc = 6.6732e-3            # Universal gravitational constant
+#        Gx = np.zeros(X.shape)
+#        Gy = Gx.copy()
+#        Gz = Gx.copy()
 
         # Mag stuff
         cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
@@ -557,7 +557,7 @@ class GeoData(object):
 
 #        face = face.tolist()
 #        un = un.tolist()
-        gval = []
+#        gval = []
         mval = []
         newdepth = self.z12+abs(self.zobsm)
 
@@ -572,9 +572,9 @@ class GeoData(object):
                 cor = (corner + [0., 0., depth])
 
             if depth in newdepth:
-                Gx = np.zeros(X.shape)
-                Gy = Gx.copy()
-                Gz = Gx.copy()
+#                Gx = np.zeros(X.shape)
+#                Gy = Gx.copy()
+#                Gz = Gx.copy()
                 Hx = np.zeros(X.shape)
                 Hy = Hx.copy()
                 Hz = Hx.copy()
@@ -584,9 +584,9 @@ class GeoData(object):
                 p1 = np.zeros(3)
                 p2 = np.zeros(3)
                 p3 = np.zeros(3)
-                mgval = np.zeros([6, npro, nstn])
+                mgval = np.zeros([3, npro, nstn])
 
-                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, Gx, Gy, Gz,
+                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, #Gx, Gy, Gz,
                              Hx, Hy, Hz, Pd, un, indx, crs, p1, p2, p3,
                              mgval)
 
@@ -594,21 +594,21 @@ class GeoData(object):
                 Hx = mgval[0]
                 Hy = mgval[1]
                 Hz = mgval[2]
-                Gx = mgval[3] * Gc
-                Gy = mgval[4] * Gc
-                Gz = mgval[5] * Gc
+#                Gx = mgval[3] * Gc
+#                Gy = mgval[4] * Gc
+#                Gz = mgval[5] * Gc
 
 #                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
 #                dt = Htot-self.hintn
                 dta = Hx*cx + Hy*cy + Hz*cz
             else:
-                Gz = np.zeros(X.shape)
+#                Gz = np.zeros(X.shape)
                 dta = np.zeros(X.shape)
 
-            gval.append(np.copy(Gz.T))
+#            gval.append(np.copy(Gz.T))
             mval.append(np.copy(dta.T))
 
-        self.glayers = np.array(gval)
+#        self.glayers = np.array(gval)
         self.mlayers = np.array(mval)
 
     def gboxmain(self, xobs, yobs, zobs):
@@ -820,7 +820,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     hcorflat = numz-hcor.flatten()
     aaa = np.reshape(np.mgrid[0:mtmp[0], 0:mtmp[1]], [2, numx*numy])
 
-    ttt = PTime()
+#    ttt = PTime()
     mgval = np.zeros([2, magval.size])
 
     for mlist in lmod.lith_list.items():
@@ -837,7 +837,16 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             mlayers = mfile['mlayers']*mlist[1].netmagn()
         else:
             mlayers = np.zeros_like(mfile['glayers'])
-        glayers = mfile['glayers']*mlist[1].rho()
+
+        if not altcalc:
+            glayers = mfile['glayers']*mlist[1].rho()
+        elif mfile['glayers'].size > 1:
+            glayers = mfile['glayers']*mlist[1].rho()
+        else:
+            glayers = np.zeros_like(mfile['mlayers'])
+
+
+#        glayers = mfile['glayers']*mlist[1].rho()
 
         showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
@@ -878,7 +887,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             pbars.incrmain()
         QtGui.QApplication.processEvents()
 
-    ttt.since_first_call()
+#    ttt.since_first_call()
     magval.resize(mtmp)
     grvval.resize(mtmp)
     magval = magval.T
@@ -1051,10 +1060,10 @@ def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
 
 
 @jit("f8[:,:,:](i4, i4, f8[:,:], f8[:,:], f8[:,:], f8[:,:], i4[:,:], " +
-     "f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
+     "f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
      "i4[:], f8[:,:], f8[:], f8[:], f8[:], f8[:,:,:])",
      nopython=True)
-def gm3d(npro, nstn, X, Y, edge, corner, face, Gx, Gy, Gz, Hx, Hy, Hz, Pd, Un,
+def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
          indx, crs, p1, p2, p3, mgval):
     """ grvmag 3d """
 
@@ -1169,18 +1178,18 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Gx, Gy, Gz, Hx, Hy, Hz, Pd, Un,
                 Hy[pr, st] = Hy[pr, st]+Pd[f]*gmtf2
                 Hz[pr, st] = Hz[pr, st]+Pd[f]*gmtf3
 
-                Gx[pr, st] = Gx[pr, st]-dp1*gmtf1
-                Gy[pr, st] = Gy[pr, st]-dp1*gmtf2
-                Gz[pr, st] = Gz[pr, st]-dp1*gmtf3
+#                Gx[pr, st] = Gx[pr, st]-dp1*gmtf1
+#                Gy[pr, st] = Gy[pr, st]-dp1*gmtf2
+#                Gz[pr, st] = Gz[pr, st]-dp1*gmtf3
 
     for pr in range(npro):
         for st in range(nstn):
             mgval[0, pr, st] = Hx[pr, st]
             mgval[1, pr, st] = Hy[pr, st]
             mgval[2, pr, st] = Hz[pr, st]
-            mgval[3, pr, st] = Gx[pr, st]
-            mgval[4, pr, st] = Gy[pr, st]
-            mgval[5, pr, st] = Gz[pr, st]
+#            mgval[3, pr, st] = Gx[pr, st]
+#            mgval[4, pr, st] = Gy[pr, st]
+#            mgval[5, pr, st] = Gz[pr, st]
 
     return mgval
 

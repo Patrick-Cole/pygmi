@@ -46,6 +46,7 @@ class ProfileDisplay(object):
         self.lmod2 = parent.lmod2
         self.showtext = parent.showtext
         self.pbar = self.parent.pbar_sub
+        self.viewmagnetics = True
 
         mainwindow = QtGui.QWidget()
 
@@ -72,7 +73,7 @@ class ProfileDisplay(object):
         self.dsb_axis_custmin = QtGui.QDoubleSpinBox(self.groupbox)
         self.dsb_axis_custmax = QtGui.QDoubleSpinBox(self.groupbox)
 
-        self.groupbox3 = QtGui.QGroupBox(self.toolboxpage1)
+#        self.groupbox3 = QtGui.QGroupBox(self.toolboxpage1)
         self.sb_profile_linethick = QtGui.QSpinBox(self.toolboxpage1)
         self.gridlayout_20 = QtGui.QGridLayout(self.toolboxpage1)
         self.lw_prof_defs = QtGui.QListWidget(self.toolboxpage1)
@@ -81,9 +82,9 @@ class ProfileDisplay(object):
         self.pb_lbound = QtGui.QPushButton(self.toolboxpage1)
         self.pb_export_csv = QtGui.QPushButton(self.toolboxpage1)
 
-        self.gridlayout4 = QtGui.QGridLayout(self.groupbox3)
-        self.rb_magnetic = QtGui.QRadioButton(self.groupbox3)
-        self.rb_gravity = QtGui.QRadioButton(self.groupbox3)
+#        self.gridlayout4 = QtGui.QGridLayout(self.groupbox3)
+#        self.rb_magnetic = QtGui.QRadioButton(self.groupbox3)
+#        self.rb_gravity = QtGui.QRadioButton(self.groupbox3)
 
         self.setupui()
 
@@ -111,8 +112,8 @@ class ProfileDisplay(object):
 #                                       QtGui.QSizePolicy.Preferred)
 #        self.toolbox.setSizePolicy(sizepolicy)
 #        self.toolboxpage1.setGeometry(QtCore.QRect(0, 0, 200, 646))
-        self.gridlayout4.addWidget(self.rb_magnetic, 1, 0, 1, 1)
-        self.gridlayout4.addWidget(self.rb_gravity, 4, 0, 1, 1)
+#        self.gridlayout4.addWidget(self.rb_magnetic, 1, 0, 1, 1)
+#        self.gridlayout4.addWidget(self.rb_gravity, 4, 0, 1, 1)
         self.verticallayout.addWidget(self.rb_axis_datamax)
         self.verticallayout.addWidget(self.rb_axis_profmax)
         self.verticallayout.addWidget(self.rb_axis_calcmax)
@@ -131,7 +132,7 @@ class ProfileDisplay(object):
 
         self.gridlayout_20.addWidget(self.lw_prof_defs, 3, 0, 1, 1)
         self.gridlayout_20.addWidget(self.sb_profile_linethick, 4, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.groupbox3, 5, 0, 1, 1)
+#        self.gridlayout_20.addWidget(self.groupbox3, 5, 0, 1, 1)
         self.gridlayout_20.addWidget(self.groupbox, 6, 0, 1, 1)
         self.gridlayout_20.addWidget(self.pb_prof_rcopy, 7, 0, 1, 1)
         self.gridlayout_20.addWidget(self.pb_lbound, 8, 0, 1, 1)
@@ -142,9 +143,9 @@ class ProfileDisplay(object):
         self.gridlayout.addWidget(self.mmc, 1, 0, 5, 1)
 
         self.sb_profnum2.setPrefix("Profile: ")
-        self.groupbox3.setTitle("Profile Data")
-        self.rb_magnetic.setText("Magnetic Data")
-        self.rb_gravity.setText("Gravity Data")
+#        self.groupbox3.setTitle("Profile Data")
+#        self.rb_magnetic.setText("Magnetic Data")
+#        self.rb_gravity.setText("Gravity Data")
         self.groupbox.setTitle("Profile Y-Axis Scale")
         self.rb_axis_datamax.setText("Scale to dataset maximum")
         self.rb_axis_profmax.setText("Scale to profile maximum")
@@ -159,14 +160,15 @@ class ProfileDisplay(object):
 
     # Buttons etc
         self.rb_axis_datamax.setChecked(True)
-        self.rb_gravity.setChecked(True)
+#        self.rb_gravity.setChecked(True)
         self.sb_profile_linethick.valueChanged.connect(self.width)
         self.lw_prof_defs.currentItemChanged.connect(self.change_defs)
         self.pb_prof_rcopy.clicked.connect(self.rcopy)
-        self.rb_gravity.clicked.connect(self.rb_mag_grav)
-        self.rb_magnetic.clicked.connect(self.rb_mag_grav)
+#        self.rb_gravity.clicked.connect(self.rb_mag_grav)
+#        self.rb_magnetic.clicked.connect(self.rb_mag_grav)
         self.pb_lbound.clicked.connect(self.lbound)
         self.hslider_profile2.valueChanged.connect(self.hprofnum)
+        self.hslider_profile2.sliderReleased.connect(self.hprofnum)
         self.sb_profnum2.valueChanged.connect(self.sprofnum)
         self.rb_axis_calcmax.clicked.connect(self.rb_plot_scale)
         self.rb_axis_profmax.clicked.connect(self.rb_plot_scale)
@@ -403,7 +405,7 @@ class ProfileDisplay(object):
 
         self.lmod1.curprof = self.sb_profnum2.value()
         self.change_model(slide=True)
-        self.update_plot(slide=True)
+        self.update_plot(slide=self.hslider_profile2.isSliderDown())
 
     def rcopy(self):
         """ Do a ranged copy on a profile """
@@ -434,18 +436,18 @@ class ProfileDisplay(object):
         self.update_plot()
         self.mpl_toolbar.update()
 
-    def rb_mag_grav(self):
-        """ Used to change the magnetic and gravity radiobutton """
-        self.update_model()
-        self.change_model()
-        self.update_plot()
+#    def rb_mag_grav(self):
+#        """ Used to change the magnetic and gravity radiobutton """
+#        self.update_model()
+#        self.change_model()
+#        self.update_plot()
 
     def update_plot(self, slide=False):
         """ Update the profile on the model view """
 
 # Display the calculated profile
         data = None
-        if self.rb_magnetic.isChecked():
+        if self.viewmagnetics:
             if 'Calculated Magnetics' in self.lmod1.griddata.keys():
                 data = self.lmod1.griddata['Calculated Magnetics'].data
 #            data2 = self.lmod2.griddata['Calculated Magnetics'].data
@@ -488,10 +490,13 @@ class ProfileDisplay(object):
 #            self.mmc.update_line(self.lmod1.yrange, [alt, alt])
             extent = self.lmod1.yrange
 
-        extent = list(extent)+[tmpprof.min(), tmpprof.max()]
         if self.rb_axis_custmax.isChecked():
             extent = list(extent)+[self.dsb_axis_custmin.value(),
                                    self.dsb_axis_custmax.value()]
+        elif self.rb_axis_calcmax.isChecked():
+            extent = list(extent)+[data.min()+regtmp, data.max()+regtmp]
+        else:
+            extent = list(extent)+[tmpprof.min(), tmpprof.max()]
 
 #        pdb.set_trace()
 # Load in observed data - if there is any
@@ -499,11 +504,11 @@ class ProfileDisplay(object):
         tmprng2 = None
         tmpprof2 = None
         if ('Magnetic Dataset' in self.lmod1.griddata.keys() and
-                self.rb_magnetic.isChecked()):
+                self.viewmagnetics):
             data2 = self.lmod1.griddata['Magnetic Dataset']
 #            regtmp = 0.0
         elif ('Gravity Dataset' in self.lmod1.griddata.keys() and
-              self.rb_gravity.isChecked()):
+              not self.viewmagnetics):
             data2 = self.lmod1.griddata['Gravity Dataset']
 #            regtmp = self.lmod1.gregional
 
@@ -523,7 +528,7 @@ class ProfileDisplay(object):
                                             tmpprof2)
                     return
                 else:
-                    tmpprof2 = data2.data[ycrd, :] #- regtmp
+                    tmpprof2 = data2.data[ycrd, :]
                     tmprng2 = (data2.tlx + np.arange(data2.cols)*data2.xdim +
                                data2.xdim/2)
             else:
@@ -539,7 +544,7 @@ class ProfileDisplay(object):
                                             tmpprof2)
                     return
                 else:
-                    tmpprof2 = data2.data[::-1, xcrd]  # - regtmp
+                    tmpprof2 = data2.data[::-1, xcrd]
                     tmprng2 = (data2.tly-data2.rows*data2.ydim +
                                np.arange(data2.rows)*data2.ydim + data2.ydim/2)
 
@@ -942,8 +947,8 @@ class MyMplCanvas(FigureCanvas):
             self.obs[0].set_data([xdat2, dat2])
         else:
             self.obs[0].set_data([[], []])
-        self.paxes.set_ylim(dmin, dmax)
-        self.paxes.set_xlim(extent[0], extent[1])
+#        self.paxes.set_ylim(dmin, dmax)
+#        self.paxes.set_xlim(extent[0], extent[1])
 
         self.paxes.draw_artist(self.cal[0])
         if xdat2 is not None:
