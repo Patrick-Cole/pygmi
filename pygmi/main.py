@@ -502,18 +502,18 @@ class MainWidget(QtGui.QMainWindow):
         self.context_menu = {}
         self.add_to_context('Basic')
 
-        self.menubar = QtGui.QMenuBar(self)
+        self.menubar = QtGui.QMenuBar()
 
-        self.centralwidget = QtGui.QWidget(self)
-        self.statusbar = QtGui.QStatusBar(self)
-        self.toolbar = QtGui.QToolBar(self)
+        self.statusbar = QtGui.QStatusBar()
+        self.toolbar = QtGui.QToolBar()
+
+        self.centralwidget = QtGui.QWidget()
         self.grid_layout = QtGui.QGridLayout(self.centralwidget)
-        self.graphics_view = QtGui.QGraphicsView(self.centralwidget)
-        self.textbrowser_datainfo = QtGui.QTextBrowser(self.centralwidget)
-        self.textbrowser_processlog = QtGui.QTextBrowser(self.centralwidget)
-        self.label = QtGui.QLabel(self.centralwidget)
-        self.label_2 = QtGui.QLabel(self.centralwidget)
+        self.graphics_view = QtGui.QGraphicsView()
+        self.textbrowser_datainfo = QtGui.QTextBrowser()
+        self.textbrowser_processlog = QtGui.QTextBrowser()
 
+        self.action_help = QtGui.QAction(self)
         self.action_delete = QtGui.QAction(self)
         self.action_bring_to_front = QtGui.QAction(self)
         self.action_send_to_back = QtGui.QAction(self)
@@ -525,7 +525,6 @@ class MainWidget(QtGui.QMainWindow):
         self.action_pointer.setCheckable(True)
         self.action_linepointer.setCheckable(True)
         self.action_pointer.setChecked(True)
-        self.action_help = QtGui.QAction(self)
 
         self.action_delete.setIcon(QtGui.QIcon(ipth+'delete.png'))
         self.action_bring_to_front.setIcon(
@@ -600,8 +599,11 @@ class MainWidget(QtGui.QMainWindow):
         self.grid_layout.addWidget(self.graphics_view, 0, 0, 4, 2)
         self.grid_layout.addWidget(self.textbrowser_datainfo, 1, 2, 1, 1)
         self.grid_layout.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
-        self.grid_layout.addWidget(self.label, 0, 2, 1, 1)
-        self.grid_layout.addWidget(self.label_2, 2, 2, 1, 1)
+
+        label = QtGui.QLabel()
+        label_2 = QtGui.QLabel()
+        self.grid_layout.addWidget(label, 0, 2, 1, 1)
+        self.grid_layout.addWidget(label_2, 2, 2, 1, 1)
 
         self.setCentralWidget(self.centralwidget)
         self.setMenuBar(self.menubar)
@@ -619,8 +621,8 @@ class MainWidget(QtGui.QMainWindow):
 
         self.setWindowTitle(
             "PyGMI - Python Geophysical Modelling and Interpretation")
-        self.label.setText("Dataset Information:")
-        self.label_2.setText("Process Log:")
+        label.setText("Dataset Information:")
+        label_2.setText("Process Log:")
         self.action_delete.setText("Delete")
         self.action_bring_to_front.setText("Bring to Front")
         self.action_send_to_back.setText("Send to Back")
@@ -718,7 +720,6 @@ class MainWidget(QtGui.QMainWindow):
         Help Routine
         """
         menu_default.HelpDocs(self, 'pygmi.main')
-
 
     def item_insert(self, item_type, item_name, class_name):
         """

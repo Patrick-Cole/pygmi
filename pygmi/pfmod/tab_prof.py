@@ -30,6 +30,7 @@ import scipy.interpolate as si
 from . import misc
 from ..raster import iodefs as ir
 import os
+import pdb
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
@@ -450,12 +451,14 @@ class ProfileDisplay(object):
 #            data2 = self.lmod2.griddata['Calculated Magnetics'].data
             self.mmc.ptitle = 'Magnetic Intensity: '
             self.mmc.punit = 'nT'
+            regtmp = 0.0
         else:
             if 'Calculated Gravity' in self.lmod1.griddata.keys():
                 data = self.lmod1.griddata['Calculated Gravity'].data
 #            data2 = self.lmod2.griddata['Calculated Gravity'].data
             self.mmc.ptitle = 'Gravity: '
             self.mmc.punit = 'mGal'
+            regtmp = self.lmod1.gregional
 
 #        if data2.shape != data.shape:
 #            data2 = np.zeros_like(data)
@@ -465,7 +468,7 @@ class ProfileDisplay(object):
             self.mmc.ptitle += 'West to East'
             self.mmc.xlabel = "Eastings (m)"
 
-            tmpprof = data[self.lmod1.numy-1-self.lmod1.curprof, :]
+            tmpprof = data[self.lmod1.numy-1-self.lmod1.curprof, :]+regtmp
 #            tmpprof2 = data2[self.lmod1.curprof, :]
             tmprng = (np.arange(tmpprof.shape[0])*self.lmod1.dxy +
                       self.lmod1.xrange[0]+self.lmod1.dxy/2.)
@@ -477,7 +480,7 @@ class ProfileDisplay(object):
             self.mmc.ptitle += 'South to North'
             self.mmc.xlabel = "Northings (m)"
 
-            tmpprof = data[::-1, self.lmod1.curprof]
+            tmpprof = data[::-1, self.lmod1.curprof]+regtmp
 #            tmpprof2 = data2[:, self.lmod1.curprof]
             tmprng = (np.arange(tmpprof.shape[0])*self.lmod1.dxy +
                       self.lmod1.yrange[0]+self.lmod1.dxy/2.)
@@ -485,14 +488,12 @@ class ProfileDisplay(object):
 #            self.mmc.update_line(self.lmod1.yrange, [alt, alt])
             extent = self.lmod1.yrange
 
-        if self.rb_axis_calcmax.isChecked():
-            extent = list(extent)+[tmpprof.min(), tmpprof.max()]
-        elif self.rb_axis_custmax.isChecked():
+        extent = list(extent)+[tmpprof.min(), tmpprof.max()]
+        if self.rb_axis_custmax.isChecked():
             extent = list(extent)+[self.dsb_axis_custmin.value(),
                                    self.dsb_axis_custmax.value()]
-        else:
-            extent = list(extent)+[data.min(), data.max()]
 
+#        pdb.set_trace()
 # Load in observed data - if there is any
         data2 = None
         tmprng2 = None
@@ -500,11 +501,11 @@ class ProfileDisplay(object):
         if ('Magnetic Dataset' in self.lmod1.griddata.keys() and
                 self.rb_magnetic.isChecked()):
             data2 = self.lmod1.griddata['Magnetic Dataset']
-            regtmp = 0.0
+#            regtmp = 0.0
         elif ('Gravity Dataset' in self.lmod1.griddata.keys() and
               self.rb_gravity.isChecked()):
             data2 = self.lmod1.griddata['Gravity Dataset']
-            regtmp = self.lmod1.gregional
+#            regtmp = self.lmod1.gregional
 
         if data2 is not None:
             if self.lmod1.is_ew:
@@ -522,7 +523,7 @@ class ProfileDisplay(object):
                                             tmpprof2)
                     return
                 else:
-                    tmpprof2 = data2.data[ycrd, :] - regtmp
+                    tmpprof2 = data2.data[ycrd, :] #- regtmp
                     tmprng2 = (data2.tlx + np.arange(data2.cols)*data2.xdim +
                                data2.xdim/2)
             else:
@@ -538,7 +539,7 @@ class ProfileDisplay(object):
                                             tmpprof2)
                     return
                 else:
-                    tmpprof2 = data2.data[::-1, xcrd] - regtmp
+                    tmpprof2 = data2.data[::-1, xcrd]  # - regtmp
                     tmprng2 = (data2.tly-data2.rows*data2.ydim +
                                np.arange(data2.rows)*data2.ydim + data2.ydim/2)
 
@@ -552,7 +553,7 @@ class ProfileDisplay(object):
             tmpprof2 = tmpprof2[nomask]
 
             if self.rb_axis_datamax.isChecked():
-                extent[2:] = [data2.data.min()-regtmp, data2.data.max()-regtmp]
+                extent[2:] = [data2.data.min(), data2.data.max()]
             elif self.rb_axis_profmax.isChecked():
                 extent[2:] = [tmpprof2.min(), tmpprof2.max()]
 
@@ -667,6 +668,8 @@ class MyMplCanvas(FigureCanvas):
 # Initial Images
         self.paxes = fig.add_subplot(211)
         self.paxes.yaxis.set_label_text("mGal")
+        self.paxes.ticklabel_format(useOffset=False)
+#        pdb.set_trace()
 #        x = [1, 2, 3]
 #        y = [1, 2, 3]
 #        self.cal = self.paxes.plot(x, y)
@@ -909,6 +912,7 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.autoscale(False)
         dmin, dmax = self.extentchk(extent)
         self.paxes.cla()
+        self.paxes.ticklabel_format(useOffset=False)
         self.paxes.set_title(self.ptitle)
         self.axes.xaxis.set_label_text(self.xlabel)
         self.paxes.yaxis.set_label_text(self.punit)

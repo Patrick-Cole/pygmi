@@ -126,7 +126,7 @@ class DataDisplay(object):
         ctxt = str(self.combo_grid1.currentText())
 
         reg = 0
-        if ctxt == 'Gravity Dataset':
+        if ctxt == 'Calculated Gravity':
             reg = self.lmod1.gregional
 
         self.grid1txt = ctxt
@@ -140,7 +140,7 @@ class DataDisplay(object):
         ctxt = str(self.combo_grid2.currentText())
 
         reg = 0
-        if ctxt == 'Gravity Dataset':
+        if ctxt == 'Calculated Gravity':
             reg = self.lmod1.gregional
 
         self.grid2txt = ctxt
@@ -310,14 +310,14 @@ class MyMplCanvas(FigureCanvas):
             pass
         self.ibar.set_label(lbl)
 
-        dmin = dat1.data.min()-reg
-        dmax = dat1.data.max()-reg
+        dmin = dat1.data.min()+reg
+        dmax = dat1.data.max()+reg
         if dmin == dmax:
             dmax = dmin+1
         self.ims.set_clim(dmin, dmax)
 
 #        cnorm = clrs.Normalize()(dat1.data[::-1]-reg)
-        cnorm = clrs.Normalize()(dat1.data-reg)
+        cnorm = clrs.Normalize()(dat1.data+reg)
         cnorm.data[cnorm.mask] = 0.0
         tmp = self.cbar(cnorm)
 
@@ -342,15 +342,15 @@ class MyMplCanvas(FigureCanvas):
         for i in self.prf:
             i.set_visible(False)
         self.ims.set_visible(False)
-#        self.ims2.set_data(dat2.data[::-1]-reg)
-        self.ims2.set_data(dat2.data-reg)
+#        self.ims2.set_data(dat2.data[::-1]+reg)
+        self.ims2.set_data(dat2.data+reg)
         self.ims2.set_extent(self.dat_extent(dat2))
         if self.xlims is not None:
             self.axes.set_xlim(self.xlims)
             self.axes.set_ylim(self.ylims)
 
-        dmin = dat2.data.min()-reg
-        dmax = dat2.data.max()-reg
+        dmin = dat2.data.min()+reg
+        dmax = dat2.data.max()+reg
         if dmin == dmax:
             dmax = dmin+1
         self.ims2.set_clim(dmin, dmax)

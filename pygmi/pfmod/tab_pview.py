@@ -395,11 +395,13 @@ class ProfileDisplay(object):
                 data = self.lmod1.griddata['Calculated Magnetics']
             self.mmc.ptitle = 'Magnetic Intensity: '
             self.mmc.punit = 'nT'
+            regtmp = 0.0
         else:
             if 'Calculated Gravity' in self.lmod1.griddata.keys():
                 data = self.lmod1.griddata['Calculated Gravity']
             self.mmc.ptitle = 'Gravity: '
             self.mmc.punit = 'mGal'
+            regtmp = self.lmod1.gregional
 
         x_0, x_1 = self.xnodes[self.curprof]
         y_0, y_1 = self.ynodes[self.curprof]
@@ -413,13 +415,15 @@ class ProfileDisplay(object):
             tmpprof = ndimage.map_coordinates(data.data[::-1], [yyy, xxx],
                                               order=1, cval=np.nan)
             tmprng = tmprng[np.logical_not(np.isnan(tmpprof))]
-            tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
+            tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]+regtmp
             extent = [0, rdist]
 
-        if self.rb_axis_datamax.isChecked():
-            extent = list(extent)+[data.data.min(), data.data.max()]
-        else:
-            extent = list(extent)+[tmpprof.min(), tmpprof.max()]
+        extent = list(extent)+[tmpprof.min(), tmpprof.max()]
+
+#        if self.rb_axis_datamax.isChecked():
+#            extent = list(extent)+[data.data.min(), data.data.max()]
+#        else:
+#            extent = list(extent)+[tmpprof.min(), tmpprof.max()]
 
 # Load in observed data - if there is any
         data2 = None
@@ -428,11 +432,9 @@ class ProfileDisplay(object):
         if ('Magnetic Dataset' in self.lmod1.griddata.keys() and
                 self.rb_magnetic.isChecked()):
             data2 = self.lmod1.griddata['Magnetic Dataset']
-            regtmp = 0.0
         elif ('Gravity Dataset' in self.lmod1.griddata.keys() and
               self.rb_gravity.isChecked()):
             data2 = self.lmod1.griddata['Gravity Dataset']
-            regtmp = self.lmod1.gregional
 
         if data2 is not None:
             xxx, yyy, rdist = self.cp_init(data2)
@@ -443,11 +445,9 @@ class ProfileDisplay(object):
 
             tmprng2 = tmprng2[np.logical_not(np.isnan(tmpprof2))]
             tmpprof2 = tmpprof2[np.logical_not(np.isnan(tmpprof2))]
-            tmpprof2 -= regtmp
-#            extent = [0, rdist]
 
             if self.rb_axis_datamax.isChecked() or len(tmpprof2) == 0:
-                extent[2:] = [data2.data.min()-regtmp, data2.data.max()-regtmp]
+                extent[2:] = [data2.data.min(), data2.data.max()]
             elif self.rb_axis_profmax.isChecked():
                 extent[2:] = [tmpprof2.min(), tmpprof2.max()]
 
@@ -494,6 +494,8 @@ class MyMplCanvas(FigureCanvas):
 # Initial Images
         self.paxes = fig.add_subplot(211)
         self.paxes.yaxis.set_label_text("mGal")
+        self.paxes.ticklabel_format(useOffset=False)
+
         self.cal = self.paxes.plot([], [])
         self.obs = plt.plot([], [], 'o')
 
@@ -706,6 +708,7 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.autoscale(False)
         dmin, dmax = self.extentchk(extent)
         self.paxes.cla()
+        self.paxes.ticklabel_format(useOffset=False)
         self.paxes.set_title(self.ptitle)
         self.axes.xaxis.set_label_text(self.xlabel)
         self.paxes.yaxis.set_label_text(self.punit)

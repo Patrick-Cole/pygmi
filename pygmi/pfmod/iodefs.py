@@ -36,7 +36,6 @@ from . import grvmag3d
 from . import cubes as mvis3d
 import pygmi.menu_default as menu_default
 import pygmi.raster.dataprep as dp
-import pdb
 
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
@@ -480,7 +479,7 @@ class ExportMod3D(object):
         tilt = str(45.)  # angle from vertical
         lat = str(np.mean([latsouth, latnorth]))  # coord of object
         lon = str(np.mean([lonwest, loneast]))  # coord of object
-        rng = str(max(xrng.ptp(),yrng.ptp(),zrng.ptp()))  # range to object (meters)
+        rng = str(max(xrng.ptp(), yrng.ptp(), zrng.ptp()))  # range to object
         alt = str(0)  # alt of object eye is looking at (meters)
         lato = str(latsouth)
         lono = str(lonwest)
@@ -775,7 +774,8 @@ class Exportkmz(QtGui.QDialog):
         self.buttonbox = QtGui.QDialogButtonBox()
         self.proj = dp.GroupProj('Confirm Model Projection')
         self.proj.set_current(wkt)
-        self.checkbox_smooth = QtGui.QCheckBox(self)
+        self.checkbox_smooth = QtGui.QCheckBox()
+        self.helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.exportkmz')
 
         self.setupui()
 
@@ -785,17 +785,17 @@ class Exportkmz(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 
-        self.gridlayout.addWidget(self.proj, 0, 0, 1, 2)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        self.buttonbox.setStandardButtons(self.buttonbox.Cancel |
+                                          self.buttonbox.Ok)
 
-        self.checkbox_smooth.setText("Smooth Model")
+        self.gridlayout.addWidget(self.proj, 0, 0, 1, 2)
         self.gridlayout.addWidget(self.checkbox_smooth, 1, 0, 1, 2)
-
-        self.gridlayout.addWidget(self.buttonbox, 2, 0, 1, 2)
+        self.gridlayout.addWidget(self.helpdocs, 2, 0, 1, 1)
+        self.gridlayout.addWidget(self.buttonbox, 2, 1, 1, 1)
 
         self.setWindowTitle("Google Earth kmz Export")
+        self.checkbox_smooth.setText("Smooth Model")
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
@@ -818,21 +818,17 @@ class ImportPicture(QtGui.QDialog):
         self.grid = None
 
         self.gridlayout_2 = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.groupbox = QtGui.QGroupBox(self)
-        self.label = QtGui.QLabel(self.groupbox)
-        self.label_2 = QtGui.QLabel(self.groupbox)
-        self.label_3 = QtGui.QLabel(self.groupbox)
-        self.label_5 = QtGui.QLabel(self)
-        self.dsb_picimp_west = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_picimp_east = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_picimp_depth = QtGui.QDoubleSpinBox(self.groupbox)
-        self.rb_picimp_westeast = QtGui.QRadioButton(self.groupbox)
-        self.rb_picimp_southnorth = QtGui.QRadioButton(self.groupbox)
-        self.dsb_picimp_maxalt = QtGui.QDoubleSpinBox(self.groupbox)
-        self.label_4 = QtGui.QLabel(self.groupbox)
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.groupbox = QtGui.QGroupBox()
+        self.dsb_picimp_west = QtGui.QDoubleSpinBox()
+        self.dsb_picimp_east = QtGui.QDoubleSpinBox()
+        self.dsb_picimp_depth = QtGui.QDoubleSpinBox()
+        self.rb_picimp_westeast = QtGui.QRadioButton()
+        self.rb_picimp_southnorth = QtGui.QRadioButton()
+        self.dsb_picimp_maxalt = QtGui.QDoubleSpinBox()
         self.gridlayout_3 = QtGui.QGridLayout(self.groupbox)
-        self.helpdocs = menu_default.HelpButton('pygmi.pfmod.dataprep.importpicture')
+        self.helpdocs = menu_default.HelpButton(
+            'pygmi.pfmod.iodefs.importpicture')
 
         self.setupui()
 
@@ -842,62 +838,70 @@ class ImportPicture(QtGui.QDialog):
         self.min_alt = None
         self.is_eastwest = None
 
-        self.rb_picimp_westeast.clicked.connect(self.lmod2var)
-        self.rb_picimp_southnorth.clicked.connect(self.lmod2var)
-
         self.lmod2var()
 
     def setupui(self):
         """ Setup UI """
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout_2.addWidget(self.buttonbox, 2, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.helpdocs, 2, 0, 1, 1)
 
-        self.gridlayout_3.addWidget(self.label, 2, 0, 1, 1)
-        self.gridlayout_3.addWidget(self.label_2, 4, 0, 1, 1)
-        self.gridlayout_3.addWidget(self.label_3, 6, 0, 1, 1)
+        label = QtGui.QLabel()
+        label_2 = QtGui.QLabel()
+        label_3 = QtGui.QLabel()
+        label_4 = QtGui.QLabel()
+        label_5 = QtGui.QLabel()
+
+        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setStandardButtons(self.buttonbox.Cancel |
+                                          self.buttonbox.Ok)
+
         self.dsb_picimp_west.setDecimals(6)
         self.dsb_picimp_west.setMinimum(-999999999.0)
         self.dsb_picimp_west.setMaximum(999999999.0)
         self.dsb_picimp_west.setProperty("value", 0.0)
-        self.gridlayout_3.addWidget(self.dsb_picimp_west, 2, 1, 1, 1)
         self.dsb_picimp_east.setDecimals(6)
         self.dsb_picimp_east.setMinimum(-999999999.0)
         self.dsb_picimp_east.setMaximum(999999999.0)
         self.dsb_picimp_east.setProperty("value", 1000.0)
-        self.gridlayout_3.addWidget(self.dsb_picimp_east, 4, 1, 1, 1)
         self.dsb_picimp_depth.setDecimals(6)
         self.dsb_picimp_depth.setMinimum(0.0)
         self.dsb_picimp_depth.setMaximum(999999999.0)
         self.dsb_picimp_depth.setProperty("value", 1000.0)
-        self.gridlayout_3.addWidget(self.dsb_picimp_depth, 6, 1, 1, 1)
         self.rb_picimp_westeast.setChecked(True)
-        self.gridlayout_3.addWidget(self.rb_picimp_westeast, 0, 0, 1, 1)
-        self.gridlayout_3.addWidget(self.rb_picimp_southnorth, 1, 0, 1, 1)
         self.dsb_picimp_maxalt.setDecimals(6)
         self.dsb_picimp_maxalt.setMinimum(-999999999.0)
         self.dsb_picimp_maxalt.setMaximum(999999999.0)
         self.dsb_picimp_maxalt.setProperty("value", 1000.0)
-        self.gridlayout_3.addWidget(self.dsb_picimp_maxalt, 5, 1, 1, 1)
-        self.gridlayout_3.addWidget(self.label_4, 5, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.groupbox, 0, 0, 1, 2)
-        self.gridlayout_2.addWidget(self.label_5, 1, 0, 1, 2)
 
         self.setWindowTitle("Profile Picture Importer")
         self.groupbox.setTitle("Profile Coordinates")
-        self.label.setText("West/South Coordinate")
-        self.label_2.setText("East/North Coordinate")
-        self.label_3.setText("Depth")
         self.rb_picimp_westeast.setText("Profile is from West to East")
         self.rb_picimp_southnorth.setText("Profile is from South to North")
-        self.label_4.setText("Maximum Altitude")
-        self.label_5.setText('Press Cancel if you wish to connect profile '
-                             'information from a 3D model')
+        label.setText("West/South Coordinate")
+        label_2.setText("East/North Coordinate")
+        label_3.setText("Depth")
+        label_4.setText("Maximum Altitude")
+        label_5.setText('Press Cancel if you wish to connect profile '
+                        'information from a 3D model')
+
+        self.gridlayout_2.addWidget(self.groupbox, 0, 0, 1, 2)
+        self.gridlayout_2.addWidget(label_5, 1, 0, 1, 2)
+        self.gridlayout_2.addWidget(self.helpdocs, 2, 0, 1, 1)
+        self.gridlayout_2.addWidget(self.buttonbox, 2, 1, 1, 1)
+
+        self.gridlayout_3.addWidget(self.rb_picimp_westeast, 0, 0, 1, 1)
+        self.gridlayout_3.addWidget(self.rb_picimp_southnorth, 1, 0, 1, 1)
+        self.gridlayout_3.addWidget(label, 2, 0, 1, 1)
+        self.gridlayout_3.addWidget(self.dsb_picimp_west, 2, 1, 1, 1)
+        self.gridlayout_3.addWidget(label_2, 4, 0, 1, 1)
+        self.gridlayout_3.addWidget(self.dsb_picimp_east, 4, 1, 1, 1)
+        self.gridlayout_3.addWidget(label_4, 5, 0, 1, 1)
+        self.gridlayout_3.addWidget(self.dsb_picimp_maxalt, 5, 1, 1, 1)
+        self.gridlayout_3.addWidget(label_3, 6, 0, 1, 1)
+        self.gridlayout_3.addWidget(self.dsb_picimp_depth, 6, 1, 1, 1)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
+        self.rb_picimp_westeast.clicked.connect(self.lmod2var)
+        self.rb_picimp_southnorth.clicked.connect(self.lmod2var)
 
     def lmod2var(self):
         """ lmod 2 var """

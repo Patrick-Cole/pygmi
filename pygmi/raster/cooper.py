@@ -76,11 +76,9 @@ class Gradients(QtGui.QDialog):
         self.order = 1
 
         self.gridlayout = QtGui.QGridLayout(self)
-        self.sb_order = QtGui.QSpinBox(self)
-        self.sb_azi = QtGui.QSpinBox(self)
-        self.label_2 = QtGui.QLabel(self)
-        self.label_3 = QtGui.QLabel(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
+        self.sb_order = QtGui.QSpinBox()
+        self.sb_azi = QtGui.QSpinBox()
+        self.buttonbox = QtGui.QDialogButtonBox()
         self.helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
         self.setupui()
@@ -91,24 +89,27 @@ class Gradients(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 #        self.resize(289, 166)
-        self.sb_order.setMinimum(1)
-        self.gridlayout.addWidget(self.sb_order, 3, 1, 1, 1)
+        label_az = QtGui.QLabel()
+        label_or = QtGui.QLabel()
 
+        self.sb_order.setMinimum(1)
         self.sb_azi.setPrefix("")
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
-        self.gridlayout.addWidget(self.sb_azi, 0, 1, 1, 1)
-        self.gridlayout.addWidget(self.label_2, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.label_3, 3, 0, 1, 1)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout.addWidget(self.buttonbox, 4, 1, 1, 1)
-        self.gridlayout.addWidget(self.helpdocs, 4, 0, 1, 1)
 
         self.setWindowTitle("Gradient Calculation")
-        self.label_2.setText("Azimuth")
-        self.label_3.setText("Order")
+        label_az.setText("Azimuth")
+        label_or.setText("Order")
+
+        self.gridlayout.addWidget(label_az, 0, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_azi, 0, 1, 1, 1)
+        self.gridlayout.addWidget(label_or, 3, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_order, 3, 1, 1, 1)
+        self.gridlayout.addWidget(self.helpdocs, 4, 0, 1, 1)
+        self.gridlayout.addWidget(self.buttonbox, 4, 1, 1, 1)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
@@ -201,12 +202,10 @@ class Visibility2d(QtGui.QDialog):
         self.dh = 10
 
         self.gridlayout = QtGui.QGridLayout(self)
-        self.sb_dh = QtGui.QSpinBox(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.sb_wsize = QtGui.QSpinBox(self)
-        self.label = QtGui.QLabel(self)
-        self.label_2 = QtGui.QLabel(self)
-        self.pbar = QtGui.QProgressBar(self)
+        self.sb_dh = QtGui.QSpinBox()
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.sb_wsize = QtGui.QSpinBox()
+        self.pbar = QtGui.QProgressBar()
         self.helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
 
         self.setupui()
@@ -216,28 +215,31 @@ class Visibility2d(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-#        self.resize(289, 166)
-        self.gridlayout.addWidget(self.label, 1, 0, 1, 1)
+        label = QtGui.QLabel()
+        label_2 = QtGui.QLabel()
+
         self.sb_dh.setMinimum(1)
         self.sb_dh.setMaximum(10000)
-        self.gridlayout.addWidget(self.sb_dh, 1, 1, 1, 1)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout.addWidget(self.buttonbox, 3, 1, 1, 1)
-        self.gridlayout.addWidget(self.helpdocs, 3, 0, 1, 1)
         self.sb_wsize.setPrefix("")
         self.sb_wsize.setMinimum(3)
         self.sb_wsize.setMaximum(100000)
         self.sb_wsize.setSingleStep(2)
-        self.gridlayout.addWidget(self.sb_wsize, 0, 1, 1, 1)
-        self.gridlayout.addWidget(self.label_2, 0, 0, 1, 1)
         self.pbar.setProperty("value", 0)
-        self.gridlayout.addWidget(self.pbar, 2, 0, 1, 2)
 
         self.setWindowTitle("Visibility")
-        self.label.setText("Viewing Height (% std dev)")
-        self.label_2.setText("Window Size (Odd)")
+        label.setText("Viewing Height (% std dev)")
+        label_2.setText("Window Size (Odd)")
+
+        self.gridlayout.addWidget(label_2, 0, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_wsize, 0, 1, 1, 1)
+        self.gridlayout.addWidget(label, 1, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_dh, 1, 1, 1, 1)
+        self.gridlayout.addWidget(self.pbar, 2, 0, 1, 2)
+        self.gridlayout.addWidget(self.helpdocs, 3, 0, 1, 1)
+        self.gridlayout.addWidget(self.buttonbox, 3, 1, 1, 1)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
@@ -441,12 +443,10 @@ class Tilt1(QtGui.QDialog):
         self.smooth = 0
 
         self.gridlayout = QtGui.QGridLayout(self)
-        self.label = QtGui.QLabel(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.sb_azi = QtGui.QSpinBox(self)
-        self.sb_s = QtGui.QSpinBox(self)
-        self.label_2 = QtGui.QLabel(self)
-        self.pbar = QtGui.QProgressBar(self)
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.sb_azi = QtGui.QSpinBox()
+        self.sb_s = QtGui.QSpinBox()
+        self.pbar = QtGui.QProgressBar()
         self.helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
 
         self.setupui()
@@ -456,29 +456,32 @@ class Tilt1(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
+        label = QtGui.QLabel()
+        label_2 = QtGui.QLabel()
 
-        self.gridlayout.addWidget(self.label, 1, 0, 1, 1)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout.addWidget(self.buttonbox, 3, 1, 1, 1)
-        self.gridlayout.addWidget(self.helpdocs, 3, 0, 1, 1)
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
         self.sb_azi.setProperty("value", 0)
-        self.gridlayout.addWidget(self.sb_azi, 1, 1, 1, 1)
         self.sb_s.setPrefix("")
         self.sb_s.setMinimum(0)
         self.sb_s.setMaximum(100000)
         self.sb_s.setSingleStep(1)
-        self.gridlayout.addWidget(self.sb_s, 0, 1, 1, 1)
-        self.gridlayout.addWidget(self.label_2, 0, 0, 1, 1)
         self.pbar.setProperty("value", 0)
-        self.gridlayout.addWidget(self.pbar, 2, 0, 1, 2)
 
         self.setWindowTitle("Tilt Angle")
-        self.label.setText("Azimuth (degrees from east)")
-        self.label_2.setText("Smoothing Matrix Size (Odd, 0 for None)")
+        label.setText("Azimuth (degrees from east)")
+        label_2.setText("Smoothing Matrix Size (Odd, 0 for None)")
+
+        self.gridlayout.addWidget(label_2, 0, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_s, 0, 1, 1, 1)
+        self.gridlayout.addWidget(label, 1, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_azi, 1, 1, 1, 1)
+        self.gridlayout.addWidget(self.pbar, 2, 0, 1, 2)
+        self.gridlayout.addWidget(self.helpdocs, 3, 0, 1, 1)
+        self.gridlayout.addWidget(self.buttonbox, 3, 1, 1, 1)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
