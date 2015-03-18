@@ -30,7 +30,6 @@ import scipy.interpolate as si
 from . import misc
 from ..raster import iodefs as ir
 import os
-import pdb
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
@@ -54,122 +53,100 @@ class ProfileDisplay(object):
         self.mpl_toolbar = NavigationToolbar(self.mmc, mainwindow)
 
         self.userint = mainwindow
-        self.toolboxpage1 = QtGui.QWidget()
-        self.groupbox = QtGui.QGroupBox(self.toolboxpage1)
+        self.groupbox = QtGui.QGroupBox()
+        self.verticallayout = QtGui.QVBoxLayout(self.groupbox)
 
         self.gridlayout = QtGui.QGridLayout(mainwindow)
-        self.sb_profnum2 = QtGui.QSpinBox(mainwindow)
-        self.hslider_profile2 = QtGui.QSlider(mainwindow)
-        self.combo_profpic = QtGui.QComboBox(mainwindow)
-        self.hs_ppic_opacity = QtGui.QSlider(mainwindow)
-        self.toolbox = QtGui.QToolBox(mainwindow)
+        self.sb_profnum = QtGui.QSpinBox()
+        self.hs_profnum = MySlider()
+        self.combo_profpic = QtGui.QComboBox()
+        self.hs_ppic_opacity = MySlider()
 
-        self.verticallayout = QtGui.QVBoxLayout(self.groupbox)
-        self.rb_axis_datamax = QtGui.QRadioButton(self.groupbox)
-        self.rb_axis_profmax = QtGui.QRadioButton(self.groupbox)
-        self.rb_axis_calcmax = QtGui.QRadioButton(self.groupbox)
-        self.rb_axis_custmax = QtGui.QRadioButton(self.groupbox)
+        self.rb_axis_datamax = QtGui.QRadioButton()
+        self.rb_axis_profmax = QtGui.QRadioButton()
+        self.rb_axis_calcmax = QtGui.QRadioButton()
+        self.rb_axis_custmax = QtGui.QRadioButton()
+        self.dsb_axis_custmin = QtGui.QDoubleSpinBox()
+        self.dsb_axis_custmax = QtGui.QDoubleSpinBox()
 
-        self.dsb_axis_custmin = QtGui.QDoubleSpinBox(self.groupbox)
-        self.dsb_axis_custmax = QtGui.QDoubleSpinBox(self.groupbox)
-
-#        self.groupbox3 = QtGui.QGroupBox(self.toolboxpage1)
-        self.sb_profile_linethick = QtGui.QSpinBox(self.toolboxpage1)
-        self.gridlayout_20 = QtGui.QGridLayout(self.toolboxpage1)
-        self.lw_prof_defs = QtGui.QListWidget(self.toolboxpage1)
-
-        self.pb_prof_rcopy = QtGui.QPushButton(self.toolboxpage1)
-        self.pb_lbound = QtGui.QPushButton(self.toolboxpage1)
-        self.pb_export_csv = QtGui.QPushButton(self.toolboxpage1)
-
-#        self.gridlayout4 = QtGui.QGridLayout(self.groupbox3)
-#        self.rb_magnetic = QtGui.QRadioButton(self.groupbox3)
-#        self.rb_gravity = QtGui.QRadioButton(self.groupbox3)
+        self.sb_profile_linethick = QtGui.QSpinBox()
+        self.lw_prof_defs = QtGui.QListWidget()
+        self.pb_prof_rcopy = QtGui.QPushButton()
+        self.pb_lbound = QtGui.QPushButton()
+        self.pb_export_csv = QtGui.QPushButton()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        self.sb_profnum2.setWrapping(True)
-        self.sb_profnum2.setMaximum(999999999)
-        self.gridlayout.addWidget(self.sb_profnum2, 0, 1, 1, 1)
+
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                        QtGui.QSizePolicy.Fixed)
-        self.hslider_profile2.setSizePolicy(sizepolicy)
-        self.hslider_profile2.setOrientation(QtCore.Qt.Horizontal)
-        self.gridlayout.addWidget(self.hslider_profile2, 1, 1, 1, 1)
-        self.gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
-#        self.combo_profpic.hide()
+
+        self.hs_profnum.setSizePolicy(sizepolicy)
         self.hs_ppic_opacity.setSizePolicy(sizepolicy)
+
+        self.lw_prof_defs.setFixedWidth(220)
+        self.sb_profnum.setWrapping(True)
+        self.sb_profnum.setMaximum(999999999)
+        self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
         self.hs_ppic_opacity.setMaximum(255)
         self.hs_ppic_opacity.setProperty("value", 255)
         self.hs_ppic_opacity.setOrientation(QtCore.Qt.Horizontal)
         self.hs_ppic_opacity.setTickPosition(QtGui.QSlider.TicksAbove)
-        self.gridlayout.addWidget(self.hs_ppic_opacity, 3, 1, 1, 1)
-#        self.hs_ppic_opacity.hide()
-        self.toolbox.setMaximumSize(QtCore.QSize(220, 16777215))
-#        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum,
-#                                       QtGui.QSizePolicy.Preferred)
-#        self.toolbox.setSizePolicy(sizepolicy)
-#        self.toolboxpage1.setGeometry(QtCore.QRect(0, 0, 200, 646))
-#        self.gridlayout4.addWidget(self.rb_magnetic, 1, 0, 1, 1)
-#        self.gridlayout4.addWidget(self.rb_gravity, 4, 0, 1, 1)
-        self.verticallayout.addWidget(self.rb_axis_datamax)
-        self.verticallayout.addWidget(self.rb_axis_profmax)
-        self.verticallayout.addWidget(self.rb_axis_calcmax)
-        self.verticallayout.addWidget(self.rb_axis_custmax)
-        self.verticallayout.addWidget(self.dsb_axis_custmin)
-        self.verticallayout.addWidget(self.dsb_axis_custmax)
         self.dsb_axis_custmin.setValue(0.)
         self.dsb_axis_custmax.setValue(50.)
         self.dsb_axis_custmin.setMinimum(-1000000.)
         self.dsb_axis_custmin.setMaximum(1000000.)
         self.dsb_axis_custmax.setMinimum(-1000000.)
         self.dsb_axis_custmax.setMaximum(1000000.)
-
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
 
-        self.gridlayout_20.addWidget(self.lw_prof_defs, 3, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.sb_profile_linethick, 4, 0, 1, 1)
-#        self.gridlayout_20.addWidget(self.groupbox3, 5, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.groupbox, 6, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.pb_prof_rcopy, 7, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.pb_lbound, 8, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.pb_export_csv, 9, 0, 1, 1)
-        self.toolbox.addItem(self.toolboxpage1, "")
-        self.gridlayout.addWidget(self.toolbox, 5, 1, 1, 1)
-        self.gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.mmc, 1, 0, 5, 1)
-
-        self.sb_profnum2.setPrefix("Profile: ")
-#        self.groupbox3.setTitle("Profile Data")
-#        self.rb_magnetic.setText("Magnetic Data")
-#        self.rb_gravity.setText("Gravity Data")
+        self.sb_profnum.setPrefix("Profile: ")
         self.groupbox.setTitle("Profile Y-Axis Scale")
         self.rb_axis_datamax.setText("Scale to dataset maximum")
         self.rb_axis_profmax.setText("Scale to profile maximum")
         self.rb_axis_calcmax.setText("Scale to calculated maximum")
         self.rb_axis_custmax.setText("Scale to custom maximum")
         self.sb_profile_linethick.setPrefix("Line Thickness: ")
-        self.toolbox.setItemText(self.toolbox.indexOf(self.toolboxpage1),
-                                 "General")
         self.pb_prof_rcopy.setText("Ranged Copy")
         self.pb_lbound.setText("Add Lithological Boundary")
         self.pb_export_csv.setText("Export Profile")
 
+#        self.gridlayout.setColumnMinimumWidth(1, 100)
+#        self.gridlayout.setColumnStretch(1, 0)
+
+        self.gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
+        self.gridlayout.addWidget(self.mmc, 1, 0, 9, 1)
+
+        self.gridlayout.addWidget(self.sb_profnum, 0, 1, 1, 1)
+        self.gridlayout.addWidget(self.hs_profnum, 1, 1, 1, 1)
+        self.gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
+        self.gridlayout.addWidget(self.hs_ppic_opacity, 3, 1, 1, 1)
+        self.gridlayout.addWidget(self.lw_prof_defs, 4, 1, 1, 1)
+        self.gridlayout.addWidget(self.sb_profile_linethick, 5, 1, 1, 1)
+        self.gridlayout.addWidget(self.groupbox, 6, 1, 1, 1)
+        self.gridlayout.addWidget(self.pb_prof_rcopy, 7, 1, 1, 1)
+        self.gridlayout.addWidget(self.pb_lbound, 8, 1, 1, 1)
+        self.gridlayout.addWidget(self.pb_export_csv, 9, 1, 1, 1)
+
+        self.verticallayout.addWidget(self.rb_axis_datamax)
+        self.verticallayout.addWidget(self.rb_axis_profmax)
+        self.verticallayout.addWidget(self.rb_axis_calcmax)
+        self.verticallayout.addWidget(self.rb_axis_custmax)
+        self.verticallayout.addWidget(self.dsb_axis_custmin)
+        self.verticallayout.addWidget(self.dsb_axis_custmax)
+
     # Buttons etc
         self.rb_axis_datamax.setChecked(True)
-#        self.rb_gravity.setChecked(True)
         self.sb_profile_linethick.valueChanged.connect(self.width)
         self.lw_prof_defs.currentItemChanged.connect(self.change_defs)
         self.pb_prof_rcopy.clicked.connect(self.rcopy)
-#        self.rb_gravity.clicked.connect(self.rb_mag_grav)
-#        self.rb_magnetic.clicked.connect(self.rb_mag_grav)
         self.pb_lbound.clicked.connect(self.lbound)
-        self.hslider_profile2.valueChanged.connect(self.hprofnum)
-        self.hslider_profile2.sliderReleased.connect(self.hprofnum)
-        self.sb_profnum2.valueChanged.connect(self.sprofnum)
+        self.hs_profnum.valueChanged.connect(self.hprofnum)
+        self.hs_profnum.sliderReleased.connect(self.hprofnum)
+        self.sb_profnum.valueChanged.connect(self.sprofnum)
         self.rb_axis_calcmax.clicked.connect(self.rb_plot_scale)
         self.rb_axis_profmax.clicked.connect(self.rb_plot_scale)
         self.rb_axis_datamax.clicked.connect(self.rb_plot_scale)
@@ -391,21 +368,23 @@ class ProfileDisplay(object):
 
     def sprofnum(self):
         """ Routine to change a profile from spinbox"""
-        self.hslider_profile2.setValue(self.sb_profnum2.value())
-        self.profnum()
+        self.hs_profnum.setValue(self.sb_profnum.value())
 
     def hprofnum(self):
         """ Routine to change a profile from spinbox"""
-        self.sb_profnum2.setValue(self.hslider_profile2.sliderPosition())
+        self.sb_profnum.valueChanged.disconnect()
+        self.sb_profnum.setValue(self.hs_profnum.sliderPosition())
+        self.sb_profnum.valueChanged.connect(self.sprofnum)
+
         self.profnum()
 
     def profnum(self):
         """ Routine to change a profile from spinbox"""
         self.update_model()
 
-        self.lmod1.curprof = self.sb_profnum2.value()
+        self.lmod1.curprof = self.sb_profnum.value()
         self.change_model(slide=True)
-        self.update_plot(slide=self.hslider_profile2.isSliderDown())
+        self.update_plot(slide=self.hs_profnum.isSliderDown())
 
     def rcopy(self):
         """ Do a ranged copy on a profile """
@@ -468,7 +447,7 @@ class ProfileDisplay(object):
 #            tmpprof2 = data2[self.lmod1.curprof, :]
             tmprng = (np.arange(tmpprof.shape[0])*self.lmod1.dxy +
                       self.lmod1.xrange[0]+self.lmod1.dxy/2.)
-            self.sb_profnum2.setMaximum(self.lmod1.numy-1)
+            self.sb_profnum.setMaximum(self.lmod1.numy-1)
 #            self.mmc.update_line(self.lmod1.xrange, [alt, alt])
             extent = self.lmod1.xrange
 
@@ -480,7 +459,7 @@ class ProfileDisplay(object):
 #            tmpprof2 = data2[:, self.lmod1.curprof]
             tmprng = (np.arange(tmpprof.shape[0])*self.lmod1.dxy +
                       self.lmod1.yrange[0]+self.lmod1.dxy/2.)
-            self.sb_profnum2.setMaximum(self.lmod1.numx-1)
+            self.sb_profnum.setMaximum(self.lmod1.numx-1)
 #            self.mmc.update_line(self.lmod1.yrange, [alt, alt])
             extent = self.lmod1.yrange
 
@@ -492,7 +471,6 @@ class ProfileDisplay(object):
         else:
             extent = list(extent)+[tmpprof.min(), tmpprof.max()]
 
-#        pdb.set_trace()
 # Load in observed data - if there is any
         data2 = None
         tmprng2 = None
@@ -571,17 +549,25 @@ class ProfileDisplay(object):
         self.lmod1 = self.parent.lmod1
         self.mmc.lmod = self.lmod1
 
+        txtmsg = ('Note: The display of gravity or magnetic data is '
+                  'triggered off their respective calculations. Press '
+                  '"Calculate Gravity" to see the gravity plot and '
+                  '"Calculate Magnetics" to see the magnetic plot')
+
+        if txtmsg not in self.parent.txtmsg.split('\n'):
+            self.showtext(txtmsg)
+
         misc.update_lith_lw(self.lmod1, self.lw_prof_defs)
 
-        self.hslider_profile2.valueChanged.disconnect()
+        self.hs_profnum.valueChanged.disconnect()
         self.combo_profpic.currentIndexChanged.disconnect()
-        self.sb_profnum2.valueChanged.disconnect()
+        self.sb_profnum.valueChanged.disconnect()
 
-        self.hslider_profile2.setMinimum(0)
+        self.hs_profnum.setMinimum(0)
         if self.lmod1.is_ew:
-            self.hslider_profile2.setMaximum(self.lmod1.numy-1)
+            self.hs_profnum.setMaximum(self.lmod1.numy-1)
         else:
-            self.hslider_profile2.setMaximum(self.lmod1.numx-1)
+            self.hs_profnum.setMaximum(self.lmod1.numx-1)
 
         if len(self.lmod1.profpics) > 0:
             self.combo_profpic.clear()
@@ -589,12 +575,12 @@ class ProfileDisplay(object):
             self.combo_profpic.setCurrentIndex(0)
 
         self.change_model()  # needs to happen before profnum set value
-        self.sb_profnum2.setValue(self.lmod1.curprof)
-        self.hslider_profile2.setValue(self.sb_profnum2.value())
+        self.sb_profnum.setValue(self.lmod1.curprof)
+        self.hs_profnum.setValue(self.sb_profnum.value())
         self.update_plot()
 #        self.change_model() # needs to happen before profnum set value
-        self.sb_profnum2.valueChanged.connect(self.sprofnum)
-        self.hslider_profile2.valueChanged.connect(self.hprofnum)
+        self.sb_profnum.valueChanged.connect(self.sprofnum)
+        self.hs_profnum.valueChanged.connect(self.hprofnum)
         self.combo_profpic.currentIndexChanged.connect(self.profpic_hs)
 
 
@@ -933,7 +919,7 @@ class MyMplCanvas(FigureCanvas):
 
     def slide_plot(self, xdat, dat, extent, xdat2, dat2):
         """ Slider """
-        dmin, dmax = self.extentchk(extent)
+#        dmin, dmax = self.extentchk(extent)
 
         self.figure.canvas.restore_region(self.pbbox)
         self.cal[0].set_data([xdat, dat])
@@ -951,3 +937,42 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.update()
 
         QtGui.QApplication.processEvents()
+
+
+class MySlider(QtGui.QSlider):
+    """
+    My Slider
+
+    Custom class which allows clicking on slider bar with slider moving to
+    click in a single step.
+    """
+    def __init__(self, parent=None):
+        QtGui.QPushButton.__init__(self, parent)
+
+    def mousePressEvent(self, event):
+        """ Mouse Press Event """
+        opt = QtGui.QStyleOptionSlider()
+        self.initStyleOption(opt)
+        sr = self.style()
+        sr = sr.subControlRect(QtGui.QStyle.CC_Slider, opt,
+                               QtGui.QStyle.SC_SliderHandle, self)
+        if (event.button() == QtCore.Qt.LeftButton and
+                sr.contains(event.pos()) is False):
+            if self.orientation() == QtCore.Qt.Vertical:
+                self.setValue(self.minimum() + ((self.maximum()-self.minimum())
+                              * (self.height()-event.y())) / self.height())
+            else:
+                halfHandleWidth = (0.5 * sr.width()) + 0.5
+                adaptedPosX = event.x()
+                if (adaptedPosX < halfHandleWidth):
+                    adaptedPosX = halfHandleWidth
+                if (adaptedPosX > self.width() - halfHandleWidth):
+                    adaptedPosX = self.width() - halfHandleWidth
+                newWidth = (self.width() - halfHandleWidth) - halfHandleWidth
+                normalizedPosition = (adaptedPosX-halfHandleWidth)/newWidth
+
+                newVal = self.minimum() + ((self.maximum()-self.minimum()) *
+                                           normalizedPosition)
+                self.setValue(newVal)
+            event.accept()
+        super(MySlider, self).mousePressEvent(event)

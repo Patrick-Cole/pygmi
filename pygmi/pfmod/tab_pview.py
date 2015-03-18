@@ -60,28 +60,25 @@ class ProfileDisplay(object):
         self.mpl_toolbar = NavigationToolbar(self.mmc, mainwindow)
 
         self.userint = mainwindow
-        self.toolboxpage1 = QtGui.QWidget()
-        self.groupbox = QtGui.QGroupBox(self.toolboxpage1)
-
+        self.groupbox = QtGui.QGroupBox()
         self.gridlayout = QtGui.QGridLayout(mainwindow)
-        self.sb_profnum2 = QtGui.QSpinBox(mainwindow)
-        self.hslider_profile2 = QtGui.QSlider(mainwindow)
-        self.combo_profpic = QtGui.QComboBox(mainwindow)
-        self.hs_ppic_opacity = QtGui.QSlider(mainwindow)
-        self.toolbox = QtGui.QToolBox(mainwindow)
-
         self.verticallayout = QtGui.QVBoxLayout(self.groupbox)
-        self.rb_axis_datamax = QtGui.QRadioButton(self.groupbox)
-        self.rb_axis_profmax = QtGui.QRadioButton(self.groupbox)
-        self.rb_axis_calcmax = QtGui.QRadioButton(self.groupbox)
 
-        self.sb_profile_linethick = QtGui.QSpinBox(self.toolboxpage1)
-        self.gridlayout_20 = QtGui.QGridLayout(self.toolboxpage1)
-        self.lw_prof_defs = QtGui.QListWidget(self.toolboxpage1)
+        self.sb_profnum2 = QtGui.QSpinBox()
+        self.hslider_profile2 = QtGui.QSlider()
+        self.combo_profpic = QtGui.QComboBox()
+        self.hs_ppic_opacity = QtGui.QSlider()
 
-        self.pb_add_prof = QtGui.QPushButton(self.toolboxpage1)
-        self.pb_export_csv = QtGui.QPushButton(self.toolboxpage1)
+        self.rb_axis_datamax = QtGui.QRadioButton()
+        self.rb_axis_profmax = QtGui.QRadioButton()
+        self.rb_axis_calcmax = QtGui.QRadioButton()
 
+        self.sb_profile_linethick = QtGui.QSpinBox()
+        self.gridlayout_20 = QtGui.QGridLayout()
+        self.lw_prof_defs = QtGui.QListWidget()
+
+        self.pb_add_prof = QtGui.QPushButton()
+        self.pb_export_csv = QtGui.QPushButton()
 
         self.setupui()
 
@@ -89,46 +86,45 @@ class ProfileDisplay(object):
         """ Setup UI """
         self.sb_profnum2.setWrapping(True)
         self.sb_profnum2.setMaximum(999999999)
-        self.gridlayout.addWidget(self.sb_profnum2, 0, 1, 1, 1)
+
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                        QtGui.QSizePolicy.Fixed)
         self.hslider_profile2.setSizePolicy(sizepolicy)
-        self.hslider_profile2.setOrientation(QtCore.Qt.Horizontal)
-        self.gridlayout.addWidget(self.hslider_profile2, 1, 1, 1, 1)
-        self.gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
         self.hs_ppic_opacity.setSizePolicy(sizepolicy)
+
+        self.lw_prof_defs.setFixedWidth(220)
+        self.hslider_profile2.setOrientation(QtCore.Qt.Horizontal)
         self.hs_ppic_opacity.setMaximum(255)
         self.hs_ppic_opacity.setProperty("value", 255)
         self.hs_ppic_opacity.setOrientation(QtCore.Qt.Horizontal)
         self.hs_ppic_opacity.setTickPosition(QtGui.QSlider.TicksAbove)
         self.gridlayout.addWidget(self.hs_ppic_opacity, 3, 1, 1, 1)
-        self.toolbox.setMaximumSize(QtCore.QSize(220, 16777215))
         self.verticallayout.addWidget(self.rb_axis_datamax)
         self.verticallayout.addWidget(self.rb_axis_profmax)
         self.verticallayout.addWidget(self.rb_axis_calcmax)
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
 
-        self.gridlayout_20.addWidget(self.lw_prof_defs, 3, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.sb_profile_linethick, 4, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.groupbox, 6, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.pb_add_prof, 7, 0, 1, 1)
-        self.gridlayout_20.addWidget(self.pb_export_csv, 9, 0, 1, 1)
-        self.toolbox.addItem(self.toolboxpage1, "")
-        self.gridlayout.addWidget(self.toolbox, 5, 1, 1, 1)
         self.gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.mmc, 1, 0, 5, 1)
+        self.gridlayout.addWidget(self.mmc, 1, 0, 7, 1)
+
+        self.gridlayout.addWidget(self.sb_profnum2, 0, 1, 1, 1)
+        self.gridlayout.addWidget(self.hslider_profile2, 1, 1, 1, 1)
+        self.gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
+        self.gridlayout.addWidget(self.lw_prof_defs, 3, 1, 1, 1)
+        self.gridlayout.addWidget(self.sb_profile_linethick, 4, 1, 1, 1)
+        self.gridlayout.addWidget(self.groupbox, 5, 1, 1, 1)
+        self.gridlayout.addWidget(self.pb_add_prof, 6, 1, 1, 1)
+        self.gridlayout.addWidget(self.pb_export_csv, 7, 1, 1, 1)
 
         self.sb_profnum2.setPrefix("Custom Profile: ")
+        self.pb_add_prof.setText("Add Custom Profile")
+        self.pb_export_csv.setText("Export Profile")
         self.groupbox.setTitle("Profile Y-Axis Scale")
         self.rb_axis_datamax.setText("Scale to dataset maximum")
         self.rb_axis_profmax.setText("Scale to profile maximum")
         self.rb_axis_calcmax.setText("Scale to calculated maximum")
         self.sb_profile_linethick.setPrefix("Line Thickness: ")
-        self.toolbox.setItemText(self.toolbox.indexOf(self.toolboxpage1),
-                                 "General")
-        self.pb_add_prof.setText("Add Custom Profile")
-        self.pb_export_csv.setText("Export Profile")
 
     # Buttons etc
         self.rb_axis_datamax.setChecked(True)
@@ -136,6 +132,7 @@ class ProfileDisplay(object):
         self.lw_prof_defs.currentItemChanged.connect(self.change_defs)
         self.pb_add_prof.clicked.connect(self.addprof)
         self.hslider_profile2.valueChanged.connect(self.hprofnum)
+        self.hslider_profile2.sliderReleased.connect(self.hprofnum)
         self.sb_profnum2.valueChanged.connect(self.sprofnum)
         self.rb_axis_calcmax.clicked.connect(self.rb_plot_scale)
         self.rb_axis_profmax.clicked.connect(self.rb_plot_scale)
