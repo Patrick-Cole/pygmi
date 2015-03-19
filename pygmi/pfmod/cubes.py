@@ -129,27 +129,28 @@ class Mod3dDisplay(QtGui.QDialog):
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
                                        QtGui.QSizePolicy.Fixed)
 
-        sizepolicy2 = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                        QtGui.QSizePolicy.Fixed)
+        sizepolicy_pb = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum,
+                                          QtGui.QSizePolicy.Maximum)
 
         self.lw_3dmod_defs.setSizePolicy(sizepolicy)
         self.lw_3dmod_defs.setSelectionMode(
             QtGui.QAbstractItemView.MultiSelection)
+        self.lw_3dmod_defs.setFixedWidth(220)
         self.verticallayout.addWidget(self.lw_3dmod_defs)
 
-        self.checkbox_smooth.setText("Smooth Model")
         self.checkbox_smooth.setSizePolicy(sizepolicy)
-        self.verticallayout.addWidget(self.checkbox_smooth)
+        self.pb_save.setSizePolicy(sizepolicy_pb)
+        self.pb_refresh.setSizePolicy(sizepolicy_pb)
+        self.pbar.setOrientation(QtCore.Qt.Vertical)
 
+        self.checkbox_smooth.setText("Smooth Model")
         self.pb_save.setText("Save to Image File (JPG or PNG)")
-        self.pb_save.setSizePolicy(sizepolicy2)
-        self.verticallayout.addWidget(self.pb_save)
+        self.pb_refresh.setText('Refresh Model')
 
-        self.pb_refresh.setText("Refresh Model")
-        self.pb_refresh.setSizePolicy(sizepolicy2)
+        self.verticallayout.addWidget(self.checkbox_smooth)
+        self.verticallayout.addWidget(self.pb_save)
         self.verticallayout.addWidget(self.pb_refresh)
 
-        self.pbar.setOrientation(QtCore.Qt.Vertical)
         self.horizontallayout.addWidget(self.pbar)
 
     def save(self):

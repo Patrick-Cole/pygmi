@@ -143,6 +143,7 @@ class BeachBall(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.algorithm = 'FPFIT'
+        self.nofps = False
 
         self.mmc = MyMplCanvas(self)
         self.tabwidget = QtGui.QTabWidget(self)
@@ -163,6 +164,13 @@ class BeachBall(QtGui.QDialog):
         for i in data:
             alist += list(i['F'].keys())
         alist = sorted(set(alist))
+
+        if len(alist) == 0:
+            self.parent.showprocesslog('Error: no Fault Plane Solutions')
+            self.nofps = True
+            return False
+        else:
+            self.nofps = False
 
         try:
             self.cbox_alg.currentIndexChanged.disconnect()
@@ -365,6 +373,10 @@ class BeachBall(QtGui.QDialog):
 
     def settings(self):
         """ run """
+        if self.nofps:
+            self.parent.showprocesslog('Error: no Fault Plane Solutions')
+            return False
+
         self.show()
         QtGui.QApplication.processEvents()
 

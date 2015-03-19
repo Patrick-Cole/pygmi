@@ -518,10 +518,15 @@ class MyMplCanvas(FigureCanvas):
 
     def move(self, event):
         """ Mouse is moving """
+        cb = QtGui.QBitmap(8, 8)
+        cb.clear()
+        cb.fill(QtCore.Qt.color1)
+        custom = QtGui.QCursor(cb)
+        self.setCursor(custom)
+
         if event.inaxes == self.axes and self.press is True:
-            row = int((event.ydata - self.lmod.zrange[0])/self.lmod.d_z)
+            row = int((event.ydata - self.lmod.zrange[0])/self.lmod.d_z)+1
             col = int((event.xdata)/self.lmod.dxy)
-#            col = int((event.xdata - self.lmod.xrange[0])/self.lmod.dxy)
 
             aaa = self.axes.get_xbound()[-1]
             bbb = self.mdata.shape[1]

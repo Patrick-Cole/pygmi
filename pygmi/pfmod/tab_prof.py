@@ -649,7 +649,6 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.mpl_connect('button_press_event', self.button_press)
         self.figure.canvas.mpl_connect('button_release_event',
                                        self.button_release)
-
 # Initial Images
         self.paxes = fig.add_subplot(211)
         self.paxes.yaxis.set_label_text("mGal")
@@ -681,6 +680,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
+
     def button_press(self, event):
         """ Button press """
         nmode = self.axes.get_navigate_mode()
@@ -702,12 +702,23 @@ class MyMplCanvas(FigureCanvas):
 
     def move(self, event):
         """ Mouse is moving """
+        cb = QtGui.QBitmap(8, 8)
+        cb.clear()
+        cb.fill(QtCore.Qt.color1)
+        custom = QtGui.QCursor(cb)
+        self.setCursor(custom)
+
+        dxy = self.lmod.dxy
+        xmin = self.lmod.xrange[0]
+        ymin = self.lmod.yrange[0]
+        zmin = self.lmod.zrange[0]
+
         if event.inaxes == self.axes and self.press is True:
             if self.lmod.is_ew:
-                col = int((event.xdata - self.lmod.xrange[0])/self.lmod.dxy)
+                col = int((event.xdata - xmin)/dxy)+1
             else:
-                col = int((event.xdata - self.lmod.yrange[0])/self.lmod.dxy)
-            row = int((event.ydata - self.lmod.zrange[0])/self.lmod.d_z)
+                col = int((event.xdata - ymin)/dxy)+1
+            row = int((event.ydata - zmin)/self.lmod.d_z)+1
 
             xdata = col
             ydata = row

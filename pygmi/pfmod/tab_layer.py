@@ -32,6 +32,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import \
     NavigationToolbar2QT as NavigationToolbar
+import ctypes
 
 
 class LayerDisplay(object):
@@ -291,17 +292,24 @@ class MyMplCanvas(FigureCanvas):
 
     def move(self, event):
         """ Mouse is moving """
+        cb = QtGui.QBitmap(8, 8)
+        cb.clear()
+        cb.fill(QtCore.Qt.color1)
+        custom = QtGui.QCursor(cb)
+        self.setCursor(custom)
+
         if self.axes.xaxis.get_label_text().find('km') > -1:
             cdiv = 1000.
         else:
             cdiv = 1.
 
+        dxy = self.lmod.dxy/cdiv
+        xmin = self.lmod.xrange[0]/cdiv
+        ymin = self.lmod.yrange[0]/cdiv
+
         if event.inaxes == self.axes and self.press is True:
-            col = int((event.xdata - self.lmod.xrange[0]/cdiv) /
-                      (self.lmod.dxy/cdiv))
-            row = int((self.lmod.yrange[1]/cdiv - event.ydata) /
-                      (self.lmod.dxy/cdiv))+1
-            row = self.mdata.shape[0] - row
+            col = int((event.xdata - xmin)/dxy)+1
+            row = int((event.ydata - ymin)/dxy)+1
 
             xdata = col
             ydata = row

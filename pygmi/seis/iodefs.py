@@ -99,6 +99,10 @@ class ImportSeisan(object):
         ltmp = pntfile.readlines()
         pntfile.close()
 
+        if len(ltmp[0]) < 80:
+            self.parent.showprocesslog('Error: Problem with file')
+            return False
+
         # This constructs a dictionary of functions
         read_record_type = {}
         read_record_type['1'] = read_record_type_1
