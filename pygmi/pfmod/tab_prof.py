@@ -702,11 +702,21 @@ class MyMplCanvas(FigureCanvas):
 
     def move(self, event):
         """ Mouse is moving """
-        cb = QtGui.QBitmap(8, 8)
-        cb.clear()
-        cb.fill(QtCore.Qt.color1)
-        custom = QtGui.QCursor(cb)
-        self.setCursor(custom)
+
+        if self.figure.canvas.toolbar._active is None:
+            vlim = self.axes.viewLim
+            dlim = self.axes.dataLim
+            tmp0 = self.axes.transData.transform((vlim.x0, vlim.y0))
+            tmp1 = self.axes.transData.transform((vlim.x1, vlim.y1))
+            width, height = tmp1-tmp0
+            width /= self.mdata.shape[1]
+            height /= self.mdata.shape[0]
+            width *= dlim.width/vlim.width
+            height *= dlim.height/vlim.height
+            cwidth = (2*self.width-1)
+            cb = QtGui.QBitmap(cwidth*width, cwidth*height)
+            cb.fill(QtCore.Qt.color1)
+            self.setCursor(QtGui.QCursor(cb))
 
         dxy = self.lmod.dxy
         xmin = self.lmod.xrange[0]
