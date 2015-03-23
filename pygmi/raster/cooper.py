@@ -97,8 +97,8 @@ class Gradients(QtGui.QDialog):
         self.sb_azi.setMinimum(-360)
         self.sb_azi.setMaximum(360)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        self.buttonbox.setStandardButtons(self.buttonbox.Cancel |
+                                          self.buttonbox.Ok)
 
         self.setWindowTitle("Gradient Calculation")
         label_az.setText("Azimuth")

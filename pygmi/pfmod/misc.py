@@ -25,6 +25,7 @@
 """ These are miscellaneous functions for the program """
 
 from PyQt4 import QtGui, QtCore
+import pygmi.menu_default as menu_default
 
 
 def update_lith_lw(lmod, lwidget):
@@ -45,56 +46,53 @@ class RangedCopy(QtGui.QDialog):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
-        self.formlayout = QtGui.QFormLayout(self)
-        self.label = QtGui.QLabel(self)
-        self.label_2 = QtGui.QLabel(self)
-        self.label_3 = QtGui.QLabel(self)
-        self.label_4 = QtGui.QLabel(self)
-        self.label_5 = QtGui.QLabel(self)
-        self.sb_master = QtGui.QSpinBox(self)
-        self.sb_start = QtGui.QSpinBox(self)
-        self.lw_lithdel = QtGui.QListWidget(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.lw_lithcopy = QtGui.QListWidget(self)
-        self.sb_end = QtGui.QSpinBox(self)
+        self.gridlayout = QtGui.QGridLayout(self)
+        self.sb_master = QtGui.QSpinBox()
+        self.sb_start = QtGui.QSpinBox()
+        self.lw_lithdel = QtGui.QListWidget()
+        self.lw_lithcopy = QtGui.QListWidget()
+        self.sb_end = QtGui.QSpinBox()
+        self.buttonbox = QtGui.QDialogButtonBox()
+        self.helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        self.formlayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.label_2)
+        label = QtGui.QLabel()
+        label_2 = QtGui.QLabel()
+        label_3 = QtGui.QLabel()
+        label_4 = QtGui.QLabel()
+        label_5 = QtGui.QLabel()
+
         self.sb_master.setMaximum(999999999)
-        self.formlayout.setWidget(0, QtGui.QFormLayout.FieldRole,
-                                  self.sb_master)
-        self.formlayout.setWidget(1, QtGui.QFormLayout.LabelRole, self.label)
         self.sb_start.setMaximum(999999999)
-        self.formlayout.setWidget(1, QtGui.QFormLayout.FieldRole,
-                                  self.sb_start)
-        self.formlayout.setWidget(3, QtGui.QFormLayout.LabelRole, self.label_3)
-        self.lw_lithcopy.setSelectionMode(
-            QtGui.QAbstractItemView.MultiSelection)
-        self.formlayout.setWidget(3, QtGui.QFormLayout.FieldRole,
-                                  self.lw_lithcopy)
-        self.formlayout.setWidget(4, QtGui.QFormLayout.LabelRole, self.label_4)
-        self.lw_lithdel.setSelectionMode(
-            QtGui.QAbstractItemView.MultiSelection)
-        self.formlayout.setWidget(4, QtGui.QFormLayout.FieldRole,
-                                  self.lw_lithdel)
+        self.lw_lithcopy.setSelectionMode(self.lw_lithcopy.MultiSelection)
+        self.lw_lithdel.setSelectionMode(self.lw_lithdel.MultiSelection)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.formlayout.setWidget(5, QtGui.QFormLayout.SpanningRole,
-                                  self.buttonbox)
-        self.formlayout.setWidget(2, QtGui.QFormLayout.LabelRole, self.label_5)
+        self.buttonbox.setStandardButtons(self.buttonbox.Cancel |
+                                          self.buttonbox.Ok)
         self.sb_end.setMaximum(999999999)
-        self.formlayout.setWidget(2, QtGui.QFormLayout.FieldRole, self.sb_end)
 
         self.setWindowTitle("Ranged Copy")
-        self.label.setText("Range Start")
-        self.label_2.setText("Master Profile")
-        self.label_3.setText("Lithologies To Copy")
-        self.label_4.setText("Lithologies To Overwrite")
-        self.label_5.setText("Range End")
+        label.setText("Range Start")
+        label_2.setText("Master Profile")
+        label_3.setText("Lithologies To Copy")
+        label_4.setText("Lithologies To Overwrite")
+        label_5.setText("Range End")
+
+        self.gridlayout.addWidget(label_2, 0, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_master, 0, 1, 1, 1)
+        self.gridlayout.addWidget(label, 1, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_start, 1, 1, 1, 1)
+        self.gridlayout.addWidget(label_5, 2, 0, 1, 1)
+        self.gridlayout.addWidget(self.sb_end, 2, 1, 1, 1)
+        self.gridlayout.addWidget(label_3, 3, 0, 1, 1)
+        self.gridlayout.addWidget(self.lw_lithcopy, 3, 1, 1, 1)
+        self.gridlayout.addWidget(label_4, 4, 0, 1, 1)
+        self.gridlayout.addWidget(self.lw_lithdel, 4, 1, 1, 1)
+        self.gridlayout.addWidget(self.helpdocs, 5, 0, 1, 1)
+        self.gridlayout.addWidget(self.buttonbox, 5, 1, 1, 1)
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
