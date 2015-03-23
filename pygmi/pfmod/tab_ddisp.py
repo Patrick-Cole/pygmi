@@ -46,79 +46,71 @@ class DataDisplay(object):
         self.grid1txt = 'Calculated Magnetics'
         self.grid2txt = 'Calculated Gravity'
 
-        mainwindow = QtGui.QWidget()
-        self.userint = mainwindow
+        self.userint = QtGui.QWidget()
         self.mmc = MyMplCanvas(len(self.lmod1.custprofx))
-        self.mpl_toolbar = NavigationToolbar(self.mmc, mainwindow)
+        self.mpl_toolbar = NavigationToolbar(self.mmc, self.userint)
 
         self.ddisp_plot = self.mmc
-        self.sb_profnum = QtGui.QSpinBox(mainwindow)
-        self.label_profile_xy = QtGui.QLabel(mainwindow)
-        self.hslider_profile = QtGui.QSlider(mainwindow)
-        self.hslider_grid = QtGui.QSlider(mainwindow)
-        self.toolbox = QtGui.QToolBox(mainwindow)
-
-        self.page_1 = QtGui.QWidget()
-        self.combo_grid1 = QtGui.QComboBox(self.page_1)
-        self.combo_grid2 = QtGui.QComboBox(self.page_1)
-
-        self.groupbox = QtGui.QGroupBox(self.page_1)
-        self.rb_ew = QtGui.QRadioButton(self.groupbox)
-        self.rb_ns = QtGui.QRadioButton(self.groupbox)
+        self.sb_profnum = QtGui.QSpinBox()
+        self.label_profile_xy = QtGui.QLabel()
+        self.hslider_profile = QtGui.QSlider()
+        self.hslider_grid = QtGui.QSlider()
+        self.combo_grid1 = QtGui.QComboBox()
+        self.combo_grid2 = QtGui.QComboBox()
+        self.rb_ew = QtGui.QRadioButton()
+        self.rb_ns = QtGui.QRadioButton()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
+        gtmp = ['Calculated Magnetics', 'Calculated Gravity']
         gridlayout = QtGui.QGridLayout(self.userint)
-        verticallayout = QtGui.QVBoxLayout(self.groupbox)
-        gridlayout2 = QtGui.QGridLayout(self.page_1)
-        gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
-        gridlayout.addWidget(self.ddisp_plot, 1, 0, 4, 1)
-        gridlayout.addWidget(self.sb_profnum, 0, 1, 1, 1)
+        groupbox = QtGui.QGroupBox()
+        verticallayout = QtGui.QVBoxLayout(groupbox)
+
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                        QtGui.QSizePolicy.Fixed)
+
         self.label_profile_xy.setSizePolicy(sizepolicy)
-        gridlayout.addWidget(self.label_profile_xy, 1, 1, 1, 1)
         self.hslider_profile.setSizePolicy(sizepolicy)
         self.hslider_profile.setOrientation(QtCore.Qt.Horizontal)
-        gridlayout.addWidget(self.hslider_profile, 2, 1, 1, 1)
         self.hslider_grid.setOrientation(QtCore.Qt.Horizontal)
-        gridlayout.addWidget(self.hslider_grid, 5, 0, 1, 1)
-        self.toolbox.setMaximumSize(QtCore.QSize(200, 16777215))
-        self.page_1.setGeometry(QtCore.QRect(0, 0, 200, 721))
-        gridlayout2.addWidget(self.combo_grid1, 10, 0, 1, 1)
-        gridlayout2.addWidget(self.combo_grid2, 9, 0, 1, 1)
-        self.groupbox.setSizePolicy(sizepolicy)
         self.rb_ew.setChecked(True)
-        verticallayout.addWidget(self.rb_ew)
-        verticallayout.addWidget(self.rb_ns)
-        gridlayout2.addWidget(self.groupbox, 3, 0, 1, 1)
-        self.toolbox.addItem(self.page_1, "")
-        gridlayout.addWidget(self.toolbox, 3, 1, 3, 1)
+        self.sb_profnum.setFixedWidth(220)
+        self.sb_profnum.setMaximum(self.lmod1.numy-1)
+        self.combo_grid1.addItems(gtmp)
+        self.combo_grid1.setCurrentIndex(0)  # set to mag
+        self.combo_grid2.addItems(gtmp)
+        self.combo_grid2.setCurrentIndex(1)  # set to grav
 
         self.sb_profnum.setPrefix("Profile: ")
         self.label_profile_xy.setText("Easting:")
-        self.groupbox.setTitle("Profile Orientation")
+        groupbox.setTitle("Profile Orientation")
         self.rb_ew.setText("Profile is W-E")
         self.rb_ns.setText("Profile is S-N")
-        self.toolbox.setItemText(0, "General")
-        self.toolbox.setCurrentIndex(0)
+
+        verticallayout.addWidget(self.rb_ew)
+        verticallayout.addWidget(self.rb_ns)
+
+        gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
+        gridlayout.addWidget(self.ddisp_plot, 1, 0, 8, 1)
+        gridlayout.addWidget(self.hslider_grid, 9, 0, 1, 1)
+        gridlayout.addWidget(self.sb_profnum, 0, 1, 1, 1)
+        gridlayout.addWidget(self.label_profile_xy, 1, 1, 1, 1)
+        gridlayout.addWidget(self.hslider_profile, 2, 1, 1, 1)
+        gridlayout.addWidget(groupbox, 3, 1, 1, 1)
+        gridlayout.addWidget(self.combo_grid2, 4, 1, 1, 1)
+        gridlayout.addWidget(self.combo_grid1, 5, 1, 1, 1)
 
     # Buttons
+        self.combo_grid1.currentIndexChanged.connect(self.combo1)
+        self.combo_grid2.currentIndexChanged.connect(self.combo2)
         self.hslider_grid.sliderMoved.connect(self.hs_grid)
-        self.sb_profnum.valueChanged.connect(self.profnum)
-        self.sb_profnum.setMaximum(self.lmod1.numy-1)
         self.hslider_profile.sliderMoved.connect(self.profnum)
+        self.sb_profnum.valueChanged.connect(self.profnum)
         self.rb_ew.clicked.connect(self.prof_dir)
         self.rb_ns.clicked.connect(self.prof_dir)
-        gtmp = ['Calculated Magnetics', 'Calculated Gravity']
-        self.combo_grid1.addItems(gtmp)
-        self.combo_grid1.setCurrentIndex(0)  # set to mag
-        self.combo_grid1.currentIndexChanged.connect(self.combo1)
-        self.combo_grid2.addItems(gtmp)
-        self.combo_grid2.setCurrentIndex(1)  # set to grav
-        self.combo_grid2.currentIndexChanged.connect(self.combo2)
 
     def combo1(self):
         """ Combo box to choose grid 1 """

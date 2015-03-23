@@ -32,8 +32,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import \
     NavigationToolbar2QT as NavigationToolbar
-import ctypes
-
+import pdb
 
 class LayerDisplay(object):
     """ Widget class to call the main interface """
@@ -45,32 +44,29 @@ class LayerDisplay(object):
 
         self.grid3 = self.lmod.griddata['Calculated Magnetics']
 
-        mainwindow = QtGui.QWidget()
+        self.userint = QtGui.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod)
-        self.mpl_toolbar = NavigationToolbar(self.mmc, mainwindow)
+        self.mpl_toolbar = NavigationToolbar(self.mmc, self.userint)
 
-        self.userint = mainwindow
-        self.toolboxpage1 = QtGui.QWidget()
-        self.gridlayout = QtGui.QGridLayout(mainwindow)
-        self.label_altitude = QtGui.QLabel(mainwindow)
-        self.sb_model_layer = QtGui.QSpinBox(mainwindow)
-        self.hslider_layer = QtGui.QSlider(mainwindow)
-        self.toolbox = QtGui.QToolBox(mainwindow)
-        self.combo_grid3 = QtGui.QComboBox(mainwindow)
-        self.hs_model_opacity = QtGui.QSlider(mainwindow)
-
-        self.gridlayout_19 = QtGui.QGridLayout(self.toolboxpage1)
-        self.sb_layer_linethick = QtGui.QSpinBox(self.toolboxpage1)
-        self.lw_editor_defs = QtGui.QListWidget(self.toolboxpage1)
-        self.pb_layer_rcopy = QtGui.QPushButton(self.toolboxpage1)
+        self.label_altitude = QtGui.QLabel()
+        self.sb_model_layer = QtGui.QSpinBox()
+        self.hslider_layer = QtGui.QSlider()
+        self.combo_grid3 = QtGui.QComboBox()
+        self.hs_model_opacity = QtGui.QSlider()
+        self.sb_layer_linethick = QtGui.QSpinBox()
+        self.lw_editor_defs = QtGui.QListWidget()
+        self.pb_layer_rcopy = QtGui.QPushButton()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
+        gridlayout = QtGui.QGridLayout(self.userint)
+
         gtmp = ['Calculated Magnetics', 'Calculated Gravity']
 
+        self.lw_editor_defs.setFixedWidth(220)
         self.sb_model_layer.setWrapping(True)
         self.sb_model_layer.setMinimum(0)
         self.sb_model_layer.setMaximum(1000)
@@ -78,56 +74,44 @@ class LayerDisplay(object):
 
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                        QtGui.QSizePolicy.Fixed)
+
         self.hslider_layer.setSizePolicy(sizepolicy)
         self.hslider_layer.setOrientation(QtCore.Qt.Horizontal)
-
         self.hs_model_opacity.setSizePolicy(sizepolicy)
         self.hs_model_opacity.setMaximum(100)
         self.hs_model_opacity.setProperty("value", 100)
         self.hs_model_opacity.setOrientation(QtCore.Qt.Horizontal)
         self.hs_model_opacity.setTickPosition(QtGui.QSlider.TicksAbove)
-
         self.sb_layer_linethick.setMinimum(1)
         self.sb_layer_linethick.setMaximum(1000)
-
-        self.toolbox.setMaximumSize(QtCore.QSize(200, 16777215))
-        self.toolboxpage1.setGeometry(QtCore.QRect(0, 0, 200, 633))
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Preferred)
-        self.toolboxpage1.setSizePolicy(sizepolicy)
-
-        self.gridlayout_19.addWidget(self.lw_editor_defs, 6, 0, 1, 1)
-        self.gridlayout_19.addWidget(self.sb_layer_linethick, 7, 0, 1, 1)
-        self.gridlayout_19.addWidget(self.pb_layer_rcopy, 8, 0, 1, 1)
-        self.toolbox.addItem(self.toolboxpage1, "")
-
-        self.gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.mmc, 1, 0, 5, 1)
-        self.gridlayout.addWidget(self.label_altitude, 0, 1, 1, 1)
-        self.gridlayout.addWidget(self.sb_model_layer, 1, 1, 1, 1)
-        self.gridlayout.addWidget(self.hslider_layer, 2, 1, 1, 1)
-        self.gridlayout.addWidget(self.combo_grid3, 3, 1, 1, 1)
-        self.gridlayout.addWidget(self.hs_model_opacity, 4, 1, 1, 1)
-        self.gridlayout.addWidget(self.toolbox, 5, 1, 1, 1)
+        self.sb_model_layer.setMaximum(self.lmod.numz-1)
+        self.combo_grid3.addItems(gtmp)
+        self.combo_grid3.setCurrentIndex(0)
 
         self.label_altitude.setText("Altitude: 0")
         self.sb_model_layer.setPrefix("Model Layer: ")
         self.hslider_layer.setToolTip("Model Layer")
         self.hs_model_opacity.setToolTip("Model Opacity")
         self.sb_layer_linethick.setPrefix("Line Thickness: ")
-        self.toolbox.setItemText(self.toolbox.indexOf(self.toolboxpage1),
-                                 "General")
         self.pb_layer_rcopy.setText("Ranged Copy")
 
+        gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
+        gridlayout.addWidget(self.mmc, 1, 0, 8, 1)
+        gridlayout.addWidget(self.label_altitude, 0, 1, 1, 1)
+        gridlayout.addWidget(self.sb_model_layer, 1, 1, 1, 1)
+        gridlayout.addWidget(self.hslider_layer, 2, 1, 1, 1)
+        gridlayout.addWidget(self.combo_grid3, 3, 1, 1, 1)
+        gridlayout.addWidget(self.hs_model_opacity, 4, 1, 1, 1)
+        gridlayout.addWidget(self.lw_editor_defs, 5, 1, 1, 1)
+        gridlayout.addWidget(self.sb_layer_linethick, 6, 1, 1, 1)
+        gridlayout.addWidget(self.pb_layer_rcopy, 7, 1, 1, 1)
+
         self.sb_model_layer.valueChanged.connect(self.sb_laynum)
-        self.sb_model_layer.setMaximum(self.lmod.numz-1)
-        self.combo_grid3.addItems(gtmp)
-        self.combo_grid3.setCurrentIndex(0)
         self.combo_grid3.currentIndexChanged.connect(self.combo)
         self.lw_editor_defs.currentItemChanged.connect(self.change_defs)
         self.hslider_layer.valueChanged.connect(self.layer_hs)
-        self.sb_layer_linethick.valueChanged.connect(self.width)
         self.pb_layer_rcopy.clicked.connect(self.rcopy)
+        self.sb_layer_linethick.valueChanged.connect(self.width)
         self.hs_model_opacity.valueChanged.connect(self.sb_laynum)
 
     def change_defs(self):
@@ -283,6 +267,7 @@ class MyMplCanvas(FigureCanvas):
         if event.button == 1 and nmode is None:
             self.press = True
             self.newline = True
+            self.move(event)
 
     def button_release(self, event):
         """ Button press """
@@ -294,14 +279,20 @@ class MyMplCanvas(FigureCanvas):
         """ Mouse is moving """
         if self.figure.canvas.toolbar._active is None:
             vlim = self.axes.viewLim
-            dlim = self.axes.dataLim
+            xptp = self.lmod.xrange[1]-self.lmod.xrange[0]
+            yptp = self.lmod.yrange[1]-self.lmod.yrange[0]
+            if xptp > 10000 or yptp > 10000:
+                xptp /= 1000
+                yptp /= 1000
             tmp0 = self.axes.transData.transform((vlim.x0, vlim.y0))
             tmp1 = self.axes.transData.transform((vlim.x1, vlim.y1))
             width, height = tmp1-tmp0
             width /= self.mdata.shape[1]
             height /= self.mdata.shape[0]
-            width *= dlim.width/vlim.width
-            height *= dlim.height/vlim.height
+
+            width *= xptp/vlim.width
+            height *= yptp/vlim.height
+
             cwidth = (2*self.width-1)
             cb = QtGui.QBitmap(cwidth*width, cwidth*height)
             cb.fill(QtCore.Qt.color1)

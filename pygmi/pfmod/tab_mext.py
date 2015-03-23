@@ -38,209 +38,178 @@ class MextDisplay(object):
         self.showtext = parent.showtext
         self.pbars = self.parent.pbars
 
-        mainwindow = QtGui.QWidget()
+        self.userint = QtGui.QWidget()
 
-        self.groupbox_model = QtGui.QGroupBox(mainwindow)
-        self.groupbox_extent = QtGui.QGroupBox(mainwindow)
-        self.groupbox_data_info = QtGui.QGroupBox(mainwindow)
-        self.verticallayout = QtGui.QVBoxLayout(mainwindow)
+        self.combo_model = QtGui.QComboBox()
+        self.combo_regional = QtGui.QComboBox()
+        self.pb_regional = QtGui.QPushButton()
+        self.combo_dtm = QtGui.QComboBox()
+        self.combo_mag = QtGui.QComboBox()
+        self.combo_grv = QtGui.QComboBox()
+        self.combo_reggrv = QtGui.QComboBox()
+        self.combo_dataset = QtGui.QComboBox()
+        self.dsb_utlx = QtGui.QDoubleSpinBox()
+        self.dsb_utly = QtGui.QDoubleSpinBox()
+        self.dsb_utlz = QtGui.QDoubleSpinBox()
+        self.dsb_xextent = QtGui.QDoubleSpinBox()
+        self.dsb_yextent = QtGui.QDoubleSpinBox()
+        self.dsb_zextent = QtGui.QDoubleSpinBox()
+        self.dsb_xycell = QtGui.QDoubleSpinBox()
+        self.dsb_zcell = QtGui.QDoubleSpinBox()
+        self.sb_cols = QtGui.QSpinBox()
+        self.sb_rows = QtGui.QSpinBox()
+        self.sb_layers = QtGui.QSpinBox()
+        self.pb_apply_changes = QtGui.QPushButton()
 
-        self.gridlayout_model = QtGui.QGridLayout(self.groupbox_model)
-        self.combo_model = QtGui.QComboBox(self.groupbox_model)
-        self.combo_regional = QtGui.QComboBox(self.groupbox_model)
-        self.pb_regional = QtGui.QPushButton(self.groupbox_model)
-
-        self.gridlayout_2 = QtGui.QGridLayout(self.groupbox_data_info)
-        self.combo_dtm = QtGui.QComboBox(self.groupbox_data_info)
-        self.combo_mag = QtGui.QComboBox(self.groupbox_data_info)
-        self.combo_grv = QtGui.QComboBox(self.groupbox_data_info)
-        self.combo_reggrv = QtGui.QComboBox(self.groupbox_data_info)
-
-        self.gridlayout = QtGui.QGridLayout(self.groupbox_extent)
-        self.combo_dataset = QtGui.QComboBox(self.groupbox_extent)
-        self.dsb_utlx = QtGui.QDoubleSpinBox(self.groupbox_extent)
-        self.dsb_utly = QtGui.QDoubleSpinBox(self.groupbox_extent)
-        self.dsb_utlz = QtGui.QDoubleSpinBox(self.groupbox_extent)
-        self.dsb_xextent = QtGui.QDoubleSpinBox(self.groupbox_extent)
-        self.dsb_yextent = QtGui.QDoubleSpinBox(self.groupbox_extent)
-        self.dsb_zextent = QtGui.QDoubleSpinBox(self.groupbox_extent)
-        self.dsb_xycell = QtGui.QDoubleSpinBox(self.groupbox_extent)
-        self.dsb_zcell = QtGui.QDoubleSpinBox(self.groupbox_extent)
-        self.sb_cols = QtGui.QSpinBox(self.groupbox_extent)
-        self.sb_rows = QtGui.QSpinBox(self.groupbox_extent)
-        self.sb_layers = QtGui.QSpinBox(self.groupbox_extent)
-        self.pb_apply_changes = QtGui.QPushButton(self.groupbox_extent)
-
-        self.userint = mainwindow
         self.setupui()
         self.init()
 
     def setupui(self):
         """ Setup UI """
+        verticallayout = QtGui.QVBoxLayout(self.userint)
+        groupbox_model = QtGui.QGroupBox()
+        groupbox_extent = QtGui.QGroupBox()
+        groupbox_data_info = QtGui.QGroupBox()
+
+        gridlayout_model = QtGui.QGridLayout(groupbox_model)
+        gridlayout = QtGui.QGridLayout(groupbox_extent)
+        gridlayout_2 = QtGui.QGridLayout(groupbox_data_info)
+
         sizepolicy2 = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                         QtGui.QSizePolicy.Preferred)
 
 # Current Models Groupbox
-        self.groupbox_model.setTitle("Current Models")
-
-        lbl1_model = QtGui.QLabel(self.groupbox_model)
-        lbl1_model.setText("Current Model:")
-        self.gridlayout_model.addWidget(lbl1_model, 0, 0, 1, 1)
-
-        lbl2_model = QtGui.QLabel(self.groupbox_model)
-        lbl2_model.setText("Regional Model:")
-        self.gridlayout_model.addWidget(lbl2_model, 1, 0, 1, 1)
-
-        self.pb_regional.setText("Apply Regional Model")
+        lbl1_model = QtGui.QLabel()
+        lbl2_model = QtGui.QLabel()
         self.pb_regional.setSizePolicy(sizepolicy2)
-        self.gridlayout_model.addWidget(self.pb_regional, 0, 2, 2, 1)
-
-        self.gridlayout_model.addWidget(self.combo_model, 0, 1, 1, 1)
-        self.gridlayout_model.addWidget(self.combo_regional, 1, 1, 1, 1)
 
 # Data Information Groupbox
-        self.groupbox_data_info.setTitle("Dataset Information")
+        lbl1_2 = QtGui.QLabel()
+        lbl2_2 = QtGui.QLabel()
+        lbl3_2 = QtGui.QLabel()
+        lbl4_2 = QtGui.QLabel()
 
-        lbl1_2 = QtGui.QLabel(self.groupbox_data_info)
-        lbl1_2.setText("DTM Dataset:")
-        self.gridlayout_2.addWidget(lbl1_2, 0, 0, 1, 1)
-
-        lbl2_2 = QtGui.QLabel(self.groupbox_data_info)
-        lbl2_2.setText("Magnetic Dataset:")
-        self.gridlayout_2.addWidget(lbl2_2, 1, 0, 1, 1)
-
-        lbl3_2 = QtGui.QLabel(self.groupbox_data_info)
-        lbl3_2.setText("Gravity Dataset:")
-        self.gridlayout_2.addWidget(lbl3_2, 2, 0, 1, 1)
-
-        lbl4_2 = QtGui.QLabel(self.groupbox_data_info)
-        lbl4_2.setText("Gravity Regional Dataset:")
-        self.gridlayout_2.addWidget(lbl4_2, 3, 0, 1, 1)
-
-        self.gridlayout_2.addWidget(self.combo_dtm, 0, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.combo_mag, 1, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.combo_grv, 2, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.combo_reggrv, 3, 1, 1, 1)
-
-        self.gridlayout_2.setColumnStretch(0, 1)
-        self.gridlayout_2.setColumnStretch(1, 1)
-        self.gridlayout_2.setColumnStretch(2, 1)
+        gridlayout_2.setColumnStretch(0, 1)
+        gridlayout_2.setColumnStretch(1, 1)
+        gridlayout_2.setColumnStretch(2, 1)
 
 # Data Extents Groupbox
-        self.groupbox_extent.setTitle("Model Extent Properties")
-
-        lbl0 = QtGui.QLabel(self.groupbox_extent)
-        lbl0.setText("Get Study Area from following Dataset:")
-        self.gridlayout.addWidget(lbl0, 0, 0, 1, 1)
-
-        lbl3 = QtGui.QLabel(self.groupbox_extent)
-        lbl3.setText("Upper Top Left X Coordinate:")
-        self.gridlayout.addWidget(lbl3, 1, 0, 1, 1)
-
-        lbl4 = QtGui.QLabel(self.groupbox_extent)
-        lbl4.setText("Upper Top Left Y Coordinate:")
-        self.gridlayout.addWidget(lbl4, 2, 0, 1, 1)
-
-        lbl1 = QtGui.QLabel(self.groupbox_extent)
-        lbl1.setText("Upper Top Left Z Coordinate (from DTM):")
-        self.gridlayout.addWidget(lbl1, 3, 0, 1, 1)
-
-        lbl8 = QtGui.QLabel(self.groupbox_extent)
-        lbl8.setText("Total X Extent:")
-        self.gridlayout.addWidget(lbl8, 4, 0, 1, 1)
-
-        lbl9 = QtGui.QLabel(self.groupbox_extent)
-        lbl9.setText("Total Y Extent:")
-        self.gridlayout.addWidget(lbl9, 5, 0, 1, 1)
-
-        lbl10 = QtGui.QLabel(self.groupbox_extent)
-        lbl10.setText("Total Z Extent (Depth):")
-        self.gridlayout.addWidget(lbl10, 6, 0, 1, 1)
-
-        lbl5 = QtGui.QLabel(self.groupbox_extent)
-        lbl5.setText("X and Y Cell Size:")
-        self.gridlayout.addWidget(lbl5, 7, 0, 1, 1)
-
-        lbl6 = QtGui.QLabel(self.groupbox_extent)
-        lbl6.setText("Z Cell Size:")
-        self.gridlayout.addWidget(lbl6, 8, 0, 1, 1)
-
-        lbl7 = QtGui.QLabel(self.groupbox_extent)
-        lbl7.setText("Number of Columns (X Direction):")
-        self.gridlayout.addWidget(lbl7, 9, 0, 1, 1)
-
-        lbl11 = QtGui.QLabel(self.groupbox_extent)
-        lbl11.setText("Number of Rows (Y Direction):")
-        self.gridlayout.addWidget(lbl11, 10, 0, 1, 1)
-
-        lbl2 = QtGui.QLabel(self.groupbox_extent)
-        lbl2.setText("Number of Layers (Z Direction):")
-        self.gridlayout.addWidget(lbl2, 11, 0, 1, 1)
-
-        self.gridlayout.addWidget(self.combo_dataset, 0, 1, 1, 1)
+        lbl0 = QtGui.QLabel()
+        lbl3 = QtGui.QLabel()
+        lbl4 = QtGui.QLabel()
+        lbl1 = QtGui.QLabel()
+        lbl8 = QtGui.QLabel()
+        lbl9 = QtGui.QLabel()
+        lbl10 = QtGui.QLabel()
+        lbl5 = QtGui.QLabel()
+        lbl6 = QtGui.QLabel()
+        lbl7 = QtGui.QLabel()
+        lbl11 = QtGui.QLabel()
+        lbl2 = QtGui.QLabel()
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)
-        self.gridlayout.addWidget(self.dsb_utlx, 1, 1, 1, 1)
-
         self.dsb_utly.setMinimum(-999999999.0)
         self.dsb_utly.setMaximum(999999999.0)
-        self.gridlayout.addWidget(self.dsb_utly, 2, 1, 1, 1)
-
         self.dsb_utlz.setMinimum(-999999999.0)
         self.dsb_utlz.setMaximum(999999999.0)
-        self.gridlayout.addWidget(self.dsb_utlz, 3, 1, 1, 1)
-
         self.dsb_xextent.setEnabled(True)
         self.dsb_xextent.setMinimum(0.1)
         self.dsb_xextent.setMaximum(2000000000.0)
-        self.gridlayout.addWidget(self.dsb_xextent, 4, 1, 1, 1)
-
         self.dsb_yextent.setEnabled(True)
         self.dsb_yextent.setMinimum(0.1)
         self.dsb_yextent.setMaximum(2000000000.0)
-        self.gridlayout.addWidget(self.dsb_yextent, 5, 1, 1, 1)
-
         self.dsb_zextent.setEnabled(True)
         self.dsb_zextent.setMinimum(0.1)
         self.dsb_zextent.setMaximum(2000000000.0)
-        self.gridlayout.addWidget(self.dsb_zextent, 6, 1, 1, 1)
-
         self.dsb_xycell.setEnabled(True)
         self.dsb_xycell.setMinimum(0.1)
         self.dsb_xycell.setMaximum(1000000.0)
-        self.gridlayout.addWidget(self.dsb_xycell, 7, 1, 1, 1)
-
         self.dsb_zcell.setEnabled(True)
         self.dsb_zcell.setDecimals(2)
         self.dsb_zcell.setMinimum(0.1)
         self.dsb_zcell.setMaximum(1000000.0)
         self.dsb_zcell.setSingleStep(1.0)
-        self.gridlayout.addWidget(self.dsb_zcell, 8, 1, 1, 1)
-
         self.sb_cols.setEnabled(False)
         self.sb_cols.setMinimum(1)
         self.sb_cols.setMaximum(1000000)
-        self.gridlayout.addWidget(self.sb_cols, 9, 1, 1, 1)
-
         self.sb_rows.setEnabled(False)
         self.sb_rows.setMinimum(1)
         self.sb_rows.setMaximum(1000000)
-        self.gridlayout.addWidget(self.sb_rows, 10, 1, 1, 1)
-
         self.sb_layers.setEnabled(False)
         self.sb_layers.setMinimum(1)
         self.sb_layers.setMaximum(1000000)
-        self.gridlayout.addWidget(self.sb_layers, 11, 1, 1, 1)
-
-        self.pb_apply_changes.setText("Accept Proposed Changes")
         self.pb_apply_changes.setSizePolicy(sizepolicy2)
-        self.gridlayout.addWidget(self.pb_apply_changes, 0, 2, 12, 1)
+
+        groupbox_model.setTitle("Current Models")
+        lbl1_model.setText("Current Model:")
+        lbl2_model.setText("Regional Model:")
+        self.pb_regional.setText("Apply Regional Model")
+        groupbox_data_info.setTitle("Dataset Information")
+        lbl1_2.setText("DTM Dataset:")
+        lbl2_2.setText("Magnetic Dataset:")
+        lbl3_2.setText("Gravity Dataset:")
+        lbl4_2.setText("Gravity Regional Dataset:")
+        groupbox_extent.setTitle("Model Extent Properties")
+        lbl0.setText("Get Study Area from following Dataset:")
+        lbl3.setText("Upper Top Left X Coordinate:")
+        lbl4.setText("Upper Top Left Y Coordinate:")
+        lbl1.setText("Upper Top Left Z Coordinate (from DTM):")
+        lbl8.setText("Total X Extent:")
+        lbl9.setText("Total Y Extent:")
+        lbl10.setText("Total Z Extent (Depth):")
+        lbl5.setText("X and Y Cell Size:")
+        lbl6.setText("Z Cell Size:")
+        lbl7.setText("Number of Columns (X Direction):")
+        lbl11.setText("Number of Rows (Y Direction):")
+        lbl2.setText("Number of Layers (Z Direction):")
+        self.pb_apply_changes.setText("Accept Proposed Changes")
 
 # Apply Groupboxes to main layout
-        self.verticallayout.addWidget(self.groupbox_model)
-        self.verticallayout.addWidget(self.groupbox_data_info)
-        self.verticallayout.addWidget(self.groupbox_extent)
+        gridlayout_model.addWidget(lbl1_model, 0, 0, 1, 1)
+        gridlayout_model.addWidget(lbl2_model, 1, 0, 1, 1)
+        gridlayout_model.addWidget(self.combo_model, 0, 1, 1, 1)
+        gridlayout_model.addWidget(self.combo_regional, 1, 1, 1, 1)
+        gridlayout_model.addWidget(self.pb_regional, 0, 2, 2, 1)
+
+        gridlayout_2.addWidget(lbl1_2, 0, 0, 1, 1)
+        gridlayout_2.addWidget(lbl2_2, 1, 0, 1, 1)
+        gridlayout_2.addWidget(lbl3_2, 2, 0, 1, 1)
+        gridlayout_2.addWidget(lbl4_2, 3, 0, 1, 1)
+        gridlayout_2.addWidget(self.combo_dtm, 0, 1, 1, 1)
+        gridlayout_2.addWidget(self.combo_mag, 1, 1, 1, 1)
+        gridlayout_2.addWidget(self.combo_grv, 2, 1, 1, 1)
+        gridlayout_2.addWidget(self.combo_reggrv, 3, 1, 1, 1)
+
+        gridlayout.addWidget(lbl0, 0, 0, 1, 1)
+        gridlayout.addWidget(lbl3, 1, 0, 1, 1)
+        gridlayout.addWidget(lbl4, 2, 0, 1, 1)
+        gridlayout.addWidget(lbl1, 3, 0, 1, 1)
+        gridlayout.addWidget(lbl8, 4, 0, 1, 1)
+        gridlayout.addWidget(lbl9, 5, 0, 1, 1)
+        gridlayout.addWidget(lbl10, 6, 0, 1, 1)
+        gridlayout.addWidget(lbl5, 7, 0, 1, 1)
+        gridlayout.addWidget(lbl6, 8, 0, 1, 1)
+        gridlayout.addWidget(lbl7, 9, 0, 1, 1)
+        gridlayout.addWidget(lbl11, 10, 0, 1, 1)
+        gridlayout.addWidget(lbl2, 11, 0, 1, 1)
+        gridlayout.addWidget(self.combo_dataset, 0, 1, 1, 1)
+        gridlayout.addWidget(self.dsb_utlx, 1, 1, 1, 1)
+        gridlayout.addWidget(self.dsb_utly, 2, 1, 1, 1)
+        gridlayout.addWidget(self.dsb_utlz, 3, 1, 1, 1)
+        gridlayout.addWidget(self.dsb_xextent, 4, 1, 1, 1)
+        gridlayout.addWidget(self.dsb_yextent, 5, 1, 1, 1)
+        gridlayout.addWidget(self.dsb_zextent, 6, 1, 1, 1)
+        gridlayout.addWidget(self.dsb_xycell, 7, 1, 1, 1)
+        gridlayout.addWidget(self.dsb_zcell, 8, 1, 1, 1)
+        gridlayout.addWidget(self.sb_cols, 9, 1, 1, 1)
+        gridlayout.addWidget(self.sb_rows, 10, 1, 1, 1)
+        gridlayout.addWidget(self.sb_layers, 11, 1, 1, 1)
+        gridlayout.addWidget(self.pb_apply_changes, 0, 2, 12, 1)
+
+        verticallayout.addWidget(groupbox_model)
+        verticallayout.addWidget(groupbox_data_info)
+        verticallayout.addWidget(groupbox_extent)
 
 # Link functions
         self.pb_regional.clicked.connect(self.apply_regional)

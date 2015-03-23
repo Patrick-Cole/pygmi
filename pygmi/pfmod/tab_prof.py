@@ -47,28 +47,21 @@ class ProfileDisplay(object):
         self.pbar = self.parent.pbar_sub
         self.viewmagnetics = True
 
-        mainwindow = QtGui.QWidget()
+        self.userint = QtGui.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod1)
-        self.mpl_toolbar = NavigationToolbar(self.mmc, mainwindow)
+        self.mpl_toolbar = NavigationToolbar(self.mmc, self.userint)
 
-        self.userint = mainwindow
-        self.groupbox = QtGui.QGroupBox()
-        self.verticallayout = QtGui.QVBoxLayout(self.groupbox)
-
-        self.gridlayout = QtGui.QGridLayout(mainwindow)
         self.sb_profnum = QtGui.QSpinBox()
         self.hs_profnum = MySlider()
         self.combo_profpic = QtGui.QComboBox()
         self.hs_ppic_opacity = MySlider()
-
         self.rb_axis_datamax = QtGui.QRadioButton()
         self.rb_axis_profmax = QtGui.QRadioButton()
         self.rb_axis_calcmax = QtGui.QRadioButton()
         self.rb_axis_custmax = QtGui.QRadioButton()
         self.dsb_axis_custmin = QtGui.QDoubleSpinBox()
         self.dsb_axis_custmax = QtGui.QDoubleSpinBox()
-
         self.sb_profile_linethick = QtGui.QSpinBox()
         self.lw_prof_defs = QtGui.QListWidget()
         self.pb_prof_rcopy = QtGui.QPushButton()
@@ -79,6 +72,9 @@ class ProfileDisplay(object):
 
     def setupui(self):
         """ Setup UI """
+        gridlayout = QtGui.QGridLayout(self.userint)
+        groupbox = QtGui.QGroupBox()
+        verticallayout = QtGui.QVBoxLayout(groupbox)
 
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                        QtGui.QSizePolicy.Fixed)
@@ -102,9 +98,10 @@ class ProfileDisplay(object):
         self.dsb_axis_custmax.setMaximum(1000000.)
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
+        self.rb_axis_datamax.setChecked(True)
 
+        groupbox.setTitle("Profile Y-Axis Scale")
         self.sb_profnum.setPrefix("Profile: ")
-        self.groupbox.setTitle("Profile Y-Axis Scale")
         self.rb_axis_datamax.setText("Scale to dataset maximum")
         self.rb_axis_profmax.setText("Scale to profile maximum")
         self.rb_axis_calcmax.setText("Scale to calculated maximum")
@@ -114,32 +111,27 @@ class ProfileDisplay(object):
         self.pb_lbound.setText("Add Lithological Boundary")
         self.pb_export_csv.setText("Export Profile")
 
-#        self.gridlayout.setColumnMinimumWidth(1, 100)
-#        self.gridlayout.setColumnStretch(1, 0)
+        gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
+        gridlayout.addWidget(self.mmc, 1, 0, 9, 1)
+        gridlayout.addWidget(self.sb_profnum, 0, 1, 1, 1)
+        gridlayout.addWidget(self.hs_profnum, 1, 1, 1, 1)
+        gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
+        gridlayout.addWidget(self.hs_ppic_opacity, 3, 1, 1, 1)
+        gridlayout.addWidget(self.lw_prof_defs, 4, 1, 1, 1)
+        gridlayout.addWidget(self.sb_profile_linethick, 5, 1, 1, 1)
+        gridlayout.addWidget(groupbox, 6, 1, 1, 1)
+        gridlayout.addWidget(self.pb_prof_rcopy, 7, 1, 1, 1)
+        gridlayout.addWidget(self.pb_lbound, 8, 1, 1, 1)
+        gridlayout.addWidget(self.pb_export_csv, 9, 1, 1, 1)
 
-        self.gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.mmc, 1, 0, 9, 1)
-
-        self.gridlayout.addWidget(self.sb_profnum, 0, 1, 1, 1)
-        self.gridlayout.addWidget(self.hs_profnum, 1, 1, 1, 1)
-        self.gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
-        self.gridlayout.addWidget(self.hs_ppic_opacity, 3, 1, 1, 1)
-        self.gridlayout.addWidget(self.lw_prof_defs, 4, 1, 1, 1)
-        self.gridlayout.addWidget(self.sb_profile_linethick, 5, 1, 1, 1)
-        self.gridlayout.addWidget(self.groupbox, 6, 1, 1, 1)
-        self.gridlayout.addWidget(self.pb_prof_rcopy, 7, 1, 1, 1)
-        self.gridlayout.addWidget(self.pb_lbound, 8, 1, 1, 1)
-        self.gridlayout.addWidget(self.pb_export_csv, 9, 1, 1, 1)
-
-        self.verticallayout.addWidget(self.rb_axis_datamax)
-        self.verticallayout.addWidget(self.rb_axis_profmax)
-        self.verticallayout.addWidget(self.rb_axis_calcmax)
-        self.verticallayout.addWidget(self.rb_axis_custmax)
-        self.verticallayout.addWidget(self.dsb_axis_custmin)
-        self.verticallayout.addWidget(self.dsb_axis_custmax)
+        verticallayout.addWidget(self.rb_axis_datamax)
+        verticallayout.addWidget(self.rb_axis_profmax)
+        verticallayout.addWidget(self.rb_axis_calcmax)
+        verticallayout.addWidget(self.rb_axis_custmax)
+        verticallayout.addWidget(self.dsb_axis_custmin)
+        verticallayout.addWidget(self.dsb_axis_custmax)
 
     # Buttons etc
-        self.rb_axis_datamax.setChecked(True)
         self.sb_profile_linethick.valueChanged.connect(self.width)
         self.lw_prof_defs.currentItemChanged.connect(self.change_defs)
         self.pb_prof_rcopy.clicked.connect(self.rcopy)
@@ -680,13 +672,13 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
-
     def button_press(self, event):
         """ Button press """
         nmode = self.axes.get_navigate_mode()
         if event.button == 1 and nmode is None:
             self.press = True
             self.newline = True
+            self.move(event)
 
     def button_release(self, event):
         """ Button press """
@@ -705,14 +697,18 @@ class MyMplCanvas(FigureCanvas):
 
         if self.figure.canvas.toolbar._active is None:
             vlim = self.axes.viewLim
-            dlim = self.axes.dataLim
+            if self.lmod.is_ew:
+                xptp = self.lmod.xrange[1]-self.lmod.xrange[0]
+            else:
+                xptp = self.lmod.yrange[1]-self.lmod.yrange[0]
+            yptp = self.lmod.zrange[1]-self.lmod.zrange[0]
             tmp0 = self.axes.transData.transform((vlim.x0, vlim.y0))
             tmp1 = self.axes.transData.transform((vlim.x1, vlim.y1))
             width, height = tmp1-tmp0
             width /= self.mdata.shape[1]
             height /= self.mdata.shape[0]
-            width *= dlim.width/vlim.width
-            height *= dlim.height/vlim.height
+            width *= xptp/vlim.width
+            height *= yptp/vlim.height
             cwidth = (2*self.width-1)
             cb = QtGui.QBitmap(cwidth*width, cwidth*height)
             cb.fill(QtCore.Qt.color1)

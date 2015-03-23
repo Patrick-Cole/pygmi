@@ -51,18 +51,10 @@ class ProfileDisplay(object):
         self.pcntmax = len(self.xnodes)-1
         self.viewmagnetics = True
 
-#        self.xnodes = {0: self.lmod1.xrange}
-#        self.ynodes = {0: [self.lmod1.yrange[0], self.lmod1.yrange[0]]}
-
-        mainwindow = QtGui.QWidget()
+        self.userint = QtGui.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod1)
-        self.mpl_toolbar = NavigationToolbar(self.mmc, mainwindow)
-
-        self.userint = mainwindow
-        self.groupbox = QtGui.QGroupBox()
-        self.gridlayout = QtGui.QGridLayout(mainwindow)
-        self.verticallayout = QtGui.QVBoxLayout(self.groupbox)
+        self.mpl_toolbar = NavigationToolbar(self.mmc, self.userint)
 
         self.sb_profnum2 = QtGui.QSpinBox()
         self.hslider_profile2 = QtGui.QSlider()
@@ -84,6 +76,10 @@ class ProfileDisplay(object):
 
     def setupui(self):
         """ Setup UI """
+        gridlayout = QtGui.QGridLayout(self.userint)
+        groupbox = QtGui.QGroupBox()
+        verticallayout = QtGui.QVBoxLayout(groupbox)
+
         self.sb_profnum2.setWrapping(True)
         self.sb_profnum2.setMaximum(999999999)
 
@@ -98,36 +94,36 @@ class ProfileDisplay(object):
         self.hs_ppic_opacity.setProperty("value", 255)
         self.hs_ppic_opacity.setOrientation(QtCore.Qt.Horizontal)
         self.hs_ppic_opacity.setTickPosition(QtGui.QSlider.TicksAbove)
-        self.gridlayout.addWidget(self.hs_ppic_opacity, 3, 1, 1, 1)
-        self.verticallayout.addWidget(self.rb_axis_datamax)
-        self.verticallayout.addWidget(self.rb_axis_profmax)
-        self.verticallayout.addWidget(self.rb_axis_calcmax)
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
+        self.rb_axis_datamax.setChecked(True)
 
-        self.gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.mmc, 1, 0, 7, 1)
+        gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
+        gridlayout.addWidget(self.mmc, 1, 0, 7, 1)
+        gridlayout.addWidget(self.sb_profnum2, 0, 1, 1, 1)
+        gridlayout.addWidget(self.hslider_profile2, 1, 1, 1, 1)
+        gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
+        gridlayout.addWidget(self.hs_ppic_opacity, 3, 1, 1, 1)
+        gridlayout.addWidget(self.lw_prof_defs, 4, 1, 1, 1)
+        gridlayout.addWidget(self.sb_profile_linethick, 5, 1, 1, 1)
+        gridlayout.addWidget(groupbox, 6, 1, 1, 1)
+        gridlayout.addWidget(self.pb_add_prof, 7, 1, 1, 1)
+        gridlayout.addWidget(self.pb_export_csv, 8, 1, 1, 1)
 
-        self.gridlayout.addWidget(self.sb_profnum2, 0, 1, 1, 1)
-        self.gridlayout.addWidget(self.hslider_profile2, 1, 1, 1, 1)
-        self.gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
-        self.gridlayout.addWidget(self.lw_prof_defs, 3, 1, 1, 1)
-        self.gridlayout.addWidget(self.sb_profile_linethick, 4, 1, 1, 1)
-        self.gridlayout.addWidget(self.groupbox, 5, 1, 1, 1)
-        self.gridlayout.addWidget(self.pb_add_prof, 6, 1, 1, 1)
-        self.gridlayout.addWidget(self.pb_export_csv, 7, 1, 1, 1)
+        verticallayout.addWidget(self.rb_axis_datamax)
+        verticallayout.addWidget(self.rb_axis_profmax)
+        verticallayout.addWidget(self.rb_axis_calcmax)
 
+        groupbox.setTitle("Profile Y-Axis Scale")
         self.sb_profnum2.setPrefix("Custom Profile: ")
         self.pb_add_prof.setText("Add Custom Profile")
         self.pb_export_csv.setText("Export Profile")
-        self.groupbox.setTitle("Profile Y-Axis Scale")
         self.rb_axis_datamax.setText("Scale to dataset maximum")
         self.rb_axis_profmax.setText("Scale to profile maximum")
         self.rb_axis_calcmax.setText("Scale to calculated maximum")
         self.sb_profile_linethick.setPrefix("Line Thickness: ")
 
     # Buttons etc
-        self.rb_axis_datamax.setChecked(True)
         self.sb_profile_linethick.valueChanged.connect(self.width)
         self.lw_prof_defs.currentItemChanged.connect(self.change_defs)
         self.pb_add_prof.clicked.connect(self.addprof)
@@ -503,6 +499,7 @@ class MyMplCanvas(FigureCanvas):
         if event.button == 1 and nmode is None:
             self.press = True
             self.newline = True
+            self.move(event)
 
     def button_release(self, event):
         """ Button press """
