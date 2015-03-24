@@ -13,13 +13,14 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.4.1
+* Python 3.4.2
 * NumPy 1.8.2
 * SciPy 0.14.0
-* Matplotlib 1.3.1
+* Matplotlib 1.4.1
 * PyQt 4.10.4
-* GDAL 1.11.0
+* GDAL 1.11.1
 * numexpr 2.4
+* numba 0.15.1
 
 It is possible that it might work on earlier versions, especially on non-windows operating systems. Under windows, there are compiled .pyd files (python version of a dll) which require the NumPy and Python version to match. However, for actual releases, I do post windows binaries which include a standalone python distribution (that will not interfere with existing installations), so this should not be a problem.
 
@@ -42,34 +43,14 @@ Windows
 ^^^^^^^
 I have now made available convenient installers for PyGMI, thanks to `Cyrille Rossant <http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/>`_. If you have already installed PyGMI using this installer, you can simply update it using the smaller pygmi_update.exe file. This smaller update file contains only the python code, if you are only interested in that.
 
-Running the software can be acheived through the shortcut on your desktop.
+Running the software can be achieved through the shortcut on your desktop.
 
 Linux
 ^^^^^
-Linux normally comes with python installed, but the additional libraries will still need to be installed. The software has been tested on Ubuntu 13.10 linux, using Python 2.7
+Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through `Anaconda <http://continuum.io/downloads>`_.
 
-* Install libraries (shown below for Ubuntu 13.10)::
-
-   sudo apt-get upgrade
-   sudo apt-get install python-numpy
-   sudo apt-get install python-scipy
-   sudo apt-get install python-qt4
-   sudo apt-get install python-matplotlib
-   sudo apt-get install python-gdal
-   sudo apt-get install python-numexpr
-   sudo apt-get install cython
-   sudo apt-get install libqt4-opengl
-   sudo apt-get install python-qt4-gl
-
-* Extract the zip file.
-* Execute the following command from within the root of the PyGMI directory to run the program::
+After installation of python, download the pygmi source off github, extract it, and execute the following command from within the root of the PyGMI directory to run the program::
 
    python quickstart.py
 
-* Alternatively you can install it as a library as shown above.
-
-Troubleshooting
----------------
-Q: I get a crash when I try to calculate the forward model under Windows.
-
-A: More than likely your version of python is too old for pre-compiled code I include for the windows install. It should be solved by downloading the larger install and reinstalling everything. 
+Alternatively you can install it as a library as shown above.

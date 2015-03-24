@@ -138,7 +138,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pygmi.pfmod.html#module-pygmi.pfmod.iodefs">pygmi.pfmod.iodefs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.pfmod.html#module-pygmi.pfmod.menu">pygmi.pfmod.menu module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.pfmod.html#module-pygmi.pfmod.misc">pygmi.pfmod.misc module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.pfmod.html#module-pygmi.pfmod.mvis3d">pygmi.pfmod.mvis3d module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.pfmod.html#module-pygmi.pfmod.cubes">pygmi.pfmod.mvis3d module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.pfmod.html#module-pygmi.pfmod.pfmod">pygmi.pfmod.pfmod module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.pfmod.html#module-pygmi.pfmod.tab_ddisp">pygmi.pfmod.tab_ddisp module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.pfmod.html#module-pygmi.pfmod.tab_layer">pygmi.pfmod.tab_layer module</a></li>
@@ -258,6 +258,7 @@ line and arrowhead are cleaned properly when moving.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>painter</strong> (<em>QPainter</em>) &#8211; </li>
 <li><strong>option</strong> (<em>QStyleOptionGraphicsItem</em>) &#8211; </li>
+<li><strong>widget</strong> (<em>QWidget, optional</em>) &#8211; </li>
 </ul>
 </td>
 </tr>
@@ -341,6 +342,8 @@ line and arrowhead are cleaned properly when moving.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> (<em>N/A</em>) &#8211; </td>
+</tr>
 </tbody>
 </table>
 </dd></dl>
@@ -532,6 +535,12 @@ Output list of PyGMI dataset</td>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.main.MainWidget.help_docs">
+<tt class="descname">help_docs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.help_docs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help Routine</p>
 </dd></dl>
 
 <dl class="method">
@@ -780,6 +789,48 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pygmi.menu_default.HelpButton">
+<em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">HelpButton</tt><big>(</big><em>htmlfile=None</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QPushButton</span></tt></p>
+<p>Help Button</p>
+<p>Convenience class to add an image to a pushbutton</p>
+<dl class="method">
+<dt id="pygmi.menu_default.HelpButton.help_docs">
+<tt class="descname">help_docs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpButton.help_docs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help Routine</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.menu_default.HelpDocs">
+<em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">HelpDocs</tt><big>(</big><em>parent=None</em>, <em>helptxt=None</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpDocs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
+<p>A basic combo box application</p>
+<dl class="attribute">
+<dt id="pygmi.menu_default.HelpDocs.parent">
+<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.menu_default.HelpDocs.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+<p>reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.menu_default.HelpDocs.indata">
+<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.menu_default.HelpDocs.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of input datasets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.menu_default.HelpDocs.outdata">
+<tt class="descname">outdata</tt><a class="headerlink" href="#pygmi.menu_default.HelpDocs.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of output datasets</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pygmi.menu_default.HelpMenu">
 <em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">HelpMenu</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpMenu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
@@ -797,12 +848,12 @@ interface. Normal as well as context menus are defined here.</p>
 <dd><p>PyGMI About Box</p>
 </dd></dl>
 
+<dl class="method">
+<dt id="pygmi.menu_default.HelpMenu.webhelp">
+<tt class="descname">webhelp</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpMenu.webhelp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help File</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="pygmi.menu_default.webhelp">
-<tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">webhelp</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.webhelp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Help File</p>
 </dd></dl>
 
 </div>

@@ -77,7 +77,7 @@
 <li><a class="reference internal" href="#module-pygmi.pfmod.iodefs">pygmi.pfmod.iodefs module</a></li>
 <li><a class="reference internal" href="#module-pygmi.pfmod.menu">pygmi.pfmod.menu module</a></li>
 <li><a class="reference internal" href="#module-pygmi.pfmod.misc">pygmi.pfmod.misc module</a></li>
-<li><a class="reference internal" href="#module-pygmi.pfmod.mvis3d">pygmi.pfmod.mvis3d module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.cubes">pygmi.pfmod.mvis3d module</a></li>
 <li><a class="reference internal" href="#module-pygmi.pfmod.pfmod">pygmi.pfmod.pfmod module</a></li>
 <li><a class="reference internal" href="#module-pygmi.pfmod.tab_ddisp">pygmi.pfmod.tab_ddisp module</a></li>
 <li><a class="reference internal" href="#module-pygmi.pfmod.tab_layer">pygmi.pfmod.tab_layer module</a></li>
@@ -703,31 +703,13 @@ are still in meters.</p>
 
 <dl class="class">
 <dt id="pygmi.pfmod.iodefs.Exportkmz">
-<em class="property">class </em><tt class="descclassname">pygmi.pfmod.iodefs.</tt><tt class="descname">Exportkmz</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">pygmi.pfmod.iodefs.</tt><tt class="descname">Exportkmz</tt><big>(</big><em>wkt</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
 <p>Class to call up a dialog</p>
-<dl class="method">
-<dt id="pygmi.pfmod.iodefs.Exportkmz.acceptall">
-<tt class="descname">acceptall</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz.acceptall" title="Permalink to this definition">¶</a></dt>
-<dd><p>accept</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.iodefs.Exportkmz.proj">
-<tt class="descname">proj</tt><big>(</big><em>indx</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz.proj" title="Permalink to this definition">¶</a></dt>
-<dd><p>used for choosing the projection</p>
-</dd></dl>
-
 <dl class="method">
 <dt id="pygmi.pfmod.iodefs.Exportkmz.setupui">
 <tt class="descname">setupui</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setup UI</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.iodefs.Exportkmz.zone">
-<tt class="descname">zone</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz.zone" title="Permalink to this definition">¶</a></dt>
-<dd><p>used for changing UTM zone</p>
 </dd></dl>
 
 </dd></dl>
@@ -923,191 +905,276 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pygmi.pfmod.mvis3d">
-<span id="pygmi-pfmod-mvis3d-module"></span><h2>pygmi.pfmod.mvis3d module<a class="headerlink" href="#module-pygmi.pfmod.mvis3d" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pygmi.pfmod.cubes">
+<span id="pygmi-pfmod-mvis3d-module"></span><h2>pygmi.pfmod.mvis3d module<a class="headerlink" href="#module-pygmi.pfmod.cubes" title="Permalink to this headline">¶</a></h2>
 <p>This is code for the 3d model creation.</p>
 <dl class="class">
-<dt id="pygmi.pfmod.mvis3d.GLWidget">
-<em class="property">class </em><tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">GLWidget</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget">
+<em class="property">class </em><tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">GLWidget</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtOpenGL.QGLWidget</span></tt></p>
 <p>OpenGL Widget</p>
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.initGeometry">
-<tt class="descname">initGeometry</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.initGeometry" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.initGeometry">
+<tt class="descname">initGeometry</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.initGeometry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize Geometry</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.initializeGL">
-<tt class="descname">initializeGL</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.initializeGL" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.init_object">
+<tt class="descname">init_object</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.init_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise VBO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.initializeGL">
+<tt class="descname">initializeGL</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.initializeGL" title="Permalink to this definition">¶</a></dt>
 <dd><p>initialize OpenGL</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.minimumSizeHint">
-<tt class="descname">minimumSizeHint</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.minimumSizeHint" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.minimumSizeHint">
+<tt class="descname">minimumSizeHint</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.minimumSizeHint" title="Permalink to this definition">¶</a></dt>
 <dd><p>minimum size hint</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.mouseMoveEvent">
-<tt class="descname">mouseMoveEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.mouseMoveEvent">
+<tt class="descname">mouseMoveEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse Move Event</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.mousePressEvent">
-<tt class="descname">mousePressEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.mousePressEvent">
+<tt class="descname">mousePressEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.mousePressEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse Press Event</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.normalizeAngle">
-<tt class="descname">normalizeAngle</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.normalizeAngle" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.normalizeAngle">
+<tt class="descname">normalizeAngle</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.normalizeAngle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Normalize angle</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.paintGL">
-<tt class="descname">paintGL</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.paintGL" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.paintGL">
+<tt class="descname">paintGL</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.paintGL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Paint OpenGL</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.resizeGL">
-<tt class="descname">resizeGL</tt><big>(</big><em>width</em>, <em>height</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.resizeGL" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.readPixels">
+<tt class="descname">readPixels</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.readPixels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads pixels from the window</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.resizeGL">
+<tt class="descname">resizeGL</tt><big>(</big><em>width</em>, <em>height</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.resizeGL" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resize OpenGL</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.setXRotation">
-<tt class="descname">setXRotation</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.setXRotation" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.setXRotation">
+<tt class="descname">setXRotation</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.setXRotation" title="Permalink to this definition">¶</a></dt>
 <dd><p>set X rotation</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.setYRotation">
-<tt class="descname">setYRotation</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.setYRotation" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.setYRotation">
+<tt class="descname">setYRotation</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.setYRotation" title="Permalink to this definition">¶</a></dt>
 <dd><p>set Y rotation</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.setZRotation">
-<tt class="descname">setZRotation</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.setZRotation" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.setZRotation">
+<tt class="descname">setZRotation</tt><big>(</big><em>angle</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.setZRotation" title="Permalink to this definition">¶</a></dt>
 <dd><p>set Z rotation</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.sizeHint">
-<tt class="descname">sizeHint</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.sizeHint" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.sizeHint">
+<tt class="descname">sizeHint</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.sizeHint" title="Permalink to this definition">¶</a></dt>
 <dd><p>size hint</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.updatelist">
-<tt class="descname">updatelist</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.updatelist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the list</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.mvis3d.GLWidget.wheelEvent">
-<tt class="descname">wheelEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.GLWidget.wheelEvent" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.GLWidget.wheelEvent">
+<tt class="descname">wheelEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.wheelEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse wheel event</p>
 </dd></dl>
 
 </dd></dl>
 
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.GetTables">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">GetTables</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.GetTables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Tables</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.InterpolateVertices">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">InterpolateVertices</tt><big>(</big><em>isolevel</em>, <em>p1x</em>, <em>p1y</em>, <em>p1z</em>, <em>p2x</em>, <em>p2y</em>, <em>p2z</em>, <em>valp1</em>, <em>valp2</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.InterpolateVertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate vertices</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.MarchingCubes">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">MarchingCubes</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em>, <em>c</em>, <em>iso</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.MarchingCubes" title="Permalink to this definition">¶</a></dt>
+<dd><p># function [F,V,col] = MarchingCubes(x,y,z,c,iso,colors)</p>
+<p># [F,V] = MarchingCubes(X,Y,Z,C,ISO)
+# [F,V,COL] = MarchingCubes(X,Y,Z,C,ISO,COLORS)
+#
+# Use marching cubes algorithm to compute a triangulated mesh of the
+# isosurface within the 3D matrix of scalar values C at isosurface value
+# ISO. The 3D matrices (X,Y,Z) represent a Cartesian, axis-aligned grid
+# specifying the points at which the data C is given. These coordinate
+# arrays must be in the format produced by Matlab&#8217;s meshgrid function.
+# Output arguments F and V are the face list and vertex list
+# of the resulting triangulated mesh. The orientation of the triangles is
+# chosen such that the normals point from the higher values to the lower
+# values. Optional arguments COLORS ans COLS can be used to produce
+# interpolated mesh face colors. For usage, see Matlab&#8217;s isosurface.m.
+# To avoid Out of Memory errors when matrix C is large, convert matrices
+# X,Y,Z and C from doubles (Matlab default) to singles (32-bit floats).
+#
+# Adapted for Matlab by Peter Hammer in 2011 based on an
+# Octave function written by Martin Helm &lt;<a class="reference external" href="mailto:martin&#37;&#52;&#48;mhelm&#46;de">martin<span>&#64;</span>mhelm<span>&#46;</span>de</a>&gt; in 2009
+# <a class="reference external" href="http://www.mhelm.de/octave/m/marching_cube.m">http://www.mhelm.de/octave/m/marching_cube.m</a>
+#
+# Revised 30 September, 2011 to add code by Oliver Woodford for removing
+# duplicate vertices.</p>
+<p>#    error(&#8216;x, y, z, c must be matrices of dim 3&#8217;)
+#    error(&#8216;x, y, z, c must be the same size&#8217;)
+#    error(&#8216;grid size must be at least 2x2x2&#8217;)
+#    error(&#8216;iso needs to be scalar value&#8217;)
+#    error( &#8216;color must be matrix of same size as c&#8217;)</p>
+</dd></dl>
+
 <dl class="class">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay">
-<em class="property">class </em><tt class="descclassname">pygmi.pfmod.mvis3d.</tt><tt class="descname">Mod3dDisplay</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay">
+<em class="property">class </em><tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">Mod3dDisplay</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.change_defs">
-<tt class="descname">change_defs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.change_defs" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.change_defs">
+<tt class="descname">change_defs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.change_defs" title="Permalink to this definition">¶</a></dt>
 <dd><p>List box routine</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.data_init">
-<tt class="descname">data_init</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.data_init" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.data_init">
+<tt class="descname">data_init</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.data_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data initialisation routine</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.defs">
-<tt class="descname">defs</tt><big>(</big><em>fcalc=False</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.defs" title="Permalink to this definition">¶</a></dt>
-<dd><p>List box in layer tab for definitions</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.get_selected">
-<tt class="descname">get_selected</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.get_selected" title="Permalink to this definition">¶</a></dt>
-<dd><p>gets selected items on the list widget</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.mod3d_vs">
-<tt class="descname">mod3d_vs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.mod3d_vs" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.mod3d_vs">
+<tt class="descname">mod3d_vs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.mod3d_vs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Vertical slider used to scale 3d view</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.opacity">
-<tt class="descname">opacity</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.opacity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Dial to change opacity of background</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.run">
-<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.run" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process data</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.save">
-<tt class="descname">save</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.save" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.save">
+<tt class="descname">save</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>This saves a jpg</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.setupui">
-<tt class="descname">setupui</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.setupui" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.set_selected_liths">
+<tt class="descname">set_selected_liths</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.set_selected_liths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the selected lithologies</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.setupui">
+<tt class="descname">setupui</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setup UI</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.update_for_kmz">
-<tt class="descname">update_for_kmz</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.update_for_kmz" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_color">
+<tt class="descname">update_color</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update color only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_for_kmz">
+<tt class="descname">update_for_kmz</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_for_kmz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates for the kmz file</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.update_model">
-<tt class="descname">update_model</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.update_model" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_model">
+<tt class="descname">update_model</tt><big>(</big><em>issmooth=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the 3d model. Faces, nodes and face normals are calculated
 here, from the voxel model.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.update_model2">
-<tt class="descname">update_model2</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.update_model2" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_model2">
+<tt class="descname">update_model2</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_model2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the 3d model. Faces, nodes and face normals are calculated
 here, from the voxel model.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.update_plot">
-<tt class="descname">update_plot</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.update_plot" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_plot">
+<tt class="descname">update_plot</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update 3D Model</p>
 </dd></dl>
 
-<dl class="method">
-<dt id="pygmi.pfmod.mvis3d.Mod3dDisplay.update_plot2">
-<tt class="descname">update_plot2</tt><big>(</big><em>fullcalc=True</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.mvis3d.Mod3dDisplay.update_plot2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update plot</p>
 </dd></dl>
 
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.bitget">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">bitget</tt><big>(</big><em>byteval</em>, <em>idx</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.bitget" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.bitset">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">bitset</tt><big>(</big><em>byteval</em>, <em>idx</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.bitset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.calc_norms">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">calc_norms</tt><big>(</big><em>faces</em>, <em>vtx</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.calc_norms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates normals</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.cubes.fancyindex">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">fancyindex</tt><a class="headerlink" href="#pygmi.pfmod.cubes.fancyindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>fancy</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.ind2sub">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">ind2sub</tt><big>(</big><em>msize</em>, <em>idx</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.ind2sub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sub2ind</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.main">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main routine</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.normalize_v3">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">normalize_v3</tt><big>(</big><em>arr</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.normalize_v3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize a numpy array of 3 component vectors shape=(n,3)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.sub2ind">
+<tt class="descclassname">pygmi.pfmod.cubes.</tt><tt class="descname">sub2ind</tt><big>(</big><em>msize</em>, <em>row</em>, <em>col</em>, <em>layer</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.cubes.sub2ind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sub2ind</p>
 </dd></dl>
 
 </div>
@@ -1119,6 +1186,18 @@ here, from the voxel model.</p>
 <em class="property">class </em><tt class="descclassname">pygmi.pfmod.pfmod.</tt><tt class="descname">MainWidget</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QMainWindow</span></tt></p>
 <p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.pfmod.MainWidget.help_docs">
+<tt class="descname">help_docs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.help_docs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help Routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.pfmod.MainWidget.savemodel">
+<tt class="descname">savemodel</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.savemodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model Save</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="pygmi.pfmod.pfmod.MainWidget.settings">
 <tt class="descname">settings</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.settings" title="Permalink to this definition">¶</a></dt>
@@ -1740,6 +1819,21 @@ while doing so - in order to update the blit</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pygmi.pfmod.tab_prof.MySlider">
+<em class="property">class </em><tt class="descclassname">pygmi.pfmod.tab_prof.</tt><tt class="descname">MySlider</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.tab_prof.MySlider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QSlider</span></tt></p>
+<p>My Slider</p>
+<p>Custom class which allows clicking on slider bar with slider moving to
+click in a single step.</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MySlider.mousePressEvent">
+<tt class="descname">mousePressEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.tab_prof.MySlider.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse Press Event</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay">
 <em class="property">class </em><tt class="descclassname">pygmi.pfmod.tab_prof.</tt><tt class="descname">ProfileDisplay</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
@@ -1787,21 +1881,9 @@ while doing so - in order to update the blit</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.profnum">
-<tt class="descname">profnum</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.profnum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Routine to change a profile from spinbox</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.profpic_hs">
 <tt class="descname">profpic_hs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.profpic_hs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Horizontal slider to change the profile</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.rb_mag_grav">
-<tt class="descname">rb_mag_grav</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.rb_mag_grav" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to change the magnetic and gravity radiobutton</p>
 </dd></dl>
 
 <dl class="method">
@@ -1988,12 +2070,6 @@ while doing so - in order to update the blit</p>
 <dt id="pygmi.pfmod.tab_pview.ProfileDisplay.profpic_hs">
 <tt class="descname">profpic_hs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.profpic_hs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Horizontal slider to change the profile</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.rb_mag_grav">
-<tt class="descname">rb_mag_grav</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.rb_mag_grav" title="Permalink to this definition">¶</a></dt>
-<dd><p>Used to change the magnetic and gravity radiobutton</p>
 </dd></dl>
 
 <dl class="method">

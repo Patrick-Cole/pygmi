@@ -47,7 +47,7 @@ pygmi.pfmod.misc module
 pygmi.pfmod.mvis3d module
 -------------------------
 
-.. automodule:: pygmi.pfmod.mvis3d
+.. automodule:: pygmi.pfmod.cubes
     :members:
     :undoc-members:
     :show-inheritance:
