@@ -42,12 +42,9 @@ import pylab as plt
 import copy
 import tempfile
 from scipy.linalg import norm
-from .datatypes import LithModel
-from ..ptimer import PTime
+from pygmi.pfmod.datatypes import LithModel
 from numba import jit
-# import random
 from matplotlib import cm
-# import pdb
 
 
 class GravMag(object):

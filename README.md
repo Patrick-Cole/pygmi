@@ -40,30 +40,16 @@ Once you are in python, you can run PyGMI by using the following commands:
 ###Windows
 I have now made available convenient installers for PyGMI, thanks to Cyrille Rossant. If you have already installed PyGMI using this installer, you can simply update it using the smaller pygmi_update.exe file. This smaller update file contains only the python code, if you are only interested in that.
 
-Running the software can be acheived through the shortcut on your desktop.
+Running the software can be achieved through the shortcut on your desktop.
 
 ###Linux
-Linux normally comes with python installed, but the additional libraries will still need to be installed. The software has been tested on Ubuntu 13.10 linux, using Python 2.7
+Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through Anaconda <http://continuum.io/downloads>.
 
-Install libraries (shown below for Ubuntu 13.10):
+After installation of python, download the pygmi source off github, extract it, and execute the following command from within the root of the PyGMI directory to run the program::
 
-	sudo apt-get upgrade
-	sudo apt-get install python-numpy
-	sudo apt-get install python-scipy
-	sudo apt-get install python-qt4
-	sudo apt-get install python-matplotlib
-	sudo apt-get install python-gdal
-	sudo apt-get install python-numexpr
-	sudo apt-get install cython
-	sudo apt-get install libqt4-opengl
-	sudo apt-get install python-qt4-gl
-
-Extract the zip file.
-
-Execute the following command from within the root of the PyGMI directory to run the program:
-
-	python quickstart.py
+   python quickstart.py
 
 Alternatively you can install it as a library as shown above.
+
 
 

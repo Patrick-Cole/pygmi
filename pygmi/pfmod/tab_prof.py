@@ -360,7 +360,14 @@ class ProfileDisplay(object):
 
     def sprofnum(self):
         """ Routine to change a profile from spinbox"""
+        self.hs_profnum.valueChanged.disconnect()
         self.hs_profnum.setValue(self.sb_profnum.value())
+        self.hs_profnum.valueChanged.connect(self.hprofnum)
+
+        self.update_model()
+        self.lmod1.curprof = self.sb_profnum.value()
+        self.change_model(slide=True)
+        self.update_plot(slide=False)
 
     def hprofnum(self):
         """ Routine to change a profile from spinbox"""
@@ -368,12 +375,7 @@ class ProfileDisplay(object):
         self.sb_profnum.setValue(self.hs_profnum.sliderPosition())
         self.sb_profnum.valueChanged.connect(self.sprofnum)
 
-        self.profnum()
-
-    def profnum(self):
-        """ Routine to change a profile from spinbox"""
         self.update_model()
-
         self.lmod1.curprof = self.sb_profnum.value()
         self.change_model(slide=True)
         self.update_plot(slide=self.hs_profnum.isSliderDown())
@@ -526,6 +528,7 @@ class ProfileDisplay(object):
             elif self.rb_axis_profmax.isChecked():
                 extent[2:] = [tmpprof2.min(), tmpprof2.max()]
 
+        print('slide:',slide)
         if slide is True:
             self.mmc.slide_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
         else:
@@ -645,13 +648,9 @@ class MyMplCanvas(FigureCanvas):
         self.paxes = fig.add_subplot(211)
         self.paxes.yaxis.set_label_text("mGal")
         self.paxes.ticklabel_format(useOffset=False)
-#        pdb.set_trace()
-#        x = [1, 2, 3]
-#        y = [1, 2, 3]
-#        self.cal = self.paxes.plot(x, y)
-#        self.obs = plt.plot(x, y, 'o')
+
         self.cal = self.paxes.plot([], [])
-        self.obs = plt.plot([], [], 'o')
+        self.obs = plt.plot([], [], '.')
 
         self.axes = fig.add_subplot(212)
         self.axes.xaxis.set_label_text(self.xlabel)
@@ -791,7 +790,6 @@ class MyMplCanvas(FigureCanvas):
                 ctmp = np.array(mlut[i]+[255])/255.
 
             tmp[dat[::-1] == i] = ctmp
-#            tmp[dat[:] == i] = ctmp
 
         return tmp
 
@@ -801,31 +799,7 @@ class MyMplCanvas(FigureCanvas):
         # back into it are the graph will go blank on a draw(). This is the
         # reason for the ims and prf commands below.
 
-#        self.axes.cla()
         self.paxes.set_xbound(extent[0], extent[1])
-#        self.figure.canvas.draw()
-#        QtGui.QApplication.processEvents()
-#
-#        tmp = self.luttodat(dat)
-#        if dat2 is not None:
-#            self.ims2 = plt.imshow(dat2.data, interpolation='nearest',
-#                                   aspect='auto')
-#            self.ims2.set_data(dat2.data)
-#            self.ims2.set_extent(self.dat_extent(dat2))
-#            self.ims2.set_clim(dat2.data.min(), dat2.data.max())
-#
-#        self.figure.canvas.draw()
-#        QtGui.QApplication.processEvents()
-#        self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
-#
-#        self.ims = plt.imshow(tmp, interpolation='nearest', aspect='auto')
-#        self.ims.set_extent(extent)
-#        self.ims.set_alpha(opac)
-#        self.figure.canvas.draw()
-#        self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
-#        self.axes.add_line(self.prf[0])
-#
-#        self.mdata = dat
 
         self.ims.set_visible(False)
         self.axes.set_xlim(extent[0], extent[1])
@@ -854,33 +828,17 @@ class MyMplCanvas(FigureCanvas):
 
     def slide_grid(self, dat, dat2=None, opac=1.0):
         """ Slider """
-#        self.mdata = dat
-#        tmp = self.luttodat(dat)
-#        self.ims.set_data(tmp)
-#
-#        self.figure.canvas.restore_region(self.bbox)
-#        self.axes.draw_artist(self.ims)
-#        self.figure.canvas.blit(self.axes.bbox)
-#        self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
-#        self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.mdata = dat
         tmp = self.luttodat(dat)
         self.ims.set_data(tmp)
         self.ims.set_alpha(opac)
-#        if dat2 is not None:
-# #            self.ims2.set_data(dat2.data[::-1])
-#            self.ims2.set_data(dat2.data)
 
         self.figure.canvas.restore_region(self.bbox)
-#        self.axes.draw_artist(self.ims2)
         self.axes.draw_artist(self.ims)
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def update_line(self, xrng, yrng):
@@ -888,7 +846,6 @@ class MyMplCanvas(FigureCanvas):
         self.prf[0].set_data([xrng, yrng])
         self.figure.canvas.restore_region(self.lbbox)
         self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def dat_extent(self, dat):
@@ -925,32 +882,38 @@ class MyMplCanvas(FigureCanvas):
         self.pbbox = self.figure.canvas.copy_from_bbox(self.paxes.bbox)
 
         self.paxes.set_autoscalex_on(False)
-        self.cal = self.paxes.plot(xdat, dat)
+#        self.cal = self.paxes.plot(xdat, dat)
+        self.cal[0].set_data([xdat, dat])
         if xdat2 is not None:
-            self.obs = self.paxes.plot(xdat2, dat2, 'o')
+            self.obs[0].set_data([xdat2, dat2])
         else:
-            self.obs = self.paxes.plot([], [], 'o')
-        self.figure.canvas.draw()
+            self.obs[0].set_data([[], []])
+
+        self.paxes.draw_artist(self.cal[0])
+        if xdat2 is not None:
+            self.paxes.draw_artist(self.obs[0])
+        self.figure.canvas.update()
+
+#        if xdat2 is not None:
+#            self.obs = self.paxes.plot(xdat2, dat2, '.')
+#        else:
+#            self.obs = self.paxes.plot([], [], '.')
+#        self.figure.canvas.draw()
         QtGui.QApplication.processEvents()
         self.plotisinit = True
 
     def slide_plot(self, xdat, dat, extent, xdat2, dat2):
         """ Slider """
-#        dmin, dmax = self.extentchk(extent)
-
         self.figure.canvas.restore_region(self.pbbox)
         self.cal[0].set_data([xdat, dat])
         if xdat2 is not None:
             self.obs[0].set_data([xdat2, dat2])
         else:
             self.obs[0].set_data([[], []])
-#        self.paxes.set_ylim(dmin, dmax)
-#        self.paxes.set_xlim(extent[0], extent[1])
 
         self.paxes.draw_artist(self.cal[0])
         if xdat2 is not None:
             self.paxes.draw_artist(self.obs[0])
-#        self.figure.canvas.blit(self.paxes.bbox)
         self.figure.canvas.update()
 
         QtGui.QApplication.processEvents()
