@@ -50,32 +50,24 @@ class MainWidget(QtGui.QMainWindow):
         self.outdata = {}
         self.parent = parent
         self.showprocesslog = self.parent.showprocesslog
+        self.lmod1 = LithModel()  # actual model
+        self.lmod2 = LithModel()  # regional model
 
 # General
         self.txtmsg = ''
         self.modelfilename = r'./tmp'
-
-        self.centralwidget = QtGui.QWidget(self)
-        self.verticallayout = QtGui.QVBoxLayout(self.centralwidget)
 
         self.toolbar = QtGui.QToolBar()
         self.statusbar = QtGui.QStatusBar()
         self.tabwidget = QtGui.QTabWidget()
         self.pbar_sub = QtGui.QProgressBar()
         self.pbar_main = QtGui.QProgressBar()
-
-        self.hlayout = QtGui.QHBoxLayout()
         self.textbrowser = QtGui.QTextBrowser()
-        self.helpdocs = menu_default.HelpButton()
+        self.actionsave = QtGui.QPushButton()
 
-        self.setupui()
-
-        self.lmod1 = LithModel()  # actual model
-        self.lmod2 = LithModel()  # regional model
         self.tabwidget.setCurrentIndex(0)
         self.oldtab = self.tabwidget.tabText(0)
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
-#        self.outdata['Model3D'] = self.lmod1
         self.outdata['Raster'] = list(self.lmod1.griddata.values())
 
 # Model Extent Tab
@@ -105,14 +97,42 @@ class MainWidget(QtGui.QMainWindow):
 # Gravity and magnetic modelling routines
         self.grvmag = grvmag3d.GravMag(self)
 
-        self.tabwidget.currentChanged.connect(self.tab_change)
-        self.helpdocs.clicked.disconnect()
-        self.helpdocs.clicked.connect(self.help_docs)
+        self.setupui()
 
-        self.actionsave = QtGui.QPushButton(self)
-        self.actionsave.setText("Save Model")
+    def setupui(self):
+        """ Setup for the GUI """
+        centralwidget = QtGui.QWidget(self)
+        verticallayout = QtGui.QVBoxLayout(centralwidget)
+        hlayout = QtGui.QHBoxLayout()
+
+        helpdocs = menu_default.HelpButton()
+
+        self.setCentralWidget(centralwidget)
+        self.resize(1024, 768)
+        self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
+        self.setStatusBar(self.statusbar)
+        self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
+        self.textbrowser.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.pbar_sub.setTextVisible(False)
+        self.pbar_main.setTextVisible(False)
+        self.toolbar.setMovable(True)
+        self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolbar.addWidget(self.actionsave)
+
+        self.setWindowTitle("Potential Field Modelling")
+        self.actionsave.setText("Save Model")
+
+        hlayout.addWidget(self.textbrowser)
+        hlayout.addWidget(helpdocs)
+        verticallayout.addWidget(self.tabwidget)
+        verticallayout.addLayout(hlayout)
+        verticallayout.addWidget(self.pbar_sub)
+        verticallayout.addWidget(self.pbar_main)
+
+        helpdocs.clicked.disconnect()
+        helpdocs.clicked.connect(self.help_docs)
         self.actionsave.clicked.connect(self.savemodel)
+        self.tabwidget.currentChanged.connect(self.tab_change)
 
     def savemodel(self):
         """ Model Save """
@@ -148,34 +168,6 @@ class MainWidget(QtGui.QMainWindow):
             htmlfile += 'pygmi.pfmod.ddisp'
 
         menu_default.HelpDocs(self, htmlfile)
-
-    def setupui(self):
-        """ Setup for the GUI """
-        self.resize(1024, 768)
-        self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
-        self.setCentralWidget(self.centralwidget)
-#        self.setMenuBar(self.menubar)
-        self.setStatusBar(self.statusbar)
-        self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
-
-        self.verticallayout.addWidget(self.tabwidget)
-        self.textbrowser.setFrameShape(QtGui.QFrame.StyledPanel)
-
-        self.hlayout.addWidget(self.textbrowser)
-        self.hlayout.addWidget(self.helpdocs)
-        self.verticallayout.addLayout(self.hlayout)
-
-
-#        self.verticallayout.addWidget(self.textbrowser)
-        self.pbar_sub.setTextVisible(False)
-        self.verticallayout.addWidget(self.pbar_sub)
-        self.pbar_main.setTextVisible(False)
-        self.verticallayout.addWidget(self.pbar_main)
-        self.toolbar.setMovable(True)
-        self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
-
-        self.setWindowTitle("Potential Field Modelling")
-#        self.setWindowIcon(QtGui.QIcon('pygmi.png'))
 
     def settings(self):
         """ Settings """

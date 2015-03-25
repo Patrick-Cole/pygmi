@@ -46,19 +46,20 @@ class RangedCopy(QtGui.QDialog):
     def __init__(self, parent=None):
         QtGui.QDialog.__init__(self, parent)
 
-        self.gridlayout = QtGui.QGridLayout(self)
         self.sb_master = QtGui.QSpinBox()
         self.sb_start = QtGui.QSpinBox()
         self.lw_lithdel = QtGui.QListWidget()
         self.lw_lithcopy = QtGui.QListWidget()
         self.sb_end = QtGui.QSpinBox()
-        self.buttonbox = QtGui.QDialogButtonBox()
-        self.helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
+        gridlayout = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
+
         label = QtGui.QLabel()
         label_2 = QtGui.QLabel()
         label_3 = QtGui.QLabel()
@@ -69,9 +70,8 @@ class RangedCopy(QtGui.QDialog):
         self.sb_start.setMaximum(999999999)
         self.lw_lithcopy.setSelectionMode(self.lw_lithcopy.MultiSelection)
         self.lw_lithdel.setSelectionMode(self.lw_lithdel.MultiSelection)
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(self.buttonbox.Cancel |
-                                          self.buttonbox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
         self.sb_end.setMaximum(999999999)
 
         self.setWindowTitle("Ranged Copy")
@@ -81,21 +81,21 @@ class RangedCopy(QtGui.QDialog):
         label_4.setText("Lithologies To Overwrite")
         label_5.setText("Range End")
 
-        self.gridlayout.addWidget(label_2, 0, 0, 1, 1)
-        self.gridlayout.addWidget(self.sb_master, 0, 1, 1, 1)
-        self.gridlayout.addWidget(label, 1, 0, 1, 1)
-        self.gridlayout.addWidget(self.sb_start, 1, 1, 1, 1)
-        self.gridlayout.addWidget(label_5, 2, 0, 1, 1)
-        self.gridlayout.addWidget(self.sb_end, 2, 1, 1, 1)
-        self.gridlayout.addWidget(label_3, 3, 0, 1, 1)
-        self.gridlayout.addWidget(self.lw_lithcopy, 3, 1, 1, 1)
-        self.gridlayout.addWidget(label_4, 4, 0, 1, 1)
-        self.gridlayout.addWidget(self.lw_lithdel, 4, 1, 1, 1)
-        self.gridlayout.addWidget(self.helpdocs, 5, 0, 1, 1)
-        self.gridlayout.addWidget(self.buttonbox, 5, 1, 1, 1)
+        gridlayout.addWidget(label_2, 0, 0, 1, 1)
+        gridlayout.addWidget(self.sb_master, 0, 1, 1, 1)
+        gridlayout.addWidget(label, 1, 0, 1, 1)
+        gridlayout.addWidget(self.sb_start, 1, 1, 1, 1)
+        gridlayout.addWidget(label_5, 2, 0, 1, 1)
+        gridlayout.addWidget(self.sb_end, 2, 1, 1, 1)
+        gridlayout.addWidget(label_3, 3, 0, 1, 1)
+        gridlayout.addWidget(self.lw_lithcopy, 3, 1, 1, 1)
+        gridlayout.addWidget(label_4, 4, 0, 1, 1)
+        gridlayout.addWidget(self.lw_lithdel, 4, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 5, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 5, 1, 1, 1)
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
 
 def rcopy_dialog(lmod1, islayer=True, is_ew=True):

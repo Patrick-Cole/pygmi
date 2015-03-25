@@ -29,6 +29,7 @@ import numpy as np
 from pygmi.pfmod.grvmag3d import quick_model
 from pygmi.pfmod.grvmag3d import calc_field
 import matplotlib.pyplot as plt
+import pygmi.ptimer as ptimer
 
 
 def test(doplt=False):
@@ -112,10 +113,12 @@ def test(doplt=False):
     tlz = zpos.max()
 
     # quick model initialises a model with all the variables we have defined.
+    ttt=ptimer.PTime()
     lmod = quick_model(xpos2.size, numy, numz, dxy, d_z,
                        tlx, tly, tlz, 0, 0, finc, fdec,
                        ['Generic'], [susc], [dens],
                        [minc], [mdec], [mstrength])
+    ttt.since_last_call('quick model')
 
     # Create the actual model. It is a 3 dimensional vector with '1' where the
     # body lies
@@ -127,15 +130,20 @@ def test(doplt=False):
                 k2 = int(k)
                 lmod.lith_index[i2, j2, k2] = 1
 
+    ttt.since_last_call('model create')
+
     # Calculate the gravity
     calc_field(lmod)
     gdata = lmod.griddata['Calculated Gravity'].data[numy/2].copy()
+    ttt.since_last_call('gravity calculation')
 
     # Change to observation height to 100 meters and calculate magnetics
     lmod.mht = mht
     calc_field(lmod, altcalc=True)
 
     mdata = lmod.griddata['Calculated Magnetics'].data[numy/2]
+
+    ttt.since_last_call('magnetic calculation')
 
     if doplt:
         # Display results

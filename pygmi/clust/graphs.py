@@ -216,24 +216,26 @@ class GraphWindow(QtGui.QDialog):
         self.setWindowTitle("Graph Window")
 
         vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtGui.QHBoxLayout()
+        hbl = QtGui.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
 
-        self.combobox1 = QtGui.QComboBox(self)
-        self.combobox2 = QtGui.QComboBox(self)
-        self.label1 = QtGui.QLabel(self)
-        self.label2 = QtGui.QLabel(self)
+        self.combobox1 = QtGui.QComboBox()
+        self.combobox2 = QtGui.QComboBox()
+        self.label1 = QtGui.QLabel()
+        self.label2 = QtGui.QLabel()
+
         self.label1.setText('Bands:')
         self.label2.setText('Bands:')
-        self.hbl.addWidget(self.label1)
-        self.hbl.addWidget(self.combobox1)
-        self.hbl.addWidget(self.label2)
-        self.hbl.addWidget(self.combobox2)
+
+        hbl.addWidget(self.label1)
+        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.label2)
+        hbl.addWidget(self.combobox2)
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(self.hbl)
+        vbl.addLayout(hbl)
 
         self.setFocus()
 

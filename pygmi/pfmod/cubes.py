@@ -26,22 +26,20 @@
 
 from __future__ import print_function
 
+import os
+import sys
 import numpy as np
 from PyQt4 import QtCore, QtGui, QtOpenGL
+import OpenGL
+OpenGL.ERROR_CHECKING = False  # Note This!!!!
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL.arrays import vbo
-try:
-    from . import misc
-except SystemError:
-    import misc
-import os
-import sys
+import pygmi.pfmod.misc as misc
 from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
 from numba import jit
 from PIL import Image
-import pdb
 
 
 class Mod3dDisplay(QtGui.QDialog):
@@ -86,46 +84,28 @@ class Mod3dDisplay(QtGui.QDialog):
         self.cust_z = None
 
 # Back to normal stuff
-        self.horizontallayout = QtGui.QHBoxLayout(self)
-        self.vslider_3dmodel = QtGui.QSlider(self)
-        self.vbox_cmodel = QtGui.QVBoxLayout()
-        self.verticallayout = QtGui.QVBoxLayout()
-
-        self.lw_3dmod_defs = QtGui.QListWidget(self)
-        self.label = QtGui.QLabel(self)
-        self.label2 = QtGui.QLabel(self)
-        self.pb_save = QtGui.QPushButton(self)
-        self.pb_refresh = QtGui.QPushButton(self)
-        self.checkbox_smooth = QtGui.QCheckBox(self)
-        self.pbar = QtGui.QProgressBar(self)
+        self.lw_3dmod_defs = QtGui.QListWidget()
+        self.label = QtGui.QLabel()
+        self.label2 = QtGui.QLabel()
+        self.pb_save = QtGui.QPushButton()
+        self.pb_refresh = QtGui.QPushButton()
+        self.checkbox_smooth = QtGui.QCheckBox()
+        self.pbar = QtGui.QProgressBar()
+        self.glwidget = GLWidget()
+        self.vslider_3dmodel = QtGui.QSlider()
 
         self.setupui()
 
-    # GL Widget
-        self.glwidget = GLWidget()
-        self.vbox_cmodel.addWidget(self.glwidget)
-
-    # Buttons
-        self.lw_3dmod_defs.clicked.connect(self.change_defs)
-        self.vslider_3dmodel.sliderReleased.connect(self.mod3d_vs)
-        self.pb_save.clicked.connect(self.save)
-        self.pb_refresh.clicked.connect(self.run)
-        self.checkbox_smooth.stateChanged.connect(self.update_plot)
-
     def setupui(self):
         """ Setup UI """
-# Column 0
+        horizontallayout = QtGui.QHBoxLayout(self)
+        vbox_cmodel = QtGui.QVBoxLayout()
+        verticallayout = QtGui.QVBoxLayout()
+
         self.vslider_3dmodel.setMinimum(1)
         self.vslider_3dmodel.setMaximum(1000)
         self.vslider_3dmodel.setOrientation(QtCore.Qt.Vertical)
-        self.horizontallayout.addWidget(self.vslider_3dmodel)
-
-# Column 1
-        self.horizontallayout.addLayout(self.vbox_cmodel)
-        self.vbox_cmodel.setSizeConstraint(QtGui.QLayout.SetNoConstraint)
-
-# Column 2
-        self.horizontallayout.addLayout(self.verticallayout)
+        vbox_cmodel.setSizeConstraint(QtGui.QLayout.SetNoConstraint)
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
                                        QtGui.QSizePolicy.Fixed)
 
@@ -136,8 +116,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.lw_3dmod_defs.setSelectionMode(
             QtGui.QAbstractItemView.MultiSelection)
         self.lw_3dmod_defs.setFixedWidth(220)
-        self.verticallayout.addWidget(self.lw_3dmod_defs)
-
         self.checkbox_smooth.setSizePolicy(sizepolicy)
         self.pb_save.setSizePolicy(sizepolicy_pb)
         self.pb_refresh.setSizePolicy(sizepolicy_pb)
@@ -147,11 +125,21 @@ class Mod3dDisplay(QtGui.QDialog):
         self.pb_save.setText("Save to Image File (JPG or PNG)")
         self.pb_refresh.setText('Refresh Model')
 
-        self.verticallayout.addWidget(self.checkbox_smooth)
-        self.verticallayout.addWidget(self.pb_save)
-        self.verticallayout.addWidget(self.pb_refresh)
+        verticallayout.addWidget(self.lw_3dmod_defs)
+        verticallayout.addWidget(self.checkbox_smooth)
+        verticallayout.addWidget(self.pb_save)
+        verticallayout.addWidget(self.pb_refresh)
+        vbox_cmodel.addWidget(self.glwidget)
+        horizontallayout.addWidget(self.vslider_3dmodel)
+        horizontallayout.addLayout(vbox_cmodel)
+        horizontallayout.addLayout(verticallayout)
+        horizontallayout.addWidget(self.pbar)
 
-        self.horizontallayout.addWidget(self.pbar)
+        self.lw_3dmod_defs.clicked.connect(self.change_defs)
+        self.vslider_3dmodel.sliderReleased.connect(self.mod3d_vs)
+        self.pb_save.clicked.connect(self.save)
+        self.pb_refresh.clicked.connect(self.run)
+        self.checkbox_smooth.stateChanged.connect(self.update_plot)
 
     def save(self):
         """ This saves a jpg """
@@ -1044,7 +1032,7 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
     return p
 
 
-@jit("f8[:,:,:](f8[:,:,:], f8[:,:,:], i4[:], i4[:], i4[:])", nopython=True)
+@jit
 def fancyindex(out, var1, ii, jj, kk):
     """ fancy """
 

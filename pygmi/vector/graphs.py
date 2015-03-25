@@ -48,15 +48,17 @@ class GraphWindow(QtGui.QDialog):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
 
-        self.combobox1 = QtGui.QComboBox(self)
-        self.combobox2 = QtGui.QComboBox(self)
-        self.spinbox = QtGui.QSpinBox(self)
-        self.label1 = QtGui.QLabel(self)
-        self.label2 = QtGui.QLabel(self)
-        self.label3 = QtGui.QLabel(self)
+        self.combobox1 = QtGui.QComboBox()
+        self.combobox2 = QtGui.QComboBox()
+        self.spinbox = QtGui.QSpinBox()
+        self.label1 = QtGui.QLabel()
+        self.label2 = QtGui.QLabel()
+        self.label3 = QtGui.QLabel()
+
         self.label1.setText('Bands:')
         self.label2.setText('Bands:')
         self.label3.setText('Value:')
+
         self.hbl.addWidget(self.label1)
         self.hbl.addWidget(self.combobox1)
         self.hbl.addWidget(self.label2)

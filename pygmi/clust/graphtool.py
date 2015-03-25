@@ -476,22 +476,16 @@ class ScatterPlot(QtGui.QDialog):
         self.m = [0, 0]
         self.dat_tmp = None
 
-        self.grid_main = QtGui.QGridLayout(self)
         self.map = GraphMap(self)
         self.hist = GraphHist(self)
 
-        self.group_cp = QtGui.QGroupBox(self)
-        self.grid_left = QtGui.QGridLayout(self.group_cp)
-        self.cp_dpoly = QtGui.QPushButton(self)
-        self.cp_combo = QtGui.QComboBox(self)
-        self.cp_combo2 = QtGui.QComboBox(self)
-        self.cp_combo3 = QtGui.QComboBox(self)
-
-        self.group_map = QtGui.QGroupBox(self)
-        self.grid_right = QtGui.QGridLayout(self.group_map)
-        self.map_dpoly = QtGui.QPushButton(self)
-        self.map_combo = QtGui.QComboBox(self)
-        self.map_combo2 = QtGui.QComboBox(self)
+        self.cp_dpoly = QtGui.QPushButton()
+        self.cp_combo = QtGui.QComboBox()
+        self.cp_combo2 = QtGui.QComboBox()
+        self.cp_combo3 = QtGui.QComboBox()
+        self.map_dpoly = QtGui.QPushButton()
+        self.map_combo = QtGui.QComboBox()
+        self.map_combo2 = QtGui.QComboBox()
 
         self.setupui()
 
@@ -500,43 +494,46 @@ class ScatterPlot(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
+        grid_main = QtGui.QGridLayout(self)
+        group_cp = QtGui.QGroupBox()
+        grid_left = QtGui.QGridLayout(group_cp)
+        group_map = QtGui.QGroupBox()
+        grid_right = QtGui.QGridLayout(group_map)
 
         self.setWindowTitle("Graph Window")
-        self.group_map.setTitle("Map Settings")
-        self.group_cp.setTitle('Cross Plot Settings')
+        group_map.setTitle("Map Settings")
+        group_cp.setTitle('Cross Plot Settings')
 
-        lbl_combo_left = QtGui.QLabel(self)
-        lbl_combo2_left = QtGui.QLabel(self)
-        lbl_combo3_left = QtGui.QLabel(self)
+        lbl_combo_left = QtGui.QLabel()
+        lbl_combo2_left = QtGui.QLabel()
+        lbl_combo3_left = QtGui.QLabel()
+        lbl_combo_right = QtGui.QLabel()
+        lbl_combo2_right = QtGui.QLabel()
+
         lbl_combo_left.setText('X Data Band:')
         lbl_combo2_left.setText('Y Data Band:')
         lbl_combo3_left.setText('Cluster Overlay:')
         self.cp_dpoly.setText('Delete Polygon')
-
-        lbl_combo_right = QtGui.QLabel(self)
-        lbl_combo2_right = QtGui.QLabel(self)
         lbl_combo_right.setText('Data Band:')
         lbl_combo2_right.setText('Cluster Overlay:')
         self.map_dpoly.setText('Delete Polygon')
 
-        self.grid_left.addWidget(lbl_combo_left, 0, 0, 1, 1)
-        self.grid_left.addWidget(lbl_combo2_left, 1, 0, 1, 1)
-        self.grid_left.addWidget(lbl_combo3_left, 2, 0, 1, 1)
-        self.grid_left.addWidget(self.cp_dpoly, 0, 2, 1, 1)
-        self.grid_left.addWidget(self.cp_combo, 0, 1, 1, 1)
-        self.grid_left.addWidget(self.cp_combo2, 1, 1, 1, 1)
-        self.grid_left.addWidget(self.cp_combo3, 2, 1, 1, 1)
-
-        self.grid_right.addWidget(lbl_combo_right, 0, 0, 1, 1)
-        self.grid_right.addWidget(lbl_combo2_right, 1, 0, 1, 1)
-        self.grid_right.addWidget(self.map_dpoly, 0, 2, 1, 1)
-        self.grid_right.addWidget(self.map_combo, 0, 1, 1, 1)
-        self.grid_right.addWidget(self.map_combo2, 1, 1, 1, 1)
-
-        self.grid_main.addWidget(self.hist, 0, 0, 1, 1)
-        self.grid_main.addWidget(self.map, 0, 1, 1, 1)
-        self.grid_main.addWidget(self.group_cp, 1, 0, 1, 1)
-        self.grid_main.addWidget(self.group_map, 1, 1, 1, 1)
+        grid_left.addWidget(lbl_combo_left, 0, 0, 1, 1)
+        grid_left.addWidget(lbl_combo2_left, 1, 0, 1, 1)
+        grid_left.addWidget(lbl_combo3_left, 2, 0, 1, 1)
+        grid_left.addWidget(self.cp_dpoly, 0, 2, 1, 1)
+        grid_left.addWidget(self.cp_combo, 0, 1, 1, 1)
+        grid_left.addWidget(self.cp_combo2, 1, 1, 1, 1)
+        grid_left.addWidget(self.cp_combo3, 2, 1, 1, 1)
+        grid_right.addWidget(lbl_combo_right, 0, 0, 1, 1)
+        grid_right.addWidget(lbl_combo2_right, 1, 0, 1, 1)
+        grid_right.addWidget(self.map_dpoly, 0, 2, 1, 1)
+        grid_right.addWidget(self.map_combo, 0, 1, 1, 1)
+        grid_right.addWidget(self.map_combo2, 1, 1, 1, 1)
+        grid_main.addWidget(self.hist, 0, 0, 1, 1)
+        grid_main.addWidget(self.map, 0, 1, 1, 1)
+        grid_main.addWidget(group_cp, 1, 0, 1, 1)
+        grid_main.addWidget(group_map, 1, 1, 1, 1)
 
         self.cp_dpoly.clicked.connect(self.on_cp_dpoly)
         self.map_dpoly.clicked.connect(self.on_map_dpoly)

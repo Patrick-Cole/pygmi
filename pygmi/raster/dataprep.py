@@ -135,29 +135,27 @@ class DataGrid(QtGui.QDialog):
         self.outdata = {}
         self.parent = parent
 
-        self.gridlayout_main = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox()
         self.dsb_dxy = QtGui.QDoubleSpinBox()
         self.dataid = QtGui.QComboBox()
         self.label_rows = QtGui.QLabel()
         self.label_cols = QtGui.QLabel()
-        self.helpdocs = menu_default.HelpButton(
-            'pygmi.raster.dataprep.datagrid')
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
+        gridlayout_main = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
         label_band = QtGui.QLabel()
         label_dxy = QtGui.QLabel()
 
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
         self.dsb_dxy.setDecimals(5)
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle("Dataset Gridding")
         self.label_rows.setText("Rows: 0")
@@ -165,17 +163,17 @@ class DataGrid(QtGui.QDialog):
         label_dxy.setText("Cell Size:")
         label_band.setText("Column to Grid:")
 
-        self.gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
-        self.gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
-        self.gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
-        self.gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.dataid, 3, 1, 1, 1)
-        self.gridlayout_main.addWidget(self.helpdocs, 4, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.buttonbox, 4, 1, 1, 3)
+        gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
+        gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
+        gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
+        gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.dataid, 3, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 4, 1, 1, 3)
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
     def dxy_change(self):
@@ -292,42 +290,41 @@ class DataMerge(QtGui.QDialog):
         self.outdata = {}
         self.parent = parent
 
-        self.gridlayout_main = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox()
         self.dsb_dxy = QtGui.QDoubleSpinBox()
         self.label_rows = QtGui.QLabel()
         self.label_cols = QtGui.QLabel()
-        self.helpdocs = menu_default.HelpButton(
-            'pygmi.raster.dataprep.datamerge')
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
 
+        gridlayout_main = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
         label_dxy = QtGui.QLabel()
+
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
         self.dsb_dxy.setDecimals(5)
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle("Dataset Merge and Resample")
         self.label_rows.setText("Rows: 0")
         self.label_cols.setText("Columns: 0")
         label_dxy.setText("Cell Size:")
 
-        self.gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
-        self.gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
-        self.gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
-        self.gridlayout_main.addWidget(self.helpdocs, 3, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.buttonbox, 3, 1, 1, 1)
+        gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
+        gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
+        gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
+        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 1)
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
     def dxy_change(self):
@@ -447,16 +444,12 @@ class DataReproj(QtGui.QDialog):
         self.outdata = {}
         self.parent = parent
 
-        self.gridlayout_main = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox()
         self.groupboxb = QtGui.QGroupBox()
         self.combobox_inp_epsg = QtGui.QComboBox()
         self.inp_epsg_info = QtGui.QLabel()
         self.groupbox2b = QtGui.QGroupBox()
         self.combobox_out_epsg = QtGui.QComboBox()
         self.out_epsg_info = QtGui.QLabel()
-        self.helpdocs = menu_default.HelpButton(
-            'pygmi.raster.dataprep.datareproj')
         self.in_proj = GroupProj('Input Projection')
         self.out_proj = GroupProj('Output Projection')
 
@@ -464,20 +457,23 @@ class DataReproj(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        gridlayout_main = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle("Dataset Reprojection")
 
-        self.gridlayout_main.addWidget(self.in_proj, 0, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.out_proj, 0, 1, 1, 1)
-        self.gridlayout_main.addWidget(self.helpdocs, 1, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.buttonbox, 1, 1, 1, 1)
+        gridlayout_main.addWidget(self.in_proj, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.out_proj, 0, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 1, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 1, 1, 1, 1)
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
     def acceptall(self):
         """
@@ -771,9 +767,6 @@ class Metadata(QtGui.QDialog):
         self.oldtxt = ''
         self.parent = parent
 
-        self.gridlayout_main = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox()
-
         self.groupbox = QtGui.QGroupBox()
         self.combobox_bandid = QtGui.QComboBox()
         self.pb_rename_id = QtGui.QPushButton()
@@ -796,6 +789,9 @@ class Metadata(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
+        gridlayout_main = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+
         gridlayout = QtGui.QGridLayout(self.groupbox)
         label_tlx = QtGui.QLabel()
         label_tly = QtGui.QLabel()
@@ -813,10 +809,9 @@ class Metadata(QtGui.QDialog):
         sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
                                        QtGui.QSizePolicy.Expanding)
         self.groupbox.setSizePolicy(sizepolicy)
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle("Dataset Metadata")
         self.pb_rename_id.setText("Rename Band Name")
@@ -834,12 +829,12 @@ class Metadata(QtGui.QDialog):
         label_mean.setText("Dataset Mean:")
         label_units.setText("Dataset Units:")
 
-        self.gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
-        self.gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
-        self.gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
-        self.gridlayout_main.addWidget(self.groupbox, 2, 0, 1, 2)
-        self.gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
-        self.gridlayout_main.addWidget(self.buttonbox, 4, 0, 1, 4)
+        gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
+        gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
+        gridlayout_main.addWidget(self.groupbox, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
+        gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
 
         gridlayout.addWidget(label_tlx, 0, 0, 1, 1)
         gridlayout.addWidget(self.dsb_tlx, 0, 1, 1, 1)
@@ -864,8 +859,8 @@ class Metadata(QtGui.QDialog):
         gridlayout.addWidget(label_units, 10, 0, 1, 1)
         gridlayout.addWidget(self.led_units, 10, 1, 1, 1)
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
         self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
         self.pb_rename_id.clicked.connect(self.rename_id)

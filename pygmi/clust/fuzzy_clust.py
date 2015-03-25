@@ -53,31 +53,19 @@ class FuzzyClust(QtGui.QDialog):
         self.outdata = {}
         self.parent = parent
 
-        self.gridlayout = QtGui.QGridLayout(self)
-        self.groupbox = QtGui.QGroupBox(self)
-        self.combobox_alg = QtGui.QComboBox(self)
-        self.doublespinbox_maxerror = QtGui.QDoubleSpinBox(self)
-        self.doublespinbox_fuzzynessexp = QtGui.QDoubleSpinBox(self)
-        self.doublespinbox_constraincluster = QtGui.QDoubleSpinBox(self)
-        self.spinbox_maxclusters = QtGui.QSpinBox(self)
-        self.spinbox_maxiterations = QtGui.QSpinBox(self)
-        self.spinbox_repeatedruns = QtGui.QSpinBox(self)
-        self.spinbox_minclusters = QtGui.QSpinBox(self)
-        self.label = QtGui.QLabel(self)
-        self.label_2 = QtGui.QLabel(self)
-        self.label_3 = QtGui.QLabel(self)
-        self.label_4 = QtGui.QLabel(self)
-        self.label_5 = QtGui.QLabel(self)
-        self.label_6 = QtGui.QLabel(self)
-        self.label_7 = QtGui.QLabel(self)
-        self.label_8 = QtGui.QLabel(self)
-        self.checkbox_denorm = QtGui.QCheckBox(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-
-        self.verticallayout = QtGui.QVBoxLayout(self.groupbox)
-        self.radiobutton_random = QtGui.QRadioButton(self.groupbox)
-        self.radiobutton_manual = QtGui.QRadioButton(self.groupbox)
-        self.radiobutton_datadriven = QtGui.QRadioButton(self.groupbox)
+        self.combobox_alg = QtGui.QComboBox()
+        self.doublespinbox_maxerror = QtGui.QDoubleSpinBox()
+        self.doublespinbox_fuzzynessexp = QtGui.QDoubleSpinBox()
+        self.doublespinbox_constraincluster = QtGui.QDoubleSpinBox()
+        self.spinbox_maxclusters = QtGui.QSpinBox()
+        self.spinbox_maxiterations = QtGui.QSpinBox()
+        self.spinbox_repeatedruns = QtGui.QSpinBox()
+        self.spinbox_minclusters = QtGui.QSpinBox()
+        self.label_7 = QtGui.QLabel()
+        self.checkbox_denorm = QtGui.QCheckBox()
+        self.radiobutton_random = QtGui.QRadioButton()
+        self.radiobutton_manual = QtGui.QRadioButton()
+        self.radiobutton_datadriven = QtGui.QRadioButton()
 
         self.setupui()
 
@@ -105,28 +93,18 @@ class FuzzyClust(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
+        gridlayout = QtGui.QGridLayout(self)
+        groupbox = QtGui.QGroupBox(self)
+        verticallayout = QtGui.QVBoxLayout(groupbox)
 
-        self.gridlayout.addWidget(self.label, 0, 2, 1, 1)
-        self.gridlayout.addWidget(self.label_2, 1, 2, 1, 1)
-        self.gridlayout.addWidget(self.label_3, 2, 2, 1, 1)
-        self.gridlayout.addWidget(self.label_4, 3, 2, 1, 1)
-        self.gridlayout.addWidget(self.label_5, 4, 2, 1, 1)
-        self.gridlayout.addWidget(self.label_6, 5, 2, 1, 1)
-        self.gridlayout.addWidget(self.label_7, 6, 2, 1, 1)
-        self.gridlayout.addWidget(self.label_8, 7, 2, 1, 1)
-        self.gridlayout.addWidget(self.checkbox_denorm, 8, 2, 1, 1)
-        self.gridlayout.addWidget(self.groupbox, 9, 2, 1, 3)
-
-        self.gridlayout.addWidget(self.combobox_alg, 0, 4, 1, 1)
-        self.gridlayout.addWidget(self.spinbox_minclusters, 1, 4, 1, 1)
-        self.gridlayout.addWidget(self.spinbox_maxclusters, 2, 4, 1, 1)
-        self.gridlayout.addWidget(self.spinbox_maxiterations, 3, 4, 1, 1)
-        self.gridlayout.addWidget(self.doublespinbox_maxerror, 4, 4, 1, 1)
-        self.gridlayout.addWidget(self.spinbox_repeatedruns, 5, 4, 1, 1)
-        self.gridlayout.addWidget(self.doublespinbox_constraincluster, 6, 4,
-                                  1, 1)
-        self.gridlayout.addWidget(self.doublespinbox_fuzzynessexp, 7, 4, 1, 1)
-        self.gridlayout.addWidget(self.buttonbox, 10, 4, 1, 1)
+        buttonbox = QtGui.QDialogButtonBox(self)
+        label = QtGui.QLabel()
+        label_2 = QtGui.QLabel()
+        label_3 = QtGui.QLabel()
+        label_4 = QtGui.QLabel()
+        label_5 = QtGui.QLabel()
+        label_6 = QtGui.QLabel()
+        label_8 = QtGui.QLabel()
 
         self.spinbox_maxclusters.setMinimum(1)
         self.spinbox_maxclusters.setProperty("value", 5)
@@ -138,35 +116,54 @@ class FuzzyClust(QtGui.QDialog):
         self.spinbox_minclusters.setProperty("value", 5)
         self.doublespinbox_maxerror.setDecimals(5)
         self.doublespinbox_maxerror.setProperty("value", 1e-05)
-        self.verticallayout.addWidget(self.radiobutton_random)
-        self.verticallayout.addWidget(self.radiobutton_manual)
-        self.verticallayout.addWidget(self.radiobutton_datadriven)
         self.doublespinbox_fuzzynessexp.setProperty("value", 1.5)
         self.radiobutton_random.setChecked(True)
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle("Fuzzy Clustering")
-        self.groupbox.setTitle("Initial Guess")
-        self.groupbox.hide()
-        self.label.setText("Cluster Algorithm:")
-        self.label_2.setText("Minimum Clusters:")
-        self.label_3.setText("Maximum Clusters")
-        self.label_4.setText("Maximum Iterations:")
-        self.label_5.setText(
-            "Terminate if relative change per iteration is less than:")
-        self.label_6.setText("Repeated Runs:")
-        self.label_7.setText(
-            "Constrain Cluster Shape (0: unconstrained, 1: spherical)")
-        self.label_8.setText("Fuzzyness Exponent")
+        groupbox.setTitle("Initial Guess")
+        groupbox.hide()
+        label.setText("Cluster Algorithm:")
+        label_2.setText("Minimum Clusters:")
+        label_3.setText("Maximum Clusters")
+        label_4.setText("Maximum Iterations:")
+        label_5.setText("Terminate if relative change per iteration is less than:")
+        label_6.setText("Repeated Runs:")
+        self.label_7.setText( "Constrain Cluster Shape (0: unconstrained, 1: spherical)")
+        label_8.setText("Fuzzyness Exponent")
         self.checkbox_denorm.setText("De-normalise Results")
         self.radiobutton_random.setText("Random")
         self.radiobutton_manual.setText("Manual")
         self.radiobutton_datadriven.setText("Data Driven")
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        gridlayout.addWidget(label, 0, 2, 1, 1)
+        gridlayout.addWidget(label_2, 1, 2, 1, 1)
+        gridlayout.addWidget(label_3, 2, 2, 1, 1)
+        gridlayout.addWidget(label_4, 3, 2, 1, 1)
+        gridlayout.addWidget(label_5, 4, 2, 1, 1)
+        gridlayout.addWidget(label_6, 5, 2, 1, 1)
+        gridlayout.addWidget(self.label_7, 6, 2, 1, 1)
+        gridlayout.addWidget(label_8, 7, 2, 1, 1)
+        gridlayout.addWidget(self.checkbox_denorm, 8, 2, 1, 1)
+        gridlayout.addWidget(groupbox, 9, 2, 1, 3)
+
+        gridlayout.addWidget(self.combobox_alg, 0, 4, 1, 1)
+        gridlayout.addWidget(self.spinbox_minclusters, 1, 4, 1, 1)
+        gridlayout.addWidget(self.spinbox_maxclusters, 2, 4, 1, 1)
+        gridlayout.addWidget(self.spinbox_maxiterations, 3, 4, 1, 1)
+        gridlayout.addWidget(self.doublespinbox_maxerror, 4, 4, 1, 1)
+        gridlayout.addWidget(self.spinbox_repeatedruns, 5, 4, 1, 1)
+        gridlayout.addWidget(self.doublespinbox_constraincluster, 6, 4, 1, 1)
+        gridlayout.addWidget(self.doublespinbox_fuzzynessexp, 7, 4, 1, 1)
+        gridlayout.addWidget(buttonbox, 10, 4, 1, 1)
+
+        verticallayout.addWidget(self.radiobutton_random)
+        verticallayout.addWidget(self.radiobutton_manual)
+        verticallayout.addWidget(self.radiobutton_datadriven)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
     def combo(self):
         """ Combo box """
@@ -181,8 +178,7 @@ class FuzzyClust(QtGui.QDialog):
     def settings(self):
         """ Settings """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
-        tst = np.array(tst).shape[0]
-        if tst > 1:
+        if tst.size > 2:
             self.reportback('Error: Your input datasets have different ' +
                             'sizes. Merge the data first')
             return

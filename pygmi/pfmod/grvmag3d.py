@@ -43,8 +43,9 @@ import copy
 import tempfile
 from scipy.linalg import norm
 from pygmi.pfmod.datatypes import LithModel
-from numba import jit
+from numba import jit, int32, float64
 from matplotlib import cm
+import pdb
 
 
 class GravMag(object):
@@ -666,9 +667,8 @@ class GeoData(object):
             z_1 = float(z12[0])
             z_2 = float(z12[1])
             gval = np.zeros([self.g_cols, self.g_rows])
-            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1,
-                             x_2, y_2, z_2, np.ones(2), np.ones(2), np.ones(2),
-                             np.array([-1, 1]))
+
+            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2, np.ones(2), np.ones(2), np.ones(2), np.array([-1, 1]))
 
             gval *= 6.6732e-3
             glayers.append(gval)
@@ -949,8 +949,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     return lmod.griddata
 
 
-@jit("f8[:,:](i4, f8[:,:], i4, i4, i4[:,:,:], i4[:], i4[:], " +
-     "f8[:,:,:], f8[:,:,:], i4[:], i4, i4[:], i4[:])", nopython=True)
+#@jit("f8[:,:](i4, f8[:,:], i4, i4, i4[:,:,:], i4[:], i4[:], " +
+#     "f8[:,:,:], f8[:,:,:], i4[:], i4, i4[:], i4[:])", nopython=True)
+@jit
 def calc_fieldb(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers,
                 glayers, hcorflat, mijk, jj, ii):
     """ Calculate magnetic and gravity field """
@@ -1018,8 +1019,10 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
     return lmod
 
 
-@jit("f8[:,:](f8[:,:], f8[:], f8[:], i4, i4, f8, f8, f8, f8, f8, f8, f8, " +
-     "f8[:], f8[:], f8[:], i4[:])", nopython=True)
+#@jit(float64[:,:](float64[:,:], float64[:], float64[:], int32, int32, float64,
+#     float64, float64, float64, float64, float64, float64,
+#     float64[:], float64[:], float64[:], int32[:]), nopython=True)
+@jit
 def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
               x, y, z, isign):
     """ Gbox routine by Blakely
@@ -1070,10 +1073,11 @@ def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
     return gval
 
 
-@jit("f8[:,:,:](i4, i4, f8[:,:], f8[:,:], f8[:,:], f8[:,:], i4[:,:], " +
-     "f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
-     "i4[:], f8[:,:], f8[:], f8[:], f8[:], f8[:,:,:])",
-     nopython=True)
+#@jit("f8[:,:,:](i4, i4, f8[:,:], f8[:,:], f8[:,:], f8[:,:], i4[:,:], " +
+#     "f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
+#     "i4[:], f8[:,:], f8[:], f8[:], f8[:], f8[:,:,:])",
+#     nopython=True)
+@jit
 def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
          indx, crs, p1, p2, p3, mgval):
     """ grvmag 3d """

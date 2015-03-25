@@ -49,8 +49,6 @@ class Normalisation(QtGui.QDialog):
         self.radiobutton_mean = QtGui.QRadioButton()
         self.radiobutton_median = QtGui.QRadioButton()
         self.radiobutton_8bit = QtGui.QRadioButton()
-        self.buttonbox = QtGui.QDialogButtonBox()
-        self.helpdocs = menu_default.HelpButton('pygmi.raster.normalisation')
 
         self.setupui()
 
@@ -59,25 +57,27 @@ class Normalisation(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        self.radiobutton_interval.setChecked(True)
 
         verticallayout = QtGui.QVBoxLayout(self)
         horizontallayout = QtGui.QHBoxLayout()
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.normalisation')
+
+        self.radiobutton_interval.setChecked(True)
 
         groupbox = QtGui.QGroupBox()
         verticallayout_2 = QtGui.QVBoxLayout(groupbox)
 
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         verticallayout_2.addWidget(self.radiobutton_interval)
         verticallayout_2.addWidget(self.radiobutton_mean)
         verticallayout_2.addWidget(self.radiobutton_median)
         verticallayout_2.addWidget(self.radiobutton_8bit)
 
-        horizontallayout.addWidget(self.helpdocs)
-        horizontallayout.addWidget(self.buttonbox)
+        horizontallayout.addWidget(helpdocs)
+        horizontallayout.addWidget(buttonbox)
 
         verticallayout.addWidget(groupbox)
         verticallayout.addLayout(horizontallayout)
@@ -90,8 +90,8 @@ class Normalisation(QtGui.QDialog):
         self.radiobutton_median.setText(
             "Median: zero,  Median absolute deviation: unity")
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
     def settings(self):
         """ Settings """

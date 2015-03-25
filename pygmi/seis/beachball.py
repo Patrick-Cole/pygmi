@@ -146,10 +146,9 @@ class BeachBall(QtGui.QDialog):
         self.nofps = False
 
         self.mmc = MyMplCanvas(self)
-        self.tabwidget = QtGui.QTabWidget(self)
-        self.btn_saveshp = QtGui.QPushButton(self)
-        self.cbox_alg = QtGui.QComboBox(self)
-        self.dsb_dist = QtGui.QDoubleSpinBox(self)
+        self.btn_saveshp = QtGui.QPushButton()
+        self.cbox_alg = QtGui.QComboBox()
+        self.dsb_dist = QtGui.QDoubleSpinBox()
 
         self.setupui()
 
@@ -205,48 +204,35 @@ class BeachBall(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Expanding)
-
-        self.setWindowTitle("Fault Plane Solution (FPS)")
+        hbl_all = QtGui.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar(self.mmc, self)
+        vbl_raster = QtGui.QVBoxLayout()
+        label2 = QtGui.QLabel()
+        label3 = QtGui.QLabel()
 
-        rwidget = QtGui.QWidget()
-        vbl_raster = QtGui.QVBoxLayout(rwidget)
-
-        label2 = QtGui.QLabel(self)
-        label2.setText('FPS Algorithm:')
-        vbl_raster.addWidget(label2)
-        vbl_raster.addWidget(self.cbox_alg)
-
-        label3 = QtGui.QLabel(self)
-        label3.setText('Width Scale Factor:')
         self.dsb_dist.setDecimals(4)
         self.dsb_dist.setMinimum(0.0001)
         self.dsb_dist.setSingleStep(0.0001)
         self.dsb_dist.setProperty("value", 0.001)
-        vbl_raster.addWidget(label3)
-        vbl_raster.addWidget(self.dsb_dist)
-
-        self.tabwidget.setSizePolicy(sizepolicy)
 
         spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
                                    QtGui.QSizePolicy.Expanding)
-        vbl_raster.addItem(spacer)
 
+        self.setWindowTitle("Fault Plane Solution (FPS)")
+        label2.setText('FPS Algorithm:')
+        label3.setText('Width Scale Factor:')
         self.btn_saveshp.setText('Save Shapefile')
-        vbl_raster.addWidget(self.btn_saveshp)
 
-# Right Vertical Layout
-        vbl_right = QtGui.QVBoxLayout()  # self is where layout is assigned
+        vbl_raster.addWidget(label2)
+        vbl_raster.addWidget(self.cbox_alg)
+        vbl_raster.addWidget(label3)
+        vbl_raster.addWidget(self.dsb_dist)
+        vbl_raster.addItem(spacer)
+        vbl_raster.addWidget(self.btn_saveshp)
+        vbl_right = QtGui.QVBoxLayout()
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
-
-# Combined Layout
-        self.tabwidget.addTab(rwidget, "Vector")
-
-        hbl_all = QtGui.QHBoxLayout(self)
-        hbl_all.addWidget(self.tabwidget)
+        hbl_all.addLayout(vbl_raster)
         hbl_all.addLayout(vbl_right)
 
         self.btn_saveshp.clicked.connect(self.save_shp)

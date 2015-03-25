@@ -25,15 +25,13 @@
 """ Import Data """
 
 from PyQt4 import QtGui
-from .datatypes import Data
-from ..clust.datatypes import Clust
+from pygmi.raster.datatypes import Data
+from pygmi.clust.datatypes import Clust
 import numpy as np
 from osgeo import gdal, osr
 import struct
-from .dataprep import merge
+from pygmi.raster.dataprep import merge
 import os
-import pdb
-# from ..ptimer import PTime
 
 
 class ImportData(object):

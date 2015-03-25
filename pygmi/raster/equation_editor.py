@@ -28,7 +28,7 @@ from PyQt4 import QtGui, QtCore
 import numpy as np
 import copy
 import numexpr as ne
-from . import dataprep
+import pygmi.raster.dataprep as dataprep
 
 
 class EquationEditor(QtGui.QDialog):
@@ -67,20 +67,13 @@ class EquationEditor(QtGui.QDialog):
 
         self.bands['all data'] = 'iall'
 
-        self.gridlayout = QtGui.QGridLayout(self)
-        self.combobox = QtGui.QComboBox(self)
+        self.combobox = QtGui.QComboBox()
 
-        self.textbrowser = QtGui.QTextEdit(self)
-        self.textbrowser2 = QtGui.QTextBrowser(self)
-
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.label = QtGui.QLabel(self)
-        self.label_2 = QtGui.QLabel(self)
+        self.textbrowser = QtGui.QTextEdit()
+        self.textbrowser2 = QtGui.QTextBrowser()
+        self.label = QtGui.QLabel()
 
         self.setupui()
-
-        self.combobox.currentIndexChanged.connect(self.combo)
-        self.textbrowser.textChanged.connect(self.textchanged)
 
     def textchanged(self):
         """ Text Changed """
@@ -88,40 +81,27 @@ class EquationEditor(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
+        gridlayout = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        label_2 = QtGui.QLabel()
+
         self.textbrowser.setEnabled(True)
-#        self.setFixedWidth(600)
         self.resize(600, 480)
 
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(QtGui.QDialogButtonBox.Cancel |
-                                          QtGui.QDialogButtonBox.Ok)
-
-        self.gridlayout.addWidget(self.label_2, 0, 0, 1, 2)
-        self.gridlayout.addWidget(self.textbrowser, 2, 0, 1, 7)
-
-        self.gridlayout.addWidget(self.combobox, 4, 0, 1, 1)
-        self.gridlayout.addWidget(self.label, 4, 1, 1, 6)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         ptmp = self.textbrowser2.palette()
         ptmp.setColor(0, 9, ptmp.color(10))
         ptmp.setColor(1, 9, ptmp.color(10))
         ptmp.setColor(2, 9, ptmp.color(10))
         self.textbrowser2.setPalette(ptmp)
-
         self.textbrowser2.setFrameShape(QtGui.QFrame.NoFrame)
-        self.gridlayout.addWidget(self.textbrowser2, 5, 0, 1, 7)
-
-        self.gridlayout.addWidget(self.buttonbox, 6, 0, 1, 7)
 
         self.setWindowTitle("Equation Editor")
         self.label.setText(": iall")
-        self.label_2.setText("Output Equation:")
-
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("accepted()"),
-                               self.accept)
-        QtCore.QObject.connect(self.buttonbox, QtCore.SIGNAL("rejected()"),
-                               self.reject)
-
+        label_2.setText("Output Equation:")
+        self.textbrowser.setText('iall')
         tmp = ('<h1>Instructions:</h1>'
                '<p>Equation editor uses the numexpr library. Use the variables'
                ' iall, i1, i2 etc in formulas. The combobox above shows which '
@@ -144,8 +124,19 @@ class EquationEditor(QtGui.QDialog):
                ' <li> log, log10, log1p, exp, expm1</li>'
                ' <li> sqrt, abs</li>'
                '</ul>')
-
         self.textbrowser2.setHtml(tmp)
+
+        gridlayout.addWidget(label_2, 0, 0, 1, 1)
+        gridlayout.addWidget(self.textbrowser, 1, 0, 1, 2)
+        gridlayout.addWidget(self.combobox, 4, 0, 1, 1)
+        gridlayout.addWidget(self.label, 4, 1, 1, 1)
+        gridlayout.addWidget(self.textbrowser2, 5, 0, 1, 2)
+        gridlayout.addWidget(buttonbox, 6, 0, 1, 2)
+
+        self.combobox.currentIndexChanged.connect(self.combo)
+        self.textbrowser.textChanged.connect(self.textchanged)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
     def combo(self):
         """ update combo information """
@@ -153,16 +144,6 @@ class EquationEditor(QtGui.QDialog):
         if txt == '':
             return
         self.label.setText(': '+self.bands[txt])
-
-    def useband(self):
-        """ use band """
-        cband = str(self.combobox.currentText())
-        if cband == 'all data':
-            self.equation += '(all data[:])'
-        else:
-            self.equation += '(bands["'+cband+'"])'
-
-        self.textbrowser.setText(self.equation)
 
     def eq_fix(self):
         """ Corrects names in equation to variable names """

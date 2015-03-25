@@ -34,10 +34,9 @@ class BasicStats(QtGui.QDialog):
     def __init__(self, parent):
         QtGui.QDialog.__init__(self)
 
-        self.gridlayout = QtGui.QGridLayout(self)
-        self.combobox = QtGui.QComboBox(self)
-        self.tablewidget = QtGui.QTableWidget(self)
-        self.pushbutton_save = QtGui.QPushButton(self)
+        self.combobox = QtGui.QComboBox()
+        self.tablewidget = QtGui.QTableWidget()
+        self.pushbutton_save = QtGui.QPushButton()
 
         self.setupui()
         self.indata = {}
@@ -48,14 +47,17 @@ class BasicStats(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        self.gridlayout.addWidget(self.tablewidget, 0, 0, 2, 1)
-        self.gridlayout.addWidget(self.pushbutton_save, 0, 3, 1, 1)
-        self.gridlayout.addWidget(self.combobox, 1, 3, 1, 1)
+        gridlayout = QtGui.QGridLayout(self)
+
         self.tablewidget.setRowCount(1)
         self.tablewidget.setColumnCount(1)
 
         self.setWindowTitle('Basic Statistics')
         self.pushbutton_save.setText("Save")
+
+        gridlayout.addWidget(self.tablewidget, 0, 0, 2, 1)
+        gridlayout.addWidget(self.pushbutton_save, 0, 3, 1, 1)
+        gridlayout.addWidget(self.combobox, 1, 3, 1, 1)
 
         self.combobox.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)

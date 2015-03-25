@@ -528,7 +528,6 @@ class ProfileDisplay(object):
             elif self.rb_axis_profmax.isChecked():
                 extent[2:] = [tmpprof2.min(), tmpprof2.max()]
 
-        print('slide:',slide)
         if slide is True:
             self.mmc.slide_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
         else:

@@ -49,8 +49,6 @@ import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.cbook as cbook
 
-import pdb
-
 
 class MyMplCanvas(FigureCanvas):
     """
@@ -294,10 +292,10 @@ class GraphWindow(QtGui.QDialog):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
 
-        self.combobox1 = QtGui.QComboBox(self)
-        self.combobox2 = QtGui.QComboBox(self)
-        self.label1 = QtGui.QLabel(self)
-        self.label2 = QtGui.QLabel(self)
+        self.combobox1 = QtGui.QComboBox()
+        self.combobox2 = QtGui.QComboBox()
+        self.label1 = QtGui.QLabel()
+        self.label2 = QtGui.QLabel()
         self.label1.setText('Bands:')
         self.label2.setText('Bands:')
         self.hbl.addWidget(self.label1)

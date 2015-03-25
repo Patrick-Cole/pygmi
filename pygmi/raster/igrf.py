@@ -56,7 +56,7 @@ from math import sqrt
 from math import atan2
 from osgeo import osr
 import copy
-from . import dataprep as dp
+import pygmi.raster.dataprep as dp
 import pygmi.menu_default as menu_default
 
 
@@ -167,61 +167,58 @@ class IGRF(QtGui.QDialog):
         self.idot = 0
         self.ddot = 0
 
-        self.gridlayout_2 = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.dsb_alt = QtGui.QDoubleSpinBox(self)
-        self.dateedit = QtGui.QDateEdit(self)
-        self.combobox_dtm = QtGui.QComboBox(self)
-        self.combobox_mag = QtGui.QComboBox(self)
-        self.helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
+        self.dsb_alt = QtGui.QDoubleSpinBox()
+        self.dateedit = QtGui.QDateEdit()
+        self.combobox_dtm = QtGui.QComboBox()
+        self.combobox_mag = QtGui.QComboBox()
         self.proj = dp.GroupProj('Input Projection')
 
         self.setupui()
-
-        self.buttonbox.accepted.connect(self.acceptall)
 
         self.ctrans = None
 
     def setupui(self):
         """ Setup UI """
 
-        self.gridlayout_2.addWidget(self.proj, 0, 0, 1, 2)
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
-        self.gridlayout_2.addWidget(self.buttonbox, 6, 1, 1, 1)
-        self.gridlayout_2.addWidget(self.helpdocs, 6, 0, 1, 1)
+        gridlayout = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
 
-        label_20 = QtGui.QLabel(self)
-        self.gridlayout_2.addWidget(label_20, 2, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.dsb_alt, 2, 1, 1, 1)
+        label_0 = QtGui.QLabel()
+        label_1 = QtGui.QLabel()
+        label_2 = QtGui.QLabel()
+        label_3 = QtGui.QLabel()
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
         self.dsb_alt.setMaximum(99999.9)
 
-        label_21 = QtGui.QLabel(self)
-        self.gridlayout_2.addWidget(label_21, 3, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.dateedit, 3, 1, 1, 1)
-
-        label_22 = QtGui.QLabel(self)
-        self.gridlayout_2.addWidget(label_22, 4, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.combobox_dtm, 4, 1, 1, 1)
-
-        label_23 = QtGui.QLabel(self)
-        self.gridlayout_2.addWidget(label_23, 5, 0, 1, 1)
-        self.gridlayout_2.addWidget(self.combobox_mag, 5, 1, 1, 1)
-
         self.setWindowTitle("IGRF")
-        label_20.setText("Sensor clearance above ground")
-        label_21.setText("Date")
-        label_22.setText("Digital Elevation Model")
-        label_23.setText("Magnetic Data")
+        label_0.setText("Sensor clearance above ground")
+        label_1.setText("Date")
+        label_2.setText("Digital Elevation Model")
+        label_3.setText("Magnetic Data")
 
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
+        gridlayout.addWidget(self.proj, 0, 0, 1, 2)
+        gridlayout.addWidget(label_0, 2, 0, 1, 1)
+        gridlayout.addWidget(self.dsb_alt, 2, 1, 1, 1)
+        gridlayout.addWidget(label_1, 3, 0, 1, 1)
+        gridlayout.addWidget(self.dateedit, 3, 1, 1, 1)
+        gridlayout.addWidget(label_2, 4, 0, 1, 1)
+        gridlayout.addWidget(self.combobox_dtm, 4, 1, 1, 1)
+        gridlayout.addWidget(label_3, 5, 0, 1, 1)
+        gridlayout.addWidget(self.combobox_mag, 5, 1, 1, 1)
+        gridlayout.addWidget(buttonbox, 6, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
     def acceptall(self):
         """ Accept button"""
 
-        orig_wkt = self.in_proj.wkt
+        orig_wkt = self.proj.wkt
 
         orig = osr.SpatialReference()
         orig.ImportFromWkt(orig_wkt)

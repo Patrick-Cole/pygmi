@@ -80,13 +80,11 @@ from matplotlib import rcParams
 from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
-from . import iodefs
-from . import dataprep
+import pygmi.raster.iodefs as iodefs
+import pygmi.raster.dataprep as dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 import pygmi.menu_default as menu_default
-from ..ptimer import PTime
-#import pdb
 
 
 class ModestImage(mi.AxesImage):
@@ -251,7 +249,6 @@ class ModestImage(mi.AxesImage):
             self._A = colormap
 
         elif self.dtype == 'Sunshade':
-            ttt = PTime()
 #            pseudo = self._full_res[0]
 #            sun = self._full_res[1]
             pseudo = self._full_res[0][(rows-y1):(rows-y0):sy, x0:x1:sx]
@@ -935,24 +932,22 @@ class PlotInterp(QtGui.QDialog):
 
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
-        self.tabwidget = QtGui.QTabWidget(self)
-        self.btn_saveimg = QtGui.QPushButton(self)
-        self.cbox_dtype = QtGui.QComboBox(self)
-        self.cbox_band1 = QtGui.QComboBox(self)
-        self.cbox_band2 = QtGui.QComboBox(self)
-        self.cbox_band3 = QtGui.QComboBox(self)
-        self.cbox_htype = QtGui.QComboBox(self)
-        self.cbox_hstype = QtGui.QComboBox(self)
+        self.btn_saveimg = QtGui.QPushButton()
+        self.cbox_dtype = QtGui.QComboBox()
+        self.cbox_band1 = QtGui.QComboBox()
+        self.cbox_band2 = QtGui.QComboBox()
+        self.cbox_band3 = QtGui.QComboBox()
+        self.cbox_htype = QtGui.QComboBox()
+        self.cbox_hstype = QtGui.QComboBox()
         self.cbox_cbar = QtGui.QComboBox(self)
-        self.kslider = QtGui.QSlider(QtCore.Qt.Horizontal, self)  # cmyK
-        self.sslider = QtGui.QSlider(QtCore.Qt.Horizontal, self)  # sunshade
-        self.aslider = QtGui.QSlider(QtCore.Qt.Horizontal, self)
-        self.slabel = QtGui.QLabel(self)
-        self.labels = QtGui.QLabel(self)
-        self.labela = QtGui.QLabel(self)
-        self.labelc = QtGui.QLabel(self)
-        self.labelk = QtGui.QLabel(self)
-        self.helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
+        self.kslider = QtGui.QSlider(QtCore.Qt.Horizontal)  # cmyK
+        self.sslider = QtGui.QSlider(QtCore.Qt.Horizontal)  # sunshade
+        self.aslider = QtGui.QSlider(QtCore.Qt.Horizontal)
+        self.slabel = QtGui.QLabel()
+        self.labels = QtGui.QLabel()
+        self.labela = QtGui.QLabel()
+        self.labelc = QtGui.QLabel()
+        self.labelk = QtGui.QLabel()
 
         self.setupui()
 
@@ -979,82 +974,18 @@ class PlotInterp(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Expanding)
+        helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
+        label1 = QtGui.QLabel()
+        label2 = QtGui.QLabel()
+        label3 = QtGui.QLabel()
 
-        self.setWindowTitle("Raster Data Interpretation")
+        vbl_raster = QtGui.QVBoxLayout()
+        hbl_all = QtGui.QHBoxLayout(self)
+        vbl_right = QtGui.QVBoxLayout()
+
         mpl_toolbar = NavigationToolbar(self.mmc, self)
-
-        rwidget = QtGui.QWidget()
-        vbl_raster = QtGui.QVBoxLayout(rwidget)
-
-        self.tabwidget.setSizePolicy(sizepolicy)
-
-        label1 = QtGui.QLabel(self)
-        label1.setText('Display Type:')
-        vbl_raster.addWidget(label1)
-        vbl_raster.addWidget(self.cbox_dtype)
-
-        label2 = QtGui.QLabel(self)
-        label2.setText('Data Bands:')
-        vbl_raster.addWidget(label2)
-        vbl_raster.addWidget(self.cbox_band1)
-        vbl_raster.addWidget(self.cbox_band2)
-        vbl_raster.addWidget(self.cbox_band3)
-
-        label3 = QtGui.QLabel(self)
-        label3.setText('Histogram Stretch:')
-        vbl_raster.addWidget(label3)
-        vbl_raster.addWidget(self.cbox_htype)
-
-        self.slabel.setText('Sunshade Stretch:')
-        vbl_raster.addWidget(self.slabel)
-        vbl_raster.addWidget(self.cbox_hstype)
-
-        self.labelc.setText('Color Bar:')
-        vbl_raster.addWidget(self.labelc)
-        vbl_raster.addWidget(self.cbox_cbar)
-
-        self.labelk.setText('K value:')
-
-        self.labels.setText('Sunshade Detail')
-        self.labela.setText('Light Reflectance')
-        vbl_raster.addWidget(self.msc)
-        vbl_raster.addWidget(self.labels)
-        vbl_raster.addWidget(self.sslider)
-        vbl_raster.addWidget(self.labela)
-        vbl_raster.addWidget(self.aslider)
-        vbl_raster.addWidget(self.labelk)
-        vbl_raster.addWidget(self.kslider)
-
         spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
                                    QtGui.QSizePolicy.Expanding)
-        vbl_raster.addItem(spacer)
-
-        self.btn_saveimg.setText('Save GeoTiff')
-        vbl_raster.addWidget(self.btn_saveimg)
-        vbl_raster.addWidget(self.helpdocs)
-
-# Right Vertical Layout
-        vbl_right = QtGui.QVBoxLayout()  # self is where layout is assigned
-        vbl_right.addWidget(self.mmc)
-        vbl_right.addWidget(mpl_toolbar)
-
-# Combined Layout
-        self.tabwidget.addTab(rwidget, "Raster")
-#        self.tabwidget.addTab(vwidget, "Vector")
-
-        hbl_all = QtGui.QHBoxLayout(self)
-        hbl_all.addWidget(self.tabwidget)
-        hbl_all.addLayout(vbl_right)
-
-        self.cbox_dtype.addItems(['Single Color Map', 'Contour', 'RGB Ternary',
-                                  'CMY Ternary', 'Sunshade'])
-        self.cbox_htype.addItems(['Linear', '95% Linear, 5% Compact',
-                                  'Histogram Equalization'])
-        self.cbox_hstype.addItems(['Linear', '95% Linear, 5% Compact',
-                                   'Histogram Equalization'])
-
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
         self.sslider.setValue(25)
@@ -1062,14 +993,57 @@ class PlotInterp(QtGui.QDialog):
         self.aslider.setMaximum(100)
         self.aslider.setSingleStep(1)
         self.aslider.setValue(75)
-
         self.kslider.setMinimum(1)
         self.kslider.setMaximum(100)
         self.kslider.setValue(1)
-
         tmp = sorted(cm.datad.keys())
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
+        self.cbox_dtype.addItems(['Single Color Map', 'Contour', 'RGB Ternary',
+                                  'CMY Ternary', 'Sunshade'])
+        self.cbox_htype.addItems(['Linear', '95% Linear, 5% Compact',
+                                  'Histogram Equalization'])
+        self.cbox_hstype.addItems(['Linear', '95% Linear, 5% Compact',
+                                   'Histogram Equalization'])
+
+        self.setWindowTitle("Raster Data Interpretation")
+        label1.setText('Display Type:')
+        label2.setText('Data Bands:')
+        label3.setText('Histogram Stretch:')
+        self.slabel.setText('Sunshade Stretch:')
+        self.labelc.setText('Color Bar:')
+        self.labelk.setText('K value:')
+        self.labels.setText('Sunshade Detail')
+        self.labela.setText('Light Reflectance')
+        self.btn_saveimg.setText('Save GeoTiff')
+
+        vbl_raster.addWidget(label1)
+        vbl_raster.addWidget(self.cbox_dtype)
+        vbl_raster.addWidget(label2)
+        vbl_raster.addWidget(self.cbox_band1)
+        vbl_raster.addWidget(self.cbox_band2)
+        vbl_raster.addWidget(self.cbox_band3)
+        vbl_raster.addWidget(label3)
+        vbl_raster.addWidget(self.cbox_htype)
+        vbl_raster.addWidget(self.slabel)
+        vbl_raster.addWidget(self.cbox_hstype)
+        vbl_raster.addWidget(self.labelc)
+        vbl_raster.addWidget(self.cbox_cbar)
+        vbl_raster.addWidget(self.msc)
+        vbl_raster.addWidget(self.labels)
+        vbl_raster.addWidget(self.sslider)
+        vbl_raster.addWidget(self.labela)
+        vbl_raster.addWidget(self.aslider)
+        vbl_raster.addWidget(self.labelk)
+        vbl_raster.addWidget(self.kslider)
+        vbl_raster.addItem(spacer)
+        vbl_raster.addWidget(self.btn_saveimg)
+        vbl_raster.addWidget(helpdocs)
+        vbl_right.addWidget(self.mmc)
+        vbl_right.addWidget(mpl_toolbar)
+
+        hbl_all.addLayout(vbl_raster)
+        hbl_all.addLayout(vbl_right)
 
         self.cbox_cbar.currentIndexChanged.connect(self.change_cbar)
         self.cbox_dtype.currentIndexChanged.connect(self.change_dtype)
