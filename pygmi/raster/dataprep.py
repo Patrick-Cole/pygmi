@@ -30,13 +30,15 @@ from PyQt4 import QtGui, QtCore
 import os
 import numpy as np
 from osgeo import gdal, osr, ogr
-from .datatypes import Data
-from ..vector.datatypes import PData
+from pygmi.raster.datatypes import Data
+from pygmi.vector.datatypes import PData
+#import pygmi.raster.cooper as cooper
 from PIL import Image, ImageDraw
 import copy
 import scipy.ndimage as ndimage
 from collections import Counter
 import pygmi.menu_default as menu_default
+import pdb
 
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
@@ -999,6 +1001,149 @@ class Metadata(QtGui.QDialog):
         return tmp
 
 
+class RTP(QtGui.QDialog):
+    """
+    Perform Reduction to the Pole on Magnetic data.
+
+    This class grids point data using a nearest neighbourhood technique.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+
+        self.dataid = QtGui.QComboBox()
+        self.dsb_inc = QtGui.QDoubleSpinBox()
+        self.dsb_dec = QtGui.QDoubleSpinBox()
+
+        self.setupui()
+
+    def setupui(self):
+        """ Setup UI """
+        gridlayout_main = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
+        label_band = QtGui.QLabel()
+        label_inc = QtGui.QLabel()
+        label_dec = QtGui.QLabel()
+
+        self.dsb_inc.setMaximum(90.0)
+        self.dsb_inc.setMinimum(-90.0)
+        self.dsb_dec.setMaximum(360.0)
+        self.dsb_dec.setMinimum(-360.0)
+#        self.dsb_dxy.setDecimals(5)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle("Dataset Gridding")
+        label_band.setText("Band to Reduce to the Pole:")
+        label_inc.setText("Inclination of Magnetic Field:")
+        label_dec.setText("Declination of Magnetic Field:")
+
+        gridlayout_main.addWidget(label_band, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_inc, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_inc, 1, 1, 1, 1)
+        gridlayout_main.addWidget(label_dec, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_dec, 2, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self):
+        """ Settings """
+        tmp = []
+        if 'Raster' not in self.indata:
+            return False
+
+        for i in self.indata['Raster']:
+            tmp.append(i.dataid)
+
+        self.dataid.addItems(tmp)
+
+        self.dsb_inc.setValue(-62.5)
+        self.dsb_dec.setValue(-16.75)
+        tmp = self.exec_()
+
+        if tmp == 1:
+            self.acceptall()
+            tmp = True
+
+        return tmp
+
+    def acceptall(self):
+        """ accept """
+        I_deg = self.dsb_inc.value()
+        D_deg = self.dsb_dec.value()
+
+        newdat = []
+        for data in self.indata['Raster']:
+            if data.dataid != self.dataid.currentText():
+                continue
+
+            datamedian = np.ma.median(data.data)
+            ndat = data.data - datamedian
+            ndat[ndat.mask] = 0
+
+#            y, x = np.nonzero(ndat.data)
+#            dxy = data.xdim
+#            z = ndat[y, x].data
+#            x = x*dxy+data.tlx
+#            y = data.tly-y*dxy
+#            ndat = quickgrid(x, y, z, dxy)
+#            ndat = ndat[::-1]
+
+            fftmod = np.fft.fft2(ndat)
+
+            ny, nx = fftmod.shape
+            nyqx = 1/(2*data.xdim)
+            nyqy = 1/(2*data.ydim)
+
+            kx = np.linspace(-nyqx, nyqx, nx)
+            ky = np.linspace(-nyqy, nyqy, ny)
+
+            KX, KY = np.meshgrid(kx, ky)
+
+            I = np.deg2rad(I_deg)
+            D = np.deg2rad(D_deg)
+            alpha = np.arctan2(KX, KY)
+            filt = 1/(np.sin(I)+1j*np.cos(I)*np.cos(D-alpha))**2
+
+            zrtp = np.fft.ifft2(fftmod*filt)
+            zrtp += datamedian
+
+    # Create dataset
+            dat = Data()
+            dat.data = np.ma.masked_invalid(np.abs(zrtp))
+            dat.data.mask = data.data.mask
+            dat.rows, dat.cols = zrtp.shape
+            dat.nullvalue = data.data.fill_value
+            dat.dataid = data.dataid
+            dat.tlx = data.tlx
+            dat.tly = data.tly
+            dat.xdim = data.xdim
+            dat.ydim = data.ydim
+
+            newdat.append(dat)
+
+        self.outdata['Raster'] = newdat
+
+
 def check_dataid(out):
     """ Checks dataid for duplicates and renames where necessary """
     tmplist = []
@@ -1327,6 +1472,20 @@ def merge(dat):
     out = check_dataid(out)
 
     return out
+
+
+#def taper(data):
+#    nr, nc = data.shape
+#    nmax = np.max([nr, nc])
+#    npts = int(2**cooper.__nextpow2(nmax))
+#    npts *= 2
+#
+#    cdiff = int(np.floor((npts-nc)/2))
+#    rdiff = int(np.floor((npts-nr)/2))
+#    data1 = cooper.__taper2d(data, npts, nc, nr, cdiff, rdiff)
+##    data1 = np.pad(data-np.median(data), ((rdiff, cdiff), (rdiff,cdiff)), 'edge')
+
+    return data1
 
 
 def trim_raster(olddata):

@@ -85,9 +85,11 @@ import pygmi.raster.dataprep as dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 import pygmi.menu_default as menu_default
+#import pygmi.raster.modest_image as modest_image
+import pdb
 
 
-class ModestImage(mi.AxesImage):
+class ModestImage2(mi.AxesImage):
     """
     Computationally modest image class - modified for use in PyGMI.
 
@@ -130,10 +132,11 @@ class ModestImage(mi.AxesImage):
             raise NotImplementedError("ModestImage does not support extents")
 
         self._full_res = None
-        self.smallres = None
         self._sx, self._sy = None, None
         self._bounds = (None, None, None, None)
-        super(ModestImage, self).__init__(*args, **kwargs)
+        super(ModestImage2, self).__init__(*args, **kwargs)
+
+        self.smallres = None
         self.cbar = cm.jet
         self.htype = 'Linear'
         self.hstype = 'Linear'
@@ -162,7 +165,7 @@ class ModestImage(mi.AxesImage):
 #            raise TypeError("Image data can not convert to float")
 #
 #        if (self._A.ndim not in (2, 3) or
-#            (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4))):
+#                (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4))):
 #            raise TypeError("Invalid dimensions for image data")
 
         self._imcache = None
@@ -345,6 +348,11 @@ class ModestImage(mi.AxesImage):
 #        self._scale_to_res()
         # The next command runs the original draw for this class.
         super().draw(renderer, *args, **kwargs)
+
+
+class ModestImage(ModestImage2):
+    def __init__(self, *args, **kwargs):
+        ModestImage2.__init__(self, *args, **kwargs)
 
 
 def imshow(axes, X, cmap=None, norm=None, aspect=None,

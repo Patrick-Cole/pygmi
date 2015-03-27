@@ -41,13 +41,7 @@ from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
-
-import matplotlib
-rcParams = matplotlib.rcParams
-
-import matplotlib.image as mi
 import matplotlib.colors as mcolors
-import matplotlib.cbook as cbook
 
 
 class MyMplCanvas(FigureCanvas):
@@ -115,29 +109,12 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-
-#        pdb.set_trace()
-
         extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
                   data1.tly - data1.rows * data1.ydim, data1.tly)
 
-        x_1, x_2, y_1, y_2 = extent
-
-#        self.axes.set_xlim(x_1, x_2)
-#        self.axes.set_ylim(y_1, y_2)
-#        self.axes.set_aspect('equal')
-
-#        extent = (0, data1.cols * data1.xdim,
-#                  0, data1.rows * data1.ydim)
 
         rdata = self.axes.imshow(data1.data, extent=extent,
                                  interpolation='nearest')
-
-#        rdata = imshow(self.axes, data1.data.astype(np.float32), extent=extent,
-#                       interpolation='nearest')
-
-#        if data2 is not None:
-#            self.axes.plot(data2.xdata, data2.ydata, '.')
 
         cbar = self.figure.colorbar(rdata)
         try:
@@ -552,196 +529,3 @@ class PlotHist(GraphWindow):
         self.label1.setText('Band:')
         self.combobox1.setCurrentIndex(0)
         self.change_band()
-
-
-class ModestImage(mi.AxesImage):
-    """
-    Computationally modest image class.
-
-    ModestImage is an extension of the Matplotlib AxesImage class
-    better suited for the interactive display of larger images. Before
-    drawing, ModestImage resamples the data array based on the screen
-    resolution and view window. This has very little affect on the
-    appearance of the image, but can substantially cut down on
-    computation since calculations of unresolved or clipped pixels
-    are skipped.
-
-    The interface of ModestImage is the same as AxesImage. However, it
-    does not currently support setting the 'extent' property. There
-    may also be weird coordinate warping operations for images that
-    I'm not aware of. Don't expect those to work either.
-
-    ModestImage
-    Copyright (c) 2013 Chris Beaumont
-
-    Permission is hereby granted, free of charge, to any person obtaining a
-    copy of this software and associated documentation files (the "Software"),
-    to deal in the Software without restriction, including without limitation
-    the rights to use, copy, modify, merge, publish, distribute, sublicense,
-    and/or sell copies of the Software, and to permit persons to whom the
-    Software is furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in
-    all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-    DEALINGS IN THE SOFTWARE.
-    """
-    def __init__(self, *args, **kwargs):
-        if 'extent' in kwargs and kwargs['extent'] is not None:
-            raise NotImplementedError("ModestImage does not support extents")
-
-        self._full_res = None
-        self._sx, self._sy = None, None
-        self._bounds = (None, None, None, None)
-        self._rgbacache = None
-        self._oldxslice = None
-        self._oldyslice = None
-
-        super(ModestImage, self).__init__(*args, **kwargs)
-
-    def set_data(self, A):
-        """
-        Set the image array
-
-        ACCEPTS: numpy/PIL Image A
-        """
-        self._full_res = A
-        self._A = A
-
-        if self._A.dtype != np.uint8 and not np.can_cast(self._A.dtype,
-                                                         np.float):
-            raise TypeError("Image data can not convert to float")
-
-        if (self._A.ndim not in (2, 3) or
-                (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4))):
-            raise TypeError("Invalid dimensions for image data")
-
-        self._imcache = None
-        self._rgbacache = None
-        self._oldxslice = None
-        self._oldyslice = None
-        self._sx, self._sy = None, None
-
-    def get_array(self):
-        """Override to return the full-resolution array"""
-        return self._full_res
-
-    def _scale_to_res(self):
-        """ Change self._A and _extent to render an image whose
-        resolution is matched to the eventual rendering."""
-
-        ax = self.axes
-
-        fx0, fy0, fx1, fy1 = ax.dataLim.extents
-        rows, cols = self._full_res.shape
-        ddx = (fx1-fx0)/cols
-        ddy = (fy1-fy0)/rows
-
-        ext = ax.transAxes.transform([1, 1]) - ax.transAxes.transform([0, 0])
-        xlim, ylim = ax.get_xlim(), ax.get_ylim()
-        dx, dy = xlim[1] - xlim[0], ylim[1] - ylim[0]
-
-        y0 = max(0, (ylim[0]-fy0)/ddy)
-        y1 = min(rows, (ylim[1]-fy0)/ddy)
-        x0 = max(0, (xlim[0]-fx0)/ddx)
-        x1 = min(cols, (xlim[1]-fx0)/ddx)
-
-        if y1 == y0:
-            y1 = y0+1
-
-        if x1 == x0:
-            x1 = x0+1
-
-#        y0 = max(0, ylim[0] - 5)
-#        y1 = min(self._full_res.shape[0], ylim[1] + 5)
-#        x0 = max(0, xlim[0] - 5)
-#        x1 = min(self._full_res.shape[1], xlim[1] + 5)
-
-        y0, y1, x0, x1 = map(int, [y0, y1, x0, x1])
-
-#        sy = int(max(1, min((y1 - y0), np.ceil(dy / ext[1]))))
-#        sx = int(max(1, min((x1 - x0), np.ceil(dx / ext[0]))))
-
-        sy = int(np.ceil(dy/(ddy*ext[1])))
-        sx = int(np.ceil(dx/(ddx*ext[0])))
-
-        # have we already calculated what we need?
-
-        if self._sx is None:
-            pass
-        elif (sx >= self._sx and sy >= self._sy and
-              x0 >= self._bounds[0] and x1 <= self._bounds[1] and
-              y0 >= self._bounds[2] and y1 <= self._bounds[3]):
-            return
-
-        self._A = self._full_res[(rows-y1):(rows-y0):sy, x0:x1:sx]
-        self._A = cbook.safe_masked_invalid(self._A)
-#        x1 = x0 + self._A.shape[1] * sx
-#        y1 = y0 + self._A.shape[0] * sy
-
-        y0 = ylim[0]
-        y1 = ylim[1]
-        x0 = xlim[0]
-        x1 = xlim[1]
-
-        self.set_extent([x0 - .5, x1 - .5, y0 - .5, y1 - .5])
-        self._sx = sx
-        self._sy = sy
-        self._bounds = (x0, x1, y0, y1)
-        self.changed()
-
-    def draw(self, renderer, *args, **kwargs):
-        self._scale_to_res()
-        super(ModestImage, self).draw(renderer, *args, **kwargs)
-
-
-def imshow(axes, X, cmap=None, norm=None, aspect=None,
-           interpolation=None, alpha=None, vmin=None, vmax=None,
-           origin=None, extent=None, shape=None, filternorm=1,
-           filterrad=4.0, imlim=None, resample=None, url=None, **kwargs):
-    """Similar to matplotlib's imshow command, but produces a ModestImage
-
-    Unlike matplotlib version, must explicitly specify axes
-    """
-
-    if not axes._hold:
-        axes.cla()
-    if norm is not None:
-        assert isinstance(norm, mcolors.Normalize)
-    if aspect is None:
-        aspect = rcParams['image.aspect']
-    axes.set_aspect(aspect)
-    im = ModestImage(axes, cmap, norm, interpolation, origin, extent,
-                     filternorm=filternorm, filterrad=filterrad,
-                     resample=resample, **kwargs)
-
-    im.set_data(X)
-    im.set_alpha(alpha)
-    axes._set_artist_props(im)
-
-    if im.get_clip_path() is None:
-        # image does not already have clipping set, clip to axes patch
-        im.set_clip_path(axes.patch)
-
-    # if norm is None and shape is None:
-    #    im.set_clim(vmin, vmax)
-    if vmin is not None or vmax is not None:
-        im.set_clim(vmin, vmax)
-    else:
-        im.autoscale_None()
-    im.set_url(url)
-
-    # update ax.dataLim, and, if autoscaling, set viewLim
-    # to tightly fit the image, regardless of dataLim.
-    im.set_extent(im.get_extent())
-
-    axes.images.append(im)
-    im._remove_method = lambda h: axes.images.remove(h)
-
-    return im

@@ -30,8 +30,8 @@ import os
 import sys
 import numpy as np
 from PyQt4 import QtCore, QtGui, QtOpenGL
-import OpenGL
-OpenGL.ERROR_CHECKING = False  # Note This!!!!
+# import OpenGL
+# OpenGL.ERROR_CHECKING = False  # Note This!!!!
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL.arrays import vbo
@@ -827,6 +827,7 @@ def calc_norms(faces, vtx):
     nrm[faces[:, 0]] += n
     nrm[faces[:, 1]] += n
     nrm[faces[:, 2]] += n
+
     normalize_v3(nrm)
 
     return nrm
@@ -835,9 +836,12 @@ def calc_norms(faces, vtx):
 def normalize_v3(arr):
     ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
     lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
-    arr[:, 0] /= lens
-    arr[:, 1] /= lens
-    arr[:, 2] /= lens
+    lens[lens == 0] = 1  # Get rid of divide by zero.
+
+    arr /= lens[:, np.newaxis]
+#    arr[:, 0] /= lens
+#    arr[:, 1] /= lens
+#    arr[:, 2] /= lens
     return arr
 
 

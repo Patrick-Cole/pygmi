@@ -996,7 +996,10 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
     lmod.lith_list['Background'].mdec = fdec
 
     j = 0
-    clrtmp = np.arange(len(inputliths))/(len(inputliths)-1)
+    if len(inputliths) == 1:
+        clrtmp = np.array([0])
+    else:
+        clrtmp = np.arange(len(inputliths))/(len(inputliths)-1)
     clrtmp = cm.jet(clrtmp)[:, :-1]
     clrtmp *= 255
     clrtmp = clrtmp.astype(int)

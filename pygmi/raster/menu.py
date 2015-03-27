@@ -98,6 +98,11 @@ class MenuWidget(object):
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
 
+        self.action_rtp = QtGui.QAction(self.parent)
+        self.action_rtp.setText("Reduction to the Pole")
+        self.menu.addAction(self.action_rtp)
+        self.action_rtp.triggered.connect(self.rtp)
+
         self.action_igrf = QtGui.QAction(self.parent)
         self.action_igrf.setText("Calculate IGRF Corrected Data")
         self.menu.addAction(self.action_igrf)
@@ -233,7 +238,13 @@ class MenuWidget(object):
     def depth_susc(self):
         """ Depth and Susceptibility calculations """
         fnc = stettler.DepthSusc(self.parent)
-        self.parent.item_insert("Step", "Depth\nSusceptibility\nInterpretation", fnc)
+        self.parent.item_insert("Step",
+                                "Depth\nSusceptibility\nInterpretation", fnc)
+
+    def rtp(self):
+        """ Compute rtp """
+        fnc = dataprep.RTP(self.parent)
+        self.parent.item_insert("Step", "RTP\nAngle", fnc)
 
     def show_ccoef(self):
         """ Show 2D correlation coefficients"""
