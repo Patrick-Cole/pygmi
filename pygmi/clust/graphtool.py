@@ -43,7 +43,7 @@ class GraphHist(FigureCanvas):
     parent : parent
         reference to the parent routine.
     """
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.figure = Figure()
 
         FigureCanvas.__init__(self, self.figure)

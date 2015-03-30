@@ -561,7 +561,7 @@ def tilt1(data, azi, s):
     data[np.isnan(data)] = dm
     data[np.isinf(data)] = dm
     if s > 0:
-        se = np.ones(s)/(s*s)
+        se = np.ones((s, s))/(s*s)
         data = si.convolve2d(data, se, 'valid')  # smooth
 
     nr, nc = data.shape
@@ -574,14 +574,14 @@ def tilt1(data, azi, s):
     nmax = np.max([nr, nc])
     npts = int(2**__nextpow2(nmax))
     dz = vertical(data, npts, 1)
-    t1 = np.arctan(dz/dxtot)
-    th = np.real(np.arctanh(np.nan_to_num(dz/dxtot)+(0+0j)))
-    tdx = np.real(np.arctan(dxtot/abs(dz)))
+    t1 = np.ma.arctan(dz/dxtot)
+    th = np.real(np.ma.arctanh(np.nan_to_num(dz/dxtot)+(0+0j)))
+    tdx = np.real(np.ma.arctan(dxtot/abs(dz)))
 
     dx1 = dx*np.cos(azi)+dy*np.sin(azi)  # Standard directional derivative
     dx2 = dx*np.cos(azi+np.pi/2)+dy*np.sin(azi+np.pi/2)
-    dxz = np.sqrt(dx2*dx2+dz*dz)
-    ta = np.arctan(dx1/dxz)         # Tilt directional derivative
+    dxz = np.ma.sqrt(dx2*dx2+dz*dz)
+    ta = np.ma.arctan(dx1/dxz)         # Tilt directional derivative
 
     # 2nd order Tilt angle
 
@@ -593,8 +593,8 @@ def tilt1(data, azi, s):
     ts = si.convolve2d(t1, se, 'same')
     [dxs, dys] = np.gradient(ts)
     dzs = vertical(ts, npts, 1)
-    dxtots = np.sqrt(dxs*dxs+dys*dys)
-    t2 = np.arctan(dzs/dxtots)
+    dxtots = np.ma.sqrt(dxs*dxs+dys*dys)
+    t2 = np.ma.arctan(dzs/dxtots)
 
     # Standard tilt angle, hyperbolic tilt angle, 2nd order tilt angle,
     # Tilt Based Directional Derivative, Total Derivative

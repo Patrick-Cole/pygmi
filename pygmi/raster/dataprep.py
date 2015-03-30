@@ -1095,53 +1095,51 @@ class RTP(QtGui.QDialog):
         for data in self.indata['Raster']:
             if data.dataid != self.dataid.currentText():
                 continue
-
-            datamedian = np.ma.median(data.data)
-            ndat = data.data - datamedian
-            ndat[ndat.mask] = 0
-
-#            y, x = np.nonzero(ndat.data)
-#            dxy = data.xdim
-#            z = ndat[y, x].data
-#            x = x*dxy+data.tlx
-#            y = data.tly-y*dxy
-#            ndat = quickgrid(x, y, z, dxy)
-#            ndat = ndat[::-1]
-
-            fftmod = np.fft.fft2(ndat)
-
-            ny, nx = fftmod.shape
-            nyqx = 1/(2*data.xdim)
-            nyqy = 1/(2*data.ydim)
-
-            kx = np.linspace(-nyqx, nyqx, nx)
-            ky = np.linspace(-nyqy, nyqy, ny)
-
-            KX, KY = np.meshgrid(kx, ky)
-
-            I = np.deg2rad(I_deg)
-            D = np.deg2rad(D_deg)
-            alpha = np.arctan2(KX, KY)
-            filt = 1/(np.sin(I)+1j*np.cos(I)*np.cos(D-alpha))**2
-
-            zrtp = np.fft.ifft2(fftmod*filt)
-            zrtp += datamedian
-
-    # Create dataset
-            dat = Data()
-            dat.data = np.ma.masked_invalid(np.abs(zrtp))
-            dat.data.mask = data.data.mask
-            dat.rows, dat.cols = zrtp.shape
-            dat.nullvalue = data.data.fill_value
-            dat.dataid = data.dataid
-            dat.tlx = data.tlx
-            dat.tly = data.tly
-            dat.xdim = data.xdim
-            dat.ydim = data.ydim
-
+            dat = rtp(data, I_deg, D_deg)
             newdat.append(dat)
 
         self.outdata['Raster'] = newdat
+
+
+def rtp(data, I_deg, D_deg):
+    """ Reduction to the Pole """
+
+    datamedian = np.ma.median(data.data)
+    ndat = data.data - datamedian
+    ndat[ndat.mask] = 0
+
+    fftmod = np.fft.fft2(ndat)
+
+    ny, nx = fftmod.shape
+    nyqx = 1/(2*data.xdim)
+    nyqy = 1/(2*data.ydim)
+
+    kx = np.linspace(-nyqx, nyqx, nx)
+    ky = np.linspace(-nyqy, nyqy, ny)
+
+    KX, KY = np.meshgrid(kx, ky)
+
+    I = np.deg2rad(I_deg)
+    D = np.deg2rad(D_deg)
+    alpha = np.arctan2(KX, KY)
+    filt = 1/(np.sin(I)+1j*np.cos(I)*np.cos(D-alpha))**2
+
+    zrtp = np.fft.ifft2(fftmod*filt)
+    zrtp = np.abs(zrtp) + datamedian
+
+# Create dataset
+    dat = Data()
+    dat.data = np.ma.masked_invalid(np.abs(zrtp))
+    dat.data.mask = data.data.mask
+    dat.rows, dat.cols = zrtp.shape
+    dat.nullvalue = data.data.fill_value
+    dat.dataid = data.dataid
+    dat.tlx = data.tlx
+    dat.tly = data.tly
+    dat.xdim = data.xdim
+    dat.ydim = data.ydim
+
+    return dat
 
 
 def check_dataid(out):
@@ -1263,6 +1261,14 @@ def cut_raster(data, ifile):
         idata.tly = idata.tly - ulY*idata.ydim  # maxY
     data = trim_raster(data)
     return data
+
+def dat_extent(dat):
+    """ Gets the extend of the dat variable """
+    left = dat.tlx
+    top = dat.tly
+    right = left + dat.cols*dat.xdim
+    bottom = top - dat.rows*dat.ydim
+    return (left, right, bottom, top)
 
 
 def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
