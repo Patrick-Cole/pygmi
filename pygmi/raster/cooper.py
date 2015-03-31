@@ -560,9 +560,13 @@ def tilt1(data, azi, s):
     data.data[data.mask] = dm
     data[np.isnan(data)] = dm
     data[np.isinf(data)] = dm
+#    import pdb
+#    pdb.set_trace()
     if s > 0:
         se = np.ones((s, s))/(s*s)
-        data = si.convolve2d(data, se, 'valid')  # smooth
+        data2 = si.convolve2d(data, se, 'valid')  # smooth
+        mask = si.convolve2d(data.mask, se, 'valid')
+        data = np.ma.array(data2, mask=mask)
 
     nr, nc = data.shape
     dtr = np.pi/180.0
@@ -575,7 +579,7 @@ def tilt1(data, azi, s):
     npts = int(2**__nextpow2(nmax))
     dz = vertical(data, npts, 1)
     t1 = np.ma.arctan(dz/dxtot)
-    th = np.real(np.ma.arctanh(np.nan_to_num(dz/dxtot)+(0+0j)))
+    th = np.real(np.arctanh(np.nan_to_num(dz/dxtot)+(0+0j)))
     tdx = np.real(np.ma.arctan(dxtot/abs(dz)))
 
     dx1 = dx*np.cos(azi)+dy*np.sin(azi)  # Standard directional derivative
