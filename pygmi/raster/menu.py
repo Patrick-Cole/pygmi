@@ -35,7 +35,7 @@ from . import show_table
 from . import dataprep
 from . import iodefs
 from . import igrf
-from . import stettler
+from . import tiltdepth
 
 
 class MenuWidget(object):
@@ -145,7 +145,7 @@ class MenuWidget(object):
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
 
         self.action_depth_susc = QtGui.QAction(self.parent)
-        self.action_depth_susc.setText("Depth and Susceptibility Interpretation")
+        self.action_depth_susc.setText("Tilt Depth Interpretation")
         self.menu.addAction(self.action_depth_susc)
         self.action_depth_susc.triggered.connect(self.depth_susc)
 
@@ -237,9 +237,9 @@ class MenuWidget(object):
 
     def depth_susc(self):
         """ Depth and Susceptibility calculations """
-        fnc = stettler.DepthSusc(self.parent)
+        fnc = tiltdepth.TiltDepth(self.parent)
         self.parent.item_insert("Step",
-                                "Depth\nSusceptibility\nInterpretation", fnc)
+                                "Tilt\nDepth\nInterpretation", fnc)
 
     def rtp(self):
         """ Compute rtp """
