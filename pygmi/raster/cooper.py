@@ -202,7 +202,6 @@ class Visibility2d(QtGui.QDialog):
 
         self.sb_dh = QtGui.QSpinBox()
         self.sb_wsize = QtGui.QSpinBox()
-        self.pbar = QtGui.QProgressBar()
 
         self.setupui()
 
@@ -223,7 +222,6 @@ class Visibility2d(QtGui.QDialog):
         self.sb_wsize.setMinimum(3)
         self.sb_wsize.setMaximum(100000)
         self.sb_wsize.setSingleStep(2)
-        self.pbar.setProperty("value", 0)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
@@ -235,9 +233,8 @@ class Visibility2d(QtGui.QDialog):
         gridlayout.addWidget(self.sb_wsize, 0, 1, 1, 1)
         gridlayout.addWidget(label, 1, 0, 1, 1)
         gridlayout.addWidget(self.sb_dh, 1, 1, 1, 1)
-        gridlayout.addWidget(self.pbar, 2, 0, 1, 2)
-        gridlayout.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 3, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -254,11 +251,7 @@ class Visibility2d(QtGui.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
         data2 = []
 
-        self.pbar.setMinimum(0)
-        self.pbar.setMaximum(len(data)+1)
-
         for i in range(len(data)):
-            self.pbar.setValue(i+1)
             self.parent.showprocesslog(data[i].dataid+':')
 
             vtot, vstd, vsum = visibility2d(data[i].data, self.wsize,
@@ -273,8 +266,6 @@ class Visibility2d(QtGui.QDialog):
             data2[-3].dataid += ' Total Visibility'
             data2[-2].dataid += ' Visibility Variation'
             data2[-1].dataid += ' Visibility Vector Resultant'
-
-        self.pbar.setValue(self.pbar.maximum())
 
         self.outdata['Raster'] = data2
         self.parent.showprocesslog('Finished!')
@@ -442,7 +433,6 @@ class Tilt1(QtGui.QDialog):
 
         self.sb_azi = QtGui.QSpinBox()
         self.sb_s = QtGui.QSpinBox()
-        self.pbar = QtGui.QProgressBar()
 
         self.setupui()
 
@@ -466,7 +456,6 @@ class Tilt1(QtGui.QDialog):
         self.sb_s.setMinimum(0)
         self.sb_s.setMaximum(100000)
         self.sb_s.setSingleStep(1)
-        self.pbar.setProperty("value", 0)
 
         self.setWindowTitle("Tilt Angle")
         label.setText("Azimuth (degrees from east)")
@@ -476,9 +465,8 @@ class Tilt1(QtGui.QDialog):
         gridlayout.addWidget(self.sb_s, 0, 1, 1, 1)
         gridlayout.addWidget(label, 1, 0, 1, 1)
         gridlayout.addWidget(self.sb_azi, 1, 1, 1, 1)
-        gridlayout.addWidget(self.pbar, 2, 0, 1, 2)
-        gridlayout.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 3, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -495,12 +483,7 @@ class Tilt1(QtGui.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
         data2 = []
 
-        self.pbar.setMinimum(0)
-        self.pbar.setMaximum(len(data)+1)
-
         for i in range(len(data)):
-            self.pbar.setValue(i+1)
-
             t1, th, t2, ta, tdx = tilt1(data[i].data, self.azi, self.smooth)
             data2.append(copy.deepcopy(data[i]))
             data2.append(copy.deepcopy(data[i]))
@@ -517,8 +500,6 @@ class Tilt1(QtGui.QDialog):
             data2[-3].dataid += ' 2nd Order Tilt Angle'
             data2[-2].dataid += ' Tilt Based Directional Derivative'
             data2[-1].dataid += ' Total Derivative'
-
-        self.pbar.setValue(self.pbar.maximum())
 
         for i in data2:
             i.data.data[i.data.mask] = i.nullvalue

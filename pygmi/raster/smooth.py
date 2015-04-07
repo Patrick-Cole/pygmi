@@ -29,6 +29,8 @@ import numpy as np
 import scipy.signal as ssig
 import copy
 import pygmi.menu_default as menu_default
+import pdb
+import pygmi.misc as misc
 
 
 class Smooth(QtGui.QDialog):
@@ -56,7 +58,6 @@ class Smooth(QtGui.QDialog):
         self.radiobutton_disk = QtGui.QRadioButton()
         self.radiobutton_gaussian = QtGui.QRadioButton()
         self.tablewidget = QtGui.QTableWidget()
-        self.progressbar = QtGui.QProgressBar()
 
         self.setupui()
 
@@ -91,7 +92,6 @@ class Smooth(QtGui.QDialog):
         self.radiobutton_box.setChecked(True)
         self.tablewidget.setRowCount(5)
         self.tablewidget.setColumnCount(5)
-        self.progressbar.setProperty("value", 0)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle("Smoothing Filters")
@@ -129,9 +129,8 @@ class Smooth(QtGui.QDialog):
         gridlayout.addWidget(groupbox_2, 2, 0, 1, 1)
         gridlayout.addWidget(groupbox_3, 2, 1, 1, 1)
         gridlayout.addWidget(groupbox, 2, 2, 1, 1)
-        gridlayout.addWidget(self.progressbar, 3, 0, 1, 3)
-        gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 3, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 3, 0, 1, 1)
 
         self.radiobutton_2dmean.clicked.connect(self.choosefilter)
         self.radiobutton_2dmedian.clicked.connect(self.choosefilter)
@@ -271,7 +270,6 @@ class Smooth(QtGui.QDialog):
     def mov_win_filt(self, dat, fmat, itype, title):
         """ move win filt function """
         out = dat.tolist()
-#        self.progressbar.setValue(0)
 
         rowf = fmat.shape[0]
         colf = fmat.shape[1]
@@ -285,24 +283,26 @@ class Smooth(QtGui.QDialog):
         dummy = np.ma.masked_invalid(dummy)
         dummy.mask[drr-1:drr-1+rowd, dcc-1:dcc-1+cold] = dat.mask
 
+        dummy.data[dummy.mask] = np.nan
         dat.data[dat.mask] = np.nan
 
         if itype == '2D Mean':
             out = ssig.correlate(dat, fmat, 'same')
-            self.progressbar.setValue(100)
 
         elif itype == '2D Median':
             self.parent.showprocesslog('Calculating Median...')
-            out = np.ma.zeros([rowd, cold])
+            out = np.ma.zeros([rowd, cold])*np.nan
             out.mask = dat.mask
+            fmat = fmat.astype(bool)
+            dummy = dummy.data
 
             for i in range(rowd):
                 self.parent.showprocesslog(title+' Progress: ' +
                                            str(round(100*i/rowd))+'%', True)
                 for j in range(cold):
-                    tmp1 = dummy[i:i+rowf, j:j+colf]
-                    tmp1.mask = np.logical_and(tmp1.mask, fmat)
-                    out[i, j] = np.ma.median(tmp1)
+                    tmp1 = dummy[i:i+rowf, j:j+colf][fmat]
+                    if np.isnan(tmp1).min() == False:
+                        out[i, j] = np.nanmedian(tmp1)
 
         out = np.ma.masked_invalid(out)
         out.shape = out.shape[0:2]

@@ -156,7 +156,7 @@ class TiltDepth(QtGui.QDialog):
             return False
 
         os.chdir(filename.rpartition('/')[0])
-        np.savetxt(filename, self.depths, delimiter=',', header='x, y, depth')
+        np.savetxt(filename, self.depths, delimiter=',', header='x, y, id, depth')
 
     def change_cbar(self):
         """ Change the color map for the color bar """
@@ -260,22 +260,22 @@ class TiltDepth(QtGui.QDialog):
         cntm45 = self.axes.contour(X, Y, Z, [-45], alpha=0)
 #        self.axes.contourf(X, Y, Z, [-45, 45])
 
-        gx0, gy0, cgrad0 = vgrad(cnt0)
-        gx45, gy45, cgrad45 = vgrad(cnt45)
-        gxm45, gym45, cgradm45 = vgrad(cntm45)
+        gx0, gy0, cgrad0, cntid0 = vgrad(cnt0)
+        gx45, gy45, cgrad45, _ = vgrad(cnt45)
+        gxm45, gym45, cgradm45, _ = vgrad(cntm45)
 
         pairs0 = []
         pairs1 = []
         pairs2 = []
 
-        g0 = np.transpose([gx0, gy0, cgrad0])
+        g0 = np.transpose([gx0, gy0, cgrad0, cntid0])
 
         dx = gx45
         dy = gy45
         dxm = gxm45
         dym = gym45
 
-        for i, j, k in g0:
+        for i, j, k, cntid in g0:
             dist = ne.evaluate('(dx-i)**2+(dy-j)**2')
             dmin = np.nonzero(dist == dist.min())[0]
             dx1 = dx[dmin]-i
@@ -306,7 +306,7 @@ class TiltDepth(QtGui.QDialog):
             if gtmp > 10:
                 continue
 
-            pairs0.append([i, j])
+            pairs0.append([i, j, cntid])
             pairs1.append([dx1, dy1, dist1])
             pairs2.append([dx2, dy2, dist2])
 
@@ -348,12 +348,17 @@ def vgrad(cnt):
     gy = np.array([])
     dx2 = np.array([])
     dy2 = np.array([])
+    cntid = np.array([])
 
+    n = 0
     for i in cnt.collections[0].get_paths():
+        n += 1
         cntvert = i.vertices
 
         dx = cntvert[:, 0][1:] - cntvert[:, 0][:-1]
         dy = cntvert[:, 1][1:] - cntvert[:, 1][:-1]
+
+        cntid = np.append(cntid, np.zeros_like(dx)+n)
 
         gx = np.append(gx, cntvert[:, 0][:-1] + dx/2)
         gy = np.append(gy, cntvert[:, 1][:-1] + dy/2)
@@ -365,7 +370,7 @@ def vgrad(cnt):
     cgrad[cgrad > 90] -= 180.
     cgrad[cgrad < -90] += 180.
 
-    return gx, gy, cgrad
+    return gx, gy, cgrad, cntid
 
 
 def tiltdepth(data, dec, inc):

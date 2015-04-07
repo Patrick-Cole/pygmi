@@ -1,10 +1,11 @@
+# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
-# Name:        ptimer.py (part of PyGMI)
+# Name:        misc.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2013 Council for Geoscience
+# Copyright:   (c) 2015 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI
@@ -22,9 +23,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" ptimer is utility module used to simplify checking how much time has passed
+""" Misc is a collection of routines which can be used in PyGMI in general.
+
+ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called. """
 
+from PyQt4 import QtGui, QtCore
 import time
 
 
@@ -65,3 +69,26 @@ class PTime(object):
         self.tchk.append(time.clock())
         print(msg, 'time(s):', self.tchk[-1] - self.tchk[-2],
               'since last call')
+
+
+class ProgressBar(QtGui.QProgressBar):
+    """
+    Progress Bar
+    """
+    def __init__(self, parent=None):
+        QtGui.QProgressBar.__init__(self, parent)
+
+    def iter(self, iterable):
+        """
+        Iterator Routine
+        """
+        total = len(iterable)
+        self.setMaximum(total)
+        self.setMinimum(0)
+        self.setValue(0)
+
+        n = 0
+        for obj in iterable:
+            yield obj
+            n += 1
+            self.setValue(n)
