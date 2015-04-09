@@ -26,6 +26,7 @@
 
 from PyQt4 import QtGui, QtCore
 import pygmi.menu_default as menu_default
+import time
 
 
 def update_lith_lw(lmod, lwidget):
@@ -182,6 +183,8 @@ class ProgressBar(object):
         self.value = 0
         self.mmax = 1
         self.mvalue = 0
+        self.otime = None
+        self.mtime = None
         self.resetall()
 
     def incr(self):
@@ -198,11 +201,60 @@ class ProgressBar(object):
 
         QtCore.QCoreApplication.processEvents()
 
+    def iter(self, iterable):
+        """
+        Iterator Routine
+        """
+        total = len(iterable)
+        self.max = total
+        self.pbar.setMaximum(total)
+        self.pbar.setMinimum(0)
+        self.pbar.setValue(0)
+
+        self.otime = time.clock()
+        time1 = self.otime
+        time2 = self.otime
+
+        n = 0
+        for obj in iterable:
+            yield obj
+            n += 1
+
+            time2 = time.clock()
+            if time2-time1 > 1:
+                self.pbar.setValue(n)
+                tleft = (total-n)*(time2-self.otime)/n
+                if tleft > 60:
+                    tleft = int(tleft // 60)
+                    self.pbar.setFormat('%p% '+str(tleft)+'min left')
+                else:
+                    tleft = int(tleft)
+                    self.pbar.setFormat('%p% '+str(tleft)+'s left')
+                QtGui.QApplication.processEvents()
+                time1 = time2
+
+        self.pbar.setFormat('%p%')
+        self.pbar.setValue(total)
+
+        self.incrmain()
+        self.value = 0
+        QtGui.QApplication.processEvents()
+
     def incrmain(self, i=1):
         """ increases value by one """
         self.mvalue += i
         self.pbarmain.setValue(self.mvalue)
-        QtCore.QCoreApplication.processEvents()
+
+        n = self.mvalue
+        total = self.mmax
+        tleft = (total-n)*(time.clock()-self.mtime)/n
+        if tleft > 60:
+            tleft = int(tleft // 60)
+            self.pbarmain.setFormat('%p% '+str(tleft)+'min left')
+        else:
+            tleft = int(tleft)
+            self.pbarmain.setFormat('%p% '+str(tleft)+'s left')
+        QtGui.QApplication.processEvents()
 
     def maxall(self):
         """ Sets all progress bars to maximum value """
@@ -210,9 +262,16 @@ class ProgressBar(object):
         self.value = self.max
         self.pbarmain.setValue(self.mvalue)
         self.pbar.setValue(self.value)
+        self.pbar.setFormat('%p%')
+        self.pbarmain.setFormat('%p%')
 
     def resetall(self, maximum=1, mmax=1):
         """ Sets min and max and resets all bars to 0 """
+
+        self.pbar.setFormat('%p%')
+        self.pbarmain.setFormat('%p%')
+        self.mtime = time.clock()
+
         self.max = maximum
         self.value = 0
         self.mmax = mmax
@@ -226,6 +285,8 @@ class ProgressBar(object):
 
     def resetsub(self, maximum=1):
         """ Sets min and max and resets sub bar to 0 """
+
+        self.pbar.setFormat('%p%')
         self.max = maximum
         self.value = 0
         self.pbar.setMinimum(self.value)

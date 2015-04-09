@@ -32,6 +32,22 @@ from PyQt4 import QtGui, QtCore
 import time
 
 
+PBAR_STYLE = """
+QProgressBar{
+    border: 2px solid grey;
+    border-radius: 5px;
+    text-align: center
+}
+
+QProgressBar::chunk {
+    background: qlineargradient(x1: 0.5, y1: 0, x2: 0.5, y2: 1, stop: 0 green, stop: 1 white);
+    width: 10px;
+}
+"""
+
+#    background: qlineargradient(x1: 0.5, y1: 0, x2: 0.5, y2: 1, stop: 0 green, stop: 1 white);
+#    background-color: #05B8CC;
+
 class PTime(object):
     """ Main class in the ptimer module. Once activated, this class keeps track
     of all time since activation. Times are stored whenever its methods are
@@ -77,6 +93,10 @@ class ProgressBar(QtGui.QProgressBar):
     """
     def __init__(self, parent=None):
         QtGui.QProgressBar.__init__(self, parent)
+        self.setMinimum(0)
+        self.setValue(0)
+        self.otime = 0
+        self.setStyleSheet(PBAR_STYLE)
 
     def iter(self, iterable):
         """
@@ -87,8 +107,27 @@ class ProgressBar(QtGui.QProgressBar):
         self.setMinimum(0)
         self.setValue(0)
 
+        self.otime = time.clock()
+        time1 = self.otime
+        time2 = self.otime
+
         n = 0
         for obj in iterable:
             yield obj
             n += 1
-            self.setValue(n)
+
+            time2 = time.clock()
+            if time2-time1 > 1:
+                self.setValue(n)
+                tleft = (total-n)*(time2-self.otime)/n
+                if tleft > 60:
+                    tleft = int(tleft // 60)
+                    self.setFormat('%p% '+str(tleft)+'min left')
+                else:
+                    tleft = int(tleft)
+                    self.setFormat('%p% '+str(tleft)+'s left')
+                QtGui.QApplication.processEvents()
+                time1 = time2
+
+        self.setFormat('%p%')
+        self.setValue(total)

@@ -38,7 +38,7 @@ from . import grvmag3d
 from . import iodefs
 from .datatypes import LithModel
 import pygmi.menu_default as menu_default
-
+import pygmi.misc as pmisc
 
 class MainWidget(QtGui.QMainWindow):
     """ Widget class to call the main interface """
@@ -60,8 +60,8 @@ class MainWidget(QtGui.QMainWindow):
         self.toolbar = QtGui.QToolBar()
         self.statusbar = QtGui.QStatusBar()
         self.tabwidget = QtGui.QTabWidget()
-        self.pbar_sub = QtGui.QProgressBar()
-        self.pbar_main = QtGui.QProgressBar()
+        self.pbar_sub = pmisc.ProgressBar()
+        self.pbar_main = pmisc.ProgressBar()
         self.textbrowser = QtGui.QTextBrowser()
         self.actionsave = QtGui.QPushButton()
 
@@ -113,8 +113,8 @@ class MainWidget(QtGui.QMainWindow):
         self.setStatusBar(self.statusbar)
         self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
         self.textbrowser.setFrameShape(QtGui.QFrame.StyledPanel)
-        self.pbar_sub.setTextVisible(False)
-        self.pbar_main.setTextVisible(False)
+#        self.pbar_sub.setTextVisible(False)
+#        self.pbar_main.setTextVisible(False)
         self.toolbar.setMovable(True)
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolbar.addWidget(self.actionsave)

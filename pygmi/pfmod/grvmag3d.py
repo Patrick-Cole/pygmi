@@ -43,9 +43,8 @@ import copy
 import tempfile
 from scipy.linalg import norm
 from pygmi.pfmod.datatypes import LithModel
-from numba import jit, int32, float64
+from numba import jit
 from matplotlib import cm
-import pdb
 
 
 class GravMag(object):
@@ -471,6 +470,10 @@ class GeoData(object):
         """ Algorithm for simultaneous computation of gravity and magnetic
             fields is based on the formulation published in GEOPHYSICS v. 66,
             521-526,2001. by Bijendra Singh and D. Guptasarma """
+        if self.pbars is not None:
+            piter = self.pbars.iter
+        else:
+            piter = iter
 
         x1 = float(self.x12[0])
         x2 = float(self.x12[1])
@@ -564,8 +567,6 @@ class GeoData(object):
         # find gx,gy,gz.
         # Add the components from all the faces to get Hx,Hy,Hz and Gx,Gy,Gz.
 
-        if self.pbars is not None:
-            self.pbars.resetsub(len(self.z12)-1)
 
 #        face = face.tolist()
 #        un = un.tolist()
@@ -573,9 +574,7 @@ class GeoData(object):
         mval = []
         newdepth = self.z12+abs(self.zobsm)
 
-        for depth in newdepth:
-            if self.pbars is not None:
-                self.pbars.incr()
+        for depth in piter(newdepth):
             if depth == 0.0:
                 cor = (corner + [0., 0., depth+self.d_z/10000.])
             elif depth == -self.d_z:
@@ -602,7 +601,6 @@ class GeoData(object):
                              Hx, Hy, Hz, Pd, un, indx, crs, p1, p2, p3,
                              mgval)
 
-#                pdb.set_trace()
                 Hx = mgval[0]
                 Hy = mgval[1]
                 Hz = mgval[2]
@@ -645,7 +643,9 @@ class GeoData(object):
 
         glayers = []
         if self.pbars is not None:
-            self.pbars.resetsub(len(self.z12)-1)
+            piter = self.pbars.iter
+        else:
+            piter = iter
         z1122 = self.z12.copy()
         x_1 = float(self.x12[0])
         y_1 = float(self.y12[0])
@@ -658,17 +658,16 @@ class GeoData(object):
         if zobs == 0:
             zobs = -0.01
 
-        for i in z1122[:-1]:
-            if self.pbars is not None:
-                self.pbars.incr()
-
+        for i in piter(z1122[:-1]):
             z12 = np.array([i, i+self.d_z])
 
             z_1 = float(z12[0])
             z_2 = float(z12[1])
             gval = np.zeros([self.g_cols, self.g_rows])
 
-            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2, np.ones(2), np.ones(2), np.ones(2), np.array([-1, 1]))
+            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1,
+                             x_2, y_2, z_2, np.ones(2), np.ones(2), np.ones(2),
+                             np.array([-1, 1]))
 
             gval *= 6.6732e-3
             glayers.append(gval)
@@ -751,6 +750,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         showtext = print
     if pbars is not None:
         pbars.resetall(mmax=2*(len(lmod.lith_list)-1)+1)
+        piter = pbars.iter
+    else:
+        piter = iter
     if np.max(lmod.lith_index) == -1:
         showtext('Error: Create a model first')
         return
@@ -822,6 +824,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
     if pbars is not None:
         pbars.resetsub(maximum=(len(lmod.lith_list)-1))
+        piter = pbars.iter
+    else:
+        piter = iter
 
     magval = np.zeros([numx, numy])
     grvval = np.zeros([numx, numy])
@@ -834,7 +839,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 #    ttt = PTime()
     mgval = np.zeros([2, magval.size])
 
-    for mlist in lmod.lith_list.items():
+    for mlist in piter(lmod.lith_list.items()):
         if 'Background' == mlist[0]:
             continue
         mijk = mlist[1].lith_index
@@ -894,11 +899,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         showtext('Done')
 
         if pbars is not None:
-            pbars.incr()
             pbars.incrmain()
         QtGui.QApplication.processEvents()
 
-#    ttt.since_first_call()
     magval.resize(mtmp)
     grvval.resize(mtmp)
     magval = magval.T
@@ -951,7 +954,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
 #@jit("f8[:,:](i4, f8[:,:], i4, i4, i4[:,:,:], i4[:], i4[:], " +
 #     "f8[:,:,:], f8[:,:,:], i4[:], i4, i4[:], i4[:])", nopython=True)
-@jit
+@jit(nopython=True)
 def calc_fieldb(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers,
                 glayers, hcorflat, mijk, jj, ii):
     """ Calculate magnetic and gravity field """
@@ -1025,7 +1028,7 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
 #@jit(float64[:,:](float64[:,:], float64[:], float64[:], int32, int32, float64,
 #     float64, float64, float64, float64, float64, float64,
 #     float64[:], float64[:], float64[:], int32[:]), nopython=True)
-@jit
+@jit(nopython=True)
 def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
               x, y, z, isign):
     """ Gbox routine by Blakely
@@ -1080,7 +1083,7 @@ def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
 #     "f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
 #     "i4[:], f8[:,:], f8[:], f8[:], f8[:], f8[:,:,:])",
 #     nopython=True)
-@jit
+@jit(nopython=True)
 def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
          indx, crs, p1, p2, p3, mgval):
     """ grvmag 3d """
