@@ -69,7 +69,7 @@ class DataCut(object):
         self.ifile = ""
         self.name = "Cut Data:"
         self.ext = ""
-        self.pbar = None
+        self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -108,6 +108,7 @@ class DataCut(object):
 
 
 #        data = trim_raster(data)
+        self.pbar.to_max()
         self.outdata['Raster'] = data
 
         return True
@@ -134,6 +135,7 @@ class DataGrid(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = parent.pbar
 
         self.dsb_dxy = QtGui.QDoubleSpinBox()
         self.dataid = QtGui.QComboBox()
@@ -230,7 +232,7 @@ class DataGrid(QtGui.QDialog):
         data = self.indata['Point'][0]
 
         newdat = []
-        for data in self.indata['Point']:
+        for data in self.pbar.iter(self.indata['Point']):
             if data.dataid != self.dataid.currentText():
                 continue
             x = data.xdata
@@ -289,6 +291,7 @@ class DataMerge(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = self.parent.pbar
 
         self.dsb_dxy = QtGui.QDoubleSpinBox()
         self.label_rows = QtGui.QLabel()
@@ -396,7 +399,7 @@ class DataMerge(QtGui.QDialog):
             return
 
         dat = []
-        for data in self.indata['Raster']:
+        for data in self.pbar.iter(self.indata['Raster']):
             doffset = 0.0
             if data.data.min() <= 0:
                 doffset = data.data.min()-1.
@@ -443,6 +446,7 @@ class DataReproj(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = self.parent.pbar
 
         self.groupboxb = QtGui.QGroupBox()
         self.combobox_inp_epsg = QtGui.QComboBox()
@@ -498,7 +502,7 @@ class DataReproj(QtGui.QDialog):
 
 # Now create virtual dataset
         dat = []
-        for data in self.indata['Raster']:
+        for data in self.pbar.iter(self.indata['Raster']):
             datamin = data.data.min()
             if datamin <= 0:
                 data.data = data.data-(datamin-1)
@@ -549,10 +553,12 @@ class DataReproj(QtGui.QDialog):
             data2 = gdal_to_dat(dest, data.dataid)
             if datamin <= 0:
                 data2.data = data2.data+(datamin-1)
-            mask = data2.data.mask
-            data2.data = np.ma.array(data2.data.filled(data.nullvalue))
-            data2.data.mask = mask
-            data2.data.set_fill_value(data.nullvalue)
+                data.data = data.data+(datamin-1)
+#            mask = data2.data.mask
+            data2.data = np.ma.masked_equal(data2.data.filled(data.nullvalue),
+                                            data.nullvalue)
+#            data2.data.mask = mask
+#            data2.data.set_fill_value(data.nullvalue)
             data2.nullvalue = data.nullvalue
             data2.data = np.ma.masked_invalid(data2.data)
             data2.data = np.ma.masked_less(data2.data, data.data.min())
@@ -603,7 +609,7 @@ class GetProf(object):
         self.ifile = ""
         self.name = "Get Profile: "
         self.ext = ""
-        self.pbar = None
+        self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -647,7 +653,7 @@ class GetProf(object):
             return
 
         allpoints = []
-        for idata in data:
+        for idata in self.pbar.iter(data):
             tmp = line.GetGeometryRef()
             points = tmp.GetPoints()
 
@@ -687,9 +693,9 @@ class GetProf(object):
 
 class GroupProj(QtGui.QWidget):
     """
-    Help Button
+    Group Proj
 
-    Convenience class to add an image to a pushbutton
+    Custom widget
     """
     def __init__(self, title='Projection', parent=None):
         QtGui.QWidget.__init__(self, parent)
@@ -1020,6 +1026,7 @@ class RTP(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = self.parent.pbar
 
         self.dataid = QtGui.QComboBox()
         self.dsb_inc = QtGui.QDoubleSpinBox()
@@ -1090,7 +1097,7 @@ class RTP(QtGui.QDialog):
         D_deg = self.dsb_dec.value()
 
         newdat = []
-        for data in self.indata['Raster']:
+        for data in self.pbar.iter(self.indata['Raster']):
             if data.dataid != self.dataid.currentText():
                 continue
             dat = rtp(data, I_deg, D_deg)
@@ -1259,6 +1266,7 @@ def cut_raster(data, ifile):
         idata.tly = idata.tly - ulY*idata.ydim  # maxY
     data = trim_raster(data)
     return data
+
 
 def dat_extent(dat):
     """ Gets the extend of the dat variable """
@@ -1489,7 +1497,7 @@ def merge(dat):
 #    data1 = cooper.__taper2d(data, npts, nc, nr, cdiff, rdiff)
 ##    data1 = np.pad(data-np.median(data), ((rdiff, cdiff), (rdiff,cdiff)), 'edge')
 
-    return data1
+#    return data1
 
 
 def trim_raster(olddata):

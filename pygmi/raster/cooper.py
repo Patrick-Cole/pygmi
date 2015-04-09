@@ -35,6 +35,7 @@ import numpy as np
 import scipy.signal as si
 import copy
 import pygmi.menu_default as menu_default
+from numba import jit
 
 #        data = np.array([   [1, 2, 3, 4, 5, 6, 7, 8, 9],
 #                            [1, 2, 3, 4, 5, 7, 6, 8, 9],
@@ -74,6 +75,7 @@ class Gradients(QtGui.QDialog):
         self.azi = 45.
         self.elev = 45.
         self.order = 1
+        self.pbar = self.parent.pbar
 
         self.sb_order = QtGui.QSpinBox()
         self.sb_azi = QtGui.QSpinBox()
@@ -124,7 +126,7 @@ class Gradients(QtGui.QDialog):
 
         data = copy.deepcopy(self.indata['Raster'])
 
-        for i in range(len(data)):
+        for i in self.pbar.iter(range(len(data))):
             data[i].data = gradients(data[i].data, self.azi, 0., self.order)
 
         self.outdata['Raster'] = data
@@ -199,6 +201,7 @@ class Visibility2d(QtGui.QDialog):
         self.outdata = {}
         self.wsize = 11
         self.dh = 10
+        self.pbar = self.parent.pbar
 
         self.sb_dh = QtGui.QSpinBox()
         self.sb_wsize = QtGui.QSpinBox()
@@ -255,7 +258,8 @@ class Visibility2d(QtGui.QDialog):
             self.parent.showprocesslog(data[i].dataid+':')
 
             vtot, vstd, vsum = visibility2d(data[i].data, self.wsize,
-                                            self.dh*data[i].data.std()/100.)
+                                            self.dh*data[i].data.std()/100.,
+                                            self.pbar.iter)
 #            data[i].data = vtot
             data2.append(copy.deepcopy(data[i]))
             data2.append(copy.deepcopy(data[i]))
@@ -273,7 +277,7 @@ class Visibility2d(QtGui.QDialog):
         return True
 
 
-def visibility2d(data, wsize, dh):
+def visibility2d(data, wsize, dh, piter=iter):
     """
     Compute visibility as a textural measure
 
@@ -314,21 +318,21 @@ def visibility2d(data, wsize, dh):
     data[mask] = mean
 
 #    self.parent.showprocesslog('NS')
-    for j in range(nc):    # Columns
+    for j in piter(range(nc)):    # Columns
         for i in range(w2, nr-w2):
             dtmp = data[i-w2:i+w2+1, j]
             vn[i, j] = __visible1(dtmp, wsize, w2+1, dh)
             vs[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
 #    self.parent.showprocesslog('EW')
-    for j in range(w2, nc-w2):    # Rows
+    for j in piter(range(w2, nc-w2)):    # Rows
         for i in range(nr):
             dtmp = data[i, j-w2:j+w2+1]
             ve[i, j] = __visible1(dtmp, wsize, w2+1, dh)
             vw[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
 #    self.parent.showprocesslog('Diag')
-    for j in range(w2, nc-w2):
+    for j in piter(range(w2, nc-w2)):
         for i in range(w2, nr-w2):
             dtmp = np.zeros(wsize)
             for k in range(wsize):
@@ -345,7 +349,7 @@ def visibility2d(data, wsize, dh):
     vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
     vtot = vtot[w2:nr-w2, w2:nc-w2]
 
-    for j in range(nc):
+    for j in piter(range(nc)):
         for i in range(nr):
             vstd[i, j] = np.std([vn[i, j], vs[i, j], ve[i, j], vw[i, j],
                                  vd1[i, j], vd2[i, j], vd3[i, j],
@@ -430,6 +434,7 @@ class Tilt1(QtGui.QDialog):
         self.outdata = {}
         self.azi = 75
         self.smooth = 0
+        self.pbar = self.parent.pbar
 
         self.sb_azi = QtGui.QSpinBox()
         self.sb_s = QtGui.QSpinBox()
@@ -483,7 +488,7 @@ class Tilt1(QtGui.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
         data2 = []
 
-        for i in range(len(data)):
+        for i in self.pbar.iter(range(len(data))):
             t1, th, t2, ta, tdx = tilt1(data[i].data, self.azi, self.smooth)
             data2.append(copy.deepcopy(data[i]))
             data2.append(copy.deepcopy(data[i]))
@@ -599,7 +604,7 @@ def __nextpow2(n):
     m_i = np.ceil(np.log2(n))
     return m_i
 
-
+@jit
 def vertical(data, npts=None, xint=1):
     """ Vertical """
 
@@ -613,7 +618,6 @@ def vertical(data, npts=None, xint=1):
     rdiff = int(np.floor((npts-nr)/2))
     data1 = __taper2d(data, npts, nc, nr, cdiff, rdiff)
 #    data1 = np.pad(data, ((rdiff, cdiff), (rdiff,cdiff)), 'edge')
-
 
     f = np.fft.fft2(data1)
     fz = f

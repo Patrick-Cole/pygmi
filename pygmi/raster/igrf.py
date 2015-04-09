@@ -140,6 +140,7 @@ class IGRF(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.reportback = self.parent.showprocesslog
+        self.pbar = self.parent.pbar
 
         MAXDEG = 13
         MAXCOEFF = (MAXDEG*(MAXDEG+2)+1)
@@ -331,14 +332,14 @@ class IGRF(QtGui.QDialog):
         progress = 0
         maxlen = xdat.size
 
-        for i in range(maxlen):
+        for i in self.pbar.iter(range(maxlen)):
             if igrf_F.mask[i] == True:
                 continue
 
             tmp = int(i*100/maxlen)
             if tmp > progress:
                 progress = tmp
-                self.reportback('Calculation: ' + str(progress) + '%', True)
+#                self.reportback('Calculation: ' + str(progress) + '%', True)
 
             longitude, latitude, _ = self.ctrans.TransformPoint(xdat[i],
                                                                 ydat[i])

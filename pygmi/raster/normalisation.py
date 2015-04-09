@@ -43,6 +43,7 @@ class Normalisation(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = parent.pbar
         self.reportback = self.parent.showprocesslog
 
         self.radiobutton_interval = QtGui.QRadioButton()
@@ -161,6 +162,7 @@ class Normalisation(QtGui.QDialog):
                                        'transform': transform}
 
         self.outdata['Raster'] = data
+        self.pbar.to_max()
         return True
 
     def datacommon(self, data, tmp1, tmp2, tmp3, tmp4):

@@ -28,7 +28,7 @@
 ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called. """
 
-from PyQt4 import QtGui, QtCore
+from PyQt4 import QtGui
 import time
 
 
@@ -131,3 +131,10 @@ class ProgressBar(QtGui.QProgressBar):
 
         self.setFormat('%p%')
         self.setValue(total)
+
+    def to_max(self):
+        """ Set PBar to Maximum """
+        self.setMaximum(1)
+        self.setMinimum(0)
+        self.setValue(1)
+        QtGui.QApplication.processEvents()

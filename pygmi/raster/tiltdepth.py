@@ -200,11 +200,11 @@ class TiltDepth(QtGui.QDialog):
         ims = self.axes.imshow(self.Z, extent=dataprep.dat_extent(zout),
                                cmap=cmap3)
 
-#        if self.x0 is not None:
-#            i = 1000
-#            self.axes.plot(self.x1[i], self.y1[i], 'oy')
-#            self.axes.plot(self.x0[i], self.y0[i], 'sy')
-#            self.axes.plot(self.x2[i], self.y2[i], 'oy')
+        if self.x0 is not None:
+            i = 0
+            self.axes.plot(self.x1[i], self.y1[i], 'oy')
+            self.axes.plot(self.x0[i], self.y0[i], 'sy')
+            self.axes.plot(self.x2[i], self.y2[i], 'oy')
 
 #        self.axes.contourf(self.X, self.Y, self.Z, [-45, 45], cmap=cmap3)
 
@@ -346,12 +346,12 @@ class TiltDepth(QtGui.QDialog):
 #        dist = (dist1+dist2)/2
         dist = np.min([dist1, dist2], 0)
 
-#        self.x0 = gx0
-#        self.x1 = dx1+gx0
-#        self.x2 = dx2+gx0
-#        self.y0 = gy0
-#        self.y1 = dy1+gy0
-#        self.y2 = dy2+gy0
+        self.x0 = gx0
+        self.x1 = dx1+gx0
+        self.x2 = dx2+gx0
+        self.y0 = gy0
+        self.y1 = dy1+gy0
+        self.y2 = dy2+gy0
 
 
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])

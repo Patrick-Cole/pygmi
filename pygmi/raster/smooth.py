@@ -41,6 +41,7 @@ class Smooth(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = parent.pbar
         self.reportback = self.parent.showprocesslog
 
         self.label = QtGui.QLabel()
@@ -288,6 +289,7 @@ class Smooth(QtGui.QDialog):
 
         if itype == '2D Mean':
             out = ssig.correlate(dat, fmat, 'same')
+            self.pbar.to_max()
 
         elif itype == '2D Median':
             self.parent.showprocesslog('Calculating Median...')
@@ -296,7 +298,7 @@ class Smooth(QtGui.QDialog):
             fmat = fmat.astype(bool)
             dummy = dummy.data
 
-            for i in range(rowd):
+            for i in self.pbar.iter(range(rowd)):
                 self.parent.showprocesslog(title+' Progress: ' +
                                            str(round(100*i/rowd))+'%', True)
                 for j in range(cold):

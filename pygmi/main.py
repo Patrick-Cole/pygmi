@@ -43,6 +43,7 @@ import numpy as np
 import math
 import pkgutil
 import os
+import pygmi.misc as misc
 
 
 class Arrow(QtGui.QGraphicsLineItem):
@@ -320,6 +321,7 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
         item to reflect whether it is busy working.
         """
         self.setBrush(QtGui.QColor(255, 0, 0, 127))
+
         temp = self.settings()
         if temp is True:
             self.setBrush(QtGui.QColor(0, 255, 0, 127))
@@ -512,6 +514,7 @@ class MainWidget(QtGui.QMainWindow):
         self.graphics_view = QtGui.QGraphicsView()
         self.textbrowser_datainfo = QtGui.QTextBrowser()
         self.textbrowser_processlog = QtGui.QTextBrowser()
+        self.pbar = misc.ProgressBar()
 
         self.action_help = QtGui.QAction(self)
         self.action_delete = QtGui.QAction(self)
@@ -599,6 +602,7 @@ class MainWidget(QtGui.QMainWindow):
         self.grid_layout.addWidget(self.graphics_view, 0, 0, 4, 2)
         self.grid_layout.addWidget(self.textbrowser_datainfo, 1, 2, 1, 1)
         self.grid_layout.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
+        self.grid_layout.addWidget(self.pbar, 5, 0, 1, 3)
 
         label = QtGui.QLabel()
         label_2 = QtGui.QLabel()
@@ -866,9 +870,11 @@ class MainWidget(QtGui.QMainWindow):
         isactive : bool, optional
             boolean variable indicating if a process is active.
         """
+
         if isactive:
             self.textbrowser_processlog.setStyleSheet(
                 "* { background-color: rgba(255, 0, 0, 127); }")
+            self.pbar.setValue(0)
         else:
             self.textbrowser_processlog.setStyleSheet(
                 "* { background-color: rgb(255, 255, 255); }")

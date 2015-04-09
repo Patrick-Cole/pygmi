@@ -52,6 +52,7 @@ class FuzzyClust(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = parent.pbar
 
         self.combobox_alg = QtGui.QComboBox()
         self.doublespinbox_maxerror = QtGui.QDoubleSpinBox()
@@ -191,6 +192,8 @@ class FuzzyClust(QtGui.QDialog):
         self.parent.process_is_active()
         self.run()
         self.parent.process_is_active(False)
+
+        self.pbar.to_max()
         return True
 
     def update_vars(self):
@@ -624,7 +627,7 @@ class FuzzyClust(QtGui.QDialog):
 #    num2unicode(info(1)),'/[',num2unicode(info(2)),
 #     ' ',num2unicode(info(3)),'] Run: ',num2unicode(info(4)),'/',
 #    num2unicode(info(5))])
-        for i in range(maxit):  # loop over all iterations
+        for i in self.pbar.iter(range(maxit)):  # loop over all iterations
             # waitbar(i/maxit,hh)
             cent_prev = cent  # store result of last iteration
             uprev = uuu

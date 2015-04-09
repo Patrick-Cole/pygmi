@@ -52,6 +52,7 @@ class CrispClust(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = parent.pbar
 
         self.spinbox_maxclusters = QtGui.QSpinBox()
         self.combobox_alg = QtGui.QComboBox()
@@ -183,7 +184,7 @@ class CrispClust(QtGui.QDialog):
         self.parent.process_is_active()
         self.run()
         self.parent.process_is_active(False)
-
+        self.pbar.to_max()
         return True
 
     def update_vars(self):
@@ -545,7 +546,7 @@ class CrispClust(QtGui.QDialog):
         obj_fcn_prev = obj_fcn_initial
         obj_fcn = np.zeros(maxit)  # This is new - we must initialize this.
 
-        for i in range(maxit):  # =1:maxit. loop over all iterations
+        for i in self.pbar.iter(range(maxit)):  # =1:maxit. loop over all iterations
             cent_prev = cent  # store result of last iteration
             idx_prev = idx
             dist_prev = edist
