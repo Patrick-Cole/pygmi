@@ -1,6 +1,42 @@
 =========
 Changelog
 =========
+v2.2.6, 10 April 2015
+------------------------
+* Progress Bar on Main Interface. New progress bars include time left.
+* Reprojecting bug fix for datasets with negative values.
+* Fixes to tilt depth and new progress bars
+* Added Column to tilt depth to specify contour id. Also removed redundant
+  progress bars. Sped up smoothing with median.
+* Added tilt depth algorithm.
+* Bug Fix with tilt angle.
+* Added RTP.
+* Cluster and Fuzzy analysis had a bug when connecting external data
+* Changed where rows and cols displays on modelling software, for people
+  with lower resolution screens. Made small improvement to drawing speed on
+  profile view.
+* Added references to the help.
+* Modelling now has variable size cursor.
+* Change to modelling cursor.
+* Updates the behaviour of the slider on the profile view of the 3D
+  modelling module.
+* Grids on kmz export were upside down
+* Mag and Grav calculation buttons simplified.
+* Gravity regional addition (scalar add) in modelling program now modify
+  calculated data, instead of observed data - so that original data is
+  honoured.
+* Update to kmz export. The export now can allow smooth models. Update
+  also allows new projection format for igrf, data reprojection and kmz
+  files.
+* Projections improved and expanded.
+* Geotiff now save tfw world file. Contour Geotiffs are now 3 times
+  bigger, to improve resolution. Contour lines now have double thickness.
+* Sunshaded Geotiff is now the same as the on screen version.
+* Add save model to 3D modelling module.
+* Primary Help completed.
+* First version with a helpdoc button on main interface.
+* Fixed a bug on the Geosoft import.
+
 v2.2.5, 12 February 2015
 ------------------------
 * Fixed a display bug in modeller where data was not visible.
