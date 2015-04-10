@@ -135,17 +135,21 @@ class Gradients(QtGui.QDialog):
 
 
 def gradients(data, azi, elev, order):
-    """Compute different gradients of image data
+    """
+    Compute different gradients of image data
+
+    Compute different horizontal gradients of image data. Based on code by
+    Gordon Cooper.
 
     Parameters
     ----------
-    data - numpy array
-        input data array
-    azi - float
+    data : numpy array
+        input numy data array
+    azi : float
         Filter direction (degrees)
-    elev - float
+    elev : float
         Elevation (for sunshading, degrees from horizontal)
-    order - int
+    order : int
         Order of DR filter - see paper. Try 1 first.
 
     Returns
@@ -603,6 +607,7 @@ def __nextpow2(n):
     """ nextpow2 """
     m_i = np.ceil(np.log2(n))
     return m_i
+
 
 @jit
 def vertical(data, npts=None, xint=1):
