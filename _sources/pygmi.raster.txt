@@ -100,10 +100,10 @@ pygmi.raster.smooth module
     :undoc-members:
     :show-inheritance:
 
-pygmi.raster.stettler module
-----------------------------
+pygmi.raster.tiltdepth module
+-----------------------------
 
-.. automodule:: pygmi.raster.stettler
+.. automodule:: pygmi.raster.tiltdepth
     :members:
     :undoc-members:
     :show-inheritance:

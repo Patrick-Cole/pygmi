@@ -31,10 +31,10 @@ pygmi.menu_default module
     :undoc-members:
     :show-inheritance:
 
-pygmi.ptimer module
+pygmi.misc module
 -------------------
 
-.. automodule:: pygmi.ptimer
+.. automodule:: pygmi.misc
     :members:
     :undoc-members:
     :show-inheritance:

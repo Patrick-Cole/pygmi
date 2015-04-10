@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi package &mdash; PyGMI 2.2.5 documentation</title>
+    <title>pygmi package &mdash; PyGMI 2.2.6 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.5',
+        VERSION:     '2.2.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,12 +24,12 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.5 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.6 documentation" href="index.html" />
     <link rel="up" title="PyGMI API Documentation" href="api.html" />
     <link rel="next" title="pygmi.clust package" href="pygmi.clust.html" />
     <link rel="prev" title="PyGMI API Documentation" href="api.html" /> 
   </head>
-  <body>
+  <body role="document">
 
 <div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
 <a href="index.html">
@@ -42,7 +42,7 @@
 </div>
 
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -61,11 +61,11 @@
         <li><a href="search.html">search</a>|&nbsp;</li>
         <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li><a href="api.html" accesskey="U">PyGMI API Documentation</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="api.html" accesskey="U">PyGMI API Documentation</a> &raquo;</li> 
       </ul>
     </div>
 
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -74,7 +74,7 @@
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-pygmi.main">pygmi.main module</a></li>
 <li><a class="reference internal" href="#module-pygmi.menu_default">pygmi.menu_default module</a></li>
-<li><a class="reference internal" href="#module-pygmi.ptimer">pygmi.ptimer module</a></li>
+<li><a class="reference internal" href="#module-pygmi.misc">pygmi.misc module</a></li>
 <li><a class="reference internal" href="#module-pygmi">Module contents</a></li>
 </ul>
 </li>
@@ -86,12 +86,14 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="pygmi.clust.html"
                         title="next chapter">pygmi.clust package</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/pygmi.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pygmi.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -110,7 +112,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="pygmi-package">
 <h1>pygmi package<a class="headerlink" href="#pygmi-package" title="Permalink to this headline">¶</a></h1>
@@ -163,7 +165,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pygmi.raster.html#module-pygmi.raster.normalisation">pygmi.raster.normalisation module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.raster.html#module-pygmi.raster.show_table">pygmi.raster.show_table module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.raster.html#module-pygmi.raster.smooth">pygmi.raster.smooth module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.raster.html#module-pygmi.raster.stettler">pygmi.raster.stettler module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.raster.html#module-pygmi.raster.tiltdepth">pygmi.raster.tiltdepth module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.raster.html#module-pygmi.raster">Module contents</a></li>
 </ul>
 </li>
@@ -199,40 +201,40 @@ routines is not. The menus and corresponding classes are found within the
 pygmi packages.</p>
 <dl class="class">
 <dt id="pygmi.main.Arrow">
-<em class="property">class </em><tt class="descclassname">pygmi.main.</tt><tt class="descname">Arrow</tt><big>(</big><em>start_item</em>, <em>end_item</em>, <em>parent=None</em>, <em>scene=None</em><big>)</big><a class="headerlink" href="#pygmi.main.Arrow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QGraphicsLineItem</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.main.</code><code class="descname">Arrow</code><span class="sig-paren">(</span><em>start_item</em>, <em>end_item</em>, <em>parent=None</em>, <em>scene=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QGraphicsLineItem</span></code></p>
 <p>Class responsible for drawing arrows on the main interface.</p>
 <dl class="attribute">
 <dt id="pygmi.main.Arrow.arrow_head">
-<tt class="descname">arrow_head</tt><a class="headerlink" href="#pygmi.main.Arrow.arrow_head" title="Permalink to this definition">¶</a></dt>
+<code class="descname">arrow_head</code><a class="headerlink" href="#pygmi.main.Arrow.arrow_head" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>QPolygonF</em></p>
 <p>Arrow head polygon.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.Arrow.my_start_item">
-<tt class="descname">my_start_item</tt><a class="headerlink" href="#pygmi.main.Arrow.my_start_item" title="Permalink to this definition">¶</a></dt>
+<code class="descname">my_start_item</code><a class="headerlink" href="#pygmi.main.Arrow.my_start_item" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>DiagramItem</em></p>
 <p>Starting DiagramItem object. This will send information to my_end_item</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.Arrow.my_end_item">
-<tt class="descname">my_end_item</tt><a class="headerlink" href="#pygmi.main.Arrow.my_end_item" title="Permalink to this definition">¶</a></dt>
+<code class="descname">my_end_item</code><a class="headerlink" href="#pygmi.main.Arrow.my_end_item" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>DiagramItem</em></p>
 <p>End DiagramItem object. This will get information from my_start_item</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.Arrow.my_color">
-<tt class="descname">my_color</tt><a class="headerlink" href="#pygmi.main.Arrow.my_color" title="Permalink to this definition">¶</a></dt>
+<code class="descname">my_color</code><a class="headerlink" href="#pygmi.main.Arrow.my_color" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>QtCore color (default is QtCore.Qt.black)</em></p>
 <p>Color</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.Arrow.boundingRect">
-<tt class="descname">boundingRect</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.Arrow.boundingRect" title="Permalink to this definition">¶</a></dt>
+<code class="descname">boundingRect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow.boundingRect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded bounding rectangle. This is necessary to ensure that the
 line and arrowhead are cleaned properly when moving.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -249,7 +251,7 @@ line and arrowhead are cleaned properly when moving.</p>
 
 <dl class="method">
 <dt id="pygmi.main.Arrow.paint">
-<tt class="descname">paint</tt><big>(</big><em>painter</em>, <em>option</em>, <em>widget=None</em><big>)</big><a class="headerlink" href="#pygmi.main.Arrow.paint" title="Permalink to this definition">¶</a></dt>
+<code class="descname">paint</code><span class="sig-paren">(</span><em>painter</em>, <em>option</em>, <em>widget=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow.paint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded paint method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -270,19 +272,19 @@ line and arrowhead are cleaned properly when moving.</p>
 
 <dl class="class">
 <dt id="pygmi.main.DiagramItem">
-<em class="property">class </em><tt class="descclassname">pygmi.main.</tt><tt class="descname">DiagramItem</tt><big>(</big><em>diagram_type</em>, <em>context_menu</em>, <em>my_class</em>, <em>parent=None</em>, <em>scene=None</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QGraphicsPolygonItem</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.main.</code><code class="descname">DiagramItem</code><span class="sig-paren">(</span><em>diagram_type</em>, <em>context_menu</em>, <em>my_class</em>, <em>parent=None</em>, <em>scene=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QGraphicsPolygonItem</span></code></p>
 <p>Diagram Item</p>
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.arrows">
-<tt class="descname">arrows</tt><a class="headerlink" href="#pygmi.main.DiagramItem.arrows" title="Permalink to this definition">¶</a></dt>
+<code class="descname">arrows</code><a class="headerlink" href="#pygmi.main.DiagramItem.arrows" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>list</em></p>
 <p>list of Arrow objects</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.diagram_type">
-<tt class="descname">diagram_type</tt><a class="headerlink" href="#pygmi.main.DiagramItem.diagram_type" title="Permalink to this definition">¶</a></dt>
+<code class="descname">diagram_type</code><a class="headerlink" href="#pygmi.main.DiagramItem.diagram_type" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>str</em></p>
 <p>string denoting the diagram type. Can be &#8216;StartEnd&#8217;, &#8216;Conditional&#8217; or
 &#8216;Step&#8217;</p>
@@ -290,45 +292,45 @@ line and arrowhead are cleaned properly when moving.</p>
 
 <dl class="attribute">
 <dt>
-<tt class="descname">context_menu = context_menu</tt></dt>
+<code class="descname">context_menu = context_menu</code></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.my_class">
-<tt class="descname">my_class</tt><a class="headerlink" href="#pygmi.main.DiagramItem.my_class" title="Permalink to this definition">¶</a></dt>
+<code class="descname">my_class</code><a class="headerlink" href="#pygmi.main.DiagramItem.my_class" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>object</em></p>
 <p>Class that the diagram item is linked to.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.is_import">
-<tt class="descname">is_import</tt><a class="headerlink" href="#pygmi.main.DiagramItem.is_import" title="Permalink to this definition">¶</a></dt>
+<code class="descname">is_import</code><a class="headerlink" href="#pygmi.main.DiagramItem.is_import" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>bool</em></p>
 <p>Flags whether my_class is used to import data</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.text_item">
-<tt class="descname">text_item</tt><a class="headerlink" href="#pygmi.main.DiagramItem.text_item" title="Permalink to this definition">¶</a></dt>
+<code class="descname">text_item</code><a class="headerlink" href="#pygmi.main.DiagramItem.text_item" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>None</em></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.my_class_name">
-<tt class="descname">my_class_name</tt><a class="headerlink" href="#pygmi.main.DiagramItem.my_class_name" title="Permalink to this definition">¶</a></dt>
+<code class="descname">my_class_name</code><a class="headerlink" href="#pygmi.main.DiagramItem.my_class_name" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>str</em></p>
 <p>Class name being referenced</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramItem.add_arrow">
-<tt class="descname">add_arrow</tt><big>(</big><em>arrow</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem.add_arrow" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_arrow</code><span class="sig-paren">(</span><em>arrow</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.add_arrow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add Arrow</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>arrow</strong> (<em>Arrow</em>) &#8211; Arrow object to add.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>arrow</strong> (<a class="reference internal" href="#pygmi.main.Arrow" title="pygmi.main.Arrow"><em>Arrow</em></a>) &#8211; Arrow object to add.</td>
 </tr>
 </tbody>
 </table>
@@ -336,7 +338,7 @@ line and arrowhead are cleaned properly when moving.</p>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramItem.contextMenuEvent">
-<tt class="descname">contextMenuEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem.contextMenuEvent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">contextMenuEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.contextMenuEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded context menu event</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -350,7 +352,7 @@ line and arrowhead are cleaned properly when moving.</p>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramItem.mouseDoubleClickEvent">
-<tt class="descname">mouseDoubleClickEvent</tt><big>(</big><em>event</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem.mouseDoubleClickEvent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mouseDoubleClickEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.mouseDoubleClickEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse double click event</p>
 <p>This event is used to activate an item. It does this by calling the
 settings() method of the item. The event also changes the color of the
@@ -359,13 +361,13 @@ item to reflect whether it is busy working.</p>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramItem.remove_arrow">
-<tt class="descname">remove_arrow</tt><big>(</big><em>arrow</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem.remove_arrow" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_arrow</code><span class="sig-paren">(</span><em>arrow</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.remove_arrow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a single Arrow</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>arrow</strong> (<em>Arrow</em>) &#8211; Arrow object to remove.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>arrow</strong> (<a class="reference internal" href="#pygmi.main.Arrow" title="pygmi.main.Arrow"><em>Arrow</em></a>) &#8211; Arrow object to remove.</td>
 </tr>
 </tbody>
 </table>
@@ -373,13 +375,13 @@ item to reflect whether it is busy working.</p>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramItem.remove_arrows">
-<tt class="descname">remove_arrows</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem.remove_arrows" title="Permalink to this definition">¶</a></dt>
+<code class="descname">remove_arrows</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.remove_arrows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove Arrows. Uses the remove_arrow method.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramItem.settings">
-<tt class="descname">settings</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem.settings" title="Permalink to this definition">¶</a></dt>
+<code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine Settings.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -397,7 +399,7 @@ method.</td>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramItem.update_indata">
-<tt class="descname">update_indata</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.DiagramItem.update_indata" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_indata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.update_indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine to add datasets</p>
 </dd></dl>
 
@@ -405,12 +407,12 @@ method.</td>
 
 <dl class="class">
 <dt id="pygmi.main.DiagramScene">
-<em class="property">class </em><tt class="descclassname">pygmi.main.</tt><tt class="descname">DiagramScene</tt><big>(</big><em>item_menu</em>, <em>parent</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramScene" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QGraphicsScene</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.main.</code><code class="descname">DiagramScene</code><span class="sig-paren">(</span><em>item_menu</em>, <em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QGraphicsScene</span></code></p>
 <p>Diagram Scene</p>
 <dl class="method">
 <dt id="pygmi.main.DiagramScene.mouseMoveEvent">
-<tt class="descname">mouseMoveEvent</tt><big>(</big><em>mouse_event</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramScene.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mouseMoveEvent</code><span class="sig-paren">(</span><em>mouse_event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded Mouse Move Event</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -424,7 +426,7 @@ method.</td>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramScene.mousePressEvent">
-<tt class="descname">mousePressEvent</tt><big>(</big><em>mouse_event</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramScene.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mousePressEvent</code><span class="sig-paren">(</span><em>mouse_event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mousePressEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded Mouse Press Event
 :param mouse_event: mouse event.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -437,7 +439,7 @@ method.</td>
 
 <dl class="method">
 <dt id="pygmi.main.DiagramScene.mouseReleaseEvent">
-<tt class="descname">mouseReleaseEvent</tt><big>(</big><em>mouse_event</em><big>)</big><a class="headerlink" href="#pygmi.main.DiagramScene.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">mouseReleaseEvent</code><span class="sig-paren">(</span><em>mouse_event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded Mouse Release Event</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -453,24 +455,24 @@ method.</td>
 
 <dl class="class">
 <dt id="pygmi.main.MainWidget">
-<em class="property">class </em><tt class="descclassname">pygmi.main.</tt><tt class="descname">MainWidget</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QMainWindow</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.main.</code><code class="descname">MainWidget</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QMainWindow</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="attribute">
 <dt id="pygmi.main.MainWidget.pdlg">
-<tt class="descname">pdlg</tt><a class="headerlink" href="#pygmi.main.MainWidget.pdlg" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pdlg</code><a class="headerlink" href="#pygmi.main.MainWidget.pdlg" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>list</em></p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.MainWidget.context_menu">
-<tt class="descname">context_menu</tt><a class="headerlink" href="#pygmi.main.MainWidget.context_menu" title="Permalink to this definition">¶</a></dt>
+<code class="descname">context_menu</code><a class="headerlink" href="#pygmi.main.MainWidget.context_menu" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>dictionary</em></p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.add_to_context">
-<tt class="descname">add_to_context</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.add_to_context" title="Permalink to this definition">¶</a></dt>
+<code class="descname">add_to_context</code><span class="sig-paren">(</span><em>txt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.add_to_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adds to a context menu.</p>
 <p>Each dataset type which PyGMI uses can have its own context menu. This
 method allows for the definition of each group of context menu items
@@ -487,25 +489,25 @@ under a user defined text label.</p>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.bring_to_front">
-<tt class="descname">bring_to_front</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.bring_to_front" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bring_to_front</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.bring_to_front" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bring the selected item to front.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.clearprocesslog">
-<tt class="descname">clearprocesslog</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.clearprocesslog" title="Permalink to this definition">¶</a></dt>
+<code class="descname">clearprocesslog</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.clearprocesslog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clears the process log.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.delete_item">
-<tt class="descname">delete_item</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.delete_item" title="Permalink to this definition">¶</a></dt>
+<code class="descname">delete_item</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.delete_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete the selected item from main interface.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.get_indata">
-<tt class="descname">get_indata</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.get_indata" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_indata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.get_indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets input data from the selected item on the main interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -522,7 +524,7 @@ Input list of PyGMI dataset</td>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.get_outdata">
-<tt class="descname">get_outdata</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.get_outdata" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_outdata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.get_outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets output data from the selected item on the main interface.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -539,13 +541,13 @@ Output list of PyGMI dataset</td>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.help_docs">
-<tt class="descname">help_docs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.help_docs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">help_docs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.help_docs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Help Routine</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.item_insert">
-<tt class="descname">item_insert</tt><big>(</big><em>item_type</em>, <em>item_name</em>, <em>class_name</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.item_insert" title="Permalink to this definition">¶</a></dt>
+<code class="descname">item_insert</code><span class="sig-paren">(</span><em>item_type</em>, <em>item_name</em>, <em>class_name</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.item_insert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item insert.</p>
 <p>Insert an item on the main interface. The item is an object passed by
 one of the menu.py routines and is one of the algorithims chosen on
@@ -565,7 +567,7 @@ the main PyGMI menu.</p>
 Return a DiagramItem object</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">DiagramItem</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pygmi.main.DiagramItem" title="pygmi.main.DiagramItem">DiagramItem</a></p>
 </td>
 </tr>
 </tbody>
@@ -574,7 +576,7 @@ Return a DiagramItem object</p>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.launch_context_item">
-<tt class="descname">launch_context_item</tt><big>(</big><em>newitem</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item" title="Permalink to this definition">¶</a></dt>
+<code class="descname">launch_context_item</code><span class="sig-paren">(</span><em>newitem</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launches a context menu item, using output data</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -588,7 +590,7 @@ Return a DiagramItem object</p>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.launch_context_item_indata">
-<tt class="descname">launch_context_item_indata</tt><big>(</big><em>newitem</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item_indata" title="Permalink to this definition">¶</a></dt>
+<code class="descname">launch_context_item_indata</code><span class="sig-paren">(</span><em>newitem</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item_indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launches a context menu item, using input data.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -602,19 +604,19 @@ Return a DiagramItem object</p>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.linepointer">
-<tt class="descname">linepointer</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.linepointer" title="Permalink to this definition">¶</a></dt>
+<code class="descname">linepointer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.linepointer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select line pointer.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.pointer">
-<tt class="descname">pointer</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.pointer" title="Permalink to this definition">¶</a></dt>
+<code class="descname">pointer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.pointer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select pointer.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.process_is_active">
-<tt class="descname">process_is_active</tt><big>(</big><em>isactive=True</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.process_is_active" title="Permalink to this definition">¶</a></dt>
+<code class="descname">process_is_active</code><span class="sig-paren">(</span><em>isactive=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.process_is_active" title="Permalink to this definition">¶</a></dt>
 <dd><p>Changes process log color when a process is active.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -628,19 +630,19 @@ Return a DiagramItem object</p>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.send_to_back">
-<tt class="descname">send_to_back</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.send_to_back" title="Permalink to this definition">¶</a></dt>
+<code class="descname">send_to_back</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.send_to_back" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send the selected item to the back.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.setupui">
-<tt class="descname">setupui</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setup UI</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.showdatainfo">
-<tt class="descname">showdatainfo</tt><big>(</big><em>txt</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.showdatainfo" title="Permalink to this definition">¶</a></dt>
+<code class="descname">showdatainfo</code><span class="sig-paren">(</span><em>txt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.showdatainfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show text in the dataset information panel</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -654,7 +656,7 @@ Return a DiagramItem object</p>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.showprocesslog">
-<tt class="descname">showprocesslog</tt><big>(</big><em>txt</em>, <em>replacelast=False</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.showprocesslog" title="Permalink to this definition">¶</a></dt>
+<code class="descname">showprocesslog</code><span class="sig-paren">(</span><em>txt</em>, <em>replacelast=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.showprocesslog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show text on the process log.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -673,7 +675,7 @@ overwritten.</li>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.showtext">
-<tt class="descname">showtext</tt><big>(</big><em>txtobj</em>, <em>txt</em>, <em>replacelast=False</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.showtext" title="Permalink to this definition">¶</a></dt>
+<code class="descname">showtext</code><span class="sig-paren">(</span><em>txtobj</em>, <em>txt</em>, <em>replacelast=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.showtext" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show text on the text panel</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -692,7 +694,7 @@ overwritten.</li>
 
 <dl class="method">
 <dt id="pygmi.main.MainWidget.update_pdlg">
-<tt class="descname">update_pdlg</tt><big>(</big><em>dlg</em><big>)</big><a class="headerlink" href="#pygmi.main.MainWidget.update_pdlg" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update_pdlg</code><span class="sig-paren">(</span><em>dlg</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.update_pdlg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Cleans deleted objects in self.pdlg and appends a new object.</p>
 <p>self.pdlg allows for modeless dialogs to remain in existance until they
 are closed</p>
@@ -710,12 +712,12 @@ are closed</p>
 
 <dl class="class">
 <dt id="pygmi.main.Startup">
-<em class="property">class </em><tt class="descclassname">pygmi.main.</tt><tt class="descname">Startup</tt><big>(</big><em>pbarmax</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.main.Startup" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.main.</code><code class="descname">Startup</code><span class="sig-paren">(</span><em>pbarmax</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Startup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
 <p>Class to provide a startup display while PyGMI loads into memory</p>
 <dl class="method">
 <dt id="pygmi.main.Startup.update">
-<tt class="descname">update</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.Startup.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Startup.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the text on the dialog</p>
 </dd></dl>
 
@@ -723,7 +725,7 @@ are closed</p>
 
 <dl class="function">
 <dt id="pygmi.main.main">
-<tt class="descclassname">pygmi.main.</tt><tt class="descname">main</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.main.main" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pygmi.main.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main entry point for the PyGMI software.</p>
 </dd></dl>
 
@@ -734,33 +736,33 @@ are closed</p>
 the about box</p>
 <dl class="class">
 <dt id="pygmi.menu_default.ComboBoxBasic">
-<em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">ComboBoxBasic</tt><big>(</big><em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.menu_default.</code><code class="descname">ComboBoxBasic</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
 <p>A basic combo box application</p>
 <dl class="attribute">
 <dt id="pygmi.menu_default.ComboBoxBasic.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.parent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>parent</em></p>
 <p>reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.menu_default.ComboBoxBasic.indata">
-<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.indata" title="Permalink to this definition">¶</a></dt>
+<code class="descname">indata</code><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>dictionary</em></p>
 <p>dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.menu_default.ComboBoxBasic.outdata">
-<tt class="descname">outdata</tt><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="descname">outdata</code><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>dictionary</em></p>
 <p>dictionary of output datasets</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.menu_default.ComboBoxBasic.run">
-<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>runs class</p>
 </dd></dl>
 
@@ -768,21 +770,21 @@ the about box</p>
 
 <dl class="class">
 <dt id="pygmi.menu_default.FileMenu">
-<em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">FileMenu</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.FileMenu" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.menu_default.</code><code class="descname">FileMenu</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.FileMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <p>This widget class creates the raster menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.menu_default.FileMenu.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.menu_default.FileMenu.parent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.menu_default.FileMenu.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>MainWidget</em></p>
 <p>Reference to MainWidget class found in main.py</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.menu_default.FileMenu.bandselect">
-<tt class="descname">bandselect</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.FileMenu.bandselect" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bandselect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.FileMenu.bandselect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select bands</p>
 </dd></dl>
 
@@ -790,13 +792,13 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="class">
 <dt id="pygmi.menu_default.HelpButton">
-<em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">HelpButton</tt><big>(</big><em>htmlfile=None</em>, <em>parent=None</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpButton" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QPushButton</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.menu_default.</code><code class="descname">HelpButton</code><span class="sig-paren">(</span><em>htmlfile=None</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpButton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QPushButton</span></code></p>
 <p>Help Button</p>
 <p>Convenience class to add an image to a pushbutton</p>
 <dl class="method">
 <dt id="pygmi.menu_default.HelpButton.help_docs">
-<tt class="descname">help_docs</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpButton.help_docs" title="Permalink to this definition">¶</a></dt>
+<code class="descname">help_docs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpButton.help_docs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Help Routine</p>
 </dd></dl>
 
@@ -804,26 +806,26 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="class">
 <dt id="pygmi.menu_default.HelpDocs">
-<em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">HelpDocs</tt><big>(</big><em>parent=None</em>, <em>helptxt=None</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpDocs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.menu_default.</code><code class="descname">HelpDocs</code><span class="sig-paren">(</span><em>parent=None</em>, <em>helptxt=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpDocs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
 <p>A basic combo box application</p>
 <dl class="attribute">
 <dt id="pygmi.menu_default.HelpDocs.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.menu_default.HelpDocs.parent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>parent</em></p>
 <p>reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.menu_default.HelpDocs.indata">
-<tt class="descname">indata</tt><a class="headerlink" href="#pygmi.menu_default.HelpDocs.indata" title="Permalink to this definition">¶</a></dt>
+<code class="descname">indata</code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>dictionary</em></p>
 <p>dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.menu_default.HelpDocs.outdata">
-<tt class="descname">outdata</tt><a class="headerlink" href="#pygmi.menu_default.HelpDocs.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="descname">outdata</code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>dictionary</em></p>
 <p>dictionary of output datasets</p>
 </dd></dl>
@@ -832,52 +834,53 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="class">
 <dt id="pygmi.menu_default.HelpMenu">
-<em class="property">class </em><tt class="descclassname">pygmi.menu_default.</tt><tt class="descname">HelpMenu</tt><big>(</big><em>parent</em><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpMenu" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<em class="property">class </em><code class="descclassname">pygmi.menu_default.</code><code class="descname">HelpMenu</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="attribute">
 <dt id="pygmi.menu_default.HelpMenu.parent">
-<tt class="descname">parent</tt><a class="headerlink" href="#pygmi.menu_default.HelpMenu.parent" title="Permalink to this definition">¶</a></dt>
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.menu_default.HelpMenu.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>parent</em></p>
 <p>reference to the parent routine</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.menu_default.HelpMenu.about">
-<tt class="descname">about</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpMenu.about" title="Permalink to this definition">¶</a></dt>
+<code class="descname">about</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu.about" title="Permalink to this definition">¶</a></dt>
 <dd><p>PyGMI About Box</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.menu_default.HelpMenu.webhelp">
-<tt class="descname">webhelp</tt><big>(</big><big>)</big><a class="headerlink" href="#pygmi.menu_default.HelpMenu.webhelp" title="Permalink to this definition">¶</a></dt>
+<code class="descname">webhelp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu.webhelp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Help File</p>
 </dd></dl>
 
 </dd></dl>
 
 </div>
-<div class="section" id="module-pygmi.ptimer">
-<span id="pygmi-ptimer-module"></span><h2>pygmi.ptimer module<a class="headerlink" href="#module-pygmi.ptimer" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-pygmi.misc">
+<span id="pygmi-misc-module"></span><h2>pygmi.misc module<a class="headerlink" href="#module-pygmi.misc" title="Permalink to this headline">¶</a></h2>
+<p>Misc is a collection of routines which can be used in PyGMI in general.</p>
 <p>ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called.</p>
 <dl class="class">
-<dt id="pygmi.ptimer.PTime">
-<em class="property">class </em><tt class="descclassname">pygmi.ptimer.</tt><tt class="descname">PTime</tt><a class="headerlink" href="#pygmi.ptimer.PTime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">builtins.object</span></tt></p>
+<dt id="pygmi.misc.PTime">
+<em class="property">class </em><code class="descclassname">pygmi.misc.</code><code class="descname">PTime</code><a class="headerlink" href="#pygmi.misc.PTime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Main class in the ptimer module. Once activated, this class keeps track
 of all time since activation. Times are stored whenever its methods are
 called.</p>
 <dl class="attribute">
-<dt id="pygmi.ptimer.PTime.tchk">
-<tt class="descname">tchk</tt><a class="headerlink" href="#pygmi.ptimer.PTime.tchk" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.misc.PTime.tchk">
+<code class="descname">tchk</code><a class="headerlink" href="#pygmi.misc.PTime.tchk" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>list</em></p>
 <p>List of times generated by the time.clock routine.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.ptimer.PTime.since_first_call">
-<tt class="descname">since_first_call</tt><big>(</big><em>msg='since first call'</em><big>)</big><a class="headerlink" href="#pygmi.ptimer.PTime.since_first_call" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.misc.PTime.since_first_call">
+<code class="descname">since_first_call</code><span class="sig-paren">(</span><em>msg='since first call'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.PTime.since_first_call" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function prints out a message and lets you know the time
 passed since the first call.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -891,8 +894,8 @@ passed since the first call.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.ptimer.PTime.since_last_call">
-<tt class="descname">since_last_call</tt><big>(</big><em>msg='since last call'</em><big>)</big><a class="headerlink" href="#pygmi.ptimer.PTime.since_last_call" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.misc.PTime.since_last_call">
+<code class="descname">since_last_call</code><span class="sig-paren">(</span><em>msg='since last call'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.PTime.since_last_call" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function prints out a message and lets you know the time
 passed since the last call.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -903,6 +906,25 @@ passed since the last call.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.misc.ProgressBar">
+<em class="property">class </em><code class="descclassname">pygmi.misc.</code><code class="descname">ProgressBar</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QProgressBar</span></code></p>
+<p>Progress Bar</p>
+<dl class="method">
+<dt id="pygmi.misc.ProgressBar.iter">
+<code class="descname">iter</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar.iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator Routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.misc.ProgressBar.to_max">
+<code class="descname">to_max</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar.to_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set PBar to Maximum</p>
 </dd></dl>
 
 </dd></dl>
@@ -931,7 +953,7 @@ datasets. It includes:</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -950,12 +972,12 @@ datasets. It includes:</p>
         <li><a href="search.html">search</a>|&nbsp;</li>
         <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li><a href="api.html" >PyGMI API Documentation</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>

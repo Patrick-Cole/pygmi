@@ -6,15 +6,15 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.test package &mdash; PyGMI 2.2.5 documentation</title>
+    <title>pygmi.test package &mdash; PyGMI 2.2.6 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.5',
+        VERSION:     '2.2.6',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,12 +24,12 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.5 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.6 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.vector package" href="pygmi.vector.html" />
     <link rel="prev" title="pygmi.raster package" href="pygmi.raster.html" /> 
   </head>
-  <body>
+  <body role="document">
 
 <div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
 <a href="index.html">
@@ -42,7 +42,7 @@
 </div>
 
 
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -61,12 +61,12 @@
         <li><a href="search.html">search</a>|&nbsp;</li>
         <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li><a href="api.html" >PyGMI API Documentation</a> &raquo;</li>
-          <li><a href="pygmi.html" accesskey="U">pygmi package</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" accesskey="U">pygmi package</a> &raquo;</li> 
       </ul>
     </div>
 
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -84,12 +84,14 @@
   <h4>Next topic</h4>
   <p class="topless"><a href="pygmi.vector.html"
                         title="next chapter">pygmi.vector package</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/pygmi.test.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pygmi.test.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -108,7 +110,7 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="pygmi-test-package">
 <h1>pygmi.test package<a class="headerlink" href="#pygmi-test-package" title="Permalink to this headline">¶</a></h1>
@@ -121,7 +123,7 @@
 tests</p>
 <dl class="function">
 <dt id="pygmi.test.pfmod.get_float">
-<tt class="descclassname">pygmi.test.pfmod.</tt><tt class="descname">get_float</tt><big>(</big><em>tmp</em>, <em>row</em>, <em>word</em><big>)</big><a class="headerlink" href="#pygmi.test.pfmod.get_float" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">get_float</code><span class="sig-paren">(</span><em>tmp</em>, <em>row</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.get_float" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a float from a list of strings.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -147,7 +149,7 @@ return a float from the row.</p>
 
 <dl class="function">
 <dt id="pygmi.test.pfmod.get_int">
-<tt class="descclassname">pygmi.test.pfmod.</tt><tt class="descname">get_int</tt><big>(</big><em>tmp</em>, <em>row</em>, <em>word</em><big>)</big><a class="headerlink" href="#pygmi.test.pfmod.get_int" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">get_int</code><span class="sig-paren">(</span><em>tmp</em>, <em>row</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.get_int" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets an int from a list of strings.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -173,7 +175,7 @@ return an integer from the row.</p>
 
 <dl class="function">
 <dt id="pygmi.test.pfmod.test">
-<tt class="descclassname">pygmi.test.pfmod.</tt><tt class="descname">test</tt><big>(</big><em>doplt=False</em><big>)</big><a class="headerlink" href="#pygmi.test.pfmod.test" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">test</code><span class="sig-paren">(</span><em>doplt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main test function</p>
 <p>This test function compares the calculations performed by PyGMI to
 calculations performed by a external software - namely mag2dc and grav2dc
@@ -195,7 +197,7 @@ lines on the graphs will coincide.</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -214,13 +216,13 @@ lines on the graphs will coincide.</p>
         <li><a href="search.html">search</a>|&nbsp;</li>
         <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li><a href="api.html" >PyGMI API Documentation</a> &raquo;</li>
-          <li><a href="pygmi.html" >pygmi package</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" >pygmi package</a> &raquo;</li> 
       </ul>
     </div>
-    <div class="footer">
+    <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
     </div>
   </body>
 </html>
