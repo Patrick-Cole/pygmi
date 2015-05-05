@@ -89,7 +89,14 @@ class PTime(object):
 
 class ProgressBar(QtGui.QProgressBar):
     """
-    Progress Bar
+    Progress Bar routine which expands the QProgressBar class slightly so that
+    there is a time function as well as a convenient of calling it via an
+    iterable.
+
+    Attributes
+    ----------
+    otime : integer
+        This is the original time recorded when the progress bar starts.
     """
     def __init__(self, parent=None):
         QtGui.QProgressBar.__init__(self, parent)
@@ -133,7 +140,7 @@ class ProgressBar(QtGui.QProgressBar):
         self.setValue(total)
 
     def to_max(self):
-        """ Set PBar to Maximum """
+        """ Sets the progress to maximum """
         self.setMaximum(1)
         self.setMinimum(0)
         self.setValue(1)
