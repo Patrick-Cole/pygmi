@@ -881,23 +881,12 @@ class MyMplCanvas(FigureCanvas):
         self.pbbox = self.figure.canvas.copy_from_bbox(self.paxes.bbox)
 
         self.paxes.set_autoscalex_on(False)
-#        self.cal = self.paxes.plot(xdat, dat)
-        self.cal[0].set_data([xdat, dat])
+        self.cal = self.paxes.plot(xdat, dat)
         if xdat2 is not None:
-            self.obs[0].set_data([xdat2, dat2])
+            self.obs = self.paxes.plot(xdat2, dat2, '.')
         else:
-            self.obs[0].set_data([[], []])
-
-        self.paxes.draw_artist(self.cal[0])
-        if xdat2 is not None:
-            self.paxes.draw_artist(self.obs[0])
-        self.figure.canvas.update()
-
-#        if xdat2 is not None:
-#            self.obs = self.paxes.plot(xdat2, dat2, '.')
-#        else:
-#            self.obs = self.paxes.plot([], [], '.')
-#        self.figure.canvas.draw()
+            self.obs = self.paxes.plot([], [], '.')
+        self.figure.canvas.draw()
         QtGui.QApplication.processEvents()
         self.plotisinit = True
 
