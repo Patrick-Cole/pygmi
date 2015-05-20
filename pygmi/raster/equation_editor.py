@@ -211,14 +211,16 @@ class EquationEditor(QtGui.QDialog):
                 QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
             return
         elif len(findat.shape) == 2:
+            masktmp = np.logical_or(indata[0].data.mask, np.isnan(findat))
             outdata = [copy.copy(indata[0])]
-            outdata[0].data = np.ma.array(findat, mask=indata[0].data.mask)
+            outdata[0].data = np.ma.array(findat, mask=masktmp)
             outdata[0].dataid = 'equation output'
         else:
             for i in range(len(findat)):
+                masktmp = np.logical_or(indata[i].data.mask,
+                                        np.isnan(findat[i]))
                 outdata.append(copy.copy(indata[i]))
-                outdata[-1].data = np.ma.array(findat[i],
-                                               mask=indata[i].data.mask)
+                outdata[-1].data = np.ma.array(findat[i], mask=masktmp)
 
         self.outdata[intype] = outdata
 
