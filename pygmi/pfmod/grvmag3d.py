@@ -158,13 +158,13 @@ class GravMag(object):
 
     def calc_regional(self):
         """
-        Calculates a gravity regional value based on a single
+        Calculates a gravity and magnetic regional value based on a single
         solid lithology model. This gets used in tab_param. The principle is
         that the maximum value for a solid model with fixed extents and depth,
         using the most COMMON lithology, would be the MAXIMUM AVERAGE value for
         any model which we would do. Therefore the regional is simply:
         REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
-        This routine calculates the last term
+        This routine calculates the last term.
         """
 
         ltmp = list(self.lmod1.lith_list.keys())
@@ -179,6 +179,9 @@ class GravMag(object):
             return
 
         lmod1 = self.lmod1
+        self.lmod2 = LithModel()
+# This line ensures that lmod2 is different to lmod1
+#        self.lmod2 = copy.copy(self.lmod2)
         self.lmod2.lith_list.clear()
 
         numlayers = lmod1.numz
@@ -216,6 +219,7 @@ class GravMag(object):
         lithn.lith_index = 1
 
         self.lmod = self.lmod2
+        self.calc_field2(False, False)
         self.calc_field2(False, True)
         self.lmod = self.lmod1
 
@@ -247,7 +251,7 @@ class GravMag(object):
 
     def test_pattern(self):
         """ Displays a test pattern of the data - an indication of the edge of
-        model field decay. It gives an idea aabout how reliable the calculated
+        model field decay. It gives an idea about how reliable the calculated
         field on the edge of the model is. """
         self.lmod1 = self.parent.lmod1
         self.lmod2 = self.parent.lmod2
@@ -769,12 +773,13 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     lmod.clith_index[:] = 0
     lmod.caltcalc = altcalc
 
-    if lmod.caltcalc is not altcalc:
-        lmod.clith_index[:] = 0
-        lmod.caltcalc = altcalc
+#    if lmod.caltcalc is not altcalc:
+#        lmod.clith_index[:] = 0
+#        lmod.caltcalc = altcalc
 
-    if lmod.clith_index.max() == 0:
+    if lmod.clith_index.max() == 0 and altcalc:
         lmod.griddata['Calculated Magnetics'].data[:] = 0
+    elif lmod.clith_index.max() == 0:
         lmod.griddata['Calculated Gravity'].data[:] = 0
 
 # model index

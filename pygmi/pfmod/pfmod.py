@@ -40,6 +40,7 @@ from .datatypes import LithModel
 import pygmi.menu_default as menu_default
 import pygmi.misc as pmisc
 
+
 class MainWidget(QtGui.QMainWindow):
     """ Widget class to call the main interface """
     def __init__(self, parent=None):

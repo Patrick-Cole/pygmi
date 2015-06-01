@@ -378,16 +378,16 @@ class DataMerge(QtGui.QDialog):
         data = self.indata['Raster'][0]
         orig_wkt = data.wkt
 
-        xmin0 = data.tlx
-        xmax0 = data.tlx+data.xdim*data.cols
-        ymax0 = data.tly
-        ymin0 = data.tly-data.ydim*data.rows
+        xmin = data.tlx
+        xmax = data.tlx+data.xdim*data.cols
+        ymax = data.tly
+        ymin = data.tly-data.ydim*data.rows
 
         for data in self.indata['Raster']:
-            xmin = min(data.tlx, xmin0)
-            xmax = max(data.tlx+data.xdim*data.cols, xmax0)
-            ymax = max(data.tly, ymax0)
-            ymin = min(data.tly-data.ydim*data.rows, ymin0)
+            xmin = min(data.tlx, xmin)
+            xmax = max(data.tlx+data.xdim*data.cols, xmax)
+            ymax = max(data.tly, ymax)
+            ymin = min(data.tly-data.ydim*data.rows, ymin)
 
         cols = int((xmax - xmin)/dxy)
         rows = int((ymax - ymin)/dxy)
@@ -1038,7 +1038,7 @@ class RTP(QtGui.QDialog):
         """ Setup UI """
         gridlayout_main = QtGui.QGridLayout(self)
         buttonbox = QtGui.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.rtp')
         label_band = QtGui.QLabel()
         label_inc = QtGui.QLabel()
         label_dec = QtGui.QLabel()
@@ -1052,7 +1052,7 @@ class RTP(QtGui.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Dataset Gridding")
+        self.setWindowTitle("Reduction to the Pole")
         label_band.setText("Band to Reduce to the Pole:")
         label_inc.setText("Inclination of Magnetic Field:")
         label_dec.setText("Declination of Magnetic Field:")
