@@ -69,7 +69,7 @@ class LithModel(object):
         self.d_z = None
         self.lith_index = None
         self.clith_index = None
-        self.caltcalc = False
+        self.cmagcalc = False
         self.curlayer = None
         self.xrange = [None, None]
         self.yrange = [None, None]

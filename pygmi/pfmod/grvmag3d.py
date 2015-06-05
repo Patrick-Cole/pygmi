@@ -149,12 +149,12 @@ class GravMag(object):
         if tlabel == 'Custom Profile Editor':
             self.parent.pview.update_plot()
 
-    def calc_field2(self, showreports=False, altcalc=False):
+    def calc_field2(self, showreports=False, magcalc=False):
         """ Calculate magnetic and gravity field """
 
         calc_field(self.lmod, pbars=self.pbars, showtext=self.showtext,
                    parent=self.parent, showreports=showreports,
-                   altcalc=altcalc)
+                   magcalc=magcalc)
 
     def calc_regional(self):
         """
@@ -601,7 +601,7 @@ class GeoData(object):
                 p3 = np.zeros(3)
                 mgval = np.zeros([3, npro, nstn])
 
-                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, #Gx, Gy, Gz,
+                mgval = gm3d(npro, nstn, X, Y, edge, cor, face,  # Gx, Gy, Gz,
                              Hx, Hy, Hz, Pd, un, indx, crs, p1, p2, p3,
                              mgval)
 
@@ -721,12 +721,12 @@ def gridmatch(lmod, ctxt, rtxt):
 
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
-               altcalc=False):
+               magcalc=False):
     """ Calculate magnetic and gravity field
 
     This function calculates the magnetic and gravity field. It has two
-    different modes of operation, by using the altcalc switch. If atlcalc=True
-    then both magnetic and gravity fields are calculated, otherwize only
+    different modes of operation, by using the magcalc switch. If magcalc=True
+    then magnetic fields are calculated, otherwize only
     gravity is calculated.
 
     Parameters
@@ -741,8 +741,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         parent function. (internal use)
     showreports : bool
         show extra reports
-    altcalc : bool
-        if true, calculate gravity and magnetic data, otherwize only gravity.
+    magcalc : bool
+        if true, calculates magnetic data, otherwize only gravity.
 
     Returns
     -------
@@ -771,13 +771,13 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
 # This forces a full recalc every time.
     lmod.clith_index[:] = 0
-    lmod.caltcalc = altcalc
+    lmod.cmagcalc = magcalc
 
-#    if lmod.caltcalc is not altcalc:
+#    if lmod.cmagcalc is not magcalc:
 #        lmod.clith_index[:] = 0
-#        lmod.caltcalc = altcalc
+#        lmod.cmagcalc = magcalc
 
-    if lmod.clith_index.max() == 0 and altcalc:
+    if lmod.clith_index.max() == 0 and magcalc:
         lmod.griddata['Calculated Magnetics'].data[:] = 0
     elif lmod.clith_index.max() == 0:
         lmod.griddata['Calculated Gravity'].data[:] = 0
@@ -810,7 +810,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                 mlist[1].parent = parent
                 mlist[1].pbars = parent.pbars
                 mlist[1].showtext = parent.showtext
-            if altcalc:
+            if magcalc:
                 mlist[1].calc_origin2()
             else:
                 mlist[1].calc_origin()
@@ -852,14 +852,14 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             continue
         tmpfiles[mlist[0]].seek(0)
         mfile = np.load(tmpfiles[mlist[0]])
-        if altcalc:
+        if magcalc:
             mlayers = mfile['mlayers']
         elif mfile['mlayers'].size > 1:
             mlayers = mfile['mlayers']*mlist[1].netmagn()
         else:
             mlayers = np.zeros_like(mfile['glayers'])
 
-        if not altcalc:
+        if not magcalc:
             glayers = mfile['glayers']*mlist[1].rho()
         elif mfile['glayers'].size > 1:
             glayers = mfile['glayers']*mlist[1].rho()

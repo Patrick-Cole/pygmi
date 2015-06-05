@@ -113,7 +113,7 @@ def test(doplt=False):
     tlz = zpos.max()
 
     # quick model initialises a model with all the variables we have defined.
-    ttt=ptimer.PTime()
+    ttt = ptimer.PTime()
     lmod = quick_model(xpos2.size, numy, numz, dxy, d_z,
                        tlx, tly, tlz, 0, 0, finc, fdec,
                        ['Generic'], [susc], [dens],
@@ -139,7 +139,7 @@ def test(doplt=False):
 
     # Change to observation height to 100 meters and calculate magnetics
     lmod.mht = mht
-    calc_field(lmod, altcalc=True)
+    calc_field(lmod, magcalc=True)
 
     mdata = lmod.griddata['Calculated Magnetics'].data[numy/2]
 
