@@ -587,9 +587,9 @@ class GeoData(object):
                 cor = (corner + [0., 0., depth])
 
             if depth in newdepth:
-#                Gx = np.zeros(X.shape)
-#                Gy = Gx.copy()
-#                Gz = Gx.copy()
+                # Gx = np.zeros(X.shape)
+                # Gy = Gx.copy()
+                # Gz = Gx.copy()
                 Hx = np.zeros(X.shape)
                 Hy = Hx.copy()
                 Hz = Hx.copy()
@@ -608,15 +608,15 @@ class GeoData(object):
                 Hx = mgval[0]
                 Hy = mgval[1]
                 Hz = mgval[2]
-#                Gx = mgval[3] * Gc
-#                Gy = mgval[4] * Gc
-#                Gz = mgval[5] * Gc
+                # Gx = mgval[3] * Gc
+                # Gy = mgval[4] * Gc
+                # Gz = mgval[5] * Gc
 
 #                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
 #                dt = Htot-self.hintn
                 dta = Hx*cx + Hy*cy + Hz*cz
             else:
-#                Gz = np.zeros(X.shape)
+                # Gz = np.zeros(X.shape)
                 dta = np.zeros(X.shape)
 
 #            gval.append(np.copy(Gz.T))
@@ -1072,7 +1072,7 @@ def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
                         ijk = isign[i]*isign[j]*isign[k]
                         arg1 = np.arctan2(x[i]*y[j], z[k]*rijk)
 
-                        if (arg1 < 0.):
+                        if arg1 < 0.:
                             arg1 = arg1 + 2 * np.pi
                         arg2 = rijk+y[j]
                         arg3 = rijk+x[i]

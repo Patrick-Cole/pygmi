@@ -351,6 +351,7 @@ class ModestImage2(mi.AxesImage):
 
 
 class ModestImage(ModestImage2):
+    """ Modest Image """
     def __init__(self, *args, **kwargs):
         ModestImage2.__init__(self, *args, **kwargs)
 

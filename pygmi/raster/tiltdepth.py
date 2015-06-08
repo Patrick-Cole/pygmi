@@ -47,9 +47,9 @@ from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
 import pygmi.menu_default as menu_default
-import pdb
+# import pdb
 import pygmi.misc as misc
-#import scipy.spatial.distance as sd
+# import scipy.spatial.distance as sd
 from numba import jit
 
 
@@ -402,9 +402,8 @@ def main():
 
     x, y, depth = tiltdepth(data, -17, -67)
 
-    dmin = distpc(np.array([1.,2.]), np.array([1.,2.]), 3, 4, 0)
+    dmin = distpc(np.array([1., 2.]), np.array([1., 2.]), 3, 4, 0)
     print(dmin)
-
 
 
 def vgrad(cnt):
@@ -550,8 +549,8 @@ def tiltdepth(data, dec, inc):
         pairs1.append([dx1, dy1, dist1])
         pairs2.append([dx2, dy2, dist2])
 
-    dmin1=np.array(dmin1).flatten()
-    dmin2=np.array(dmin2).flatten()
+    dmin1 = np.array(dmin1).flatten()
+    dmin2 = np.array(dmin2).flatten()
 
     pairs0 = np.array(pairs0)
     pairs1 = np.array(pairs1)

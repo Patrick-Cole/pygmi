@@ -131,7 +131,7 @@ class FuzzyClust(QtGui.QDialog):
         label_4.setText("Maximum Iterations:")
         label_5.setText("Terminate if relative change per iteration is less than:")
         label_6.setText("Repeated Runs:")
-        self.label_7.setText( "Constrain Cluster Shape (0: unconstrained, 1: spherical)")
+        self.label_7.setText("Constrain Cluster Shape (0: unconstrained, 1: spherical)")
         label_8.setText("Fuzzyness Exponent")
         self.checkbox_denorm.setText("De-normalise Results")
         self.radiobutton_random.setText("Random")
