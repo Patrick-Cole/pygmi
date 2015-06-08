@@ -536,7 +536,8 @@ class ExportData(object):
             fno.write(bintmp)
 
             ntmp = 1.701410009187828e+38
-            tmp = (k.data.filled(ntmp)).astype('f')
+            tmp = k.data.astype('f')
+            tmp = tmp.filled(ntmp)
             tmp = tmp[::-1]
             fno.write(tmp.tostring())
 
