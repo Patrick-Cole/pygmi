@@ -32,6 +32,7 @@ from osgeo import gdal, osr
 import struct
 from pygmi.raster.dataprep import merge
 import os
+import glob
 
 
 class ImportData(object):
@@ -209,8 +210,13 @@ def get_raster(ifile):
     bname = ifile.split('/')[-1].rpartition('.')[0]+': '
     ifile = ifile[:]
     ext = ifile[-3:]
+
+    # Envi Case
     if ext == 'hdr':
         ifile = ifile[:-4]
+        tmp = glob.glob(ifile+'.dat')
+        if len(tmp) > 0:
+            ifile = tmp[0]
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
@@ -234,6 +240,10 @@ def get_raster(ifile):
         if dat[i].data.dtype.kind == 'i':
             if nval is None:
                 nval = 999999
+            nval = int(nval)
+        elif dat[i].data.dtype.kind == 'u':
+            if nval is None:
+                nval = 0
             nval = int(nval)
         else:
             if nval is None:
