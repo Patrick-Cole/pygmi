@@ -24,32 +24,24 @@
 # -----------------------------------------------------------------------------
 """ Setup script for packaging PyGMI """
 
-from distutils.core import setup
+from setuptools import setup, find_packages
 from pygmi import __version__ as PVER
 
 setup(name='pygmi',
       version=PVER,
+
       description='Python Geophysical Modelling and Interpretation',
+      long_description=open('README.rst').read(),
+
+      url='https://github.com/Patrick-Cole/pygmi',
+      download_url='https://github.com/Patrick-Cole/pygmi/archive/pygmi-' +
+                   PVER + '.tar.gz',
+
       author='Patrick Cole',
       author_email='pcole@geoscience.org.za',
-      url='https://github.com/Patrick-Cole/pygmi',
-      download_url='https://github.com/Patrick-Cole/pygmi/archive/v' + PVER +
-      '.tar.gz',
+
       license='GNU General Public License v3 (GPLv3)',
-      platforms=['Windows', 'Linux'],
-      long_description=open('README.md').read(),
-      packages=['pygmi', 'pygmi.raster', 'pygmi.clust', 'pygmi.pfmod',
-                'pygmi.test', 'pygmi.vector', 'pygmi.seis'],
-      package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
-                              'helpdocs/*.png', 'images/*.png',
-                              'images/*.emf', 'images/*.ico']},
-      requires={"numpy": [">=1.9.1"],
-                "scipy": [">=0.15.0"],
-                "matplotlib": [">=1.4.2"],
-                "PyQt4": [">=4.11.3"],
-                "GDAL": [">=1.11.1"],
-                "numexpr": [">=2.4"],
-                "numba": [">=0.16.0"]},
+
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Environment :: Win32 (MS Windows)',
@@ -59,14 +51,27 @@ setup(name='pygmi',
           'Intended Audience :: Science/Research',
           'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
           'Natural Language :: English',
-          'Operating System :: Microsoft :: Windows :: Windows 7',
-          'Operating System :: Microsoft :: Windows :: Windows Vista',
-          'Operating System :: Microsoft :: Windows :: Windows XP',
+          'Operating System :: Microsoft :: Windows',
           'Operating System :: POSIX :: Linux',
-          'Programming Language :: Python',
+          'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 3',
           'Topic :: Scientific/Engineering :: Mathematics',
           'Topic :: Scientific/Engineering :: Physics',
           'Topic :: Scientific/Engineering :: Visualization',
           'Topic :: Software Development :: Libraries :: Python Modules',
-          ])
+          ],
+
+
+      keywords='Geophysics Magnetic Gravity Modelling Interpretation',
+
+      packages=(find_packages(exclude=['docs'])),
+
+      install_requires=["numpy", "scipy", "matplotlib", "PyQt4", "gdal",
+                        "numexpr", "numba"],
+
+      package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
+                              'helpdocs/*.png', 'images/*.png',
+                              'images/*.emf', 'images/*.ico']},
+
+      entry_points={'gui_scipts': ['pygmi = pygmi.main:main']}
+      )
