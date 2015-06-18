@@ -1,6 +1,16 @@
 =========
 Changelog
 =========
+v2.2.7, 18 June 2015
+--------------------
+* Update to setup for hosting on pypi
+* Added the possibility for ENVI files to have .dat extension
+* Allowed uint files to have a no data value of 0 where none is defined
+* Fixed bug with surfer export
+* Fixed bug with regional test
+* Equation editor bug fix
+* Fixed a bug where profiles were not saving to images correctly
+
 v2.2.6, 10 April 2015
 ------------------------
 * Progress Bar on Main Interface. New progress bars include time left.
