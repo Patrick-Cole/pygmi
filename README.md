@@ -15,24 +15,32 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.4
-* NumPy 1.8
-* SciPy 0.14
-* Matplotlib 1.4
-* PyQt 4.10
-* GDAL 1.11
+* Python 3.4.2
+* NumPy 1.8.2
+* SciPy 0.14.0
+* Matplotlib 1.4.1
+* PyQt 4.10.4
+* GDAL 1.11.1
 * numexpr 2.4
-* numba 0.15
+* numba 0.15.1
 
 It is possible that it might work on earlier versions, especially on non-windows operating systems. Under windows, there are compiled .pyd files (python version of a dll) which require the NumPy and Python version to match. However, for actual releases, I do post windows binaries which include a standalone python distribution (that will not interfere with existing installations), so this should not be a problem.
 
 ##Installation
 ###General
-If you satisfy the requirements, and wish to run PyGMI from within your python environment, you can install PyGMI as a library using the following command from within the root of the PyGMI directory:
+The easiest way to install pygmi if you are worning in a python environment is to use the pip command as follows:
+
+	pip install pygmi
+
+This will download pygmi from PyPI and install it within your python repository. Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:
 
 	python setup.py install
 
-Once you are in python, you can run PyGMI by using the following commands:
+In either case, running pygmi can be now done at the command prompt as follows:
+
+	pygmi
+
+If you are in python, you can run PyGMI by using the following commands:
 
 	import pygmi
 	pygmi.main()
@@ -48,11 +56,17 @@ Linux normally comes with python installed, but the additional libraries will st
 
 After installation of python, you can follow the instructions under General.
 
-### Alternative execution
+###Anaconda
+Anaconda does not find pyqt4 on its system even if it is there already. To install pygmi on anaconda, edit the setup.py file, and replace the install_requires switch with the following:
+
+	install_requires=["numpy", "scipy", "matplotlib", "gdal", "numexpr", "numba"],
+
+As you can see, all we have done is removed PyQt4 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:
+
+	python setup.py install
+
+###Alternative execution
+
 If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
 
 	python quickstart.py
-
-
-
-

@@ -4,4 +4,4 @@ matplotlib
 gdal
 numexpr
 numba
-pyqt4
+PyQt4

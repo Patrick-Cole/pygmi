@@ -1,7 +1,7 @@
 Overview
 ========
 
-PyGMI stands for Python Geophysical Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets. 
+PyGMI stands for Python Geophysical Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets.
 
 PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>`_ (Geological Survey of South Africa).
 
@@ -15,7 +15,7 @@ It includes:
 
 View the PyGMI project on `GitHub <https://github.com/Patrick-Cole/pygmi>`_!
 
-The PyGMI Wiki pages, including installation, can be found `here <http://patrick-cole.github.io/pygmi/index.html>`_!
+The PyGMI `Wiki <http://patrick-cole.github.io/pygmi/index.html>`_ pages, include installation and full usage!
 
 The latest release version can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
