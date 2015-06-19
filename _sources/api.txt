@@ -1,0 +1,16 @@
+PyGMI API Documentation
+=======================
+
+This section will focus on developer information as well as how to use the program. This is a work in progress, so if you have any questions not on the wiki, feel free to contact me.
+
+PyGMI was not really originally designed to be used like a conventional library. I realised recently that it would probably be more useful to people if I gave them access to some of the code which I had written. Therefore, over time I will be exposing that functionality in a more robust way than what is currently available.
+
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   pygmi
+   quickstart
+

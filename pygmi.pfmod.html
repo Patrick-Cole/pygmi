@@ -1,0 +1,2168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>pygmi.pfmod package &mdash; PyGMI 2.2.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.2.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="PyGMI 2.2.7 documentation" href="index.html" />
+    <link rel="up" title="pygmi package" href="pygmi.html" />
+    <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
+    <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
+  </head>
+  <body role="document">
+
+<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+<a href="index.html">
+<img src="_static/logo.png" border="0" alt="py4sci"/>
+</a>
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+</a>
+
+</div>
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pygmi.raster.html" title="pygmi.raster package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pygmi.clust.html" title="pygmi.clust package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" accesskey="U">pygmi package</a> &raquo;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pygmi.pfmod package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.datatypes">pygmi.pfmod.datatypes module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.grvmag3d">pygmi.pfmod.grvmag3d module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.iodefs">pygmi.pfmod.iodefs module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.menu">pygmi.pfmod.menu module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.misc">pygmi.pfmod.misc module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.cubes">pygmi.pfmod.mvis3d module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.pfmod">pygmi.pfmod.pfmod module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.tab_ddisp">pygmi.pfmod.tab_ddisp module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.tab_layer">pygmi.pfmod.tab_layer module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.tab_mext">pygmi.pfmod.tab_mext module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.tab_param">pygmi.pfmod.tab_param module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.tab_prof">pygmi.pfmod.tab_prof module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod.tab_pview">pygmi.pfmod.tab_pview module</a></li>
+<li><a class="reference internal" href="#module-pygmi.pfmod">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pygmi.clust.html"
+                        title="previous chapter">pygmi.clust package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pygmi.raster.html"
+                        title="next chapter">pygmi.raster package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pygmi.pfmod.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pygmi-pfmod-package">
+<h1>pygmi.pfmod package<a class="headerlink" href="#pygmi-pfmod-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pygmi.pfmod.datatypes">
+<span id="pygmi-pfmod-datatypes-module"></span><h2>pygmi.pfmod.datatypes module<a class="headerlink" href="#module-pygmi.pfmod.datatypes" title="Permalink to this headline">¶</a></h2>
+<p>Class for data types</p>
+<dl class="class">
+<dt id="pygmi.pfmod.datatypes.LithModel">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.datatypes.</code><code class="descname">LithModel</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Lithological Model Data.</p>
+<p>This is the main data structure for the modelling program</p>
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.mlut">
+<code class="descname">mlut</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.mlut" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>color table for lithologies</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.numx">
+<code class="descname">numx</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numx" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>number of columns per layer in model</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.numy">
+<code class="descname">numy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numy" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>number of rows per layer in model</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.numz">
+<code class="descname">numz</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numz" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>number of layers in model</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.dxy">
+<code class="descname">dxy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.dxy" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>dimension of cubes in the x and y directions</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.d_z">
+<code class="descname">d_z</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.d_z" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>dimension of cubes in the z direction</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.lith_index">
+<code class="descname">lith_index</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_index" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>numpy array</em></p>
+<p>3D array of lithological indices.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.clith_index">
+<code class="descname">clith_index</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.clith_index" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>numpy array</em></p>
+<p>3D array of calculated lithological indices.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.calt_calc">
+<code class="descname">calt_calc</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.calt_calc" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>bool</em></p>
+<p>boolean specifying which calculation was used.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.curlayer">
+<code class="descname">curlayer</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.curlayer" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>Current layer</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.xrange">
+<code class="descname">xrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.xrange" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em></p>
+<p>minimum and maximum x coordinates</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.yrange">
+<code class="descname">yrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.yrange" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em></p>
+<p>minimum and maximum y coordinates</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.zrange">
+<code class="descname">zrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.zrange" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>list</em></p>
+<p>minimum and maximum z coordinates</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.curprof">
+<code class="descname">curprof</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.curprof" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>current profile (in x or y direction)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.griddata">
+<code class="descname">griddata</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.griddata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>dictionary of Data classes with raster data</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.custprofx">
+<code class="descname">custprofx</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.custprofx" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>custom profile x coordinates</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.custprofy">
+<code class="descname">custprofy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.custprofy" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>custom profile y coordinates</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.profpics">
+<code class="descname">profpics</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.profpics" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>= profile pictures</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.lith_list">
+<code class="descname">lith_list</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_list" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>= list of lithologies</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.lith_list_reverse">
+<code class="descname">lith_list_reverse</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_list_reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>= reverse lookup for lith_list</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.mht">
+<code class="descname">mht</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.mht" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>height of magnetic sensor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.ght">
+<code class="descname">ght</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.ght" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>height of gravity sensor</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.gregional">
+<code class="descname">gregional</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.gregional" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>gravity regional correction</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.datatypes.LithModel.name">
+<code class="descname">name</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em></p>
+<p>name of the model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.datatypes.LithModel.dtm_to_lith">
+<code class="descname">dtm_to_lith</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.dtm_to_lith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign the DTM to the model. This means creating nodata values in
+areas above the DTM. These values are assigned a lithology of -1.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.datatypes.LithModel.init_calc_grids">
+<code class="descname">init_calc_grids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.init_calc_grids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes mag and gravity from the model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.datatypes.LithModel.init_grid">
+<code class="descname">init_grid</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.init_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes raster variables in the Data class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>numpy masked array</em>) &#8211; masked array containing raster data.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.datatypes.LithModel.is_modified">
+<code class="descname">is_modified</code><span class="sig-paren">(</span><em>modified=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.is_modified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates modified flag</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>modified</strong> (<em>bool</em>) &#8211; flag for whether the lithology has been modified</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.datatypes.LithModel.lithold_to_lith">
+<code class="descname">lithold_to_lith</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lithold_to_lith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Transfers an old lithology to the new one, using updates parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.datatypes.LithModel.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>cols</em>, <em>rows</em>, <em>layers</em>, <em>utlx</em>, <em>utly</em>, <em>utlz</em>, <em>dxy</em>, <em>d_z</em>, <em>mht=-1</em>, <em>ght=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the local variables for the LithModel class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>cols</strong> (<em>int</em>) &#8211; number of columns per layer in model</li>
+<li><strong>rows</strong> (<em>int</em>) &#8211; number of rows per layer in model</li>
+<li><strong>layers</strong> (<em>int</em>) &#8211; number of layers in model</li>
+<li><strong>utlx</strong> (<em>float</em>) &#8211; upper top left (NW) x coordinate</li>
+<li><strong>utly</strong> (<em>float</em>) &#8211; upper top left (NW) y coordinate</li>
+<li><strong>utlz</strong> (<em>float</em>) &#8211; upper top left (NW) z coordinate</li>
+<li><strong>dxy</strong> (<em>float</em>) &#8211; dimension of cubes in the x and y directions</li>
+<li><strong>d_z</strong> (<em>float</em>) &#8211; dimension of cubes in the z direction</li>
+<li><strong>mht</strong> (<em>float</em>) &#8211; height of magnetic sensor</li>
+<li><strong>ght</strong> (<em>float</em>) &#8211; height of gravity sensor</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.datatypes.LithModel.update_lith_list_reverse">
+<code class="descname">update_lith_list_reverse</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.update_lith_list_reverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the lith_list reverse lookup. It must be run at least once
+before using lith_list_reverse</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.datatypes.LithModel.update_lithlist">
+<code class="descname">update_lithlist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.update_lithlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates lith_list from local variables</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.grvmag3d">
+<span id="pygmi-pfmod-grvmag3d-module"></span><h2>pygmi.pfmod.grvmag3d module<a class="headerlink" href="#module-pygmi.pfmod.grvmag3d" title="Permalink to this headline">¶</a></h2>
+<p>Gravity and magnetic field calculations.
+This uses the following algorithms:</p>
+<p class="rubric">References</p>
+<p>Singh, B., Guptasarma, D., 2001. New method for fast computation of gravity
+and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.</p>
+<p>Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
+1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201</p>
+<dl class="class">
+<dt id="pygmi.pfmod.grvmag3d.GeoData">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">GeoData</code><span class="sig-paren">(</span><em>parent</em>, <em>ncols=10</em>, <em>nrows=10</em>, <em>numz=10</em>, <em>dxy=10.0</em>, <em>d_z=10.0</em>, <em>mht=80.0</em>, <em>ght=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Data layer class:
+This class defines each geological type and calculates the field
+for one cube from the standard definitions.</p>
+<p>The is a class which contains the geophysical information for a single
+lithology. This includes the final calculated field for that lithology
+only.</p>
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GeoData.calc_origin">
+<code class="descname">calc_origin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.calc_origin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the field values for the lithologies</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GeoData.calc_origin2">
+<code class="descname">calc_origin2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.calc_origin2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the field values for the lithologies</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GeoData.gboxmain">
+<code class="descname">gboxmain</code><span class="sig-paren">(</span><em>xobs</em>, <em>yobs</em>, <em>zobs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.gboxmain" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Gbox routine by Blakely</dt>
+<dd>Note: xobs, yobs and zobs must be floats or there will be problems
+later.</dd>
+</dl>
+<p>Subroutine GBOX computes the vertical attraction of a
+rectangular prism.  Sides of prism are parallel to x,y,z axes,
+and z axis is vertical down.</p>
+<dl class="docutils">
+<dt>Input parameters:</dt>
+<dd>Observation point is (x0,y0,z0).  The prism extends from x1
+to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
+directions, respectively.  Density of prism is rho.  All
+distance parameters in units of m;</dd>
+<dt>Output parameters:</dt>
+<dd>Vertical attraction of gravity, g, in mGal/rho.
+Must still be multiplied by rho outside routine.
+Done this way for speed.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GeoData.gmmain">
+<code class="descname">gmmain</code><span class="sig-paren">(</span><em>xobs</em>, <em>yobs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.gmmain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Algorithm for simultaneous computation of gravity and magnetic
+fields is based on the formulation published in GEOPHYSICS v. 66,
+521-526,2001. by Bijendra Singh and D. Guptasarma</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GeoData.netmagn">
+<code class="descname">netmagn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.netmagn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the net magnetization</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GeoData.rho">
+<code class="descname">rho</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.rho" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the density contrast</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GeoData.set_xyz">
+<code class="descname">set_xyz</code><span class="sig-paren">(</span><em>ncols</em>, <em>nrows</em>, <em>numz</em>, <em>g_dxy</em>, <em>mht</em>, <em>ght</em>, <em>d_z</em>, <em>dxy=None</em>, <em>modified=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.set_xyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets/updates xyz parameters again</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GeoData.set_xyz12">
+<code class="descname">set_xyz12</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData.set_xyz12" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set x12, y12, z12. This is the limits of the cubes for the model</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.grvmag3d.GravMag">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">GravMag</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>This class holds the generic magnetic and gravity modelling routines</p>
+<p>Routine that will calculate the final versions of the field. Other,
+related code is here as well, such as the inversion routines.</p>
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field">
+<code class="descname">calc_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pre field-calculation routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field2">
+<code class="descname">calc_field2</code><span class="sig-paren">(</span><em>showreports=False</em>, <em>magcalc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate magnetic and gravity field</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field_new">
+<code class="descname">calc_field_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field_new" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pre field-calculation routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_regional">
+<code class="descname">calc_regional</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_regional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates a gravity and magnetic regional value based on a single
+solid lithology model. This gets used in tab_param. The principle is
+that the maximum value for a solid model with fixed extents and depth,
+using the most COMMON lithology, would be the MAXIMUM AVERAGE value for
+any model which we would do. Therefore the regional is simply:
+REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
+This routine calculates the last term.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.grd_to_lith">
+<code class="descname">grd_to_lith</code><span class="sig-paren">(</span><em>curgrid</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.grd_to_lith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign the DTM to the lithology model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.test_pattern">
+<code class="descname">test_pattern</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.test_pattern" title="Permalink to this definition">¶</a></dt>
+<dd><p>Displays a test pattern of the data - an indication of the edge of
+model field decay. It gives an idea about how reliable the calculated
+field on the edge of the model is.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.update_graph">
+<code class="descname">update_graph</code><span class="sig-paren">(</span><em>grvval</em>, <em>magval</em>, <em>modind</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.update_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the graph</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.calc_field">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">calc_field</code><span class="sig-paren">(</span><em>lmod</em>, <em>pbars=None</em>, <em>showtext=None</em>, <em>parent=None</em>, <em>showreports=False</em>, <em>magcalc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.calc_field" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate magnetic and gravity field</p>
+<p>This function calculates the magnetic and gravity field. It has two
+different modes of operation, by using the magcalc switch. If magcalc=True
+then magnetic fields are calculated, otherwize only
+gravity is calculated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lmod</strong> (<a class="reference internal" href="#pygmi.pfmod.datatypes.LithModel" title="pygmi.pfmod.datatypes.LithModel"><em>LithModel</em></a>) &#8211; PyGMI lithological model</li>
+<li><strong>pbars</strong> (<em>module</em>) &#8211; progress bar routine if available. (internal use)</li>
+<li><strong>showtext</strong> (<em>module</em>) &#8211; showtext routine if available. (internal use)</li>
+<li><strong>parent</strong> (<a class="reference internal" href="pygmi.clust.html#pygmi.clust.graphs.PlotMembership.parent" title="pygmi.clust.graphs.PlotMembership.parent"><em>parent</em></a>) &#8211; parent function. (internal use)</li>
+<li><strong>showreports</strong> (<em>bool</em>) &#8211; show extra reports</li>
+<li><strong>magcalc</strong> (<em>bool</em>) &#8211; if true, calculates magnetic data, otherwize only gravity.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>lmod.griddata</strong> &#8211;
+dictionary of items of type Data.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dictionary</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.grvmag3d.calc_fieldb">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">calc_fieldb</code><a class="headerlink" href="#pygmi.pfmod.grvmag3d.calc_fieldb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate magnetic and gravity field</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.dat_extent">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">dat_extent</code><span class="sig-paren">(</span><em>dat</em>, <em>axes</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.dat_extent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the extent of the dat variable</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.dircos">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">dircos</code><span class="sig-paren">(</span><em>incl</em>, <em>decl</em>, <em>azim</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.dircos" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Subroutine DIRCOS computes direction cosines from inclination</dt>
+<dd>and declination.</dd>
+<dt>Input parameters:</dt>
+<dd><p class="first">incl:  inclination in degrees positive below horizontal.
+decl:  declination in degrees positive east of true north.
+azim:  azimuth of x axis in degrees positive east of north.</p>
+<p class="last">Output parameters:
+a,b,c:  the three direction cosines.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.grvmag3d.gboxmain2">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">gboxmain2</code><a class="headerlink" href="#pygmi.pfmod.grvmag3d.gboxmain2" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Gbox routine by Blakely</dt>
+<dd>Note: xobs, yobs and zobs must be floats or there will be problems
+later.</dd>
+</dl>
+<p>Subroutine GBOX computes the vertical attraction of a
+rectangular prism.  Sides of prism are parallel to x,y,z axes,
+and z axis is vertical down.</p>
+<dl class="docutils">
+<dt>Input parameters:</dt>
+<dd>Observation point is (x0,y0,z0).  The prism extends from x1
+to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
+directions, respectively.  Density of prism is rho.  All
+distance parameters in units of m;</dd>
+<dt>Output parameters:</dt>
+<dd>Vertical attraction of gravity, g, in mGal/rho.
+Must still be multiplied by rho outside routine.
+Done this way for speed.</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.grvmag3d.gm3d">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">gm3d</code><a class="headerlink" href="#pygmi.pfmod.grvmag3d.gm3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>grvmag 3d</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.gridmatch">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">gridmatch</code><span class="sig-paren">(</span><em>lmod</em>, <em>ctxt</em>, <em>rtxt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.gridmatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Matches the rows and columns of the second grid to the first
+grid</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.quick_model">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">quick_model</code><span class="sig-paren">(</span><em>numx=50, numy=50, numz=50, dxy=1000, d_z=100, tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67, fdec=-17, inputliths=['Generic'], susc=[0.01], dens=[3.0], minc=None, mdec=None, mstrength=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.quick_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a quick model</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.save_layer">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">save_layer</code><span class="sig-paren">(</span><em>mlist</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.save_layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine saves the mlayer and glayer to a file</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.iodefs">
+<span id="pygmi-pfmod-iodefs-module"></span><h2>pygmi.pfmod.iodefs module<a class="headerlink" href="#module-pygmi.pfmod.iodefs" title="Permalink to this headline">¶</a></h2>
+<p>Import Data</p>
+<dl class="class">
+<dt id="pygmi.pfmod.iodefs.ExportMod3D">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">ExportMod3D</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Export Data</p>
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ExportMod3D.lmod2dict">
+<code class="descname">lmod2dict</code><span class="sig-paren">(</span><em>outdict</em>, <em>pre=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D.lmod2dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>place lmod in dictionary</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ExportMod3D.mod3dtocsv">
+<code class="descname">mod3dtocsv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D.mod3dtocsv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the 3D model in a csv file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ExportMod3D.mod3dtokmz">
+<code class="descname">mod3dtokmz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D.mod3dtokmz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the 3D model and grids in a kmz file.
+Note:
+Only the boundary of the area is in degrees. The actual coordinates
+are still in meters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ExportMod3D.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show Info</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ExportMod3D.savemodel">
+<code class="descname">savemodel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D.savemodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save model</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.iodefs.Exportkmz">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">Exportkmz</code><span class="sig-paren">(</span><em>wkt</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<p>Class to call up a dialog</p>
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.Exportkmz.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.iodefs.ImportMod3D">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">ImportMod3D</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportMod3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Import Data</p>
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportMod3D.dict2lmod">
+<code class="descname">dict2lmod</code><span class="sig-paren">(</span><em>indict</em>, <em>pre=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportMod3D.dict2lmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>routine to convert a dictionary to an lmod</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportMod3D.import_ascii_xyz_model">
+<code class="descname">import_ascii_xyz_model</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportMod3D.import_ascii_xyz_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to import ASCII XYZ Models of the form x,y,z,label</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportMod3D.settings">
+<code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportMod3D.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.iodefs.ImportPicture">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">ImportPicture</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportPicture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<p>Class to call up a dialog</p>
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportPicture.lmod2var">
+<code class="descname">lmod2var</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportPicture.lmod2var" title="Permalink to this definition">¶</a></dt>
+<dd><p>lmod 2 var</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportPicture.settings">
+<code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportPicture.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load GeoTiff</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportPicture.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportPicture.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportPicture.update_var">
+<code class="descname">update_var</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportPicture.update_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the values</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportPicture.update_win">
+<code class="descname">update_win</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportPicture.update_win" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the window values</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.iodefs.gtiff">
+<code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">gtiff</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.gtiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Utility to import geotiffs</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.menu">
+<span id="pygmi-pfmod-menu-module"></span><h2>pygmi.pfmod.menu module<a class="headerlink" href="#module-pygmi.pfmod.menu" title="Permalink to this headline">¶</a></h2>
+<p>Potential Field Modelling</p>
+<dl class="class">
+<dt id="pygmi.pfmod.menu.MenuWidget">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.menu.</code><code class="descname">MenuWidget</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface</p>
+<p>This widget class creates the modelling menus to be found on the main
+interface. Normal as well as context menus are defined here.</p>
+<dl class="attribute">
+<dt id="pygmi.pfmod.menu.MenuWidget.parent">
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>MainWidget</em></p>
+<p>Reference to MainWidget class found in main.py</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.menu.MenuWidget.export_mod3d">
+<code class="descname">export_mod3d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.export_mod3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export 3D Model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.menu.MenuWidget.import_mod3d">
+<code class="descname">import_mod3d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.import_mod3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.menu.MenuWidget.import_prof_pic">
+<code class="descname">import_prof_pic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.import_prof_pic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.menu.MenuWidget.mod3d">
+<code class="descname">mod3d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.mod3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>3D display of data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.menu.MenuWidget.pfmod">
+<code class="descname">pfmod</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.pfmod" title="Permalink to this definition">¶</a></dt>
+<dd><p>voxel modelling of data</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.misc">
+<span id="pygmi-pfmod-misc-module"></span><h2>pygmi.pfmod.misc module<a class="headerlink" href="#module-pygmi.pfmod.misc" title="Permalink to this headline">¶</a></h2>
+<p>These are miscellaneous functions for the program</p>
+<dl class="class">
+<dt id="pygmi.pfmod.misc.ProgressBar">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">ProgressBar</code><span class="sig-paren">(</span><em>pbar</em>, <em>pbarmain</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Wrapper for a progress bar</p>
+<dl class="method">
+<dt id="pygmi.pfmod.misc.ProgressBar.busysub">
+<code class="descname">busysub</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar.busysub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Busy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.ProgressBar.incr">
+<code class="descname">incr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar.incr" title="Permalink to this definition">¶</a></dt>
+<dd><p>increases value by one</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.ProgressBar.incrmain">
+<code class="descname">incrmain</code><span class="sig-paren">(</span><em>i=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar.incrmain" title="Permalink to this definition">¶</a></dt>
+<dd><p>increases value by one</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.ProgressBar.iter">
+<code class="descname">iter</code><span class="sig-paren">(</span><em>iterable</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar.iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterator Routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.ProgressBar.maxall">
+<code class="descname">maxall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar.maxall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets all progress bars to maximum value</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.ProgressBar.resetall">
+<code class="descname">resetall</code><span class="sig-paren">(</span><em>maximum=1</em>, <em>mmax=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar.resetall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets min and max and resets all bars to 0</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.ProgressBar.resetsub">
+<code class="descname">resetsub</code><span class="sig-paren">(</span><em>maximum=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar.resetsub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets min and max and resets sub bar to 0</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.misc.RangedCopy">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">RangedCopy</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.RangedCopy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<p>Class to call up a dialog for ranged copying</p>
+<dl class="method">
+<dt id="pygmi.pfmod.misc.RangedCopy.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.RangedCopy.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.misc.rcopy_dialog">
+<code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">rcopy_dialog</code><span class="sig-paren">(</span><em>lmod1</em>, <em>islayer=True</em>, <em>is_ew=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.rcopy_dialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main routine to perform actual ranged copy</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.misc.update_lith_lw">
+<code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">update_lith_lw</code><span class="sig-paren">(</span><em>lmod</em>, <em>lwidget</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.update_lith_lw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the lithology list widget</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.cubes">
+<span id="pygmi-pfmod-mvis3d-module"></span><h2>pygmi.pfmod.mvis3d module<a class="headerlink" href="#module-pygmi.pfmod.cubes" title="Permalink to this headline">¶</a></h2>
+<p>This is code for the 3d model creation.</p>
+<dl class="class">
+<dt id="pygmi.pfmod.cubes.GLWidget">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">GLWidget</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtOpenGL.QGLWidget</span></code></p>
+<p>OpenGL Widget</p>
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.initGeometry">
+<code class="descname">initGeometry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.initGeometry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize Geometry</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.init_object">
+<code class="descname">init_object</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.init_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise VBO</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.initializeGL">
+<code class="descname">initializeGL</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.initializeGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialize OpenGL</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.minimumSizeHint">
+<code class="descname">minimumSizeHint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.minimumSizeHint" title="Permalink to this definition">¶</a></dt>
+<dd><p>minimum size hint</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.mouseMoveEvent">
+<code class="descname">mouseMoveEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse Move Event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.mousePressEvent">
+<code class="descname">mousePressEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse Press Event</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.normalizeAngle">
+<code class="descname">normalizeAngle</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.normalizeAngle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize angle</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.paintGL">
+<code class="descname">paintGL</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.paintGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Paint OpenGL</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.readPixels">
+<code class="descname">readPixels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.readPixels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads pixels from the window</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.resizeGL">
+<code class="descname">resizeGL</code><span class="sig-paren">(</span><em>width</em>, <em>height</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.resizeGL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize OpenGL</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.setXRotation">
+<code class="descname">setXRotation</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.setXRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>set X rotation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.setYRotation">
+<code class="descname">setYRotation</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.setYRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>set Y rotation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.setZRotation">
+<code class="descname">setZRotation</code><span class="sig-paren">(</span><em>angle</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.setZRotation" title="Permalink to this definition">¶</a></dt>
+<dd><p>set Z rotation</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.sizeHint">
+<code class="descname">sizeHint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.sizeHint" title="Permalink to this definition">¶</a></dt>
+<dd><p>size hint</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.wheelEvent">
+<code class="descname">wheelEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.wheelEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse wheel event</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.GetTables">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">GetTables</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GetTables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Tables</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.InterpolateVertices">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">InterpolateVertices</code><span class="sig-paren">(</span><em>isolevel</em>, <em>p1x</em>, <em>p1y</em>, <em>p1z</em>, <em>p2x</em>, <em>p2y</em>, <em>p2z</em>, <em>valp1</em>, <em>valp2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.InterpolateVertices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interpolate vertices</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.MarchingCubes">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">MarchingCubes</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em>, <em>c</em>, <em>iso</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.MarchingCubes" title="Permalink to this definition">¶</a></dt>
+<dd><p># function [F,V,col] = MarchingCubes(x,y,z,c,iso,colors)</p>
+<p># [F,V] = MarchingCubes(X,Y,Z,C,ISO)
+# [F,V,COL] = MarchingCubes(X,Y,Z,C,ISO,COLORS)
+#
+# Use marching cubes algorithm to compute a triangulated mesh of the
+# isosurface within the 3D matrix of scalar values C at isosurface value
+# ISO. The 3D matrices (X,Y,Z) represent a Cartesian, axis-aligned grid
+# specifying the points at which the data C is given. These coordinate
+# arrays must be in the format produced by Matlab&#8217;s meshgrid function.
+# Output arguments F and V are the face list and vertex list
+# of the resulting triangulated mesh. The orientation of the triangles is
+# chosen such that the normals point from the higher values to the lower
+# values. Optional arguments COLORS ans COLS can be used to produce
+# interpolated mesh face colors. For usage, see Matlab&#8217;s isosurface.m.
+# To avoid Out of Memory errors when matrix C is large, convert matrices
+# X,Y,Z and C from doubles (Matlab default) to singles (32-bit floats).
+#
+# Adapted for Matlab by Peter Hammer in 2011 based on an
+# Octave function written by Martin Helm &lt;<a class="reference external" href="mailto:martin&#37;&#52;&#48;mhelm&#46;de">martin<span>&#64;</span>mhelm<span>&#46;</span>de</a>&gt; in 2009
+# <a class="reference external" href="http://www.mhelm.de/octave/m/marching_cube.m">http://www.mhelm.de/octave/m/marching_cube.m</a>
+#
+# Revised 30 September, 2011 to add code by Oliver Woodford for removing
+# duplicate vertices.</p>
+<p>#    error(&#8216;x, y, z, c must be matrices of dim 3&#8217;)
+#    error(&#8216;x, y, z, c must be the same size&#8217;)
+#    error(&#8216;grid size must be at least 2x2x2&#8217;)
+#    error(&#8216;iso needs to be scalar value&#8217;)
+#    error( &#8216;color must be matrix of same size as c&#8217;)</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">Mod3dDisplay</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.change_defs">
+<code class="descname">change_defs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.change_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List box routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.data_init">
+<code class="descname">data_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.data_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Data initialisation routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.mod3d_vs">
+<code class="descname">mod3d_vs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.mod3d_vs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vertical slider used to scale 3d view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.save">
+<code class="descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>This saves a jpg</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.set_selected_liths">
+<code class="descname">set_selected_liths</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.set_selected_liths" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the selected lithologies</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_color">
+<code class="descname">update_color</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_color" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update color only</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_for_kmz">
+<code class="descname">update_for_kmz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_for_kmz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates for the kmz file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_model">
+<code class="descname">update_model</code><span class="sig-paren">(</span><em>issmooth=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the 3d model. Faces, nodes and face normals are calculated
+here, from the voxel model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_model2">
+<code class="descname">update_model2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_model2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the 3d model. Faces, nodes and face normals are calculated
+here, from the voxel model.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_plot">
+<code class="descname">update_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update 3D Model</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.bitget">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">bitget</code><span class="sig-paren">(</span><em>byteval</em>, <em>idx</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.bitget" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.bitset">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">bitset</code><span class="sig-paren">(</span><em>byteval</em>, <em>idx</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.bitset" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.calc_norms">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">calc_norms</code><span class="sig-paren">(</span><em>faces</em>, <em>vtx</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.calc_norms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates normals</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.cubes.fancyindex">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">fancyindex</code><a class="headerlink" href="#pygmi.pfmod.cubes.fancyindex" title="Permalink to this definition">¶</a></dt>
+<dd><p>fancy</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.ind2sub">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">ind2sub</code><span class="sig-paren">(</span><em>msize</em>, <em>idx</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.ind2sub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sub2ind</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.main">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main routine</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.normalize_v3">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">normalize_v3</code><span class="sig-paren">(</span><em>arr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.normalize_v3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize a numpy array of 3 component vectors shape=(n,3)</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.cubes.sub2ind">
+<code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">sub2ind</code><span class="sig-paren">(</span><em>msize</em>, <em>row</em>, <em>col</em>, <em>layer</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.sub2ind" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sub2ind</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.pfmod">
+<span id="pygmi-pfmod-pfmod-module"></span><h2>pygmi.pfmod.pfmod module<a class="headerlink" href="#module-pygmi.pfmod.pfmod" title="Permalink to this headline">¶</a></h2>
+<p>This is the main program for the modelling package</p>
+<dl class="class">
+<dt id="pygmi.pfmod.pfmod.MainWidget">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.pfmod.</code><code class="descname">MainWidget</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QMainWindow</span></code></p>
+<p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.pfmod.MainWidget.help_docs">
+<code class="descname">help_docs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.help_docs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Help Routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.pfmod.MainWidget.savemodel">
+<code class="descname">savemodel</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.savemodel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Model Save</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.pfmod.MainWidget.settings">
+<code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.pfmod.MainWidget.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup for the GUI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.pfmod.MainWidget.showtext">
+<code class="descname">showtext</code><span class="sig-paren">(</span><em>txt</em>, <em>replacelast=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.showtext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show text on the text panel of the main user interface</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.pfmod.MainWidget.tab_change">
+<code class="descname">tab_change</code><span class="sig-paren">(</span><em>index=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget.tab_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>This gets called any time we change a tab, and activates the
+routines behind the new tab</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.tab_ddisp">
+<span id="pygmi-pfmod-tab-ddisp-module"></span><h2>pygmi.pfmod.tab_ddisp module<a class="headerlink" href="#module-pygmi.pfmod.tab_ddisp" title="Permalink to this headline">¶</a></h2>
+<p>Data Display Routines found on Data Display Tab</p>
+<dl class="class">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_ddisp.</code><code class="descname">DataDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay.combo1">
+<code class="descname">combo1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay.combo1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combo box to choose grid 1</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay.combo2">
+<code class="descname">combo2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay.combo2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combo box to choose grid 2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay.hs_grid">
+<code class="descname">hs_grid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay.hs_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizontal slider used to show grid1 and grid2</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay.prof_dir">
+<code class="descname">prof_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay.prof_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Radio button for EW or NS profiles</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay.profnum">
+<code class="descname">profnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay.profnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to change a profile from spinbox</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay.tab_activate">
+<code class="descname">tab_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay.tab_activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs when the tab is activated</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.DataDisplay.update_combos">
+<code class="descname">update_combos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay.update_combos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the combos</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_ddisp.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>ncust=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg</span></code></p>
+<p>Canvas for the actual plot</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas.dat_extent">
+<code class="descname">dat_extent</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas.dat_extent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the extent of the dat variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas.init_grid1">
+<code class="descname">init_grid1</code><span class="sig-paren">(</span><em>dat1</em>, <em>reg=0</em>, <em>lbl=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas.init_grid1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the upper single color map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas.init_grid2">
+<code class="descname">init_grid2</code><span class="sig-paren">(</span><em>dat2</em>, <em>reg=0</em>, <em>lbl=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas.init_grid2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the lower single color map. It has to disable the upper map
+while doing so - in order to update the blit</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas.init_line">
+<code class="descname">init_line</code><span class="sig-paren">(</span><em>xrng</em>, <em>yrng</em>, <em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas.init_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the line position</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas.set_limits">
+<code class="descname">set_limits</code><span class="sig-paren">(</span><em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas.set_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets limits for the axes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas.slide_grid1">
+<code class="descname">slide_grid1</code><span class="sig-paren">(</span><em>perc=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas.slide_grid1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slider</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas.update_ncust">
+<code class="descname">update_ncust</code><span class="sig-paren">(</span><em>ncust</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas.update_ncust" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates mumber of custom profiles</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.tab_layer">
+<span id="pygmi-pfmod-tab-layer-module"></span><h2>pygmi.pfmod.tab_layer module<a class="headerlink" href="#module-pygmi.pfmod.tab_layer" title="Permalink to this headline">¶</a></h2>
+<p>Layer Display Tab Routines</p>
+<dl class="class">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_layer.</code><code class="descname">LayerDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.change_defs">
+<code class="descname">change_defs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.change_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List box in layer tab for definitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.combo">
+<code class="descname">combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combo box to choose grid 3</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.layer_hs">
+<code class="descname">layer_hs</code><span class="sig-paren">(</span><em>hval</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.layer_hs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizontal slider to change the layer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.rcopy">
+<code class="descname">rcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.rcopy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do a ranged copy on a layer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.sb_laynum">
+<code class="descname">sb_laynum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.sb_laynum" title="Permalink to this definition">¶</a></dt>
+<dd><p>This increases or decreases the model layer</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.tab_activate">
+<code class="descname">tab_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.tab_activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs when the tab is activated</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.update_combos">
+<code class="descname">update_combos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.update_combos" title="Permalink to this definition">¶</a></dt>
+<dd><p>This updates combos</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.update_model">
+<code class="descname">update_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.update_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the model from the graph</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.update_model_plot">
+<code class="descname">update_model_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.update_model_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>This updates some of the plotting stuff</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.width">
+<code class="descname">width</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the width of the edits on the layer view</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_layer.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent</em>, <em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg</span></code></p>
+<p>Canvas for the actual plot</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.button_press">
+<code class="descname">button_press</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.button_press" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.button_release">
+<code class="descname">button_release</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.button_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.dat_extent">
+<code class="descname">dat_extent</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.dat_extent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the extend of the dat variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.init_grid">
+<code class="descname">init_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>dat2</em>, <em>extent</em>, <em>opac</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.init_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the single color map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.init_line">
+<code class="descname">init_line</code><span class="sig-paren">(</span><em>xrng</em>, <em>yrng</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.init_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the line position</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.luttodat">
+<code class="descname">luttodat</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.luttodat" title="Permalink to this definition">¶</a></dt>
+<dd><p>lut to dat grid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.move">
+<code class="descname">move</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse is moving</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.set_limits">
+<code class="descname">set_limits</code><span class="sig-paren">(</span><em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.set_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets limits for the axes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.set_mdata">
+<code class="descname">set_mdata</code><span class="sig-paren">(</span><em>xdata</em>, <em>ydata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.set_mdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to &#8216;draw&#8217; the line on mdata</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_layer.MyMplCanvas.slide_grid">
+<code class="descname">slide_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>dat2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas.slide_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slider</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.tab_mext">
+<span id="pygmi-pfmod-tab-mext-module"></span><h2>pygmi.pfmod.tab_mext module<a class="headerlink" href="#module-pygmi.pfmod.tab_mext" title="Permalink to this headline">¶</a></h2>
+<p>Model Extension Display Tab Routines</p>
+<dl class="class">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_mext.</code><code class="descname">MextDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.apply_changes">
+<code class="descname">apply_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.apply_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update when changing from this tab</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.apply_regional">
+<code class="descname">apply_regional</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.apply_regional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the regional model to the current model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.choose_combo">
+<code class="descname">choose_combo</code><span class="sig-paren">(</span><em>combo</em>, <em>dtxt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.choose_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combo box choice routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.choose_dtm">
+<code class="descname">choose_dtm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.choose_dtm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combo box to choose current dataset</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.choose_model">
+<code class="descname">choose_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.choose_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose which model file to use</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.choose_regional">
+<code class="descname">choose_regional</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.choose_regional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose which regional model file to use</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.extgrid">
+<code class="descname">extgrid</code><span class="sig-paren">(</span><em>gdata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.extgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extrapolates the grid to get rid of nulls. Uses a masked grid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.get_area">
+<code class="descname">get_area</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.get_area" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get area</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.init">
+<code class="descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.tab_activate">
+<code class="descname">tab_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.tab_activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs when the tab is activated</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.upd_layers">
+<code class="descname">upd_layers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.upd_layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the layers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.update_combos">
+<code class="descname">update_combos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.update_combos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the combos</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.update_model_combos">
+<code class="descname">update_model_combos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.update_model_combos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the model combos</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.update_vals">
+<code class="descname">update_vals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.update_vals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the visible model extent parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.xycell">
+<code class="descname">xycell</code><span class="sig-paren">(</span><em>dxy</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.xycell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to adjust XY dimensions when cell size changes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_mext.MextDisplay.zcell">
+<code class="descname">zcell</code><span class="sig-paren">(</span><em>d_z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay.zcell" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to adjust Z dimension when cell size changes</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.tab_param">
+<span id="pygmi-pfmod-tab-param-module"></span><h2>pygmi.pfmod.tab_param module<a class="headerlink" href="#module-pygmi.pfmod.tab_param" title="Permalink to this headline">¶</a></h2>
+<p>Parameter Display Tab Routines</p>
+<dl class="class">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_param.</code><code class="descname">ParamDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.add_def">
+<code class="descname">add_def</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.add_def" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine being called by button push</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.add_defs">
+<code class="descname">add_defs</code><span class="sig-paren">(</span><em>deftxt=''</em>, <em>getcol=False</em>, <em>lmod=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.add_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add geophysical definitions and make them editable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.apply_lith_changes">
+<code class="descname">apply_lith_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.apply_lith_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies lithological changes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.apply_prop_changes">
+<code class="descname">apply_prop_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.apply_prop_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies geophysical property changes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.autoregional">
+<code class="descname">autoregional</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.autoregional" title="Permalink to this definition">¶</a></dt>
+<dd><p>Automatically estimates the regional</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.change_defs">
+<code class="descname">change_defs</code><span class="sig-paren">(</span><em>item</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.change_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change geophysical definitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.change_magnetization">
+<code class="descname">change_magnetization</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.change_magnetization" title="Permalink to this definition">¶</a></dt>
+<dd><p>update spinboxes when magnetization is changed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.change_qratio">
+<code class="descname">change_qratio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.change_qratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>update spinboxes when qratio is changed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.change_rmi">
+<code class="descname">change_rmi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.change_rmi" title="Permalink to this definition">¶</a></dt>
+<dd><p>update spinboxes when rmi is changed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.connect_spin">
+<code class="descname">connect_spin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.connect_spin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Connect spin boxes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.disconnect_spin">
+<code class="descname">disconnect_spin</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.disconnect_spin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Disconnect spin boxes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.get_lith">
+<code class="descname">get_lith</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.get_lith" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get parameter definitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.init">
+<code class="descname">init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize parameters</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.lw_color_change">
+<code class="descname">lw_color_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.lw_color_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to allow lithologies to have their colors changed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.lw_index_change">
+<code class="descname">lw_index_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.lw_index_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>List box in parameter tab for definitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.rem_defs">
+<code class="descname">rem_defs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.rem_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove geophysical definitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.rename_defs">
+<code class="descname">rename_defs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.rename_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to rename a definition</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.set_lw_colors">
+<code class="descname">set_lw_colors</code><span class="sig-paren">(</span><em>lwidget</em>, <em>lmod=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.set_lw_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set list widget colors</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_param.ParamDisplay.tab_activate">
+<code class="descname">tab_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay.tab_activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs when the tab is activated</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.tab_prof">
+<span id="pygmi-pfmod-tab-prof-module"></span><h2>pygmi.pfmod.tab_prof module<a class="headerlink" href="#module-pygmi.pfmod.tab_prof" title="Permalink to this headline">¶</a></h2>
+<p>Profile Display Tab Routines</p>
+<dl class="class">
+<dt id="pygmi.pfmod.tab_prof.LithBound">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">LithBound</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.LithBound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<p>Class to call up a dialog for lithological boundary</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.LithBound.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.LithBound.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent</em>, <em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg</span></code></p>
+<p>This is a QWidget</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.button_press">
+<code class="descname">button_press</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.button_press" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.button_release">
+<code class="descname">button_release</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.button_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.dat_extent">
+<code class="descname">dat_extent</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.dat_extent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the extend of the dat variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.extentchk">
+<code class="descname">extentchk</code><span class="sig-paren">(</span><em>extent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.extentchk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks extent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.init_grid">
+<code class="descname">init_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>extent</em>, <em>dat2</em>, <em>opac</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.init_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the single color map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.init_plot">
+<code class="descname">init_plot</code><span class="sig-paren">(</span><em>xdat</em>, <em>dat</em>, <em>extent</em>, <em>xdat2</em>, <em>dat2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.init_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the single color map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.luttodat">
+<code class="descname">luttodat</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.luttodat" title="Permalink to this definition">¶</a></dt>
+<dd><p>lut to dat grid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.move">
+<code class="descname">move</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse is moving</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.set_mdata">
+<code class="descname">set_mdata</code><span class="sig-paren">(</span><em>xdata</em>, <em>ydata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.set_mdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to &#8216;draw&#8217; the line on mdata</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.slide_grid">
+<code class="descname">slide_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>dat2=None</em>, <em>opac=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.slide_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slider</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.slide_plot">
+<code class="descname">slide_plot</code><span class="sig-paren">(</span><em>xdat</em>, <em>dat</em>, <em>extent</em>, <em>xdat2</em>, <em>dat2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.slide_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slider</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.update_line">
+<code class="descname">update_line</code><span class="sig-paren">(</span><em>xrng</em>, <em>yrng</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.update_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the line position</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.tab_prof.MySlider">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">MySlider</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MySlider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QSlider</span></code></p>
+<p>My Slider</p>
+<p>Custom class which allows clicking on slider bar with slider moving to
+click in a single step.</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.MySlider.mousePressEvent">
+<code class="descname">mousePressEvent</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MySlider.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse Press Event</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">ProfileDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.change_defs">
+<code class="descname">change_defs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.change_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List box in profile tab for definitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.change_model">
+<code class="descname">change_model</code><span class="sig-paren">(</span><em>slide=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.change_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change Model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.export_csv">
+<code class="descname">export_csv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.export_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export Profile to csv</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.hprofnum">
+<code class="descname">hprofnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.hprofnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to change a profile from spinbox</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.lbound">
+<code class="descname">lbound</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.lbound" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert a lithological boundary</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.lbound_dialog">
+<code class="descname">lbound_dialog</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.lbound_dialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main routine to perform actual ranged copy</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.load_data">
+<code class="descname">load_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.load_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used to load Layer data</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.profpic_hs">
+<code class="descname">profpic_hs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.profpic_hs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizontal slider to change the profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.rb_plot_scale">
+<code class="descname">rb_plot_scale</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.rb_plot_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot scale</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.rcopy">
+<code class="descname">rcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.rcopy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do a ranged copy on a profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.sprofnum">
+<code class="descname">sprofnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.sprofnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to change a profile from spinbox</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.tab_activate">
+<code class="descname">tab_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.tab_activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs when the tab is activated</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.update_model">
+<code class="descname">update_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.update_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update model itself</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.update_plot">
+<code class="descname">update_plot</code><span class="sig-paren">(</span><em>slide=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.update_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the profile on the model view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.width">
+<code class="descname">width</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the width of the edits on the profile view</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod.tab_pview">
+<span id="pygmi-pfmod-tab-pview-module"></span><h2>pygmi.pfmod.tab_pview module<a class="headerlink" href="#module-pygmi.pfmod.tab_pview" title="Permalink to this headline">¶</a></h2>
+<p>Profile Display Tab Routines</p>
+<dl class="class">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_pview.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent</em>, <em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg</span></code></p>
+<p>This is a QWidget</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.button_press">
+<code class="descname">button_press</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.button_press" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.button_release">
+<code class="descname">button_release</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.button_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.dat_extent">
+<code class="descname">dat_extent</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.dat_extent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the extend of the dat variable</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.extentchk">
+<code class="descname">extentchk</code><span class="sig-paren">(</span><em>extent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.extentchk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks extent</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.init_grid">
+<code class="descname">init_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>extent</em>, <em>dat2</em>, <em>opac</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.init_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the single color map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.init_plot">
+<code class="descname">init_plot</code><span class="sig-paren">(</span><em>xdat</em>, <em>dat</em>, <em>extent</em>, <em>xdat2</em>, <em>dat2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.init_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the single color map</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.luttodat">
+<code class="descname">luttodat</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.luttodat" title="Permalink to this definition">¶</a></dt>
+<dd><p>lut to dat grid</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.move">
+<code class="descname">move</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse is moving</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.set_mdata">
+<code class="descname">set_mdata</code><span class="sig-paren">(</span><em>xdata</em>, <em>ydata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.set_mdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to &#8216;draw&#8217; the line on mdata</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.slide_grid">
+<code class="descname">slide_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>dat2=None</em>, <em>opac=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.slide_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slider</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.slide_plot">
+<code class="descname">slide_plot</code><span class="sig-paren">(</span><em>xdat</em>, <em>dat</em>, <em>extent</em>, <em>xdat2</em>, <em>dat2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.slide_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slider</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.MyMplCanvas.update_line">
+<code class="descname">update_line</code><span class="sig-paren">(</span><em>xrng</em>, <em>yrng</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas.update_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates the line position</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_pview.</code><code class="descname">ProfileDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.addprof">
+<code class="descname">addprof</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.addprof" title="Permalink to this definition">¶</a></dt>
+<dd><p>add another profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.change_defs">
+<code class="descname">change_defs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.change_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>List box in profile tab for definitions</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.change_model">
+<code class="descname">change_model</code><span class="sig-paren">(</span><em>slide=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.change_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change Model</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.cp_init">
+<code class="descname">cp_init</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.cp_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializes stuff for custom profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.export_csv">
+<code class="descname">export_csv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.export_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export Profile to csv</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.hprofnum">
+<code class="descname">hprofnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.hprofnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to change a profile from spinbox</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.profnum">
+<code class="descname">profnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.profnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to change a profile from spinbox</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.profpic_hs">
+<code class="descname">profpic_hs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.profpic_hs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizontal slider to change the profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.rb_plot_scale">
+<code class="descname">rb_plot_scale</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.rb_plot_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>plot scale</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.sprofnum">
+<code class="descname">sprofnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.sprofnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to change a profile from spinbox</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.tab_activate">
+<code class="descname">tab_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.tab_activate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs when the tab is activated</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.update_model">
+<code class="descname">update_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.update_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update model itself</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.update_plot">
+<code class="descname">update_plot</code><span class="sig-paren">(</span><em>slide=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.update_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the profile on the model view</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.width">
+<code class="descname">width</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.width" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the width of the edits on the profile view</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.pfmod">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.pfmod" title="Permalink to this headline">¶</a></h2>
+<p>Potential Field Routines</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pygmi.raster.html" title="pygmi.raster package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pygmi.clust.html" title="pygmi.clust package"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" >pygmi package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

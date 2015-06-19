@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Seismology Analysis: Description of Modules &mdash; PyGMI 2.2.7 documentation</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '2.2.7',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="top" title="PyGMI 2.2.7 documentation" href="index.html" />
+    <link rel="up" title="Seismology Data Analysis" href="seis.html" />
+    <link rel="next" title="References" href="seis.ref.html" />
+    <link rel="prev" title="Seismology Analysis: Context Menu" href="seis.cm.html" /> 
+  </head>
+  <body role="document">
+
+<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+<a href="index.html">
+<img src="_static/logo.png" border="0" alt="py4sci"/>
+</a>
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+</a>
+
+</div>
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="seis.ref.html" title="References"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="seis.cm.html" title="Seismology Analysis: Context Menu"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="wiki.html" >PyGMI Wiki</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="seis.html" accesskey="U">Seismology Data Analysis</a> &raquo;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Seismology Analysis: Description of Modules</a><ul>
+<li><a class="reference internal" href="#import-seisan-data">Import Seisan Data</a></li>
+<li><a class="reference internal" href="#import-generic-fps">Import Generic FPS</a></li>
+<li><a class="reference internal" href="#import-scanned-bulletins">Import Scanned Bulletins</a></li>
+<li><a class="reference internal" href="#fault-plane-solutions">Fault Plane Solutions</a></li>
+<li><a class="reference internal" href="#delete-records">Delete Records</a></li>
+<li><a class="reference internal" href="#remove-quarry-events">Remove Quarry Events</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="seis.cm.html"
+                        title="previous chapter">Seismology Analysis: Context Menu</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="seis.ref.html"
+                        title="next chapter">References</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/seis.dm.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="seismology-analysis-description-of-modules">
+<h1>Seismology Analysis: Description of Modules<a class="headerlink" href="#seismology-analysis-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="import-seisan-data">
+<h2>Import Seisan Data<a class="headerlink" href="#import-seisan-data" title="Permalink to this headline">¶</a></h2>
+<p>Imports SEISAN data stored in the NORDIC format.</p>
+</div>
+<div class="section" id="import-generic-fps">
+<h2>Import Generic FPS<a class="headerlink" href="#import-generic-fps" title="Permalink to this headline">¶</a></h2>
+<p>Imports generic fault plane solutions stored in an ASCII file. This is stored
+in a csv file. The format is as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Longitude</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Strike</span><span class="p">,</span> <span class="n">Dip</span><span class="p">,</span> <span class="n">Rake</span><span class="p">,</span> <span class="n">Magnitude</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="import-scanned-bulletins">
+<h2>Import Scanned Bulletins<a class="headerlink" href="#import-scanned-bulletins" title="Permalink to this headline">¶</a></h2>
+<p>Imoprts ASCII seismic bulletins which have been obtained from Optical Character
+Recognition software. The bulletins are from the Council for Geoscience, and
+this forms part of an initiative converting paper records to digital records.</p>
+<p>The module will convert the ASCII file to NORDIC format. Errors in conversion
+are also displayed.</p>
+</div>
+<div class="section" id="fault-plane-solutions">
+<h2>Fault Plane Solutions<a class="headerlink" href="#fault-plane-solutions" title="Permalink to this headline">¶</a></h2>
+<p>This module allows for the display of fault plane solutions as beachball plots.
+The beachball plots can be exported to shapefiles. Note that two shapefiles are
+exported - one for the actual beachballs and one for a boundary of the
+beachballs.</p>
+<p>The core code is translated from bb.m written by Andy Michael and Oliver Boyd
+at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd/Software/Software.html">http://www.ceri.memphis.edu/people/olboyd/Software/Software.html</a></p>
+</div>
+<div class="section" id="delete-records">
+<h2>Delete Records<a class="headerlink" href="#delete-records" title="Permalink to this headline">¶</a></h2>
+<p>This is a simple script used to delete records.</p>
+</div>
+<div class="section" id="remove-quarry-events">
+<h2>Remove Quarry Events<a class="headerlink" href="#remove-quarry-events" title="Permalink to this headline">¶</a></h2>
+<p>This script allows for the removal of quarry events from seismology data. It is
+based on the paper by Wiemer and Baer (2000)</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="seis.ref.html" title="References"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="seis.cm.html" title="Seismology Analysis: Context Menu"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="wiki.html" >PyGMI Wiki</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="seis.html" >Seismology Data Analysis</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

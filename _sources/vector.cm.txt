@@ -1,0 +1,24 @@
+Vector Analysis: Context Menu
+-----------------------------
+
+The vector context menus are available for modules which have vector output
+data. Output data is only available on green modules. To access the context
+menu, simply right-click a green module.
+
+Export Point Data
+^^^^^^^^^^^^^^^^^
+This module allows for the export of point data.
+
+Show Point Data
+^^^^^^^^^^^^^^^
+This module displays point data in graph form.
+
+
+Show Vector Data
+^^^^^^^^^^^^^^^^
+Vector data, such as shapefiles, can be displayed here.
+
+Show Rose Diagrams
+^^^^^^^^^^^^^^^^^^
+This module calculates and displays rose diagrams. It needs as input vector
+line data which has been imported into PyGMI.

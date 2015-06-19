@@ -1,0 +1,41 @@
+Seismology Analysis: Description of Modules
+-------------------------------------------
+
+Import Seisan Data
+^^^^^^^^^^^^^^^^^^
+Imports SEISAN data stored in the NORDIC format.
+
+Import Generic FPS
+^^^^^^^^^^^^^^^^^^
+Imports generic fault plane solutions stored in an ASCII file. This is stored
+in a csv file. The format is as follows::
+
+   Longitude, Latitude, Strike, Dip, Rake, Magnitude
+
+Import Scanned Bulletins
+^^^^^^^^^^^^^^^^^^^^^^^^
+Imoprts ASCII seismic bulletins which have been obtained from Optical Character
+Recognition software. The bulletins are from the Council for Geoscience, and
+this forms part of an initiative converting paper records to digital records.
+
+The module will convert the ASCII file to NORDIC format. Errors in conversion
+are also displayed.
+
+Fault Plane Solutions
+^^^^^^^^^^^^^^^^^^^^^
+This module allows for the display of fault plane solutions as beachball plots.
+The beachball plots can be exported to shapefiles. Note that two shapefiles are
+exported - one for the actual beachballs and one for a boundary of the
+beachballs.
+
+The core code is translated from bb.m written by Andy Michael and Oliver Boyd
+at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html
+
+Delete Records
+^^^^^^^^^^^^^^
+This is a simple script used to delete records.
+
+Remove Quarry Events
+^^^^^^^^^^^^^^^^^^^^
+This script allows for the removal of quarry events from seismology data. It is
+based on the paper by Wiemer and Baer (2000)

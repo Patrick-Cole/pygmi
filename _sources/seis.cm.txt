@@ -1,0 +1,10 @@
+Seismology Analysis: Context Menu
+---------------------------------
+
+The seismology context menus are available for modules which have seismology
+output data. Output data is only available on green modules. To access the
+context menu, simply right-click a green module.
+
+Export Seisan Data
+^^^^^^^^^^^^^^^^^^
+This option allows for the export of seismology data in NORDIC format.

@@ -1,0 +1,17 @@
+Vector Analysis: Description of Modules
+---------------------------------------
+
+Import Shapefile Data
+^^^^^^^^^^^^^^^^^^^^^
+This module imports shapfile data. Shapefile data is defined as vector data in
+PyGMI.
+
+Import Point/Line Data
+^^^^^^^^^^^^^^^^^^^^^^
+This module imports point or line data stored in ASCII files (such as
+comma-delimited files). If your data contains coordinates, then please ensure
+that these cordinates are in teh first two columns.
+
+Import LEMI-417 Data
+^^^^^^^^^^^^^^^^^^^^
+This module imports ASCII LEMI-417 data.

@@ -1,0 +1,18 @@
+Potential Field Modelling
+=========================
+
+Introduction
+------------
+Potential field modelling within PyGMI is performed on voxels, forming a 3D
+model. The model is displayed using a context menu for the corresponding
+module.
+
+Subpackages
+-----------
+
+.. toctree::
+
+    pfmod.cm
+    pfmod.dm
+    pfmod.ref
+
