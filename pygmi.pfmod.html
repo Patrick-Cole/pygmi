@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.pfmod package &mdash; PyGMI 2.2.6 documentation</title>
+    <title>pygmi.pfmod package &mdash; PyGMI 2.2.7 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.6',
+        VERSION:     '2.2.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.6 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.7 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
     <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
@@ -499,7 +499,7 @@ related code is here as well, such as the inversion routines.</p>
 
 <dl class="method">
 <dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field2">
-<code class="descname">calc_field2</code><span class="sig-paren">(</span><em>showreports=False</em>, <em>altcalc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field2" title="Permalink to this definition">¶</a></dt>
+<code class="descname">calc_field2</code><span class="sig-paren">(</span><em>showreports=False</em>, <em>magcalc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate magnetic and gravity field</p>
 </dd></dl>
 
@@ -512,13 +512,13 @@ related code is here as well, such as the inversion routines.</p>
 <dl class="method">
 <dt id="pygmi.pfmod.grvmag3d.GravMag.calc_regional">
 <code class="descname">calc_regional</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_regional" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates a gravity regional value based on a single
+<dd><p>Calculates a gravity and magnetic regional value based on a single
 solid lithology model. This gets used in tab_param. The principle is
 that the maximum value for a solid model with fixed extents and depth,
 using the most COMMON lithology, would be the MAXIMUM AVERAGE value for
 any model which we would do. Therefore the regional is simply:
 REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
-This routine calculates the last term</p>
+This routine calculates the last term.</p>
 </dd></dl>
 
 <dl class="method">
@@ -537,7 +537,7 @@ This routine calculates the last term</p>
 <dt id="pygmi.pfmod.grvmag3d.GravMag.test_pattern">
 <code class="descname">test_pattern</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.test_pattern" title="Permalink to this definition">¶</a></dt>
 <dd><p>Displays a test pattern of the data - an indication of the edge of
-model field decay. It gives an idea aabout how reliable the calculated
+model field decay. It gives an idea about how reliable the calculated
 field on the edge of the model is.</p>
 </dd></dl>
 
@@ -551,11 +551,11 @@ field on the edge of the model is.</p>
 
 <dl class="function">
 <dt id="pygmi.pfmod.grvmag3d.calc_field">
-<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">calc_field</code><span class="sig-paren">(</span><em>lmod</em>, <em>pbars=None</em>, <em>showtext=None</em>, <em>parent=None</em>, <em>showreports=False</em>, <em>altcalc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.calc_field" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">calc_field</code><span class="sig-paren">(</span><em>lmod</em>, <em>pbars=None</em>, <em>showtext=None</em>, <em>parent=None</em>, <em>showreports=False</em>, <em>magcalc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.calc_field" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate magnetic and gravity field</p>
 <p>This function calculates the magnetic and gravity field. It has two
-different modes of operation, by using the altcalc switch. If atlcalc=True
-then both magnetic and gravity fields are calculated, otherwize only
+different modes of operation, by using the magcalc switch. If magcalc=True
+then magnetic fields are calculated, otherwize only
 gravity is calculated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -565,9 +565,9 @@ gravity is calculated.</p>
 <li><strong>lmod</strong> (<a class="reference internal" href="#pygmi.pfmod.datatypes.LithModel" title="pygmi.pfmod.datatypes.LithModel"><em>LithModel</em></a>) &#8211; PyGMI lithological model</li>
 <li><strong>pbars</strong> (<em>module</em>) &#8211; progress bar routine if available. (internal use)</li>
 <li><strong>showtext</strong> (<em>module</em>) &#8211; showtext routine if available. (internal use)</li>
-<li><strong>parent</strong> (<a class="reference internal" href="pygmi.html#pygmi.menu_default.ComboBoxBasic.parent" title="pygmi.menu_default.ComboBoxBasic.parent"><em>parent</em></a>) &#8211; parent function. (internal use)</li>
+<li><strong>parent</strong> (<a class="reference internal" href="pygmi.clust.html#pygmi.clust.graphs.PlotMembership.parent" title="pygmi.clust.graphs.PlotMembership.parent"><em>parent</em></a>) &#8211; parent function. (internal use)</li>
 <li><strong>showreports</strong> (<em>bool</em>) &#8211; show extra reports</li>
-<li><strong>altcalc</strong> (<em>bool</em>) &#8211; if true, calculate gravity and magnetic data, otherwize only gravity.</li>
+<li><strong>magcalc</strong> (<em>bool</em>) &#8211; if true, calculates magnetic data, otherwize only gravity.</li>
 </ul>
 </td>
 </tr>

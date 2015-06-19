@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; PyGMI 2.2.6 documentation</title>
+    <title>Installation &mdash; PyGMI 2.2.7 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.6',
+        VERSION:     '2.2.7',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.6 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.7 documentation" href="index.html" />
     <link rel="up" title="PyGMI Wiki" href="wiki.html" />
     <link rel="next" title="Quick Start to use PyGMI" href="qstart.html" />
     <link rel="prev" title="PyGMI Wiki" href="wiki.html" /> 
@@ -76,6 +76,8 @@
 <li><a class="reference internal" href="#general">General</a></li>
 <li><a class="reference internal" href="#windows">Windows</a></li>
 <li><a class="reference internal" href="#linux">Linux</a></li>
+<li><a class="reference internal" href="#id2">Anaconda</a></li>
+<li><a class="reference internal" href="#alternative-execution">Alternative execution</a></li>
 </ul>
 </li>
 </ul>
@@ -143,15 +145,19 @@
 <h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="general">
 <h3>General<a class="headerlink" href="#general" title="Permalink to this headline">¶</a></h3>
-<p>If you satisfy the requirements, and wish to run PyGMI from within your python environment, you can install PyGMI as a library using the following command from within the root of the PyGMI directory:</p>
-<div class="highlight-python"><div class="highlight"><pre>python setup.py install
-</pre></div>
-</div>
-<p>Once you are in python, you can run PyGMI by using the following commands:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">pygmi</span>
-<span class="n">pygmi</span><span class="o">.</span><span class="n">main</span><span class="p">()</span>
-</pre></div>
-</div>
+<p>The easiest way to install pygmi if you are worning in a python environment is to use the pip command as follows:</p>
+<blockquote>
+<div>pip install pygmi</div></blockquote>
+<p>This will download pygmi from PyPI and install it within your python repository. Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:</p>
+<blockquote>
+<div>python setup.py install</div></blockquote>
+<p>In either case, running pygmi can be now done at the command prompt as follows:</p>
+<blockquote>
+<div>pygmi</div></blockquote>
+<p>If you are in python, you can run PyGMI by using the following commands:</p>
+<blockquote>
+<div>import pygmi
+pygmi.main()</div></blockquote>
 </div>
 <div class="section" id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
@@ -161,11 +167,22 @@
 <div class="section" id="linux">
 <h3>Linux<a class="headerlink" href="#linux" title="Permalink to this headline">¶</a></h3>
 <p>Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through <a class="reference external" href="http://continuum.io/downloads">Anaconda</a>.</p>
-<p>After installation of python, download the pygmi source off github, extract it, and execute the following command from within the root of the PyGMI directory to run the program:</p>
-<div class="highlight-python"><div class="highlight"><pre>python quickstart.py
-</pre></div>
+<p>After installation of python, you can follow the instructions under General.</p>
 </div>
-<p>Alternatively you can install it as a library as shown above.</p>
+<div class="section" id="id2">
+<h3>Anaconda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Anaconda does not find pyqt4 on its system even if it is there already. To install pygmi on anaconda, edit the setup.py file, and replace the install_requires switch with the following:</p>
+<blockquote>
+<div>install_requires=[&#8220;numpy&#8221;, &#8220;scipy&#8221;, &#8220;matplotlib&#8221;, &#8220;gdal&#8221;, &#8220;numexpr&#8221;, &#8220;numba&#8221;],</div></blockquote>
+<p>As you can see, all we have done is removed PyQt4 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:</p>
+<blockquote>
+<div>python setup.py install</div></blockquote>
+</div>
+<div class="section" id="alternative-execution">
+<h3>Alternative execution<a class="headerlink" href="#alternative-execution" title="Permalink to this headline">¶</a></h3>
+<p>If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:</p>
+<blockquote>
+<div>python quickstart.py</div></blockquote>
 </div>
 </div>
 </div>
