@@ -16,7 +16,7 @@ lithology menu, that lithology becomes opaque. The background opacity can also
 be varied. The viewer provides a means to save an image of the model to a .jpg
 or .png file format.
 
-.. image:: _static/pf3dmoddisp.png
+.. image:: _images/pf3dmoddisp.png
    :width: 100%
 
 Export 3D Model
@@ -28,5 +28,5 @@ This provides a means to export the model in one of 3 formats:
 * xyz - this is an ASCII format, supplied to export the model in a generic
   fashion.
 
-.. image:: _static/pfmodgearth.jpg
+.. image:: _images/pfmodgearth.jpg
    :width: 100%

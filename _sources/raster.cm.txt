@@ -56,14 +56,14 @@ are binned, and the amplitude of the bins are shown in colour. The scale of the
 amplitudes is given in log in order to increase the amount of information on
 the plot.
 
-.. image:: _static/rasterhexbin.png
+.. image:: _images/rasterhexbin.png
    :width: 100%
 
 Show Histogram
 ^^^^^^^^^^^^^^
 This shows the histogram for a band of data.
 
-.. image:: _static/rasterhist.png
+.. image:: _images/rasterhist.png
    :width: 100%
 
 Show 2D Correlation Coefficients
@@ -72,7 +72,7 @@ The 2D correlation coefficients show the degree of correlation between all the
 bands in a dataset. It is sometimes used in cluster analysis as a preparatory
 step in order to exclude bands of information which are too similar.
 
-.. image:: _static/raster2dcorr.png
+.. image:: _images/raster2dcorr.png
    :width: 100%
 
 

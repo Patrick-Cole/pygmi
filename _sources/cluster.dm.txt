@@ -18,9 +18,9 @@ The following fuzzy clustering (Paasche 2009) techniques are supported:
 
 Scatter Plot Tool
 -----------------
-The scatter plot tool is used for scatter plot analysis. By supplying the results of a cluster analysis, in addition to the raster data input into the cluster analysis, it is also possible to see where the clusters are located within the scatter plots. 
+The scatter plot tool is used for scatter plot analysis. By supplying the results of a cluster analysis, in addition to the raster data input into the cluster analysis, it is also possible to see where the clusters are located within the scatter plots.
 
 The scatter plot tool shows both a scatter plot and a view of the raster data. A polygon can be drawn on either view, and the corresponding pixels will be displayed in the other view.
 
-.. image:: _static/clustscatter.png
-   :width: 100%	
+.. image:: _images/clustscatter.png
+   :width: 100%

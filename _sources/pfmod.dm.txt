@@ -17,7 +17,7 @@ picture are specified here.
 If a .npz file is connected to this module (imported through the import 3D
 model tool) then appropriate default values for the picture are filled in.
 
-.. image:: _static/pfimpprofpic.png
+.. image:: _images/pfimpprofpic.png
    :width: 100%
 
 Model Creation and Editing
@@ -44,7 +44,7 @@ available.
 
 Any changes here must be accepted using the 'Accept Proposed Changes' button.
 
-.. image:: _static/pfmodparam.png
+.. image:: _images/pfmodparam.png
    :width: 100%
 
 Geophysical Parameters
@@ -71,7 +71,7 @@ lithology basis. These include:
 
 Additional lithologies can be added, removed or renamed here.
 
-.. image:: _static/pfmodparam2.png
+.. image:: _images/pfmodparam2.png
    :width: 100%
 
 Data Display
@@ -83,7 +83,7 @@ The slider below the image allows for the fading of one dataset into another.
 This is useful, for example, when comparing calculated gravity data to the
 measured gravity data.
 
-.. image:: _static/pfmoddisp.png
+.. image:: _images/pfmoddisp.png
    :width: 100%
 
 Layer Editor
@@ -97,7 +97,7 @@ Please note that on the first few layers there may be sections which are air
 The ranged copy function allows for the copying of a lithology on the current
 layer over a range of layers.
 
-.. image:: _static/pfmodledit.png
+.. image:: _images/pfmodledit.png
    :width: 100%
 
 Profile Editor
@@ -117,7 +117,7 @@ calculation.
 The ranged copy function allows for the copying of a lithology on the current
 profile over a range of profiles.
 
-.. image:: _static/pfmodpedit.png
+.. image:: _images/pfmodpedit.png
    :width: 100%
 
 Custom Profile Viewer

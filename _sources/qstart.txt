@@ -14,7 +14,7 @@ Details
 The menus in PyGMI group tasks into categories. By clicking on a menu item, you
 will see that the item appears as a flow chart element on the main interface.
 
-.. image:: _static/main.png
+.. image:: _images/main.png
    :width: 100%
 
 * By clicking on the line connector icon on the menubar, it is possible to

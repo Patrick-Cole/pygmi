@@ -11,7 +11,7 @@ All raster modules, once activated (module will be green) have a context menu
 which allows the display of the data as well as its statistics. The context
 menu is accessed by **right clicking** on the module.
 
-.. image:: _static/rasterintro.png
+.. image:: _images/rasterintro.png
    :width: 100%
 
 

@@ -6,22 +6,22 @@ Cluster Statistics
 ------------------
 Cluster statistics show the central value of each cluster with respect to each band of data, as well as the associated standard deviation.
 
-.. image:: _static/cluststat.png
-   :width: 100%	
+.. image:: _images/cluststat.png
+   :width: 100%
 
 Show Class Data
 ---------------
 This provides a quick graphical representation of the output of the cluster analysis
 
-.. image:: _static/clustshowclass.png
-   :width: 100%	
+.. image:: _images/clustshowclass.png
+   :width: 100%
 
 Show Membership Data (Fuzzy Only)
 ---------------------------------
 This relates to fuzzy cluster analysis. It shows in graphical form, the membership of each cluster.
 
-.. image:: _static/clustshowmemb.png
-   :width: 100%	
+.. image:: _images/clustshowmemb.png
+   :width: 100%
 
 Show OBJ, VRC, NCE, XBI Graphs
 ------------------------------
@@ -34,8 +34,8 @@ The following graphs are produced:
 * Normalized Class Entropy (NCE) as a 2D graph
 * Xie-Beni Index (XBI) as a 2D graph
 
-.. image:: _static/clustshowgraphs.png
-   :width: 100%	
+.. image:: _images/clustshowgraphs.png
+   :width: 100%
 
 Export Data
 -----------

@@ -7,7 +7,7 @@ This module imports raster data using the GDAL library, including ENVI,
 ER Mapper, Geotiff, Geosoft GXF and Surfer. It is possible to connect multiple
 imports to another module, thereby creating a 'merged' dataset.
 
-.. image:: _static/rasterimport.png
+.. image:: _images/rasterimport.png
    :width: 100%
 
 
@@ -50,7 +50,7 @@ Allows for the smoothing of data using mean, median and mode filters. These
 filters can have either a box window or a disk window. In addition, the mean
 filter can be defined by a Gaussian window.
 
-.. image:: _static/rastersmooth.png
+.. image:: _images/rastersmooth.png
    :width: 100%
 
 Normalisation
@@ -101,7 +101,7 @@ EPSG codes are available online at either:
 * http://spatialreference.org/ref/epsg/
 * In the gcs.csv and pcs.csv files in your python GDAL\\data directory.
 
-.. image:: _static/rasterreproj.png
+.. image:: _images/rasterreproj.png
    :width: 100%
 
 Cut Raster Using Polygon
@@ -135,5 +135,5 @@ that it also includes two additional parameters:
 * Sunshade detail
 * Light reflectance
 
-.. image:: _static/rasterinterp.png
+.. image:: _images/rasterinterp.png
    :width: 100%
