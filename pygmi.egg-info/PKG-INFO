@@ -1,0 +1,47 @@
+Metadata-Version: 1.1
+Name: pygmi
+Version: 2.2.7
+Summary: Python Geophysical Modelling and Interpretation
+Home-page: https://github.com/Patrick-Cole/pygmi
+Author: Patrick Cole
+Author-email: pcole@geoscience.org.za
+License: GNU General Public License v3 (GPLv3)
+Download-URL: https://github.com/Patrick-Cole/pygmi/archive/pygmi-2.2.7.tar.gz
+Description: Overview
+        ========
+        
+        PyGMI stands for Python Geophysical Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets. 
+        
+        PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>`_ (Geological Survey of South Africa).
+        
+        It includes:
+        
+        * Magnetic and Gravity 3D forward modelling
+        * Cluster Analysis
+        * Routines for cutting, reprojecting and doing simple modifications to data
+        * Convenient display of data using pseudo-color, ternary and sunshaded representation.
+        * It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
+        
+        View the PyGMI project on `GitHub <https://github.com/Patrick-Cole/pygmi>`_!
+        
+        The latest release version can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
+        
+        If you have any comments or queries, you can contact the author either through `GitHub <https://github.com/Patrick-Cole/pygmi>`_ or via email at pcole@geoscience.org.za
+Keywords: Geophysics Magnetic Gravity Modelling Interpretation
+Platform: UNKNOWN
+Classifier: Development Status :: 5 - Production/Stable
+Classifier: Environment :: Win32 (MS Windows)
+Classifier: Environment :: X11 Applications :: Qt
+Classifier: Intended Audience :: Education
+Classifier: Intended Audience :: End Users/Desktop
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU General Public License v3 (GPLv3)
+Classifier: Natural Language :: English
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python :: 2
+Classifier: Programming Language :: Python :: 3
+Classifier: Topic :: Scientific/Engineering :: Mathematics
+Classifier: Topic :: Scientific/Engineering :: Physics
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Software Development :: Libraries :: Python Modules

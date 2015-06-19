@@ -27,15 +27,16 @@
 from setuptools import setup, find_packages
 from pygmi import __version__ as PVER
 
+base_url = 'https://github.com/Patrick-Cole/pygmi'
+
 setup(name='pygmi',
       version=PVER,
 
       description='Python Geophysical Modelling and Interpretation',
       long_description=open('README.rst').read(),
 
-      url='https://github.com/Patrick-Cole/pygmi',
-      download_url='https://github.com/Patrick-Cole/pygmi/archive/pygmi-' +
-                   PVER + '.tar.gz',
+      url=base_url,
+      download_url=base_url+'/archive/pygmi-' + PVER + '.tar.gz',
 
       author='Patrick Cole',
       author_email='pcole@geoscience.org.za',
@@ -66,12 +67,14 @@ setup(name='pygmi',
 
       packages=(find_packages(exclude=['docs'])),
 
-      install_requires=["numpy", "scipy", "matplotlib", "PyQt4", "gdal",
-                        "numexpr", "numba"],
+      install_requires=["numpy", "scipy", "matplotlib", "gdal",
+                        "numexpr", "numba", "pyqt4"],
 
       package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
                               'helpdocs/*.png', 'images/*.png',
                               'images/*.emf', 'images/*.ico']},
 
-      entry_points={'gui_scipts': ['pygmi = pygmi.main:main']}
+      entry_points={'gui_scripts': ['pygmi = pygmi:main']},
+
+      zip_safe=False
       )

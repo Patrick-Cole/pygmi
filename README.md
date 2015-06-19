@@ -15,14 +15,14 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.4.2
-* NumPy 1.8.2
-* SciPy 0.14.0
-* Matplotlib 1.4.1
-* PyQt 4.10.4
-* GDAL 1.11.1
+* Python 3.4
+* NumPy 1.8
+* SciPy 0.14
+* Matplotlib 1.4
+* PyQt 4.10
+* GDAL 1.11
 * numexpr 2.4
-* numba 0.15.1
+* numba 0.15
 
 It is possible that it might work on earlier versions, especially on non-windows operating systems. Under windows, there are compiled .pyd files (python version of a dll) which require the NumPy and Python version to match. However, for actual releases, I do post windows binaries which include a standalone python distribution (that will not interfere with existing installations), so this should not be a problem.
 
@@ -30,7 +30,8 @@ It is possible that it might work on earlier versions, especially on non-windows
 ###General
 If you satisfy the requirements, and wish to run PyGMI from within your python environment, you can install PyGMI as a library using the following command from within the root of the PyGMI directory:
 
-python setup.py install
+	python setup.py install
+
 Once you are in python, you can run PyGMI by using the following commands:
 
 	import pygmi
@@ -45,11 +46,13 @@ Running the software can be achieved through the shortcut on your desktop.
 ###Linux
 Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through Anaconda <http://continuum.io/downloads>.
 
-After installation of python, download the pygmi source off github, extract it, and execute the following command from within the root of the PyGMI directory to run the program::
+After installation of python, you can follow the instructions under General.
 
-   python quickstart.py
+### Alternative execution
+If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
 
-Alternatively you can install it as a library as shown above.
+	python quickstart.py
+
 
 
 

@@ -15,6 +15,8 @@ It includes:
 
 View the PyGMI project on `GitHub <https://github.com/Patrick-Cole/pygmi>`_!
 
+The PyGMI Wiki pages, including installation, can be found `here <http://patrick-cole.github.io/pygmi/index.html>`_!
+
 The latest release version can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
 If you have any comments or queries, you can contact the author either through `GitHub <https://github.com/Patrick-Cole/pygmi>`_ or via email at pcole@geoscience.org.za
