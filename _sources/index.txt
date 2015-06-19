@@ -33,9 +33,7 @@ If you have any comments or queries, you can contact the author either through `
 
 Videos
 ------
-Introduction_
-
-.. _Introduction: _static/introduction.mp4
+Introduction :download:`introduction <_static/introduction.mp4>`
 
 
 Contents
