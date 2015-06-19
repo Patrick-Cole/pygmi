@@ -35,6 +35,28 @@ Videos
 ------
 Introduction :download:`mp4 <_downloads/introduction.mp4>`
 
+Raster Context Menus :download:`mp4 <_downloads/Raster 1.mp4>`
+
+Raster Equation Editor :download:`mp4 <_downloads/Raster 2.mp4>`
+
+Raster Smoothing :download:`mp4 <_downloads/Raster 3.mp4>`
+
+Raster Normalisation :download:`mp4 <_downloads/Raster 4.mp4>`
+
+Raster Gradients, Visibility and Tilt :download:`mp4 <_downloads/Raster 5.mp4>`
+
+Raster Reduction to the Pole and IGRF :download:`mp4 <_downloads/Raster 6.mp4>`
+
+Raster Data Interpretation :download:`mp4 <_downloads/Raster 7.mp4>`
+
+Raster Merge, Resampling and Reprojection :download:`mp4 <_downloads/Raster 8.mp4>`
+
+Cluster Analysis :download:`mp4 <_downloads/Cluster 1.mp4>`
+
+3D Modelling :download:`mp4 <_downloads/Modelling 1.mp4>`
+
+Vectors, Rose Diagrams and Gridding :download:`mp4 <_downloads/Vector 1.mp4>`
+
 
 Contents
 --------
