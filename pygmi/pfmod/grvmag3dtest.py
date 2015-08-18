@@ -45,6 +45,9 @@ from scipy.linalg import norm
 from pygmi.pfmod.datatypes import LithModel
 from numba import jit
 from matplotlib import cm
+from math import sqrt
+import pdb
+import pygmi.misc as ptimer
 
 
 class GravMag(object):
@@ -483,12 +486,9 @@ class GeoData(object):
         x2 = float(self.x12[1])
         y1 = float(self.y12[0])
         y2 = float(self.y12[1])
-#        z1 = float(self.z12[0])
-#        z2 = float(self.z12[1])
         z1 = 0.0
         z2 = self.d_z
 
-#        ncor = 8
         corner = np.array([[x1, y1, z1],
                            [x1, y2, z1],
                            [x2, y2, z1],
@@ -506,7 +506,6 @@ class GeoData(object):
                          [3, 2, 6, 7],
                          [4, 5, 1, 0]])
 
-#    nedges = sum(face(1:nf,1))
         nedges = 4*nf
         edge = np.zeros([nedges, 8])
         # get edge lengths
@@ -542,12 +541,10 @@ class GeoData(object):
 
         # Grav stuff
 #        Gc = 6.6732e-3            # Universal gravitational constant
-#        Gx = np.zeros(X.shape)
-#        Gy = Gx.copy()
-#        Gz = Gx.copy()
 
         # Mag stuff
         cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
+
         uh = np.array([cx, cy, cz])
         H = self.hintn*uh               # The ambient magnetic field (nTesla)
         ind_magn = self.susc*H/(4*np.pi)   # Induced magnetization
@@ -559,10 +556,6 @@ class GeoData(object):
         net_magn = rem_magn+ind_magn  # Net magnetization
         Pd = np.transpose(np.dot(un, net_magn.T))   # Pole densities
 
-        Hx = np.zeros(X.shape)
-        Hy = Hx.copy()
-        Hz = Hx.copy()
-
         # For each observation point do the following.
         # For each face find the solid angle.
         # For each side find p,q,r and add p,q,r of sides to get P,Q,R for the
@@ -571,12 +564,9 @@ class GeoData(object):
         # find gx,gy,gz.
         # Add the components from all the faces to get Hx,Hy,Hz and Gx,Gy,Gz.
 
-
-#        face = face.tolist()
-#        un = un.tolist()
-#        gval = []
         mval = []
         newdepth = self.z12+abs(self.zobsm)
+        indx = np.array([0, 1, 2, 3, 0, 1])
 
         for depth in piter(newdepth):
             if depth == 0.0:
@@ -587,42 +577,20 @@ class GeoData(object):
                 cor = (corner + [0., 0., depth])
 
             if depth in newdepth:
-                # Gx = np.zeros(X.shape)
-                # Gy = Gx.copy()
-                # Gz = Gx.copy()
-                Hx = np.zeros(X.shape)
-                Hy = Hx.copy()
-                Hz = Hx.copy()
-
-                indx = np.array([0, 1, 2, 3, 0, 1])
                 crs = np.zeros([4, 3])
-                p1 = np.zeros(3)
-                p2 = np.zeros(3)
-                p3 = np.zeros(3)
                 mgval = np.zeros([3, npro, nstn])
 
-                mgval = gm3d(npro, nstn, X, Y, edge, cor, face,  # Gx, Gy, Gz,
-                             Hx, Hy, Hz, Pd, un, indx, crs, p1, p2, p3,
-                             mgval)
-
-                Hx = mgval[0]
-                Hy = mgval[1]
-                Hz = mgval[2]
-                # Gx = mgval[3] * Gc
-                # Gy = mgval[4] * Gc
-                # Gz = mgval[5] * Gc
+                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, Pd, un, indx,
+                             crs, mgval)
 
 #                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
-#                dt = Htot-self.hintn
-                dta = Hx*cx + Hy*cy + Hz*cz
+#                dta = Htot-self.hintn  # Correct, was originally dt
+                dta = mgval[0]*cx + mgval[1]*cy + mgval[2]*cz
             else:
-                # Gz = np.zeros(X.shape)
                 dta = np.zeros(X.shape)
 
-#            gval.append(np.copy(Gz.T))
             mval.append(np.copy(dta.T))
 
-#        self.glayers = np.array(gval)
         self.mlayers = np.array(mval)
 
     def gboxmain(self, xobs, yobs, zobs):
@@ -750,6 +718,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         dictionary of items of type Data.
     """
 
+    ttt = ptimer.PTime()
+
     if showtext is None:
         showtext = print
     if pbars is not None:
@@ -875,6 +845,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
 #        glayers = mfile['glayers']*mlist[1].rho()
 
+        ttt.since_last_call('calc for cubes')
+
         showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
 
@@ -959,12 +931,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         pbars.maxall()
 
     lmod.clith_index = lmod.lith_index.copy()
-
+    ttt.since_last_call('calc sum')
     return lmod.griddata
 
 
-#@jit("f8[:,:](i4, f8[:,:], i4, i4, i4[:,:,:], i4[:], i4[:], " +
-#     "f8[:,:,:], f8[:,:,:], i4[:], i4, i4[:], i4[:])", nopython=True)
 @jit(nopython=True)
 def calc_fieldb(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers,
                 glayers, hcorflat, mijk, jj, ii):
@@ -1036,9 +1006,6 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
     return lmod
 
 
-#@jit(float64[:,:](float64[:,:], float64[:], float64[:], int32, int32, float64,
-#     float64, float64, float64, float64, float64, float64,
-#     float64[:], float64[:], float64[:], int32[:]), nopython=True)
 @jit(nopython=True)
 def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
               x, y, z, isign):
@@ -1090,19 +1057,195 @@ def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
     return gval
 
 
-#@jit("f8[:,:,:](i4, i4, f8[:,:], f8[:,:], f8[:,:], f8[:,:], i4[:,:], " +
-#     "f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
-#     "i4[:], f8[:,:], f8[:], f8[:], f8[:], f8[:,:,:])",
-#     nopython=True)
-@jit(nopython=True)
-def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
-         indx, crs, p1, p2, p3, mgval):
-    """ grvmag 3d """
+# @jit(nopython=True)
+# def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
+#         indx, crs, mgval):
+#    """ grvmag 3d """
+#
+#    omega = 0.0
+#    dp1 = 1.0
+#    I = 1.0
+#
+#    for pr in range(npro):
+#        for st in range(nstn):
+#            x = X[pr, st]
+#            y = Y[pr, st]
+#            for f in range(6):  # 6 Faces
+#                for g in range(4):  # 4 points in a face
+#                    # correct corners so that we have distances from obs pnt
+#                    cindx = face[f, g]
+#                    crs[g, 0] = corner[cindx, 0] - x
+#                    crs[g, 1] = corner[cindx, 1] - y
+#                    crs[g, 2] = corner[cindx, 2]
+#
+#                p = 0
+#                q = 0
+#                r = 0
+#                W = -2*np.pi
+#                l = Un[f, 0]
+#                m = Un[f, 1]
+#                n = Un[f, 2]
+#
+#
+#                for t in range(4):  # 4 lines in a face
+#                    p10 = crs[indx[t], 0]
+#                    p11 = crs[indx[t], 1]
+#                    p12 = crs[indx[t], 2]
+#                    p20 = crs[indx[t+1], 0]
+#                    p21 = crs[indx[t+1], 1]
+#                    p22 = crs[indx[t+1], 2]
+#                    p30 = crs[indx[t+2], 0]
+#                    p31 = crs[indx[t+2], 1]
+#                    p32 = crs[indx[t+2], 2]
+###############################################################################
+#
+#                    n10 = p21*p32 - p22*p31
+#                    n11 = p22*p30 - p20*p32
+#                    n12 = p20*p31 - p21*p30
+#
+#                    n20 = p21*p12 - p22*p11
+#                    n21 = p22*p10 - p20*p12
+#                    n22 = p20*p11 - p21*p10
+#
+#                    pn1 = np.sqrt(n10*n10+n11*n11+n12*n12)
+#                    pn2 = np.sqrt(n20*n20+n21*n21+n22*n22)
+#
+#                    rrr = (n10*n20+n11*n21+n12*n22)/(pn1*pn2)
+#
+#                    # angle between n1 and n2: A.B = |A||B|cos(ang)
+#                    ang = np.arccos(rrr)
+# # The stuff I got rid of is to allow for the observation point inside the
+# # cube
+#
+# # This is the solid angle. There are 4 in a pyramid. It is the sum of the
+# # angles between the sides of the pyramid
+#                    W += ang  # This is the solid angle.
+#
+#
+###############################################################################
+#
+#                    eno2 = 4*f+t   # Edge no
+#                    L = edge[eno2, 3]  # length of edge?
+#
+#                    r12 = (np.sqrt(p10*p10+p11*p11+p12*p12) +
+#                           np.sqrt(p20*p20+p21*p21+p22*p22))
+#                    I = (1/L)*np.log((r12+L)/(r12-L))
+#
+#                    """
+# np.log((r12+L)/(r12-L)) = log(r12+L)-log(r12-L)
+#                        = log(r12)+log(1+L/r12)-log(r12)-log(1-L/r12)
+#                        = log(1+L/r12)-log(1-L/r12)
+#                    """
+#
+#                    p += I*edge[eno2, 0]
+#                    q += I*edge[eno2, 1]
+#                    r += I*edge[eno2, 2]
+#
+# #                    V = edge[eno2, :3]
+# #                    b = 2*(np.dot(V, p1))
+# #                    r1 = np.linalg.norm(p1)
+# #                    r2 = np.linalg.norm(p2)
+# #
+# #                    I2 = (1/L)*np.log((np.sqrt(L**2+b+r1**2)+L+b/(2*L)) /
+# #                                      (r1+b/(2*L)))
+# #
+# #                    if imax < abs(I-I2):
+# #                        imax = abs(I-I2)
+# #                        print(imax)
+#
+#                    """
+#                    (np.sqrt(L**2+b+r1**2)+L+b/(2*L))/(r1+b/(2*L))
+#
+#
+#                    I = (1/L)*np.log((r12+r22+L)/(r12+r22-L))
+#
+#
+#                    b = 2*(p2-p1).p1
+#                    L = sqrt((p2-p1).(p2-p1))
+#                    r1 = sqrt(p1.p1)
+#                    r2 = sqrt(p2.p2)
+#                    r12 = p1.p1
+#                    r22 = p2.p2
+#
+#                    b2 = b/(2*L) = (p2-p1).p1/L
+#                    L2 = (p2-p1).(p2-p1)
+#
+#
+#                    sqrt = L2+b+r12
+#                         = (p2-p1).(p2-p1)+2*(p2-p1).p1+p1.p1
+#                         = p2.p2-p2.p1-p2.p1+p1.p1+2*p2.p1-2*p1.p1+p1.p1
+#                         = p2.p2-2*p2.p1+2*p2.p1-2*p1.p1+2*p1.p1
+#                         = p2.p2
+#                         = r22
+#
+#                    L2 = r22-b-r12
+#
+#                    L = sqrt((p2-p1).(p2-p1))
+#                      = sqrt(p2.p2-2*p2.p1+p1.p1)
+#                    b2 = (p2-p1).p1/L
+#                       = p2.p1/L-p1.p1/L
+#                       = (p1.p2-p1.p1)/sqrt(p1.p1-2*p1.p2+p2.p2)
+#
+#
+#                    eq1 = eq2
+#                    eq1 = sqrt(p1.p1)+L
+#                    eq1 = r1 + L
+#                    eq2 = L + b2
+#                    eq2 = L + b/(2*L)
+#
+#
+#                    L = p2-p1
+#                    p1 = (x1, y1, z1)
+#                    p2 = (x2, y2, z1)
+#
+#                    sqrt(p1.p1)+sqrt(p2.p2)+sqrt((p2-p1).(p2-p1))   /
+#                    sqrt(p1.p1)+sqrt(p2.p2)-sqrt((p2-p1).(p2-p1))
+#
+#                    """
+#
+#        #        From omega, l, m, n PQR get components of field due to face f
+#                # dp1 is dot product between (l,m,n) and (x,y,z) or Un and r.
+#                dp1 = l*crs[0, 0]+m*crs[0, 1]+n*crs[0, 2]
+#
+#                if dp1 < 0.:
+#                    omega = W
+#                else:
+#                    omega = -W
+#
+#
+##                aaa=np.dot(np.cross(r1,r2), r3)/(np.dot(r1, r2)*np.linalg.norm(r3)+np.dot(r2, r3)*np.linalg.norm(r1)+np.dot(r3, r1)*np.linalg.norm(r2)+np.linalg.norm(r1)*np.linalg.norm(r2)*np.linalg.norm(r3))
+#
+##                W = (p30*(p11*p22 - p12*p21) + p31*(-p10*p22 + p12*p20) + p32*(p10*p21 - p11*p20))/(sqrt((p10**2 + p11**2 + p12**2)*(p20**2 + p21**2 + p22**2)*(p30**2 + p31**2 + p32**2)) + sqrt(p10**2 + p11**2 + p12**2)*(p20*p30 + p21*p31 + p22*p32) + sqrt(p20**2 + p21**2 + p22**2)*(p10*p30 + p11*p31 + p12*p32) + sqrt(p30**2 + p31**2 + p32**2)*(p10*p20 + p11*p21 + p12*p22))
+#                p1m = sqrt(p10**2 + p11**2 + p12**2)
+#                p2m = sqrt(p20**2 + p21**2 + p22**2)
+#                p3m = sqrt(p30**2 + p31**2 + p32**2)
+#
+#                W = (p10*n10 + p11*n11 + p12*n12)/(p1m*p2m*p3m + p1m*(p20*p30 + p21*p31 + p22*p32) + p2m*(p10*p30 + p11*p31 + p12*p32) + p3m*(p10*p20 + p11*p21 + p12*p22))
+#                omega2 = -4*np.arctan(W)
+# #                print(omega)
+# #                pdb.set_trace()
+#                # l, m, n and components of unit normal to a face.
+# #                print(f,p,q,r)
+#                gmtf1 = l*omega+n*q-m*r
+#                gmtf2 = m*omega+l*r-n*p
+#                gmtf3 = n*omega+m*p-l*q
+#
+#                Hx[pr, st] = Hx[pr, st]+Pd[f]*gmtf1
+#                Hy[pr, st] = Hy[pr, st]+Pd[f]*gmtf2
+#                Hz[pr, st] = Hz[pr, st]+Pd[f]*gmtf3
+#
+#    for pr in range(npro):
+#        for st in range(nstn):
+#            mgval[0, pr, st] = Hx[pr, st]
+#            mgval[1, pr, st] = Hy[pr, st]
+#            mgval[2, pr, st] = Hz[pr, st]
+#
+#    return mgval
 
-    flimit = 64*np.spacing(1)
-    omega = 0.0
-    dp1 = 1.0
-    I = 1.0
+
+@jit(nopython=True)
+def gm3d(npro, nstn, X, Y, edge, corner, face, Pd, Un, indx, crs, mgval):
+    """ grvmag 3d. mgval MUST be zeros """
 
     for pr in range(npro):
         for st in range(nstn):
@@ -1110,6 +1253,7 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
             y = Y[pr, st]
             for f in range(6):  # 6 Faces
                 for g in range(4):  # 4 points in a face
+                    # correct corners so that we have distances from obs pnt
                     cindx = face[f, g]
                     crs[g, 0] = corner[cindx, 0] - x
                     crs[g, 1] = corner[cindx, 1] - y
@@ -1118,77 +1262,26 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
                 p = 0
                 q = 0
                 r = 0
-                eno1 = 4*f
-                W = -2*np.pi
                 l = Un[f, 0]
                 m = Un[f, 1]
                 n = Un[f, 2]
 
-                for t in range(4):
-                    p1[0] = crs[indx[t], 0]
-                    p1[1] = crs[indx[t], 1]
-                    p1[2] = crs[indx[t], 2]
-                    p2[0] = crs[indx[t+1], 0]
-                    p2[1] = crs[indx[t+1], 1]
-                    p2[2] = crs[indx[t+1], 2]
-                    p3[0] = crs[indx[t+2], 0]
-                    p3[1] = crs[indx[t+2], 1]
-                    p3[2] = crs[indx[t+2], 2]
-###############################################################################
-                    ang = 0
-                    anout = p1[0]*l+p1[1]*m+p1[2]*n
+                p20 = crs[0, 0]
+                p21 = crs[0, 1]
+                p22 = crs[0, 2]
+                r12b = np.sqrt(p20*p20+p21*p21+p22*p22)
 
-                    if anout > flimit:
-                        n10 = p2[1]*p3[2] - p2[2]*p3[1]
-                        n11 = p2[2]*p3[0] - p2[0]*p3[2]
-                        n12 = p2[0]*p3[1] - p2[1]*p3[0]
+                for t in range(4):  # 4 lines in a face
+                    p20 = crs[indx[t+1], 0]
+                    p21 = crs[indx[t+1], 1]
+                    p22 = crs[indx[t+1], 2]
 
-                        n20 = p2[1]*p1[2] - p2[2]*p1[1]
-                        n21 = p2[2]*p1[0] - p2[0]*p1[2]
-                        n22 = p2[0]*p1[1] - p2[1]*p1[0]
+                    eno2 = 4*f+t   # Edge no
+                    L = edge[eno2, 3]  # length of edge?
+                    r12a = r12b
+                    r12b = np.sqrt(p20*p20+p21*p21+p22*p22)
 
-                    else:
-                        n10 = p2[1]*p1[2] - p2[2]*p1[1]
-                        n11 = p2[2]*p1[0] - p2[0]*p1[2]
-                        n12 = p2[0]*p1[1] - p2[1]*p1[0]
-
-                        n20 = p2[1]*p3[2] - p2[2]*p3[1]
-                        n21 = p2[2]*p3[0] - p2[0]*p3[2]
-                        n22 = p2[0]*p3[1] - p2[1]*p3[0]
-
-                    pn1 = np.sqrt(n10*n10+n11*n11+n12*n12)
-                    pn2 = np.sqrt(n20*n20+n21*n21+n22*n22)
-
-                    if (pn1 <= flimit) or (pn2 <= flimit):
-                        ang = np.nan
-                    else:
-                        n10 = n10/pn1
-                        n11 = n11/pn1
-                        n12 = n12/pn1
-                        n20 = n20/pn2
-                        n21 = n21/pn2
-                        n22 = n22/pn2
-
-                        rrr = n10*n20+n11*n21+n12*n22
-                        ang = np.arccos(rrr)
-
-                        perp = n10*p3[0]+n11*p3[1]+n12*p3[2]
-                        if anout > flimit:
-                            perp = n10*p1[0]+n11*p1[1]+n12*p1[2]
-
-                        if perp < -flimit:        # points p1,p2,p3 in cw order
-                            ang = 2*np.pi-ang
-
-                    if abs(anout) <= flimit:
-                        ang = 0
-###############################################################################
-                    W += ang
-
-                    eno2 = eno1+t   # Edge no
-                    L = edge[eno2, 3]
-
-                    r12 = (np.sqrt(p1[0]*p1[0]+p1[1]*p1[1]+p1[2]*p1[2]) +
-                           np.sqrt(p2[0]*p2[0]+p2[1]*p2[1]+p2[2]*p2[2]))
+                    r12 = r12a+r12b
                     I = (1/L)*np.log((r12+L)/(r12-L))
 
                     p += I*edge[eno2, 0]
@@ -1197,33 +1290,42 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
 
         #        From omega, l, m, n PQR get components of field due to face f
                 # dp1 is dot product between (l,m,n) and (x,y,z) or Un and r.
-                dp1 = l*crs[0, 0]+m*crs[0, 1]+n*crs[0, 2]
-                if dp1 < 0.:
-                    omega = W
-                else:
-                    omega = -W
+
+                p10 = crs[0, 0]
+                p11 = crs[0, 1]
+                p12 = crs[0, 2]
+                p20 = crs[1, 0]
+                p21 = crs[1, 1]
+                p22 = crs[1, 2]
+                p30 = crs[2, 0]
+                p31 = crs[2, 1]
+                p32 = crs[2, 2]
+                p40 = crs[3, 0]
+                p41 = crs[3, 1]
+                p42 = crs[3, 2]
+
+                p1m = sqrt(p10**2 + p11**2 + p12**2)
+                p2m = sqrt(p20**2 + p21**2 + p22**2)
+                p3m = sqrt(p30**2 + p31**2 + p32**2)
+                p4m = sqrt(p40**2 + p41**2 + p42**2)
+
+                Wn = p30*(p11*p22 - p12*p21) + p31*(-p10*p22 + p12*p20) + p32*(p10*p21 - p11*p20)
+                Wd = p1m*p2m*p3m + p1m*(p20*p30 + p21*p31 + p22*p32) + p2m*(p10*p30 + p11*p31 + p12*p32) + p3m*(p10*p20 + p11*p21 + p12*p22)
+                omega = -2*np.arctan2(Wn, Wd)
+
+                Wn = p10*(p31*p42 - p32*p41) + p11*(-p30*p42 + p32*p40) + p12*(p30*p41 - p31*p40)
+                Wd = p1m*p3m*p4m + p1m*(p30*p40 + p31*p41 + p32*p42) + p3m*(p10*p40 + p11*p41 + p12*p42) + p4m*(p10*p30 + p11*p31 + p12*p32)
+
+                omega += -2*np.arctan2(Wn, Wd)
 
                 # l, m, n and components of unit normal to a face.
                 gmtf1 = l*omega+n*q-m*r
                 gmtf2 = m*omega+l*r-n*p
                 gmtf3 = n*omega+m*p-l*q
 
-                Hx[pr, st] = Hx[pr, st]+Pd[f]*gmtf1
-                Hy[pr, st] = Hy[pr, st]+Pd[f]*gmtf2
-                Hz[pr, st] = Hz[pr, st]+Pd[f]*gmtf3
-
-#                Gx[pr, st] = Gx[pr, st]-dp1*gmtf1
-#                Gy[pr, st] = Gy[pr, st]-dp1*gmtf2
-#                Gz[pr, st] = Gz[pr, st]-dp1*gmtf3
-
-    for pr in range(npro):
-        for st in range(nstn):
-            mgval[0, pr, st] = Hx[pr, st]
-            mgval[1, pr, st] = Hy[pr, st]
-            mgval[2, pr, st] = Hz[pr, st]
-#            mgval[3, pr, st] = Gx[pr, st]
-#            mgval[4, pr, st] = Gy[pr, st]
-#            mgval[5, pr, st] = Gz[pr, st]
+                mgval[0, pr, st] += Pd[f]*gmtf1  # Hx
+                mgval[1, pr, st] += Pd[f]*gmtf2  # Hy
+                mgval[2, pr, st] += Pd[f]*gmtf3  # Hz
 
     return mgval
 

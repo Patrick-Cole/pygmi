@@ -28,6 +28,7 @@ from setuptools import setup, find_packages
 from pygmi import __version__ as PVER
 
 base_url = 'https://github.com/Patrick-Cole/pygmi'
+homepage = 'http://patrick-cole.github.io/pygmi/'
 
 setup(name='pygmi',
       version=PVER,
@@ -35,7 +36,7 @@ setup(name='pygmi',
       description='Python Geophysical Modelling and Interpretation',
       long_description=open('README.rst').read(),
 
-      url=base_url,
+      url=homepage,
       download_url=base_url+'/archive/pygmi-' + PVER + '.tar.gz',
 
       author='Patrick Cole',

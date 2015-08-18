@@ -48,11 +48,13 @@ If you are in python, you can run PyGMI by using the following commands:
 
 ###Windows
 I have now made available convenient installers for PyGMI, thanks to Cyrille Rossant. If you have already installed PyGMI using this installer, you can simply update it using the smaller pygmi_update.exe file. This smaller update file contains only the python code, if you are only interested in that.
+Installers are available in [64-bit](https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.6/PyGMI64_2.2.6.0.exe) and [32-bit](https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.6/PyGMI32_2.2.6.0.exe)
+
 
 Running the software can be achieved through the shortcut on your desktop.
 
 ###Linux
-Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through Anaconda <http://continuum.io/downloads>.
+Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through [Anaconda](http://continuum.io/downloads>).
 
 After installation of python, you can follow the instructions under General.
 

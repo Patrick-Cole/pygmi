@@ -13,8 +13,6 @@ It includes:
 * Convenient display of data using pseudo-color, ternary and sunshaded representation.
 * It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
 
-View the PyGMI project on `GitHub <https://github.com/Patrick-Cole/pygmi>`_!
-
 The PyGMI `Wiki <http://patrick-cole.github.io/pygmi/index.html>`_ pages, include installation and full usage!
 
 The latest release version can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
