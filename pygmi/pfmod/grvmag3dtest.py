@@ -812,7 +812,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     aaa = np.reshape(np.mgrid[0:mtmp[0], 0:mtmp[1]], [2, numx*numy])
 
 #    ttt = PTime()
-    mgval = np.zeros([2, magval.size])
+    mgval = np.zeros([magval.size])
 
     for mlist in piter(lmod.lith_list.items()):
         if 'Background' == mlist[0]:
@@ -858,11 +858,18 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             for k in kuni:
-                baba = calc_fieldb(k, mgval, numx, numy, modind, aaa[0],
-                                   aaa[1], mlayers, glayers, hcorflat, mijk,
-                                   juni, iuni)
-                magval += baba[0]
-                grvval += baba[1]
+                if magcalc:
+                    baba = calc_fieldb(k, mgval, numx, numy, modind, aaa[0],
+                                       aaa[1], mlayers, hcorflat, mijk,
+                                       juni, iuni)
+                    magval += baba
+                else:
+                    baba = calc_fieldb(k, mgval, numx, numy, modind, aaa[0],
+                                       aaa[1], glayers, hcorflat, mijk,
+                                       juni, iuni)
+                    grvval += baba
+
+
 
         if abs(np.sum(cmodind == -1)) < cmodind.size and mijk in cmodind:
             print('subtracting')
@@ -937,26 +944,24 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
 @jit(nopython=True)
 def calc_fieldb(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers,
-                glayers, hcorflat, mijk, jj, ii):
+                hcorflat, mijk, jj, ii):
     """ Calculate magnetic and gravity field """
 
     b = numx*numy
-    for i in range(2):
-        for j in range(b):
-            mgval[i, j] = 0.
+    for j in range(b):
+        mgval[j] = 0.
 
     for i in ii:
         xoff = numx-i
         for j in jj:
             yoff = numy-j
-            if (modind[i, j, k] != mijk):
-                continue
+#            if (modind[i, j, k] != mijk):
+#                continue
             for ijk in range(b):
                 xoff2 = xoff + aaa0[ijk]
                 yoff2 = aaa1[ijk]+yoff
                 hcor2 = hcorflat[ijk]+k
-                mgval[0, ijk] += mlayers[hcor2, xoff2, yoff2]
-                mgval[1, ijk] += glayers[hcor2, xoff2, yoff2]
+                mgval[ijk] += mlayers[hcor2, xoff2, yoff2]
 
     return mgval
 

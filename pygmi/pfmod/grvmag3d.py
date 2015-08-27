@@ -380,7 +380,6 @@ class GeoData(object):
 
 #            self.showtext('   Calculate magnetic origin field')
 #            self.mboxmain(xdist, ydist, self.zobsm)
-            self.showtext('   Calculate gravity origin field')
             self.gboxmain(xdist, ydist, self.zobsg)
 
             self.modified = False
@@ -402,7 +401,6 @@ class GeoData(object):
             ydist = np.arange(numy-self.g_dxy/2, -self.g_dxy/2, -self.g_dxy,
                               dtype=float)
 
-            self.showtext('   Calculate magnetic origin field')
             self.gmmain(xdist, ydist)
 
             self.modified = False
@@ -805,15 +803,21 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             continue
         if 'Background' != mlist[0]:  # and 'Penge' in mlist[0]:
             mlist[1].modified = True
-            showtext(mlist[0]+':')
+            if showreports is True:
+                showtext(mlist[0]+':')
             if parent is not None:
                 mlist[1].parent = parent
                 mlist[1].pbars = parent.pbars
                 mlist[1].showtext = parent.showtext
             if magcalc:
                 mlist[1].calc_origin2()
+                if showreports is True:
+                    showtext('   Calculate magnetic origin field')
             else:
                 mlist[1].calc_origin()
+                if showreports is True:
+                    showtext('   Calculate gravity origin field')
+
             tmpfiles[mlist[0]] = save_layer(mlist)
 
     if showreports is True:
@@ -874,9 +878,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
 
 #        glayers = mfile['glayers']*mlist[1].rho()
-
-        showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
-                 ' during this calculation)')
+        if showreports is True:
+            showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
+                     ' during this calculation)')
 
         if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
             QtGui.QApplication.processEvents()
@@ -893,7 +897,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                 grvval += baba[1]
 
         if abs(np.sum(cmodind == -1)) < cmodind.size and mijk in cmodind:
-            print('subtracting')
+            if showreports is True:
+                showtext('subtracting')
             QtGui.QApplication.processEvents()
             i, j, k = np.nonzero(cmodind == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
@@ -907,7 +912,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                 magval += baba[0]
                 grvval += baba[1]
 
-        showtext('Done')
+        if showreports is True:
+            showtext('Done')
 
         if pbars is not None:
             pbars.incrmain()
@@ -954,7 +960,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
     if parent is not None:
         parent.outdata['Raster'] = list(lmod.griddata.values())
-    showtext('Calculation Finished')
+
+    if showreports is True:
+        showtext('Calculation Finished')
     if pbars is not None:
         pbars.maxall()
 
