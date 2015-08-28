@@ -173,7 +173,6 @@ class ImportMod3D(object):
         lmod.dxy = indict[pre+'dxy']
         lmod.d_z = indict[pre+'d_z']
         lmod.lith_index = indict[pre+'lith_index']
-        lmod.clith_index = np.zeros_like(lmod.lith_index)
         lmod.curprof = 0
         lmod.curlayer = 0
         lmod.xrange = np.array(indict[pre+'xrange']).tolist()

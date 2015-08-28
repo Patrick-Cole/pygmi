@@ -26,8 +26,8 @@
 tests """
 
 import numpy as np
-from pygmi.pfmod.grvmag3dtest import quick_model
-from pygmi.pfmod.grvmag3dtest import calc_field
+from pygmi.pfmod.grvmag3d import quick_model
+from pygmi.pfmod.grvmag3d import calc_field
 import matplotlib.pyplot as plt
 import pygmi.misc as ptimer
 

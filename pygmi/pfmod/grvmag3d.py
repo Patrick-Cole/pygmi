@@ -45,6 +45,8 @@ from scipy.linalg import norm
 from pygmi.pfmod.datatypes import LithModel
 from numba import jit
 from matplotlib import cm
+from math import sqrt
+import pygmi.misc as ptimer
 
 
 class GravMag(object):
@@ -380,6 +382,7 @@ class GeoData(object):
 
 #            self.showtext('   Calculate magnetic origin field')
 #            self.mboxmain(xdist, ydist, self.zobsm)
+            self.showtext('   Calculate gravity origin field')
             self.gboxmain(xdist, ydist, self.zobsg)
 
             self.modified = False
@@ -401,6 +404,7 @@ class GeoData(object):
             ydist = np.arange(numy-self.g_dxy/2, -self.g_dxy/2, -self.g_dxy,
                               dtype=float)
 
+            self.showtext('   Calculate magnetic origin field')
             self.gmmain(xdist, ydist)
 
             self.modified = False
@@ -481,12 +485,9 @@ class GeoData(object):
         x2 = float(self.x12[1])
         y1 = float(self.y12[0])
         y2 = float(self.y12[1])
-#        z1 = float(self.z12[0])
-#        z2 = float(self.z12[1])
         z1 = 0.0
         z2 = self.d_z
 
-#        ncor = 8
         corner = np.array([[x1, y1, z1],
                            [x1, y2, z1],
                            [x2, y2, z1],
@@ -504,7 +505,6 @@ class GeoData(object):
                          [3, 2, 6, 7],
                          [4, 5, 1, 0]])
 
-#    nedges = sum(face(1:nf,1))
         nedges = 4*nf
         edge = np.zeros([nedges, 8])
         # get edge lengths
@@ -540,12 +540,10 @@ class GeoData(object):
 
         # Grav stuff
 #        Gc = 6.6732e-3            # Universal gravitational constant
-#        Gx = np.zeros(X.shape)
-#        Gy = Gx.copy()
-#        Gz = Gx.copy()
 
         # Mag stuff
         cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
+
         uh = np.array([cx, cy, cz])
         H = self.hintn*uh               # The ambient magnetic field (nTesla)
         ind_magn = self.susc*H/(4*np.pi)   # Induced magnetization
@@ -557,10 +555,6 @@ class GeoData(object):
         net_magn = rem_magn+ind_magn  # Net magnetization
         Pd = np.transpose(np.dot(un, net_magn.T))   # Pole densities
 
-        Hx = np.zeros(X.shape)
-        Hy = Hx.copy()
-        Hz = Hx.copy()
-
         # For each observation point do the following.
         # For each face find the solid angle.
         # For each side find p,q,r and add p,q,r of sides to get P,Q,R for the
@@ -569,12 +563,9 @@ class GeoData(object):
         # find gx,gy,gz.
         # Add the components from all the faces to get Hx,Hy,Hz and Gx,Gy,Gz.
 
-
-#        face = face.tolist()
-#        un = un.tolist()
-#        gval = []
         mval = []
         newdepth = self.z12+abs(self.zobsm)
+        indx = np.array([0, 1, 2, 3, 0, 1])
 
         for depth in piter(newdepth):
             if depth == 0.0:
@@ -585,42 +576,20 @@ class GeoData(object):
                 cor = (corner + [0., 0., depth])
 
             if depth in newdepth:
-                # Gx = np.zeros(X.shape)
-                # Gy = Gx.copy()
-                # Gz = Gx.copy()
-                Hx = np.zeros(X.shape)
-                Hy = Hx.copy()
-                Hz = Hx.copy()
-
-                indx = np.array([0, 1, 2, 3, 0, 1])
                 crs = np.zeros([4, 3])
-                p1 = np.zeros(3)
-                p2 = np.zeros(3)
-                p3 = np.zeros(3)
                 mgval = np.zeros([3, npro, nstn])
 
-                mgval = gm3d(npro, nstn, X, Y, edge, cor, face,  # Gx, Gy, Gz,
-                             Hx, Hy, Hz, Pd, un, indx, crs, p1, p2, p3,
-                             mgval)
-
-                Hx = mgval[0]
-                Hy = mgval[1]
-                Hz = mgval[2]
-                # Gx = mgval[3] * Gc
-                # Gy = mgval[4] * Gc
-                # Gz = mgval[5] * Gc
+                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, Pd, un, indx,
+                             crs, mgval)
 
 #                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
-#                dt = Htot-self.hintn
-                dta = Hx*cx + Hy*cy + Hz*cz
+#                dta = Htot-self.hintn  # Correct, was originally dt
+                dta = mgval[0]*cx + mgval[1]*cy + mgval[2]*cz
             else:
-                # Gz = np.zeros(X.shape)
                 dta = np.zeros(X.shape)
 
-#            gval.append(np.copy(Gz.T))
             mval.append(np.copy(dta.T))
 
-#        self.glayers = np.array(gval)
         self.mlayers = np.array(mval)
 
     def gboxmain(self, xobs, yobs, zobs):
@@ -748,6 +717,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         dictionary of items of type Data.
     """
 
+    ttt = ptimer.PTime()
+
     if showtext is None:
         showtext = print
     if pbars is not None:
@@ -767,58 +738,34 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     numz = int(lmod.numz)
     tmpfiles = {}
 
-# This forces a full recalc every time.
-    lmod.clith_index[:] = 0
-    lmod.cmagcalc = magcalc
-
-#    if lmod.cmagcalc is not magcalc:
-#        lmod.clith_index[:] = 0
-#        lmod.cmagcalc = magcalc
-
-    if lmod.clith_index.max() == 0 and magcalc:
-        lmod.griddata['Calculated Magnetics'].data[:] = 0
-    elif lmod.clith_index.max() == 0:
-        lmod.griddata['Calculated Gravity'].data[:] = 0
-
 # model index
     modind = lmod.lith_index.copy()
     modindcheck = lmod.lith_index.copy()
-    cmodind = lmod.clith_index.copy()
-    tmp = (modind == cmodind)
-    modind[tmp] = -1
-    cmodind[tmp] = -1
     modind[modind == 0] = -1
-    cmodind[cmodind == 0] = -1
     modindcheck[modind == 0] = -1
 
-    if (abs(np.sum(modind == -1)) == modind.size and
-            abs(np.sum(cmodind == -1)) == cmodind.size):
+    if abs(np.sum(modind == -1)) == modind.size:
         showtext('No changes to model!')
         return
 
     for mlist in lmod.lith_list.items():
-        # if 'Background' != mlist[0] and mlist[1].modified is True:
         mijk = mlist[1].lith_index
-        if mijk not in modind and mijk not in cmodind:
+        if mijk not in modind:
             continue
         if 'Background' != mlist[0]:  # and 'Penge' in mlist[0]:
             mlist[1].modified = True
-            if showreports is True:
-                showtext(mlist[0]+':')
+            showtext(mlist[0]+':')
             if parent is not None:
                 mlist[1].parent = parent
                 mlist[1].pbars = parent.pbars
                 mlist[1].showtext = parent.showtext
             if magcalc:
                 mlist[1].calc_origin2()
-                if showreports is True:
-                    showtext('   Calculate magnetic origin field')
             else:
                 mlist[1].calc_origin()
-                if showreports is True:
-                    showtext('   Calculate gravity origin field')
-
             tmpfiles[mlist[0]] = save_layer(mlist)
+
+    ttt.since_last_call('calc for cubes')
 
     if showreports is True:
         showtext('Summing data')
@@ -834,53 +781,31 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     if pbars is not None:
         pbars.resetsub(maximum=(len(lmod.lith_list)-1))
         piter = pbars.iter
-    else:
-        piter = iter
 
-    magval = np.zeros([numx, numy])
-    grvval = np.zeros([numx, numy])
-    mtmp = magval.shape
-    magval = magval.flatten()
-    grvval = grvval.flatten()
+    magval = np.zeros(numx*numy)
+    grvval = np.zeros(numx*numy)
+    mgvalin = np.zeros(numx*numy)
+    mgval = np.zeros(numx*numy)
+
     hcorflat = numz-hcor.flatten()
-    aaa = np.reshape(np.mgrid[0:mtmp[0], 0:mtmp[1]], [2, numx*numy])
-
-#    ttt = PTime()
-    mgval = np.zeros([2, magval.size])
+    aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
 
     for mlist in piter(lmod.lith_list.items()):
         if 'Background' == mlist[0]:
             continue
         mijk = mlist[1].lith_index
-        if mijk not in modind and mijk not in cmodind:
+        if mijk not in modind:
             continue
         tmpfiles[mlist[0]].seek(0)
         mfile = np.load(tmpfiles[mlist[0]])
 
         if magcalc:
-            mlayers = mfile['mlayers']
-
-###############################################################################
-# Not sure why I did this. It does not apply normally by it worries me.
-        elif mfile['mlayers'].size > 1:
-            showtext('warning, may be multiplying by netmag twice')
-            mlayers = mfile['mlayers']*mlist[1].netmagn()
-###############################################################################
+            mglayers = mfile['mlayers']
         else:
-            mlayers = np.zeros_like(mfile['glayers'])
+            mglayers = mfile['glayers']*mlist[1].rho()
 
-        if not magcalc:
-            glayers = mfile['glayers']*mlist[1].rho()
-        elif mfile['glayers'].size > 1:
-            glayers = mfile['glayers']*mlist[1].rho()
-        else:
-            glayers = np.zeros_like(mfile['mlayers'])
-
-
-#        glayers = mfile['glayers']*mlist[1].rho()
-        if showreports is True:
-            showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
-                     ' during this calculation)')
+        showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
+                 ' during this calculation)')
 
         if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
             QtGui.QApplication.processEvents()
@@ -890,51 +815,34 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             for k in kuni:
-                baba = calc_fieldb(k, mgval, numx, numy, modind, aaa[0],
-                                   aaa[1], mlayers, glayers, hcorflat, mijk,
-                                   juni, iuni)
-                magval += baba[0]
-                grvval += baba[1]
+                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0], aaa[1],
+                                  mglayers, hcorflat, mijk, juni, iuni)
+                mgvalin += baba
 
-        if abs(np.sum(cmodind == -1)) < cmodind.size and mijk in cmodind:
-            if showreports is True:
-                showtext('subtracting')
-            QtGui.QApplication.processEvents()
-            i, j, k = np.nonzero(cmodind == mijk)
-            iuni = np.array(np.unique(i), dtype=np.int32)
-            juni = np.array(np.unique(j), dtype=np.int32)
-            kuni = np.array(np.unique(k), dtype=np.int32)
-
-            for k in kuni:
-                baba = calc_fieldb(k, mgval, numx, numy, modind, aaa[0],
-                                   aaa[1], mlayers, glayers, hcorflat, mijk,
-                                   juni, iuni)
-                magval += baba[0]
-                grvval += baba[1]
-
-        if showreports is True:
-            showtext('Done')
+        showtext('Done')
 
         if pbars is not None:
             pbars.incrmain()
         QtGui.QApplication.processEvents()
 
-    magval.resize(mtmp)
-    grvval.resize(mtmp)
+    if magcalc:
+        magval = mgvalin
+    else:
+        grvval = mgvalin
+
+    magval.resize([numx, numy])
+    grvval.resize([numx, numy])
     magval = magval.T
     grvval = grvval.T
     magval = magval[::-1]
     grvval = grvval[::-1]
 
-#    magval += lmod.griddata['Calculated Magnetics'].data
-#    grvval += lmod.griddata['Calculated Gravity'].data
-
 # Update variables
-    lmod.griddata['Calculated Magnetics'].data += magval
-    lmod.griddata['Calculated Gravity'].data += grvval
+    lmod.griddata['Calculated Magnetics'].data = magval
+    lmod.griddata['Calculated Gravity'].data = grvval
 
 # This addoldcalc has has flaws w.r.t. regional if you change the regional
-    if 'Gravity Regional' in lmod.griddata and lmod.clith_index.max() == 0:
+    if 'Gravity Regional' in lmod.griddata and not magcalc:
         zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
         lmod.griddata['Calculated Gravity'].data += zfin
 
@@ -960,28 +868,22 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
     if parent is not None:
         parent.outdata['Raster'] = list(lmod.griddata.values())
-
-    if showreports is True:
-        showtext('Calculation Finished')
+    showtext('Calculation Finished')
     if pbars is not None:
         pbars.maxall()
 
-    lmod.clith_index = lmod.lith_index.copy()
-
+    ttt.since_last_call('calc for sum')
     return lmod.griddata
 
 
-#@jit("f8[:,:](i4, f8[:,:], i4, i4, i4[:,:,:], i4[:], i4[:], " +
-#     "f8[:,:,:], f8[:,:,:], i4[:], i4, i4[:], i4[:])", nopython=True)
 @jit(nopython=True)
-def calc_fieldb(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers,
-                glayers, hcorflat, mijk, jj, ii):
+def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
+               mijk, jj, ii):
     """ Calculate magnetic and gravity field """
 
     b = numx*numy
-    for i in range(2):
-        for j in range(b):
-            mgval[i, j] = 0.
+    for j in range(b):
+        mgval[j] = 0.
 
     for i in ii:
         xoff = numx-i
@@ -993,17 +895,22 @@ def calc_fieldb(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers,
                 xoff2 = xoff + aaa0[ijk]
                 yoff2 = aaa1[ijk]+yoff
                 hcor2 = hcorflat[ijk]+k
-                mgval[0, ijk] += mlayers[hcor2, xoff2, yoff2]
-                mgval[1, ijk] += glayers[hcor2, xoff2, yoff2]
+                mgval[ijk] += mlayers[hcor2, xoff2, yoff2]
 
     return mgval
 
 
 def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
                 tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67, fdec=-17,
-                inputliths=['Generic'], susc=[0.01], dens=[3.0],
-                minc=None, mdec=None, mstrength=None):
+                inputliths=None, susc=None, dens=None, minc=None, mdec=None,
+                mstrength=None):
     """ Create a quick model """
+    if inputliths is None:
+        inputliths = ['Generic']
+    if susc is None:
+        susc = [0.01]
+    if dens is None:
+        dens = [3.0]
 
     lmod = LithModel()
     lmod.update(numx, numy, numz, tlx, tly, tlz, dxy, d_z, mht, ght)
@@ -1044,9 +951,6 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
     return lmod
 
 
-#@jit(float64[:,:](float64[:,:], float64[:], float64[:], int32, int32, float64,
-#     float64, float64, float64, float64, float64, float64,
-#     float64[:], float64[:], float64[:], int32[:]), nopython=True)
 @jit(nopython=True)
 def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
               x, y, z, isign):
@@ -1098,19 +1002,9 @@ def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
     return gval
 
 
-#@jit("f8[:,:,:](i4, i4, f8[:,:], f8[:,:], f8[:,:], f8[:,:], i4[:,:], " +
-#     "f8[:,:], f8[:,:], f8[:,:], f8[:], f8[:,:], " +
-#     "i4[:], f8[:,:], f8[:], f8[:], f8[:], f8[:,:,:])",
-#     nopython=True)
 @jit(nopython=True)
-def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
-         indx, crs, p1, p2, p3, mgval):
-    """ grvmag 3d """
-
-    flimit = 64*np.spacing(1)
-    omega = 0.0
-    dp1 = 1.0
-    I = 1.0
+def gm3d(npro, nstn, X, Y, edge, corner, face, Pd, Un, indx, crs, mgval):
+    """ grvmag 3d. mgval MUST be zeros """
 
     for pr in range(npro):
         for st in range(nstn):
@@ -1118,6 +1012,7 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
             y = Y[pr, st]
             for f in range(6):  # 6 Faces
                 for g in range(4):  # 4 points in a face
+                    # correct corners so that we have distances from obs pnt
                     cindx = face[f, g]
                     crs[g, 0] = corner[cindx, 0] - x
                     crs[g, 1] = corner[cindx, 1] - y
@@ -1126,77 +1021,26 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
                 p = 0
                 q = 0
                 r = 0
-                eno1 = 4*f
-                W = -2*np.pi
                 l = Un[f, 0]
                 m = Un[f, 1]
                 n = Un[f, 2]
 
-                for t in range(4):
-                    p1[0] = crs[indx[t], 0]
-                    p1[1] = crs[indx[t], 1]
-                    p1[2] = crs[indx[t], 2]
-                    p2[0] = crs[indx[t+1], 0]
-                    p2[1] = crs[indx[t+1], 1]
-                    p2[2] = crs[indx[t+1], 2]
-                    p3[0] = crs[indx[t+2], 0]
-                    p3[1] = crs[indx[t+2], 1]
-                    p3[2] = crs[indx[t+2], 2]
-###############################################################################
-                    ang = 0
-                    anout = p1[0]*l+p1[1]*m+p1[2]*n
+                p20 = crs[0, 0]
+                p21 = crs[0, 1]
+                p22 = crs[0, 2]
+                r12b = np.sqrt(p20*p20+p21*p21+p22*p22)
 
-                    if anout > flimit:
-                        n10 = p2[1]*p3[2] - p2[2]*p3[1]
-                        n11 = p2[2]*p3[0] - p2[0]*p3[2]
-                        n12 = p2[0]*p3[1] - p2[1]*p3[0]
+                for t in range(4):  # 4 lines in a face
+                    p20 = crs[indx[t+1], 0]
+                    p21 = crs[indx[t+1], 1]
+                    p22 = crs[indx[t+1], 2]
 
-                        n20 = p2[1]*p1[2] - p2[2]*p1[1]
-                        n21 = p2[2]*p1[0] - p2[0]*p1[2]
-                        n22 = p2[0]*p1[1] - p2[1]*p1[0]
+                    eno2 = 4*f+t   # Edge no
+                    L = edge[eno2, 3]  # length of edge?
+                    r12a = r12b
+                    r12b = np.sqrt(p20*p20+p21*p21+p22*p22)
 
-                    else:
-                        n10 = p2[1]*p1[2] - p2[2]*p1[1]
-                        n11 = p2[2]*p1[0] - p2[0]*p1[2]
-                        n12 = p2[0]*p1[1] - p2[1]*p1[0]
-
-                        n20 = p2[1]*p3[2] - p2[2]*p3[1]
-                        n21 = p2[2]*p3[0] - p2[0]*p3[2]
-                        n22 = p2[0]*p3[1] - p2[1]*p3[0]
-
-                    pn1 = np.sqrt(n10*n10+n11*n11+n12*n12)
-                    pn2 = np.sqrt(n20*n20+n21*n21+n22*n22)
-
-                    if (pn1 <= flimit) or (pn2 <= flimit):
-                        ang = np.nan
-                    else:
-                        n10 = n10/pn1
-                        n11 = n11/pn1
-                        n12 = n12/pn1
-                        n20 = n20/pn2
-                        n21 = n21/pn2
-                        n22 = n22/pn2
-
-                        rrr = n10*n20+n11*n21+n12*n22
-                        ang = np.arccos(rrr)
-
-                        perp = n10*p3[0]+n11*p3[1]+n12*p3[2]
-                        if anout > flimit:
-                            perp = n10*p1[0]+n11*p1[1]+n12*p1[2]
-
-                        if perp < -flimit:        # points p1,p2,p3 in cw order
-                            ang = 2*np.pi-ang
-
-                    if abs(anout) <= flimit:
-                        ang = 0
-###############################################################################
-                    W += ang
-
-                    eno2 = eno1+t   # Edge no
-                    L = edge[eno2, 3]
-
-                    r12 = (np.sqrt(p1[0]*p1[0]+p1[1]*p1[1]+p1[2]*p1[2]) +
-                           np.sqrt(p2[0]*p2[0]+p2[1]*p2[1]+p2[2]*p2[2]))
+                    r12 = r12a+r12b
                     I = (1/L)*np.log((r12+L)/(r12-L))
 
                     p += I*edge[eno2, 0]
@@ -1205,33 +1049,42 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Hx, Hy, Hz, Pd, Un,
 
         #        From omega, l, m, n PQR get components of field due to face f
                 # dp1 is dot product between (l,m,n) and (x,y,z) or Un and r.
-                dp1 = l*crs[0, 0]+m*crs[0, 1]+n*crs[0, 2]
-                if dp1 < 0.:
-                    omega = W
-                else:
-                    omega = -W
+
+                p10 = crs[0, 0]
+                p11 = crs[0, 1]
+                p12 = crs[0, 2]
+                p20 = crs[1, 0]
+                p21 = crs[1, 1]
+                p22 = crs[1, 2]
+                p30 = crs[2, 0]
+                p31 = crs[2, 1]
+                p32 = crs[2, 2]
+                p40 = crs[3, 0]
+                p41 = crs[3, 1]
+                p42 = crs[3, 2]
+
+                p1m = sqrt(p10**2 + p11**2 + p12**2)
+                p2m = sqrt(p20**2 + p21**2 + p22**2)
+                p3m = sqrt(p30**2 + p31**2 + p32**2)
+                p4m = sqrt(p40**2 + p41**2 + p42**2)
+
+                Wn = p30*(p11*p22 - p12*p21) + p31*(-p10*p22 + p12*p20) + p32*(p10*p21 - p11*p20)
+                Wd = p1m*p2m*p3m + p1m*(p20*p30 + p21*p31 + p22*p32) + p2m*(p10*p30 + p11*p31 + p12*p32) + p3m*(p10*p20 + p11*p21 + p12*p22)
+                omega = -2*np.arctan2(Wn, Wd)
+
+                Wn = p10*(p31*p42 - p32*p41) + p11*(-p30*p42 + p32*p40) + p12*(p30*p41 - p31*p40)
+                Wd = p1m*p3m*p4m + p1m*(p30*p40 + p31*p41 + p32*p42) + p3m*(p10*p40 + p11*p41 + p12*p42) + p4m*(p10*p30 + p11*p31 + p12*p32)
+
+                omega += -2*np.arctan2(Wn, Wd)
 
                 # l, m, n and components of unit normal to a face.
                 gmtf1 = l*omega+n*q-m*r
                 gmtf2 = m*omega+l*r-n*p
                 gmtf3 = n*omega+m*p-l*q
 
-                Hx[pr, st] = Hx[pr, st]+Pd[f]*gmtf1
-                Hy[pr, st] = Hy[pr, st]+Pd[f]*gmtf2
-                Hz[pr, st] = Hz[pr, st]+Pd[f]*gmtf3
-
-#                Gx[pr, st] = Gx[pr, st]-dp1*gmtf1
-#                Gy[pr, st] = Gy[pr, st]-dp1*gmtf2
-#                Gz[pr, st] = Gz[pr, st]-dp1*gmtf3
-
-    for pr in range(npro):
-        for st in range(nstn):
-            mgval[0, pr, st] = Hx[pr, st]
-            mgval[1, pr, st] = Hy[pr, st]
-            mgval[2, pr, st] = Hz[pr, st]
-#            mgval[3, pr, st] = Gx[pr, st]
-#            mgval[4, pr, st] = Gy[pr, st]
-#            mgval[5, pr, st] = Gz[pr, st]
+                mgval[0, pr, st] += Pd[f]*gmtf1  # Hx
+                mgval[1, pr, st] += Pd[f]*gmtf2  # Hy
+                mgval[2, pr, st] += Pd[f]*gmtf3  # Hz
 
     return mgval
 

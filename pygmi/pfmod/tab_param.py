@@ -306,7 +306,6 @@ class ParamDisplay(object):
         self.lmod1.gregional = self.dsb_gregional.value()
         self.lmod1.mht = self.dsb_mht.value()
         self.lmod1.ght = self.dsb_ght.value()
-        self.lmod1.clith_index[:] = 0
         for lith in list(self.lmod1.lith_list.values()):
             lith.zobsg = -self.dsb_ght.value()
             lith.zobsm = -self.dsb_mht.value()
@@ -319,7 +318,6 @@ class ParamDisplay(object):
     def apply_lith_changes(self):
         """ Applies lithological changes """
 
-        self.lmod1.clith_index[:] = 0
         lith = self.get_lith()
         lith.density = self.dsb_density.value()
         if lith == self.lmod1.lith_list['Background']:
