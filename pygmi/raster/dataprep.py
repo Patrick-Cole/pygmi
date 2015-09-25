@@ -291,7 +291,7 @@ class DataMerge(QtGui.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = self.parent.pbar
+#        self.pbar = self.parent.pbar
 
         self.dsb_dxy = QtGui.QDoubleSpinBox()
         self.label_rows = QtGui.QLabel()
@@ -399,7 +399,8 @@ class DataMerge(QtGui.QDialog):
             return
 
         dat = []
-        for data in self.pbar.iter(self.indata['Raster']):
+#        for data in self.pbar.iter(self.indata['Raster']):
+        for data in self.indata['Raster']:
             doffset = 0.0
             if data.data.min() <= 0:
                 doffset = data.data.min()-1.

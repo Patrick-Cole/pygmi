@@ -47,6 +47,11 @@ from numba import jit
 from matplotlib import cm
 from math import sqrt
 import pygmi.misc as ptimer
+from pygmi.raster.dataprep import gdal_to_dat
+from pygmi.raster.dataprep import data_to_gdal_mem
+from osgeo import gdal, osr, ogr
+import pdb
+from bokeh.plotting import figure, show, output_file
 
 
 class GravMag(object):
@@ -663,7 +668,7 @@ def save_layer(mlist):
     return outfile
 
 
-def gridmatch(lmod, ctxt, rtxt):
+def gridmatch2(lmod, ctxt, rtxt):
     """ Matches the rows and columns of the second grid to the first
     grid """
     rgrv = lmod.griddata[rtxt]
@@ -671,21 +676,72 @@ def gridmatch(lmod, ctxt, rtxt):
     x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
                   rgrv.xdim)+0.5*rgrv.xdim
     y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
-                  rgrv.xdim)+0.5*rgrv.ydim
+                  rgrv.ydim)+0.5*rgrv.ydim
     x_2, y_2 = np.meshgrid(x, y)
     z_2 = rgrv.data
     x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
-    y_i = np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - \
-        cgrv.rows*cgrv.ydim + 0.5*cgrv.ydim
+    y_i = np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - cgrv.rows*cgrv.ydim + 0.5*cgrv.ydim
+    
     xi2, yi2 = np.meshgrid(x_i, y_i)
 
-    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
-                       (xi2.flatten(), yi2.flatten()))
+    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(), (xi2.flatten(), yi2.flatten()), method='nearest')
     zfin = np.ma.masked_invalid(zfin)
     zfin.shape = cgrv.data.shape
 
+    output_file("image.html", title="pygmi test")
+    ppp = figure(x_range=[cgrv.tlx, cgrv.tlx+cgrv.cols*cgrv.xdim], 
+               y_range=[cgrv.tly - cgrv.rows*cgrv.ydim, cgrv.tly])
+
+
+    x1 = int((cgrv.tlx-rgrv.tlx)/rgrv.xdim)
+    x2 = int((cgrv.tlx+cgrv.cols*cgrv.xdim-rgrv.tlx)/rgrv.xdim)
+    y1 = int((rgrv.tly-cgrv.tly)/rgrv.ydim)
+    y2 = int((rgrv.tly-cgrv.tly+cgrv.rows*cgrv.ydim)/rgrv.ydim)
+
+    hope = rgrv.data[y1:y2, x1:x2]
+
+    ppp.image(image=[hope[::-1]], x=[cgrv.tlx], y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols], dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
+    ppp.image(image=[cgrv.data[::-1]], x=[cgrv.tlx+cgrv.xdim*cgrv.cols], y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols], dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
+    ppp.image(image=[zfin[::-1]], x=[cgrv.tlx-cgrv.xdim*cgrv.cols], y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols], dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
+    show(ppp)
+    
+    pdb.set_trace()
+
+
+    aaa=1
+
     return zfin
 
+
+def gridmatch(lmod, ctxt, rtxt):
+    """ Matches the rows and columns of the second grid to the first
+    grid """
+    rgrv = lmod.griddata[rtxt]
+    cgrv = lmod.griddata[ctxt]
+   
+    data = rgrv
+    data2 = cgrv
+    orig_wkt = data.wkt
+    orig_wkt2 = data2.wkt
+    
+    doffset = 0.0
+    if data.data.min() <= 0:
+        doffset = data.data.min()-1.
+        data.data -= doffset
+
+    gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
+    gtr = (data2.tlx, data2.xdim, 0.0, data2.tly, 0.0, -data2.ydim)
+    src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
+    dest = data_to_gdal_mem(data, gtr, orig_wkt2, data2.cols, data2.rows, True)
+
+    gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt2, gdal.GRA_Bilinear)
+
+    dat = gdal_to_dat(dest, data.dataid)
+
+    dat.data += doffset
+    
+    return dat.data
+    
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                magcalc=False):
@@ -845,6 +901,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     if 'Gravity Regional' in lmod.griddata and not magcalc:
         zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
         lmod.griddata['Calculated Gravity'].data += zfin
+#        zfin2 = gridmatch2(lmod, 'Calculated Gravity', 'Gravity Regional')
+#        lmod.griddata['Calculated Magnetics'].data = zfin2
+
+
 
     if lmod.lith_index.max() <= 0:
         lmod.griddata['Calculated Magnetics'].data *= 0.
