@@ -45,12 +45,11 @@ from pygmi.pfmod.datatypes import LithModel
 from numba import jit
 from matplotlib import cm
 from math import sqrt
-import pygmi.misc as ptimer
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
 from osgeo import gdal
-# import pdb
 # import scipy.interpolate as si
+# import pdb
 # from bokeh.plotting import figure, show, output_file
 
 
@@ -746,9 +745,35 @@ def gridmatch(lmod, ctxt, rtxt):
 
     dat = gdal_to_dat(dest, data.dataid)
 
-    dat.data += doffset
+    if doffset != 0.0:
+        dat.data += doffset
+        data.data += doffset
 
     return dat.data
+
+
+#def gridmatch2(lmod, ctxt, rtxt):
+#    """ Matches the rows and columns of the second grid to the first
+#    grid """
+#    rgrv = lmod.griddata[rtxt]
+#    cgrv = lmod.griddata[ctxt]
+#    x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
+#                  rgrv.xdim)+0.5*rgrv.xdim
+#    y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
+#                  rgrv.xdim)+0.5*rgrv.ydim
+#    x_2, y_2 = np.meshgrid(x, y)
+#    z_2 = rgrv.data
+#    x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
+#    y_i = np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - \
+#        cgrv.rows*cgrv.ydim + 0.5*cgrv.ydim
+#    xi2, yi2 = np.meshgrid(x_i, y_i)
+#
+#    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
+#                       (xi2.flatten(), yi2.flatten()))
+#    zfin = np.ma.masked_invalid(zfin)
+#    zfin.shape = cgrv.data.shape
+#
+#    return zfin
 
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
@@ -780,8 +805,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     lmod.griddata : dictionary
         dictionary of items of type Data.
     """
-
-    ttt = ptimer.PTime()
 
     if showtext is None:
         showtext = print
@@ -828,8 +851,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             else:
                 mlist[1].calc_origin()
             tmpfiles[mlist[0]] = save_layer(mlist)
-
-    ttt.since_last_call('calc for cubes')
 
     if showreports is True:
         showtext('Summing data')
@@ -938,7 +959,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     if pbars is not None:
         pbars.maxall()
 
-    ttt.since_last_call('calc for sum')
     return lmod.griddata
 
 

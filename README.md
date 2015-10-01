@@ -15,16 +15,22 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.4.2
-* NumPy 1.8.2
-* SciPy 0.14.0
-* Matplotlib 1.4.1
-* PyQt 4.10.4
-* GDAL 1.11.1
-* numexpr 2.4
-* numba 0.15.1
+* Python 3.4.3
+* NumPy 1.9.2
+* SciPy 0.16.0
+* Matplotlib 1.4.3
+* six 1.9.0 (used by Matplotlib, should be installed automatically)
+* pytz 2015.4 (used by Matplotlib, should be installed automatically)
+* python-dateutil 2.4.2 (used by Matplotlib, should be installed automatically)
+* pyparsing 2.0.3 (used by Matplotlib, should be installed automatically)
+* PyQt 4.11.4
+* GDAL 1.11.3
+* numexpr 2.4.3
+* numba 0.20.0
+* llvmlite 0.6.0 (used by numba, should be installed automatically)
+* PyOpenGL 3.1.0
 
-It is possible that it might work on earlier versions, especially on non-windows operating systems. Under windows, there are compiled .pyd files (python version of a dll) which require the NumPy and Python version to match. However, for actual releases, I do post windows binaries which include a standalone python distribution (that will not interfere with existing installations), so this should not be a problem.
+It is possible that it might work on earlier versions, especially on non-windows operating systems.
 
 ##Installation
 ###General
@@ -47,9 +53,9 @@ If you are in python, you can run PyGMI by using the following commands:
 
 
 ###Windows
-I have now made available convenient installers for PyGMI, thanks to Cyrille Rossant. If you have already installed PyGMI using this installer, you can simply update it using the smaller pygmi_update.exe file. This smaller update file contains only the python code, if you are only interested in that.
-Installers are available in [64-bit](https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.6/PyGMI64_2.2.6.0.exe) and [32-bit](https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.6/PyGMI32_2.2.6.0.exe)
+I have now made available convenient installers for PyGMI, thanks to Cyrille Rossant.
 
+Installers are available in [64-bit and 32-bit](https://github.com/Patrick-Cole/pygmi/releases)
 
 Running the software can be achieved through the shortcut on your desktop.
 

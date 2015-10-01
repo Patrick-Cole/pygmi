@@ -11,7 +11,7 @@ datasets. It includes:
 It is released under the Gnu General Public License version 3.0
 """
 __all__ = ["raster", "clust", "pfmod", "vector", "test", "seis"]
-__version__ = '2.2.7'
+__version__ = '2.2.8'
 
 from . import raster
 from . import clust

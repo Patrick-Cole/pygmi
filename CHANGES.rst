@@ -1,6 +1,12 @@
 =========
 Changelog
 =========
+v2.2.8, 1 October 2015
+----------------------
+* removed libraries not needed etc
+* Fixed a problem with adding a gravity regional dataset to calculated gravity.
+* Updates to the speed of the calculation for magnetic data.
+
 v2.2.7, 18 June 2015
 --------------------
 * Update to setup for hosting on pypi
@@ -12,7 +18,7 @@ v2.2.7, 18 June 2015
 * Fixed a bug where profiles were not saving to images correctly
 
 v2.2.6, 10 April 2015
-------------------------
+---------------------
 * Progress Bar on Main Interface. New progress bars include time left.
 * Reprojecting bug fix for datasets with negative values.
 * Fixes to tilt depth and new progress bars
