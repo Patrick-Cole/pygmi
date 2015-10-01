@@ -36,7 +36,6 @@ References:
 from __future__ import print_function
 
 from PyQt4 import QtGui, QtCore
-import scipy.interpolate as si
 import numpy as np
 import pylab as plt
 import copy
@@ -49,9 +48,10 @@ from math import sqrt
 import pygmi.misc as ptimer
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
-from osgeo import gdal, osr, ogr
-import pdb
-from bokeh.plotting import figure, show, output_file
+from osgeo import gdal
+# import pdb
+# import scipy.interpolate as si
+# from bokeh.plotting import figure, show, output_file
 
 
 class GravMag(object):
@@ -558,7 +558,7 @@ class GeoData(object):
         rem_magn = (400*np.pi*self.mstrength)*um     # Remanent magnetization
 
         net_magn = rem_magn+ind_magn  # Net magnetization
-        Pd = np.transpose(np.dot(un, net_magn.T))   # Pole densities
+        pd = np.transpose(np.dot(un, net_magn.T))   # Pole densities
 
         # For each observation point do the following.
         # For each face find the solid angle.
@@ -584,7 +584,7 @@ class GeoData(object):
                 crs = np.zeros([4, 3])
                 mgval = np.zeros([3, npro, nstn])
 
-                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, Pd, un, indx,
+                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, pd, un, indx,
                              crs, mgval)
 
 #                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
@@ -668,49 +668,57 @@ def save_layer(mlist):
     return outfile
 
 
-def gridmatch2(lmod, ctxt, rtxt):
-    """ Matches the rows and columns of the second grid to the first
-    grid """
-    rgrv = lmod.griddata[rtxt]
-    cgrv = lmod.griddata[ctxt]
-    x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
-                  rgrv.xdim)+0.5*rgrv.xdim
-    y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
-                  rgrv.ydim)+0.5*rgrv.ydim
-    x_2, y_2 = np.meshgrid(x, y)
-    z_2 = rgrv.data
-    x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
-    y_i = np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - cgrv.rows*cgrv.ydim + 0.5*cgrv.ydim
-    
-    xi2, yi2 = np.meshgrid(x_i, y_i)
-
-    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(), (xi2.flatten(), yi2.flatten()), method='nearest')
-    zfin = np.ma.masked_invalid(zfin)
-    zfin.shape = cgrv.data.shape
-
-    output_file("image.html", title="pygmi test")
-    ppp = figure(x_range=[cgrv.tlx, cgrv.tlx+cgrv.cols*cgrv.xdim], 
-               y_range=[cgrv.tly - cgrv.rows*cgrv.ydim, cgrv.tly])
-
-
-    x1 = int((cgrv.tlx-rgrv.tlx)/rgrv.xdim)
-    x2 = int((cgrv.tlx+cgrv.cols*cgrv.xdim-rgrv.tlx)/rgrv.xdim)
-    y1 = int((rgrv.tly-cgrv.tly)/rgrv.ydim)
-    y2 = int((rgrv.tly-cgrv.tly+cgrv.rows*cgrv.ydim)/rgrv.ydim)
-
-    hope = rgrv.data[y1:y2, x1:x2]
-
-    ppp.image(image=[hope[::-1]], x=[cgrv.tlx], y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols], dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-    ppp.image(image=[cgrv.data[::-1]], x=[cgrv.tlx+cgrv.xdim*cgrv.cols], y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols], dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-    ppp.image(image=[zfin[::-1]], x=[cgrv.tlx-cgrv.xdim*cgrv.cols], y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols], dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-    show(ppp)
-    
-    pdb.set_trace()
-
-
-    aaa=1
-
-    return zfin
+# def gridmatch2(lmod, ctxt, rtxt):
+#    """ Matches the rows and columns of the second grid to the first
+#    grid """
+#    rgrv = lmod.griddata[rtxt]
+#    cgrv = lmod.griddata[ctxt]
+#    x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
+#                  rgrv.xdim)+0.5*rgrv.xdim
+#    y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
+#                  rgrv.ydim)+0.5*rgrv.ydim
+#    x_2, y_2 = np.meshgrid(x, y)
+#    z_2 = rgrv.data
+#    x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
+#    y_i = (np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - cgrv.rows*cgrv.ydim +
+#           0.5*cgrv.ydim)
+#
+#    xi2, yi2 = np.meshgrid(x_i, y_i)
+#
+#    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
+#                       (xi2.flatten(), yi2.flatten()), method='nearest')
+#    zfin = np.ma.masked_invalid(zfin)
+#    zfin.shape = cgrv.data.shape
+#
+#    output_file("image.html", title="pygmi test")
+#    ppp = figure(x_range=[cgrv.tlx, cgrv.tlx+cgrv.cols*cgrv.xdim],
+#               y_range=[cgrv.tly - cgrv.rows*cgrv.ydim, cgrv.tly])
+#
+#
+#    x1 = int((cgrv.tlx-rgrv.tlx)/rgrv.xdim)
+#    x2 = int((cgrv.tlx+cgrv.cols*cgrv.xdim-rgrv.tlx)/rgrv.xdim)
+#    y1 = int((rgrv.tly-cgrv.tly)/rgrv.ydim)
+#    y2 = int((rgrv.tly-cgrv.tly+cgrv.rows*cgrv.ydim)/rgrv.ydim)
+#
+#    hope = rgrv.data[y1:y2, x1:x2]
+#
+#    ppp.image(image=[hope[::-1]], x=[cgrv.tlx],
+#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
+#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
+#    ppp.image(image=[cgrv.data[::-1]], x=[cgrv.tlx+cgrv.xdim*cgrv.cols],
+#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
+#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
+#    ppp.image(image=[zfin[::-1]], x=[cgrv.tlx-cgrv.xdim*cgrv.cols],
+#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
+#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
+#    show(ppp)
+#
+#    pdb.set_trace()
+#
+#
+#    aaa=1
+#
+#    return zfin
 
 
 def gridmatch(lmod, ctxt, rtxt):
@@ -718,12 +726,12 @@ def gridmatch(lmod, ctxt, rtxt):
     grid """
     rgrv = lmod.griddata[rtxt]
     cgrv = lmod.griddata[ctxt]
-   
+
     data = rgrv
     data2 = cgrv
     orig_wkt = data.wkt
     orig_wkt2 = data2.wkt
-    
+
     doffset = 0.0
     if data.data.min() <= 0:
         doffset = data.data.min()-1.
@@ -739,9 +747,9 @@ def gridmatch(lmod, ctxt, rtxt):
     dat = gdal_to_dat(dest, data.dataid)
 
     dat.data += doffset
-    
+
     return dat.data
-    
+
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
                magcalc=False):
@@ -904,8 +912,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 #        zfin2 = gridmatch2(lmod, 'Calculated Gravity', 'Gravity Regional')
 #        lmod.griddata['Calculated Magnetics'].data = zfin2
 
-
-
     if lmod.lith_index.max() <= 0:
         lmod.griddata['Calculated Magnetics'].data *= 0.
         lmod.griddata['Calculated Gravity'].data *= 0.
@@ -1063,7 +1069,7 @@ def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
 
 
 @jit(nopython=True)
-def gm3d(npro, nstn, X, Y, edge, corner, face, Pd, Un, indx, crs, mgval):
+def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
     """ grvmag 3d. mgval MUST be zeros """
 
     for pr in range(npro):
@@ -1081,9 +1087,9 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Pd, Un, indx, crs, mgval):
                 p = 0
                 q = 0
                 r = 0
-                l = Un[f, 0]
-                m = Un[f, 1]
-                n = Un[f, 2]
+                l = un[f, 0]
+                m = un[f, 1]
+                n = un[f, 2]
 
                 p20 = crs[0, 0]
                 p21 = crs[0, 1]
@@ -1108,7 +1114,7 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Pd, Un, indx, crs, mgval):
                     r += I*edge[eno2, 2]
 
         #        From omega, l, m, n PQR get components of field due to face f
-                # dp1 is dot product between (l,m,n) and (x,y,z) or Un and r.
+                # dp1 is dot product between (l,m,n) and (x,y,z) or un and r.
 
                 p10 = crs[0, 0]
                 p11 = crs[0, 1]
@@ -1128,23 +1134,29 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, Pd, Un, indx, crs, mgval):
                 p3m = sqrt(p30**2 + p31**2 + p32**2)
                 p4m = sqrt(p40**2 + p41**2 + p42**2)
 
-                Wn = p30*(p11*p22 - p12*p21) + p31*(-p10*p22 + p12*p20) + p32*(p10*p21 - p11*p20)
-                Wd = p1m*p2m*p3m + p1m*(p20*p30 + p21*p31 + p22*p32) + p2m*(p10*p30 + p11*p31 + p12*p32) + p3m*(p10*p20 + p11*p21 + p12*p22)
-                omega = -2*np.arctan2(Wn, Wd)
+                wn = (p30*(p11*p22 - p12*p21) + p31*(-p10*p22 + p12*p20) +
+                      p32*(p10*p21 - p11*p20))
+                wd = (p1m*p2m*p3m + p1m*(p20*p30 + p21*p31 + p22*p32) +
+                      p2m*(p10*p30 + p11*p31 + p12*p32) +
+                      p3m*(p10*p20 + p11*p21 + p12*p22))
+                omega = -2*np.arctan2(wn, wd)
 
-                Wn = p10*(p31*p42 - p32*p41) + p11*(-p30*p42 + p32*p40) + p12*(p30*p41 - p31*p40)
-                Wd = p1m*p3m*p4m + p1m*(p30*p40 + p31*p41 + p32*p42) + p3m*(p10*p40 + p11*p41 + p12*p42) + p4m*(p10*p30 + p11*p31 + p12*p32)
+                wn = (p10*(p31*p42 - p32*p41) + p11*(-p30*p42 + p32*p40) +
+                      p12*(p30*p41 - p31*p40))
+                wd = (p1m*p3m*p4m + p1m*(p30*p40 + p31*p41 + p32*p42) +
+                      p3m*(p10*p40 + p11*p41 + p12*p42) +
+                      p4m*(p10*p30 + p11*p31 + p12*p32))
 
-                omega += -2*np.arctan2(Wn, Wd)
+                omega += -2*np.arctan2(wn, wd)
 
                 # l, m, n and components of unit normal to a face.
                 gmtf1 = l*omega+n*q-m*r
                 gmtf2 = m*omega+l*r-n*p
                 gmtf3 = n*omega+m*p-l*q
 
-                mgval[0, pr, st] += Pd[f]*gmtf1  # Hx
-                mgval[1, pr, st] += Pd[f]*gmtf2  # Hy
-                mgval[2, pr, st] += Pd[f]*gmtf3  # Hz
+                mgval[0, pr, st] += pd[f]*gmtf1  # Hx
+                mgval[1, pr, st] += pd[f]*gmtf2  # Hy
+                mgval[2, pr, st] += pd[f]*gmtf3  # Hz
 
     return mgval
 
