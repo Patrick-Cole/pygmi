@@ -29,11 +29,11 @@ from osgeo import osr, gdal
 import os
 import numpy as np
 import sys
-from .datatypes import Data, LithModel
 import matplotlib.pyplot as plt
 import zipfile
-from . import grvmag3d
-from . import cubes as mvis3d
+from pygmi.pfmod.datatypes import Data, LithModel
+import pygmi.pfmod.grvmag3d as grvmag3d
+import pygmi.pfmod.cubes as mvis3d
 import pygmi.menu_default as menu_default
 import pygmi.raster.dataprep as dp
 

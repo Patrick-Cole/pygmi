@@ -25,17 +25,17 @@
 """ Raster Menu Routines """
 
 from PyQt4 import QtGui
-from . import equation_editor
-from . import smooth
-from . import normalisation
-from . import cooper
-from . import ginterp
-from . import graphs
-from . import show_table
-from . import dataprep
-from . import iodefs
-from . import igrf
-from . import tiltdepth
+from pygmi.raster import equation_editor
+from pygmi.raster import smooth
+from pygmi.raster import normalisation
+from pygmi.raster import cooper
+from pygmi.raster import ginterp
+from pygmi.raster import graphs
+from pygmi.raster import show_table
+from pygmi.raster import dataprep
+from pygmi.raster import iodefs
+from pygmi.raster import igrf
+from pygmi.raster import tiltdepth
 
 
 class MenuWidget(object):

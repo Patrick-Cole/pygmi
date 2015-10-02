@@ -29,7 +29,6 @@ import numpy as np
 import scipy.signal as ssig
 import copy
 import pygmi.menu_default as menu_default
-# import pdb
 # import pygmi.misc as misc
 
 

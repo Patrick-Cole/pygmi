@@ -32,25 +32,24 @@ References:
 
 import os
 import numpy as np
-import pygmi.raster.cooper as cooper
-import matplotlib.pyplot as plt
-import pygmi.raster.iodefs as iodefs
 import numexpr as ne
+import pygmi.raster.cooper as cooper
+import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
+import pygmi.menu_default as menu_default
+import pygmi.misc as misc
 from math import atan2, pi
 
 from PyQt4 import QtGui
 import matplotlib
+import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import matplotlib.cm as cm
 from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
-import pygmi.menu_default as menu_default
-# import pdb
-import pygmi.misc as misc
-# import scipy.spatial.distance as sd
 from numba import jit
+# import scipy.spatial.distance as sd
 
 
 class TiltDepth(QtGui.QDialog):

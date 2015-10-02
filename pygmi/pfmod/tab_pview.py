@@ -27,7 +27,7 @@
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.ndimage as ndimage
-from . import misc
+from pygmi.pfmod import misc
 import os
 
 # from matplotlib.figure import Figure

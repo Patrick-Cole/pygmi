@@ -28,7 +28,7 @@ from PyQt4 import QtGui
 import numpy as np
 import os
 import re
-from . import datatypes as sdt
+import pygmi.seis.datatypes as sdt
 
 
 def str2float(inp):

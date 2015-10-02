@@ -27,8 +27,8 @@
 from PyQt4 import QtGui
 import numpy as np
 from osgeo import ogr
-from .datatypes import PData
-from .datatypes import VData
+from pygmi.vector.datatypes import PData
+from pygmi.vector.datatypes import VData
 import os
 
 

@@ -27,9 +27,9 @@
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import copy
-from .datatypes import Clust
-from . import var_ratio as vr
-from . import xie_beni as xb
+from pygmi.clust.datatypes import Clust
+from pygmi.clust import var_ratio as vr
+from pygmi.clust import xie_beni as xb
 import os
 
 

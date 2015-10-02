@@ -25,9 +25,9 @@
 """ Potential Field Modelling """
 
 from PyQt4 import QtGui
-from . import pfmod
-from . import cubes as mvis3d
-from . import iodefs
+import pygmi.pfmod.pfmod as pfmod
+import pygmi.pfmod.cubes as mvis3d
+import pygmi.pfmod.iodefs as iodefs
 
 
 class MenuWidget(object):

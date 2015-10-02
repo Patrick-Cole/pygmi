@@ -25,8 +25,8 @@
 """ Vector Menu Routines """
 
 from PyQt4 import QtGui
-from . import iodefs
-from . import graphs
+from pygmi.vector import iodefs
+from pygmi.vector import graphs
 
 
 class MenuWidget(object):

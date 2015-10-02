@@ -25,12 +25,12 @@
 """ Clustering Menu Routines """
 
 from PyQt4 import QtGui
-from . import crisp_clust
-from . import fuzzy_clust
-from . import graphtool
-from . import graphs
-from ..raster import show_table
-from ..raster import iodefs
+from pygmi.clust import crisp_clust
+from pygmi.clust import fuzzy_clust
+from pygmi.clust import graphtool
+from pygmi.clust import graphs
+from pygmi.raster import show_table
+from pygmi.raster import iodefs
 
 
 class MenuWidget(object):

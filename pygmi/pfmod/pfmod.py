@@ -27,16 +27,16 @@
 from PyQt4 import QtGui, QtCore
 
 # Other dependancies
-from . import misc
-from . import tab_ddisp
-from . import tab_layer
-from . import tab_prof
-from . import tab_pview
-from . import tab_param
-from . import tab_mext
-from . import grvmag3d
-from . import iodefs
-from .datatypes import LithModel
+from pygmi.pfmod import misc
+from pygmi.pfmod import tab_ddisp
+from pygmi.pfmod import tab_layer
+from pygmi.pfmod import tab_prof
+from pygmi.pfmod import tab_pview
+from pygmi.pfmod import tab_param
+from pygmi.pfmod import tab_mext
+from pygmi.pfmod import grvmag3d
+from pygmi.pfmod import iodefs
+from pygmi.pfmod.datatypes import LithModel
 import pygmi.menu_default as menu_default
 import pygmi.misc as pmisc
 

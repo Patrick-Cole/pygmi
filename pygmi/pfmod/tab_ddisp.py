@@ -26,7 +26,6 @@
 
 from PyQt4 import QtGui, QtCore
 import numpy as np
-# from matplotlib.figure import Figure
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import matplotlib.colors as clrs

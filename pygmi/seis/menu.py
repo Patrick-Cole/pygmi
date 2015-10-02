@@ -25,10 +25,10 @@
 """ Seis Menu Routines """
 
 from PyQt4 import QtGui
-from . import scan_imp
-from . import del_rec
-from . import iodefs
-from . import beachball
+from pygmi.seis import scan_imp
+from pygmi.seis import del_rec
+from pygmi.seis import iodefs
+from pygmi.seis import beachball
 
 
 class MenuWidget(object):

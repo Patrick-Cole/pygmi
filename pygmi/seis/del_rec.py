@@ -45,7 +45,7 @@ class DeleteRecord(object):
         """ Settings """
         self.showtext('Delete Rows starting')
 
-        ifile = QtGui.QFileDialog.getOpenFileName()[0]
+        ifile = QtGui.QFileDialog.getOpenFileName()
         if ifile == '':
             return
         os.chdir(ifile.rpartition('/')[0])

@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Class for data types """
 
-from ..raster.datatypes import Data
+from pygmi.raster.datatypes import Data
 
 
 class Clust(Data):

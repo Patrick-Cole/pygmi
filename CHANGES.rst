@@ -1,6 +1,10 @@
 =========
 Changelog
 =========
+v2.2.9, 2 October 2015
+----------------------
+* fixed a problem with an offset on calculated magnetic data, introduced in v2.2.8
+
 v2.2.8, 1 October 2015
 ----------------------
 * removed libraries not needed etc

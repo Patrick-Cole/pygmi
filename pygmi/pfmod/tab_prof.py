@@ -27,8 +27,8 @@
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.interpolate as si
-from . import misc
-from ..raster import iodefs as ir
+from pygmi.pfmod import misc
+import pygmi.raster.iodefs as ir
 import os
 
 import matplotlib.pyplot as plt

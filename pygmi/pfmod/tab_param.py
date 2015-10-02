@@ -26,8 +26,8 @@
 
 from PyQt4 import QtGui
 import numpy as np
-from . import grvmag3d
-from . import misc
+from pygmi.pfmod import grvmag3d
+from pygmi.pfmod import misc
 
 
 class ParamDisplay(object):

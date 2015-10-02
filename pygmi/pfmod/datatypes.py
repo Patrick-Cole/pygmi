@@ -25,7 +25,7 @@
 """ Class for data types """
 
 import numpy as np
-from ..raster.datatypes import Data
+from pygmi.raster.datatypes import Data
 
 
 class LithModel(object):
