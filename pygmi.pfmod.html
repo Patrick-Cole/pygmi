@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.pfmod package &mdash; PyGMI 2.2.7 documentation</title>
+    <title>pygmi.pfmod package &mdash; PyGMI 2.2.9 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.7',
+        VERSION:     '2.2.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.7 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.9 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
     <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
@@ -185,20 +185,6 @@
 <code class="descname">lith_index</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_index" title="Permalink to this definition">¶</a></dt>
 <dd><p><em>numpy array</em></p>
 <p>3D array of lithological indices.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pygmi.pfmod.datatypes.LithModel.clith_index">
-<code class="descname">clith_index</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.clith_index" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy array</em></p>
-<p>3D array of calculated lithological indices.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pygmi.pfmod.datatypes.LithModel.calt_calc">
-<code class="descname">calt_calc</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.calt_calc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em></p>
-<p>boolean specifying which calculation was used.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -565,7 +551,6 @@ gravity is calculated.</p>
 <li><strong>lmod</strong> (<a class="reference internal" href="#pygmi.pfmod.datatypes.LithModel" title="pygmi.pfmod.datatypes.LithModel"><em>LithModel</em></a>) &#8211; PyGMI lithological model</li>
 <li><strong>pbars</strong> (<em>module</em>) &#8211; progress bar routine if available. (internal use)</li>
 <li><strong>showtext</strong> (<em>module</em>) &#8211; showtext routine if available. (internal use)</li>
-<li><strong>parent</strong> (<a class="reference internal" href="pygmi.raster.html#pygmi.raster.graphs.PlotCCoef.parent" title="pygmi.raster.graphs.PlotCCoef.parent"><em>parent</em></a>) &#8211; parent function. (internal use)</li>
 <li><strong>showreports</strong> (<em>bool</em>) &#8211; show extra reports</li>
 <li><strong>magcalc</strong> (<em>bool</em>) &#8211; if true, calculates magnetic data, otherwize only gravity.</li>
 </ul>
@@ -580,12 +565,6 @@ dictionary of items of type Data.</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pygmi.pfmod.grvmag3d.calc_fieldb">
-<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">calc_fieldb</code><a class="headerlink" href="#pygmi.pfmod.grvmag3d.calc_fieldb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate magnetic and gravity field</p>
 </dd></dl>
 
 <dl class="function">
@@ -637,7 +616,7 @@ Done this way for speed.</dd>
 <dl class="attribute">
 <dt id="pygmi.pfmod.grvmag3d.gm3d">
 <code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">gm3d</code><a class="headerlink" href="#pygmi.pfmod.grvmag3d.gm3d" title="Permalink to this definition">¶</a></dt>
-<dd><p>grvmag 3d</p>
+<dd><p>grvmag 3d. mgval MUST be zeros</p>
 </dd></dl>
 
 <dl class="function">
@@ -649,7 +628,7 @@ grid</p>
 
 <dl class="function">
 <dt id="pygmi.pfmod.grvmag3d.quick_model">
-<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">quick_model</code><span class="sig-paren">(</span><em>numx=50, numy=50, numz=50, dxy=1000, d_z=100, tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67, fdec=-17, inputliths=['Generic'], susc=[0.01], dens=[3.0], minc=None, mdec=None, mstrength=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.quick_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">quick_model</code><span class="sig-paren">(</span><em>numx=50</em>, <em>numy=50</em>, <em>numz=50</em>, <em>dxy=1000</em>, <em>d_z=100</em>, <em>tlx=0</em>, <em>tly=0</em>, <em>tlz=0</em>, <em>mht=100</em>, <em>ght=0</em>, <em>finc=-67</em>, <em>fdec=-17</em>, <em>inputliths=None</em>, <em>susc=None</em>, <em>dens=None</em>, <em>minc=None</em>, <em>mdec=None</em>, <em>mstrength=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.quick_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a quick model</p>
 </dd></dl>
 
@@ -657,6 +636,12 @@ grid</p>
 <dt id="pygmi.pfmod.grvmag3d.save_layer">
 <code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">save_layer</code><span class="sig-paren">(</span><em>mlist</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.save_layer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine saves the mlayer and glayer to a file</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.grvmag3d.sum_fields">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">sum_fields</code><a class="headerlink" href="#pygmi.pfmod.grvmag3d.sum_fields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate magnetic and gravity field</p>
 </dd></dl>
 
 </div>

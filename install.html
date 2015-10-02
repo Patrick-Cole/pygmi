@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; PyGMI 2.2.7 documentation</title>
+    <title>Installation &mdash; PyGMI 2.2.9 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.7',
+        VERSION:     '2.2.9',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.7 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.9 documentation" href="index.html" />
     <link rel="up" title="PyGMI Wiki" href="wiki.html" />
     <link rel="next" title="Quick Start to use PyGMI" href="qstart.html" />
     <link rel="prev" title="PyGMI Wiki" href="wiki.html" /> 
@@ -48,6 +48,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="qstart.html" title="Quick Start to use PyGMI"
              accesskey="N">next</a> |</li>
@@ -127,16 +130,22 @@
 <p>PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.4 on Windows.</p>
 <p>PyGMI is developed and has been tested with the following libraries in order to function:</p>
 <ul class="simple">
-<li>Python 3.4.2</li>
-<li>NumPy 1.8.2</li>
-<li>SciPy 0.14.0</li>
-<li>Matplotlib 1.4.1</li>
-<li>PyQt 4.10.4</li>
-<li>GDAL 1.11.1</li>
-<li>numexpr 2.4</li>
-<li>numba 0.15.1</li>
+<li>Python 3.4.3</li>
+<li>NumPy 1.9.2</li>
+<li>SciPy 0.16.0</li>
+<li>Matplotlib 1.4.3</li>
+<li>six 1.9.0 (used by Matplotlib, should be installed automatically)</li>
+<li>pytz 2015.4 (used by Matplotlib, should be installed automatically)</li>
+<li>python-dateutil 2.4.2 (used by Matplotlib, should be installed automatically)</li>
+<li>pyparsing 2.0.3 (used by Matplotlib, should be installed automatically)</li>
+<li>PyQt 4.11.4</li>
+<li>GDAL 1.11.3</li>
+<li>numexpr 2.4.3</li>
+<li>numba 0.20.0</li>
+<li>llvmlite 0.6.0 (used by numba, should be installed automatically)</li>
+<li>PyOpenGL 3.1.0</li>
 </ul>
-<p>It is possible that it might work on earlier versions, especially on non-windows operating systems. Under windows, there are compiled .pyd files (python version of a dll) which require the NumPy and Python version to match. However, for actual releases, I do post windows binaries which include a standalone python distribution (that will not interfere with existing installations), so this should not be a problem.</p>
+<p>It is possible that it might work on earlier versions, especially on non-windows operating systems.</p>
 </div>
 <div class="section" id="id1">
 <h2>Installation<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
@@ -153,12 +162,13 @@
 <div>pygmi</div></blockquote>
 <p>If you are in python, you can run PyGMI by using the following commands:</p>
 <blockquote>
-<div>import pygmi
-pygmi.main()</div></blockquote>
+<div><p>import pygmi</p>
+<p>pygmi.main()</p>
+</div></blockquote>
 </div>
 <div class="section" id="windows">
 <h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline">¶</a></h3>
-<p>I have now made available convenient installers for PyGMI, thanks to <a class="reference external" href="http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/">Cyrille Rossant</a>. If you have already installed PyGMI using this installer, you can simply update it using the smaller pygmi_update.exe file. This smaller update file contains only the python code, if you are only interested in that.</p>
+<p>I have now made available convenient installers for PyGMI, thanks to <a class="reference external" href="http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/">Cyrille Rossant</a>.</p>
 <p>Running the software can be achieved through the shortcut on your desktop.</p>
 </div>
 <div class="section" id="linux">
@@ -170,7 +180,7 @@ pygmi.main()</div></blockquote>
 <h3>Anaconda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>Anaconda does not find pyqt4 on its system even if it is there already. To install pygmi on anaconda, edit the setup.py file, and replace the install_requires switch with the following:</p>
 <blockquote>
-<div>install_requires=[&#8220;numpy&#8221;, &#8220;scipy&#8221;, &#8220;matplotlib&#8221;, &#8220;gdal&#8221;, &#8220;numexpr&#8221;, &#8220;numba&#8221;],</div></blockquote>
+<div>install_requires=[&#8220;numpy&#8221;, &#8220;scipy&#8221;, &#8220;matplotlib&#8221;, &#8220;gdal&#8221;, &#8220;numexpr&#8221;, &#8220;numba&#8221;, &#8220;Pillow&#8221;, &#8220;PyOpenGL&#8221;],</div></blockquote>
 <p>As you can see, all we have done is removed PyQt4 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:</p>
 <blockquote>
 <div>python setup.py install</div></blockquote>
@@ -196,6 +206,9 @@ pygmi.main()</div></blockquote>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="qstart.html" title="Quick Start to use PyGMI"
              >next</a> |</li>
