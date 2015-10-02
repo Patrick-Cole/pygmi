@@ -277,10 +277,10 @@ class GravMag(object):
         mmin = magtmp.mean()-2*magtmp.std()
         mmax = magtmp.mean()+2*magtmp.std()
         mint = (magtmp.std()*4)/10.
-        csrange = np.arange(mmin, mmax, mint)
-
-        cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
-        plt.clabel(cns, inline=1, fontsize=10)
+        if magtmp.ptp()>0:
+            csrange = np.arange(mmin, mmax, mint)
+            cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
+            plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal')
         cbar.set_label('nT')
 
@@ -291,10 +291,11 @@ class GravMag(object):
         mmin = grvtmp.mean()-2*grvtmp.std()
         mmax = grvtmp.mean()+2*grvtmp.std()
         mint = (grvtmp.std()*4)/10.
-        csrange = np.arange(mmin, mmax, mint)
-        cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
 
-        plt.clabel(cns, inline=1, fontsize=10)
+        if grvtmp.ptp()>0:
+            csrange = np.arange(mmin, mmax, mint)
+            cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
+            plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal')
         cbar.set_label('mgal')
 
