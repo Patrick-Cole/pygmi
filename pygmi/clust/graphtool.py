@@ -37,11 +37,6 @@ from matplotlib.backends.backend_qt4agg import FigureCanvas
 class GraphHist(FigureCanvas):
     """
     Plots several lines in distinct colors.
-
-    Parameters
-    ----------
-    parent : parent
-        reference to the parent routine.
     """
     def __init__(self, parent=None):
         self.figure = Figure()
@@ -187,11 +182,6 @@ class GraphHist(FigureCanvas):
 class GraphMap(FigureCanvas):
     """
     Plots several lines in distinct colors.
-
-    Parameters
-    ----------
-    parent : parent
-        reference to the parent routine.
 
     Attributes
     ----------
@@ -451,11 +441,6 @@ class PolygonInteractor(QtCore.QObject):
 class ScatterPlot(QtGui.QDialog):
     """
     Main Graph Tool Routine
-
-    Parameters
-    ----------
-    parent : parent
-        reference to the parent routine.
 
     Attributes
     ----------

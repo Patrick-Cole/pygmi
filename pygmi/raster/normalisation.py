@@ -161,6 +161,10 @@ class Normalisation(QtGui.QDialog):
                     i.norm[n_norms] = {'type': 'histeq',
                                        'transform': transform}
 
+        # Correct the null value
+        for i in data:
+            i.data.data[i.data.mask] = i.nullvalue
+
         self.outdata['Raster'] = data
         self.pbar.to_max()
         return True

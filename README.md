@@ -67,7 +67,7 @@ After installation of python, you can follow the instructions under General.
 ###Anaconda
 Anaconda does not find pyqt4 on its system even if it is there already. To install pygmi on anaconda, edit the setup.py file, and replace the install_requires switch with the following:
 
-	install_requires=["numpy", "scipy", "matplotlib", "gdal", "numexpr", "numba"],
+	install_requires=["numpy", "scipy", "matplotlib", "gdal", "numexpr", "numba", "Pillow", "PyOpenGL"],
 
 As you can see, all we have done is removed PyQt4 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:
 

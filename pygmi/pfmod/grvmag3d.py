@@ -751,8 +751,7 @@ def gridmatch(lmod, ctxt, rtxt):
 
     return dat.data
 
-
-#def gridmatch2(lmod, ctxt, rtxt):
+# def gridmatch2(lmod, ctxt, rtxt):
 #    """ Matches the rows and columns of the second grid to the first
 #    grid """
 #    rgrv = lmod.griddata[rtxt]
@@ -793,8 +792,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         progress bar routine if available. (internal use)
     showtext : module
         showtext routine if available. (internal use)
-    parent : parent
-        parent function. (internal use)
     showreports : bool
         show extra reports
     magcalc : bool

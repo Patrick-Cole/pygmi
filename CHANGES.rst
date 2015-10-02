@@ -4,10 +4,11 @@ Changelog
 v2.2.9, 2 October 2015
 ----------------------
 * fixed a problem with an offset on calculated magnetic data, introduced in v2.2.8
+* fixed a bug when using the Seismology Delete Records option.
 
 v2.2.8, 1 October 2015
 ----------------------
-* removed libraries not needed etc
+* Removed libraries not needed etc
 * Fixed a problem with adding a gravity regional dataset to calculated gravity.
 * Updates to the speed of the calculation for magnetic data.
 
