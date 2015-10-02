@@ -48,8 +48,9 @@ from math import sqrt
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
 from osgeo import gdal
+
 # import scipy.interpolate as si
-# import pdb
+import pdb
 # from bokeh.plotting import figure, show, output_file
 
 
@@ -277,6 +278,7 @@ class GravMag(object):
         mmax = magtmp.mean()+2*magtmp.std()
         mint = (magtmp.std()*4)/10.
         csrange = np.arange(mmin, mmax, mint)
+
         cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
         plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal')
@@ -864,8 +866,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         pbars.resetsub(maximum=(len(lmod.lith_list)-1))
         piter = pbars.iter
 
-    magval = np.zeros(numx*numy)
-    grvval = np.zeros(numx*numy)
+#    magval = np.zeros(numx*numy)
+#    grvval = np.zeros(numx*numy)
     mgvalin = np.zeros(numx*numy)
     mgval = np.zeros(numx*numy)
 
@@ -907,21 +909,30 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
             pbars.incrmain()
         QtGui.QApplication.processEvents()
 
-    if magcalc:
-        magval = mgvalin
-    else:
-        grvval = mgvalin
+    mgvalin.resize([numx, numy])
+    mgvalin = mgvalin.T
+    mgvalin = mgvalin[::-1]
 
-    magval.resize([numx, numy])
-    grvval.resize([numx, numy])
-    magval = magval.T
-    grvval = grvval.T
-    magval = magval[::-1]
-    grvval = grvval[::-1]
+    if magcalc:
+        lmod.griddata['Calculated Magnetics'].data = mgvalin
+    else:
+        lmod.griddata['Calculated Gravity'].data = mgvalin
+
+#    if magcalc:
+#        magval = mgvalin
+#    else:
+#        grvval = mgvalin
+
+#    magval.resize([numx, numy])
+#    grvval.resize([numx, numy])
+#    magval = magval.T
+#    grvval = grvval.T
+#    magval = magval[::-1]
+#    grvval = grvval[::-1]
 
 # Update variables
-    lmod.griddata['Calculated Magnetics'].data = magval
-    lmod.griddata['Calculated Gravity'].data = grvval
+#    lmod.griddata['Calculated Magnetics'].data = magval
+#    lmod.griddata['Calculated Gravity'].data = grvval
 
 # This addoldcalc has has flaws w.r.t. regional if you change the regional
     if 'Gravity Regional' in lmod.griddata and not magcalc:
