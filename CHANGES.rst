@@ -3,8 +3,10 @@ Changelog
 =========
 v2.2.9, 2 October 2015
 ----------------------
-* fixed a problem with an offset on calculated magnetic data, introduced in v2.2.8
-* fixed a bug when using the Seismology Delete Records option.
+* Fixed a bug crashing regional test
+* Fixed a bug where null values were not set correctly in the normalisation routine.
+* Fixed a problem with an offset on calculated magnetic data, introduced in v2.2.8
+* Fixed a bug when using the Seismology Delete Records option.
 
 v2.2.8, 1 October 2015
 ----------------------
