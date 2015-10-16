@@ -222,7 +222,7 @@ class ProfileDisplay(object):
                 self.lmod1.yrange[0]+self.lmod1.dxy/2.)
         xx, yy = np.meshgrid(xrng, yrng)
         xlines = np.arange(self.lmod1.numx) + 1
-        ylines = np.arange(self.lmod1.numy, 0, -1)
+        ylines = np.arange(self.lmod1.numy, 0, -1)-1
         _, lines = np.meshgrid(xlines, ylines)
 
         if not self.lmod1.is_ew:
