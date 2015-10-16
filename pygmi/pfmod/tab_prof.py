@@ -229,6 +229,7 @@ class ProfileDisplay(object):
             xx = xx.T
             yy = yy.T
             lines, _ = np.meshgrid(xlines, ylines)
+            lines = lines.T
 
         header = '"Line","x","y"'
         newdata = [lines.flatten(), xx.flatten(), yy.flatten()]
