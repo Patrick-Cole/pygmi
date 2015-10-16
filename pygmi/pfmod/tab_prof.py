@@ -30,12 +30,13 @@ import scipy.interpolate as si
 from pygmi.pfmod import misc
 import pygmi.raster.iodefs as ir
 import os
+from pygmi.pfmod.grvmag3d import gridmatch
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import \
     NavigationToolbar2QT as NavigationToolbar
-
+import pdb
 
 class ProfileDisplay(object):
     """ Widget class to call the main interface """
@@ -109,7 +110,7 @@ class ProfileDisplay(object):
         self.sb_profile_linethick.setPrefix("Line Thickness: ")
         self.pb_prof_rcopy.setText("Ranged Copy")
         self.pb_lbound.setText("Add Lithological Boundary")
-        self.pb_export_csv.setText("Export Profile")
+        self.pb_export_csv.setText("Export All Profiles")
 
         gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
         gridlayout.addWidget(self.mmc, 1, 0, 9, 1)
@@ -214,28 +215,37 @@ class ProfileDisplay(object):
             return
         os.chdir(filename.rpartition('/')[0])
 
-        maggrid = self.lmod1.griddata['Calculated Magnetics'].data
-        grvgrid = self.lmod1.griddata['Calculated Gravity'].data
-        curprof = self.lmod1.curprof
+        xrng = (np.arange(self.lmod1.numx)*self.lmod1.dxy +
+                self.lmod1.xrange[0]+self.lmod1.dxy/2.)
+        yrng = (np.arange(self.lmod1.numy)*self.lmod1.dxy +
+                self.lmod1.yrange[0]+self.lmod1.dxy/2.)
+        xx, yy = np.meshgrid(xrng, yrng)
+        xlines = np.arange(self.lmod1.numx) + 1
+        ylines = np.arange(self.lmod1.numy) + 1
+        _, lines = np.meshgrid(xlines, ylines)
 
-        if self.lmod1.is_ew:
-            cmag = maggrid[-curprof-1]
-            cgrv = grvgrid[-curprof-1]
-            xrng = (np.arange(cmag.shape[0])*self.lmod1.dxy +
-                    self.lmod1.xrange[0]+self.lmod1.dxy/2.)
-            yrng = np.zeros_like(xrng)+self.lmod1.dxy/2.
+        if not self.lmod1.is_ew:
+            xx = xx.T
+            yy = yy.T
+            lines, _ = np.meshgrid(xlines, ylines)
 
-        else:
-            cmag = maggrid[::-1, curprof]
-            cgrv = grvgrid[::-1, curprof]
-            yrng = (np.arange(cmag.shape[0])*self.lmod1.dxy +
-                    self.lmod1.yrange[0]+self.lmod1.dxy/2.)
-            xrng = np.zeros_like(yrng)+self.lmod1.dxy/2.
-
-        newdata = np.transpose([xrng, yrng, cgrv, cmag])
+        header = '"Line","x","y"'
+        newdata = [lines.flatten(), xx.flatten(), yy.flatten()]
+#        pdb.set_trace()
+        for i in self.lmod1.griddata.keys():
+            if 'Calculated' not in i:
+                data = gridmatch(self.lmod1, 'Calculated Magnetics', i)
+            else:
+                data = self.lmod1.griddata[i].data
+            if not self.lmod1.is_ew:
+                data = data.T
+            newdata.append(np.array(data.flatten()))
+            header = header+',"'+i+'"'
+        newdata = np.transpose(newdata)
+        header = header+'\n'
 
         fno = open(filename, 'wb')
-        fno.write(b'"x","y","Gravity","Magnetics"\n')
+        fno.write(bytes(header, 'utf-8'))
         np.savetxt(fno, newdata, delimiter=',')
         fno.close()
         self.parent.pbars.incr()
