@@ -221,7 +221,7 @@ class ProfileDisplay(object):
         yrng = (np.arange(self.lmod1.numy)*self.lmod1.dxy +
                 self.lmod1.yrange[0]+self.lmod1.dxy/2.)
         xx, yy = np.meshgrid(xrng, yrng)
-        xlines = np.arange(self.lmod1.numx) + 1
+        xlines = np.arange(self.lmod1.numx)
         ylines = np.arange(self.lmod1.numy, 0, -1)-1
         _, lines = np.meshgrid(xlines, ylines)
 
@@ -243,7 +243,7 @@ class ProfileDisplay(object):
                     data = data + self.lmod1.gregional
 
             if not self.lmod1.is_ew:
-                data = data.T
+                data = data[::-1].T
             newdata.append(np.array(data.flatten()))
             header = header+',"'+i+'"'
         newdata = np.transpose(newdata)
