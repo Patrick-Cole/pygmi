@@ -38,6 +38,7 @@ from matplotlib.backends.backend_qt4agg import \
     NavigationToolbar2QT as NavigationToolbar
 import pdb
 
+
 class ProfileDisplay(object):
     """ Widget class to call the main interface """
     def __init__(self, parent):
@@ -221,7 +222,7 @@ class ProfileDisplay(object):
                 self.lmod1.yrange[0]+self.lmod1.dxy/2.)
         xx, yy = np.meshgrid(xrng, yrng)
         xlines = np.arange(self.lmod1.numx) + 1
-        ylines = np.arange(self.lmod1.numy) + 1
+        ylines = np.arange(self.lmod1.numy, 0, -1)
         _, lines = np.meshgrid(xlines, ylines)
 
         if not self.lmod1.is_ew:
@@ -237,6 +238,9 @@ class ProfileDisplay(object):
                 data = gridmatch(self.lmod1, 'Calculated Magnetics', i)
             else:
                 data = self.lmod1.griddata[i].data
+                if 'Gravity' in i:
+                    data = data + self.lmod1.gregional
+
             if not self.lmod1.is_ew:
                 data = data.T
             newdata.append(np.array(data.flatten()))
