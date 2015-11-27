@@ -328,12 +328,15 @@ class ExportData(object):
 
     def run(self):
         """ Show Info """
+        self.parent.process_is_active(True)
+
         if 'Cluster' in self.indata:
             data = self.indata['Cluster']
         elif 'Raster' in self.indata:
             data = self.indata['Raster']
         else:
             self.parent.showprocesslog('No raster data')
+            self.parent.process_is_active(False)
             return
 
         ext = \
@@ -349,6 +352,7 @@ class ExportData(object):
         filename = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
+            self.parent.process_is_active(False)
             return False
         os.chdir(filename.rpartition('/')[0])
 
@@ -376,6 +380,8 @@ class ExportData(object):
             self.export_gdal(data, 'EHdr')
 
         self.parent.showprocesslog('Export Data Finished!')
+        self.parent.process_is_active(False)
+
 
     def export_gdal(self, dat, drv):
         """

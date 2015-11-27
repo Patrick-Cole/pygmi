@@ -1347,10 +1347,10 @@ class PlotInterp(QtGui.QDialog):
             pseudo = None
 
         elif dtype == 'Sunshade':
-            #            pseudo = self.mmc.image._full_res[0]
-            #            sun = self.mmc.image._full_res[1]
-            pseudo = self.mmc.image.smallres[:, :, 0]
-            sun = self.mmc.image.smallres[:, :, 1]
+            pseudo = self.mmc.image._full_res[0]
+            sun = self.mmc.image._full_res[1]
+#            pseudo = self.mmc.image.smallres[:, :, 0]
+#            sun = self.mmc.image.smallres[:, :, 1]
 
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)

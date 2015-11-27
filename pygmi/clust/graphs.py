@@ -110,7 +110,7 @@ class MyMplCanvas(FigureCanvas):
         extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
                   data1.tly - data1.rows * data1.ydim, data1.tly)
 
-        cdat = data1.data + 1
+        cdat = data1.data # + 1
         csp = self.axes.imshow(cdat, cmap=plt.cm.jet, extent=extent)
         vals = np.unique(cdat)
         vals = vals.compressed()

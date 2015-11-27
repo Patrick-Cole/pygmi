@@ -355,7 +355,7 @@ class FuzzyClust(QtGui.QDialog):
 
                 clobj_fcn = np.array([np.Inf])
                 for j in range(no_runs):
-                    self.reportback('Run ' + str(j) + ' of' + str(no_runs))
+                    self.reportback('Run ' + str(j+1) + ' of' + str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)

@@ -340,7 +340,7 @@ class CrispClust(QtGui.QDialog):
 
                 clobj_fcn = np.array([np.inf])
                 for j in range(no_runs):
-                    self.reportback('Run '+str(j)+' of'+str(no_runs))
+                    self.reportback('Run '+str(j+1)+' of'+str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -473,7 +473,11 @@ class CrispClust(QtGui.QDialog):
         self.reportback("Crisp Cluster complete" + ' ('+self.cltype + ' ' +
                         self.init_type+')')
 
+        for i in dat_out:
+            i.data += 1
+            i.data = i.data.astype(np.uint8)
         self.outdata['Cluster'] = dat_out
+
         return True
 
     def crisp_means(self, data, no_clust, cent, centfix, maxit, term_thresh,
