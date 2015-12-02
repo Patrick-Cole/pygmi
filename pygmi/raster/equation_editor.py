@@ -110,8 +110,10 @@ class EquationEditor(QtGui.QDialog):
                '<p>Sum:</p>'
                '<p>    i1 + 1000</p>'
                '<p>Threshold between values 1 and 98, substituting -999 as a '
-               'nodata value:</p>'
+               'value:</p>'
                '<p>    where((i1 &gt; 1) &amp; (i1 &lt; 98) , i1, -999)</p>'
+               '<p>Replacing the value 0 with a nodata or null value:</p>'
+               '<p>    where(iall!=0, iall, nodata)</p>'
                '<h2>Commands</h2>'
                '<ul>'
                ' <li> Logical operators: &amp;, |, ~</li>'
@@ -123,6 +125,7 @@ class EquationEditor(QtGui.QDialog):
                'sinh, cosh, tanh, arctan2, arcsinh, arccosh, arctanh</li>'
                ' <li> log, log10, log1p, exp, expm1</li>'
                ' <li> sqrt, abs</li>'
+               ' <li> nodata or null value of first band: nodata</li>'
                '</ul>')
         self.textbrowser2.setHtml(tmp)
 
@@ -145,11 +148,12 @@ class EquationEditor(QtGui.QDialog):
             return
         self.label.setText(': '+self.bands[txt])
 
-    def eq_fix(self):
+    def eq_fix(self, indata):
         """ Corrects names in equation to variable names """
         neweq = str(self.equation)
         neweq = neweq.replace('ln', 'log')
         neweq = neweq.replace('^', '**')
+        neweq = neweq.replace('nodata', str(indata[0].nullvalue))
 
         return neweq
 
@@ -198,9 +202,17 @@ class EquationEditor(QtGui.QDialog):
         if self.equation == '':
             return
 
-        neweq = self.eq_fix()
+        neweq = self.eq_fix(indata)
 
-        findat = ne.evaluate(neweq, self.localdict)
+        try:
+            findat = ne.evaluate(neweq, self.localdict)
+        except:
+            QtGui.QMessageBox.warning(
+                self.parent, 'Error',
+                ' Nothing processed! Your equation most likely had an error.',
+                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+            return
+
         outdata = []
 
         if np.size(findat) == 1:
@@ -211,16 +223,17 @@ class EquationEditor(QtGui.QDialog):
                 QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
             return
         elif len(findat.shape) == 2:
-            masktmp = np.logical_or(indata[0].data.mask, np.isnan(findat))
+            findat[np.isnan(findat)] = indata[0].nullvalue
             outdata = [copy.copy(indata[0])]
-            outdata[0].data = np.ma.array(findat, mask=masktmp)
+            outdata[0].data = np.ma.masked_equal(findat, indata[0].nullvalue)
             outdata[0].dataid = 'equation output'
         else:
             for i in range(len(findat)):
-                masktmp = np.logical_or(indata[i].data.mask,
-                                        np.isnan(findat[i]))
+                findat[i][np.isnan(findat[i])] = indata[i].nullvalue
                 outdata.append(copy.copy(indata[i]))
-                outdata[-1].data = np.ma.array(findat[i], mask=masktmp)
+                outdata[-1].data = np.ma.masked_equal(findat[i],
+                                                      indata[i].nullvalue)
+
 
         self.outdata[intype] = outdata
 
