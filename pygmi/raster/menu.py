@@ -88,6 +88,11 @@ class MenuWidget(object):
         self.menu.addAction(self.action_gradients)
         self.action_gradients.triggered.connect(self.gradients)
 
+        self.action_vgradients = QtGui.QAction(self.parent)
+        self.action_vgradients.setText("Vertical Gradients")
+        self.menu.addAction(self.action_vgradients)
+        self.action_vgradients.triggered.connect(self.vgradients)
+
         self.action_visibility = QtGui.QAction(self.parent)
         self.action_visibility.setText("Visibility")
         self.menu.addAction(self.action_visibility)
@@ -224,6 +229,11 @@ class MenuWidget(object):
         """ Compute different gradients """
         fnc = cooper.Gradients(self.parent)
         self.parent.item_insert("Step", "Gradients", fnc)
+
+    def vgradients(self):
+        """ Compute different gradients """
+        fnc = cooper.VGradients(self.parent)
+        self.parent.item_insert("Step", "Vertical\nGradients", fnc)
 
     def norm_data(self):
         """ Normalisation of data"""

@@ -33,9 +33,11 @@
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.signal as si
+import scipy.interpolate as sint
 import copy
 import pygmi.menu_default as menu_default
 from numba import jit
+import pdb
 
 #        data = np.array([   [1, 2, 3, 4, 5, 6, 7, 8, 9],
 #                            [1, 2, 3, 4, 5, 7, 6, 8, 9],
@@ -132,6 +134,97 @@ class Gradients(QtGui.QDialog):
         self.outdata['Raster'] = data
 
         return True
+
+
+class VGradients(QtGui.QDialog):
+    """
+    Class used to gather information via a GUI, for function gradients
+
+    Attributes
+    ----------
+    parent : parent
+    indata : dictionary
+        PyGMI input data in a dictionary
+    outdata :
+        PyGMI input data in a dictionary
+    azi : float
+        Azimuth/filter direction (degrees)
+    elev : float
+        Elevation (for sunshading, degrees from horizontal)
+    order : int
+        Order of DR filter - see paper. Try 1 first.
+    """
+    def __init__(self, parent):
+        QtGui.QDialog.__init__(self, parent)
+
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+        self.azi = 45.
+        self.elev = 45.
+        self.order = 1
+        self.pbar = self.parent.pbar
+
+        self.sb_order = QtGui.QSpinBox()
+        self.sb_azi = QtGui.QSpinBox()
+
+        self.setupui()
+
+        self.sb_azi.setValue(self.azi)
+        self.sb_order.setValue(self.order)
+
+    def setupui(self):
+        """ Setup UI """
+#        self.resize(289, 166)
+        gridlayout = QtGui.QGridLayout(self)
+        label_az = QtGui.QLabel()
+        label_or = QtGui.QLabel()
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
+
+        self.sb_order.setMinimum(1)
+        self.sb_azi.setPrefix("")
+        self.sb_azi.setMinimum(-360)
+        self.sb_azi.setMaximum(360)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle("Vertical Gradient Calculation")
+        label_az.setText("Azimuth")
+        label_or.setText("Order")
+
+#        gridlayout.addWidget(label_az, 0, 0, 1, 1)
+#        gridlayout.addWidget(self.sb_azi, 0, 1, 1, 1)
+#        gridlayout.addWidget(label_or, 3, 0, 1, 1)
+#        gridlayout.addWidget(self.sb_order, 3, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self):
+        """ Settings """
+        temp = self.exec_()
+        if temp == 0:
+            return
+
+        self.azi = self.sb_azi.value()
+        self.order = self.sb_order.value()
+
+        data = copy.deepcopy(self.indata['Raster'])
+
+        for i in self.pbar.iter(range(len(data))):
+#            data[i].data = gradients(data[i].data, self.azi, 0., self.order)
+            mask = data[i].data.mask
+            pdb.set_trace()
+            data[i].data = np.ma.array(vertical(data[i].data))
+            data[i].data.mask = mask
+
+        self.outdata['Raster'] = data
+
+        return True
+
 
 
 def gradients(data, azi, elev, order):

@@ -1183,6 +1183,9 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
                 gmtf2 = m*omega+l*r-n*p
                 gmtf3 = n*omega+m*p-l*q
 
+                # gmtf are common to gravity and magnetic, so have no field
+                # info. pd is the field contribution
+
                 mgval[0, pr, st] += pd[f]*gmtf1  # Hx
                 mgval[1, pr, st] += pd[f]*gmtf2  # Hy
                 mgval[2, pr, st] += pd[f]*gmtf3  # Hz
@@ -1193,7 +1196,7 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
 def dircos(incl, decl, azim):
     """
     Subroutine DIRCOS computes direction cosines from inclination
-        and declination.
+    and declination.
 
     Input parameters:
         incl:  inclination in degrees positive below horizontal.
