@@ -285,6 +285,8 @@ class ExportMod3D(object):
             self.ifile = str(filename)
             self.ext = filename[-3:]
 
+            self.showtext('Saving '+self.ifile+'...')
+
         # Pop up save dialog box
             if self.ext == 'npz':
                 self.savemodel()
@@ -307,7 +309,7 @@ class ExportMod3D(object):
 # Save data
         np.savez_compressed(filename, **outdict)
 #        self.pbars.incr()
-        self.showtext('Model save complete')
+        self.showtext('Model save complete!')
 
     def lmod2dict(self, outdict, pre=''):
         """ place lmod in dictionary """
@@ -406,7 +408,7 @@ class ExportMod3D(object):
                    header=head)
 #        self.pbars.incr()
 
-        self.showtext('csv export complete...')
+        self.showtext('csv export complete!')
 
     def mod3dtokmz(self):
         """ Saves the 3D model and grids in a kmz file.
@@ -761,7 +763,7 @@ class ExportMod3D(object):
         zfile.close()
 #        self.pbars.resetsub(maximum=1)
 #        self.pbars.incr()
-        self.showtext('kmz export complete')
+        self.showtext('kmz export complete!')
 
 
 class Exportkmz(QtGui.QDialog):

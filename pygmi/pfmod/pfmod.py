@@ -53,6 +53,7 @@ class MainWidget(QtGui.QMainWindow):
         self.showprocesslog = self.parent.showprocesslog
         self.lmod1 = LithModel()  # actual model
         self.lmod2 = LithModel()  # regional model
+        self.showprocesslog = self.showtext
 
 # General
         self.txtmsg = ''
@@ -137,6 +138,7 @@ class MainWidget(QtGui.QMainWindow):
 
     def savemodel(self):
         """ Model Save """
+        self.showtext('Saving Model, please do not close the interface...')
         tmp = iodefs.ExportMod3D(self)
         tmp.indata = self.outdata
         tmp.run()
