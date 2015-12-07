@@ -1196,12 +1196,13 @@ class PlotInterp(QtGui.QDialog):
         the case  where data must be initialised before entering at the
         standard 'settings' sub module."""
 
-        if 'Raster' not in self.indata:
-            return
-
         if 'Cluster' in self.indata:
             self.indata = copy.deepcopy(self.indata)
             self.indata = dataprep.cluster_to_raster(self.indata)
+
+        if 'Raster' not in self.indata:
+            return
+
         self.indata['Raster'] = dataprep.merge(self.indata['Raster'])
 
         data = self.indata['Raster']
@@ -1616,6 +1617,10 @@ class PlotInterp(QtGui.QDialog):
     def settings(self):
         """ This is called when the used double clicks the routine from the
         main PyGMI interface"""
+
+        if 'Raster' not in self.indata:
+            return
+
         self.show()
         QtGui.QApplication.processEvents()
 

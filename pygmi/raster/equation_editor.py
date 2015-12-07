@@ -29,6 +29,7 @@ import numpy as np
 import copy
 import numexpr as ne
 import pygmi.raster.dataprep as dataprep
+import pdb
 
 
 class EquationEditor(QtGui.QDialog):
@@ -213,6 +214,8 @@ class EquationEditor(QtGui.QDialog):
                 QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
             return
 
+#        pdb.set_trace()
+
         outdata = []
 
         if np.size(findat) == 1:
@@ -224,16 +227,20 @@ class EquationEditor(QtGui.QDialog):
             return
         elif len(findat.shape) == 2:
             findat[np.isnan(findat)] = indata[0].nullvalue
+            mask = indata[0].data.mask
+            findat[mask] = indata[0].nullvalue
+
             outdata = [copy.copy(indata[0])]
             outdata[0].data = np.ma.masked_equal(findat, indata[0].nullvalue)
             outdata[0].dataid = 'equation output'
         else:
             for i in range(len(findat)):
                 findat[i][np.isnan(findat[i])] = indata[i].nullvalue
+                mask = indata[i].data.mask
+                findat[i][mask] = indata[i].nullvalue
                 outdata.append(copy.copy(indata[i]))
                 outdata[-1].data = np.ma.masked_equal(findat[i],
                                                       indata[i].nullvalue)
-
 
         self.outdata[intype] = outdata
 
