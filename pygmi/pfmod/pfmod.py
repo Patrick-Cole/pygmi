@@ -149,6 +149,7 @@ class MainWidget(QtGui.QMainWindow):
         """
         Help Routine
         """
+
         index = self.tabwidget.currentIndex()
         htmlfile = ''
 
