@@ -75,6 +75,7 @@ class ImportData(object):
             "GeoPak grid (*.grd);;" + \
             "ASCII with .hdr header (*.asc);;" + \
             "ASCII XYZ (*.xyz);;" + \
+            "Arcinfo Binary Grid (hdr.adf);;" + \
             "ArcGIS BIL (*.bil)"
 
         filename, filt = QtGui.QFileDialog.getOpenFileNameAndFilter(
