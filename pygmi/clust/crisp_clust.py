@@ -171,7 +171,6 @@ class CrispClust(QtGui.QDialog):
         """ Settings """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
-            pdb.set_trace()
             self.reportback('Error: Your input datasets have different ' +
                             'sizes. Merge the data first')
             return
