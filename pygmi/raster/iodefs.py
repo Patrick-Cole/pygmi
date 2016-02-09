@@ -33,6 +33,7 @@ import struct
 from pygmi.raster.dataprep import merge
 import os
 import glob
+import pdb
 
 
 class ImportData(object):
@@ -459,8 +460,16 @@ class ExportData(object):
             elif dtype == np.float or dtype == np.float64:
                 data[i].nullvalue = np.float64(dtmp.fill_value)
 
+            elif dtype == np.uint8:
+                data[i].nullvalue = np.uint8(dtmp.fill_value)
+            elif dtype == np.int32:
+                data[i].nullvalue = np.uint32(dtmp.fill_value)
+
             dtmp.set_fill_value(data[i].nullvalue)
             dtmp = dtmp.filled()
+
+            if dtype == np.uint8:
+                data[i].nullvalue = int(data[i].nullvalue)
 
             if drv != 'GTiff':
                 rtmp.SetNoDataValue(data[i].nullvalue)
