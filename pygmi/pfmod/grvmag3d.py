@@ -36,22 +36,20 @@ References:
 from __future__ import print_function
 
 from PyQt4 import QtGui, QtCore
-import numpy as np
-import pylab as plt
 import copy
 import tempfile
+from math import sqrt
+import pdb
+
+import numpy as np
+import pylab as plt
 from scipy.linalg import norm
+from osgeo import gdal
 from pygmi.pfmod.datatypes import LithModel
 from numba import jit
 from matplotlib import cm
-from math import sqrt
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
-from osgeo import gdal
-
-# import scipy.interpolate as si
-import pdb
-# from bokeh.plotting import figure, show, output_file
 
 
 class GravMag(object):
@@ -277,7 +275,7 @@ class GravMag(object):
         mmin = magtmp.mean()-2*magtmp.std()
         mmax = magtmp.mean()+2*magtmp.std()
         mint = (magtmp.std()*4)/10.
-        if magtmp.ptp()>0:
+        if magtmp.ptp() > 0:
             csrange = np.arange(mmin, mmax, mint)
             cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
             plt.clabel(cns, inline=1, fontsize=10)
@@ -292,7 +290,7 @@ class GravMag(object):
         mmax = grvtmp.mean()+2*grvtmp.std()
         mint = (grvtmp.std()*4)/10.
 
-        if grvtmp.ptp()>0:
+        if grvtmp.ptp() > 0:
             csrange = np.arange(mmin, mmax, mint)
             cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
             plt.clabel(cns, inline=1, fontsize=10)
@@ -839,7 +837,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
         mijk = mlist[1].lith_index
         if mijk not in modind:
             continue
-        if 'Background' != mlist[0]:  # and 'Penge' in mlist[0]:
+        if mlist[0] != 'Background':  # and 'Penge' in mlist[0]:
             mlist[1].modified = True
             showtext(mlist[0]+':')
             if parent is not None:
@@ -876,7 +874,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
 
     for mlist in piter(lmod.lith_list.items()):
-        if 'Background' == mlist[0]:
+        if mlist[0] == 'Background':
             continue
         mijk = mlist[1].lith_index
         if mijk not in modind:
@@ -1142,7 +1140,7 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
                     q += I*edge[eno2, 1]
                     r += I*edge[eno2, 2]
 
-        #        From omega, l, m, n PQR get components of field due to face f
+                # From omega, l, m, n PQR get components of field due to face f
                 # dp1 is dot product between (l,m,n) and (x,y,z) or un and r.
 
                 p10 = crs[0, 0]
@@ -1184,7 +1182,8 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
                 gmtf3 = n*omega+m*p-l*q
 
                 # gmtf are common to gravity and magnetic, so have no field
-                # info. pd is the field contribution
+                # info. pd is the field contribution. f is face. pr is profile.
+                # st is station.
 
                 mgval[0, pr, st] += pd[f]*gmtf1  # Hx
                 mgval[1, pr, st] += pd[f]*gmtf2  # Hy

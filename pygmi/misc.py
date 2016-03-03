@@ -61,7 +61,7 @@ class PTime(object):
     def __init__(self):
         self.tchk = [time.clock()]
 
-    def since_first_call(self, msg='since first call'):
+    def since_first_call(self, msg='since first call', show=True):
         """ This function prints out a message and lets you know the time
         passed since the first call.
 
@@ -71,9 +71,12 @@ class PTime(object):
             Optional message
         """
         self.tchk.append(time.clock())
-        print(msg, 'at time (s):', self.tchk[-1] - self.tchk[0])
+        tdiff = self.tchk[-1] - self.tchk[0]
+        if show:
+            print(msg, 'at time (s):', tdiff)
+        return tdiff
 
-    def since_last_call(self, msg='since last call'):
+    def since_last_call(self, msg='since last call', show=True):
         """ This function prints out a message and lets you know the time
         passed since the last call.
 
@@ -83,8 +86,10 @@ class PTime(object):
             Optional message"""
 
         self.tchk.append(time.clock())
-        print(msg, 'time(s):', self.tchk[-1] - self.tchk[-2],
-              'since last call')
+        tdiff = self.tchk[-1] - self.tchk[-2]
+        if show:
+            print(msg, 'time(s):', tdiff, 'since last call')
+        return tdiff
 
 
 class ProgressBar(QtGui.QProgressBar):

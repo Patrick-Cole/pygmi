@@ -86,8 +86,6 @@ class TiltDepth(QtGui.QDialog):
         self.y1 = None
         self.y2 = None
 
-
-
         self.figure = Figure()
         self.mmc = FigureCanvas(self.figure)
         self.axes = self.figure.add_subplot(111)
