@@ -157,7 +157,7 @@ class Mod3dDisplay(QtGui.QDialog):
         width = self.glwidget.width()
         height = self.glwidget.height()
         tmp = self.glwidget.readPixels()
-        image = Image.fromstring('RGB', (width, height), tmp)
+        image = Image.frombytes('RGB', (width, height), tmp)
         image = image.transpose(Image.FLIP_TOP_BOTTOM)
         image.save(filename, ftype)
 

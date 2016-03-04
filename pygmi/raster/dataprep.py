@@ -1137,7 +1137,6 @@ def rtp(data, I_deg, D_deg):
 
 # Create dataset
     dat = Data()
-#    dat.data = np.ma.masked_invalid(np.abs(zrtp))
     dat.data = np.ma.masked_invalid(zrtp)
     dat.data.mask = data.data.mask
     dat.rows, dat.cols = zrtp.shape
