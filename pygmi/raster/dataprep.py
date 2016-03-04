@@ -28,6 +28,7 @@ from __future__ import print_function
 
 from PyQt4 import QtGui, QtCore
 import os
+import pdb
 import numpy as np
 from osgeo import gdal, osr, ogr
 from pygmi.raster.datatypes import Data
@@ -1127,15 +1128,17 @@ def rtp(data, I_deg, D_deg):
 
     I = np.deg2rad(I_deg)
     D = np.deg2rad(D_deg)
-    alpha = np.arctan2(KX, KY)
+    alpha = np.arctan2(KY, KX)
+
     filt = 1/(np.sin(I)+1j*np.cos(I)*np.cos(D-alpha))**2
 
     zrtp = np.fft.ifft2(fftmod*filt)
-    zrtp = np.abs(zrtp) + datamedian
+    zrtp = zrtp.real + datamedian
 
 # Create dataset
     dat = Data()
-    dat.data = np.ma.masked_invalid(np.abs(zrtp))
+#    dat.data = np.ma.masked_invalid(np.abs(zrtp))
+    dat.data = np.ma.masked_invalid(zrtp)
     dat.data.mask = data.data.mask
     dat.rows, dat.cols = zrtp.shape
     dat.nullvalue = data.data.fill_value
@@ -1639,3 +1642,33 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz = np.ma.array(zfin)
     newz.mask = newmask
     return newz
+
+def tests():
+    """ Tests to debug RTP """
+    from pygmi.raster.iodefs import get_raster
+    import pdb
+    import matplotlib.pyplot as plt
+
+    datrtp = get_raster('C:\\Work\\Programming\\pygmi\\data\\RTP\\South_Africa_EMAG2_diffRTP_surfer.grd')
+    dat = get_raster('C:\\Work\\Programming\\pygmi\\data\\RTP\\South_Africa_EMAG2_TMI_surfer.grd')
+    dat = dat[0]
+    datrtp = datrtp[0]
+    incl = -65.
+    decl = -22.
+
+    dat2 = rtp(dat, incl, decl)
+
+    plt.subplot(2,1,1)
+    plt.imshow(dat.data, vmin=-1200, vmax=1200)
+    plt.colorbar()
+    plt.subplot(2,1,2)
+    plt.imshow(dat2.data, vmin=-1200, vmax=1200)
+    plt.colorbar()
+    plt.show()
+
+
+
+
+
+if __name__ == "__main__":
+    tests()
