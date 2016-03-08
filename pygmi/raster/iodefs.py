@@ -67,9 +67,13 @@ class ImportData(object):
     def settings(self):
         """ Settings """
         ext = \
+            "Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;" + \
             "ERMapper (*.ers);;" + \
             "ENVI (*.hdr);;" + \
+            "ERDAS Imagine (*.img);;" + \
+            "PCI Geomatics Database File (*.pix);;" + \
             "GeoTiff (*.tif);;" + \
+            "SAGA binary grid (*.sdat);;" + \
             "Geosoft UNCOMPRESSED grid (*.grd);;" + \
             "Geosoft (*.gxf);;" + \
             "Surfer grid (v.6) (*.grd);;" + \
