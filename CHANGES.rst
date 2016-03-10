@@ -1,6 +1,21 @@
 =========
 Changelog
 =========
+v2.2.10, 10 March 2016
+----------------------
+* Added some Raster imports
+* Fixed a bug preventing the saving of an image in the 3D viewer. It was caused by a changing library API.
+* Fixed the reduction to the pole module.
+* Removed pdb in crisp clust
+* Fixed bug affecting export of integer datasets
+* Arcinfo grid
+* Fixed a new bug with equation editor
+* Added save message for 3D model save.
+* Equation editor fix: Added null values, Fixed masking of null values
+* Added alpha version Vertical Gradients - but there is still lots of work to be done. It does not play well with null values.
+* Bugfix with export csv
+* New exports all profiles from a 3-d model
+
 v2.2.9, 2 October 2015
 ----------------------
 * Fixed a bug crashing regional test
