@@ -1,0 +1,9 @@
+numpy
+scipy
+matplotlib
+gdal
+numexpr
+numba
+PyQt4
+Pillow
+PyOpenGL

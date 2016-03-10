@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.raster package &mdash; PyGMI 2.2.9 documentation</title>
+    <title>pygmi.raster package &mdash; PyGMI 2.2.10 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.9',
+        VERSION:     '2.2.10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.9 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.10 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.test package" href="pygmi.test.html" />
     <link rel="prev" title="pygmi.pfmod package" href="pygmi.pfmod.html" /> 
@@ -244,6 +244,65 @@
 <dl class="method">
 <dt id="pygmi.raster.cooper.Tilt1.setupui">
 <code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Tilt1.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.raster.cooper.VGradients">
+<em class="property">class </em><code class="descclassname">pygmi.raster.cooper.</code><code class="descname">VGradients</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.VGradients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<p>Class used to gather information via a GUI, for function gradients</p>
+<dl class="attribute">
+<dt id="pygmi.raster.cooper.VGradients.parent">
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.raster.cooper.VGradients.indata">
+<code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em></p>
+<p>PyGMI input data in a dictionary</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.raster.cooper.VGradients.outdata">
+<code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>PyGMI input data in a dictionary</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.raster.cooper.VGradients.azi">
+<code class="descname">azi</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.azi" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>Azimuth/filter direction (degrees)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.raster.cooper.VGradients.elev">
+<code class="descname">elev</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.elev" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>float</em></p>
+<p>Elevation (for sunshading, degrees from horizontal)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.raster.cooper.VGradients.order">
+<code class="descname">order</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.order" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>int</em></p>
+<p>Order of DR filter - see paper. Try 1 first.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.cooper.VGradients.settings">
+<code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.VGradients.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.cooper.VGradients.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.VGradients.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setup UI</p>
 </dd></dl>
 
@@ -1009,6 +1068,12 @@ M x N array of z values</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pygmi.raster.dataprep.tests">
+<code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">tests</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.tests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests to debug RTP</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="pygmi.raster.dataprep.trim_raster">
 <code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">trim_raster</code><span class="sig-paren">(</span><em>olddata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.trim_raster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Function to trim nulls from a raster dataset.</p>
@@ -1237,7 +1302,7 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 
 <dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.eq_fix">
-<code class="descname">eq_fix</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.eq_fix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">eq_fix</code><span class="sig-paren">(</span><em>indata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.eq_fix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Corrects names in equation to variable names</p>
 </dd></dl>
 
@@ -3089,6 +3154,12 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.raster.menu.MenuWidget.vgradients">
+<code class="descname">vgradients</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.vgradients" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute different gradients</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.visibility">
 <code class="descname">visibility</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.visibility" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute visibility</p>
@@ -3466,7 +3537,7 @@ main PyGMI interface</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
     </div>
   </body>
 </html>

@@ -7,7 +7,9 @@ Notices
 =======
 Welcome to the new PyGMI website! It contains more information, including API documentation for the project.
 
-October 2, 2015: `PyGMI 2.2.9 <https://github.com/Patrick-Cole/pygmi/releases/tag/v2.2.9>`_ is now released.
+March 7, 2016: `PyGMI 2.2.10 <https://github.com/Patrick-Cole/pygmi/releases/tag/v2.2.10>`_ is now released.
+
+PyGMI is now being developed using python 3.5. It may still work on older versions, however.
 
 Overview
 ========
