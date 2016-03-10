@@ -11,9 +11,28 @@ It is released under the Gnu General Public License version 3.0
 For license information see the file LICENSE.txt
 
 ##Requirements
-PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.4 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is now being done in Python 3.5 on Windows.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
+
+* Python 3.5.1
+* NumPy 1.10.4
+* SciPy 0.17.0
+* Matplotlib 1.5.1
+* six 1.10.0 (used by Matplotlib, should be installed automatically)
+* pytz 2015.7 (used by Matplotlib, should be installed automatically)
+* python-dateutil 2.4.2 (used by Matplotlib, should be installed automatically)
+* pyparsing 2.0.7 (used by Matplotlib, should be installed automatically)
+* cycler 0.9.0 (used by Matplotlib, should be installed automatically)
+* PyQt 4.11.4
+* GDAL 2.0.2
+* numexpr 2.4.6
+* numba 0.23.1
+* llvmlite 0.8.0 (used by numba, should be installed automatically)
+* PyOpenGL 3.1.1b1
+
+
+It should also still work with the following or newer, if you wish to try installing Python 3.4:
 
 * Python 3.4.3
 * NumPy 1.9.2
