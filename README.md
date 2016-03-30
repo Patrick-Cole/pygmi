@@ -92,6 +92,13 @@ As you can see, all we have done is removed PyQt4 from the requirements. You wil
 
 	python setup.py install
 
+Note that you can simply install Anaconda use its 'conda install' command to satisfy dependencies. For example:
+
+	conda install gdal
+	conda install krb5
+
+Make sure that krb5 is installed, or gdal will not work.
+
 ###Alternative execution
 
 If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
