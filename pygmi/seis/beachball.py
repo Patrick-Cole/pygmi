@@ -514,8 +514,12 @@ def beachball(fm, centerx, centery, diam):
 
     Xs2, Ys2 = pol2cart(th2*d2r, 90*np.ones_like(th2))
 
-    X = np.concatenate((X1, Xs1, X2, Xs2), 1)
-    Y = np.concatenate((Y1, Ys1, Y2, Ys2), 1)
+#    import pdb
+#    pdb.set_trace()
+#    X = np.concatenate((X1, Xs1, X2, Xs2), 1)
+#    Y = np.concatenate((Y1, Ys1, Y2, Ys2), 1)
+    X = np.hstack((X1, Xs1, X2, Xs2))
+    Y = np.hstack((Y1, Ys1, Y2, Ys2))
 
     if D > 0:
         X = ampy*X * D/90 + CY

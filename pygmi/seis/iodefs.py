@@ -458,6 +458,9 @@ class ImportGenericFPS(object):
             return False
 
         dat = []
+        if datatmp.ndim == 1:
+            datatmp = np.expand_dims(datatmp, 0)
+
         for i in datatmp:
             event = {}
             tmp = sdt.seisan_1()
