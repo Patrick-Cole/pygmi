@@ -25,11 +25,11 @@
 """ Import Data """
 
 from PyQt4 import QtGui
+import os
 import numpy as np
 from osgeo import ogr
 from pygmi.vector.datatypes import PData
 from pygmi.vector.datatypes import VData
-import os
 
 
 class ImportLEMI417Data(object):

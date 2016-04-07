@@ -25,18 +25,15 @@
 """ Profile Display Tab Routines """
 
 from PyQt4 import QtGui, QtCore
+import os
 import numpy as np
 import scipy.interpolate as si
-from pygmi.pfmod import misc
-import pygmi.raster.iodefs as ir
-import os
-from pygmi.pfmod.grvmag3d import gridmatch
-
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import \
-    NavigationToolbar2QT as NavigationToolbar
-import pdb
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+import pygmi.raster.iodefs as ir
+from pygmi.pfmod import misc
+from pygmi.pfmod.grvmag3d import gridmatch
 
 
 class ProfileDisplay(object):
@@ -52,7 +49,7 @@ class ProfileDisplay(object):
         self.userint = QtGui.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod1)
-        self.mpl_toolbar = NavigationToolbar(self.mmc, self.userint)
+        self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
         self.sb_profnum = QtGui.QSpinBox()
         self.hs_profnum = MySlider()
@@ -89,7 +86,7 @@ class ProfileDisplay(object):
         self.sb_profnum.setMaximum(999999999)
         self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
         self.hs_ppic_opacity.setMaximum(255)
-        self.hs_ppic_opacity.setProperty("value", 255)
+        self.hs_ppic_opacity.setProperty("value", 0)
         self.hs_ppic_opacity.setOrientation(QtCore.Qt.Horizontal)
         self.hs_ppic_opacity.setTickPosition(QtGui.QSlider.TicksAbove)
         self.dsb_axis_custmin.setValue(0.)
@@ -368,7 +365,10 @@ class ProfileDisplay(object):
         return data[0]
 
     def profpic_hs(self):
-        """ Horizontal slider to change the profile """
+        """
+        Horizontal slider to change the opacity of profile and overlain
+        picture
+        """
         self.update_model()
         self.change_model(slide=True)
         self.update_plot(slide=True)
@@ -382,7 +382,8 @@ class ProfileDisplay(object):
         self.update_model()
         self.lmod1.curprof = self.sb_profnum.value()
         self.change_model(slide=True)
-        self.update_plot(slide=False)
+        self.update_plot(slide=True)
+#        self.update_plot(slide=False)
 
     def hprofnum(self):
         """ Routine to change a profile from spinbox"""
@@ -393,7 +394,8 @@ class ProfileDisplay(object):
         self.update_model()
         self.lmod1.curprof = self.sb_profnum.value()
         self.change_model(slide=True)
-        self.update_plot(slide=self.hs_profnum.isSliderDown())
+        self.update_plot(slide=True)
+#        self.update_plot(slide=self.hs_profnum.isSliderDown())
 
     def rcopy(self):
         """ Do a ranged copy on a profile """
@@ -505,8 +507,7 @@ class ProfileDisplay(object):
                         self.mmc.init_plot(tmprng, tmpprof, extent, tmprng2,
                                            tmpprof2)
                     else:
-                        self.mmc.slide_plot(tmprng, tmpprof, extent, tmprng2,
-                                            tmpprof2)
+                        self.mmc.slide_plot(tmprng, tmpprof, tmprng2, tmpprof2)
                     return
                 else:
                     tmpprof2 = data2.data[ycrd, :]
@@ -521,8 +522,7 @@ class ProfileDisplay(object):
                         self.mmc.init_plot(tmprng, tmpprof, extent, tmprng2,
                                            tmpprof2)
                     else:
-                        self.mmc.slide_plot(tmprng, tmpprof, extent, tmprng2,
-                                            tmpprof2)
+                        self.mmc.slide_plot(tmprng, tmpprof, tmprng2, tmpprof2)
                     return
                 else:
                     tmpprof2 = data2.data[::-1, xcrd]
@@ -544,7 +544,7 @@ class ProfileDisplay(object):
                 extent[2:] = [tmpprof2.min(), tmpprof2.max()]
 
         if slide is True:
-            self.mmc.slide_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
+            self.mmc.slide_plot(tmprng, tmpprof, tmprng2, tmpprof2)
         else:
             self.mmc.init_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
 
@@ -652,6 +652,7 @@ class MyMplCanvas(FigureCanvas):
         self.punit = ''
         self.xlabel = 'Eastings (m)'
         self.plotisinit = False
+        self.opac = 1.0
 
 # Events
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
@@ -702,6 +703,10 @@ class MyMplCanvas(FigureCanvas):
                 extent = self.axes.get_xbound()
                 self.paxes.set_xbound(extent[0], extent[1])
                 self.figure.canvas.draw()
+                QtGui.QApplication.processEvents()
+
+                self.slide_grid(self.mdata)
+                QtGui.QApplication.processEvents()
             else:
                 self.parent.update_model()
 
@@ -813,26 +818,31 @@ class MyMplCanvas(FigureCanvas):
         # back into it are the graph will go blank on a draw(). This is the
         # reason for the ims and prf commands below.
 
+        self.opac = opac
+
         self.paxes.set_xbound(extent[0], extent[1])
 
         self.ims.set_visible(False)
+        self.ims2.set_visible(False)
         self.axes.set_xlim(extent[0], extent[1])
         self.axes.set_ylim(extent[2], extent[3])
-
-        if dat2 is not None:
-            self.ims2.set_data(dat2.data)
-            self.ims2.set_extent(self.dat_extent(dat2))
-            self.ims2.set_clim(dat2.data.min(), dat2.data.max())
 
         self.figure.canvas.draw()
         QtGui.QApplication.processEvents()
         self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
+        if dat2 is not None:
+            self.ims2.set_visible(True)
+            self.ims2.set_data(dat2.data)
+            self.ims2.set_extent(dat_extent(dat2))
+            self.ims2.set_clim(dat2.data.min(), dat2.data.max())
+            self.ims2.set_alpha(self.opac)
+
         self.ims.set_visible(True)
         self.ims.set_extent(extent)
         tmp = self.luttodat(dat)
         self.ims.set_data(tmp)
-        self.ims.set_alpha(opac)
+#        self.ims.set_alpha(opac)
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.figure.canvas.draw()
@@ -840,15 +850,21 @@ class MyMplCanvas(FigureCanvas):
 
         self.mdata = dat
 
-    def slide_grid(self, dat, dat2=None, opac=1.0):
+    def slide_grid(self, dat, dat2=None, opac=None):
         """ Slider """
+        if opac is not None:
+            self.opac = opac
         self.mdata = dat
         tmp = self.luttodat(dat)
         self.ims.set_data(tmp)
-        self.ims.set_alpha(opac)
+
+        if dat2 is not None:
+            self.ims2.set_visible(True)
+            self.ims2.set_alpha(self.opac)
 
         self.figure.canvas.restore_region(self.bbox)
         self.axes.draw_artist(self.ims)
+        self.axes.draw_artist(self.ims2)
         self.figure.canvas.update()
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
@@ -862,28 +878,12 @@ class MyMplCanvas(FigureCanvas):
         self.axes.draw_artist(self.prf[0])
         self.figure.canvas.update()
 
-    def dat_extent(self, dat):
-        """ Gets the extend of the dat variable """
-        left = dat.tlx
-        top = dat.tly
-        right = left + dat.cols*dat.xdim
-        bottom = top - dat.rows*dat.ydim
-        return (left, right, bottom, top)
-
 # This section is just for the profile line plot
-
-    def extentchk(self, extent):
-        """ Checks extent """
-        dmin = extent[2]
-        dmax = extent[3]
-        if dmin == dmax:
-            dmax = dmin+1
-        return dmin, dmax
 
     def init_plot(self, xdat, dat, extent, xdat2, dat2):
         """ Updates the single color map """
         self.paxes.autoscale(False)
-        dmin, dmax = self.extentchk(extent)
+        dmin, dmax = extentchk(extent)
         self.paxes.cla()
         self.paxes.ticklabel_format(useOffset=False)
         self.paxes.set_title(self.ptitle)
@@ -905,7 +905,7 @@ class MyMplCanvas(FigureCanvas):
         QtGui.QApplication.processEvents()
         self.plotisinit = True
 
-    def slide_plot(self, xdat, dat, extent, xdat2, dat2):
+    def slide_plot(self, xdat, dat, xdat2, dat2):
         """ Slider """
         self.figure.canvas.restore_region(self.pbbox)
         self.cal[0].set_data([xdat, dat])
@@ -942,14 +942,15 @@ class MySlider(QtGui.QSlider):
         if (event.button() == QtCore.Qt.LeftButton and
                 sr.contains(event.pos()) is False):
             if self.orientation() == QtCore.Qt.Vertical:
-                self.setValue(self.minimum() + ((self.maximum()-self.minimum())
-                              * (self.height()-event.y())) / self.height())
+                self.setValue(self.minimum()+((self.maximum()-self.minimum()) *
+                                              (self.height()-event.y())) /
+                              self.height())
             else:
                 halfHandleWidth = (0.5 * sr.width()) + 0.5
                 adaptedPosX = event.x()
-                if (adaptedPosX < halfHandleWidth):
+                if adaptedPosX < halfHandleWidth:
                     adaptedPosX = halfHandleWidth
-                if (adaptedPosX > self.width() - halfHandleWidth):
+                if adaptedPosX > self.width() - halfHandleWidth:
                     adaptedPosX = self.width() - halfHandleWidth
                 newWidth = (self.width() - halfHandleWidth) - halfHandleWidth
                 normalizedPosition = (adaptedPosX-halfHandleWidth)/newWidth
@@ -959,3 +960,21 @@ class MySlider(QtGui.QSlider):
                 self.setValue(newVal)
             event.accept()
         super(MySlider, self).mousePressEvent(event)
+
+
+def dat_extent(dat):
+    """ Gets the extend of the dat variable """
+    left = dat.tlx
+    top = dat.tly
+    right = left + dat.cols*dat.xdim
+    bottom = top - dat.rows*dat.ydim
+    return (left, right, bottom, top)
+
+
+def extentchk(extent):
+    """ Checks extent """
+    dmin = extent[2]
+    dmax = extent[3]
+    if dmin == dmax:
+        dmax = dmin+1
+    return dmin, dmax

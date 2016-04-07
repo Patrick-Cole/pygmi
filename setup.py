@@ -77,5 +77,4 @@ setup(name='pygmi',
 
       entry_points={'gui_scripts': ['pygmi = pygmi:main']},
 
-      zip_safe=False
-      )
+      zip_safe=False)

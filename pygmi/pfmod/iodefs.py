@@ -25,21 +25,21 @@
 """ Import Data """
 
 from PyQt4 import QtGui, QtCore
-from osgeo import osr, gdal
-import os
-import numpy as np
 import sys
-import matplotlib.pyplot as plt
+import os
 import zipfile
+import numpy as np
+from osgeo import osr, gdal
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 from pygmi.pfmod.datatypes import Data, LithModel
 import pygmi.pfmod.grvmag3d as grvmag3d
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.menu_default as menu_default
 import pygmi.raster.dataprep as dp
-
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
-from . import datatypes
+from pygmi.pfmod import datatypes
 sys.modules['datatypes'] = datatypes
 
 
@@ -150,7 +150,7 @@ class ImportMod3D(object):
                     lmod.yrange[1], lmod.zrange[1], lmod.dxy, lmod.d_z)
         lmod.update_lith_list_reverse()
 
-        for i in range(len(x)):
+        for i, _ in enumerate(x):
             col = int((x[i]-lmod.xrange[0])/lmod.dxy)
             row = int((lmod.yrange[1]-y[i])/lmod.dxy)
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
@@ -708,7 +708,7 @@ class ExportMod3D(object):
                 '</COLLADA>')
 
         zfile = zipfile.ZipFile(filename, 'w')
-        for i in range(len(modeldae)):
+        for i, _ in enumerate(modeldae):
             zfile.writestr('models\\mod3d'+str(i)+'.dae', modeldae[i])
 
         for i in self.lmod.griddata.keys():
@@ -924,6 +924,11 @@ class ImportPicture(QtGui.QDialog):
         else:
             self.grid.dataid = r'South to North'
 
+        self.grid.dataid = "Image"
+        self.grid.rows = self.grid.data.shape[0]
+        self.grid.cols = self.grid.data.shape[1]
+        self.grid.nullvalue = 0
+
         self.grid.xdim = (self.max_coord-self.min_coord)/self.grid.cols
         self.grid.ydim = (self.max_alt-self.min_alt)/self.grid.rows
         self.grid.tlx = self.min_coord
@@ -962,8 +967,11 @@ class ImportPicture(QtGui.QDialog):
 
         self.ifile = filename
 
-        data = gtiff(filename)
-        self.grid = data[0]
+#        data = gtiff(filename)
+        data = mpimg.imread(filename)
+
+        self.grid = Data()
+        self.grid.data = data
 
         if (self.dsb_picimp_west.value() >=
                 self.dsb_picimp_east.value()):
@@ -985,6 +993,8 @@ def gtiff(filename):
     ngreen = dataset.GetRasterBand(2).ReadAsArray()
     nblue = dataset.GetRasterBand(3).ReadAsArray()
     itmp = np.uint32(nred*65536+ngreen*256+nblue+int('FF000000', 16))
+
+#    itmp = np.transpose([nred, ngreen, nblue])
 
     gtr = dataset.GetGeoTransform()
     dat = [Data()]

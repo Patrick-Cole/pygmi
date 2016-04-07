@@ -117,7 +117,7 @@ class MyMplCanvas(FigureCanvas):
 
         for idat in self.data:
             pxy = idat[:2]
-            np1 = idat[2:-1]
+            np1 = idat[3:-1]
             pwidth = self.pwidth*idat[-1]
             xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth)
 
@@ -193,7 +193,7 @@ class BeachBall(QtGui.QDialog):
                            i['1'].latitude,
                            i['1'].magnitude_1]
                     tmpxy.append([tmp[0], tmp[1]])
-                    tmpmag.append(tmp[2])
+                    tmpmag.append(tmp[-1])
 
             if len(tmpmag) > 1:
                 pwidth = min(sdist.pdist(tmpxy).min()/(2*max(tmpmag)), pwidth)
@@ -285,14 +285,24 @@ class BeachBall(QtGui.QDialog):
         layer.CreateField(ogr.FieldDefn("Dip", ogr.OFTReal))
         layer.CreateField(ogr.FieldDefn("Rake", ogr.OFTReal))
         layer.CreateField(ogr.FieldDefn("Magnitude", ogr.OFTReal))
+        layer.CreateField(ogr.FieldDefn("Quadrant", ogr.OFTString))
+        layer.CreateField(ogr.FieldDefn("Depth", ogr.OFTReal))
 
         layer2 = data_source2.CreateLayer("Fault Plane Solution Boundaries",
                                           srs, ogr.wkbPolygon)
 
+        layer2.CreateField(ogr.FieldDefn("Strike", ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn("Dip", ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn("Rake", ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn("Magnitude", ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn("Quadrant", ogr.OFTString))
+        layer2.CreateField(ogr.FieldDefn("Depth", ogr.OFTReal))
+
         # Calculate BeachBall
         for idat in indata:
             pxy = idat[:2]
-            np1 = idat[2:-1]
+            np1 = idat[3:-1]
+            depth = idat[2]
             pwidth = self.mmc.pwidth*idat[-1]
             xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth)
 
@@ -320,19 +330,24 @@ class BeachBall(QtGui.QDialog):
             feature.SetField("Dip", np1[1])
             feature.SetField("Rake", np1[2])
             feature.SetField("Magnitude", idat[-1])
+            feature.SetField("Quadrant", "Compressional")
+            feature.SetField("Depth", depth)
 
             feature.SetGeometry(poly)
             # Create the feature in the layer (shapefile)
             layer.CreateFeature(feature)
             # Destroy the feature to free resources
-            feature.Destroy()
 
-            feature = ogr.Feature(layer2.GetLayerDefn())
-            feature.SetGeometry(poly1)
+            feature2 = ogr.Feature(layer2.GetLayerDefn())
+            feature2.SetField("Quadrant", "Tensional and Compressional")
+
+            feature2.SetGeometry(poly1)
             # Create the feature in the layer (shapefile)
+            layer2.CreateFeature(feature2)
             layer2.CreateFeature(feature)
             # Destroy the feature to free resources
             feature.Destroy()
+            feature2.Destroy()
 
         data_source.Destroy()
         data_source2.Destroy()
@@ -346,7 +361,7 @@ class BeachBall(QtGui.QDialog):
         indata = []
         for i in data:
             if i['F'].get(self.algorithm) is not None:
-                tmp = [i['1'].longitude, i['1'].latitude,
+                tmp = [i['1'].longitude, i['1'].latitude, i['1'].depth,
                        i['F'][self.algorithm].strike,
                        i['F'][self.algorithm].dip,
                        i['F'][self.algorithm].rake,
@@ -514,16 +529,14 @@ def beachball(fm, centerx, centery, diam):
 
     Xs2, Ys2 = pol2cart(th2*d2r, 90*np.ones_like(th2))
 
-#    import pdb
-#    pdb.set_trace()
 #    X = np.concatenate((X1, Xs1, X2, Xs2), 1)
 #    Y = np.concatenate((Y1, Ys1, Y2, Ys2), 1)
     X = np.hstack((X1, Xs1, X2, Xs2))
     Y = np.hstack((Y1, Ys1, Y2, Ys2))
 
     if D > 0:
-        X = ampy*X * D/90 + CY
-        Y = Y * D/90 + CX
+        X = ampy*X*D/90 + CY
+        Y = Y*D/90 + CX
         phid = np.arange(0, 2*np.pi, 0.01)
         x, y = pol2cart(phid, 90)
         xx = x*D/90 + CX

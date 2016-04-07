@@ -417,8 +417,8 @@ class ImportGenericFPS(object):
         """ Settings """
         QtGui.QMessageBox.information(self.parent, 'File Format',
                                       'The file should have the following'
-                                      ' columns: longitude, latitude, strike,'
-                                      ' dip, rake, magnitude.')
+                                      ' columns: longitude, latitude, depth,'
+                                      ' strike, dip, rake, magnitude.')
 
         ext = \
             "Comma Delimeted Text (*.csv);;" +\
@@ -466,14 +466,15 @@ class ImportGenericFPS(object):
             tmp = sdt.seisan_1()
             tmp.longitude = i[0]
             tmp.latitude = i[1]
+            tmp.depth = i[2]
             tmp.magnitude_1 = i[-1]
             event['1'] = tmp
 
             tmp = sdt.seisan_F()
             tmp.program_used = 'Generic'
-            tmp.strike = i[2]
-            tmp.dip = i[3]
-            tmp.rake = i[4]
+            tmp.strike = i[3]
+            tmp.dip = i[4]
+            tmp.rake = i[5]
             event['F'] = {}
             event['F']['Generic'] = tmp
             dat.append(event)
