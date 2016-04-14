@@ -30,6 +30,7 @@ import os
 import zipfile
 import numpy as np
 from osgeo import osr, gdal
+from osgeo import ogr
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from pygmi.pfmod.datatypes import Data, LithModel
@@ -37,6 +38,7 @@ import pygmi.pfmod.grvmag3d as grvmag3d
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.menu_default as menu_default
 import pygmi.raster.dataprep as dp
+import pdb
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
 from pygmi.pfmod import datatypes
@@ -276,7 +278,7 @@ class ExportMod3D(object):
         for self.lmod in self.indata['Model3D']:
             filename = QtGui.QFileDialog.getSaveFileName(
                 self.parent, 'Save File', '.',
-                'npz (*.npz);;kmz (*.kmz);;csv (*.csv)')
+                'npz (*.npz);;shapefile (*.shp);;kmz (*.kmz);;csv (*.csv)')
 
             if filename == '':
                 return
@@ -292,6 +294,8 @@ class ExportMod3D(object):
                 self.savemodel()
             if self.ext == 'kmz':
                 self.mod3dtokmz()
+            if self.ext == 'shp':
+                self.mod3dtoshp()
             if self.ext == 'csv':
                 self.mod3dtocsv()
 
@@ -765,6 +769,161 @@ class ExportMod3D(object):
 #        self.pbars.incr()
         self.showtext('kmz export complete!')
 
+    def mod3dtoshp(self):
+        """ Saves the 3D model and grids in a shapefile file.
+        Note:
+        Only the boundary of the area is in degrees. The actual coordinates
+        are still in meters.
+        """
+
+        mvis_3d = mvis3d.Mod3dDisplay()
+        mvis_3d.lmod1 = self.lmod
+#        mvis_3d.checkbox_smooth.setChecked(True)
+
+        rev = 1  # should be 1 normally
+
+        xrng = np.array(self.lmod.xrange, dtype=float)
+        yrng = np.array(self.lmod.yrange, dtype=float)
+        zrng = np.array(self.lmod.zrange, dtype=float)
+
+        if 'Raster' in self.indata:
+            wkt = self.indata['Raster'][0].wkt
+        else:
+            wkt = ''
+        prjkmz = Exportkmz(wkt)
+        tmp = prjkmz.exec_()
+
+        if tmp == 0:
+            return
+
+        smooth = prjkmz.checkbox_smooth.isChecked()
+
+        orig_wkt = prjkmz.proj.wkt
+        orig = osr.SpatialReference()
+        orig.ImportFromWkt(orig_wkt)
+
+        targ = osr.SpatialReference()
+        targ.SetWellKnownGeogCS('WGS84')
+        prj = osr.CoordinateTransformation(orig, targ)
+
+        res = prj.TransformPoint(xrng[0], yrng[0])
+        lonwest, latsouth = res[0], res[1]
+        res = prj.TransformPoint(xrng[1], yrng[1])
+        loneast, latnorth = res[0], res[1]
+
+# Get Save Name
+        filename = self.ifile
+
+        self.showtext('shapefile export starting...')
+
+# Move to 3d model tab to update the model stuff
+        self.showtext('updating 3d model...')
+
+        mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
+        mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
+        mvis_3d.gdata = self.lmod.lith_index[::1, ::1, ::-1]
+        itmp = np.sort(np.unique(self.lmod.lith_index))
+        itmp = itmp[itmp > 0]
+        tmp = np.ones((255, 4))*255
+        for i in itmp:
+            tmp[i, :3] = self.lmod.mlut[i]
+        mvis_3d.lut = tmp
+#        mvis_3d.update_plot(fullcalc = True)
+        mvis_3d.update_model(smooth)
+
+        self.showtext('creating shapefile file')
+#        heading = str(0.)
+#        tilt = str(45.)  # angle from vertical
+#        lat = str(np.mean([latsouth, latnorth]))  # coord of object
+#        lon = str(np.mean([lonwest, loneast]))  # coord of object
+#        rng = str(max(xrng.ptp(), yrng.ptp(), zrng.ptp()))  # range to object
+#        alt = str(0)  # alt of object eye is looking at (meters)
+#        lato = str(latsouth)
+#        lono = str(lonwest)
+
+        driver = ogr.GetDriverByName('ESRI Shapefile')
+
+        datasource = driver.CreateDataSource(self.ifile)
+        layer = datasource.CreateLayer('Model',
+                                       geom_type=ogr.wkbMultiPolygon25D)
+
+        layer.CreateField(ogr.FieldDefn("Lithology", ogr.OFTString))
+        layer.CreateField(ogr.FieldDefn("Susc", ogr.OFTReal))
+        layer.CreateField(ogr.FieldDefn("Density", ogr.OFTReal))
+
+
+# update colors
+        self.lmod.update_lith_list_reverse()
+
+        mvis_3d.update_for_kmz()
+
+#        pmax = len(mvis_3d.gfaces)
+#        self.pbars.resetsub(maximum=pmax)
+        lkey = list(mvis_3d.faces.keys())
+        lkey.pop(lkey.index(0))
+        lithcnt = -1
+
+#        alt = 0
+        for lith in lkey:
+            lithtext = mvis_3d.lmod1.lith_list_reverse[lith]
+            lithsusc = self.lmod.lith_list[lithtext].susc
+            lithdens = self.lmod.lith_list[lithtext].density
+
+            faces = np.array(mvis_3d.gfaces[lith])
+            # Google wants the model to have origin (0,0)
+
+            points = mvis_3d.gpoints[lith]
+
+#            points -= mvis_3d.origin
+#
+#            x = points[:, 0]
+#            y = points[:, 1]
+#            earthrad = 6378137.
+#            z = earthrad-np.sqrt(earthrad**2-(x**2+y**2))
+#
+#            pdb.set_trace()
+#            points[:, 2] -= z
+#
+#            if rev == -1:
+#                points += [xrng.ptp(), yrng.ptp(), 0]
+
+            lithcnt += 1
+
+            for f in faces:
+                multipolygon = ogr.Geometry(ogr.wkbMultiPolygon25D)
+                tmp = points[f]
+
+                ring1 = ogr.Geometry(ogr.wkbLinearRing)
+                ring1.AddPoint(tmp[0, 0], tmp[0, 1], tmp[0, 2])
+                ring1.AddPoint(tmp[1, 0], tmp[1, 1], tmp[1, 2])
+                ring1.AddPoint(tmp[2, 0], tmp[2, 1], tmp[2, 2])
+                ring1.AddPoint(tmp[0, 0], tmp[0, 1], tmp[0, 2])
+
+            # Create polygon #1
+                poly1 = ogr.Geometry(ogr.wkbPolygon25D)
+                poly1.AddGeometry(ring1)
+                multipolygon.AddGeometry(poly1)
+
+                ring1 = None
+                poly1 = None
+
+                feature = ogr.Feature(layer.GetLayerDefn())
+                feature.SetGeometry(multipolygon)
+                feature.SetField("Lithology", lithtext)
+                feature.SetField("Susc", lithsusc)
+                feature.SetField("Density", lithdens)
+                layer.CreateFeature(feature)
+
+                multipolygon = None
+
+            # flush memory
+            feature.Destroy()
+
+        datasource.Destroy()
+
+#        self.pbars.resetsub(maximum=1)
+#        self.pbars.incr()
+        self.showtext('shapefile export complete!')
 
 class Exportkmz(QtGui.QDialog):
     """ Class to call up a dialog """

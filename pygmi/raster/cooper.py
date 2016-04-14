@@ -217,7 +217,7 @@ class VGradients(QtGui.QDialog):
         for i in self.pbar.iter(range(len(data))):
 #            data[i].data = gradients(data[i].data, self.azi, 0., self.order)
             mask = data[i].data.mask
-            pdb.set_trace()
+#            pdb.set_trace()
             data[i].data = np.ma.array(vertical(data[i].data))
             data[i].data.mask = mask
 

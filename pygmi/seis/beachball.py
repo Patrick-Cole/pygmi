@@ -340,7 +340,7 @@ class BeachBall(QtGui.QDialog):
 
             feature2 = ogr.Feature(layer2.GetLayerDefn())
             feature2.SetField("Quadrant", "Tensional and Compressional")
-
+            feature2.SetField("Depth", depth)
             feature2.SetGeometry(poly1)
             # Create the feature in the layer (shapefile)
             layer2.CreateFeature(feature2)
