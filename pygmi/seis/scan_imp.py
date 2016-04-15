@@ -24,11 +24,11 @@
 # -----------------------------------------------------------------------------
 """ This program converts scanned bulletins to seisan format """
 
-import numpy as np
-from PyQt4 import QtGui
 import os
 import re
-from . import datatypes as sdt
+import numpy as np
+from PyQt4 import QtGui
+import pygmi.seis.datatypes as sdt
 
 
 def str2float(inp):
@@ -666,9 +666,9 @@ class SIMP(object):
                    'JUL': 7, 'AUG': 8, 'SEP': 9, 'OCT': 10, 'NOV': 11,
                    'DEC': 12}
         mrecs = []
-        for i in range(len(idata)):
+        for i, idatai in enumerate(idata):
             for j in monconv.keys():
-                if idata[i].find(j) > -1:
+                if idatai.find(j) > -1:
                     mrecs.append([j, i])
 
     # Add the end of each record.
@@ -677,9 +677,9 @@ class SIMP(object):
         mrecs[-1].append(len(idata))
 
     # Add the data record type
-        for i in range(len(mrecs)):
+        for i, mrecsi in enumerate(mrecs):
             dtype = ''
-            for j in idata[mrecs[i][1]:mrecs[i][2]]:
+            for j in idata[mrecsi[1]:mrecsi[2]]:
                 if j.find('STA') > -1 and j.find('INST') > -1:
                     dtype = 'RECORDA'
                 if j.find('STA') > -1 and j.find('MAGNITUDE') > -1:
@@ -746,8 +746,8 @@ def clean_string(tmp):
                 tmp2[-1] += ' '
 
 # remove page numbers
-    for j in range(len(tmp2)):
-        tmp3 = tmp2[j].replace(' ', '')
+    for j, tmp2j in enumerate(tmp2):
+        tmp3 = tmp2j.replace(' ', '')
         if tmp3[0] == '-' and tmp3[-1] == '-'and len(tmp3) <= 5:
             tmp2[j] = ''
 

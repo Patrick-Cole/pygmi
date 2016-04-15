@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """ Smooth Data """
 
-from PyQt4 import QtGui
 import copy
+from PyQt4 import QtGui
 import numpy as np
 import scipy.signal as ssig
 import pygmi.menu_default as menu_default
@@ -158,12 +158,12 @@ class Smooth(QtGui.QDialog):
 #        if datachecks.Datachecks(self).isnorm(data) is True:
 #            return data
         if self.radiobutton_2dmean.isChecked():
-            for i in range(len(data)):
+            for i, _ in enumerate(data):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
                                                  '2D Mean', data[i].dataid)
 
         if self.radiobutton_2dmedian.isChecked():
-            for i in range(len(data)):
+            for i, _ in enumerate(data):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
                                                  '2D Median', data[i].dataid)
 

@@ -30,8 +30,8 @@
 |    http://www.wits.ac.za/science/geophysics/gc.htm
 """
 
-from PyQt4 import QtGui, QtCore
 import copy
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.signal as si
 # import scipy.interpolate as sint
@@ -350,16 +350,16 @@ class Visibility2d(QtGui.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
         data2 = []
 
-        for i in range(len(data)):
-            self.parent.showprocesslog(data[i].dataid+':')
+        for i, datai in enumerate(data):
+            self.parent.showprocesslog(datai.dataid+':')
 
-            vtot, vstd, vsum = visibility2d(data[i].data, self.wsize,
+            vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
                                             self.dh*data[i].data.std()/100.,
                                             self.pbar.iter)
 #            data[i].data = vtot
-            data2.append(copy.deepcopy(data[i]))
-            data2.append(copy.deepcopy(data[i]))
-            data2.append(copy.deepcopy(data[i]))
+            data2.append(copy.deepcopy(datai))
+            data2.append(copy.deepcopy(datai))
+            data2.append(copy.deepcopy(datai))
             data2[-3].data = vtot
             data2[-2].data = vstd
             data2[-1].data = vsum

@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """ This is the function which calls the equation editor """
 
-from PyQt4 import QtGui, QtCore
 import copy
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import numexpr as ne
 import pygmi.raster.dataprep as dataprep
@@ -233,12 +233,12 @@ class EquationEditor(QtGui.QDialog):
             outdata[0].data = np.ma.masked_equal(findat, indata[0].nullvalue)
             outdata[0].dataid = 'equation output'
         else:
-            for i in range(len(findat)):
-                findat[i][np.isnan(findat[i])] = indata[i].nullvalue
+            for i, findati in enumerate(findat):
+                findat[i][np.isnan(findati)] = indata[i].nullvalue
                 mask = indata[i].data.mask
                 findat[i][mask] = indata[i].nullvalue
                 outdata.append(copy.copy(indata[i]))
-                outdata[-1].data = np.ma.masked_equal(findat[i],
+                outdata[-1].data = np.ma.masked_equal(findati,
                                                       indata[i].nullvalue)
 
         self.outdata[intype] = outdata

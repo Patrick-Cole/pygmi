@@ -48,18 +48,17 @@
 The code below is translated from bb.m written by Andy Michael and Oliver Boyd
 at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html"""
 
+import os
 import numpy as np
 import numexpr as ne
 from PyQt4 import QtGui
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
-import os
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 from matplotlib import patches
-import osgeo.ogr as ogr
-import osgeo.osr as osr
+import ogr
+import osr
 import scipy.spatial.distance as sdist
 
 
@@ -205,7 +204,7 @@ class BeachBall(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
         hbl_all = QtGui.QHBoxLayout(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         vbl_raster = QtGui.QVBoxLayout()
         label2 = QtGui.QLabel()
         label3 = QtGui.QLabel()
@@ -468,7 +467,8 @@ def beachball(fm, centerx, centery, diam):
     mech[j] = 1
 
     # Get azimuth and dip of second plane
-    s2, d2, r2 = auxplane(s1, d1, r1)
+#    s2, d2, r2 = auxplane(s1, d1, r1)
+    s2, d2, _ = auxplane(s1, d1, r1)
 
     for ev in range(ne1):
         S1 = s1[ev]

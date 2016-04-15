@@ -78,12 +78,11 @@ import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
 from matplotlib import rcParams
 from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
-import pygmi.raster.iodefs as iodefs
-import pygmi.raster.dataprep as dataprep
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
+import pygmi.raster.iodefs as iodefs
+import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 # import pygmi.raster.modest_image as modest_image
 
@@ -707,7 +706,7 @@ class MyMplCanvas(FigureCanvas):
         else:
             bincol = cm.gray(binave)
 
-        for j in range(len(patches)):
+        for j, patchesj in enumerate(patches):
             patches[j].set_color(bincol[j])
 
 # This section draws the black line.
@@ -991,7 +990,7 @@ class PlotInterp(QtGui.QDialog):
         hbl_all = QtGui.QHBoxLayout(self)
         vbl_right = QtGui.QVBoxLayout()
 
-        mpl_toolbar = NavigationToolbar(self.mmc, self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
                                    QtGui.QSizePolicy.Expanding)
         self.sslider.setMinimum(1)
@@ -1763,7 +1762,7 @@ def histcomp(img, nbr_bins=256):
     cdf = imhist.cumsum()  # cumulative distribution function
     cdf = cdf / float(cdf[-1])  # normalize
 
-    perc = 5
+    perc = 5.
     perc = perc/100.
 
 #    pdb.set_trace()

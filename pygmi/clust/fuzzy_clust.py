@@ -24,9 +24,9 @@
 # -----------------------------------------------------------------------------
 """ Fuzzy clustering """
 
-from PyQt4 import QtGui, QtCore
 import os
 import copy
+from PyQt4 import QtGui, QtCore
 import numpy as np
 from pygmi.clust.datatypes import Clust
 from pygmi.clust import var_ratio as vr
@@ -245,7 +245,7 @@ class FuzzyClust(QtGui.QDialog):
 # Add the masks to this.This promotes False values to True if necessary
         for i in data:
             masktmp += i.data.mask
-        for i in range(len(data)):    # Apply this to all the bands
+        for i, _ in enumerate(data):    # Apply this to all the bands
             data[i].data.mask = masktmp
 # #############################################################################
 
@@ -399,7 +399,7 @@ class FuzzyClust(QtGui.QDialog):
             den_cent_std1 = np.array(cent_std, copy=True)
 
             if de_norm == 1:
-                for k in range(len(data)):
+                for k, _ in enumerate(data):
                     if np.size(data[k].norm) > 0:
                         nnorm = len(data[k].norm)
                         for j in range(nnorm, 0, -1):

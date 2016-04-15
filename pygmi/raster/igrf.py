@@ -48,12 +48,12 @@ translated into Python from the Geomag code.
 |                Boulder, CO  80303
 """
 
-from PyQt4 import QtGui, QtCore
 from math import sin
 from math import cos
 from math import sqrt
 from math import atan2
 import copy
+from PyQt4 import QtGui, QtCore
 import numpy as np
 from osgeo import osr
 import pygmi.raster.dataprep as dp

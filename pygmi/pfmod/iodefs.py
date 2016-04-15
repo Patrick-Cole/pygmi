@@ -24,10 +24,10 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-from PyQt4 import QtGui, QtCore
 import sys
 import os
 import zipfile
+from PyQt4 import QtGui, QtCore
 import numpy as np
 from osgeo import osr, gdal
 from osgeo import ogr
@@ -38,7 +38,6 @@ import pygmi.pfmod.grvmag3d as grvmag3d
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.menu_default as menu_default
 import pygmi.raster.dataprep as dp
-import pdb
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
 from pygmi.pfmod import datatypes
@@ -152,8 +151,8 @@ class ImportMod3D(object):
                     lmod.yrange[1], lmod.zrange[1], lmod.dxy, lmod.d_z)
         lmod.update_lith_list_reverse()
 
-        for i, _ in enumerate(x):
-            col = int((x[i]-lmod.xrange[0])/lmod.dxy)
+        for i, xi in enumerate(x):
+            col = int((xi-lmod.xrange[0])/lmod.dxy)
             row = int((lmod.yrange[1]-y[i])/lmod.dxy)
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
             lmod.lith_index[col, row, layer] = \
@@ -780,7 +779,7 @@ class ExportMod3D(object):
         mvis_3d.lmod1 = self.lmod
 #        mvis_3d.checkbox_smooth.setChecked(True)
 
-        rev = 1  # should be 1 normally
+#        rev = 1  # should be 1 normally
 
         xrng = np.array(self.lmod.xrange, dtype=float)
         yrng = np.array(self.lmod.yrange, dtype=float)
@@ -804,15 +803,15 @@ class ExportMod3D(object):
 
         targ = osr.SpatialReference()
         targ.SetWellKnownGeogCS('WGS84')
-        prj = osr.CoordinateTransformation(orig, targ)
+#        prj = osr.CoordinateTransformation(orig, targ)
 
-        res = prj.TransformPoint(xrng[0], yrng[0])
-        lonwest, latsouth = res[0], res[1]
-        res = prj.TransformPoint(xrng[1], yrng[1])
-        loneast, latnorth = res[0], res[1]
+#        res = prj.TransformPoint(xrng[0], yrng[0])
+#        lonwest, latsouth = res[0], res[1]
+#        res = prj.TransformPoint(xrng[1], yrng[1])
+#        loneast, latnorth = res[0], res[1]
 
 # Get Save Name
-        filename = self.ifile
+#        filename = self.ifile
 
         self.showtext('shapefile export starting...')
 

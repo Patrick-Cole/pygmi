@@ -77,7 +77,7 @@ class BasicStats(QtGui.QDialog):
     def run(self):
         """ run """
         data = self.indata['Raster']
-        self.bands, self.cols, self.data = self.basicstats_calc(data)
+        self.bands, self.cols, self.data = basicstats_calc(data)
 
         data = self.data[0][:, 1:]
         rows = self.data[0][:, 0]
@@ -106,34 +106,35 @@ class BasicStats(QtGui.QDialog):
         ifile = str(filename)
         savetable(ifile, self.bands, self.cols, self.data)
 
-    def basicstats_calc(self, data):
-        """ Calculate stats """
-    # Minimum, maximum, mean, std dev, median, median abs deviation
-    # no samples, no samples in x dir, no samples in y dir, band
-        stats = []
-        for i in data:
-            srow = []
-            dtmp = i.data.compressed()
-            srow.append(dtmp.min())
-            srow.append(dtmp.max())
-            srow.append(dtmp.mean())
-            srow.append(dtmp.std())
-            srow.append(np.median(dtmp))
-            srow.append(np.median(abs(dtmp - srow[-1])))
-            srow.append(i.data.size)
-            srow.append(i.data.shape[1])
-            srow.append(i.data.shape[0])
-            srow.append(st.skew(dtmp))
-            srow.append(st.kurtosis(dtmp))
-            srow = np.array(srow).tolist()
-            stats.append([i.dataid] + srow)
 
-        bands = ['Data Column']
-        cols = ['Band', 'Minimum', 'Maximum', 'Mean', 'Std Dev', 'Median',
-                'Median Abs Dev', 'No Samples', 'No cols (samples in x-dir)',
-                'No rows (samples in y-dir)', 'Skewness', 'Kurtosis']
-        dattmp = [np.array(stats, dtype=object)]
-        return bands, cols, dattmp
+def basicstats_calc(data):
+    """ Calculate stats """
+# Minimum, maximum, mean, std dev, median, median abs deviation
+# no samples, no samples in x dir, no samples in y dir, band
+    stats = []
+    for i in data:
+        srow = []
+        dtmp = i.data.compressed()
+        srow.append(dtmp.min())
+        srow.append(dtmp.max())
+        srow.append(dtmp.mean())
+        srow.append(dtmp.std())
+        srow.append(np.median(dtmp))
+        srow.append(np.median(abs(dtmp - srow[-1])))
+        srow.append(i.data.size)
+        srow.append(i.data.shape[1])
+        srow.append(i.data.shape[0])
+        srow.append(st.skew(dtmp))
+        srow.append(st.kurtosis(dtmp))
+        srow = np.array(srow).tolist()
+        stats.append([i.dataid] + srow)
+
+    bands = ['Data Column']
+    cols = ['Band', 'Minimum', 'Maximum', 'Mean', 'Std Dev', 'Median',
+            'Median Abs Dev', 'No Samples', 'No cols (samples in x-dir)',
+            'No rows (samples in y-dir)', 'Skewness', 'Kurtosis']
+    dattmp = [np.array(stats, dtype=object)]
+    return bands, cols, dattmp
 
 
 class ClusterStats(QtGui.QDialog):
@@ -173,8 +174,8 @@ class ClusterStats(QtGui.QDialog):
         i = self.combobox.currentIndex()
         data = self.data[i]
 
-        for row in range(len(data)):
-            for col in range(len(data[0])):
+        for row, _ in enumerate(data):
+            for col, _ in enumerate(data[0]):
                 self.tablewidget.setCellWidget(
                     row, col, QtGui.QLabel(str(data[row][col])))
 
@@ -192,8 +193,8 @@ class ClusterStats(QtGui.QDialog):
         for i in data:
             val = i.center.tolist()
             std = i.center_std.tolist()
-            for j in range(len(val)):
-                for k in range(len(val[0])):
+            for j, _ in enumerate(val):
+                for k, _ in enumerate(val[0]):
                     val[j][k] = '{:.4f} : {:.4f}'.format(val[j][k], std[j][k])
             self.data.append(val)
 
@@ -233,10 +234,10 @@ def savetable(ifile, bands, cols, data):
     for i in cols[1:]:
         htmp += ',' + i
 
-    for k in range(len(bands)):
+    for k, _ in enumerate(bands):
         fobj.write(bands[k]+'\n')
         fobj.write(htmp+'\n')
-        for i in range(len(data[k])):
+        for i, _ in enumerate(data[k]):
             rtmp = str(data[k][i][0])
             for j in range(1, len(data[k][0])):
                 rtmp += ','+str(data[k][i][j])

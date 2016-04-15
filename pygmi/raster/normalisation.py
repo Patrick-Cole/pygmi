@@ -24,9 +24,9 @@
 # -----------------------------------------------------------------------------
 """ Normalisation function """
 
-from PyQt4 import QtGui, QtCore
 import copy
 import warnings
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.stats as sstat
 import pygmi.menu_default as menu_default
@@ -109,26 +109,26 @@ class Normalisation(QtGui.QDialog):
                 tmp1 = i.data.min()
                 tmp2 = i.data.max() - i.data.min()
                 tmp3 = 'minmax'
-                norm_type = 'Normalised to interval [0 1]'
-                i, transform = self.datacommon(i, tmp1, tmp2, tmp3, norm_type)
+#                norm_type = 'Normalised to interval [0 1]'
+                i, transform = datacommon(i, tmp1, tmp2, tmp3)
         elif self.radiobutton_mean.isChecked():
             for i in data:
                 tmp1 = i.data.mean()
                 tmp2 = i.data.std()
                 tmp3 = 'meanstd'
-                norm_type = 'Normalised to mean, standard deviation = 1'
-                i, transform = self.datacommon(i, tmp1, tmp2, tmp3, norm_type)
+#                norm_type = 'Normalised to mean, standard deviation = 1'
+                i, transform = datacommon(i, tmp1, tmp2, tmp3)
         elif self.radiobutton_median.isChecked():
             for i in data:
                 tmp1 = np.median(i.data.compressed())
                 tmp2 = np.median(abs(i.data.compressed() - tmp1))
                 tmp3 = 'medmad'
-                norm_type = 'Normalised to median, mean absolute deviation = 1'
-                i, transform = self.datacommon(i, tmp1, tmp2, tmp3, norm_type)
+#                norm_type = 'Normalised to median, mean absolute deviation=1'
+                i, transform = datacommon(i, tmp1, tmp2, tmp3)
         elif self.radiobutton_8bit.isChecked():
             for i in data:
-                norm_type = 'Normalised-histogram equalisation'
                 nlevels = 256
+#                norm_type = 'Normalised-histogram equalisation'
                 no_pix = i.data.count()
                 dummy_dat = np.sort(i.data[np.isnan(i.data) != 1],
                                     axis=None)
@@ -167,23 +167,24 @@ class Normalisation(QtGui.QDialog):
         self.pbar.to_max()
         return True
 
-    def datacommon(self, data, tmp1, tmp2, tmp3, tmp4):
-        """ Common stuff used in the process routine """
-        transform = np.zeros((2, 2))
-        if tmp1 != 0.0 or tmp2 != 1.0:
-            transform[0:2, 0] = [0, 1]
-            transform[0:2, 1] = [tmp1, tmp2]
 
-            dtmp = data.data.data
-            mtmp = data.data.mask
-            dtmp -= tmp1
-            dtmp /= tmp2
+def datacommon(data, tmp1, tmp2, tmp3):
+    """ Common stuff used in the process routine """
+    transform = np.zeros((2, 2))
+    if tmp1 != 0.0 or tmp2 != 1.0:
+        transform[0:2, 0] = [0, 1]
+        transform[0:2, 1] = [tmp1, tmp2]
 
-            data.data = np.ma.array(dtmp, mask=mtmp)
+        dtmp = data.data.data
+        mtmp = data.data.mask
+        dtmp -= tmp1
+        dtmp /= tmp2
+
+        data.data = np.ma.array(dtmp, mask=mtmp)
 #            data.data -= tmp1
 #            data.data /= tmp2
 #            data.data[np.isnan(data.data)] = data.nullvalue
-            n_norms = len(data.norm)
+        n_norms = len(data.norm)
 #            data.proc.append(tmp4)
-            data.norm[n_norms] = {'type': tmp3, 'transform': transform}
-        return data, transform
+        data.norm[n_norms] = {'type': tmp3, 'transform': transform}
+    return data, transform

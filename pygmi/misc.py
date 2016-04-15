@@ -28,8 +28,8 @@
 ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called. """
 
-from PyQt4 import QtGui
 import time
+from PyQt4 import QtGui
 
 
 PBAR_STYLE = """

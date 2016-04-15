@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """ Profile Display Tab Routines """
 
-from PyQt4 import QtGui, QtCore
 import os
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.interpolate as si
 import matplotlib.pyplot as plt

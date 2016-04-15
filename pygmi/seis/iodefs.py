@@ -24,10 +24,10 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-from PyQt4 import QtGui
-import numpy as np
 import os
 import re
+from PyQt4 import QtGui
+import numpy as np
 import pygmi.seis.datatypes as sdt
 
 

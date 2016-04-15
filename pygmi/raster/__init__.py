@@ -1,7 +1,6 @@
 """
 Raster Routines
 """
-__all__ = ["dataprep", "datatypes", "iodefs"]
 from . import datatypes
 from . import dataprep
 from . import iodefs
@@ -12,3 +11,5 @@ from .dataprep import trim_raster
 from .iodefs import get_raster
 from .datatypes import numpy_to_pygmi
 from .datatypes import pygmi_to_numpy
+
+__all__ = ["dataprep", "datatypes", "iodefs"]

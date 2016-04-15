@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """ Profile Display Tab Routines """
 
-from PyQt4 import QtGui, QtCore
 import os
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.ndimage as ndimage
 
@@ -720,7 +720,7 @@ class MyMplCanvas(FigureCanvas):
 
     def slide_plot(self, xdat, dat, extent, xdat2, dat2):
         """ Slider """
-        dmin, dmax = self.extentchk(extent)
+#        dmin, dmax = self.extentchk(extent)
 
         self.figure.canvas.restore_region(self.pbbox)
         self.cal[0].set_data([xdat, dat])

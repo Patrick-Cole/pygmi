@@ -35,21 +35,20 @@ References:
 
 from __future__ import print_function
 
-from PyQt4 import QtGui, QtCore
 import copy
 import tempfile
 from math import sqrt
-import pdb
+from PyQt4 import QtGui, QtCore
 
 import numpy as np
 import pylab as plt
 from scipy.linalg import norm
 from osgeo import gdal
-from pygmi.pfmod.datatypes import LithModel
 from numba import jit
 from matplotlib import cm
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
+from pygmi.pfmod.datatypes import LithModel
 
 
 class GravMag(object):

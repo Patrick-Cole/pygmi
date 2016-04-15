@@ -34,12 +34,12 @@ pygmi packages.
 
 """
 
-from PyQt4 import QtGui, QtCore
 import sys
 import importlib
 import math
 import pkgutil
 import os
+from PyQt4 import QtGui, QtCore
 import numpy as np
 import pygmi
 import pygmi.menu_default as menu_default

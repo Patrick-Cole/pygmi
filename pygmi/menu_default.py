@@ -25,9 +25,9 @@
 """ This is the default set of menus for the main interface. It also includes
 the about box """
 
-from PyQt4 import QtGui, QtCore
-import webbrowser
 import os
+import webbrowser
+from PyQt4 import QtGui, QtCore
 
 
 class FileMenu(object):

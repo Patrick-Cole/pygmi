@@ -26,14 +26,14 @@
 
 from __future__ import print_function
 
-from PyQt4 import QtGui, QtCore
 import os
 import copy
+from collections import Counter
+from PyQt4 import QtGui, QtCore
 import numpy as np
 from osgeo import gdal, osr, ogr
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
-from collections import Counter
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.vector.datatypes import PData

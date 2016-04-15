@@ -331,37 +331,38 @@ class PlotCCoef(GraphWindow):
         self.show()
         data = self.indata['Raster']
 
-        dummy_mat = [[self.corr2d(i.data, j.data) for j in data] for i in data]
+        dummy_mat = [[corr2d(i.data, j.data) for j in data] for i in data]
         dummy_mat = np.array(dummy_mat)
 
         self.mmc.update_pcolor(data, dummy_mat)
 
-    def corr2d(self, dat1, dat2):
-        """
-        Calculate the 2D correlation
 
-        Parameters
-        ----------
-        dat1 : numpy array
-            dataset 1 for use in correlation calculation
-        dat2 : numpy array
-            dataset 2 for use in correlation calculation
+def corr2d(dat1, dat2):
+    """
+    Calculate the 2D correlation
 
-        Returns
-        -------
-        out : numpy array
-            array of correlation coefficients
-        """
+    Parameters
+    ----------
+    dat1 : numpy array
+        dataset 1 for use in correlation calculation
+    dat2 : numpy array
+        dataset 2 for use in correlation calculation
 
-        out = None
-        if dat1.shape == dat2.shape:
-            mdat1 = dat1 - dat1.mean()
-            mdat2 = dat2 - dat2.mean()
-            numerator = (mdat1 * mdat2).sum()
-            denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
-            out = numerator / denominator
+    Returns
+    -------
+    out : numpy array
+        array of correlation coefficients
+    """
 
-        return out
+    out = None
+    if dat1.shape == dat2.shape:
+        mdat1 = dat1 - dat1.mean()
+        mdat2 = dat2 - dat2.mean()
+        numerator = (mdat1 * mdat2).sum()
+        denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
+        out = numerator / denominator
+
+    return out
 
 
 class PlotRaster(GraphWindow):

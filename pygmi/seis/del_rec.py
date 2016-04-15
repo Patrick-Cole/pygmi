@@ -24,9 +24,9 @@
 # -----------------------------------------------------------------------------
 """ This program deletes seisan records """
 
+import os
 import numpy as np
 from PyQt4 import QtGui
-import os
 import matplotlib.pyplot as plt
 
 

@@ -293,8 +293,8 @@ class TiltDepth(QtGui.QDialog):
         self.pbar.setValue(3)
 
         gx0, gy0, cgrad0, cntid0 = vgrad(cnt0)
-        gx45, gy45, cgrad45, _ = vgrad(cnt45)
-        gxm45, gym45, cgradm45, _ = vgrad(cntm45)
+        gx45, gy45, _, _ = vgrad(cnt45)
+        gxm45, gym45, _, _ = vgrad(cntm45)
 
         g0 = np.transpose([gx0, gy0])
 
@@ -396,7 +396,7 @@ def main():
     data = iodefs.get_raster(ifile)
     data = data[0]
 
-    x, y, depth = tiltdepth(data, -17, -67)
+#    x, y, depth = tiltdepth(data, -17, -67)
 
     dmin = distpc(np.array([1., 2.]), np.array([1., 2.]), 3, 4, 0)
     print(dmin)
@@ -492,8 +492,8 @@ def tiltdepth(data, dec, inc):
     plt.colorbar()
 
     gx0, gy0, cgrad0, _ = vgrad(cnt0)
-    gx45, gy45, cgrad45, _ = vgrad(cnt45)
-    gxm45, gym45, cgradm45, _ = vgrad(cntm45)
+    gx45, gy45, _, _ = vgrad(cnt45)
+    gxm45, gym45, _, _ = vgrad(cntm45)
 
     pairs0 = []
     pairs1 = []

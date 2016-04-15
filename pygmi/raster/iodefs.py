@@ -24,10 +24,10 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-from PyQt4 import QtGui
 import os
 import glob
 import struct
+from PyQt4 import QtGui
 import numpy as np
 from osgeo import gdal, osr
 from pygmi.raster.datatypes import Data
@@ -445,11 +445,11 @@ class ExportData(object):
 
         out.SetProjection(data[0].wkt)
 
-        for i in range(len(data)):
+        for i, datai in enumerate(data):
             rtmp = out.GetRasterBand(i+1)
-            rtmp.SetDescription(data[i].dataid)
+            rtmp.SetDescription(datai.dataid)
 
-            dtmp = np.ma.array(data[i].data).astype(dtype)
+            dtmp = np.ma.array(datai.data).astype(dtype)
 
             # This section tries to overcome null values with round off error
             # in 32-bit numbers.

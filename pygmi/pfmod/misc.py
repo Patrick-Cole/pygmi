@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """ These are miscellaneous functions for the program """
 
-from PyQt4 import QtGui, QtCore
 import time
+from PyQt4 import QtGui, QtCore
 import pygmi.menu_default as menu_default
 
 

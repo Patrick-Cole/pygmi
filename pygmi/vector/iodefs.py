@@ -24,8 +24,8 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-from PyQt4 import QtGui
 import os
+from PyQt4 import QtGui
 import numpy as np
 from osgeo import ogr
 from pygmi.vector.datatypes import PData
@@ -226,13 +226,12 @@ class ExportPoint(object):
 #        self.ext = filename[-3:]
         data = self.indata['Point']
 
-        for i in range(len(data)):
-            datid = data[i].dataid
+        for i, datai in enumerate(data):
+            datid = datai.dataid
             if datid is '':
                 datid = str(i)
 
-            dattmp = np.transpose([data[i].xdata, data[i].ydata,
-                                   data[i].zdata])
+            dattmp = np.transpose([datai.xdata, datai.ydata, datai.zdata])
 
             ofile2 = ofile+'_'+''.join(x for x in datid if x.isalnum())+'.csv'
 
