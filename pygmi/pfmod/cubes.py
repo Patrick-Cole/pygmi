@@ -35,11 +35,11 @@ from PyQt4 import QtCore, QtGui, QtOpenGL
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL.arrays import vbo
-import pygmi.pfmod.misc as misc
 from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
 from numba import jit
 from PIL import Image
+import pygmi.pfmod.misc as misc
 
 
 class Mod3dDisplay(QtGui.QDialog):

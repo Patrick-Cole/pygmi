@@ -28,11 +28,9 @@ import numpy as np
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt
 import matplotlib.collections as mc
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as \
-    FigureCanvas
+from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 
 
 class GraphWindow(QtGui.QDialog):
@@ -47,7 +45,7 @@ class GraphWindow(QtGui.QDialog):
         vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtGui.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.combobox1 = QtGui.QComboBox()
         self.combobox2 = QtGui.QComboBox()
@@ -82,7 +80,7 @@ class GraphWindow(QtGui.QDialog):
         pass
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     MPL Canvas class.
 
@@ -96,7 +94,7 @@ class MyMplCanvas(FigureCanvas):
         self.background = None
         self.parent = parent
 
-        FigureCanvas.__init__(self, fig)
+        FigureCanvasQTAgg.__init__(self, fig)
 
         self.figure.canvas.mpl_connect('pick_event', self.onpick)
         self.figure.canvas.mpl_connect('button_release_event',

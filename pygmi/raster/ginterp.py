@@ -64,9 +64,9 @@ supports GeoTiff files.
 
 import os
 import copy
+from math import cos, sin, tan
 import numpy as np
 import numexpr as ne
-from math import cos, sin, tan
 from PyQt4 import QtGui, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
@@ -85,8 +85,7 @@ import pygmi.raster.dataprep as dataprep
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 import pygmi.menu_default as menu_default
-#import pygmi.raster.modest_image as modest_image
-import pdb
+# import pygmi.raster.modest_image as modest_image
 
 
 class ModestImage2(mi.AxesImage):

@@ -25,11 +25,10 @@
 """ This is the function which calls the equation editor """
 
 from PyQt4 import QtGui, QtCore
-import numpy as np
 import copy
+import numpy as np
 import numexpr as ne
 import pygmi.raster.dataprep as dataprep
-import pdb
 
 
 class EquationEditor(QtGui.QDialog):

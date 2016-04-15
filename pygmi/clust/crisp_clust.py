@@ -25,12 +25,11 @@
 """ This is the main Crisp Clustering set of routines """
 
 from PyQt4 import QtGui, QtCore
-import numpy as np
+import os
 import copy
+import numpy as np
 from pygmi.clust.datatypes import Clust
 import pygmi.clust.var_ratio as vr
-import os
-import pdb
 
 
 class CrispClust(QtGui.QDialog):
@@ -554,7 +553,7 @@ class CrispClust(QtGui.QDialog):
             idx_prev = idx
             dist_prev = edist
     # calc new cluster centre positions
-            cent, idx = self.gcentroids(data, idx, no_clust, mindist)
+            cent, idx = gcentroids(data, idx, no_clust, mindist)
     # constrain the cluster center positions to keep it in  the given interval
             if centfix.size > 0:
                 # constrain the center positions within the given limits
@@ -566,7 +565,7 @@ class CrispClust(QtGui.QDialog):
                                        centfix(cent_idx == 1))
 
     # calc new cluster centre distances
-            edist = self.gdist(data, cent, idx, no_clust, cltype, cov_constr)
+            edist = gdist(data, cent, idx, no_clust, cltype, cov_constr)
     # get new index values for each data point and the distance from each
     # sample to its cluster center
             mindist = edist.min(0)
@@ -602,110 +601,112 @@ class CrispClust(QtGui.QDialog):
         return idx, cent, obj_fcn, vrc
 
 # -----------------------------------------------------------------------------
-    def gdist(self, data, center, index, no_clust, cltype, cov_constr):
-        """ Gdist routine """
-        no_samples = data.shape[0]
-        no_datasets = data.shape[1]
-        bigd = np.zeros([no_clust, no_samples])
-        ddd = []
-        if cltype == 'k-means':
-            onetmp = np.ones([no_samples, 1])  # trying this for speed?
-            for j in range(no_clust):
-                # Euclidian
-                bigd[j] = np.sqrt(np.sum(((data-onetmp*center[j])**2), 1))
-                # determinant criterion see Spath, Helmuth,
-                # "Cluster-Formation and Analyse", chapter 3
-        elif cltype == 'advanced k-means':
-            for j in range(no_clust):
-                # difference between each sample attribute to the corresponding
-                # attribute of the j-th cluster
-                dcent = data-np.ones([no_samples, 1])*center[j]
-                # grab the data belonging to cluster j
-                mod_idx = (index == j)*1
-                # should I use different transpose?
-                # Streuungsmatrix/ covariance of the j-th cluster
-                mat_a = np.dot(np.ones([no_datasets, 1])*mod_idx*dcent.T,
-                               dcent/np.sum(mod_idx))
-                # constrain covariance matrix if badly conditioned
-                if np.linalg.cond(mat_a) > 1e10:
-                    # warning([' Badly conditionend covariance matrix \
-                    # (cond. number > 1e10) of cluster ',num2unicode(j)]);
-                    ed1, ev1 = np.linalg.eig(mat_a)
-                    edmax = np.max(ed1)
-                    ed1[1e10*ed1 < edmax] = edmax/1e10
-                    mat_a = np.dot(np.dot(ev1, (ed1*np.eye(no_datasets))),
-                                   np.linalg.inv(ev1))
-                if j == 0:  # sum all covariance matrices for all clusters
-                    mat_a0 = mat_a
-                else:
-                    mat_a0 = mat_a0 + mat_a
-    # calc new distances using the same covariance matrix for all clusters -->
-    # ellisoidal clusters, all clusters use equal ellipsoids
-            for j in range(no_clust):
-                # difference between each sample attribute to the corresponding
-                # attribute of the j-th cluster
-                dcent = data-np.ones([no_samples, 1])*center[j]
-                # does this need to be in this loop?
-                mbig = (np.linalg.det(mat_a0)**(1.0/no_datasets) *
-                        np.linalg.pinv(mat_a0))
-                ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
-            bigd = np.sqrt(ddd)
-    # cluster adapted determinant criterion see Spath, Helmuth,
-    # "Cluster-Formation and Analyse", chapter 4 --> equivalent to crisp GK
-    # algorithm
-        elif cltype == 'w-means':
-            for j in range(no_clust):
-                # difference between each sample attribute to the corresponding
-                # attribute of the j-th cluster
-                dcent = data-np.ones([no_samples, 1])*center[j]
-                mod_idx = (index == j)*1  # grab data belonging to cluster j
-#    '*dcent/sum(mod_idx); % Streuungsmatrix/ covariance of the j-th cluster
-                mat_a = np.dot(np.ones([no_datasets, 1])*mod_idx*dcent.T,
-                               dcent/np.sum(mod_idx))
-                mat_a0 = np.eye(mat_a.shape[0])
-    # if cov_constr>0, this enforces not to elongated ellipsoids -->
-    # avoid the needle-like cluster
-                mat_a = (1-cov_constr)*mat_a+cov_constr*(mat_a0/no_samples)
-    # constrain covariance matrix if badly conditioned and cluster contains
-    # more than 1 sample
-                if np.linalg.cond(mat_a) > 1e10 and np.sum(mod_idx) > 1:
-                    # warning([' Badly conditionend covariance matrix '+
-                    #   '(cond. number > 1e10) of cluster ',num2unicode(j)])
-                    ed1, ev1 = np.linalg.eig(mat_a)
-                    edmax = np.max(ed1)
-                    ed1[1e10*ed1 < edmax] = edmax/1e10
-                    mat_a = np.dot(np.dot(ev1, (ed1*np.eye(no_datasets))),
-                                   np.linalg.inv(ev1))
-    # assume spherical shape of clusters with only one sample
-                elif np.sum(mod_idx) == 1:
-                    mat_a = mat_a0
-                mbig = (np.linalg.det(mat_a)**(1.0/no_datasets) *
-                        np.linalg.pinv(mat_a))
-    # calc cluster to sample distances using mahalanobis distance for each
-    # cluster, ellipsoidal clusters, each cluster has its own individually
-    # oriented and shaped ellipsoid
-                ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
-            bigd = np.sqrt(ddd)
-#    end
-        return bigd
 
 # -----------------------------------------------------------------------------
-    def gcentroids(self, data, index, no_clust, mindist):
-        """Gcentroids"""
-    #    no_samples=data.shape[0]
-        no_datatypes = data.shape[1]
-        centroids = np.tile(np.nan, (no_clust, no_datatypes))
+def gcentroids(data, index, no_clust, mindist):
+    """Gcentroids"""
+#    no_samples=data.shape[0]
+    no_datatypes = data.shape[1]
+    centroids = np.tile(np.nan, (no_clust, no_datatypes))
+    for j in range(no_clust):
+        # find all members of the j-th cluster
+        members = (index == j).nonzero()[0]
+        # if j is an empty cluster, put one sample into this cluster
+        if members.size == 0:
+            # take the sample that has the greatest distance to its current
+            # cluster and make this the center of the j-th cluster
+            idx1 = mindist.argmax(0)
+            centroids[j] = data[idx1]
+            index[idx1] = j
+            mindist[idx1] = 0
+        else:
+            centroids[j] = data[members].mean(0)
+    return centroids, index
+
+
+def gdist(data, center, index, no_clust, cltype, cov_constr):
+    """ Gdist routine """
+    no_samples = data.shape[0]
+    no_datasets = data.shape[1]
+    bigd = np.zeros([no_clust, no_samples])
+    ddd = []
+    if cltype == 'k-means':
+        onetmp = np.ones([no_samples, 1])  # trying this for speed?
         for j in range(no_clust):
-            # find all members of the j-th cluster
-            members = (index == j).nonzero()[0]
-            # if j is an empty cluster, put one sample into this cluster
-            if members.size == 0:
-                # take the sample that has the greatest distance to its current
-                # cluster and make this the center of the j-th cluster
-                idx1 = mindist.argmax(0)
-                centroids[j] = data[idx1]
-                index[idx1] = j
-                mindist[idx1] = 0
+            # Euclidian
+            bigd[j] = np.sqrt(np.sum(((data-onetmp*center[j])**2), 1))
+            # determinant criterion see Spath, Helmuth,
+            # "Cluster-Formation and Analyse", chapter 3
+    elif cltype == 'advanced k-means':
+        for j in range(no_clust):
+            # difference between each sample attribute to the corresponding
+            # attribute of the j-th cluster
+            dcent = data-np.ones([no_samples, 1])*center[j]
+            # grab the data belonging to cluster j
+            mod_idx = (index == j)*1
+            # should I use different transpose?
+            # Streuungsmatrix/ covariance of the j-th cluster
+            mat_a = np.dot(np.ones([no_datasets, 1])*mod_idx*dcent.T,
+                           dcent/np.sum(mod_idx))
+            # constrain covariance matrix if badly conditioned
+            if np.linalg.cond(mat_a) > 1e10:
+                # warning([' Badly conditionend covariance matrix \
+                # (cond. number > 1e10) of cluster ',num2unicode(j)]);
+                ed1, ev1 = np.linalg.eig(mat_a)
+                edmax = np.max(ed1)
+                ed1[1e10*ed1 < edmax] = edmax/1e10
+                mat_a = np.dot(np.dot(ev1, (ed1*np.eye(no_datasets))),
+                               np.linalg.inv(ev1))
+            if j == 0:  # sum all covariance matrices for all clusters
+                mat_a0 = mat_a
             else:
-                centroids[j] = data[members].mean(0)
-        return centroids, index
+                mat_a0 = mat_a0 + mat_a
+# calc new distances using the same covariance matrix for all clusters -->
+# ellisoidal clusters, all clusters use equal ellipsoids
+        for j in range(no_clust):
+            # difference between each sample attribute to the corresponding
+            # attribute of the j-th cluster
+            dcent = data-np.ones([no_samples, 1])*center[j]
+            # does this need to be in this loop?
+            mbig = (np.linalg.det(mat_a0)**(1.0/no_datasets) *
+                    np.linalg.pinv(mat_a0))
+            ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
+        bigd = np.sqrt(ddd)
+# cluster adapted determinant criterion see Spath, Helmuth,
+# "Cluster-Formation and Analyse", chapter 4 --> equivalent to crisp GK
+# algorithm
+    elif cltype == 'w-means':
+        for j in range(no_clust):
+            # difference between each sample attribute to the corresponding
+            # attribute of the j-th cluster
+            dcent = data-np.ones([no_samples, 1])*center[j]
+            mod_idx = (index == j)*1  # grab data belonging to cluster j
+#    '*dcent/sum(mod_idx); % Streuungsmatrix/ covariance of the j-th cluster
+            mat_a = np.dot(np.ones([no_datasets, 1])*mod_idx*dcent.T,
+                           dcent/np.sum(mod_idx))
+            mat_a0 = np.eye(mat_a.shape[0])
+# if cov_constr>0, this enforces not to elongated ellipsoids -->
+# avoid the needle-like cluster
+            mat_a = (1-cov_constr)*mat_a+cov_constr*(mat_a0/no_samples)
+# constrain covariance matrix if badly conditioned and cluster contains
+# more than 1 sample
+            if np.linalg.cond(mat_a) > 1e10 and np.sum(mod_idx) > 1:
+                # warning([' Badly conditionend covariance matrix '+
+                #   '(cond. number > 1e10) of cluster ',num2unicode(j)])
+                ed1, ev1 = np.linalg.eig(mat_a)
+                edmax = np.max(ed1)
+                ed1[1e10*ed1 < edmax] = edmax/1e10
+                mat_a = np.dot(np.dot(ev1, (ed1*np.eye(no_datasets))),
+                               np.linalg.inv(ev1))
+# assume spherical shape of clusters with only one sample
+            elif np.sum(mod_idx) == 1:
+                mat_a = mat_a0
+            mbig = (np.linalg.det(mat_a)**(1.0/no_datasets) *
+                    np.linalg.pinv(mat_a))
+# calc cluster to sample distances using mahalanobis distance for each
+# cluster, ellipsoidal clusters, each cluster has its own individually
+# oriented and shaped ellipsoid
+            ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
+        bigd = np.sqrt(ddd)
+#    end
+    return bigd

@@ -25,8 +25,8 @@
 """ These are miscellaneous functions for the program """
 
 from PyQt4 import QtGui, QtCore
-import pygmi.menu_default as menu_default
 import time
+import pygmi.menu_default as menu_default
 
 
 def update_lith_lw(lmod, lwidget):

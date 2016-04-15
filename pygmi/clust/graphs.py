@@ -30,8 +30,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d  # this is used, ignore warning
 from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 
 
 class MyMplCanvas(FigureCanvas):
@@ -206,7 +205,7 @@ class GraphWindow(QtGui.QDialog):
         vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtGui.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.combobox1 = QtGui.QComboBox()
         self.combobox2 = QtGui.QComboBox()

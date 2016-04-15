@@ -25,12 +25,12 @@
 """ Fuzzy clustering """
 
 from PyQt4 import QtGui, QtCore
-import numpy as np
+import os
 import copy
+import numpy as np
 from pygmi.clust.datatypes import Clust
 from pygmi.clust import var_ratio as vr
 from pygmi.clust import xie_beni as xb
-import os
 
 
 class FuzzyClust(QtGui.QDialog):
@@ -595,7 +595,7 @@ class FuzzyClust(QtGui.QDialog):
     #      strcmp('GG',cltype) == 1 | strcmp('gg',cltype) == 1
     # calc distances of each data point to each cluster centre assuming
     # spherical clusters
-            edist = self.fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
+            edist = fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
             tmp = edist ** (-2.0 / (expo - 1))  # calc new U, suppose expo != 1
             uuu = tmp / (np.ones([no_clust, 1]) * np.sum(tmp, 0))
             m_f = uuu ** expo  # MF matrix after exponential modification
@@ -612,7 +612,7 @@ class FuzzyClust(QtGui.QDialog):
                                   (m_f.T).sum()).T)
     # calc distances of each data point to each cluster centre assuming
     # spherical clusters
-            edist = self.fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
+            edist = fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
 
     #    cent_orig = cent
         centfix = abs(centfix)
@@ -637,7 +637,7 @@ class FuzzyClust(QtGui.QDialog):
                 cent = np.dot(m_f, data) / ((np.ones([data.shape[1], 1]) *
                                              np.sum(m_f, 1)).T)
     # calc distances of each data point to each cluster centre
-            edist = self.fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr)
+            edist = fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr)
             tmp = edist ** (-2 / (expo - 1))  # calc new uuu, suppose expo != 1
             uuu = tmp / np.sum(tmp, 0)
             m_f = uuu ** expo
@@ -685,222 +685,224 @@ class FuzzyClust(QtGui.QDialog):
 
 # -----------------------------------------------------------------------------
 
-    def fuzzy_dist2(self, cent, data, uuu, expo, cltype, cov_constr):
-        """ Fuzzy dist 2 """
-        no_datasets = data.shape[1]
-        ddd = np.zeros([cent.shape[0], data.shape[0]])
-        if cltype == 'FCM' or cltype == 'fcm':
-            for j in range(cent.shape[0]):
-                ddd[j, :] = np.sqrt(np.sum(((data - np.ones([data.shape[0], 1])
-                                             * cent[j]) ** 2), 1))
+
+def fuzzy_dist2(cent, data, uuu, expo, cltype, cov_constr):
+    """ Fuzzy dist 2 """
+    no_datasets = data.shape[1]
+    ddd = np.zeros([cent.shape[0], data.shape[0]])
+    if cltype == 'FCM' or cltype == 'fcm':
+        for j in range(cent.shape[0]):
+            ddd[j, :] = np.sqrt(np.sum(((data - np.ones([data.shape[0], 1]) *
+                                         cent[j]) ** 2), 1))
 # determinant criterion see Spath, Helmuth,
 # "Cluster-Formation and Analyse",
 # chapter 3
-        elif cltype == 'DET' or cltype == 'det':
-            m_f = uuu ** expo
-            for j in range(cent.shape[0]):
-                # difference between each sample attribute to the corresponding
-                # attribute of the j-th cluster
-                dcent = data - np.ones([data.shape[0], 1]) * cent[j]
-                aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
-                             dcent / np.sum(m_f[j], 0))  # Covariance of the
+    elif cltype == 'DET' or cltype == 'det':
+        m_f = uuu ** expo
+        for j in range(cent.shape[0]):
+            # difference between each sample attribute to the corresponding
+            # attribute of the j-th cluster
+            dcent = data - np.ones([data.shape[0], 1]) * cent[j]
+            aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
+                         dcent / np.sum(m_f[j], 0))  # Covariance of the
 #                                                          j-th cluster
 
-    # constrain covariance matrix if badly conditioned
-                if np.linalg.cond(aaa) > 1e10:
-                    e_d, e_v = np.linalg.eig(aaa)
-                    edmax = np.max(e_d)
-                    e_d[1e10 * e_d < edmax] = edmax / 1e10
-                    aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                                 np.linalg.inv(e_v))
-                if j == 0:  # sum all covariance matrices for all clusters
-                    aaa0 = aaa
-                else:
-                    aaa0 = aaa0 + aaa
-            mmm = np.linalg.det(aaa0) ** (1.0 / cent.shape[1]) * \
-                np.linalg.pinv(aaa0)
-            dtmp = []
-    #  calc new distances using the same covariance matrix for all clusters -->
-    # ellisoidal clusters, all clusters use equal ellipsoids
-            for j in range(cent.shape[0]):
-                #  difference between each sample attribute to the
-                # corresponding attribute of the j-th cluster
-                dcent = data - np.ones([data.shape[0], 1]) * cent[j]
-                dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
-            ddd = np.sqrt(np.array(dtmp))
-        elif cltype == 'GK' or cltype == 'gk':
-            m_f = uuu ** expo
-            dtmp = []
-            for j in range(cent.shape[0]):
-                #  difference between each sample attribute to the
-                # corresponding attribute of the j-th cluster
-                dcent = data - np.ones([data.shape[0], 1]) * cent[j]
-                aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
-                             dcent / np.sum(m_f[j], 0))  # Covariance of the
+# constrain covariance matrix if badly conditioned
+            if np.linalg.cond(aaa) > 1e10:
+                e_d, e_v = np.linalg.eig(aaa)
+                edmax = np.max(e_d)
+                e_d[1e10 * e_d < edmax] = edmax / 1e10
+                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
+                             np.linalg.inv(e_v))
+            if j == 0:  # sum all covariance matrices for all clusters
+                aaa0 = aaa
+            else:
+                aaa0 = aaa0 + aaa
+        mmm = np.linalg.det(aaa0) ** (1.0 / cent.shape[1]) * \
+            np.linalg.pinv(aaa0)
+        dtmp = []
+#  calc new distances using the same covariance matrix for all clusters -->
+# ellisoidal clusters, all clusters use equal ellipsoids
+        for j in range(cent.shape[0]):
+            #  difference between each sample attribute to the
+            # corresponding attribute of the j-th cluster
+            dcent = data - np.ones([data.shape[0], 1]) * cent[j]
+            dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
+        ddd = np.sqrt(np.array(dtmp))
+    elif cltype == 'GK' or cltype == 'gk':
+        m_f = uuu ** expo
+        dtmp = []
+        for j in range(cent.shape[0]):
+            #  difference between each sample attribute to the
+            # corresponding attribute of the j-th cluster
+            dcent = data - np.ones([data.shape[0], 1]) * cent[j]
+            aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
+                         dcent / np.sum(m_f[j], 0))  # Covariance of the
 #                                                          j-th cluster
-                aaa0 = np.eye(aaa.shape[0])
-    #  if cov_constr>0, this enforces not to elongated ellipsoids --> avoid the
-    # needle-like cluster
-                aaa = (1.0 - cov_constr) * aaa + cov_constr * (aaa0 /
-                                                               data.shape[0])
-    # constrain covariance matrix if badly conditioned
-                if np.linalg.cond(aaa) > 1e10:
-                    e_d, e_v = np.linalg.eig(aaa)
-                    edmax = np.max(e_d)
-                    e_d[1e10 * e_d < edmax] = edmax / 1e10
-                    aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                                 np.linalg.inv(e_v))
-                mmm = (np.linalg.det(aaa) ** (1.0 / cent.shape[1]) *
-                       np.linalg.pinv(aaa))
-                dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
-    #            d[j,:] = np.sum((dcent*M*dcent),2).T
-            ddd = np.sqrt(np.array(dtmp))
-        elif cltype == 'GG' or cltype == 'gg':
-            m_f = uuu ** expo
-            dtmp = []
-            for j in range(cent.shape[0]):
-                #  difference between each sample attribute to the
-                # corresponding attribute of the j-th cluster
-                dcent = data - np.ones([data.shape[0], 1]) * cent[j]
-                aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
-                             dcent / np.sum(m_f[j], 0))  # Covariance of the
+            aaa0 = np.eye(aaa.shape[0])
+#  if cov_constr>0, this enforces not to elongated ellipsoids --> avoid the
+# needle-like cluster
+            aaa = (1.0 - cov_constr) * aaa + cov_constr * (aaa0 /
+                                                           data.shape[0])
+# constrain covariance matrix if badly conditioned
+            if np.linalg.cond(aaa) > 1e10:
+                e_d, e_v = np.linalg.eig(aaa)
+                edmax = np.max(e_d)
+                e_d[1e10 * e_d < edmax] = edmax / 1e10
+                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
+                             np.linalg.inv(e_v))
+            mmm = (np.linalg.det(aaa) ** (1.0 / cent.shape[1]) *
+                   np.linalg.pinv(aaa))
+            dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
+#            d[j,:] = np.sum((dcent*M*dcent),2).T
+        ddd = np.sqrt(np.array(dtmp))
+    elif cltype == 'GG' or cltype == 'gg':
+        m_f = uuu ** expo
+        dtmp = []
+        for j in range(cent.shape[0]):
+            #  difference between each sample attribute to the
+            # corresponding attribute of the j-th cluster
+            dcent = data - np.ones([data.shape[0], 1]) * cent[j]
+            aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
+                         dcent / np.sum(m_f[j], 0))  # Covariance of the
 #                                                          j-th cluster
-                ppp = 1.0 / data.shape[0] * np.sum(m_f[j])
-                aaa0 = np.eye(aaa.shape[0])
-    #  if cov_constr>0, this enforces not to elongated ellipsoids --> avoid the
-    # needle-like cluster
-                aaa = (1.0 - cov_constr) * aaa + cov_constr * (aaa0 /
-                                                               data.shape[0])
-    # constrain covariance matrix if badly conditioned
-                if np.linalg.cond(aaa) > 1e10:
-                    e_d, e_v = np.linalg.eig(aaa)
-                    edmax = np.max(e_d)
-                    e_d[1e10 * e_d < edmax] = edmax / 1e10
-                    aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                                 np.linalg.inv(e_v))
-                dtmp.append(np.sum((np.linalg.det(aaa))**0.5 /
-                                   ppp*np.exp(np.dot(dcent,
-                                                     np.linalg.pinv(aaa)) *
-                                              dcent*0.5), 1).T)
-            ddd = np.sqrt(np.array(dtmp))
-        ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster
+            ppp = 1.0 / data.shape[0] * np.sum(m_f[j])
+            aaa0 = np.eye(aaa.shape[0])
+#  if cov_constr>0, this enforces not to elongated ellipsoids --> avoid the
+# needle-like cluster
+            aaa = (1.0 - cov_constr) * aaa + cov_constr * (aaa0 /
+                                                           data.shape[0])
+# constrain covariance matrix if badly conditioned
+            if np.linalg.cond(aaa) > 1e10:
+                e_d, e_v = np.linalg.eig(aaa)
+                edmax = np.max(e_d)
+                e_d[1e10 * e_d < edmax] = edmax / 1e10
+                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
+                             np.linalg.inv(e_v))
+            dtmp.append(np.sum((np.linalg.det(aaa))**0.5 /
+                               ppp*np.exp(np.dot(dcent,
+                                                 np.linalg.pinv(aaa)) *
+                                          dcent*0.5), 1).T)
+        ddd = np.sqrt(np.array(dtmp))
+    ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster
 #                                center
-        return ddd
+    return ddd
 
-    def fuzzy_dist(self, cent, data, uuu, expo, cltype, cov_constr):
-        """ Fuzzy Dist """
+
+def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
+    """ Fuzzy Dist """
 #        maxnumexp = np.log(np.finfo(np.float64).max)
-        no_samples = data.shape[0]
-        no_datasets = data.shape[1]
-        no_cent = cent.shape[0]
-        ddd = np.zeros([cent.shape[0], no_samples])
+    no_samples = data.shape[0]
+    no_datasets = data.shape[1]
+    no_cent = cent.shape[0]
+    ddd = np.zeros([cent.shape[0], no_samples])
 
 # FCM
-        if cltype == 'FCM' or cltype == 'fcm':
-            for j in range(no_cent):
-                ddd[j, :] = np.sqrt(np.sum(((data - np.ones([no_samples, 1]) *
-                                             cent[j])**2), 1))
-            # determinant criterion see Spath, Helmuth,
-            # "Cluster-Formation and Analyse", chapter 3
-        elif cltype == 'DET' or cltype == 'det':
-            m_f = uuu ** expo
-            for j in range(no_cent):
-                # difference between each sample attribute to the corresponding
-                # attribute of the j-th cluster
-                dcent = data - np.ones([no_samples, 1]) * cent[j]
-                aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
-                             dcent / np.sum(m_f[j], 0))  # Covar of the j-th
+    if cltype == 'FCM' or cltype == 'fcm':
+        for j in range(no_cent):
+            ddd[j, :] = np.sqrt(np.sum(((data - np.ones([no_samples, 1]) *
+                                         cent[j])**2), 1))
+        # determinant criterion see Spath, Helmuth,
+        # "Cluster-Formation and Analyse", chapter 3
+    elif cltype == 'DET' or cltype == 'det':
+        m_f = uuu ** expo
+        for j in range(no_cent):
+            # difference between each sample attribute to the corresponding
+            # attribute of the j-th cluster
+            dcent = data - np.ones([no_samples, 1]) * cent[j]
+            aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
+                         dcent / np.sum(m_f[j], 0))  # Covar of the j-th
 #                                                          cluster
 
-                # constrain covariance matrix if badly conditioned
-                if np.linalg.cond(aaa) > 1e10:
-                    e_d, e_v = np.linalg.eig(aaa)
-                    edmax = np.max(e_d)
-                    e_d[1e10 * e_d < edmax] = edmax / 1e10
-                    aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                                 np.linalg.inv(e_v))
-                if j == 0:  # sum all covariance matrices for all clusters
-                    aaa0 = aaa
-                else:
-                    aaa0 = aaa0 + aaa
-            mmm = np.linalg.det(aaa0)**(1.0/no_datasets)*np.linalg.pinv(aaa0)
-            dtmp = []
-            # calc new distances using the same covariance matrix for all
-            # clusters --> ellisoidal clusters, all clusters use equal
-            # ellipsoids
-            for j in range(no_cent):
-                # difference between each sample attribute to the corresponding
-                # attribute of the j-th cluster
-                dcent = data - np.ones([no_samples, 1]) * cent[j]
-                dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
-            ddd = np.sqrt(np.array(dtmp))
+            # constrain covariance matrix if badly conditioned
+            if np.linalg.cond(aaa) > 1e10:
+                e_d, e_v = np.linalg.eig(aaa)
+                edmax = np.max(e_d)
+                e_d[1e10 * e_d < edmax] = edmax / 1e10
+                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
+                             np.linalg.inv(e_v))
+            if j == 0:  # sum all covariance matrices for all clusters
+                aaa0 = aaa
+            else:
+                aaa0 = aaa0 + aaa
+        mmm = np.linalg.det(aaa0)**(1.0/no_datasets)*np.linalg.pinv(aaa0)
+        dtmp = []
+        # calc new distances using the same covariance matrix for all
+        # clusters --> ellisoidal clusters, all clusters use equal
+        # ellipsoids
+        for j in range(no_cent):
+            # difference between each sample attribute to the corresponding
+            # attribute of the j-th cluster
+            dcent = data - np.ones([no_samples, 1]) * cent[j]
+            dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
+        ddd = np.sqrt(np.array(dtmp))
 # GK
-        elif cltype == 'GK' or cltype == 'gk':
-            m_f = uuu ** expo
-            dtmp = []
-            for j in range(no_cent):
-                # difference between each sample attribute to the corresponding
-                # attribute of the j-th cluster
-                dcent = data - np.ones([no_samples, 1]) * cent[j]
-                # Covariance of the j-th cluster
-                aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
-                             dcent / np.sum(m_f[j], 0))
-                aaa0 = np.eye(no_datasets)
-            # if cov_constr>0, this enforces not to elongated ellipsoids -->
-                # avoid the needle-like cluster
-                aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
-                # constrain covariance matrix if badly conditioned
-                if np.linalg.cond(aaa) > 1e10:
-                    e_d, e_v = np.linalg.eig(aaa)
-                    edmax = np.max(e_d)
-                    e_d[1e10 * e_d < edmax] = edmax / 1e10
-                    aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                                 np.linalg.inv(e_v))
-            # GK Code
-                mmm = np.linalg.det(aaa)**(1.0/no_datasets)*np.linalg.pinv(aaa)
-                dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
-    #            d[j,:] = np.sum((dcent*M*dcent),2).T
-            ddd = np.sqrt(np.array(dtmp))
+    elif cltype == 'GK' or cltype == 'gk':
+        m_f = uuu ** expo
+        dtmp = []
+        for j in range(no_cent):
+            # difference between each sample attribute to the corresponding
+            # attribute of the j-th cluster
+            dcent = data - np.ones([no_samples, 1]) * cent[j]
+            # Covariance of the j-th cluster
+            aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
+                         dcent / np.sum(m_f[j], 0))
+            aaa0 = np.eye(no_datasets)
+        # if cov_constr>0, this enforces not to elongated ellipsoids -->
+            # avoid the needle-like cluster
+            aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
+            # constrain covariance matrix if badly conditioned
+            if np.linalg.cond(aaa) > 1e10:
+                e_d, e_v = np.linalg.eig(aaa)
+                edmax = np.max(e_d)
+                e_d[1e10 * e_d < edmax] = edmax / 1e10
+                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
+                             np.linalg.inv(e_v))
+        # GK Code
+            mmm = np.linalg.det(aaa)**(1.0/no_datasets)*np.linalg.pinv(aaa)
+            dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
+#            d[j,:] = np.sum((dcent*M*dcent),2).T
+        ddd = np.sqrt(np.array(dtmp))
 # GG
-        elif cltype == 'GG' or cltype == 'gg':
-            m_f = uuu ** expo
-            dtmp = []
-            for j in range(no_cent):
-                # difference between each sample attribute to the corresponding
-                # attribute of the j-th cluster
-                dcent = data - cent[j]
-                # Covariance of the j-th cluster
-                aaa = np.dot(m_f[j] * dcent.T, dcent / np.sum(m_f[j], 0))
-                aaa0 = np.eye(no_datasets)
-            # if cov_constr>0, this enforces not to elongated ellipsoids -->
-                # avoid the needle-like cluster
-                aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
+    elif cltype == 'GG' or cltype == 'gg':
+        m_f = uuu ** expo
+        dtmp = []
+        for j in range(no_cent):
+            # difference between each sample attribute to the corresponding
+            # attribute of the j-th cluster
+            dcent = data - cent[j]
+            # Covariance of the j-th cluster
+            aaa = np.dot(m_f[j] * dcent.T, dcent / np.sum(m_f[j], 0))
+            aaa0 = np.eye(no_datasets)
+        # if cov_constr>0, this enforces not to elongated ellipsoids -->
+            # avoid the needle-like cluster
+            aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
 
-                # constrain covariance matrix if badly conditioned
-                if np.linalg.cond(aaa) > 1e10:
-                    e_d, e_v = np.linalg.eig(aaa)
-                    edmax = np.max(e_d)
-                    e_d[1e10 * e_d < edmax] = edmax / 1e10
-                    aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                                 np.linalg.inv(e_v))
-            # GG code
-                ppp = 1.0 / no_samples * np.sum(m_f[j])
+            # constrain covariance matrix if badly conditioned
+            if np.linalg.cond(aaa) > 1e10:
+                e_d, e_v = np.linalg.eig(aaa)
+                edmax = np.max(e_d)
+                e_d[1e10 * e_d < edmax] = edmax / 1e10
+                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
+                             np.linalg.inv(e_v))
+        # GG code
+            ppp = 1.0 / no_samples * np.sum(m_f[j])
 
-                t_1 = np.linalg.det(aaa)**0.5/ppp
-                t_4 = np.linalg.pinv(aaa)
-                t_5 = np.dot(dcent, t_4) * dcent * 0.5
+            t_1 = np.linalg.det(aaa)**0.5/ppp
+            t_4 = np.linalg.pinv(aaa)
+            t_5 = np.dot(dcent, t_4) * dcent * 0.5
 #                t_6[t_6 > maxnumexp] = maxnumexp
-                t_7 = np.exp(t_5)
-                t_9 = t_1 * t_7
-                t_10 = np.sum(t_9, 1).T
-                dtmp.append(t_10)
+            t_7 = np.exp(t_5)
+            t_9 = t_1 * t_7
+            t_10 = np.sum(t_9, 1).T
+            dtmp.append(t_10)
 #                dtmp.append(np.sum((np.linalg.det(aaa)) ** 0.5 / ppp *
 #                            np.exp(np.dot(dcent, np.linalg.pinv(aaa)) *
 #                                   dcent * 0.5), 1).T)
-            ddd = np.sqrt(np.array(dtmp))
-        ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster
+        ddd = np.sqrt(np.array(dtmp))
+    ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster
 #                                center
-        if (ddd == np.inf).max() == True:
-            ddd[ddd == np.inf] = np.random.normal() * 1e-10  # solve break
+    if (ddd == np.inf).max() == True:
+        ddd[ddd == np.inf] = np.random.normal() * 1e-10  # solve break
 
-        return ddd
+    return ddd

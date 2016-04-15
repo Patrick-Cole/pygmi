@@ -49,13 +49,13 @@ translated into Python from the Geomag code.
 """
 
 from PyQt4 import QtGui, QtCore
-import numpy as np
 from math import sin
 from math import cos
 from math import sqrt
 from math import atan2
-from osgeo import osr
 import copy
+import numpy as np
+from osgeo import osr
 import pygmi.raster.dataprep as dp
 import pygmi.menu_default as menu_default
 

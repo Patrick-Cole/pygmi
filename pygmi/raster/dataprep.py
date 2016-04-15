@@ -28,16 +28,15 @@ from __future__ import print_function
 
 from PyQt4 import QtGui, QtCore
 import os
-import pdb
+import copy
 import numpy as np
 from osgeo import gdal, osr, ogr
-from pygmi.raster.datatypes import Data
-from pygmi.vector.datatypes import PData
 from PIL import Image, ImageDraw
-import copy
 import scipy.ndimage as ndimage
 from collections import Counter
 import pygmi.menu_default as menu_default
+from pygmi.raster.datatypes import Data
+from pygmi.vector.datatypes import PData
 
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
@@ -1488,7 +1487,6 @@ def merge(dat):
 
     return out
 
-
 #def taper(data):
 #    nr, nc = data.shape
 #    nmax = np.max([nr, nc])
@@ -1642,10 +1640,10 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz.mask = newmask
     return newz
 
+
 def tests():
     """ Tests to debug RTP """
     from pygmi.raster.iodefs import get_raster
-    import pdb
     import matplotlib.pyplot as plt
 
     datrtp = get_raster('C:\\Work\\Programming\\pygmi\\data\\RTP\\South_Africa_EMAG2_diffRTP_surfer.grd')
@@ -1657,16 +1655,13 @@ def tests():
 
     dat2 = rtp(dat, incl, decl)
 
-    plt.subplot(2,1,1)
+    plt.subplot(2, 1, 1)
     plt.imshow(dat.data, vmin=-1200, vmax=1200)
     plt.colorbar()
-    plt.subplot(2,1,2)
+    plt.subplot(2, 1, 2)
     plt.imshow(dat2.data, vmin=-1200, vmax=1200)
     plt.colorbar()
     plt.show()
-
-
-
 
 
 if __name__ == "__main__":

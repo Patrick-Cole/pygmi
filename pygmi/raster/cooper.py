@@ -31,13 +31,12 @@
 """
 
 from PyQt4 import QtGui, QtCore
+import copy
 import numpy as np
 import scipy.signal as si
-import scipy.interpolate as sint
-import copy
-import pygmi.menu_default as menu_default
+# import scipy.interpolate as sint
 from numba import jit
-import pdb
+import pygmi.menu_default as menu_default
 
 #        data = np.array([   [1, 2, 3, 4, 5, 6, 7, 8, 9],
 #                            [1, 2, 3, 4, 5, 7, 6, 8, 9],

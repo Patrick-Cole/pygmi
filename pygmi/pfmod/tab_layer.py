@@ -26,11 +26,11 @@
 
 from PyQt4 import QtGui, QtCore
 import numpy as np
-import pygmi.pfmod.misc as misc
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import \
     NavigationToolbar2QT as NavigationToolbar
+import pygmi.pfmod.misc as misc
 
 
 class LayerDisplay(object):

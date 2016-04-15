@@ -25,16 +25,16 @@
 """ Profile Display Tab Routines """
 
 from PyQt4 import QtGui, QtCore
+import os
 import numpy as np
 import scipy.ndimage as ndimage
-from pygmi.pfmod import misc
-import os
 
 # from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
     NavigationToolbar
+from pygmi.pfmod import misc
 
 
 class ProfileDisplay(object):

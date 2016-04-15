@@ -31,14 +31,9 @@ References:
 """
 
 import os
+from math import atan2, pi
 import numpy as np
 import numexpr as ne
-import pygmi.raster.cooper as cooper
-import pygmi.raster.iodefs as iodefs
-import pygmi.raster.dataprep as dataprep
-import pygmi.menu_default as menu_default
-import pygmi.misc as misc
-from math import atan2, pi
 
 from PyQt4 import QtGui
 import matplotlib
@@ -46,10 +41,14 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import matplotlib.cm as cm
 from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 from numba import jit
 # import scipy.spatial.distance as sd
+import pygmi.raster.cooper as cooper
+import pygmi.raster.iodefs as iodefs
+import pygmi.raster.dataprep as dataprep
+import pygmi.menu_default as menu_default
+import pygmi.misc as misc
 
 
 class TiltDepth(QtGui.QDialog):
@@ -119,7 +118,7 @@ class TiltDepth(QtGui.QDialog):
         hbl_all = QtGui.QHBoxLayout(self)
         vbl_right = QtGui.QVBoxLayout()
 
-        mpl_toolbar = NavigationToolbar(self.mmc, self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
                                    QtGui.QSizePolicy.Expanding)
         tmp = sorted(cm.datad.keys())
