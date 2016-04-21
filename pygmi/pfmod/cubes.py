@@ -484,6 +484,10 @@ class Mod3dDisplay(QtGui.QDialog):
                 faces, vtx = MarchingCubes(xx, yy, zz, c, .1)
 
                 if vtx == []:
+                    self.lmod1.update_lith_list_reverse()
+                    lithtext = self.lmod1.lith_list_reverse[lno]
+                    print(lithtext)
+
                     self.faces[lno] = []
                     self.corners[lno] = []
                     self.norms[lno] = []
@@ -1007,6 +1011,10 @@ def MarchingCubes(x, y, z, c, iso):
     newI = np.zeros_like(I)
     newI[I] = np.cumsum(M)-1
     F = newI[F]
+
+    # Eliminate duplicate faces
+#    F.sort(0)
+#    F = np.vstack({tuple(row) for row in F})
 
     return F, V
 # ============================================================

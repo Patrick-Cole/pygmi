@@ -107,7 +107,12 @@ class Quarry(object):
         """ Settings """
         self.showtext('Delete quarry events starting')
 
-        ifile = QtGui.QFileDialog.getOpenFileName()[0]
+        ext = "All Files (*.*)"
+
+        ifile = QtGui.QFileDialog.getOpenFileName(self.parent, 'Open File',
+                                                  '.', ext)
+
+#        ifile = QtGui.QFileDialog.getOpenFileName()[0]
         if ifile == '':
             return
 

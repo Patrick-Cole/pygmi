@@ -24,11 +24,14 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
+import pdb
 import sys
 import os
+import re
 import zipfile
 from PyQt4 import QtGui, QtCore
 import numpy as np
+import scipy.spatial as ss
 from osgeo import osr, gdal
 from osgeo import ogr
 import matplotlib.pyplot as plt
@@ -779,8 +782,6 @@ class ExportMod3D(object):
         mvis_3d.lmod1 = self.lmod
 #        mvis_3d.checkbox_smooth.setChecked(True)
 
-#        rev = 1  # should be 1 normally
-
         xrng = np.array(self.lmod.xrange, dtype=float)
         yrng = np.array(self.lmod.yrange, dtype=float)
         zrng = np.array(self.lmod.zrange, dtype=float)
@@ -797,26 +798,13 @@ class ExportMod3D(object):
 
         smooth = prjkmz.checkbox_smooth.isChecked()
 
-        orig_wkt = prjkmz.proj.wkt
-        orig = osr.SpatialReference()
-        orig.ImportFromWkt(orig_wkt)
-
-        targ = osr.SpatialReference()
-        targ.SetWellKnownGeogCS('WGS84')
-#        prj = osr.CoordinateTransformation(orig, targ)
-
-#        res = prj.TransformPoint(xrng[0], yrng[0])
-#        lonwest, latsouth = res[0], res[1]
-#        res = prj.TransformPoint(xrng[1], yrng[1])
-#        loneast, latnorth = res[0], res[1]
-
-# Get Save Name
-#        filename = self.ifile
-
         self.showtext('shapefile export starting...')
 
 # Move to 3d model tab to update the model stuff
-        self.showtext('updating 3d model...')
+        if smooth is True:
+            self.showtext('updating and smoothing 3d model...')
+        else:
+            self.showtext('updating 3d model...')
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
         mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
@@ -827,28 +815,19 @@ class ExportMod3D(object):
         for i in itmp:
             tmp[i, :3] = self.lmod.mlut[i]
         mvis_3d.lut = tmp
-#        mvis_3d.update_plot(fullcalc = True)
         mvis_3d.update_model(smooth)
 
         self.showtext('creating shapefile file')
-#        heading = str(0.)
-#        tilt = str(45.)  # angle from vertical
-#        lat = str(np.mean([latsouth, latnorth]))  # coord of object
-#        lon = str(np.mean([lonwest, loneast]))  # coord of object
-#        rng = str(max(xrng.ptp(), yrng.ptp(), zrng.ptp()))  # range to object
-#        alt = str(0)  # alt of object eye is looking at (meters)
-#        lato = str(latsouth)
-#        lono = str(lonwest)
 
         driver = ogr.GetDriverByName('ESRI Shapefile')
 
-        datasource = driver.CreateDataSource(self.ifile)
-        layer = datasource.CreateLayer('Model',
-                                       geom_type=ogr.wkbMultiPolygon25D)
-
-        layer.CreateField(ogr.FieldDefn("Lithology", ogr.OFTString))
-        layer.CreateField(ogr.FieldDefn("Susc", ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn("Density", ogr.OFTReal))
+#        datasource = driver.CreateDataSource(self.ifile)
+#        layer = datasource.CreateLayer('Model',
+#                                       geom_type=ogr.wkbMultiPolygon25D)
+#
+#        layer.CreateField(ogr.FieldDefn("Lithology", ogr.OFTString))
+#        layer.CreateField(ogr.FieldDefn("Susc", ogr.OFTReal))
+#        layer.CreateField(ogr.FieldDefn("Density", ogr.OFTReal))
 
 
 # update colors
@@ -860,33 +839,32 @@ class ExportMod3D(object):
 #        self.pbars.resetsub(maximum=pmax)
         lkey = list(mvis_3d.faces.keys())
         lkey.pop(lkey.index(0))
-        lithcnt = -1
 
-#        alt = 0
         for lith in lkey:
             lithtext = mvis_3d.lmod1.lith_list_reverse[lith]
             lithsusc = self.lmod.lith_list[lithtext].susc
             lithdens = self.lmod.lith_list[lithtext].density
+            self.showtext(' '+lithtext)
 
             faces = np.array(mvis_3d.gfaces[lith])
-            # Google wants the model to have origin (0,0)
+
+            if faces.size == 0:
+                continue
+
+            ifile = self.ifile[:-4]+'_'+re.sub(r'[^A-Za-z]+', '_',
+                                               lithtext)+'.shp'
+            datasource = driver.CreateDataSource(ifile)
+            layer = datasource.CreateLayer('Model',
+                                           geom_type=ogr.wkbMultiPolygon25D)
+
+            if layer is None:
+                pdb.set_trace()
+
+            layer.CreateField(ogr.FieldDefn("Lithology", ogr.OFTString))
+            layer.CreateField(ogr.FieldDefn("Susc", ogr.OFTReal))
+            layer.CreateField(ogr.FieldDefn("Density", ogr.OFTReal))
 
             points = mvis_3d.gpoints[lith]
-
-#            points -= mvis_3d.origin
-#
-#            x = points[:, 0]
-#            y = points[:, 1]
-#            earthrad = 6378137.
-#            z = earthrad-np.sqrt(earthrad**2-(x**2+y**2))
-#
-#            pdb.set_trace()
-#            points[:, 2] -= z
-#
-#            if rev == -1:
-#                points += [xrng.ptp(), yrng.ptp(), 0]
-
-            lithcnt += 1
 
             for f in faces:
                 multipolygon = ogr.Geometry(ogr.wkbMultiPolygon25D)
@@ -916,13 +894,15 @@ class ExportMod3D(object):
                 multipolygon = None
 
             # flush memory
-            feature.Destroy()
-
-        datasource.Destroy()
+            layer = None
+            feature = None
+            datasource = None
+#        datasource.Destroy()
 
 #        self.pbars.resetsub(maximum=1)
 #        self.pbars.incr()
         self.showtext('shapefile export complete!')
+
 
 class Exportkmz(QtGui.QDialog):
     """ Class to call up a dialog """
@@ -1168,3 +1148,58 @@ def gtiff(filename):
     dat[0].nullvalue = np.nan  # This was erread.nullvalue, is changed above
 
     return dat
+
+
+
+
+"""
+            inorm1 = np.arange(norm.shape[0])
+
+            can_reduce = True
+            while can_reduce:
+                can_reduce = False
+                for idx, i in enumerate(inorm1):
+                    ifaces = np.nonzero(np.sum(faces == i, 1))[0]
+                    if ifaces.size == 0:
+                        continue
+                    faces1 = faces[ifaces]
+                    norm2 = norm[faces1]
+                    u1 = np.unique(norm2)
+                    u2 = np.unique(norm2[0])
+
+                    if np.all(u1 == u2) and u1.size <= 3:
+                        faces2 = faces1[faces1 != i]
+                        # This line makes sure that we only simplify if the
+                        # elimiated vertex is in the center of triangles.
+                        if (np.unique(faces2).size*2 == faces2.size):
+                            can_reduce = True
+                            break
+
+                print(inorm1.size, idx)
+                if not can_reduce:
+                    break
+                inorm1 = inorm1[idx:]
+
+                faces2.shape = (faces1.shape[0], 2)
+                faces2 = faces2.tolist()
+                vert = [faces2.pop(0)]
+
+                while len(faces2) > 0:
+                    tmp = (np.array(faces2) == vert[-1])
+                    if tmp.max() == False:
+                        faces2 = np.fliplr(faces2).tolist()
+                        continue
+                    itmp = np.nonzero(tmp)[0][0]
+                    vert += [faces2.pop(itmp)[::-1]]
+
+                vert = np.array(vert).flatten()[::2]
+                faces = np.delete(faces, ifaces, 0)
+
+                for i, _ in enumerate(vert[:-2]):
+                    ftmp = [vert[0], vert[i+1], vert[i+2]]
+                    faces = np.vstack((faces, ftmp))
+
+            pdb.set_trace()
+
+
+"""
