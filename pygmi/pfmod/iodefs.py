@@ -31,7 +31,6 @@ import re
 import zipfile
 from PyQt4 import QtGui, QtCore
 import numpy as np
-import scipy.spatial as ss
 from osgeo import osr, gdal
 from osgeo import ogr
 import matplotlib.pyplot as plt
@@ -521,7 +520,7 @@ class ExportMod3D(object):
         lkey.pop(lkey.index(0))
         lithcnt = -1
 
-        alt = 0
+        alt = str(0)
         for lith in lkey:
             faces = np.array(mvis_3d.gfaces[lith])
             # Google wants the model to have origin (0,0)
@@ -536,8 +535,6 @@ class ExportMod3D(object):
             z = earthrad-np.sqrt(earthrad**2-(x**2+y**2))
             points[:, 2] -= z
 
-#            pdb.set_trace()
-
             if rev == -1:
                 points += [xrng.ptp(), yrng.ptp(), 0]
 
@@ -551,7 +548,6 @@ class ExportMod3D(object):
                 points = points[:60000]
                 norm = norm[:60000]
                 faces = faces[faces.max(1) < 60000]
-#                continue
 
             lithcnt += 1
 
