@@ -470,13 +470,13 @@ class ImportGenericFPS(object):
             tmp.magnitude_1 = i[-1]
             event['1'] = tmp
 
-            tmp = sdt.seisan_F()
-            tmp.program_used = 'Generic'
-            tmp.strike = i[3]
-            tmp.dip = i[4]
-            tmp.rake = i[5]
+            tmp2 = sdt.seisan_F()
+            tmp2.program_used = 'Generic'
+            tmp2.strike = i[3]
+            tmp2.dip = i[4]
+            tmp2.rake = i[5]
             event['F'] = {}
-            event['F']['Generic'] = tmp
+            event['F']['Generic'] = tmp2
             dat.append(event)
 
         self.outdata['Seis'] = dat
@@ -1220,6 +1220,7 @@ class ExportCSV(object):
         tmp = sform('{0:1s}', 'P', tmp, 80)
 
         return tmp
+
 
 def sform(strform, val, tmp, col1, col2=None, nval=-999):
     """

@@ -152,7 +152,7 @@ class ImportPointData(object):
             ltmp = [str(c) for c in range(len(ltmp))]
 
         datatmp = np.genfromtxt(filename, unpack=True, delimiter=dlim,
-                                skiprows=srows, usemask=True)
+                                skip_header=srows, usemask=True)
 
 #        datatmp.mask = np.logical_or(datatmp.mask, np.isnan(datatmp.data))
 #        pdb.set_trace()

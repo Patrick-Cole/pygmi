@@ -103,9 +103,6 @@ class Arrow(QtGui.QGraphicsLineItem):
         if self.my_start_item.collidesWithItem(self.my_end_item):
             return
 
-        my_start_item = self.my_start_item
-        my_end_item = self.my_end_item
-        my_color = self.my_color
         my_pen = self.pen()
         my_pen.setColor(self.my_color)
         arrow_size = 10.0
@@ -117,14 +114,14 @@ class Arrow(QtGui.QGraphicsLineItem):
         x1, y1 = np.mean(self.my_end_item.np_poly, 0)
         my_end_off = QtCore.QPointF(x1, y1)
 
-        center_line = QtCore.QLineF(my_start_item.pos()+my_start_off,
-                                    my_end_item.pos()+my_end_off)
-        end_polygon = my_end_item.polygon()
-        p1 = end_polygon.first() + my_end_item.pos()
+        center_line = QtCore.QLineF(self.my_start_item.pos()+my_start_off,
+                                    self.my_end_item.pos()+my_end_off)
+        end_polygon = self.my_end_item.polygon()
+        p1 = end_polygon.first() + self.my_end_item.pos()
 
         intersect_point = QtCore.QPointF()
         for i in end_polygon:
-            p2 = i + my_end_item.pos()
+            p2 = i + self.my_end_item.pos()
             poly_line = QtCore.QLineF(p1, p2)
             intersect_type = poly_line.intersect(center_line, intersect_point)
             if intersect_type == QtCore.QLineF.BoundedIntersection:
@@ -132,7 +129,7 @@ class Arrow(QtGui.QGraphicsLineItem):
             p1 = p2
 
         self.setLine(QtCore.QLineF(intersect_point,
-                                   my_start_item.pos()+my_start_off))
+                                   self.my_start_item.pos()+my_start_off))
         line = self.line()
 
         angle = math.acos(line.dx() / line.length())
@@ -155,7 +152,7 @@ class Arrow(QtGui.QGraphicsLineItem):
         painter.drawLine(line)
         painter.drawPolygon(self.arrow_head)
         if self.isSelected():
-            painter.setPen(QtGui.QPen(my_color, 1, QtCore.Qt.DashLine))
+            painter.setPen(QtGui.QPen(self.my_color, 1, QtCore.Qt.DashLine))
             my_line = QtCore.QLineF(line)
             my_line.translate(0, 4.0)
             painter.drawLine(my_line)

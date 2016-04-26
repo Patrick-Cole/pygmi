@@ -53,16 +53,7 @@ class FileMenu(object):
         self.menufile.setTitle("File")
         parent.menubar.addAction(self.menufile.menuAction())
 
-#        self.action_open_project = QtGui.QAction(parent)
-#        self.action_open_project.setText("Open Project")
-#        self.menufile.addAction(self.action_open_project)
-
-#        self.action_save_project = QtGui.QAction(parent)
-#        self.action_save_project.setText("Save Project")
-#        self.menufile.addAction(self.action_save_project)
-
         self.action_exit = QtGui.QAction(parent)
-#        self.menufile.addSeparator()
         self.action_exit.setText("Exit")
         self.menufile.addAction(self.action_exit)
 
