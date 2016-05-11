@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Plot Vector Data using Matplotlib """
 
+import pdb
 import numpy as np
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt
@@ -260,13 +261,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fcnt = np.array(fcnt)
         flen = np.array(flen)
         bwidth = np.pi/nbins
-        bcols = plt.cm.Set1(np.arange(nbins)/nbins)
+        bcols = plt.cm.Set1(np.arange(nbins+1)/nbins)
         np.random.shuffle(bcols)
+
+#        pdb.set_trace()
 
         if rtype == 0:
             # Draw rose diagram base on one angle per linear feature
 
-            radii, theta = np.histogram(fangle, bins=np.arange(0, np.pi,
+            radii, theta = np.histogram(fangle, bins=np.arange(0, np.pi+bwidth,
                                                                bwidth))
             xtheta = theta[:-1]  # +(theta[1]-theta[0])/2
             bcols2 = bcols[(xtheta/bwidth).astype(int)]
