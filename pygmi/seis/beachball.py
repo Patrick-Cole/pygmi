@@ -385,6 +385,9 @@ class BeachBall(QtGui.QDialog):
 
 def beachball(fm, centerx, centery, diam):
     """
+    Source code provided here are adopted from MatLab script
+    `bb.m` written by Andy Michael and Oliver Boyd.
+
     function bb(fm, centerx, centery, diam, ta, color)
     Draws beachball diagram of earthquake double-couple focal mechanism(s).
     S1, D1, and R1, the strike, dip and rake of one of the focal planes, can
@@ -534,6 +537,7 @@ def beachball(fm, centerx, centery, diam):
     X = np.hstack((X1, Xs1, X2, Xs2))
     Y = np.hstack((Y1, Ys1, Y2, Ys2))
 
+    ampy = 1.0
     if D > 0:
         X = ampy*X*D/90 + CY
         Y = Y*D/90 + CX
