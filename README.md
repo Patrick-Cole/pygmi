@@ -78,6 +78,8 @@ Installers are available in [64-bit and 32-bit](https://github.com/Patrick-Cole/
 
 Running the software can be achieved through the shortcut on your desktop.
 
+You may need to install the Microsoft Visual C++ 2015 Redistributable. It can be obtained from [here](https://www.visualstudio.com/downloads/download-visual-studio-vs#d-visual-c)
+
 ###Linux
 Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through [Anaconda](http://continuum.io/downloads>).
 
