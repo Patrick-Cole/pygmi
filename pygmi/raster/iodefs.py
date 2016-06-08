@@ -142,6 +142,7 @@ class ImportData(object):
             return False
 
         output_type = 'Raster'
+
         if 'Cluster' in dat[0].dataid:
             output_type = 'Cluster'
 
@@ -369,6 +370,8 @@ def get_hdf(ifile):
         dat = get_modis(ifile)
     elif 'ASTER' in metadata.values():
         dat = get_aster(ifile)
+    elif 'ASTER_GDEM_ASTGDEM_Description' in metadata.keys():
+        dat = get_aster_ged(ifile)
     else:
         dat = None
 
@@ -415,7 +418,6 @@ def get_modis(ifile):
 
     i = -1
     for ifile, bandid2 in subdata:
-        print(ifile, bandid2)
         dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
         gtr = dataset.GetGeoTransform()
@@ -533,9 +535,9 @@ def get_aster(ifile):
 
     subdata = [i for i in subdata if 'ImageData' in i[0]]
 
+
     i = -1
     for ifile, bandid2 in subdata:
-        print(ifile, bandid2)
         dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
         rtmp2 = dataset.ReadAsArray()
@@ -545,13 +547,7 @@ def get_aster(ifile):
         gtr = tmpds.GetGeoTransform()
         tlx, lonsdim, _, tly, _, latsdim = gtr
 
-        print(bandid2, np.unique(rtmp2).size)
         nval = 0
-
-#        plt.imshow(rtmp2)
-#        plt.show()
-#
-#        pdb.set_trace()
 
         i += 1
 
@@ -594,6 +590,203 @@ def get_aster(ifile):
 
         dat[i].wkt = srs.ExportToWkt()
 
+    if dat == []:
+        dat = None
+    return dat
+
+
+def get_aster_ged(ifile):
+    dat = []
+    ifile = ifile[:]
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    subdata = dataset.GetSubDatasets()
+    metadata = dataset.GetMetadata()
+
+    latentry = [i for i in subdata if 'Latitude' in i[1]]
+    subdata.pop(subdata.index(latentry[0]))
+    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lats = rtmp.ReadAsArray()
+    latsdim = (lats.max()-lats.min())/lats.shape[0]
+
+    lonentry = [i for i in subdata if 'Longitude' in i[1]]
+    subdata.pop(subdata.index(lonentry[0]))
+    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lons = rtmp.ReadAsArray()
+    lonsdim = (lons.max()-lons.min())/lons.shape[0]
+
+    tlx = lons.min()-abs(lonsdim/2)
+    tly = lats.max()+abs(latsdim/2)
+
+    i = -1
+    for ifile, bandid2 in subdata:
+        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+        bandid = bandid2
+
+        if bandid2 == '[1000x1000] //ASTER_GDEM/ASTGDEM (16-bit integer)':
+            bandid = metadata['ASTER_GDEM_ASTGDEM_Description']
+        if bandid2 == '[1000x1000] //Land_Water_Map/LWmap (16-bit integer)':
+            bandid = metadata['Land_Water_Map_LWmap_Description']
+        if bandid2 == '[1000x1000] //Observations/NumObs (16-bit integer)':
+            bandid = metadata['Observations_NumObs_Description']
+
+        gtr = dataset.GetGeoTransform()
+        rtmp2 = dataset.ReadAsArray()
+
+        if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
+            rtmp2 = np.transpose(rtmp2, (2, 0, 1))
+
+        nbands = 1
+        if rtmp2.ndim == 3:
+            nbands = rtmp2.shape[0]
+
+        for i2 in range(nbands):
+            nval = -9999
+            i += 1
+
+            dat.append(Data())
+            if rtmp2.ndim == 3:
+                dat[i].data = rtmp2[i2]
+            else:
+                dat[i].data = rtmp2
+
+            dat[i].data = np.ma.masked_invalid(dat[i].data)
+            dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
+            if dat[i].data.mask.size == 1:
+                dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
+                                    dat[i].data.mask)
+
+            if bandid2 == '[5x1000x1000] //Emissivity/Mean (16-bit integer)':
+                bandid = metadata['Emissivity_Mean_Description']+'_band1'+str(i2)
+                dat[i].data = dat[i].data * 0.001
+            if bandid2 == '[5x1000x1000] //Emissivity/SDev (16-bit integer)':
+                bandid = metadata['Emissivity_SDev_Description']+'_band1'+str(i2)
+                dat[i].data = dat[i].data * 0.0001
+            if bandid2 == '[1000x1000] //NDVI/Mean (16-bit integer)':
+                bandid = metadata['NDVI_Mean_Description']
+                dat[i].data = dat[i].data * 0.01
+            if bandid2 == '[1000x1000] //NDVI/SDev (16-bit integer)':
+                bandid = metadata['NDVI_SDev_Description']
+                dat[i].data = dat[i].data * 0.01
+            if bandid2 == '[1000x1000] //Temperature/Mean (32-bit integer)':
+                bandid = metadata['Temperature_Mean_Description']
+                dat[i].data = dat[i].data * 0.01
+            if bandid2 == '[1000x1000] //Temperature/SDev (16-bit integer)':
+                bandid = metadata['Temperature_SDev_Description']
+                dat[i].data = dat[i].data * 0.01
+
+            dat[i].nrofbands = dataset.RasterCount
+            dat[i].tlx = tlx
+            dat[i].tly = tly
+            dat[i].dataid = bandid
+            dat[i].nullvalue = nval
+            dat[i].rows = dat[i].data.shape[0]
+            dat[i].cols = dat[i].data.shape[1]
+            dat[i].xdim = abs(lonsdim)
+            dat[i].ydim = abs(latsdim)
+            dat[i].gtr = gtr
+
+            srs = osr.SpatialReference()
+            srs.ImportFromWkt(dataset.GetProjection())
+            srs.AutoIdentifyEPSG()
+
+            dat[i].wkt = srs.ExportToWkt()
+
+    return dat
+
+
+def get_aster_ged2(ifile):
+    dat = []
+    ifile = ifile[:]
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    subdata = dataset.GetSubDatasets()
+    pdb.set_trace()
+
+    latentry = [i for i in subdata if 'Latitude' in i[1]]
+    subdata.pop(subdata.index(latentry[0]))
+    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lats = rtmp.ReadAsArray()
+    latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
+
+    lonentry = [i for i in subdata if 'Longitude' in i[1]]
+    subdata.pop(subdata.index(lonentry[0]))
+    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lons = rtmp.ReadAsArray()
+    lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
+
+    lonsdim = latsdim
+    tlx = lons.min()-abs(lonsdim/2)
+    tly = lats.max()+abs(latsdim/2)
+    cols = int((lons.max()-lons.min())/lonsdim)+1
+    rows = int((lats.max()-lats.min())/latsdim)+1
+
+    newx2, newy2 = np.mgrid[0:rows, 0:cols]
+    newx2 = newx2*lonsdim + tlx
+    newy2 = tlx - newy2*latsdim
+
+    i = -1
+    for ifile, bandid2 in subdata:
+        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+        rtmp2 = dataset.ReadAsArray()
+
+        tmpds = gdal.AutoCreateWarpedVRT(dataset)
+        rtmp2 = tmpds.ReadAsArray()
+        gtr = tmpds.GetGeoTransform()
+        tlx, lonsdim, _, tly, _, latsdim = gtr
+
+        nval = 0
+
+        i += 1
+
+        dat.append(Data())
+        dat[i].data = rtmp2
+
+        if dat[i].data.dtype.kind == 'i':
+            if nval is None:
+                nval = 999999
+            nval = int(nval)
+        elif dat[i].data.dtype.kind == 'u':
+            if nval is None:
+                nval = 0
+            nval = int(nval)
+        else:
+            if nval is None:
+                nval = 1e+20
+            nval = float(nval)
+
+        dat[i].data = np.ma.masked_invalid(dat[i].data)
+        dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
+        if dat[i].data.mask.size == 1:
+            dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
+                                dat[i].data.mask)
+
+        dat[i].nrofbands = dataset.RasterCount
+        dat[i].tlx = tlx
+        dat[i].tly = tly
+        dat[i].dataid = bandid2
+        dat[i].nullvalue = nval
+        dat[i].rows = dat[i].data.shape[0]
+        dat[i].cols = dat[i].data.shape[1]
+        dat[i].xdim = abs(lonsdim)
+        dat[i].ydim = abs(latsdim)
+        dat[i].gtr = gtr
+
+        srs = osr.SpatialReference()
+        srs.ImportFromWkt(dataset.GetProjection())
+        srs.AutoIdentifyEPSG()
+
+        dat[i].wkt = srs.ExportToWkt()
+
+    if dat == []:
+        dat = None
     return dat
 
 
@@ -1087,8 +1280,6 @@ def get_geosoft(hfile):
 
     temspc = np.fromfile(f, dtype='a324', count=1)[0]
 
-#    pdb.set_trace()
-
     if es == 2:
         nval = -32767
         data = np.fromfile(f, dtype=np.int16, count=nrows*ncols)
@@ -1174,9 +1365,6 @@ def get_geosoft(hfile):
 #    # This is the ground-reflectance for the given radiance,
 #    # under the given atmospheric conditions
 #    print(ss.outputs.atmos_corrected_reflectance_lambertian)
-#
-#    pdb.set_trace()
-
 
 
 # if __name__ == "__main__":
