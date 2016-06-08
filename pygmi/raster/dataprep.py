@@ -37,6 +37,7 @@ import scipy.ndimage as ndimage
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.vector.datatypes import PData
+from numba import jit
 
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
@@ -1557,6 +1558,7 @@ def trim_raster(olddata):
     return olddata
 
 
+#@jit(nopython=True)
 def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     """
     Do a quick grid
@@ -1587,6 +1589,9 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
         showtext = print
 
     showtext('Creating Grid')
+    x = x.flatten()
+    y = y.flatten()
+    z = z.flatten()
 
     xmin = x.min()
     xmax = x.max()
@@ -1626,7 +1631,7 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
                 newmask[yindex[i], xindex[i]] = 0
             zfin = newz
         else:
-            xx, yy = np.nonzero(newmask)
+            xx, yy = newmask.nonzero()
             xx2 = xx//jj
             yy2 = yy//jj
             zfin[xx, yy] = newz[xx2, yy2]
@@ -1641,7 +1646,7 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     return newz
 
 
-def tests():
+def tests_rtp():
     """ Tests to debug RTP """
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
@@ -1660,6 +1665,34 @@ def tests():
     plt.colorbar()
     plt.subplot(2, 1, 2)
     plt.imshow(dat2.data, vmin=-1200, vmax=1200)
+    plt.colorbar()
+    plt.show()
+
+
+def func(x, y):
+    return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2
+
+
+def tests():
+    """ Tests to debug RTP """
+    import matplotlib.pyplot as plt
+    import pdb
+    from pygmi.misc import PTime
+
+    grid_x, grid_y = np.mgrid[0:1:100j, 0:1:200j]
+    points = np.random.rand(1000000, 2)
+    values = func(points[:,0], points[:,1])
+
+#    pdb.set_trace()
+    ttt = PTime()
+
+    dat = quickgrid(points[:,0], points[:,1], values, .001, numits=-1)
+
+    ttt.since_last_call()
+
+#    dat = griddata(points, values, (grid_x, grid_y), method='nearest')
+
+    plt.imshow(dat)
     plt.colorbar()
     plt.show()
 

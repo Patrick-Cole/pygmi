@@ -24,15 +24,21 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
+import pdb
 import os
 import glob
 import struct
 from PyQt4 import QtGui
 import numpy as np
+from scipy.interpolate import griddata
 from osgeo import gdal, osr
+from pyhdf.SD import SD, SDC
 from pygmi.raster.datatypes import Data
 from pygmi.clust.datatypes import Clust
 from pygmi.raster.dataprep import merge
+from pygmi.raster.dataprep import quickgrid
+import matplotlib.pyplot as plt
+from Py6S import *
 
 
 class ImportData(object):
@@ -67,6 +73,7 @@ class ImportData(object):
         """ Settings """
         ext = \
             "Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;" + \
+            "hdf (*.hdf);;" + \
             "ERMapper (*.ers);;" + \
             "ENVI (*.hdr);;" + \
             "ERDAS Imagine (*.img);;" + \
@@ -95,6 +102,8 @@ class ImportData(object):
             dat = get_geopak(self.ifile)
         elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
             dat = get_geosoft(self.ifile)
+        elif filt == 'hdf (*.hdf)':
+            dat = get_hdf(self.ifile)
         elif filt == 'ASCII with .hdr header (*.asc)':
             dat = get_ascii(self.ifile)
         else:
@@ -116,6 +125,13 @@ class ImportData(object):
                                           'grid. You can export your grid to '
                                           'this format using the Geosoft '
                                           'Viewer.',
+                                          QtGui.QMessageBox.Ok,
+                                          QtGui.QMessageBox.Ok)
+            elif filt == 'hdf (*.hdf)':
+                QtGui.QMessageBox.warning(self.parent, 'Error',
+                                          'Could not import the data.'
+                                          'Currently only ASTER and MODIS'
+                                          'are supported.',
                                           QtGui.QMessageBox.Ok,
                                           QtGui.QMessageBox.Ok)
             else:
@@ -302,6 +318,285 @@ def get_raster(ifile):
     return dat
 
 
+def get_hdf(ifile):
+    """
+    This function loads a raster dataset off the disk using the GDAL
+    libraries. It returns the data in a PyGMI data object.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+#    dat = []
+    ifile = ifile[:]
+#    ext = ifile[-3:]
+
+#    myd03 = SD(ifile, SDC.READ)
+#    myd03_Latitude = myd03.select('Latitude')
+#    myd03_Longitude = myd03.select('Longitude')
+#    myd03_Latitude_data = myd03_Latitude.get()
+#    myd03_Longitude_data = myd03_Longitude.get()
+
+#    myd03_sds = myd03.select('Cloud_Phase_Optical_Properties')
+#    myd03_sds_data = myd03_sds.get()
+
+#    latmin = myd03_Latitude_data[0, 0]
+#    latmax = myd03_Latitude_data[-1, -1]
+#    lat_0 = latmin + (latmax - latmin) / 2.
+
+#    tmp_01 = myd03_Longitude_data[0, 0]
+#    tmp_02 = myd03_Longitude_data[-1, -1]
+#    lonmin = min(myd03_Longitude_data[0, 0], myd03_Longitude_data[-1, -1])
+#    lonmax = max(myd03_Longitude_data[0, 0], myd03_Longitude_data[-1, -1])
+#    lon_0 = lonmin + (lonmax - lonmin) / 2.
+#    if lon_0 > 180:
+#        lon_0 = - (360 - lon_0)
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    if dataset is None:
+        return None
+
+    metadata = dataset.GetMetadata()
+
+    if 'Moderate Resolution Imaging Spectroradiometer' in metadata.values():
+        dat = get_modis(ifile)
+    elif 'ASTER' in metadata.values():
+        dat = get_aster(ifile)
+    else:
+        dat = None
+
+    return dat
+
+
+def get_modis(ifile):
+    dat = []
+    ifile = ifile[:]
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    subdata = dataset.GetSubDatasets()
+
+    latentry = [i for i in subdata if 'Latitude' in i[1]]
+    subdata.pop(subdata.index(latentry[0]))
+    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lats = rtmp.ReadAsArray()
+    latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
+
+    lonentry = [i for i in subdata if 'Longitude' in i[1]]
+    subdata.pop(subdata.index(lonentry[0]))
+    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lons = rtmp.ReadAsArray()
+    lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
+
+    lonsdim = latsdim
+    tlx = lons.min()-abs(lonsdim/2)
+    tly = lats.max()+abs(latsdim/2)
+    cols = int((lons.max()-lons.min())/lonsdim)+1
+    rows = int((lats.max()-lats.min())/latsdim)+1
+
+    newx2, newy2 = np.mgrid[0:rows, 0:cols]
+    newx2 = newx2*lonsdim + tlx
+    newy2 = tlx - newy2*latsdim
+
+    tmp = []
+    for i in subdata:
+        if 'HDF4_EOS:EOS_SWATH' in i[0]:
+            tmp.append(i)
+    subdata = tmp
+
+    i = -1
+    for ifile, bandid2 in subdata:
+        print(ifile, bandid2)
+        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+        gtr = dataset.GetGeoTransform()
+        rtmp2 = dataset.ReadAsArray()
+
+        if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
+            rtmp2 = np.transpose(rtmp2, (2, 0, 1))
+
+        nbands = 1
+        if rtmp2.ndim == 3:
+            nbands = rtmp2.shape[0]
+
+        for i2 in range(nbands):
+            rtmp = dataset.GetRasterBand(i2+1)
+            bandid = rtmp.GetDescription()
+            nval = rtmp.GetNoDataValue()
+            i += 1
+
+            dat.append(Data())
+            if rtmp2.ndim == 3:
+                dat[i].data = rtmp2[i2]
+            else:
+                dat[i].data = rtmp2
+
+            newx = lons[dat[i].data != nval]
+            newy = lats[dat[i].data != nval]
+            newz = dat[i].data[dat[i].data != nval]
+
+            if newx.size == 0:
+                dat[i].data = np.zeros((rows, cols)) + nval
+            else:
+                tmp = quickgrid(newx, newy, newz, latsdim)
+                mask = tmp.mask
+                gdat = tmp.data
+                dat[i].data = np.ma.masked_invalid(gdat[::-1])
+                dat[i].data.mask = mask[::-1]
+
+            if dat[i].data.dtype.kind == 'i':
+                if nval is None:
+                    nval = 999999
+                nval = int(nval)
+            elif dat[i].data.dtype.kind == 'u':
+                if nval is None:
+                    nval = 0
+                nval = int(nval)
+            else:
+                if nval is None:
+                    nval = 1e+20
+                nval = float(nval)
+
+            dat[i].data = np.ma.masked_invalid(dat[i].data)
+            dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
+            if dat[i].data.mask.size == 1:
+                dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
+                                    dat[i].data.mask)
+
+            dat[i].nrofbands = dataset.RasterCount
+            dat[i].tlx = tlx
+            dat[i].tly = tly
+            dat[i].dataid = bandid2+' '+bandid
+            dat[i].nullvalue = nval
+            dat[i].rows = dat[i].data.shape[0]
+            dat[i].cols = dat[i].data.shape[1]
+            dat[i].xdim = abs(lonsdim)
+            dat[i].ydim = abs(latsdim)
+            dat[i].gtr = gtr
+
+            srs = osr.SpatialReference()
+            srs.ImportFromWkt(dataset.GetProjection())
+            srs.AutoIdentifyEPSG()
+
+            dat[i].wkt = srs.ExportToWkt()
+
+    return dat
+
+
+def get_aster(ifile):
+    dat = []
+    ifile = ifile[:]
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    subdata = dataset.GetSubDatasets()
+
+    latentry = [i for i in subdata if 'Latitude' in i[1]]
+    subdata.pop(subdata.index(latentry[0]))
+    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lats = rtmp.ReadAsArray()
+    latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
+
+    lonentry = [i for i in subdata if 'Longitude' in i[1]]
+    subdata.pop(subdata.index(lonentry[0]))
+    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lons = rtmp.ReadAsArray()
+    lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
+
+    lonsdim = latsdim
+    tlx = lons.min()-abs(lonsdim/2)
+    tly = lats.max()+abs(latsdim/2)
+    cols = int((lons.max()-lons.min())/lonsdim)+1
+    rows = int((lats.max()-lats.min())/latsdim)+1
+
+    newx2, newy2 = np.mgrid[0:rows, 0:cols]
+    newx2 = newx2*lonsdim + tlx
+    newy2 = tlx - newy2*latsdim
+
+
+#    tmp = []
+#    for i in subdata:
+#        if 'HDF4_EOS:EOS_SWATH' in i[0]:
+#            tmp.append(i)
+#    subdata = tmp
+
+    subdata = [i for i in subdata if 'ImageData' in i[0]]
+
+    i = -1
+    for ifile, bandid2 in subdata:
+        print(ifile, bandid2)
+        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+        rtmp2 = dataset.ReadAsArray()
+
+        tmpds = gdal.AutoCreateWarpedVRT(dataset)
+        rtmp2 = tmpds.ReadAsArray()
+        gtr = tmpds.GetGeoTransform()
+        tlx, lonsdim, _, tly, _, latsdim = gtr
+
+        print(bandid2, np.unique(rtmp2).size)
+        nval = 0
+
+#        plt.imshow(rtmp2)
+#        plt.show()
+#
+#        pdb.set_trace()
+
+        i += 1
+
+        dat.append(Data())
+        dat[i].data = rtmp2
+
+        if dat[i].data.dtype.kind == 'i':
+            if nval is None:
+                nval = 999999
+            nval = int(nval)
+        elif dat[i].data.dtype.kind == 'u':
+            if nval is None:
+                nval = 0
+            nval = int(nval)
+        else:
+            if nval is None:
+                nval = 1e+20
+            nval = float(nval)
+
+        dat[i].data = np.ma.masked_invalid(dat[i].data)
+        dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
+        if dat[i].data.mask.size == 1:
+            dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
+                                dat[i].data.mask)
+
+        dat[i].nrofbands = dataset.RasterCount
+        dat[i].tlx = tlx
+        dat[i].tly = tly
+        dat[i].dataid = bandid2
+        dat[i].nullvalue = nval
+        dat[i].rows = dat[i].data.shape[0]
+        dat[i].cols = dat[i].data.shape[1]
+        dat[i].xdim = abs(lonsdim)
+        dat[i].ydim = abs(latsdim)
+        dat[i].gtr = gtr
+
+        srs = osr.SpatialReference()
+        srs.ImportFromWkt(dataset.GetProjection())
+        srs.AutoIdentifyEPSG()
+
+        dat[i].wkt = srs.ExportToWkt()
+
+    return dat
+
+
 class ExportData(object):
     """
     Export Data
@@ -386,7 +681,6 @@ class ExportData(object):
 
         self.parent.showprocesslog('Export Data Finished!')
         self.parent.process_is_active(False)
-
 
     def export_gdal(self, dat, drv):
         """
@@ -830,3 +1124,60 @@ def get_geosoft(hfile):
     dat[i].ydim = dy
 
     return dat
+
+def tests():
+    """ Tests """
+    from pygmi.misc import PTime
+#    ifile = r'E:\\aster\\AST_L1A_00304012006081253_20160516021940_11667.hdf'
+#    dat = get_hdf(ifile)
+
+    # Create a SixS object called s
+    # (used as the standard name by convention)
+    ss = SixS()
+    ss.sixs_path = r'C:\Work\Programming\Remote_Sensing\LandCor_5_0_source\source\6S\sixsV1.1.exe'
+
+    # Set the atmospheric conditions as usual
+    ss.aero_profile = AeroProfile.PredefinedType(AeroProfile.Maritime)
+    ss.aot550 = 0.05
+    ss.atmos_profile = AtmosProfile.UserWaterAndOzone(2, 0.318)
+
+    # Set the wavelength
+    ss.wavelength = Wavelength(PredefinedWavelengths.ASTER_B1)
+
+    # Set the altitudes
+    ss.altitudes.set_target_sea_level()
+    ss.altitudes.set_sensor_satellite_level()
+
+    # Set the geometry
+    ss.geometry = Geometry.User()
+    ss.geometry.solar_z = 35.8
+    ss.geometry.solar_a = 149.4
+    ss.geometry.view_z = 5.1
+    ss.geometry.view_a = 106.8
+    ss.geometry.month = 6
+    ss.geometry.date = 28
+
+    # Turn on atmospheric correction mode and set it to do the
+    # correction assuming a Lambertian surface with a TOA
+    # radiance of 137.5 W/m^2
+
+    ttt = PTime()
+
+    for i in range(1):
+        ss.atmos_corr = AtmosCorr.AtmosCorrLambertianFromRadiance(137.5)
+        # Run the model
+        ss.run()
+    ttt.since_last_call()
+
+    # Print the result of the atmospheric correction
+    # (assuming Lambertian reflectance)
+    # This is the ground-reflectance for the given radiance,
+    # under the given atmospheric conditions
+    print(ss.outputs.atmos_corrected_reflectance_lambertian)
+
+    pdb.set_trace()
+
+
+
+if __name__ == "__main__":
+    tests()
