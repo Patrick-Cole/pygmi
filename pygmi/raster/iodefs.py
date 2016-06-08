@@ -659,6 +659,7 @@ def get_aster_ged(ifile):
                 dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                     dat[i].data.mask)
 
+            dat[i].data = dat[i].data * 1.0
             if bandid2 == '[5x1000x1000] //Emissivity/Mean (16-bit integer)':
                 bandid = metadata['Emissivity_Mean_Description']+'_band1'+str(i2)
                 dat[i].data = dat[i].data * 0.001
@@ -698,96 +699,7 @@ def get_aster_ged(ifile):
     return dat
 
 
-def get_aster_ged2(ifile):
-    dat = []
-    ifile = ifile[:]
 
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-    subdata = dataset.GetSubDatasets()
-    pdb.set_trace()
-
-    latentry = [i for i in subdata if 'Latitude' in i[1]]
-    subdata.pop(subdata.index(latentry[0]))
-    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lats = rtmp.ReadAsArray()
-    latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
-
-    lonentry = [i for i in subdata if 'Longitude' in i[1]]
-    subdata.pop(subdata.index(lonentry[0]))
-    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lons = rtmp.ReadAsArray()
-    lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
-
-    lonsdim = latsdim
-    tlx = lons.min()-abs(lonsdim/2)
-    tly = lats.max()+abs(latsdim/2)
-    cols = int((lons.max()-lons.min())/lonsdim)+1
-    rows = int((lats.max()-lats.min())/latsdim)+1
-
-    newx2, newy2 = np.mgrid[0:rows, 0:cols]
-    newx2 = newx2*lonsdim + tlx
-    newy2 = tlx - newy2*latsdim
-
-    i = -1
-    for ifile, bandid2 in subdata:
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-        rtmp2 = dataset.ReadAsArray()
-
-        tmpds = gdal.AutoCreateWarpedVRT(dataset)
-        rtmp2 = tmpds.ReadAsArray()
-        gtr = tmpds.GetGeoTransform()
-        tlx, lonsdim, _, tly, _, latsdim = gtr
-
-        nval = 0
-
-        i += 1
-
-        dat.append(Data())
-        dat[i].data = rtmp2
-
-        if dat[i].data.dtype.kind == 'i':
-            if nval is None:
-                nval = 999999
-            nval = int(nval)
-        elif dat[i].data.dtype.kind == 'u':
-            if nval is None:
-                nval = 0
-            nval = int(nval)
-        else:
-            if nval is None:
-                nval = 1e+20
-            nval = float(nval)
-
-        dat[i].data = np.ma.masked_invalid(dat[i].data)
-        dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
-        if dat[i].data.mask.size == 1:
-            dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                dat[i].data.mask)
-
-        dat[i].nrofbands = dataset.RasterCount
-        dat[i].tlx = tlx
-        dat[i].tly = tly
-        dat[i].dataid = bandid2
-        dat[i].nullvalue = nval
-        dat[i].rows = dat[i].data.shape[0]
-        dat[i].cols = dat[i].data.shape[1]
-        dat[i].xdim = abs(lonsdim)
-        dat[i].ydim = abs(latsdim)
-        dat[i].gtr = gtr
-
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(dataset.GetProjection())
-        srs.AutoIdentifyEPSG()
-
-        dat[i].wkt = srs.ExportToWkt()
-
-    if dat == []:
-        dat = None
-    return dat
 
 
 class ExportData(object):
