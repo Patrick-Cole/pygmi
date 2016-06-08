@@ -38,7 +38,7 @@ from pygmi.clust.datatypes import Clust
 from pygmi.raster.dataprep import merge
 from pygmi.raster.dataprep import quickgrid
 import matplotlib.pyplot as plt
-from Py6S import *
+# from Py6S import *
 
 
 class ImportData(object):
@@ -1125,59 +1125,59 @@ def get_geosoft(hfile):
 
     return dat
 
-def tests():
-    """ Tests """
-    from pygmi.misc import PTime
-#    ifile = r'E:\\aster\\AST_L1A_00304012006081253_20160516021940_11667.hdf'
-#    dat = get_hdf(ifile)
+#def tests():
+#    """ Tests """
+#    from pygmi.misc import PTime
+##    ifile = r'E:\\aster\\AST_L1A_00304012006081253_20160516021940_11667.hdf'
+##    dat = get_hdf(ifile)
+#
+#    # Create a SixS object called s
+#    # (used as the standard name by convention)
+#    ss = SixS()
+#    ss.sixs_path = r'C:\Work\Programming\Remote_Sensing\LandCor_5_0_source\source\6S\sixsV1.1.exe'
+#
+#    # Set the atmospheric conditions as usual
+#    ss.aero_profile = AeroProfile.PredefinedType(AeroProfile.Maritime)
+#    ss.aot550 = 0.05
+#    ss.atmos_profile = AtmosProfile.UserWaterAndOzone(2, 0.318)
+#
+#    # Set the wavelength
+#    ss.wavelength = Wavelength(PredefinedWavelengths.ASTER_B1)
+#
+#    # Set the altitudes
+#    ss.altitudes.set_target_sea_level()
+#    ss.altitudes.set_sensor_satellite_level()
+#
+#    # Set the geometry
+#    ss.geometry = Geometry.User()
+#    ss.geometry.solar_z = 35.8
+#    ss.geometry.solar_a = 149.4
+#    ss.geometry.view_z = 5.1
+#    ss.geometry.view_a = 106.8
+#    ss.geometry.month = 6
+#    ss.geometry.date = 28
+#
+#    # Turn on atmospheric correction mode and set it to do the
+#    # correction assuming a Lambertian surface with a TOA
+#    # radiance of 137.5 W/m^2
+#
+#    ttt = PTime()
+#
+#    for i in range(1):
+#        ss.atmos_corr = AtmosCorr.AtmosCorrLambertianFromRadiance(137.5)
+#        # Run the model
+#        ss.run()
+#    ttt.since_last_call()
+#
+#    # Print the result of the atmospheric correction
+#    # (assuming Lambertian reflectance)
+#    # This is the ground-reflectance for the given radiance,
+#    # under the given atmospheric conditions
+#    print(ss.outputs.atmos_corrected_reflectance_lambertian)
+#
+#    pdb.set_trace()
 
-    # Create a SixS object called s
-    # (used as the standard name by convention)
-    ss = SixS()
-    ss.sixs_path = r'C:\Work\Programming\Remote_Sensing\LandCor_5_0_source\source\6S\sixsV1.1.exe'
-
-    # Set the atmospheric conditions as usual
-    ss.aero_profile = AeroProfile.PredefinedType(AeroProfile.Maritime)
-    ss.aot550 = 0.05
-    ss.atmos_profile = AtmosProfile.UserWaterAndOzone(2, 0.318)
-
-    # Set the wavelength
-    ss.wavelength = Wavelength(PredefinedWavelengths.ASTER_B1)
-
-    # Set the altitudes
-    ss.altitudes.set_target_sea_level()
-    ss.altitudes.set_sensor_satellite_level()
-
-    # Set the geometry
-    ss.geometry = Geometry.User()
-    ss.geometry.solar_z = 35.8
-    ss.geometry.solar_a = 149.4
-    ss.geometry.view_z = 5.1
-    ss.geometry.view_a = 106.8
-    ss.geometry.month = 6
-    ss.geometry.date = 28
-
-    # Turn on atmospheric correction mode and set it to do the
-    # correction assuming a Lambertian surface with a TOA
-    # radiance of 137.5 W/m^2
-
-    ttt = PTime()
-
-    for i in range(1):
-        ss.atmos_corr = AtmosCorr.AtmosCorrLambertianFromRadiance(137.5)
-        # Run the model
-        ss.run()
-    ttt.since_last_call()
-
-    # Print the result of the atmospheric correction
-    # (assuming Lambertian reflectance)
-    # This is the ground-reflectance for the given radiance,
-    # under the given atmospheric conditions
-    print(ss.outputs.atmos_corrected_reflectance_lambertian)
-
-    pdb.set_trace()
 
 
-
-if __name__ == "__main__":
-    tests()
+# if __name__ == "__main__":
+#     tests()
