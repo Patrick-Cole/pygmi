@@ -133,4 +133,4 @@ class MenuWidget(object):
     def quarry(self):
         """ Removes quarry events """
         fnc = del_rec.Quarry(self.parent)
-        self.parent.item_insert("Io", "Remove\nQuarry\nEvents", fnc)
+        self.parent.item_insert("Step", "Remove\nQuarry\nEvents", fnc)

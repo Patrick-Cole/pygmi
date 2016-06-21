@@ -527,6 +527,9 @@ class ExportMod3D(object):
 
             points = mvis_3d.gpoints[lith]
 
+            if points == []:
+                continue
+
             points -= mvis_3d.origin
 
             x = points[:, 0]

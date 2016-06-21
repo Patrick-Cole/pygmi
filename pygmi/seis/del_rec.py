@@ -25,6 +25,7 @@
 """ This program deletes seisan records """
 
 import os
+import pdb
 import numpy as np
 from PyQt4 import QtGui
 import matplotlib.pyplot as plt
@@ -97,58 +98,86 @@ class Quarry(object):
     def __init__(self, parent=None):
         # Initialize Variables
         self.parent = parent
-        self.indata = {'tmp': True}
+#        self.indata = {'tmp': True}
+        self.indata = {}
         self.outdata = {}
         self.showtext = self.parent.showprocesslog
+        self.name = "Quarry: "
+        self.pbar = None
 
-        self.settings()
+        self.events = []
+#        self.settings()
+
+#    def data_init(self):
+#        """ data init - entry point into routine """
+#        if 'Seis' not in self.indata:
+#            return
+#
+#        data = self.indata['Seis']
+#
+#        alist = []
+#        for i in data:
+#            alist.append(i['1'])
+#
+#        if len(alist) == 0:
+#            self.parent.showprocesslog('Error: no Type 1 records')
+#            return False
+#
+#        self.events = alist
 
     def settings(self):
         """ Settings """
         self.showtext('Delete quarry events starting')
 
-        ext = "All Files (*.*)"
-
-        ifile = QtGui.QFileDialog.getOpenFileName(self.parent, 'Open File',
-                                                  '.', ext)
-
-#        ifile = QtGui.QFileDialog.getOpenFileName()[0]
-        if ifile == '':
+        if 'Seis' not in self.indata:
             return
 
-        os.chdir(ifile.rpartition('/')[0])
+        data = self.indata['Seis']
 
-        self.calcrq2(ifile)
+        alist = []
+        for i in data:
+            if '1' in i:
+                alist.append(i['1'])
+
+        if len(alist) == 0:
+            self.showtext('Error: no Type 1 records')
+            return False
+
+        self.events = alist
+
+        data = self.calcrq2()
+        self.outdata['Seis'] = data
 
         return True
 
-    def calcrq2(self, ifile):
+    def calcrq2(self):
         """ Calculates the Rq value """
-        ofile = ifile[:-4]+'_new.out'
-        ofile2 = ifile[:-4]+'_del.out'
-
-        inputf = open(ifile)
+#        ofile = ifile[:-4]+'_new.out'
+#        ofile2 = ifile[:-4]+'_del.out'
+#
+#        inputf = open(ifile)
 
         self.showtext('Working...')
 
-        idata = inputf.readlines()
-        date = []
+#        date = []
         hour = []
         lat = []
         lon = []
-        for i in idata:
-            date.append(i[0:21])
-            hour.append(int(i[17:19]))
-            lat.append(float(i[29:36]))
-            lon.append(float(i[38:44]))
+        for i in self.events:
+            if i.latitude is None or i.longitude is None:
+                continue
+            hour.append(i.hour)
+            lat.append(i.latitude)
+            lon.append(i.longitude)
+#            date.append(i[0:21])
 
-        day = [6, 19]
+        day = [6, 19]  # daytime start at 6am and ends at 7pm
         hour = np.array(hour)
         hour[hour < day[0]] = -99
         hour[hour > day[1]] = -99
         hour[hour != -99] = True
         hour[hour == -99] = False
-        idata = np.array(idata)
+#        idata = np.array(idata)
 
         lon = np.array(lon)
         lat = np.array(lat)
@@ -165,7 +194,7 @@ class Quarry(object):
         ilat = []
         ilon = []
         ihour = []
-        iidata = []
+#        iidata = []
 
         rperc = self.randrq(nmax, nstep, nrange, day)
         self.showtext('Calculating Rq values')
@@ -210,7 +239,7 @@ class Quarry(object):
                 tmpcnt.append(np.where(rq[:, i] > 99.)[0].shape[0])
 
             self.showtext(str(tmpcnt)+' possible eliminations in '
-                          + ' event groups: ' + str(nrange), True)
+                          ' event groups: ' + str(nrange), True)
 
             tmax = np.transpose(np.where(rq == rq.max()))[0]
             i, ndx = tmax
@@ -228,11 +257,11 @@ class Quarry(object):
                 ilat += lat[np.logical_not(mask)].tolist()
                 ilon += lon[np.logical_not(mask)].tolist()
                 ihour += hour[np.logical_not(mask)].tolist()
-                iidata += idata[np.logical_not(mask)].tolist()
+#                iidata += idata[np.logical_not(mask)].tolist()
                 lat = lat[mask]
                 lon = lon[mask]
                 hour = hour[mask]
-                idata = idata[mask]
+#                idata = idata[mask]
             else:
                 stayinloop = False
 
@@ -240,15 +269,15 @@ class Quarry(object):
         plt.plot(ilon, ilat, 'b.')
         plt.show()
 
-        outputf2 = open(ofile2, 'w')
-        outputf = open(ofile, 'w')
+#        outputf2 = open(ofile2, 'w')
+#        outputf = open(ofile, 'w')
 
-        outputf2.writelines(iidata)
-        outputf.writelines(idata)
-
-        inputf.close()
-        outputf.close()
-        outputf2.close()
+#        outputf2.writelines(iidata)
+#        outputf.writelines(idata)
+#
+#        inputf.close()
+#        outputf.close()
+#        outputf2.close()
 
         self.showtext('Completed!')
 

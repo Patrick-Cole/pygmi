@@ -26,6 +26,7 @@
 
 import os
 import re
+import pdb
 from PyQt4 import QtGui
 import numpy as np
 import pygmi.seis.datatypes as sdt
@@ -149,7 +150,12 @@ class ImportSeisan(object):
             elif ltype == 'M' and event.get('M') is not None:
                 event[ltype] = read_record_type[ltype](i, event[ltype])
             else:
-                event[ltype] = read_record_type[ltype](i)
+                try:
+                    event[ltype] = read_record_type[ltype](i)
+                except:
+                    self.parent.showprocesslog('Error: Problem with file on line:')
+                    self.parent.showprocesslog(i)
+                    return False
 
         if len(event) > 0:
             dat.append(event)
