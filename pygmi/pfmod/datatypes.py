@@ -26,6 +26,7 @@
 
 import numpy as np
 from pygmi.raster.datatypes import Data
+import pdb
 
 
 class LithModel(object):
@@ -103,12 +104,28 @@ class LithModel(object):
         """
         if self.olith_index is None:
             return
-        xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy) + \
-            .5 * self.dxy
-        yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy) + \
-            .5 * self.dxy
-        zvals = np.arange(self.zrange[0], self.zrange[1], self.d_z) + \
-            .5 * self.d_z
+#        xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy) + \
+#            .5 * self.dxy
+#        yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy) + \
+#            .5 * self.dxy
+#        zvals = np.arange(self.zrange[0], self.zrange[1], self.d_z) + \
+#            .5 * self.d_z
+
+        xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy)
+        yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy)
+        zvals = np.arange(self.zrange[0], self.zrange[1], self.d_z)
+
+        if xvals[-1] == self.xrange[1]:
+            xvals = xvals[:-1]
+        if yvals[-1] == self.yrange[1]:
+            yvals = yvals[:-1]
+        if zvals[-1] == self.zrange[1]:
+            yvals = yvals[:-1]
+
+        xvals += 0.5 * self.dxy
+        yvals += 0.5 * self.dxy
+        zvals += 0.5 * self.d_z
+
         xvals = xvals[self.oxrng[0] < xvals]
         xvals = xvals[xvals < self.oxrng[1]]
         yvals = yvals[self.oyrng[0] < yvals]
@@ -126,10 +143,13 @@ class LithModel(object):
                     o_k = int((self.ozrng[1] - x_k) / self.od_z)
                     k = int((self.zrange[1] - x_k) / self.d_z)
 
-                    if (self.lith_index[i, j, k] != -1 and
-                            self.olith_index[o_i, o_j, o_k] != -1):
-                        self.lith_index[i, j, k] = \
-                            self.olith_index[o_i, o_j, o_k]
+                    try:
+                        if (self.lith_index[i, j, k] != -1 and
+                                self.olith_index[o_i, o_j, o_k] != -1):
+                            self.lith_index[i, j, k] = \
+                                self.olith_index[o_i, o_j, o_k]
+                    except:
+                        pdb.set_trace()
 
     def dtm_to_lith(self):
         """ Assign the DTM to the model. This means creating nodata values in
