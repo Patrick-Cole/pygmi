@@ -73,7 +73,12 @@ class PTime(object):
         self.tchk.append(time.clock())
         tdiff = self.tchk[-1] - self.tchk[0]
         if show:
-            print(msg, 'at time (s):', tdiff)
+            if tdiff > 60:
+                print(msg, 'time (s):', tdiff)
+            else:
+                mins = int(tdiff/60)
+                secs = tdiff-mins*60
+                print(msg, 'time (s): ', mins, ' minutes ', secs, ' seconds')
         return tdiff
 
     def since_last_call(self, msg='since last call', show=True):
