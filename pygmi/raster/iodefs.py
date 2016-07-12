@@ -24,20 +24,20 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-import pdb
+# import pdb
 import os
 import glob
 import struct
 from PyQt4 import QtGui
 import numpy as np
-from scipy.interpolate import griddata
+# from scipy.interpolate import griddata
 from osgeo import gdal, osr
-from pyhdf.SD import SD, SDC
+# from pyhdf.SD import SD, SDC
 from pygmi.raster.datatypes import Data
 from pygmi.clust.datatypes import Clust
 from pygmi.raster.dataprep import merge
 from pygmi.raster.dataprep import quickgrid
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # from Py6S import *
 
 
@@ -74,6 +74,8 @@ class ImportData(object):
         ext = \
             "Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;" + \
             "hdf (*.hdf);;" + \
+            "hdf (*.h5);;" + \
+            "ASTER GED (*.bin);;" + \
             "ERMapper (*.ers);;" + \
             "ENVI (*.hdr);;" + \
             "ERDAS Imagine (*.img);;" + \
@@ -104,8 +106,12 @@ class ImportData(object):
             dat = get_geosoft(self.ifile)
         elif filt == 'hdf (*.hdf)':
             dat = get_hdf(self.ifile)
+        elif filt == "hdf (*.h5)":
+            dat = get_hdf(self.ifile)
         elif filt == 'ASCII with .hdr header (*.asc)':
             dat = get_ascii(self.ifile)
+        elif filt == 'ASTER GED (*.bin)':
+            dat = get_aster_ged_bin(self.ifile)
         else:
             dat = get_raster(self.ifile)
 
@@ -379,6 +385,9 @@ def get_hdf(ifile):
 
 
 def get_modis(ifile):
+    """
+    Gets MODIS data
+    """
     dat = []
     ifile = ifile[:]
 
@@ -495,6 +504,9 @@ def get_modis(ifile):
 
 
 def get_aster(ifile):
+    """
+    Gets ASTER Data
+    """
     dat = []
     ifile = ifile[:]
 
@@ -596,27 +608,30 @@ def get_aster(ifile):
 
 
 def get_aster_ged(ifile):
+    """
+    Gets ASTER GED data
+    """
     dat = []
     ifile = ifile[:]
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
     subdata = dataset.GetSubDatasets()
-    metadata = dataset.GetMetadata()
+#    metadata = dataset.GetMetadata()
 
     latentry = [i for i in subdata if 'Latitude' in i[1]]
     subdata.pop(subdata.index(latentry[0]))
     dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
     rtmp = dataset.GetRasterBand(1)
     lats = rtmp.ReadAsArray()
-    latsdim = (lats.max()-lats.min())/lats.shape[0]
+    latsdim = (lats.max()-lats.min())/(lats.shape[0]-1)
 
     lonentry = [i for i in subdata if 'Longitude' in i[1]]
     subdata.pop(subdata.index(lonentry[0]))
     dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
     rtmp = dataset.GetRasterBand(1)
     lons = rtmp.ReadAsArray()
-    lonsdim = (lons.max()-lons.min())/lons.shape[0]
+    lonsdim = (lons.max()-lons.min())/(lons.shape[0]-1)
 
     tlx = lons.min()-abs(lonsdim/2)
     tly = lats.max()+abs(latsdim/2)
@@ -625,13 +640,19 @@ def get_aster_ged(ifile):
     for ifile, bandid2 in subdata:
         dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
         bandid = bandid2
+        units = ''
 
-        if bandid2 == '[1000x1000] //ASTER_GDEM/ASTGDEM (16-bit integer)':
-            bandid = metadata['ASTER_GDEM_ASTGDEM_Description']
-        if bandid2 == '[1000x1000] //Land_Water_Map/LWmap (16-bit integer)':
-            bandid = metadata['Land_Water_Map_LWmap_Description']
-        if bandid2 == '[1000x1000] //Observations/NumObs (16-bit integer)':
-            bandid = metadata['Observations_NumObs_Description']
+        if 'ASTER_GDEM' in bandid2:
+            bandid = 'ASTER GDEM'
+            units = 'meters'
+#            bandid = metadata['ASTER_GDEM_ASTGDEM_Description']
+        if 'Land_Water_Map' in bandid2:
+            bandid = 'Land_water_map'
+#            bandid = metadata['Land_Water_Map_LWmap_Description']
+        if 'Observations' in bandid2:
+            bandid = 'Observations'
+            units = 'number per pixel'
+#            bandid = metadata['Observations_NumObs_Description']
 
         gtr = dataset.GetGeoTransform()
         rtmp2 = dataset.ReadAsArray()
@@ -660,23 +681,31 @@ def get_aster_ged(ifile):
                                     dat[i].data.mask)
 
             dat[i].data = dat[i].data * 1.0
-            if bandid2 == '[5x1000x1000] //Emissivity/Mean (16-bit integer)':
-                bandid = metadata['Emissivity_Mean_Description']+'_band1'+str(i2)
+            if 'Emissivity/Mean' in bandid2:
+                bandid = 'Emissivity_mean_band_'+str(10+i2)
+#                bandid = metadata['Emissivity_Mean_Description']+'_band1'+str(i2)
                 dat[i].data = dat[i].data * 0.001
-            if bandid2 == '[5x1000x1000] //Emissivity/SDev (16-bit integer)':
-                bandid = metadata['Emissivity_SDev_Description']+'_band1'+str(i2)
+            if 'Emissivity/SDev' in bandid2:
+                bandid = 'Emissivity_std_dev_band_'+str(10+i2)
+#                bandid = metadata['Emissivity_SDev_Description']+'_band1'+str(i2)
                 dat[i].data = dat[i].data * 0.0001
-            if bandid2 == '[1000x1000] //NDVI/Mean (16-bit integer)':
-                bandid = metadata['NDVI_Mean_Description']
+            if 'NDVI/Mean' in bandid2:
+                bandid = 'NDVI_mean'
+#                bandid = metadata['NDVI_Mean_Description']
                 dat[i].data = dat[i].data * 0.01
-            if bandid2 == '[1000x1000] //NDVI/SDev (16-bit integer)':
-                bandid = metadata['NDVI_SDev_Description']
+            if 'NDVI/SDev' in bandid2:
+                bandid = 'NDVI_std_dev'
+#                bandid = metadata['NDVI_SDev_Description']
                 dat[i].data = dat[i].data * 0.01
-            if bandid2 == '[1000x1000] //Temperature/Mean (32-bit integer)':
-                bandid = metadata['Temperature_Mean_Description']
+            if 'Temperature/Mean' in bandid2:
+                bandid = 'Temperature_mean'
+                units = 'Kelvin'
+#                bandid = metadata['Temperature_Mean_Description']
                 dat[i].data = dat[i].data * 0.01
-            if bandid2 == '[1000x1000] //Temperature/SDev (16-bit integer)':
-                bandid = metadata['Temperature_SDev_Description']
+            if 'Temperature/SDev' in bandid2:
+                bandid = 'Temperature_std_dev'
+                units = 'Kelvin'
+#                bandid = metadata['Temperature_SDev_Description']
                 dat[i].data = dat[i].data * 0.01
 
             dat[i].nrofbands = dataset.RasterCount
@@ -689,6 +718,7 @@ def get_aster_ged(ifile):
             dat[i].xdim = abs(lonsdim)
             dat[i].ydim = abs(latsdim)
             dat[i].gtr = gtr
+            dat[i].units = units
 
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
@@ -699,7 +729,100 @@ def get_aster_ged(ifile):
     return dat
 
 
+def get_aster_ged_bin(ifile):
+    """
+    Emissivity_Mean_Description: Mean Emissivity for each pixel on grid-box
+                                 using all ASTER data from 2000-2010
+    Emissivity_SDev_Description: Emissivity Standard Deviation for each pixel
+                                 on grid-box using all ASTER data from
+                                 2000-2010
+    Temperature_Mean_Description: Mean Temperature (K) for each pixel on
+                                  grid-box using all ASTER data from 2000-2010
+    Temperature_SDev_Description: Temperature Standard Deviation for each pixel
+                                  on grid-box using all ASTER data from
+                                  2000-2010
+    NDVI_Mean_Description: Mean NDVI for each pixel on grid-box using all ASTER
+                           data from 2000-2010',
+    NDVI_SDev_Description: NDVI Standard Deviation for each pixel on grid-box
+                           using all ASTER data from 2000-2010,
+    Land_Water_Map_LWmap_Description: Land Water Map using ASTER visible bands
+    Observations_NumObs_Description: Number of values used in computing mean
+                                     and standard deviation for each pixel
+    Geolocation_Latitude_Description: Latitude
+    Geolocation_Longitude_Description: Longitude
+    ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED
+    """
 
+    dat = []
+    nval = -9999
+    bandid = {}
+
+    bandid[0] = 'Emissivity_mean_band_10'
+    bandid[1] = 'Emissivity_mean_band_11'
+    bandid[2] = 'Emissivity_mean_band_12'
+    bandid[3] = 'Emissivity_mean_band_13'
+    bandid[4] = 'Emissivity_mean_band_14'
+    bandid[5] = 'Emissivity_std_dev_band_10'
+    bandid[6] = 'Emissivity_std_dev_band_11'
+    bandid[7] = 'Emissivity_std_dev_band_12'
+    bandid[8] = 'Emissivity_std_dev_band_13'
+    bandid[9] = 'Emissivity_std_dev_band_14'
+    bandid[10] = 'Temperature_mean'
+    bandid[11] = 'Temperature_std_dev'
+    bandid[12] = 'NDVI_mean'
+    bandid[13] = 'NDVI_std_dev'
+    bandid[14] = 'Land_water_map'
+    bandid[15] = 'Observations'
+    bandid[16] = 'Latitude'
+    bandid[17] = 'Longitude'
+    bandid[18] = 'ASTER GDEM'
+
+    scale = [0.001, 0.001, 0.001, 0.001, 0.001,
+             0.0001, 0.0001, 0.0001, 0.0001, 0.0001,
+             0.01, 0.01, 0.01, 0.01,
+             1, 1, 0.001, 0.001, 1]
+
+    units = ['', '', '', '', '', '', '', '', '', '', 'Kelvin', 'Kelvin',
+             '', '', '', 'Number per pixel', 'degrees', 'degrees', 'meters']
+
+    data = np.fromfile(ifile, dtype=np.int32)
+    rows_cols = int((data.size/19)**0.5)
+    data.shape = (19, rows_cols, rows_cols)
+
+#    if 'AG1kmB' in ifile:
+#        data.shape = (19, 100, 100)
+#    elif 'AG100B' in ifile:
+#        data.shape = (19, 1000, 1000)
+
+    lats = data[16]*scale[16]
+    lons = data[17]*scale[17]
+
+    latsdim = (lats.max()-lats.min())/(lats.shape[0]-1)
+    lonsdim = (lons.max()-lons.min())/(lons.shape[0]-1)
+
+    tlx = lons.min()-abs(lonsdim/2)
+    tly = lats.max()+abs(latsdim/2)
+
+    for i in range(19):
+        dat.append(Data())
+
+        dat[i].data = data[i]*scale[i]
+
+        dat[i].nrofbands = 1
+        dat[i].tlx = tlx
+        dat[i].tly = tly
+        dat[i].dataid = bandid[i]
+        dat[i].nullvalue = nval*scale[i]
+        dat[i].rows = dat[i].data.shape[0]
+        dat[i].cols = dat[i].data.shape[1]
+        dat[i].xdim = lonsdim
+        dat[i].ydim = latsdim
+        dat[i].units = units[i]
+
+    dat.pop(17)
+    dat.pop(16)
+
+    return dat
 
 
 class ExportData(object):
