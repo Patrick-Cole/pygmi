@@ -1,6 +1,18 @@
 =========
 Changelog
 =========
+v2.2.11, 12 July 2016
+---------------------
+* Added aster GED (binary) and fixed a bug on hdr aster GED import.
+* Update to misc function
+* Fixed a bug when resizing a model
+* Bugfix in kmz export and in quarry event removal algorithm
+* Fixes to shapefile 3D export
+* Update to beachball, vertical gradient and export 3d model to shapefile
+* Update to picture overlay on 3D modelling
+* Fault plane solutions
+* Update readme taking into account anaconda bug
+
 v2.2.10, 10 March 2016
 ----------------------
 * Added some Raster imports

@@ -24,21 +24,16 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-# import pdb
 import os
 import glob
 import struct
 from PyQt4 import QtGui
 import numpy as np
-# from scipy.interpolate import griddata
 from osgeo import gdal, osr
-# from pyhdf.SD import SD, SDC
 from pygmi.raster.datatypes import Data
 from pygmi.clust.datatypes import Clust
 from pygmi.raster.dataprep import merge
 from pygmi.raster.dataprep import quickgrid
-# import matplotlib.pyplot as plt
-# from Py6S import *
 
 
 class ImportData(object):
@@ -387,6 +382,16 @@ def get_hdf(ifile):
 def get_modis(ifile):
     """
     Gets MODIS data
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
     """
     dat = []
     ifile = ifile[:]
@@ -506,6 +511,16 @@ def get_modis(ifile):
 def get_aster(ifile):
     """
     Gets ASTER Data
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
     """
     dat = []
     ifile = ifile[:]
@@ -610,6 +625,16 @@ def get_aster(ifile):
 def get_aster_ged(ifile):
     """
     Gets ASTER GED data
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
     """
     dat = []
     ifile = ifile[:]
@@ -731,27 +756,39 @@ def get_aster_ged(ifile):
 
 def get_aster_ged_bin(ifile):
     """
-    Emissivity_Mean_Description: Mean Emissivity for each pixel on grid-box
-                                 using all ASTER data from 2000-2010
-    Emissivity_SDev_Description: Emissivity Standard Deviation for each pixel
-                                 on grid-box using all ASTER data from
-                                 2000-2010
-    Temperature_Mean_Description: Mean Temperature (K) for each pixel on
-                                  grid-box using all ASTER data from 2000-2010
-    Temperature_SDev_Description: Temperature Standard Deviation for each pixel
-                                  on grid-box using all ASTER data from
-                                  2000-2010
-    NDVI_Mean_Description: Mean NDVI for each pixel on grid-box using all ASTER
-                           data from 2000-2010',
-    NDVI_SDev_Description: NDVI Standard Deviation for each pixel on grid-box
-                           using all ASTER data from 2000-2010,
-    Land_Water_Map_LWmap_Description: Land Water Map using ASTER visible bands
-    Observations_NumObs_Description: Number of values used in computing mean
-                                     and standard deviation for each pixel
-    Geolocation_Latitude_Description: Latitude
-    Geolocation_Longitude_Description: Longitude
-    ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED
+    Get ASTER GED binary format
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
     """
+#    Emissivity_Mean_Description: Mean Emissivity for each pixel on grid-box
+#                                 using all ASTER data from 2000-2010
+#    Emissivity_SDev_Description: Emissivity Standard Deviation for each pixel
+#                                 on grid-box using all ASTER data from
+#                                 2000-2010
+#    Temperature_Mean_Description: Mean Temperature (K) for each pixel on
+#                                  grid-box using all ASTER data from 2000-2010
+#    Temperature_SDev_Description: Temperature Standard Deviation for each pixel
+#                                  on grid-box using all ASTER data from
+#                                  2000-2010
+#    NDVI_Mean_Description: Mean NDVI for each pixel on grid-box using all ASTER
+#                           data from 2000-2010',
+#    NDVI_SDev_Description: NDVI Standard Deviation for each pixel on grid-box
+#                           using all ASTER data from 2000-2010,
+#    Land_Water_Map_LWmap_Description: Land Water Map using ASTER visible bands
+#    Observations_NumObs_Description: Number of values used in computing mean
+#                                     and standard deviation for each pixel
+#    Geolocation_Latitude_Description: Latitude
+#    Geolocation_Longitude_Description: Longitude
+#    ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED
+
 
     dat = []
     nval = -9999
@@ -1176,7 +1213,19 @@ class ExportData(object):
 
 
 def get_geopak(hfile):
-    """ GeoPak Import """
+    """
+    GeoPak Import
+
+    Parameters
+    ----------
+    hfile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
 
     fin = open(hfile, 'rb')
     fall = fin.read()
@@ -1279,7 +1328,19 @@ def get_geopak(hfile):
 
 
 def get_geosoft(hfile):
-    """ Get geosoft file """
+    """
+    Get geosoft file
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
     f = open(hfile, mode='rb')
 
     es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
