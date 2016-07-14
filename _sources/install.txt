@@ -68,15 +68,17 @@ In either case, running pygmi can be now done at the command prompt as follows:
 If you are in python, you can run PyGMI by using the following commands:
 
    import pygmi
-   
+
    pygmi.main()
 
 
 Windows
 ^^^^^^^
-I have now made available convenient installers for PyGMI, thanks to `Cyrille Rossant <http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/>`_. 
+I have now made available convenient installers for PyGMI, thanks to `Cyrille Rossant <http://cyrille.rossant.net/create-a-standalone-windows-installer-for-your-python-application/>`_.
 
 Running the software can be achieved through the shortcut on your desktop.
+
+You may need to install the Microsoft Visual C++ 2015 Redistributable. It can be obtained from `here <https://www.visualstudio.com/downloads/download-visual-studio-vs#d-visual-c>`_.
 
 Linux
 ^^^^^
@@ -93,6 +95,15 @@ Anaconda does not find pyqt4 on its system even if it is there already. To insta
 As you can see, all we have done is removed PyQt4 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:
 
    python setup.py install
+
+Note that you can simply install Anaconda use its 'conda install' command to satisfy dependencies. For example:
+
+    conda install gdal
+
+    conda install krb5
+
+
+Make sure that krb5 is installed, or gdal will not work.
 
 Alternative execution
 ^^^^^^^^^^^^^^^^^^^^^

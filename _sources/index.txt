@@ -7,7 +7,7 @@ Notices
 =======
 Welcome to the new PyGMI website! It contains more information, including API documentation for the project.
 
-March 7, 2016: `PyGMI 2.2.10 <https://github.com/Patrick-Cole/pygmi/releases/tag/v2.2.10>`_ is now released.
+July 12, 2016: `PyGMI 2.2.11 <https://github.com/Patrick-Cole/pygmi/releases/tag/v2.2.11>`_ is now released.
 
 PyGMI is now being developed using python 3.5. It may still work on older versions, however.
 
@@ -30,7 +30,10 @@ View the PyGMI project on `GitHub <https://github.com/Patrick-Cole/pygmi>`_!
 
 The latest release version can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
-Windows installers are found as either `64-bit <https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.9/PyGMIx64_2.2.9.exe>`_ or `32-bit <https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.9/PyGMIx32_2.2.9.exe>`_.
+Windows installers are found as either `64-bit <https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.11/PyGMIx64_2.2.11.exe>`_ or `32-bit <https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.11/PyGMIx32_2.2.11.exe>`_.
+
+You may need to install the `Microsoft Visual C++ 2015 Redistributable <https://www.visualstudio.com/downloads/download-visual-studio-vs#d-visual-c>`_.
+
 
 If you have any comments or queries, you can contact the author either through `GitHub <https://github.com/Patrick-Cole/pygmi>`_ or via email at pcole@geoscience.org.za
 

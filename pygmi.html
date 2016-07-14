@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi package &mdash; PyGMI 2.2.10 documentation</title>
+    <title>pygmi package &mdash; PyGMI 2.2.11 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.10',
+        VERSION:     '2.2.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.10 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.11 documentation" href="index.html" />
     <link rel="up" title="PyGMI API Documentation" href="api.html" />
     <link rel="next" title="pygmi.clust package" href="pygmi.clust.html" />
     <link rel="prev" title="PyGMI API Documentation" href="api.html" /> 
@@ -101,9 +101,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -207,29 +204,25 @@ pygmi packages.</p>
 <dl class="attribute">
 <dt id="pygmi.main.Arrow.arrow_head">
 <code class="descname">arrow_head</code><a class="headerlink" href="#pygmi.main.Arrow.arrow_head" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QPolygonF</em></p>
-<p>Arrow head polygon.</p>
+<dd><p><em>QPolygonF</em> &#8211; Arrow head polygon.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.Arrow.my_start_item">
 <code class="descname">my_start_item</code><a class="headerlink" href="#pygmi.main.Arrow.my_start_item" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>DiagramItem</em></p>
-<p>Starting DiagramItem object. This will send information to my_end_item</p>
+<dd><p><em>DiagramItem</em> &#8211; Starting DiagramItem object. This will send information to my_end_item</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.Arrow.my_end_item">
 <code class="descname">my_end_item</code><a class="headerlink" href="#pygmi.main.Arrow.my_end_item" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>DiagramItem</em></p>
-<p>End DiagramItem object. This will get information from my_start_item</p>
+<dd><p><em>DiagramItem</em> &#8211; End DiagramItem object. This will get information from my_start_item</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.Arrow.my_color">
 <code class="descname">my_color</code><a class="headerlink" href="#pygmi.main.Arrow.my_color" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QtCore color (default is QtCore.Qt.black)</em></p>
-<p>Color</p>
+<dd><p><em>QtCore color (default is QtCore.Qt.black)</em> &#8211; Color</p>
 </dd></dl>
 
 <dl class="method">
@@ -278,15 +271,13 @@ line and arrowhead are cleaned properly when moving.</p>
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.arrows">
 <code class="descname">arrows</code><a class="headerlink" href="#pygmi.main.DiagramItem.arrows" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em></p>
-<p>list of Arrow objects</p>
+<dd><p><em>list</em> &#8211; list of Arrow objects</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.diagram_type">
 <code class="descname">diagram_type</code><a class="headerlink" href="#pygmi.main.DiagramItem.diagram_type" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em></p>
-<p>string denoting the diagram type. Can be &#8216;StartEnd&#8217;, &#8216;Conditional&#8217; or
+<dd><p><em>str</em> &#8211; string denoting the diagram type. Can be &#8216;StartEnd&#8217;, &#8216;Conditional&#8217; or
 &#8216;Step&#8217;</p>
 </dd></dl>
 
@@ -298,15 +289,13 @@ line and arrowhead are cleaned properly when moving.</p>
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.my_class">
 <code class="descname">my_class</code><a class="headerlink" href="#pygmi.main.DiagramItem.my_class" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>object</em></p>
-<p>Class that the diagram item is linked to.</p>
+<dd><p><em>object</em> &#8211; Class that the diagram item is linked to.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.is_import">
 <code class="descname">is_import</code><a class="headerlink" href="#pygmi.main.DiagramItem.is_import" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bool</em></p>
-<p>Flags whether my_class is used to import data</p>
+<dd><p><em>bool</em> &#8211; Flags whether my_class is used to import data</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -318,8 +307,7 @@ line and arrowhead are cleaned properly when moving.</p>
 <dl class="attribute">
 <dt id="pygmi.main.DiagramItem.my_class_name">
 <code class="descname">my_class_name</code><a class="headerlink" href="#pygmi.main.DiagramItem.my_class_name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em></p>
-<p>Class name being referenced</p>
+<dd><p><em>str</em> &#8211; Class name being referenced</p>
 </dd></dl>
 
 <dl class="method">
@@ -387,8 +375,7 @@ item to reflect whether it is busy working.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>iflag</strong> &#8211;
-Returns a boolean reflecting success of the my_class.settings()
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>iflag</strong> &#8211; Returns a boolean reflecting success of the my_class.settings()
 method.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
@@ -428,13 +415,8 @@ method.</td>
 <dt id="pygmi.main.DiagramScene.mousePressEvent">
 <code class="descname">mousePressEvent</code><span class="sig-paren">(</span><em>mouse_event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mousePressEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded Mouse Press Event
-:param mouse_event: mouse event.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-</tbody>
-</table>
+:param mouse_event: mouse event.
+:type mouse_event: QGraphicsSceneMouseEvent</p>
 </dd></dl>
 
 <dl class="method">
@@ -513,8 +495,7 @@ under a user defined text label.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>idata</strong> &#8211;
-Input list of PyGMI dataset</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>idata</strong> &#8211; Input list of PyGMI dataset</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
 </tr>
@@ -530,8 +511,7 @@ Input list of PyGMI dataset</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>odata</strong> &#8211;
-Output list of PyGMI dataset</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><strong>odata</strong> &#8211; Output list of PyGMI dataset</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
 </tr>
@@ -563,8 +543,7 @@ the main PyGMI menu.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>item</strong> &#8211;
-Return a DiagramItem object</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>item</strong> &#8211; Return a DiagramItem object</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="#pygmi.main.DiagramItem" title="pygmi.main.DiagramItem">DiagramItem</a></p>
@@ -742,22 +721,19 @@ the about box</p>
 <dl class="attribute">
 <dt id="pygmi.menu_default.ComboBoxBasic.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.menu_default.ComboBoxBasic.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of input datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.menu_default.ComboBoxBasic.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.menu_default.ComboBoxBasic.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of output datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
 </dd></dl>
 
 <dl class="method">
@@ -778,8 +754,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.menu_default.FileMenu.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.menu_default.FileMenu.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MainWidget</em></p>
-<p>Reference to MainWidget class found in main.py</p>
+<dd><p><em>MainWidget</em> &#8211; Reference to MainWidget class found in main.py</p>
 </dd></dl>
 
 <dl class="method">
@@ -812,22 +787,19 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.menu_default.HelpDocs.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.menu_default.HelpDocs.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of input datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.menu_default.HelpDocs.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of output datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
 </dd></dl>
 
 </dd></dl>
@@ -840,8 +812,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.menu_default.HelpMenu.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.menu_default.HelpMenu.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="method">
@@ -874,8 +845,7 @@ called.</p>
 <dl class="attribute">
 <dt id="pygmi.misc.PTime.tchk">
 <code class="descname">tchk</code><a class="headerlink" href="#pygmi.misc.PTime.tchk" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em></p>
-<p>List of times generated by the time.clock routine.</p>
+<dd><p><em>list</em> &#8211; List of times generated by the time.clock routine.</p>
 </dd></dl>
 
 <dl class="method">
@@ -920,8 +890,7 @@ iterable.</p>
 <dl class="attribute">
 <dt id="pygmi.misc.ProgressBar.otime">
 <code class="descname">otime</code><a class="headerlink" href="#pygmi.misc.ProgressBar.otime" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>integer</em></p>
-<p>This is the original time recorded when the progress bar starts.</p>
+<dd><p><em>integer</em> &#8211; This is the original time recorded when the progress bar starts.</p>
 </dd></dl>
 
 <dl class="method">
@@ -985,8 +954,8 @@ datasets. It includes:</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
+        &copy; Copyright 2016, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>

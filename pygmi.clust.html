@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.clust package &mdash; PyGMI 2.2.10 documentation</title>
+    <title>pygmi.clust package &mdash; PyGMI 2.2.11 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.10',
+        VERSION:     '2.2.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.10 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.11 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.pfmod package" href="pygmi.pfmod.html" />
     <link rel="prev" title="pygmi package" href="pygmi.html" /> 
@@ -106,9 +106,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -135,22 +132,19 @@
 <dl class="attribute">
 <dt id="pygmi.clust.crisp_clust.CrispClust.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.crisp_clust.CrispClust.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of input datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.crisp_clust.CrispClust.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of output datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
 </dd></dl>
 
 <dl class="method">
@@ -163,18 +157,6 @@
 <dt id="pygmi.clust.crisp_clust.CrispClust.crisp_means">
 <code class="descname">crisp_means</code><span class="sig-paren">(</span><em>data</em>, <em>no_clust</em>, <em>cent</em>, <em>centfix</em>, <em>maxit</em>, <em>term_thresh</em>, <em>cltype</em>, <em>cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.crisp_means" title="Permalink to this definition">¶</a></dt>
 <dd><p>Crisp Means</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.clust.crisp_clust.CrispClust.gcentroids">
-<code class="descname">gcentroids</code><span class="sig-paren">(</span><em>data</em>, <em>index</em>, <em>no_clust</em>, <em>mindist</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.gcentroids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gcentroids</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.clust.crisp_clust.CrispClust.gdist">
-<code class="descname">gdist</code><span class="sig-paren">(</span><em>data</em>, <em>center</em>, <em>index</em>, <em>no_clust</em>, <em>cltype</em>, <em>cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.gdist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gdist routine</p>
 </dd></dl>
 
 <dl class="method">
@@ -203,6 +185,18 @@
 
 </dd></dl>
 
+<dl class="function">
+<dt id="pygmi.clust.crisp_clust.gcentroids">
+<code class="descclassname">pygmi.clust.crisp_clust.</code><code class="descname">gcentroids</code><span class="sig-paren">(</span><em>data</em>, <em>index</em>, <em>no_clust</em>, <em>mindist</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.gcentroids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gcentroids</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.clust.crisp_clust.gdist">
+<code class="descclassname">pygmi.clust.crisp_clust.</code><code class="descname">gdist</code><span class="sig-paren">(</span><em>data</em>, <em>center</em>, <em>index</em>, <em>no_clust</em>, <em>cltype</em>, <em>cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.gdist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gdist routine</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-pygmi.clust.datatypes">
 <span id="pygmi-clust-datatypes-module"></span><h2>pygmi.clust.datatypes module<a class="headerlink" href="#module-pygmi.clust.datatypes" title="Permalink to this headline">¶</a></h2>
@@ -226,40 +220,25 @@
 <dl class="attribute">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of input datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of output datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.combo">
 <code class="descname">combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.combo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.clust.fuzzy_clust.FuzzyClust.fuzzy_dist">
-<code class="descname">fuzzy_dist</code><span class="sig-paren">(</span><em>cent</em>, <em>data</em>, <em>uuu</em>, <em>expo</em>, <em>cltype</em>, <em>cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.fuzzy_dist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fuzzy Dist</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.clust.fuzzy_clust.FuzzyClust.fuzzy_dist2">
-<code class="descname">fuzzy_dist2</code><span class="sig-paren">(</span><em>cent</em>, <em>data</em>, <em>uuu</em>, <em>expo</em>, <em>cltype</em>, <em>cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.fuzzy_dist2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fuzzy dist 2</p>
 </dd></dl>
 
 <dl class="method">
@@ -294,6 +273,18 @@
 
 </dd></dl>
 
+<dl class="function">
+<dt id="pygmi.clust.fuzzy_clust.fuzzy_dist">
+<code class="descclassname">pygmi.clust.fuzzy_clust.</code><code class="descname">fuzzy_dist</code><span class="sig-paren">(</span><em>cent</em>, <em>data</em>, <em>uuu</em>, <em>expo</em>, <em>cltype</em>, <em>cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.fuzzy_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuzzy Dist</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.clust.fuzzy_clust.fuzzy_dist2">
+<code class="descclassname">pygmi.clust.fuzzy_clust.</code><code class="descname">fuzzy_dist2</code><span class="sig-paren">(</span><em>cent</em>, <em>data</em>, <em>uuu</em>, <em>expo</em>, <em>cltype</em>, <em>cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.fuzzy_dist2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fuzzy dist 2</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-pygmi.clust.graphs">
 <span id="pygmi-clust-graphs-module"></span><h2>pygmi.clust.graphs module<a class="headerlink" href="#module-pygmi.clust.graphs" title="Permalink to this headline">¶</a></h2>
@@ -306,8 +297,7 @@
 <dl class="attribute">
 <dt id="pygmi.clust.graphs.GraphWindow.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.graphs.GraphWindow.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="method">
@@ -332,8 +322,7 @@
 <dl class="attribute">
 <dt id="pygmi.clust.graphs.MyMplCanvas.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.graphs.MyMplCanvas.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="method">
@@ -376,15 +365,13 @@
 <dl class="attribute">
 <dt id="pygmi.clust.graphs.PlotMembership.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.graphs.PlotMembership.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.graphs.PlotMembership.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.clust.graphs.PlotMembership.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of input datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="method">
@@ -415,15 +402,13 @@
 <dl class="attribute">
 <dt id="pygmi.clust.graphs.PlotRaster.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.graphs.PlotRaster.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.graphs.PlotRaster.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.clust.graphs.PlotRaster.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of input datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="method">
@@ -448,15 +433,13 @@
 <dl class="attribute">
 <dt id="pygmi.clust.graphs.PlotVRCetc.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.graphs.PlotVRCetc.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.graphs.PlotVRCetc.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.clust.graphs.PlotVRCetc.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of input datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="method">
@@ -534,8 +517,7 @@
 <dl class="attribute">
 <dt id="pygmi.clust.graphtool.GraphMap.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="method">
@@ -648,22 +630,19 @@
 <dl class="attribute">
 <dt id="pygmi.clust.graphtool.ScatterPlot.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
-<p>reference to the parent routine</p>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.graphtool.ScatterPlot.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of input datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.clust.graphtool.ScatterPlot.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of output datasets</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
 </dd></dl>
 
 <dl class="method">
@@ -748,8 +727,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.clust.menu.MenuWidget.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.clust.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MainWidget</em></p>
-<p>Reference to MainWidget class found in main.py</p>
+<dd><p><em>MainWidget</em> &#8211; Reference to MainWidget class found in main.py</p>
 </dd></dl>
 
 <dl class="method">
@@ -826,8 +804,7 @@ U can either be membership matrix (FCM) or cluster index values (k-means)</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vrc</strong> &#8211;
-variance ration criterion</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>vrc</strong> &#8211; variance ration criterion</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
@@ -861,8 +838,7 @@ min xbi is optimal</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>xbi</strong> &#8211;
-xie beni index</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>xbi</strong> &#8211; xie beni index</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy array</p>
@@ -909,8 +885,8 @@ xie beni index</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
+        &copy; Copyright 2016, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>

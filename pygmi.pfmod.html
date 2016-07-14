@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.pfmod package &mdash; PyGMI 2.2.10 documentation</title>
+    <title>pygmi.pfmod package &mdash; PyGMI 2.2.11 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.10',
+        VERSION:     '2.2.11',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.10 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.11 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
     <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
@@ -111,9 +111,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -141,155 +138,133 @@
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.mlut">
 <code class="descname">mlut</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.mlut" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>color table for lithologies</p>
+<dd><p><em>dictionary</em> &#8211; color table for lithologies</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.numx">
 <code class="descname">numx</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numx" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em></p>
-<p>number of columns per layer in model</p>
+<dd><p><em>int</em> &#8211; number of columns per layer in model</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.numy">
 <code class="descname">numy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em></p>
-<p>number of rows per layer in model</p>
+<dd><p><em>int</em> &#8211; number of rows per layer in model</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.numz">
 <code class="descname">numz</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numz" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em></p>
-<p>number of layers in model</p>
+<dd><p><em>int</em> &#8211; number of layers in model</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.dxy">
 <code class="descname">dxy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.dxy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em></p>
-<p>dimension of cubes in the x and y directions</p>
+<dd><p><em>float</em> &#8211; dimension of cubes in the x and y directions</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.d_z">
 <code class="descname">d_z</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.d_z" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em></p>
-<p>dimension of cubes in the z direction</p>
+<dd><p><em>float</em> &#8211; dimension of cubes in the z direction</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.lith_index">
 <code class="descname">lith_index</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_index" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy array</em></p>
-<p>3D array of lithological indices.</p>
+<dd><p><em>numpy array</em> &#8211; 3D array of lithological indices.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.curlayer">
 <code class="descname">curlayer</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.curlayer" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em></p>
-<p>Current layer</p>
+<dd><p><em>int</em> &#8211; Current layer</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.xrange">
 <code class="descname">xrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.xrange" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em></p>
-<p>minimum and maximum x coordinates</p>
+<dd><p><em>list</em> &#8211; minimum and maximum x coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.yrange">
 <code class="descname">yrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.yrange" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em></p>
-<p>minimum and maximum y coordinates</p>
+<dd><p><em>list</em> &#8211; minimum and maximum y coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.zrange">
 <code class="descname">zrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.zrange" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em></p>
-<p>minimum and maximum z coordinates</p>
+<dd><p><em>list</em> &#8211; minimum and maximum z coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.curprof">
 <code class="descname">curprof</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.curprof" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em></p>
-<p>current profile (in x or y direction)</p>
+<dd><p><em>int</em> &#8211; current profile (in x or y direction)</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.griddata">
 <code class="descname">griddata</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.griddata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>dictionary of Data classes with raster data</p>
+<dd><p><em>dictionary</em> &#8211; dictionary of Data classes with raster data</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.custprofx">
 <code class="descname">custprofx</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.custprofx" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>custom profile x coordinates</p>
+<dd><p><em>dictionary</em> &#8211; custom profile x coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.custprofy">
 <code class="descname">custprofy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.custprofy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>custom profile y coordinates</p>
+<dd><p><em>dictionary</em> &#8211; custom profile y coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.profpics">
 <code class="descname">profpics</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.profpics" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>= profile pictures</p>
+<dd><p><em>dictionary</em> &#8211; = profile pictures</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.lith_list">
 <code class="descname">lith_list</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_list" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>= list of lithologies</p>
+<dd><p><em>dictionary</em> &#8211; = list of lithologies</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.lith_list_reverse">
 <code class="descname">lith_list_reverse</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_list_reverse" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em></p>
-<p>= reverse lookup for lith_list</p>
+<dd><p><em>dictionary</em> &#8211; = reverse lookup for lith_list</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.mht">
 <code class="descname">mht</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.mht" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em></p>
-<p>height of magnetic sensor</p>
+<dd><p><em>float</em> &#8211; height of magnetic sensor</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.ght">
 <code class="descname">ght</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.ght" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em></p>
-<p>height of gravity sensor</p>
+<dd><p><em>float</em> &#8211; height of gravity sensor</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.gregional">
 <code class="descname">gregional</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.gregional" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em></p>
-<p>gravity regional correction</p>
+<dd><p><em>float</em> &#8211; gravity regional correction</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em></p>
-<p>name of the model</p>
+<dd><p><em>str</em> &#8211; name of the model</p>
 </dd></dl>
 
 <dl class="method">
@@ -556,8 +531,7 @@ gravity is calculated.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>lmod.griddata</strong> &#8211;
-dictionary of items of type Data.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>lmod.griddata</strong> &#8211; dictionary of items of type Data.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dictionary</p>
@@ -675,6 +649,15 @@ are still in meters.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.iodefs.ExportMod3D.mod3dtoshp">
+<code class="descname">mod3dtoshp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D.mod3dtoshp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Saves the 3D model and grids in a shapefile file.
+Note:
+Only the boundary of the area is in degrees. The actual coordinates
+are still in meters.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.iodefs.ExportMod3D.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show Info</p>
@@ -783,8 +766,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.pfmod.menu.MenuWidget.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MainWidget</em></p>
-<p>Reference to MainWidget class found in main.py</p>
+<dd><p><em>MainWidget</em> &#8211; Reference to MainWidget class found in main.py</p>
 </dd></dl>
 
 <dl class="method">
@@ -1750,18 +1732,6 @@ while doing so - in order to update the blit</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.dat_extent">
-<code class="descname">dat_extent</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.dat_extent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the extend of the dat variable</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.tab_prof.MyMplCanvas.extentchk">
-<code class="descname">extentchk</code><span class="sig-paren">(</span><em>extent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.extentchk" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks extent</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="pygmi.pfmod.tab_prof.MyMplCanvas.init_grid">
 <code class="descname">init_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>extent</em>, <em>dat2</em>, <em>opac</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.init_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the single color map</p>
@@ -1793,13 +1763,13 @@ while doing so - in order to update the blit</p>
 
 <dl class="method">
 <dt id="pygmi.pfmod.tab_prof.MyMplCanvas.slide_grid">
-<code class="descname">slide_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>dat2=None</em>, <em>opac=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.slide_grid" title="Permalink to this definition">¶</a></dt>
+<code class="descname">slide_grid</code><span class="sig-paren">(</span><em>dat</em>, <em>dat2=None</em>, <em>opac=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.slide_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Slider</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.pfmod.tab_prof.MyMplCanvas.slide_plot">
-<code class="descname">slide_plot</code><span class="sig-paren">(</span><em>xdat</em>, <em>dat</em>, <em>extent</em>, <em>xdat2</em>, <em>dat2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.slide_plot" title="Permalink to this definition">¶</a></dt>
+<code class="descname">slide_plot</code><span class="sig-paren">(</span><em>xdat</em>, <em>dat</em>, <em>xdat2</em>, <em>dat2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.slide_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Slider</p>
 </dd></dl>
 
@@ -1876,7 +1846,8 @@ click in a single step.</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.profpic_hs">
 <code class="descname">profpic_hs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.profpic_hs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Horizontal slider to change the profile</p>
+<dd><p>Horizontal slider to change the opacity of profile and overlain
+picture</p>
 </dd></dl>
 
 <dl class="method">
@@ -1927,6 +1898,18 @@ click in a single step.</p>
 <dd><p>Sets the width of the edits on the profile view</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.tab_prof.dat_extent">
+<code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">dat_extent</code><span class="sig-paren">(</span><em>dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.dat_extent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the extend of the dat variable</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.tab_prof.extentchk">
+<code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">extentchk</code><span class="sig-paren">(</span><em>extent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.extentchk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks extent</p>
 </dd></dl>
 
 </div>
@@ -2146,8 +2129,8 @@ click in a single step.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.5.
+        &copy; Copyright 2016, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>
