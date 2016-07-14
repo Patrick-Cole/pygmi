@@ -30,7 +30,7 @@ View the PyGMI project on `GitHub <https://github.com/Patrick-Cole/pygmi>`_!
 
 The latest release version can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
-Windows installers are found as either `64-bit <https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.11/PyGMIx64_2.2.11.exe>`_ or `32-bit <https://github.com/Patrick-Cole/pygmi/releases/download/v2.2.11/PyGMIx32_2.2.11.exe>`_.
+Windows installers are found as either `64-bit <https://github.com/Patrick-Cole/pygmi/releases/download/v2%2C2.11/PyGMIx64_2.2.11.exe>`_ or `32-bit <https://github.com/Patrick-Cole/pygmi/releases/download/v2%2C2.11/PyGMIx86_2.2.11.exe>`_.
 
 You may need to install the `Microsoft Visual C++ 2015 Redistributable <https://www.visualstudio.com/downloads/download-visual-studio-vs#d-visual-c>`_.
 
