@@ -25,6 +25,7 @@
 """ Data Display Routines found on Data Display Tab"""
 
 from PyQt4 import QtGui, QtCore
+import pdb
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -309,6 +310,8 @@ class MyMplCanvas(FigureCanvas):
 
 #        cnorm = clrs.Normalize()(dat1.data[::-1]-reg)
         cnorm = clrs.Normalize()(dat1.data+reg)
+        if cnorm.mask.size == 1:
+            cnorm.mask = (cnorm.mask*np.ones_like(cnorm.data)).astype(bool)
         cnorm.data[cnorm.mask] = 0.0
         tmp = self.cbar(cnorm)
 

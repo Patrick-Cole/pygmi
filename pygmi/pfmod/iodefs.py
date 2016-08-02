@@ -192,7 +192,11 @@ class ImportMod3D(object):
 
         lmod.mlut = np.asscalar(indict[pre+'mlut'])
         lmod.init_calc_grids()
+
         lmod.griddata = np.asscalar(indict[pre+'griddata'])
+
+        for i in lmod.griddata:
+            lmod.griddata[i].data = np.ma.array(lmod.griddata[i].data)
 
         # This gets rid of a legacy variable name
         for i in lmod.griddata.keys():
