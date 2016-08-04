@@ -28,8 +28,7 @@ from PyQt4 import QtGui, QtCore
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import \
-    NavigationToolbar2QT as NavigationToolbar
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 import pygmi.pfmod.misc as misc
 
 
@@ -46,7 +45,7 @@ class LayerDisplay(object):
         self.userint = QtGui.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod)
-        self.mpl_toolbar = NavigationToolbar(self.mmc, self.userint)
+        self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
         self.label_altitude = QtGui.QLabel()
         self.sb_model_layer = QtGui.QSpinBox()

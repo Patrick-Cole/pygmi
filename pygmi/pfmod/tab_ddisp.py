@@ -25,7 +25,6 @@
 """ Data Display Routines found on Data Display Tab"""
 
 from PyQt4 import QtGui, QtCore
-import pdb
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
@@ -398,16 +397,19 @@ class MyMplCanvas(FigureCanvas):
         right = left + dat.cols*dat.xdim
         bottom = top - dat.rows*dat.ydim
 
-        if False:  # (right-left) > 10000 or (top-bottom) > 10000:
-            self.axes.xaxis.set_label_text("Eastings (km)")
-            self.axes.yaxis.set_label_text("Northings (km)")
-            left /= 1000.
-            right /= 1000.
-            top /= 1000.
-            bottom /= 1000.
-        else:
-            self.axes.xaxis.set_label_text("Eastings (m)")
-            self.axes.yaxis.set_label_text("Northings (m)")
+#        if (right-left) > 10000 or (top-bottom) > 10000:
+#            self.axes.xaxis.set_label_text("Eastings (km)")
+#            self.axes.yaxis.set_label_text("Northings (km)")
+#            left /= 1000.
+#            right /= 1000.
+#            top /= 1000.
+#            bottom /= 1000.
+#        else:
+#            self.axes.xaxis.set_label_text("Eastings (m)")
+#            self.axes.yaxis.set_label_text("Northings (m)")
+
+        self.axes.xaxis.set_label_text("Eastings (m)")
+        self.axes.yaxis.set_label_text("Northings (m)")
 
         return (left, right, bottom, top)
 
