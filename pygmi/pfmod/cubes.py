@@ -181,18 +181,18 @@ class Mod3dDisplay(QtGui.QDialog):
 # array([     0.        ,      0.        , -60877.27272727])
 
         if list(self.faces.values())[0].shape[1] == 4:
-            for i in list(self.faces.keys()):
+            for i in self.faces:
                 self.gfaces[i] = np.append(self.faces[i][:, :-1],
                                            self.faces[i][:, [0, 2, 3]])
                 self.gfaces[i].shape = (self.gfaces[i].shape[0]/3, 3)
         else:
             self.gfaces = self.faces.copy()
 
-        self.glutlith = range(1, len(list(self.gfaces.keys()))+1)
+        self.glutlith = range(1, len(self.gfaces)+1)
 
     def change_defs(self):
         """ List box routine """
-        if len(self.lmod1.lith_list.keys()) == 0:
+        if len(self.lmod1.lith_list) == 0:
             return
         self.set_selected_liths()
         self.update_color()
@@ -320,7 +320,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
         self.lut = tmp
 
-        if len(self.lmod1.lith_list.keys()) > 0:
+        if len(self.lmod1.lith_list) > 0:
             self.set_selected_liths()
             self.update_model()
             self.update_model2()
@@ -942,7 +942,7 @@ def MarchingCubes(x, y, z, c, iso):
     offset = sub2ind(c.shape, xyz_off[:, 0], xyz_off[:, 1], xyz_off[:, 2])
     pp = np.zeros([iden.size, lindex, 12])
     ccedge = np.array([cedge.flatten(order='F')[iden], iden])  # uses vec
-    ccedge = ccedge.T
+    ccedge = np.transpose(ccedge)
     ix_offset = 0
 
     x = x.flatten(order='F')

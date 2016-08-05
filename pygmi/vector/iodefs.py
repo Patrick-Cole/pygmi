@@ -264,12 +264,10 @@ class ImportShapeData(object):
 
     def settings(self):
         """Entry point into item. Data imported from here."""
-        ext = \
-            "Shapefile (*.shp);;" +\
-            "All Files (*.*)"
+        ext = "Shapefile (*.shp);;" + "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+        filename = QtGui.QFileDialog.getOpenFileName(self.parent, 'Open File',
+                                                     '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -296,7 +294,7 @@ class ImportShapeData(object):
         for i in range(lyr.GetFeatureCount()):
             feat = lyr.GetFeature(i)
             ftmp = feat.items()
-            for j in ftmp.keys():
+            for j in ftmp:
                 if attrib.get(j) is None:
                     attrib[j] = [ftmp[j]]
                 else:

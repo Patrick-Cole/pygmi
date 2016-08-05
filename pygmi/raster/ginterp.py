@@ -1558,7 +1558,7 @@ class PlotInterp(QtGui.QDialog):
 
             tmp = np.array([[list(range(255))]*255])
             tmp.shape = (255, 255)
-            tmp = tmp.T
+            tmp = np.transpose(tmp)
 
             red = ndimage.rotate(tmp, 0)
             green = ndimage.rotate(tmp, 120)

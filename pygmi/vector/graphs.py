@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Plot Vector Data using Matplotlib """
 
-import pdb
 import numpy as np
 from PyQt4 import QtGui, QtCore
 import matplotlib.pyplot as plt

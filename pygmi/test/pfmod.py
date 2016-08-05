@@ -105,12 +105,12 @@ def test(doplt=False):
     d_z = 50
     ypos = np.arange(-strike, strike, dxy)
     zpos = np.arange(z.min(), 0, d_z)
-    xpos2 = np.arange(xpos.min(), xpos.max(), dxy)
+    xpos2 = np.arange(np.min(xpos), np.max(xpos), dxy)
     numy = ypos.size
     numz = zpos.size
-    tlx = xpos.min()
-    tly = ypos.max()
-    tlz = zpos.max()
+    tlx = np.min(xpos)
+    tly = np.max(ypos)
+    tlz = np.max(zpos)
 
     # quick model initialises a model with all the variables we have defined.
     ttt = ptimer.PTime()
@@ -122,7 +122,7 @@ def test(doplt=False):
 
     # Create the actual model. It is a 3 dimensional vector with '1' where the
     # body lies
-    for i in np.arange(x.min(), x.max(), dxy):
+    for i in np.arange(np.min(x), np.max(x), dxy):
         for j in np.arange(0, 2*strike, dxy):
             for k in np.arange(abs(z).min()/d_z, abs(z).max()/d_z):
                 i2 = int(i/dxy)
@@ -134,14 +134,14 @@ def test(doplt=False):
 
     # Calculate the gravity
     calc_field(lmod)
-    gdata = lmod.griddata['Calculated Gravity'].data[numy/2].copy()
+    gdata = lmod.griddata['Calculated Gravity'].data[numy//2].copy()
     ttt.since_last_call('gravity calculation')
 
     # Change to observation height to 100 meters and calculate magnetics
     lmod.mht = mht
     calc_field(lmod, magcalc=True)
 
-    mdata = lmod.griddata['Calculated Magnetics'].data[numy/2]
+    mdata = lmod.griddata['Calculated Magnetics'].data[numy//2]
 
     ttt.since_last_call('magnetic calculation')
 

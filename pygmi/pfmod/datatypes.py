@@ -26,7 +26,6 @@
 
 import numpy as np
 from pygmi.raster.datatypes import Data
-import pdb
 
 
 class LithModel(object):
@@ -143,20 +142,16 @@ class LithModel(object):
                     o_k = int((self.ozrng[1] - x_k) / self.od_z)
                     k = int((self.zrange[1] - x_k) / self.d_z)
 
-                    try:
-                        if (self.lith_index[i, j, k] != -1 and
-                                self.olith_index[o_i, o_j, o_k] != -1):
-                            self.lith_index[i, j, k] = \
-                                self.olith_index[o_i, o_j, o_k]
-                    except:
-                        pdb.set_trace()
+                    if (self.lith_index[i, j, k] != -1 and
+                            self.olith_index[o_i, o_j, o_k] != -1):
+                        self.lith_index[i, j, k] = \
+                            self.olith_index[o_i, o_j, o_k]
 
     def dtm_to_lith(self):
         """ Assign the DTM to the model. This means creating nodata values in
         areas above the DTM. These values are assigned a lithology of -1."""
 
-        if 'DTM Dataset' not in list(self.griddata.keys()):
-
+        if 'DTM Dataset' not in self.griddata:
             return
 
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
@@ -224,7 +219,7 @@ class LithModel(object):
         Args:
             modified (bool): flag for whether the lithology has been modified
         """
-        for i in list(self.lith_list.keys()):
+        for i in self.lith_list:
             self.lith_list[i].modified = modified
 
     def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht=-1,
@@ -286,7 +281,7 @@ class LithModel(object):
 
     def update_lithlist(self):
         """ Updates lith_list from local variables"""
-        for i in list(self.lith_list.keys()):
+        for i in self.lith_list:
             self.lith_list[i].set_xyz(self.numx, self.numy, self.numz,
                                       self.dxy, self.mht, self.ght, self.d_z,
                                       modified=False)

@@ -37,7 +37,6 @@ import scipy.ndimage as ndimage
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.vector.datatypes import PData
-from numba import jit
 
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
@@ -747,7 +746,7 @@ class Metadata(QtGui.QDialog):
     """
     Edit Metadata
 
-    This class allows the editing of teh metadata for a raster dataset using a
+    This class allows the editing of the metadata for a raster dataset using a
     GUI.
 
     Attributes
@@ -1418,7 +1417,7 @@ def getepsgcodes():
     pfile.close()
 
     pcodes = {}
-    for i in dcodes.keys():
+    for i in dcodes:
         pcodes[i+r' / Geodetic Geographic'] = dcodes[i]
 
     plines = plines[1:]
@@ -1558,7 +1557,6 @@ def trim_raster(olddata):
     return olddata
 
 
-#@jit(nopython=True)
 def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     """
     Do a quick grid
@@ -1605,7 +1603,7 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     if numits < 1:
         numits = int(max(np.log2(cols), np.log2(rows)))
 
-    while newmask.max() > 0 and j < (numits-1):
+    while np.max(newmask) > 0 and j < (numits-1):
         j += 1
         jj = 2**j
         dxy2 = dxy*jj
@@ -1651,8 +1649,8 @@ def tests_rtp():
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
-    datrtp = get_raster('C:\\Work\\Programming\\pygmi\\data\\RTP\\South_Africa_EMAG2_diffRTP_surfer.grd')
-    dat = get_raster('C:\\Work\\Programming\\pygmi\\data\\RTP\\South_Africa_EMAG2_TMI_surfer.grd')
+    datrtp = get_raster(r'C:\Work\Programming\pygmi\data\RTP\South_Africa_EMAG2_diffRTP_surfer.grd')
+    dat = get_raster(r'C:\Work\Programming\pygmi\data\RTP\South_Africa_EMAG2_TMI_surfer.grd')
     dat = dat[0]
     datrtp = datrtp[0]
     incl = -65.
@@ -1670,26 +1668,25 @@ def tests_rtp():
 
 
 def func(x, y):
+    """ Function """
     return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2
 
 
 def tests():
     """ Tests to debug RTP """
     import matplotlib.pyplot as plt
-    import pdb
     from pygmi.misc import PTime
 
-    grid_x, grid_y = np.mgrid[0:1:100j, 0:1:200j]
     points = np.random.rand(1000000, 2)
-    values = func(points[:,0], points[:,1])
+    values = func(points[:, 0], points[:, 1])
 
-#    pdb.set_trace()
     ttt = PTime()
 
-    dat = quickgrid(points[:,0], points[:,1], values, .001, numits=-1)
+    dat = quickgrid(points[:, 0], points[:, 1], values, .001, numits=-1)
 
     ttt.since_last_call()
 
+#    grid_x, grid_y = np.mgrid[0:1:100j, 0:1:200j]
 #    dat = griddata(points, values, (grid_x, grid_y), method='nearest')
 
     plt.imshow(dat)

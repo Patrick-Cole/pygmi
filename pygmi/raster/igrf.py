@@ -721,8 +721,7 @@ class IGRF(QtGui.QDialog):
                     cc = (2.0 * fn - 1.0)/aa
                     ii = k - n
                     j = k - 2 * n + 1
-                    p[k] = (fn + 1.0) * (cc * slat/fn * p[ii] - bb/(fn - 1.0)
-                                         * p[j])
+                    p[k] = (fn + 1.0) * (cc * slat/fn * p[ii]-bb/(fn-1.0)*p[j])
                     q[k] = cc * (slat * q[ii] - clat/fn * p[ii]) - bb * q[j]
 
             if gh == 3:

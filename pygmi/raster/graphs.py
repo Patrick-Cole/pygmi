@@ -112,7 +112,6 @@ class MyMplCanvas(FigureCanvas):
         extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
                   data1.tly - data1.rows * data1.ydim, data1.tly)
 
-
         rdata = self.axes.imshow(data1.data, extent=extent,
                                  interpolation='nearest')
 

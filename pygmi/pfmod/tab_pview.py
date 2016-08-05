@@ -185,7 +185,7 @@ class ProfileDisplay(object):
             i = 0
         itxt = str(self.lw_prof_defs.item(i).text())
 
-        if itxt not in self.lmod1.lith_list.keys():
+        if itxt not in self.lmod1.lith_list:
             return
 
         lith = self.lmod1.lith_list[itxt]
@@ -368,13 +368,13 @@ class ProfileDisplay(object):
         data = None
 
         if self.viewmagnetics:
-            if 'Calculated Magnetics' in self.lmod1.griddata.keys():
+            if 'Calculated Magnetics' in self.lmod1.griddata:
                 data = self.lmod1.griddata['Calculated Magnetics']
             self.mmc.ptitle = 'Magnetic Intensity: '
             self.mmc.punit = 'nT'
             regtmp = 0.0
         else:
-            if 'Calculated Gravity' in self.lmod1.griddata.keys():
+            if 'Calculated Gravity' in self.lmod1.griddata:
                 data = self.lmod1.griddata['Calculated Gravity']
             self.mmc.ptitle = 'Gravity: '
             self.mmc.punit = 'mGal'
@@ -404,10 +404,9 @@ class ProfileDisplay(object):
         data2 = None
         tmprng2 = None
         tmpprof2 = None
-        if ('Magnetic Dataset' in self.lmod1.griddata.keys() and
-                self.viewmagnetics):
+        if ('Magnetic Dataset' in self.lmod1.griddata and self.viewmagnetics):
             data2 = self.lmod1.griddata['Magnetic Dataset']
-        elif ('Gravity Dataset' in self.lmod1.griddata.keys() and
+        elif ('Gravity Dataset' in self.lmod1.griddata and
               not self.viewmagnetics):
             data2 = self.lmod1.griddata['Gravity Dataset']
 

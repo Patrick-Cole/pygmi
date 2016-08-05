@@ -32,7 +32,7 @@ import pygmi.menu_default as menu_default
 def update_lith_lw(lmod, lwidget):
     """ Updates the lithology list widget """
     lwidget.clear()
-    for i in lmod.lith_list.keys():
+    for i in lmod.lith_list:
         lwidget.addItem(i)
 
     for i in range(lwidget.count()):
@@ -102,7 +102,7 @@ class RangedCopy(QtGui.QDialog):
 def rcopy_dialog(lmod1, islayer=True, is_ew=True):
     """ Main routine to perform actual ranged copy """
     rcopy = RangedCopy()
-    for i in lmod1.lith_list.keys():
+    for i in lmod1.lith_list:
         rcopy.lw_lithcopy.addItem(i)
         rcopy.lw_lithdel.addItem(i)
 
@@ -215,15 +215,15 @@ class ProgressBar(object):
         time1 = self.otime
         time2 = self.otime
 
-        n = 0
+        i = 0
         for obj in iterable:
             yield obj
-            n += 1
+            i += 1
 
             time2 = time.clock()
             if time2-time1 > 1:
-                self.pbar.setValue(n)
-                tleft = (total-n)*(time2-self.otime)/n
+                self.pbar.setValue(i)
+                tleft = (total-i)*(time2-self.otime)/i
                 if tleft > 60:
                     tleft = int(tleft // 60)
                     self.pbar.setFormat('%p% '+str(tleft)+'min left')

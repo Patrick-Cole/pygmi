@@ -85,7 +85,7 @@ class ImportMod3D(object):
         self.outdata['Model3D'] = [self.lmod]
         self.lmod.name = filename.rpartition('/')[-1]
 
-        for i in self.lmod.griddata.keys():
+        for i in self.lmod.griddata:
             if self.lmod.griddata[i].dataid == '':
                 self.lmod.griddata[i].dataid = i
 #            try:
@@ -163,7 +163,6 @@ class ImportMod3D(object):
     def dict2lmod(self, indict, pre=''):
         """ routine to convert a dictionary to an lmod """
         lithkeys = indict[pre+'lithkeys']
-#        self.pbars.resetall(maximum=lithkeys.size+1)
 
         lmod = self.lmod
 
@@ -199,7 +198,7 @@ class ImportMod3D(object):
             lmod.griddata[i].data = np.ma.array(lmod.griddata[i].data)
 
         # This gets rid of a legacy variable name
-        for i in lmod.griddata.keys():
+        for i in lmod.griddata:
             if not hasattr(lmod.griddata[i], 'dataid'):
                 lmod.griddata[i].dataid = ''
             if hasattr(lmod.griddata[i], 'bandid'):
@@ -208,13 +207,13 @@ class ImportMod3D(object):
                 del lmod.griddata[i].bandid
 
         wktfin = None
-        for i in lmod.griddata.keys():
+        for i in lmod.griddata:
             wkt = lmod.griddata[i].wkt
             if wkt != '' and wkt is not None:
                 wktfin = wkt
 
         if wktfin is not None:
-            for i in lmod.griddata.keys():
+            for i in lmod.griddata:
                 wkt = lmod.griddata[i].wkt
                 if wkt == '' or wkt is None:
                     lmod.griddata[i].wkt = wktfin
@@ -720,7 +719,7 @@ class ExportMod3D(object):
         for i, _ in enumerate(modeldae):
             zfile.writestr('models\\mod3d'+str(i)+'.dae', modeldae[i])
 
-        for i in self.lmod.griddata.keys():
+        for i in self.lmod.griddata:
             x_1 = self.lmod.griddata[i].tlx
             x_2 = x_1 + self.lmod.griddata[i].xdim*self.lmod.griddata[i].cols
             y_2 = self.lmod.griddata[i].tly
@@ -1091,7 +1090,7 @@ class ImportPicture(QtGui.QDialog):
 
     def settings(self):
         """ Load GeoTiff """
-        if 'Model3D' in self.indata.keys():
+        if 'Model3D' in self.indata:
             self.lmod = self.indata['Model3D'][0]
             self.lmod2var()
 
@@ -1153,56 +1152,50 @@ def gtiff(filename):
     return dat
 
 
-
-
-"""
-            inorm1 = np.arange(norm.shape[0])
-
-            can_reduce = True
-            while can_reduce:
-                can_reduce = False
-                for idx, i in enumerate(inorm1):
-                    ifaces = np.nonzero(np.sum(faces == i, 1))[0]
-                    if ifaces.size == 0:
-                        continue
-                    faces1 = faces[ifaces]
-                    norm2 = norm[faces1]
-                    u1 = np.unique(norm2)
-                    u2 = np.unique(norm2[0])
-
-                    if np.all(u1 == u2) and u1.size <= 3:
-                        faces2 = faces1[faces1 != i]
-                        # This line makes sure that we only simplify if the
-                        # elimiated vertex is in the center of triangles.
-                        if (np.unique(faces2).size*2 == faces2.size):
-                            can_reduce = True
-                            break
-
-                print(inorm1.size, idx)
-                if not can_reduce:
-                    break
-                inorm1 = inorm1[idx:]
-
-                faces2.shape = (faces1.shape[0], 2)
-                faces2 = faces2.tolist()
-                vert = [faces2.pop(0)]
-
-                while len(faces2) > 0:
-                    tmp = (np.array(faces2) == vert[-1])
-                    if tmp.max() == False:
-                        faces2 = np.fliplr(faces2).tolist()
-                        continue
-                    itmp = np.nonzero(tmp)[0][0]
-                    vert += [faces2.pop(itmp)[::-1]]
-
-                vert = np.array(vert).flatten()[::2]
-                faces = np.delete(faces, ifaces, 0)
-
-                for i, _ in enumerate(vert[:-2]):
-                    ftmp = [vert[0], vert[i+1], vert[i+2]]
-                    faces = np.vstack((faces, ftmp))
-
-            pdb.set_trace()
-
-
-"""
+#            inorm1 = np.arange(norm.shape[0])
+#
+#            can_reduce = True
+#            while can_reduce:
+#                can_reduce = False
+#                for idx, i in enumerate(inorm1):
+#                    ifaces = np.nonzero(np.sum(faces == i, 1))[0]
+#                    if ifaces.size == 0:
+#                        continue
+#                    faces1 = faces[ifaces]
+#                    norm2 = norm[faces1]
+#                    u1 = np.unique(norm2)
+#                    u2 = np.unique(norm2[0])
+#
+#                    if np.all(u1 == u2) and u1.size <= 3:
+#                        faces2 = faces1[faces1 != i]
+#                        # This line makes sure that we only simplify if the
+#                        # elimiated vertex is in the center of triangles.
+#                        if (np.unique(faces2).size*2 == faces2.size):
+#                            can_reduce = True
+#                            break
+#
+#                print(inorm1.size, idx)
+#                if not can_reduce:
+#                    break
+#                inorm1 = inorm1[idx:]
+#
+#                faces2.shape = (faces1.shape[0], 2)
+#                faces2 = faces2.tolist()
+#                vert = [faces2.pop(0)]
+#
+#                while len(faces2) > 0:
+#                    tmp = (np.array(faces2) == vert[-1])
+#                    if tmp.max() == False:
+#                        faces2 = np.fliplr(faces2).tolist()
+#                        continue
+#                    itmp = np.nonzero(tmp)[0][0]
+#                    vert += [faces2.pop(itmp)[::-1]]
+#
+#                vert = np.array(vert).flatten()[::2]
+#                faces = np.delete(faces, ifaces, 0)
+#
+#                for i, _ in enumerate(vert[:-2]):
+#                    ftmp = [vert[0], vert[i+1], vert[i+2]]
+#                    faces = np.vstack((faces, ftmp))
+#
+#            pdb.set_trace()

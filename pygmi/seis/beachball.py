@@ -659,21 +659,21 @@ def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
                   [-V[2, 1], V[2, 0], V[2, 2]],
                   [V[0, 1], -V[0, 0], -V[0, 2]]])
 
-    IMAX = np.nonzero(D == D.max())
-    IMIN = np.nonzero(D == D.min())
-    AE = (V[:, IMAX]+V[:, IMIN])/np.sqrt(2.0)
-    AN = (V[:, IMAX]-V[:, IMIN])/np.sqrt(2.0)
-    AER = np.sqrt(AE[0]**2+AE[1]**2+AE[2]**2)
-    ANR = np.sqrt(AN[0]**2+AN[1]**2+AN[2]**2)
-    AE = AE/AER
-    AN = AN/ANR
+    imax = np.nonzero(D == np.max(D))
+    imin = np.nonzero(D == np.min(D))
+    AE = (V[:, imax]+V[:, imin])/np.sqrt(2.0)
+    AN = (V[:, imax]-V[:, imin])/np.sqrt(2.0)
+    aer = np.sqrt(AE[0]**2+AE[1]**2+AE[2]**2)
+    anr = np.sqrt(AN[0]**2+AN[1]**2+AN[2]**2)
+    AE = AE/aer
+    AN = AN/anr
     if AN[2] <= 0.:
-        AN1 = AN
-        AE1 = AE
+        an1 = AN
+        ae1 = AE
     else:
-        AN1 = -AN
-        AE1 = -AE
-    ft, fd, fl = TDL(AN1, AE1)
+        an1 = -AN
+        ae1 = -AE
+    ft, fd, fl = TDL(an1, ae1)
     strike = 360 - ft
     dip = fd
     rake = 180 - fl
@@ -702,14 +702,14 @@ def TDL(AN, BN):
     """
     XN, YN, ZN = AN.flatten()
     XE, YE, ZE = BN.flatten()
-    AAA = 1.0E-06
-    CON = 57.2957795
-    if abs(ZN) < AAA:
+    aaa = 1.0E-06
+    fdh = 57.2957795
+    if abs(ZN) < aaa:
         FD = 90.
-        AXN = abs(XN)
-        if AXN > 1.0:
-            AXN = 1.0
-        FT = np.arcsin(AXN)*CON
+        axn = abs(XN)
+        if axn > 1.0:
+            axn = 1.0
+        FT = np.arcsin(axn)*fdh
         ST = -XN
         CT = YN
         if ST >= 0. and CT < 0:
@@ -718,9 +718,9 @@ def TDL(AN, BN):
             FT = 180.+FT
         if ST < 0. and CT > 0:
             FT = 360.-FT
-        FL = np.arcsin(abs(ZE))*CON
+        FL = np.arcsin(abs(ZE))*fdh
         SL = -ZE
-        if abs(XN) < AAA:
+        if abs(XN) < aaa:
             CL = XE/YN
         else:
             CL = -YE/XN
@@ -733,9 +733,9 @@ def TDL(AN, BN):
     else:
         if -ZN > 1.0:
             ZN = -1.0
-        FDH = np.arccos(-ZN)
-        FD = FDH*CON
-        SD = np.sin(FDH)
+        fdh = np.arccos(-ZN)
+        FD = fdh*fdh
+        SD = np.sin(fdh)
         if SD == 0:
             return
         ST = -XN/SD
@@ -743,7 +743,7 @@ def TDL(AN, BN):
         SX = abs(ST)
         if SX > 1.0:
             SX = 1.0
-        FT = np.arcsin(SX)*CON
+        FT = np.arcsin(SX)*fdh
         if ST >= 0. and CT < 0:
             FT = 180.-FT
         if ST < 0. and CT <= 0:
@@ -754,7 +754,7 @@ def TDL(AN, BN):
         SX = np.abs(SL)
         if SX > 1.0:
             SX = 1.0
-        FL = np.arcsin(SX)*CON
+        FL = np.arcsin(SX)*fdh
         if ST == 0:
             CL = XE/CT
         else:

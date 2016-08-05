@@ -349,7 +349,6 @@ class TiltDepth(QtGui.QDialog):
         self.y1 = dy1+gy0
         self.y2 = dy2+gy0
 
-
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
 
 
@@ -523,7 +522,7 @@ def tiltdepth(data, dec, inc):
             grad += 180
         gtmp = abs(90-abs(grad-k))
         if gtmp > 10:
-            continue # means all angles greater than 10 are excluded
+            continue  # means all angles greater than 10 are excluded
 
         dist = ne.evaluate('(dxm-i)**2+(dym-j)**2')
         dmin = np.nonzero(dist == dist.min())[0]

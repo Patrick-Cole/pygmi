@@ -667,7 +667,7 @@ class SIMP(object):
                    'DEC': 12}
         mrecs = []
         for i, idatai in enumerate(idata):
-            for j in monconv.keys():
+            for j in monconv:
                 if idatai.find(j) > -1:
                     mrecs.append([j, i])
 

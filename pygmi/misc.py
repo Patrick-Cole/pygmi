@@ -128,15 +128,15 @@ class ProgressBar(QtGui.QProgressBar):
         time1 = self.otime
         time2 = self.otime
 
-        n = 0
+        i = 0
         for obj in iterable:
             yield obj
-            n += 1
+            i += 1
 
             time2 = time.clock()
             if time2-time1 > 1:
-                self.setValue(n)
-                tleft = (total-n)*(time2-self.otime)/n
+                self.setValue(i)
+                tleft = (total-i)*(time2-self.otime)/i
                 if tleft > 60:
                     tleft = int(tleft // 60)
                     self.setFormat('%p% '+str(tleft)+'min left')

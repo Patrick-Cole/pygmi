@@ -910,11 +910,14 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
     mgvalin.resize([numx, numy])
     mgvalin = mgvalin.T
     mgvalin = mgvalin[::-1]
+    mgvalin = np.ma.array(mgvalin)
 
     if magcalc:
         lmod.griddata['Calculated Magnetics'].data = mgvalin
     else:
         lmod.griddata['Calculated Gravity'].data = mgvalin
+
+
 
 #    if magcalc:
 #        magval = mgvalin

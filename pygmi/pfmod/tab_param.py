@@ -222,7 +222,7 @@ class ParamDisplay(object):
 
     def autoregional(self):
         """ Automatically estimates the regional """
-        if 'Gravity Dataset' not in self.lmod1.griddata.keys():
+        if 'Gravity Dataset' not in self.lmod1.griddata:
             self.showtext('No gravity dataset!')
             return
 
@@ -399,7 +399,7 @@ class ParamDisplay(object):
         for i in range(self.lw_param_defs.count()):
             itxtlist.append(str(self.lw_param_defs.item(i).text()))
 
-        for i in self.lmod1.lith_list.keys():
+        for i in self.lmod1.lith_list:
             if i not in itxtlist:
                 if i == 'Background':
                     j = self.lw_param_defs.currentRow()

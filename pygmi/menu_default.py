@@ -122,7 +122,7 @@ class ComboBoxBasic(QtGui.QDialog):
 
         data = my_class.indata.copy()
 
-        for j in data.keys():
+        for j in data:
             if j is 'Model3D' or j is 'Seis':
                 continue
 
@@ -139,7 +139,7 @@ class ComboBoxBasic(QtGui.QDialog):
         if tmp != 1:
             return
 
-        for j in data.keys():
+        for j in data:
             if j is 'Model3D' or j is 'Seis':
                 continue
             atmp = [i.text() for i in self.combo.selectedItems()]
@@ -171,6 +171,7 @@ class HelpMenu(object):
     def __init__(self, parent):
 
         self.parent = parent
+        self.webpage = r'http://patrick-cole.github.io/pygmi/'
 
 # Help Menu
 
@@ -199,7 +200,7 @@ Version:       '''+self.parent.__version__+'''
 Author:       Patrick Cole
 E-Mail:        pcole@geoscience.org.za
 
-Copyright:    (c) 2015 Council for Geoscience
+Copyright:    (c) 2016 Council for Geoscience
 Licence:      GPL-3.0
 
 PyGMI is free software: you can redistribute it and/or modify it under
@@ -219,7 +220,7 @@ with this program. If not, see http://www.gnu.org/licenses/'''
 
     def webhelp(self):
         """ Help File"""
-        webbrowser.open(r'http://patrick-cole.github.io/pygmi/')
+        webbrowser.open(self.webpage)
 
 
 class HelpButton(QtGui.QPushButton):

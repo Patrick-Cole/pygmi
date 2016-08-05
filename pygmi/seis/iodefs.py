@@ -26,7 +26,6 @@
 
 import os
 import re
-import pdb
 from PyQt4 import QtGui
 import numpy as np
 import pygmi.seis.datatypes as sdt

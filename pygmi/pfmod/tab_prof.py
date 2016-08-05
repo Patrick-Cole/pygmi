@@ -157,7 +157,7 @@ class ProfileDisplay(object):
             i = 0
         itxt = str(self.lw_prof_defs.item(i).text())
 
-        if itxt not in self.lmod1.lith_list.keys():
+        if itxt not in self.lmod1.lith_list:
             return
 
         lith = self.lmod1.lith_list[itxt]
@@ -231,7 +231,7 @@ class ProfileDisplay(object):
         header = '"Line","x","y"'
         newdata = [lines.flatten(), xx.flatten(), yy.flatten()]
 #        pdb.set_trace()
-        for i in self.lmod1.griddata.keys():
+        for i in self.lmod1.griddata:
             if 'Calculated' not in i:
                 data = gridmatch(self.lmod1, 'Calculated Magnetics', i)
             else:
@@ -262,7 +262,7 @@ class ProfileDisplay(object):
 
         lw_lithupper.addItem(r'Do Not Change')
         lw_lithlower.addItem(r'Do Not Change')
-        for i in lmod1.lith_list.keys():
+        for i in lmod1.lith_list:
             lw_lithupper.addItem(i)
             lw_lithlower.addItem(i)
 
@@ -432,14 +432,14 @@ class ProfileDisplay(object):
 # Display the calculated profile
         data = None
         if self.viewmagnetics:
-            if 'Calculated Magnetics' in self.lmod1.griddata.keys():
+            if 'Calculated Magnetics' in self.lmod1.griddata:
                 data = self.lmod1.griddata['Calculated Magnetics'].data
 #            data2 = self.lmod2.griddata['Calculated Magnetics'].data
             self.mmc.ptitle = 'Magnetic Intensity: '
             self.mmc.punit = 'nT'
             regtmp = 0.0
         else:
-            if 'Calculated Gravity' in self.lmod1.griddata.keys():
+            if 'Calculated Gravity' in self.lmod1.griddata:
                 data = self.lmod1.griddata['Calculated Gravity'].data
 #            data2 = self.lmod2.griddata['Calculated Gravity'].data
             self.mmc.ptitle = 'Gravity: '
@@ -486,11 +486,10 @@ class ProfileDisplay(object):
         data2 = None
         tmprng2 = None
         tmpprof2 = None
-        if ('Magnetic Dataset' in self.lmod1.griddata.keys() and
-                self.viewmagnetics):
+        if ('Magnetic Dataset' in self.lmod1.griddata and self.viewmagnetics):
             data2 = self.lmod1.griddata['Magnetic Dataset']
 #            regtmp = 0.0
-        elif ('Gravity Dataset' in self.lmod1.griddata.keys() and
+        elif ('Gravity Dataset' in self.lmod1.griddata and
               not self.viewmagnetics):
             data2 = self.lmod1.griddata['Gravity Dataset']
 #            regtmp = self.lmod1.gregional

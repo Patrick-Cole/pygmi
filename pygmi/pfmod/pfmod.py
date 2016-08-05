@@ -180,7 +180,7 @@ class MainWidget(QtGui.QMainWindow):
 
         for i in self.indata['Raster']:
             self.inraster[i.dataid] = i
-        if 'Model3D' in self.indata.keys():
+        if 'Model3D' in self.indata:
             self.lmod1 = self.indata['Model3D'][0]
 #            self.lmod1.init_calc_grids()
             self.lmod2 = self.indata['Model3D'][-1]

@@ -119,7 +119,7 @@ class LayerDisplay(object):
             misc.update_lith_lw(self.lmod, self.lw_editor_defs)
             i = 0
         itxt = str(self.lw_editor_defs.item(i).text())
-        if itxt not in self.lmod.lith_list.keys():
+        if itxt not in self.lmod.lith_list:
             return
 
         lith = self.lmod.lith_list[itxt]

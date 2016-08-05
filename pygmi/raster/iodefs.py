@@ -371,7 +371,7 @@ def get_hdf(ifile):
         dat = get_modis(ifile)
     elif 'ASTER' in metadata.values():
         dat = get_aster(ifile)
-    elif 'ASTER_GDEM_ASTGDEM_Description' in metadata.keys():
+    elif 'ASTER_GDEM_ASTGDEM_Description' in metadata:
         dat = get_aster_ged(ifile)
     else:
         dat = None

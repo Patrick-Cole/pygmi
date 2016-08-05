@@ -35,10 +35,10 @@ pygmi packages.
 """
 
 import sys
-import importlib
-import math
-import pkgutil
 import os
+import pkgutil
+import math
+import importlib
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import pygmi
@@ -260,14 +260,14 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
         data = {}
         for i in self.arrows:
             odata = i.my_start_item.my_class.outdata
-            for j in odata.keys():
+            for j in odata:
                 if j in data:
                     data[j] = data[j] + odata[j]
                 else:
                     data[j] = odata[j]
 
-#        if 'Model3D' not in data.keys() and 'Seis' not in data.keys():
-#            for j in data.keys():
+#        if 'Model3D' not in data and 'Seis' not in data:
+#            for j in data:
 #                tmp = []
 #                for i in data[j]:
 #                    tmp.append(i.dataid)
@@ -417,13 +417,13 @@ class DiagramScene(QtGui.QGraphicsScene):
             return
         parent = self.parent
         text = ''
-        for i in odata.keys():
+        for i in odata:
             text += '\n' + i + ' dataset:\n'
             if i == 'Raster' or i == 'Cluster':
                 for j in odata[i]:
                     text += '  '+j.dataid + '\n'
             if i == 'Model3D':
-                for j in odata[i][0].lith_list.keys():
+                for j in odata[i][0].lith_list:
                     text += '  '+j + '\n'
         parent.showdatainfo(text)
 
