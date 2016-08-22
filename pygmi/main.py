@@ -44,6 +44,7 @@ import numpy as np
 import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
+import pdb
 
 
 class Arrow(QtGui.QGraphicsLineItem):
@@ -547,7 +548,10 @@ class MainWidget(QtGui.QMainWindow):
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
         menus = [raster_menu, vector_menu]+menus
-        start = Startup(len(menus))
+
+        start = Startup(len(menus)+1)
+        start.update()
+        self.pypiver = misc.getpypiversion()
         menuimports = []
         for i in menus:
             if i == 'pygmi.__pycache__.menu':
@@ -1028,6 +1032,15 @@ def main():
 
     # this will activate the window
     wid.activateWindow()
+
+    if wid.pypiver != pygmi.__version__ and wid.pypiver != '':
+        text = 'There is an update available on the web.\nYour Version: ' + \
+               pygmi.__version__+'\nNew Version: '+wid.pypiver
+        QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Update Available!',
+                                  text,
+                                  QtGui.QMessageBox.Ok,
+                                  QtGui.QMessageBox.Ok)
+
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

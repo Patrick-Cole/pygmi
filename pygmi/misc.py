@@ -29,7 +29,13 @@ ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called. """
 
 import time
+import io
+import sys
+import socket
+import pdb
+import pip
 from PyQt4 import QtGui
+from OpenGL import GL  # Loading this now to prevent an error later
 
 
 PBAR_STYLE = """
@@ -155,3 +161,42 @@ class ProgressBar(QtGui.QProgressBar):
         self.setMinimum(0)
         self.setValue(1)
         QtGui.QApplication.processEvents()
+
+
+def getpypiversion():
+    """ Gets the PyPi version of PyGMI """
+
+    try:
+        # see if we can resolve the host name -- tells us if there is
+        # a DNS listening
+        host = socket.gethostbyname("www.google.com")
+        # connect to the host -- tells us if the host is actually
+        # reachable
+        tmps = socket.create_connection((host, 80), 2)
+        tmps.close()
+    except:
+        return 'no internet'
+
+    tmpio = io.StringIO()
+    sys.stdout = tmpio
+
+    pip.main(['search', 'pygmi'])
+    sys.stdout = sys.__stdout__
+
+    tmpout = tmpio.getvalue()
+    tmpio.close()
+
+    tmpout = tmpout.splitlines()
+
+    for i in tmpout:
+        if 'pygmi ' in i.lower():
+            verstr = i
+
+    verstr = verstr.split('(')[1]
+    verstr = verstr.split(')')[0]
+
+    return str(verstr)
+
+
+if __name__ == "__main__":
+    print(getpypiversion())
