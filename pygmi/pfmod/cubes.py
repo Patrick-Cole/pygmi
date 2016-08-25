@@ -154,6 +154,9 @@ class Mod3dDisplay(QtGui.QDialog):
         if 'PNG' in filename:
             ftype = 'PNG'
 
+        self.glwidget.init_object()
+        self.glwidget.updateGL()
+
         width = self.glwidget.width()
         height = self.glwidget.height()
         tmp = self.glwidget.readPixels()
@@ -256,7 +259,7 @@ class Mod3dDisplay(QtGui.QDialog):
             clr = np.append(clr,
                             np.zeros([self.corners[lno].shape[0], 4])+clrtmp)
 
-        clr.shape = (clr.shape[0]/4, 4)
+        clr.shape = (clr.shape[0]//4, 4)
 
         self.glwidget.cubeClrArray = clr
 
@@ -462,7 +465,7 @@ class Mod3dDisplay(QtGui.QDialog):
                 n_f = np.arange(uuu.size)
                 newfaces = n_f[i]
                 newcorners = cloc[uuu]
-                newfaces.shape = (newfaces.size/4, 4)
+                newfaces.shape = (newfaces.size//4, 4)
 
                 self.faces[lno] = newfaces
                 self.corners[lno] = newcorners
@@ -557,8 +560,8 @@ class Mod3dDisplay(QtGui.QDialog):
             idx = np.append(idx, self.faces[lno].flatten()+idxmax)
             idxmax = idx.max()+1
 
-        vtx.shape = (vtx.shape[0]/3, 3)
-        clr.shape = (clr.shape[0]/4, 4)
+        vtx.shape = (vtx.shape[0]//3, 3)
+        clr.shape = (clr.shape[0]//4, 4)
 
         vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
 
