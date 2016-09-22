@@ -165,8 +165,9 @@ class TiltDepth(QtGui.QDialog):
 
         ext = "Text File (*.csv)"
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent,
-                                                     'Save File', '.', ext)
+        filename, _ = QtGui.QFileDialog.getSaveFileName(self.parent,
+                                                        'Save File',
+                                                        '.', ext)
         if filename == '':
             return False
 

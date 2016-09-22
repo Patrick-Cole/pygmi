@@ -87,7 +87,7 @@ class DataCut(object):
 
         ext = "Shape file (*.shp)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
@@ -628,7 +628,7 @@ class GetProf(object):
 
         ext = "Shape file (*.shp)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
@@ -1362,6 +1362,9 @@ def gdal_to_dat(dest, bandid='Data'):
     rtmp = dest.GetRasterBand(1)
     dat.data = rtmp.ReadAsArray()
     nval = rtmp.GetNoDataValue()
+
+    dat.data[np.isnan(dat.data)] = nval
+    dat.data[np.isinf(dat.data)] = nval
     dat.data = np.ma.masked_equal(dat.data, nval)
 
 #    dtype = dat.data.dtype

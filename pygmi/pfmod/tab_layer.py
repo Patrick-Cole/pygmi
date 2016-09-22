@@ -26,8 +26,9 @@
 
 from PyQt4 import QtGui, QtCore
 import numpy as np
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.figure import Figure
+from matplotlib import cm
 from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 import pygmi.pfmod.misc as misc
 
@@ -109,7 +110,7 @@ class LayerDisplay(object):
         self.lw_editor_defs.currentItemChanged.connect(self.change_defs)
         self.hslider_layer.valueChanged.connect(self.layer_hs)
         self.pb_layer_rcopy.clicked.connect(self.rcopy)
-        self.sb_layer_linethick.valueChanged.connect(self.width)
+        self.sb_layer_linethick.valueChanged.connect(self.setwidth)
         self.hs_model_opacity.valueChanged.connect(self.sb_laynum)
 
     def change_defs(self):
@@ -197,9 +198,9 @@ class LayerDisplay(object):
         self.lmod.lith_index[:, :, self.lmod.curlayer] = \
             self.mmc.mdata.T.copy()
 
-    def width(self, width):
+    def setwidth(self, width):
         """ Sets the width of the edits on the layer view """
-        self.mmc.width = width
+        self.mmc.mywidth = width
 
     def tab_activate(self):
         """ Runs when the tab is activated """
@@ -220,15 +221,14 @@ class MyMplCanvas(FigureCanvas):
     ----------
     """
     def __init__(self, parent, lmod):
-        # fig = Figure()
-        fig = plt.figure()
+        fig = Figure()
         FigureCanvas.__init__(self, fig)
 
-        self.parent = parent
+        self.myparent = parent
         self.lmod = lmod
-        self.cbar = plt.cm.jet
+        self.cbar = cm.jet
         self.curmodel = 0
-        self.width = 1
+        self.mywidth = 1
         self.xold = None
         self.yold = None
         self.press = False
@@ -248,9 +248,10 @@ class MyMplCanvas(FigureCanvas):
         self.axes = fig.add_subplot(111)
         self.axes.xaxis.set_label_text("Eastings (m)")
         self.axes.yaxis.set_label_text("Northings (m)")
-        self.ims2 = plt.imshow(self.mdata, cmap=self.cbar,
-                               interpolation='nearest')
-        self.ims = plt.imshow(self.cbar(self.mdata), interpolation='nearest')
+        self.ims2 = self.axes.imshow(self.mdata, cmap=self.cbar,
+                                     interpolation='nearest')
+        self.ims = self.axes.imshow(self.cbar(self.mdata),
+                                    interpolation='nearest')
         self.figure.canvas.draw()
 
         self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
@@ -271,7 +272,7 @@ class MyMplCanvas(FigureCanvas):
         """ Button press """
         if event.button == 1:
             self.press = False
-            self.parent.update_model()
+            self.myparent.update_model()
 
     def move(self, event):
         """ Mouse is moving """
@@ -291,7 +292,7 @@ class MyMplCanvas(FigureCanvas):
             width *= xptp/vlim.width
             height *= yptp/vlim.height
 
-            cwidth = (2*self.width-1)
+            cwidth = (2*self.mywidth-1)
             cb = QtGui.QBitmap(cwidth*width, cwidth*height)
             cb.fill(QtCore.Qt.color1)
             self.setCursor(QtGui.QCursor(cb))
@@ -344,7 +345,7 @@ class MyMplCanvas(FigureCanvas):
         gheight = self.mdata.shape[0]
         gwidth = self.mdata.shape[1]
 
-        width = self.width-1  # 'pen' width
+        width = self.mywidth-1  # 'pen' width
         xstart = xdata-width-1
         xend = xdata+width
         ystart = ydata-width-1

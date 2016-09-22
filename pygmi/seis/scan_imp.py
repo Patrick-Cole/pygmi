@@ -127,8 +127,9 @@ class SIMP(object):
 
         ext = "Scanned Bulletin Text File (*.txt)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(self.parent, 'Open File',
-                                                     '.', ext)
+        filename, _ = QtGui.QFileDialog.getOpenFileName(self.parent,
+                                                        'Open File',
+                                                        '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])

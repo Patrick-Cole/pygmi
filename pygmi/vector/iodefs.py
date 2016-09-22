@@ -62,7 +62,7 @@ class ImportLEMI417Data(object):
         """Entry point into item. Data imported from here."""
         ext = "LEMI-417 Text DataAll Files (*.t*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -122,7 +122,7 @@ class ImportPointData(object):
         ext = ("Common Formats (*.csv *.dat *.xyz *.txt);;"
                "All Files (*.*)")
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -215,7 +215,7 @@ class ExportPoint(object):
             self.showtext('Error: You need to have a point data first!')
             return
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'csv (*.csv)')
 
         if filename == '':
@@ -266,8 +266,9 @@ class ImportShapeData(object):
         """Entry point into item. Data imported from here."""
         ext = "Shapefile (*.shp);;" + "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(self.parent, 'Open File',
-                                                     '.', ext)
+        filename, _ = QtGui.QFileDialog.getOpenFileName(self.parent,
+                                                        'Open File',
+                                                        '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])

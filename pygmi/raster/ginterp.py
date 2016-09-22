@@ -1261,7 +1261,7 @@ class PlotInterp(QtGui.QDialog):
         """Save image as a GeoTiff"""
 
         ext = "GeoTiff (*.tif)"
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
             return False

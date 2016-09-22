@@ -25,7 +25,6 @@
 """ Variance Ratio """
 
 import numpy as np
-import scipy.stats as ss
 
 
 def var_ratio(data, uuu, center, dist_orig):
@@ -61,7 +60,7 @@ def var_ratio(data, uuu, center, dist_orig):
 
 # sum of squared dist between cluster cent
 # calc the overall mean for each data type considering the entire data set
-    m_all = ss.nanmean(data)
+    m_all = np.nanmean(data)
 # squared dist of cluster centres from overall mean
     dis_cent = (center - (np.ones([center.shape[0], 1]) * m_all)) ** 2
     dis_cent = np.sum(dis_cent, 1)

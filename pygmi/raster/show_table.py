@@ -98,7 +98,7 @@ class BasicStats(QtGui.QDialog):
     def save(self):
         """ Save """
         ext = "CSV Format (*.csv)"
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtGui.QFileDialog.getSaveFileName(
             self, 'Save Table', '.', ext)
         if filename == '':
             return False
@@ -216,7 +216,7 @@ class ClusterStats(QtGui.QDialog):
     def save(self):
         """ Save """
         ext = "CSV Format (*.csv)"
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtGui.QFileDialog.getSaveFileName(
             self, 'Save Table', '.', ext)
         if filename == '':
             return False

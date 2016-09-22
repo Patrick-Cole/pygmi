@@ -29,11 +29,10 @@ from PyQt4 import QtGui, QtCore
 import numpy as np
 import scipy.ndimage as ndimage
 
-# from matplotlib.figure import Figure
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.figure import Figure
+from matplotlib import cm
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 from pygmi.pfmod import misc
 
 
@@ -54,7 +53,7 @@ class ProfileDisplay(object):
         self.userint = QtGui.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod1)
-        self.mpl_toolbar = NavigationToolbar(self.mmc, self.userint)
+        self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
         self.sb_profnum2 = QtGui.QSpinBox()
         self.hslider_profile2 = QtGui.QSlider()
@@ -124,7 +123,7 @@ class ProfileDisplay(object):
         self.sb_profile_linethick.setPrefix("Line Thickness: ")
 
     # Buttons etc
-        self.sb_profile_linethick.valueChanged.connect(self.width)
+        self.sb_profile_linethick.valueChanged.connect(self.setwidth)
         self.lw_prof_defs.currentItemChanged.connect(self.change_defs)
         self.pb_add_prof.clicked.connect(self.addprof)
         self.hslider_profile2.valueChanged.connect(self.hprofnum)
@@ -254,7 +253,7 @@ class ProfileDisplay(object):
     def export_csv(self):
         """ Export Profile to csv """
         self.parent.pbars.resetall()
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
         if filename == '':
             return
@@ -404,7 +403,7 @@ class ProfileDisplay(object):
         data2 = None
         tmprng2 = None
         tmpprof2 = None
-        if ('Magnetic Dataset' in self.lmod1.griddata and self.viewmagnetics):
+        if 'Magnetic Dataset' in self.lmod1.griddata and self.viewmagnetics:
             data2 = self.lmod1.griddata['Magnetic Dataset']
         elif ('Gravity Dataset' in self.lmod1.griddata and
               not self.viewmagnetics):
@@ -430,24 +429,23 @@ class ProfileDisplay(object):
         else:
             self.mmc.init_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
 
-    def width(self, width):
+    def setwidth(self, width):
         """ Sets the width of the edits on the profile view """
 
-        self.mmc.width = width
+        self.mmc.mywidth = width
 
 
 class MyMplCanvas(FigureCanvas):
     """This is a QWidget"""
     def __init__(self, parent, lmod):
-        # fig = Figure()
-        fig = plt.figure()
+        fig = Figure()
         FigureCanvas.__init__(self, fig)
 
-        self.parent = parent
+        self.myparent = parent
         self.lmod = lmod
-        self.cbar = plt.cm.jet
+        self.cbar = cm.jet
         self.curmodel = 0
-        self.width = 1
+        self.mywidth = 1
         self.xold = None
         self.yold = None
         self.press = False
@@ -471,7 +469,7 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.ticklabel_format(useOffset=False)
 
         self.cal = self.paxes.plot([], [])
-        self.obs = plt.plot([], [], 'o')
+        self.obs = self.paxes.plot([], [], 'o')
 
         self.axes = fig.add_subplot(212)
         self.axes.xaxis.set_label_text(self.xlabel)
@@ -480,10 +478,10 @@ class MyMplCanvas(FigureCanvas):
         tmp = self.cbar(self.mdata)
         tmp[:, :, 3] = 0
 
-        self.ims2 = plt.imshow(tmp.copy(), interpolation='nearest',
-                               aspect='auto')
-        self.ims = plt.imshow(tmp.copy(), interpolation='nearest',
-                              aspect='auto')
+        self.ims2 = self.axes.imshow(tmp.copy(), interpolation='nearest',
+                                     aspect='auto')
+        self.ims = self.axes.imshow(tmp.copy(), interpolation='nearest',
+                                    aspect='auto')
         self.figure.canvas.draw()
 
         self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
@@ -510,7 +508,7 @@ class MyMplCanvas(FigureCanvas):
                 self.paxes.set_xbound(extent[0], extent[1])
                 self.figure.canvas.draw()
             else:
-                self.parent.update_model()
+                self.myparent.update_model()
 
     def move(self, event):
         """ Mouse is moving """
@@ -524,7 +522,7 @@ class MyMplCanvas(FigureCanvas):
             height /= self.mdata.shape[0]
             width *= dlim.width/vlim.width
             height *= dlim.height/vlim.height
-            cwidth = (2*self.width-1)
+            cwidth = (2*self.mywidth-1)
             cb = QtGui.QBitmap(cwidth*width, cwidth*height)
             cb.fill(QtCore.Qt.color1)
             self.setCursor(QtGui.QCursor(cb))
@@ -574,7 +572,7 @@ class MyMplCanvas(FigureCanvas):
         gheight = self.mdata.shape[0]
         gwidth = self.mdata.shape[1]
 
-        width = self.width-1  # 'pen' width
+        width = self.mywidth-1  # 'pen' width
         xstart = xdata-width-1
         xend = xdata+width
         ystart = ydata-width-1

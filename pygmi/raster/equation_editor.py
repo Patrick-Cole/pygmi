@@ -213,8 +213,6 @@ class EquationEditor(QtGui.QDialog):
                 QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
             return
 
-#        pdb.set_trace()
-
         outdata = []
 
         if np.size(findat) == 1:
@@ -240,6 +238,13 @@ class EquationEditor(QtGui.QDialog):
                 outdata.append(copy.copy(indata[i]))
                 outdata[-1].data = np.ma.masked_equal(findati,
                                                       indata[i].nullvalue)
+
+        # This is needed to get rid of bad, unmasked values etc.
+        for i, _ in enumerate(outdata):
+            mask = np.logical_or(mask, np.isinf(outdata[i].data))
+            mask = np.logical_or(mask, np.isnan(outdata[i].data))
+            outdata[i].data.mask = mask
+            outdata[i].data.fill_value = indata[i].data.fill_value
 
         self.outdata[intype] = outdata
 

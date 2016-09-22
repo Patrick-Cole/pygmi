@@ -27,11 +27,10 @@
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import matplotlib.cm as cm
-import matplotlib.pyplot as plt
 import matplotlib.colors as clrs
 from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import \
-    NavigationToolbar2QT as NavigationToolbar
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
 
 
 class DataDisplay(object):
@@ -47,7 +46,7 @@ class DataDisplay(object):
 
         self.userint = QtGui.QWidget()
         self.mmc = MyMplCanvas(len(self.lmod1.custprofx))
-        self.mpl_toolbar = NavigationToolbar(self.mmc, self.userint)
+        self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
         self.ddisp_plot = self.mmc
         self.sb_profnum = QtGui.QSpinBox()
@@ -239,8 +238,7 @@ class MyMplCanvas(FigureCanvas):
     """
     def __init__(self, ncust=1):
         # figure stuff
-        # fig = Figure()
-        fig = plt.figure()
+        fig = Figure()
 
         self.cbar = cm.jet
         self.gmode = None
@@ -260,8 +258,9 @@ class MyMplCanvas(FigureCanvas):
 
         dat = np.zeros([100, 100])
 
-        self.ims2 = plt.imshow(dat, cmap=self.cbar, interpolation='nearest')
-        self.ims = plt.imshow(self.cbar(dat), interpolation='nearest')
+        self.ims2 = self.axes.imshow(dat, cmap=self.cbar,
+                                     interpolation='nearest')
+        self.ims = self.axes.imshow(self.cbar(dat), interpolation='nearest')
         self.ims2.set_clim(0, 1)
         self.ibar = self.figure.colorbar(self.ims, fraction=0.025, pad=0.1)
         self.ibar2 = self.figure.colorbar(self.ims2, cax=self.ibar.ax.twinx())

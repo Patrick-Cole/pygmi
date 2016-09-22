@@ -39,12 +39,13 @@ import os
 import pkgutil
 import math
 import importlib
+from distutils.version import StrictVersion
 from PyQt4 import QtGui, QtCore
 import numpy as np
 import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
-import pdb
+from OpenGL import GL  # Loading this now to prevent an error later
 
 
 class Arrow(QtGui.QGraphicsLineItem):
@@ -62,8 +63,8 @@ class Arrow(QtGui.QGraphicsLineItem):
     my_color : QtCore color (default is QtCore.Qt.black)
         Color
     """
-    def __init__(self, start_item, end_item, parent=None, scene=None):
-        super(Arrow, self).__init__(parent, scene)
+    def __init__(self, start_item, end_item, parent=None):
+        super(Arrow, self).__init__(parent)
 
         self.arrow_head = QtGui.QPolygonF()
 
@@ -181,9 +182,8 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
     my_class_name : str
         Class name being referenced
     """
-    def __init__(self, diagram_type, context_menu, my_class, parent=None,
-                 scene=None):
-        super(DiagramItem, self).__init__(parent, scene)
+    def __init__(self, diagram_type, context_menu, my_class, parent=None):
+        super(DiagramItem, self).__init__(parent)
 
         self.arrows = []
 
@@ -1033,7 +1033,10 @@ def main():
     # this will activate the window
     wid.activateWindow()
 
-    if wid.pypiver != pygmi.__version__ and wid.pypiver != '':
+    if wid.pypiver == 'no internet' or wid.pypiver == '':
+        wid.pypiver = pygmi.__version__
+
+    if StrictVersion(wid.pypiver)>StrictVersion(pygmi.__version__):
         text = 'There is an update available on the web.\nYour Version: ' + \
                pygmi.__version__+'\nNew Version: '+wid.pypiver
         QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Update Available!',

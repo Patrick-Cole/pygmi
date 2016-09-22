@@ -307,10 +307,10 @@ class Smooth(QtGui.QDialog):
 
         out = np.ma.masked_invalid(out)
         out.shape = out.shape[0:2]
-        out.mask[:rowf/2] = True
-        out.mask[-rowf/2:] = True
-        out.mask[:, :colf/2] = True
-        out.mask[:, -colf/2:] = True
+        out.mask[:rowf//2] = True
+        out.mask[-rowf//2:] = True
+        out.mask[:, :colf//2] = True
+        out.mask[:, -colf//2:] = True
         return out
 
 

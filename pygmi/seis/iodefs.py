@@ -86,7 +86,7 @@ class ImportSeisan(object):
             "Seisan Format (*.out);;" +\
             "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -429,7 +429,7 @@ class ImportGenericFPS(object):
             "Comma Delimeted Text (*.csv);;" +\
             "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -513,8 +513,9 @@ class ExportSeisan(object):
 
         data = self.indata['Seis']
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent, 'Save File',
-                                                     '.', 'sei (*.sei)')
+        filename, _ = QtGui.QFileDialog.getSaveFileName(self.parent,
+                                                        'Save File',
+                                                        '.', 'sei (*.sei)')
 
         if filename == '':
             return
@@ -873,8 +874,9 @@ class ExportCSV(object):
 
         data = self.indata['Seis']
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent, 'Save File',
-                                                     '.', 'csv (*.csv)')
+        filename, _ = QtGui.QFileDialog.getSaveFileName(self.parent,
+                                                        'Save File',
+                                                        '.', 'csv (*.csv)')
 
         if filename == '':
             return

@@ -57,8 +57,10 @@ class FileMenu(object):
         self.action_exit.setText("Exit")
         self.menufile.addAction(self.action_exit)
 
-        QtCore.QObject.connect(self.action_exit, QtCore.SIGNAL("triggered()"),
-                               parent.close)
+        self.action_exit.triggered.connect(parent.close)
+
+#        QtCore.QObject.connect(self.action_exit, QtCore.SIGNAL("triggered()"),
+#                               parent.close)
 
 # Context menus
         context_menu['Basic'].addSeparator()

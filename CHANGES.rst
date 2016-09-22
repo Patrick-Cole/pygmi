@@ -1,6 +1,10 @@
 =========
 Changelog
 =========
+v2.2.12, 06 September 2016
+---------------------
+* Bugfixes
+
 v2.2.11, 12 July 2016
 ---------------------
 * Added aster GED (binary) and fixed a bug on hdr aster GED import.

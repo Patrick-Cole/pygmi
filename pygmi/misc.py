@@ -32,10 +32,8 @@ import time
 import io
 import sys
 import socket
-import pdb
 import pip
 from PyQt4 import QtGui
-from OpenGL import GL  # Loading this now to prevent an error later
 
 
 PBAR_STYLE = """

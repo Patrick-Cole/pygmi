@@ -914,7 +914,7 @@ class ExportData(object):
             "ASCII XYZ (*.xyz);;" + \
             "ArcGIS BIL (*.bil)"
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
             self.parent.process_is_active(False)

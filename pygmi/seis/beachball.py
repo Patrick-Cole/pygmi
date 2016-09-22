@@ -243,7 +243,7 @@ class BeachBall(QtGui.QDialog):
 
         ext = "Shape file (*.shp)"
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save Shape File', '.', ext)
 
         if filename == '':

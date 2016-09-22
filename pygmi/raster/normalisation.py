@@ -28,7 +28,6 @@ import copy
 import warnings
 from PyQt4 import QtGui, QtCore
 import numpy as np
-import scipy.stats as sstat
 import pygmi.menu_default as menu_default
 
 
@@ -145,7 +144,7 @@ class Normalisation(QtGui.QDialog):
                     cop = np.round(float(j+1)*(no_pix/nlevels))
                     cutoff = dummy_dat[cop-1]
                     idx = np.nonzero(tmp < cutoff)
-                    transform[j, 0:2] = [j+1, sstat.nanmedian(tmp[idx])]
+                    transform[j, 0:2] = [j+1, np.nanmedian(tmp[idx])]
                     tmp[idx] = np.nan
                     tmpndat[idx] = j+1
 #                        prog.Update(j)
