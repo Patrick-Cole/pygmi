@@ -253,7 +253,7 @@ class ProfileDisplay(object):
     def export_csv(self):
         """ Export Profile to csv """
         self.parent.pbars.resetall()
-        filename, _ = QtGui.QFileDialog.getSaveFileName(
+        filename = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
         if filename == '':
             return

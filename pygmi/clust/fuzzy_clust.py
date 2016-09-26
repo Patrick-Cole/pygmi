@@ -260,7 +260,7 @@ class FuzzyClust(QtGui.QDialog):
                 "ASCII matrix (*.txt);;" + \
                 "ASCII matrix (*.asc);;" + \
                 "ASCII matrix (*.dat)"
-            filename, _ = QtGui.QFileDialog.getOpenFileName(
+            filename = QtGui.QFileDialog.getOpenFileName(
                 self.parent, 'Read Cluster Centers', '.', ext)
             if filename == '':
                 return False
@@ -287,7 +287,7 @@ class FuzzyClust(QtGui.QDialog):
                 startmdat = {i: smtmp}
                 startmfix = {i: []}
 
-            filename, _ = QtGui.QFileDialog.getOpenFileName(
+            filename = QtGui.QFileDialog.getOpenFileName(
                 self.parent, 'Read Cluster Center Constraints', '.', ext)
             if filename == '':
                 QtGui.QMessageBox.warning(

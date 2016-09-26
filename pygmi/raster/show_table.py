@@ -98,12 +98,10 @@ class BasicStats(QtGui.QDialog):
     def save(self):
         """ Save """
         ext = "CSV Format (*.csv)"
-        filename, _ = QtGui.QFileDialog.getSaveFileName(
-            self, 'Save Table', '.', ext)
-        if filename == '':
+        ifile = QtGui.QFileDialog.getSaveFileName(self, 'Save Table', '.', ext)
+        if ifile == '':
             return False
 
-        ifile = str(filename)
         savetable(ifile, self.bands, self.cols, self.data)
 
 
@@ -216,12 +214,10 @@ class ClusterStats(QtGui.QDialog):
     def save(self):
         """ Save """
         ext = "CSV Format (*.csv)"
-        filename, _ = QtGui.QFileDialog.getSaveFileName(
-            self, 'Save Table', '.', ext)
-        if filename == '':
+        ifile = QtGui.QFileDialog.getSaveFileName(self, 'Save Table', '.', ext)
+        if ifile == '':
             return False
 
-        ifile = str(filename)
         savetable(ifile, self.bands, self.cols, self.data)
 
 

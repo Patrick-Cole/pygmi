@@ -61,7 +61,7 @@ class ImportMod3D(object):
 
     def settings(self):
         """ Settings """
-        filename, _ = QtGui.QFileDialog.getOpenFileName(
+        filename = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.',
             'npz (*.npz);;csv (*.csv);; txt (*.txt)')
         if filename == '':
@@ -280,7 +280,7 @@ class ExportMod3D(object):
             return
 
         for self.lmod in self.indata['Model3D']:
-            filename, _ = QtGui.QFileDialog.getSaveFileName(
+            filename = QtGui.QFileDialog.getSaveFileName(
                 self.parent, 'Save File', '.',
                 'npz (*.npz);;shapefile (*.shp);;kmz (*.kmz);;csv (*.csv)')
 
@@ -1098,7 +1098,7 @@ class ImportPicture(QtGui.QDialog):
         if temp == 0:
             return False
 
-        filename, _ = QtGui.QFileDialog.getOpenFileName(
+        filename = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', '*.jpg *.tif *.bmp')
 
         if filename == '':

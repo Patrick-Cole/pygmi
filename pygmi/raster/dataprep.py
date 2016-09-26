@@ -87,7 +87,7 @@ class DataCut(object):
 
         ext = "Shape file (*.shp)"
 
-        filename, _ = QtGui.QFileDialog.getOpenFileName(
+        filename = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
@@ -628,7 +628,7 @@ class GetProf(object):
 
         ext = "Shape file (*.shp)"
 
-        filename, _ = QtGui.QFileDialog.getOpenFileName(
+        filename = QtGui.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False

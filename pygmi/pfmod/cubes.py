@@ -143,7 +143,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
     def save(self):
         """ This saves a jpg """
-        filename, _ = QtGui.QFileDialog.getSaveFileName(
+        filename = QtGui.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'JPG (*.jpg);;PNG (*.png)')
         if filename == '':
             return
