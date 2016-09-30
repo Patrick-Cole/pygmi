@@ -781,8 +781,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None, showreports=False,
 
     This function calculates the magnetic and gravity field. It has two
     different modes of operation, by using the magcalc switch. If magcalc=True
-    then magnetic fields are calculated, otherwize only
-    gravity is calculated.
+    then magnetic fields are calculated, otherwize only gravity is calculated.
 
     Parameters
     ----------
