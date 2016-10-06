@@ -1,9 +1,13 @@
 =========
 Changelog
 =========
-v2.2.12, 06 September 2016
----------------------
-* Bugfixes
+v2.2.12, 10 October 2016
+------------------------
+* Fixed an bug saving and opening files, introduced in previous commit.
+* Bug fixes and prep for PyQt5
+* Fixed a bug exporting 3D image.
+* New version also checks for an update on pypi
+* Fixed a bug with no mask exported from modeller.
 
 v2.2.11, 12 July 2016
 ---------------------
