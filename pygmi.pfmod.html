@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.pfmod package &mdash; PyGMI 2.2.11 documentation</title>
+    <title>pygmi.pfmod package &#8212; PyGMI 2.2.12 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.11',
+        VERSION:     '2.2.12',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.11 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.12 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
     <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
@@ -61,8 +61,8 @@
         <li><a href="search.html">search</a>|&nbsp;</li>
         <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="pygmi.html" accesskey="U">pygmi package</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" accesskey="U">pygmi package</a> &#187;</li> 
       </ul>
     </div>
 
@@ -106,8 +106,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -516,8 +516,7 @@ field on the edge of the model is.</p>
 <dd><p>Calculate magnetic and gravity field</p>
 <p>This function calculates the magnetic and gravity field. It has two
 different modes of operation, by using the magcalc switch. If magcalc=True
-then magnetic fields are calculated, otherwize only
-gravity is calculated.</p>
+then magnetic fields are calculated, otherwize only gravity is calculated.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1355,6 +1354,12 @@ while doing so - in order to update the blit</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.tab_layer.LayerDisplay.setwidth">
+<code class="descname">setwidth</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.setwidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the width of the edits on the layer view</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.tab_layer.LayerDisplay.tab_activate">
 <code class="descname">tab_activate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.tab_activate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs when the tab is activated</p>
@@ -1376,12 +1381,6 @@ while doing so - in order to update the blit</p>
 <dt id="pygmi.pfmod.tab_layer.LayerDisplay.update_model_plot">
 <code class="descname">update_model_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.update_model_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>This updates some of the plotting stuff</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.tab_layer.LayerDisplay.width">
-<code class="descname">width</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay.width" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the width of the edits on the layer view</p>
 </dd></dl>
 
 </dd></dl>
@@ -1869,6 +1868,12 @@ picture</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.setwidth">
+<code class="descname">setwidth</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.setwidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the width of the edits on the profile view</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.sprofnum">
 <code class="descname">sprofnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.sprofnum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine to change a profile from spinbox</p>
@@ -1890,12 +1895,6 @@ picture</p>
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.update_plot">
 <code class="descname">update_plot</code><span class="sig-paren">(</span><em>slide=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.update_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the profile on the model view</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.width">
-<code class="descname">width</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.width" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the width of the edits on the profile view</p>
 </dd></dl>
 
 </dd></dl>
@@ -2061,6 +2060,12 @@ picture</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.setwidth">
+<code class="descname">setwidth</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.setwidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the width of the edits on the profile view</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.tab_pview.ProfileDisplay.sprofnum">
 <code class="descname">sprofnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.sprofnum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine to change a profile from spinbox</p>
@@ -2082,12 +2087,6 @@ picture</p>
 <dt id="pygmi.pfmod.tab_pview.ProfileDisplay.update_plot">
 <code class="descname">update_plot</code><span class="sig-paren">(</span><em>slide=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.update_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the profile on the model view</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.pfmod.tab_pview.ProfileDisplay.width">
-<code class="descname">width</code><span class="sig-paren">(</span><em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay.width" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the width of the edits on the profile view</p>
 </dd></dl>
 
 </dd></dl>
@@ -2124,13 +2123,13 @@ picture</p>
         <li><a href="search.html">search</a>|&nbsp;</li>
         <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="pygmi.html" >pygmi package</a> &raquo;</li> 
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" >pygmi package</a> &#187;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2016, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+        &#169; Copyright 2016, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
     </div>
   </body>
 </html>
