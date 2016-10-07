@@ -55,7 +55,6 @@ setup(name='pygmi',
           'Natural Language :: English',
           'Operating System :: Microsoft :: Windows',
           'Operating System :: POSIX :: Linux',
-          'Programming Language :: Python :: 2',
           'Programming Language :: Python :: 3',
           'Topic :: Scientific/Engineering :: Mathematics',
           'Topic :: Scientific/Engineering :: Physics',
@@ -68,7 +67,7 @@ setup(name='pygmi',
 
       packages=(find_packages(exclude=['docs'])),
 
-      install_requires=["numpy", "scipy", "matplotlib", "gdal", "llvmlite"
+      install_requires=["numpy", "scipy", "matplotlib", "gdal", "llvmlite",
                         "numexpr", "numba", "PyQt4", "Pillow", 'PyOpenGL'],
 
       package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
