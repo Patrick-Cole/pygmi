@@ -68,7 +68,8 @@ setup(name='pygmi',
       packages=(find_packages(exclude=['docs'])),
 
       install_requires=["numpy", "scipy", "matplotlib", "gdal", "llvmlite",
-                        "numexpr", "numba", "PyQt4", "Pillow", 'PyOpenGL'],
+                        "numexpr", "numba", "PyQt4", "Pillow", 'PyOpenGL',
+                        "pip"],
 
       package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
                               'helpdocs/*.png', 'images/*.png',

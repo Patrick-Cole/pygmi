@@ -1,6 +1,10 @@
 =========
 Changelog
 =========
+v2.2.13, 11 October 2016
+------------------------
+* Fixed some setup bugs
+
 v2.2.12, 10 October 2016
 ------------------------
 * Fixed an bug saving and opening files, introduced in previous commit.
