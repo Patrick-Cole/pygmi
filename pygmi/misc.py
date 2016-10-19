@@ -77,7 +77,7 @@ class PTime(object):
         self.tchk.append(time.clock())
         tdiff = self.tchk[-1] - self.tchk[0]
         if show:
-            if tdiff > 60:
+            if tdiff < 60:
                 print(msg, 'time (s):', tdiff)
             else:
                 mins = int(tdiff/60)
