@@ -1683,11 +1683,11 @@ def tests():
     points = np.random.rand(1000000, 2)
     values = func(points[:, 0], points[:, 1])
 
-    ttt = PTime()
+#    ttt = PTime()
 
     dat = quickgrid(points[:, 0], points[:, 1], values, .001, numits=-1)
 
-    ttt.since_last_call()
+#    ttt.since_last_call()
 
 #    grid_x, grid_y = np.mgrid[0:1:100j, 0:1:200j]
 #    dat = griddata(points, values, (grid_x, grid_y), method='nearest')

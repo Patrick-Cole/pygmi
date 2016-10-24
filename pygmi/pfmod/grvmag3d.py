@@ -622,11 +622,11 @@ class GeoData(object):
             Done this way for speed. """
 
         glayers = []
-#        if self.pbars is not None:
-#            piter = self.pbars.iter
-#        else:
-#            piter = iter
-        piter = iter
+        if self.pbars is not None:
+            piter = self.pbars.iter
+        else:
+            piter = iter
+#        piter = iter
         z1122 = self.z12.copy()
         x_1 = float(self.x12[0])
         y_1 = float(self.y12[0])
@@ -1200,7 +1200,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     if pbars is not None:
         pbars.maxall()
 
-    tdiff = ttt.since_last_call()
+    tdiff = ttt.since_last_call(show=False)
     mins = int(tdiff/60)
     secs = tdiff-mins*60
 
