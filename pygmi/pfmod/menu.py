@@ -28,6 +28,7 @@ from PyQt4 import QtGui
 import pygmi.pfmod.pfmod as pfmod
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.pfmod.iodefs as iodefs
+import pygmi.pfmod.misc as misc
 
 
 class MenuWidget(object):
@@ -57,6 +58,11 @@ class MenuWidget(object):
         self.action_import_mod3d.setText("Import 3D Model")
         self.menu.addAction(self.action_import_mod3d)
         self.action_import_mod3d.triggered.connect(self.import_mod3d)
+
+        self.action_merge_mod3d = QtGui.QAction(parent)
+        self.action_merge_mod3d.setText("Merge two 3D Models")
+        self.menu.addAction(self.action_merge_mod3d)
+        self.action_merge_mod3d.triggered.connect(self.merge_mod3d)
 
         self.action_prof_pic = QtGui.QAction(parent)
         self.action_prof_pic.setText("Import Profile Picture")
@@ -100,6 +106,11 @@ class MenuWidget(object):
         """ Imports data"""
         fnc = iodefs.ImportMod3D(self.parent)
         self.parent.item_insert("Io", "Import 3D Model", fnc)
+
+    def merge_mod3d(self):
+        """ Imports data"""
+        fnc = misc.MergeMod3D(self.parent)
+        self.parent.item_insert("Step", "Merge 3D Models", fnc)
 
     def import_prof_pic(self):
         """ Imports data"""

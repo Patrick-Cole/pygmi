@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Merge 3D Models</h1>
+		<p>The merge 3D models tool allows for the merging of two 3D models into one single model.</p>
+		<p>It makes the following important assumptions:</p>
+		<ul>
+			<li>There are only TWO input models.</li>
+			<li>If two lithologies have the same name, they are the same and settings from the Master are to be used.</li>
+			<li>If a lithology is in the Slave model, and not in the Master, it is copied into the Master.</li>
+			<li>If the Master and Slave dataset do not align, the slave is modified to fit the Master</li>
+		</ul>
+		<h2>Options</h2>
+		<ul>
+			<li>Master Dataset - This is the dataset which will be added to. Its values are not changed.</li>
+			<li>Slave Dataset - This dataset is incorporated into the Master.</li>
+		</ul>
+	</body>
+</html>

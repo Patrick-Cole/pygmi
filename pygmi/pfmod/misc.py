@@ -27,6 +27,7 @@
 import time
 from PyQt4 import QtGui, QtCore
 import pygmi.menu_default as menu_default
+import pdb
 
 
 def update_lith_lw(lmod, lwidget):
@@ -299,3 +300,145 @@ class ProgressBar(object):
         self.pbar.setMaximum(0)
         self.pbar.setValue(-1)
         QtCore.QCoreApplication.processEvents()
+
+
+class MergeMod3D(QtGui.QDialog):
+    """
+    Perform Merge of two models.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+    def __init__(self, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.pbar = self.parent.pbar
+
+        self.master = QtGui.QComboBox()
+        self.slave = QtGui.QComboBox()
+
+        self.setupui()
+
+    def setupui(self):
+        """ Setup UI """
+        gridlayout_main = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
+        label_master = QtGui.QLabel()
+        label_slave = QtGui.QLabel()
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle("3D Model Merge")
+        label_master.setText("Master Dataset:")
+        label_slave.setText("Slave Dataset:")
+
+        gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_slave, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.slave, 1, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self):
+        """ Settings """
+        tmp = []
+        if 'Model3D' not in self.indata:
+            return False
+        elif len(self.indata['Model3D']) != 2:
+            self.parent.showprocesslog('You need two datasets connected!')
+            return False
+
+        for i in self.indata['Model3D']:
+            tmp.append(i.name)
+
+        self.master.addItems(tmp)
+        self.slave.addItems(tmp)
+
+        self.master.setCurrentIndex(0)
+        self.slave.setCurrentIndex(1)
+
+        tmp = self.exec_()
+
+        if tmp == 1:
+            tmp = self.acceptall()
+
+        return tmp
+
+    def acceptall(self):
+        """ accept """
+        if self.master.currentText() == self.slave.currentText():
+            self.parent.showprocesslog('Your master dataset must be different'
+                                       ' to the slave dataset!')
+            return False
+
+        for data in self.indata['Model3D']:
+            if data.name == self.master.currentText():
+                datmaster = data
+            if data.name == self.slave.currentText():
+                datslave = data
+
+        xrange = list(datmaster.xrange) + list(datslave.xrange)
+        xrange.sort()
+        yrange = list(datmaster.yrange) + list(datslave.yrange)
+        yrange.sort()
+        zrange = list(datmaster.zrange) + list(datslave.zrange)
+        zrange.sort()
+
+        dxy = datmaster.dxy
+        d_z = datmaster.d_z
+
+        utlx = xrange[0]
+        utly = yrange[-1]
+        utlz = zrange[-1]
+
+        xextent = xrange[-1]-xrange[0]
+        yextent = yrange[-1]-yrange[0]
+        zextent = zrange[-1]-zrange[0]
+
+        cols = int(xextent//dxy)
+        rows = int(yextent//dxy)
+        layers = int(zextent//d_z)
+
+        datmaster.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
+                         usedtm=False)
+        datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
+                        usedtm=False)
+
+        for lith in datslave.lith_list:
+            if lith not in datmaster.lith_list:
+                datmaster.lith_list[lith] = datslave.lith_list[lith]
+
+        lithcnt = 900
+        for lith in datmaster.lith_list:
+            if lith == 'Background':
+                continue
+            lithcnt += 1
+            tmp = (datmaster.lith_index == datmaster.lith_list[lith].lith_index)
+            datmaster.lith_index[tmp] = lithcnt
+            datmaster.lith_list[lith].lith_index = lithcnt-900
+
+            if lith in datslave.lith_list:
+                tmp = (datslave.lith_index == datslave.lith_list[lith].lith_index)
+                datslave.lith_index[tmp] = lithcnt
+
+        datmaster.lith_index[datmaster.lith_index == 0] = datslave.lith_index[datmaster.lith_index == 0]
+        datmaster.lith_index[datmaster.lith_index >900] -= 900
+
+        self.outdata['Model3D'] = [datmaster]
+        return True

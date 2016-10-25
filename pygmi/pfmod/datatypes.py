@@ -26,6 +26,7 @@
 
 import numpy as np
 from pygmi.raster.datatypes import Data
+import pdb
 
 
 class LithModel(object):
@@ -223,7 +224,7 @@ class LithModel(object):
             self.lith_list[i].modified = modified
 
     def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht=-1,
-               ght=-1):
+               ght=-1, usedtm=True):
         """ Updates the local variables for the LithModel class
 
         Args:
@@ -274,7 +275,8 @@ class LithModel(object):
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
                                    dtype=int)
         self.init_calc_grids()
-        self.dtm_to_lith()
+        if usedtm:
+            self.dtm_to_lith()
         self.lithold_to_lith()
         self.update_lithlist()
         self.is_modified()
