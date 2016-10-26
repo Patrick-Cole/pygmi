@@ -25,9 +25,13 @@
 """ These are miscellaneous functions for the program """
 
 import time
+import pdb
 from PyQt4 import QtGui, QtCore
 import pygmi.menu_default as menu_default
-import pdb
+from pygmi.raster.dataprep import data_to_gdal_mem
+from pygmi.raster.dataprep import gdal_to_dat
+from osgeo import gdal
+import numpy as np
 
 
 def update_lith_lw(lmod, lwidget):
@@ -395,10 +399,13 @@ class MergeMod3D(QtGui.QDialog):
 
         xrange = list(datmaster.xrange) + list(datslave.xrange)
         xrange.sort()
+        xrange = [xrange[0], xrange[-1]]
         yrange = list(datmaster.yrange) + list(datslave.yrange)
         yrange.sort()
+        yrange = [yrange[0], yrange[-1]]
         zrange = list(datmaster.zrange) + list(datslave.zrange)
         zrange.sort()
+        zrange = [zrange[0], zrange[-1]]
 
         dxy = datmaster.dxy
         d_z = datmaster.d_z
@@ -438,7 +445,76 @@ class MergeMod3D(QtGui.QDialog):
                 datslave.lith_index[tmp] = lithcnt
 
         datmaster.lith_index[datmaster.lith_index == 0] = datslave.lith_index[datmaster.lith_index == 0]
-        datmaster.lith_index[datmaster.lith_index >900] -= 900
+        datmaster.lith_index[datmaster.lith_index > 900] -= 900
+
+        self.outdata['Raster'] = []
+
+        for i in datmaster.griddata:
+            if (i == 'DTM Dataset' or i == 'Magnetic Dataset' or
+                    i == 'Gravity Dataset' or i == 'Study Area Dataset' or
+                    i == 'Gravity Regional'):
+                if i in datslave.griddata:
+                    datmaster.griddata[i] = gmerge(datmaster.griddata[i],
+                                                   datslave.griddata[i],
+                                                   xrange, yrange)
+                self.outdata['Raster'].append(datmaster.griddata[i])
 
         self.outdata['Model3D'] = [datmaster]
+#        pdb.set_trace()
         return True
+
+
+def gmerge(master, slave, xrange=None, yrange=None):
+    """
+    This routine is used to merge two grids.
+    """
+
+    if xrange is None or yrange is None:
+        return master
+
+    xdim = master.xdim
+    ydim = master.ydim
+    orig_wkt = master.wkt
+
+    xmin = xrange[0]
+    xmax = xrange[-1]
+    ymin = yrange[0]
+    ymax = yrange[-1]
+
+    cols = int((xmax - xmin)//xdim)
+    rows = int((ymax - ymin)//ydim)
+    gtr = (xmin, xdim, 0.0, ymax, 0.0, -ydim)
+
+    dat = []
+
+    for data in [master, slave]:
+        doffset = 0.0
+        if data.data.min() <= 0:
+            doffset = data.data.min()-1.
+            data.data -= doffset
+        data.data.set_fill_value(0)
+        tmp = data.data.filled()
+        data.data = np.ma.masked_equal(tmp, 0)
+        data.nullvalue = 0
+
+        gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
+        src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
+        dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
+
+        gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt, gdal.GRA_Bilinear)
+
+        dat.append(gdal_to_dat(dest, data.dataid))
+        dat[-1].data = np.ma.masked_outside(dat[-1].data, 0.1,
+                                            data.data.max() + 1000)
+        dat[-1].data += doffset
+        dat[-1].data.set_fill_value(1e+20)
+        tmp = dat[-1].data.filled()
+        dat[-1].data = np.ma.masked_equal(tmp, 1e+20)
+        dat[-1].nullvalue = 1e+20
+
+    imask = np.logical_and(dat[0].data.mask == True, dat[1].data.mask == False)
+    if imask.size > 1:
+        dat[0].data.data[imask] = dat[1].data.data[imask]
+        dat[0].data.mask[imask] = False
+
+    return dat[0]
