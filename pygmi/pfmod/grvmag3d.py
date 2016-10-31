@@ -639,6 +639,8 @@ class GeoData(object):
         if zobs == 0:
             zobs = -0.01
 
+        if z_0 == 0.:
+            z1122=np.arange(0., self.z12[-1]+self.d_z, self.d_z)
         for i in piter(z1122[:-1]):
             z12 = np.array([i, i+self.d_z])
 
@@ -651,7 +653,10 @@ class GeoData(object):
                              np.array([-1, 1]))
 
             gval *= 6.6732e-3
-            glayers.append(gval)
+            if z_0 != 0.:
+                glayers.append(gval)
+            else:
+                glayers = [-gval]+glayers+[gval]
         self.glayers = np.array(glayers)
 
 
@@ -717,11 +722,6 @@ def save_layer(mlist):
 #              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
 #              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
 #    show(ppp)
-#
-#    pdb.set_trace()
-#
-#
-#    aaa=1
 #
 #    return zfin
 
@@ -1019,6 +1019,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     numx = int(lmod.numx)
     numy = int(lmod.numy)
     numz = int(lmod.numz)
+
     tmpfiles = {}
 
 # model index

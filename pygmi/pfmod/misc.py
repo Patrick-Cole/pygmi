@@ -32,6 +32,7 @@ from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.raster.dataprep import gdal_to_dat
 from osgeo import gdal
 import numpy as np
+import copy
 
 
 def update_lith_lw(lmod, lwidget):
@@ -422,6 +423,19 @@ class MergeMod3D(QtGui.QDialog):
         rows = int(yextent//dxy)
         layers = int(zextent//d_z)
 
+        self.outdata['Raster'] = []
+
+        for i in datmaster.griddata:
+            if (i == 'DTM Dataset' or i == 'Magnetic Dataset' or
+                    i == 'Gravity Dataset' or i == 'Study Area Dataset' or
+                    i == 'Gravity Regional'):
+                if i in datslave.griddata:
+                    datmaster.griddata[i] = gmerge(datmaster.griddata[i],
+                                                   datslave.griddata[i],
+                                                   xrange, yrange)
+                self.outdata['Raster'].append(datmaster.griddata[i])
+
+
         datmaster.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
                          usedtm=False)
         datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
@@ -436,31 +450,20 @@ class MergeMod3D(QtGui.QDialog):
             if lith == 'Background':
                 continue
             lithcnt += 1
-            tmp = (datmaster.lith_index == datmaster.lith_list[lith].lith_index)
+            tmp = (datmaster.lith_index ==
+                   datmaster.lith_list[lith].lith_index)
             datmaster.lith_index[tmp] = lithcnt
             datmaster.lith_list[lith].lith_index = lithcnt-900
 
             if lith in datslave.lith_list:
-                tmp = (datslave.lith_index == datslave.lith_list[lith].lith_index)
+                tmp = (datslave.lith_index ==
+                       datslave.lith_list[lith].lith_index)
                 datslave.lith_index[tmp] = lithcnt
 
         datmaster.lith_index[datmaster.lith_index == 0] = datslave.lith_index[datmaster.lith_index == 0]
         datmaster.lith_index[datmaster.lith_index > 900] -= 900
 
-        self.outdata['Raster'] = []
-
-        for i in datmaster.griddata:
-            if (i == 'DTM Dataset' or i == 'Magnetic Dataset' or
-                    i == 'Gravity Dataset' or i == 'Study Area Dataset' or
-                    i == 'Gravity Regional'):
-                if i in datslave.griddata:
-                    datmaster.griddata[i] = gmerge(datmaster.griddata[i],
-                                                   datslave.griddata[i],
-                                                   xrange, yrange)
-                self.outdata['Raster'].append(datmaster.griddata[i])
-
         self.outdata['Model3D'] = [datmaster]
-#        pdb.set_trace()
         return True
 
 
@@ -481,8 +484,8 @@ def gmerge(master, slave, xrange=None, yrange=None):
     ymin = yrange[0]
     ymax = yrange[-1]
 
-    cols = int((xmax - xmin)//xdim)
-    rows = int((ymax - ymin)//ydim)
+    cols = int((xmax - xmin)//xdim)+1
+    rows = int((ymax - ymin)//ydim)+1
     gtr = (xmin, xdim, 0.0, ymax, 0.0, -ydim)
 
     dat = []

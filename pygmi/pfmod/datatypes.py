@@ -99,7 +99,7 @@ class LithModel(object):
 
         self.is_ew = True
 
-    def lithold_to_lith(self):
+    def lithold_to_lith(self, nodtm=False):
         """ Transfers an old lithology to the new one, using updates parameters
         """
         if self.olith_index is None:
@@ -144,7 +144,7 @@ class LithModel(object):
                     k = int((self.zrange[1] - x_k) / self.d_z)
 
                     if (self.lith_index[i, j, k] != -1 and
-                            self.olith_index[o_i, o_j, o_k] != -1):
+                            self.olith_index[o_i, o_j, o_k] != -1) or nodtm:
                         self.lith_index[i, j, k] = \
                             self.olith_index[o_i, o_j, o_k]
 
@@ -277,7 +277,7 @@ class LithModel(object):
         self.init_calc_grids()
         if usedtm:
             self.dtm_to_lith()
-        self.lithold_to_lith()
+        self.lithold_to_lith(not(usedtm))
         self.update_lithlist()
         self.is_modified()
 
