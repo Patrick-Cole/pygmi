@@ -435,33 +435,79 @@ class MergeMod3D(QtGui.QDialog):
                                                    xrange, yrange)
                 self.outdata['Raster'].append(datmaster.griddata[i])
 
-
         datmaster.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
                          usedtm=False)
         datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
                         usedtm=False)
 
-        for lith in datslave.lith_list:
-            if lith not in datmaster.lith_list:
-                datmaster.lith_list[lith] = datslave.lith_list[lith]
+#        datmaster.update_lith_list_reverse()
+#        lithkeys = list(datmaster.lith_list_reverse.keys())
+#        lithkeys.sort()
+#        for icnt, ilith in enumerate(lithkeys):
+#            lith = datmaster.lith_list_reverse[ilith]
+#            oldlithindex = datmaster.lith_list[lith].lith_index
+#
+#            datmaster.lith_list[lith].lith_index = icnt
+#            datmaster.mlut[icnt] = datmaster.mlut[oldlithindex]
+#
+#            tmp = (datmaster.lith_index == oldlithindex)
+#            datmaster.lith_index[tmp] = icnt
+#
+#        ocnt = icnt
+#        datslave.update_lith_list_reverse()
+#        lithkeys = list(datslave.lith_list_reverse.keys())
+#        lithkeys.sort()
+#        for icnt2, ilith in enumerate(lithkeys):
+#            icnt = icnt2+ocnt
+#            lith = datslave.lith_list_reverse[ilith]
+#            oldlithindex = datslave.lith_list[lith].lith_index
+#
+#            datslave.lith_list[lith].lith_index = icnt
+#            datslave.mlut[icnt] = datslave.mlut[oldlithindex]
+#
+#            tmp = (datslave.lith_index == oldlithindex)
+#            datslave.lith_index[tmp] = icnt
 
-        lithcnt = 900
-        for lith in datmaster.lith_list:
+#        for lith in datslave.lith_list:
+#            if lith not in datmaster.lith_list:
+#                datmaster.lith_list[lith] = datslave.lith_list[lith]
+#                lithnum = datmaster.lith_list[lith].lith_index
+#                datmaster.mlut[lithnum] = datslave.mlut[lithnum]
+
+        lithcnt = 9000
+        newmlut = {0: datmaster.mlut[0]}
+        all_liths = list(set(datmaster.lith_list) | set(datslave.lith_list))
+
+        for lith in all_liths:
             if lith == 'Background':
                 continue
             lithcnt += 1
-            tmp = (datmaster.lith_index ==
-                   datmaster.lith_list[lith].lith_index)
-            datmaster.lith_index[tmp] = lithcnt
-            datmaster.lith_list[lith].lith_index = lithcnt-900
-
             if lith in datslave.lith_list:
-                tmp = (datslave.lith_index ==
-                       datslave.lith_list[lith].lith_index)
+                oldlithindex = datslave.lith_list[lith].lith_index
+                newmlut[lithcnt-9000] = datslave.mlut[oldlithindex]
+                tmp = (datslave.lith_index == oldlithindex)
                 datslave.lith_index[tmp] = lithcnt
+                datslave.lith_list[lith].lith_index = lithcnt-9000
 
-        datmaster.lith_index[datmaster.lith_index == 0] = datslave.lith_index[datmaster.lith_index == 0]
-        datmaster.lith_index[datmaster.lith_index > 900] -= 900
+            if lith in datmaster.lith_list:
+                oldlithindex = datmaster.lith_list[lith].lith_index
+                newmlut[lithcnt-9000] = datmaster.mlut[oldlithindex]
+                tmp = (datmaster.lith_index == oldlithindex)
+                datmaster.lith_index[tmp] = lithcnt
+                datmaster.lith_list[lith].lith_index = lithcnt-9000
+
+        datmaster.mlut = newmlut
+        datmaster.lith_index[datmaster.lith_index == 0] = \
+            datslave.lith_index[datmaster.lith_index == 0]
+        datmaster.lith_index[datmaster.lith_index > 9000] -= 9000
+
+        for lith in datslave.lith_list:
+            if lith not in datmaster.lith_list:
+                datmaster.lith_list[lith] = datslave.lith_list[lith]
+                lithnum = datmaster.lith_list[lith].lith_index
+                datmaster.mlut[lithnum] = datslave.mlut[lithnum]
+
+        pdb.set_trace()
 
         self.outdata['Model3D'] = [datmaster]
         return True
