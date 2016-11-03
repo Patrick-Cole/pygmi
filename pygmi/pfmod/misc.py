@@ -507,8 +507,6 @@ class MergeMod3D(QtGui.QDialog):
                 lithnum = datmaster.lith_list[lith].lith_index
                 datmaster.mlut[lithnum] = datslave.mlut[lithnum]
 
-        pdb.set_trace()
-
         self.outdata['Model3D'] = [datmaster]
         return True
 
