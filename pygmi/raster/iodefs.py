@@ -562,7 +562,6 @@ def get_aster(ifile):
 
     subdata = [i for i in subdata if 'ImageData' in i[0]]
 
-
     i = -1
     for ifile, bandid2 in subdata:
         dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
@@ -966,6 +965,9 @@ class ExportData(object):
         driver = gdal.GetDriverByName(drv)
         dtype = data[0].data.dtype
 
+#        orig = osr.SpatialReference()
+#        pdb.set_trace()
+
         if dtype == np.uint8:
             fmt = gdal.GDT_Byte
         elif dtype == np.int32:
@@ -992,6 +994,18 @@ class ExportData(object):
             out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
                                 len(data), fmt, options=['COMPRESS=NONE',
                                                          'TFW=YES'])
+        elif drv == 'ERS' and 'Cape / TM' in data[0].wkt:
+            tmp = data[0].wkt.split('TM')[1][:2]
+            out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
+                                len(data), fmt,
+                                options=['PROJ=STMLO'+tmp, 'DATUM=CAPE',
+                                         'UNITS=METERS'])
+        elif drv == 'ERS' and 'Hartebeesthoek94 / TM' in data[0].wkt:
+            tmp = data[0].wkt.split('TM')[1][:2]
+            out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
+                                len(data), fmt,
+                                options=['PROJ=STMLO'+tmp, 'DATUM=WGS84',
+                                         'UNITS=METERS'])
         else:
             out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
                                 len(data), fmt)
