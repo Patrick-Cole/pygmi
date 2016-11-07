@@ -155,7 +155,6 @@ class ImportPointData(object):
                                 skip_header=srows, usemask=True)
 
 #        datatmp.mask = np.logical_or(datatmp.mask, np.isnan(datatmp.data))
-#        pdb.set_trace()
 #        try:
 #            datatmp = np.loadtxt(filename, unpack=True, delimiter=dlim,
 #                                 skiprows=srows)

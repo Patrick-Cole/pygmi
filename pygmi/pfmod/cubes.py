@@ -170,7 +170,6 @@ class Mod3dDisplay(QtGui.QDialog):
         self.gpoints = self.corners
         self.gnorms = self.norms
         self.gfaces = {}
-#        pdb.set_trace()
 
 # (Pdb) self.corners[0].max(0)
 # array([ 505000.,  320000.,   60000.])

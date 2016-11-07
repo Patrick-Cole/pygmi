@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-import pdb
 import sys
 import os
 import re
@@ -460,9 +459,6 @@ class ExportMod3D(object):
         res = prj.TransformPoint(xrng[1], yrng[1])
         loneast, latnorth = res[0], res[1]
 
-#        pdb.set_trace()
-
-
 # Get Save Name
         filename = self.ifile
 
@@ -859,9 +855,6 @@ class ExportMod3D(object):
             layer = datasource.CreateLayer('Model',
                                            geom_type=ogr.wkbMultiPolygon25D)
 
-            if layer is None:
-                pdb.set_trace()
-
             layer.CreateField(ogr.FieldDefn("Lithology", ogr.OFTString))
             layer.CreateField(ogr.FieldDefn("Susc", ogr.OFTReal))
             layer.CreateField(ogr.FieldDefn("Density", ogr.OFTReal))
@@ -1197,5 +1190,3 @@ def gtiff(filename):
 #                for i, _ in enumerate(vert[:-2]):
 #                    ftmp = [vert[0], vert[i+1], vert[i+2]]
 #                    faces = np.vstack((faces, ftmp))
-#
-#            pdb.set_trace()

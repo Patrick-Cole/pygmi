@@ -233,6 +233,7 @@ def get_raster(ifile):
     bname = ifile.split('/')[-1].rpartition('.')[0]+': '
     ifile = ifile[:]
     ext = ifile[-3:]
+    custom_wkt = None
 
     # Envi Case
     if ext == 'hdr':
@@ -241,12 +242,31 @@ def get_raster(ifile):
         if len(tmp) > 0:
             ifile = tmp[0]
 
+    if ext == 'ers':
+        with open(ifile) as f:
+            metadata = f.read()
+            if 'STMLO' in metadata:
+                clong = metadata.split('STMLO')[1][:2]
+
+                orig = osr.SpatialReference()
+                if 'CAPE' in metadata:
+                    orig.ImportFromEPSG(4222)
+                    orig.SetTM(0., float(clong), 1., 0., 0.)
+                    orig.SetProjCS(r'Cape / TM'+clong)
+                    custom_wkt = orig.ExportToWkt()
+                elif 'WGS84':
+                    orig.ImportFromEPSG(4148)
+                    orig.SetTM(0., float(clong), 1., 0., 0.)
+                    orig.SetProjCS(r'Hartebeesthoek94 / TM'+clong)
+                    custom_wkt = orig.ExportToWkt()
+
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
     if dataset is None:
         return None
 
     gtr = dataset.GetGeoTransform()
+
 #    output_type = 'Raster'
 
     for i in range(dataset.RasterCount):
@@ -307,11 +327,13 @@ def get_raster(ifile):
         dat[i].ydim = abs(gtr[5])
         dat[i].gtr = gtr
 
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(dataset.GetProjection())
-        srs.AutoIdentifyEPSG()
-
-        dat[i].wkt = srs.ExportToWkt()
+        if custom_wkt is None:
+            srs = osr.SpatialReference()
+            srs.ImportFromWkt(dataset.GetProjection())
+            srs.AutoIdentifyEPSG()
+            dat[i].wkt = srs.ExportToWkt()
+        else:
+            dat[i].wkt = custom_wkt
 
         if 'Cluster' in bandid:
             dat[i].no_clusters = int(dat[i].data.max()+1)
@@ -904,9 +926,9 @@ class ExportData(object):
             return
 
         ext = \
+            "GeoTiff (*.tif);;" + \
             "ENVI (*.hdr);;" + \
             "ERMapper (*.ers);;" + \
-            "GeoTiff (*.tif);;" + \
             "Geosoft (*.gxf);;" + \
             "Surfer grid (v.6) (*.grd);;" + \
             "ArcInfo ASCII (*.asc);;" + \
@@ -964,9 +986,6 @@ class ExportData(object):
 
         driver = gdal.GetDriverByName(drv)
         dtype = data[0].data.dtype
-
-#        orig = osr.SpatialReference()
-#        pdb.set_trace()
 
         if dtype == np.uint8:
             fmt = gdal.GDT_Byte

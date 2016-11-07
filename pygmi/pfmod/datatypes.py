@@ -26,7 +26,6 @@
 
 import numpy as np
 from pygmi.raster.datatypes import Data
-import pdb
 
 
 class LithModel(object):

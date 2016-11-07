@@ -263,8 +263,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         bcols = plt.cm.Set1(np.arange(nbins+1)/nbins)
         np.random.shuffle(bcols)
 
-#        pdb.set_trace()
-
         if rtype == 0:
             # Draw rose diagram base on one angle per linear feature
 

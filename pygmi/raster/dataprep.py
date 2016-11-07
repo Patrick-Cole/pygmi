@@ -245,10 +245,7 @@ class DataGrid(QtGui.QDialog):
                 y = y[filt]
                 z = z[filt]
 
-#            self.parent.showprocesslog
-#            pdb.set_trace()
             tmp = quickgrid(x, y, z, dxy, showtext=self.parent.showprocesslog)
-#            pdb.set_trace()
             mask = tmp.mask
             gdat = tmp.data
 

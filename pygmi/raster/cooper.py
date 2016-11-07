@@ -216,7 +216,6 @@ class VGradients(QtGui.QDialog):
         for i in self.pbar.iter(range(len(data))):
 #            data[i].data = gradients(data[i].data, self.azi, 0., self.order)
             mask = data[i].data.mask
-#            pdb.set_trace()
             data[i].data = np.ma.array(vertical(data[i].data))
             data[i].data.mask = mask
 
@@ -642,8 +641,7 @@ def tilt1(data, azi, s):
     data.data[data.mask] = dm
     data[np.isnan(data)] = dm
     data[np.isinf(data)] = dm
-#    import pdb
-#    pdb.set_trace()
+
     if s > 0:
         se = np.ones((s, s))/(s*s)
         data2 = si.convolve2d(data, se, 'valid')  # smooth

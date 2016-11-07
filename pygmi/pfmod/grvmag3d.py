@@ -39,7 +39,6 @@ import copy
 import tempfile
 from math import sqrt
 from multiprocessing import Pool
-import pdb
 from PyQt4 import QtGui, QtCore
 
 import numpy as np

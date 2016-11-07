@@ -570,8 +570,6 @@ def tiltdepth(data, dec, inc):
 #    plt.plot(gx0, gy0, '.')
 #    plt.plot(gx45, gy45, '.')
 #    plt.plot(gxm45, gym45, '.')
-#    pdb.set_trace()
-
     i = 200
     plt.plot(gx45f[i], gy45f[i], 'o')
     plt.plot(gx0f[i], gy0f[i], 's')

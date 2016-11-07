@@ -231,7 +231,7 @@ class ProfileDisplay(object):
 
         header = '"Line","x","y"'
         newdata = [lines.flatten(), xx.flatten(), yy.flatten()]
-#        pdb.set_trace()
+
         for i in self.lmod1.griddata:
             if 'Calculated' not in i:
                 data = gridmatch(self.lmod1, 'Calculated Magnetics', i)

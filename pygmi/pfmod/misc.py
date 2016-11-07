@@ -25,14 +25,12 @@
 """ These are miscellaneous functions for the program """
 
 import time
-import pdb
 from PyQt4 import QtGui, QtCore
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.raster.dataprep import gdal_to_dat
 from osgeo import gdal
 import numpy as np
-import copy
 
 
 def update_lith_lw(lmod, lwidget):
