@@ -186,7 +186,7 @@ class Mod3dDisplay(QtGui.QDialog):
             for i in self.faces:
                 self.gfaces[i] = np.append(self.faces[i][:, :-1],
                                            self.faces[i][:, [0, 2, 3]])
-                self.gfaces[i].shape = (self.gfaces[i].shape[0]/3, 3)
+                self.gfaces[i].shape = (int(self.gfaces[i].shape[0]/3), 3)
         else:
             self.gfaces = self.faces.copy()
 

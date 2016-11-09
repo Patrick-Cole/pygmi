@@ -1396,6 +1396,7 @@ def getepsgcodes():
     """
     Convenience function used to get a list of EPSG codes
     """
+
     dfile = open(os.environ['GDAL_DATA']+'\\gcs.csv')
     dlines = dfile.readlines()
     dfile.close()
@@ -1405,9 +1406,7 @@ def getepsgcodes():
     for i in dlines:
         tmp = i.split(',')
         if tmp[1][0] == '"':
-            tmp[1] = tmp[1][1:]
-        if tmp[1][-1] == '"':
-            tmp[1] = tmp[1][:-1]
+            tmp[1] = tmp[1][1:-1]
         wkttmp = epsgtowkt(tmp[0])
         if wkttmp != '':
             dcodes[tmp[1]] = wkttmp
@@ -1415,6 +1414,8 @@ def getepsgcodes():
     pfile = open(os.environ['GDAL_DATA']+'\\pcs.csv')
     plines = pfile.readlines()
     pfile.close()
+
+    orig = osr.SpatialReference()
 
     pcodes = {}
     for i in dcodes:
@@ -1424,12 +1425,13 @@ def getepsgcodes():
     for i in plines:
         tmp = i.split(',')
         if tmp[1][0] == '"':
-            tmp[1] = tmp[1][1:]
-        if tmp[1][-1] == '"':
-            tmp[1] = tmp[1][:-1]
-        wkttmp = epsgtowkt(tmp[0])
-        if wkttmp != '':
-            pcodes[tmp[1]] = wkttmp
+            tmp[1] = tmp[1][1:-1]
+#        wkttmp = epsgtowkt(tmp[0])
+        err = orig.ImportFromEPSG(int(tmp[0]))
+        if err == 0:
+            pcodes[tmp[1]] = orig.ExportToWkt()
+#        if wkttmp != '':
+#            pcodes[tmp[1]] = wkttmp
 
     clat = 0.
     scale = 1.
@@ -1443,6 +1445,7 @@ def getepsgcodes():
             orig.SetTM(clat, clong, scale, f_e, f_n)
             orig.SetProjCS(datum+r' / TM'+str(clong))
             pcodes[datum+r' / TM'+str(clong)] = orig.ExportToWkt()
+
 
     return pcodes
 
@@ -1673,14 +1676,23 @@ def func(x, y):
 
 
 def tests():
-    """ Tests to debug RTP """
+    """ Tests to debug """
     import matplotlib.pyplot as plt
     from pygmi.misc import PTime
+    import pdb
+    import sys
+
+    app = QtGui.QApplication(sys.argv)
+
+    ttt = PTime()
+    aaa = GroupProj('Input Projection')
+
+    ttt.since_last_call()
+    pdb.set_trace()
 
     points = np.random.rand(1000000, 2)
     values = func(points[:, 0], points[:, 1])
 
-#    ttt = PTime()
 
     dat = quickgrid(points[:, 0], points[:, 1], values, .001, numits=-1)
 

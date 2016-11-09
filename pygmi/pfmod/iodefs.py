@@ -54,15 +54,21 @@ class ImportMod3D(object):
         self.ifile = ""
         self.name = "Import 3D Model: "
         self.ext = ""
-        self.pbar = None
         self.indata = {}
         self.outdata = {}
 
+        self.pbars = parent.pbar
+
     def settings(self):
         """ Settings """
-        filename = QtGui.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.',
-            'npz (*.npz);;csv (*.csv);; txt (*.txt)')
+        ext = ('npz (*.npz);;'
+               'Leapfrog Block Model (*.csv);;'
+               'x,y,z,label (*.csv);;'
+               'x,y,z,label (*.txt)')
+
+        filename, filt = QtGui.QFileDialog.getOpenFileNameAndFilter(
+            self.parent, 'Open File', '.', ext)
+
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -73,9 +79,9 @@ class ImportMod3D(object):
         self.lmod.griddata.clear()
         self.lmod.lith_list.clear()
 
-        if filename.find('.csv') > -1:
-            self.import_ascii_xyz_model(filename)
-        elif filename.find('.txt') > -1:
+        if filt == 'Leapfrog Block Model (*.csv)':
+            self.import_leapfrog_csv(filename)
+        elif filt == 'x,y,z,label (*.csv)' or filt == 'x,y,z,label (*.txt)':
             self.import_ascii_xyz_model(filename)
         else:
             indict = np.load(filename)
@@ -87,14 +93,104 @@ class ImportMod3D(object):
         for i in self.lmod.griddata:
             if self.lmod.griddata[i].dataid == '':
                 self.lmod.griddata[i].dataid = i
-#            try:
-#            except AttributeError:
-#                if self.lmod.griddata[i].bandid == '':
-#                    self.lmod.griddata[i].dataid = i
 
         self.outdata['Raster'] = list(self.lmod.griddata.values())
 
         return True
+
+    def import_leapfrog_csv(self, filename):
+        """ Imports leapfrog csv block models """
+
+        piter = self.pbars.iter
+
+        with open(filename) as fno:
+            tmp = fno.readlines()
+
+        header = tmp.pop(0).split(',')
+        header = header[7:]
+
+        mtmp = MessageCombo(header)
+        mtmp.exec_()
+        datindx = mtmp.master.currentIndex()
+
+        x = []
+        y = []
+        z = []
+        label = []
+        xcell = float(tmp[0].split(',')[3])
+        ycell = float(tmp[0].split(',')[4])
+        zcell = float(tmp[0].split(',')[5])
+
+        for i in piter(tmp):
+            i2 = i.split(',')
+            x.append(float(i2[0]))
+            y.append(float(i2[1]))
+            z.append(float(i2[2]))
+            label.append(i2[7+datindx])
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        x_u = np.unique(x)
+        y_u = np.unique(y)
+        z_u = np.unique(z)
+        labelu = np.unique(label)
+        labelu[labelu == 'blank'] = 'Background'
+
+        lmod = self.lmod
+
+        lmod.numx = x_u.shape[0]
+        lmod.numy = y_u.shape[0]
+        lmod.numz = z_u.shape[0]
+        lmod.dxy = max(xcell, ycell)
+        lmod.d_z = zcell
+        lmod.curprof = 0
+        lmod.curlayer = 0
+        lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
+        lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
+        lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
+
+        lindx = 0
+        for itxt in labelu:
+            lindx += 1
+            if itxt == 'Background':
+                lmod.lith_list[itxt] = grvmag3d.GeoData(
+                    self.parent, ncols=lmod.numx, nrows=lmod.numy,
+                    numz=lmod.numz, dxy=lmod.dxy, d_z=lmod.d_z)
+                lmod.lith_list[itxt].lith_index = 0
+                lmod.mlut[0] = [np.random.randint(0, 255),
+                                np.random.randint(0, 255),
+                                np.random.randint(0, 255)]
+            else:
+                lmod.lith_list[itxt] = grvmag3d.GeoData(
+                    self.parent, ncols=lmod.numx, nrows=lmod.numy,
+                    numz=lmod.numz, dxy=lmod.dxy, d_z=lmod.d_z)
+                lmod.lith_list[itxt].lith_index = lindx
+                lmod.mlut[lindx] = [np.random.randint(0, 255),
+                                    np.random.randint(0, 255),
+                                    np.random.randint(0, 255)]
+
+            lmod.lith_list[itxt].modified = True
+            lmod.lith_list[itxt].set_xyz12()
+
+        lmod.lith_index = None
+        lmod.update(lmod.numx, lmod.numy, lmod.numz, lmod.xrange[0],
+                    lmod.yrange[1], lmod.zrange[1], lmod.dxy, lmod.d_z,
+                    usedtm=True)
+        lmod.update_lith_list_reverse()
+
+        for i in piter(range(len(x))):
+            xi = x[i]
+            col = int((xi-lmod.xrange[0])/lmod.dxy)
+            row = int((lmod.yrange[1]-y[i])/lmod.dxy)
+            layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
+            if label[i] == 'blank':
+                lmod.lith_index[col, row, layer] = \
+                    lmod.lith_list['Background'].lith_index
+            else:
+                lmod.lith_index[col, row, layer] = \
+                    lmod.lith_list[label[i]].lith_index
 
     def import_ascii_xyz_model(self, filename):
         """ Used to import ASCII XYZ Models of the form x,y,z,label"""
@@ -217,9 +313,6 @@ class ImportMod3D(object):
                 if wkt == '' or wkt is None:
                     lmod.griddata[i].wkt = wktfin
 
-
-#        self.pbars.incr()
-
 # Section to load lithologies.
         lmod.lith_list['Background'] = grvmag3d.GeoData(self.parent)
 
@@ -254,7 +347,6 @@ class ImportMod3D(object):
             lmod.lith_list[itxt].zobsg = np.asscalar(indict[pre+itxt+'_zobsg'])
             lmod.lith_list[itxt].modified = True
             lmod.lith_list[itxt].set_xyz12()
-#            self.pbars.incr()
 
 
 class ExportMod3D(object):
@@ -305,17 +397,14 @@ class ExportMod3D(object):
     def savemodel(self):
         """ Save model """
 # Open file
-#        self.pbars.resetall(maximum = 2)
         filename = self.ifile
 
 # Construct output dictionary
         outdict = {}
         outdict = self.lmod2dict(outdict)
-#        self.pbars.incr()
 
 # Save data
         np.savez_compressed(filename, **outdict)
-#        self.pbars.incr()
         self.showtext('Model save complete!')
 
     def lmod2dict(self, outdict, pre=''):
@@ -370,8 +459,6 @@ class ExportMod3D(object):
 
     def mod3dtocsv(self):
         """ Saves the 3D model in a csv file. """
-#        self.pbars.resetall(maximum = self.lmod1.numx, mmax = 2)
-
         self.showtext('csv export starting...')
 
         self.lmod.update_lith_list_reverse()
@@ -381,7 +468,6 @@ class ExportMod3D(object):
         tmp = []
         ltmp = []
         for i in range(self.lmod.numx):
-            # self.pbars.incr()
             x = self.lmod.xrange[0]+i*self.lmod.dxy
             for j in range(self.lmod.numy):
                 y = self.lmod.yrange[0]+j*self.lmod.dxy
@@ -395,7 +481,6 @@ class ExportMod3D(object):
                         tmp.append([x, y, z, dens, susc, lith])
                         ltmp.append(lithname[lith])
 
-#        self.pbars.resetsub(1)
         tmp = np.array(tmp)
         ltmp = np.array(ltmp)
         stmp = np.zeros(len(tmp), dtype=[('x', 'f4'), ('y', 'f4'), ('z', 'f4'),
@@ -413,7 +498,6 @@ class ExportMod3D(object):
         head = 'X, Y, Z, Density, Susceptibility, Lithology Code, Lithology'
         np.savetxt(self.ifile, stmp, fmt="%f, %f, %f, %f, %f, %i, %s",
                    header=head)
-#        self.pbars.incr()
 
         self.showtext('csv export complete!')
 
@@ -513,8 +597,6 @@ class ExportMod3D(object):
         mvis_3d.update_for_kmz()
 
         modeldae = []
-#        pmax = len(mvis_3d.gfaces)
-#        self.pbars.resetsub(maximum=pmax)
         lkey = list(mvis_3d.faces.keys())
         lkey.pop(lkey.index(0))
         lithcnt = -1
@@ -765,8 +847,6 @@ class ExportMod3D(object):
         zfile.writestr('doc.kml', dockml)
 
         zfile.close()
-#        self.pbars.resetsub(maximum=1)
-#        self.pbars.incr()
         self.showtext('kmz export complete!')
 
     def mod3dtoshp(self):
@@ -833,8 +913,6 @@ class ExportMod3D(object):
 
         mvis_3d.update_for_kmz()
 
-#        pmax = len(mvis_3d.gfaces)
-#        self.pbars.resetsub(maximum=pmax)
         lkey = list(mvis_3d.faces.keys())
         lkey.pop(lkey.index(0))
 
@@ -894,8 +972,6 @@ class ExportMod3D(object):
             datasource = None
 #        datasource.Destroy()
 
-#        self.pbars.resetsub(maximum=1)
-#        self.pbars.incr()
         self.showtext('shapefile export complete!')
 
 
@@ -1116,6 +1192,79 @@ class ImportPicture(QtGui.QDialog):
         self.outdata['ProfPic'] = [self.grid]
 
         return True
+
+
+class MessageCombo(QtGui.QDialog):
+    """
+    Message combo box.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    """
+    def __init__(self, combotext, parent=None):
+        QtGui.QDialog.__init__(self, parent)
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+
+        self.master = QtGui.QComboBox()
+        self.master.addItems(combotext)
+
+        self.setupui()
+
+    def setupui(self):
+        """ Setup UI """
+        gridlayout_main = QtGui.QGridLayout(self)
+        buttonbox = QtGui.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
+        label_master = QtGui.QLabel()
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Ok)
+
+        self.setWindowTitle("Model Choice")
+        label_master.setText("Choose Model:")
+
+        gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
+
+        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+
+#    def settings(self):
+#        """ Settings """
+#        tmp = []
+#        if 'Model3D' not in self.indata:
+#            return False
+#        elif len(self.indata['Model3D']) != 2:
+#            self.parent.showprocesslog('You need two datasets connected!')
+#            return False
+#
+#        for i in self.indata['Model3D']:
+#            tmp.append(i.name)
+#
+#        self.master.addItems(tmp)
+#        self.slave.addItems(tmp)
+#
+#        self.master.setCurrentIndex(0)
+#        self.slave.setCurrentIndex(1)
+#
+#        tmp = self.exec_()
+#
+#        if tmp == 1:
+#            tmp = self.acceptall()
+#
+#        return tmp
+
+    def acceptall(self):
+        """ accept """
+        return self.master.currentText()
 
 
 def gtiff(filename):
