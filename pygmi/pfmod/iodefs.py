@@ -528,6 +528,13 @@ class ExportMod3D(object):
         if tmp == 0:
             return
 
+        if prjkmz.proj.wkt == '':
+            QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Warning',
+                                      ' You need a projection!',
+                                      QtGui.QMessageBox.Ok,
+                                      QtGui.QMessageBox.Ok)
+            return
+
         smooth = prjkmz.checkbox_smooth.isChecked()
 
         orig_wkt = prjkmz.proj.wkt
@@ -1219,7 +1226,7 @@ class MessageCombo(QtGui.QDialog):
         """ Setup UI """
         gridlayout_main = QtGui.QGridLayout(self)
         buttonbox = QtGui.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
+#        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
         label_master = QtGui.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -1232,7 +1239,7 @@ class MessageCombo(QtGui.QDialog):
         gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+#        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
