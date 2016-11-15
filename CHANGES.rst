@@ -1,6 +1,18 @@
 =========
 Changelog
 =========
+v2.2.14, 15 November 2016
+-------------------------
+* Added import of Leapfrog csv blockfiles
+* Fixed bug exporting ER Mapper files using SA custion projection
+* Fixed a bug in 3D model software
+* Bug fix for merge module
+* Added a tool to merge two models
+* reactivated a progress bar display
+* alpha speed update
+* update modelling calculation using multi processing.
+* numerous bug fixes
+
 v2.2.13, 11 October 2016
 ------------------------
 * Fixed some setup bugs
@@ -108,8 +120,8 @@ v2.2.5, 12 February 2015
 
 v2.2.4, 12 December 2014
 ------------------------
-* Increased size of font for ternary colorbar. 
-* Corrected issues with modelling information display, especially w.r.t. remanence. 
+* Increased size of font for ternary colorbar.
+* Corrected issues with modelling information display, especially w.r.t. remanence.
 
 v2.2.3, 10 December 2014
 ------------------------
