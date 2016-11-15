@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.pfmod package &#8212; PyGMI 2.2.12 documentation</title>
+    <title>pygmi.pfmod package &#8212; PyGMI 2.2.14 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.12',
+        VERSION:     '2.2.14',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.12 documentation" href="index.html" />
+    <link rel="top" title="PyGMI 2.2.14 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
     <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
@@ -310,13 +310,13 @@ areas above the DTM. These values are assigned a lithology of -1.</p>
 
 <dl class="method">
 <dt id="pygmi.pfmod.datatypes.LithModel.lithold_to_lith">
-<code class="descname">lithold_to_lith</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lithold_to_lith" title="Permalink to this definition">¶</a></dt>
+<code class="descname">lithold_to_lith</code><span class="sig-paren">(</span><em>nodtm=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lithold_to_lith" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transfers an old lithology to the new one, using updates parameters</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.pfmod.datatypes.LithModel.update">
-<code class="descname">update</code><span class="sig-paren">(</span><em>cols</em>, <em>rows</em>, <em>layers</em>, <em>utlx</em>, <em>utly</em>, <em>utlz</em>, <em>dxy</em>, <em>d_z</em>, <em>mht=-1</em>, <em>ght=-1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.update" title="Permalink to this definition">¶</a></dt>
+<code class="descname">update</code><span class="sig-paren">(</span><em>cols</em>, <em>rows</em>, <em>layers</em>, <em>utlx</em>, <em>utly</em>, <em>utlz</em>, <em>dxy</em>, <em>d_z</em>, <em>mht=-1</em>, <em>ght=-1</em>, <em>usedtm=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the local variables for the LithModel class</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -541,6 +541,36 @@ then magnetic fields are calculated, otherwize only gravity is calculated.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.calc_field2">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">calc_field2</code><span class="sig-paren">(</span><em>lmod</em>, <em>pbars=None</em>, <em>showtext=None</em>, <em>parent=None</em>, <em>showreports=False</em>, <em>magcalc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.calc_field2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate magnetic and gravity field</p>
+<p>This function calculates the magnetic and gravity field. It has two
+different modes of operation, by using the magcalc switch. If magcalc=True
+then magnetic fields are calculated, otherwize only gravity is calculated.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>lmod</strong> (<a class="reference internal" href="#pygmi.pfmod.datatypes.LithModel" title="pygmi.pfmod.datatypes.LithModel"><em>LithModel</em></a>) &#8211; PyGMI lithological model</li>
+<li><strong>pbars</strong> (<em>module</em>) &#8211; progress bar routine if available. (internal use)</li>
+<li><strong>showtext</strong> (<em>module</em>) &#8211; showtext routine if available. (internal use)</li>
+<li><strong>showreports</strong> (<em>bool</em>) &#8211; show extra reports</li>
+<li><strong>magcalc</strong> (<em>bool</em>) &#8211; if true, calculates magnetic data, otherwize only gravity.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>lmod.griddata</strong> &#8211; dictionary of items of type Data.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dictionary</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="pygmi.pfmod.grvmag3d.dat_extent">
 <code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">dat_extent</code><span class="sig-paren">(</span><em>dat</em>, <em>axes</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.dat_extent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the extent of the dat variable</p>
@@ -615,6 +645,12 @@ grid</p>
 <dt id="pygmi.pfmod.grvmag3d.sum_fields">
 <code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">sum_fields</code><a class="headerlink" href="#pygmi.pfmod.grvmag3d.sum_fields" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate magnetic and gravity field</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.grvmag3d.test">
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>This routine is for testing purposes</p>
 </dd></dl>
 
 </div>
@@ -701,6 +737,12 @@ are still in meters.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.iodefs.ImportMod3D.import_leapfrog_csv">
+<code class="descname">import_leapfrog_csv</code><span class="sig-paren">(</span><em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportMod3D.import_leapfrog_csv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports leapfrog csv block models</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.iodefs.ImportMod3D.settings">
 <code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportMod3D.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Settings</p>
@@ -741,6 +783,31 @@ are still in meters.</p>
 <dt id="pygmi.pfmod.iodefs.ImportPicture.update_win">
 <code class="descname">update_win</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportPicture.update_win" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the window values</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.iodefs.MessageCombo">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">MessageCombo</code><span class="sig-paren">(</span><em>combotext</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.MessageCombo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<p>Message combo box.</p>
+<dl class="attribute">
+<dt id="pygmi.pfmod.iodefs.MessageCombo.parent">
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.pfmod.iodefs.MessageCombo.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.MessageCombo.acceptall">
+<code class="descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.MessageCombo.acceptall" title="Permalink to this definition">¶</a></dt>
+<dd><p>accept</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.iodefs.MessageCombo.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.MessageCombo.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
 </dd></dl>
 
 </dd></dl>
@@ -787,6 +854,12 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.menu.MenuWidget.merge_mod3d">
+<code class="descname">merge_mod3d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.merge_mod3d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Imports data</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.menu.MenuWidget.mod3d">
 <code class="descname">mod3d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.mod3d" title="Permalink to this definition">¶</a></dt>
 <dd><p>3D display of data</p>
@@ -804,6 +877,49 @@ interface. Normal as well as context menus are defined here.</p>
 <div class="section" id="module-pygmi.pfmod.misc">
 <span id="pygmi-pfmod-misc-module"></span><h2>pygmi.pfmod.misc module<a class="headerlink" href="#module-pygmi.pfmod.misc" title="Permalink to this headline">¶</a></h2>
 <p>These are miscellaneous functions for the program</p>
+<dl class="class">
+<dt id="pygmi.pfmod.misc.MergeMod3D">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">MergeMod3D</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<p>Perform Merge of two models.</p>
+<dl class="attribute">
+<dt id="pygmi.pfmod.misc.MergeMod3D.parent">
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.misc.MergeMod3D.indata">
+<code class="descname">indata</code><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.misc.MergeMod3D.outdata">
+<code class="descname">outdata</code><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.MergeMod3D.acceptall">
+<code class="descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.acceptall" title="Permalink to this definition">¶</a></dt>
+<dd><p>accept</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.MergeMod3D.settings">
+<code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.misc.MergeMod3D.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="class">
 <dt id="pygmi.pfmod.misc.ProgressBar">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">ProgressBar</code><span class="sig-paren">(</span><em>pbar</em>, <em>pbarmain</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar" title="Permalink to this definition">¶</a></dt>
@@ -864,6 +980,12 @@ interface. Normal as well as context menus are defined here.</p>
 <dd><p>Setup UI</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.pfmod.misc.gmerge">
+<code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">gmerge</code><span class="sig-paren">(</span><em>master</em>, <em>slave</em>, <em>xrange=None</em>, <em>yrange=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.gmerge" title="Permalink to this definition">¶</a></dt>
+<dd><p>This routine is used to merge two grids.</p>
 </dd></dl>
 
 <dl class="function">
