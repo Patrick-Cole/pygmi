@@ -46,9 +46,7 @@ PyGMI is developed and has been tested with the following libraries in order to 
 
 Windows Users
 -------------
-Windows Users
--------------
-You may need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI. 
+You may need to install some dependencies using downloaded binaries, because of compilation requirements. Therefore, if you do get an error, you can try installing precompiled binaries before installing PyGMI.
 
 Examples of binaries you may need to get are:
 
@@ -63,7 +61,7 @@ You may also need to install the `Microsoft Visual C++ 2015 Redistributable <htt
 
 Linux
 -----
-Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through `Anaconda <http://continuum.io/downloads>`_.
+Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through `Anaconda Python <http://continuum.io/downloads>`_.
 
 Anaconda
 --------
