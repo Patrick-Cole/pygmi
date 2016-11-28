@@ -106,6 +106,12 @@ class ImportMod3D(object):
         with open(filename) as fno:
             tmp = fno.readlines()
 
+        while tmp[0][0] == '#':
+            tmp.pop(0)
+
+        if len(tmp) == 0:
+            return
+
         header = tmp.pop(0).split(',')
         header = header[7:]
 
