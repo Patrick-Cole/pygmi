@@ -66,6 +66,7 @@ class LithModel(object):
         self.dxy = None
         self.d_z = None
         self.lith_index = None
+        self.lith_index_old = None
         self.curlayer = None
         self.xrange = [None, None]
         self.yrange = [None, None]
@@ -82,6 +83,7 @@ class LithModel(object):
         self.gregional = 100
         self.name = '3D Model'
         self.dataid = '3D Model'
+        self.tmpfiles = None
 
         # Next line calls a function to update the variables above.
         self.update(100, 75, 40, 0, 150000, 0, 1500, 100, 100, 0)
@@ -273,6 +275,10 @@ class LithModel(object):
         self.curprof = 0
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
                                    dtype=int)
+        self.lith_index_old = np.zeros([self.numx, self.numy, self.numz],
+                                       dtype=int)
+        self.lith_index_old[:] = -1
+
         self.init_calc_grids()
         if usedtm:
             self.dtm_to_lith()

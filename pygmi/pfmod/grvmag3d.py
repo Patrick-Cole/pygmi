@@ -35,6 +35,7 @@ References:
 
 from __future__ import print_function
 
+import pdb
 import copy
 import tempfile
 from math import sqrt
@@ -77,25 +78,105 @@ class GravMag(object):
         self.actionregionaltest = QtGui.QPushButton(self.parent)
         self.actioncalculate = QtGui.QPushButton(self.parent)
         self.actioncalculate2 = QtGui.QPushButton(self.parent)
+        self.actioncalculate3 = QtGui.QPushButton(self.parent)
+        self.actioncalculate4 = QtGui.QPushButton(self.parent)
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
         self.actionregionaltest.setText("Regional Test")
-        self.actioncalculate.setText("Calculate Gravity")
-        self.actioncalculate2.setText("Calculate Magnetics")
+        self.actioncalculate.setText("Calculate Gravity (All)")
+        self.actioncalculate2.setText("Calculate Magnetics (All)")
+        self.actioncalculate3.setText("Calculate Gravity (Changes Only)")
+        self.actioncalculate4.setText("Calculate Magnetics (Changes Only)")
         self.parent.toolbar.addWidget(self.actionregionaltest)
         self.parent.toolbar.addSeparator()
         self.parent.toolbar.addWidget(self.actioncalculate)
         self.parent.toolbar.addWidget(self.actioncalculate2)
+        self.parent.toolbar.addWidget(self.actioncalculate3)
+        self.parent.toolbar.addWidget(self.actioncalculate4)
         self.parent.toolbar.addSeparator()
 
         self.actionregionaltest.clicked.connect(self.test_pattern)
-        self.actioncalculate.clicked.connect(self.calc_field)
-        self.actioncalculate2.clicked.connect(self.calc_field_new)
+        self.actioncalculate.clicked.connect(self.calc_field_grav)
+        self.actioncalculate2.clicked.connect(self.calc_field_mag)
+        self.actioncalculate3.clicked.connect(self.calc_field_grav_changes)
+        self.actioncalculate4.clicked.connect(self.calc_field_mag_changes)
+        self.actioncalculate3.setEnabled(False)
+        self.actioncalculate4.setEnabled(False)
 
-    def calc_field_new(self):
+    def calc_field_mag(self):
         """ Pre field-calculation routine """
+        self.lmod1 = self.parent.lmod1
+        self.lmod2 = self.parent.lmod2
+        self.lmod = self.lmod1
+        self.parent.pview.viewmagnetics = True
+        self.parent.profile.viewmagnetics = True
+
+        self.lmod.lith_index_old[:] = -1
+
+        # Update the model from the view
+        indx = self.parent.tabwidget.currentIndex()
+        tlabel = self.parent.tabwidget.tabText(indx)
+
+        if tlabel == 'Layer Editor':
+            self.parent.layer.update_model()
+
+        if tlabel == 'Profile Editor':
+            self.parent.profile.update_model()
+
+        if tlabel == 'Custom Profile Editor':
+            self.parent.pview.update_model()
+
+        # now do the calculations
+        self.calc_field2(True, True)
+
+        if tlabel == 'Profile Editor':
+            self.parent.profile.update_plot()
+
+        if tlabel == 'Custom Profile Editor':
+            self.parent.pview.update_plot()
+
+        self.actioncalculate4.setEnabled(True)
+
+    def calc_field_grav(self):
+        """ Pre field-calculation routine """
+        # Update this
+        self.lmod1 = self.parent.lmod1
+        self.lmod2 = self.parent.lmod2
+        self.lmod = self.lmod1
+        self.parent.profile.viewmagnetics = False
+        self.parent.pview.viewmagnetics = False
+
+        self.lmod.lith_index_old[:] = -1
+
+        # Update the model from the view
+        indx = self.parent.tabwidget.currentIndex()
+        tlabel = self.parent.tabwidget.tabText(indx)
+
+        if tlabel == 'Layer Editor':
+            self.parent.layer.update_model()
+
+        if tlabel == 'Profile Editor':
+            self.parent.profile.update_model()
+
+        if tlabel == 'Custom Profile Editor':
+            self.parent.pview.update_model()
+
+        # now do the calculations
+        self.calc_field2(True)
+
+        if tlabel == 'Profile Editor':
+            self.parent.profile.update_plot()
+
+        if tlabel == 'Custom Profile Editor':
+            self.parent.pview.update_plot()
+
+        self.actioncalculate3.setEnabled(True)
+
+
+    def calc_field_mag_changes(self):
+        """ calculates only mag changes """
         self.lmod1 = self.parent.lmod1
         self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
@@ -124,9 +205,8 @@ class GravMag(object):
         if tlabel == 'Custom Profile Editor':
             self.parent.pview.update_plot()
 
-    def calc_field(self):
-        """ Pre field-calculation routine """
-        # Update this
+    def calc_field_grav_changes(self):
+        """ calculates only grav changes """
         self.lmod1 = self.parent.lmod1
         self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
@@ -639,7 +719,7 @@ class GeoData(object):
             zobs = -0.01
 
         if z_0 == 0.:
-            z1122=np.arange(0., self.z12[-1]+self.d_z, self.d_z)
+            z1122 = np.arange(0., self.z12[-1]+self.d_z, self.d_z)
         for i in piter(z1122[:-1]):
             z12 = np.array([i, i+self.d_z])
 
@@ -1023,60 +1103,36 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
 # model index
     modind = lmod.lith_index.copy()
-    modindcheck = lmod.lith_index.copy()
-    modind[modind == 0] = -1
-    modindcheck[modind == 0] = -1
+    modindcheck = lmod.lith_index_old.copy()
+#    modind[modind == 0] = -1
+#    modindcheck[modindcheck == 0] = -1
 
-    if abs(np.sum(modind == -1)) == modind.size:
+    tmp = (modind == modindcheck)
+    modind[tmp] = -1
+    modindcheck[tmp] = -1
+
+    if np.unique(modind).size == 1:
         showtext('No changes to model!')
         return
 
-#    pool = Pool()
-#    results = []
-    for mlist in lmod.lith_list.items():
-        mijk = mlist[1].lith_index
-        if mijk not in modind:
-            continue
-        if mlist[0] != 'Background':  # and 'Penge' in mlist[0]:
-            mlist[1].modified = True
-            showtext(mlist[0]+':')
-            if parent is not None:
-                mlist[1].parent = parent
-                mlist[1].pbars = parent.pbars
-                mlist[1].showtext = parent.showtext
-            if magcalc:
-                mlist[1].calc_origin2()
-#                results.append(pool.apply_async(mlist[1].calc_origin2))
-            else:
-                mlist[1].calc_origin()
-#                results.append(pool.apply_async(mlist[1].calc_origin))
-            tmpfiles[mlist[0]] = save_layer(mlist)
-
-#    showtext('Calculating...')
-#    lmod.update_lith_list_reverse()
-#
-#    for p in results:
-#        glayers, lindx = p.get()
-##        layers[lmod.lith_list_reverse[lindx]] = glayers
-#
-#        outdict = {}
-#        outfile = tempfile.TemporaryFile()
-#
-#        if magcalc:
-#            outdict['mlayers'] = glayers
-#        else:
-#            outdict['glayers'] = glayers
-#
-#        np.savez(outfile, **outdict)
-#        outfile.seek(0)
-#
-#        mlist = lmod.lith_list[lmod.lith_list_reverse[lindx]]
-#        mlist.mlayers = None
-#        mlist.glayers = None
-#
-#        tmpfiles[lmod.lith_list_reverse[lindx]] = outfile
-#
-#    pool.close()
+    if np.unique(modindcheck).size == 1 and np.unique(modindcheck)[0] == -1:
+        for mlist in lmod.lith_list.items():
+            mijk = mlist[1].lith_index
+            if mijk not in modind and mijk not in modindcheck:
+                continue
+            if mlist[0] != 'Background':
+                mlist[1].modified = True
+                showtext(mlist[0]+':')
+                if parent is not None:
+                    mlist[1].parent = parent
+                    mlist[1].pbars = parent.pbars
+                    mlist[1].showtext = parent.showtext
+                if magcalc:
+                    mlist[1].calc_origin2()
+                else:
+                    mlist[1].calc_origin()
+                tmpfiles[mlist[0]] = save_layer(mlist)
+        lmod.tmpfiles = tmpfiles
 
     if showreports is True:
         showtext('Summing data')
@@ -1107,12 +1163,11 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         if mlist[0] == 'Background':
             continue
         mijk = mlist[1].lith_index
-        if mijk not in modind:
+        if mijk not in modind and mijk not in modindcheck:
             continue
-        tmpfiles[mlist[0]].seek(0)
+        lmod.tmpfiles[mlist[0]].seek(0)
 
-#        mfile = {'glayers': layers[mlist[0]]}
-        mfile = np.load(tmpfiles[mlist[0]])
+        mfile = np.load(lmod.tmpfiles[mlist[0]])
 
         if magcalc:
             mglayers = mfile['mlayers']
@@ -1122,7 +1177,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
 
-        if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
+        if np.unique(modind).size > 1 and mijk in modind:
             QtGui.QApplication.processEvents()
             i, j, k = np.nonzero(modind == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
@@ -1130,7 +1185,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             if i.size < 50000:
-
                 for k in kuni:
                     baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
                                       aaa[1], mglayers, hcorflat, mijk, juni,
@@ -1151,6 +1205,36 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                 pool.close()
                 del baba
 
+        if np.unique(modindcheck).size > 1 and mijk in modindcheck:
+            QtGui.QApplication.processEvents()
+            i, j, k = np.nonzero(modindcheck == mijk)
+            iuni = np.array(np.unique(i), dtype=np.int32)
+            juni = np.array(np.unique(j), dtype=np.int32)
+            kuni = np.array(np.unique(k), dtype=np.int32)
+
+            if i.size < 50000:
+                for k in kuni:
+                    baba = sum_fields(k, mgval, numx, numy, modindcheck,
+                                      aaa[0],
+                                      aaa[1], mglayers, hcorflat, mijk, juni,
+                                      iuni)
+                    mgvalin -= baba
+            else:
+                pool = Pool()
+                baba = []
+
+                for k in kuni:
+                    baba.append(pool.apply_async(sum_fields,
+                                                 args=(k, mgval, numx, numy,
+                                                       modindcheck, aaa[0],
+                                                       aaa[1],
+                                                       mglayers, hcorflat,
+                                                       mijk, juni, iuni,)))
+                for p in baba:
+                    mgvalin -= p.get()
+                pool.close()
+                del baba
+
         showtext('Done')
 
         if pbars is not None:
@@ -1161,6 +1245,12 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     mgvalin = mgvalin.T
     mgvalin = mgvalin[::-1]
     mgvalin = np.ma.array(mgvalin)
+
+    if np.unique(modindcheck).size > 1:
+        if magcalc:
+            mgvalin += lmod.griddata['Calculated Magnetics'].data
+        else:
+            mgvalin += lmod.griddata['Calculated Gravity'].data
 
     if magcalc:
         lmod.griddata['Calculated Magnetics'].data = mgvalin
@@ -1203,6 +1293,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     tdiff = ttt.since_last_call(show=False)
     mins = int(tdiff/60)
     secs = tdiff-mins*60
+
+    lmod.lith_index_old = np.copy(lmod.lith_index)
 
     showtext('Total Time: '+str(mins)+' minutes and '+str(secs)+' seconds')
     return lmod.griddata

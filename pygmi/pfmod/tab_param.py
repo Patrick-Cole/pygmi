@@ -323,12 +323,16 @@ class ParamDisplay(object):
         if lith == self.lmod1.lith_list['Background']:
             for lith in list(self.lmod1.lith_list.values()):
                 lith.bdensity = self.dsb_density.value()
+
         lith.susc = self.dsb_susc.value()
         lith.mstrength = self.dsb_magnetization.value()
         lith.mdec = self.dsb_mdec.value()
         lith.minc = self.dsb_minc.value()
         lith.qratio = self.dsb_qratio.value()
         lith.modified = True
+
+        self.lmod1.lith_index_old[:] = -1
+
         self.showtext('Lithological changes applied.')
 
     def change_rmi(self):
