@@ -80,9 +80,11 @@ def test(doplt=False):
 
     # Start to load in magnetic data
     mfile = open('Mag2dc_mag.txt')
+#    mfile = open('test_qpotent.txt')
     tmp = mfile.read()
     tmp2 = tmp.splitlines()
 
+    hintn = get_float(tmp2, 4, 2)
     finc = get_float(tmp2, 4, 5)
     fdec = get_float(tmp2, 4, 8)
     mht = get_float(tmp2, 7, 5)
@@ -112,12 +114,25 @@ def test(doplt=False):
     tly = np.max(ypos)
     tlz = np.max(zpos)
 
+    print('Remanent Parameters')
+    print(mstrength*400*np.pi, minc, mdec)
+
+#    susc = 0.0007
+#    minc = 63.8
+#    mdec = 14.7
+#    mstrength = 1.48/4/np.pi
+#    finc = 78
+#    fdec = -33
+#    hintn = 56707
+
+#    mstrength /= (4*np.pi)
+
     # quick model initialises a model with all the variables we have defined.
     ttt = ptimer.PTime()
     lmod = quick_model(xpos2.size, numy, numz, dxy, d_z,
                        tlx, tly, tlz, 0, 0, finc, fdec,
                        ['Generic'], [susc], [dens],
-                       [minc], [mdec], [mstrength])
+                       [minc], [mdec], [mstrength], hintn)
     ttt.since_last_call('quick model')
 
     # Create the actual model. It is a 3 dimensional vector with '1' where the
@@ -138,6 +153,7 @@ def test(doplt=False):
     ttt.since_last_call('gravity calculation')
 
     # Change to observation height to 100 meters and calculate magnetics
+    lmod.lith_index_old *= -1
     lmod.mht = mht
     calc_field(lmod, magcalc=True)
 

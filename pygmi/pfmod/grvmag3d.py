@@ -630,6 +630,43 @@ class GeoData(object):
 #        Gc = 6.6732e-3            # Universal gravitational constant
 
         # Mag stuff
+        """
+
+        SI
+        mu0 = 4*pi*10**-7  (Henry/m)
+        B = mu0(H+M)   (Telsa, A/m)
+
+        CGS
+        mu0 = 1
+        B = H + 4*pi*M  (gauss, Oersted, emu/cm3)
+        gauss == Oersted == 4*pi* emu/cm3
+        B = H + 4*pi*M  (gauss, Oersted, emu/cm3)
+        M = kH
+        B = H + 4*pi*(k*H+Mr)
+        B = H + 4*pi*k*H+4*pi*Mr
+
+
+
+        nT = 400pi A/m
+        mur = 1+k
+        k = mur-1
+        M = kH
+        J = mu0M
+        B = mu0(1+k)H
+        B = mu0murH
+        k(SI) = 4pi*k (cgs)
+
+        M = B(mur-1)/mu0 * 10**-9  (if B is nT or gammas)
+        M = kB/mu0 * 10**-9
+        M = kB / 400pi
+
+        B = mu0(H+M)
+          = mu0(H+kH+Mr)
+
+        B = mu0kH
+          = 400pi*k*H  (H is A/m)
+
+        """
         cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
 
         uh = np.array([cx, cy, cz])
@@ -638,7 +675,7 @@ class GeoData(object):
 
         mcx, mcy, mcz = dircos(self.minc, self.mdec, 90.0)
         um = np.array([mcx, mcy, mcz])
-        rem_magn = (400*np.pi*self.mstrength)*um     # Remanent magnetization
+        rem_magn = (400*np.pi*self.mstrength)*um/4/np.pi     # Remanent magnetization
 
         net_magn = rem_magn+ind_magn  # Net magnetization
         pd = np.transpose(np.dot(un, net_magn.T))   # Pole densities
@@ -1325,7 +1362,7 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
 def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
                 tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67, fdec=-17,
                 inputliths=None, susc=None, dens=None, minc=None, mdec=None,
-                mstrength=None):
+                mstrength=None, hintn=30000):
     """ Create a quick model """
     if inputliths is None:
         inputliths = ['Generic']
@@ -1345,6 +1382,7 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
     lmod.lith_list['Background'].fdec = fdec
     lmod.lith_list['Background'].minc = finc
     lmod.lith_list['Background'].mdec = fdec
+    lmod.lith_list['Background'].hintn = hintn
 
     j = 0
     if len(inputliths) == 1:
@@ -1365,6 +1403,7 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
         lmod.lith_list[i].lith_index = j
         lmod.lith_list[i].finc = finc
         lmod.lith_list[i].fdec = fdec
+        lmod.lith_list[i].hintn = hintn
         if mstrength is not None:
             lmod.lith_list[i].minc = minc[j-1]
             lmod.lith_list[i].mdec = mdec[j-1]
