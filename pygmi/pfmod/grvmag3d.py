@@ -1257,12 +1257,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     else:
         lmod.griddata['Calculated Gravity'].data = mgvalin
 
-# This addoldcalc has has flaws w.r.t. regional if you change the regional
-    if 'Gravity Regional' in lmod.griddata and not magcalc:
+    if ('Gravity Regional' in lmod.griddata and not magcalc and
+            np.unique(modindcheck).size == 1):
         zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
         lmod.griddata['Calculated Gravity'].data += zfin
-#        zfin2 = gridmatch2(lmod, 'Calculated Gravity', 'Gravity Regional')
-#        lmod.griddata['Calculated Magnetics'].data = zfin2
 
     if lmod.lith_index.max() <= 0:
         lmod.griddata['Calculated Magnetics'].data *= 0.
