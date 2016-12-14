@@ -1446,7 +1446,6 @@ def getepsgcodes():
             orig.SetProjCS(datum+r' / TM'+str(clong))
             pcodes[datum+r' / TM'+str(clong)] = orig.ExportToWkt()
 
-
     return pcodes
 
 

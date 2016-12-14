@@ -309,10 +309,10 @@ def read_record_type_f(i):
         tmp.station_distribution_ratio = str2float(i[50:55])
     if prg == 'FOCMEC' or prg == 'HASH':
         tmp.amplitude_ratio = str2float(i[55:60])
-    if prg == 'FOCMEC' or prg == 'PINV':
-        tmp.number_of_bad_polarities = str2int(i[60:62])
-    if prg == 'FOCMEC':
-        tmp.number_of_bad_amplitude_ratios = str2int(i[63:65])
+#    if prg == 'FOCMEC' or prg == 'PINV':
+#        tmp.number_of_bad_polarities = str2int(i[60:62])
+#    if prg == 'FOCMEC':
+#        tmp.number_of_bad_amplitude_ratios = str2int(i[63:65])
     tmp.agency_code = i[66:69]
     tmp.solution_quality = i[77]
 

@@ -195,7 +195,8 @@ class BeachBall(QtGui.QDialog):
                     tmpmag.append(tmp[-1])
 
             if len(tmpmag) > 1:
-                pwidth = min(sdist.pdist(tmpxy).min()/(2*max(tmpmag)), pwidth)
+                pwidth = min(np.median(sdist.pdist(tmpxy))/(2*max(tmpmag)),
+                             pwidth)
 
         self.dsb_dist.setValue(pwidth)
 
