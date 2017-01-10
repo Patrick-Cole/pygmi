@@ -636,18 +636,63 @@ class GeoData(object):
         mu0 = 4*pi*10**-7  (Henry/m)
         B = mu0(H+M)   (Telsa, A/m)
 
+        1 A/m = 4pi/1000 Oersted
+        1 Gauss = 100000 gamma/nT
+        1 Gauss = 1 Oersted
+        1 A/m = 400pi  nT/gamma
+
+        or (for conversion)
+
+        1 A/m = Oersted*1000/4pi
+        1 Gauss = gamma/nT*1/100000
+        1 Gauss = Oersted*1
+        1 A/m = nT/gamma*1/400pi
+        1 Gauss = emu/cm3*4pi
+        A/m  = emu/cm3 * 1000
+        A/m = Gauss*1000/4pi
+        Gauss = A/m*4pi/1000
+        nT = A/m*100*4pi
+        Mcgs = Msi / 1000
+
         CGS
         mu0 = 1
         B = H + 4*pi*M  (gauss, Oersted, emu/cm3)
         gauss == Oersted == 4*pi* emu/cm3
         B = H + 4*pi*M  (gauss, Oersted, emu/cm3)
-        M = kH
+        M = Mi + Mr
+        M = k*H + Mr  (from Blakely)
         B = H + 4*pi*(k*H+Mr)
         B = H + 4*pi*k*H+4*pi*Mr
 
+        if k is SI then this becomes:
+        k(cgs) = k(SI)/(4*pi)
+
+        B = H + k(SI)*H + 4*pi*Mr
+
+        if Mr is in A/m, and H is in gauss, then Mr(cgs) = Mr(SI)/1000
+
+        B = H + k*H + 4*pi*Mr(SI)/1000
+
+        if H is in gamma (nT), then mult Mr term by 100000
+
+        B = H + k(SI)*H + 400*pi*Mr(SI)
+
+        Equations in code divide susc by 4pi because susc is SI. This is
+        evident because of code comparison between two papers, one of which
+        uses SI susc, and other uses CGS susc.
+
+        However, the software uses M(CGS) only, i.e.
+
+        M = Mi(CGS) + Mr(CGS)
+          = H*k(CGS) + Mr(CGS)
+          = H*k(SI)/4pi + Mr(SI)/1000  (H in gauss)
+          = H*k(SI)/4pi + 100 * Mr(SI)  (H in nT/gamma)
+
+        QED
+        --->
 
 
-        nT = 400pi A/m
+        nT = 400*pi A/m
         mur = 1+k
         k = mur-1
         M = kH
@@ -666,6 +711,9 @@ class GeoData(object):
         B = mu0kH
           = 400pi*k*H  (H is A/m)
 
+
+         1 Gauss is 100 000 nT
+
         """
         cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
 
@@ -675,7 +723,8 @@ class GeoData(object):
 
         mcx, mcy, mcz = dircos(self.minc, self.mdec, 90.0)
         um = np.array([mcx, mcy, mcz])
-        rem_magn = (400*np.pi*self.mstrength)*um/4/np.pi     # Remanent magnetization
+#        rem_magn = (400*np.pi*self.mstrength)*um/(4*np.pi)     # Remanent magnetization
+        rem_magn = (100*self.mstrength)*um     # Remanent magnetization
 
         net_magn = rem_magn+ind_magn  # Net magnetization
         pd = np.transpose(np.dot(un, net_magn.T))   # Pole densities

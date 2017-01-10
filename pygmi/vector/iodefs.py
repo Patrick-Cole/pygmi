@@ -141,8 +141,18 @@ class ImportPointData(object):
         pntfile = open(filename)
         ltmp = pntfile.readline()
         pntfile.close()
+        ltmp = ltmp.lower()
 
         isheader = any(c.isalpha() for c in ltmp)
+
+        if ',' in ltmp:
+            dlim = ','
+
+        xcol = 0
+        ycol = 1
+        if ltmp.index('lat') < ltmp.index('lon') and 'lat' in ltmp:
+            xcol = 1
+            ycol = 0
 
         srows = 0
         ltmp = ltmp.split(dlim)
@@ -169,8 +179,8 @@ class ImportPointData(object):
         if tmp == QtGui.QMessageBox.Yes:
             for i in range(2, datatmp.shape[0]):
                 dat.append(PData())
-                dat[-1].xdata = datatmp[0]
-                dat[-1].ydata = datatmp[1]
+                dat[-1].xdata = datatmp[xcol]
+                dat[-1].ydata = datatmp[ycol]
                 dat[-1].zdata = datatmp[i]
                 dat[-1].dataid = ltmp[i]
         else:

@@ -4,20 +4,20 @@ There are 200 Observation points.
 Geomagnetic Field Parameters:-
 Intensity : 56707.0  Inclination : 78.4  Declination : -33.2
 
-The profile bearing was   61.0 degrees.
+The profile bearing was   58.5 degrees.
 The reference height used was   1.0
 The units used were m.
 Susceptibilities are in SI units.
 
 Body 1
  No. of corners is 4    Susceptibility :     0.001
- Strike length :  400.00
+ Strike length :  800.00
 Remanent Parameters :  Int ; 1859.8 nT.   Inc ; 63.8 Angle ;  14.7 degrees.
  X and Y positions of the bodys corners:-
-          900.000      100.000
-          1100.000      100.000
-          1100.000      600.000
-          900.000      600.000
+          800.000      100.000
+          1000.000      100.000
+          1000.000      600.000
+          800.000      600.000
 
     Position              Calculated Field
      0.0                       -49.68001

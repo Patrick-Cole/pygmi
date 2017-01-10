@@ -30,6 +30,7 @@ import matplotlib.pyplot as plt
 from pygmi.pfmod.grvmag3d import quick_model
 from pygmi.pfmod.grvmag3d import calc_field
 import pygmi.misc as ptimer
+import pdb
 
 
 def test(doplt=False):
@@ -80,7 +81,6 @@ def test(doplt=False):
 
     # Start to load in magnetic data
     mfile = open('Mag2dc_mag.txt')
-#    mfile = open('test_qpotent.txt')
     tmp = mfile.read()
     tmp2 = tmp.splitlines()
 
@@ -116,16 +116,6 @@ def test(doplt=False):
 
     print('Remanent Parameters')
     print(mstrength*400*np.pi, minc, mdec)
-
-#    susc = 0.0007
-#    minc = 63.8
-#    mdec = 14.7
-#    mstrength = 1.48/4/np.pi
-#    finc = 78
-#    fdec = -33
-#    hintn = 56707
-
-#    mstrength /= (4*np.pi)
 
     # quick model initialises a model with all the variables we have defined.
     ttt = ptimer.PTime()
@@ -203,6 +193,119 @@ def get_int(tmp, row, word):
     return int(tmp[row].split()[word])
 
 
+def test2(doplt=False):
+    """
+    Main test function
+
+    This test function compares the calculations performed by PyGMI to
+    calculations performed by a external software - namely mag2dc and grav2dc
+    by G.R.J Cooper.
+
+    A series of graphs are produced. If the test is successful, points and
+    lines on the graphs will coincide.
+    """
+    print('Testing modelling of gravity and potential field data')
+
+    # First initialise variables
+    x = []
+    z = []
+    xpos = []
+    m2dc = []
+
+    # start to load in gravity data
+    gfile = open('test_qpotent.txt')
+
+    tmp = gfile.read()
+    tmp2 = tmp.splitlines()
+
+    numx = get_int(tmp2, 2, 2)
+    cnrs = get_int(tmp2, 12, 4)
+    strike = get_float(tmp2, 13, 3)
+    hintn = get_float(tmp2, 4, 2)
+    finc = get_float(tmp2, 4, 5)
+    fdec = get_float(tmp2, 4, 8)
+    mht = get_float(tmp2, 7, 5)
+    susc = get_float(tmp2, 12, 7)
+    minc = get_float(tmp2, 14, 9)
+    mdec = get_float(tmp2, 14, 12)
+    mstrength = get_float(tmp2, 14, 5)/(400*np.pi)
+
+    for i in range(cnrs):
+        x.append(get_float(tmp2, 16+i, 0))
+        z.append(get_float(tmp2, 16+i, 1))
+
+    for i in range(numx):
+        xpos.append(get_float(tmp2, 18+cnrs+i, 0))
+        m2dc.append(get_float(tmp2, 18+cnrs+i, 1))
+
+    gfile.close()
+
+    # Convert to numpy and correct orientation of depths.
+    x = np.array(x)
+    z = -np.array(z)
+    xpos = np.array(xpos)
+    m2dc = np.array(m2dc)
+
+    # for testing purposes the cube being modelled should have dxy = d_z to
+    # keep things simple
+    dxy = (xpos[1]-xpos[0])
+    d_z = 50
+    ypos = np.arange(-strike, strike, dxy)
+    zpos = np.arange(z.min(), 0, d_z)
+    xpos2 = np.arange(np.min(xpos), np.max(xpos), dxy)
+    numy = ypos.size
+    numz = zpos.size
+    tlx = np.min(xpos)
+    tly = np.max(ypos)
+    tlz = np.max(zpos)
+    tlz = 0.0
+
+    print('Remanent Parameters')
+    print(mstrength*400*np.pi, minc, mdec)
+
+    # quick model initialises a model with all the variables we have defined.
+    ttt = ptimer.PTime()
+    lmod = quick_model(xpos2.size, numy, numz, dxy, d_z,
+                       tlx, tly, tlz, 0, 0, finc, fdec,
+                       ['Generic'], [susc], [0.0],
+                       [minc], [mdec], [mstrength], hintn)
+    ttt.since_last_call('quick model')
+
+    # Create the actual model. It is a 3 dimensional vector with '1' where the
+    # body lies
+    for i in np.arange(np.min(x), np.max(x), dxy):
+        for j in np.arange(0, 2*strike, dxy):
+            for k in np.arange(abs(z).min()/d_z, abs(z).max()/d_z):
+                i2 = int(i/dxy)
+                j2 = int(j/dxy)
+                k2 = int(k)
+                lmod.lith_index[i2, j2, k2] = 1
+
+    ttt.since_last_call('model create')
+
+    lmod.mht = mht
+    calc_field(lmod, magcalc=True)
+
+    mdata = lmod.griddata['Calculated Magnetics'].data[numy//2]
+
+    ttt.since_last_call('magnetic calculation')
+
+    if doplt:
+        # Display results
+        _, ax1 = plt.subplots()
+
+        ax2 = ax1.twinx()
+        ax2.plot(xpos2+dxy/2, mdata, 'b', label='PyGMI')
+#        ax2.plot(xpos, m2dc, 'b.', label='Mag2DC')
+        ax2.set_ylabel('nT')
+        ax2.legend(loc='upper right', shadow=True)
+        plt.show()
+
+#    print(mdata[:-1]-m2dc[2::2])
+#    np.testing.assert_almost_equal(gdata[:-1], g2dc[2::2], 1)
+#    np.testing.assert_almost_equal(mdata[:-1], m2dc[2::2], 1)
+
+
 def get_float(tmp, row, word):
     """
     Gets a float from a list of strings.
@@ -225,4 +328,4 @@ def get_float(tmp, row, word):
 
 
 if __name__ == "__main__":
-    test(True)
+    test2(True)
