@@ -216,8 +216,8 @@ class ImportMod3D(object):
         z_u = np.array(np.unique(z))
         labelu = np.unique(label)
         xcell = x.ptp()/float(x_u.shape[0]-1)
-        ycell = x.ptp()/float(y_u.shape[0]-1)
-        zcell = x.ptp()/float(z_u.shape[0]-1)
+        ycell = y.ptp()/float(y_u.shape[0]-1)
+        zcell = z.ptp()/float(z_u.shape[0]-1)
 
         lmod = self.lmod
 
@@ -234,7 +234,8 @@ class ImportMod3D(object):
         lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
 
 # Section to load lithologies.
-        lmod.lith_list.pop('Generic 1')
+        if 'Generic 1' in lmod.lith_list:
+            lmod.lith_list.pop('Generic 1')
 
         lindx = 0
         for itxt in labelu:
