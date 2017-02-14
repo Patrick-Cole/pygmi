@@ -224,7 +224,8 @@ class ImportMod3D(object):
         lmod.numx = x_u.shape[0]
         lmod.numy = y_u.shape[0]
         lmod.numz = z_u.shape[0]
-        lmod.dxy = max(xcell, ycell)
+#        lmod.dxy = max(xcell, ycell)
+        lmod.dxy = min(xcell, ycell)
         lmod.d_z = zcell
 #        lmod.lith_index = indict[pre+'lith_index']
         lmod.curprof = 0
@@ -251,6 +252,7 @@ class ImportMod3D(object):
             lmod.lith_list[itxt].modified = True
             lmod.lith_list[itxt].set_xyz12()
 
+        lmod.lith_index = None
         lmod.update(lmod.numx, lmod.numy, lmod.numz, lmod.xrange[0],
                     lmod.yrange[1], lmod.zrange[1], lmod.dxy, lmod.d_z)
         lmod.update_lith_list_reverse()
