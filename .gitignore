@@ -13,3 +13,6 @@ grvmagc_*.html
 .spyderproject
 log.txt
 Thumbs.db
+pygmi/test/2D_INV_Lines.csv
+pygmi/test/2D_INV_Lines_1000m.csv
+pygmi/test/2D_INV_Lines_1000m.csv

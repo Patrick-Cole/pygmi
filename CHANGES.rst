@@ -1,6 +1,18 @@
 =========
 Changelog
 =========
+v2.2.15, 6 March 2017
+---------------------
+* Fixed incorrect calculation of remanence.
+* 3d import fix.
+* Fix for 3d import from text files.
+* Anaglyph tests.
+* Minor maintenence.
+* Seismology Focmec format update.
+* Added feature to calculate only changes to model.
+* Fixed leapfrog import bug when header is in csv file.
+* Readme update.
+
 v2.2.14, 15 November 2016
 -------------------------
 * Added import of Leapfrog csv blockfiles

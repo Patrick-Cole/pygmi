@@ -20,4 +20,4 @@ from . import seis
 from .main import main
 
 __all__ = ["raster", "clust", "pfmod", "vector", "test", "seis"]
-__version__ = '2.2.14'
+__version__ = '2.2.15'
