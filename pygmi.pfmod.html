@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>pygmi.pfmod package &#8212; PyGMI 2.2.14 documentation</title>
+    <title>pygmi.pfmod package &#8212; PyGMI 2.2.15 documentation</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.14',
+        VERSION:     '2.2.15',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,9 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
-    <link rel="top" title="PyGMI 2.2.14 documentation" href="index.html" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="top" title="PyGMI 2.2.15 documentation" href="index.html" />
     <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
     <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
@@ -453,21 +455,33 @@ fields is based on the formulation published in GEOPHYSICS v. 66,
 <p>Routine that will calculate the final versions of the field. Other,
 related code is here as well, such as the inversion routines.</p>
 <dl class="method">
-<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field">
-<code class="descname">calc_field</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pre field-calculation routine</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field2">
 <code class="descname">calc_field2</code><span class="sig-paren">(</span><em>showreports=False</em>, <em>magcalc=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate magnetic and gravity field</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field_new">
-<code class="descname">calc_field_new</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field_new" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field_grav">
+<code class="descname">calc_field_grav</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field_grav" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pre field-calculation routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field_grav_changes">
+<code class="descname">calc_field_grav_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field_grav_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates only grav changes</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field_mag">
+<code class="descname">calc_field_mag</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field_mag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pre field-calculation routine</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.grvmag3d.GravMag.calc_field_mag_changes">
+<code class="descname">calc_field_mag_changes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag.calc_field_mag_changes" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculates only mag changes</p>
 </dd></dl>
 
 <dl class="method">
@@ -631,7 +645,7 @@ grid</p>
 
 <dl class="function">
 <dt id="pygmi.pfmod.grvmag3d.quick_model">
-<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">quick_model</code><span class="sig-paren">(</span><em>numx=50</em>, <em>numy=50</em>, <em>numz=50</em>, <em>dxy=1000</em>, <em>d_z=100</em>, <em>tlx=0</em>, <em>tly=0</em>, <em>tlz=0</em>, <em>mht=100</em>, <em>ght=0</em>, <em>finc=-67</em>, <em>fdec=-17</em>, <em>inputliths=None</em>, <em>susc=None</em>, <em>dens=None</em>, <em>minc=None</em>, <em>mdec=None</em>, <em>mstrength=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.quick_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">quick_model</code><span class="sig-paren">(</span><em>numx=50</em>, <em>numy=50</em>, <em>numz=50</em>, <em>dxy=1000</em>, <em>d_z=100</em>, <em>tlx=0</em>, <em>tly=0</em>, <em>tlz=0</em>, <em>mht=100</em>, <em>ght=0</em>, <em>finc=-67</em>, <em>fdec=-17</em>, <em>inputliths=None</em>, <em>susc=None</em>, <em>dens=None</em>, <em>minc=None</em>, <em>mdec=None</em>, <em>mstrength=None</em>, <em>hintn=30000</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.quick_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a quick model</p>
 </dd></dl>
 
@@ -2250,8 +2264,8 @@ picture</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2016, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.6.
+        &#169; Copyright 2017, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
   </body>
 </html>
