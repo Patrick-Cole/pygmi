@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Model Extension Display Tab Routines """
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import numpy as np
 import scipy.interpolate as si
 
@@ -38,74 +38,74 @@ class MextDisplay(object):
         self.showtext = parent.showtext
         self.pbars = self.parent.pbars
 
-        self.userint = QtGui.QWidget()
+        self.userint = QtWidgets.QWidget()
 
-        self.combo_model = QtGui.QComboBox()
-        self.combo_regional = QtGui.QComboBox()
-        self.pb_regional = QtGui.QPushButton()
-        self.combo_dtm = QtGui.QComboBox()
-        self.combo_mag = QtGui.QComboBox()
-        self.combo_grv = QtGui.QComboBox()
-        self.combo_reggrv = QtGui.QComboBox()
-        self.combo_dataset = QtGui.QComboBox()
-        self.dsb_utlx = QtGui.QDoubleSpinBox()
-        self.dsb_utly = QtGui.QDoubleSpinBox()
-        self.dsb_utlz = QtGui.QDoubleSpinBox()
-        self.dsb_xextent = QtGui.QDoubleSpinBox()
-        self.dsb_yextent = QtGui.QDoubleSpinBox()
-        self.dsb_zextent = QtGui.QDoubleSpinBox()
-        self.dsb_xycell = QtGui.QDoubleSpinBox()
-        self.dsb_zcell = QtGui.QDoubleSpinBox()
-        self.sb_cols = QtGui.QSpinBox()
-        self.sb_rows = QtGui.QSpinBox()
-        self.sb_layers = QtGui.QSpinBox()
-        self.pb_apply_changes = QtGui.QPushButton()
+        self.combo_model = QtWidgets.QComboBox()
+        self.combo_regional = QtWidgets.QComboBox()
+        self.pb_regional = QtWidgets.QPushButton()
+        self.combo_dtm = QtWidgets.QComboBox()
+        self.combo_mag = QtWidgets.QComboBox()
+        self.combo_grv = QtWidgets.QComboBox()
+        self.combo_reggrv = QtWidgets.QComboBox()
+        self.combo_dataset = QtWidgets.QComboBox()
+        self.dsb_utlx = QtWidgets.QDoubleSpinBox()
+        self.dsb_utly = QtWidgets.QDoubleSpinBox()
+        self.dsb_utlz = QtWidgets.QDoubleSpinBox()
+        self.dsb_xextent = QtWidgets.QDoubleSpinBox()
+        self.dsb_yextent = QtWidgets.QDoubleSpinBox()
+        self.dsb_zextent = QtWidgets.QDoubleSpinBox()
+        self.dsb_xycell = QtWidgets.QDoubleSpinBox()
+        self.dsb_zcell = QtWidgets.QDoubleSpinBox()
+        self.sb_cols = QtWidgets.QSpinBox()
+        self.sb_rows = QtWidgets.QSpinBox()
+        self.sb_layers = QtWidgets.QSpinBox()
+        self.pb_apply_changes = QtWidgets.QPushButton()
 
         self.setupui()
         self.init()
 
     def setupui(self):
         """ Setup UI """
-        verticallayout = QtGui.QVBoxLayout(self.userint)
-        groupbox_model = QtGui.QGroupBox()
-        groupbox_extent = QtGui.QGroupBox()
-        groupbox_data_info = QtGui.QGroupBox()
+        verticallayout = QtWidgets.QVBoxLayout(self.userint)
+        groupbox_model = QtWidgets.QGroupBox()
+        groupbox_extent = QtWidgets.QGroupBox()
+        groupbox_data_info = QtWidgets.QGroupBox()
 
-        gridlayout_model = QtGui.QGridLayout(groupbox_model)
-        gridlayout = QtGui.QGridLayout(groupbox_extent)
-        gridlayout_2 = QtGui.QGridLayout(groupbox_data_info)
+        gridlayout_model = QtWidgets.QGridLayout(groupbox_model)
+        gridlayout = QtWidgets.QGridLayout(groupbox_extent)
+        gridlayout_2 = QtWidgets.QGridLayout(groupbox_data_info)
 
-        sizepolicy2 = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                        QtGui.QSizePolicy.Preferred)
+        sizepolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                        QtWidgets.QSizePolicy.Preferred)
 
 # Current Models Groupbox
-        lbl1_model = QtGui.QLabel()
-        lbl2_model = QtGui.QLabel()
+        lbl1_model = QtWidgets.QLabel()
+        lbl2_model = QtWidgets.QLabel()
         self.pb_regional.setSizePolicy(sizepolicy2)
 
 # Data Information Groupbox
-        lbl1_2 = QtGui.QLabel()
-        lbl2_2 = QtGui.QLabel()
-        lbl3_2 = QtGui.QLabel()
-        lbl4_2 = QtGui.QLabel()
+        lbl1_2 = QtWidgets.QLabel()
+        lbl2_2 = QtWidgets.QLabel()
+        lbl3_2 = QtWidgets.QLabel()
+        lbl4_2 = QtWidgets.QLabel()
 
         gridlayout_2.setColumnStretch(0, 1)
         gridlayout_2.setColumnStretch(1, 1)
         gridlayout_2.setColumnStretch(2, 1)
 
 # Data Extents Groupbox
-        lbl0 = QtGui.QLabel()
-        lbl3 = QtGui.QLabel()
-        lbl4 = QtGui.QLabel()
-        lbl1 = QtGui.QLabel()
-        lbl8 = QtGui.QLabel()
-        lbl9 = QtGui.QLabel()
-        lbl10 = QtGui.QLabel()
-        lbl5 = QtGui.QLabel()
-        lbl6 = QtGui.QLabel()
-#        lbl7 = QtGui.QLabel()
-#        lbl11 = QtGui.QLabel()
-#        lbl2 = QtGui.QLabel()
+        lbl0 = QtWidgets.QLabel()
+        lbl3 = QtWidgets.QLabel()
+        lbl4 = QtWidgets.QLabel()
+        lbl1 = QtWidgets.QLabel()
+        lbl8 = QtWidgets.QLabel()
+        lbl9 = QtWidgets.QLabel()
+        lbl10 = QtWidgets.QLabel()
+        lbl5 = QtWidgets.QLabel()
+        lbl6 = QtWidgets.QLabel()
+#        lbl7 = QtWidgets.QLabel()
+#        lbl11 = QtWidgets.QLabel()
+#        lbl2 = QtWidgets.QLabel()
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)

@@ -28,7 +28,7 @@ import sys
 import os
 import re
 import zipfile
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr, gdal
 from osgeo import ogr
@@ -56,7 +56,6 @@ class ImportMod3D(object):
         self.ext = ""
         self.indata = {}
         self.outdata = {}
-
         self.pbars = parent.pbar
 
     def settings(self):
@@ -66,7 +65,7 @@ class ImportMod3D(object):
                'x,y,z,label (*.csv);;'
                'x,y,z,label (*.txt)')
 
-        filename, filt = QtGui.QFileDialog.getOpenFileNameAndFilter(
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
 
         if filename == '':
@@ -211,20 +210,44 @@ class ImportMod3D(object):
         z = tmp[:, 2].astype(np.float)
         label = tmp[:, 3]
 
-        x_u = np.array(np.unique(x))
-        y_u = np.array(np.unique(y))
-        z_u = np.array(np.unique(z))
+#        x_u = np.array(np.unique(x))
+#        y_u = np.array(np.unique(y))
+#        z_u = np.array(np.unique(z))
         labelu = np.unique(label)
-        xcell = x.ptp()/float(x_u.shape[0]-1)
-        ycell = y.ptp()/float(y_u.shape[0]-1)
-        zcell = z.ptp()/float(z_u.shape[0]-1)
+#        xcell = x.ptp()/float(x_u.shape[0]-1)
+#        ycell = y.ptp()/float(y_u.shape[0]-1)
+#        zcell = z.ptp()/float(z_u.shape[0]-1)
+
+#        xcell = np.max(np.diff(x_u))
+#        ycell = np.max(np.diff(y_u))
+#        zcell = np.max(np.diff(z_u))
+
+        idx = np.unique(x, return_index=True)[1]
+        x_u = x[np.sort(idx)]
+        dx_u = np.diff(x_u)
+        idx = np.unique(y, return_index=True)[1]
+        y_u = y[np.sort(idx)]
+        dy_u = np.diff(y_u)
+        idx = np.unique(z, return_index=True)[1]
+        z_u = z[np.sort(idx)]
+        dz_u = np.diff(z_u)
+
+        if dx_u[0] < 0:
+            dx_u *= -1
+        if dy_u[0] < 0:
+            dy_u *= -1
+        if dz_u[0] < 0:
+            dz_u *= -1
+
+        xcell = np.max(dx_u)
+        ycell = np.max(dy_u)
+        zcell = np.max(dz_u)
 
         lmod = self.lmod
 
-        lmod.numx = x_u.shape[0]
-        lmod.numy = y_u.shape[0]
-        lmod.numz = z_u.shape[0]
-#        lmod.dxy = max(xcell, ycell)
+#        lmod.numx = x_u.shape[0]
+#        lmod.numy = y_u.shape[0]
+#        lmod.numz = z_u.shape[0]
         lmod.dxy = min(xcell, ycell)
         lmod.d_z = zcell
 #        lmod.lith_index = indict[pre+'lith_index']
@@ -233,6 +256,10 @@ class ImportMod3D(object):
         lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
         lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
         lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
+        lmod.numx = int(np.ptp(lmod.xrange)/lmod.dxy+1)
+        lmod.numy = int(np.ptp(lmod.yrange)/lmod.dxy+1)
+        lmod.numz = int(np.ptp(lmod.zrange)/lmod.d_z+1)
+
 
 # Section to load lithologies.
         if 'Generic 1' in lmod.lith_list:
@@ -261,8 +288,12 @@ class ImportMod3D(object):
             col = int((xi-lmod.xrange[0])/lmod.dxy)
             row = int((lmod.yrange[1]-y[i])/lmod.dxy)
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
-            lmod.lith_index[col, row, layer] = \
-                lmod.lith_list[label[i]].lith_index
+            try:
+                lmod.lith_index[col, row, layer] = \
+                    lmod.lith_list[label[i]].lith_index
+            except:
+                import pdb
+                pdb.set_trace()
 
     def dict2lmod(self, indict, pre=''):
         """ routine to convert a dictionary to an lmod """
@@ -380,7 +411,7 @@ class ExportMod3D(object):
             return
 
         for self.lmod in self.indata['Model3D']:
-            filename = QtGui.QFileDialog.getSaveFileName(
+            filename, filt = QtWidgets.QFileDialog.getSaveFileName(
                 self.parent, 'Save File', '.',
                 'npz (*.npz);;shapefile (*.shp);;kmz (*.kmz);;csv (*.csv)')
 
@@ -538,10 +569,10 @@ class ExportMod3D(object):
             return
 
         if prjkmz.proj.wkt == '':
-            QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Warning',
+            QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Warning',
                                       ' You need a projection!',
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+                                      QtWidgets.QMessageBox.Ok,
+                                      QtWidgets.QMessageBox.Ok)
             return
 
         smooth = prjkmz.checkbox_smooth.isChecked()
@@ -991,12 +1022,12 @@ class ExportMod3D(object):
         self.showtext('shapefile export complete!')
 
 
-class Exportkmz(QtGui.QDialog):
+class Exportkmz(QtWidgets.QDialog):
     """ Class to call up a dialog """
     def __init__(self, wkt, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
-        self.checkbox_smooth = QtGui.QCheckBox()
+        self.checkbox_smooth = QtWidgets.QCheckBox()
         self.proj = dp.GroupProj('Confirm Model Projection')
         self.proj.set_current(wkt)
 
@@ -1005,8 +1036,8 @@ class Exportkmz(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.exportkmz')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -1024,10 +1055,10 @@ class Exportkmz(QtGui.QDialog):
         buttonbox.rejected.connect(self.reject)
 
 
-class ImportPicture(QtGui.QDialog):
+class ImportPicture(QtWidgets.QDialog):
     """ Class to call up a dialog """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.lmod = LithModel()
@@ -1040,12 +1071,12 @@ class ImportPicture(QtGui.QDialog):
         self.outdata = {}
         self.grid = None
 
-        self.dsb_picimp_west = QtGui.QDoubleSpinBox()
-        self.dsb_picimp_east = QtGui.QDoubleSpinBox()
-        self.dsb_picimp_depth = QtGui.QDoubleSpinBox()
-        self.rb_picimp_westeast = QtGui.QRadioButton()
-        self.rb_picimp_southnorth = QtGui.QRadioButton()
-        self.dsb_picimp_maxalt = QtGui.QDoubleSpinBox()
+        self.dsb_picimp_west = QtWidgets.QDoubleSpinBox()
+        self.dsb_picimp_east = QtWidgets.QDoubleSpinBox()
+        self.dsb_picimp_depth = QtWidgets.QDoubleSpinBox()
+        self.rb_picimp_westeast = QtWidgets.QRadioButton()
+        self.rb_picimp_southnorth = QtWidgets.QRadioButton()
+        self.dsb_picimp_maxalt = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
 
@@ -1059,17 +1090,17 @@ class ImportPicture(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        groupbox = QtGui.QGroupBox()
-        gridlayout_2 = QtGui.QGridLayout(self)
-        gridlayout_3 = QtGui.QGridLayout(groupbox)
-        buttonbox = QtGui.QDialogButtonBox()
+        groupbox = QtWidgets.QGroupBox()
+        gridlayout_2 = QtWidgets.QGridLayout(self)
+        gridlayout_3 = QtWidgets.QGridLayout(groupbox)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.importpicture')
 
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
-        label_3 = QtGui.QLabel()
-        label_4 = QtGui.QLabel()
-        label_5 = QtGui.QLabel()
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+        label_3 = QtWidgets.QLabel()
+        label_4 = QtWidgets.QLabel()
+        label_5 = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -1183,7 +1214,7 @@ class ImportPicture(QtGui.QDialog):
         if temp == 0:
             return False
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', '*.jpg *.tif *.bmp')
 
         if filename == '':
@@ -1210,7 +1241,7 @@ class ImportPicture(QtGui.QDialog):
         return True
 
 
-class MessageCombo(QtGui.QDialog):
+class MessageCombo(QtWidgets.QDialog):
     """
     Message combo box.
 
@@ -1220,23 +1251,23 @@ class MessageCombo(QtGui.QDialog):
         reference to the parent routine
     """
     def __init__(self, combotext, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
 
-        self.master = QtGui.QComboBox()
+        self.master = QtWidgets.QComboBox()
         self.master.addItems(combotext)
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout_main = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
 #        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
-        label_master = QtGui.QLabel()
+        label_master = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)

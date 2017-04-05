@@ -35,13 +35,13 @@ from math import atan2, pi
 import numpy as np
 import numexpr as ne
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import matplotlib.cm as cm
-from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from numba import jit
 # import scipy.spatial.distance as sd
 import pygmi.raster.cooper as cooper
@@ -51,7 +51,7 @@ import pygmi.menu_default as menu_default
 import pygmi.misc as misc
 
 
-class TiltDepth(QtGui.QDialog):
+class TiltDepth(QtWidgets.QDialog):
     """
     This is the primary class for the Tilt Depth.
 
@@ -89,12 +89,12 @@ class TiltDepth(QtGui.QDialog):
         self.mmc = FigureCanvas(self.figure)
         self.axes = self.figure.add_subplot(111)
 
-        self.cbox_band1 = QtGui.QComboBox()
-        self.cbox_cbar = QtGui.QComboBox(self)
-        self.dsb_inc = QtGui.QDoubleSpinBox()
-        self.dsb_dec = QtGui.QDoubleSpinBox()
-        self.btn_apply = QtGui.QPushButton()
-        self.btn_save = QtGui.QPushButton()
+        self.cbox_band1 = QtWidgets.QComboBox()
+        self.cbox_cbar = QtWidgets.QComboBox(self)
+        self.dsb_inc = QtWidgets.QDoubleSpinBox()
+        self.dsb_dec = QtWidgets.QDoubleSpinBox()
+        self.btn_apply = QtWidgets.QPushButton()
+        self.btn_save = QtWidgets.QPushButton()
         self.pbar = misc.ProgressBar()
 
         self.setupui()
@@ -102,10 +102,10 @@ class TiltDepth(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
         helpdocs = menu_default.HelpButton('pygmi.raster.tiltdepth')
-        label2 = QtGui.QLabel()
-        labelc = QtGui.QLabel()
-        label_inc = QtGui.QLabel()
-        label_dec = QtGui.QLabel()
+        label2 = QtWidgets.QLabel()
+        labelc = QtWidgets.QLabel()
+        label_inc = QtWidgets.QLabel()
+        label_dec = QtWidgets.QLabel()
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
@@ -114,13 +114,13 @@ class TiltDepth(QtGui.QDialog):
         self.dsb_dec.setMinimum(-360.0)
         self.dsb_dec.setValue(-17.)
 
-        vbl_raster = QtGui.QVBoxLayout()
-        hbl_all = QtGui.QHBoxLayout(self)
-        vbl_right = QtGui.QVBoxLayout()
+        vbl_raster = QtWidgets.QVBoxLayout()
+        hbl_all = QtWidgets.QHBoxLayout(self)
+        vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-                                   QtGui.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                   QtWidgets.QSizePolicy.Expanding)
         tmp = sorted(cm.datad.keys())
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
@@ -165,7 +165,7 @@ class TiltDepth(QtGui.QDialog):
 
         ext = "Text File (*.csv)"
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent,
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(self.parent,
                                                      'Save File',
                                                      '.', ext)
         if filename == '':
@@ -217,7 +217,7 @@ class TiltDepth(QtGui.QDialog):
         txt = str(self.cbox_band1.currentText())
 
         self.btn_apply.setText('Calculating...')
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.btn_apply.setEnabled(False)
 
         for i in self.indata['Raster']:
@@ -227,7 +227,7 @@ class TiltDepth(QtGui.QDialog):
 
         self.btn_apply.setEnabled(True)
         self.btn_apply.setText('Calculate Tilt Depth')
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
     def settings(self):
         """ This is called when the used double clicks the routine from the
@@ -251,7 +251,7 @@ class TiltDepth(QtGui.QDialog):
 #        self.change_band1()
 
         self.show()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         return True
 

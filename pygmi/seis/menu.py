@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Seis Menu Routines """
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 from pygmi.seis import scan_imp
 from pygmi.seis import del_rec
 from pygmi.seis import iodefs
@@ -49,50 +49,50 @@ class MenuWidget(object):
         self.parent.add_to_context('Seis')
         context_menu = self.parent.context_menu
 
-        self.menu = QtGui.QMenu(parent.menubar)
+        self.menu = QtWidgets.QMenu(parent.menubar)
         self.menu.setTitle("Seismology")
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_seisan = QtGui.QAction(parent)
+        self.action_import_seisan = QtWidgets.QAction(parent)
         self.action_import_seisan.setText("Import Seisan Data")
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
 
-        self.action_import_genfps = QtGui.QAction(parent)
+        self.action_import_genfps = QtWidgets.QAction(parent)
         self.action_import_genfps.setText("Import Generic FPS")
         self.menu.addAction(self.action_import_genfps)
         self.action_import_genfps.triggered.connect(self.import_genfps)
 
-        self.action_import_scans = QtGui.QAction(parent)
+        self.action_import_scans = QtWidgets.QAction(parent)
         self.action_import_scans.setText("Import Scanned Bulletins")
         self.menu.addAction(self.action_import_scans)
         self.action_import_scans.triggered.connect(self.import_scans)
 
         self.menu.addSeparator()
 
-        self.action_beachball = QtGui.QAction(self.parent)
+        self.action_beachball = QtWidgets.QAction(self.parent)
         self.action_beachball.setText("Fault Plane Solutions")
         self.menu.addAction(self.action_beachball)
         self.action_beachball.triggered.connect(self.beachball)
 
-        self.action_delete_recs = QtGui.QAction(parent)
+        self.action_delete_recs = QtWidgets.QAction(parent)
         self.action_delete_recs.setText("Delete Records")
         self.menu.addAction(self.action_delete_recs)
         self.action_delete_recs.triggered.connect(self.delete_recs)
 
-        self.action_quarry = QtGui.QAction(parent)
+        self.action_quarry = QtWidgets.QAction(parent)
         self.action_quarry.setText("Remove Quarry Events")
         self.menu.addAction(self.action_quarry)
         self.action_quarry.triggered.connect(self.quarry)
 
         context_menu['Seis'].addSeparator()
 
-        self.action_export_seisan = QtGui.QAction(self.parent)
+        self.action_export_seisan = QtWidgets.QAction(self.parent)
         self.action_export_seisan.setText("Export Seisan Data")
         context_menu['Seis'].addAction(self.action_export_seisan)
         self.action_export_seisan.triggered.connect(self.export_seisan)
 
-        self.action_export_csv = QtGui.QAction(self.parent)
+        self.action_export_csv = QtWidgets.QAction(self.parent)
         self.action_export_csv.setText("Export to CSV")
         context_menu['Seis'].addAction(self.action_export_csv)
         self.action_export_csv.triggered.connect(self.export_csv)

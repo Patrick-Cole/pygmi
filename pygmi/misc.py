@@ -33,7 +33,7 @@ import io
 import sys
 import socket
 import pip
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 
 
 PBAR_STYLE = """
@@ -49,8 +49,6 @@ QProgressBar::chunk {
 }
 """
 
-#    background: qlineargradient(x1: 0.5, y1: 0, x2: 0.5, y2: 1, stop: 0 green, stop: 1 white);
-#    background-color: #05B8CC;
 
 class PTime(object):
     """ Main class in the ptimer module. Once activated, this class keeps track
@@ -101,7 +99,7 @@ class PTime(object):
         return tdiff
 
 
-class ProgressBar(QtGui.QProgressBar):
+class ProgressBar(QtWidgets.QProgressBar):
     """
     Progress Bar routine which expands the QProgressBar class slightly so that
     there is a time function as well as a convenient of calling it via an
@@ -113,7 +111,7 @@ class ProgressBar(QtGui.QProgressBar):
         This is the original time recorded when the progress bar starts.
     """
     def __init__(self, parent=None):
-        QtGui.QProgressBar.__init__(self, parent)
+        QtWidgets.QProgressBar.__init__(self, parent)
         self.setMinimum(0)
         self.setValue(0)
         self.otime = 0
@@ -147,7 +145,7 @@ class ProgressBar(QtGui.QProgressBar):
                 else:
                     tleft = int(tleft)
                     self.setFormat('%p% '+str(tleft)+'s left')
-                QtGui.QApplication.processEvents()
+                QtWidgets.QApplication.processEvents()
                 time1 = time2
 
         self.setFormat('%p%')
@@ -158,7 +156,7 @@ class ProgressBar(QtGui.QProgressBar):
         self.setMaximum(1)
         self.setMinimum(0)
         self.setValue(1)
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
 
 def getpypiversion():

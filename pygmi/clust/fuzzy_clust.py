@@ -26,14 +26,14 @@
 
 import os
 import copy
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from pygmi.clust.datatypes import Clust
 from pygmi.clust import var_ratio as vr
 from pygmi.clust import xie_beni as xb
 
 
-class FuzzyClust(QtGui.QDialog):
+class FuzzyClust(QtWidgets.QDialog):
     """
     Fuzzy Clust
 
@@ -47,26 +47,26 @@ class FuzzyClust(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
         self.pbar = parent.pbar
 
-        self.combobox_alg = QtGui.QComboBox()
-        self.doublespinbox_maxerror = QtGui.QDoubleSpinBox()
-        self.doublespinbox_fuzzynessexp = QtGui.QDoubleSpinBox()
-        self.doublespinbox_constraincluster = QtGui.QDoubleSpinBox()
-        self.spinbox_maxclusters = QtGui.QSpinBox()
-        self.spinbox_maxiterations = QtGui.QSpinBox()
-        self.spinbox_repeatedruns = QtGui.QSpinBox()
-        self.spinbox_minclusters = QtGui.QSpinBox()
-        self.label_7 = QtGui.QLabel()
-        self.checkbox_denorm = QtGui.QCheckBox()
-        self.radiobutton_random = QtGui.QRadioButton()
-        self.radiobutton_manual = QtGui.QRadioButton()
-        self.radiobutton_datadriven = QtGui.QRadioButton()
+        self.combobox_alg = QtWidgets.QComboBox()
+        self.doublespinbox_maxerror = QtWidgets.QDoubleSpinBox()
+        self.doublespinbox_fuzzynessexp = QtWidgets.QDoubleSpinBox()
+        self.doublespinbox_constraincluster = QtWidgets.QDoubleSpinBox()
+        self.spinbox_maxclusters = QtWidgets.QSpinBox()
+        self.spinbox_maxiterations = QtWidgets.QSpinBox()
+        self.spinbox_repeatedruns = QtWidgets.QSpinBox()
+        self.spinbox_minclusters = QtWidgets.QSpinBox()
+        self.label_7 = QtWidgets.QLabel()
+        self.checkbox_denorm = QtWidgets.QCheckBox()
+        self.radiobutton_random = QtWidgets.QRadioButton()
+        self.radiobutton_manual = QtWidgets.QRadioButton()
+        self.radiobutton_datadriven = QtWidgets.QRadioButton()
 
         self.setupui()
 
@@ -94,18 +94,18 @@ class FuzzyClust(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
-        groupbox = QtGui.QGroupBox(self)
-        verticallayout = QtGui.QVBoxLayout(groupbox)
+        gridlayout = QtWidgets.QGridLayout(self)
+        groupbox = QtWidgets.QGroupBox(self)
+        verticallayout = QtWidgets.QVBoxLayout(groupbox)
 
-        buttonbox = QtGui.QDialogButtonBox(self)
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
-        label_3 = QtGui.QLabel()
-        label_4 = QtGui.QLabel()
-        label_5 = QtGui.QLabel()
-        label_6 = QtGui.QLabel()
-        label_8 = QtGui.QLabel()
+        buttonbox = QtWidgets.QDialogButtonBox(self)
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+        label_3 = QtWidgets.QLabel()
+        label_4 = QtWidgets.QLabel()
+        label_5 = QtWidgets.QLabel()
+        label_6 = QtWidgets.QLabel()
+        label_8 = QtWidgets.QLabel()
 
         self.spinbox_maxclusters.setMinimum(1)
         self.spinbox_maxclusters.setProperty("value", 5)
@@ -260,7 +260,7 @@ class FuzzyClust(QtGui.QDialog):
                 "ASCII matrix (*.txt);;" + \
                 "ASCII matrix (*.asc);;" + \
                 "ASCII matrix (*.dat)"
-            filename = QtGui.QFileDialog.getOpenFileName(
+            filename, filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Read Cluster Centers', '.', ext)
             if filename == '':
                 return False
@@ -273,10 +273,10 @@ class FuzzyClust(QtGui.QDialog):
             ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
 
             if dat_in.shape[1] != col or row != ro1:
-                QtGui.QMessageBox.warning(self.parent, 'Warning',
+                QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' Incorrect matrix size!',
-                                          QtGui.QMessageBox.Ok,
-                                          QtGui.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
 
             cnt = -1
             for i in range(no_clust[0], no_clust[1] + 1):
@@ -287,22 +287,22 @@ class FuzzyClust(QtGui.QDialog):
                 startmdat = {i: smtmp}
                 startmfix = {i: []}
 
-            filename = QtGui.QFileDialog.getOpenFileName(
+            filename, filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Read Cluster Center Constraints', '.', ext)
             if filename == '':
-                QtGui.QMessageBox.warning(
+                QtWidgets.QMessageBox.warning(
                     self.parent, 'Warning',
                     'Running cluster analysis without constraints',
-                    QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+                    QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
             else:
                 ifile = str(filename)
                 dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
                 [row, col] = np.shape(dummy_mod)
                 ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
                 if dat_in.shape[1] != col or row != ro1:
-                    QtGui.QMessageBox.warning(
+                    QtWidgets.QMessageBox.warning(
                         self.parent, 'Warning', ' Incorrect matrix size!',
-                        QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+                        QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
                 cnt = -1
                 for i in range(no_clust[0], no_clust[1] + 1):
                     smtmp = np.zeros(i)

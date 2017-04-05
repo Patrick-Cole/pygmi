@@ -67,7 +67,7 @@ import copy
 from math import cos, sin, tan
 import numpy as np
 import numexpr as ne
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
 import matplotlib.gridspec as gridspec
@@ -77,14 +77,13 @@ import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
 from matplotlib import rcParams
-from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
-# import pygmi.raster.modest_image as modest_image
 
 
 class ModestImage2(mi.AxesImage):
@@ -503,8 +502,8 @@ class MyMplCanvas(FigureCanvas):
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
@@ -541,7 +540,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_aspect('equal')
 
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.bbox_hist_red = self.figure.canvas.copy_from_bbox(
@@ -908,7 +907,7 @@ class MySunCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
 
-class PlotInterp(QtGui.QDialog):
+class PlotInterp(QtWidgets.QDialog):
     """
     This is the primary class for the raster data interpretation module. The
     main interface is set up from here, as well as monitoring of the mouse
@@ -939,22 +938,22 @@ class PlotInterp(QtGui.QDialog):
 
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
-        self.btn_saveimg = QtGui.QPushButton()
-        self.cbox_dtype = QtGui.QComboBox()
-        self.cbox_band1 = QtGui.QComboBox()
-        self.cbox_band2 = QtGui.QComboBox()
-        self.cbox_band3 = QtGui.QComboBox()
-        self.cbox_htype = QtGui.QComboBox()
-        self.cbox_hstype = QtGui.QComboBox()
-        self.cbox_cbar = QtGui.QComboBox(self)
-        self.kslider = QtGui.QSlider(QtCore.Qt.Horizontal)  # cmyK
-        self.sslider = QtGui.QSlider(QtCore.Qt.Horizontal)  # sunshade
-        self.aslider = QtGui.QSlider(QtCore.Qt.Horizontal)
-        self.slabel = QtGui.QLabel()
-        self.labels = QtGui.QLabel()
-        self.labela = QtGui.QLabel()
-        self.labelc = QtGui.QLabel()
-        self.labelk = QtGui.QLabel()
+        self.btn_saveimg = QtWidgets.QPushButton()
+        self.cbox_dtype = QtWidgets.QComboBox()
+        self.cbox_band1 = QtWidgets.QComboBox()
+        self.cbox_band2 = QtWidgets.QComboBox()
+        self.cbox_band3 = QtWidgets.QComboBox()
+        self.cbox_htype = QtWidgets.QComboBox()
+        self.cbox_hstype = QtWidgets.QComboBox()
+        self.cbox_cbar = QtWidgets.QComboBox(self)
+        self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # cmyK
+        self.sslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # sunshade
+        self.aslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.slabel = QtWidgets.QLabel()
+        self.labels = QtWidgets.QLabel()
+        self.labela = QtWidgets.QLabel()
+        self.labelc = QtWidgets.QLabel()
+        self.labelk = QtWidgets.QLabel()
 
         self.setupui()
 
@@ -982,17 +981,17 @@ class PlotInterp(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
         helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
-        label1 = QtGui.QLabel()
-        label2 = QtGui.QLabel()
-        label3 = QtGui.QLabel()
+        label1 = QtWidgets.QLabel()
+        label2 = QtWidgets.QLabel()
+        label3 = QtWidgets.QLabel()
 
-        vbl_raster = QtGui.QVBoxLayout()
-        hbl_all = QtGui.QHBoxLayout(self)
-        vbl_right = QtGui.QVBoxLayout()
+        vbl_raster = QtWidgets.QVBoxLayout()
+        hbl_all = QtWidgets.QHBoxLayout(self)
+        vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-                                   QtGui.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                   QtWidgets.QSizePolicy.Expanding)
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
         self.sslider.setValue(25)
@@ -1161,7 +1160,7 @@ class PlotInterp(QtGui.QDialog):
             self.mmc.argb[2].set_visible(False)
             self.mmc.cell = self.sslider.value()
             self.mmc.alpha = float(self.aslider.value())/100.
-            QtGui.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents()
             self.msc.init_graph()
             self.mmc.init_graph()
 
@@ -1261,14 +1260,14 @@ class PlotInterp(QtGui.QDialog):
         """Save image as a GeoTiff"""
 
         ext = "GeoTiff (*.tif)"
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
             return False
 
-        text, okay = QtGui.QInputDialog.getText(
+        text, okay = QtWidgets.QInputDialog.getText(
             self, "Colorbar", "Enter length in inches:",
-            QtGui.QLineEdit.Normal, "8")
+            QtWidgets.QLineEdit.Normal, "8")
 
         if not okay:
             return
@@ -1279,34 +1278,34 @@ class PlotInterp(QtGui.QDialog):
         dtype = str(self.cbox_dtype.currentText())
 
         if 'Ternary' not in dtype:
-            text, okay = QtGui.QInputDialog.getText(
+            text, okay = QtWidgets.QInputDialog.getText(
                 self, "Colorbar", "Enter colorbar unit label:",
-                QtGui.QLineEdit.Normal,
+                QtWidgets.QLineEdit.Normal,
                 self.units[str(self.cbox_band1.currentText())])
 
             if not okay:
                 return
         else:
             units = str(self.cbox_band1.currentText())
-            rtext, okay = QtGui.QInputDialog.getText(
+            rtext, okay = QtWidgets.QInputDialog.getText(
                 self, "Ternary Colorbar", "Enter red/cyan label:",
-                QtGui.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
                 return
 
             units = str(self.cbox_band2.currentText())
-            gtext, okay = QtGui.QInputDialog.getText(
+            gtext, okay = QtWidgets.QInputDialog.getText(
                 self, "Ternary Colorbar", "Enter green/magenta label:",
-                QtGui.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
                 return
 
             units = str(self.cbox_band3.currentText())
-            btext, okay = QtGui.QInputDialog.getText(
+            btext, okay = QtWidgets.QInputDialog.getText(
                 self, "Ternary Colorbar", "Enter blue/yelow label:",
-                QtGui.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
                 return
@@ -1607,10 +1606,10 @@ class PlotInterp(QtGui.QDialog):
             fname = filename[:-4]+'_tern.tif'
             fig.savefig(fname, dpi=300)
 
-        QtGui.QMessageBox.information(self, "Information",
+        QtWidgets.QMessageBox.information(self, "Information",
                                       "Save to GeoTiff is complete!",
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+                                      QtWidgets.QMessageBox.Ok,
+                                      QtWidgets.QMessageBox.Ok)
 
     def settings(self):
         """ This is called when the used double clicks the routine from the
@@ -1620,7 +1619,7 @@ class PlotInterp(QtGui.QDialog):
             return
 
         self.show()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.mmc.init_graph()
         self.msc.init_graph()

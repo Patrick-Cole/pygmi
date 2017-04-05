@@ -26,7 +26,7 @@
 
 import os
 import re
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import numpy as np
 import pygmi.seis.datatypes as sdt
 
@@ -86,7 +86,7 @@ class ImportSeisan(object):
             "Seisan Format (*.out);;" +\
             "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -420,16 +420,17 @@ class ImportGenericFPS(object):
 
     def settings(self):
         """ Settings """
-        QtGui.QMessageBox.information(self.parent, 'File Format',
-                                      'The file should have the following'
-                                      ' columns: longitude, latitude, depth,'
-                                      ' strike, dip, rake, magnitude.')
+        QtWidgets.QMessageBox.information(self.parent, 'File Format',
+                                          'The file should have the following '
+                                          'columns: longitude, latitude, '
+                                          'depth, strike, dip, rake, '
+                                          'magnitude.')
 
         ext = \
             "Comma Delimeted Text (*.csv);;" +\
             "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -456,10 +457,10 @@ class ImportGenericFPS(object):
         try:
             datatmp = np.loadtxt(filename, delimiter=dlim, skiprows=srows)
         except ValueError:
-            QtGui.QMessageBox.critical(self.parent, 'Import Error',
-                                       'There was a problem loading the file.'
-                                       ' You may have a text character in one'
-                                       ' of your columns.')
+            QtWidgets.QMessageBox.critical(self.parent, 'Import Error',
+                                           'There was a problem loading the '
+                                           'file. You may have a text '
+                                           'character in one of your columns.')
             return False
 
         dat = []
@@ -513,9 +514,9 @@ class ExportSeisan(object):
 
         data = self.indata['Seis']
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent,
-                                                     'Save File',
-                                                     '.', 'sei (*.sei)')
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                            'Save File',
+                                                            '.', 'sei (*.sei)')
 
         if filename == '':
             return
@@ -874,9 +875,9 @@ class ExportCSV(object):
 
         data = self.indata['Seis']
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent,
-                                                     'Save File',
-                                                     '.', 'csv (*.csv)')
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                            'Save File',
+                                                            '.', 'csv (*.csv)')
         if filename == '':
             return
         os.chdir(filename.rpartition('/')[0])

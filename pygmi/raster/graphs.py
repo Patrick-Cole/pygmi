@@ -35,11 +35,11 @@ menu. The following are supported:
 """
 
 import numpy as np
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
     NavigationToolbar
 import matplotlib.colors as mcolors
 
@@ -203,20 +203,29 @@ class MyMplCanvas(FigureCanvas):
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)
 
-        z[z.mask] = np.nan
-        z.mask = data.data.mask.copy()
+#        z[z.mask] = np.nan
+#        z.mask = data.data.mask.copy()
         cmap = plt.cm.jet
-        cmap.set_bad('w', 0.)
-        cmap.set_under('w', 0.)
+#        cmap.set_bad('w', 0.)
+#        cmap.set_under('w', 0.)
 
-        lev = np.arange(z.min(), z.max(), 1)
-        norml = mcolors.BoundaryNorm(lev, 256)
+#        lev = np.arange(z.min(), z.max(), 1)
+#        norml = mcolors.BoundaryNorm(lev, 256)
+        norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
+
+        z.set_fill_value(np.nan)
+        z = z.filled()
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
         ax = self.axes
-        ax.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
-                        shade=True)
+
+        surf = ax.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
+                               vmin=z.min(), vmax=z.max(), shade=False,
+                               antialiased=False)
+#        ax.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
+#                        shade=True
+        self.figure.colorbar(surf)
 
         ax.set_title('')
         ax.set_xlabel("X")
@@ -247,7 +256,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
 
-class GraphWindow(QtGui.QDialog):
+class GraphWindow(QtWidgets.QDialog):
     """
     Graph Window - The QDialog window which will contain our image
 
@@ -257,21 +266,21 @@ class GraphWindow(QtGui.QDialog):
         reference to the parent routine
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent=None)
+        QtWidgets.QDialog.__init__(self, parent=None)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Graph Window")
 
-        vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtGui.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
 
-        self.combobox1 = QtGui.QComboBox()
-        self.combobox2 = QtGui.QComboBox()
-        self.label1 = QtGui.QLabel()
-        self.label2 = QtGui.QLabel()
+        self.combobox1 = QtWidgets.QComboBox()
+        self.combobox2 = QtWidgets.QComboBox()
+        self.label1 = QtWidgets.QLabel()
+        self.label2 = QtWidgets.QLabel()
         self.label1.setText('Bands:')
         self.label2.setText('Bands:')
         self.hbl.addWidget(self.label1)

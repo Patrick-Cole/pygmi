@@ -24,19 +24,19 @@
 # -----------------------------------------------------------------------------
 """ This is a routine which displays a table graphically with various stats """
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import numpy as np
 import scipy.stats.mstats as st
 
 
-class BasicStats(QtGui.QDialog):
+class BasicStats(QtWidgets.QDialog):
     """ Show a summary of basic stats """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
 
-        self.combobox = QtGui.QComboBox()
-        self.tablewidget = QtGui.QTableWidget()
-        self.pushbutton_save = QtGui.QPushButton()
+        self.combobox = QtWidgets.QComboBox()
+        self.tablewidget = QtWidgets.QTableWidget()
+        self.pushbutton_save = QtWidgets.QPushButton()
 
         self.setupui()
         self.indata = {}
@@ -47,7 +47,7 @@ class BasicStats(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
+        gridlayout = QtWidgets.QGridLayout(self)
 
         self.tablewidget.setRowCount(1)
         self.tablewidget.setColumnCount(1)
@@ -70,7 +70,7 @@ class BasicStats(QtGui.QDialog):
         for row in range(data.shape[0]):
             for col in range(data.shape[1]):
                 self.tablewidget.setCellWidget(
-                    row, col, QtGui.QLabel(str(data[row, col])))
+                    row, col, QtWidgets.QLabel(str(data[row, col])))
 
         self.tablewidget.resizeColumnsToContents()
 
@@ -98,7 +98,7 @@ class BasicStats(QtGui.QDialog):
     def save(self):
         """ Save """
         ext = "CSV Format (*.csv)"
-        ifile = QtGui.QFileDialog.getSaveFileName(self, 'Save Table', '.', ext)
+        ifile, filt = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table', '.', ext)
         if ifile == '':
             return False
 
@@ -135,15 +135,15 @@ def basicstats_calc(data):
     return bands, cols, dattmp
 
 
-class ClusterStats(QtGui.QDialog):
+class ClusterStats(QtWidgets.QDialog):
     """ Show a summary of basic stats """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
 
-        self.gridlayout = QtGui.QGridLayout(self)
-        self.combobox = QtGui.QComboBox(self)
-        self.tablewidget = QtGui.QTableWidget(self)
-        self.pushbutton_save = QtGui.QPushButton(self)
+        self.gridlayout = QtWidgets.QGridLayout(self)
+        self.combobox = QtWidgets.QComboBox(self)
+        self.tablewidget = QtWidgets.QTableWidget(self)
+        self.pushbutton_save = QtWidgets.QPushButton(self)
 
         self.setupui()
         self.indata = {}
@@ -175,7 +175,7 @@ class ClusterStats(QtGui.QDialog):
         for row, _ in enumerate(data):
             for col, _ in enumerate(data[0]):
                 self.tablewidget.setCellWidget(
-                    row, col, QtGui.QLabel(str(data[row][col])))
+                    row, col, QtWidgets.QLabel(str(data[row][col])))
 
         self.tablewidget.resizeColumnsToContents()
 
@@ -214,7 +214,7 @@ class ClusterStats(QtGui.QDialog):
     def save(self):
         """ Save """
         ext = "CSV Format (*.csv)"
-        ifile = QtGui.QFileDialog.getSaveFileName(self, 'Save Table', '.', ext)
+        ifile, filt = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table', '.', ext)
         if ifile == '':
             return False
 

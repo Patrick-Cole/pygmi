@@ -9,6 +9,7 @@ pygmi.egg-info/
 
 *.py[co]
 *.cmd
+*.lnk
 grvmagc_*.html
 .spyderproject
 log.txt

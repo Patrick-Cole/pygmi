@@ -27,7 +27,7 @@
 import os
 import re
 import numpy as np
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import pygmi.seis.datatypes as sdt
 
 
@@ -127,9 +127,9 @@ class SIMP(object):
 
         ext = "Scanned Bulletin Text File (*.txt)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(self.parent,
-                                                     'Open File',
-                                                     '.', ext)
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
+                                                            'Open File',
+                                                            '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])

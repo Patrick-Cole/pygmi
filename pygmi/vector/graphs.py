@@ -25,34 +25,34 @@
 """ Plot Vector Data using Matplotlib """
 
 import numpy as np
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
 import matplotlib.collections as mc
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 
-class GraphWindow(QtGui.QDialog):
+class GraphWindow(QtWidgets.QDialog):
     """Graph Window - Main QT Dialog class for graphs."""
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent=None)
+        QtWidgets.QDialog.__init__(self, parent=None)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Graph Window")
 
-        vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtGui.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtGui.QComboBox()
-        self.combobox2 = QtGui.QComboBox()
-        self.spinbox = QtGui.QSpinBox()
-        self.label1 = QtGui.QLabel()
-        self.label2 = QtGui.QLabel()
-        self.label3 = QtGui.QLabel()
+        self.combobox1 = QtWidgets.QComboBox()
+        self.combobox2 = QtWidgets.QComboBox()
+        self.spinbox = QtWidgets.QSpinBox()
+        self.label1 = QtWidgets.QLabel()
+        self.label2 = QtWidgets.QLabel()
+        self.label3 = QtWidgets.QLabel()
 
         self.label1.setText('Bands:')
         self.label2.setText('Bands:')

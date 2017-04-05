@@ -53,14 +53,14 @@ from math import cos
 from math import sqrt
 from math import atan2
 import copy
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr
 import pygmi.raster.dataprep as dp
 import pygmi.menu_default as menu_default
 
 
-class IGRF(QtGui.QDialog):
+class IGRF(QtWidgets.QDialog):
     """
     IGRF field calculation
 
@@ -134,7 +134,7 @@ class IGRF(QtGui.QDialog):
         array of MAXMOD  Min year of model.
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent=None)
+        QtWidgets.QDialog.__init__(self, parent=None)
 
         self.parent = parent
         self.indata = {}
@@ -168,10 +168,10 @@ class IGRF(QtGui.QDialog):
         self.idot = 0
         self.ddot = 0
 
-        self.dsb_alt = QtGui.QDoubleSpinBox()
-        self.dateedit = QtGui.QDateEdit()
-        self.combobox_dtm = QtGui.QComboBox()
-        self.combobox_mag = QtGui.QComboBox()
+        self.dsb_alt = QtWidgets.QDoubleSpinBox()
+        self.dateedit = QtWidgets.QDateEdit()
+        self.combobox_dtm = QtWidgets.QComboBox()
+        self.combobox_mag = QtWidgets.QComboBox()
         self.proj = dp.GroupProj('Input Projection')
 
         self.setupui()
@@ -181,14 +181,14 @@ class IGRF(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
 
-        label_0 = QtGui.QLabel()
-        label_1 = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
-        label_3 = QtGui.QLabel()
+        label_0 = QtWidgets.QLabel()
+        label_1 = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+        label_3 = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)

@@ -24,13 +24,13 @@
 # -----------------------------------------------------------------------------
 """ Data Display Routines found on Data Display Tab"""
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.colors as clrs
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 
 class DataDisplay(object):
@@ -44,31 +44,31 @@ class DataDisplay(object):
         self.grid1txt = 'Calculated Magnetics'
         self.grid2txt = 'Calculated Gravity'
 
-        self.userint = QtGui.QWidget()
+        self.userint = QtWidgets.QWidget()
         self.mmc = MyMplCanvas(len(self.lmod1.custprofx))
         self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
         self.ddisp_plot = self.mmc
-        self.sb_profnum = QtGui.QSpinBox()
-        self.label_profile_xy = QtGui.QLabel()
-        self.hslider_profile = QtGui.QSlider()
-        self.hslider_grid = QtGui.QSlider()
-        self.combo_grid1 = QtGui.QComboBox()
-        self.combo_grid2 = QtGui.QComboBox()
-        self.rb_ew = QtGui.QRadioButton()
-        self.rb_ns = QtGui.QRadioButton()
+        self.sb_profnum = QtWidgets.QSpinBox()
+        self.label_profile_xy = QtWidgets.QLabel()
+        self.hslider_profile = QtWidgets.QSlider()
+        self.hslider_grid = QtWidgets.QSlider()
+        self.combo_grid1 = QtWidgets.QComboBox()
+        self.combo_grid2 = QtWidgets.QComboBox()
+        self.rb_ew = QtWidgets.QRadioButton()
+        self.rb_ns = QtWidgets.QRadioButton()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
         gtmp = ['Calculated Magnetics', 'Calculated Gravity']
-        gridlayout = QtGui.QGridLayout(self.userint)
-        groupbox = QtGui.QGroupBox()
-        verticallayout = QtGui.QVBoxLayout(groupbox)
+        gridlayout = QtWidgets.QGridLayout(self.userint)
+        groupbox = QtWidgets.QGroupBox()
+        verticallayout = QtWidgets.QVBoxLayout(groupbox)
 
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Fixed)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                       QtWidgets.QSizePolicy.Fixed)
 
         self.label_profile_xy.setSizePolicy(sizepolicy)
         self.hslider_profile.setSizePolicy(sizepolicy)
@@ -137,7 +137,7 @@ class DataDisplay(object):
         self.grid2 = self.lmod1.griddata[ctxt]
         self.mmc.init_grid2(self.grid2, reg, ctxt)
     # Needed to force the drawing of colorbar
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.hs_grid()
 
     def hs_grid(self):
@@ -252,8 +252,8 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.__init__(self, fig)
 
 #        FigureCanvas.setSizePolicy(self,
-#                                   QtGui.QSizePolicy.Expanding,
-#                                   QtGui.QSizePolicy.Expanding)
+#                                   QtWidgets.QSizePolicy.Expanding,
+#                                   QtWidgets.QSizePolicy.Expanding)
 #        FigureCanvas.updateGeometry(self)
 
         dat = np.zeros([100, 100])

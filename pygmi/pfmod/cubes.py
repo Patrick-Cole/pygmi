@@ -29,9 +29,7 @@ from __future__ import print_function
 import os
 import sys
 import numpy as np
-from PyQt4 import QtCore, QtGui, QtOpenGL
-# import OpenGL
-# OpenGL.ERROR_CHECKING = False  # Note This!!!!
+from PyQt5 import QtCore, QtWidgets, QtOpenGL, QtGui
 from OpenGL import GL
 from OpenGL import GLU
 from OpenGL.arrays import vbo
@@ -42,10 +40,10 @@ from PIL import Image
 import pygmi.pfmod.misc as misc
 
 
-class Mod3dDisplay(QtGui.QDialog):
+class Mod3dDisplay(QtWidgets.QDialog):
     """ Widget class to call the main interface """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.parent = parent
         self.lmod1 = None
         self.indata = {}
@@ -84,37 +82,37 @@ class Mod3dDisplay(QtGui.QDialog):
         self.cust_z = None
 
 # Back to normal stuff
-        self.lw_3dmod_defs = QtGui.QListWidget()
-        self.label = QtGui.QLabel()
-        self.label2 = QtGui.QLabel()
-        self.pb_save = QtGui.QPushButton()
-        self.pb_refresh = QtGui.QPushButton()
-        self.checkbox_smooth = QtGui.QCheckBox()
-        self.pbar = QtGui.QProgressBar()
+        self.lw_3dmod_defs = QtWidgets.QListWidget()
+        self.label = QtWidgets.QLabel()
+        self.label2 = QtWidgets.QLabel()
+        self.pb_save = QtWidgets.QPushButton()
+        self.pb_refresh = QtWidgets.QPushButton()
+        self.checkbox_smooth = QtWidgets.QCheckBox()
+        self.pbar = QtWidgets.QProgressBar()
         self.glwidget = GLWidget()
-        self.vslider_3dmodel = QtGui.QSlider()
+        self.vslider_3dmodel = QtWidgets.QSlider()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        horizontallayout = QtGui.QHBoxLayout(self)
-        vbox_cmodel = QtGui.QVBoxLayout()
-        verticallayout = QtGui.QVBoxLayout()
+        horizontallayout = QtWidgets.QHBoxLayout(self)
+        vbox_cmodel = QtWidgets.QVBoxLayout()
+        verticallayout = QtWidgets.QVBoxLayout()
 
         self.vslider_3dmodel.setMinimum(1)
         self.vslider_3dmodel.setMaximum(1000)
         self.vslider_3dmodel.setOrientation(QtCore.Qt.Vertical)
-        vbox_cmodel.setSizeConstraint(QtGui.QLayout.SetNoConstraint)
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-                                       QtGui.QSizePolicy.Fixed)
+        vbox_cmodel.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                                       QtWidgets.QSizePolicy.Fixed)
 
-        sizepolicy_pb = QtGui.QSizePolicy(QtGui.QSizePolicy.Maximum,
-                                          QtGui.QSizePolicy.Maximum)
+        sizepolicy_pb = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum,
+                                          QtWidgets.QSizePolicy.Maximum)
 
         self.lw_3dmod_defs.setSizePolicy(sizepolicy)
         self.lw_3dmod_defs.setSelectionMode(
-            QtGui.QAbstractItemView.MultiSelection)
+            QtWidgets.QAbstractItemView.MultiSelection)
         self.lw_3dmod_defs.setFixedWidth(220)
         self.checkbox_smooth.setSizePolicy(sizepolicy)
         self.pb_save.setSizePolicy(sizepolicy_pb)
@@ -143,7 +141,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
     def save(self):
         """ This saves a jpg """
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'JPG (*.jpg);;PNG (*.png)')
         if filename == '':
             return
@@ -300,7 +298,7 @@ class Mod3dDisplay(QtGui.QDialog):
 
     def update_plot(self):
         """ Update 3D Model """
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
     # Update 3D model
         self.spacing = [self.lmod1.dxy, self.lmod1.dxy, self.lmod1.d_z]
         self.origin = [self.lmod1.xrange[0], self.lmod1.yrange[0],
@@ -336,7 +334,7 @@ class Mod3dDisplay(QtGui.QDialog):
     def update_model(self, issmooth=None):
         """ Update the 3d model. Faces, nodes and face normals are calculated
         here, from the voxel model. """
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         if issmooth is None:
             issmooth = self.checkbox_smooth.isChecked()
@@ -803,7 +801,8 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def wheelEvent(self, event):
         """ Mouse wheel event """
-        self.zoomfactor -= event.delta()/1000.
+        angle = event.angleDelta().y()/8
+        self.zoomfactor -= angle/1000.
 
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glLoadIdentity()
@@ -1422,7 +1421,7 @@ def main():
 #    c = (xx-.5)**2 + (yy-.5)**2 + (zz-.5)**2
 #    faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     wid = Mod3dDisplay()
     wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
                        QtCore.Qt.WindowActive)

@@ -51,11 +51,11 @@ at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html"""
 import os
 import numpy as np
 import numexpr as ne
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib import patches
 import ogr
 import osr
@@ -92,8 +92,8 @@ class MyMplCanvas(FigureCanvas):
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
     def init_graph(self):
@@ -112,7 +112,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_ylim((ymin, ymax))
 
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         for idat in self.data:
             pxy = idat[:2]
@@ -129,7 +129,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
 
-class BeachBall(QtGui.QDialog):
+class BeachBall(QtWidgets.QDialog):
     """ Create shapefiles with beachballs """
     def __init__(self, parent=None):
         super(BeachBall, self).__init__(parent)
@@ -145,9 +145,9 @@ class BeachBall(QtGui.QDialog):
         self.nofps = False
 
         self.mmc = MyMplCanvas(self)
-        self.btn_saveshp = QtGui.QPushButton()
-        self.cbox_alg = QtGui.QComboBox()
-        self.dsb_dist = QtGui.QDoubleSpinBox()
+        self.btn_saveshp = QtWidgets.QPushButton()
+        self.cbox_alg = QtWidgets.QComboBox()
+        self.dsb_dist = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
 
@@ -204,19 +204,19 @@ class BeachBall(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        hbl_all = QtGui.QHBoxLayout(self)
+        hbl_all = QtWidgets.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        vbl_raster = QtGui.QVBoxLayout()
-        label2 = QtGui.QLabel()
-        label3 = QtGui.QLabel()
+        vbl_raster = QtWidgets.QVBoxLayout()
+        label2 = QtWidgets.QLabel()
+        label3 = QtWidgets.QLabel()
 
         self.dsb_dist.setDecimals(4)
         self.dsb_dist.setMinimum(0.0001)
         self.dsb_dist.setSingleStep(0.0001)
         self.dsb_dist.setProperty("value", 0.001)
 
-        spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-                                   QtGui.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                       QtWidgets.QSizePolicy.Expanding)
 
         self.setWindowTitle("Fault Plane Solution (FPS)")
         label2.setText('FPS Algorithm:')
@@ -229,7 +229,7 @@ class BeachBall(QtGui.QDialog):
         vbl_raster.addWidget(self.dsb_dist)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveshp)
-        vbl_right = QtGui.QVBoxLayout()
+        vbl_right = QtWidgets.QVBoxLayout()
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
         hbl_all.addLayout(vbl_raster)
@@ -244,7 +244,7 @@ class BeachBall(QtGui.QDialog):
 
         ext = "Shape file (*.shp)"
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save Shape File', '.', ext)
         if filename == '':
             return False
@@ -378,7 +378,7 @@ class BeachBall(QtGui.QDialog):
             return False
 
         self.show()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.mmc.init_graph()
 

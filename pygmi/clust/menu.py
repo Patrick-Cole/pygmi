@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Clustering Menu Routines """
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 from pygmi.clust import crisp_clust
 from pygmi.clust import fuzzy_clust
 from pygmi.clust import graphtool
@@ -52,21 +52,21 @@ class MenuWidget(object):
         context_menu = self.parent.context_menu
 
 # Normal menus
-        self.menuclustering = QtGui.QMenu(parent.menubar)
+        self.menuclustering = QtWidgets.QMenu(parent.menubar)
         self.menuclustering.setTitle("Clustering")
         parent.menubar.addAction(self.menuclustering.menuAction())
 
-        self.action_crisp_clustering = QtGui.QAction(self.parent)
+        self.action_crisp_clustering = QtWidgets.QAction(self.parent)
         self.action_crisp_clustering.setText("Crisp Clustering")
         self.menuclustering.addAction(self.action_crisp_clustering)
         self.action_crisp_clustering.triggered.connect(self.crisp_cluster)
 
-        self.action_fuzzy_clustering = QtGui.QAction(self.parent)
+        self.action_fuzzy_clustering = QtWidgets.QAction(self.parent)
         self.action_fuzzy_clustering.setText("Fuzzy Clustering")
         self.menuclustering.addAction(self.action_fuzzy_clustering)
         self.action_fuzzy_clustering.triggered.connect(self.fuzzy_cluster)
 
-        self.action_scatter_plot = QtGui.QAction(self.parent)
+        self.action_scatter_plot = QtWidgets.QAction(self.parent)
         self.action_scatter_plot.setText("Scatter Plot Tool")
         self.menuclustering.addAction(self.action_scatter_plot)
         self.action_scatter_plot.triggered.connect(self.scatter_plot)
@@ -74,31 +74,31 @@ class MenuWidget(object):
 # Context menus
         context_menu['Cluster'].addSeparator()
 
-        self.action_cluster_statistics = QtGui.QAction(self.parent)
+        self.action_cluster_statistics = QtWidgets.QAction(self.parent)
         self.action_cluster_statistics.setText("Cluster Statistics")
         context_menu['Cluster'].addAction(self.action_cluster_statistics)
         self.action_cluster_statistics.triggered.connect(self.cluster_stats)
 
-        self.action_show_class_data = QtGui.QAction(self.parent)
+        self.action_show_class_data = QtWidgets.QAction(self.parent)
         self.action_show_class_data.setText("Show Class Data")
         context_menu['Cluster'].addAction(self.action_show_class_data)
         self.action_show_class_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_membership_data = QtGui.QAction(self.parent)
+        self.action_show_membership_data = QtWidgets.QAction(self.parent)
         self.action_show_membership_data.setText(
             "Show Membership Data (Fuzzy Only)")
         context_menu['Cluster'].addAction(self.action_show_membership_data)
         self.action_show_membership_data.triggered.connect(
             self.show_membership_data)
 
-        self.action_show_objvrcncexbigraphs = QtGui.QAction(self.parent)
+        self.action_show_objvrcncexbigraphs = QtWidgets.QAction(self.parent)
         self.action_show_objvrcncexbigraphs.setText(
             "Show OBJ, VRC, NCE, XBI Graphs")
         context_menu['Cluster'].addAction(self.action_show_objvrcncexbigraphs)
         self.action_show_objvrcncexbigraphs.triggered.connect(
             self.show_vrc_etc)
 
-        self.action_export_data = QtGui.QAction(self.parent)
+        self.action_export_data = QtWidgets.QAction(self.parent)
         self.action_export_data.setText("Export Data")
         context_menu['Cluster'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)

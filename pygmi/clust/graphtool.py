@@ -27,11 +27,11 @@ Graph tool is a multi-function graphing tool for use with cluster analysis
 """
 
 import numpy as np
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 from matplotlib.figure import Figure
 import matplotlib.pylab as plt
 from matplotlib.path import Path
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 
 class GraphHist(FigureCanvas):
@@ -315,7 +315,7 @@ class PolygonInteractor(QtCore.QObject):
     def draw_callback(self):
         """ Draw callback """
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.poly)
@@ -438,7 +438,7 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.update()
 
 
-class ScatterPlot(QtGui.QDialog):
+class ScatterPlot(QtWidgets.QDialog):
     """
     Main Graph Tool Routine
 
@@ -452,7 +452,7 @@ class ScatterPlot(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.indata = {}
         self.outdata = {}
         self.parent = parent
@@ -464,13 +464,13 @@ class ScatterPlot(QtGui.QDialog):
         self.map = GraphMap(self)
         self.hist = GraphHist(self)
 
-        self.cp_dpoly = QtGui.QPushButton()
-        self.cp_combo = QtGui.QComboBox()
-        self.cp_combo2 = QtGui.QComboBox()
-        self.cp_combo3 = QtGui.QComboBox()
-        self.map_dpoly = QtGui.QPushButton()
-        self.map_combo = QtGui.QComboBox()
-        self.map_combo2 = QtGui.QComboBox()
+        self.cp_dpoly = QtWidgets.QPushButton()
+        self.cp_combo = QtWidgets.QComboBox()
+        self.cp_combo2 = QtWidgets.QComboBox()
+        self.cp_combo3 = QtWidgets.QComboBox()
+        self.map_dpoly = QtWidgets.QPushButton()
+        self.map_combo = QtWidgets.QComboBox()
+        self.map_combo2 = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -479,21 +479,21 @@ class ScatterPlot(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        grid_main = QtGui.QGridLayout(self)
-        group_cp = QtGui.QGroupBox()
-        grid_left = QtGui.QGridLayout(group_cp)
-        group_map = QtGui.QGroupBox()
-        grid_right = QtGui.QGridLayout(group_map)
+        grid_main = QtWidgets.QGridLayout(self)
+        group_cp = QtWidgets.QGroupBox()
+        grid_left = QtWidgets.QGridLayout(group_cp)
+        group_map = QtWidgets.QGroupBox()
+        grid_right = QtWidgets.QGridLayout(group_map)
 
         self.setWindowTitle("Graph Window")
         group_map.setTitle("Map Settings")
         group_cp.setTitle('Cross Plot Settings')
 
-        lbl_combo_left = QtGui.QLabel()
-        lbl_combo2_left = QtGui.QLabel()
-        lbl_combo3_left = QtGui.QLabel()
-        lbl_combo_right = QtGui.QLabel()
-        lbl_combo2_right = QtGui.QLabel()
+        lbl_combo_left = QtWidgets.QLabel()
+        lbl_combo2_left = QtWidgets.QLabel()
+        lbl_combo3_left = QtWidgets.QLabel()
+        lbl_combo_right = QtWidgets.QLabel()
+        lbl_combo2_right = QtWidgets.QLabel()
 
         lbl_combo_left.setText('X Data Band:')
         lbl_combo2_left.setText('Y Data Band:')

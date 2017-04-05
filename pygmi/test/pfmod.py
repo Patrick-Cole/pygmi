@@ -30,7 +30,6 @@ import matplotlib.pyplot as plt
 from pygmi.pfmod.grvmag3d import quick_model
 from pygmi.pfmod.grvmag3d import calc_field
 import pygmi.misc as ptimer
-import pdb
 
 
 def test(doplt=False):

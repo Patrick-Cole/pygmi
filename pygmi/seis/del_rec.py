@@ -26,7 +26,7 @@
 
 import os
 import numpy as np
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
 
 
@@ -45,7 +45,7 @@ class DeleteRecord(object):
         """ Settings """
         self.showtext('Delete Rows starting')
 
-        ifile = QtGui.QFileDialog.getOpenFileName()
+        ifile, _ = QtWidgets.QFileDialog.getOpenFileName()
         if ifile == '':
             return
         os.chdir(ifile.rpartition('/')[0])
@@ -65,10 +65,10 @@ class DeleteRecord(object):
         outputf = open(ofile, 'w')
         inputf = open(ifile)
 
-        skey = QtGui.QInputDialog.getText(
+        skey = QtWidgets.QInputDialog.getText(
             self.parent, 'Delete Criteria',
             'Please input the terms used to decide on lines to delete',
-            QtGui.QLineEdit.Normal, 'AML, IAML')[0]
+            QtWidgets.QLineEdit.Normal, 'AML, IAML')[0]
 
         skey = str(skey).upper()
 
@@ -337,7 +337,7 @@ class Quarry(object):
 #        plt.figure(1)
 #        plt.plot(lon, lat, 'b.')
 #        plt.show()
-#        QtGui.QApplication.processEvents()
+#        QtWidgets.QApplication.processEvents()
 #
 #        while stayinloop:
 #            nd = np.zeros([rows, cols, rlyrs])

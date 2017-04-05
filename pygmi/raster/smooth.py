@@ -25,17 +25,16 @@
 """ Smooth Data """
 
 import copy
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import numpy as np
 import scipy.signal as ssig
 import pygmi.menu_default as menu_default
-# import pygmi.misc as misc
 
 
-class Smooth(QtGui.QDialog):
+class Smooth(QtWidgets.QDialog):
     """ Smooth """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
@@ -43,21 +42,21 @@ class Smooth(QtGui.QDialog):
         self.pbar = parent.pbar
         self.reportback = self.parent.showprocesslog
 
-        self.label = QtGui.QLabel()
-        self.spinbox_x = QtGui.QSpinBox()
-        self.label_2 = QtGui.QLabel()
-        self.label_3 = QtGui.QLabel()
-        self.spinbox_y = QtGui.QSpinBox()
-        self.spinbox_radius = QtGui.QSpinBox()
-        self.label_4 = QtGui.QLabel()
-        self.spinbox_stddev = QtGui.QSpinBox()
+        self.label = QtWidgets.QLabel()
+        self.spinbox_x = QtWidgets.QSpinBox()
+        self.label_2 = QtWidgets.QLabel()
+        self.label_3 = QtWidgets.QLabel()
+        self.spinbox_y = QtWidgets.QSpinBox()
+        self.spinbox_radius = QtWidgets.QSpinBox()
+        self.label_4 = QtWidgets.QLabel()
+        self.spinbox_stddev = QtWidgets.QSpinBox()
 
-        self.radiobutton_2dmedian = QtGui.QRadioButton()
-        self.radiobutton_2dmean = QtGui.QRadioButton()
-        self.radiobutton_box = QtGui.QRadioButton()
-        self.radiobutton_disk = QtGui.QRadioButton()
-        self.radiobutton_gaussian = QtGui.QRadioButton()
-        self.tablewidget = QtGui.QTableWidget()
+        self.radiobutton_2dmedian = QtWidgets.QRadioButton()
+        self.radiobutton_2dmean = QtWidgets.QRadioButton()
+        self.radiobutton_box = QtWidgets.QRadioButton()
+        self.radiobutton_disk = QtWidgets.QRadioButton()
+        self.radiobutton_gaussian = QtWidgets.QRadioButton()
+        self.tablewidget = QtWidgets.QTableWidget()
 
         self.setupui()
 
@@ -68,12 +67,12 @@ class Smooth(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 
-        gridlayout = QtGui.QGridLayout(self)
-        groupbox = QtGui.QGroupBox()
-        gridlayout_2 = QtGui.QGridLayout(groupbox)
-        groupbox_2 = QtGui.QGroupBox()
-        groupbox_3 = QtGui.QGroupBox()
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        groupbox = QtWidgets.QGroupBox()
+        gridlayout_2 = QtWidgets.QGridLayout(groupbox)
+        groupbox_2 = QtWidgets.QGroupBox()
+        groupbox_3 = QtWidgets.QGroupBox()
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.smooth')
 
         self.spinbox_x.setMinimum(1)
@@ -108,10 +107,10 @@ class Smooth(QtGui.QDialog):
         self.radiobutton_disk.setText("Disk Window")
         self.radiobutton_gaussian.setText("Gaussian Window")
 
-        verticallayout = QtGui.QVBoxLayout(groupbox_2)
+        verticallayout = QtWidgets.QVBoxLayout(groupbox_2)
         verticallayout.addWidget(self.radiobutton_2dmean)
         verticallayout.addWidget(self.radiobutton_2dmedian)
-        verticallayout_2 = QtGui.QVBoxLayout(groupbox_3)
+        verticallayout_2 = QtWidgets.QVBoxLayout(groupbox_3)
         verticallayout_2.addWidget(self.radiobutton_box)
         verticallayout_2.addWidget(self.radiobutton_disk)
         verticallayout_2.addWidget(self.radiobutton_gaussian)
@@ -253,7 +252,7 @@ class Smooth(QtGui.QDialog):
                     i = 127
                 else:
                     i = int(255*(self.fmat[row, col]-fmin)/frange)
-                ltmp = QtGui.QLabel('{:g}'.format(self.fmat[row, col]))
+                ltmp = QtWidgets.QLabel('{:g}'.format(self.fmat[row, col]))
                 ltmp.setStyleSheet(
                     'Background: rgb' +
                     str((red[i], green[i], blue[i])) + '; Color: rgb' +
@@ -264,8 +263,8 @@ class Smooth(QtGui.QDialog):
 
     def msgbox(self, title, message):
         """ Msgbox """
-        QtGui.QMessageBox.warning(self.parent, title, message,
-                                  QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+        QtWidgets.QMessageBox.warning(self.parent, title, message,
+                                  QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
 
     def mov_win_filt(self, dat, fmat, itype, title):
         """ move win filt function """

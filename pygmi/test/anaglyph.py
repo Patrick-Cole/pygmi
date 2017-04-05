@@ -373,22 +373,22 @@ def histcomp(img, nbr_bins=256, perc=5.):
     return img2
 
 
-def anaglyph(red, blue, type='dubois'):
+def anaglyph(red, blue, atype='dubois'):
     """ color Aanaglyph """
 
-    if type == 'dubois':
+    if atype == 'dubois':
         mat = np.array([[0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
                         [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
                         [-0.048, -0.050, -0.017, -0.026, -0.093, 1.234]])
-    elif type == 'color':
+    elif atype == 'color':
         mat = np.array([[1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
-    elif type == 'true':
+    elif atype == 'true':
         mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
-    elif type == 'gray':
+    elif atype == 'gray':
         mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
@@ -647,23 +647,23 @@ def main_rotate():
 #    plt.plot(zr[50], 'r')
 #    plt.plot(zb[50], 'b')
 #    plt.show()
-#
-#    plt.subplot(211)
-#    plt.imshow(red, origin='lower')
-#    plt.subplot(212)
-#    plt.imshow(blue, origin='lower')
-#    plt.show()
+
+    plt.subplot(211)
+    plt.imshow(red, origin='lower')
+    plt.subplot(212)
+    plt.imshow(blue, origin='lower')
+    plt.show()
 
     adata = anaglyph(red, blue, 'dubois')
 
-    plt.imshow(adata, origin='lower')
+    plt.imshow(adata, origin='lower', interpolation='spline36')
 #    plt.contour(zr, colors='r', origin='lower')
 #    plt.contour(zb, colors='c', origin='lower')
     plt.show()
 
-    x, y = np.indices(zr.shape)
-    ax = plt.gca()
-    ax.set_axis_bgcolor('black')
+#    x, y = np.indices(zr.shape)
+#    ax = plt.gca()
+#    ax.set_axis_bgcolor('black')
 #    plt.contour(zr, colors='r', origin='lower')
 #    plt.contour(zb, colors='c', origin='lower')
 #    plt.show()

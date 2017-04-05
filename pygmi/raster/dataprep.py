@@ -29,7 +29,7 @@ from __future__ import print_function
 import os
 import copy
 from collections import Counter
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import gdal, osr, ogr
 from PIL import Image, ImageDraw
@@ -87,7 +87,7 @@ class DataCut(object):
 
         ext = "Shape file (*.shp)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
@@ -101,9 +101,9 @@ class DataCut(object):
             err = ('There was a problem importing the shapefile. Please make '
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
-            QtGui.QMessageBox.warning(self.parent, 'Error', err,
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
+                                      QtWidgets.QMessageBox.Ok,
+                                      QtWidgets.QMessageBox.Ok)
             return False
 
 
@@ -114,7 +114,7 @@ class DataCut(object):
         return True
 
 
-class DataGrid(QtGui.QDialog):
+class DataGrid(QtWidgets.QDialog):
     """
     Grid Point Data
 
@@ -130,27 +130,27 @@ class DataGrid(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
         self.pbar = parent.pbar
 
-        self.dsb_dxy = QtGui.QDoubleSpinBox()
-        self.dataid = QtGui.QComboBox()
-        self.label_rows = QtGui.QLabel()
-        self.label_cols = QtGui.QLabel()
+        self.dsb_dxy = QtWidgets.QDoubleSpinBox()
+        self.dataid = QtWidgets.QComboBox()
+        self.label_rows = QtWidgets.QLabel()
+        self.label_cols = QtWidgets.QLabel()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout_main = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
-        label_band = QtGui.QLabel()
-        label_dxy = QtGui.QLabel()
+        label_band = QtWidgets.QLabel()
+        label_dxy = QtWidgets.QLabel()
 
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
@@ -266,7 +266,7 @@ class DataGrid(QtGui.QDialog):
         self.outdata['Point'] = self.indata['Point']
 
 
-class DataMerge(QtGui.QDialog):
+class DataMerge(QtWidgets.QDialog):
     """
     Data Merge
 
@@ -283,26 +283,26 @@ class DataMerge(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
 #        self.pbar = self.parent.pbar
 
-        self.dsb_dxy = QtGui.QDoubleSpinBox()
-        self.label_rows = QtGui.QLabel()
-        self.label_cols = QtGui.QLabel()
+        self.dsb_dxy = QtWidgets.QDoubleSpinBox()
+        self.label_rows = QtWidgets.QLabel()
+        self.label_cols = QtWidgets.QLabel()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
 
-        gridlayout_main = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
-        label_dxy = QtGui.QLabel()
+        label_dxy = QtWidgets.QLabel()
 
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
@@ -423,7 +423,7 @@ class DataMerge(QtGui.QDialog):
 #        self.accept()
 
 
-class DataReproj(QtGui.QDialog):
+class DataReproj(QtWidgets.QDialog):
     """
     Reprojections
 
@@ -439,19 +439,19 @@ class DataReproj(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
         self.pbar = self.parent.pbar
 
-        self.groupboxb = QtGui.QGroupBox()
-        self.combobox_inp_epsg = QtGui.QComboBox()
-        self.inp_epsg_info = QtGui.QLabel()
-        self.groupbox2b = QtGui.QGroupBox()
-        self.combobox_out_epsg = QtGui.QComboBox()
-        self.out_epsg_info = QtGui.QLabel()
+        self.groupboxb = QtWidgets.QGroupBox()
+        self.combobox_inp_epsg = QtWidgets.QComboBox()
+        self.inp_epsg_info = QtWidgets.QLabel()
+        self.groupbox2b = QtWidgets.QGroupBox()
+        self.combobox_out_epsg = QtWidgets.QComboBox()
+        self.out_epsg_info = QtWidgets.QLabel()
         self.in_proj = GroupProj('Input Projection')
         self.out_proj = GroupProj('Output Projection')
 
@@ -459,8 +459,8 @@ class DataReproj(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout_main = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -625,7 +625,7 @@ class GetProf(object):
 
         ext = "Shape file (*.shp)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
@@ -639,9 +639,9 @@ class GetProf(object):
             err = ('There was a problem importing the shapefile. Please make '
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
-            QtGui.QMessageBox.warning(self.parent, 'Error', err,
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
+                                      QtWidgets.QMessageBox.Ok,
+                                      QtWidgets.QMessageBox.Ok)
             return False
 
         lyr = shapef.GetLayer()
@@ -689,26 +689,26 @@ class GetProf(object):
         return True
 
 
-class GroupProj(QtGui.QWidget):
+class GroupProj(QtWidgets.QWidget):
     """
     Group Proj
 
     Custom widget
     """
     def __init__(self, title='Projection', parent=None):
-        QtGui.QWidget.__init__(self, parent)
+        QtWidgets.QWidget.__init__(self, parent)
 
         self.wkt = ''
 
-        self.gridlayout = QtGui.QGridLayout(self)
-        self.groupbox = QtGui.QGroupBox()
-        self.combobox = QtGui.QComboBox()
-        self.label = QtGui.QLabel()
+        self.gridlayout = QtWidgets.QGridLayout(self)
+        self.groupbox = QtWidgets.QGroupBox()
+        self.combobox = QtWidgets.QComboBox()
+        self.label = QtWidgets.QLabel()
 
         self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
 
         self.groupbox.setTitle(title)
-        gridlayout = QtGui.QGridLayout(self.groupbox)
+        gridlayout = QtWidgets.QGridLayout(self.groupbox)
         gridlayout.addWidget(self.combobox, 0, 0, 1, 1)
         gridlayout.addWidget(self.label, 1, 0, 1, 1)
 
@@ -739,7 +739,7 @@ class GroupProj(QtGui.QWidget):
         self.label.setText(srs.ExportToPrettyWkt())
 
 
-class Metadata(QtGui.QDialog):
+class Metadata(QtWidgets.QDialog):
     """
     Edit Metadata
 
@@ -762,7 +762,7 @@ class Metadata(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
@@ -771,21 +771,21 @@ class Metadata(QtGui.QDialog):
         self.oldtxt = ''
         self.parent = parent
 
-        self.groupbox = QtGui.QGroupBox()
-        self.combobox_bandid = QtGui.QComboBox()
-        self.pb_rename_id = QtGui.QPushButton()
-        self.lbl_rows = QtGui.QLabel()
-        self.lbl_cols = QtGui.QLabel()
-        self.inp_epsg_info = QtGui.QLabel()
-        self.txt_null = QtGui.QLineEdit()
-        self.dsb_tlx = QtGui.QLineEdit()
-        self.dsb_tly = QtGui.QLineEdit()
-        self.dsb_xdim = QtGui.QLineEdit()
-        self.dsb_ydim = QtGui.QLineEdit()
-        self.led_units = QtGui.QLineEdit()
-        self.lbl_min = QtGui.QLabel()
-        self.lbl_max = QtGui.QLabel()
-        self.lbl_mean = QtGui.QLabel()
+        self.groupbox = QtWidgets.QGroupBox()
+        self.combobox_bandid = QtWidgets.QComboBox()
+        self.pb_rename_id = QtWidgets.QPushButton()
+        self.lbl_rows = QtWidgets.QLabel()
+        self.lbl_cols = QtWidgets.QLabel()
+        self.inp_epsg_info = QtWidgets.QLabel()
+        self.txt_null = QtWidgets.QLineEdit()
+        self.dsb_tlx = QtWidgets.QLineEdit()
+        self.dsb_tly = QtWidgets.QLineEdit()
+        self.dsb_xdim = QtWidgets.QLineEdit()
+        self.dsb_ydim = QtWidgets.QLineEdit()
+        self.led_units = QtWidgets.QLineEdit()
+        self.lbl_min = QtWidgets.QLabel()
+        self.lbl_max = QtWidgets.QLabel()
+        self.lbl_mean = QtWidgets.QLabel()
 
         self.proj = GroupProj('Input Projection')
 
@@ -793,25 +793,25 @@ class Metadata(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout_main = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
 
-        gridlayout = QtGui.QGridLayout(self.groupbox)
-        label_tlx = QtGui.QLabel()
-        label_tly = QtGui.QLabel()
-        label_xdim = QtGui.QLabel()
-        label_ydim = QtGui.QLabel()
-        label_null = QtGui.QLabel()
-        label_rows = QtGui.QLabel()
-        label_cols = QtGui.QLabel()
-        label_min = QtGui.QLabel()
-        label_max = QtGui.QLabel()
-        label_mean = QtGui.QLabel()
-        label_units = QtGui.QLabel()
-        label_bandid = QtGui.QLabel()
+        gridlayout = QtWidgets.QGridLayout(self.groupbox)
+        label_tlx = QtWidgets.QLabel()
+        label_tly = QtWidgets.QLabel()
+        label_xdim = QtWidgets.QLabel()
+        label_ydim = QtWidgets.QLabel()
+        label_null = QtWidgets.QLabel()
+        label_rows = QtWidgets.QLabel()
+        label_cols = QtWidgets.QLabel()
+        label_min = QtWidgets.QLabel()
+        label_max = QtWidgets.QLabel()
+        label_mean = QtWidgets.QLabel()
+        label_units = QtWidgets.QLabel()
+        label_bandid = QtWidgets.QLabel()
 
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Expanding)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                       QtWidgets.QSizePolicy.Expanding)
         self.groupbox.setSizePolicy(sizepolicy)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -901,10 +901,10 @@ class Metadata(QtGui.QDialog):
     def rename_id(self):
         """ Renames the band name """
         ctxt = str(self.combobox_bandid.currentText())
-        (skey, isokay) = QtGui.QInputDialog.getText(
+        (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Band Name',
             'Please type in the new name for the band',
-            QtGui.QLineEdit.Normal, ctxt)
+            QtWidgets.QLineEdit.Normal, ctxt)
 
         if isokay:
             self.combobox_bandid.currentIndexChanged.disconnect()
@@ -1003,7 +1003,7 @@ class Metadata(QtGui.QDialog):
         return tmp
 
 
-class RTP(QtGui.QDialog):
+class RTP(QtWidgets.QDialog):
     """
     Perform Reduction to the Pole on Magnetic data.
 
@@ -1019,27 +1019,27 @@ class RTP(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
         self.pbar = self.parent.pbar
 
-        self.dataid = QtGui.QComboBox()
-        self.dsb_inc = QtGui.QDoubleSpinBox()
-        self.dsb_dec = QtGui.QDoubleSpinBox()
+        self.dataid = QtWidgets.QComboBox()
+        self.dsb_inc = QtWidgets.QDoubleSpinBox()
+        self.dsb_dec = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout_main = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.rtp')
-        label_band = QtGui.QLabel()
-        label_inc = QtGui.QLabel()
-        label_dec = QtGui.QLabel()
+        label_band = QtWidgets.QLabel()
+        label_inc = QtWidgets.QLabel()
+        label_dec = QtWidgets.QLabel()
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
@@ -1681,7 +1681,7 @@ def tests():
     import pdb
     import sys
 
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
 
     ttt = PTime()
     aaa = GroupProj('Input Projection')

@@ -27,7 +27,7 @@
 import os
 import glob
 import struct
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import numpy as np
 from osgeo import gdal, osr
 from pygmi.raster.datatypes import Data
@@ -86,7 +86,7 @@ class ImportData(object):
             "Arcinfo Binary Grid (hdr.adf);;" + \
             "ArcGIS BIL (*.bil)"
 
-        filename, filt = QtGui.QFileDialog.getOpenFileNameAndFilter(
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -112,34 +112,34 @@ class ImportData(object):
 
         if dat is None:
             if filt == 'Surfer grid (v.6) (*.grd)':
-                QtGui.QMessageBox.warning(self.parent, 'Error',
+                QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Could not import the surfer 6 '
                                           'grid. Please make sure it not '
                                           'another format, such as geosoft.',
-                                          QtGui.QMessageBox.Ok,
-                                          QtGui.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
-                QtGui.QMessageBox.warning(self.parent, 'Error',
+                QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Could not import the grid. '
                                           'Please make sure it is a Geosoft '
                                           'FLOAT grid, and not a compressed '
                                           'grid. You can export your grid to '
                                           'this format using the Geosoft '
                                           'Viewer.',
-                                          QtGui.QMessageBox.Ok,
-                                          QtGui.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             elif filt == 'hdf (*.hdf)':
-                QtGui.QMessageBox.warning(self.parent, 'Error',
+                QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Could not import the data.'
                                           'Currently only ASTER and MODIS'
                                           'are supported.',
-                                          QtGui.QMessageBox.Ok,
-                                          QtGui.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             else:
-                QtGui.QMessageBox.warning(self.parent, 'Error',
+                QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'Could not import the grid.',
-                                          QtGui.QMessageBox.Ok,
-                                          QtGui.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             return False
 
         output_type = 'Raster'
@@ -935,7 +935,7 @@ class ExportData(object):
             "ASCII XYZ (*.xyz);;" + \
             "ArcGIS BIL (*.bil)"
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
             self.parent.process_is_active(False)

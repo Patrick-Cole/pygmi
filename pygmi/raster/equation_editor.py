@@ -25,13 +25,13 @@
 """ This is the function which calls the equation editor """
 
 import copy
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import numexpr as ne
 import pygmi.raster.dataprep as dataprep
 
 
-class EquationEditor(QtGui.QDialog):
+class EquationEditor(QtWidgets.QDialog):
     """
     Equation Editor
 
@@ -55,7 +55,7 @@ class EquationEditor(QtGui.QDialog):
         list of all bands
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
@@ -67,11 +67,11 @@ class EquationEditor(QtGui.QDialog):
 
         self.bands['all data'] = 'iall'
 
-        self.combobox = QtGui.QComboBox()
+        self.combobox = QtWidgets.QComboBox()
 
-        self.textbrowser = QtGui.QTextEdit()
-        self.textbrowser2 = QtGui.QTextBrowser()
-        self.label = QtGui.QLabel()
+        self.textbrowser = QtWidgets.QTextEdit()
+        self.textbrowser2 = QtWidgets.QTextBrowser()
+        self.label = QtWidgets.QLabel()
 
         self.setupui()
 
@@ -81,9 +81,9 @@ class EquationEditor(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
-        label_2 = QtGui.QLabel()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        label_2 = QtWidgets.QLabel()
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)
@@ -96,7 +96,7 @@ class EquationEditor(QtGui.QDialog):
         ptmp.setColor(1, 9, ptmp.color(10))
         ptmp.setColor(2, 9, ptmp.color(10))
         self.textbrowser2.setPalette(ptmp)
-        self.textbrowser2.setFrameShape(QtGui.QFrame.NoFrame)
+        self.textbrowser2.setFrameShape(QtWidgets.QFrame.NoFrame)
 
         self.setWindowTitle("Equation Editor")
         self.label.setText(": iall")
@@ -207,20 +207,20 @@ class EquationEditor(QtGui.QDialog):
         try:
             findat = ne.evaluate(neweq, self.localdict)
         except:
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self.parent, 'Error',
                 ' Nothing processed! Your equation most likely had an error.',
-                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+                QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
             return
 
         outdata = []
 
         if np.size(findat) == 1:
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self.parent, 'Warning',
                 ' Nothing processed! Your equation outputs a single ' +
                 'value instead of a minimum of one band.',
-                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+                QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
             return
         elif len(findat.shape) == 2:
             findat[np.isnan(findat)] = indata[0].nullvalue

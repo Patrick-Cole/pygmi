@@ -25,7 +25,7 @@
 """ Import Data """
 
 import os
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import numpy as np
 from osgeo import ogr
 from pygmi.vector.datatypes import PData
@@ -62,7 +62,7 @@ class ImportLEMI417Data(object):
         """Entry point into item. Data imported from here."""
         ext = "LEMI-417 Text DataAll Files (*.t*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -122,17 +122,17 @@ class ImportPointData(object):
         ext = ("Common Formats (*.csv *.dat *.xyz *.txt);;"
                "All Files (*.*)")
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
         self.ifile = str(filename)
 
-        tmp = QtGui.QMessageBox.question(self.parent, 'Data Query',
-                                         'Are the first two columns X and Y?',
-                                         QtGui.QMessageBox.Yes |
-                                         QtGui.QMessageBox.No)
+        tmp = QtWidgets.QMessageBox.question(self.parent, 'Data Query',
+                                             'Are the first two columns X and Y?',
+                                             QtWidgets.QMessageBox.Yes |
+                                             QtWidgets.QMessageBox.No)
 
         dlim = None
         if filename[-3:] == 'csv':
@@ -150,9 +150,10 @@ class ImportPointData(object):
 
         xcol = 0
         ycol = 1
-        if ltmp.index('lat') < ltmp.index('lon') and 'lat' in ltmp:
-            xcol = 1
-            ycol = 0
+        if 'lat' in ltmp:
+            if ltmp.index('lat') < ltmp.index('lon'):
+                xcol = 1
+                ycol = 0
 
         srows = 0
         ltmp = ltmp.split(dlim)
@@ -169,14 +170,14 @@ class ImportPointData(object):
 #            datatmp = np.loadtxt(filename, unpack=True, delimiter=dlim,
 #                                 skiprows=srows)
 #        except ValueError:
-#            QtGui.QMessageBox.critical(self.parent, 'Import Error',
+#            QtWidgets.QMessageBox.critical(self.parent, 'Import Error',
 #                                       'There was a problem loading the file.'
 #                                       ' You may have a text character in one'
 #                                       ' of your columns.')
 #            return False
 
         dat = []
-        if tmp == QtGui.QMessageBox.Yes:
+        if tmp == QtWidgets.QMessageBox.Yes:
             for i in range(2, datatmp.shape[0]):
                 dat.append(PData())
                 dat[-1].xdata = datatmp[xcol]
@@ -224,7 +225,7 @@ class ExportPoint(object):
             self.showtext('Error: You need to have a point data first!')
             return
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'csv (*.csv)')
 
         if filename == '':
@@ -275,9 +276,9 @@ class ImportShapeData(object):
         """Entry point into item. Data imported from here."""
         ext = "Shapefile (*.shp);;" + "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(self.parent,
-                                                     'Open File',
-                                                     '.', ext)
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
+                                                            'Open File',
+                                                            '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -291,9 +292,9 @@ class ImportShapeData(object):
             err = ('There was a problem importing the shapefile. Please make '
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
-            QtGui.QMessageBox.warning(self.parent, 'Error', err,
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             return False
 
         lyr = shapef.GetLayer()

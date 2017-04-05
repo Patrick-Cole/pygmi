@@ -31,25 +31,13 @@
 """
 
 import copy
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import scipy.signal as si
-# import scipy.interpolate as sint
-from numba import jit
 import pygmi.menu_default as menu_default
 
-#        data = np.array([   [1, 2, 3, 4, 5, 6, 7, 8, 9],
-#                            [1, 2, 3, 4, 5, 7, 6, 8, 9],
-#                            [1, 2, 3, 4, 5, 7, 6, 8, 9],
-#                            [4, 3, 2, 1, 0, 1, 2, 9, 0],
-#                            [4, 3, 1, 1, 0, 1, 2, 3, 4],
-#                            [4, 3, 1, 1, 0, 1, 1, 1, 2],
-#                            [4, 3, 1, 1, 0, 1, 2, 3, 4],
-#                            [4, 3, 1, 1, 0, 1, 1, 1, 2],
-#                            [4, 3, 1, 1, 0, 1, 1, 2, 2]])
 
-
-class Gradients(QtGui.QDialog):
+class Gradients(QtWidgets.QDialog):
     """
     Class used to gather information via a GUI, for function gradients
 
@@ -68,7 +56,7 @@ class Gradients(QtGui.QDialog):
         Order of DR filter - see paper. Try 1 first.
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -78,8 +66,8 @@ class Gradients(QtGui.QDialog):
         self.order = 1
         self.pbar = self.parent.pbar
 
-        self.sb_order = QtGui.QSpinBox()
-        self.sb_azi = QtGui.QSpinBox()
+        self.sb_order = QtWidgets.QSpinBox()
+        self.sb_azi = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -89,10 +77,10 @@ class Gradients(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 #        self.resize(289, 166)
-        gridlayout = QtGui.QGridLayout(self)
-        label_az = QtGui.QLabel()
-        label_or = QtGui.QLabel()
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        label_az = QtWidgets.QLabel()
+        label_or = QtWidgets.QLabel()
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
         self.sb_order.setMinimum(1)
@@ -135,7 +123,7 @@ class Gradients(QtGui.QDialog):
         return True
 
 
-class VGradients(QtGui.QDialog):
+class VGradients(QtWidgets.QDialog):
     """
     Class used to gather information via a GUI, for function gradients
 
@@ -154,7 +142,7 @@ class VGradients(QtGui.QDialog):
         Order of DR filter - see paper. Try 1 first.
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -164,8 +152,8 @@ class VGradients(QtGui.QDialog):
         self.order = 1
         self.pbar = self.parent.pbar
 
-        self.sb_order = QtGui.QSpinBox()
-        self.sb_azi = QtGui.QSpinBox()
+        self.sb_order = QtWidgets.QSpinBox()
+        self.sb_azi = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -175,10 +163,10 @@ class VGradients(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 #        self.resize(289, 166)
-        gridlayout = QtGui.QGridLayout(self)
-        label_az = QtGui.QLabel()
-        label_or = QtGui.QLabel()
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        label_az = QtWidgets.QLabel()
+        label_or = QtWidgets.QLabel()
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
         self.sb_order.setMinimum(1)
@@ -214,7 +202,6 @@ class VGradients(QtGui.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
 
         for i in self.pbar.iter(range(len(data))):
-#            data[i].data = gradients(data[i].data, self.azi, 0., self.order)
             mask = data[i].data.mask
             data[i].data = np.ma.array(vertical(data[i].data))
             data[i].data.mask = mask
@@ -222,7 +209,6 @@ class VGradients(QtGui.QDialog):
         self.outdata['Raster'] = data
 
         return True
-
 
 
 def gradients(data, azi, elev, order):
@@ -235,7 +221,7 @@ def gradients(data, azi, elev, order):
     Parameters
     ----------
     data : numpy array
-        input numy data array
+        input numpy data array
     azi : float
         Filter direction (degrees)
     elev : float
@@ -272,7 +258,7 @@ def gradients(data, azi, elev, order):
     return dr
 
 
-class Visibility2d(QtGui.QDialog):
+class Visibility2d(QtWidgets.QDialog):
     """
     Class used to gather information via a GUI, for function visibility2d
 
@@ -289,7 +275,7 @@ class Visibility2d(QtGui.QDialog):
         height of observer above surface
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -298,8 +284,8 @@ class Visibility2d(QtGui.QDialog):
         self.dh = 10
         self.pbar = self.parent.pbar
 
-        self.sb_dh = QtGui.QSpinBox()
-        self.sb_wsize = QtGui.QSpinBox()
+        self.sb_dh = QtWidgets.QSpinBox()
+        self.sb_wsize = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -308,11 +294,11 @@ class Visibility2d(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
 
         self.sb_dh.setMinimum(1)
         self.sb_dh.setMaximum(10000)
@@ -505,7 +491,7 @@ def __visible2(dat, nr, cp, dh):
     return num
 
 
-class Tilt1(QtGui.QDialog):
+class Tilt1(QtWidgets.QDialog):
     """
     Class used to gather information via a GUI, for function tilt1
 
@@ -522,7 +508,7 @@ class Tilt1(QtGui.QDialog):
         size of smoothing matrix to use - must be odd input 0 for no smoothing
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -531,8 +517,8 @@ class Tilt1(QtGui.QDialog):
         self.smooth = 0
         self.pbar = self.parent.pbar
 
-        self.sb_azi = QtGui.QSpinBox()
-        self.sb_s = QtGui.QSpinBox()
+        self.sb_azi = QtWidgets.QSpinBox()
+        self.sb_s = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -541,11 +527,11 @@ class Tilt1(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -699,7 +685,6 @@ def __nextpow2(n):
     return m_i
 
 
-@jit
 def vertical(data, npts=None, xint=1):
     """ Vertical """
 
@@ -803,6 +788,5 @@ def __taper2d(g, npts, n, m, ndiff, mdiff):
                 gf[i, j] = (gf[i, j] *
                             np.cos((i+1-ndiff)*np.pi/(2*ndiff)) *
                             np.cos((j+1-ndiff-m)*np.pi/(2*mdiff)))
-
 
     return gf

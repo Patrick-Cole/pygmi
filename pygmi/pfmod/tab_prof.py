@@ -25,13 +25,13 @@
 """ Profile Display Tab Routines """
 
 import os
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import scipy.interpolate as si
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib import cm
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import pygmi.raster.iodefs as ir
 from pygmi.pfmod import misc
 from pygmi.pfmod.grvmag3d import gridmatch
@@ -47,37 +47,37 @@ class ProfileDisplay(object):
         self.pbar = self.parent.pbar_sub
         self.viewmagnetics = True
 
-        self.userint = QtGui.QWidget()
+        self.userint = QtWidgets.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod1)
         self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
-        self.sb_profnum = QtGui.QSpinBox()
+        self.sb_profnum = QtWidgets.QSpinBox()
         self.hs_profnum = MySlider()
-        self.combo_profpic = QtGui.QComboBox()
+        self.combo_profpic = QtWidgets.QComboBox()
         self.hs_ppic_opacity = MySlider()
-        self.rb_axis_datamax = QtGui.QRadioButton()
-        self.rb_axis_profmax = QtGui.QRadioButton()
-        self.rb_axis_calcmax = QtGui.QRadioButton()
-        self.rb_axis_custmax = QtGui.QRadioButton()
-        self.dsb_axis_custmin = QtGui.QDoubleSpinBox()
-        self.dsb_axis_custmax = QtGui.QDoubleSpinBox()
-        self.sb_profile_linethick = QtGui.QSpinBox()
-        self.lw_prof_defs = QtGui.QListWidget()
-        self.pb_prof_rcopy = QtGui.QPushButton()
-        self.pb_lbound = QtGui.QPushButton()
-        self.pb_export_csv = QtGui.QPushButton()
+        self.rb_axis_datamax = QtWidgets.QRadioButton()
+        self.rb_axis_profmax = QtWidgets.QRadioButton()
+        self.rb_axis_calcmax = QtWidgets.QRadioButton()
+        self.rb_axis_custmax = QtWidgets.QRadioButton()
+        self.dsb_axis_custmin = QtWidgets.QDoubleSpinBox()
+        self.dsb_axis_custmax = QtWidgets.QDoubleSpinBox()
+        self.sb_profile_linethick = QtWidgets.QSpinBox()
+        self.lw_prof_defs = QtWidgets.QListWidget()
+        self.pb_prof_rcopy = QtWidgets.QPushButton()
+        self.pb_lbound = QtWidgets.QPushButton()
+        self.pb_export_csv = QtWidgets.QPushButton()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self.userint)
-        groupbox = QtGui.QGroupBox()
-        verticallayout = QtGui.QVBoxLayout(groupbox)
+        gridlayout = QtWidgets.QGridLayout(self.userint)
+        groupbox = QtWidgets.QGroupBox()
+        verticallayout = QtWidgets.QVBoxLayout(groupbox)
 
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Fixed)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                           QtWidgets.QSizePolicy.Fixed)
 
         self.hs_profnum.setSizePolicy(sizepolicy)
         self.hs_ppic_opacity.setSizePolicy(sizepolicy)
@@ -89,7 +89,7 @@ class ProfileDisplay(object):
         self.hs_ppic_opacity.setMaximum(255)
         self.hs_ppic_opacity.setProperty("value", 0)
         self.hs_ppic_opacity.setOrientation(QtCore.Qt.Horizontal)
-        self.hs_ppic_opacity.setTickPosition(QtGui.QSlider.TicksAbove)
+        self.hs_ppic_opacity.setTickPosition(QtWidgets.QSlider.TicksAbove)
         self.dsb_axis_custmin.setValue(0.)
         self.dsb_axis_custmax.setValue(50.)
         self.dsb_axis_custmin.setMinimum(-1000000.)
@@ -208,7 +208,7 @@ class ProfileDisplay(object):
     def export_csv(self):
         """ Export Profile to csv """
         self.parent.pbars.resetall()
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
         if filename == '':
             return
@@ -593,32 +593,32 @@ class ProfileDisplay(object):
         self.combo_profpic.currentIndexChanged.connect(self.profpic_hs)
 
 
-class LithBound(QtGui.QDialog):
+class LithBound(QtWidgets.QDialog):
     """ Class to call up a dialog for lithological boundary"""
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
-        self.gridlayout = QtGui.QGridLayout(self)
-        self.buttonbox = QtGui.QDialogButtonBox(self)
-        self.lw_lithupper = QtGui.QListWidget(self)
-        self.lw_lithlower = QtGui.QListWidget(self)
-        self.label_3 = QtGui.QLabel(self)
-        self.label_4 = QtGui.QLabel(self)
+        self.gridlayout = QtWidgets.QGridLayout(self)
+        self.buttonbox = QtWidgets.QDialogButtonBox(self)
+        self.lw_lithupper = QtWidgets.QListWidget(self)
+        self.lw_lithlower = QtWidgets.QListWidget(self)
+        self.label_3 = QtWidgets.QLabel(self)
+        self.label_4 = QtWidgets.QLabel(self)
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
         self.gridlayout.addWidget(self.label_3, 0, 0, 1, 1)
         self.lw_lithupper.setSelectionMode(
-            QtGui.QAbstractItemView.SingleSelection)
+            QtWidgets.QAbstractItemView.SingleSelection)
         self.gridlayout.addWidget(self.lw_lithupper, 0, 1, 1, 1)
         self.gridlayout.addWidget(self.label_4, 1, 0, 1, 1)
         self.lw_lithlower.setSelectionMode(
-            QtGui.QAbstractItemView.SingleSelection)
+            QtWidgets.QAbstractItemView.SingleSelection)
         self.gridlayout.addWidget(self.lw_lithlower, 1, 1, 1, 1)
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
         self.gridlayout.addWidget(self.buttonbox, 2, 0, 1, 2)
 
         self.setWindowTitle("Add Lithological Boundary")
@@ -702,10 +702,10 @@ class MyMplCanvas(FigureCanvas):
                 extent = self.axes.get_xbound()
                 self.paxes.set_xbound(extent[0], extent[1])
                 self.figure.canvas.draw()
-                QtGui.QApplication.processEvents()
+                QtWidgets.QApplication.processEvents()
 
                 self.slide_grid(self.mdata)
-                QtGui.QApplication.processEvents()
+                QtWidgets.QApplication.processEvents()
             else:
                 self.myparent.update_model()
 
@@ -827,7 +827,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_ylim(extent[2], extent[3])
 
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
         if dat2 is not None:
@@ -845,7 +845,7 @@ class MyMplCanvas(FigureCanvas):
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.mdata = dat
 
@@ -891,7 +891,7 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.set_ylim(dmin, dmax)
         self.paxes.set_xlim(extent[0], extent[1])
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.pbbox = self.figure.canvas.copy_from_bbox(self.paxes.bbox)
 
         self.paxes.set_autoscalex_on(False)
@@ -901,7 +901,7 @@ class MyMplCanvas(FigureCanvas):
         else:
             self.obs = self.paxes.plot([], [], '.')
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.plotisinit = True
 
     def slide_plot(self, xdat, dat, xdat2, dat2):
@@ -918,10 +918,10 @@ class MyMplCanvas(FigureCanvas):
             self.paxes.draw_artist(self.obs[0])
         self.figure.canvas.update()
 
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
 
-class MySlider(QtGui.QSlider):
+class MySlider(QtWidgets.QSlider):
     """
     My Slider
 
@@ -929,15 +929,15 @@ class MySlider(QtGui.QSlider):
     click in a single step.
     """
     def __init__(self, parent=None):
-        QtGui.QPushButton.__init__(self, parent)
+        QtWidgets.QPushButton.__init__(self, parent)
 
     def mousePressEvent(self, event):
         """ Mouse Press Event """
-        opt = QtGui.QStyleOptionSlider()
+        opt = QtWidgets.QStyleOptionSlider()
         self.initStyleOption(opt)
         sr = self.style()
-        sr = sr.subControlRect(QtGui.QStyle.CC_Slider, opt,
-                               QtGui.QStyle.SC_SliderHandle, self)
+        sr = sr.subControlRect(QtWidgets.QStyle.CC_Slider, opt,
+                               QtWidgets.QStyle.SC_SliderHandle, self)
         if (event.button() == QtCore.Qt.LeftButton and
                 sr.contains(event.pos()) is False):
             if self.orientation() == QtCore.Qt.Vertical:

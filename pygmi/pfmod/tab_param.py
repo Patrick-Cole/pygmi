@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Parameter Display Tab Routines """
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets, QtGui
 import numpy as np
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
@@ -41,58 +41,58 @@ class ParamDisplay(object):
         self.showtext = parent.showtext
         self.islmod1 = True
 
-        self.userint = QtGui.QWidget()
+        self.userint = QtWidgets.QWidget()
 
-        self.dsb_mht = QtGui.QDoubleSpinBox()
-        self.dsb_hdec = QtGui.QDoubleSpinBox()
-        self.dsb_hint = QtGui.QDoubleSpinBox()
-        self.dsb_hinc = QtGui.QDoubleSpinBox()
-        self.pb_autoregional = QtGui.QPushButton()
-        self.dsb_ght = QtGui.QDoubleSpinBox()
-        self.pb_apply_prop_changes = QtGui.QPushButton()
-        self.dsb_gregional = QtGui.QDoubleSpinBox()
+        self.dsb_mht = QtWidgets.QDoubleSpinBox()
+        self.dsb_hdec = QtWidgets.QDoubleSpinBox()
+        self.dsb_hint = QtWidgets.QDoubleSpinBox()
+        self.dsb_hinc = QtWidgets.QDoubleSpinBox()
+        self.pb_autoregional = QtWidgets.QPushButton()
+        self.dsb_ght = QtWidgets.QDoubleSpinBox()
+        self.pb_apply_prop_changes = QtWidgets.QPushButton()
+        self.dsb_gregional = QtWidgets.QDoubleSpinBox()
 
-        self.pb_rename_def = QtGui.QPushButton()
-        self.pb_rem_def = QtGui.QPushButton()
-        self.lw_param_defs = QtGui.QListWidget()
-        self.pb_add_def = QtGui.QPushButton()
+        self.pb_rename_def = QtWidgets.QPushButton()
+        self.pb_rem_def = QtWidgets.QPushButton()
+        self.lw_param_defs = QtWidgets.QListWidget()
+        self.pb_add_def = QtWidgets.QPushButton()
 
-        self.gbox_lithprops = QtGui.QGroupBox()
-        self.dsb_mdec = QtGui.QDoubleSpinBox()
-        self.dsb_density = QtGui.QDoubleSpinBox()
-        self.dsb_minc = QtGui.QDoubleSpinBox()
-        self.dsb_susc = QtGui.QDoubleSpinBox()
-        self.pb_apply_lith_changes = QtGui.QPushButton()
-        self.dsb_rmi = QtGui.QDoubleSpinBox()
-        self.dsb_qratio = QtGui.QDoubleSpinBox()
-        self.dsb_magnetization = QtGui.QDoubleSpinBox()
+        self.gbox_lithprops = QtWidgets.QGroupBox()
+        self.dsb_mdec = QtWidgets.QDoubleSpinBox()
+        self.dsb_density = QtWidgets.QDoubleSpinBox()
+        self.dsb_minc = QtWidgets.QDoubleSpinBox()
+        self.dsb_susc = QtWidgets.QDoubleSpinBox()
+        self.pb_apply_lith_changes = QtWidgets.QPushButton()
+        self.dsb_rmi = QtWidgets.QDoubleSpinBox()
+        self.dsb_qratio = QtWidgets.QDoubleSpinBox()
+        self.dsb_magnetization = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
         self.init()
 
     def setupui(self):
         """ Setup UI """
-        verticallayout = QtGui.QVBoxLayout(self.userint)
+        verticallayout = QtWidgets.QVBoxLayout(self.userint)
 
-        gbox1 = QtGui.QGroupBox()
-        gbox2 = QtGui.QGroupBox()
-        glayout = QtGui.QGridLayout(gbox1)
-        glayout2 = QtGui.QGridLayout(gbox2)
-        glayout3 = QtGui.QGridLayout(self.gbox_lithprops)
+        gbox1 = QtWidgets.QGroupBox()
+        gbox2 = QtWidgets.QGroupBox()
+        glayout = QtWidgets.QGridLayout(gbox1)
+        glayout2 = QtWidgets.QGridLayout(gbox2)
+        glayout3 = QtWidgets.QGridLayout(self.gbox_lithprops)
 
-        label_1 = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
-        label_3 = QtGui.QLabel()
-        label_4 = QtGui.QLabel()
-        label_5 = QtGui.QLabel()
-        label_6 = QtGui.QLabel()
-        label_7 = QtGui.QLabel()
-        label_8 = QtGui.QLabel()
-        label_9 = QtGui.QLabel()
-        label_10 = QtGui.QLabel()
-        label_11 = QtGui.QLabel()
-        label_12 = QtGui.QLabel()
-        label_13 = QtGui.QLabel()
+        label_1 = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+        label_3 = QtWidgets.QLabel()
+        label_4 = QtWidgets.QLabel()
+        label_5 = QtWidgets.QLabel()
+        label_6 = QtWidgets.QLabel()
+        label_7 = QtWidgets.QLabel()
+        label_8 = QtWidgets.QLabel()
+        label_9 = QtWidgets.QLabel()
+        label_10 = QtWidgets.QLabel()
+        label_11 = QtWidgets.QLabel()
+        label_12 = QtWidgets.QLabel()
+        label_13 = QtWidgets.QLabel()
 
         self.dsb_gregional.setMinimum(-10000.0)
         self.dsb_gregional.setMaximum(10000.0)
@@ -110,15 +110,15 @@ class ParamDisplay(object):
         self.dsb_hdec.setMaximum(360.0)
         self.dsb_hdec.setProperty("value", -17.0)
 
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed,
-                                       QtGui.QSizePolicy.Preferred)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                                       QtWidgets.QSizePolicy.Preferred)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
             self.lw_param_defs.sizePolicy().hasHeightForWidth())
         self.lw_param_defs.setSizePolicy(sizepolicy)
         self.lw_param_defs.setEditTriggers(
-            QtGui.QAbstractItemView.NoEditTriggers)
+            QtWidgets.QAbstractItemView.NoEditTriggers)
         self.dsb_susc.setDecimals(4)
         self.dsb_susc.setMaximum(999999999.0)
         self.dsb_susc.setSingleStep(0.01)
@@ -520,10 +520,10 @@ class ParamDisplay(object):
 
         ctxt = str(self.lw_param_defs.currentItem().text())
 
-        (skey, isokay) = QtGui.QInputDialog.getText(
+        (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Definition',
             'Please type in the new name for the definition',
-            QtGui.QLineEdit.Normal, ctxt)
+            QtWidgets.QLineEdit.Normal, ctxt)
 
         if isokay:
             self.lw_param_defs.currentItem().setText(skey)

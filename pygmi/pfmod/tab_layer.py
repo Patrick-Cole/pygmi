@@ -24,12 +24,12 @@
 # -----------------------------------------------------------------------------
 """ Layer Display Tab Routines """
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib import cm
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import pygmi.pfmod.misc as misc
 
 
@@ -43,25 +43,25 @@ class LayerDisplay(object):
 
         self.grid3 = self.lmod.griddata['Calculated Magnetics']
 
-        self.userint = QtGui.QWidget()
+        self.userint = QtWidgets.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod)
         self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
-        self.label_altitude = QtGui.QLabel()
-        self.sb_model_layer = QtGui.QSpinBox()
-        self.hslider_layer = QtGui.QSlider()
-        self.combo_grid3 = QtGui.QComboBox()
-        self.hs_model_opacity = QtGui.QSlider()
-        self.sb_layer_linethick = QtGui.QSpinBox()
-        self.lw_editor_defs = QtGui.QListWidget()
-        self.pb_layer_rcopy = QtGui.QPushButton()
+        self.label_altitude = QtWidgets.QLabel()
+        self.sb_model_layer = QtWidgets.QSpinBox()
+        self.hslider_layer = QtWidgets.QSlider()
+        self.combo_grid3 = QtWidgets.QComboBox()
+        self.hs_model_opacity = QtWidgets.QSlider()
+        self.sb_layer_linethick = QtWidgets.QSpinBox()
+        self.lw_editor_defs = QtWidgets.QListWidget()
+        self.pb_layer_rcopy = QtWidgets.QPushButton()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self.userint)
+        gridlayout = QtWidgets.QGridLayout(self.userint)
 
         gtmp = ['Calculated Magnetics', 'Calculated Gravity']
 
@@ -71,8 +71,8 @@ class LayerDisplay(object):
         self.sb_model_layer.setMaximum(1000)
         self.sb_model_layer.setProperty("value", 0)
 
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Fixed)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                       QtWidgets.QSizePolicy.Fixed)
 
         self.hslider_layer.setSizePolicy(sizepolicy)
         self.hslider_layer.setOrientation(QtCore.Qt.Horizontal)
@@ -80,7 +80,7 @@ class LayerDisplay(object):
         self.hs_model_opacity.setMaximum(100)
         self.hs_model_opacity.setProperty("value", 100)
         self.hs_model_opacity.setOrientation(QtCore.Qt.Horizontal)
-        self.hs_model_opacity.setTickPosition(QtGui.QSlider.TicksAbove)
+        self.hs_model_opacity.setTickPosition(QtWidgets.QSlider.TicksAbove)
         self.sb_layer_linethick.setMinimum(1)
         self.sb_layer_linethick.setMaximum(1000)
         self.sb_model_layer.setMaximum(self.lmod.numz-1)
@@ -412,7 +412,7 @@ class MyMplCanvas(FigureCanvas):
         self.ims2.set_clim(dat2.data.min(), dat2.data.max())
 
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
         self.ims.set_visible(True)

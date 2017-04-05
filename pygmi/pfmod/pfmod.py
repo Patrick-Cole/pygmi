@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """ This is the main program for the modelling package """
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 
 # Other dependancies
 from pygmi.pfmod import misc
@@ -41,10 +41,10 @@ import pygmi.menu_default as menu_default
 import pygmi.misc as pmisc
 
 
-class MainWidget(QtGui.QMainWindow):
+class MainWidget(QtWidgets.QMainWindow):
     """ Widget class to call the main interface """
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+        QtWidgets.QMainWindow.__init__(self, parent)
 
         self.indata = {}
         self.inraster = {}
@@ -59,13 +59,13 @@ class MainWidget(QtGui.QMainWindow):
         self.txtmsg = ''
         self.modelfilename = r'./tmp'
 
-        self.toolbar = QtGui.QToolBar()
-        self.statusbar = QtGui.QStatusBar()
-        self.tabwidget = QtGui.QTabWidget()
+        self.toolbar = QtWidgets.QToolBar()
+        self.statusbar = QtWidgets.QStatusBar()
+        self.tabwidget = QtWidgets.QTabWidget()
         self.pbar_sub = pmisc.ProgressBar()
         self.pbar_main = pmisc.ProgressBar()
-        self.textbrowser = QtGui.QTextBrowser()
-        self.actionsave = QtGui.QPushButton()
+        self.textbrowser = QtWidgets.QTextBrowser()
+        self.actionsave = QtWidgets.QPushButton()
 
         self.tabwidget.setCurrentIndex(0)
         self.oldtab = self.tabwidget.tabText(0)
@@ -103,9 +103,9 @@ class MainWidget(QtGui.QMainWindow):
 
     def setupui(self):
         """ Setup for the GUI """
-        centralwidget = QtGui.QWidget(self)
-        verticallayout = QtGui.QVBoxLayout(centralwidget)
-        hlayout = QtGui.QHBoxLayout()
+        centralwidget = QtWidgets.QWidget(self)
+        verticallayout = QtWidgets.QVBoxLayout(centralwidget)
+        hlayout = QtWidgets.QHBoxLayout()
 
         helpdocs = menu_default.HelpButton()
 
@@ -114,7 +114,7 @@ class MainWidget(QtGui.QMainWindow):
         self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
         self.setStatusBar(self.statusbar)
         self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
-        self.textbrowser.setFrameShape(QtGui.QFrame.StyledPanel)
+        self.textbrowser.setFrameShape(QtWidgets.QFrame.StyledPanel)
 #        self.pbar_sub.setTextVisible(False)
 #        self.pbar_main.setTextVisible(False)
         self.toolbar.setMovable(True)

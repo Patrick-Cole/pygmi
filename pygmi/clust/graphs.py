@@ -25,12 +25,12 @@
 """ Plot Cluster Data """
 
 import numpy as np
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d  # this is used, ignore warning
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 
 class MyMplCanvas(FigureCanvas):
@@ -186,7 +186,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
 
-class GraphWindow(QtGui.QDialog):
+class GraphWindow(QtWidgets.QDialog):
     """
     Graph Window
 
@@ -196,21 +196,21 @@ class GraphWindow(QtGui.QDialog):
         reference to the parent routine
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent=None)
+        QtWidgets.QDialog.__init__(self, parent=None)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Graph Window")
 
-        vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
-        hbl = QtGui.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtGui.QComboBox()
-        self.combobox2 = QtGui.QComboBox()
-        self.label1 = QtGui.QLabel()
-        self.label2 = QtGui.QLabel()
+        self.combobox1 = QtWidgets.QComboBox()
+        self.combobox2 = QtWidgets.QComboBox()
+        self.label1 = QtWidgets.QLabel()
+        self.label2 = QtWidgets.QLabel()
 
         self.label1.setText('Bands:')
         self.label2.setText('Bands:')

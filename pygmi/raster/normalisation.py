@@ -26,7 +26,7 @@
 
 import copy
 import warnings
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pygmi.menu_default as menu_default
 
@@ -34,10 +34,10 @@ import pygmi.menu_default as menu_default
 warnings.simplefilter('always', RuntimeWarning)
 
 
-class Normalisation(QtGui.QDialog):
+class Normalisation(QtWidgets.QDialog):
     """ Class Normalisation """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
@@ -45,10 +45,10 @@ class Normalisation(QtGui.QDialog):
         self.pbar = parent.pbar
         self.reportback = self.parent.showprocesslog
 
-        self.radiobutton_interval = QtGui.QRadioButton()
-        self.radiobutton_mean = QtGui.QRadioButton()
-        self.radiobutton_median = QtGui.QRadioButton()
-        self.radiobutton_8bit = QtGui.QRadioButton()
+        self.radiobutton_interval = QtWidgets.QRadioButton()
+        self.radiobutton_mean = QtWidgets.QRadioButton()
+        self.radiobutton_median = QtWidgets.QRadioButton()
+        self.radiobutton_8bit = QtWidgets.QRadioButton()
 
         self.setupui()
 
@@ -58,15 +58,15 @@ class Normalisation(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 
-        verticallayout = QtGui.QVBoxLayout(self)
-        horizontallayout = QtGui.QHBoxLayout()
-        buttonbox = QtGui.QDialogButtonBox()
+        verticallayout = QtWidgets.QVBoxLayout(self)
+        horizontallayout = QtWidgets.QHBoxLayout()
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.normalisation')
 
         self.radiobutton_interval.setChecked(True)
 
-        groupbox = QtGui.QGroupBox()
-        verticallayout_2 = QtGui.QVBoxLayout(groupbox)
+        groupbox = QtWidgets.QGroupBox()
+        verticallayout_2 = QtWidgets.QVBoxLayout(groupbox)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)

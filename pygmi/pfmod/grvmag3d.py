@@ -35,12 +35,11 @@ References:
 
 from __future__ import print_function
 
-import pdb
 import copy
 import tempfile
 from math import sqrt
 from multiprocessing import Pool
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
 import pylab as plt
@@ -75,11 +74,11 @@ class GravMag(object):
         self.mfname = self.parent.modelfilename
         self.tmpfiles = {}
 
-        self.actionregionaltest = QtGui.QPushButton(self.parent)
-        self.actioncalculate = QtGui.QPushButton(self.parent)
-        self.actioncalculate2 = QtGui.QPushButton(self.parent)
-        self.actioncalculate3 = QtGui.QPushButton(self.parent)
-        self.actioncalculate4 = QtGui.QPushButton(self.parent)
+        self.actionregionaltest = QtWidgets.QPushButton(self.parent)
+        self.actioncalculate = QtWidgets.QPushButton(self.parent)
+        self.actioncalculate2 = QtWidgets.QPushButton(self.parent)
+        self.actioncalculate3 = QtWidgets.QPushButton(self.parent)
+        self.actioncalculate4 = QtWidgets.QPushButton(self.parent)
         self.setupui()
 
     def setupui(self):
@@ -174,7 +173,6 @@ class GravMag(object):
 
         self.actioncalculate3.setEnabled(True)
 
-
     def calc_field_mag_changes(self):
         """ calculates only mag changes """
         self.lmod1 = self.parent.lmod1
@@ -256,7 +254,7 @@ class GravMag(object):
         ltmp = list(self.lmod1.lith_list.keys())
         ltmp.pop(ltmp.index('Background'))
 
-        text, okay = QtGui.QInputDialog.getItem(
+        text, okay = QtWidgets.QInputDialog.getItem(
             self.parent, 'Regional Test',
             'Please choose the lithology to use:',
             ltmp)
@@ -723,7 +721,7 @@ class GeoData(object):
 
         mcx, mcy, mcz = dircos(self.minc, self.mdec, 90.0)
         um = np.array([mcx, mcy, mcz])
-#        rem_magn = (400*np.pi*self.mstrength)*um/(4*np.pi)     # Remanent magnetization
+#        rem_magn = (400*np.pi*self.mstrength)*um/(4*np.pi)
         rem_magn = (100*self.mstrength)*um     # Remanent magnetization
 
         net_magn = rem_magn+ind_magn  # Net magnetization
@@ -1060,7 +1058,7 @@ def calc_field2(lmod, pbars=None, showtext=None, parent=None,
                  ' during this calculation)')
 
         if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
-            QtGui.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modind == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
             juni = np.array(np.unique(j), dtype=np.int32)
@@ -1075,7 +1073,7 @@ def calc_field2(lmod, pbars=None, showtext=None, parent=None,
 
         if pbars is not None:
             pbars.incrmain()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
     mgvalin.resize([numx, numy])
     mgvalin = mgvalin.T
@@ -1264,7 +1262,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                  ' during this calculation)')
 
         if np.unique(modind).size > 1 and mijk in modind:
-            QtGui.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modind == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
             juni = np.array(np.unique(j), dtype=np.int32)
@@ -1292,7 +1290,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                 del baba
 
         if np.unique(modindcheck).size > 1 and mijk in modindcheck:
-            QtGui.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modindcheck == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
             juni = np.array(np.unique(j), dtype=np.int32)
@@ -1325,7 +1323,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
         if pbars is not None:
             pbars.incrmain()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
     mgvalin.resize([numx, numy])
     mgvalin = mgvalin.T
