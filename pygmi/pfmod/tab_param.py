@@ -24,10 +24,50 @@
 # -----------------------------------------------------------------------------
 """ Parameter Display Tab Routines """
 
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
+import pygmi.menu_default as menu_default
+
+
+class MergeLith(QtWidgets.QDialog):
+    """ Class to call up a dialog for ranged copying """
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+
+        self.lw_lithmaster = QtWidgets.QListWidget()
+        self.lw_lithmerge = QtWidgets.QListWidget()
+
+        self.setupui()
+
+    def setupui(self):
+        """ Setup UI """
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
+
+        label_1 = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+
+        self.lw_lithmaster.setSelectionMode(self.lw_lithmaster.SingleSelection)
+        self.lw_lithmerge.setSelectionMode(self.lw_lithmerge.MultiSelection)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle("Merge Lithologies")
+        label_1.setText("Master Lithology")
+        label_2.setText("Lithologies To Merge")
+
+        gridlayout.addWidget(label_1, 0, 0, 1, 1)
+        gridlayout.addWidget(self.lw_lithmaster, 0, 1, 1, 1)
+        gridlayout.addWidget(label_2, 1, 0, 1, 1)
+        gridlayout.addWidget(self.lw_lithmerge, 1, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
 
 class ParamDisplay(object):
@@ -54,6 +94,7 @@ class ParamDisplay(object):
 
         self.pb_rename_def = QtWidgets.QPushButton()
         self.pb_rem_def = QtWidgets.QPushButton()
+        self.pb_merge_def = QtWidgets.QPushButton()
         self.lw_param_defs = QtWidgets.QListWidget()
         self.pb_add_def = QtWidgets.QPushButton()
 
@@ -165,6 +206,7 @@ class ParamDisplay(object):
         self.pb_add_def.setText("Add New Lithological Definition")
         self.pb_rename_def.setText("Rename Current Definition")
         self.pb_rem_def.setText("Remove Current Definition")
+        self.pb_merge_def.setText("Merge Definitions")
 
         verticallayout.addWidget(gbox1)
         verticallayout.addWidget(gbox2)
@@ -183,10 +225,11 @@ class ParamDisplay(object):
         glayout.addWidget(self.dsb_hdec, 6, 1, 1, 1)
         glayout.addWidget(self.pb_apply_prop_changes, 7, 0, 1, 2)
         glayout2.addWidget(self.pb_add_def, 0, 0, 1, 1)
-        glayout2.addWidget(self.gbox_lithprops, 0, 1, 4, 1)
+        glayout2.addWidget(self.gbox_lithprops, 0, 1, 5, 1)
         glayout2.addWidget(self.lw_param_defs, 1, 0, 1, 1)
         glayout2.addWidget(self.pb_rename_def, 2, 0, 1, 1)
         glayout2.addWidget(self.pb_rem_def, 3, 0, 1, 1)
+        glayout2.addWidget(self.pb_merge_def, 4, 0, 1, 1)
         glayout3.addWidget(label_13, 3, 0, 1, 1)
         glayout3.addWidget(self.dsb_density, 3, 1, 1, 1)
         glayout3.addWidget(label_7, 4, 0, 1, 1)
@@ -210,6 +253,7 @@ class ParamDisplay(object):
         self.lw_param_defs.itemDoubleClicked.connect(self.lw_color_change)
         self.pb_add_def.clicked.connect(self.add_def)
         self.pb_rem_def.clicked.connect(self.rem_defs)
+        self.pb_merge_def.clicked.connect(self.merge_defs)
         self.pb_rename_def.clicked.connect(self.rename_defs)
         self.pb_apply_lith_changes.clicked.connect(self.apply_lith_changes)
         self.pb_apply_prop_changes.clicked.connect(self.apply_prop_changes)
@@ -281,7 +325,7 @@ class ParamDisplay(object):
             lithn.density = lithn.bdensity
 
         if getcol is True:
-            col = QtGui.QColorDialog.getColor()
+            col = QtWidgets.QColorDialog.getColor()
             lmod.mlut[lithn.lith_index] = [col.red(), col.green(), col.blue()]
 
 # setup list widgets
@@ -452,7 +496,7 @@ class ParamDisplay(object):
     def lw_color_change(self):
         """ Routine to allow lithologies to have their colors changed """
         ctxt = str(self.lw_param_defs.currentItem().text())
-        col = QtGui.QColorDialog.getColor()
+        col = QtWidgets.QColorDialog.getColor()
 
         lithi = self.lmod1.lith_list[ctxt].lith_index
 
@@ -511,6 +555,34 @@ class ParamDisplay(object):
 
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
 
+    def merge_defs(self):
+        """ Remove geophysical definitions """
+
+        mlith = MergeLith()
+        for i in self.lmod1.lith_list:
+            mlith.lw_lithmaster.addItem(i)
+            mlith.lw_lithmerge.addItem(i)
+
+        tmp = mlith.exec_()
+
+        if tmp == 0:
+            return
+
+        lithmaster = mlith.lw_lithmaster.selectedItems()
+        lithmerge = mlith.lw_lithmerge.selectedItems()
+
+        index_master = self.lmod1.lith_list[lithmaster[0].text()].lith_index
+
+        for i in lithmerge:
+            mtxt = i.text()
+            j = self.lmod1.lith_list[mtxt].lith_index
+            self.lmod1.lith_index[self.lmod1.lith_index == j] = index_master
+
+            if mtxt != 'Background':
+                del self.lmod1.lith_list[mtxt]
+
+        misc.update_lith_lw(self.lmod1, self.lw_param_defs)
+
     def rename_defs(self):
         """ Used to rename a definition """
 
@@ -548,3 +620,4 @@ class ParamDisplay(object):
         self.lw_index_change()
         self.dsb_gregional.setValue(self.lmod1.gregional)
 #        self.parent.mext.update_vals()
+
