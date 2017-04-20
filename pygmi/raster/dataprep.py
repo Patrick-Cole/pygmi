@@ -87,7 +87,7 @@ class DataCut(object):
 
         ext = "Shape file (*.shp)"
 
-        filename = QtWidgets.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
@@ -625,7 +625,7 @@ class GetProf(object):
 
         ext = "Shape file (*.shp)"
 
-        filename = QtWidgets.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
@@ -1521,8 +1521,8 @@ def trim_raster(olddata):
     """
 
     for data in olddata:
-        mask = data.data.mask
-        data.data[mask] = data.nullvalue
+        mask = data.data.mask.copy()
+        data.data.data[mask] = data.nullvalue
 
         rowstart = 0
         for i in range(mask.shape[0]):
