@@ -30,7 +30,7 @@ import scipy.interpolate as si
 
 
 class MextDisplay(object):
-    """ Widget class to call the main interface """
+    """ MextDisplay - Widget class to call the main interface """
     def __init__(self, parent):
         self.parent = parent
         self.lmod1 = parent.lmod1  # actual model
@@ -267,7 +267,11 @@ class MextDisplay(object):
         self.update_vals()
 
         self.pbars.incr()
-        self.parent.outdata['Raster'] = list(self.lmod1.griddata.values())
+        # This line is to avoid duplicates since study area and dtm are often
+        # the same dataset
+        tmp = [i for i in set(self.lmod1.griddata.values())]
+        self.parent.outdata['Raster'] = tmp
+#        self.parent.outdata['Raster'] = list(self.lmod1.griddata.values())
         self.showtext('Changes applied.')
 
     def apply_regional(self):

@@ -42,7 +42,7 @@ import pygmi.misc as pmisc
 
 
 class MainWidget(QtWidgets.QMainWindow):
-    """ Widget class to call the main interface """
+    """ MainWidget - Widget class to call the main interface """
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
 
@@ -70,7 +70,9 @@ class MainWidget(QtWidgets.QMainWindow):
         self.tabwidget.setCurrentIndex(0)
         self.oldtab = self.tabwidget.tabText(0)
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
-        self.outdata['Raster'] = list(self.lmod1.griddata.values())
+#        self.outdata['Raster'] = list(self.lmod1.griddata.values())
+        tmp = [i for i in set(self.lmod1.griddata.values())]
+        self.outdata['Raster'] = tmp
 
 # Model Extent Tab
         self.mext = tab_mext.MextDisplay(self)
@@ -175,9 +177,13 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def settings(self):
         """ Settings """
-        if 'Raster' not in self.indata:
-            self.indata['Raster'] = list(self.lmod1.griddata.values())
+        datatmp = [i for i in set(self.lmod1.griddata.values())]
 
+        if 'Raster' not in self.indata:
+#            self.indata['Raster'] = list(self.lmod1.griddata.values())
+            self.indata['Raster'] = datatmp
+
+        self.inraster = {}
         for i in self.indata['Raster']:
             self.inraster[i.dataid] = i
         if 'Model3D' in self.indata:
@@ -189,7 +195,8 @@ class MainWidget(QtWidgets.QMainWindow):
         self.outdata['Model3D'] = [self.lmod1]
         self.mext.update_combos()
         self.mext.tab_activate()
-        self.outdata['Raster'] = list(self.lmod1.griddata.values())
+#        self.outdata['Raster'] = list(self.lmod1.griddata.values())
+        self.outdata['Raster'] = datatmp
 
         if 'ProfPic' in self.indata:
             icnt = 0
@@ -200,6 +207,13 @@ class MainWidget(QtWidgets.QMainWindow):
         self.show()
 
         return True
+
+    def data_reset(self):
+        """ resests the data """
+        if 'Model3D' in self.indata:
+            self.lmod1 = self.indata['Model3D'][0]
+        self.lmod1.griddata = {}
+        self.lmod1.init_calc_grids()
 
     def showtext(self, txt, replacelast=False):
         """ Show text on the text panel of the main user interface"""

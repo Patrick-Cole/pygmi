@@ -144,16 +144,22 @@ class ComboBoxBasic(QtWidgets.QDialog):
         for j in data:
             if j is 'Model3D' or j is 'Seis':
                 continue
-            atmp = [i.text() for i in self.combo.selectedItems()]
+#            atmp = [i.text() for i in self.combo.selectedItems()]
+            atmp = [i.row() for i in self.combo.selectedIndexes()]
 
             if len(atmp) > 0:
                 dtmp = []
-                for i in data[j]:
-                    if i.dataid in atmp:
-                        dtmp.append(i)
+                for i in atmp:
+                    dtmp.append(data[j][i])
+#                for i in data[j]:
+#                    if i.dataid in atmp:
+#                        dtmp.append(i)
                 data[j] = dtmp
 
         my_class.indata = data
+
+        if hasattr(my_class, 'data_reset'):
+            my_class.data_reset()
 
         if hasattr(my_class, 'data_init'):
             my_class.data_init()

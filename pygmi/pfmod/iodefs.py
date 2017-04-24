@@ -93,7 +93,9 @@ class ImportMod3D(object):
             if self.lmod.griddata[i].dataid == '':
                 self.lmod.griddata[i].dataid = i
 
-        self.outdata['Raster'] = list(self.lmod.griddata.values())
+#        self.outdata['Raster'] = list(self.lmod.griddata.values())
+        tmp = [i for i in set(self.lmod.griddata.values())]
+        self.outdata['Raster'] = tmp
 
         return True
 

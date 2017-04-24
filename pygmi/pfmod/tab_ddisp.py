@@ -34,7 +34,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 
 class DataDisplay(object):
-    """ Widget class to call the main interface """
+    """ DataDisplay - Widget class to call the main interface """
     def __init__(self, parent):
         self.parent = parent
         self.lmod1 = parent.lmod1
@@ -193,6 +193,11 @@ class DataDisplay(object):
     def update_combos(self):
         """ Update the combos """
         tmp = list(self.lmod1.griddata.keys())
+
+        if self.grid1txt not in tmp:
+            self.grid1txt = 'Calculated Magnetics'
+        if self.grid2txt not in tmp:
+            self.grid2txt = 'Calculated Gravity'
 
         self.combo_grid1.blockSignals(True)
         self.combo_grid2.blockSignals(True)

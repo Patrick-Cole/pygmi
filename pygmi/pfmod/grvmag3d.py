@@ -1129,7 +1129,9 @@ def calc_field2(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
 
     if parent is not None:
-        parent.outdata['Raster'] = list(lmod.griddata.values())
+        tmp = [i for i in set(lmod.griddata.values())]
+        parent.outdata['Raster'] = tmp
+#        parent.outdata['Raster'] = list(lmod.griddata.values())
     showtext('Calculation Finished')
     if pbars is not None:
         pbars.maxall()
@@ -1367,7 +1369,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
 
     if parent is not None:
-        parent.outdata['Raster'] = list(lmod.griddata.values())
+        tmp = [i for i in set(lmod.griddata.values())]
+        parent.outdata['Raster'] = tmp
+#        parent.outdata['Raster'] = list(lmod.griddata.values())
     showtext('Calculation Finished')
     if pbars is not None:
         pbars.maxall()

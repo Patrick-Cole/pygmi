@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
+import pdb
 import os
 import glob
 import struct
@@ -1046,30 +1047,30 @@ class ExportData(object):
             # This section tries to overcome null values with round off error
             # in 32-bit numbers.
             if dtype == np.float32:
-                data[i].nullvalue = np.float64(np.float32(data[i].nullvalue))
-                if data[i].data.min() > -1e+10:
-                    data[i].nullvalue = np.float64(np.float32(-1e+10))
-                elif data[i].data.max() < 1e+10:
-                    data[i].nullvalue = np.float64(np.float32(1e+10))
+                datai.nullvalue = np.float64(np.float32(datai.nullvalue))
+                if datai.data.min() > -1e+10:
+                    datai.nullvalue = np.float64(np.float32(-1e+10))
+                elif datai.data.max() < 1e+10:
+                    datai.nullvalue = np.float64(np.float32(1e+10))
 
             elif dtype == np.float or dtype == np.float64:
-                data[i].nullvalue = np.float64(dtmp.fill_value)
+                datai.nullvalue = np.float64(dtmp.fill_value)
 
             elif dtype == np.uint8:
-                data[i].nullvalue = np.uint8(dtmp.fill_value)
+                datai.nullvalue = np.uint8(dtmp.fill_value)
             elif dtype == np.int32:
-                data[i].nullvalue = np.uint32(dtmp.fill_value)
+                datai.nullvalue = np.uint32(dtmp.fill_value)
 
-            dtmp.set_fill_value(data[i].nullvalue)
+            dtmp.set_fill_value(datai.nullvalue)
             dtmp = dtmp.filled()
 
             if dtype == np.uint8:
-                data[i].nullvalue = int(data[i].nullvalue)
+                datai.nullvalue = int(datai.nullvalue)
 
-            if drv != 'GTiff':
-                rtmp.SetNoDataValue(data[i].nullvalue)
+            if drv != 'GTiffaaa':
+                rtmp.SetNoDataValue(datai.nullvalue)
             elif len(data) == 1:
-                rtmp.SetNoDataValue(data[i].nullvalue)
+                rtmp.SetNoDataValue(datai.nullvalue)
             rtmp.WriteArray(dtmp)
 
         out = None  # Close File
