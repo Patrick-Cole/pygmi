@@ -706,11 +706,11 @@ class MyMplCanvas(FigureCanvas):
         self.pbbox = self.figure.canvas.copy_from_bbox(self.paxes.bbox)
 
         self.paxes.set_autoscalex_on(False)
-        self.cal = self.paxes.plot(xdat, dat)
         if xdat2 is not None:
             self.obs = self.paxes.plot(xdat2, dat2, 'o')
         else:
             self.obs = self.paxes.plot([], [], 'o')
+        self.cal = self.paxes.plot(xdat, dat)
         self.figure.canvas.draw()
         QtWidgets.QApplication.processEvents()
         self.plotisinit = True
@@ -728,9 +728,9 @@ class MyMplCanvas(FigureCanvas):
 #        self.paxes.set_ylim(dmin, dmax)
 #        self.paxes.set_xlim(extent[0], extent[1])
 
-        self.paxes.draw_artist(self.cal[0])
         if xdat2 is not None:
             self.paxes.draw_artist(self.obs[0])
+        self.paxes.draw_artist(self.cal[0])
 #        self.figure.canvas.blit(self.paxes.bbox)
         self.figure.canvas.update()
 

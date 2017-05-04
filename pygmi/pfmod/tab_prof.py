@@ -895,11 +895,12 @@ class MyMplCanvas(FigureCanvas):
         self.pbbox = self.figure.canvas.copy_from_bbox(self.paxes.bbox)
 
         self.paxes.set_autoscalex_on(False)
-        self.cal = self.paxes.plot(xdat, dat)
         if xdat2 is not None:
             self.obs = self.paxes.plot(xdat2, dat2, '.')
         else:
             self.obs = self.paxes.plot([], [], '.')
+        self.cal = self.paxes.plot(xdat, dat)
+
         self.figure.canvas.draw()
         QtWidgets.QApplication.processEvents()
         self.plotisinit = True
@@ -907,12 +908,12 @@ class MyMplCanvas(FigureCanvas):
     def slide_plot(self, xdat, dat, xdat2, dat2):
         """ Slider """
         self.figure.canvas.restore_region(self.pbbox)
-        self.cal[0].set_data([xdat, dat])
         if xdat2 is not None:
             self.obs[0].set_data([xdat2, dat2])
         else:
             self.obs[0].set_data([[], []])
 
+        self.cal[0].set_data([xdat, dat])
         self.paxes.draw_artist(self.cal[0])
         if xdat2 is not None:
             self.paxes.draw_artist(self.obs[0])
