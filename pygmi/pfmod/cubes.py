@@ -169,17 +169,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.gnorms = self.norms
         self.gfaces = {}
 
-# (Pdb) self.corners[0].max(0)
-# array([ 505000.,  320000.,   60000.])
-# (Pdb) self.corners[0].min(0)
-# array([     0.,      0.,  31000.])
-
-
-# (Pdb) self.corners[0].max(0)
-# array([ 509386.36363636,  324386.36363636,      -0.        ])
-# (Pdb) self.corners[0].min(0)
-# array([     0.        ,      0.        , -60877.27272727])
-
         if list(self.faces.values())[0].shape[1] == 4:
             for i in self.faces:
                 self.gfaces[i] = np.append(self.faces[i][:, :-1],
@@ -271,8 +260,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
             return False
 
         self.lmod1 = self.indata['Model3D'][0]
-
-#        self.vslider_3dmodel.setValue(1)
 
         liths = np.unique(self.lmod1.lith_index[::1, ::1, ::-1])
         liths = np.array(liths).astype(int)  # needed for use in faces array
@@ -372,11 +359,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
             x = np.arange(nshape[1]) * self.spacing[1]
             y = np.arange(nshape[0]) * self.spacing[0]
             z = np.arange(nshape[2]) * self.spacing[2]
-#            if self.cust_z is None:
-#                z = np.arange(nshape[2]) * self.spacing[2]
-#            else:
-#                z = ([self.cust_z[0] - self.cust_z[1]] + self.cust_z.tolist()
-#                     + [2*self.cust_z[-1] - self.cust_z[-2]])
             xx, yy, zz = np.meshgrid(x, y, z)
 
     # Set up gaussian smoothing filter
@@ -501,10 +483,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
                 self.corners[lno] = vtx[:, [1, 0, 2]] + self.origin
 
             self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
-
-#            ftmp = np.transpose(self.faces[lno])
-#            I = np.lexsort(ftmp)
-#            self.faces[lno] = self.faces[lno][I]
 
     def update_model2(self):
         """ Update the 3d model. Faces, nodes and face normals are calculated
@@ -662,12 +640,6 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.qglClearColor(ctmp)
         self.initGeometry()
 
-#        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
-#        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_FILL)
-#        GL.glShadeModel(GL.GL_SMOOTH)
-
-#############
-#        GL.glEnable(GL.GL_NORMALIZE)
 # Blend allows transparency
 
         GL.glEnable(GL.GL_ALPHA_TEST)

@@ -264,8 +264,6 @@ class GravMag(object):
 
         lmod1 = self.lmod1
         self.lmod2 = LithModel()
-# This line ensures that lmod2 is different to lmod1
-#        self.lmod2 = copy.copy(self.lmod2)
         self.lmod2.lith_list.clear()
 
         numlayers = lmod1.numz
@@ -461,18 +459,13 @@ class GeoData(object):
 # cell
             xdist = np.arange(self.g_dxy/2, numx+self.g_dxy/2, self.g_dxy,
                               dtype=float)
-            ydist = np.arange(numy-self.g_dxy/2, -self.g_dxy/2, -self.g_dxy,
-                              dtype=float)
+            ydist = np.arange(numy-self.g_dxy/2, -1*self.g_dxy/2,
+                              -1*self.g_dxy, dtype=float)
 
-#            self.showtext('   Calculate magnetic origin field')
-#            self.mboxmain(xdist, ydist, self.zobsm)
             self.showtext('   Calculate gravity origin field')
             self.gboxmain(xdist, ydist, self.zobsg)
 
             self.modified = False
-#        else:
-#            pass
-#            self.pbars.incrmain(2)
         return self.glayers, self.lith_index
 
     def calc_origin2(self):
@@ -486,16 +479,13 @@ class GeoData(object):
 # cell
             xdist = np.arange(self.g_dxy/2, numx+self.g_dxy/2, self.g_dxy,
                               dtype=float)
-            ydist = np.arange(numy-self.g_dxy/2, -self.g_dxy/2, -self.g_dxy,
-                              dtype=float)
+            ydist = np.arange(numy-self.g_dxy/2, -1*self.g_dxy/2,
+                              -1*self.g_dxy, dtype=float)
 
             self.showtext('   Calculate magnetic origin field')
             self.gmmain(xdist, ydist)
 
             self.modified = False
-#        else:
-#            pass
-#            self.pbars.incrmain(2)
         return self.mlayers, self.lith_index
 
     def netmagn(self):
@@ -597,7 +587,6 @@ class GeoData(object):
         for f in range(nf):
             indx = face[f].tolist() + [face[f, 0]]
             for t in range(4):
-                # edgeno = sum(face(1:f-1,1))+t
                 edgeno = f*4+t
                 ends = indx[t:t+2]
                 p1 = corner[ends[0]]
@@ -742,7 +731,7 @@ class GeoData(object):
         for depth in piter(newdepth):
             if depth == 0.0:
                 cor = (corner + [0., 0., depth+self.d_z/10000.])
-            elif depth == -self.d_z:
+            elif depth == (-1*self.d_z):
                 cor = (corner + [0., 0., depth-self.d_z/10000.])
             else:
                 cor = (corner + [0., 0., depth])
@@ -841,54 +830,6 @@ def save_layer(mlist):
     return outfile
 
 
-# def gridmatch2(lmod, ctxt, rtxt):
-#    """ Matches the rows and columns of the second grid to the first
-#    grid """
-#    rgrv = lmod.griddata[rtxt]
-#    cgrv = lmod.griddata[ctxt]
-#    x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
-#                  rgrv.xdim)+0.5*rgrv.xdim
-#    y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
-#                  rgrv.ydim)+0.5*rgrv.ydim
-#    x_2, y_2 = np.meshgrid(x, y)
-#    z_2 = rgrv.data
-#    x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
-#    y_i = (np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - cgrv.rows*cgrv.ydim +
-#           0.5*cgrv.ydim)
-#
-#    xi2, yi2 = np.meshgrid(x_i, y_i)
-#
-#    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
-#                       (xi2.flatten(), yi2.flatten()), method='nearest')
-#    zfin = np.ma.masked_invalid(zfin)
-#    zfin.shape = cgrv.data.shape
-#
-#    output_file("image.html", title="pygmi test")
-#    ppp = figure(x_range=[cgrv.tlx, cgrv.tlx+cgrv.cols*cgrv.xdim],
-#               y_range=[cgrv.tly - cgrv.rows*cgrv.ydim, cgrv.tly])
-#
-#
-#    x1 = int((cgrv.tlx-rgrv.tlx)/rgrv.xdim)
-#    x2 = int((cgrv.tlx+cgrv.cols*cgrv.xdim-rgrv.tlx)/rgrv.xdim)
-#    y1 = int((rgrv.tly-cgrv.tly)/rgrv.ydim)
-#    y2 = int((rgrv.tly-cgrv.tly+cgrv.rows*cgrv.ydim)/rgrv.ydim)
-#
-#    hope = rgrv.data[y1:y2, x1:x2]
-#
-#    ppp.image(image=[hope[::-1]], x=[cgrv.tlx],
-#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
-#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-#    ppp.image(image=[cgrv.data[::-1]], x=[cgrv.tlx+cgrv.xdim*cgrv.cols],
-#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
-#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-#    ppp.image(image=[zfin[::-1]], x=[cgrv.tlx-cgrv.xdim*cgrv.cols],
-#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
-#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-#    show(ppp)
-#
-#    return zfin
-
-
 def gridmatch(lmod, ctxt, rtxt):
     """ Matches the rows and columns of the second grid to the first
     grid """
@@ -919,29 +860,6 @@ def gridmatch(lmod, ctxt, rtxt):
         data.data += doffset
 
     return dat.data
-
-# def gridmatch2(lmod, ctxt, rtxt):
-#    """ Matches the rows and columns of the second grid to the first
-#    grid """
-#    rgrv = lmod.griddata[rtxt]
-#    cgrv = lmod.griddata[ctxt]
-#    x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
-#                  rgrv.xdim)+0.5*rgrv.xdim
-#    y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
-#                  rgrv.xdim)+0.5*rgrv.ydim
-#    x_2, y_2 = np.meshgrid(x, y)
-#    z_2 = rgrv.data
-#    x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
-#    y_i = np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - \
-#        cgrv.rows*cgrv.ydim + 0.5*cgrv.ydim
-#    xi2, yi2 = np.meshgrid(x_i, y_i)
-#
-#    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
-#                       (xi2.flatten(), yi2.flatten()))
-#    zfin = np.ma.masked_invalid(zfin)
-#    zfin.shape = cgrv.data.shape
-#
-#    return zfin
 
 
 def calc_field2(lmod, pbars=None, showtext=None, parent=None,
@@ -1004,7 +922,7 @@ def calc_field2(lmod, pbars=None, showtext=None, parent=None,
         mijk = mlist[1].lith_index
         if mijk not in modind:
             continue
-        if mlist[0] != 'Background':  # and 'Penge' in mlist[0]:
+        if mlist[0] != 'Background':
             mlist[1].modified = True
             showtext(mlist[0]+':')
             if parent is not None:
@@ -1032,8 +950,6 @@ def calc_field2(lmod, pbars=None, showtext=None, parent=None,
         pbars.resetsub(maximum=(len(lmod.lith_list)-1))
         piter = pbars.iter
 
-#    magval = np.zeros(numx*numy)
-#    grvval = np.zeros(numx*numy)
     mgvalin = np.zeros(numx*numy)
     mgval = np.zeros(numx*numy)
 
@@ -1085,28 +1001,10 @@ def calc_field2(lmod, pbars=None, showtext=None, parent=None,
     else:
         lmod.griddata['Calculated Gravity'].data = mgvalin
 
-#    if magcalc:
-#        magval = mgvalin
-#    else:
-#        grvval = mgvalin
-
-#    magval.resize([numx, numy])
-#    grvval.resize([numx, numy])
-#    magval = magval.T
-#    grvval = grvval.T
-#    magval = magval[::-1]
-#    grvval = grvval[::-1]
-
-# Update variables
-#    lmod.griddata['Calculated Magnetics'].data = magval
-#    lmod.griddata['Calculated Gravity'].data = grvval
-
 # This addoldcalc has has flaws w.r.t. regional if you change the regional
     if 'Gravity Regional' in lmod.griddata and not magcalc:
         zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
         lmod.griddata['Calculated Gravity'].data += zfin
-#        zfin2 = gridmatch2(lmod, 'Calculated Gravity', 'Gravity Regional')
-#        lmod.griddata['Calculated Magnetics'].data = zfin2
 
     if lmod.lith_index.max() <= 0:
         lmod.griddata['Calculated Magnetics'].data *= 0.
@@ -1131,7 +1029,6 @@ def calc_field2(lmod, pbars=None, showtext=None, parent=None,
     if parent is not None:
         tmp = [i for i in set(lmod.griddata.values())]
         parent.outdata['Raster'] = tmp
-#        parent.outdata['Raster'] = list(lmod.griddata.values())
     showtext('Calculation Finished')
     if pbars is not None:
         pbars.maxall()
@@ -1190,12 +1087,13 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 # model index
     modind = lmod.lith_index.copy()
     modindcheck = lmod.lith_index_old.copy()
-#    modind[modind == 0] = -1
-#    modindcheck[modindcheck == 0] = -1
 
     tmp = (modind == modindcheck)
-    modind[tmp] = -1
-    modindcheck[tmp] = -1
+# If modind and modindcheck have different shapes, then tmp == False. The next
+# line checks for that.
+    if not isinstance(tmp, bool):
+        modind[tmp] = -1
+        modindcheck[tmp] = -1
 
     if np.unique(modind).size == 1:
         showtext('No changes to model!')
@@ -1235,15 +1133,11 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         pbars.resetsub(maximum=(len(lmod.lith_list)-1))
         piter = pbars.iter
 
-#    magval = np.zeros(numx*numy)
-#    grvval = np.zeros(numx*numy)
     mgvalin = np.zeros(numx*numy)
     mgval = np.zeros(numx*numy)
 
     hcorflat = numz-hcor.flatten()
     aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
-
-#    results = []
 
     for mlist in piter(lmod.lith_list.items()):
         if mlist[0] == 'Background':
@@ -1371,7 +1265,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     if parent is not None:
         tmp = [i for i in set(lmod.griddata.values())]
         parent.outdata['Raster'] = tmp
-#        parent.outdata['Raster'] = list(lmod.griddata.values())
     showtext('Calculation Finished')
     if pbars is not None:
         pbars.maxall()
@@ -1670,26 +1563,10 @@ def test():
     indict = np.load(filename)
     imod.dict2lmod(indict)
 
-#    imod.outdata['Model3D'] = [imod.lmod]
-#    imod.lmod.name = filename.rpartition('/')[-1]
-#
-#    for i in imod.lmod.griddata:
-#        if imod.lmod.griddata[i].dataid == '':
-#            imod.lmod.griddata[i].dataid = i
-#
-#    imod.outdata['Raster'] = list(imod.lmod.griddata.values())
-
 # Calculate the field
-#    calc_field(imod.lmod)
     calc_field(imod.lmod)
-
     ttt.since_last_call()
-    # since last call time(s): 280.0313334835183 since last call
-    # since last call time(s): 200.0313334835183 since last call
-    # since last call time(s): 385.0313334835183 since last call
 
-# since last call time(s): 1632.1685698633316 since last call
-# since last call time(s): 1324.5173409631864 since last call
 
 if __name__ == "__main__":
     test()

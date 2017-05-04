@@ -173,12 +173,10 @@ class ProfileDisplay(object):
     # First we plot the model stuff
         newprof = self.lmod1.curprof
         if self.lmod1.is_ew:
-            # gtmp = self.lmod1.lith_index[:, newprof,:].T.copy()
             gtmp = self.lmod1.lith_index[:, newprof, ::-1].T.copy()
             left = self.lmod1.xrange[0]
             right = self.lmod1.xrange[1]
         else:
-            # gtmp = self.lmod1.lith_index[newprof,:,:].T.copy()
             gtmp = self.lmod1.lith_index[newprof, :, ::-1].T.copy()
             left = self.lmod1.yrange[0]
             right = self.lmod1.yrange[1]
@@ -334,7 +332,6 @@ class ProfileDisplay(object):
                 jgrd = int((tly-jmod)/d_y)
 
                 if igrd >= 0 and jgrd >= 0 and igrd < cols and jgrd < rows:
-                    # k_2 = int((regz-fgrid.ev(jmod, imod))/d_z)
                     k_2 = int((regz-fgrid(jmod, imod))/d_z)
                     if k_2 < 0:
                         k_2 = 0
@@ -384,7 +381,6 @@ class ProfileDisplay(object):
         self.lmod1.curprof = self.sb_profnum.value()
         self.change_model(slide=True)
         self.update_plot(slide=True)
-#        self.update_plot(slide=False)
 
     def hprofnum(self):
         """ Routine to change a profile from spinbox"""
@@ -396,7 +392,6 @@ class ProfileDisplay(object):
         self.lmod1.curprof = self.sb_profnum.value()
         self.change_model(slide=True)
         self.update_plot(slide=True)
-#        self.update_plot(slide=self.hs_profnum.isSliderDown())
 
     def rcopy(self):
         """ Do a ranged copy on a profile """
@@ -435,32 +430,24 @@ class ProfileDisplay(object):
         if self.viewmagnetics:
             if 'Calculated Magnetics' in self.lmod1.griddata:
                 data = self.lmod1.griddata['Calculated Magnetics'].data
-#            data2 = self.lmod2.griddata['Calculated Magnetics'].data
             self.mmc.ptitle = 'Magnetic Intensity: '
             self.mmc.punit = 'nT'
             regtmp = 0.0
         else:
             if 'Calculated Gravity' in self.lmod1.griddata:
                 data = self.lmod1.griddata['Calculated Gravity'].data
-#            data2 = self.lmod2.griddata['Calculated Gravity'].data
             self.mmc.ptitle = 'Gravity: '
             self.mmc.punit = 'mGal'
             regtmp = self.lmod1.gregional
-
-#        if data2.shape != data.shape:
-#            data2 = np.zeros_like(data)
-#        alt = self.lmod1.zrange[1]-self.lmod1.curlayer*self.lmod1.d_z
 
         if self.lmod1.is_ew and data is not None:
             self.mmc.ptitle += 'West to East'
             self.mmc.xlabel = "Eastings (m)"
 
             tmpprof = data[self.lmod1.numy-1-self.lmod1.curprof, :]+regtmp
-#            tmpprof2 = data2[self.lmod1.curprof, :]
             tmprng = (np.arange(tmpprof.shape[0])*self.lmod1.dxy +
                       self.lmod1.xrange[0]+self.lmod1.dxy/2.)
             self.sb_profnum.setMaximum(self.lmod1.numy-1)
-#            self.mmc.update_line(self.lmod1.xrange, [alt, alt])
             extent = self.lmod1.xrange
 
         elif not(self.lmod1.is_ew) and data is not None:
@@ -468,11 +455,9 @@ class ProfileDisplay(object):
             self.mmc.xlabel = "Northings (m)"
 
             tmpprof = data[::-1, self.lmod1.curprof]+regtmp
-#            tmpprof2 = data2[:, self.lmod1.curprof]
             tmprng = (np.arange(tmpprof.shape[0])*self.lmod1.dxy +
                       self.lmod1.yrange[0]+self.lmod1.dxy/2.)
             self.sb_profnum.setMaximum(self.lmod1.numx-1)
-#            self.mmc.update_line(self.lmod1.yrange, [alt, alt])
             extent = self.lmod1.yrange
 
         if self.rb_axis_custmax.isChecked():
@@ -489,18 +474,14 @@ class ProfileDisplay(object):
         tmpprof2 = None
         if 'Magnetic Dataset' in self.lmod1.griddata and self.viewmagnetics:
             data2 = self.lmod1.griddata['Magnetic Dataset']
-#            regtmp = 0.0
         elif ('Gravity Dataset' in self.lmod1.griddata and
               not self.viewmagnetics):
             data2 = self.lmod1.griddata['Gravity Dataset']
-#            regtmp = self.lmod1.gregional
 
         if data2 is not None:
             if self.lmod1.is_ew:
                 ycrdl = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy
-#               ycrdl = self.lmod1.yrange[1]-self.lmod1.curprof*self.lmod1.dxy
                 ycrd = int((data2.tly - ycrdl)/data2.ydim)
-#               ycrd = data2.rows-int((data2.tly - ycrdl)/data2.ydim)
 
                 if ycrd < 0 or ycrd >= data2.rows:
                     if slide is False:
@@ -587,7 +568,6 @@ class ProfileDisplay(object):
         self.sb_profnum.setValue(self.lmod1.curprof)
         self.hs_profnum.setValue(self.sb_profnum.value())
         self.update_plot()
-#        self.change_model() # needs to happen before profnum set value
         self.sb_profnum.valueChanged.connect(self.sprofnum)
         self.hs_profnum.valueChanged.connect(self.hprofnum)
         self.combo_profpic.currentIndexChanged.connect(self.profpic_hs)
@@ -628,8 +608,6 @@ class LithBound(QtWidgets.QDialog):
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
-#        QtCore.QMetaObject.connectSlotsByName(Dialog)
-
 
 class MyMplCanvas(FigureCanvas):
     """This is a QWidget"""
@@ -663,8 +641,8 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.yaxis.set_label_text("mGal")
         self.paxes.ticklabel_format(useOffset=False)
 
-        self.cal = self.paxes.plot([], [])
-        self.obs = self.paxes.plot([], [], '.')
+        self.cal = self.paxes.plot([], [], zorder=10, color='blue')
+        self.obs = self.paxes.plot([], [], '.', zorder=1, color='orange')
 
         self.axes = fig.add_subplot(212)
         self.axes.xaxis.set_label_text(self.xlabel)
@@ -841,7 +819,6 @@ class MyMplCanvas(FigureCanvas):
         self.ims.set_extent(extent)
         tmp = self.luttodat(dat)
         self.ims.set_data(tmp)
-#        self.ims.set_alpha(opac)
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.figure.canvas.draw()
@@ -896,10 +873,10 @@ class MyMplCanvas(FigureCanvas):
 
         self.paxes.set_autoscalex_on(False)
         if xdat2 is not None:
-            self.obs = self.paxes.plot(xdat2, dat2, '.')
+            self.obs = self.paxes.plot(xdat2, dat2, '.', zorder=1, color='orange')
         else:
-            self.obs = self.paxes.plot([], [], '.')
-        self.cal = self.paxes.plot(xdat, dat)
+            self.obs = self.paxes.plot([], [], '.', zorder=1, color='orange')
+        self.cal = self.paxes.plot(xdat, dat, zorder=10, color='blue')
 
         self.figure.canvas.draw()
         QtWidgets.QApplication.processEvents()
@@ -914,9 +891,11 @@ class MyMplCanvas(FigureCanvas):
             self.obs[0].set_data([[], []])
 
         self.cal[0].set_data([xdat, dat])
-        self.paxes.draw_artist(self.cal[0])
+
         if xdat2 is not None:
             self.paxes.draw_artist(self.obs[0])
+        self.paxes.draw_artist(self.cal[0])
+
         self.figure.canvas.update()
 
         QtWidgets.QApplication.processEvents()

@@ -228,10 +228,6 @@ class ProfileDisplay(object):
         else:
             self.mmc.init_grid(gtmp, extent, gtmpl, opac)
 
-#        alt = self.lmod1.zrange[1]-self.lmod1.curlayer*self.lmod1.d_z
-
-#        self.mmc.update_line(self.lmod1.xrange, [alt, alt])
-
     def cp_init(self, data):
         """ Initializes stuff for custom profile """
         x_0, x_1 = self.xnodes[self.curprof]
@@ -317,9 +313,6 @@ class ProfileDisplay(object):
         self.ynodes = self.lmod1.custprofy
         self.pcntmax = len(self.xnodes)-1
 
-#        self.xnodes[0] = self.lmod1.xrange
-#        self.ynodes[0] = [self.lmod1.yrange[0], self.lmod1.yrange[0]]
-
         misc.update_lith_lw(self.lmod1, self.lw_prof_defs)
 
         self.hslider_profile2.valueChanged.disconnect()
@@ -344,11 +337,6 @@ class ProfileDisplay(object):
 
     def update_model(self):
         """ Update model itself """
-#        tmp = self.lmod1.lith_index[:, self.curprof, ::-1]
-#        if tmp.shape != self.mmc.mdata.T.shape:
-#            return
-#        self.lmod1.lith_index[:, self.curprof, ::-1] = (
-#            self.mmc.mdata.T.copy())
 
         data = self.lmod1.griddata['Calculated Gravity']
         xxx, yyy = self.cp_init(data)[:2]
@@ -425,7 +413,7 @@ class ProfileDisplay(object):
                 extent[2:] = [tmpprof2.min(), tmpprof2.max()]
 
         if slide is True:
-            self.mmc.slide_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
+            self.mmc.slide_plot(tmprng, tmpprof, tmprng2, tmpprof2)
         else:
             self.mmc.init_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
 
@@ -468,8 +456,8 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.yaxis.set_label_text("mGal")
         self.paxes.ticklabel_format(useOffset=False)
 
-        self.cal = self.paxes.plot([], [])
-        self.obs = self.paxes.plot([], [], 'o')
+        self.cal = self.paxes.plot([], [], zorder=10, color='blue')
+        self.obs = self.paxes.plot([], [], '.', zorder=1, color='orange')
 
         self.axes = fig.add_subplot(212)
         self.axes.xaxis.set_label_text(self.xlabel)
@@ -586,7 +574,6 @@ class MyMplCanvas(FigureCanvas):
         if yend > gheight:
             yend = gheight
 
-#        for i in range(xstart, xend):
         i = xstart
         while i < xend:
             tmp = (self.crd == self.crd[i])
@@ -656,12 +643,10 @@ class MyMplCanvas(FigureCanvas):
 
         self.figure.canvas.restore_region(self.bbox)
         self.axes.draw_artist(self.ims)
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def update_line(self, xrng, yrng):
@@ -669,7 +654,6 @@ class MyMplCanvas(FigureCanvas):
         self.prf[0].set_data([xrng, yrng])
         self.figure.canvas.restore_region(self.lbbox)
         self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def dat_extent(self, dat):
@@ -707,31 +691,27 @@ class MyMplCanvas(FigureCanvas):
 
         self.paxes.set_autoscalex_on(False)
         if xdat2 is not None:
-            self.obs = self.paxes.plot(xdat2, dat2, 'o')
+            self.obs = self.paxes.plot(xdat2, dat2, '.', zorder=1, color='orange')
         else:
-            self.obs = self.paxes.plot([], [], 'o')
-        self.cal = self.paxes.plot(xdat, dat)
+            self.obs = self.paxes.plot([], [], '.', zorder=1, color='orange')
+        self.cal = self.paxes.plot(xdat, dat, zorder=10, color='blue')
         self.figure.canvas.draw()
         QtWidgets.QApplication.processEvents()
         self.plotisinit = True
 
-    def slide_plot(self, xdat, dat, extent, xdat2, dat2):
+    def slide_plot(self, xdat, dat, xdat2, dat2):
         """ Slider """
-#        dmin, dmax = self.extentchk(extent)
-
         self.figure.canvas.restore_region(self.pbbox)
-        self.cal[0].set_data([xdat, dat])
         if xdat2 is not None:
             self.obs[0].set_data([xdat2, dat2])
         else:
             self.obs[0].set_data([[], []])
-#        self.paxes.set_ylim(dmin, dmax)
-#        self.paxes.set_xlim(extent[0], extent[1])
+        self.cal[0].set_data([xdat, dat])
 
         if xdat2 is not None:
             self.paxes.draw_artist(self.obs[0])
         self.paxes.draw_artist(self.cal[0])
-#        self.figure.canvas.blit(self.paxes.bbox)
+
         self.figure.canvas.update()
 
         QtWidgets.QApplication.processEvents()
