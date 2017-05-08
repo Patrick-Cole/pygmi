@@ -59,9 +59,6 @@ class FileMenu(object):
 
         self.action_exit.triggered.connect(parent.close)
 
-#        QtCore.QObject.connect(self.action_exit, QtCore.SIGNAL("triggered()"),
-#                               parent.close)
-
 # Context menus
         context_menu['Basic'].addSeparator()
 
@@ -133,7 +130,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
                 tmp.append(i.dataid)
             self.combo.addItems(tmp)
 
-        if len(tmp) == 0:
+        if not tmp:
             return
 
         tmp = self.exec_()
@@ -144,16 +141,12 @@ class ComboBoxBasic(QtWidgets.QDialog):
         for j in data:
             if j is 'Model3D' or j is 'Seis':
                 continue
-#            atmp = [i.text() for i in self.combo.selectedItems()]
             atmp = [i.row() for i in self.combo.selectedIndexes()]
 
-            if len(atmp) > 0:
+            if atmp:
                 dtmp = []
                 for i in atmp:
                     dtmp.append(data[j][i])
-#                for i in data[j]:
-#                    if i.dataid in atmp:
-#                        dtmp.append(i)
                 data[j] = dtmp
 
         my_class.indata = data

@@ -27,10 +27,10 @@
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import axes3d  # this is used, ignore warning
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from mpl_toolkits.mplot3d import axes3d  # this is used, ignore warning
 
 
 class MyMplCanvas(FigureCanvas):
@@ -49,57 +49,9 @@ class MyMplCanvas(FigureCanvas):
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
-#        self.background = None
         self.parent = parent
 
         FigureCanvas.__init__(self, fig)
-
-#        self.figure.canvas.mpl_connect('pick_event', self.onpick)
-#        self.figure.canvas.mpl_connect('button_release_event',
-#                                       self.button_release_callback)
-#        self.figure.canvas.mpl_connect('motion_notify_event',
-#                                       self.motion_notify_callback)
-
-#    def button_release_callback(self, event):
-#        """ mouse button release """
-#        if event.inaxes is None:
-#            return
-#        if event.button != 1:
-#            return
-#        self.ind = None
-
-#    def motion_notify_callback(self, event):
-#        """ move mouse """
-#        if event.inaxes is None:
-#            return
-#        if event.button != 1:
-#            return
-#        if self.ind is None:
-#            return
-#
-#        y = event.ydata
-#        dtmp = self.line.get_data()
-#        dtmp[1][self.ind] = y
-#        self.line.set_data(dtmp[0], dtmp[1])
-#
-##        self.figure.canvas.restore_region(self.background)
-#        self.axes.draw_artist(self.line)
-##        self.figure.canvas.blit(self.axes.bbox)
-#        self.figure.canvas.update()
-
-#    def onpick(self, event):
-#        """ Picker event """
-#        if event.mouseevent.inaxes is None:
-#            return
-#        if event.mouseevent.button != 1:
-#            return
-#        if event.artist != self.line:
-#            return True
-#
-#        self.ind = event.ind
-#        self.ind = self.ind[len(self.ind) / 2]  # get center-ish value
-#
-#        return True
 
     def update_contour(self, data1):
         """ Update the plot """
@@ -117,7 +69,6 @@ class MyMplCanvas(FigureCanvas):
         self.axes.figure.colorbar(csp, boundaries=bnds, values=vals,
                                   ticks=vals)
 
-#        self.axes.set_title('Data')
         self.axes.set_xlabel("Eastings")
         self.axes.set_ylabel("Northings")
         self.figure.canvas.draw()
@@ -155,7 +106,6 @@ class MyMplCanvas(FigureCanvas):
 
         rdata = self.axes.imshow(data1.memdat[mem], extent=extent)
         self.figure.colorbar(rdata)
-#        self.axes.set_title('Data')
         self.axes.set_xlabel("Eastings")
         self.axes.set_ylabel("Northings")
         self.figure.canvas.draw()
@@ -315,7 +265,7 @@ class PlotMembership(GraphWindow):
     def run(self):
         """ Run """
         data = self.indata['Cluster']
-        if len(data[0].memdat) == 0:
+        if not data[0].memdat:
             return
 
         self.show()
@@ -409,7 +359,7 @@ class PlotVRCetc(GraphWindow):
         if data[0].xbi is not None:
             items += ['Xie-Beni Index']
 
-        if len(items) == 0:
+        if not items:
             self.parent.showprocesslog('Your dataset does not qualify')
             return
 

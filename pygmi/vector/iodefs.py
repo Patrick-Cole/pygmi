@@ -165,17 +165,6 @@ class ImportPointData(object):
         datatmp = np.genfromtxt(filename, unpack=True, delimiter=dlim,
                                 skip_header=srows, usemask=True)
 
-#        datatmp.mask = np.logical_or(datatmp.mask, np.isnan(datatmp.data))
-#        try:
-#            datatmp = np.loadtxt(filename, unpack=True, delimiter=dlim,
-#                                 skiprows=srows)
-#        except ValueError:
-#            QtWidgets.QMessageBox.critical(self.parent, 'Import Error',
-#                                       'There was a problem loading the file.'
-#                                       ' You may have a text character in one'
-#                                       ' of your columns.')
-#            return False
-
         dat = []
         if tmp == QtWidgets.QMessageBox.Yes:
             for i in range(2, datatmp.shape[0]):
@@ -233,12 +222,11 @@ class ExportPoint(object):
 
         os.chdir(filename.rpartition('/')[0])
         ofile = str(filename.rpartition('/')[-1][:-4])
-#        self.ext = filename[-3:]
         data = self.indata['Point']
 
         for i, datai in enumerate(data):
             datid = datai.dataid
-            if datid is '':
+            if datid == '':
                 datid = str(i)
 
             dattmp = np.transpose([datai.xdata, datai.ydata, datai.zdata])
@@ -321,8 +309,8 @@ class ImportShapeData(object):
             dat.dtype = 'Point'
 
         if lyr.GetGeomType() is ogr.wkbPolygon:
-            for i in range(lyr.GetFeatureCount()):
-                feat = lyr.GetFeature(i)
+            for j in range(lyr.GetFeatureCount()):
+                feat = lyr.GetFeature(j)
                 geom = feat.GetGeometryRef()
                 ifin = 0
                 if geom.GetGeometryName() == 'MULTIPOLYGON':

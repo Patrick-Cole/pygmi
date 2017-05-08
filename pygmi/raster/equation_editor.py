@@ -174,7 +174,8 @@ class EquationEditor(QtWidgets.QDialog):
 
         indata = dataprep.merge(self.indata[intype])
 
-        mask = indata[-1].data.mask
+        mask = np.ma.getmaskarray(indata[-1].data)
+
         for i in indata:
             mask = np.logical_or(mask, i.data.mask)
         for i in indata:
@@ -224,7 +225,7 @@ class EquationEditor(QtWidgets.QDialog):
             return
         elif len(findat.shape) == 2:
             findat[np.isnan(findat)] = indata[0].nullvalue
-            mask = indata[0].data.mask
+            mask = np.ma.getmaskarray(indata[0].data)
             findat[mask] = indata[0].nullvalue
 
             outdata = [copy.copy(indata[0])]
@@ -233,7 +234,7 @@ class EquationEditor(QtWidgets.QDialog):
         else:
             for i, findati in enumerate(findat):
                 findat[i][np.isnan(findati)] = indata[i].nullvalue
-                mask = indata[i].data.mask
+                mask = np.ma.getmaskarray(indata[i].data)
                 findat[i][mask] = indata[i].nullvalue
                 outdata.append(copy.copy(indata[i]))
                 outdata[-1].data = np.ma.masked_equal(findati,
@@ -241,10 +242,8 @@ class EquationEditor(QtWidgets.QDialog):
 
         # This is needed to get rid of bad, unmasked values etc.
         for i, _ in enumerate(outdata):
-            mask = np.logical_or(mask, np.isinf(outdata[i].data))
-            mask = np.logical_or(mask, np.isnan(outdata[i].data))
-            outdata[i].data.mask = mask
-            outdata[i].data.fill_value = indata[i].data.fill_value
+            outdata[i].data.set_fill_value(indata[i].data.fill_value)
+            outdata[i].data = np.ma.fix_invalid(outdata[i].data)
 
         self.outdata[intype] = outdata
 
@@ -275,6 +274,5 @@ def hmode(data):
         mmax = mhist[1][mind+1]
 
     mode2 = (mmax-mmin)/2 + mmin
-#        mcnt = mhist[0][mind]
 
     return mode2

@@ -229,8 +229,6 @@ class IGRF(QtWidgets.QDialog):
 
         self.ctrans = osr.CoordinateTransformation(orig, targ)
 
-#        self.accept()
-
     def settings(self):
         """
         Settings Dialog. This is the main entrypoint into this routine. It also
@@ -255,7 +253,6 @@ class IGRF(QtWidgets.QDialog):
         else:
             return False
 
-#        again = 1
         mdf = open(__file__.rpartition('\\')[0]+'\\IGRF11.cof')
         modbuff = mdf.readlines()
         fileline = -1                            # First line will be 1
@@ -339,7 +336,6 @@ class IGRF(QtWidgets.QDialog):
             tmp = int(i*100/maxlen)
             if tmp > progress:
                 progress = tmp
-#                self.reportback('Calculation: ' + str(progress) + '%', True)
 
             longitude, latitude, _ = self.ctrans.TransformPoint(xdat[i],
                                                                 ydat[i])
@@ -348,66 +344,7 @@ class IGRF(QtWidgets.QDialog):
 # Do the first calculations
             self.shval3(igdgc, latitude, longitude, alt, nmax, 3)
             self.dihf(3)
-#            self.shval3(igdgc, latitude, longitude, alt, nmax, 4)
-#            self.dihf(4)
-#
-#            RAD2DEG = (180.0/np.pi)
-#
-#            self.ddot = ((self.dtemp - self.d)*RAD2DEG)
-#            if self.ddot > 180.0:
-#                self.ddot -= 360.0
-#            if self.ddot <= -180.0:
-#                self.ddot += 360.0
-#            self.ddot *= 60.0
-#
-#            self.idot = ((self.itemp - self.i)*RAD2DEG)*60
-#            self.d = self.d*(RAD2DEG)
-#            self.i = self.i*(RAD2DEG)
-#            self.hdot = self.htemp - self.h
-#            self.xdot = self.xtemp - self.x
-#            self.ydot = self.ytemp - self.y
-#            self.zdot = self.ztemp - self.z
-#            self.fdot = self.ftemp - self.f
-#
-#          # deal with geographic and magnetic poles
-#
-#            if self.h < 100.0:  # at magnetic poles
-#                self.d = np.nan
-#                self.ddot = np.nan
-#              # while rest is ok
-#
-#            if 90.0-abs(latitude) <= 0.001:  # at geographic poles
-#                self.x = np.nan
-#                self.y = np.nan
-#                self.d = np.nan
-#                self.xdot = np.nan
-#                self.ydot = np.nan
-#                self.ddot = np.nan
 
-#            print('Test Data')
-#            print('==========')
-#
-#            print('# Date 2014.5', sdate)
-#            print('# Coord-System D')
-#            print('# Altitude K100', alt)
-#            print('# Latitude 70.3', latitude)
-#            print('# Longitude 30.8', longitude)
-#            print('# D_deg 13d', int(self.d))
-#            print('# D_min 51m ', int((self.d-int(self.d))*60))
-#            print('# I_deg 78d', int(self.i))
-#            print('# I_min 55m', int((self.i-int(self.i))*60))
-#            print('# H_nT 9987.9 {0:.1f}'.format(self.h))
-#            print('# X_nT 9697.4 {0:.1f}'.format(self.x))
-#            print('# Y_nT 2391.4 {0:.1f}'.format(self.y))
-#            print('# Z_nT 51022.3 {0:.1f}'.format(self.z))
-#            print('# F_nT 51990.7 {0:.1f}'.format(self.f))
-#            print('# dD_min 10.9 {0:.1f}'.format(self.ddot))
-#            print('# dI_min 1.0 {0:.1f}'.format(self.idot))
-#            print('# dH_nT -10.4 {0:.1f}'.format(self.hdot))
-#            print('# dX_nT -17.7 {0:.1f}'.format(self.xdot))
-#            print('# dY_nT 28.1 {0:.1f}'.format(self.ydot))
-#            print('# dZ_nT 29.0 {0:.1f}'.format(self.zdot))
-#            print('# dF_nT 26.5 {0:.1f}'.format(self.fdot))
             igrf_F[i] = self.f
 
         self.outdata['Raster'] = copy.deepcopy(self.indata['Raster'])
@@ -459,7 +396,6 @@ class IGRF(QtWidgets.QDialog):
                 cnt += 1
                 tmp = file[strec+cnt]
                 tmp = tmp.split()
-#                n = int(tmp[0])
                 m = int(tmp[1])
 
                 if iflag == 1:

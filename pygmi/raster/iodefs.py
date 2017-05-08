@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-import pdb
 import os
 import glob
 import struct
@@ -114,33 +113,35 @@ class ImportData(object):
         if dat is None:
             if filt == 'Surfer grid (v.6) (*.grd)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import the surfer 6 '
-                                          'grid. Please make sure it not '
-                                          'another format, such as geosoft.',
-                                          QtWidgets.QMessageBox.Ok,
-                                          QtWidgets.QMessageBox.Ok)
+                                              'Could not import the surfer 6 '
+                                              'grid. Please make sure it not '
+                                              'another format, such as '
+                                              'geosoft.',
+                                              QtWidgets.QMessageBox.Ok,
+                                              QtWidgets.QMessageBox.Ok)
             elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import the grid. '
-                                          'Please make sure it is a Geosoft '
-                                          'FLOAT grid, and not a compressed '
-                                          'grid. You can export your grid to '
-                                          'this format using the Geosoft '
-                                          'Viewer.',
-                                          QtWidgets.QMessageBox.Ok,
-                                          QtWidgets.QMessageBox.Ok)
+                                              'Could not import the grid. '
+                                              'Please make sure it is a '
+                                              'Geosoft FLOAT grid, and not a '
+                                              'compressed grid. You can '
+                                              'export your grid to '
+                                              'this format using the Geosoft '
+                                              'Viewer.',
+                                              QtWidgets.QMessageBox.Ok,
+                                              QtWidgets.QMessageBox.Ok)
             elif filt == 'hdf (*.hdf)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import the data.'
-                                          'Currently only ASTER and MODIS'
-                                          'are supported.',
-                                          QtWidgets.QMessageBox.Ok,
-                                          QtWidgets.QMessageBox.Ok)
+                                              'Could not import the data.'
+                                              'Currently only ASTER and MODIS'
+                                              'are supported.',
+                                              QtWidgets.QMessageBox.Ok,
+                                              QtWidgets.QMessageBox.Ok)
             else:
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import the grid.',
-                                          QtWidgets.QMessageBox.Ok,
-                                          QtWidgets.QMessageBox.Ok)
+                                              'Could not import the grid.',
+                                              QtWidgets.QMessageBox.Ok,
+                                              QtWidgets.QMessageBox.Ok)
             return False
 
         output_type = 'Raster'
@@ -240,7 +241,7 @@ def get_raster(ifile):
     if ext == 'hdr':
         ifile = ifile[:-4]
         tmp = glob.glob(ifile+'.dat')
-        if len(tmp) > 0:
+        if tmp:
             ifile = tmp[0]
 
     if ext == 'ers':
@@ -255,7 +256,7 @@ def get_raster(ifile):
                     orig.SetTM(0., float(clong), 1., 0., 0.)
                     orig.SetProjCS(r'Cape / TM'+clong)
                     custom_wkt = orig.ExportToWkt()
-                elif 'WGS84':
+                elif 'WGS84' in metadata:
                     orig.ImportFromEPSG(4148)
                     orig.SetTM(0., float(clong), 1., 0., 0.)
                     orig.SetProjCS(r'Hartebeesthoek94 / TM'+clong)
@@ -268,15 +269,12 @@ def get_raster(ifile):
 
     gtr = dataset.GetGeoTransform()
 
-#    output_type = 'Raster'
-
     for i in range(dataset.RasterCount):
         rtmp = dataset.GetRasterBand(i+1)
         bandid = rtmp.GetDescription()
         nval = rtmp.GetNoDataValue()
 
         if 'Cluster' in bandid:
-            # output_type = 'Cluster'
             dat.append(Clust())
         else:
             dat.append(Data())
@@ -293,21 +291,13 @@ def get_raster(ifile):
             if nval is None:
                 nval = 1e+20
             nval = float(nval)
-#            dtype = dat[i].data.dtype
-#            if dtype != np.float64 and dtype != np.float32:
-#                dat[i].data = dat[i].data.astype(np.float32)
-#            if dtype == np.float64 or dtype == np.float32:
-#                dat[i].data[dat[i].data == nval] = np.nan
         if ext == 'ers' and nval == -1.0e+32:
             dat[i].data[np.ma.less_equal(dat[i].data, nval)] = -1.0e+32
-#                dat[i].data[np.ma.less_equal(dat[i].data, nval)] = np.nan
 
-#            dat[i].data = np.ma.masked_invalid(dat[i].data)
 # Note that because the data is stored in a masked array, the array ends up
 # being double the size that it was on the disk.
         dat[i].data = np.ma.masked_invalid(dat[i].data)
         dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
-#        dat[i].data = np.ma.masked_equal(dat[i].data, nval)
         if dat[i].data.mask.size == 1:
             dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                 dat[i].data.mask)
@@ -338,7 +328,6 @@ def get_raster(ifile):
 
         if 'Cluster' in bandid:
             dat[i].no_clusters = int(dat[i].data.max()+1)
-#                dat[i].no_clusters = np.unique(dat[i].data).count()
 
     return dat
 
@@ -358,30 +347,7 @@ def get_hdf(ifile):
     dat : PyGMI raster Data
         dataset imported
     """
-#    dat = []
     ifile = ifile[:]
-#    ext = ifile[-3:]
-
-#    myd03 = SD(ifile, SDC.READ)
-#    myd03_Latitude = myd03.select('Latitude')
-#    myd03_Longitude = myd03.select('Longitude')
-#    myd03_Latitude_data = myd03_Latitude.get()
-#    myd03_Longitude_data = myd03_Longitude.get()
-
-#    myd03_sds = myd03.select('Cloud_Phase_Optical_Properties')
-#    myd03_sds_data = myd03_sds.get()
-
-#    latmin = myd03_Latitude_data[0, 0]
-#    latmax = myd03_Latitude_data[-1, -1]
-#    lat_0 = latmin + (latmax - latmin) / 2.
-
-#    tmp_01 = myd03_Longitude_data[0, 0]
-#    tmp_02 = myd03_Longitude_data[-1, -1]
-#    lonmin = min(myd03_Longitude_data[0, 0], myd03_Longitude_data[-1, -1])
-#    lonmax = max(myd03_Longitude_data[0, 0], myd03_Longitude_data[-1, -1])
-#    lon_0 = lonmin + (lonmax - lonmin) / 2.
-#    if lon_0 > 180:
-#        lon_0 = - (360 - lon_0)
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
@@ -576,13 +542,6 @@ def get_aster(ifile):
     newx2 = newx2*lonsdim + tlx
     newy2 = tlx - newy2*latsdim
 
-
-#    tmp = []
-#    for i in subdata:
-#        if 'HDF4_EOS:EOS_SWATH' in i[0]:
-#            tmp.append(i)
-#    subdata = tmp
-
     subdata = [i for i in subdata if 'ImageData' in i[0]]
 
     i = -1
@@ -664,7 +623,6 @@ def get_aster_ged(ifile):
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
     subdata = dataset.GetSubDatasets()
-#    metadata = dataset.GetMetadata()
 
     latentry = [i for i in subdata if 'Latitude' in i[1]]
     subdata.pop(subdata.index(latentry[0]))
@@ -692,14 +650,11 @@ def get_aster_ged(ifile):
         if 'ASTER_GDEM' in bandid2:
             bandid = 'ASTER GDEM'
             units = 'meters'
-#            bandid = metadata['ASTER_GDEM_ASTGDEM_Description']
         if 'Land_Water_Map' in bandid2:
             bandid = 'Land_water_map'
-#            bandid = metadata['Land_Water_Map_LWmap_Description']
         if 'Observations' in bandid2:
             bandid = 'Observations'
             units = 'number per pixel'
-#            bandid = metadata['Observations_NumObs_Description']
 
         gtr = dataset.GetGeoTransform()
         rtmp2 = dataset.ReadAsArray()
@@ -730,29 +685,23 @@ def get_aster_ged(ifile):
             dat[i].data = dat[i].data * 1.0
             if 'Emissivity/Mean' in bandid2:
                 bandid = 'Emissivity_mean_band_'+str(10+i2)
-#                bandid = metadata['Emissivity_Mean_Description']+'_band1'+str(i2)
                 dat[i].data = dat[i].data * 0.001
             if 'Emissivity/SDev' in bandid2:
                 bandid = 'Emissivity_std_dev_band_'+str(10+i2)
-#                bandid = metadata['Emissivity_SDev_Description']+'_band1'+str(i2)
                 dat[i].data = dat[i].data * 0.0001
             if 'NDVI/Mean' in bandid2:
                 bandid = 'NDVI_mean'
-#                bandid = metadata['NDVI_Mean_Description']
                 dat[i].data = dat[i].data * 0.01
             if 'NDVI/SDev' in bandid2:
                 bandid = 'NDVI_std_dev'
-#                bandid = metadata['NDVI_SDev_Description']
                 dat[i].data = dat[i].data * 0.01
             if 'Temperature/Mean' in bandid2:
                 bandid = 'Temperature_mean'
                 units = 'Kelvin'
-#                bandid = metadata['Temperature_Mean_Description']
                 dat[i].data = dat[i].data * 0.01
             if 'Temperature/SDev' in bandid2:
                 bandid = 'Temperature_std_dev'
                 units = 'Kelvin'
-#                bandid = metadata['Temperature_SDev_Description']
                 dat[i].data = dat[i].data * 0.01
 
             dat[i].nrofbands = dataset.RasterCount
@@ -780,6 +729,27 @@ def get_aster_ged_bin(ifile):
     """
     Get ASTER GED binary format
 
+    Emissivity_Mean_Description: Mean Emissivity for each pixel on grid-box
+                                 using all ASTER data from 2000-2010
+    Emissivity_SDev_Description: Emissivity Standard Deviation for each pixel
+                                 on grid-box using all ASTER data from
+                                 2000-2010
+    Temperature_Mean_Description: Mean Temperature (K) for each pixel on
+                                  grid-box using all ASTER data from 2000-2010
+    Temperature_SDev_Description: Temperature Standard Deviation for each pixel
+                                  on grid-box using all ASTER data from
+                                  2000-2010
+    NDVI_Mean_Description: Mean NDVI for each pixel on grid-box using all ASTER
+                           data from 2000-2010',
+    NDVI_SDev_Description: NDVI Standard Deviation for each pixel on grid-box
+                           using all ASTER data from 2000-2010,
+    Land_Water_Map_LWmap_Description: Land Water Map using ASTER visible bands
+    Observations_NumObs_Description: Number of values used in computing mean
+                                     and standard deviation for each pixel
+    Geolocation_Latitude_Description: Latitude
+    Geolocation_Longitude_Description: Longitude
+    ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED
+
     Parameters
     ----------
     ifile : str
@@ -790,27 +760,6 @@ def get_aster_ged_bin(ifile):
     dat : PyGMI raster Data
         dataset imported
     """
-#    Emissivity_Mean_Description: Mean Emissivity for each pixel on grid-box
-#                                 using all ASTER data from 2000-2010
-#    Emissivity_SDev_Description: Emissivity Standard Deviation for each pixel
-#                                 on grid-box using all ASTER data from
-#                                 2000-2010
-#    Temperature_Mean_Description: Mean Temperature (K) for each pixel on
-#                                  grid-box using all ASTER data from 2000-2010
-#    Temperature_SDev_Description: Temperature Standard Deviation for each pixel
-#                                  on grid-box using all ASTER data from
-#                                  2000-2010
-#    NDVI_Mean_Description: Mean NDVI for each pixel on grid-box using all ASTER
-#                           data from 2000-2010',
-#    NDVI_SDev_Description: NDVI Standard Deviation for each pixel on grid-box
-#                           using all ASTER data from 2000-2010,
-#    Land_Water_Map_LWmap_Description: Land Water Map using ASTER visible bands
-#    Observations_NumObs_Description: Number of values used in computing mean
-#                                     and standard deviation for each pixel
-#    Geolocation_Latitude_Description: Latitude
-#    Geolocation_Longitude_Description: Longitude
-#    ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED
-
 
     dat = []
     nval = -9999
@@ -847,11 +796,6 @@ def get_aster_ged_bin(ifile):
     data = np.fromfile(ifile, dtype=np.int32)
     rows_cols = int((data.size/19)**0.5)
     data.shape = (19, rows_cols, rows_cols)
-
-#    if 'AG1kmB' in ifile:
-#        data.shape = (19, 100, 100)
-#    elif 'AG100B' in ifile:
-#        data.shape = (19, 1000, 1000)
 
     lats = data[16]*scale[16]
     lons = data[17]*scale[17]
@@ -911,7 +855,6 @@ class ExportData(object):
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-#        self.dirname = ""
 
     def run(self):
         """ Show Info """
@@ -936,7 +879,7 @@ class ExportData(object):
             "ASCII XYZ (*.xyz);;" + \
             "ArcGIS BIL (*.bil)"
 
-        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
             self.parent.process_is_active(False)
@@ -1005,8 +948,6 @@ class ExportData(object):
             fmt = gdal.GDT_Float32
             dtype = np.float32
             tmpfile = tmp[0] + '.bil'
-#        elif drv == 'VRT':
-#            tmpfile = tmp[0] + '.vrt'
         else:
             tmpfile = tmp[0]
 
@@ -1030,11 +971,6 @@ class ExportData(object):
             out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
                                 len(data), fmt)
         out.SetGeoTransform([xmin, data[0].xdim, 0, ymax, 0, -data[0].ydim])
-#        orig = osr.SpatialReference()
-#        orig.SetWellKnownGeogCS('WGS84')
-#        orig.ImportFromEPSG(4222)  # Cape
-#        orig.SetTM(0.0, 31.0, 1.0, 0.0, 0.0)
-#        out.SetProjection(orig.ExportToWkt())
 
         out.SetProjection(data[0].wkt)
 
@@ -1057,7 +993,7 @@ class ExportData(object):
                 datai.nullvalue = np.float64(dtmp.fill_value)
 
             elif dtype == np.uint8:
-                datai.nullvalue = np.uint8(dtmp.fill_value)
+                datai.nullvalue = 0  # specify 0, since fill value is 999999
             elif dtype == np.int32:
                 datai.nullvalue = np.uint32(dtmp.fill_value)
 
@@ -1067,7 +1003,7 @@ class ExportData(object):
             if dtype == np.uint8:
                 datai.nullvalue = int(datai.nullvalue)
 
-            if drv != 'GTiffaaa':
+            if drv != 'GTiff':
                 rtmp.SetNoDataValue(datai.nullvalue)
             elif len(data) == 1:
                 rtmp.SetNoDataValue(datai.nullvalue)
@@ -1092,9 +1028,7 @@ class ExportData(object):
             fno = open(file_out, 'w')
 
             xmin = k.tlx
-#            xmax = k.tlx + k.cols*k.xdim
             ymin = k.tly - k.rows*k.ydim
-#            ymax = k.tly
 
             fno.write("#TITLE\n")
             fno.write(self.name)
@@ -1179,9 +1113,7 @@ class ExportData(object):
             fno = open(file_out, 'w')
 
             xmin = k.tlx
-#            xmax = k.tlx + k.cols*k.xdim
             ymin = k.tly - k.rows*k.ydim
-#            ymax = k.tly
 
             fno.write("ncols \t\t\t" + str(k.cols))
             fno.write("\nnrows \t\t\t" + str(k.rows))
@@ -1196,7 +1128,6 @@ class ExportData(object):
                 fno.write("\n")
                 for i in range(k.cols):
                     fno.write(str(tmp[j, i]) + " ")
-                    # fno.write(str(data[0].data[j].data[i]) + " ")
 
             fno.close()
 
@@ -1216,8 +1147,6 @@ class ExportData(object):
             tmp = k.data.filled(k.nullvalue)
 
             xmin = k.tlx
-#            xmax = k.tlx + k.cols*k.xdim
-#            ymin = k.tly - k.rows*k.ydim
             ymax = k.tly
 
             for j in range(k.rows):
@@ -1265,9 +1194,7 @@ def get_geopak(hfile):
     fall = fin.read()
     fin.close()
 
-    # bof = np.frombuffer(fall, dtype=np.uint8, count=1, offset=0)
     off = 0
-#    fnew = b''
     fnew = []
     while off < len(fall):
         off += 1
@@ -1283,11 +1210,8 @@ def get_geopak(hfile):
 
         off += 1
 
-#        fnew += fall[off:off+reclen]
         fnew.append(fall[off:off+reclen])
         off += reclen
-#        ereclen = np.frombuffer(fall, dtype=np.uint8, count=1, offset=off)[0]
-#        print(breclen, ereclen, reclen)
 
     fnew = b''.join(fnew)
     header = np.frombuffer(fnew, dtype=np.float32, count=32, offset=0)
@@ -1445,57 +1369,3 @@ def get_geosoft(hfile):
     dat[i].ydim = dy
 
     return dat
-
-#def tests():
-#    """ Tests """
-#    from pygmi.misc import PTime
-##    ifile = r'E:\\aster\\AST_L1A_00304012006081253_20160516021940_11667.hdf'
-##    dat = get_hdf(ifile)
-#
-#    # Create a SixS object called s
-#    # (used as the standard name by convention)
-#    ss = SixS()
-#    ss.sixs_path = r'C:\Work\Programming\Remote_Sensing\LandCor_5_0_source\source\6S\sixsV1.1.exe'
-#
-#    # Set the atmospheric conditions as usual
-#    ss.aero_profile = AeroProfile.PredefinedType(AeroProfile.Maritime)
-#    ss.aot550 = 0.05
-#    ss.atmos_profile = AtmosProfile.UserWaterAndOzone(2, 0.318)
-#
-#    # Set the wavelength
-#    ss.wavelength = Wavelength(PredefinedWavelengths.ASTER_B1)
-#
-#    # Set the altitudes
-#    ss.altitudes.set_target_sea_level()
-#    ss.altitudes.set_sensor_satellite_level()
-#
-#    # Set the geometry
-#    ss.geometry = Geometry.User()
-#    ss.geometry.solar_z = 35.8
-#    ss.geometry.solar_a = 149.4
-#    ss.geometry.view_z = 5.1
-#    ss.geometry.view_a = 106.8
-#    ss.geometry.month = 6
-#    ss.geometry.date = 28
-#
-#    # Turn on atmospheric correction mode and set it to do the
-#    # correction assuming a Lambertian surface with a TOA
-#    # radiance of 137.5 W/m^2
-#
-#    ttt = PTime()
-#
-#    for i in range(1):
-#        ss.atmos_corr = AtmosCorr.AtmosCorrLambertianFromRadiance(137.5)
-#        # Run the model
-#        ss.run()
-#    ttt.since_last_call()
-#
-#    # Print the result of the atmospheric correction
-#    # (assuming Lambertian reflectance)
-#    # This is the ground-reflectance for the given radiance,
-#    # under the given atmospheric conditions
-#    print(ss.outputs.atmos_corrected_reflectance_lambertian)
-
-
-# if __name__ == "__main__":
-#     tests()

@@ -93,7 +93,6 @@ class ImportMod3D(object):
             if self.lmod.griddata[i].dataid == '':
                 self.lmod.griddata[i].dataid = i
 
-#        self.outdata['Raster'] = list(self.lmod.griddata.values())
         tmp = [i for i in set(self.lmod.griddata.values())]
         self.outdata['Raster'] = tmp
 
@@ -110,7 +109,7 @@ class ImportMod3D(object):
         while tmp[0][0] == '#':
             tmp.pop(0)
 
-        if len(tmp) == 0:
+        if not tmp:
             return
 
         header = tmp.pop(0).split(',')
@@ -211,18 +210,7 @@ class ImportMod3D(object):
         y = tmp[:, 1].astype(np.float)
         z = tmp[:, 2].astype(np.float)
         label = tmp[:, 3]
-
-#        x_u = np.array(np.unique(x))
-#        y_u = np.array(np.unique(y))
-#        z_u = np.array(np.unique(z))
         labelu = np.unique(label)
-#        xcell = x.ptp()/float(x_u.shape[0]-1)
-#        ycell = y.ptp()/float(y_u.shape[0]-1)
-#        zcell = z.ptp()/float(z_u.shape[0]-1)
-
-#        xcell = np.max(np.diff(x_u))
-#        ycell = np.max(np.diff(y_u))
-#        zcell = np.max(np.diff(z_u))
 
         idx = np.unique(x, return_index=True)[1]
         x_u = x[np.sort(idx)]
@@ -247,12 +235,8 @@ class ImportMod3D(object):
 
         lmod = self.lmod
 
-#        lmod.numx = x_u.shape[0]
-#        lmod.numy = y_u.shape[0]
-#        lmod.numz = z_u.shape[0]
         lmod.dxy = min(xcell, ycell)
         lmod.d_z = zcell
-#        lmod.lith_index = indict[pre+'lith_index']
         lmod.curprof = 0
         lmod.curlayer = 0
         lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
@@ -339,7 +323,7 @@ class ImportMod3D(object):
             if not hasattr(lmod.griddata[i], 'dataid'):
                 lmod.griddata[i].dataid = ''
             if hasattr(lmod.griddata[i], 'bandid'):
-                if lmod.griddata[i].dataid is '':
+                if lmod.griddata[i].dataid == '':
                     lmod.griddata[i].dataid = lmod.griddata[i].bandid
                 del lmod.griddata[i].bandid
 
@@ -402,7 +386,6 @@ class ExportMod3D(object):
         self.indata = {}
         self.outdata = {}
         self.lmod = None
-#        self.dirname = ""
         self.showtext = self.parent.showprocesslog
 
     def run(self):
@@ -413,7 +396,7 @@ class ExportMod3D(object):
             return
 
         for self.lmod in self.indata['Model3D']:
-            filename, filt = QtWidgets.QFileDialog.getSaveFileName(
+            filename, _ = QtWidgets.QFileDialog.getSaveFileName(
                 self.parent, 'Save File', '.',
                 'npz (*.npz);;shapefile (*.shp);;kmz (*.kmz);;csv (*.csv)')
 
@@ -552,7 +535,6 @@ class ExportMod3D(object):
 
         mvis_3d = mvis3d.Mod3dDisplay()
         mvis_3d.lmod1 = self.lmod
-#        mvis_3d.checkbox_smooth.setChecked(True)
 
         rev = 1  # should be 1 normally
 
@@ -572,9 +554,9 @@ class ExportMod3D(object):
 
         if prjkmz.proj.wkt == '':
             QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Warning',
-                                      ' You need a projection!',
-                                      QtWidgets.QMessageBox.Ok,
-                                      QtWidgets.QMessageBox.Ok)
+                                          ' You need a projection!',
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             return
 
         smooth = prjkmz.checkbox_smooth.isChecked()
@@ -609,7 +591,6 @@ class ExportMod3D(object):
         for i in itmp:
             tmp[i, :3] = self.lmod.mlut[i]
         mvis_3d.lut = tmp
-#        mvis_3d.update_plot(fullcalc = True)
         mvis_3d.update_model(smooth)
 
         self.showtext('creating kmz file')
@@ -883,7 +864,6 @@ class ExportMod3D(object):
                        aspect='auto',
                        interpolation='nearest')
             plt.savefig('tmp930.png')
-#            plt.close('tmp930')
 
             zfile.write('tmp930.png', 'models\\'+i+'.png')
             os.remove('tmp930.png')
@@ -907,7 +887,6 @@ class ExportMod3D(object):
 
         mvis_3d = mvis3d.Mod3dDisplay()
         mvis_3d.lmod1 = self.lmod
-#        mvis_3d.checkbox_smooth.setChecked(True)
 
         xrng = np.array(self.lmod.xrange, dtype=float)
         yrng = np.array(self.lmod.yrange, dtype=float)
@@ -947,15 +926,6 @@ class ExportMod3D(object):
         self.showtext('creating shapefile file')
 
         driver = ogr.GetDriverByName('ESRI Shapefile')
-
-#        datasource = driver.CreateDataSource(self.ifile)
-#        layer = datasource.CreateLayer('Model',
-#                                       geom_type=ogr.wkbMultiPolygon25D)
-#
-#        layer.CreateField(ogr.FieldDefn("Lithology", ogr.OFTString))
-#        layer.CreateField(ogr.FieldDefn("Susc", ogr.OFTReal))
-#        layer.CreateField(ogr.FieldDefn("Density", ogr.OFTReal))
-
 
 # update colors
         self.lmod.update_lith_list_reverse()
@@ -1019,7 +989,6 @@ class ExportMod3D(object):
             layer = None
             feature = None
             datasource = None
-#        datasource.Destroy()
 
         self.showtext('shapefile export complete!')
 
@@ -1192,13 +1161,6 @@ class ImportPicture(QtWidgets.QDialog):
         self.grid.tlx = self.min_coord
         self.grid.tly = self.max_alt
 
-#        filename = self.ifile
-#        if filename.rfind('/') != -1:
-#            datatext = filename.rpartition(r'/')[-1]
-#        else:
-#            datatext = filename
-#        self.lmod.profpics[datatext] = grid
-
     def update_win(self):
         """ Updates the window values """
         self.dsb_picimp_west.setValue(self.min_coord)
@@ -1216,7 +1178,7 @@ class ImportPicture(QtWidgets.QDialog):
         if temp == 0:
             return False
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', '*.jpg *.tif *.bmp')
 
         if filename == '':
@@ -1225,7 +1187,6 @@ class ImportPicture(QtWidgets.QDialog):
 
         self.ifile = filename
 
-#        data = gtiff(filename)
         data = mpimg.imread(filename)
 
         self.grid = Data()
@@ -1268,7 +1229,6 @@ class MessageCombo(QtWidgets.QDialog):
         """ Setup UI """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-#        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
         label_master = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -1280,36 +1240,9 @@ class MessageCombo(QtWidgets.QDialog):
 
         gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
-
-#        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
-
-#    def settings(self):
-#        """ Settings """
-#        tmp = []
-#        if 'Model3D' not in self.indata:
-#            return False
-#        elif len(self.indata['Model3D']) != 2:
-#            self.parent.showprocesslog('You need two datasets connected!')
-#            return False
-#
-#        for i in self.indata['Model3D']:
-#            tmp.append(i.name)
-#
-#        self.master.addItems(tmp)
-#        self.slave.addItems(tmp)
-#
-#        self.master.setCurrentIndex(0)
-#        self.slave.setCurrentIndex(1)
-#
-#        tmp = self.exec_()
-#
-#        if tmp == 1:
-#            tmp = self.acceptall()
-#
-#        return tmp
 
     def acceptall(self):
         """ accept """
@@ -1325,8 +1258,6 @@ def gtiff(filename):
     nblue = dataset.GetRasterBand(3).ReadAsArray()
     itmp = np.uint32(nred*65536+ngreen*256+nblue+int('FF000000', 16))
 
-#    itmp = np.transpose([nred, ngreen, nblue])
-
     gtr = dataset.GetGeoTransform()
     dat = [Data()]
 
@@ -1341,50 +1272,3 @@ def gtiff(filename):
     dat[0].nullvalue = np.nan  # This was erread.nullvalue, is changed above
 
     return dat
-
-
-#            inorm1 = np.arange(norm.shape[0])
-#
-#            can_reduce = True
-#            while can_reduce:
-#                can_reduce = False
-#                for idx, i in enumerate(inorm1):
-#                    ifaces = np.nonzero(np.sum(faces == i, 1))[0]
-#                    if ifaces.size == 0:
-#                        continue
-#                    faces1 = faces[ifaces]
-#                    norm2 = norm[faces1]
-#                    u1 = np.unique(norm2)
-#                    u2 = np.unique(norm2[0])
-#
-#                    if np.all(u1 == u2) and u1.size <= 3:
-#                        faces2 = faces1[faces1 != i]
-#                        # This line makes sure that we only simplify if the
-#                        # elimiated vertex is in the center of triangles.
-#                        if (np.unique(faces2).size*2 == faces2.size):
-#                            can_reduce = True
-#                            break
-#
-#                print(inorm1.size, idx)
-#                if not can_reduce:
-#                    break
-#                inorm1 = inorm1[idx:]
-#
-#                faces2.shape = (faces1.shape[0], 2)
-#                faces2 = faces2.tolist()
-#                vert = [faces2.pop(0)]
-#
-#                while len(faces2) > 0:
-#                    tmp = (np.array(faces2) == vert[-1])
-#                    if tmp.max() == False:
-#                        faces2 = np.fliplr(faces2).tolist()
-#                        continue
-#                    itmp = np.nonzero(tmp)[0][0]
-#                    vert += [faces2.pop(itmp)[::-1]]
-#
-#                vert = np.array(vert).flatten()[::2]
-#                faces = np.delete(faces, ifaces, 0)
-#
-#                for i, _ in enumerate(vert[:-2]):
-#                    ftmp = [vert[0], vert[i+1], vert[i+2]]
-#                    faces = np.vstack((faces, ftmp))

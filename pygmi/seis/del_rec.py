@@ -97,7 +97,6 @@ class Quarry(object):
     def __init__(self, parent=None):
         # Initialize Variables
         self.parent = parent
-#        self.indata = {'tmp': True}
         self.indata = {}
         self.outdata = {}
         self.showtext = self.parent.showprocesslog
@@ -105,24 +104,6 @@ class Quarry(object):
         self.pbar = None
 
         self.events = []
-#        self.settings()
-
-#    def data_init(self):
-#        """ data init - entry point into routine """
-#        if 'Seis' not in self.indata:
-#            return
-#
-#        data = self.indata['Seis']
-#
-#        alist = []
-#        for i in data:
-#            alist.append(i['1'])
-#
-#        if len(alist) == 0:
-#            self.parent.showprocesslog('Error: no Type 1 records')
-#            return False
-#
-#        self.events = alist
 
     def settings(self):
         """ Settings """
@@ -138,7 +119,7 @@ class Quarry(object):
             if '1' in i:
                 alist.append(i['1'])
 
-        if len(alist) == 0:
+        if not alist:
             self.showtext('Error: no Type 1 records')
             return False
 
@@ -151,14 +132,9 @@ class Quarry(object):
 
     def calcrq2(self):
         """ Calculates the Rq value """
-#        ofile = ifile[:-4]+'_new.out'
-#        ofile2 = ifile[:-4]+'_del.out'
-#
-#        inputf = open(ifile)
 
         self.showtext('Working...')
 
-#        date = []
         hour = []
         lat = []
         lon = []
@@ -168,7 +144,6 @@ class Quarry(object):
             hour.append(i.hour)
             lat.append(i.latitude)
             lon.append(i.longitude)
-#            date.append(i[0:21])
 
         day = [6, 19]  # daytime start at 6am and ends at 7pm
         hour = np.array(hour)
@@ -176,7 +151,6 @@ class Quarry(object):
         hour[hour > day[1]] = -99
         hour[hour != -99] = True
         hour[hour == -99] = False
-#        idata = np.array(idata)
 
         lon = np.array(lon)
         lat = np.array(lat)
@@ -193,7 +167,6 @@ class Quarry(object):
         ilat = []
         ilon = []
         ihour = []
-#        iidata = []
 
         rperc = self.randrq(nmax, nstep, nrange, day)
         self.showtext('Calculating Rq values')
@@ -256,11 +229,9 @@ class Quarry(object):
                 ilat += lat[np.logical_not(mask)].tolist()
                 ilon += lon[np.logical_not(mask)].tolist()
                 ihour += hour[np.logical_not(mask)].tolist()
-#                iidata += idata[np.logical_not(mask)].tolist()
                 lat = lat[mask]
                 lon = lon[mask]
                 hour = hour[mask]
-#                idata = idata[mask]
             else:
                 stayinloop = False
 
@@ -268,154 +239,7 @@ class Quarry(object):
         plt.plot(ilon, ilat, 'b.')
         plt.show()
 
-#        outputf2 = open(ofile2, 'w')
-#        outputf = open(ofile, 'w')
-
-#        outputf2.writelines(iidata)
-#        outputf.writelines(idata)
-#
-#        inputf.close()
-#        outputf.close()
-#        outputf2.close()
-
         self.showtext('Completed!')
-
-#    def calcrq(self, ifile):
-#        """ Calculates the Rq value """
-#        ofile = ifile[:-4]+'_new.out'
-#
-#        outputf = open(ofile, 'w')
-#        inputf = open(ifile)
-#
-#        self.showtext('Working...')
-#
-#        idata = inputf.readlines()
-# ##        odata = idata
-#        date = []
-#        hour = []
-#        lat = []
-#        lon = []
-#        for i in idata:
-#            date.append(i[0:21])
-#            hour.append(int(i[17:19]))
-#            lat.append(float(i[29:36]))
-#            lon.append(float(i[38:44]))
-#
-#        day = [6, 19]
-#        hour = np.array(hour)
-#        hour[hour < day[0]] = -99
-#        hour[hour > day[1]] = -99
-#        hour[hour != -99] = True
-#        hour[hour == -99] = False
-#        idata = np.array(idata)
-#
-#        lon = np.array(lon)
-#        lat = np.array(lat)
-#        ld = day[1]-day[0]
-#        ln = 24-ld
-#        dxy = 0.1
-#        dxyd2 = np.sqrt(2)*dxy
-#        lonrange = lon.max()-lon.min()+dxy
-#        latrange = lat.max()-lat.min()+dxy
-#        tlx = lon.min()
-#        tly = lat.max()
-#        rows = int(latrange/dxy)
-#        cols = int(lonrange/dxy)
-#        nmin = 50
-#        nmax = 400
-#        nstep = 50
-#        nrange = list(range(nmin, nmax+nstep, nstep))
-#        rlyrs = len(nrange)
-#        stayinloop = True
-#
-#        ttt.since_last_call()
-#        rperc = self.randrq(nmax, nstep, nrange, day)
-#        self.showtext('Calculating Rq values')
-#
-#        ttt.since_last_call('Begin of while loop')
-#
-#        plt.figure(1)
-#        plt.plot(lon, lat, 'b.')
-#        plt.show()
-#        QtWidgets.QApplication.processEvents()
-#
-#        while stayinloop:
-#            nd = np.zeros([rows, cols, rlyrs])
-#            nn = np.zeros([rows, cols, rlyrs])
-#            cnt = hour.shape[0]
-#            mask = np.ones(cnt).astype(bool)
-#
-#            for i in range(cols):
-#                londiff = (tlx+i*dxy)-lon
-#                for j in range(rows):
-#                    latdiff = (tly-j*dxy)-lat
-#                    r = np.sqrt(londiff**2+latdiff**2)
-#                    if r.min() > dxyd2:
-#                        nn[j, i] = 1.
-#                        continue
-#                    rs = np.argsort(r)
-#                    rs = rs[:nmax]
-#                    r = r[rs]
-#                    rs = rs[r < dxyd2]
-#                    hrs = hour[rs]
-#                    for N in nrange:
-#                        ndx = N/nstep-1
-#                        nd[j, i, ndx] = hrs[:N].sum()
-#                        nn[j, i, ndx] = N-nd[j, i, ndx]
-#                        if nn[j, i, ndx] == 0:
-#                            mask[rs[:N]] = False
-#                            nn[j, i, ndx] = N
-#                            nd[j, i, ndx] = 0
-#
-#            rq = (nd*ln)/(nn*ld)
-# ##            rq[rq == np.inf] = max(rq[rq < np.inf].max(), 100.)
-#
-#            for ndx in range(len(nrange)):
-#                rq[:, :, ndx][rq[:, :, ndx] > rperc[ndx][1]] = rperc[ndx][1]
-#                rq[:, :, ndx] -= rperc[ndx][0]
-#                rq[:, :, ndx] /= (rperc[ndx][1]-rperc[ndx][0])
-#                rq[:, :, ndx] *= 100.
-#
-#            tmax = np.transpose(np.where(rq == rq.max()))[0]
-#            j, i, ndx = tmax
-#            self.showtext('Rq percentile:'+str(rq[j, i, ndx]), True)
-#
-#            ttt.since_last_call('section 2')
-#
-#            if rq[j, i, ndx] > 99.:
-#                londiff = (tlx+i*dxy)-lon
-#                latdiff = (tly-j*dxy)-lat
-#                r = np.sqrt(londiff**2+latdiff**2)
-#                rs = np.argsort(r)
-#                rs = rs[:(ndx+1)*nstep]
-#                r = r[rs]
-#                rs = rs[r < dxyd2]
-#
-# ##                cnt = hour.shape[0]
-# ##                mask = np.ones(cnt).astype(bool)
-#                mask[rs] = False
-#                lat = lat[mask]
-#                lon = lon[mask]
-#                hour = hour[mask]
-#                idata = idata[mask]
-#            else:
-#                stayinloop = False
-#            ttt.since_last_call('section 3')
-#
-#        ttt.since_first_call('end')
-#
-#        plt.figure(1)
-#        plt.plot(lon, lat, 'r.')
-#        plt.show()
-#
-#        outputf.writelines(idata)
-#
-# # Close files
-#
-#        inputf.close()
-#        outputf.close()
-#
-#        self.showtext('Completed!')
 
     def randrq(self, nmax, nstep, nrange, day):
         """ Calculates random Rq values """

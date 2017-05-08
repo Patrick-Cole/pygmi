@@ -163,7 +163,7 @@ class BeachBall(QtWidgets.QDialog):
             alist += list(i['F'].keys())
         alist = sorted(set(alist))
 
-        if len(alist) == 0:
+        if not alist:
             self.parent.showprocesslog('Error: no Fault Plane Solutions')
             self.nofps = True
             return False
@@ -240,7 +240,6 @@ class BeachBall(QtWidgets.QDialog):
 
     def save_shp(self):
         """Save Beachballs """
-#        data = self.indata['Seis']
 
         ext = "Shape file (*.shp)"
 
@@ -448,7 +447,6 @@ def beachball(fm, centerx, centery, diam):
         d1 = fm[:, 1]
         r1 = fm[:, 2]
 
-    # r2d = 180/np.pi
     d2r = np.pi/180
     ampy = np.cos(np.mean(centery)*d2r)
 
@@ -470,7 +468,6 @@ def beachball(fm, centerx, centery, diam):
     mech[j] = 1
 
     # Get azimuth and dip of second plane
-#    s2, d2, r2 = auxplane(s1, d1, r1)
     s2, d2, _ = auxplane(s1, d1, r1)
 
     for ev in range(ne1):
@@ -532,8 +529,6 @@ def beachball(fm, centerx, centery, diam):
 
     Xs2, Ys2 = pol2cart(th2*d2r, 90*np.ones_like(th2))
 
-#    X = np.concatenate((X1, Xs1, X2, Xs2), 1)
-#    Y = np.concatenate((Y1, Ys1, Y2, Ys2), 1)
     X = np.hstack((X1, Xs1, X2, Xs2))
     Y = np.hstack((Y1, Ys1, Y2, Ys2))
 

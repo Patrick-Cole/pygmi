@@ -105,12 +105,6 @@ class LithModel(object):
         """
         if self.olith_index is None:
             return
-#        xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy) + \
-#            .5 * self.dxy
-#        yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy) + \
-#            .5 * self.dxy
-#        zvals = np.arange(self.zrange[0], self.zrange[1], self.d_z) + \
-#            .5 * self.d_z
 
         xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy)
         yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy)
@@ -282,7 +276,7 @@ class LithModel(object):
         self.init_calc_grids()
         if usedtm:
             self.dtm_to_lith()
-        self.lithold_to_lith(not(usedtm))
+        self.lithold_to_lith(not usedtm)
         self.update_lithlist()
         self.is_modified()
 
@@ -299,7 +293,7 @@ class LithModel(object):
         keys = list(self.lith_list.keys())
         values = list(self.lith_list.values())
 
-        if len(keys) == 0:
+        if not keys:
             return
 
         self.lith_list_reverse = {}

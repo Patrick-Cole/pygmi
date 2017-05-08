@@ -55,7 +55,6 @@ def var_ratio(data, uuu, center, dist_orig):
     if uuu.ndim == 1:   # check whether fuzzy or crisp info is given
         crisp = uuu
     else:
-        # alp = uuu.max(0)
         crisp = uuu.argmin(0)
 
 # sum of squared dist between cluster cent

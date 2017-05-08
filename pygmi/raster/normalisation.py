@@ -100,44 +100,34 @@ class Normalisation(QtWidgets.QDialog):
             return
 
         data = copy.deepcopy(self.indata['Raster'])
-#        if datachecks.Datachecks(self).isdata(data) is False:
-#            return data
         transform = np.zeros((2, 2))
         if self.radiobutton_interval.isChecked():
             for i in data:
                 tmp1 = i.data.min()
                 tmp2 = i.data.max() - i.data.min()
                 tmp3 = 'minmax'
-#                norm_type = 'Normalised to interval [0 1]'
                 i, transform = datacommon(i, tmp1, tmp2, tmp3)
         elif self.radiobutton_mean.isChecked():
             for i in data:
                 tmp1 = i.data.mean()
                 tmp2 = i.data.std()
                 tmp3 = 'meanstd'
-#                norm_type = 'Normalised to mean, standard deviation = 1'
                 i, transform = datacommon(i, tmp1, tmp2, tmp3)
         elif self.radiobutton_median.isChecked():
             for i in data:
                 tmp1 = np.median(i.data.compressed())
                 tmp2 = np.median(abs(i.data.compressed() - tmp1))
                 tmp3 = 'medmad'
-#                norm_type = 'Normalised to median, mean absolute deviation=1'
                 i, transform = datacommon(i, tmp1, tmp2, tmp3)
         elif self.radiobutton_8bit.isChecked():
             for i in data:
                 nlevels = 256
-#                norm_type = 'Normalised-histogram equalisation'
                 no_pix = i.data.count()
                 dummy_dat = np.sort(i.data[np.isnan(i.data) != 1],
                                     axis=None)
 
-#                    ndat_eq = np.array(data[i].data, copy=True)
-#                    ndat_eq = np.nan
                 ndat_eq = np.array(i.data, copy=True) * np.nan
                 transform = np.zeros((nlevels, 2))
-#                    prog = wx.ProgressDialog('Histogram equalisation', \
-#                        'Normalisation', nlevels, None, wx.PD_SMOOTH)
                 tmp = i.data.flatten('F')
                 tmpndat = ndat_eq.flatten('F')
                 for j in range(nlevels):
@@ -147,13 +137,10 @@ class Normalisation(QtWidgets.QDialog):
                     transform[j, 0:2] = [j+1, np.nanmedian(tmp[idx])]
                     tmp[idx] = np.nan
                     tmpndat[idx] = j+1
-#                        prog.Update(j)
-#                    prog.Destroy()
                 ndat_eq = np.reshape(tmpndat, i.data.shape, 'F')
                 tmpd = np.ma.array(ndat_eq)
                 i.data = tmpd.astype('float32')
                 i.data = np.ma.masked_invalid(i.data)
-#                    i.proc.append(norm_type)
                 n_norms = len(i.norm)
                 i.norm[n_norms] = {'type': 'histeq',
                                    'transform': transform}
@@ -180,10 +167,6 @@ def datacommon(data, tmp1, tmp2, tmp3):
         dtmp /= tmp2
 
         data.data = np.ma.array(dtmp, mask=mtmp)
-#            data.data -= tmp1
-#            data.data /= tmp2
-#            data.data[np.isnan(data.data)] = data.nullvalue
         n_norms = len(data.norm)
-#            data.proc.append(tmp4)
         data.norm[n_norms] = {'type': tmp3, 'transform': transform}
     return data, transform

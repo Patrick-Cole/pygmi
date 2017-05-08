@@ -152,7 +152,7 @@ class ParamDisplay(object):
         self.dsb_hdec.setProperty("value", -17.0)
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                                       QtWidgets.QSizePolicy.Preferred)
+                                           QtWidgets.QSizePolicy.Preferred)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
@@ -277,7 +277,6 @@ class ParamDisplay(object):
         self.dsb_gregional.setValue(grvreg)
 
         self.showtext('Regional estimated.')
-        # self.apply_prop_changes()
 
     def add_defs(self, deftxt='', getcol=False, lmod=None):
         """ Add geophysical definitions and make them editable"""
@@ -288,8 +287,7 @@ class ParamDisplay(object):
             lmod = self.lmod1
             self.islmod1 = True
 
-#        self.max_lith_index = len(lmod.lith_list)-1
-        if len(lmod.lith_list) == 0:
+        if not lmod.lith_list:
             self.max_lith_index = -1
         else:
             lmod.update_lith_list_reverse()
@@ -298,11 +296,6 @@ class ParamDisplay(object):
         defnum = self.lw_param_defs.count()
         if deftxt == '':
             deftxt = 'Generic '+str(defnum)
-
-#        self.lw_param_defs.addItem(deftxt)
-#        self.lw_3dmod_defs.addItem(deftxt)
-#        self.lw_prof_defs.addItem(deftxt)
-#        self.lw_editor_defs.addItem(deftxt)
 
         lmod.lith_list[deftxt] = grvmag3d.GeoData(
             self.parent, lmod.numx, lmod.numy, lmod.numz, lmod.dxy, lmod.d_z,
@@ -329,14 +322,7 @@ class ParamDisplay(object):
             lmod.mlut[lithn.lith_index] = [col.red(), col.green(), col.blue()]
 
 # setup list widgets
-#        tmpitem = self.lw_param_defs.item(defnum)
-#        tmpitem.setFlags(tmpitem.flags() | QtCore.Qt.ItemIsEditable)
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
-
-#        self.set_lw_colors(self.lw_param_defs, lmod)
-#        self.set_lw_colors(self.lw_3dmod_defs, lmod)
-#        self.set_lw_colors(self.lw_editor_defs, lmod)
-#        self.set_lw_colors(self.lw_prof_defs, lmod)
 
         if defnum == 0:
             lithn.susc = 0
@@ -455,12 +441,6 @@ class ParamDisplay(object):
                 else:
                     self.lmod1.lith_list[itxt] = self.lmod1.lith_list[i]
                     self.lmod1.lith_list.pop(i)
-#                    self.lw_3dmod_defs.findItems(i,
-#                            QtCore.Qt.MatchExactly)[0].setText(itxt)
-#                    self.lw_prof_defs.findItems(i,
-#                            QtCore.Qt.MatchExactly)[0].setText(itxt)
-#                    self.lw_editor_defs.findItems(i,
-#                            QtCore.Qt.MatchExactly)[0].setText(itxt)
 
     def get_lith(self):
         """ Get parameter definitions """
@@ -543,11 +523,6 @@ class ParamDisplay(object):
             self.showtext('You must have at least two lithologies')
             return
 
-#        self.lw_param_defs.takeItem(crow)
-#        self.lw_3dmod_defs.takeItem(crow)
-#        self.lw_prof_defs.takeItem(crow)
-#        self.lw_editor_defs.takeItem(crow)
-
         lind = self.lmod1.lith_list[ctxt].lith_index
         del self.lmod1.lith_list[ctxt]
         self.lmod1.lith_index[self.lmod1.lith_index == lind] = 0
@@ -619,5 +594,3 @@ class ParamDisplay(object):
 # Need this to init the first values.
         self.lw_index_change()
         self.dsb_gregional.setValue(self.lmod1.gregional)
-#        self.parent.mext.update_vals()
-

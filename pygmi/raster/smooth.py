@@ -152,10 +152,6 @@ class Smooth(QtWidgets.QDialog):
         self.parent.process_is_active(True)
         self.parent.showprocesslog('Smoothing ')
         data = copy.deepcopy(self.indata['Raster'])
-#        if datachecks.Datachecks(self).isdata(data) is False:
-#            return data
-#        if datachecks.Datachecks(self).isnorm(data) is True:
-#            return data
         if self.radiobutton_2dmean.isChecked():
             for i, _ in enumerate(data):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
@@ -264,7 +260,8 @@ class Smooth(QtWidgets.QDialog):
     def msgbox(self, title, message):
         """ Msgbox """
         QtWidgets.QMessageBox.warning(self.parent, title, message,
-                                  QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
+                                      QtWidgets.QMessageBox.Ok,
+                                      QtWidgets.QMessageBox.Ok)
 
     def mov_win_filt(self, dat, fmat, itype, title):
         """ move win filt function """

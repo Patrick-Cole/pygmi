@@ -125,7 +125,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.restore_region(self.background)
         self.axes.draw_artist(self.line)
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def onpick(self, event):
@@ -226,7 +225,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(121, polar=True)
-#        ax1.set_title('Rose')
         ax1.set_theta_direction(-1)
         ax1.set_theta_zero_location('N')
         ax1.yaxis.set_ticklabels([])
@@ -234,8 +232,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = ax1
 
         ax2 = self.figure.add_subplot(1, 2, 2)
-        # ax2.set_title('Lineaments')
-        # ax2.axis('equal')
         ax2.set_aspect('equal')
 
         fangle = []
@@ -310,7 +306,6 @@ class PlotPoints(GraphWindow):
         """ Combo box to choose band """
         data = self.indata['Point']
         i = self.combobox1.currentIndex()
-#        j = self.combobox2.currentIndex()
         self.mmc.update_line(data, i)
 
     def run(self):
@@ -376,14 +371,6 @@ class PlotVector(GraphWindow):
         self.show()
         data = self.indata['Vector']
         self.mmc.update_vector(data)
-#        for i in data:
-#            self.combobox1.addItem(i.dataid)
-#            self.combobox2.addItem(i.dataid)
-
-#        self.label1.setText('Top Profile:')
-#        self.label2.setText('Bottom Profile:')
-#        self.combobox1.setCurrentIndex(0)
-#        self.combobox2.setCurrentIndex(1)
 
 
 def histogram(x, y=None, xmin=None, xmax=None, bins=10):

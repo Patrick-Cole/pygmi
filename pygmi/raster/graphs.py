@@ -90,7 +90,6 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_yticklabels(dat_mat, rotation='horizontal')
         self.axes.set_xlim(0, len(data1))
         self.axes.set_ylim(0, len(data1))
-#        self.figure.colorbar()
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -203,14 +202,8 @@ class MyMplCanvas(FigureCanvas):
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)
 
-#        z[z.mask] = np.nan
-#        z.mask = data.data.mask.copy()
         cmap = plt.cm.jet
-#        cmap.set_bad('w', 0.)
-#        cmap.set_under('w', 0.)
 
-#        lev = np.arange(z.min(), z.max(), 1)
-#        norml = mcolors.BoundaryNorm(lev, 256)
         norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
 
         z.set_fill_value(np.nan)
@@ -223,8 +216,6 @@ class MyMplCanvas(FigureCanvas):
         surf = ax.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
                                vmin=z.min(), vmax=z.max(), shade=False,
                                antialiased=False)
-#        ax.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
-#                        shade=True
         self.figure.colorbar(surf)
 
         ax.set_title('')

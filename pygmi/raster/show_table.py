@@ -98,7 +98,8 @@ class BasicStats(QtWidgets.QDialog):
     def save(self):
         """ Save """
         ext = "CSV Format (*.csv)"
-        ifile, filt = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table', '.', ext)
+        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
+                                                         '.', ext)
         if ifile == '':
             return False
 
@@ -214,7 +215,8 @@ class ClusterStats(QtWidgets.QDialog):
     def save(self):
         """ Save """
         ext = "CSV Format (*.csv)"
-        ifile, filt = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table', '.', ext)
+        ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
+                                                         '.', ext)
         if ifile == '':
             return False
 
@@ -225,7 +227,6 @@ def savetable(ifile, bands, cols, data):
     """ Save tabular data """
     fobj = open(ifile, 'a')
 
-#    htmp = 'Center'
     htmp = cols[0]
     for i in cols[1:]:
         htmp += ',' + i

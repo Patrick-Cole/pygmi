@@ -267,21 +267,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
                 else:
                     data[j] = odata[j]
 
-#        if 'Model3D' not in data and 'Seis' not in data:
-#            for j in data:
-#                tmp = []
-#                for i in data[j]:
-#                    tmp.append(i.dataid)
-#                tmp = ComboBoxBasic(txt='Select Datasets', dlist=tmp)
-#                atmp = [i.text() for i in tmp.combo.selectedItems()]
-#        #        aa.show()
-#                if len(atmp) > 0:
-#                    dtmp = []
-#                    for i in data[j]:
-#                        if i.dataid in atmp:
-#                            dtmp.append(i)
-#                    data[j] = dtmp
-
         self.my_class.indata = data
         if hasattr(self.my_class, 'data_init'):
             self.my_class.data_init()
@@ -299,7 +284,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         tmplist = ['Basic']+list(self.my_class.outdata.keys())
         tmp = []
-#        exclude = ['ProfPic', 'Seis']
         exclude = ['ProfPic']
         for i in tmplist:
             if i not in exclude:
@@ -410,7 +394,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
 # now display the information about the selected data
         tmp = self.selectedItems()
-        if len(tmp) == 0:
+        if not tmp:
             return
         try:
             odata = tmp[0].my_class.outdata
@@ -455,16 +439,16 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         """
         if self.line and self.my_mode == "InsertLine":
             start_items = self.items(self.line.line().p1())
-            if len(start_items) and start_items[0] == self.line:
+            if start_items and start_items[0] == self.line:
                 start_items.pop(0)
             end_items = self.items(self.line.line().p2())
-            if len(end_items) and end_items[0] == self.line:
+            if end_items and end_items[0] == self.line:
                 end_items.pop(0)
 
             self.removeItem(self.line)
             self.line = None
 
-            if (len(start_items) and len(end_items) and
+            if (start_items and end_items and
                     isinstance(start_items[-1], DiagramItem) and
                     isinstance(end_items[-1], DiagramItem) and
                     start_items[-1] != end_items[-1]):
@@ -769,7 +753,6 @@ class MainWidget(QtWidgets.QMainWindow):
             item_color = QtGui.QColor(0, 255, 0, 127)
 
 # Do text first, since this determines size of polygon
-#        text_item = DiagramTextItem()
         text_item = QtWidgets.QGraphicsTextItem()
         text_item.setPlainText(item_name)
         text_item.setFont(self.scene.my_font)
@@ -824,10 +807,6 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         outdata = self.get_outdata()
 
-#        if outdata[0] == {}:
-#            self.run()
-#            outdata = self.get_outdata()
-
         for odata in outdata:
             if odata is not None and odata != {}:
                 dlg = newitem(self)
@@ -878,26 +857,6 @@ class MainWidget(QtWidgets.QMainWindow):
         else:
             self.textbrowser_processlog.setStyleSheet(
                 "* { background-color: rgb(255, 255, 255); }")
-
-#    def run(self):
-#        """Runs program to end. Currently this is unused."""
-#        item_list = []
-#
-#        # First get the data import items
-#        for item in self.scene.items():
-#            if isinstance(item, DiagramItem):
-#                if item.is_import is True:
-#                    item_list.append(item)
-#
-#        # Then get the rest of the items in sequence, while running them
-#        while len(item_list) > 0:
-#            item = item_list.pop(0)
-#            if item.is_import is False:
-#                item.settings()
-#            for i in item.arrows:
-#                newitem = i.my_end_item
-#                if newitem != item and newitem not in item_list:
-#                    item_list.append(newitem)
 
     def send_to_back(self):
         """Send the selected item to the back."""
@@ -1024,7 +983,7 @@ def main():
     """ Main entry point for the PyGMI software. """
     app = QtWidgets.QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
-    
+
     wid = MainWidget()
     wid.show()
 
@@ -1045,13 +1004,13 @@ def main():
                                       text,
                                       QtWidgets.QMessageBox.Ok,
                                       QtWidgets.QMessageBox.Ok)
-    
+
     try:
         __IPYTHON__
     except NameError:
         sys.exit(app.exec_())
     else:
         app.exec_()
-        
+
 if __name__ == "__main__":
     main()

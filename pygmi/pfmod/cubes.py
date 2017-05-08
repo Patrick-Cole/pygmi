@@ -105,10 +105,10 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.vslider_3dmodel.setOrientation(QtCore.Qt.Vertical)
         vbox_cmodel.setSizeConstraint(QtWidgets.QLayout.SetNoConstraint)
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                                       QtWidgets.QSizePolicy.Fixed)
+                                           QtWidgets.QSizePolicy.Fixed)
 
         sizepolicy_pb = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum,
-                                          QtWidgets.QSizePolicy.Maximum)
+                                              QtWidgets.QSizePolicy.Maximum)
 
         self.lw_3dmod_defs.setSizePolicy(sizepolicy)
         self.lw_3dmod_defs.setSelectionMode(
@@ -141,7 +141,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
     def save(self):
         """ This saves a jpg """
-        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'JPG (*.jpg);;PNG (*.png)')
         if filename == '':
             return
@@ -181,7 +181,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
     def change_defs(self):
         """ List box routine """
-        if len(self.lmod1.lith_list) == 0:
+        if not self.lmod1.lith_list:
             return
         self.set_selected_liths()
         self.update_color()
@@ -307,7 +307,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
         self.lut = tmp
 
-        if len(self.lmod1.lith_list) > 0:
+        if self.lmod1.lith_list:
             self.set_selected_liths()
             self.update_model()
             self.update_model2()
@@ -361,7 +361,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
             z = np.arange(nshape[2]) * self.spacing[2]
             xx, yy, zz = np.meshgrid(x, y, z)
 
-    # Set up gaussian smoothing filter
+            # Set up gaussian smoothing filter
             ix, iy, iz = np.mgrid[-1:2, -1:2, -1:2]
             sigma = 2
             cci = np.exp(-(ix**2+iy**2+iz**2)/(3*sigma**2))
@@ -655,18 +655,6 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnable(GL.GL_LIGHT0)
         GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [1., 1., 1., 0.])
 
-##################
-#        GL.glLightfv(GL.GL_LIGHT0, GL.GL_SPECULAR, [1.,1.,1.,1.])
-#        GL.glLightfv(GL.GL_LIGHT0, GL.GL_DIFFUSE, [1.,1.,1.,1.])
-#        GL.glLightfv(GL.GL_LIGHT0, GL.GL_AMBIENT, [0.,0.,0.,1.])
-#
-#        GL.glMaterialfv(GL.GL_FRONT, GL.GL_EMISSION, [0., 1., 0., 1.0])
-#        GL.glMaterialfv(GL.GL_FRONT, GL.GL_DIFFUSE, [1., 0., 0., 1.0])
-#
-#        shininess = 64.
-#        GL.glMaterialfv(GL.GL_FRONT, GL.GL_SPECULAR, [1., 1., 1., 1.0])
-#        GL.glMaterialf(GL.GL_FRONT, GL.GL_SHININESS, shininess);
-
     def initGeometry(self):
         """ Initialize Geometry """
         self.init_object()
@@ -740,7 +728,6 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glLoadIdentity()
         self.aspect = width / float(height)
-#        GL.glFrustum(-1.0, +1.0, -1.0, 1.0, 1.0, 201.)
 
         GLU.gluPerspective(70.0*self.zoomfactor, self.aspect, 1.0, 201.0)
 
@@ -816,9 +803,6 @@ def normalize_v3(arr):
     lens[lens == 0] = 1  # Get rid of divide by zero.
 
     arr /= lens[:, np.newaxis]
-#    arr[:, 0] /= lens
-#    arr[:, 1] /= lens
-#    arr[:, 2] /= lens
     return arr
 
 
@@ -878,7 +862,7 @@ def MarchingCubes(x, y, z, c, iso):
                            [n1+1, n2+1, n3+1],
                            [n1, n2+1, n3+1]])
 
-    # loop thru vertices of all cubes
+    # loop through vertices of all cubes
 
     out = np.zeros(n)
     for ii in range(8):
@@ -985,14 +969,7 @@ def MarchingCubes(x, y, z, c, iso):
     newI[I] = np.cumsum(M)-1
     F = newI[F]
 
-    # Eliminate duplicate faces
-#    F.sort(0)
-#    F = np.vstack({tuple(row) for row in F})
-
     return F, V
-# ============================================================
-# ==================  SUBFUNCTIONS ===========================
-# ============================================================
 
 
 def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
@@ -1047,7 +1024,6 @@ def bitset(byteval, idx):
 def sub2ind(msize, row, col, layer):
     """ Sub2ind """
     nrows, ncols, _ = msize
-#    tmp = layer*ncols*nrows+row*ncols+col
     tmp = layer*ncols*nrows+nrows*col+row
     return tmp.astype(int)
 
@@ -1364,18 +1340,6 @@ def GetTables():
 def main():
     """ Main routine """
 
-# Create model
-
-#    lmod = quick_model(numx=3, numy=3, numz=3, dxy=100, d_z=100,
-#                       tlx=0, tly=0, tlz=0, mht=100, ght=45, finc=90, fdec=0,
-#                       inputliths=['Generic'], susc=[0.01], dens=[3.0])
-#
-#    lmod.lith_index[2, 2, 2] = 1
-
-
-#    faces, norms, corners = trimain(lmod.lith_index, 0.1)
-#
-
     c = np.zeros([5, 5, 5])
     c[1:4, 1:4, 1:4] = 1
     c = zoom(c, 1, order=1)
@@ -1386,21 +1350,11 @@ def main():
     xx, yy, zz = np.meshgrid(x, y, z)
     faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
 
-#    x = np.linspace(0, 2, 20)
-#    y = np.linspace(0, 2, 20)
-#    z = np.linspace(0, 2, 20)
-#    xx, yy, zz = np.meshgrid(x, y, z)
-#    c = (xx-.5)**2 + (yy-.5)**2 + (zz-.5)**2
-#    faces, vtx = MarchingCubes(xx, yy, zz, c, .5)
-
     app = QtWidgets.QApplication(sys.argv)
     wid = Mod3dDisplay()
     wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
                        QtCore.Qt.WindowActive)
 
-    # this will activate the window
-
-###############################
     faces = np.array(faces)
     vtx = np.array(vtx)
 # Create a zeroed array with the same type and shape as our vertices i.e.,
@@ -1445,23 +1399,12 @@ def main():
                                  np.array([0.9, 0.4, 0.0, 0.5]))
     wid.glwidget.cubeNrmArray = norm
 
-#    ftmp = np.transpose(faces)
-#    I = np.lexsort(ftmp)
-#    faces = faces[I]
-
     wid.glwidget.cubeIdxArray = faces.flatten().astype(np.uint32)
 
-# This activates the opengl stuff
+    # This activates the opengl stuff
 
-#    wid.glwidget.init_object()
     print('widshow')
     wid.show()
-#    wid.activateWindow()
-
-#    wid.glwidget.updateGL()
-#
-#    wid.run()
-
     sys.exit(app.exec_())
 
 

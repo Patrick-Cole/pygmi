@@ -41,25 +41,3 @@ class Clust(Data):
         self.nce = None
         self.xbi = None
         self.obj_fcn = None
-
-#        self.proc_history = []
-#        self.type = "cluster"
-#        self.algorithm = 0
-#        self.initialization = 0
-#        self.init_mod = 0
-#        self.init_constrains = 0
-#        self.runs = 0
-#        self.max_iterations = 0
-#        self.denormalize = 0
-#        self.term_threshold = 0
-#        self.shape_constrain = 0
-#        self.zonal = 0
-#        self.alpha = 0
-#        self.xxx = np.array([])
-#        self.yyy = np.array([])
-#        self.obj_fcn = 0
-#        self.denorm_center = 0
-#        self.denorm_center_stdup = 0
-#        self.denorm_center_stdlow = 0
-#        self.iterations = 0
-#        self.fuzziness_exp = 0

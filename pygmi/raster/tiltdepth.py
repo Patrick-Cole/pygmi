@@ -43,7 +43,6 @@ import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from numba import jit
-# import scipy.spatial.distance as sd
 import pygmi.raster.cooper as cooper
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
@@ -120,7 +119,7 @@ class TiltDepth(QtWidgets.QDialog):
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
-                                   QtWidgets.QSizePolicy.Expanding)
+                                       QtWidgets.QSizePolicy.Expanding)
         tmp = sorted(cm.datad.keys())
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
@@ -153,7 +152,6 @@ class TiltDepth(QtWidgets.QDialog):
         hbl_all.addLayout(vbl_right)
 
         self.cbox_cbar.currentIndexChanged.connect(self.change_cbar)
-#        self.cbox_band1.currentIndexChanged.connect(self.change_band1)
         self.btn_apply.clicked.connect(self.change_band1)
         self.btn_save.clicked.connect(self.save_depths)
 
@@ -165,9 +163,9 @@ class TiltDepth(QtWidgets.QDialog):
 
         ext = "Text File (*.csv)"
 
-        filename, filt = QtWidgets.QFileDialog.getSaveFileName(self.parent,
-                                                     'Save File',
-                                                     '.', ext)
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                            'Save File',
+                                                            '.', ext)
         if filename == '':
             return False
 
@@ -202,8 +200,6 @@ class TiltDepth(QtWidgets.QDialog):
             self.axes.plot(self.x1[i], self.y1[i], 'oy')
             self.axes.plot(self.x0[i], self.y0[i], 'sy')
             self.axes.plot(self.x2[i], self.y2[i], 'oy')
-
-#        self.axes.contourf(self.X, self.Y, self.Z, [-45, 45], cmap=cmap3)
 
         self.figure.colorbar(ims)
 
@@ -242,13 +238,8 @@ class TiltDepth(QtWidgets.QDialog):
         for i in data:
             blist.append(i.dataid)
 
-#        self.cbox_band1.currentIndexChanged.disconnect()
         self.cbox_band1.clear()
         self.cbox_band1.addItems(blist)
-
-#        self.cbox_band1.currentIndexChanged.connect(self.change_band1)
-
-#        self.change_band1()
 
         self.show()
         QtWidgets.QApplication.processEvents()
@@ -301,9 +292,6 @@ class TiltDepth(QtWidgets.QDialog):
 
         self.pbar.setValue(4)
 
-#        dmin1 = distpc2(dx, dy, gx0, gy0, np.zeros(gx0.size, dtype=int))
-#        dmin2 = distpc2(dxm, dym, gx0, gy0, np.zeros(gx0.size, dtype=int))
-
         dmin1 = []
         dmin2 = []
 
@@ -340,7 +328,6 @@ class TiltDepth(QtWidgets.QDialog):
         dist1 = np.sqrt(dx1**2+dy1**2)
         dist2 = np.sqrt(dx2**2+dy2**2)
 
-#        dist = (dist1+dist2)/2
         dist = np.min([dist1, dist2], 0)
 
         self.x0 = gx0
@@ -395,8 +382,6 @@ def main():
 
     data = iodefs.get_raster(ifile)
     data = data[0]
-
-#    x, y, depth = tiltdepth(data, -17, -67)
 
     dmin = distpc(np.array([1., 2.]), np.array([1., 2.]), 3, 4, 0)
     print(dmin)
@@ -477,8 +462,6 @@ def tiltdepth(data, dec, inc):
     x = zout.tlx + np.arange(nc)*zout.xdim+zout.xdim/2
     y = zout.tly - np.arange(nr)*zout.ydim-zout.ydim/2
 
-#    x = zout.tlx + np.arange(nc)*zout.xdim
-#    y = zout.tly - np.arange(nr)*zout.ydim
     X, Y = np.meshgrid(x, y)
     Z = np.rad2deg(t1)
 
@@ -487,7 +470,6 @@ def tiltdepth(data, dec, inc):
     cntm45 = plt.contour(X, Y, Z, [-45], alpha=0)
     plt.contourf(X, Y, Z, [-45, 45])
 
-#    plt.imshow(zout.data, extent=dataprep.dat_extent(zout))
     plt.imshow(Z, extent=dataprep.dat_extent(zout))
     plt.colorbar()
 
@@ -566,10 +548,6 @@ def tiltdepth(data, dec, inc):
 
     plt.axes().set_aspect('equal')
 
-
-#    plt.plot(gx0, gy0, '.')
-#    plt.plot(gx45, gy45, '.')
-#    plt.plot(gxm45, gym45, '.')
     i = 200
     plt.plot(gx45f[i], gy45f[i], 'o')
     plt.plot(gx0f[i], gy0f[i], 's')

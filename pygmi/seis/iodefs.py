@@ -124,7 +124,7 @@ class ImportSeisan(object):
 
         for i in ltmp:
             if i.strip() == '':
-                if len(event) > 0:
+                if event:
                     dat.append(event)
                     event = {}
                     event['4'] = []
@@ -156,7 +156,7 @@ class ImportSeisan(object):
                     self.parent.showprocesslog(i)
                     return False
 
-        if len(event) > 0:
+        if event:
             dat.append(event)
 
         self.outdata['Seis'] = dat
@@ -309,10 +309,6 @@ def read_record_type_f(i):
         tmp.station_distribution_ratio = str2float(i[50:55])
     if prg == 'FOCMEC' or prg == 'HASH':
         tmp.amplitude_ratio = str2float(i[55:60])
-#    if prg == 'FOCMEC' or prg == 'PINV':
-#        tmp.number_of_bad_polarities = str2int(i[60:62])
-#    if prg == 'FOCMEC':
-#        tmp.number_of_bad_amplitude_ratios = str2int(i[63:65])
     tmp.agency_code = i[66:69]
     tmp.solution_quality = i[77]
 
@@ -502,7 +498,6 @@ class ExportSeisan(object):
         self.outdata = {}
         self.lmod = None
         self.fobj = None
-#        self.dirname = ""
         self.showtext = self.parent.showprocesslog
 
     def run(self):
@@ -522,7 +517,6 @@ class ExportSeisan(object):
             return
 
         os.chdir(filename.rpartition('/')[0])
-#        ofile = str(filename.rpartition('/')[-1][:-4])
         self.ext = filename[-3:]
 
         self.fobj = open(filename, 'w')
@@ -533,7 +527,6 @@ class ExportSeisan(object):
             self.write_record_type_m(i)  # This is missing  some #3 recs
             self.write_record_type_e(i)
             self.write_record_type_i(i)  # This is missing  some #3 recs
-#            self.write_record_type_3(i)
             self.write_record_type_4(i)
             self.fobj.write(' \n')
 
@@ -863,7 +856,6 @@ class ExportCSV(object):
         self.outdata = {}
         self.lmod = None
         self.fobj = None
-#        self.dirname = ""
         self.showtext = self.parent.showprocesslog
 
     def run(self):
@@ -881,7 +873,6 @@ class ExportCSV(object):
         if filename == '':
             return
         os.chdir(filename.rpartition('/')[0])
-#        ofile = str(filename.rpartition('/')[-1][:-4])
         self.ext = filename[-3:]
 
         self.fobj = open(filename, 'w')
@@ -1191,8 +1182,6 @@ class ExportCSV(object):
         tmp = sform('{0:1s}', dat.quality, tmp, 78)
 
         tmp = sform('{0:1s}', 'M', tmp, 80)
-
-#        self.fobj.write(tmp)
 
         tmp = ' '*80+'\n'
 

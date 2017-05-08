@@ -76,7 +76,6 @@ class Gradients(QtWidgets.QDialog):
 
     def setupui(self):
         """ Setup UI """
-#        self.resize(289, 166)
         gridlayout = QtWidgets.QGridLayout(self)
         label_az = QtWidgets.QLabel()
         label_or = QtWidgets.QLabel()
@@ -162,7 +161,6 @@ class VGradients(QtWidgets.QDialog):
 
     def setupui(self):
         """ Setup UI """
-#        self.resize(289, 166)
         gridlayout = QtWidgets.QGridLayout(self)
         label_az = QtWidgets.QLabel()
         label_or = QtWidgets.QLabel()
@@ -180,10 +178,6 @@ class VGradients(QtWidgets.QDialog):
         label_az.setText("Azimuth")
         label_or.setText("Order")
 
-#        gridlayout.addWidget(label_az, 0, 0, 1, 1)
-#        gridlayout.addWidget(self.sb_azi, 0, 1, 1, 1)
-#        gridlayout.addWidget(label_or, 3, 0, 1, 1)
-#        gridlayout.addWidget(self.sb_order, 3, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
 
@@ -240,15 +234,6 @@ def gradients(data, azi, elev, order):
     elev = elev*np.pi/180
     dx, dy = np.gradient(data)
     dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
-
-    # Sunshading
-
-#        cAzi = np.cos(azi)
-#        sAzi = np.sin(azi)
-#        tElev = np.tan(elev)
-#        top = (1.0-dx*cAzi*tElev-dy*sAzi*tElev)
-#        bottom = np.sqrt(1.0+dx*dx+dy*dy)+np.sqrt(1.0+tElev*tElev)
-#        sun = top/bottom
 
     # Derivative ratio
 
@@ -341,7 +326,6 @@ class Visibility2d(QtWidgets.QDialog):
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
                                             self.dh*data[i].data.std()/100.,
                                             self.pbar.iter)
-#            data[i].data = vtot
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
@@ -398,21 +382,18 @@ def visibility2d(data, wsize, dh, piter=iter):
     data = data.data
     data[mask] = mean
 
-#    self.parent.showprocesslog('NS')
     for j in piter(range(nc)):    # Columns
         for i in range(w2, nr-w2):
             dtmp = data[i-w2:i+w2+1, j]
             vn[i, j] = __visible1(dtmp, wsize, w2+1, dh)
             vs[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
-#    self.parent.showprocesslog('EW')
     for j in piter(range(w2, nc-w2)):    # Rows
         for i in range(nr):
             dtmp = data[i, j-w2:j+w2+1]
             ve[i, j] = __visible1(dtmp, wsize, w2+1, dh)
             vw[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
-#    self.parent.showprocesslog('Diag')
     for j in piter(range(w2, nc-w2)):
         for i in range(w2, nr-w2):
             dtmp = np.zeros(wsize)
@@ -426,7 +407,6 @@ def visibility2d(data, wsize, dh, piter=iter):
             vd3[i, j] = __visible1(dtmp, wsize, w2+1, dh)
             vd4[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
-#    self.parent.showprocesslog('Computing std of visibility')
     vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
     vtot = vtot[w2:nr-w2, w2:nc-w2]
 
@@ -459,9 +439,8 @@ def visibility2d(data, wsize, dh, piter=iter):
 def __visible1(dat, nr, cp, dh):
     """ Visible 1 """
     num = 1
-#        d = d[d.nonzero()].tolist()
 
-    if cp < nr-1 and len(dat) > 0:
+    if cp < nr-1 and dat:
         num = 2
         cpn = cp-1
         thetamax = float(dat[cpn+1]-dat[cpn]-dh)
@@ -477,9 +456,8 @@ def __visible1(dat, nr, cp, dh):
 def __visible2(dat, nr, cp, dh):
     """ Visible 2 """
     num = 0
-#        d = d[d.nonzero()].tolist()
 
-    if cp > 2 and len(dat) > 0:
+    if cp > 2 and dat:
         num = 1
         cpn = cp-1
         thetamax = (dat[cpn-1]-dat[cpn]-dh)
@@ -637,7 +615,6 @@ def tilt1(data, azi, s):
     nr, nc = data.shape
     dtr = np.pi/180.0
     azi = azi*dtr
-#        thresh = thresh*dtr
 
     dy, dx = np.gradient(data)
     dxtot = np.sqrt(dx*dx+dy*dy)
@@ -659,7 +636,6 @@ def tilt1(data, azi, s):
     if s < 3:
         s = 3
     se = np.ones([s, s])/(s*s)
-#        s2 = np.floor(s/2)
     ts = si.convolve2d(t1, se, 'same')
     [dxs, dys] = np.gradient(ts)
     dzs = vertical(ts, npts, 1)
@@ -697,7 +673,6 @@ def vertical(data, npts=None, xint=1):
     cdiff = int(np.floor((npts-nc)/2))
     rdiff = int(np.floor((npts-nr)/2))
     data1 = __taper2d(data, npts, nc, nr, cdiff, rdiff)
-#    data1 = np.pad(data, ((rdiff, cdiff), (rdiff,cdiff)), 'edge')
 
     f = np.fft.fft2(data1)
     fz = f
@@ -726,8 +701,6 @@ def __taper2d(g, npts, n, m, ndiff, mdiff):
     gm = g.mean()
     gf = np.zeros([npts, npts])+np.median(g-gm)
     gf[mdiff:mdiff+m, ndiff:ndiff+n] = g-gm
-
-#    gf = np.pad(g-gm, ((mdiff, mdiff), (ndiff, ndiff)), 'median')
 
     for j in range(mdiff, mdiff+m):
         for i in range(ndiff):

@@ -73,12 +73,9 @@ class DataCut(object):
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-#        self.dirname = ""
 
     def settings(self):
         """ Show Info """
-#        if 'Cluster' in self.indata:
-#            data = self.indata['Cluster']
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
@@ -102,12 +99,11 @@ class DataCut(object):
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                      QtWidgets.QMessageBox.Ok,
-                                      QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             return False
 
 
-#        data = trim_raster(data)
         self.pbar.to_max()
         self.outdata['Raster'] = data
 
@@ -210,12 +206,6 @@ class DataGrid(QtWidgets.QDialog):
         dy = y.ptp()/np.sqrt(y.size)
         dxy = max(dx, dy)
 
-#        xy = np.transpose([x, y])
-#        xy = xy.tolist()
-#        xy = np.array(xy)
-#        xy = xy[:-1]-xy[1:]
-#        dxy = np.median(np.sqrt(np.sum(xy**2, 1)))/3
-
         self.dsb_dxy.setValue(dxy)
         self.dxy_change()
         tmp = self.exec_()
@@ -288,7 +278,6 @@ class DataMerge(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-#        self.pbar = self.parent.pbar
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.label_rows = QtWidgets.QLabel()
@@ -396,7 +385,6 @@ class DataMerge(QtWidgets.QDialog):
             return
 
         dat = []
-#        for data in self.pbar.iter(self.indata['Raster']):
         for data in self.indata['Raster']:
             doffset = 0.0
             if data.data.min() <= 0:
@@ -412,15 +400,7 @@ class DataMerge(QtWidgets.QDialog):
             dat.append(gdal_to_dat(dest, data.dataid))
             dat[-1].data += doffset
 
-#        mask = dat[-1].data.mask
-#        for i in dat:
-#            mask += i.data.mask
-#        mask[mask != 0] = 1
-#        for i in dat:
-#            i.data.mask = mask
-
         self.outdata['Raster'] = dat
-#        self.accept()
 
 
 class DataReproj(QtWidgets.QDialog):
@@ -552,11 +532,8 @@ class DataReproj(QtWidgets.QDialog):
             if datamin <= 0:
                 data2.data = data2.data+(datamin-1)
                 data.data = data.data+(datamin-1)
-#            mask = data2.data.mask
             data2.data = np.ma.masked_equal(data2.data.filled(data.nullvalue),
                                             data.nullvalue)
-#            data2.data.mask = mask
-#            data2.data.set_fill_value(data.nullvalue)
             data2.nullvalue = data.nullvalue
             data2.data = np.ma.masked_invalid(data2.data)
             data2.data = np.ma.masked_less(data2.data, data.data.min())
@@ -611,12 +588,9 @@ class GetProf(object):
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-#        self.dirname = ""
 
     def settings(self):
         """ Show Info """
-#        if 'Cluster' in self.indata:
-#            data = self.indata['Cluster']
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
@@ -640,8 +614,8 @@ class GetProf(object):
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                      QtWidgets.QMessageBox.Ok,
-                                      QtWidgets.QMessageBox.Ok)
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             return False
 
         lyr = shapef.GetLayer()
@@ -664,8 +638,6 @@ class GetProf(object):
             y_0 = (y_0-bly)/idata.ydim
             y_1 = (y_1-bly)/idata.ydim
             rcell = int(np.sqrt((x_1-x_0)**2+(y_1-y_0)**2))
-#            rdist = np.sqrt((idata.xdim*(x_1-x_0))**2 +
-#                            (idata.ydim*(y_1-y_0))**2)
 
             xxx = np.linspace(x_0, x_1, rcell, False)
             yyy = np.linspace(y_0, y_1, rcell, False)
@@ -677,7 +649,6 @@ class GetProf(object):
             tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
             xxx = xxx*idata.xdim+idata.tlx
             yyy = yyy*idata.ydim+bly
-#            allpoints.append(np.array([xxx, yyy, tmpprof]))
             allpoints.append(PData())
             allpoints[-1].xdata = xxx
             allpoints[-1].ydata = yyy
@@ -811,7 +782,7 @@ class Metadata(QtWidgets.QDialog):
         label_bandid = QtWidgets.QLabel()
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                       QtWidgets.QSizePolicy.Expanding)
+                                           QtWidgets.QSizePolicy.Expanding)
         self.groupbox.setSizePolicy(sizepolicy)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -895,7 +866,6 @@ class Metadata(QtWidgets.QDialog):
                         tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
                     if i.units != '':
                         tmp.dataid += ' ('+i.units+')'
-#                    tmp.data.data[tmp.data.data == i.nullvalue] = np.nan
                     tmp.data.mask = (tmp.data.data == i.nullvalue)
 
     def rename_id(self):
@@ -1045,7 +1015,6 @@ class RTP(QtWidgets.QDialog):
         self.dsb_inc.setMinimum(-90.0)
         self.dsb_dec.setMaximum(360.0)
         self.dsb_dec.setMinimum(-360.0)
-#        self.dsb_dxy.setDecimals(5)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -1216,7 +1185,6 @@ def cut_raster(data, ifile):
     lyr = shapef.GetLayer()
     poly = lyr.GetNextFeature()
     if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
-        # self.parent.showprocesslog('You need polygons in that shape file')
         return
 
     for idata in data:
@@ -1364,19 +1332,6 @@ def gdal_to_dat(dest, bandid='Data'):
     dat.data[np.isinf(dat.data)] = nval
     dat.data = np.ma.masked_equal(dat.data, nval)
 
-#    dtype = dat.data.dtype
-#    nval = np.nan
-#    if dtype == np.float32 or dtype == np.float64:
-#        dat.data[dat.data == 0.] = np.nan
-# #    dat.data[dat.data == rtmp.GetNoDataValue()] = np.nan
-#        dat.data = np.ma.masked_invalid(nval)
-#
-#    if dtype == np.uint8:
-#        dat.data = np.ma.masked_equal(dat.data, 0)
-#        nval = 0
-
-#    dat.data[dat.data.mask] = rtmp.GetNoDataValue()
-
     dat.nrofbands = dest.RasterCount
     dat.tlx = gtr[0]
     dat.tly = gtr[3]
@@ -1426,12 +1381,9 @@ def getepsgcodes():
         tmp = i.split(',')
         if tmp[1][0] == '"':
             tmp[1] = tmp[1][1:-1]
-#        wkttmp = epsgtowkt(tmp[0])
         err = orig.ImportFromEPSG(int(tmp[0]))
         if err == 0:
             pcodes[tmp[1]] = orig.ExportToWkt()
-#        if wkttmp != '':
-#            pcodes[tmp[1]] = wkttmp
 
     clat = 0.
     scale = 1.
@@ -1489,19 +1441,6 @@ def merge(dat):
 
     return out
 
-#def taper(data):
-#    nr, nc = data.shape
-#    nmax = np.max([nr, nc])
-#    npts = int(2**cooper.__nextpow2(nmax))
-#    npts *= 2
-#
-#    cdiff = int(np.floor((npts-nc)/2))
-#    rdiff = int(np.floor((npts-nr)/2))
-#    data1 = cooper.__taper2d(data, npts, nc, nr, cdiff, rdiff)
-##    data1 = np.pad(data-np.median(data), ((rdiff, cdiff), (rdiff,cdiff)), 'edge')
-
-#    return data1
-
 
 def trim_raster(olddata):
     """ Function to trim nulls from a raster dataset.
@@ -1550,8 +1489,6 @@ def trim_raster(olddata):
 
         data.data = data.data[rowstart:rowend, colstart:colend]
         data.data.mask = (data.data.data == data.nullvalue)
-#        data.data = np.ma.masked_invalid(data.data[rowstart:rowend,
-#                                                   colstart:colend])
         data.rows, data.cols = data.data.shape
         data.tlx = data.tlx + colstart*data.xdim
         data.tly = data.tly - rowstart*data.ydim
@@ -1694,11 +1631,6 @@ def tests():
 
 
     dat = quickgrid(points[:, 0], points[:, 1], values, .001, numits=-1)
-
-#    ttt.since_last_call()
-
-#    grid_x, grid_y = np.mgrid[0:1:100j, 0:1:200j]
-#    dat = griddata(points, values, (grid_x, grid_y), method='nearest')
 
     plt.imshow(dat)
     plt.colorbar()

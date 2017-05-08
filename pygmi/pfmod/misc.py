@@ -438,40 +438,6 @@ class MergeMod3D(QtWidgets.QDialog):
         datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
                         usedtm=False)
 
-#        datmaster.update_lith_list_reverse()
-#        lithkeys = list(datmaster.lith_list_reverse.keys())
-#        lithkeys.sort()
-#        for icnt, ilith in enumerate(lithkeys):
-#            lith = datmaster.lith_list_reverse[ilith]
-#            oldlithindex = datmaster.lith_list[lith].lith_index
-#
-#            datmaster.lith_list[lith].lith_index = icnt
-#            datmaster.mlut[icnt] = datmaster.mlut[oldlithindex]
-#
-#            tmp = (datmaster.lith_index == oldlithindex)
-#            datmaster.lith_index[tmp] = icnt
-#
-#        ocnt = icnt
-#        datslave.update_lith_list_reverse()
-#        lithkeys = list(datslave.lith_list_reverse.keys())
-#        lithkeys.sort()
-#        for icnt2, ilith in enumerate(lithkeys):
-#            icnt = icnt2+ocnt
-#            lith = datslave.lith_list_reverse[ilith]
-#            oldlithindex = datslave.lith_list[lith].lith_index
-#
-#            datslave.lith_list[lith].lith_index = icnt
-#            datslave.mlut[icnt] = datslave.mlut[oldlithindex]
-#
-#            tmp = (datslave.lith_index == oldlithindex)
-#            datslave.lith_index[tmp] = icnt
-
-#        for lith in datslave.lith_list:
-#            if lith not in datmaster.lith_list:
-#                datmaster.lith_list[lith] = datslave.lith_list[lith]
-#                lithnum = datmaster.lith_list[lith].lith_index
-#                datmaster.mlut[lithnum] = datslave.mlut[lithnum]
-
         lithcnt = 9000
         newmlut = {0: datmaster.mlut[0]}
         all_liths = list(set(datmaster.lith_list) | set(datslave.lith_list))

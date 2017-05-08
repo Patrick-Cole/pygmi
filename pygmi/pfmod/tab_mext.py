@@ -76,7 +76,7 @@ class MextDisplay(object):
         gridlayout_2 = QtWidgets.QGridLayout(groupbox_data_info)
 
         sizepolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                        QtWidgets.QSizePolicy.Preferred)
+                                            QtWidgets.QSizePolicy.Preferred)
 
 # Current Models Groupbox
         lbl1_model = QtWidgets.QLabel()
@@ -103,9 +103,6 @@ class MextDisplay(object):
         lbl10 = QtWidgets.QLabel()
         lbl5 = QtWidgets.QLabel()
         lbl6 = QtWidgets.QLabel()
-#        lbl7 = QtWidgets.QLabel()
-#        lbl11 = QtWidgets.QLabel()
-#        lbl2 = QtWidgets.QLabel()
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)
@@ -163,9 +160,6 @@ class MextDisplay(object):
         lbl10.setText("Total Z Extent (Depth):")
         lbl5.setText("X and Y Cell Size:")
         lbl6.setText("Z Cell Size:")
-#        lbl7.setText("Number of Columns (X Direction):")
-#        lbl11.setText("Number of Rows (Y Direction):")
-#        lbl2.setText("Number of Layers (Z Direction):")
         self.pb_apply_changes.setText("Accept Proposed Changes")
 
 # Apply Groupboxes to main layout
@@ -193,9 +187,6 @@ class MextDisplay(object):
         gridlayout.addWidget(lbl10, 6, 0, 1, 1)
         gridlayout.addWidget(lbl5, 7, 0, 1, 1)
         gridlayout.addWidget(lbl6, 8, 0, 1, 1)
-#        gridlayout.addWidget(lbl7, 9, 0, 1, 1)
-#        gridlayout.addWidget(lbl11, 10, 0, 1, 1)
-#        gridlayout.addWidget(lbl2, 11, 0, 1, 1)
         gridlayout.addWidget(self.combo_dataset, 0, 1, 1, 1)
         gridlayout.addWidget(self.dsb_utlx, 1, 1, 1, 1)
         gridlayout.addWidget(self.dsb_utly, 2, 1, 1, 1)
@@ -208,9 +199,6 @@ class MextDisplay(object):
         gridlayout.addWidget(self.sb_cols, 1, 2, 1, 1)
         gridlayout.addWidget(self.sb_rows, 2, 2, 1, 1)
         gridlayout.addWidget(self.sb_layers, 3, 2, 1, 1)
-#        gridlayout.addWidget(self.sb_cols, 9, 1, 1, 1)
-#        gridlayout.addWidget(self.sb_rows, 10, 1, 1, 1)
-#        gridlayout.addWidget(self.sb_layers, 11, 1, 1, 1)
         gridlayout.addWidget(self.pb_apply_changes, 7, 2, 2, 1)
 
         verticallayout.addWidget(groupbox_model)
@@ -271,7 +259,6 @@ class MextDisplay(object):
         # the same dataset
         tmp = [i for i in set(self.lmod1.griddata.values())]
         self.parent.outdata['Raster'] = tmp
-#        self.parent.outdata['Raster'] = list(self.lmod1.griddata.values())
         self.showtext('Changes applied.')
 
     def apply_regional(self):
@@ -330,7 +317,6 @@ class MextDisplay(object):
         ctxt = str(self.combo_model.currentText())
         if ctxt == 'None' or 'Model3D' not in self.parent.indata:
             return
-#        print('choose model')
         for i in self.parent.indata['Model3D']:
             if i.name == ctxt:
                 self.lmod1 = i
@@ -343,7 +329,6 @@ class MextDisplay(object):
         ctxt = str(self.combo_regional.currentText())
         if ctxt == 'None' or 'Model3D' not in self.parent.indata:
             return
-#        print('choose regional')
         for i in self.parent.indata['Model3D']:
             if i.name == ctxt:
                 self.lmod2 = i
@@ -543,6 +528,5 @@ class MextDisplay(object):
         self.update_model_combos()
         self.choose_model()
         self.choose_regional()
-#        self.lmod1 = self.parent.lmod1
         self.update_vals()
         self.update_combos()

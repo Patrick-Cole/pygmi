@@ -72,7 +72,7 @@ class LayerDisplay(object):
         self.sb_model_layer.setProperty("value", 0)
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                       QtWidgets.QSizePolicy.Fixed)
+                                           QtWidgets.QSizePolicy.Fixed)
 
         self.hslider_layer.setSizePolicy(sizepolicy)
         self.hslider_layer.setOrientation(QtCore.Qt.Horizontal)
@@ -375,7 +375,6 @@ class MyMplCanvas(FigureCanvas):
                 ctmp = np.array(mlut[i]+[255])/255.
 
             tmp[dat[::-1] == i] = ctmp
-#            tmp[dat == i] = ctmp
 
         return tmp
 
@@ -403,7 +402,6 @@ class MyMplCanvas(FigureCanvas):
         self.ims.set_extent(extent)
         self.ims.set_alpha(opac)
 
-#        self.ims2.set_data(dat2.data[::-1])
         self.ims2.set_data(dat2.data)
         self.ims2.set_extent(self.dat_extent(dat2))
         if self.xlims is not None:
@@ -429,17 +427,14 @@ class MyMplCanvas(FigureCanvas):
         self.ims.set_alpha(opac)
         if dat2 is not None:
             self.ims2.set_data(dat2.data)
-#            self.ims2.set_data(dat2.data[::-1])
 
         self.figure.canvas.restore_region(self.bbox)
         self.axes.draw_artist(self.ims2)
         self.axes.draw_artist(self.ims)
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
         self.mdata = dat
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def init_line(self, xrng, yrng):
@@ -451,7 +446,6 @@ class MyMplCanvas(FigureCanvas):
         self.prf[0].set_data([xrng, yrng])
         self.figure.canvas.restore_region(self.lbbox)
         self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def dat_extent(self, dat):

@@ -200,16 +200,6 @@ class CrispClust(QtWidgets.QDialog):
         """ Process data """
         data = copy.copy(self.indata['Raster'])
         self.update_vars()
-#        if datachecks.Datachecks(self).multdata(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).isdata(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).equalsize(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).samecoords(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).iscomplete(data) == False:
-#            return data
 
         cltype = self.cltype
         cov_constr = self.constrain
@@ -232,20 +222,14 @@ class CrispClust(QtWidgets.QDialog):
             data[i].data.mask = masktmp
 # #############################################################################
 
-#        dat_in = np.array([i.data.flatten() for i in data]).T
         dat_in = np.array([i.data.compressed() for i in data]).T
-
-#        dat_in = dat_in[dat_in != None]
-
-#        dat_in = np.array([[x for x in data[i].data.flatten() if x != None]
-#              for i in range(len(data))]).T
 
         if self.radiobutton_manual.isChecked() is True:
             ext = \
                 "ASCII matrix (*.txt);;" + \
                 "ASCII matrix (*.asc);;" + \
                 "ASCII matrix (*.dat)"
-            filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Read Cluster Centers', '.', ext)
             if filename == '':
                 return False
@@ -258,9 +242,9 @@ class CrispClust(QtWidgets.QDialog):
             ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
             if dat_in.shape[1] != co0 or ro0 != ro1:
                 QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                          ' Incorrect matrix size!',
-                                          QtWidgets.QMessageBox.Ok,
-                                          QtWidgets.QMessageBox.Ok)
+                                              ' Incorrect matrix size!',
+                                              QtWidgets.QMessageBox.Ok,
+                                              QtWidgets.QMessageBox.Ok)
             cnt = -1
             for i in range(no_clust[0], no_clust[1] + 1):
                 smtmp = np.zeros(i)
@@ -270,7 +254,7 @@ class CrispClust(QtWidgets.QDialog):
                 startmdat = {i: smtmp}
                 startmfix = {i: []}
 
-            filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Read Cluster Center Constraints', '.', ext)
             if filename == '':
                 QtWidgets.QMessageBox.warning(
@@ -285,9 +269,9 @@ class CrispClust(QtWidgets.QDialog):
                 ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
                 if dat_in.shape[1] != co0 or ro0 != ro1:
                     QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                              ' Incorrect matrix size!',
-                                              QtWidgets.QMessageBox.Ok,
-                                              QtWidgets.QMessageBox.Ok)
+                                                  ' Incorrect matrix size!',
+                                                  QtWidgets.QMessageBox.Ok,
+                                                  QtWidgets.QMessageBox.Ok)
                 cnt = -1
                 for i in range(no_clust[0], no_clust[1] + 1):
                     smtmp = np.zeros(i)
@@ -306,11 +290,8 @@ class CrispClust(QtWidgets.QDialog):
                 self.reportback('Initial guess: data driven')
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp/i
-#                idx=1
-#                idx=[[idx,(j-1)*dno_samp] for j in range(2,i+1)]
                 idx = np.arange(0, no_samp+dno_samp, dno_samp)
                 idx[0] = 1
-#                idx=np.array([idx,no_samp])
                 startmdat = {i: np.zeros([i, dat_in.shape[1]])}
                 dat_in1 = dat_in
                 smtmp = np.zeros([i, dat_in.shape[1]])
@@ -357,7 +338,6 @@ class CrispClust(QtWidgets.QDialog):
                         clvrc = clvrc1
                         startmdat = {i: startm1dat[i]}
 
-#            zonal = np.zeros(data[0].data.shape)-9999.0
             zonal = np.ma.masked_all(data[0].data.shape)
 
             alpha = (data[0].data.mask == 0)
@@ -424,35 +404,14 @@ class CrispClust(QtWidgets.QDialog):
 
             for k in data:
                 dat_out[cnt].input_type.append(k.dataid)
-#                dat_out[cnt].proc_history.append(k.proc)
 
             dat_out[cnt].data = zonal
-#            dat_out[cnt].data.mask = masktmp
             dat_out[cnt].nullvalue = zonal.fill_value
             dat_out[cnt].no_clusters = i
             dat_out[cnt].center = clcent  # These are arrays
             dat_out[cnt].center_std = cent_std  # These are arrays
             dat_out[cnt].obj_fcn = clobj_fcn
             dat_out[cnt].vrc = clvrc
-
-#            dat_out[cnt].type = self.type
-#            dat_out[cnt].algorithm = cltype
-#            dat_out[cnt].initialization = init_type
-#            dat_out[cnt].init_mod = startmdat[i]
-#            dat_out[cnt].init_constrains = startmfix[i]
-#            dat_out[cnt].runs = no_runs
-#            dat_out[cnt].max_iterations = max_iter
-#            dat_out[cnt].denormalize = de_norm
-#            dat_out[cnt].term_threshold = term_thresh
-#            dat_out[cnt].shape_constrain = cov_constr
-#            dat_out[cnt].zonal = zonal
-#            dat_out[cnt].alpha = alpha
-#            dat_out[cnt].xxx = data[0].xxx
-#            dat_out[cnt].yyy = data[0].yyy
-#            dat_out[cnt].denorm_center = den_cent
-#            dat_out[cnt].denorm_center_stdup = den_cent_std
-#            dat_out[cnt].denorm_center_stdlow = den_cent_std1
-#            dat_out[cnt].iterations = clobj_fcn.size
 
             self.log = ("Crisp Cluster complete" + ' (' + self.cltype + ' ' +
                         self.init_type+')')
@@ -480,47 +439,47 @@ class CrispClust(QtWidgets.QDialog):
 
     def crisp_means(self, data, no_clust, cent, centfix, maxit, term_thresh,
                     cltype, cov_constr):
-        """ Crisp Means """
+        """ Crisp Means
+ [idx, cent, obj_fcn] = crisp_means(data, no_clust, cent, maxit, term_thresh,
+ cltype, cov_constr)
 
-# [idx, cent, obj_fcn] = crisp_means(data, no_clust, cent, maxit, term_thresh,
-# cltype, cov_constr)
+ script enables the crisp clustering of COMPLETE multi-variate datasets.
+ (no attributes missing!!!!!!!!!)
 
-# script enables the crisp clustering of COMPLETE multi-variate datasets.
-# (no attributes missing!!!!!!!!!)
+ NOTE: All input arguments must be provided, even if they are empty!!!!
+ DATA: NxP matrix containing the data to be clustered, N is number of
+ samples, P is number of different attributes availabe for each sample
+ NO_CLUST: number of clusters to be used
+ CENT: cluster centre positions, either empty [] --> randomly
+ guess center positions will be used for initialisation or NO_CLUSTxP
+ matrix
+ CENTFIX: Constrains the position of cluster centers, if centfix is empty,
+ cluster centers can freely vary during cluster analysis, otherwise
+ CENTFIX is of equal size to CENT and gives an absolut deviation from
+ initial center positions that should not be exceeded during clustering.
+ Note, CETNFIX applies only if center values are provided by the user
+ MAXIT: number of maximal allowed iterations
+ TERM_THRESH: Termination threshold, either empty [] --> go for the maximum
+ number of iterations MAXIT or
+ a scalar giving the minimum reduction of the size of the objective function
+ for two consecutive iterations in Percent
+ CLTYPE: either 'kmeans' --> kmeans cluster analysis (spherically shaped
+ cluster), 'det' --> uses the determinant criterion of Spath, H.,
+ "Cluster-Formation and Analyse, chapter3" (ellipsoidal clusters, all
+ cluster use the same ellipsoid), or 'vardet' --> Spath, H., chapter 4
+ (each cluster uses its individual ellipsoid) Note: the latter is the
+ crisp version of the Gustafson-Kessel algorithm
+ COV_CONSTR: scalar between [0 1], values >0 trimm the covariance matrix
+ to avoid needle-like ellpsoids for the clusters, applies only for
+ CLTYPE='vardet', but must always be provided
 
-# NOTE: All input arguments must be provided, even if they are empty!!!!
-# DATA: NxP matrix containing the data to be clustered, N is number of
-# samples, P is number of different attributes availabe for each sample
-# NO_CLUST: number of clusters to be used
-# CENT: cluster centre positions, either empty [] --> randomly
-# guess center positions will be used for initialisation or NO_CLUSTxP
-# matrix
-# CENTFIX: Constrains the position of cluster centers, if centfix is empty,
-# cluster centers can freely vary during cluster analysis, otherwise
-# CENTFIX is of equal size to CENT and gives an absolut deviation from
-# initial center positions that should not be exceeded during clustering.
-# Note, CETNFIX applies only if center values are provided by the user
-# MAXIT: number of maximal allowed iterations
-# TERM_THRESH: Termination threshold, either empty [] --> go for the maximum
-# number of iterations MAXIT or
-# a scalar giving the minimum reduction of the size of the objective function
-# for two consecutive iterations in Percent
-# CLTYPE: either 'kmeans' --> kmeans cluster analysis (spherically shaped
-# cluster), 'det' --> uses the determinant criterion of Spath, H.,
-# "Cluster-Formation and Analyse, chapter3" (ellipsoidal clusters, all
-# cluster use the same ellipsoid), or 'vardet' --> Spath, H., chapter 4
-# (each cluster uses its individual ellipsoid) Note: the latter is the
-# crisp version of the Gustafson-Kessel algorithm
-# COV_CONSTR: scalar between [0 1], values >0 trimm the covariance matrix
-# to avoid needle-like ellpsoids for the clusters, applies only for
-# CLTYPE='vardet', but must always be provided
-
-# IDX: cluster index number for each sample after the last iteration, column
-# vector
-# CENT: matrix with cluster centre positions after last iteration, one cluster
-# centre per row
-# OBJ_FCN: Vector, size of the objective function after each iteration
-# VRC: Variance Ratio Criterion
+ IDX: cluster index number for each sample after the last iteration, column
+ vector
+ CENT: matrix with cluster centre positions after last iteration, one cluster
+ centre per row
+ OBJ_FCN: Vector, size of the objective function after each iteration
+ VRC: Variance Ratio Criterion
+        """
         self.reportback(' ')
 
         no_samples = data.shape[0]
@@ -594,18 +553,13 @@ class CrispClust(QtWidgets.QDialog):
                     else:
                         # changed from i-1 to i for w-means
                         obj_fcn = np.delete(obj_fcn, np.s_[i::])
-                        # vrc=vr.var_ratio(data, idx, cent, edist)
                     break  # and stop the clustering right now
             obj_fcn_prev = obj_fcn[i]
         vrc = vr.var_ratio(data, idx, cent, edist)
         return idx, cent, obj_fcn, vrc
 
-# -----------------------------------------------------------------------------
-
-# -----------------------------------------------------------------------------
 def gcentroids(data, index, no_clust, mindist):
     """Gcentroids"""
-#    no_samples=data.shape[0]
     no_datatypes = data.shape[1]
     centroids = np.tile(np.nan, (no_clust, no_datatypes))
     for j in range(no_clust):
@@ -708,5 +662,4 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
 # oriented and shaped ellipsoid
             ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
         bigd = np.sqrt(ddd)
-#    end
     return bigd

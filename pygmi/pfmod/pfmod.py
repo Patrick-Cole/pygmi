@@ -70,7 +70,6 @@ class MainWidget(QtWidgets.QMainWindow):
         self.tabwidget.setCurrentIndex(0)
         self.oldtab = self.tabwidget.tabText(0)
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
-#        self.outdata['Raster'] = list(self.lmod1.griddata.values())
         tmp = [i for i in set(self.lmod1.griddata.values())]
         self.outdata['Raster'] = tmp
 
@@ -117,8 +116,6 @@ class MainWidget(QtWidgets.QMainWindow):
         self.setStatusBar(self.statusbar)
         self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
         self.textbrowser.setFrameShape(QtWidgets.QFrame.StyledPanel)
-#        self.pbar_sub.setTextVisible(False)
-#        self.pbar_main.setTextVisible(False)
         self.toolbar.setMovable(True)
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolbar.addWidget(self.actionsave)
@@ -180,7 +177,6 @@ class MainWidget(QtWidgets.QMainWindow):
         datatmp = [i for i in set(self.lmod1.griddata.values())]
 
         if 'Raster' not in self.indata:
-#            self.indata['Raster'] = list(self.lmod1.griddata.values())
             self.indata['Raster'] = datatmp
 
         self.inraster = {}
@@ -188,14 +184,11 @@ class MainWidget(QtWidgets.QMainWindow):
             self.inraster[i.dataid] = i
         if 'Model3D' in self.indata:
             self.lmod1 = self.indata['Model3D'][0]
-#            self.lmod1.init_calc_grids()
             self.lmod2 = self.indata['Model3D'][-1]
-#            self.lmod2.init_calc_grids()
 
         self.outdata['Model3D'] = [self.lmod1]
         self.mext.update_combos()
         self.mext.tab_activate()
-#        self.outdata['Raster'] = list(self.lmod1.griddata.values())
         self.outdata['Raster'] = datatmp
 
         if 'ProfPic' in self.indata:

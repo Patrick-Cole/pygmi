@@ -534,6 +534,7 @@ class ProfileDisplay(object):
 
         self.mmc.mywidth = width
 
+
     def tab_activate(self):
         """ Runs when the tab is activated """
         self.lmod1 = self.parent.lmod1
@@ -929,9 +930,9 @@ class MySlider(QtWidgets.QSlider):
                 adaptedPosX = event.x()
                 if adaptedPosX < halfHandleWidth:
                     adaptedPosX = halfHandleWidth
-                if adaptedPosX > self.mywidth() - halfHandleWidth:
-                    adaptedPosX = self.mywidth() - halfHandleWidth
-                newWidth = (self.mywidth() - halfHandleWidth) - halfHandleWidth
+                if adaptedPosX > self.width() - halfHandleWidth:
+                    adaptedPosX = self.width() - halfHandleWidth
+                newWidth = (self.width() - halfHandleWidth) - halfHandleWidth
                 normalizedPosition = (adaptedPosX-halfHandleWidth)/newWidth
 
                 newVal = self.minimum() + ((self.maximum()-self.minimum()) *

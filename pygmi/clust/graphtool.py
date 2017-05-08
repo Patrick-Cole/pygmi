@@ -202,14 +202,6 @@ class GraphMap(FigureCanvas):
         self.csp = None
         self.subplot = None
 
-#    def dat_extent(self, dat):
-#        """ Gets the extend of the dat variable """
-#        left = dat.tlx
-#        top = dat.tly
-#        right = left + dat.cols*dat.xdim
-#        bottom = top - dat.rows*dat.ydim
-#        return (left, right, bottom, top)
-
     def init_graph(self):
         """ Initialize the Graph """
         mtmp = self.mindx
@@ -300,7 +292,6 @@ class PolygonInteractor(QtCore.QObject):
         self.line = plt.Line2D(xtmp, ytmp, marker='o', markerfacecolor='r',
                                color='y', animated=True)
         self.ax.add_line(self.line)
-#        self._update_line(poly)
 
         self.poly.add_callback(self.poly_changed)
         self._ind = None  # the active vert
@@ -320,7 +311,6 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
-#        self.canvas.blit(self.ax.bbox)
         self.canvas.update()
 
     def new_poly(self, npoly):
@@ -376,7 +366,6 @@ class PolygonInteractor(QtCore.QObject):
                 self.canvas.restore_region(self.background)
                 self.ax.draw_artist(self.poly)
                 self.ax.draw_artist(self.line)
-#                self.canvas.blit(self.ax.bbox)
                 self.canvas.update()
                 return
             dmin = -1
@@ -400,7 +389,6 @@ class PolygonInteractor(QtCore.QObject):
             self.canvas.restore_region(self.background)
             self.ax.draw_artist(self.poly)
             self.ax.draw_artist(self.line)
-#            self.canvas.blit(self.ax.bbox)
             self.canvas.update()
 
     def button_release_callback(self, event):
@@ -434,7 +422,6 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
-#        self.canvas.blit(self.ax.bbox)
         self.canvas.update()
 
 

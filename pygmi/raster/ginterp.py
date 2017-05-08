@@ -157,14 +157,6 @@ class ModestImage2(mi.AxesImage):
         self._A = A
         self.smallres = A
 
-#        if self._A.dtype != np.uint8 and not np.can_cast(self._A.dtype,
-#                                                         np.float):
-#            raise TypeError("Image data can not convert to float")
-#
-#        if (self._A.ndim not in (2, 3) or
-#                (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4))):
-#            raise TypeError("Invalid dimensions for image data")
-
         self._imcache = None
         self._rgbacache = None
         self._oldxslice = None
@@ -172,10 +164,6 @@ class ModestImage2(mi.AxesImage):
         self._sx, self._sy = None, None
         if self.axes.dataLim.x0 != np.inf:
             self._scale_to_res()
-
-#    def get_array(self):
-#        """Override to return the full-resolution array"""
-#        return self._full_res
 
     def _scale_to_res(self):
         """ Change self._A and _extent to render an image whose
@@ -249,8 +237,6 @@ class ModestImage2(mi.AxesImage):
             self._A = colormap
 
         elif self.dtype == 'Sunshade':
-#            pseudo = self._full_res[0]
-#            sun = self._full_res[1]
             pseudo = self._full_res[0][(rows-y1):(rows-y0):sy, x0:x1:sx]
             sun = self._full_res[1][(rows-y1):(rows-y0):sy, x0:x1:sx]
             mask = np.logical_or(pseudo.mask, sun.mask)
@@ -327,7 +313,6 @@ class ModestImage2(mi.AxesImage):
         x0 = xlim[0]
         x1 = xlim[1]
 
-#        self.set_extent([x0 - .5, x1 - .5, y0 - .5, y1 - .5])
         self.set_extent([x0, x1, y0, y1])
         self._sx = sx
         self._sy = sy
@@ -337,12 +322,11 @@ class ModestImage2(mi.AxesImage):
     def draw(self, renderer, *args, **kwargs):
         """ Draw """
 
-# This loop forces the histograms to remain static
+        # This loop forces the histograms to remain static
         for argb in self.figure.axes[1:]:
             argb.set_xlim(argb.dataLim.x0, argb.dataLim.x1)
             argb.set_ylim(argb.dataLim.y0, argb.dataLim.y1*1.2)
 
-#        self._scale_to_res()
         # The next command runs the original draw for this class.
         super().draw(renderer, *args, **kwargs)
 
@@ -381,8 +365,6 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
         # image does not already have clipping set, clip to axes patch
         im.set_clip_path(axes.patch)
 
-    # if norm is None and shape is None:
-    #    im.set_clim(vmin, vmax)
     if vmin is not None or vmax is not None:
         im.set_clim(vmin, vmax)
     else:
@@ -563,7 +545,7 @@ class MyMplCanvas(FigureCanvas):
 
     def move(self, event):
         """ Mouse is moving """
-        if len(self.data) == 0 or self.gmode == 'Contour':
+        if not self.data or self.gmode == 'Contour':
             return
 
         if event.inaxes == self.axes:
@@ -639,7 +621,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_graph(self):
         """ Update the plot """
-        if len(self.data) == 0 or self.gmode is None:
+        if not self.data or self.gmode is None:
             return
 
         self.image.cbar = self.cbar
@@ -991,7 +973,7 @@ class PlotInterp(QtWidgets.QDialog):
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
-                                   QtWidgets.QSizePolicy.Expanding)
+                                       QtWidgets.QSizePolicy.Expanding)
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
         self.sslider.setValue(25)
@@ -1327,9 +1309,6 @@ class PlotInterp(QtWidgets.QDialog):
             pseudo[pseudo > psmall.max()] = psmall.max()
             pseudo.mask = pmask
 
-#            mask = np.logical_not(pseudo.mask)
-#            pseudo += pseudo.min()
-
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
 
@@ -1347,8 +1326,6 @@ class PlotInterp(QtWidgets.QDialog):
         elif dtype == 'Sunshade':
             pseudo = self.mmc.image._full_res[0]
             sun = self.mmc.image._full_res[1]
-#            pseudo = self.mmc.image.smallres[:, :, 0]
-#            sun = self.mmc.image.smallres[:, :, 1]
 
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
@@ -1368,10 +1345,6 @@ class PlotInterp(QtWidgets.QDialog):
             sunshader = currentshader(sun.data, cell, theta, phi, alpha)
             snorm = norm2(sunshader)
 
-#            pnorm = norm2(pseudo)
-#            colormap = self.cbar(pnorm)
-
-
             img = img2rgb(pseudo, self.mmc.cbar)
             pseudo = None
             sunshader = None
@@ -1380,9 +1353,6 @@ class PlotInterp(QtWidgets.QDialog):
             img[:, :, 1] = img[:, :, 1]*snorm  # green
             img[:, :, 2] = img[:, :, 2]*snorm  # blue
             img = img.astype(np.uint8)
-#            mask = np.logical_or(pseudo.mask, sun.mask)
-#            mask = np.logical_not(mask)
-#            img[:, :, 3] = mask
 
         elif 'Ternary' in dtype:
             red = self.mmc.image._full_res[0]
@@ -1442,7 +1412,6 @@ class PlotInterp(QtWidgets.QDialog):
             tmpsize = self.mmc.figure.get_size_inches()
             self.mmc.figure.set_size_inches(tmpsize*3)
             self.mmc.figure.canvas.draw()
-#            fcol = int(self.mmc.figure.get_facecolor()[0]*255)
             img = np.fromstring(self.mmc.figure.canvas.tostring_argb(),
                                 dtype=np.uint8, sep='')
             w, h = self.mmc.figure.canvas.get_width_height()
@@ -1486,7 +1455,6 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[0].data[mask <= 1] = 0
         newimg[1].data[mask <= 1] = 0
         newimg[2].data[mask <= 1] = 0
-#        newimg[3].data[mask == 0] = 0
 
         newimg[0].nullvalue = 0
         newimg[1].nullvalue = 0
@@ -1607,9 +1575,9 @@ class PlotInterp(QtWidgets.QDialog):
             fig.savefig(fname, dpi=300)
 
         QtWidgets.QMessageBox.information(self, "Information",
-                                      "Save to GeoTiff is complete!",
-                                      QtWidgets.QMessageBox.Ok,
-                                      QtWidgets.QMessageBox.Ok)
+                                          "Save to GeoTiff is complete!",
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
 
     def settings(self):
         """ This is called when the used double clicks the routine from the
@@ -1703,34 +1671,6 @@ def currentshader(data, cell, theta, phi, alpha):
     Ps = ne.evaluate('coss**n')
     R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2'))
 
-
-#    ldict = locals()
-#    ldict['pinit'] = asp[1]
-#    ldict['qinit'] = asp[2]
-
-# Update cell
-#    ldict['p'] = ne.evaluate('pinit/cell', ldict)
-#    ldict['q'] = ne.evaluate('qinit/cell', ldict)
-#    ldict['sqrt_1p2q2'] = ne.evaluate('sqrt(1+p**2+q**2)', ldict)
-
-# Update angle
-#    ldict['cosg2'] = cos(theta/2)
-#    ldict['p0'] = -cos(phi)*tan(theta)
-#    ldict['q0'] = -sin(phi)*tan(theta)
-#    ldict['sqrttmp'] = ne.evaluate('(1+sqrt(1+p0**2+q0**2))', ldict)
-#    ldict['p1'] = ne.evaluate('p0 / sqrttmp', ldict)
-#    ldict['q1'] = ne.evaluate('q0 / sqrttmp', ldict)
-
-
-#     n: how compact the bright patch is
-#    ldict['cosi'] = ne.evaluate('((1+p0*p+q0*q)/'
-#                                '(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))', ldict)
-#    ldict['coss'] = ne.evaluate('((1+p1*p+q1*q)/'
-#                                '(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))', ldict)
-#    ldict['Ps'] = ne.evaluate('coss**n', ldict)
-#    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2',
-#                                         ldict))
-
     return R
 
 
@@ -1754,8 +1694,6 @@ def histcomp(img, nbr_bins=256):
 # get image histogram
     imask = img.mask
     tmp = img.compressed()
-#        if tmp.mask.size > 1:
-#            tmp = tmp.data[tmp.mask == 0]
     imhist, bins = np.histogram(tmp, nbr_bins)
 
     cdf = imhist.cumsum()  # cumulative distribution function
@@ -1849,7 +1787,6 @@ def img2rgb(img, cbar):
     im2 = norm255(im2)
     cbartmp = cbar(range(255))
     cbartmp = np.array([[0., 0., 0., 1.]]+cbartmp.tolist())*255
-#    cbartmp[:, :-1] *= 255
     cbartmp = cbartmp.round()
     cbartmp = cbartmp.astype(np.uint8)
     im2 = cbartmp[im2]
