@@ -297,10 +297,10 @@ def get_raster(ifile):
 # Note that because the data is stored in a masked array, the array ends up
 # being double the size that it was on the disk.
         dat[i].data = np.ma.masked_invalid(dat[i].data)
-        dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
+        dat[i].data.mask = np.ma.getmaskarray(dat[i].data) | (dat[i].data == nval)
         if dat[i].data.mask.size == 1:
             dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                dat[i].data.mask)
+                                np.ma.getmaskarray(dat[i].data))
 
         dat[i].nrofbands = dataset.RasterCount
         dat[i].tlx = gtr[0]
@@ -420,8 +420,8 @@ def get_modis(ifile):
     subdata = tmp
 
     i = -1
-    for ifile, bandid2 in subdata:
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    for ifile2, bandid2 in subdata:
+        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
 
         gtr = dataset.GetGeoTransform()
         rtmp2 = dataset.ReadAsArray()
@@ -453,7 +453,7 @@ def get_modis(ifile):
                 dat[i].data = np.zeros((rows, cols)) + nval
             else:
                 tmp = quickgrid(newx, newy, newz, latsdim)
-                mask = tmp.mask
+                mask = np.ma.getmaskarray(tmp)
                 gdat = tmp.data
                 dat[i].data = np.ma.masked_invalid(gdat[::-1])
                 dat[i].data.mask = mask[::-1]
@@ -472,10 +472,10 @@ def get_modis(ifile):
                 nval = float(nval)
 
             dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
+            dat[i].data.mask = np.ma.getmaskarray(dat[i].data) | (dat[i].data == nval)
             if dat[i].data.mask.size == 1:
                 dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                    dat[i].data.mask)
+                                    np.ma.getmaskarray(dat[i].data))
 
             dat[i].nrofbands = dataset.RasterCount
             dat[i].tlx = tlx
@@ -545,8 +545,8 @@ def get_aster(ifile):
     subdata = [i for i in subdata if 'ImageData' in i[0]]
 
     i = -1
-    for ifile, bandid2 in subdata:
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    for ifile2, bandid2 in subdata:
+        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
 
         rtmp2 = dataset.ReadAsArray()
 
@@ -642,8 +642,8 @@ def get_aster_ged(ifile):
     tly = lats.max()+abs(latsdim/2)
 
     i = -1
-    for ifile, bandid2 in subdata:
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    for ifile2, bandid2 in subdata:
+        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
         bandid = bandid2
         units = ''
 
@@ -677,10 +677,10 @@ def get_aster_ged(ifile):
                 dat[i].data = rtmp2
 
             dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
+            dat[i].data.mask = np.ma.getmaskarray(dat[i].data) | (dat[i].data == nval)
             if dat[i].data.mask.size == 1:
                 dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                    dat[i].data.mask)
+                                    np.ma.getmaskarray(dat[i].data))
 
             dat[i].data = dat[i].data * 1.0
             if 'Emissivity/Mean' in bandid2:

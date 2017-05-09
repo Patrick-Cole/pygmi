@@ -122,7 +122,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
         data = my_class.indata.copy()
 
         for j in data:
-            if j is 'Model3D' or j is 'Seis':
+            if j == 'Model3D' or j == 'Seis':
                 continue
 
             tmp = []
@@ -139,7 +139,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
             return
 
         for j in data:
-            if j is 'Model3D' or j is 'Seis':
+            if j == 'Model3D' or j == 'Seis':
                 continue
             atmp = [i.row() for i in self.combo.selectedIndexes()]
 

@@ -184,7 +184,7 @@ class ProfileDisplay(object):
         extent = (left, right, bottom, top)
 
         ctxt = str(self.combo_profpic.currentText())
-        if len(self.lmod1.profpics) > 0 and ctxt != u'':
+        if self.lmod1.profpics and ctxt != u'':
             gtmpl = self.lmod1.profpics[ctxt]
             opac = self.hs_ppic_opacity.value()/self.hs_ppic_opacity.maximum()
         else:
@@ -206,7 +206,7 @@ class ProfileDisplay(object):
     def export_csv(self):
         """ Export Profile to csv """
         self.parent.pbars.resetall()
-        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
         if filename == '':
             return
@@ -560,7 +560,7 @@ class ProfileDisplay(object):
         else:
             self.hs_profnum.setMaximum(self.lmod1.numx-1)
 
-        if len(self.lmod1.profpics) > 0:
+        if self.lmod1.profpics:
             self.combo_profpic.clear()
             self.combo_profpic.addItems(list(self.lmod1.profpics.keys()))
             self.combo_profpic.setCurrentIndex(0)

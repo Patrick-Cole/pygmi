@@ -351,7 +351,7 @@ class MextDisplay(object):
         outg.shape = gtmp.shape
         outg[gmask] = gdata[gmask]
         outg = np.ma.array(outg)
-        outg.mask = gdata.mask
+        outg.mask = np.ma.getmaskarray(gdata)
 
         return outg
 

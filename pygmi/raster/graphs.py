@@ -211,17 +211,17 @@ class MyMplCanvas(FigureCanvas):
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
-        ax = self.axes
+        ax1 = self.axes
 
-        surf = ax.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
-                               vmin=z.min(), vmax=z.max(), shade=False,
-                               antialiased=False)
+        surf = ax1.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
+                                vmin=z.min(), vmax=z.max(), shade=False,
+                                antialiased=False)
         self.figure.colorbar(surf)
 
-        ax.set_title('')
-        ax.set_xlabel("X")
-        ax.set_ylabel("Y")
-        ax.set_zlabel("Z")
+        ax1.set_title('')
+        ax1.set_xlabel("X")
+        ax1.set_ylabel("Y")
+        ax1.set_zlabel("Z")
 
         self.figure.canvas.draw()
 

@@ -9,6 +9,7 @@ import pdb
 import numpy as np
 from pygmi.raster import iodefs as pio
 from pygmi.raster.datatypes import Data
+from pygmi.pfmod import iodefs as pio3d
 import matplotlib.pyplot as plt
 import scipy.interpolate as si
 import scipy.signal as ss
@@ -23,6 +24,9 @@ def main():
 
     filename = r'C:\Work\Programming\pygmi\data\filt_magdata.csv'
     ofile = r'C:\Work\Programming\pygmi\data\magdata.tif'
+
+    filename = r'C:\Work\Programming\pygmi\data\273Grav_Elevation.txt'
+    ofile = r'C:\Work\Programming\pygmi\data\dtmdata.tif'
     srows = 0
     dlim = None
     xcol = 0
@@ -94,7 +98,8 @@ def main():
     tmp = pio.ExportData(None)
     tmp.ifile = ofile
 #    tmp.export_ascii_xyz([odat])
-    tmp.export_gdal([odat], 'ENVI')
+#    tmp.export_gdal([odat], 'ENVI')
+    tmp.export_gdal([odat], 'GTiff')
 
     # Plotting section
 
@@ -112,8 +117,41 @@ def main():
     pdb.set_trace()
 
 
+def main2():
+    """ loads in a model """
+
+    tmp = pio3d.ImportMod3D(None)
+    tmp.ifile = r'C:\Work\Programming\pygmi\data\7-BC_57km_StagChamOnly.npz'
+    ofile = r'C:\Work\Programming\pygmi\data\7-BC_57km_StagChamOnly.tif'
+
+    # Reset Variables
+    tmp.lmod.griddata.clear()
+    tmp.lmod.lith_list.clear()
+
+    #load model
+    indict = np.load(tmp.ifile)
+    tmp.dict2lmod(indict)
+
+    lith_index = tmp.lmod.lith_index
+
+    lith_index[lith_index == -1] = 0
+    lith_index[lith_index > 0] = 1
+
+    dz = tmp.lmod.d_z
+    out = lith_index.sum(2) * dz
+
+    gout = tmp.lmod.griddata['Calculated Gravity']
+    gout.data = out.T
+    gout.data = gout.data[::-1]
+    gout.nullvalue = 0.
+    gout.data = np.ma.masked_equal(gout.data, 0.)
+
+    tmp = pio.ExportData(None)
+    tmp.ifile = ofile
+    tmp.export_gdal([gout], 'GTiff')
 
 
+    pdb.set_trace()
 
 
 

@@ -612,12 +612,11 @@ class GeoData(object):
 
         npro, nstn = X.shape
         # Initialise
-
-        # Grav stuff
-#        Gc = 6.6732e-3            # Universal gravitational constant
-
-        # Mag stuff
         """
+        Grav stuff
+        Gc = 6.6732e-3            # Universal gravitational constant
+
+        Mag stuff
 
         SI
         mu0 = 4*pi*10**-7  (Henry/m)

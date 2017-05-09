@@ -219,7 +219,7 @@ class ModestImage2(mi.AxesImage):
 
         if self.dtype == 'Single Color Map':
             pseudo = self._full_res[(rows-y1):(rows-y0):sy, x0:x1:sx]
-            mask = pseudo.mask
+            mask = np.ma.getmaskarray(pseudo)
 
             if self.htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
@@ -1392,7 +1392,7 @@ class PlotInterp(QtWidgets.QDialog):
         elif dtype == 'Contour':
             pseudo = self.mmc.image._full_res.copy()
             psmall = self.mmc.image.smallres
-            pmask = pseudo.mask.copy()
+            pmask = np.ma.getmaskarray(pseudo)
 
             pseudo[pseudo < psmall.min()] = psmall.min()
             pseudo[pseudo > psmall.max()] = psmall.max()
@@ -1692,7 +1692,7 @@ def histcomp(img, nbr_bins=256):
         compacted array
     """
 # get image histogram
-    imask = img.mask
+    imask = np.ma.getmaskarray(img)
     tmp = img.compressed()
     imhist, bins = np.histogram(tmp, nbr_bins)
 
@@ -1812,7 +1812,7 @@ def norm2(dat):
     datmin = float(dat.min())
     datptp = float(dat.ptp())
     out = np.ma.array(ne.evaluate('(dat-datmin)/datptp'))
-    out.mask = dat.mask
+    out.mask = np.ma.getmaskarray(dat)
     return out
 
 

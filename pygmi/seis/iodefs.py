@@ -358,7 +358,7 @@ def read_record_type_i(i):
 def read_record_type_m(i, vtmp=None):
     """ Reads record type M"""
 
-    if i[1:3] is not 'MT':
+    if i[1:3] != 'MT':
         tmp = sdt.seisan_M()
         tmp.year = i[1:5]
         tmp.month = i[6:8]

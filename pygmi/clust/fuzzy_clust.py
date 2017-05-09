@@ -363,8 +363,8 @@ class FuzzyClust(QtWidgets.QDialog):
             alpha1 = (data[0].data.mask == 0)
             zonal[alpha1 == 1] = clidx
             alpha[alpha1 == 1] = clalp
-            zonal.mask = data[0].data.mask
-            alpha.mask = data[0].data.mask
+            zonal.mask = np.ma.getmaskarray(data[0].data)
+            alpha.mask = np.ma.getmaskarray(data[0].data)
 
             cent_std = np.array([np.std(dat_in[clidx == k], 0)
                                  for k in range(i)])

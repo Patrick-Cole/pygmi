@@ -56,7 +56,9 @@ class ImportMod3D(object):
         self.ext = ""
         self.indata = {}
         self.outdata = {}
-        self.pbars = parent.pbar
+
+        if parent is not None:
+            self.pbars = parent.pbar
 
     def settings(self):
         """ Settings """

@@ -268,7 +268,7 @@ def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
     theta: sun elevation
     cell: between 1 and 100 - controls sunshade detail.
     """
-    mask = data.mask
+    mask = np.ma.getmaskarray(data)
 
     sunshader = currentshader(data, cell, elev, azim, alpha)
     snorm = norm2(sunshader)

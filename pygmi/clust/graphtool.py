@@ -73,7 +73,7 @@ class GraphHist(FigureCanvas):
     def get_clust_scat(self, bins, dattmp, ctmp):
         """ Routine to get the scattergram with cluster overlay """
         clust = np.ma.array(dattmp[ctmp[2] - 1].data.flatten())
-        clust.mask = self.xcoord.mask
+        clust.mask = np.ma.getmaskarray(self.xcoord)
         clust = clust.compressed()
         xxx = self.xcoord.compressed()
         yyy = self.ycoord.compressed()
@@ -522,7 +522,7 @@ class ScatterPlot(QtWidgets.QDialog):
         """ map dpoly """
         self.map.polyi.new_poly([[10, 10]])
         dattmp = self.hist.csp.get_array()
-        dattmp.mask = np.ma.masked_equal(dattmp.data, 0.).mask
+        dattmp.mask = np.ma.getmaskarray(np.ma.masked_equal(dattmp.data, 0.))
         self.hist.csp.changed()
         self.hist.figure.canvas.draw()
 
@@ -632,7 +632,7 @@ class ScatterPlot(QtWidgets.QDialog):
         dattmp = self.hist.csp.get_array()
         atmp = np.array([self.hist.xcoord[polymask],
                          self.hist.ycoord[polymask]]).T
-        dattmp.mask = np.ones_like(dattmp.mask)
+        dattmp.mask = np.ones_like(np.ma.getmaskarray(dattmp))
         for i in atmp:
             dattmp.mask[i[1], i[0]] = False
         self.hist.csp.changed()

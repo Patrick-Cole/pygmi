@@ -283,13 +283,13 @@ class Smooth(QtWidgets.QDialog):
         dat.data[dat.mask] = np.nan
 
         if itype == '2D Mean':
-            out = ssig.correlate(dat, fmat, 'same')
+            out = ssig.correlate(dat, fmat, 'same', method='direct')
             self.pbar.to_max()
 
         elif itype == '2D Median':
             self.parent.showprocesslog('Calculating Median...')
             out = np.ma.zeros([rowd, cold])*np.nan
-            out.mask = dat.mask
+            out.mask = np.ma.getmaskarray(dat)
             fmat = fmat.astype(bool)
             dummy = dummy.data
 

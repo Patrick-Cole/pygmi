@@ -196,7 +196,7 @@ class VGradients(QtWidgets.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
 
         for i in self.pbar.iter(range(len(data))):
-            mask = data[i].data.mask
+            mask = np.ma.getmaskarray(data[i].data)
             data[i].data = np.ma.array(vertical(data[i].data))
             data[i].data.mask = mask
 
@@ -377,7 +377,7 @@ def visibility2d(data, wsize, dh, piter=iter):
     vd3 = np.zeros([nr, nc])
     vd4 = np.zeros([nr, nc])
     vstd = np.zeros([nr, nc])
-    mask = data.mask
+    mask = np.ma.getmaskarray(data)
     mean = data.mean()
     data = data.data
     data[mask] = mean
@@ -646,9 +646,9 @@ def tilt1(data, azi, s):
     # Tilt Based Directional Derivative, Total Derivative
     t1 = np.ma.array(t1)
     th = np.ma.array(th)
-    th.mask = t1.mask
+    th.mask = np.ma.getmaskarray(t1)
     t2 = np.ma.array(t2)
-    t2.mask = t1.mask
+    t2.mask = np.ma.getmaskarray(t1)
     ta = np.ma.array(ta)
     tdx = np.ma.array(tdx)
 

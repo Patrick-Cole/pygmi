@@ -236,7 +236,7 @@ class DataGrid(QtWidgets.QDialog):
                 z = z[filt]
 
             tmp = quickgrid(x, y, z, dxy, showtext=self.parent.showprocesslog)
-            mask = tmp.mask
+            mask = np.ma.getmaskarray(tmp)
             gdat = tmp.data
 
     # Create dataset
@@ -1103,7 +1103,7 @@ def rtp(data, I_deg, D_deg):
 # Create dataset
     dat = Data()
     dat.data = np.ma.masked_invalid(zrtp)
-    dat.data.mask = data.data.mask
+    dat.data.mask = np.ma.getmaskarray(data.data)
     dat.rows, dat.cols = zrtp.shape
     dat.nullvalue = data.data.fill_value
     dat.dataid = data.dataid
@@ -1293,7 +1293,8 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
             src.GetRasterBand(1).SetNoDataValue(data.nullvalue)
         src.GetRasterBand(1).WriteArray(data.data)
     else:
-        tmp = np.ma.masked_all((rows, cols))
+        tmp = np.zeros((rows, cols))
+        tmp = np.ma.masked_equal(tmp, 0)
         src.GetRasterBand(1).SetNoDataValue(0)  # Set to this because of Reproj
         src.GetRasterBand(1).WriteArray(tmp)
 
@@ -1328,9 +1329,9 @@ def gdal_to_dat(dest, bandid='Data'):
     dat.data = rtmp.ReadAsArray()
     nval = rtmp.GetNoDataValue()
 
-    dat.data[np.isnan(dat.data)] = nval
-    dat.data[np.isinf(dat.data)] = nval
     dat.data = np.ma.masked_equal(dat.data, nval)
+    dat.data.set_fill_value(nval)
+    dat.data = np.ma.fix_invalid(dat.data)
 
     dat.nrofbands = dest.RasterCount
     dat.tlx = gtr[0]
@@ -1460,7 +1461,7 @@ def trim_raster(olddata):
     """
 
     for data in olddata:
-        mask = data.data.mask.copy()
+        mask = np.ma.getmaskarray(data.data)
         data.data.data[mask] = data.nullvalue
 
         rowstart = 0
