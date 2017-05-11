@@ -534,7 +534,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         start = Startup(len(menus)+1)
         start.update()
-        self.pypiver = misc.getpypiversion()
+
         menuimports = []
         for i in menus:
             if i == 'pygmi.__pycache__.menu':
@@ -992,18 +992,6 @@ def main():
 
     # this will activate the window
     wid.activateWindow()
-
-    if wid.pypiver == 'no internet' or wid.pypiver == '':
-        wid.pypiver = pygmi.__version__
-
-    if StrictVersion(wid.pypiver) > StrictVersion(pygmi.__version__):
-        text = 'There is an update available on the web.\nYour Version: ' + \
-               pygmi.__version__+'\nNew Version: '+wid.pypiver
-        QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(),
-                                      'Update Available!',
-                                      text,
-                                      QtWidgets.QMessageBox.Ok,
-                                      QtWidgets.QMessageBox.Ok)
 
     try:
         __IPYTHON__
