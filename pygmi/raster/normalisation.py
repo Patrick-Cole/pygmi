@@ -131,11 +131,12 @@ class Normalisation(QtWidgets.QDialog):
                 tmp = i.data.flatten('F')
                 tmpndat = ndat_eq.flatten('F')
                 for j in range(nlevels):
-                    cop = np.round(float(j+1)*(no_pix/nlevels))
+                    cop = np.int(np.round(float(j+1)*(no_pix/nlevels)))
                     cutoff = dummy_dat[cop-1]
                     idx = np.nonzero(tmp < cutoff)
                     transform[j, 0:2] = [j+1, np.nanmedian(tmp[idx])]
                     tmp[idx] = np.nan
+                    tmp = np.ma.fix_invalid(tmp)
                     tmpndat[idx] = j+1
                 ndat_eq = np.reshape(tmpndat, i.data.shape, 'F')
                 tmpd = np.ma.array(ndat_eq)

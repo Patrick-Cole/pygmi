@@ -230,14 +230,15 @@ def gradients(data, azi, elev, order):
     """
     # Directional derivative
 
-    azi = azi*np.pi/180
-    elev = elev*np.pi/180
+    azi = np.deg2rad(azi)
+    elev = np.deg2rad(elev)
     dx, dy = np.gradient(data)
     dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
 
     # Derivative ratio
 
     dt2 = -dy*np.sin(azi+np.pi/2)-dx*np.cos(azi+np.pi/2)
+    dt2 = dt2.astype(np.float64)
     dr = np.arctan2(dt1, abs(dt2)**order)
 
     return dr
@@ -440,7 +441,7 @@ def __visible1(dat, nr, cp, dh):
     """ Visible 1 """
     num = 1
 
-    if cp < nr-1 and dat:
+    if cp < nr-1 and dat.size > 0:
         num = 2
         cpn = cp-1
         thetamax = float(dat[cpn+1]-dat[cpn]-dh)
@@ -457,7 +458,7 @@ def __visible2(dat, nr, cp, dh):
     """ Visible 2 """
     num = 0
 
-    if cp > 2 and dat:
+    if cp > 2 and dat.size > 0:
         num = 1
         cpn = cp-1
         thetamax = (dat[cpn-1]-dat[cpn]-dh)
@@ -617,7 +618,9 @@ def tilt1(data, azi, s):
     azi = azi*dtr
 
     dy, dx = np.gradient(data)
-    dxtot = np.sqrt(dx*dx+dy*dy)
+#    dx = dx.astype(np.float64)
+#    dy = dy.astype(np.float64)
+    dxtot = np.ma.sqrt(dx*dx+dy*dy)
     nmax = np.max([nr, nc])
     npts = int(2**__nextpow2(nmax))
     dz = vertical(data, npts, 1)
@@ -689,6 +692,7 @@ def vertical(data, npts=None, xint=1):
     fz = np.fft.fftshift(fz)
     fzinv = np.fft.ifft2(fz)
     dz = np.real(fzinv[rdiff:nr+rdiff, cdiff:nc+cdiff])
+
     return dz
 
 
@@ -699,7 +703,7 @@ def __taper2d(g, npts, n, m, ndiff, mdiff):
 
     npts2 = npts-1
     gm = g.mean()
-    gf = np.zeros([npts, npts])+np.median(g-gm)
+    gf = np.zeros([npts, npts])+np.ma.median(g-gm)
     gf[mdiff:mdiff+m, ndiff:ndiff+n] = g-gm
 
     for j in range(mdiff, mdiff+m):

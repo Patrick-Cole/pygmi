@@ -11,4 +11,4 @@ datasets. It includes:
 It is released under the Gnu General Public License version 3.0
 """
 
-__version__ = '2.2.15'
+__version__ = '2.3.0'

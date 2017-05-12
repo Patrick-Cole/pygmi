@@ -1078,7 +1078,7 @@ def rtp(data, I_deg, D_deg):
 
     datamedian = np.ma.median(data.data)
     ndat = data.data - datamedian
-    ndat[ndat.mask] = 0
+    ndat.data[ndat.mask] = 0
 
     fftmod = np.fft.fft2(ndat)
 

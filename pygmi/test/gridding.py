@@ -13,6 +13,7 @@ from pygmi.pfmod import iodefs as pio3d
 import matplotlib.pyplot as plt
 import scipy.interpolate as si
 import scipy.signal as ss
+import geosoft.gxpy as gxpy
 
 
 
@@ -154,6 +155,10 @@ def main2():
     pdb.set_trace()
 
 
+def main3():
+    """ main 3 """
+    dtmp = gxpy.gdb.Geosoft_gdb.open('a')
+
 
 if __name__ == "__main__":
-    main()
+    main3()

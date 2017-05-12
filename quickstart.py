@@ -27,7 +27,7 @@
 This routine is used as a convenience function, typically if you do NOT
 formally install PyGMI as a library and prefer to run it from within the
 default extracted directory structure.
-"""
+w"""
 
 import traceback
 import sys

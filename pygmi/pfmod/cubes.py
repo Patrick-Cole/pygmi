@@ -782,27 +782,32 @@ class GLWidget(QtOpenGL.QGLWidget):
 def calc_norms(faces, vtx):
     """ Calculates normals """
 
-    nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
+#    nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
+    nrm = np.zeros(vtx.shape, dtype=np.float64)
     tris = vtx[faces]
     n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] -
                  tris[::, 0])
-    normalize_v3(n)
+    n = normalize_v3(n)
 
     nrm[faces[:, 0]] += n
     nrm[faces[:, 1]] += n
     nrm[faces[:, 2]] += n
 
-    normalize_v3(nrm)
+    nrm = normalize_v3(nrm)
 
     return nrm
 
 
 def normalize_v3(arr):
     ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
+
+    arr = arr.astype(np.float64)
+
     lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
     lens[lens == 0] = 1  # Get rid of divide by zero.
 
     arr /= lens[:, np.newaxis]
+
     return arr
 
 
@@ -1369,7 +1374,7 @@ def main():
 # n is now an array of normals per triangle. The length of each normal is
 # dependent the vertices, we need to normalize these, so that our next step
 # weights each normal equally.
-    normalize_v3(n)
+    n = normalize_v3(n)
 #    n[2] *= -1
 # now we have a normalized array of normals, one per triangle, i.e., per
 # triangle normals. But instead of one per triangle (i.e., flat shading), we
@@ -1381,7 +1386,7 @@ def main():
     norm[faces[:, 0]] += n
     norm[faces[:, 1]] += n
     norm[faces[:, 2]] += n
-    normalize_v3(norm)
+    norm = normalize_v3(norm)
 
 # Now we have a vertex array, vertices, a normal array, norm, and the index
 # array, faces, and we are ready to pass it on to our rendering algorithm.
