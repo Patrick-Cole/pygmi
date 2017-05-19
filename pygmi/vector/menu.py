@@ -70,6 +70,13 @@ class MenuWidget(object):
 
         self.menufile.addSeparator()
 
+        self.action_cut_data = QtWidgets.QAction(self.parent)
+        self.action_cut_data.setText("Cut Points using Polygon")
+        self.menufile.addAction(self.action_cut_data)
+        self.action_cut_data.triggered.connect(self.cut_data)
+
+        self.menufile.addSeparator()
+
 # Context menus
         context_menu['Point'].addSeparator()
 
@@ -94,6 +101,11 @@ class MenuWidget(object):
         self.action_show_rose_diagram.setText("Show Rose Diagram")
         context_menu['Vector'].addAction(self.action_show_rose_diagram)
         self.action_show_rose_diagram.triggered.connect(self.show_rose_diagram)
+
+    def cut_data(self):
+        """ Export point data """
+        fnc = iodefs.PointCut(self.parent)
+        self.parent.item_insert("Step", "Cut\nPoints", fnc)
 
     def export_point(self):
         """ Export point data """

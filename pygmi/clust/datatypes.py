@@ -37,7 +37,7 @@ class Clust(Data):
         self.center = []
         self.center_std = []
         self.memdat = []
-        self.vrc = None
+        self.vrc = 0.0
         self.nce = None
         self.xbi = None
         self.obj_fcn = None

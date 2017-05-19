@@ -246,7 +246,7 @@ class GraphMap(FigureCanvas):
         self.subplot.get_yaxis().set_visible(False)
 
         if mtmp[1] > 0:
-            cdat = self.cdata[mtmp[1] - 1].data + 1
+            cdat = self.cdata[mtmp[1] - 1].data
             self.csp = self.subplot.imshow(cdat, cmap=plt.cm.jet)
             vals = np.unique(cdat)
             vals = vals.compressed()
@@ -587,10 +587,8 @@ class ScatterPlot(QtWidgets.QDialog):
         if 'Cluster' in self.indata:
             self.hist.cdata = self.indata['Cluster']
             self.map.cdata = self.indata['Cluster']
-            cbands += ['Clusters: ' + str(i.data.ptp()) for i in
-                       self.indata['Cluster']]
-            mbands += ['Clusters: ' + str(i.data.ptp()) for i in
-                       self.indata['Cluster']]
+            cbands += [i.dataid for i in self.indata['Cluster']]
+            mbands += [i.dataid for i in self.indata['Cluster']]
 
         self.cp_combo3.clear()
         self.map_combo2.clear()

@@ -42,6 +42,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
     NavigationToolbar
 import matplotlib.colors as mcolors
+from mpl_toolkits.mplot3d import axes3d
 
 
 class MyMplCanvas(FigureCanvas):
