@@ -35,6 +35,7 @@ References:
 
 from __future__ import print_function
 
+import pdb
 import copy
 import tempfile
 from math import sqrt
@@ -448,7 +449,7 @@ class GeoData(object):
 
         self.set_xyz(ncols, nrows, numz, dxy, mht, ght, d_z)
 
-    def calc_origin(self):
+    def calc_origin_grav(self):
         """ Calculate the field values for the lithologies"""
 
         if self.modified is True:
@@ -468,7 +469,7 @@ class GeoData(object):
             self.modified = False
         return self.glayers, self.lith_index
 
-    def calc_origin2(self):
+    def calc_origin_mag(self):
         """ Calculate the field values for the lithologies"""
 
         if self.modified is True:
@@ -483,7 +484,9 @@ class GeoData(object):
                               -1*self.g_dxy, dtype=float)
 
             self.showtext('   Calculate magnetic origin field')
-            self.gmmain(xdist, ydist)
+            self.mboxmain(xdist, ydist, self.zobsm)
+#            mtmp = self.mlayers.copy()
+#            self.gmmain(xdist, ydist)
 
             self.modified = False
         return self.mlayers, self.lith_index
@@ -810,6 +813,78 @@ class GeoData(object):
                 glayers = [-gval]+glayers+[gval]
         self.glayers = np.array(glayers)
 
+    def mboxmain(self, xobs, yobs, zobs):
+        """ Gbox routine by Blakely
+            Note: xobs, yobs and zobs must be floats or there will be problems
+            later.
+
+        Subroutine GBOX computes the vertical attraction of a
+        rectangular prism.  Sides of prism are parallel to x,y,z axes,
+        and z axis is vertical down.
+
+        Input parameters:
+            Observation point is (x0,y0,z0).  The prism extends from x1
+            to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
+            directions, respectively.  Density of prism is rho.  All
+            distance parameters in units of m;
+
+        Output parameters:
+            Vertical attraction of gravity, g, in mGal/rho.
+            Must still be multiplied by rho outside routine.
+            Done this way for speed. """
+
+        mlayers = []
+        if self.pbars is not None:
+            piter = self.pbars.iter
+        else:
+            piter = iter
+#        piter = iter
+        z1122 = self.z12.copy()
+        z1122 = z1122.astype(float)
+        x1 = float(self.x12[0])
+        y1 = float(self.y12[0])
+        x2 = float(self.x12[1])
+        y2 = float(self.y12[1])
+        z0 = float(zobs)
+        numx = int(self.g_cols)
+        numy = int(self.g_rows)
+
+        ma, mb, mc = dircos(self.minc, self.mdec, self.theta)
+        fa, fb, fc = dircos(self.finc, self.fdec, self.theta)
+
+        mr = self.mstrength * np.array([ma, mb, mc])
+        mi = self.susc*self.hintn*np.array([fa, fb, fc]) / (400*np.pi)
+        m3 = mr+mi
+
+        mt = np.sqrt(m3 @ m3)
+        m3 /= mt
+
+        ma, mb, mc = m3
+
+        fm1 = ma*fb + mb*fa
+        fm2 = ma*fc + mc*fa
+        fm3 = mb*fc + mc*fb
+        fm4 = ma*fa
+        fm5 = mb*fb
+        fm6 = mc*fc
+
+        if zobs == 0:
+            zobs = -0.01
+
+#        if z0 == 0.:
+#            z1122 = np.arange(0., self.z12[-1]+self.d_z, self.d_z)
+        for z1 in piter(z1122):
+
+            mval = np.zeros([self.g_cols, self.g_rows])
+
+            mval = mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2,
+                        fm1, fm2, fm3, fm4, fm5, fm6)
+
+            mlayers.append(mval)
+
+        self.mlayers = np.array(mlayers) * mt * 100.
+        self.mlayers = self.mlayers[:-1]-self.mlayers[1:]
+
 
 def save_layer(mlist):
     """ Routine saves the mlayer and glayer to a file """
@@ -1111,9 +1186,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                     mlist[1].pbars = parent.pbars
                     mlist[1].showtext = parent.showtext
                 if magcalc:
-                    mlist[1].calc_origin2()
+                    mlist[1].calc_origin_mag()
                 else:
-                    mlist[1].calc_origin()
+                    mlist[1].calc_origin_grav()
                 tmpfiles[mlist[0]] = save_layer(mlist)
         lmod.tmpfiles = tmpfiles
 
@@ -1353,6 +1428,73 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
             lmod.lith_list[i].mstrength = mstrength[j-1]
 
     return lmod
+
+
+@jit(nopython=True)
+def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
+         fm4, fm5, fm6):
+    """
+
+    Subroutine MBOX computes the total field anomaly of an infinitely
+    extended rectangular prism.  Sides of prism are parallel to x,y,z
+    axes, and z is vertical down.  Bottom of prism extends to infinity.
+    Two calls to mbox can provide the anomaly of a prism with finite
+    thickness; e.g.,
+
+        call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
+        call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
+        t=t1-t2
+
+    Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).
+
+    Input parameters:
+        Observation point is (x0,y0,z0).  Prism extends from x1 to
+        x2, y1 to y2, and z1 to infinity in x, y, and z directions,
+        respectively.  Magnetization defined by inclination mi,
+        declination md, intensity m.  Ambient field defined by
+        inclination fi and declination fd.  X axis has declination
+        theta. Distance units are irrelevant but must be consistent.
+        Angles are in degrees, with inclinations positive below
+        horizontal and declinations positive east of true north.
+        Magnetization in A/m.
+
+    Output paramters:
+        Total field anomaly t, in nT.
+    """
+
+    h = (z1-z0)
+    hsq = h**2
+
+    for ii in range(numx):
+        alpha = [x1-xobs[ii], x2-xobs[ii]]
+        for jj in range(numy):
+            beta = [y1-yobs[jj], y2-yobs[jj]]
+            t = 0.
+
+            for i in [0, 1]:
+                alphasq = alpha[i]**2
+                for j in [0, 1]:
+                    sign = 1.
+                    if i != j:
+                        sign = -1.
+                    r0sq = alphasq+beta[j]**2+hsq
+                    r0 = np.sqrt(r0sq)
+                    r0h = r0*h
+                    alphabeta = alpha[i]*beta[j]
+                    arg1 = (r0-alpha[i])/(r0+alpha[i])
+                    arg2 = (r0-beta[j])/(r0+beta[j])
+                    arg3 = alphasq+r0h+hsq
+                    arg4 = r0sq+r0h-alphasq
+                    tlog = (fm3*np.log(arg1)/2.+fm2*np.log(arg2)/2. -
+                            fm1*np.log(r0+h))
+                    tatan = (-fm4*np.arctan2(alphabeta, arg3) -
+                             fm5*np.arctan2(alphabeta, arg4) +
+                             fm6*np.arctan2(alphabeta, r0h))
+
+                    t = t+sign*(tlog+tatan)
+            mval[ii, jj] = t
+
+    return mval
 
 
 @jit(nopython=True)

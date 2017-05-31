@@ -25,6 +25,7 @@
 """ These are pfmod tests. Run this file from within this directory to do the
 tests """
 
+import pdb
 import numpy as np
 import matplotlib.pyplot as plt
 from pygmi.pfmod.grvmag3d import quick_model
@@ -115,7 +116,38 @@ def test(doplt=False):
 
     print('Remanent Parameters')
     print(mstrength*400*np.pi, minc, mdec)
+###############################################################################
 
+    y0 = 0
+    z0 = -100
+    x1 = x.min()
+    x2 = x.max()
+    y1 = -strike
+    y2 = strike
+    z1 = z.max()
+    z2 = z.min()
+    fi = finc
+    fd = fdec
+    mi = minc
+    md = mdec
+    theta = 90
+    h = hintn
+    m = mstrength
+    k = susc
+
+    t1 = []
+    for x0 in xpos:
+        t1.append(mbox(x0, y0, z0, x1, y1, -z1, x2, y2, mi, md, fi, fd, m, theta, h, k))
+
+    t2 = []
+    for x0 in xpos:
+        t2.append(mbox(x0, y0, z0, x1, y1, -z2, x2, y2, mi, md, fi, fd, m, theta, h, k))
+
+    t1 = np.array(t1)
+    t2 = np.array(t2)
+    t = t1-t2
+
+###############################################################################
     # quick model initialises a model with all the variables we have defined.
     ttt = ptimer.PTime()
     lmod = quick_model(xpos2.size, numy, numz, dxy, d_z,
@@ -162,6 +194,7 @@ def test(doplt=False):
         ax2 = ax1.twinx()
         ax2.plot(xpos2+dxy/2, mdata, 'b', label='PyGMI')
         ax2.plot(xpos, m2dc, 'b.', label='Mag2DC')
+        ax2.plot(xpos, t, '-.', label='mbox')
         ax2.set_ylabel('nT')
         ax2.legend(loc='upper right', shadow=True)
         plt.show()
@@ -326,5 +359,108 @@ def get_float(tmp, row, word):
     return float(tmp[row].split()[word])
 
 
+def dircos(inc, dec, azim):
+    """ dircos """
+
+    I = np.deg2rad(inc)
+    D = np.deg2rad(dec-azim)
+
+    a = np.cos(I)*np.cos(D)
+    b = np.cos(I)*np.sin(D)
+    g = np.sin(I)
+
+    return a, b, g
+
+
+def mbox(x0, y0, z0, x1, y1, z1, x2, y2, mi, md, fi, fd, m, theta, h, k):
+    """
+
+    Subroutine MBOX computes the total field anomaly of an infinitely
+    extended rectangular prism.  Sides of prism are parallel to x,y,z
+    axes, and z is vertical down.  Bottom of prism extends to infinity.
+    Two calls to mbox can provide the anomaly of a prism with finite
+    thickness; e.g.,
+
+        call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
+        call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
+        t=t1-t2
+
+    Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).
+
+    Input parameters:
+        Observation point is (x0,y0,z0).  Prism extends from x1 to
+        x2, y1 to y2, and z1 to infinity in x, y, and z directions,
+        respectively.  Magnetization defined by inclination mi,
+        declination md, intensity m.  Ambient field defined by
+        inclination fi and declination fd.  X axis has declination
+        theta. Distance units are irrelevant but must be consistent.
+        Angles are in degrees, with inclinations positive below
+        horizontal and declinations positive east of true north.
+        Magnetization in A/m.
+
+    Output paramters:
+        Total field anomaly t, in nT.
+    """
+
+    cm = 1.e-7  # constant for SI
+    t2nt = 1.e9  # telsa to nT
+
+    h = h / (400*np.pi)
+
+    ma, mb, mc = dircos(mi, md, theta)
+    fa, fb, fc = dircos(fi, fd, theta)
+
+    mr = m*np.array([ma, mb, mc])
+    mi = k*h*np.array([fa, fb, fc])
+    m3 = mr+mi
+
+    mt = np.sqrt(m3 @ m3)
+    m3 /= mt
+
+    print(k*h)
+
+    ma, mb, mc = m3
+    m = mt
+
+#    m = np.sqrt(mi @ mi)
+#    ma, mb, mc = fa, fb, fc
+
+    fm1 = ma*fb + mb*fa
+    fm2 = ma*fc + mc*fa
+    fm3 = mb*fc + mc*fb
+    fm4 = ma*fa
+    fm5 = mb*fb
+    fm6 = mc*fc
+    alpha = [x1-x0, x2-x0]
+    beta = [y1-y0, y2-y0]
+    h = z1-z0
+    t = 0.
+    hsq = h**2
+
+    for i in [0, 1]:
+        alphasq = alpha[i]**2
+        for j in [0, 1]:
+            sign = 1.
+            if i != j:
+                sign = -1.
+            r0sq = alphasq+beta[j]**2+hsq
+            r0 = np.sqrt(r0sq)
+            r0h = r0*h
+            alphabeta = alpha[i]*beta[j]
+            arg1 = (r0-alpha[i])/(r0+alpha[i])
+            arg2 = (r0-beta[j])/(r0+beta[j])
+            arg3 = alphasq+r0h+hsq
+            arg4 = r0sq+r0h-alphasq
+            tlog = fm3*np.log(arg1)/2.+fm2*np.log(arg2)/2. - fm1*np.log(r0+h)
+            tatan = (-fm4*np.arctan2(alphabeta, arg3) -
+                     fm5*np.arctan2(alphabeta, arg4) +
+                     fm6*np.arctan2(alphabeta, r0h))
+
+            t = t+sign*(tlog+tatan)
+    t = t*m*cm*t2nt
+
+    return t
+
+
 if __name__ == "__main__":
-    test2(True)
+    test(True)
