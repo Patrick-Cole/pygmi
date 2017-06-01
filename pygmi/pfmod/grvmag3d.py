@@ -441,6 +441,7 @@ class GeoData(object):
         self.zobsg = None
 
         self.mlayers = None
+        self.mtmp = None
         self.glayers = None
 
         self.x12 = None
@@ -467,7 +468,6 @@ class GeoData(object):
             self.gboxmain(xdist, ydist, self.zobsg)
 
             self.modified = False
-        return self.glayers, self.lith_index
 
     def calc_origin_mag(self):
         """ Calculate the field values for the lithologies"""
@@ -485,11 +485,12 @@ class GeoData(object):
 
             self.showtext('   Calculate magnetic origin field')
             self.mboxmain(xdist, ydist, self.zobsm)
-#            mtmp = self.mlayers.copy()
+#            self.mtmp = self.mlayers.copy()
 #            self.gmmain(xdist, ydist)
 
+#            pdb.set_trace()
+
             self.modified = False
-        return self.mlayers, self.lith_index
 
     def netmagn(self):
         """ Calculate the net magnetization """
@@ -857,7 +858,9 @@ class GeoData(object):
         m3 = mr+mi
 
         mt = np.sqrt(m3 @ m3)
-        m3 /= mt
+        if mt > 0:
+            m3 /= mt
+#        pdb.set_trace()
 
         ma, mb, mc = m3
 
@@ -870,6 +873,8 @@ class GeoData(object):
 
         if zobs == 0:
             zobs = -0.01
+
+        z1122 = np.append(z1122, [2*z1122[-1]-z1122[-2]])
 
 #        if z0 == 0.:
 #            z1122 = np.arange(0., self.z12[-1]+self.d_z, self.d_z)
@@ -936,178 +941,178 @@ def gridmatch(lmod, ctxt, rtxt):
     return dat.data
 
 
-def calc_field2(lmod, pbars=None, showtext=None, parent=None,
-                showreports=False, magcalc=False):
-    """ Calculate magnetic and gravity field
-
-    This function calculates the magnetic and gravity field. It has two
-    different modes of operation, by using the magcalc switch. If magcalc=True
-    then magnetic fields are calculated, otherwize only gravity is calculated.
-
-    Parameters
-    ----------
-    lmod : LithModel
-        PyGMI lithological model
-    pbars : module
-        progress bar routine if available. (internal use)
-    showtext : module
-        showtext routine if available. (internal use)
-    showreports : bool
-        show extra reports
-    magcalc : bool
-        if true, calculates magnetic data, otherwize only gravity.
-
-    Returns
-    -------
-    lmod.griddata : dictionary
-        dictionary of items of type Data.
-    """
-
-    if showtext is None:
-        showtext = print
-    if pbars is not None:
-        pbars.resetall(mmax=2*(len(lmod.lith_list)-1)+1)
-        piter = pbars.iter
-    else:
-        piter = iter
-    if np.max(lmod.lith_index) == -1:
-        showtext('Error: Create a model first')
-        return
-
-    # Init some variables for convenience
-    lmod.update_lithlist()
-
-    numx = int(lmod.numx)
-    numy = int(lmod.numy)
-    numz = int(lmod.numz)
-    tmpfiles = {}
-
-# model index
-    modind = lmod.lith_index.copy()
-    modindcheck = lmod.lith_index.copy()
-    modind[modind == 0] = -1
-    modindcheck[modind == 0] = -1
-
-    if abs(np.sum(modind == -1)) == modind.size:
-        showtext('No changes to model!')
-        return
-
-    for mlist in lmod.lith_list.items():
-        mijk = mlist[1].lith_index
-        if mijk not in modind:
-            continue
-        if mlist[0] != 'Background':
-            mlist[1].modified = True
-            showtext(mlist[0]+':')
-            if parent is not None:
-                mlist[1].parent = parent
-                mlist[1].pbars = parent.pbars
-                mlist[1].showtext = parent.showtext
-            if magcalc:
-                mlist[1].calc_origin2()
-            else:
-                mlist[1].calc_origin()
-            tmpfiles[mlist[0]] = save_layer(mlist)
-
-    if showreports is True:
-        showtext('Summing data')
-
-    QtCore.QCoreApplication.processEvents()
-# get height corrections
-    tmp = np.copy(lmod.lith_index)
-    tmp[tmp > -1] = 0
-    hcor = np.abs(tmp.sum(2))
-
-# Get mlayers and glayers with correct rho and netmagn
-
-    if pbars is not None:
-        pbars.resetsub(maximum=(len(lmod.lith_list)-1))
-        piter = pbars.iter
-
-    mgvalin = np.zeros(numx*numy)
-    mgval = np.zeros(numx*numy)
-
-    hcorflat = numz-hcor.flatten()
-    aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
-
-    for mlist in piter(lmod.lith_list.items()):
-        if mlist[0] == 'Background':
-            continue
-        mijk = mlist[1].lith_index
-        if mijk not in modind:
-            continue
-        tmpfiles[mlist[0]].seek(0)
-        mfile = np.load(tmpfiles[mlist[0]])
-
-        if magcalc:
-            mglayers = mfile['mlayers']
-        else:
-            mglayers = mfile['glayers']*mlist[1].rho()
-
-        showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
-                 ' during this calculation)')
-
-        if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
-            QtWidgets.QApplication.processEvents()
-            i, j, k = np.nonzero(modind == mijk)
-            iuni = np.array(np.unique(i), dtype=np.int32)
-            juni = np.array(np.unique(j), dtype=np.int32)
-            kuni = np.array(np.unique(k), dtype=np.int32)
-
-            for k in kuni:
-                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0], aaa[1],
-                                  mglayers, hcorflat, mijk, juni, iuni)
-                mgvalin += baba
-
-        showtext('Done')
-
-        if pbars is not None:
-            pbars.incrmain()
-        QtWidgets.QApplication.processEvents()
-
-    mgvalin.resize([numx, numy])
-    mgvalin = mgvalin.T
-    mgvalin = mgvalin[::-1]
-    mgvalin = np.ma.array(mgvalin)
-
-    if magcalc:
-        lmod.griddata['Calculated Magnetics'].data = mgvalin
-    else:
-        lmod.griddata['Calculated Gravity'].data = mgvalin
-
-# This addoldcalc has has flaws w.r.t. regional if you change the regional
-    if 'Gravity Regional' in lmod.griddata and not magcalc:
-        zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
-        lmod.griddata['Calculated Gravity'].data += zfin
-
-    if lmod.lith_index.max() <= 0:
-        lmod.griddata['Calculated Magnetics'].data *= 0.
-        lmod.griddata['Calculated Gravity'].data *= 0.
-
-    if 'Magnetic Dataset' in lmod.griddata:
-        ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
-        lmod.griddata['Magnetic Residual'] = copy.deepcopy(
-            lmod.griddata['Magnetic Dataset'])
-        lmod.griddata['Magnetic Residual'].data = (
-            lmod.griddata['Magnetic Dataset'].data - ztmp)
-        lmod.griddata['Magnetic Residual'].dataid = 'Magnetic Residual'
-
-    if 'Gravity Dataset' in lmod.griddata:
-        ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
-        lmod.griddata['Gravity Residual'] = copy.deepcopy(
-            lmod.griddata['Gravity Dataset'])
-        lmod.griddata['Gravity Residual'].data = (
-            lmod.griddata['Gravity Dataset'].data - ztmp - lmod.gregional)
-        lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
-
-    if parent is not None:
-        tmp = [i for i in set(lmod.griddata.values())]
-        parent.outdata['Raster'] = tmp
-    showtext('Calculation Finished')
-    if pbars is not None:
-        pbars.maxall()
-
-    return lmod.griddata
+#def calc_field2(lmod, pbars=None, showtext=None, parent=None,
+#                showreports=False, magcalc=False):
+#    """ Calculate magnetic and gravity field
+#
+#    This function calculates the magnetic and gravity field. It has two
+#    different modes of operation, by using the magcalc switch. If magcalc=True
+#    then magnetic fields are calculated, otherwize only gravity is calculated.
+#
+#    Parameters
+#    ----------
+#    lmod : LithModel
+#        PyGMI lithological model
+#    pbars : module
+#        progress bar routine if available. (internal use)
+#    showtext : module
+#        showtext routine if available. (internal use)
+#    showreports : bool
+#        show extra reports
+#    magcalc : bool
+#        if true, calculates magnetic data, otherwize only gravity.
+#
+#    Returns
+#    -------
+#    lmod.griddata : dictionary
+#        dictionary of items of type Data.
+#    """
+#
+#    if showtext is None:
+#        showtext = print
+#    if pbars is not None:
+#        pbars.resetall(mmax=2*(len(lmod.lith_list)-1)+1)
+#        piter = pbars.iter
+#    else:
+#        piter = iter
+#    if np.max(lmod.lith_index) == -1:
+#        showtext('Error: Create a model first')
+#        return
+#
+#    # Init some variables for convenience
+#    lmod.update_lithlist()
+#
+#    numx = int(lmod.numx)
+#    numy = int(lmod.numy)
+#    numz = int(lmod.numz)
+#    tmpfiles = {}
+#
+## model index
+#    modind = lmod.lith_index.copy()
+#    modindcheck = lmod.lith_index.copy()
+#    modind[modind == 0] = -1
+#    modindcheck[modind == 0] = -1
+#
+#    if abs(np.sum(modind == -1)) == modind.size:
+#        showtext('No changes to model!')
+#        return
+#
+#    for mlist in lmod.lith_list.items():
+#        mijk = mlist[1].lith_index
+#        if mijk not in modind:
+#            continue
+#        if mlist[0] != 'Background':
+#            mlist[1].modified = True
+#            showtext(mlist[0]+':')
+#            if parent is not None:
+#                mlist[1].parent = parent
+#                mlist[1].pbars = parent.pbars
+#                mlist[1].showtext = parent.showtext
+#            if magcalc:
+#                mlist[1].calc_origin_mag()
+#            else:
+#                mlist[1].calc_origin_grav()
+#            tmpfiles[mlist[0]] = save_layer(mlist)
+#
+#    if showreports is True:
+#        showtext('Summing data')
+#
+#    QtCore.QCoreApplication.processEvents()
+## get height corrections
+#    tmp = np.copy(lmod.lith_index)
+#    tmp[tmp > -1] = 0
+#    hcor = np.abs(tmp.sum(2))
+#
+## Get mlayers and glayers with correct rho and netmagn
+#
+#    if pbars is not None:
+#        pbars.resetsub(maximum=(len(lmod.lith_list)-1))
+#        piter = pbars.iter
+#
+#    mgvalin = np.zeros(numx*numy)
+#    mgval = np.zeros(numx*numy)
+#
+#    hcorflat = numz-hcor.flatten()
+#    aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
+#
+#    for mlist in piter(lmod.lith_list.items()):
+#        if mlist[0] == 'Background':
+#            continue
+#        mijk = mlist[1].lith_index
+#        if mijk not in modind:
+#            continue
+#        tmpfiles[mlist[0]].seek(0)
+#        mfile = np.load(tmpfiles[mlist[0]])
+#
+#        if magcalc:
+#            mglayers = mfile['mlayers']
+#        else:
+#            mglayers = mfile['glayers']*mlist[1].rho()
+#
+#        showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
+#                 ' during this calculation)')
+#
+#        if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
+#            QtWidgets.QApplication.processEvents()
+#            i, j, k = np.nonzero(modind == mijk)
+#            iuni = np.array(np.unique(i), dtype=np.int32)
+#            juni = np.array(np.unique(j), dtype=np.int32)
+#            kuni = np.array(np.unique(k), dtype=np.int32)
+#
+#            for k in kuni:
+#                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0], aaa[1],
+#                                  mglayers, hcorflat, mijk, juni, iuni)
+#                mgvalin += baba
+#
+#        showtext('Done')
+#
+#        if pbars is not None:
+#            pbars.incrmain()
+#        QtWidgets.QApplication.processEvents()
+#
+#    mgvalin.resize([numx, numy])
+#    mgvalin = mgvalin.T
+#    mgvalin = mgvalin[::-1]
+#    mgvalin = np.ma.array(mgvalin)
+#
+#    if magcalc:
+#        lmod.griddata['Calculated Magnetics'].data = mgvalin
+#    else:
+#        lmod.griddata['Calculated Gravity'].data = mgvalin
+#
+## This addoldcalc has has flaws w.r.t. regional if you change the regional
+#    if 'Gravity Regional' in lmod.griddata and not magcalc:
+#        zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
+#        lmod.griddata['Calculated Gravity'].data += zfin
+#
+#    if lmod.lith_index.max() <= 0:
+#        lmod.griddata['Calculated Magnetics'].data *= 0.
+#        lmod.griddata['Calculated Gravity'].data *= 0.
+#
+#    if 'Magnetic Dataset' in lmod.griddata:
+#        ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
+#        lmod.griddata['Magnetic Residual'] = copy.deepcopy(
+#            lmod.griddata['Magnetic Dataset'])
+#        lmod.griddata['Magnetic Residual'].data = (
+#            lmod.griddata['Magnetic Dataset'].data - ztmp)
+#        lmod.griddata['Magnetic Residual'].dataid = 'Magnetic Residual'
+#
+#    if 'Gravity Dataset' in lmod.griddata:
+#        ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
+#        lmod.griddata['Gravity Residual'] = copy.deepcopy(
+#            lmod.griddata['Gravity Dataset'])
+#        lmod.griddata['Gravity Residual'].data = (
+#            lmod.griddata['Gravity Dataset'].data - ztmp - lmod.gregional)
+#        lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
+#
+#    if parent is not None:
+#        tmp = [i for i in set(lmod.griddata.values())]
+#        parent.outdata['Raster'] = tmp
+#    showtext('Calculation Finished')
+#    if pbars is not None:
+#        pbars.maxall()
+#
+#    return lmod.griddata
 
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None,
