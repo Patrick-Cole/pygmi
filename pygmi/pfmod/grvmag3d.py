@@ -450,7 +450,7 @@ class GeoData(object):
 
         self.set_xyz(ncols, nrows, numz, dxy, mht, ght, d_z)
 
-    def calc_origin_grav(self):
+    def calc_origin_grav(self, hcor=None):
         """ Calculate the field values for the lithologies"""
 
         if self.modified is True:
@@ -464,12 +464,17 @@ class GeoData(object):
             ydist = np.arange(numy-self.g_dxy/2, -1*self.g_dxy/2,
                               -1*self.g_dxy, dtype=float)
 
+            if hcor is None:
+                hcor2 = 0
+            else:
+                hcor2 = int(self.numz-hcor.max())
+
             self.showtext('   Calculate gravity origin field')
-            self.gboxmain(xdist, ydist, self.zobsg)
+            self.gboxmain(xdist, ydist, self.zobsg, hcor2)
 
             self.modified = False
 
-    def calc_origin_mag(self):
+    def calc_origin_mag(self, hcor=None):
         """ Calculate the field values for the lithologies"""
 
         if self.modified is True:
@@ -484,7 +489,13 @@ class GeoData(object):
                               -1*self.g_dxy, dtype=float)
 
             self.showtext('   Calculate magnetic origin field')
-            self.mboxmain(xdist, ydist, self.zobsm)
+
+            if hcor is None:
+                hcor2 = 0
+            else:
+                hcor2 = int(self.numz-hcor.max())
+
+            self.mboxmain(xdist, ydist, self.zobsm, hcor2)
 #            self.mtmp = self.mlayers.copy()
 #            self.gmmain(xdist, ydist)
 
@@ -756,7 +767,7 @@ class GeoData(object):
 
         self.mlayers = np.array(mval)
 
-    def gboxmain(self, xobs, yobs, zobs):
+    def gboxmain(self, xobs, yobs, zobs, hcor):
         """ Gbox routine by Blakely
             Note: xobs, yobs and zobs must be floats or there will be problems
             later.
@@ -781,7 +792,7 @@ class GeoData(object):
             piter = self.pbars.iter
         else:
             piter = iter
-#        piter = iter
+
         z1122 = self.z12.copy()
         x_1 = float(self.x12[0])
         y_1 = float(self.y12[0])
@@ -794,52 +805,61 @@ class GeoData(object):
         if zobs == 0:
             zobs = -0.01
 
-        if z_0 == 0.:
-            z1122 = np.arange(0., self.z12[-1]+self.d_z, self.d_z)
-        for i in piter(z1122[:-1]):
-            z12 = np.array([i, i+self.d_z])
+        for z1 in piter(z1122[:-1]):
+            if z1 < z1122[hcor]:
+                glayers.append(np.zeros((self.g_cols, self.g_rows)))
+                continue
 
-            z_1 = float(z12[0])
-            z_2 = float(z12[1])
+            z2 = z1 + self.d_z
+
             gval = np.zeros([self.g_cols, self.g_rows])
 
-            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1,
-                             x_2, y_2, z_2, np.ones(2), np.ones(2), np.ones(2),
+            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z1,
+                             x_2, y_2, z2, np.ones(2), np.ones(2), np.ones(2),
                              np.array([-1, 1]))
 
             gval *= 6.6732e-3
-            if z_0 != 0.:
-                glayers.append(gval)
-            else:
-                glayers = [-gval]+glayers+[gval]
+            glayers.append(gval)
+
         self.glayers = np.array(glayers)
 
-    def mboxmain(self, xobs, yobs, zobs):
-        """ Gbox routine by Blakely
+    def mboxmain(self, xobs, yobs, zobs, hcor):
+        """ Mbox routine by Blakely
             Note: xobs, yobs and zobs must be floats or there will be problems
             later.
 
-        Subroutine GBOX computes the vertical attraction of a
-        rectangular prism.  Sides of prism are parallel to x,y,z axes,
-        and z axis is vertical down.
+        Subroutine MBOX computes the total field anomaly of an infinitely
+        extended rectangular prism.  Sides of prism are parallel to x,y,z
+        axes, and z is vertical down.  Bottom of prism extends to infinity.
+        Two calls to mbox can provide the anomaly of a prism with finite
+        thickness; e.g.,
+
+            call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
+            call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
+            t=t1-t2
+
+        Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).
 
         Input parameters:
-            Observation point is (x0,y0,z0).  The prism extends from x1
-            to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
-            directions, respectively.  Density of prism is rho.  All
-            distance parameters in units of m;
+            Observation point is (x0,y0,z0).  Prism extends from x1 to
+            x2, y1 to y2, and z1 to infinity in x, y, and z directions,
+            respectively.  Magnetization defined by inclination mi,
+            declination md, intensity m.  Ambient field defined by
+            inclination fi and declination fd.  X axis has declination
+            theta. Distance units are irrelevant but must be consistent.
+            Angles are in degrees, with inclinations positive below
+            horizontal and declinations positive east of true north.
+            Magnetization in A/m.
 
-        Output parameters:
-            Vertical attraction of gravity, g, in mGal/rho.
-            Must still be multiplied by rho outside routine.
-            Done this way for speed. """
+        Output paramters:
+            Total field anomaly t, in nT."""
 
         mlayers = []
         if self.pbars is not None:
             piter = self.pbars.iter
         else:
             piter = iter
-#        piter = iter
+
         z1122 = self.z12.copy()
         z1122 = z1122.astype(float)
         x1 = float(self.x12[0])
@@ -860,7 +880,6 @@ class GeoData(object):
         mt = np.sqrt(m3 @ m3)
         if mt > 0:
             m3 /= mt
-#        pdb.set_trace()
 
         ma, mb, mc = m3
 
@@ -876,14 +895,15 @@ class GeoData(object):
 
         z1122 = np.append(z1122, [2*z1122[-1]-z1122[-2]])
 
-#        if z0 == 0.:
-#            z1122 = np.arange(0., self.z12[-1]+self.d_z, self.d_z)
         for z1 in piter(z1122):
+            if z1 < z1122[hcor]:
+                mlayers.append(np.zeros((self.g_cols, self.g_rows)))
+                continue
 
             mval = np.zeros([self.g_cols, self.g_rows])
 
             mval = mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2,
-                        fm1, fm2, fm3, fm4, fm5, fm6)
+                        fm1, fm2, fm3, fm4, fm5, fm6, np.ones(2), np.ones(2))
 
             mlayers.append(mval)
 
@@ -1178,6 +1198,11 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         showtext('No changes to model!')
         return
 
+# get height corrections
+    tmp = np.copy(lmod.lith_index)
+    tmp[tmp > -1] = 0
+    hcor = np.abs(tmp.sum(2))
+
     if np.unique(modindcheck).size == 1 and np.unique(modindcheck)[0] == -1:
         for mlist in lmod.lith_list.items():
             mijk = mlist[1].lith_index
@@ -1191,7 +1216,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                     mlist[1].pbars = parent.pbars
                     mlist[1].showtext = parent.showtext
                 if magcalc:
-                    mlist[1].calc_origin_mag()
+                    mlist[1].calc_origin_mag(hcor)
                 else:
                     mlist[1].calc_origin_grav()
                 tmpfiles[mlist[0]] = save_layer(mlist)
@@ -1202,9 +1227,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
     QtCore.QCoreApplication.processEvents()
 # get height corrections
-    tmp = np.copy(lmod.lith_index)
-    tmp[tmp > -1] = 0
-    hcor = np.abs(tmp.sum(2))
+#    tmp = np.copy(lmod.lith_index)
+#    tmp[tmp > -1] = 0
+#    hcor = np.abs(tmp.sum(2))
 
 # Get mlayers and glayers with correct rho and netmagn
 
@@ -1437,7 +1462,7 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
 
 @jit(nopython=True)
 def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
-         fm4, fm5, fm6):
+         fm4, fm5, fm6, alpha, beta):
     """
 
     Subroutine MBOX computes the total field anomaly of an infinitely
@@ -1467,18 +1492,20 @@ def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
         Total field anomaly t, in nT.
     """
 
-    h = (z1-z0)
+    h = z1-z0
     hsq = h**2
 
     for ii in range(numx):
-        alpha = [x1-xobs[ii], x2-xobs[ii]]
+        alpha[0] = x1-xobs[ii]
+        alpha[1] = x2-xobs[ii]
         for jj in range(numy):
-            beta = [y1-yobs[jj], y2-yobs[jj]]
+            beta[0] = y1-yobs[jj]
+            beta[1] = y2-yobs[jj]
             t = 0.
 
-            for i in [0, 1]:
+            for i in range(2):
                 alphasq = alpha[i]**2
-                for j in [0, 1]:
+                for j in range(2):
                     sign = 1.
                     if i != j:
                         sign = -1.
@@ -1701,7 +1728,7 @@ def test():
 
     ttt = PTime()
 # Import model file
-    filename = r'C:\Work\Programming\pygmi\data\Magmodel_South_Delph_copy.npz'
+    filename = r'C:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
     imod = ImportMod3D(None)
     imod.ifile = filename
     imod.lmod.griddata.clear()
@@ -1710,8 +1737,18 @@ def test():
     imod.dict2lmod(indict)
 
 # Calculate the field
-    calc_field(imod.lmod)
+    calc_field(imod.lmod, magcalc=True)
     ttt.since_last_call()
+
+    """
+    Gravity:
+        Total Time: 0 minutes and 41.381071914357896 seconds
+    Mag:
+        Total Time: 2 minutes and 9.530613649693635 seconds
+        Total Time: 1 minutes and 28.718702124839353 seconds
+        Total Time: 1 minutes and 14.895504790858254 seconds
+        Total Time: 0 minutes and 50.30150122850542 seconds
+    """
 
 
 if __name__ == "__main__":
