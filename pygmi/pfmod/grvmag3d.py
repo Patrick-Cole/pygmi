@@ -35,7 +35,6 @@ References:
 
 from __future__ import print_function
 
-import pdb
 import copy
 import tempfile
 from math import sqrt
@@ -499,33 +498,7 @@ class GeoData(object):
 #            self.mtmp = self.mlayers.copy()
 #            self.gmmain(xdist, ydist)
 
-#            pdb.set_trace()
-
             self.modified = False
-
-    def netmagn(self):
-        """ Calculate the net magnetization """
-        theta = 0.
-        fcx, fcy, fcz = dircos(self.finc, self.fdec, theta)
-        unith = np.array([fcx, fcy, fcz])
-        hintn = self.hintn * 10**-9          # in Tesla
-        mu0 = 4*np.pi*10**-7
-        hstrength = self.susc*hintn/mu0  # Induced magnetization, needs susc.
-        ind_magn = hstrength*unith
-
-#       B is Induced Field (Tesla)
-#       M is Magnetization (A/m)
-#       H is Magnetic Field (A/m)
-#       k is Susceptibility and is M/H
-#   `   B = mu0(H+M)
-#       Q = Jr/Ji = mstrength/hstrength = Jr/kH
-
-        mcx, mcy, mcz = dircos(self.minc, self.mdec, theta)
-        unitm = np.array([mcx, mcy, mcz])
-        rem_magn = self.mstrength*unitm   # Remnant magnetization
-        net_magn = rem_magn+ind_magn      # Net magnetization
-        netmagscalar = np.sqrt((net_magn**2).sum())
-        return netmagscalar
 
     def rho(self):
         """ Returns the density contrast """
@@ -627,95 +600,7 @@ class GeoData(object):
 
         npro, nstn = X.shape
         # Initialise
-        """
-        Grav stuff
-        Gc = 6.6732e-3            # Universal gravitational constant
 
-        Mag stuff
-
-        SI
-        mu0 = 4*pi*10**-7  (Henry/m)
-        B = mu0(H+M)   (Telsa, A/m)
-
-        1 A/m = 4pi/1000 Oersted
-        1 Gauss = 100000 gamma/nT
-        1 Gauss = 1 Oersted
-        1 A/m = 400pi  nT/gamma
-
-        or (for conversion)
-
-        1 A/m = Oersted*1000/4pi
-        1 Gauss = gamma/nT*1/100000
-        1 Gauss = Oersted*1
-        1 A/m = nT/gamma*1/400pi
-        1 Gauss = emu/cm3*4pi
-        A/m  = emu/cm3 * 1000
-        A/m = Gauss*1000/4pi
-        Gauss = A/m*4pi/1000
-        nT = A/m*100*4pi
-        Mcgs = Msi / 1000
-
-        CGS
-        mu0 = 1
-        B = H + 4*pi*M  (gauss, Oersted, emu/cm3)
-        gauss == Oersted == 4*pi* emu/cm3
-        B = H + 4*pi*M  (gauss, Oersted, emu/cm3)
-        M = Mi + Mr
-        M = k*H + Mr  (from Blakely)
-        B = H + 4*pi*(k*H+Mr)
-        B = H + 4*pi*k*H+4*pi*Mr
-
-        if k is SI then this becomes:
-        k(cgs) = k(SI)/(4*pi)
-
-        B = H + k(SI)*H + 4*pi*Mr
-
-        if Mr is in A/m, and H is in gauss, then Mr(cgs) = Mr(SI)/1000
-
-        B = H + k*H + 4*pi*Mr(SI)/1000
-
-        if H is in gamma (nT), then mult Mr term by 100000
-
-        B = H + k(SI)*H + 400*pi*Mr(SI)
-
-        Equations in code divide susc by 4pi because susc is SI. This is
-        evident because of code comparison between two papers, one of which
-        uses SI susc, and other uses CGS susc.
-
-        However, the software uses M(CGS) only, i.e.
-
-        M = Mi(CGS) + Mr(CGS)
-          = H*k(CGS) + Mr(CGS)
-          = H*k(SI)/4pi + Mr(SI)/1000  (H in gauss)
-          = H*k(SI)/4pi + 100 * Mr(SI)  (H in nT/gamma)
-
-        QED
-        --->
-
-
-        nT = 400*pi A/m
-        mur = 1+k
-        k = mur-1
-        M = kH
-        J = mu0M
-        B = mu0(1+k)H
-        B = mu0murH
-        k(SI) = 4pi*k (cgs)
-
-        M = B(mur-1)/mu0 * 10**-9  (if B is nT or gammas)
-        M = kB/mu0 * 10**-9
-        M = kB / 400pi
-
-        B = mu0(H+M)
-          = mu0(H+kH+Mr)
-
-        B = mu0kH
-          = 400pi*k*H  (H is A/m)
-
-
-         1 Gauss is 100 000 nT
-
-        """
         cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
 
         uh = np.array([cx, cy, cz])
@@ -814,9 +699,9 @@ class GeoData(object):
 
             gval = np.zeros([self.g_cols, self.g_rows])
 
-            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z1,
-                             x_2, y_2, z2, np.ones(2), np.ones(2), np.ones(2),
-                             np.array([-1, 1]))
+            gval = gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z1,
+                        x_2, y_2, z2, np.ones(2), np.ones(2), np.ones(2),
+                        np.array([-1, 1]))
 
             gval *= 6.6732e-3
             glayers.append(gval)
@@ -961,180 +846,6 @@ def gridmatch(lmod, ctxt, rtxt):
     return dat.data
 
 
-#def calc_field2(lmod, pbars=None, showtext=None, parent=None,
-#                showreports=False, magcalc=False):
-#    """ Calculate magnetic and gravity field
-#
-#    This function calculates the magnetic and gravity field. It has two
-#    different modes of operation, by using the magcalc switch. If magcalc=True
-#    then magnetic fields are calculated, otherwize only gravity is calculated.
-#
-#    Parameters
-#    ----------
-#    lmod : LithModel
-#        PyGMI lithological model
-#    pbars : module
-#        progress bar routine if available. (internal use)
-#    showtext : module
-#        showtext routine if available. (internal use)
-#    showreports : bool
-#        show extra reports
-#    magcalc : bool
-#        if true, calculates magnetic data, otherwize only gravity.
-#
-#    Returns
-#    -------
-#    lmod.griddata : dictionary
-#        dictionary of items of type Data.
-#    """
-#
-#    if showtext is None:
-#        showtext = print
-#    if pbars is not None:
-#        pbars.resetall(mmax=2*(len(lmod.lith_list)-1)+1)
-#        piter = pbars.iter
-#    else:
-#        piter = iter
-#    if np.max(lmod.lith_index) == -1:
-#        showtext('Error: Create a model first')
-#        return
-#
-#    # Init some variables for convenience
-#    lmod.update_lithlist()
-#
-#    numx = int(lmod.numx)
-#    numy = int(lmod.numy)
-#    numz = int(lmod.numz)
-#    tmpfiles = {}
-#
-## model index
-#    modind = lmod.lith_index.copy()
-#    modindcheck = lmod.lith_index.copy()
-#    modind[modind == 0] = -1
-#    modindcheck[modind == 0] = -1
-#
-#    if abs(np.sum(modind == -1)) == modind.size:
-#        showtext('No changes to model!')
-#        return
-#
-#    for mlist in lmod.lith_list.items():
-#        mijk = mlist[1].lith_index
-#        if mijk not in modind:
-#            continue
-#        if mlist[0] != 'Background':
-#            mlist[1].modified = True
-#            showtext(mlist[0]+':')
-#            if parent is not None:
-#                mlist[1].parent = parent
-#                mlist[1].pbars = parent.pbars
-#                mlist[1].showtext = parent.showtext
-#            if magcalc:
-#                mlist[1].calc_origin_mag()
-#            else:
-#                mlist[1].calc_origin_grav()
-#            tmpfiles[mlist[0]] = save_layer(mlist)
-#
-#    if showreports is True:
-#        showtext('Summing data')
-#
-#    QtCore.QCoreApplication.processEvents()
-## get height corrections
-#    tmp = np.copy(lmod.lith_index)
-#    tmp[tmp > -1] = 0
-#    hcor = np.abs(tmp.sum(2))
-#
-## Get mlayers and glayers with correct rho and netmagn
-#
-#    if pbars is not None:
-#        pbars.resetsub(maximum=(len(lmod.lith_list)-1))
-#        piter = pbars.iter
-#
-#    mgvalin = np.zeros(numx*numy)
-#    mgval = np.zeros(numx*numy)
-#
-#    hcorflat = numz-hcor.flatten()
-#    aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
-#
-#    for mlist in piter(lmod.lith_list.items()):
-#        if mlist[0] == 'Background':
-#            continue
-#        mijk = mlist[1].lith_index
-#        if mijk not in modind:
-#            continue
-#        tmpfiles[mlist[0]].seek(0)
-#        mfile = np.load(tmpfiles[mlist[0]])
-#
-#        if magcalc:
-#            mglayers = mfile['mlayers']
-#        else:
-#            mglayers = mfile['glayers']*mlist[1].rho()
-#
-#        showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
-#                 ' during this calculation)')
-#
-#        if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
-#            QtWidgets.QApplication.processEvents()
-#            i, j, k = np.nonzero(modind == mijk)
-#            iuni = np.array(np.unique(i), dtype=np.int32)
-#            juni = np.array(np.unique(j), dtype=np.int32)
-#            kuni = np.array(np.unique(k), dtype=np.int32)
-#
-#            for k in kuni:
-#                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0], aaa[1],
-#                                  mglayers, hcorflat, mijk, juni, iuni)
-#                mgvalin += baba
-#
-#        showtext('Done')
-#
-#        if pbars is not None:
-#            pbars.incrmain()
-#        QtWidgets.QApplication.processEvents()
-#
-#    mgvalin.resize([numx, numy])
-#    mgvalin = mgvalin.T
-#    mgvalin = mgvalin[::-1]
-#    mgvalin = np.ma.array(mgvalin)
-#
-#    if magcalc:
-#        lmod.griddata['Calculated Magnetics'].data = mgvalin
-#    else:
-#        lmod.griddata['Calculated Gravity'].data = mgvalin
-#
-## This addoldcalc has has flaws w.r.t. regional if you change the regional
-#    if 'Gravity Regional' in lmod.griddata and not magcalc:
-#        zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
-#        lmod.griddata['Calculated Gravity'].data += zfin
-#
-#    if lmod.lith_index.max() <= 0:
-#        lmod.griddata['Calculated Magnetics'].data *= 0.
-#        lmod.griddata['Calculated Gravity'].data *= 0.
-#
-#    if 'Magnetic Dataset' in lmod.griddata:
-#        ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
-#        lmod.griddata['Magnetic Residual'] = copy.deepcopy(
-#            lmod.griddata['Magnetic Dataset'])
-#        lmod.griddata['Magnetic Residual'].data = (
-#            lmod.griddata['Magnetic Dataset'].data - ztmp)
-#        lmod.griddata['Magnetic Residual'].dataid = 'Magnetic Residual'
-#
-#    if 'Gravity Dataset' in lmod.griddata:
-#        ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
-#        lmod.griddata['Gravity Residual'] = copy.deepcopy(
-#            lmod.griddata['Gravity Dataset'])
-#        lmod.griddata['Gravity Residual'].data = (
-#            lmod.griddata['Gravity Dataset'].data - ztmp - lmod.gregional)
-#        lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
-#
-#    if parent is not None:
-#        tmp = [i for i in set(lmod.griddata.values())]
-#        parent.outdata['Raster'] = tmp
-#    showtext('Calculation Finished')
-#    if pbars is not None:
-#        pbars.maxall()
-#
-#    return lmod.griddata
-
-
 def calc_field(lmod, pbars=None, showtext=None, parent=None,
                showreports=False, magcalc=False):
     """ Calculate magnetic and gravity field
@@ -1226,10 +937,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         showtext('Summing data')
 
     QtCore.QCoreApplication.processEvents()
-# get height corrections
-#    tmp = np.copy(lmod.lith_index)
-#    tmp[tmp > -1] = 0
-#    hcor = np.abs(tmp.sum(2))
 
 # Get mlayers and glayers with correct rho and netmagn
 
@@ -1530,8 +1237,8 @@ def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
 
 
 @jit(nopython=True)
-def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
-              x, y, z, isign):
+def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
+         x, y, z, isign):
     """ Gbox routine by Blakely
         Note: xobs, yobs and zobs must be floats or there will be problems
         later.
@@ -1698,6 +1405,7 @@ def dircos(incl, decl, azim):
     aaa = np.cos(xincl)*np.cos(xdecl-xazim)
     bbb = np.cos(xincl)*np.sin(xdecl-xazim)
     ccc = np.sin(xincl)
+
     return aaa, bbb, ccc
 
 
@@ -1726,7 +1434,6 @@ def test():
     """ This routine is for testing purposes """
     from pygmi.pfmod.iodefs import ImportMod3D
 
-    ttt = PTime()
 # Import model file
     filename = r'C:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
     imod = ImportMod3D(None)
@@ -1738,18 +1445,6 @@ def test():
 
 # Calculate the field
     calc_field(imod.lmod, magcalc=True)
-    ttt.since_last_call()
-
-    """
-    Gravity:
-        Total Time: 0 minutes and 41.381071914357896 seconds
-    Mag:
-        Total Time: 2 minutes and 9.530613649693635 seconds
-        Total Time: 1 minutes and 28.718702124839353 seconds
-        Total Time: 1 minutes and 14.895504790858254 seconds
-        Total Time: 0 minutes and 50.30150122850542 seconds
-    """
-
 
 if __name__ == "__main__":
     test()

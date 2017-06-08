@@ -1,9 +1,28 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon May  8 08:10:19 2017
-
-@author: pcole
-"""
+# -----------------------------------------------------------------------------
+# Name:        gridding.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2017 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+""" These are helper routines for gridding up data. """
 
 import pdb
 import numpy as np
@@ -12,22 +31,13 @@ from pygmi.raster.datatypes import Data
 from pygmi.pfmod import iodefs as pio3d
 import matplotlib.pyplot as plt
 import scipy.interpolate as si
-import scipy.signal as ss
-import geosoft.gxpy as gxpy
 
 
-
-def main():
+def grid():
     """ First 2 columns must be x and y """
 
-    filename = r'C:\Work\Programming\pygmi\data\273Grav_2.67_40by39.dat'
-    ofile = r'C:\Work\Programming\pygmi\data\gravdata.tif'
-
-    filename = r'C:\Work\Programming\pygmi\data\filt_magdata.csv'
+    filename = r'C:\Work\Programming\pygmi\data\sue\filt_magdata.csv'
     ofile = r'C:\Work\Programming\pygmi\data\magdata.tif'
-
-    filename = r'C:\Work\Programming\pygmi\data\273Grav_Elevation.txt'
-    ofile = r'C:\Work\Programming\pygmi\data\dtmdata.tif'
     srows = 0
     dlim = None
     xcol = 0
@@ -59,16 +69,6 @@ def main():
     xdata = datatmp[xcol]
     ydata = datatmp[ycol]
     zdata = datatmp[zcol]
-
-    # Filter
-
-#    flen = 7
-#    z2= ss.medfilt(zdata[:800],21)
-#    z2= ss.wiener(zdata[:800],flen)
-#
-#    plt.plot(zdata[flen:800-flen])
-#    plt.plot(z2[flen:800-flen])
-#    plt.show()
 
     points = datatmp[:2].T
 
@@ -104,32 +104,30 @@ def main():
 
     # Plotting section
 
-    dataex = (newxdata.min(), newxdata.max(), newydata.min(), newydata.max())
+#    dataex = (newxdata.min(), newxdata.max(), newydata.min(), newydata.max())
 #    plt.imshow(grid, cmap = plt.cm.jet, extent=dataex, origin='upper')
 
-
-    plt.tricontourf(xdata, ydata, zdata, 40, cmap = plt.cm.jet)
+    plt.tricontourf(xdata, ydata, zdata, 40, cmap=plt.cm.jet)
 
 #    plt.plot(xdata, ydata, '.')
     plt.colorbar()
     plt.show()
 
-
     pdb.set_trace()
 
 
-def main2():
+def model_to_grid_thickness():
     """ loads in a model """
 
     tmp = pio3d.ImportMod3D(None)
-    tmp.ifile = r'C:\Work\Programming\pygmi\data\7-BC_57km_StagChamOnly.npz'
-    ofile = r'C:\Work\Programming\pygmi\data\7-BC_57km_StagChamOnly.tif'
+    tmp.ifile = r'C:\Work\Programming\pygmi\data\7-BC_57km_StagChamOnly_NEW.npz'
+    ofile = r'C:\Work\Programming\pygmi\data\7-BC_57km_StagChamOnly_NEW.tif'
 
     # Reset Variables
     tmp.lmod.griddata.clear()
     tmp.lmod.lith_list.clear()
 
-    #load model
+    # load model
     indict = np.load(tmp.ifile)
     tmp.dict2lmod(indict)
 
@@ -151,14 +149,9 @@ def main2():
     tmp.ifile = ofile
     tmp.export_gdal([gout], 'GTiff')
 
-
     pdb.set_trace()
 
 
-def main3():
-    """ main 3 """
-    dtmp = gxpy.gdb.Geosoft_gdb.open('a')
-
-
 if __name__ == "__main__":
-    main3()
+    model_to_grid_thickness()
+#    grid()
