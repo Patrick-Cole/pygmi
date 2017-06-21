@@ -1583,59 +1583,11 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz.mask = newmask
     return newz
 
-
-def tests_rtp():
-    """ Tests to debug RTP """
-    from pygmi.raster.iodefs import get_raster
-    import matplotlib.pyplot as plt
-
-    datrtp = get_raster(r'C:\Work\Programming\pygmi\data\RTP\South_Africa_EMAG2_diffRTP_surfer.grd')
-    dat = get_raster(r'C:\Work\Programming\pygmi\data\RTP\South_Africa_EMAG2_TMI_surfer.grd')
-    dat = dat[0]
-    datrtp = datrtp[0]
-    incl = -65.
-    decl = -22.
-
-    dat2 = rtp(dat, incl, decl)
-
-    plt.subplot(2, 1, 1)
-    plt.imshow(dat.data, vmin=-1200, vmax=1200)
-    plt.colorbar()
-    plt.subplot(2, 1, 2)
-    plt.imshow(dat2.data, vmin=-1200, vmax=1200)
-    plt.colorbar()
-    plt.show()
-
-
 def func(x, y):
     """ Function """
     return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2
 
 
-def tests():
-    """ Tests to debug """
-    import matplotlib.pyplot as plt
-    from pygmi.misc import PTime
-    import pdb
-    import sys
-
-    app = QtWidgets.QApplication(sys.argv)
-
-    ttt = PTime()
-    aaa = GroupProj('Input Projection')
-
-    ttt.since_last_call()
-    pdb.set_trace()
-
-    points = np.random.rand(1000000, 2)
-    values = func(points[:, 0], points[:, 1])
-
-
-    dat = quickgrid(points[:, 0], points[:, 1], values, .001, numits=-1)
-
-    plt.imshow(dat)
-    plt.colorbar()
-    plt.show()
 
 
 if __name__ == "__main__":

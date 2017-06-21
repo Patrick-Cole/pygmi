@@ -29,8 +29,13 @@ Graph tool is a multi-function graphing tool for use with cluster analysis
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from matplotlib.figure import Figure
-import matplotlib.pylab as plt
+from matplotlib import cm
+from matplotlib.artist import Artist
+from matplotlib.patches import Polygon
+from matplotlib.lines import Line2D
 from matplotlib.path import Path
+from matplotlib.ticker import NullFormatter
+from matplotlib.mlab import dist_point_to_segment
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 
@@ -44,7 +49,7 @@ class GraphHist(FigureCanvas):
         FigureCanvas.__init__(self, self.figure)
         self.setParent(parent)
 
-        self.nullfmt = plt.NullFormatter()
+        self.nullfmt = NullFormatter()
         self.pntxy = None
         self.polyi = None
         self.axhistx = None
@@ -115,8 +120,10 @@ class GraphHist(FigureCanvas):
         self.axscatter.get_yaxis().set_visible(False)
 
         self.csp = self.axscatter.imshow(xymahist.T, interpolation='nearest',
-                                         cmap=plt.cm.jet, aspect='auto')
+                                         cmap=cm.jet, aspect='auto')
 
+        self.csp.set_clim(xymahist.min(), xymahist.max())
+        self.csp.changed()
         self.figure.canvas.draw()
 
     def polyint(self):
@@ -212,7 +219,7 @@ class GraphMap(FigureCanvas):
         self.subplot.get_xaxis().set_visible(False)
         self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, cmap=plt.cm.jet)
+        self.csp = self.subplot.imshow(dat.data, cmap=cm.jet)
         self.subplot.figure.colorbar(self.csp)
 
         self.figure.canvas.draw()
@@ -247,14 +254,14 @@ class GraphMap(FigureCanvas):
 
         if mtmp[1] > 0:
             cdat = self.cdata[mtmp[1] - 1].data
-            self.csp = self.subplot.imshow(cdat, cmap=plt.cm.jet)
+            self.csp = self.subplot.imshow(cdat, cmap=cm.jet)
             vals = np.unique(cdat)
             vals = vals.compressed()
             bnds = (vals - 0.5).tolist() + [vals.max() + .5]
             self.subplot.figure.colorbar(self.csp, boundaries=bnds,
                                          values=vals, ticks=vals)
         else:
-            self.csp = self.subplot.imshow(dat.data, cmap=plt.cm.jet)
+            self.csp = self.subplot.imshow(dat.data, cmap=cm.jet)
             self.subplot.figure.colorbar(self.csp)
 
         self.figure.canvas.draw()
@@ -279,7 +286,7 @@ class PolygonInteractor(QtCore.QObject):
     def __init__(self, axtmp, pntxy):
         QtCore.QObject.__init__(self)
         self.ax = axtmp
-        self.poly = plt.Polygon([(1, 1)], animated=True)
+        self.poly = Polygon([(1, 1)], animated=True)
         self.ax.add_patch(self.poly)
         self.canvas = self.poly.figure.canvas
         self.poly.set_alpha(0.5)
@@ -289,8 +296,8 @@ class PolygonInteractor(QtCore.QObject):
 
         xtmp, ytmp = list(zip(*self.poly.xy))
 
-        self.line = plt.Line2D(xtmp, ytmp, marker='o', markerfacecolor='r',
-                               color='y', animated=True)
+        self.line = Line2D(xtmp, ytmp, marker='o', markerfacecolor='r',
+                           color='y', animated=True)
         self.ax.add_line(self.line)
 
         self.poly.add_callback(self.poly_changed)
@@ -326,7 +333,7 @@ class PolygonInteractor(QtCore.QObject):
         # this method is called whenever the polygon object is called
         # only copy the artist props to the line (except visibility)
         vis = self.line.get_visible()
-        plt.Artist.update_from(self.line, poly)
+        Artist.update_from(self.line, poly)
         self.line.set_visible(vis)  # don't use the poly visibility state
 
     def get_ind_under_point(self, event):
@@ -373,7 +380,7 @@ class PolygonInteractor(QtCore.QObject):
             for i in range(len(xys) - 1):
                 s0tmp = xys[i]
                 s1tmp = xys[i + 1]
-                dtmp = plt.dist_point_to_segment(ptmp, s0tmp, s1tmp)
+                dtmp = dist_point_to_segment(ptmp, s0tmp, s1tmp)
                 if dmin == -1:
                     dmin = dtmp
                     imin = i
@@ -608,6 +615,9 @@ class ScatterPlot(QtWidgets.QDialog):
 
         self.hist.polyi.polyi_changed.connect(self.update_map)
         self.map.polyi.polyi_changed.connect(self.update_hist)
+
+        self.hist.update_graph(clearaxis=True)
+        self.map.update_graph()
 
         return True
 

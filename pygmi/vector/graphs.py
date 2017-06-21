@@ -26,8 +26,8 @@
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-import matplotlib.pyplot as plt
 import matplotlib.collections as mc
+from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
@@ -256,7 +256,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fcnt = np.array(fcnt)
         flen = np.array(flen)
         bwidth = np.pi/nbins
-        bcols = plt.cm.Set1(np.arange(nbins+1)/nbins)
+        bcols = cm.Set1(np.arange(nbins+1)/nbins)
         np.random.shuffle(bcols)
 
         if rtype == 0:

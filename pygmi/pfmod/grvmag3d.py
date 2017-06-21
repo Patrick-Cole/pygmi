@@ -35,6 +35,7 @@ References:
 
 from __future__ import print_function
 
+import pdb
 import copy
 import tempfile
 from math import sqrt
@@ -42,7 +43,7 @@ from multiprocessing import Pool
 from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 from scipy.linalg import norm
 from osgeo import gdal
 from numba import jit
@@ -345,7 +346,7 @@ class GravMag(object):
         grvtmp = self.lmod2.griddata['Calculated Gravity'].data
 
         regplt = plt.figure()
-        axes = plt.subplot(1, 2, 1)
+        axes = plt.subplot(121)
         etmp = dat_extent(self.lmod2.griddata['Calculated Magnetics'], axes)
         plt.title('Magnetic Data')
         ims = plt.imshow(magtmp, extent=etmp)
@@ -359,7 +360,7 @@ class GravMag(object):
         cbar = plt.colorbar(ims, orientation='horizontal')
         cbar.set_label('nT')
 
-        axes = plt.subplot(1, 2, 2)
+        axes = plt.subplot(122)
         etmp = dat_extent(self.lmod2.griddata['Calculated Gravity'], axes)
         plt.title('Gravity Data')
         ims = plt.imshow(grvtmp, extent=etmp)
@@ -914,23 +915,23 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     tmp[tmp > -1] = 0
     hcor = np.abs(tmp.sum(2))
 
-    if np.unique(modindcheck).size == 1 and np.unique(modindcheck)[0] == -1:
-        for mlist in lmod.lith_list.items():
-            mijk = mlist[1].lith_index
-            if mijk not in modind and mijk not in modindcheck:
-                continue
-            if mlist[0] != 'Background':
-                mlist[1].modified = True
-                showtext(mlist[0]+':')
-                if parent is not None:
-                    mlist[1].parent = parent
-                    mlist[1].pbars = parent.pbars
-                    mlist[1].showtext = parent.showtext
-                if magcalc:
-                    mlist[1].calc_origin_mag(hcor)
-                else:
-                    mlist[1].calc_origin_grav()
-                tmpfiles[mlist[0]] = save_layer(mlist)
+#    if np.unique(modindcheck).size == 1 and np.unique(modindcheck)[0] == -1:
+    for mlist in lmod.lith_list.items():
+        mijk = mlist[1].lith_index
+        if mijk not in modind and mijk not in modindcheck:
+            continue
+        if mlist[0] != 'Background':
+            mlist[1].modified = True
+            showtext(mlist[0]+':')
+            if parent is not None:
+                mlist[1].parent = parent
+                mlist[1].pbars = parent.pbars
+                mlist[1].showtext = parent.showtext
+            if magcalc:
+                mlist[1].calc_origin_mag(hcor)
+            else:
+                mlist[1].calc_origin_grav()
+            tmpfiles[mlist[0]] = save_layer(mlist)
         lmod.tmpfiles = tmpfiles
 
     if showreports is True:
@@ -956,7 +957,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         mijk = mlist[1].lith_index
         if mijk not in modind and mijk not in modindcheck:
             continue
-        lmod.tmpfiles[mlist[0]].seek(0)
+        try:
+            lmod.tmpfiles[mlist[0]].seek(0)
+        except:
+            pdb.set_trace()
 
         mfile = np.load(lmod.tmpfiles[mlist[0]])
 
@@ -1114,10 +1118,10 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
     return mgval
 
 
-def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
-                tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67, fdec=-17,
+def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
+                tlx=0., tly=0., tlz=0., mht=100., ght=0., finc=-67, fdec=-17,
                 inputliths=None, susc=None, dens=None, minc=None, mdec=None,
-                mstrength=None, hintn=30000):
+                mstrength=None, hintn=30000.):
     """ Create a quick model """
     if inputliths is None:
         inputliths = ['Generic']
@@ -1435,16 +1439,28 @@ def test():
     from pygmi.pfmod.iodefs import ImportMod3D
 
 # Import model file
-    filename = r'C:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
-    imod = ImportMod3D(None)
-    imod.ifile = filename
-    imod.lmod.griddata.clear()
-    imod.lmod.lith_list.clear()
-    indict = np.load(filename)
-    imod.dict2lmod(indict)
+#    filename = r'C:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
+#    imod = ImportMod3D(None)
+#    imod.ifile = filename
+#    imod.lmod.griddata.clear()
+#    imod.lmod.lith_list.clear()
+#    indict = np.load(filename)
+#    imod.dict2lmod(indict)
+#    calc_field(imod.lmod, magcalc=True)
+
+
+# quick model
+    lmod = quick_model(numz=5)
+    lmod.lith_index[10, 10, 0] = 1
+    lmod.mht = 100
+    calc_field(lmod, magcalc=True)
 
 # Calculate the field
-    calc_field(imod.lmod, magcalc=True)
+
+    magval = lmod.griddata['Calculated Magnetics'].data
+
+    plt.imshow(magval, cmap=cm.jet)
+    plt.show()
 
 if __name__ == "__main__":
     test()

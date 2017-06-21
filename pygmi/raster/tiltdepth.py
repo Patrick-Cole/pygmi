@@ -31,20 +31,16 @@ References:
 """
 
 import os
-from math import atan2, pi
+from math import pi
 import numpy as np
-import numexpr as ne
 
 from PyQt5 import QtWidgets
-import matplotlib
-import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from numba import jit
 import pygmi.raster.cooper as cooper
-import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
@@ -185,13 +181,13 @@ class TiltDepth(QtWidgets.QDialog):
         self.axes.contour(self.X, self.Y, self.Z, [45], linestyles='dashed')
         self.axes.contour(self.X, self.Y, self.Z, [-45], linestyles='dashed')
 
-        cmap = plt.get_cmap(txt)
+        cmap = cm.get_cmap(txt)
         cmap2 = np.array([cmap(i) for i in range(cmap.N)])
         low = int(cmap.N*(45/180))
         high = int(cmap.N*(135/180))
         cmap2[low:high] = cmap2[int(cmap.N/2)]
 
-        cmap3 = matplotlib.colors.ListedColormap(cmap2)
+        cmap3 = cm.colors.ListedColormap(cmap2)
         ims = self.axes.imshow(self.Z, extent=dataprep.dat_extent(zout),
                                cmap=cmap3)
 
@@ -376,17 +372,6 @@ def distpc(dx, dy, dx0, dy0, dcnt):
     return dcnt
 
 
-def main():
-    """ Main """
-    ifile = r'C:\Work\Programming\pygmi\data\m2920ac.ers'
-
-    data = iodefs.get_raster(ifile)
-    data = data[0]
-
-    dmin = distpc(np.array([1., 2.]), np.array([1., 2.]), 3, 4, 0)
-    print(dmin)
-
-
 def vgrad(cnt):
     """ Gets contour gradients at vertices """
 
@@ -443,120 +428,3 @@ def vgrad2(cnt):
     cgrad[cgrad < -90] += 180.
 
     return gx, gy, cgrad, np.zeros_like(gx)
-
-
-def tiltdepth(data, dec, inc):
-    """ Calculate tilt depth """
-# RTP
-    zout = dataprep.rtp(data, inc, dec)
-
-# Tilt
-    nr, nc = zout.data.shape
-    dy, dx = np.gradient(zout.data)
-    dxtot = np.sqrt(dx**2+dy**2)
-    dz = cooper.vertical(zout.data)
-    t1 = np.arctan(dz/dxtot)
-    # A negative number implies we are straddling 0
-
-# Contour tilt
-    x = zout.tlx + np.arange(nc)*zout.xdim+zout.xdim/2
-    y = zout.tly - np.arange(nr)*zout.ydim-zout.ydim/2
-
-    X, Y = np.meshgrid(x, y)
-    Z = np.rad2deg(t1)
-
-    cnt0 = plt.contour(X, Y, Z, [0])
-    cnt45 = plt.contour(X, Y, Z, [45], alpha=0)
-    cntm45 = plt.contour(X, Y, Z, [-45], alpha=0)
-    plt.contourf(X, Y, Z, [-45, 45])
-
-    plt.imshow(Z, extent=dataprep.dat_extent(zout))
-    plt.colorbar()
-
-    gx0, gy0, cgrad0, _ = vgrad(cnt0)
-    gx45, gy45, _, _ = vgrad(cnt45)
-    gxm45, gym45, _, _ = vgrad(cntm45)
-
-    pairs0 = []
-    pairs1 = []
-    pairs2 = []
-
-    g0 = np.transpose([gx0, gy0, cgrad0])
-
-    dx = gx45
-    dy = gy45
-    dxm = gxm45
-    dym = gym45
-    dmin1 = []
-    dmin2 = []
-
-    for i, j, k in g0:
-        dist = ne.evaluate('(dx-i)**2+(dy-j)**2')
-        dmin = np.nonzero(dist == dist.min())[0]
-        dmin1.append(dmin)
-        dx1 = dx[dmin]
-        dy1 = dy[dmin]
-        dist1 = dx1**2+dy1**2
-
-        grad = atan2(dy1-j, dx1-i)*180/pi
-        if grad > 90:
-            grad -= 180
-        elif grad < -90:
-            grad += 180
-        gtmp = abs(90-abs(grad-k))
-        if gtmp > 10:
-            continue  # means all angles greater than 10 are excluded
-
-        dist = ne.evaluate('(dxm-i)**2+(dym-j)**2')
-        dmin = np.nonzero(dist == dist.min())[0]
-        dmin2.append(dmin)
-        dx2 = dxm[dmin]
-        dy2 = dym[dmin]
-        dist2 = dx2**2+dy2**2
-
-        grad = atan2(dy2-j, dx2-i)*180/pi
-        if grad > 90:
-            grad -= 180
-        elif grad < -90:
-            grad += 180
-        gtmp = abs(90-abs(grad-k))
-        if gtmp > 10:
-            continue
-
-        pairs0.append([i, j])
-        pairs1.append([dx1, dy1, dist1])
-        pairs2.append([dx2, dy2, dist2])
-
-    dmin1 = np.array(dmin1).flatten()
-    dmin2 = np.array(dmin2).flatten()
-
-    pairs0 = np.array(pairs0)
-    pairs1 = np.array(pairs1)
-    pairs2 = np.array(pairs2)
-
-    dist1 = pairs1[:, 2]
-    dist2 = pairs2[:, 2]
-
-    dist = np.min([dist1, dist2], 0)
-
-    gx0f = pairs0[:, 0]
-    gy0f = pairs0[:, 1]
-    gx45f = pairs1[:, 0]
-    gy45f = pairs1[:, 1]
-    gxm45f = pairs2[:, 0]
-    gym45f = pairs2[:, 1]
-
-    plt.axes().set_aspect('equal')
-
-    i = 200
-    plt.plot(gx45f[i], gy45f[i], 'o')
-    plt.plot(gx0f[i], gy0f[i], 's')
-    plt.plot(gxm45f[i], gym45f[i], 'o')
-
-    plt.show()
-
-    return gx0f, gy0f, dist.flatten()
-
-
-if __name__ == "__main__":
-    main()

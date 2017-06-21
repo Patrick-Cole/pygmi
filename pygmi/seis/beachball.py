@@ -53,7 +53,7 @@ import numpy as np
 import numexpr as ne
 from PyQt5 import QtWidgets
 import matplotlib.cm as cm
-import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib import patches
@@ -65,7 +65,7 @@ import scipy.spatial.distance as sdist
 class MyMplCanvas(FigureCanvas):
     """Canvas for the actual plot"""
     def __init__(self, parent):
-        fig = plt.figure()
+        fig = Figure()
         super(MyMplCanvas, self).__init__(fig)
 
         # figure stuff

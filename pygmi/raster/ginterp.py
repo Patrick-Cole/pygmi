@@ -72,7 +72,6 @@ from scipy import ndimage
 from matplotlib.figure import Figure
 import matplotlib.gridspec as gridspec
 import matplotlib.cm as cm
-import matplotlib.pyplot as plt
 import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
@@ -878,8 +877,8 @@ class MySunCanvas(FigureCanvas):
     def init_graph(self):
         """ Init graph """
         self.axes.clear()
-        plt.setp(self.axes.get_xticklabels(), fontsize=8)
-        plt.setp(self.axes.get_yticklabels(), visible=False)
+        self.axes.set_xticklabels(self.axes.get_xticklabels(), fontsize=8)
+        self.axes.set_yticklabels(self.axes.get_yticklabels(), visible=False)
 
         self.axes.set_autoscaley_on(False)
         self.axes.set_rmax(1.0)
@@ -1053,7 +1052,7 @@ class PlotInterp(QtWidgets.QDialog):
     def change_cbar(self):
         """ Change the color map for the color bar """
         txt = str(self.cbox_cbar.currentText())
-        self.mmc.cbar = plt.get_cmap(txt)
+        self.mmc.cbar = cm.get_cmap(txt)
         self.mmc.update_graph()
 
     def change_dtype(self):
@@ -1474,7 +1473,6 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[2].ydim = (newimg[2].ydim*newimg[2].rows)/imgshape0
         newimg[3].ydim = (newimg[3].ydim*newimg[3].rows)/imgshape0
 
-
         newimg[0].cols = imgshape1
         newimg[1].cols = imgshape1
         newimg[2].cols = imgshape1
@@ -1492,32 +1490,42 @@ class PlotInterp(QtWidgets.QDialog):
 # Section for colorbars
         if 'Ternary' not in dtype:
             txt = str(self.cbox_cbar.currentText())
-            cmap = plt.get_cmap(txt)
+            cmap = cm.get_cmap(txt)
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
 # Horizontal Bar
-            fig = plt.figure(figsize=(blen, (bwid+0.75)), tight_layout=True)
-            ax = fig.add_subplot(111)
+            fig = Figure()
+            canvas = FigureCanvas(fig)
+            fig.set_figwidth(blen)
+            fig.set_figheight(bwid+0.75)
+            fig.set_tight_layout(True)
+            ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
                                         orientation='horizontal')
             cb.set_label(text)
 
             fname = filename[:-4]+'_hcbar.tif'
-            fig.savefig(fname, dpi=300)
+            canvas.print_figure(fname, dpi=300)
 
 # Vertical Bar
-            fig = plt.figure(figsize=((bwid + 1), blen), tight_layout=True)
-            ax = fig.add_subplot(111)
+            fig = Figure()
+            canvas = FigureCanvas(fig)
+            fig.set_figwidth(bwid+1)
+            fig.set_figheight(blen)
+            fig.set_tight_layout(True)
+            ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
                                         orientation='vertical')
             cb.set_label(text)
 
             fname = filename[:-4]+'_vcbar.tif'
-            fig.savefig(fname, dpi=300)
+            canvas.print_figure(fname, dpi=300)
         else:
-            fig = plt.figure(tight_layout=True)
+            fig = Figure()
+            canvas = FigureCanvas(fig)
+            fig.set_tight_layout(True)
 
             redlabel = rtext
             greenlabel = gtext
@@ -1550,29 +1558,31 @@ class PlotInterp(QtWidgets.QDialog):
             data.shape = (red.shape[0], red.shape[1], 3)
 
             data = data[:221, 90:350]
-            plt.xlim((-100, 355))
-            plt.ylim((-100, 322))
+
+            ax = fig.gca()
+            ax.set_xlim((-100, 355))
+            ax.set_ylim((-100, 322))
 
             path = Path([[0, 0], [127.5, 222], [254, 0], [0, 0]])
             patch = PathPatch(path, facecolor='none')
-            plt.gca().add_patch(patch)
+            ax.add_patch(patch)
 
-            im = plt.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
-                            clip_on=True)
+            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
+                           clip_on=True)
             im.set_clip_path(patch)
 
-            plt.text(0, -5, greenlabel, horizontalalignment='center',
-                     verticalalignment='top', size=20)
-            plt.text(254, -5, bluelabel, horizontalalignment='center',
-                     verticalalignment='top', size=20)
-            plt.text(127.5, 225, redlabel, horizontalalignment='center',
-                     size=20)
-            plt.tick_params(top='off', right='off', bottom='off', left='off',
-                            labelbottom='off', labelleft='off')
+            ax.text(0, -5, greenlabel, horizontalalignment='center',
+                    verticalalignment='top', size=20)
+            ax.text(254, -5, bluelabel, horizontalalignment='center',
+                    verticalalignment='top', size=20)
+            ax.text(127.5, 225, redlabel, horizontalalignment='center',
+                    size=20)
+            ax.tick_params(top='off', right='off', bottom='off', left='off',
+                           labelbottom='off', labelleft='off')
 
-            plt.axis('off')
+            ax.axis('off')
             fname = filename[:-4]+'_tern.tif'
-            fig.savefig(fname, dpi=300)
+            canvas.print_figure(fname, dpi=300)
 
         QtWidgets.QMessageBox.information(self, "Information",
                                           "Save to GeoTiff is complete!",

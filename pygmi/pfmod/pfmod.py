@@ -46,7 +46,7 @@ class MainWidget(QtWidgets.QMainWindow):
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
 
-        self.indata = {}
+        self.indata = {'tmp': True}
         self.inraster = {}
         self.outdata = {}
         self.parent = parent

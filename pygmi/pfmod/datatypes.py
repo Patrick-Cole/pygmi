@@ -86,7 +86,7 @@ class LithModel(object):
         self.tmpfiles = None
 
         # Next line calls a function to update the variables above.
-        self.update(100, 75, 40, 0, 150000, 0, 1500, 100, 100, 0)
+        self.update(50, 40, 5, 0, 0, 0, 100, 100, 100, 0)
 
         self.olith_index = None
         self.odxy = None

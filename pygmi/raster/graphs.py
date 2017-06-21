@@ -36,7 +36,7 @@ menu. The following are supported:
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-import matplotlib.pyplot as plt
+import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
@@ -203,7 +203,7 @@ class MyMplCanvas(FigureCanvas):
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)
 
-        cmap = plt.cm.jet
+        cmap = cm.jet
 
         norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
 

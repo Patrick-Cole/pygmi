@@ -736,9 +736,6 @@ class MainWidget(QtWidgets.QMainWindow):
 
         item.my_class_name = item_name.replace('\n', ' ')
 
-        if item_name == "Potential\nField\nModelling":
-            item.my_class.indata['tmp'] = True
-
         if 'Import' in item_name:
             item.is_import = True
             iflag = item.settings()
