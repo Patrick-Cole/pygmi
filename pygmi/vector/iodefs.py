@@ -346,31 +346,18 @@ class ExportPoint(object):
         os.chdir(filename.rpartition('/')[0])
         ofile = str(filename.rpartition('/')[-1][:-4])
         data = self.indata['Point']
-#        datall = []
-#        head = ''
 
         dfall = pd.DataFrame()
         dfall.loc[:, 'X'] = data[0].xdata
         dfall.loc[:, 'Y'] = data[0].ydata
 
         for i, datai in enumerate(data):
-#            datall.append(datai.zdata)
-#            head += ','+datid
-
             datid = datai.dataid
             if datid == '':
                 datid = str(i)
 
-#            df = pd.DataFrame()
-#            df.loc[:, 'X'] = datai.xdata
-#            df.loc[:, 'Y'] = datai.ydata
-#            df.loc[:, datai.dataid] = datai.zdata
-            dfall.loc[:, datid] = datai.zdata
-
-#            ofile2 = ofile+'_'+''.join(x for x in datid if x.isalnum())+'.csv'
-
-#            df.to_csv(ofile2, index=False)
-#            del df
+            tmp = datai.zdata.tolist()
+            dfall.loc[:, datid] = tmp
 
         ofile2 = ofile+'_all.csv'
         dfall.to_csv(ofile2, index=False)

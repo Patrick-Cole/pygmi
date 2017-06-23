@@ -173,7 +173,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
         for i in data:
-            tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
+            try:
+                tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
+            except:
+                pass
             ax2.plot(tmp, label=i.dataid)
         ax2.set_ylim([-.1, 1.1])
         ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
