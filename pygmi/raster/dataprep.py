@@ -389,7 +389,7 @@ class DataMerge(QtWidgets.QDialog):
             doffset = 0.0
             if data.data.min() <= 0:
                 doffset = data.data.min()-1.
-                data.data -= doffset
+                data.data = data.data - doffset
             gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
             src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
             dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
@@ -398,7 +398,7 @@ class DataMerge(QtWidgets.QDialog):
                                 gdal.GRA_Bilinear)
 
             dat.append(gdal_to_dat(dest, data.dataid))
-            dat[-1].data += doffset
+            dat[-1].data = dat[-1].data + doffset
 
         self.outdata['Raster'] = dat
 
@@ -865,7 +865,7 @@ class Metadata(QtWidgets.QDialog):
                     if tmp.dataid[-1] == ')':
                         tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
                     if i.units != '':
-                        tmp.dataid += ' ('+i.units+')'
+                        tmp.dataid = tmp.dataid + ' ('+i.units+')'
                     tmp.data.mask = (tmp.data.data == i.nullvalue)
 
     def rename_id(self):
@@ -1126,8 +1126,8 @@ def check_dataid(out):
         j = 1
         for i in out:
             if elt == i.dataid and count > 1:
-                i.dataid += '('+str(j)+')'
-                j += 1
+                i.dataid = i.dataid + '('+str(j)+')'
+                j = j + 1
 
     return out
 
@@ -1157,7 +1157,7 @@ def cluster_to_raster(indata):
 
     for i in indata['Cluster']:
         indata['Raster'].append(i)
-        indata['Raster'][-1].data += 1
+        indata['Raster'][-1].data = indata['Raster'][-1].data + 1
 
     return indata
 
@@ -1468,25 +1468,25 @@ def trim_raster(olddata):
         for i in range(mask.shape[0]):
             if bool(mask[i].min()) is False:
                 break
-            rowstart += 1
+            rowstart = rowstart + 1
 
         rowend = mask.shape[0]
         for i in range(mask.shape[0]-1, -1, -1):
             if bool(mask[i].min()) is False:
                 break
-            rowend -= 1
+            rowend = rowend - 1
 
         colstart = 0
         for i in range(mask.shape[1]):
             if bool(mask[:, i].min()) is False:
                 break
-            colstart += 1
+            colstart = colstart + 1
 
         colend = mask.shape[1]
         for i in range(mask.shape[1]-1, -1, -1):
             if bool(mask[:, i].min()) is False:
                 break
-            colend -= 1
+            colend = colend - 1
 
         data.data = data.data[rowstart:rowend, colstart:colend]
         data.data.mask = (data.data.data == data.nullvalue)
@@ -1544,7 +1544,7 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
         numits = int(max(np.log2(cols), np.log2(rows)))
 
     while np.max(newmask) > 0 and j < (numits-1):
-        j += 1
+        j = j + 1
         jj = 2**j
         dxy2 = dxy*jj
         rows = int((ymax-ymin)/dxy2)+1
@@ -1557,8 +1557,8 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
         yindex = ((y-ymin)/dxy2).astype(int)
 
         for i in range(z.size):
-            newz[yindex[i], xindex[i]] += z[i]
-            zdiv[yindex[i], xindex[i]] += 1
+            newz[yindex[i], xindex[i]] = newz[yindex[i], xindex[i]] + z[i]
+            zdiv[yindex[i], xindex[i]] = zdiv[yindex[i], xindex[i]] + 1
 
         filt = zdiv > 0
         newz[filt] = newz[filt]/zdiv[filt]

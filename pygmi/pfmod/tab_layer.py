@@ -281,16 +281,16 @@ class MyMplCanvas(FigureCanvas):
             xptp = self.lmod.xrange[1]-self.lmod.xrange[0]
             yptp = self.lmod.yrange[1]-self.lmod.yrange[0]
             if xptp > 10000 or yptp > 10000:
-                xptp /= 1000
-                yptp /= 1000
+                xptp = xptp / 1000
+                yptp = yptp / 1000
             tmp0 = self.axes.transData.transform((vlim.x0, vlim.y0))
             tmp1 = self.axes.transData.transform((vlim.x1, vlim.y1))
             width, height = tmp1-tmp0
-            width /= self.mdata.shape[1]
-            height /= self.mdata.shape[0]
+            width = width / self.mdata.shape[1]
+            height = height / self.mdata.shape[0]
 
-            width *= xptp/vlim.width
-            height *= yptp/vlim.height
+            width = width * xptp/vlim.width
+            height = height * yptp/vlim.height
 
             cwidth = (2*self.mywidth-1)
             cb = QtGui.QBitmap(cwidth*width, cwidth*height)
@@ -385,10 +385,10 @@ class MyMplCanvas(FigureCanvas):
         if (right-left) > 10000 or (top-bottom) > 10000:
             self.axes.xaxis.set_label_text("Eastings (km)")
             self.axes.yaxis.set_label_text("Northings (km)")
-            left /= 1000.
-            right /= 1000.
-            top /= 1000.
-            bottom /= 1000.
+            left = left / 1000.
+            right = right / 1000.
+            top = top / 1000.
+            bottom = bottom / 1000.
             extent = (left, right, bottom, top)
         else:
             self.axes.xaxis.set_label_text("Eastings (m)")
@@ -458,10 +458,10 @@ class MyMplCanvas(FigureCanvas):
         if (right-left) > 10000 or (top-bottom) > 10000:
             self.axes.xaxis.set_label_text("Eastings (km)")
             self.axes.yaxis.set_label_text("Northings (km)")
-            left /= 1000.
-            right /= 1000.
-            top /= 1000.
-            bottom /= 1000.
+            left = left / 1000.
+            right = right / 1000.
+            top = top / 1000.
+            bottom = bottom / 1000.
         else:
             self.axes.xaxis.set_label_text("Eastings (m)")
             self.axes.yaxis.set_label_text("Northings (m)")
@@ -473,10 +473,10 @@ class MyMplCanvas(FigureCanvas):
         left, right = lmod.xrange
         bottom, top = lmod.yrange
         if (right-left) > 10000 or (top-bottom) > 10000:
-            left /= 1000.
-            right /= 1000.
-            top /= 1000.
-            bottom /= 1000.
+            left = left / 1000.
+            right = right / 1000.
+            top = top / 1000.
+            bottom = bottom / 1000.
 
         self.xlims = (left, right)
         self.ylims = (bottom, top)

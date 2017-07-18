@@ -287,9 +287,9 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         exclude = ['ProfPic']
         for i in tmplist:
             if i not in exclude:
-                tmp += self.context_menu[i].actions()
+                tmp = tmp+self.context_menu[i].actions()
             if i == 'ProfPic' and 'Raster' not in tmplist:
-                tmp += self.context_menu['Raster'].actions()
+                tmp = tmp+self.context_menu['Raster'].actions()
         local_menu = QtWidgets.QMenu()
         local_menu.addActions(tmp)
         local_menu.exec_(event.screenPos())
@@ -403,13 +403,13 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         parent = self.parent
         text = ''
         for i in odata:
-            text += '\n' + i + ' dataset:\n'
+            text = text + '\n' + i + ' dataset:\n'
             if i == 'Raster' or i == 'Cluster':
                 for j in odata[i]:
-                    text += '  '+j.dataid + '\n'
+                    text = text + '  '+j.dataid + '\n'
             if i == 'Model3D':
                 for j in odata[i][0].lith_list:
-                    text += '  '+j + '\n'
+                    text = text + '  '+j + '\n'
         parent.showdatainfo(text)
 
     def mouseMoveEvent(self, mouse_event):
@@ -746,7 +746,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 ifile = ifile[:len(item_name)]+'\n'+ifile[len(item_name):]
             if len(ifile) > 2*len(item_name):
                 ifile = ifile[:2*len(item_name)]+'...\n'
-            item_name += ':\n'+ifile
+            item_name = item_name +':\n'+ifile
             item_color = QtGui.QColor(0, 255, 0, 127)
 
 # Do text first, since this determines size of polygon
@@ -763,10 +763,10 @@ class MainWidget(QtWidgets.QMainWindow):
 
 # Actual polygon item
         text_width = text_item.boundingRect().width()
-        item.np_poly *= 1.5*text_width/item.np_poly[:, 0].ptp()
-        item.np_poly[:, 0] += (text_item.boundingRect().left() -
+        item.np_poly = item.np_poly * 1.5*text_width/item.np_poly[:, 0].ptp()
+        item.np_poly[:, 0] = item.np_poly[:, 0]+(text_item.boundingRect().left() -
                                item.np_poly[:, 0].min() - text_width/4)
-        item.np_poly[:, 1] += text_item.boundingRect().height()/2
+        item.np_poly[:, 1] = item.np_poly[:, 1]+text_item.boundingRect().height()/2
 
         my_points = []
         for i in item.np_poly:
@@ -913,8 +913,8 @@ class MainWidget(QtWidgets.QMainWindow):
         if replacelast is True:
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
-            txtmsg += '\n'
-        txtmsg += txt + '\n'
+            txtmsg = txtmsg + '\n'
+        txtmsg = txtmsg + txt + '\n'
         txtobj.setPlainText(txtmsg)
         tmp = txtobj.verticalScrollBar()
         tmp.setValue(tmp.maximumHeight())

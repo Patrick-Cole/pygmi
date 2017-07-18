@@ -492,7 +492,7 @@ class ProfileDisplay(object):
             regtmp = self.lmod1.gregional
 
         if self.lmod1.is_ew and data is not None:
-            self.mmc.ptitle += 'West to East'
+            self.mmc.ptitle = self.mmc.ptitle + 'West to East'
             self.mmc.xlabel = "Eastings (m)"
 
             tmpprof = data[self.lmod1.numy-1-self.lmod1.curprof, :]+regtmp
@@ -502,7 +502,7 @@ class ProfileDisplay(object):
             extent = self.lmod1.xrange
 
         elif not(self.lmod1.is_ew) and data is not None:
-            self.mmc.ptitle += 'South to North'
+            self.mmc.ptitle = self.mmc.ptitle + 'South to North'
             self.mmc.xlabel = "Northings (m)"
 
             tmpprof = data[::-1, self.lmod1.curprof]+regtmp
@@ -751,10 +751,10 @@ class MyMplCanvas(FigureCanvas):
             tmp0 = self.axes.transData.transform((vlim.x0, vlim.y0))
             tmp1 = self.axes.transData.transform((vlim.x1, vlim.y1))
             width, height = tmp1-tmp0
-            width /= self.mdata.shape[1]
-            height /= self.mdata.shape[0]
-            width *= xptp/vlim.width
-            height *= yptp/vlim.height
+            width = width / self.mdata.shape[1]
+            height = height / self.mdata.shape[0]
+            width = width * xptp/vlim.width
+            height = height * yptp/vlim.height
             cwidth = (2*self.mywidth-1)
             cb = QtGui.QBitmap(cwidth*width, cwidth*height)
             cb.fill(QtCore.Qt.color1)

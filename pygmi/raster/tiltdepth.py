@@ -302,13 +302,13 @@ class TiltDepth(QtWidgets.QDialog):
         dy2 = gym45[dmin2] - gy0
 
         grad = np.arctan2(dy1, dx1)*180/pi
-        grad[grad > 90] -= 180
-        grad[grad < -90] += 180
+        grad[grad > 90] = grad[grad > 90] - 180
+        grad[grad < -90] = grad[grad < -90] + 180
         gtmp1 = np.abs(90-np.abs(grad-cgrad0))
 
         grad = np.arctan2(dy2, dx2)*180/pi
-        grad[grad > 90] -= 180
-        grad[grad < -90] += 180
+        grad[grad > 90] = grad[grad > 90] - 180
+        grad[grad < -90] = grad[grad < -90] + 180
         gtmp2 = np.abs(90-np.abs(grad-cgrad0))
 
         gtmp = np.logical_and(gtmp1 <= 10, gtmp2 <= 10)
@@ -383,7 +383,7 @@ def vgrad(cnt):
 
     n = 0
     for cntvert in cnt.allsegs[0]:
-        n += 1
+        n = n + 1
 
         dx = np.diff(cntvert[:, 0])
         dy = np.diff(cntvert[:, 1])
@@ -397,8 +397,8 @@ def vgrad(cnt):
 
     cgrad = np.arctan2(dy2, dx2)
     cgrad = np.rad2deg(cgrad)
-    cgrad[cgrad > 90] -= 180.
-    cgrad[cgrad < -90] += 180.
+    cgrad[cgrad > 90] = cgrad[cgrad > 90] - 180.
+    cgrad[cgrad < -90] = cgrad[cgrad < -90] + 180.
 
     return np.array(gx), np.array(gy), cgrad, np.array(cntid)
 
@@ -424,7 +424,7 @@ def vgrad2(cnt):
 
     cgrad = np.arctan2(dy2, dx2)
     cgrad = np.rad2deg(cgrad)
-    cgrad[cgrad > 90] -= 180.
-    cgrad[cgrad < -90] += 180.
+    cgrad[cgrad > 90] = cgrad[cgrad > 90] - 180.
+    cgrad[cgrad < -90] = cgrad[cgrad < -90] + 180.
 
     return gx, gy, cgrad, np.zeros_like(gx)

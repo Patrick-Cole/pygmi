@@ -136,14 +136,14 @@ class GraphHist(FigureCanvas):
         """ Routine to setup the coordinates for the scattergram """
         self.xcoord = self.data[self.cindx[0]].data.flatten()
         self.ycoord = self.data[self.cindx[1]].data.flatten()
-        self.xcoord -= self.xcoord.min()
-        self.ycoord -= self.ycoord.min()
+        self.xcoord = self.xcoord - self.xcoord.min()
+        self.ycoord = self.ycoord - self.ycoord.min()
         xptp = self.xcoord.ptp()
         yptp = self.ycoord.ptp()
         xstep = xptp / 50
         ystep = yptp / 50
-        self.xcoord /= xstep
-        self.ycoord /= ystep
+        self.xcoord = self.xcoord / xstep
+        self.ycoord = self.ycoord / ystep
         self.xcoord = self.xcoord.astype(int)
         self.ycoord = self.ycoord.astype(int)
 
@@ -594,8 +594,8 @@ class ScatterPlot(QtWidgets.QDialog):
         if 'Cluster' in self.indata:
             self.hist.cdata = self.indata['Cluster']
             self.map.cdata = self.indata['Cluster']
-            cbands += [i.dataid for i in self.indata['Cluster']]
-            mbands += [i.dataid for i in self.indata['Cluster']]
+            cbands = cbands + [i.dataid for i in self.indata['Cluster']]
+            mbands = mbands + [i.dataid for i in self.indata['Cluster']]
 
         self.cp_combo3.clear()
         self.map_combo2.clear()

@@ -278,9 +278,9 @@ class SIMP(object):
             tmp2 = ''
             for i in tmp:
                 if i.isalnum() or i == '.' or i == '-' or i == '+' or i == '=':
-                    tmp2 += i
+                    tmp2 = tmp2 + i
                 else:
-                    tmp2 += ''
+                    tmp2 = tmp2 + ''
             tmp = tmp2
 # extracted and forced negative
             self.lat = -1*abs(float(tmp[tmp.find('.')-2:tmp.find('.')+3]))

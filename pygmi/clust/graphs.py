@@ -206,7 +206,7 @@ class PlotVRCetc(GraphWindow):
         data = self.indata['Cluster']
 
         if data[0].vrc is not None:
-            items += ['Variance Ratio Criterion']
+            items = items + ['Variance Ratio Criterion']
 
         if not items or len(data) == 1:
             self.parent.showprocesslog('Your dataset does not qualify')

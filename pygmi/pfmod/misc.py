@@ -175,7 +175,7 @@ def rcopy_dialog(lmod1, islayer=True, is_ew=True):
         mtmp2 = mtmp.copy()
         mtmp2[mlslice == 0] = 0
         ltmp[mlslice == 1] = 0
-        ltmp += mtmp2
+        ltmp = ltmp + mtmp2
 
 
 class ProgressBar(object):
@@ -194,9 +194,9 @@ class ProgressBar(object):
     def incr(self):
         """ increases value by one """
         if self.value < self.max:
-            self.value += 1
+            self.value = self.value + 1
             if self.value == self.max and self.mvalue < self.mmax:
-                self.mvalue += 1
+                self.mvalue = self.mvalue + 1
                 self.value = 0
                 self.pbarmain.setValue(self.mvalue)
             if self.mvalue == self.mmax:
@@ -222,7 +222,7 @@ class ProgressBar(object):
         i = 0
         for obj in iterable:
             yield obj
-            i += 1
+            i = i + 1
 
             time2 = time.clock()
             if time2-time1 > 1:
@@ -246,7 +246,7 @@ class ProgressBar(object):
 
     def incrmain(self, i=1):
         """ increases value by one """
-        self.mvalue += i
+        self.mvalue = self.mvalue + i
         self.pbarmain.setValue(self.mvalue)
 
         n = self.mvalue
@@ -445,7 +445,7 @@ class MergeMod3D(QtWidgets.QDialog):
         for lith in all_liths:
             if lith == 'Background':
                 continue
-            lithcnt += 1
+            lithcnt = lithcnt + 1
             if lith in datslave.lith_list:
                 oldlithindex = datslave.lith_list[lith].lith_index
                 newmlut[lithcnt-9000] = datslave.mlut[oldlithindex]
@@ -463,7 +463,8 @@ class MergeMod3D(QtWidgets.QDialog):
         datmaster.mlut = newmlut
         datmaster.lith_index[datmaster.lith_index == 0] = \
             datslave.lith_index[datmaster.lith_index == 0]
-        datmaster.lith_index[datmaster.lith_index > 9000] -= 9000
+        datmaster.lith_index[datmaster.lith_index > 9000] = \
+            datmaster.lith_index[datmaster.lith_index > 9000] - 9000
 
         for lith in datslave.lith_list:
             if lith not in datmaster.lith_list:
@@ -502,7 +503,7 @@ def gmerge(master, slave, xrange=None, yrange=None):
         doffset = 0.0
         if data.data.min() <= 0:
             doffset = data.data.min()-1.
-            data.data -= doffset
+            data.data = data.data - doffset
         data.data.set_fill_value(0)
         tmp = data.data.filled()
         data.data = np.ma.masked_equal(tmp, 0)
@@ -517,7 +518,7 @@ def gmerge(master, slave, xrange=None, yrange=None):
         dat.append(gdal_to_dat(dest, data.dataid))
         dat[-1].data = np.ma.masked_outside(dat[-1].data, 0.1,
                                             data.data.max() + 1000)
-        dat[-1].data += doffset
+        dat[-1].data = dat[-1].data + doffset
         dat[-1].data.set_fill_value(1e+20)
         tmp = dat[-1].data.filled()
         dat[-1].data = np.ma.masked_equal(tmp, 1e+20)

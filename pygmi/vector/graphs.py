@@ -247,13 +247,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
             xtmp = pnts[0, 1:]-pnts[0, :-1]
             ytmp = pnts[1, 1:]-pnts[1, :-1]
             ftmp = np.arctan2(xtmp, ytmp)
-            ftmp[ftmp < 0] += 2*np.pi
-            ftmp[ftmp > np.pi] -= np.pi
+            ftmp[ftmp < 0] = ftmp[ftmp < 0] + 2*np.pi
+            ftmp[ftmp > np.pi] = ftmp[ftmp > np.pi] - np.pi
             ltmp = np.sqrt(xtmp**2+ytmp**2)
 
-            fangle += [np.sum(ftmp*ltmp)/ltmp.sum()]
-            fcnt += ftmp.tolist()
-            flen += ltmp.tolist()
+            fangle = fangle + [np.sum(ftmp*ltmp)/ltmp.sum()]
+            fcnt = fcnt + ftmp.tolist()
+            flen = flen + ltmp.tolist()
 
         fangle = np.array(fangle)
         fcnt = np.array(fcnt)

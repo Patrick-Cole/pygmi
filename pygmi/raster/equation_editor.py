@@ -184,7 +184,7 @@ class EquationEditor(QtWidgets.QDialog):
         self.localdict = {}
         j = 0
         for i in indata:
-            j += 1
+            j = j + 1
             self.localdict['i'+str(j)] = i.data
             self.bands[i.dataid] = 'i'+str(j)
             self.bandsall.append(i.data)

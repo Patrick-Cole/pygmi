@@ -310,7 +310,7 @@ class ParamDisplay(object):
         lithn.bdensity = litho.bdensity
         lithn.zobsg = litho.zobsg
 
-        self.max_lith_index += 1
+        self.max_lith_index = self.max_lith_index + 1
         lithn.lith_index = self.max_lith_index
 
         if deftxt == 'Background':

@@ -229,7 +229,7 @@ def savetable(ifile, bands, cols, data):
 
     htmp = cols[0]
     for i in cols[1:]:
-        htmp += ',' + i
+        htmp = htmp + ',' + i
 
     for k, _ in enumerate(bands):
         fobj.write(bands[k]+'\n')
@@ -237,7 +237,7 @@ def savetable(ifile, bands, cols, data):
         for i, _ in enumerate(data[k]):
             rtmp = str(data[k][i][0])
             for j in range(1, len(data[k][0])):
-                rtmp += ','+str(data[k][i][j])
+                rtmp = rtmp + ','+str(data[k][i][j])
             fobj.write(rtmp+'\n')
         fobj.write('\n')
     fobj.close()

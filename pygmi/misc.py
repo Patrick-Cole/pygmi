@@ -129,7 +129,7 @@ class ProgressBar(QtWidgets.QProgressBar):
         i = 0
         for obj in iterable:
             yield obj
-            i += 1
+            i = i+1
 
             time2 = time.clock()
             if time2-time1 > 1:

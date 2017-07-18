@@ -161,7 +161,7 @@ class ImportMod3D(object):
 
         lindx = 0
         for itxt in labelu:
-            lindx += 1
+            lindx = lindx + 1
             if itxt == 'Background':
                 lmod.lith_list[itxt] = grvmag3d.GeoData(
                     self.parent, ncols=lmod.numx, nrows=lmod.numy,
@@ -225,11 +225,11 @@ class ImportMod3D(object):
         dz_u = np.diff(z_u)
 
         if dx_u[0] < 0:
-            dx_u *= -1
+            dx_u = -1 * dx_u
         if dy_u[0] < 0:
-            dy_u *= -1
+            dy_u = -1 * dy_u
         if dz_u[0] < 0:
-            dz_u *= -1
+            dz_u = -1 * dz_u
 
         xcell = np.max(dx_u)
         ycell = np.max(dy_u)
@@ -255,7 +255,7 @@ class ImportMod3D(object):
 
         lindx = 0
         for itxt in labelu:
-            lindx += 1
+            lindx = lindx + 1
             lmod.mlut[lindx] = [np.random.randint(0, 255),
                                 np.random.randint(0, 255),
                                 np.random.randint(0, 255)]
@@ -643,16 +643,16 @@ class ExportMod3D(object):
             if points == []:
                 continue
 
-            points -= mvis_3d.origin
+            points = points - mvis_3d.origin
 
             x = points[:, 0]
             y = points[:, 1]
             earthrad = 6378137.
             z = earthrad-np.sqrt(earthrad**2-(x**2+y**2))
-            points[:, 2] -= z
+            points[:, 2] = points[:, 2] - z
 
             if rev == -1:
-                points += [xrng.ptp(), yrng.ptp(), 0]
+                points = points + [xrng.ptp(), yrng.ptp(), 0]
 
             norm = np.abs(mvis_3d.gnorms[lith])
             clrtmp = np.array(self.lmod.mlut[lith])/255.
@@ -665,9 +665,9 @@ class ExportMod3D(object):
                 norm = norm[:60000]
                 faces = faces[faces.max(1) < 60000]
 
-            lithcnt += 1
+            lithcnt = lithcnt + 1
 
-            dockml += (
+            dockml = dockml + (
                 '    <Placemark>\r\n'
                 '      <name>' + curmod + '</name>\r\n'
                 '      <description></description>\r\n'
@@ -840,7 +840,7 @@ class ExportMod3D(object):
             res = prj.TransformPoint(x_2, y_2)
             loneast, latnorth = res[0], res[1]
 
-            dockml += (
+            dockml = dockml + (
                 '    <GroundOverlay>\r\n'
                 '        <name>' + i + '</name>\r\n'
                 '        <description></description>\r\n'
@@ -870,7 +870,7 @@ class ExportMod3D(object):
             zfile.write('tmp930.png', 'models\\'+i+'.png')
             os.remove('tmp930.png')
 
-        dockml += (
+        dockml = dockml + (
             '  </Folder>\r\n'
             '  \r\n'
             '  </kml>')
