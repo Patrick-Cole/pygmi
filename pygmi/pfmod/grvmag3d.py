@@ -829,7 +829,7 @@ def gridmatch(lmod, ctxt, rtxt):
     doffset = 0.0
     if data.data.min() <= 0:
         doffset = data.data.min()-1.
-        data.data -= doffset
+        data.data = data.data - doffset
 
     gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
     gtr = (data2.tlx, data2.xdim, 0.0, data2.tly, 0.0, -data2.ydim)
@@ -841,8 +841,8 @@ def gridmatch(lmod, ctxt, rtxt):
     dat = gdal_to_dat(dest, data.dataid)
 
     if doffset != 0.0:
-        dat.data += doffset
-        data.data += doffset
+        dat.data = dat.data + doffset
+        data.data = data.data + doffset
 
     return dat.data
 
