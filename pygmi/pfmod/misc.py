@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """ These are miscellaneous functions for the program """
 
+import pdb
 import time
 from PyQt5 import QtWidgets, QtCore, QtGui
 import pygmi.menu_default as menu_default
@@ -175,7 +176,7 @@ def rcopy_dialog(lmod1, islayer=True, is_ew=True):
         mtmp2 = mtmp.copy()
         mtmp2[mlslice == 0] = 0
         ltmp[mlslice == 1] = 0
-        ltmp = ltmp + mtmp2
+        ltmp += mtmp2
 
 
 class ProgressBar(object):
