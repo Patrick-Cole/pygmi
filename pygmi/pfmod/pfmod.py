@@ -153,22 +153,22 @@ class MainWidget(QtWidgets.QMainWindow):
         htmlfile = ''
 
         if self.tabwidget.tabText(index) == 'Geophysical Parameters':
-            htmlfile = htmlfile + 'pygmi.pfmod.param'
+            htmlfile += 'pygmi.pfmod.param'
 
         if self.tabwidget.tabText(index) == 'Model Extent Parameters':
-            htmlfile = htmlfile + 'pygmi.pfmod.mext'
+            htmlfile += 'pygmi.pfmod.mext'
 
         if self.tabwidget.tabText(index) == 'Profile Editor':
-            htmlfile = htmlfile + 'pygmi.pfmod.prof'
+            htmlfile += 'pygmi.pfmod.prof'
 
         if self.tabwidget.tabText(index) == 'Custom Profile Editor':
-            htmlfile = htmlfile + 'pygmi.pfmod.pview'
+            htmlfile += 'pygmi.pfmod.pview'
 
         if self.tabwidget.tabText(index) == 'Layer Editor':
-            htmlfile = htmlfile + 'pygmi.pfmod.layer'
+            htmlfile += 'pygmi.pfmod.layer'
 
         if self.tabwidget.tabText(index) == 'Data Display':
-            htmlfile = htmlfile + 'pygmi.pfmod.ddisp'
+            htmlfile += 'pygmi.pfmod.ddisp'
 
         menu_default.HelpDocs(self, htmlfile)
 
@@ -194,7 +194,7 @@ class MainWidget(QtWidgets.QMainWindow):
         if 'ProfPic' in self.indata:
             icnt = 0
             for i in self.indata['ProfPic']:
-                icnt = icnt + 1
+                icnt += 1
                 self.lmod1.profpics['Profile: '+str(icnt)] = i
 
         self.show()
@@ -213,8 +213,8 @@ class MainWidget(QtWidgets.QMainWindow):
         if replacelast is True:
             self.txtmsg = self.txtmsg[:self.txtmsg.rfind('\n')]
             self.txtmsg = self.txtmsg[:self.txtmsg.rfind('\n')]
-            self.txtmsg = self.txtmsg + '\n'
-        self.txtmsg = self.txtmsg + txt + '\n'
+            self.txtmsg += '\n'
+        self.txtmsg += txt + '\n'
         self.textbrowser.setPlainText(self.txtmsg)
         tmp = self.textbrowser.verticalScrollBar()
         tmp.setValue(tmp.maximumHeight())

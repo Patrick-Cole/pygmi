@@ -138,7 +138,7 @@ class TensorCube(object):
         mi = self.susc*self.hintn/(400*np.pi)*np.array([fa, fb, fc])
         m3 = mr+mi
         m = np.sqrt(m3 @ m3)
-        m3 = m3 / m
+        m3 /= m
         self.a, self.b, self.g = m3
 
         hnew = m*(400*np.pi/self.susc)
@@ -1124,7 +1124,7 @@ def gridmatch(lmod, ctxt, rtxt):
     doffset = 0.0
     if data.data.min() <= 0:
         doffset = data.data.min()-1.
-        data.data = data.data - doffset
+        data.data -= doffset
 
     gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
     gtr = (data2.tlx, data2.xdim, 0.0, data2.tly, 0.0, -data2.ydim)
@@ -1322,7 +1322,7 @@ def calc_mag_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Calculated '+i].data = mgvalin[i]
 
         if lmod.lith_index.max() <= 0:
-            lmod.griddata[i].data = lmod.griddata[i].data * 0.
+            lmod.griddata[i].data *= 0.
 
     if parent is not None:
         tmp = [i for i in set(lmod.griddata.values())]
@@ -1523,7 +1523,7 @@ def calc_grv_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Calculated '+i].data = mgvalin[i]
 
         if lmod.lith_index.max() <= 0:
-            lmod.griddata[i].data = lmod.griddata[i].data * 0.
+            lmod.griddata[i].data *= 0.
 
     if ('Gravity Regional' in lmod.griddata and
             np.unique(modindcheck).size == 1):
@@ -1604,7 +1604,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
     else:
         clrtmp = np.arange(len(inputliths))/(len(inputliths)-1)
     clrtmp = cm.jet(clrtmp)[:, :-1]
-    clrtmp = clrtmp * 255
+    clrtmp *= 255
     clrtmp = clrtmp.astype(int)
 
     for i in inputliths:
@@ -1661,10 +1661,10 @@ def dat_extent(dat, axes):
     if (right-left) > 10000 or (top-bottom) > 10000:
         axes.xaxis.set_label_text("Eastings (km)")
         axes.yaxis.set_label_text("Northings (km)")
-        left = left / 1000.
-        right = right / 1000.
-        top = top / 1000.
-        bottom = bottom / 1000.
+        left /= 1000.
+        right /= 1000.
+        top /= 1000.
+        bottom /= 1000.
     else:
         axes.xaxis.set_label_text("Eastings (m)")
         axes.yaxis.set_label_text("Northings (m)")

@@ -275,7 +275,7 @@ class MyMplCanvas(FigureCanvas):
 
         self.prf = self.axes.plot([0, 1], [0, 1])
         for _ in range(ncust):
-            self.prf = self.prf + self.axes.plot([0, 1], [0, 1])
+            self.prf += self.axes.plot([0, 1], [0, 1])
 
         self.figure.canvas.draw()
 
@@ -287,13 +287,13 @@ class MyMplCanvas(FigureCanvas):
         if diff < 1:
             return
         for _ in range(diff):
-            self.prf = self.prf + self.axes.plot([0, 1], [0, 1])
+            self.prf += self.axes.plot([0, 1], [0, 1])
 
     def init_grid1(self, dat1, reg=0, lbl=''):
         """ Updates the upper single color map """
         try:
             if dat1.units != '':
-                lbl = lbl + ' ('+dat1.units+')'
+                lbl += ' ('+dat1.units+')'
         except AttributeError:
             pass
         self.ibar.set_label(lbl)
@@ -323,7 +323,7 @@ class MyMplCanvas(FigureCanvas):
         while doing so - in order to update the blit """
         try:
             if dat2.units != '':
-                lbl = lbl + ' ('+dat2.units+')'
+                lbl += ' ('+dat2.units+')'
         except AttributeError:
             pass
         self.ibar2.set_label(lbl)

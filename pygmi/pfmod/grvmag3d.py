@@ -704,7 +704,7 @@ class GeoData(object):
                         x_2, y_2, z2, np.ones(2), np.ones(2), np.ones(2),
                         np.array([-1, 1]))
 
-            gval = gval * 6.6732e-3
+            gval *= 6.6732e-3
             glayers.append(gval)
 
         self.glayers = np.array(glayers)
@@ -765,7 +765,7 @@ class GeoData(object):
 
         mt = np.sqrt(m3 @ m3)
         if mt > 0:
-            m3 = m3 / mt
+            m3 /= mt
 
         ma, mb, mc = m3
 
@@ -829,7 +829,7 @@ def gridmatch(lmod, ctxt, rtxt):
     doffset = 0.0
     if data.data.min() <= 0:
         doffset = data.data.min()-1.
-        data.data = data.data - doffset
+        data.data -= doffset
 
     gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
     gtr = (data2.tlx, data2.xdim, 0.0, data2.tly, 0.0, -data2.ydim)
@@ -841,8 +841,8 @@ def gridmatch(lmod, ctxt, rtxt):
     dat = gdal_to_dat(dest, data.dataid)
 
     if doffset != 0.0:
-        dat.data = dat.data + doffset
-        data.data = data.data + doffset
+        dat.data += doffset
+        data.data += doffset
 
     return dat.data
 
@@ -984,7 +984,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                     baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
                                       aaa[1], mglayers, hcorflat, mijk, juni,
                                       iuni)
-                    mgvalin = mgvalin + baba
+                    mgvalin += baba
             else:
                 pool = Pool()
                 baba = []
@@ -996,7 +996,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                                                        mglayers, hcorflat,
                                                        mijk, juni, iuni,)))
                 for p in baba:
-                    mgvalin = mgvalin + p.get()
+                    mgvalin += p.get()
                 pool.close()
                 del baba
 
@@ -1013,7 +1013,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                                       aaa[0],
                                       aaa[1], mglayers, hcorflat, mijk, juni,
                                       iuni)
-                    mgvalin = mgvalin - baba
+                    mgvalin -= baba
             else:
                 pool = Pool()
                 baba = []
@@ -1026,7 +1026,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                                                        mglayers, hcorflat,
                                                        mijk, juni, iuni,)))
                 for p in baba:
-                    mgvalin = mgvalin - p.get()
+                    mgvalin -= p.get()
                 pool.close()
                 del baba
 
@@ -1043,9 +1043,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
     if np.unique(modindcheck).size > 1:
         if magcalc:
-            mgvalin = mgvalin + lmod.griddata['Calculated Magnetics'].data
+            mgvalin += lmod.griddata['Calculated Magnetics'].data
         else:
-            mgvalin = mgvalin + lmod.griddata['Calculated Gravity'].data
+            mgvalin += lmod.griddata['Calculated Gravity'].data
 
     if magcalc:
         lmod.griddata['Calculated Magnetics'].data = mgvalin
@@ -1055,11 +1055,11 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     if ('Gravity Regional' in lmod.griddata and not magcalc and
             np.unique(modindcheck).size == 1):
         zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
-        lmod.griddata['Calculated Gravity'].data = lmod.griddata['Calculated Gravity'].data + zfin
+        lmod.griddata['Calculated Gravity'].data += zfin
 
     if lmod.lith_index.max() <= 0:
-        lmod.griddata['Calculated Magnetics'].data = lmod.griddata['Calculated Magnetics'].data * 0.
-        lmod.griddata['Calculated Gravity'].data = lmod.griddata['Calculated Gravity'].data * 0.
+        lmod.griddata['Calculated Magnetics'].data *= 0.
+        lmod.griddata['Calculated Gravity'].data *= 0.
 
     if 'Magnetic Dataset' in lmod.griddata:
         ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
@@ -1113,7 +1113,7 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
                 xoff2 = xoff + aaa0[ijk]
                 yoff2 = aaa1[ijk]+yoff
                 hcor2 = hcorflat[ijk]+k
-                mgval[ijk] = mgval[ijk] + mlayers[hcor2, xoff2, yoff2]
+                mgval[ijk] += mlayers[hcor2, xoff2, yoff2]
 
     return mgval
 
@@ -1149,11 +1149,11 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
     else:
         clrtmp = np.arange(len(inputliths))/(len(inputliths)-1)
     clrtmp = cm.jet(clrtmp)[:, :-1]
-    clrtmp = clrtmp * 255
+    clrtmp *= 255
     clrtmp = clrtmp.astype(int)
 
     for i in inputliths:
-        j = j + 1
+        j += 1
         lmod.mlut[j] = clrtmp[j-1]
         lmod.lith_list[i] = GeoData(None, numx, numy, numz, dxy, d_z, mht, ght)
 
@@ -1285,7 +1285,7 @@ def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
                         arg3 = rijk+x[i]
                         arg2 = np.log(arg2)
                         arg3 = np.log(arg3)
-                        sumi = sumi + ijk*(z[k]*arg1-x[i]*arg2-y[j]*arg3)
+                        sumi += ijk*(z[k]*arg1-x[i]*arg2-y[j]*arg3)
             gval[ii, jj] = sumi
 
     return gval
@@ -1332,9 +1332,9 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
                     r12 = r12a+r12b
                     I = (1/L)*np.log((r12+L)/(r12-L))
 
-                    p = p + I*edge[eno2, 0]
-                    q = q + I*edge[eno2, 1]
-                    r = r + I*edge[eno2, 2]
+                    p += I*edge[eno2, 0]
+                    q += I*edge[eno2, 1]
+                    r += I*edge[eno2, 2]
 
                 # From omega, l, m, n PQR get components of field due to face f
                 # dp1 is dot product between (l,m,n) and (x,y,z) or un and r.
@@ -1370,7 +1370,7 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
                       p3m*(p10*p40 + p11*p41 + p12*p42) +
                       p4m*(p10*p30 + p11*p31 + p12*p32))
 
-                omega = omega - 2*np.arctan2(wn, wd)
+                omega += -2*np.arctan2(wn, wd)
 
                 # l, m, n and components of unit normal to a face.
                 gmtf1 = l*omega+n*q-m*r
@@ -1381,9 +1381,9 @@ def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
                 # info. pd is the field contribution. f is face. pr is profile.
                 # st is station.
 
-                mgval[0, pr, st] = mgval[0, pr, st] + pd[f]*gmtf1  # Hx
-                mgval[1, pr, st] = mgval[1, pr, st] + pd[f]*gmtf2  # Hy
-                mgval[2, pr, st] = mgval[2, pr, st] + pd[f]*gmtf3  # Hz
+                mgval[0, pr, st] += pd[f]*gmtf1  # Hx
+                mgval[1, pr, st] += pd[f]*gmtf2  # Hy
+                mgval[2, pr, st] += pd[f]*gmtf3  # Hz
 
     return mgval
 
@@ -1423,10 +1423,10 @@ def dat_extent(dat, axes):
     if (right-left) > 10000 or (top-bottom) > 10000:
         axes.xaxis.set_label_text("Eastings (km)")
         axes.yaxis.set_label_text("Northings (km)")
-        left = left / 1000.
-        right = right / 1000.
-        top = top / 1000.
-        bottom = bottom / 1000.
+        left /= 1000.
+        right /= 1000.
+        top /= 1000.
+        bottom /= 1000.
     else:
         axes.xaxis.set_label_text("Eastings (m)")
         axes.yaxis.set_label_text("Northings (m)")

@@ -164,8 +164,8 @@ def datacommon(data, tmp1, tmp2, tmp3):
 
         dtmp = data.data.data
         mtmp = data.data.mask
-        dtmp = dtmp - tmp1
-        dtmp = dtmp / tmp2
+        dtmp -= tmp1
+        dtmp /= tmp2
 
         data.data = np.ma.array(dtmp, mask=mtmp)
         n_norms = len(data.norm)

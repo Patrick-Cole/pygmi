@@ -437,7 +437,7 @@ def get_modis(ifile):
             rtmp = dataset.GetRasterBand(i2+1)
             bandid = rtmp.GetDescription()
             nval = rtmp.GetNoDataValue()
-            i = i + 1
+            i += 1
 
             dat.append(Data())
             if rtmp2.ndim == 3:
@@ -557,7 +557,7 @@ def get_aster(ifile):
 
         nval = 0
 
-        i = i + 1
+        i += 1
 
         dat.append(Data())
         dat[i].data = rtmp2
@@ -668,7 +668,7 @@ def get_aster_ged(ifile):
 
         for i2 in range(nbands):
             nval = -9999
-            i = i + 1
+            i += 1
 
             dat.append(Data())
             if rtmp2.ndim == 3:
@@ -1061,7 +1061,7 @@ class ExportData(object):
                         fno.write("\n")
 
                     fno.write(str(tmp[i, j]) + "  ")
-                    kkk = kkk + 1
+                    kkk += 1
 
             fno.close()
 
@@ -1197,7 +1197,7 @@ def get_geopak(hfile):
     off = 0
     fnew = []
     while off < len(fall):
-        off = off + 1
+        off += 1
         breclen = np.frombuffer(fall, dtype=np.uint8, count=1, offset=off)[0]
 
         if breclen == 130:
@@ -1208,10 +1208,10 @@ def get_geopak(hfile):
         if breclen == 129:
             reclen = 128
 
-        off = off + 1
+        off += 1
 
         fnew.append(fall[off:off+reclen])
-        off = off + reclen
+        off += reclen
 
     fnew = b''.join(fnew)
     header = np.frombuffer(fnew, dtype=np.float32, count=32, offset=0)

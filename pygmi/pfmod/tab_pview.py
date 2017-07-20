@@ -160,7 +160,7 @@ class ProfileDisplay(object):
         if not okay:
             return
 
-        self.pcntmax = self.pcntmax + 1
+        self.pcntmax += 1
         self.xnodes[self.pcntmax] = [float(tx0), float(tx1)]
         self.ynodes[self.pcntmax] = [float(ty0), float(ty1)]
 
@@ -369,7 +369,7 @@ class ProfileDisplay(object):
 
         x_0, x_1 = self.xnodes[self.curprof]
         y_0, y_1 = self.ynodes[self.curprof]
-        self.mmc.ptitle = self.mmc.ptitle + str((x_0, y_0)) + ' to ' + str((x_1, y_1))
+        self.mmc.ptitle += str((x_0, y_0)) + ' to ' + str((x_1, y_1))
 
         if data is not None:
             xxx, yyy, rdist = self.cp_init(data)
@@ -506,10 +506,10 @@ class MyMplCanvas(FigureCanvas):
             tmp0 = self.axes.transData.transform((vlim.x0, vlim.y0))
             tmp1 = self.axes.transData.transform((vlim.x1, vlim.y1))
             width, height = tmp1-tmp0
-            width = width / self.mdata.shape[1]
-            height = height / self.mdata.shape[0]
-            width = width * dlim.width/vlim.width
-            height = height * dlim.height/vlim.height
+            width /= self.mdata.shape[1]
+            height /= self.mdata.shape[0]
+            width *= dlim.width/vlim.width
+            height *= dlim.height/vlim.height
             cwidth = (2*self.mywidth-1)
             cb = QtGui.QBitmap(cwidth*width, cwidth*height)
             cb.fill(QtCore.Qt.color1)
@@ -581,7 +581,7 @@ class MyMplCanvas(FigureCanvas):
             tmp = tmp.nonzero()[0]
             if tmp[-1] >= xend:
                 xend = tmp[-1]+1
-            i = i + 1
+            i += 1
 
         if xstart < xend and ystart < yend:
             mtmp = self.mdata[ystart:yend, xstart:xend]

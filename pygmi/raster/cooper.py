@@ -333,9 +333,9 @@ class Visibility2d(QtWidgets.QDialog):
             data2[-3].data = vtot
             data2[-2].data = vstd
             data2[-1].data = vsum
-            data2[-3].dataid = data2[-3].dataid + ' Total Visibility'
-            data2[-2].dataid = data2[-2].dataid + ' Visibility Variation'
-            data2[-1].dataid = data2[-1].dataid + ' Visibility Vector Resultant'
+            data2[-3].dataid += ' Total Visibility'
+            data2[-2].dataid += ' Visibility Variation'
+            data2[-1].dataid += ' Visibility Vector Resultant'
 
         self.outdata['Raster'] = data2
         self.parent.showprocesslog('Finished!')
@@ -560,11 +560,11 @@ class Tilt1(QtWidgets.QDialog):
             data2[-3].data = t2
             data2[-2].data = ta
             data2[-1].data = tdx
-            data2[-5].dataid = data2[-5].dataid + ' Standard Tilt Angle'
-            data2[-4].dataid = data2[-4].dataid + ' Hyperbolic Tilt Angle'
-            data2[-3].dataid = data2[-3].dataid + ' 2nd Order Tilt Angle'
-            data2[-2].dataid = data2[-2].dataid + ' Tilt Based Directional Derivative'
-            data2[-1].dataid = data2[-1].dataid + ' Total Derivative'
+            data2[-5].dataid += ' Standard Tilt Angle'
+            data2[-4].dataid += ' Hyperbolic Tilt Angle'
+            data2[-3].dataid += ' 2nd Order Tilt Angle'
+            data2[-2].dataid += ' Tilt Based Directional Derivative'
+            data2[-1].dataid += ' Total Derivative'
 
         for i in data2:
             i.data.data[i.data.mask] = i.nullvalue

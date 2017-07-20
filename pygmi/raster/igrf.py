@@ -268,7 +268,7 @@ class IGRF(QtWidgets.QDialog):
         irec_pos = []
 # First model will be 0
         for i in modbuff:
-            fileline = fileline + 1  # On new line
+            fileline += 1  # On new line
             if i[:3] == '   ':
                 i2 = i.split()
                 model.append(i2[0])
@@ -355,7 +355,7 @@ class IGRF(QtWidgets.QDialog):
         self.outdata['Raster'][-1].data = igrf_F
         self.outdata['Raster'][-1].dataid = 'IGRF'
         self.outdata['Raster'].append(copy.deepcopy(maggrid))
-        self.outdata['Raster'][-1].data = self.outdata['Raster'][-1].data - igrf_F
+        self.outdata['Raster'][-1].data -= igrf_F
         self.outdata['Raster'][-1].dataid = 'Magnetic Data: IGRF Corrected'
 
         self.reportback('Calculation: Completed', True)
@@ -393,7 +393,7 @@ class IGRF(QtWidgets.QDialog):
 
         for nn in range(1, nmax_of_gh+1):
             for _ in range(nn+1):
-                cnt = cnt + 1
+                cnt += 1
                 tmp = file[strec+cnt]
                 tmp = tmp.split()
                 m = int(tmp[1])

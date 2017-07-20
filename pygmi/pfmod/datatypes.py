@@ -117,9 +117,9 @@ class LithModel(object):
         if zvals[-1] == self.zrange[1]:
             yvals = yvals[:-1]
 
-        xvals = xvals + 0.5 * self.dxy
-        yvals = yvals + 0.5 * self.dxy
-        zvals = zvals + 0.5 * self.d_z
+        xvals += 0.5 * self.dxy
+        yvals += 0.5 * self.dxy
+        zvals += 0.5 * self.d_z
 
         xvals = xvals[self.oxrng[0] < xvals]
         xvals = xvals[xvals < self.oxrng[1]]

@@ -99,9 +99,9 @@ def animationStep():  # Setting abimation for centre cube under rotation
     """Update animated parameters."""
     global animationAngle
     global frameRate
-    animationAngle = animationAngle + 2
+    animationAngle += 2
     while animationAngle > 360:
-        animationAngle = animationAngle - 360
+        animationAngle -= 360
     sleep(1 / float(frameRate))
     GLUT.glutPostRedisplay()
 
@@ -474,8 +474,8 @@ def load_data():
     dxy = 125
     dxy = 125
 
-    x = x * dxy
-    y = y * dxy
+    x *= dxy
+    y *= dxy
 
     x = x[20:100, 25:150]
     y = y[20:100, 25:150]
@@ -616,7 +616,7 @@ def main_gsc():
     blue = sdata.copy()
     red = sdata.copy()
 
-#    red[:, :, :3] = red[:, :, :3] * 0
+#    red[:, :, :3] *= 0
 
 #    scale = data.ptp() / scale
 
@@ -661,7 +661,7 @@ def main_rotate():
     rotang = 10  # 0.5 to 10 degrees
 
     x, y, z = load_data()
-    z = z * scale
+    z *= scale
 
     red, zr = rot_and_clean(x, y, z, rotang, 'red', True)
     blue, zb = rot_and_clean(x, y, z, rotang, 'blue', True)

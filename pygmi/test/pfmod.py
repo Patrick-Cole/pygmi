@@ -174,7 +174,7 @@ def test(doplt=False):
     ttt.since_last_call('gravity calculation')
 
     # Change to observation height to 100 meters and calculate magnetics
-    lmod.lith_index_old = -1 * lmod.lith_index_old
+    lmod.lith_index_old *= -1
     lmod.mht = mht
     calc_field(lmod, magcalc=True)
 
@@ -415,7 +415,7 @@ def mbox(x0, y0, z0, x1, y1, z1, x2, y2, mi, md, fi, fd, m, theta, h, k):
     m3 = mr+mi
 
     mt = np.sqrt(m3 @ m3)
-    m3 = m3 / mt
+    m3 /= mt
 
     print(k*h)
 

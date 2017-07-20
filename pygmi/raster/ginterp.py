@@ -265,9 +265,9 @@ class ModestImage2(mi.AxesImage):
 
             colormap = self.cbar(pnorm)
 
-            colormap[:, :, 0] = colormap[:, :, 0] * snorm  # red
-            colormap[:, :, 1] = colormap[:, :, 1] * snorm  # green
-            colormap[:, :, 2] = colormap[:, :, 2] * snorm  # blue
+            colormap[:, :, 0] *= snorm  # red
+            colormap[:, :, 1] *= snorm  # green
+            colormap[:, :, 2] *= snorm  # blue
             colormap[:, :, 3] = np.logical_not(mask)
 
             self._A = colormap
@@ -1635,7 +1635,7 @@ def aspect2(data):
     pi = np.pi
     adeg = ne.evaluate('90-arctan2(dzdy, -dzdx)*180./pi')
     adeg = np.ma.masked_invalid(adeg)
-    adeg[np.ma.less(adeg, 0.)] = adeg[np.ma.less(adeg, 0.)] + 360.
+    adeg[np.ma.less(adeg, 0.)] += 360.
     adeg[np.logical_and(dzdx == 0, dzdy == 0)] = -1.
 
     return [adeg, dzdx, dzdy]

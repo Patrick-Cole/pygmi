@@ -160,7 +160,7 @@ class BeachBall(QtWidgets.QDialog):
 
         alist = []
         for i in data:
-            alist = alist + list(i['F'].keys())
+            alist += list(i['F'].keys())
         alist = sorted(set(alist))
 
         if not alist:

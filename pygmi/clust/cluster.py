@@ -257,7 +257,7 @@ class Cluster(QtWidgets.QDialog):
 # Section to deal with different bands having different null values.
         masktmp = data[0].data.mask
         for i in data:
-            masktmp = masktmp + i.data.mask
+            masktmp += i.data.mask
         for i, _ in enumerate(data):
             data[i].data.mask = masktmp
         X = np.array([i.data.compressed() for i in data]).T
@@ -322,7 +322,7 @@ class Cluster(QtWidgets.QDialog):
         self.reportback("Cluster complete" + ' ('+self.cltype + ' ' + ')')
 
         for i in dat_out:
-            i.data = i.data+1
+            i.data += 1
             i.data = i.data.astype(np.uint8)
 
         self.outdata['Cluster'] = dat_out

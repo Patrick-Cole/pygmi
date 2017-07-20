@@ -368,7 +368,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
         tmppval = 0
         for lno in liths:
-            tmppval = tmppval+1
+            tmppval += 1
             self.pbar.setValue(tmppval)
             if lno not in lcheck:
                 continue
@@ -477,8 +477,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
                 self.faces[lno] = faces
 
-                vtx[:, 2] = -1*vtx[:, 2]
-                vtx[:, 2] = vtx[:, 2] + zz.max()
+                vtx[:, 2] *= -1
+                vtx[:, 2] += zz.max()
 
                 self.corners[lno] = vtx[:, [1, 0, 2]] + self.origin
 
@@ -512,7 +512,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
         tmppval = 0
 
         for lno in liths:
-            tmppval = 1+tmppval
+            tmppval += 1
             self.pbar.setValue(tmppval)
 
             if lno not in lcheck:
@@ -761,7 +761,7 @@ class GLWidget(QtOpenGL.QGLWidget):
     def wheelEvent(self, event):
         """ Mouse wheel event """
         angle = event.angleDelta().y()/8
-        self.zoomfactor = self.zoomfactor - angle/1000.
+        self.zoomfactor -= angle/1000.
 
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glLoadIdentity()
@@ -773,9 +773,9 @@ class GLWidget(QtOpenGL.QGLWidget):
     def normalizeAngle(self, angle):
         """ Normalize angle """
         while angle < 0:
-            angle = angle + 360 * 16
+            angle += 360 * 16
         while angle > 360 * 16:
-            angle = angle - 360 * 16
+            angle -= 360 * 16
         return angle
 
 
@@ -789,9 +789,9 @@ def calc_norms(faces, vtx):
                  tris[::, 0])
     n = normalize_v3(n)
 
-    nrm[faces[:, 0]] = nrm[faces[:, 0]] + n
-    nrm[faces[:, 1]] = nrm[faces[:, 1]] + n
-    nrm[faces[:, 2]] = nrm[faces[:, 2]] + n
+    nrm[faces[:, 0]] += n
+    nrm[faces[:, 1]] += n
+    nrm[faces[:, 2]] += n
 
     nrm = normalize_v3(nrm)
 
@@ -806,7 +806,7 @@ def normalize_v3(arr):
     lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
     lens[lens == 0] = 1  # Get rid of divide by zero.
 
-    arr = arr / lens[:, np.newaxis]
+    arr /= lens[:, np.newaxis]
 
     return arr
 
@@ -1005,13 +1005,13 @@ def fancyindex(out, var1, ii, jj, kk):
 
     i1 = -1
     for i in ii:
-        i1 = i1 + 1
+        i1 += 1
         j1 = -1
         for j in jj:
-            j1 = j1 + 1
+            j1 += 1
             k1 = -1
             for k in kk:
-                k1 = k1 + 1
+                k1 += 1
                 out[i1, j1, k1] = var1[i, j, k]
     return out
 
@@ -1375,7 +1375,7 @@ def main():
 # dependent the vertices, we need to normalize these, so that our next step
 # weights each normal equally.
     n = normalize_v3(n)
-#    n[2] = n[2] * -1
+#    n[2] *= -1
 # now we have a normalized array of normals, one per triangle, i.e., per
 # triangle normals. But instead of one per triangle (i.e., flat shading), we
 # add to each vertex in that triangle, the triangles' normal. Multiple
@@ -1383,9 +1383,9 @@ def main():
 # again afterwards. The cool part, we can actually add the normals through an
 # indexed view of our (zeroed) per vertex normal array.
 
-    norm[faces[:, 0]] = norm[faces[:, 0]] + n
-    norm[faces[:, 1]] = norm[faces[:, 1]] + n
-    norm[faces[:, 2]] = norm[faces[:, 2]] + n
+    norm[faces[:, 0]] += n
+    norm[faces[:, 1]] += n
+    norm[faces[:, 2]] += n
     norm = normalize_v3(norm)
 
 # Now we have a vertex array, vertices, a normal array, norm, and the index

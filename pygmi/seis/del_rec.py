@@ -202,9 +202,9 @@ class Quarry(object):
 
             for ndx in range(len(nrange)):
                 rq[:, ndx][rq[:, ndx] > rperc[ndx][1]] = rperc[ndx][1]
-                rq[:, ndx] = rq[:, ndx] - rperc[ndx][0]
-                rq[:, ndx] = rq[:, ndx] / (rperc[ndx][1]-rperc[ndx][0])
-                rq[:, ndx] = rq[:, ndx] * 100.
+                rq[:, ndx] -= rperc[ndx][0]
+                rq[:, ndx] /= (rperc[ndx][1]-rperc[ndx][0])
+                rq[:, ndx] *= 100.
 
             tmpcnt = []
             for i in range(rlyrs):
@@ -226,9 +226,9 @@ class Quarry(object):
                 rs = rs[r < rdist]
 
                 mask[rs] = False
-                ilat = ilat + lat[np.logical_not(mask)].tolist()
-                ilon = ilon + lon[np.logical_not(mask)].tolist()
-                ihour = ihour + hour[np.logical_not(mask)].tolist()
+                ilat += lat[np.logical_not(mask)].tolist()
+                ilon += lon[np.logical_not(mask)].tolist()
+                ihour += hour[np.logical_not(mask)].tolist()
                 lat = lat[mask]
                 lon = lon[mask]
                 hour = hour[mask]
@@ -253,13 +253,13 @@ class Quarry(object):
         for N in nrange:
             self.showtext(str(N)+' of '+str(nmax), True)
             tmp = np.random.rand(1000000, nstep)
-            tmp = tmp * 24
+            tmp *= 24
             tmp[tmp < day[0]] = -99
             tmp[tmp > day[1]] = -99
             tmp[tmp != -99] = True
             tmp[tmp == -99] = False
 
-            nd = nd + tmp.sum(1)
+            nd += tmp.sum(1)
             nn = N-nd
             rq = (nd*ln)/(nn*ld)
             rperc.append(np.percentile(rq, [99, 100]))
