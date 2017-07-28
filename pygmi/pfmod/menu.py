@@ -60,6 +60,11 @@ class MenuWidget(object):
         self.menu.addAction(self.action_import_mod3d)
         self.action_import_mod3d.triggered.connect(self.import_mod3d)
 
+        self.action_import_tmod3d = QtWidgets.QAction(parent)
+        self.action_import_tmod3d.setText("Import 3D Model for Tensor Modelling")
+        self.menu.addAction(self.action_import_tmod3d)
+        self.action_import_tmod3d.triggered.connect(self.import_tmod3d)
+
         self.action_merge_mod3d = QtWidgets.QAction(parent)
         self.action_merge_mod3d.setText("Merge two 3D Models")
         self.menu.addAction(self.action_merge_mod3d)
@@ -118,6 +123,11 @@ class MenuWidget(object):
     def import_mod3d(self):
         """ Imports data"""
         fnc = iodefs.ImportMod3D(self.parent)
+        self.parent.item_insert("Io", "Import 3D Model", fnc)
+
+    def import_tmod3d(self):
+        """ Imports data"""
+        fnc = iodefs.ImportTMod3D(self.parent)
         self.parent.item_insert("Io", "Import 3D Model", fnc)
 
     def merge_mod3d(self):

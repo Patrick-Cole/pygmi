@@ -1,10 +1,10 @@
 # -----------------------------------------------------------------------------
-# Name:        grvmag3d.py (part of PyGMI)
+# Name:        tensor3d.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2013 Council for Geoscience
+# Copyright:   (c) 2017 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI
@@ -38,7 +38,7 @@ from __future__ import print_function
 import pdb
 import copy
 import tempfile
-from math import sqrt, atan2, log
+from math import sqrt, atan2, log, atan
 from multiprocessing import Pool
 from PyQt5 import QtWidgets, QtCore
 
@@ -289,10 +289,7 @@ class TensorCube(object):
         """ function """
         r = sqrt(x**2+y**2+z**2)
 
-# must check this!!!
-        tmp = z*atan2(x*y, z*r)
-
-#        tmp = -z*np.arctan((x*y)/(z*r))
+        tmp = -z*atan((x*y)/(z*r))
 
         if x != 0:
             tmp += x*log(y+r)
@@ -306,6 +303,7 @@ class TensorCube(object):
         r = sqrt(x**2+y**2+z**2)
 
         tmp = -atan2(y*z, x*r)
+#        tmp = -atan((y*z)/(x*r))
 
         return tmp
 
@@ -313,7 +311,8 @@ class TensorCube(object):
         """ function """
         r = sqrt(x**2+y**2+z**2)
 
-        tmp = -atan2(x*z, y*r)
+        tmp = -atan((x*z)/(y*r))
+#        tmp = -np.arctan((x*z)/(y*r))
 
         return tmp
 
@@ -321,7 +320,7 @@ class TensorCube(object):
         """ function """
         r = sqrt(x**2+y**2+z**2)
 
-        tmp = -atan2(x*y, z*r)
+        tmp = -atan((x*y)/(z*r))
 
         return tmp
 
@@ -349,25 +348,32 @@ class TensorCube(object):
 
     def Bx(self, x, y, z):
         """ function """
+        r = sqrt(x**2+y**2+z**2)
+
         tmp = (self.a*self.Gxx(x, y, z) + self.b*self.Gxy(x, y, z) +
                self.g*self.Gxz(x, y, z))
+#        tmp = -self.a*atan2(y*z, x*r) + self.b*log(z+r) + self.g*log(y+r)
 
         return tmp
 
     def By(self, x, y, z):
         """ function """
+        r = sqrt(x**2+y**2+z**2)
 
         tmp = (self.a*self.Gxy(x, y, z) + self.b*self.Gyy(x, y, z) +
                self.g*self.Gyz(x, y, z))
+#        tmp = self.a*log(z+r) - self.b*atan2(x*z, y*r) + self.g*log(x+r)
 
         return tmp
 
     def Bz(self, x, y, z):
         """ function """
+        r = sqrt(x**2+y**2+z**2)
 
         tmp = (self.a*self.Gxz(x, y, z) + self.b*self.Gyz(x, y, z) +
                self.g*self.Gzz(x, y, z))
 
+#        tmp = (self.a*log(y+r) + self.b*log(x+r) - self.g*atan2(x*y, z*r))
         return tmp
 
     def Bxx(self, x, y, z):
@@ -959,29 +965,32 @@ class GeoData(object):
         tcube.height = abs(zobs)
         tcube.u = self.x12
         tcube.v = self.y12
-        tcube.w = -self.z12
 
         z1122 = self.z12.copy()
-        for z1 in piter(z1122[:-1]):
-            if z1 < z1122[hcor]:
-                grvval.append(np.zeros((self.g_cols, self.g_rows)))
-                gx.append(np.zeros((self.g_cols, self.g_rows)))
-                gy.append(np.zeros((self.g_cols, self.g_rows)))
-                gz.append(np.zeros((self.g_cols, self.g_rows)))
-                gxx.append(np.zeros((self.g_cols, self.g_rows)))
-                gxy.append(np.zeros((self.g_cols, self.g_rows)))
-                gxz.append(np.zeros((self.g_cols, self.g_rows)))
-                gyy.append(np.zeros((self.g_cols, self.g_rows)))
-                gyz.append(np.zeros((self.g_cols, self.g_rows)))
-                gzz.append(np.zeros((self.g_cols, self.g_rows)))
-                continue
+        for z1 in piter(z1122[::-1][:-1]):
+#            if z1 < z1122[hcor]:
+#                grvval.append(np.zeros((self.g_cols, self.g_rows)))
+#                gx.append(np.zeros((self.g_cols, self.g_rows)))
+#                gy.append(np.zeros((self.g_cols, self.g_rows)))
+#                gz.append(np.zeros((self.g_cols, self.g_rows)))
+#                gxx.append(np.zeros((self.g_cols, self.g_rows)))
+#                gxy.append(np.zeros((self.g_cols, self.g_rows)))
+#                gxz.append(np.zeros((self.g_cols, self.g_rows)))
+#                gyy.append(np.zeros((self.g_cols, self.g_rows)))
+#                gyz.append(np.zeros((self.g_cols, self.g_rows)))
+#                gzz.append(np.zeros((self.g_cols, self.g_rows)))
+#                continue
 
             z2 = z1 - self.d_z
             print(z1, z2)
             tcube.w = [z1, z2]
-            tcube.calc_grav(xobs, yobs[::-1])
+            tcube.calc_grav(xobs, yobs)
 
-            grvval.append(tcube.grvval)
+            print(tcube.gx.max())
+
+            plt.plot(tcube.gy.T[50])
+
+            grvval.append(tcube.grvval.T)
             gx.append(tcube.gx)
             gy.append(tcube.gy)
             gz.append(tcube.gz)
@@ -991,6 +1000,8 @@ class GeoData(object):
             gyy.append(tcube.gyy)
             gyz.append(tcube.gyz)
             gzz.append(tcube.gzz)
+
+        plt.show()
 
         self.mlayers = {}
         self.mlayers['Gravity'] = np.array(grvval)
@@ -1220,6 +1231,7 @@ def calc_mag_field(lmod, pbars=None, showtext=None, parent=None,
                     mlist[1].parent = parent
                     mlist[1].pbars = parent.pbars
                     mlist[1].showtext = parent.showtext
+
                 mlist[1].calc_origin_mag(hcor)
 
                 outfile = tempfile.TemporaryFile()
@@ -1674,7 +1686,7 @@ def dat_extent(dat, axes):
 
 def test():
     """ This routine is for testing purposes """
-    from pygmi.pfmod.iodefs import ImportMod3D
+#    from pygmi.pfmod.iodefs import ImportMod3D
 
 # Import model file
 #    filename = r'C:\Work\Programming\pygmi\data\test\vertdyke.npz'
@@ -1687,87 +1699,49 @@ def test():
 #    calc_field(imod.lmod, magcalc=True)
 
 # quick model
-    lmod = quick_model(numz=5)
-    lmod.lith_index[20:30, 15:25, 0] = 1
-    lmod.mht = 100
+    lmod = quick_model(numz=3)
+#    lmod.lith_index[20:30, 15:25, 1:4] = 1
+    lmod.lith_index[25, 20, 0] = 1
+#    lmod.lith_index[25, 20, 1] = 1
+#    lmod.lith_index[25, 20, 2] = 1
+    lmod.mht = 0
 #    calc_mag_field(lmod)  # Total Time: 0 minutes and 12.393026751134352 seconds
     calc_grv_field(lmod)
 
-# Calculate the field
-    plt.subplot(4, 3, 1)
-    plt.imshow(lmod.griddata['Calculated gx'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Tx')
-    plt.colorbar()
+    prof = 25
 
-    plt.subplot(4, 3, 2)
-    plt.imshow(lmod.griddata['Calculated gy'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Ty')
-    plt.colorbar()
+#    plt.title('Magval')
+#    plt.plot(xcoords, tcube.magval[prof])
+#    plt.show()
+#
+#    plt.title('Bx')
+#    plt.plot(xcoords, tcube.bx[prof])
+#    plt.show()
+#
+#    plt.title('By')
+#    plt.plot(xcoords, tcube.by[prof])
+#    plt.show()
+#
+#    plt.title('Bz')
+#    plt.plot(xcoords, tcube.bz[prof])
+#    plt.show()
 
-    plt.subplot(4, 3, 3)
-    plt.imshow(lmod.griddata['Calculated gz'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Tz')
-    plt.colorbar()
-
-    plt.subplot(4, 3, 4)
-    plt.imshow(lmod.griddata['Calculated gxx'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Txx')
-    plt.colorbar()
-
-    plt.subplot(4, 3, 8)
-    plt.imshow(lmod.griddata['Calculated gyy'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Tyy')
-    plt.colorbar()
-
-    plt.subplot(4, 3, 12)
-    plt.imshow(lmod.griddata['Calculated gzz'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Tzz')
-    plt.colorbar()
-
-    plt.subplot(4, 3, 5)
-    plt.imshow(lmod.griddata['Calculated gxy'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Txy')
-    plt.colorbar()
-
-    plt.subplot(4, 3, 9)
-    plt.imshow(lmod.griddata['Calculated gyz'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Tyz')
-    plt.colorbar()
-
-    plt.subplot(4, 3, 6)
-    plt.imshow(lmod.griddata['Calculated gxz'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('Txz')
-    plt.colorbar()
-
-    plt.subplot(4, 3, 10)
-    plt.imshow(lmod.griddata['Calculated Gravity'].data, cmap=cm.jet)
-    plt.xticks([])
-    plt.yticks([])
-    plt.title('f')
-    plt.colorbar()
-
-    plt.tight_layout()
+    plt.title('Grvval')
+    plt.plot(lmod.griddata['Calculated Gravity'].data[prof])
     plt.show()
 
-    pdb.set_trace()
+    plt.title('gx')
+    plt.plot(lmod.griddata['Calculated gx'].data[prof])
+    plt.show()
+
+    plt.title('gy')
+    plt.plot(lmod.griddata['Calculated gy'].data[prof])
+    plt.show()
+
+    plt.title('gz')
+    plt.plot(lmod.griddata['Calculated gz'].data[prof])
+    plt.show()
+
 
 if __name__ == "__main__":
     test()
