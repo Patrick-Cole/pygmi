@@ -25,6 +25,7 @@
 """ These are helper routines for gridding up data. """
 
 import pdb
+import pprint
 import numpy as np
 from pygmi.raster import iodefs as pio
 from pygmi.raster.datatypes import Data
@@ -152,6 +153,56 @@ def model_to_grid_thickness():
     pdb.set_trace()
 
 
+def model_to_lith_depth():
+    """ loads in a model """
+
+    tmp = pio3d.ImportMod3D(None)
+    tmp.ifile = r'C:\Work\Programming\pygmi\data\StagCham_Youssof_ALTComplexMantleLC_ds_extended.npz'
+    ofile = r'C:\Work\Programming\pygmi\data\hope.tif'
+
+    # Reset Variables
+    tmp.lmod.griddata.clear()
+    tmp.lmod.lith_list.clear()
+
+    # load model
+    indict = np.load(tmp.ifile)
+    tmp.dict2lmod(indict)
+
+    tmp.lmod.update_lith_list_reverse()
+
+    print('These are the lithologies and their codes:')
+    pprint.pprint(tmp.lmod.lith_list_reverse)
+    print('')
+    lithcode = int(input("what lithology code do you wish? "))
+
+    lith_index = tmp.lmod.lith_index
+
+    dz = tmp.lmod.d_z
+    dtm = (lith_index == -1).sum(2)*dz
+
+    lith = (lith_index == lithcode)
+
+    xxx, yyy, zzz = lith.shape
+
+    out = np.zeros((xxx, yyy))-1.
+
+    for i in range(xxx):
+        for j in range(yyy):
+            if True in lith[i, j]:
+                out[i, j] = np.nonzero(lith[i, j])[0][0]*dz - dtm[i, j]
+
+    gout = tmp.lmod.griddata['Calculated Gravity']
+    gout.data = out.T
+    gout.data = gout.data[::-1]
+    gout.nullvalue = -1.
+    gout.data = np.ma.masked_equal(gout.data, -1.)
+
+    tmp = pio.ExportData(None)
+    tmp.ifile = ofile
+    tmp.export_gdal([gout], 'GTiff')
+
+
 if __name__ == "__main__":
-    model_to_grid_thickness()
+    model_to_lith_depth()
+#    model_to_grid_thickness()
 #    grid()
