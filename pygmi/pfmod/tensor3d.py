@@ -41,6 +41,7 @@ import tempfile
 from math import sqrt, atan2, log, atan
 from multiprocessing import Pool
 from PyQt5 import QtWidgets, QtCore
+import winsound
 
 import numpy as np
 import scipy.interpolate as si
@@ -967,32 +968,29 @@ class GeoData(object):
         tcube.v = self.y12
 
         z1122 = self.z12.copy()
-        for z1 in piter(z1122[::-1][:-1]):
-#            if z1 < z1122[hcor]:
-#                grvval.append(np.zeros((self.g_cols, self.g_rows)))
-#                gx.append(np.zeros((self.g_cols, self.g_rows)))
-#                gy.append(np.zeros((self.g_cols, self.g_rows)))
-#                gz.append(np.zeros((self.g_cols, self.g_rows)))
-#                gxx.append(np.zeros((self.g_cols, self.g_rows)))
-#                gxy.append(np.zeros((self.g_cols, self.g_rows)))
-#                gxz.append(np.zeros((self.g_cols, self.g_rows)))
-#                gyy.append(np.zeros((self.g_cols, self.g_rows)))
-#                gyz.append(np.zeros((self.g_cols, self.g_rows)))
-#                gzz.append(np.zeros((self.g_cols, self.g_rows)))
-#                continue
+        for z1 in piter(z1122[:-1]):
+            if z1 < z1122[hcor]:
+                grvval.append(np.zeros((self.g_cols, self.g_rows)))
+                gx.append(np.zeros((self.g_cols, self.g_rows)))
+                gy.append(np.zeros((self.g_cols, self.g_rows)))
+                gz.append(np.zeros((self.g_cols, self.g_rows)))
+                gxx.append(np.zeros((self.g_cols, self.g_rows)))
+                gxy.append(np.zeros((self.g_cols, self.g_rows)))
+                gxz.append(np.zeros((self.g_cols, self.g_rows)))
+                gyy.append(np.zeros((self.g_cols, self.g_rows)))
+                gyz.append(np.zeros((self.g_cols, self.g_rows)))
+                gzz.append(np.zeros((self.g_cols, self.g_rows)))
+                continue
 
-            z2 = z1 - self.d_z
-            print(z1, z2)
-            tcube.w = [z1, z2]
+            z2 = z1 + self.d_z
+
+            print(-z1, -z2)
+            tcube.w = [-z1, -z2]
             tcube.calc_grav(xobs, yobs)
 
-            print(tcube.gx.max())
-
-            plt.plot(tcube.gy.T[50])
-
-            grvval.append(tcube.grvval.T)
+            grvval.append(tcube.grvval)
             gx.append(tcube.gx)
-            gy.append(tcube.gy)
+            gy.append(tcube.gy.copy())
             gz.append(tcube.gz)
             gxx.append(tcube.gxx)
             gxy.append(tcube.gxy)
@@ -1000,8 +998,6 @@ class GeoData(object):
             gyy.append(tcube.gyy)
             gyz.append(tcube.gyz)
             gzz.append(tcube.gzz)
-
-        plt.show()
 
         self.mlayers = {}
         self.mlayers['Gravity'] = np.array(grvval)
@@ -1014,6 +1010,7 @@ class GeoData(object):
         self.mlayers['gyy'] = np.array(gyy)
         self.mlayers['gyz'] = np.array(gyz)
         self.mlayers['gzz'] = np.array(gzz)
+
 
     def mboxmain(self, xobs, yobs, zobs, hcor):
         """ Mbox routine by Blakely
@@ -1092,10 +1089,11 @@ class GeoData(object):
                 bzz.append(np.zeros((self.g_cols, self.g_rows)))
                 continue
 
-            z2 = z1 - self.d_z
-            print(z1, z2)
-            tcube.w = [z1, z2]
-            tcube.calc_mag(xobs, yobs[::-1])
+#            z2 = z1 - self.d_z
+            z2 = z1 + self.d_z
+            print(-z1, -z2)
+            tcube.w = [-z1, -z2]
+            tcube.calc_mag(xobs, yobs)
 
             magval.append(tcube.magval)
             bx.append(tcube.bx)
@@ -1315,7 +1313,7 @@ def calc_mag_field(lmod, pbars=None, showtext=None, parent=None,
 
             mgvalin[mgtextind].resize([numx, numy])
             mgvalin[mgtextind] = mgvalin[mgtextind].T
-            mgvalin[mgtextind] = mgvalin[mgtextind][::-1]
+#            mgvalin[mgtextind] = mgvalin[mgtextind][::-1]
             mgvalin[mgtextind] = np.ma.array(mgvalin[mgtextind])
 
         showtext('Done')
@@ -1482,6 +1480,17 @@ def calc_grv_field(lmod, pbars=None, showtext=None, parent=None,
             mglayers = mfile[mgtextind]
             mgvalin[mgtextind] = np.zeros(numx*numy)
 
+#            if mgtextind == 'gy':
+#                plt.plot(mglayers[0,40])
+#                plt.plot(mglayers[1,40])
+#                plt.plot(mglayers[2,40])
+#                tmp = mglayers[2]
+#                plt.plot(tmp.T[40])
+#                plt.plot(mglayers[4,40])
+#                plt.plot(mglayers[5,40])
+#                plt.show()
+#                pdb.set_trace()
+
             for mi, mtmp in enumerate([modind, modindcheck]):
                 if np.unique(modind).size < 2 or mijk not in mtmp:
                     continue
@@ -1595,7 +1604,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
     if susc is None:
         susc = [0.01]
     if dens is None:
-        dens = [3.0]
+        dens = [2.85]
 
     lmod = LithModel()
     lmod.update(numx, numy, numz, tlx, tly, tlz, dxy, d_z, mht, ght)
@@ -1686,61 +1695,164 @@ def dat_extent(dat, axes):
 
 def test():
     """ This routine is for testing purposes """
-#    from pygmi.pfmod.iodefs import ImportMod3D
+    from pygmi.pfmod.iodefs import ImportTMod3D
 
 # Import model file
-#    filename = r'C:\Work\Programming\pygmi\data\test\vertdyke.npz'
-#    imod = ImportMod3D(None)
-#    imod.ifile = filename
-#    imod.lmod.griddata.clear()
-#    imod.lmod.lith_list.clear()
-#    indict = np.load(filename)
-#    imod.dict2lmod(indict)
-#    calc_field(imod.lmod, magcalc=True)
+    filename = r'C:\Work\Programming\pygmi\data\ptest1.npz'
+    imod = ImportTMod3D(None)
+    imod.ifile = filename
+    imod.lmod.griddata.clear()
+    imod.lmod.lith_list.clear()
+    indict = np.load(filename)
+    imod.dict2lmod(indict)
+    calc_mag_field(imod.lmod)
+
+    lmod = imod.lmod
 
 # quick model
-    lmod = quick_model(numz=3)
-#    lmod.lith_index[20:30, 15:25, 1:4] = 1
-    lmod.lith_index[25, 20, 0] = 1
-#    lmod.lith_index[25, 20, 1] = 1
-#    lmod.lith_index[25, 20, 2] = 1
-    lmod.mht = 0
-#    calc_mag_field(lmod)  # Total Time: 0 minutes and 12.393026751134352 seconds
-    calc_grv_field(lmod)
+#    blx = 0  # bottom left x (min x)
+#    bly = 0  # bottom left y (min y)
+#    blz = 0  # surface z ( max z)
+#
+#    dxy = 10
+#    d_z = 10
+#
+#    x1 = 150
+#    x2 = 250
+#    y1 = 150
+#    y2 = 250
+#
+##    x1 = 200
+##    x2 = 210
+##    y1 = 200
+##    y2 = 210
+#
+#    z1 = 0
+#    z2 = -300
+#
+#    x1 = x1 - blx
+#    x2 = x2 - blx
+#    y1 = x1 - bly
+#    y2 = x2 - bly
+#    z1 = blz - z1
+#    z2 = blz - z2
+#
+#    numx = 40
+#    numy = 40
+#    numz = int(z2/d_z)
+#
+#    lmod = quick_model(numx=numx, numy=numy, numz=numz, dxy=dxy, d_z=d_z,
+#                       mht=0., ght=0., finc=45, fdec=30, susc=[0.1],
+#                       hintn=28000, dens=[2.85])
+#
+#    xi1 = int(x1/dxy)
+#    xi2 = int(x2/dxy)
+#    yi1 = int(y1/dxy)
+#    yi2 = int(y2/dxy)
+#    zi1 = int(z1/d_z)
+#    zi2 = int(z2/d_z)
+#
+#    lmod.lith_index[xi1:xi2, yi1:yi2, zi1:zi2] = 1
+#
+#    calc_mag_field(lmod)
+##    calc_grv_field(lmod)
 
-    prof = 25
+    prof = 20
+    magval = lmod.griddata['Calculated Magnetics'].data[::-1]
+    bx = lmod.griddata['Calculated bx'].data[::-1]
+    by = lmod.griddata['Calculated by'].data[::-1]
+    bz = lmod.griddata['Calculated bz'].data[::-1]
+    bxx = lmod.griddata['Calculated bxx'].data[::-1]
+    byy = lmod.griddata['Calculated byy'].data[::-1]
+    bxy = lmod.griddata['Calculated bxy'].data[::-1]
+    byz = lmod.griddata['Calculated byz'].data[::-1]
+    bxz = lmod.griddata['Calculated bxz'].data[::-1]
 
-#    plt.title('Magval')
-#    plt.plot(xcoords, tcube.magval[prof])
+    x = range(0,400,10)
+
+    plt.figure(figsize=(8,11))
+    plt.subplot(411)
+    plt.title('$B_{tmi}$')
+    plt.grid(True)
+    plt.plot(x, magval[prof], label='Tensor')
+
+    plt.subplot(412)
+    plt.title('$B_{x}$')
+    plt.grid(True)
+    plt.plot(x, bx[prof], label='Tensor')
+
+    plt.subplot(413)
+    plt.title('$B_{y}$')
+    plt.grid(True)
+    plt.plot(x, by[prof], label='Tensor')
+
+    plt.subplot(414)
+    plt.title('$B_{z}$')
+    plt.grid(True)
+    plt.plot(x, bz[prof], label='Tensor')
+
+    plt.tight_layout()
+    plt.show()
+
+    plt.figure(figsize=(8,11))
+    plt.subplot(511)
+    plt.title('$B_{xx}$')
+    plt.grid(True)
+    plt.plot(x, bxx[prof], label='Tensor')
+
+    plt.subplot(512)
+    plt.title('$B_{xy}$')
+    plt.grid(True)
+    plt.plot(x, bxy[prof], label='Tensor')
+
+    plt.subplot(513)
+    plt.title('$B_{yy}$')
+    plt.grid(True)
+    plt.plot(x, byy[prof], label='Tensor')
+
+    plt.subplot(514)
+    plt.title('$B_{yz}$')
+    plt.grid(True)
+    plt.plot(x, byz[prof], label='Tensor')
+
+    plt.subplot(515)
+    plt.title('$B_{xz}$')
+    plt.grid(True)
+    plt.plot(x, bxz[prof], label='Tensor')
+
+    plt.tight_layout()
+    plt.show()
+
+#    plt.title('Grvval')
+#    plt.grid(True)
+#    plt.plot(lmod.griddata['Calculated Gravity'].data[::-1][prof])
 #    plt.show()
 #
-#    plt.title('Bx')
-#    plt.plot(xcoords, tcube.bx[prof])
+#    plt.title('gx')
+#    plt.grid(True)
+#    plt.plot(lmod.griddata['Calculated gx'].data[::-1][prof])
 #    plt.show()
 #
-#    plt.title('By')
-#    plt.plot(xcoords, tcube.by[prof])
+#    plt.title('gy')
+#    plt.grid(True)
+#    plt.plot(lmod.griddata['Calculated gy'].data[::-1][prof])
 #    plt.show()
 #
-#    plt.title('Bz')
-#    plt.plot(xcoords, tcube.bz[prof])
+#    plt.title('gz')
+#    plt.grid(True)
+#    plt.plot(lmod.griddata['Calculated gz'].data[::-1][prof])
+#    plt.show()
+#
+#    plt.title('gy')
+#    plt.grid(True)
+#    plt.imshow(lmod.griddata['Calculated gy'].data[::-1])
 #    plt.show()
 
-    plt.title('Grvval')
-    plt.plot(lmod.griddata['Calculated Gravity'].data[prof])
-    plt.show()
 
-    plt.title('gx')
-    plt.plot(lmod.griddata['Calculated gx'].data[prof])
-    plt.show()
+    print('Finished!')
+    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
-    plt.title('gy')
-    plt.plot(lmod.griddata['Calculated gy'].data[prof])
-    plt.show()
-
-    plt.title('gz')
-    plt.plot(lmod.griddata['Calculated gz'].data[prof])
-    plt.show()
+    pdb.set_trace()
 
 
 if __name__ == "__main__":
