@@ -979,26 +979,35 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
             juni = np.array(np.unique(j), dtype=np.int32)
             kuni = np.array(np.unique(k), dtype=np.int32)
 
-            if i.size < 50000:
-                for k in kuni:
-                    baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
-                                      aaa[1], mglayers, hcorflat, mijk, juni,
-                                      iuni)
-                    mgvalin += baba
-            else:
-                pool = Pool()
-                baba = []
+# This is temporary to try and fix a bug.
 
-                for k in kuni:
-                    baba.append(pool.apply_async(sum_fields,
-                                                 args=(k, mgval, numx, numy,
-                                                       modind, aaa[0], aaa[1],
-                                                       mglayers, hcorflat,
-                                                       mijk, juni, iuni,)))
-                for p in baba:
-                    mgvalin += p.get()
-                pool.close()
-                del baba
+            for k in kuni:
+                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
+                                  aaa[1], mglayers, hcorflat, mijk, juni,
+                                  iuni)
+                mgvalin += baba
+
+#
+#            if i.size < 50000:
+#                for k in kuni:
+#                    baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
+#                                      aaa[1], mglayers, hcorflat, mijk, juni,
+#                                      iuni)
+#                    mgvalin += baba
+#            else:
+#                pool = Pool()
+#                baba = []
+#
+#                for k in kuni:
+#                    baba.append(pool.apply_async(sum_fields,
+#                                                 args=(k, mgval, numx, numy,
+#                                                       modind, aaa[0], aaa[1],
+#                                                       mglayers, hcorflat,
+#                                                       mijk, juni, iuni,)))
+#                for p in baba:
+#                    mgvalin += p.get()
+#                pool.close()
+#                del baba
 
         if np.unique(modindcheck).size > 1 and mijk in modindcheck:
             QtWidgets.QApplication.processEvents()

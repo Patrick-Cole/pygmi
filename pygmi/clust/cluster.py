@@ -126,7 +126,7 @@ class Cluster(QtWidgets.QDialog):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Crisp Clustering")
+        self.setWindowTitle("Cluster Analysis")
         label.setText("Cluster Algorithm:")
         self.label_minclusters.setText("Minimum Clusters:")
         self.label_maxclusters.setText("Maximum Clusters")
@@ -275,8 +275,10 @@ class Cluster(QtWidgets.QDialog):
                 continue
 
             if self.cltype == 'k-means':
-                cfit = skc.KMeans(n_clusters=i, tol=self.tol,
-                                  max_iter=self.max_iter).fit(X)
+#                cfit = skc.KMeans(n_clusters=i, tol=self.tol,
+#                                  max_iter=self.max_iter).fit(X)
+                cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
+                                           max_iter=self.max_iter).fit(X)
             elif self.cltype == 'DBSCAN':
                 cfit = skc.DBSCAN(eps=self.eps,
                                   min_samples=self.min_samples).fit(X)

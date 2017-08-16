@@ -216,6 +216,7 @@ class ProfileDisplay(object):
                 self.lmod1.xrange[0]+self.lmod1.dxy/2.)
         yrng = (np.arange(self.lmod1.numy)*self.lmod1.dxy +
                 self.lmod1.yrange[0]+self.lmod1.dxy/2.)
+        yrng = yrng[::-1]
         xx, yy = np.meshgrid(xrng, yrng)
         xlines = np.arange(self.lmod1.numx)
         ylines = np.arange(self.lmod1.numy, 0, -1)-1
@@ -229,6 +230,9 @@ class ProfileDisplay(object):
 
         header = '"Line","x","y"'
         newdata = [lines.flatten(), xx.flatten(), yy.flatten()]
+
+        import pdb
+        pdb.set_trace()
 
         for i in self.lmod1.griddata:
             if 'Calculated' not in i:
@@ -480,7 +484,7 @@ class ProfileDisplay(object):
 
         if data2 is not None:
             if self.lmod1.is_ew:
-                ycrdl = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy
+                ycrdl = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy+self.lmod1.dxy/2
                 ycrd = int((data2.tly - ycrdl)/data2.ydim)
 
                 if ycrd < 0 or ycrd >= data2.rows:
@@ -495,7 +499,7 @@ class ProfileDisplay(object):
                     tmprng2 = (data2.tlx + np.arange(data2.cols)*data2.xdim +
                                data2.xdim/2)
             else:
-                xcrdl = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy
+                xcrdl = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy+self.lmod1.dxy/2
                 xcrd = int((xcrdl-data2.tlx)/data2.xdim)
 
                 if xcrd < 0 or xcrd >= data2.cols:

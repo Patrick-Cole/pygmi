@@ -306,10 +306,12 @@ class IGRF(QtWidgets.QDialog):
         igdgc = 1
 
         if (sdate > maxyr) and (sdate < maxyr+1):
-            print("\nWarning: The date %4.2f is out of range,\n", sdate)
-            print("but still within one year of model expiration date.\n")
-            print("An updated model file is available before 1.1.%4.0f\n",
-                  maxyr)
+            self.reportback("Warning: The date " + str(sdate) +
+                            " is out of range,")
+            self.reportback("but still within one year of model expiration"
+                            " date.")
+            self.reportback("An updated model file is available before 1.1." +
+                            str(maxyr))
 
         if max2[modelI] == 0:
             self.getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0)
@@ -358,6 +360,13 @@ class IGRF(QtWidgets.QDialog):
         self.outdata['Raster'][-1].data -= igrf_F
         self.outdata['Raster'][-1].dataid = 'Magnetic Data: IGRF Corrected'
 
+        self.reportback('')
+        self.reportback('Latest Values in Calculation')
+        self.reportback('=============================')
+        self.reportback('Total Intensity: '+str(self.f))
+        self.reportback('Inclination: '+str(np.rad2deg(self.i)))
+        self.reportback('Declination: '+str(np.rad2deg(self.d)))
+        self.reportback('')
         self.reportback('Calculation: Completed', True)
 
         return True

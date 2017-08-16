@@ -530,7 +530,10 @@ class ExportMod3D(object):
         self.indata = {}
         self.outdata = {}
         self.lmod = None
-        self.showtext = self.parent.showprocesslog
+        if parent is not None:
+            self.showtext = self.parent.showprocesslog
+        else:
+            self.showtext = print
 
     def run(self):
         """ Show Info """

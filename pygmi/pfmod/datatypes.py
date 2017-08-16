@@ -169,11 +169,14 @@ class LithModel(object):
         self.lith_index[:, :, :] = 0
 
         for i in range(self.numx):
+            xcrd = self.xrange[0] + (i + .5) * self.dxy
+            xcrd2 = int((xcrd - gxmin) / d_x)
             for j in range(self.numy):
-                xcrd = self.xrange[0] + (i + .5) * self.dxy
                 ycrd = self.yrange[1] - (j + .5) * self.dxy
-                xcrd2 = int((xcrd - gxmin) / d_x)
                 ycrd2 = grows - int((gymax - ycrd) / d_y)
+                if ycrd2 == grows:
+                    ycrd2 = grows-1
+                
                 if (ycrd2 >= 0 and xcrd2 >= 0 and ycrd2 < grows and
                         xcrd2 < gcols):
                     alt = curgrid.data.data[ycrd2, xcrd2]

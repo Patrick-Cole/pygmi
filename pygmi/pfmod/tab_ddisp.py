@@ -182,11 +182,11 @@ class DataDisplay(object):
         ytmp = np.array([ytmp, ytmp])
 
         if self.rb_ew.isChecked():
-            xys = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy
+            xys = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy+self.lmod1.dxy/2
             self.label_profile_xy.setText('Northing: '+str(xys))
             self.mmc.init_line(self.lmod1.xrange, [xys, xys], self.lmod1)
         elif self.rb_ns.isChecked():
-            xys = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy
+            xys = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy+self.lmod1.dxy/2
             self.label_profile_xy.setText('Easting: '+str(xys))
             self.mmc.init_line([xys, xys], self.lmod1.yrange, self.lmod1)
 
