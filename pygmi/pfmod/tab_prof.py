@@ -240,7 +240,8 @@ class ProfileDisplay(object):
                     data = data + self.lmod1.gregional
 
             if not self.lmod1.is_ew:
-                data = data[::-1].T
+#                data = data[::-1].T
+                data = data.T
             newdata.append(np.array(data.flatten()))
             header = header+',"'+i+'"'
         newdata = np.transpose(newdata)
