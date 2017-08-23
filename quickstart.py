@@ -40,6 +40,7 @@ def excepthook(type_, value, traceback_):
     traceback.print_exception(type_, value, traceback_)
     QtCore.qFatal('')
 
+
 if __name__ == "__main__":
     sys.excepthook = excepthook
     main()

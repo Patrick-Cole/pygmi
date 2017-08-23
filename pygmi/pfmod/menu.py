@@ -60,10 +60,12 @@ class MenuWidget(object):
         self.menu.addAction(self.action_import_mod3d)
         self.action_import_mod3d.triggered.connect(self.import_mod3d)
 
-        self.action_import_tmod3d = QtWidgets.QAction(parent)
-        self.action_import_tmod3d.setText("Import 3D Model for Tensor Modelling")
-        self.menu.addAction(self.action_import_tmod3d)
-        self.action_import_tmod3d.triggered.connect(self.import_tmod3d)
+        self.action_pfmod = QtWidgets.QAction(self.parent)
+        self.action_pfmod.setText("Model Creation and Editing")
+        self.menu.addAction(self.action_pfmod)
+        self.action_pfmod.triggered.connect(self.pfmod)
+
+        self.menu.addSeparator()
 
         self.action_merge_mod3d = QtWidgets.QAction(parent)
         self.action_merge_mod3d.setText("Merge two 3D Models")
@@ -77,13 +79,13 @@ class MenuWidget(object):
 
         self.menu.addSeparator()
 
-        self.action_pfmod = QtWidgets.QAction(self.parent)
-        self.action_pfmod.setText("Model Creation and Editing")
-        self.menu.addAction(self.action_pfmod)
-        self.action_pfmod.triggered.connect(self.pfmod)
+        self.action_import_tmod3d = QtWidgets.QAction(parent)
+        self.action_import_tmod3d.setText("Import 3D Model for Tensor Modelling (Beta)")
+        self.menu.addAction(self.action_import_tmod3d)
+        self.action_import_tmod3d.triggered.connect(self.import_tmod3d)
 
         self.action_tpfmod = QtWidgets.QAction(self.parent)
-        self.action_tpfmod.setText("Tensor Model Creation and Editing")
+        self.action_tpfmod.setText("Tensor Model Creation and Editing (Beta)")
         self.menu.addAction(self.action_tpfmod)
         self.action_tpfmod.triggered.connect(self.tpfmod)
 

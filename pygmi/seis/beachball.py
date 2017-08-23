@@ -84,10 +84,11 @@ class MyMplCanvas(FigureCanvas):
         self.cntf = None
         self.background = None
         self.pwidth = 0.001
+        self.isgeog = True
 
         self.axes = fig.add_subplot(111)
-        self.axes.xaxis.set_visible(False)
-        self.axes.yaxis.set_visible(False)
+#        self.axes.xaxis.set_visible(False)
+#        self.axes.yaxis.set_visible(False)
 
         self.setParent(parent)
 
@@ -118,13 +119,14 @@ class MyMplCanvas(FigureCanvas):
             pxy = idat[:2]
             np1 = idat[3:-1]
             pwidth = self.pwidth*idat[-1]
-            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth)
+            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
+                                             self.isgeog)
 
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
 
-            self.axes.add_patch(patches.Polygon(pvert1))
-            self.axes.add_patch(patches.Polygon(pvert0, facecolor='none'))
+            self.axes.add_patch(patches.Polygon(pvert1, edgecolor=(0.0, 0.0, 0.0)))
+            self.axes.add_patch(patches.Polygon(pvert0, facecolor='none', edgecolor=(0.0, 0.0, 0.0)))
 
         self.figure.canvas.draw()
 
@@ -148,6 +150,8 @@ class BeachBall(QtWidgets.QDialog):
         self.btn_saveshp = QtWidgets.QPushButton()
         self.cbox_alg = QtWidgets.QComboBox()
         self.dsb_dist = QtWidgets.QDoubleSpinBox()
+        self.radio_geog = QtWidgets.QRadioButton('Geographic Units')
+        self.radio_proj = QtWidgets.QRadioButton('Projected Units')
 
         self.setupui()
 
@@ -215,6 +219,8 @@ class BeachBall(QtWidgets.QDialog):
         self.dsb_dist.setSingleStep(0.0001)
         self.dsb_dist.setProperty("value", 0.001)
 
+        self.radio_geog.setChecked(True)
+
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
                                        QtWidgets.QSizePolicy.Expanding)
 
@@ -227,6 +233,8 @@ class BeachBall(QtWidgets.QDialog):
         vbl_raster.addWidget(self.cbox_alg)
         vbl_raster.addWidget(label3)
         vbl_raster.addWidget(self.dsb_dist)
+        vbl_raster.addWidget(self.radio_geog)
+        vbl_raster.addWidget(self.radio_proj)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveshp)
         vbl_right = QtWidgets.QVBoxLayout()
@@ -237,6 +245,7 @@ class BeachBall(QtWidgets.QDialog):
 
         self.btn_saveshp.clicked.connect(self.save_shp)
         self.dsb_dist.valueChanged.connect(self.change_alg)
+        self.radio_geog.toggled.connect(self.change_alg)
 
     def save_shp(self):
         """Save Beachballs """
@@ -352,6 +361,7 @@ class BeachBall(QtWidgets.QDialog):
 
     def change_alg(self):
         """ Change algorithm """
+
         txt = str(self.cbox_alg.currentText())
         self.algorithm = txt
         data = self.indata['Seis']
@@ -366,6 +376,7 @@ class BeachBall(QtWidgets.QDialog):
                        i['1'].magnitude_1]
                 indata.append(tmp)
 
+        self.mmc.isgeog = self.radio_geog.isChecked()
         self.mmc.data = np.array(indata)
         self.mmc.pwidth = self.dsb_dist.value()
         self.mmc.init_graph()
@@ -382,7 +393,7 @@ class BeachBall(QtWidgets.QDialog):
         self.mmc.init_graph()
 
 
-def beachball(fm, centerx, centery, diam):
+def beachball(fm, centerx, centery, diam, isgeog):
     """
     Source code provided here are adopted from MatLab script
     `bb.m` written by Andy Michael and Oliver Boyd.
@@ -532,7 +543,9 @@ def beachball(fm, centerx, centery, diam):
     X = np.hstack((X1, Xs1, X2, Xs2))
     Y = np.hstack((Y1, Ys1, Y2, Ys2))
 
-    ampy = 1.0
+    if isgeog:
+        ampy = 1.0
+
     if D > 0:
         X = ampy*X*D/90 + CY
         Y = Y*D/90 + CX
