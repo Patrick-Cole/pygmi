@@ -26,12 +26,15 @@
 
 from __future__ import print_function
 
+import pdb
+import ctypes
 import os
 import sys
 import numpy as np
 from PyQt5 import QtCore, QtWidgets, QtOpenGL, QtGui
 from OpenGL import GL
 from OpenGL import GLU
+from OpenGL import GLUT
 from OpenGL.arrays import vbo
 from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
@@ -88,6 +91,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.pb_save = QtWidgets.QPushButton()
         self.pb_refresh = QtWidgets.QPushButton()
         self.checkbox_smooth = QtWidgets.QCheckBox()
+        self.checkbox_ortho = QtWidgets.QCheckBox('Orthographic Projection')
+        self.checkbox_axis = QtWidgets.QCheckBox('Display Axis')
         self.pbar = QtWidgets.QProgressBar()
         self.glwidget = GLWidget()
         self.vslider_3dmodel = QtWidgets.QSlider()
@@ -119,12 +124,17 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.pb_refresh.setSizePolicy(sizepolicy_pb)
         self.pbar.setOrientation(QtCore.Qt.Vertical)
 
+        self.checkbox_ortho.setChecked(True)
+        self.checkbox_axis.setChecked(True)
+
         self.checkbox_smooth.setText("Smooth Model")
         self.pb_save.setText("Save to Image File (JPG or PNG)")
         self.pb_refresh.setText('Refresh Model')
 
         verticallayout.addWidget(self.lw_3dmod_defs)
         verticallayout.addWidget(self.checkbox_smooth)
+        verticallayout.addWidget(self.checkbox_ortho)
+        verticallayout.addWidget(self.checkbox_axis)
         verticallayout.addWidget(self.pb_save)
         verticallayout.addWidget(self.pb_refresh)
         vbox_cmodel.addWidget(self.glwidget)
@@ -138,6 +148,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.pb_save.clicked.connect(self.save)
         self.pb_refresh.clicked.connect(self.run)
         self.checkbox_smooth.stateChanged.connect(self.update_plot)
+        self.checkbox_ortho.stateChanged.connect(self.update_model2)
+        self.checkbox_axis.stateChanged.connect(self.update_model2)
 
     def save(self):
         """ This saves a jpg """
@@ -286,6 +298,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
     def update_plot(self):
         """ Update 3D Model """
         QtWidgets.QApplication.processEvents()
+
     # Update 3D model
         self.spacing = [self.lmod1.dxy, self.lmod1.dxy, self.lmod1.d_z]
         self.origin = [self.lmod1.xrange[0], self.lmod1.yrange[0],
@@ -487,6 +500,10 @@ class Mod3dDisplay(QtWidgets.QDialog):
     def update_model2(self):
         """ Update the 3d model. Faces, nodes and face normals are calculated
         here, from the voxel model. """
+
+        self.glwidget.is_ortho = self.checkbox_ortho.isChecked()
+        self.glwidget.has_axis = self.checkbox_axis.isChecked()
+
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
         liths = liths[liths < 900]
@@ -538,6 +555,9 @@ class Mod3dDisplay(QtWidgets.QDialog):
         vtx.shape = (vtx.shape[0]//3, 3)
         clr.shape = (clr.shape[0]//4, 4)
 
+        zmax = vtx[:, -1].max()
+        zmin = vtx[:, -1].min()
+
         vtx[:, -1] = (vtx[:, -1]-self.origin[-1])*self.zmult + self.origin[-1]
 
         cptp = vtx.ptp(0).max()/100.
@@ -545,11 +565,18 @@ class Mod3dDisplay(QtWidgets.QDialog):
         cptpd2 = vtx.ptp(0)/2.
         vtx = (vtx-cmin-cptpd2)/cptp
 
+        vadd = cmin+cptpd2
+        vmult = cptp
+
         self.glwidget.hastriangles = self.checkbox_smooth.isChecked()
         self.glwidget.cubeVtxArray = vtx
         self.glwidget.cubeClrArray = clr
         self.glwidget.cubeNrmArray = nrm
         self.glwidget.cubeIdxArray = idx.astype(np.uint32)
+        self.glwidget.vmult = vmult
+        self.glwidget.vadd = vadd
+        self.glwidget.zmin = zmin
+        self.glwidget.zmax = zmax
 
         self.glwidget.init_object()
         self.glwidget.updateGL()
@@ -571,6 +598,12 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.aspect = 1.
         self.glist = None
         self.hastriangles = False
+        self.vmult = 1.0
+        self.vadd = np.array([0.0, 0.0, 0.0])
+        self.zmin = 0.
+        self.zmax = 1.
+        self.has_axis = True
+        self.is_ortho = True
 
         self.cubeVtxArray = np.array([[0.0, 0.0, 0.0],
                                       [1.0, 0.0, 0.0],
@@ -636,24 +669,25 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def initializeGL(self):
         """ initialize OpenGL """
+        GLUT.glutInit()
         ctmp = QtGui.QColor.fromCmykF(0., 0., 0., 0.0)
         self.qglClearColor(ctmp)
         self.initGeometry()
 
 # Blend allows transparency
-
         GL.glEnable(GL.GL_ALPHA_TEST)
         GL.glAlphaFunc(GL.GL_GREATER, 0.1)
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glDepthMask(GL.GL_TRUE)
         GL.glDepthFunc(GL.GL_LEQUAL)
+#        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
 
         GL.glEnable(GL.GL_CULL_FACE)
 
         GL.glEnable(GL.GL_COLOR_MATERIAL)
         GL.glEnable(GL.GL_LIGHTING)
         GL.glEnable(GL.GL_LIGHT0)
-        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [1., 1., 1., 0.])
+        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [-1., -1., 1., 0.])
 
     def initGeometry(self):
         """ Initialize Geometry """
@@ -677,6 +711,8 @@ class GLWidget(QtOpenGL.QGLWidget):
             self.data_buffer.set_array(data)
             self.indx_buffer.set_array(idx)
 
+        self.init_projection()
+
     def paintGL(self):
         """ Paint OpenGL """
         float_size = 4
@@ -684,6 +720,8 @@ class GLWidget(QtOpenGL.QGLWidget):
         coff = 3 * float_size
         noff = 7 * float_size
         record_len = 10 * float_size
+
+        GL.glLineWidth(1.0)
 
         GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
@@ -717,6 +755,105 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glDisableClientState(GL.GL_COLOR_ARRAY)
         GL.glDisableClientState(GL.GL_NORMAL_ARRAY)
 
+        if self.has_axis is True:
+            self.draw_with_axis()
+
+    def draw_with_axis(self):
+        """ draws with a set of axis """
+
+        GL.glDisable(GL.GL_LIGHTING)
+
+        xmin, ymin, zmin = self.cubeVtxArray.min(0)
+        xmax, ymax, zmax = self.cubeVtxArray.max(0)
+
+        xmin *= 1.5
+        ymin *= 1.5
+        zmin *= 1.5
+
+        xmax *= 1.5
+        ymax *= 1.5
+        zmax *= 1.5
+
+        dx = (xmax-xmin)/5
+        dy = (ymax-ymin)/5
+        dz = (zmax-zmin)/4
+
+        GL.glBegin(GL.GL_LINES)
+        GL.glColor3f(0.5, .5, .5)
+
+        GL.glVertex3f(xmin, ymin, zmin)
+        GL.glVertex3f(xmin, ymin, zmax)
+
+        GL.glVertex3f(xmin, ymin, zmin)
+        GL.glVertex3f(xmax, ymin, zmin)
+
+        for i in np.arange(xmin, xmax, dx):
+            GL.glVertex3f(i+dx, ymin, zmin)
+            GL.glVertex3f(i+dx, ymax, zmin)
+
+        for i in np.arange(ymin, ymax, dy):
+            GL.glVertex3f(xmin, i+dy, zmin)
+            GL.glVertex3f(xmax, i+dy, zmin)
+
+            GL.glVertex3f(xmin, i+dy, zmin)
+            GL.glVertex3f(xmin, i+dy, zmax)
+
+        for i in np.arange(zmin, zmax, dz):
+            GL.glVertex3f(xmin, ymin, i+dz)
+            GL.glVertex3f(xmin, ymax, i+dz)
+
+        GL.glEnd()
+
+        GL.glLineWidth(4.)
+
+        GL.glBegin(GL.GL_LINES)
+        GL.glColor3f(1.0, 0, 0)
+
+        GL.glVertex3f(xmin, ymax, zmin)
+        GL.glVertex3f(xmax, ymax, zmin)
+
+        GL.glColor3f(0.0, 1.0, 0)
+        GL.glVertex3f(xmin, ymin, zmin)
+        GL.glVertex3f(xmin, ymax, zmin)
+
+        GL.glColor3f(0.0, 0, 1.0)
+        GL.glVertex3f(xmin, ymax, zmin)
+        GL.glVertex3f(xmin, ymax, zmax)
+
+        GL.glEnd()
+
+        GL.glColor3f(0, 0, 0)
+
+        self.print_string(xmax+6, ymax, zmin, 'X')
+        self.print_string(xmin, ymin-10, zmin, 'Y')
+        self.print_string(xmin, ymax, zmax+6, 'Z')
+
+        dz1 = (self.zmax-self.zmin)/5
+
+        for i in np.arange(xmin, xmax-dx, dx):
+            text = str(round((i+dx)*self.vmult+self.vadd[0], 1))
+            self.print_string(i+dx, ymax+4, zmin, text)
+
+        for i in np.arange(ymin, ymax-dy, dy):
+            text = str(round((i+dy)*self.vmult+self.vadd[1], 1))
+            self.print_string(xmax, i+dy, zmin, text)
+
+        tmp = self.zmin
+        for i in np.arange(zmin, zmax-dz, dz):
+            tmp += dz1
+            text = str(round(tmp, 1))
+            self.print_string(xmin, ymax+4, i+dz, text)
+
+        GL.glEnable(GL.GL_LIGHTING)
+
+    def print_string(self, x, y, z, text):
+        """ Prints a 2D text string """
+
+        GL.glRasterPos3f(x, y, z)
+        for i, ch in enumerate(text):
+            GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_HELVETICA_10,
+                                     ctypes.c_int(ord(ch)))
+
     def resizeGL(self, width, height):
         """ Resize OpenGL """
         side = min(width, height)
@@ -724,12 +861,26 @@ class GLWidget(QtOpenGL.QGLWidget):
             return
 
         GL.glViewport((width - side) // 2, (height - side) // 2, side, side)
+        self.aspect = width / float(height)
+
+        self.init_projection()
+
+    def init_projection(self):
+        """ initialise the projection """
 
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glLoadIdentity()
-        self.aspect = width / float(height)
 
-        GLU.gluPerspective(70.0*self.zoomfactor, self.aspect, 1.0, 201.0)
+        xmin, ymin, zmin = self.cubeVtxArray.min(0)
+        xmax, ymax, zmax = self.cubeVtxArray.max(0)
+
+        if self.is_ortho is True:
+            GL.glOrtho(xmin*self.zoomfactor,
+                       xmax*self.zoomfactor,
+                       ymin*self.zoomfactor,
+                       ymax*self.zoomfactor, -201, 301.0)
+        else:
+            GLU.gluPerspective(70.0*self.zoomfactor, self.aspect, 1.0, 201.0)
 
         GL.glMatrixMode(GL.GL_MODELVIEW)
 
@@ -763,11 +914,8 @@ class GLWidget(QtOpenGL.QGLWidget):
         angle = event.angleDelta().y()/8
         self.zoomfactor -= angle/1000.
 
-        GL.glMatrixMode(GL.GL_PROJECTION)
-        GL.glLoadIdentity()
-        GLU.gluPerspective(70.0*self.zoomfactor, self.aspect, 1.0, 201.0)
+        self.init_projection()
 
-        GL.glMatrixMode(GL.GL_MODELVIEW)
         self.updateGL()
 
     def normalizeAngle(self, angle):
@@ -1406,9 +1554,11 @@ def main():
 
     wid.glwidget.cubeIdxArray = faces.flatten().astype(np.uint32)
 
+    wid.glwidget.zmax = vtx[:, -1].max()
+    wid.glwidget.zmin = vtx[:, -1].min()
+
     # This activates the opengl stuff
 
-    print('widshow')
     wid.show()
     sys.exit(app.exec_())
 
