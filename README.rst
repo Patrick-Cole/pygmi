@@ -27,28 +27,25 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.5.3
-* appdirs 1.4.3
+* python 3.5.4
 * cycler 0.10.0
-* GDAL 2.0.3
-* llvmlite 0.16.0
-* matplotlib 2.0.0
-* numba 0.31.0
+* GDAL 2.1.4
+* llvmlite 0.19.0
+* matplotlib 2.0.2
+* numba 0.34.0
 * numexpr 2.6.2
-* numpy 1.11.3
-* olefile 0.44
-* packaging 16.8
-* pandas 0.19.2
-* pillow 4.0.0
+* numpy 1.13.1
+* pillow 4.2.1
+* pip 9.0.1
 * pyopengl 3.1.1
 * pyparsing 2.2.0
-* pyqt5 5.8.1
-* python-dateutil 2.6.0
-* pytz 2016.10
-* scikit_learn 0.18.1
-* SciPy 0.19.0
-* setuptools 34.3.2
-* sip 4.19.1
+* pyqt5 5.9
+* python_dateutil 2.6.1
+* pytz 2017.2
+* scipy 0.19.1
+* scikit_learn 0.18.2
+* setuptools 36.2.7
+* sip 4.19.3
 * six 1.10.0
 
 Windows Users

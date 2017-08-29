@@ -201,7 +201,7 @@ Version:       '''+self.parent.__version__+'''
 Author:       Patrick Cole
 E-Mail:        pcole@geoscience.org.za
 
-Copyright:    (c) 2016 Council for Geoscience
+Copyright:    (c) 2017 Council for Geoscience
 Licence:      GPL-3.0
 
 PyGMI is free software: you can redistribute it and/or modify it under
