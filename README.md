@@ -1,4 +1,4 @@
-#PyGMI Readme
+# PyGMI Readme
 
 PyGMI stands for *Python Geophysical Modelling and Interpretation*. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets. It includes:
 * Magnetic and Gravity 3D forward modelling
@@ -10,7 +10,7 @@ It is released under the Gnu General Public License version 3.0
 
 For license information see the file LICENSE.txt
 
-##Requirements
+## Requirements
 PyGMI will run on both Windows and Linux. It should be noted that the main development is now being done in Python 3.5 on Windows.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
@@ -39,8 +39,8 @@ PyGMI is developed and has been tested with the following libraries in order to 
 
 It is possible that it might work on earlier versions, especially on non-windows operating systems.
 
-##Installation
-###General
+## Installation
+### General
 The easiest way to install pygmi if you are worning in a python environment is to use the pip command as follows:
 
 	pip install pygmi
@@ -59,7 +59,7 @@ If you are in python, you can run PyGMI by using the following commands:
 	pygmi.main()
 
 
-###Windows
+### Windows
 I have now made available convenient installers for PyGMI, thanks to Cyrille Rossant.
 
 Installers are available in [64-bit and 32-bit](https://github.com/Patrick-Cole/pygmi/releases)
@@ -68,12 +68,12 @@ Running the software can be achieved through the shortcut on your desktop.
 
 You may need to install the Microsoft Visual C++ 2015 Redistributable. It can be obtained from [here](https://www.visualstudio.com/downloads/download-visual-studio-vs#d-visual-c)
 
-###Linux
+### Linux
 Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through [Anaconda](http://continuum.io/downloads>).
 
 After installation of python, you can follow the instructions under General.
 
-###Anaconda
+### Anaconda
 Anaconda does not find pyqt5 on its system even if it is there already. To install pygmi on anaconda, edit the setup.py file, and replace the install_requires switch with the following:
 
 	install_requires=["numpy", "scipy", "matplotlib", "gdal", "numexpr", "numba", "Pillow", "PyOpenGL"],
@@ -89,7 +89,7 @@ Note that you can simply install Anaconda use its 'conda install' command to sat
 
 Make sure that krb5 is installed, or gdal will not work.
 
-###Alternative execution
+### Alternative execution
 
 If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
 
