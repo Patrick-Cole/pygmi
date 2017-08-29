@@ -24,8 +24,9 @@
 # -----------------------------------------------------------------------------
 """ These are miscellaneous functions for the program """
 
+import pdb
 import time
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.raster.dataprep import gdal_to_dat
@@ -46,30 +47,30 @@ def update_lith_lw(lmod, lwidget):
         tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 
 
-class RangedCopy(QtGui.QDialog):
+class RangedCopy(QtWidgets.QDialog):
     """ Class to call up a dialog for ranged copying """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
-        self.sb_master = QtGui.QSpinBox()
-        self.sb_start = QtGui.QSpinBox()
-        self.lw_lithdel = QtGui.QListWidget()
-        self.lw_lithcopy = QtGui.QListWidget()
-        self.sb_end = QtGui.QSpinBox()
+        self.sb_master = QtWidgets.QSpinBox()
+        self.sb_start = QtWidgets.QSpinBox()
+        self.lw_lithdel = QtWidgets.QListWidget()
+        self.lw_lithcopy = QtWidgets.QListWidget()
+        self.sb_end = QtWidgets.QSpinBox()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
-        label_3 = QtGui.QLabel()
-        label_4 = QtGui.QLabel()
-        label_5 = QtGui.QLabel()
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+        label_3 = QtWidgets.QLabel()
+        label_4 = QtWidgets.QLabel()
+        label_5 = QtWidgets.QLabel()
 
         self.sb_master.setMaximum(999999999)
         self.sb_start.setMaximum(999999999)
@@ -234,7 +235,7 @@ class ProgressBar(object):
                 else:
                     tleft = int(tleft)
                     self.pbar.setFormat('%p% '+str(tleft)+'s left')
-                QtGui.QApplication.processEvents()
+                QtWidgets.QApplication.processEvents()
                 time1 = time2
 
         self.pbar.setFormat('%p%')
@@ -242,7 +243,7 @@ class ProgressBar(object):
 
         self.incrmain()
         self.value = 0
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
     def incrmain(self, i=1):
         """ increases value by one """
@@ -258,7 +259,7 @@ class ProgressBar(object):
         else:
             tleft = int(tleft)
             self.pbarmain.setFormat('%p% '+str(tleft)+'s left')
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
     def maxall(self):
         """ Sets all progress bars to maximum value """
@@ -305,7 +306,7 @@ class ProgressBar(object):
         QtCore.QCoreApplication.processEvents()
 
 
-class MergeMod3D(QtGui.QDialog):
+class MergeMod3D(QtWidgets.QDialog):
     """
     Perform Merge of two models.
 
@@ -319,25 +320,25 @@ class MergeMod3D(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
         self.pbar = self.parent.pbar
 
-        self.master = QtGui.QComboBox()
-        self.slave = QtGui.QComboBox()
+        self.master = QtWidgets.QComboBox()
+        self.slave = QtWidgets.QComboBox()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout_main = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
-        label_master = QtGui.QLabel()
-        label_slave = QtGui.QLabel()
+        label_master = QtWidgets.QLabel()
+        label_slave = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -437,40 +438,6 @@ class MergeMod3D(QtGui.QDialog):
                          usedtm=False)
         datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
                         usedtm=False)
-
-#        datmaster.update_lith_list_reverse()
-#        lithkeys = list(datmaster.lith_list_reverse.keys())
-#        lithkeys.sort()
-#        for icnt, ilith in enumerate(lithkeys):
-#            lith = datmaster.lith_list_reverse[ilith]
-#            oldlithindex = datmaster.lith_list[lith].lith_index
-#
-#            datmaster.lith_list[lith].lith_index = icnt
-#            datmaster.mlut[icnt] = datmaster.mlut[oldlithindex]
-#
-#            tmp = (datmaster.lith_index == oldlithindex)
-#            datmaster.lith_index[tmp] = icnt
-#
-#        ocnt = icnt
-#        datslave.update_lith_list_reverse()
-#        lithkeys = list(datslave.lith_list_reverse.keys())
-#        lithkeys.sort()
-#        for icnt2, ilith in enumerate(lithkeys):
-#            icnt = icnt2+ocnt
-#            lith = datslave.lith_list_reverse[ilith]
-#            oldlithindex = datslave.lith_list[lith].lith_index
-#
-#            datslave.lith_list[lith].lith_index = icnt
-#            datslave.mlut[icnt] = datslave.mlut[oldlithindex]
-#
-#            tmp = (datslave.lith_index == oldlithindex)
-#            datslave.lith_index[tmp] = icnt
-
-#        for lith in datslave.lith_list:
-#            if lith not in datmaster.lith_list:
-#                datmaster.lith_list[lith] = datslave.lith_list[lith]
-#                lithnum = datmaster.lith_list[lith].lith_index
-#                datmaster.mlut[lithnum] = datslave.mlut[lithnum]
 
         lithcnt = 9000
         newmlut = {0: datmaster.mlut[0]}

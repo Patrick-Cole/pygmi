@@ -27,7 +27,7 @@
 import os
 import re
 import numpy as np
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import pygmi.seis.datatypes as sdt
 
 
@@ -127,9 +127,9 @@ class SIMP(object):
 
         ext = "Scanned Bulletin Text File (*.txt)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(self.parent,
-                                                     'Open File',
-                                                     '.', ext)
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
+                                                            'Open File',
+                                                            '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -398,7 +398,7 @@ class SIMP(object):
 
     def get_station(self, tmp, station):
         """ Gets the station """
-        if len(tmp) == 0:
+        if not tmp:
             return tmp
 
         if station != '':
@@ -412,7 +412,7 @@ class SIMP(object):
 
     def get_data_dist(self, tmp, station):
         """ Gets the distance """
-        if len(tmp) == 0:
+        if not tmp:
             return tmp
 
         if station == '' and len(self.datastat) > 1:
@@ -427,7 +427,7 @@ class SIMP(object):
 
     def get_data_azim(self, tmp, station):
         """ Gets the azimuth """
-        if len(tmp) == 0:
+        if not tmp:
             return tmp
 
         if station == '' and len(self.data_azim) > 1:
@@ -442,7 +442,7 @@ class SIMP(object):
 
     def get_data_phase(self, tmp, station, default):
         """ Gets the phase """
-        if len(tmp) == 0:
+        if not tmp:
             return tmp
 
         self.dataphase[-1] = default
@@ -463,7 +463,7 @@ class SIMP(object):
 
     def get_data_d(self, tmp):
         """ Gets the D value """
-        if len(tmp) == 0:
+        if not tmp:
             return tmp
 
         if tmp[0].isalpha():
@@ -476,15 +476,15 @@ class SIMP(object):
 
     def get_time_section(self, tmp):
         """ Gets the time """
-        if len(tmp) == 0:
+        if not tmp:
             return tmp
         tmp2 = tmp.pop(0)
         if tmp2.find('.') == -1:
-            if len(tmp) == 0:
+            if not tmp:
                 return tmp
             tmp2 += tmp.pop(0)
         if tmp2.find('.') == -1:
-            if len(tmp) == 0:
+            if not tmp:
                 return tmp
             tmp2 += tmp.pop(0)
         tmp2 = tmp2.zfill(8)  # pad with zeros if needed
@@ -496,12 +496,11 @@ class SIMP(object):
         self.datasecs[-1] = float(tmp2[4:])
         if self.datasecs[-1] > 60.0:
             self.showtext('Possible problem with time field')
-#            raise NameError('Possible problem with time field')
         return tmp
 
     def get_data_resid(self, tmp, station):
         """ Gets the data residual """
-        if len(tmp) == 0:
+        if not tmp:
             return tmp
         if (station != '' and isfloat(tmp[0]) is True and
                 tmp[0].isdigit() is False):
@@ -511,14 +510,14 @@ class SIMP(object):
 
     def get_data_period(self, tmp):
         """ Gets the period """
-        if len(tmp) > 0:
+        if tmp:
             self.dataperiod[-1] = float(tmp[0])
             tmp.pop(0)
         return tmp
 
     def get_data_amplitude(self, tmp):
         """ Gets the amplitude """
-        if len(tmp) > 0:
+        if tmp:
             self.dataamplitude[-1] = float(tmp[0][:4])*1000
             tmp.pop(0)
         return tmp
@@ -543,31 +542,21 @@ class SIMP(object):
         tmp.year = self.year
         tmp.month = self.mondec
         tmp.day = self.day
-#        tmp.fixed_origin_time = i[10]
         tmp.hour = self.hour
         tmp.minutes = self.minute
         tmp.seconds = self.sec
-#        tmp.location_model_indicator = i[20]
         tmp.distance_indicator = self.distanceindicator
-#        tmp.event_id = i[22]
         tmp.latitude = self.lat  # -999 means none
         tmp.longitude = self.lon  # -999 means none
         tmp.depth = self.depth  # -999 means none
         if self.depth != -999:
             tmp.depth_indicator = 'F'
-#        tmp.locating_indicator = i[44]
         tmp.hypocenter_reporting_agency = 'PRE'
         tmp.number_of_stations_used = self.numstations
         tmp.rms_of_time_residuals = self.datarms
         tmp.magnitude_1 = self.magnitude
         tmp.type_of_magnitude_1 = 'L'
         tmp.magnitude_reporting_agency_1 = 'PRE'
-#        tmp.magnitude_2 = str2float(i[63:67])
-#        tmp.type_of_magnitude_2 = i[67]
-#        tmp.magnitude_reporting_agency_2 = i[68:71]
-#        tmp.magnitude_3 = str2float(i[71:75])
-#        tmp.type_of_magnitude_3 = i[75]
-#        tmp.magnitude_reporting_agency_3 = i[76:79]
         self.event['1'] = tmp
 
     def get_record_type_e(self):
@@ -599,7 +588,7 @@ class SIMP(object):
         tmp.new_id_created = ' '
         tmp.id_locked = 'L'
 
-        if self.region is not '':
+        if self.region != '':
             tmp.region = self.region
 
         self.event['I'] = tmp
@@ -613,7 +602,7 @@ class SIMP(object):
             tmp.station_name = self.datastat[i]
             tmp.instrument_type = 'S'
             tmp.component = 'Z'
-            if self.dataphase[i] is not '':
+            if self.dataphase[i] != '':
                 tmp.quality = self.dataphase[i][0]
                 tmp.phase_id = self.dataphase[i][1:]
             if self.dataw[i] != 1:
@@ -704,7 +693,6 @@ def read_ifile(ifile):
     idata = idata.replace('(S)', 'S')
     idata = idata.replace(',', '.')
     idata = re.sub(r'[^\x21-x7E\n]', ' ', idata)
-#    idata = nohex(idata)
     inputf.close()
 
 # Split into lines

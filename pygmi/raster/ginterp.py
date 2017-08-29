@@ -67,24 +67,22 @@ import copy
 from math import cos, sin, tan
 import numpy as np
 import numexpr as ne
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
 import matplotlib.gridspec as gridspec
 import matplotlib.cm as cm
-import matplotlib.pyplot as plt
 import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
 from matplotlib import rcParams
-from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
-# import pygmi.raster.modest_image as modest_image
 
 
 class ModestImage2(mi.AxesImage):
@@ -158,14 +156,6 @@ class ModestImage2(mi.AxesImage):
         self._A = A
         self.smallres = A
 
-#        if self._A.dtype != np.uint8 and not np.can_cast(self._A.dtype,
-#                                                         np.float):
-#            raise TypeError("Image data can not convert to float")
-#
-#        if (self._A.ndim not in (2, 3) or
-#                (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4))):
-#            raise TypeError("Invalid dimensions for image data")
-
         self._imcache = None
         self._rgbacache = None
         self._oldxslice = None
@@ -173,10 +163,6 @@ class ModestImage2(mi.AxesImage):
         self._sx, self._sy = None, None
         if self.axes.dataLim.x0 != np.inf:
             self._scale_to_res()
-
-#    def get_array(self):
-#        """Override to return the full-resolution array"""
-#        return self._full_res
 
     def _scale_to_res(self):
         """ Change self._A and _extent to render an image whose
@@ -232,7 +218,7 @@ class ModestImage2(mi.AxesImage):
 
         if self.dtype == 'Single Color Map':
             pseudo = self._full_res[(rows-y1):(rows-y0):sy, x0:x1:sx]
-            mask = pseudo.mask
+            mask = np.ma.getmaskarray(pseudo)
 
             if self.htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
@@ -250,8 +236,6 @@ class ModestImage2(mi.AxesImage):
             self._A = colormap
 
         elif self.dtype == 'Sunshade':
-#            pseudo = self._full_res[0]
-#            sun = self._full_res[1]
             pseudo = self._full_res[0][(rows-y1):(rows-y0):sy, x0:x1:sx]
             sun = self._full_res[1][(rows-y1):(rows-y0):sy, x0:x1:sx]
             mask = np.logical_or(pseudo.mask, sun.mask)
@@ -328,7 +312,6 @@ class ModestImage2(mi.AxesImage):
         x0 = xlim[0]
         x1 = xlim[1]
 
-#        self.set_extent([x0 - .5, x1 - .5, y0 - .5, y1 - .5])
         self.set_extent([x0, x1, y0, y1])
         self._sx = sx
         self._sy = sy
@@ -338,12 +321,11 @@ class ModestImage2(mi.AxesImage):
     def draw(self, renderer, *args, **kwargs):
         """ Draw """
 
-# This loop forces the histograms to remain static
+        # This loop forces the histograms to remain static
         for argb in self.figure.axes[1:]:
             argb.set_xlim(argb.dataLim.x0, argb.dataLim.x1)
             argb.set_ylim(argb.dataLim.y0, argb.dataLim.y1*1.2)
 
-#        self._scale_to_res()
         # The next command runs the original draw for this class.
         super().draw(renderer, *args, **kwargs)
 
@@ -382,8 +364,6 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
         # image does not already have clipping set, clip to axes patch
         im.set_clip_path(axes.patch)
 
-    # if norm is None and shape is None:
-    #    im.set_clim(vmin, vmax)
     if vmin is not None or vmax is not None:
         im.set_clim(vmin, vmax)
     else:
@@ -503,8 +483,8 @@ class MyMplCanvas(FigureCanvas):
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
@@ -541,7 +521,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_aspect('equal')
 
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.bbox_hist_red = self.figure.canvas.copy_from_bbox(
@@ -564,7 +544,7 @@ class MyMplCanvas(FigureCanvas):
 
     def move(self, event):
         """ Mouse is moving """
-        if len(self.data) == 0 or self.gmode == 'Contour':
+        if not self.data or self.gmode == 'Contour':
             return
 
         if event.inaxes == self.axes:
@@ -640,7 +620,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_graph(self):
         """ Update the plot """
-        if len(self.data) == 0 or self.gmode is None:
+        if not self.data or self.gmode is None:
             return
 
         self.image.cbar = self.cbar
@@ -897,8 +877,8 @@ class MySunCanvas(FigureCanvas):
     def init_graph(self):
         """ Init graph """
         self.axes.clear()
-        plt.setp(self.axes.get_xticklabels(), fontsize=8)
-        plt.setp(self.axes.get_yticklabels(), visible=False)
+        self.axes.set_xticklabels(self.axes.get_xticklabels(), fontsize=8)
+        self.axes.set_yticklabels(self.axes.get_yticklabels(), visible=False)
 
         self.axes.set_autoscaley_on(False)
         self.axes.set_rmax(1.0)
@@ -908,7 +888,7 @@ class MySunCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
 
-class PlotInterp(QtGui.QDialog):
+class PlotInterp(QtWidgets.QDialog):
     """
     This is the primary class for the raster data interpretation module. The
     main interface is set up from here, as well as monitoring of the mouse
@@ -939,22 +919,22 @@ class PlotInterp(QtGui.QDialog):
 
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
-        self.btn_saveimg = QtGui.QPushButton()
-        self.cbox_dtype = QtGui.QComboBox()
-        self.cbox_band1 = QtGui.QComboBox()
-        self.cbox_band2 = QtGui.QComboBox()
-        self.cbox_band3 = QtGui.QComboBox()
-        self.cbox_htype = QtGui.QComboBox()
-        self.cbox_hstype = QtGui.QComboBox()
-        self.cbox_cbar = QtGui.QComboBox(self)
-        self.kslider = QtGui.QSlider(QtCore.Qt.Horizontal)  # cmyK
-        self.sslider = QtGui.QSlider(QtCore.Qt.Horizontal)  # sunshade
-        self.aslider = QtGui.QSlider(QtCore.Qt.Horizontal)
-        self.slabel = QtGui.QLabel()
-        self.labels = QtGui.QLabel()
-        self.labela = QtGui.QLabel()
-        self.labelc = QtGui.QLabel()
-        self.labelk = QtGui.QLabel()
+        self.btn_saveimg = QtWidgets.QPushButton()
+        self.cbox_dtype = QtWidgets.QComboBox()
+        self.cbox_band1 = QtWidgets.QComboBox()
+        self.cbox_band2 = QtWidgets.QComboBox()
+        self.cbox_band3 = QtWidgets.QComboBox()
+        self.cbox_htype = QtWidgets.QComboBox()
+        self.cbox_hstype = QtWidgets.QComboBox()
+        self.cbox_cbar = QtWidgets.QComboBox(self)
+        self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # cmyK
+        self.sslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # sunshade
+        self.aslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
+        self.slabel = QtWidgets.QLabel()
+        self.labels = QtWidgets.QLabel()
+        self.labela = QtWidgets.QLabel()
+        self.labelc = QtWidgets.QLabel()
+        self.labelk = QtWidgets.QLabel()
 
         self.setupui()
 
@@ -982,17 +962,17 @@ class PlotInterp(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
         helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
-        label1 = QtGui.QLabel()
-        label2 = QtGui.QLabel()
-        label3 = QtGui.QLabel()
+        label1 = QtWidgets.QLabel()
+        label2 = QtWidgets.QLabel()
+        label3 = QtWidgets.QLabel()
 
-        vbl_raster = QtGui.QVBoxLayout()
-        hbl_all = QtGui.QHBoxLayout(self)
-        vbl_right = QtGui.QVBoxLayout()
+        vbl_raster = QtWidgets.QVBoxLayout()
+        hbl_all = QtWidgets.QHBoxLayout(self)
+        vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-                                   QtGui.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                       QtWidgets.QSizePolicy.Expanding)
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
         self.sslider.setValue(25)
@@ -1072,7 +1052,7 @@ class PlotInterp(QtGui.QDialog):
     def change_cbar(self):
         """ Change the color map for the color bar """
         txt = str(self.cbox_cbar.currentText())
-        self.mmc.cbar = plt.get_cmap(txt)
+        self.mmc.cbar = cm.get_cmap(txt)
         self.mmc.update_graph()
 
     def change_dtype(self):
@@ -1161,7 +1141,7 @@ class PlotInterp(QtGui.QDialog):
             self.mmc.argb[2].set_visible(False)
             self.mmc.cell = self.sslider.value()
             self.mmc.alpha = float(self.aslider.value())/100.
-            QtGui.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents()
             self.msc.init_graph()
             self.mmc.init_graph()
 
@@ -1261,14 +1241,14 @@ class PlotInterp(QtGui.QDialog):
         """Save image as a GeoTiff"""
 
         ext = "GeoTiff (*.tif)"
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
             return False
 
-        text, okay = QtGui.QInputDialog.getText(
+        text, okay = QtWidgets.QInputDialog.getText(
             self, "Colorbar", "Enter length in inches:",
-            QtGui.QLineEdit.Normal, "8")
+            QtWidgets.QLineEdit.Normal, "8")
 
         if not okay:
             return
@@ -1279,34 +1259,34 @@ class PlotInterp(QtGui.QDialog):
         dtype = str(self.cbox_dtype.currentText())
 
         if 'Ternary' not in dtype:
-            text, okay = QtGui.QInputDialog.getText(
+            text, okay = QtWidgets.QInputDialog.getText(
                 self, "Colorbar", "Enter colorbar unit label:",
-                QtGui.QLineEdit.Normal,
+                QtWidgets.QLineEdit.Normal,
                 self.units[str(self.cbox_band1.currentText())])
 
             if not okay:
                 return
         else:
             units = str(self.cbox_band1.currentText())
-            rtext, okay = QtGui.QInputDialog.getText(
+            rtext, okay = QtWidgets.QInputDialog.getText(
                 self, "Ternary Colorbar", "Enter red/cyan label:",
-                QtGui.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
                 return
 
             units = str(self.cbox_band2.currentText())
-            gtext, okay = QtGui.QInputDialog.getText(
+            gtext, okay = QtWidgets.QInputDialog.getText(
                 self, "Ternary Colorbar", "Enter green/magenta label:",
-                QtGui.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
                 return
 
             units = str(self.cbox_band3.currentText())
-            btext, okay = QtGui.QInputDialog.getText(
+            btext, okay = QtWidgets.QInputDialog.getText(
                 self, "Ternary Colorbar", "Enter blue/yelow label:",
-                QtGui.QLineEdit.Normal, units)
+                QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
                 return
@@ -1328,9 +1308,6 @@ class PlotInterp(QtGui.QDialog):
             pseudo[pseudo > psmall.max()] = psmall.max()
             pseudo.mask = pmask
 
-#            mask = np.logical_not(pseudo.mask)
-#            pseudo += pseudo.min()
-
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
 
@@ -1348,8 +1325,6 @@ class PlotInterp(QtGui.QDialog):
         elif dtype == 'Sunshade':
             pseudo = self.mmc.image._full_res[0]
             sun = self.mmc.image._full_res[1]
-#            pseudo = self.mmc.image.smallres[:, :, 0]
-#            sun = self.mmc.image.smallres[:, :, 1]
 
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
@@ -1369,10 +1344,6 @@ class PlotInterp(QtGui.QDialog):
             sunshader = currentshader(sun.data, cell, theta, phi, alpha)
             snorm = norm2(sunshader)
 
-#            pnorm = norm2(pseudo)
-#            colormap = self.cbar(pnorm)
-
-
             img = img2rgb(pseudo, self.mmc.cbar)
             pseudo = None
             sunshader = None
@@ -1381,9 +1352,6 @@ class PlotInterp(QtGui.QDialog):
             img[:, :, 1] = img[:, :, 1]*snorm  # green
             img[:, :, 2] = img[:, :, 2]*snorm  # blue
             img = img.astype(np.uint8)
-#            mask = np.logical_or(pseudo.mask, sun.mask)
-#            mask = np.logical_not(mask)
-#            img[:, :, 3] = mask
 
         elif 'Ternary' in dtype:
             red = self.mmc.image._full_res[0]
@@ -1423,7 +1391,7 @@ class PlotInterp(QtGui.QDialog):
         elif dtype == 'Contour':
             pseudo = self.mmc.image._full_res.copy()
             psmall = self.mmc.image.smallres
-            pmask = pseudo.mask.copy()
+            pmask = np.ma.getmaskarray(pseudo)
 
             pseudo[pseudo < psmall.min()] = psmall.min()
             pseudo[pseudo > psmall.max()] = psmall.max()
@@ -1443,7 +1411,6 @@ class PlotInterp(QtGui.QDialog):
             tmpsize = self.mmc.figure.get_size_inches()
             self.mmc.figure.set_size_inches(tmpsize*3)
             self.mmc.figure.canvas.draw()
-#            fcol = int(self.mmc.figure.get_facecolor()[0]*255)
             img = np.fromstring(self.mmc.figure.canvas.tostring_argb(),
                                 dtype=np.uint8, sep='')
             w, h = self.mmc.figure.canvas.get_width_height()
@@ -1487,7 +1454,6 @@ class PlotInterp(QtGui.QDialog):
         newimg[0].data[mask <= 1] = 0
         newimg[1].data[mask <= 1] = 0
         newimg[2].data[mask <= 1] = 0
-#        newimg[3].data[mask == 0] = 0
 
         newimg[0].nullvalue = 0
         newimg[1].nullvalue = 0
@@ -1507,7 +1473,6 @@ class PlotInterp(QtGui.QDialog):
         newimg[2].ydim = (newimg[2].ydim*newimg[2].rows)/imgshape0
         newimg[3].ydim = (newimg[3].ydim*newimg[3].rows)/imgshape0
 
-
         newimg[0].cols = imgshape1
         newimg[1].cols = imgshape1
         newimg[2].cols = imgshape1
@@ -1525,32 +1490,42 @@ class PlotInterp(QtGui.QDialog):
 # Section for colorbars
         if 'Ternary' not in dtype:
             txt = str(self.cbox_cbar.currentText())
-            cmap = plt.get_cmap(txt)
+            cmap = cm.get_cmap(txt)
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
 # Horizontal Bar
-            fig = plt.figure(figsize=(blen, (bwid+0.75)), tight_layout=True)
-            ax = fig.add_subplot(111)
+            fig = Figure()
+            canvas = FigureCanvas(fig)
+            fig.set_figwidth(blen)
+            fig.set_figheight(bwid+0.75)
+            fig.set_tight_layout(True)
+            ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
                                         orientation='horizontal')
             cb.set_label(text)
 
             fname = filename[:-4]+'_hcbar.tif'
-            fig.savefig(fname, dpi=300)
+            canvas.print_figure(fname, dpi=300)
 
 # Vertical Bar
-            fig = plt.figure(figsize=((bwid + 1), blen), tight_layout=True)
-            ax = fig.add_subplot(111)
+            fig = Figure()
+            canvas = FigureCanvas(fig)
+            fig.set_figwidth(bwid+1)
+            fig.set_figheight(blen)
+            fig.set_tight_layout(True)
+            ax = fig.gca()
 
             cb = mcolorbar.ColorbarBase(ax, cmap=cmap, norm=norm,
                                         orientation='vertical')
             cb.set_label(text)
 
             fname = filename[:-4]+'_vcbar.tif'
-            fig.savefig(fname, dpi=300)
+            canvas.print_figure(fname, dpi=300)
         else:
-            fig = plt.figure(tight_layout=True)
+            fig = Figure()
+            canvas = FigureCanvas(fig)
+            fig.set_tight_layout(True)
 
             redlabel = rtext
             greenlabel = gtext
@@ -1583,34 +1558,36 @@ class PlotInterp(QtGui.QDialog):
             data.shape = (red.shape[0], red.shape[1], 3)
 
             data = data[:221, 90:350]
-            plt.xlim((-100, 355))
-            plt.ylim((-100, 322))
+
+            ax = fig.gca()
+            ax.set_xlim((-100, 355))
+            ax.set_ylim((-100, 322))
 
             path = Path([[0, 0], [127.5, 222], [254, 0], [0, 0]])
             patch = PathPatch(path, facecolor='none')
-            plt.gca().add_patch(patch)
+            ax.add_patch(patch)
 
-            im = plt.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
-                            clip_on=True)
+            im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
+                           clip_on=True)
             im.set_clip_path(patch)
 
-            plt.text(0, -5, greenlabel, horizontalalignment='center',
-                     verticalalignment='top', size=20)
-            plt.text(254, -5, bluelabel, horizontalalignment='center',
-                     verticalalignment='top', size=20)
-            plt.text(127.5, 225, redlabel, horizontalalignment='center',
-                     size=20)
-            plt.tick_params(top='off', right='off', bottom='off', left='off',
-                            labelbottom='off', labelleft='off')
+            ax.text(0, -5, greenlabel, horizontalalignment='center',
+                    verticalalignment='top', size=20)
+            ax.text(254, -5, bluelabel, horizontalalignment='center',
+                    verticalalignment='top', size=20)
+            ax.text(127.5, 225, redlabel, horizontalalignment='center',
+                    size=20)
+            ax.tick_params(top='off', right='off', bottom='off', left='off',
+                           labelbottom='off', labelleft='off')
 
-            plt.axis('off')
+            ax.axis('off')
             fname = filename[:-4]+'_tern.tif'
-            fig.savefig(fname, dpi=300)
+            canvas.print_figure(fname, dpi=300)
 
-        QtGui.QMessageBox.information(self, "Information",
-                                      "Save to GeoTiff is complete!",
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+        QtWidgets.QMessageBox.information(self, "Information",
+                                          "Save to GeoTiff is complete!",
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
 
     def settings(self):
         """ This is called when the used double clicks the routine from the
@@ -1620,7 +1597,7 @@ class PlotInterp(QtGui.QDialog):
             return
 
         self.show()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.mmc.init_graph()
         self.msc.init_graph()
@@ -1704,34 +1681,6 @@ def currentshader(data, cell, theta, phi, alpha):
     Ps = ne.evaluate('coss**n')
     R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2'))
 
-
-#    ldict = locals()
-#    ldict['pinit'] = asp[1]
-#    ldict['qinit'] = asp[2]
-
-# Update cell
-#    ldict['p'] = ne.evaluate('pinit/cell', ldict)
-#    ldict['q'] = ne.evaluate('qinit/cell', ldict)
-#    ldict['sqrt_1p2q2'] = ne.evaluate('sqrt(1+p**2+q**2)', ldict)
-
-# Update angle
-#    ldict['cosg2'] = cos(theta/2)
-#    ldict['p0'] = -cos(phi)*tan(theta)
-#    ldict['q0'] = -sin(phi)*tan(theta)
-#    ldict['sqrttmp'] = ne.evaluate('(1+sqrt(1+p0**2+q0**2))', ldict)
-#    ldict['p1'] = ne.evaluate('p0 / sqrttmp', ldict)
-#    ldict['q1'] = ne.evaluate('q0 / sqrttmp', ldict)
-
-
-#     n: how compact the bright patch is
-#    ldict['cosi'] = ne.evaluate('((1+p0*p+q0*q)/'
-#                                '(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))', ldict)
-#    ldict['coss'] = ne.evaluate('((1+p1*p+q1*q)/'
-#                                '(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))', ldict)
-#    ldict['Ps'] = ne.evaluate('coss**n', ldict)
-#    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2',
-#                                         ldict))
-
     return R
 
 
@@ -1753,10 +1702,8 @@ def histcomp(img, nbr_bins=256):
         compacted array
     """
 # get image histogram
-    imask = img.mask
+    imask = np.ma.getmaskarray(img)
     tmp = img.compressed()
-#        if tmp.mask.size > 1:
-#            tmp = tmp.data[tmp.mask == 0]
     imhist, bins = np.histogram(tmp, nbr_bins)
 
     cdf = imhist.cumsum()  # cumulative distribution function
@@ -1850,7 +1797,6 @@ def img2rgb(img, cbar):
     im2 = norm255(im2)
     cbartmp = cbar(range(255))
     cbartmp = np.array([[0., 0., 0., 1.]]+cbartmp.tolist())*255
-#    cbartmp[:, :-1] *= 255
     cbartmp = cbartmp.round()
     cbartmp = cbartmp.astype(np.uint8)
     im2 = cbartmp[im2]
@@ -1876,7 +1822,7 @@ def norm2(dat):
     datmin = float(dat.min())
     datptp = float(dat.ptp())
     out = np.ma.array(ne.evaluate('(dat-datmin)/datptp'))
-    out.mask = dat.mask
+    out.mask = np.ma.getmaskarray(dat)
     return out
 
 

@@ -28,7 +28,7 @@ import sys
 import os
 import re
 import zipfile
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr, gdal
 from osgeo import ogr
@@ -36,6 +36,7 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from pygmi.pfmod.datatypes import Data, LithModel
 import pygmi.pfmod.grvmag3d as grvmag3d
+import pygmi.pfmod.tensor3d as tensor3d
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.menu_default as menu_default
 import pygmi.raster.dataprep as dp
@@ -57,7 +58,8 @@ class ImportMod3D(object):
         self.indata = {}
         self.outdata = {}
 
-        self.pbars = parent.pbar
+        if parent is not None:
+            self.pbars = parent.pbar
 
     def settings(self):
         """ Settings """
@@ -66,7 +68,7 @@ class ImportMod3D(object):
                'x,y,z,label (*.csv);;'
                'x,y,z,label (*.txt)')
 
-        filename, filt = QtGui.QFileDialog.getOpenFileNameAndFilter(
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
 
         if filename == '':
@@ -94,7 +96,8 @@ class ImportMod3D(object):
             if self.lmod.griddata[i].dataid == '':
                 self.lmod.griddata[i].dataid = i
 
-        self.outdata['Raster'] = list(self.lmod.griddata.values())
+        tmp = [i for i in set(self.lmod.griddata.values())]
+        self.outdata['Raster'] = tmp
 
         return True
 
@@ -109,7 +112,7 @@ class ImportMod3D(object):
         while tmp[0][0] == '#':
             tmp.pop(0)
 
-        if len(tmp) == 0:
+        if not tmp:
             return
 
         header = tmp.pop(0).split(',')
@@ -210,29 +213,42 @@ class ImportMod3D(object):
         y = tmp[:, 1].astype(np.float)
         z = tmp[:, 2].astype(np.float)
         label = tmp[:, 3]
-
-        x_u = np.array(np.unique(x))
-        y_u = np.array(np.unique(y))
-        z_u = np.array(np.unique(z))
         labelu = np.unique(label)
-        xcell = x.ptp()/float(x_u.shape[0]-1)
-        ycell = y.ptp()/float(y_u.shape[0]-1)
-        zcell = z.ptp()/float(z_u.shape[0]-1)
+
+        idx = np.unique(x, return_index=True)[1]
+        x_u = x[np.sort(idx)]
+        dx_u = np.diff(x_u)
+        idx = np.unique(y, return_index=True)[1]
+        y_u = y[np.sort(idx)]
+        dy_u = np.diff(y_u)
+        idx = np.unique(z, return_index=True)[1]
+        z_u = z[np.sort(idx)]
+        dz_u = np.diff(z_u)
+
+        if dx_u[0] < 0:
+            dx_u *= -1
+        if dy_u[0] < 0:
+            dy_u *= -1
+        if dz_u[0] < 0:
+            dz_u *= -1
+
+        xcell = np.max(dx_u)
+        ycell = np.max(dy_u)
+        zcell = np.max(dz_u)
 
         lmod = self.lmod
 
-        lmod.numx = x_u.shape[0]
-        lmod.numy = y_u.shape[0]
-        lmod.numz = z_u.shape[0]
-#        lmod.dxy = max(xcell, ycell)
         lmod.dxy = min(xcell, ycell)
         lmod.d_z = zcell
-#        lmod.lith_index = indict[pre+'lith_index']
         lmod.curprof = 0
         lmod.curlayer = 0
         lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
         lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
         lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
+        lmod.numx = int(np.ptp(lmod.xrange)/lmod.dxy+1)
+        lmod.numy = int(np.ptp(lmod.yrange)/lmod.dxy+1)
+        lmod.numz = int(np.ptp(lmod.zrange)/lmod.d_z+1)
+
 
 # Section to load lithologies.
         if 'Generic 1' in lmod.lith_list:
@@ -261,8 +277,12 @@ class ImportMod3D(object):
             col = int((xi-lmod.xrange[0])/lmod.dxy)
             row = int((lmod.yrange[1]-y[i])/lmod.dxy)
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
-            lmod.lith_index[col, row, layer] = \
-                lmod.lith_list[label[i]].lith_index
+            try:
+                lmod.lith_index[col, row, layer] = \
+                    lmod.lith_list[label[i]].lith_index
+            except:
+                import pdb
+                pdb.set_trace()
 
     def dict2lmod(self, indict, pre=''):
         """ routine to convert a dictionary to an lmod """
@@ -306,7 +326,7 @@ class ImportMod3D(object):
             if not hasattr(lmod.griddata[i], 'dataid'):
                 lmod.griddata[i].dataid = ''
             if hasattr(lmod.griddata[i], 'bandid'):
-                if lmod.griddata[i].dataid is '':
+                if lmod.griddata[i].dataid == '':
                     lmod.griddata[i].dataid = lmod.griddata[i].bandid
                 del lmod.griddata[i].bandid
 
@@ -358,6 +378,147 @@ class ImportMod3D(object):
             lmod.lith_list[itxt].set_xyz12()
 
 
+class ImportTMod3D(object):
+    """ Import Data """
+    def __init__(self, parent):
+        self.parent = parent
+        self.lmod = LithModel()
+
+        self.ifile = ""
+        self.name = "Import 3D Model: "
+        self.ext = ""
+        self.indata = {}
+        self.outdata = {}
+
+        if parent is not None:
+            self.pbars = parent.pbar
+
+    def settings(self):
+        """ Settings """
+        ext = ('npz (*.npz)')
+
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+
+        if filename == '':
+            return False
+        os.chdir(filename.rpartition('/')[0])
+        self.ifile = str(filename)
+        self.parent.modelfilename = filename.rpartition('.')[0]
+
+# Reset Variables
+        self.lmod.griddata.clear()
+        self.lmod.lith_list.clear()
+
+        indict = np.load(filename)
+        self.dict2lmod(indict)
+
+        self.outdata['Model3D'] = [self.lmod]
+        self.lmod.name = filename.rpartition('/')[-1]
+
+        for i in self.lmod.griddata:
+            if self.lmod.griddata[i].dataid == '':
+                self.lmod.griddata[i].dataid = i
+
+        tmp = [i for i in set(self.lmod.griddata.values())]
+        self.outdata['Raster'] = tmp
+
+        return True
+
+    def dict2lmod(self, indict, pre=''):
+        """ routine to convert a dictionary to an lmod """
+        lithkeys = indict[pre+'lithkeys']
+
+        lmod = self.lmod
+
+        lmod.gregional = indict[pre+'gregional']
+        lmod.ght = indict[pre+'ght']
+        lmod.mht = indict[pre+'mht']
+        lmod.numx = indict[pre+'numx']
+        lmod.numy = indict[pre+'numy']
+        lmod.numz = indict[pre+'numz']
+        lmod.dxy = indict[pre+'dxy']
+        lmod.d_z = indict[pre+'d_z']
+        lmod.lith_index = indict[pre+'lith_index']
+        lmod.curprof = 0
+        lmod.curlayer = 0
+        lmod.xrange = np.array(indict[pre+'xrange']).tolist()
+        lmod.yrange = np.array(indict[pre+'yrange']).tolist()
+        lmod.zrange = np.array(indict[pre+'zrange']).tolist()
+        if pre+'custprofx' in indict:
+            lmod.custprofx = np.asscalar(indict[pre+'custprofx'])
+        else:
+            lmod.custprofx = {0: (lmod.xrange[0], lmod.xrange[1])}
+        if pre+'custprofy' in indict:
+            lmod.custprofy = np.asscalar(indict[pre+'custprofy'])
+        else:
+            lmod.custprofy = {0: (lmod.yrange[0], lmod.yrange[0])}
+
+        lmod.mlut = np.asscalar(indict[pre+'mlut'])
+        lmod.init_calc_grids()
+
+        lmod.griddata = np.asscalar(indict[pre+'griddata'])
+
+        for i in lmod.griddata:
+            lmod.griddata[i].data = np.ma.array(lmod.griddata[i].data)
+
+        # This gets rid of a legacy variable name
+        for i in lmod.griddata:
+            if not hasattr(lmod.griddata[i], 'dataid'):
+                lmod.griddata[i].dataid = ''
+            if hasattr(lmod.griddata[i], 'bandid'):
+                if lmod.griddata[i].dataid == '':
+                    lmod.griddata[i].dataid = lmod.griddata[i].bandid
+                del lmod.griddata[i].bandid
+
+        wktfin = None
+        for i in lmod.griddata:
+            wkt = lmod.griddata[i].wkt
+            if wkt != '' and wkt is not None:
+                wktfin = wkt
+
+        if wktfin is not None:
+            for i in lmod.griddata:
+                wkt = lmod.griddata[i].wkt
+                if wkt == '' or wkt is None:
+                    lmod.griddata[i].wkt = wktfin
+
+# Section to load lithologies.
+        lmod.lith_list['Background'] = tensor3d.GeoData(self.parent)
+
+        for itxt in lithkeys:
+            if itxt != 'Background':
+                lmod.lith_list[itxt] = tensor3d.GeoData(self.parent)
+
+            lmod.lith_list[itxt].hintn = np.asscalar(indict[pre+itxt+'_hintn'])
+            lmod.lith_list[itxt].finc = np.asscalar(indict[pre+itxt+'_finc'])
+            lmod.lith_list[itxt].fdec = np.asscalar(indict[pre+itxt+'_fdec'])
+            lmod.lith_list[itxt].zobsm = np.asscalar(indict[pre+itxt+'_zobsm'])
+            lmod.lith_list[itxt].susc = np.asscalar(indict[pre+itxt+'_susc'])
+            lmod.lith_list[itxt].mstrength = np.asscalar(
+                indict[pre+itxt+'_mstrength'])
+            lmod.lith_list[itxt].qratio = np.asscalar(
+                indict[pre+itxt+'_qratio'])
+            lmod.lith_list[itxt].minc = np.asscalar(indict[pre+itxt+'_minc'])
+            lmod.lith_list[itxt].mdec = np.asscalar(indict[pre+itxt+'_mdec'])
+            lmod.lith_list[itxt].density = np.asscalar(
+                indict[pre+itxt+'_density'])
+            lmod.lith_list[itxt].bdensity = np.asscalar(
+                indict[pre+itxt+'_bdensity'])
+            lmod.lith_list[itxt].lith_index = np.asscalar(
+                indict[pre+itxt+'_lith_index'])
+            lmod.lith_list[itxt].g_cols = np.asscalar(indict[pre+itxt+'_numx'])
+            lmod.lith_list[itxt].g_rows = np.asscalar(indict[pre+itxt+'_numy'])
+            lmod.lith_list[itxt].numz = np.asscalar(indict[pre+itxt+'_numz'])
+            lmod.lith_list[itxt].g_dxy = np.asscalar(indict[pre+itxt+'_dxy'])
+            lmod.lith_list[itxt].dxy = np.asscalar(indict[pre+itxt+'_dxy'])
+            lmod.lith_list[itxt].d_z = np.asscalar(indict[pre+itxt+'_d_z'])
+            lmod.lith_list[itxt].zobsm = np.asscalar(indict[pre+itxt+'_zobsm'])
+            lmod.lith_list[itxt].zobsg = np.asscalar(indict[pre+itxt+'_zobsg'])
+            lmod.lith_list[itxt].modified = True
+            lmod.lith_list[itxt].set_xyz12()
+
+
 class ExportMod3D(object):
     """ Export Data """
     def __init__(self, parent):
@@ -369,8 +530,10 @@ class ExportMod3D(object):
         self.indata = {}
         self.outdata = {}
         self.lmod = None
-#        self.dirname = ""
-        self.showtext = self.parent.showprocesslog
+        if parent is not None:
+            self.showtext = self.parent.showprocesslog
+        else:
+            self.showtext = print
 
     def run(self):
         """ Show Info """
@@ -380,7 +543,7 @@ class ExportMod3D(object):
             return
 
         for self.lmod in self.indata['Model3D']:
-            filename = QtGui.QFileDialog.getSaveFileName(
+            filename, _ = QtWidgets.QFileDialog.getSaveFileName(
                 self.parent, 'Save File', '.',
                 'npz (*.npz);;shapefile (*.shp);;kmz (*.kmz);;csv (*.csv)')
 
@@ -519,7 +682,6 @@ class ExportMod3D(object):
 
         mvis_3d = mvis3d.Mod3dDisplay()
         mvis_3d.lmod1 = self.lmod
-#        mvis_3d.checkbox_smooth.setChecked(True)
 
         rev = 1  # should be 1 normally
 
@@ -538,10 +700,10 @@ class ExportMod3D(object):
             return
 
         if prjkmz.proj.wkt == '':
-            QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Warning',
-                                      ' You need a projection!',
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Warning',
+                                          ' You need a projection!',
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             return
 
         smooth = prjkmz.checkbox_smooth.isChecked()
@@ -576,7 +738,6 @@ class ExportMod3D(object):
         for i in itmp:
             tmp[i, :3] = self.lmod.mlut[i]
         mvis_3d.lut = tmp
-#        mvis_3d.update_plot(fullcalc = True)
         mvis_3d.update_model(smooth)
 
         self.showtext('creating kmz file')
@@ -850,7 +1011,6 @@ class ExportMod3D(object):
                        aspect='auto',
                        interpolation='nearest')
             plt.savefig('tmp930.png')
-#            plt.close('tmp930')
 
             zfile.write('tmp930.png', 'models\\'+i+'.png')
             os.remove('tmp930.png')
@@ -874,7 +1034,6 @@ class ExportMod3D(object):
 
         mvis_3d = mvis3d.Mod3dDisplay()
         mvis_3d.lmod1 = self.lmod
-#        mvis_3d.checkbox_smooth.setChecked(True)
 
         xrng = np.array(self.lmod.xrange, dtype=float)
         yrng = np.array(self.lmod.yrange, dtype=float)
@@ -914,15 +1073,6 @@ class ExportMod3D(object):
         self.showtext('creating shapefile file')
 
         driver = ogr.GetDriverByName('ESRI Shapefile')
-
-#        datasource = driver.CreateDataSource(self.ifile)
-#        layer = datasource.CreateLayer('Model',
-#                                       geom_type=ogr.wkbMultiPolygon25D)
-#
-#        layer.CreateField(ogr.FieldDefn("Lithology", ogr.OFTString))
-#        layer.CreateField(ogr.FieldDefn("Susc", ogr.OFTReal))
-#        layer.CreateField(ogr.FieldDefn("Density", ogr.OFTReal))
-
 
 # update colors
         self.lmod.update_lith_list_reverse()
@@ -986,17 +1136,16 @@ class ExportMod3D(object):
             layer = None
             feature = None
             datasource = None
-#        datasource.Destroy()
 
         self.showtext('shapefile export complete!')
 
 
-class Exportkmz(QtGui.QDialog):
+class Exportkmz(QtWidgets.QDialog):
     """ Class to call up a dialog """
     def __init__(self, wkt, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
-        self.checkbox_smooth = QtGui.QCheckBox()
+        self.checkbox_smooth = QtWidgets.QCheckBox()
         self.proj = dp.GroupProj('Confirm Model Projection')
         self.proj.set_current(wkt)
 
@@ -1005,8 +1154,8 @@ class Exportkmz(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.exportkmz')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -1024,10 +1173,10 @@ class Exportkmz(QtGui.QDialog):
         buttonbox.rejected.connect(self.reject)
 
 
-class ImportPicture(QtGui.QDialog):
+class ImportPicture(QtWidgets.QDialog):
     """ Class to call up a dialog """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.lmod = LithModel()
@@ -1040,12 +1189,12 @@ class ImportPicture(QtGui.QDialog):
         self.outdata = {}
         self.grid = None
 
-        self.dsb_picimp_west = QtGui.QDoubleSpinBox()
-        self.dsb_picimp_east = QtGui.QDoubleSpinBox()
-        self.dsb_picimp_depth = QtGui.QDoubleSpinBox()
-        self.rb_picimp_westeast = QtGui.QRadioButton()
-        self.rb_picimp_southnorth = QtGui.QRadioButton()
-        self.dsb_picimp_maxalt = QtGui.QDoubleSpinBox()
+        self.dsb_picimp_west = QtWidgets.QDoubleSpinBox()
+        self.dsb_picimp_east = QtWidgets.QDoubleSpinBox()
+        self.dsb_picimp_depth = QtWidgets.QDoubleSpinBox()
+        self.rb_picimp_westeast = QtWidgets.QRadioButton()
+        self.rb_picimp_southnorth = QtWidgets.QRadioButton()
+        self.dsb_picimp_maxalt = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
 
@@ -1059,17 +1208,17 @@ class ImportPicture(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        groupbox = QtGui.QGroupBox()
-        gridlayout_2 = QtGui.QGridLayout(self)
-        gridlayout_3 = QtGui.QGridLayout(groupbox)
-        buttonbox = QtGui.QDialogButtonBox()
+        groupbox = QtWidgets.QGroupBox()
+        gridlayout_2 = QtWidgets.QGridLayout(self)
+        gridlayout_3 = QtWidgets.QGridLayout(groupbox)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.importpicture')
 
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
-        label_3 = QtGui.QLabel()
-        label_4 = QtGui.QLabel()
-        label_5 = QtGui.QLabel()
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+        label_3 = QtWidgets.QLabel()
+        label_4 = QtWidgets.QLabel()
+        label_5 = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -1159,13 +1308,6 @@ class ImportPicture(QtGui.QDialog):
         self.grid.tlx = self.min_coord
         self.grid.tly = self.max_alt
 
-#        filename = self.ifile
-#        if filename.rfind('/') != -1:
-#            datatext = filename.rpartition(r'/')[-1]
-#        else:
-#            datatext = filename
-#        self.lmod.profpics[datatext] = grid
-
     def update_win(self):
         """ Updates the window values """
         self.dsb_picimp_west.setValue(self.min_coord)
@@ -1183,7 +1325,7 @@ class ImportPicture(QtGui.QDialog):
         if temp == 0:
             return False
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', '*.jpg *.tif *.bmp')
 
         if filename == '':
@@ -1192,7 +1334,6 @@ class ImportPicture(QtGui.QDialog):
 
         self.ifile = filename
 
-#        data = gtiff(filename)
         data = mpimg.imread(filename)
 
         self.grid = Data()
@@ -1210,7 +1351,7 @@ class ImportPicture(QtGui.QDialog):
         return True
 
 
-class MessageCombo(QtGui.QDialog):
+class MessageCombo(QtWidgets.QDialog):
     """
     Message combo box.
 
@@ -1220,23 +1361,22 @@ class MessageCombo(QtGui.QDialog):
         reference to the parent routine
     """
     def __init__(self, combotext, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
 
-        self.master = QtGui.QComboBox()
+        self.master = QtWidgets.QComboBox()
         self.master.addItems(combotext)
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout_main = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
-#        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
-        label_master = QtGui.QLabel()
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        label_master = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -1247,36 +1387,9 @@ class MessageCombo(QtGui.QDialog):
 
         gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.master, 0, 1, 1, 1)
-
-#        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
-
-#    def settings(self):
-#        """ Settings """
-#        tmp = []
-#        if 'Model3D' not in self.indata:
-#            return False
-#        elif len(self.indata['Model3D']) != 2:
-#            self.parent.showprocesslog('You need two datasets connected!')
-#            return False
-#
-#        for i in self.indata['Model3D']:
-#            tmp.append(i.name)
-#
-#        self.master.addItems(tmp)
-#        self.slave.addItems(tmp)
-#
-#        self.master.setCurrentIndex(0)
-#        self.slave.setCurrentIndex(1)
-#
-#        tmp = self.exec_()
-#
-#        if tmp == 1:
-#            tmp = self.acceptall()
-#
-#        return tmp
 
     def acceptall(self):
         """ accept """
@@ -1292,8 +1405,6 @@ def gtiff(filename):
     nblue = dataset.GetRasterBand(3).ReadAsArray()
     itmp = np.uint32(nred*65536+ngreen*256+nblue+int('FF000000', 16))
 
-#    itmp = np.transpose([nred, ngreen, nblue])
-
     gtr = dataset.GetGeoTransform()
     dat = [Data()]
 
@@ -1308,50 +1419,3 @@ def gtiff(filename):
     dat[0].nullvalue = np.nan  # This was erread.nullvalue, is changed above
 
     return dat
-
-
-#            inorm1 = np.arange(norm.shape[0])
-#
-#            can_reduce = True
-#            while can_reduce:
-#                can_reduce = False
-#                for idx, i in enumerate(inorm1):
-#                    ifaces = np.nonzero(np.sum(faces == i, 1))[0]
-#                    if ifaces.size == 0:
-#                        continue
-#                    faces1 = faces[ifaces]
-#                    norm2 = norm[faces1]
-#                    u1 = np.unique(norm2)
-#                    u2 = np.unique(norm2[0])
-#
-#                    if np.all(u1 == u2) and u1.size <= 3:
-#                        faces2 = faces1[faces1 != i]
-#                        # This line makes sure that we only simplify if the
-#                        # elimiated vertex is in the center of triangles.
-#                        if (np.unique(faces2).size*2 == faces2.size):
-#                            can_reduce = True
-#                            break
-#
-#                print(inorm1.size, idx)
-#                if not can_reduce:
-#                    break
-#                inorm1 = inorm1[idx:]
-#
-#                faces2.shape = (faces1.shape[0], 2)
-#                faces2 = faces2.tolist()
-#                vert = [faces2.pop(0)]
-#
-#                while len(faces2) > 0:
-#                    tmp = (np.array(faces2) == vert[-1])
-#                    if tmp.max() == False:
-#                        faces2 = np.fliplr(faces2).tolist()
-#                        continue
-#                    itmp = np.nonzero(tmp)[0][0]
-#                    vert += [faces2.pop(itmp)[::-1]]
-#
-#                vert = np.array(vert).flatten()[::2]
-#                faces = np.delete(faces, ifaces, 0)
-#
-#                for i, _ in enumerate(vert[:-2]):
-#                    ftmp = [vert[0], vert[i+1], vert[i+2]]
-#                    faces = np.vstack((faces, ftmp))

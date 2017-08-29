@@ -26,7 +26,7 @@
 
 import os
 import re
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import numpy as np
 import pygmi.seis.datatypes as sdt
 
@@ -86,7 +86,7 @@ class ImportSeisan(object):
             "Seisan Format (*.out);;" +\
             "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -124,7 +124,7 @@ class ImportSeisan(object):
 
         for i in ltmp:
             if i.strip() == '':
-                if len(event) > 0:
+                if event:
                     dat.append(event)
                     event = {}
                     event['4'] = []
@@ -156,7 +156,7 @@ class ImportSeisan(object):
                     self.parent.showprocesslog(i)
                     return False
 
-        if len(event) > 0:
+        if event:
             dat.append(event)
 
         self.outdata['Seis'] = dat
@@ -309,10 +309,6 @@ def read_record_type_f(i):
         tmp.station_distribution_ratio = str2float(i[50:55])
     if prg == 'FOCMEC' or prg == 'HASH':
         tmp.amplitude_ratio = str2float(i[55:60])
-#    if prg == 'FOCMEC' or prg == 'PINV':
-#        tmp.number_of_bad_polarities = str2int(i[60:62])
-#    if prg == 'FOCMEC':
-#        tmp.number_of_bad_amplitude_ratios = str2int(i[63:65])
     tmp.agency_code = i[66:69]
     tmp.solution_quality = i[77]
 
@@ -362,7 +358,7 @@ def read_record_type_i(i):
 def read_record_type_m(i, vtmp=None):
     """ Reads record type M"""
 
-    if i[1:3] is not 'MT':
+    if i[1:3] != 'MT':
         tmp = sdt.seisan_M()
         tmp.year = i[1:5]
         tmp.month = i[6:8]
@@ -420,16 +416,17 @@ class ImportGenericFPS(object):
 
     def settings(self):
         """ Settings """
-        QtGui.QMessageBox.information(self.parent, 'File Format',
-                                      'The file should have the following'
-                                      ' columns: longitude, latitude, depth,'
-                                      ' strike, dip, rake, magnitude.')
+        QtWidgets.QMessageBox.information(self.parent, 'File Format',
+                                          'The file should have the following '
+                                          'columns: longitude, latitude, '
+                                          'depth, strike, dip, rake, '
+                                          'magnitude.')
 
         ext = \
             "Comma Delimeted Text (*.csv);;" +\
             "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -456,10 +453,10 @@ class ImportGenericFPS(object):
         try:
             datatmp = np.loadtxt(filename, delimiter=dlim, skiprows=srows)
         except ValueError:
-            QtGui.QMessageBox.critical(self.parent, 'Import Error',
-                                       'There was a problem loading the file.'
-                                       ' You may have a text character in one'
-                                       ' of your columns.')
+            QtWidgets.QMessageBox.critical(self.parent, 'Import Error',
+                                           'There was a problem loading the '
+                                           'file. You may have a text '
+                                           'character in one of your columns.')
             return False
 
         dat = []
@@ -501,7 +498,6 @@ class ExportSeisan(object):
         self.outdata = {}
         self.lmod = None
         self.fobj = None
-#        self.dirname = ""
         self.showtext = self.parent.showprocesslog
 
     def run(self):
@@ -513,15 +509,14 @@ class ExportSeisan(object):
 
         data = self.indata['Seis']
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent,
-                                                     'Save File',
-                                                     '.', 'sei (*.sei)')
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                            'Save File',
+                                                            '.', 'sei (*.sei)')
 
         if filename == '':
             return
 
         os.chdir(filename.rpartition('/')[0])
-#        ofile = str(filename.rpartition('/')[-1][:-4])
         self.ext = filename[-3:]
 
         self.fobj = open(filename, 'w')
@@ -532,7 +527,6 @@ class ExportSeisan(object):
             self.write_record_type_m(i)  # This is missing  some #3 recs
             self.write_record_type_e(i)
             self.write_record_type_i(i)  # This is missing  some #3 recs
-#            self.write_record_type_3(i)
             self.write_record_type_4(i)
             self.fobj.write(' \n')
 
@@ -862,7 +856,6 @@ class ExportCSV(object):
         self.outdata = {}
         self.lmod = None
         self.fobj = None
-#        self.dirname = ""
         self.showtext = self.parent.showprocesslog
 
     def run(self):
@@ -874,13 +867,12 @@ class ExportCSV(object):
 
         data = self.indata['Seis']
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent,
-                                                     'Save File',
-                                                     '.', 'csv (*.csv)')
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                            'Save File',
+                                                            '.', 'csv (*.csv)')
         if filename == '':
             return
         os.chdir(filename.rpartition('/')[0])
-#        ofile = str(filename.rpartition('/')[-1][:-4])
         self.ext = filename[-3:]
 
         self.fobj = open(filename, 'w')
@@ -1190,8 +1182,6 @@ class ExportCSV(object):
         tmp = sform('{0:1s}', dat.quality, tmp, 78)
 
         tmp = sform('{0:1s}', 'M', tmp, 80)
-
-#        self.fobj.write(tmp)
 
         tmp = ' '*80+'\n'
 

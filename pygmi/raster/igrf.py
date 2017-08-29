@@ -53,14 +53,14 @@ from math import cos
 from math import sqrt
 from math import atan2
 import copy
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr
 import pygmi.raster.dataprep as dp
 import pygmi.menu_default as menu_default
 
 
-class IGRF(QtGui.QDialog):
+class IGRF(QtWidgets.QDialog):
     """
     IGRF field calculation
 
@@ -134,7 +134,7 @@ class IGRF(QtGui.QDialog):
         array of MAXMOD  Min year of model.
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent=None)
+        QtWidgets.QDialog.__init__(self, parent=None)
 
         self.parent = parent
         self.indata = {}
@@ -168,10 +168,10 @@ class IGRF(QtGui.QDialog):
         self.idot = 0
         self.ddot = 0
 
-        self.dsb_alt = QtGui.QDoubleSpinBox()
-        self.dateedit = QtGui.QDateEdit()
-        self.combobox_dtm = QtGui.QComboBox()
-        self.combobox_mag = QtGui.QComboBox()
+        self.dsb_alt = QtWidgets.QDoubleSpinBox()
+        self.dateedit = QtWidgets.QDateEdit()
+        self.combobox_dtm = QtWidgets.QComboBox()
+        self.combobox_mag = QtWidgets.QComboBox()
         self.proj = dp.GroupProj('Input Projection')
 
         self.setupui()
@@ -181,14 +181,14 @@ class IGRF(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
 
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
 
-        label_0 = QtGui.QLabel()
-        label_1 = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
-        label_3 = QtGui.QLabel()
+        label_0 = QtWidgets.QLabel()
+        label_1 = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+        label_3 = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -229,8 +229,6 @@ class IGRF(QtGui.QDialog):
 
         self.ctrans = osr.CoordinateTransformation(orig, targ)
 
-#        self.accept()
-
     def settings(self):
         """
         Settings Dialog. This is the main entrypoint into this routine. It also
@@ -255,7 +253,6 @@ class IGRF(QtGui.QDialog):
         else:
             return False
 
-#        again = 1
         mdf = open(__file__.rpartition('\\')[0]+'\\IGRF11.cof')
         modbuff = mdf.readlines()
         fileline = -1                            # First line will be 1
@@ -309,10 +306,12 @@ class IGRF(QtGui.QDialog):
         igdgc = 1
 
         if (sdate > maxyr) and (sdate < maxyr+1):
-            print("\nWarning: The date %4.2f is out of range,\n", sdate)
-            print("but still within one year of model expiration date.\n")
-            print("An updated model file is available before 1.1.%4.0f\n",
-                  maxyr)
+            self.reportback("Warning: The date " + str(sdate) +
+                            " is out of range,")
+            self.reportback("but still within one year of model expiration"
+                            " date.")
+            self.reportback("An updated model file is available before 1.1." +
+                            str(maxyr))
 
         if max2[modelI] == 0:
             self.getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0)
@@ -339,7 +338,6 @@ class IGRF(QtGui.QDialog):
             tmp = int(i*100/maxlen)
             if tmp > progress:
                 progress = tmp
-#                self.reportback('Calculation: ' + str(progress) + '%', True)
 
             longitude, latitude, _ = self.ctrans.TransformPoint(xdat[i],
                                                                 ydat[i])
@@ -348,72 +346,13 @@ class IGRF(QtGui.QDialog):
 # Do the first calculations
             self.shval3(igdgc, latitude, longitude, alt, nmax, 3)
             self.dihf(3)
-#            self.shval3(igdgc, latitude, longitude, alt, nmax, 4)
-#            self.dihf(4)
-#
-#            RAD2DEG = (180.0/np.pi)
-#
-#            self.ddot = ((self.dtemp - self.d)*RAD2DEG)
-#            if self.ddot > 180.0:
-#                self.ddot -= 360.0
-#            if self.ddot <= -180.0:
-#                self.ddot += 360.0
-#            self.ddot *= 60.0
-#
-#            self.idot = ((self.itemp - self.i)*RAD2DEG)*60
-#            self.d = self.d*(RAD2DEG)
-#            self.i = self.i*(RAD2DEG)
-#            self.hdot = self.htemp - self.h
-#            self.xdot = self.xtemp - self.x
-#            self.ydot = self.ytemp - self.y
-#            self.zdot = self.ztemp - self.z
-#            self.fdot = self.ftemp - self.f
-#
-#          # deal with geographic and magnetic poles
-#
-#            if self.h < 100.0:  # at magnetic poles
-#                self.d = np.nan
-#                self.ddot = np.nan
-#              # while rest is ok
-#
-#            if 90.0-abs(latitude) <= 0.001:  # at geographic poles
-#                self.x = np.nan
-#                self.y = np.nan
-#                self.d = np.nan
-#                self.xdot = np.nan
-#                self.ydot = np.nan
-#                self.ddot = np.nan
 
-#            print('Test Data')
-#            print('==========')
-#
-#            print('# Date 2014.5', sdate)
-#            print('# Coord-System D')
-#            print('# Altitude K100', alt)
-#            print('# Latitude 70.3', latitude)
-#            print('# Longitude 30.8', longitude)
-#            print('# D_deg 13d', int(self.d))
-#            print('# D_min 51m ', int((self.d-int(self.d))*60))
-#            print('# I_deg 78d', int(self.i))
-#            print('# I_min 55m', int((self.i-int(self.i))*60))
-#            print('# H_nT 9987.9 {0:.1f}'.format(self.h))
-#            print('# X_nT 9697.4 {0:.1f}'.format(self.x))
-#            print('# Y_nT 2391.4 {0:.1f}'.format(self.y))
-#            print('# Z_nT 51022.3 {0:.1f}'.format(self.z))
-#            print('# F_nT 51990.7 {0:.1f}'.format(self.f))
-#            print('# dD_min 10.9 {0:.1f}'.format(self.ddot))
-#            print('# dI_min 1.0 {0:.1f}'.format(self.idot))
-#            print('# dH_nT -10.4 {0:.1f}'.format(self.hdot))
-#            print('# dX_nT -17.7 {0:.1f}'.format(self.xdot))
-#            print('# dY_nT 28.1 {0:.1f}'.format(self.ydot))
-#            print('# dZ_nT 29.0 {0:.1f}'.format(self.zdot))
-#            print('# dF_nT 26.5 {0:.1f}'.format(self.fdot))
             igrf_F[i] = self.f
 
         self.outdata['Raster'] = copy.deepcopy(self.indata['Raster'])
         igrf_F = np.ma.array(igrf_F)
         igrf_F.shape = data.data.shape
-        igrf_F.mask = data.data.mask
+        igrf_F.mask = np.ma.getmaskarray(data.data)
         self.outdata['Raster'].append(copy.deepcopy(data))
         self.outdata['Raster'][-1].data = igrf_F
         self.outdata['Raster'][-1].dataid = 'IGRF'
@@ -421,6 +360,13 @@ class IGRF(QtGui.QDialog):
         self.outdata['Raster'][-1].data -= igrf_F
         self.outdata['Raster'][-1].dataid = 'Magnetic Data: IGRF Corrected'
 
+        self.reportback('')
+        self.reportback('Latest Values in Calculation')
+        self.reportback('=============================')
+        self.reportback('Total Intensity: '+str(self.f))
+        self.reportback('Inclination: '+str(np.rad2deg(self.i)))
+        self.reportback('Declination: '+str(np.rad2deg(self.d)))
+        self.reportback('')
         self.reportback('Calculation: Completed', True)
 
         return True
@@ -459,7 +405,6 @@ class IGRF(QtGui.QDialog):
                 cnt += 1
                 tmp = file[strec+cnt]
                 tmp = tmp.split()
-#                n = int(tmp[0])
                 m = int(tmp[1])
 
                 if iflag == 1:

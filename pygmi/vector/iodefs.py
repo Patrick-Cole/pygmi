@@ -25,11 +25,15 @@
 """ Import Data """
 
 import os
-from PyQt4 import QtGui
+import copy
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import ogr
+import matplotlib.path as mplPath
+import pandas as pd
 from pygmi.vector.datatypes import PData
 from pygmi.vector.datatypes import VData
+import pygmi.menu_default as menu_default
 
 
 class ImportLEMI417Data(object):
@@ -62,7 +66,7 @@ class ImportLEMI417Data(object):
         """Entry point into item. Data imported from here."""
         ext = "LEMI-417 Text DataAll Files (*.t*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -90,7 +94,7 @@ class ImportLEMI417Data(object):
         return True
 
 
-class ImportPointData(object):
+class ImportPointData(QtWidgets.QDialog):
     """
     Import Point Data
 
@@ -110,29 +114,58 @@ class ImportPointData(object):
         input file name. Used in main.py
     """
     def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+
         self.name = "Import Point/Line Data: "
-        self.pbar = None
+        self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
         self.ifile = ""
+
+        self.xchan = QtWidgets.QComboBox()
+        self.ychan = QtWidgets.QComboBox()
+
+        self.setupui()
+
+    def setupui(self):
+        """ Setup UI """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
+        label_xchan = QtWidgets.QLabel()
+        label_ychan = QtWidgets.QLabel()
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle(r"Import Point/Line Data")
+        label_xchan.setText("X Channel:")
+        label_ychan.setText("Y Channel:")
+
+        gridlayout_main.addWidget(label_xchan, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_ychan, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.ychan, 1, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
 
     def settings(self):
         """Entry point into item. Data imported from here."""
         ext = ("Common Formats (*.csv *.dat *.xyz *.txt);;"
                "All Files (*.*)")
 
-        filename = QtGui.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
         self.ifile = str(filename)
-
-        tmp = QtGui.QMessageBox.question(self.parent, 'Data Query',
-                                         'Are the first two columns X and Y?',
-                                         QtGui.QMessageBox.Yes |
-                                         QtGui.QMessageBox.No)
 
         dlim = None
         if filename[-3:] == 'csv':
@@ -148,48 +181,128 @@ class ImportPointData(object):
         if ',' in ltmp:
             dlim = ','
 
-        xcol = 0
-        ycol = 1
-        if ltmp.index('lat') < ltmp.index('lon') and 'lat' in ltmp:
-            xcol = 1
-            ycol = 0
-
         srows = 0
         ltmp = ltmp.split(dlim)
+        ltmp[-1] = ltmp[-1].strip('\n')
+
+        self.xchan.addItems(ltmp)
+        self.ychan.addItems(ltmp)
+
+        self.xchan.setCurrentIndex(0)
+        self.ychan.setCurrentIndex(1)
+
+        tmp = self.exec_()
+
+        if tmp != 1:
+            return tmp
+
+        xcol = self.xchan.currentIndex()
+        ycol = self.ychan.currentIndex()
+
         if isheader:
             srows = 1
         else:
             ltmp = [str(c) for c in range(len(ltmp))]
 
+#        datatmp = np.genfromtxt(filename, unpack=True, delimiter=dlim,
+#                                skip_header=srows, usemask=True)
         datatmp = np.genfromtxt(filename, unpack=True, delimiter=dlim,
-                                skip_header=srows, usemask=True)
+                                skip_header=srows, dtype=None)
 
-#        datatmp.mask = np.logical_or(datatmp.mask, np.isnan(datatmp.data))
-#        try:
-#            datatmp = np.loadtxt(filename, unpack=True, delimiter=dlim,
-#                                 skiprows=srows)
-#        except ValueError:
-#            QtGui.QMessageBox.critical(self.parent, 'Import Error',
-#                                       'There was a problem loading the file.'
-#                                       ' You may have a text character in one'
-#                                       ' of your columns.')
-#            return False
-
+        datanames = datatmp.dtype.names
         dat = []
-        if tmp == QtGui.QMessageBox.Yes:
-            for i in range(2, datatmp.shape[0]):
+        if datanames is None:
+            datatmp = np.transpose(datatmp)
+            dat = []
+            for i, datatmpi in enumerate(datatmp):
+                if i == xcol or i == ycol:
+                    continue
                 dat.append(PData())
                 dat[-1].xdata = datatmp[xcol]
                 dat[-1].ydata = datatmp[ycol]
-                dat[-1].zdata = datatmp[i]
+                dat[-1].zdata = datatmpi
                 dat[-1].dataid = ltmp[i]
         else:
-            for i in range(datatmp.shape[0]):
+            for i in datanames:
+                if i == 'f'+str(xcol) or i == 'f'+str(ycol):
+                    continue
                 dat.append(PData())
-                dat[i].zdata = datatmp[i]
-                dat[i].dataid = ltmp[i]
+                dat[-1].xdata = datatmp['f'+str(xcol)]
+                dat[-1].ydata = datatmp['f'+str(ycol)]
+                dat[-1].zdata = datatmp[i]
+                dat[-1].dataid = ltmp[int(i[1:])]
 
         self.outdata['Point'] = dat
+        return True
+
+
+
+class PointCut(object):
+    """
+    Cut Data using shapefiles
+
+    This class cuts point datasets using a boundary defined by a polygon
+    shapefile.
+
+    Attributes
+    ----------
+    ifile : str
+        input file name.
+    name : str
+        item name
+    ext : str
+        file name extension.
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+    def __init__(self, parent):
+        self.ifile = ""
+        self.name = "Cut Data:"
+        self.ext = ""
+        self.pbar = parent.pbar
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+
+    def settings(self):
+        """ Show Info """
+        if 'Point' in self.indata:
+            data = copy.deepcopy(self.indata['Point'])
+        else:
+            self.parent.showprocesslog('No point data')
+            return
+
+        ext = "Shape file (*.shp)"
+
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open Shape File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(filename.rpartition('/')[0])
+
+        self.ifile = str(filename)
+        self.ext = filename[-3:]
+        data = cut_point(data, self.ifile)
+
+        if data is None:
+            err = ('There was a problem importing the shapefile. Please make '
+                   'sure you have at all the individual files which make up '
+                   'the shapefile.')
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
+            return False
+
+
+        self.pbar.to_max()
+        self.outdata['Point'] = data
+
         return True
 
 
@@ -224,7 +337,7 @@ class ExportPoint(object):
             self.showtext('Error: You need to have a point data first!')
             return
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'csv (*.csv)')
 
         if filename == '':
@@ -232,19 +345,26 @@ class ExportPoint(object):
 
         os.chdir(filename.rpartition('/')[0])
         ofile = str(filename.rpartition('/')[-1][:-4])
-#        self.ext = filename[-3:]
         data = self.indata['Point']
+
+        dfall = pd.DataFrame()
+        dfall.loc[:, 'X'] = data[0].xdata
+        dfall.loc[:, 'Y'] = data[0].ydata
 
         for i, datai in enumerate(data):
             datid = datai.dataid
-            if datid is '':
+            if datid == '':
                 datid = str(i)
 
-            dattmp = np.transpose([datai.xdata, datai.ydata, datai.zdata])
+            tmp = datai.zdata.tolist()
+            dfall.loc[:, datid] = tmp
 
-            ofile2 = ofile+'_'+''.join(x for x in datid if x.isalnum())+'.csv'
+        ofile2 = ofile+'_all.csv'
+        dfall.to_csv(ofile2, index=False)
 
-            np.savetxt(ofile2, dattmp, delimiter=',')
+        self.parent.showprocesslog('Export completed')
+
+        return True
 
 
 class ImportShapeData(object):
@@ -275,9 +395,9 @@ class ImportShapeData(object):
         """Entry point into item. Data imported from here."""
         ext = "Shapefile (*.shp);;" + "All Files (*.*)"
 
-        filename = QtGui.QFileDialog.getOpenFileName(self.parent,
-                                                     'Open File',
-                                                     '.', ext)
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
+                                                            'Open File',
+                                                            '.', ext)
         if filename == '':
             return False
         os.chdir(filename.rpartition('/')[0])
@@ -291,9 +411,9 @@ class ImportShapeData(object):
             err = ('There was a problem importing the shapefile. Please make '
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
-            QtGui.QMessageBox.warning(self.parent, 'Error', err,
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             return False
 
         lyr = shapef.GetLayer()
@@ -320,8 +440,8 @@ class ImportShapeData(object):
             dat.dtype = 'Point'
 
         if lyr.GetGeomType() is ogr.wkbPolygon:
-            for i in range(lyr.GetFeatureCount()):
-                feat = lyr.GetFeature(i)
+            for j in range(lyr.GetFeatureCount()):
+                feat = lyr.GetFeature(j)
                 geom = feat.GetGeometryRef()
                 ifin = 0
                 if geom.GetGeometryName() == 'MULTIPOLYGON':
@@ -350,3 +470,59 @@ class ImportShapeData(object):
         dat.attrib = attrib
         self.outdata['Vector'] = dat
         return True
+
+
+def cut_point(data, ifile):
+    """Cuts a point dataset
+
+    Cut a point dataset using a shapefile
+
+    Parameters
+    ----------
+    data : Data
+        PyGMI Dataset
+    ifile : str
+        shapefile used to cut data
+
+    Returns
+    -------
+    Data
+        PyGMI Dataset
+    """
+    shapef = ogr.Open(ifile)
+    if shapef is None:
+        return None
+    lyr = shapef.GetLayer()
+    poly = lyr.GetNextFeature()
+    if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
+        return
+
+    points = []
+    geom = poly.GetGeometryRef()
+
+    ifin = 0
+    imax = 0
+    if geom.GetGeometryName() == 'MULTIPOLYGON':
+        for i in range(geom.GetGeometryCount()):
+            geom.GetGeometryRef(i)
+            itmp = geom.GetGeometryRef(i)
+            itmp = itmp.GetGeometryRef(0).GetPointCount()
+            if itmp > imax:
+                imax = itmp
+                ifin = i
+        geom = geom.GetGeometryRef(ifin)
+
+    pts = geom.GetGeometryRef(0)
+    for p in range(pts.GetPointCount()):
+        points.append((pts.GetX(p), pts.GetY(p)))
+
+    bbpath = mplPath.Path(points)
+
+    chk = bbpath.contains_points(np.transpose([data[0].xdata, data[0].ydata]))
+
+    for idata in data:
+        idata.xdata = idata.xdata[chk]
+        idata.ydata = idata.ydata[chk]
+        idata.zdata = idata.zdata[chk]
+
+    return data

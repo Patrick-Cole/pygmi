@@ -51,11 +51,11 @@ at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html"""
 import os
 import numpy as np
 import numexpr as ne
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
 import matplotlib.cm as cm
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib import patches
 import ogr
 import osr
@@ -65,7 +65,7 @@ import scipy.spatial.distance as sdist
 class MyMplCanvas(FigureCanvas):
     """Canvas for the actual plot"""
     def __init__(self, parent):
-        fig = plt.figure()
+        fig = Figure()
         super(MyMplCanvas, self).__init__(fig)
 
         # figure stuff
@@ -84,16 +84,17 @@ class MyMplCanvas(FigureCanvas):
         self.cntf = None
         self.background = None
         self.pwidth = 0.001
+        self.isgeog = True
 
         self.axes = fig.add_subplot(111)
-        self.axes.xaxis.set_visible(False)
-        self.axes.yaxis.set_visible(False)
+#        self.axes.xaxis.set_visible(False)
+#        self.axes.yaxis.set_visible(False)
 
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
-                                   QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
+                                   QtWidgets.QSizePolicy.Expanding,
+                                   QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
 
     def init_graph(self):
@@ -112,24 +113,25 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_ylim((ymin, ymax))
 
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         for idat in self.data:
             pxy = idat[:2]
             np1 = idat[3:-1]
             pwidth = self.pwidth*idat[-1]
-            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth)
+            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
+                                             self.isgeog)
 
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
 
-            self.axes.add_patch(patches.Polygon(pvert1))
-            self.axes.add_patch(patches.Polygon(pvert0, facecolor='none'))
+            self.axes.add_patch(patches.Polygon(pvert1, edgecolor=(0.0, 0.0, 0.0)))
+            self.axes.add_patch(patches.Polygon(pvert0, facecolor='none', edgecolor=(0.0, 0.0, 0.0)))
 
         self.figure.canvas.draw()
 
 
-class BeachBall(QtGui.QDialog):
+class BeachBall(QtWidgets.QDialog):
     """ Create shapefiles with beachballs """
     def __init__(self, parent=None):
         super(BeachBall, self).__init__(parent)
@@ -145,9 +147,11 @@ class BeachBall(QtGui.QDialog):
         self.nofps = False
 
         self.mmc = MyMplCanvas(self)
-        self.btn_saveshp = QtGui.QPushButton()
-        self.cbox_alg = QtGui.QComboBox()
-        self.dsb_dist = QtGui.QDoubleSpinBox()
+        self.btn_saveshp = QtWidgets.QPushButton()
+        self.cbox_alg = QtWidgets.QComboBox()
+        self.dsb_dist = QtWidgets.QDoubleSpinBox()
+        self.radio_geog = QtWidgets.QRadioButton('Geographic Units')
+        self.radio_proj = QtWidgets.QRadioButton('Projected Units')
 
         self.setupui()
 
@@ -163,7 +167,7 @@ class BeachBall(QtGui.QDialog):
             alist += list(i['F'].keys())
         alist = sorted(set(alist))
 
-        if len(alist) == 0:
+        if not alist:
             self.parent.showprocesslog('Error: no Fault Plane Solutions')
             self.nofps = True
             return False
@@ -204,19 +208,21 @@ class BeachBall(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        hbl_all = QtGui.QHBoxLayout(self)
+        hbl_all = QtWidgets.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        vbl_raster = QtGui.QVBoxLayout()
-        label2 = QtGui.QLabel()
-        label3 = QtGui.QLabel()
+        vbl_raster = QtWidgets.QVBoxLayout()
+        label2 = QtWidgets.QLabel()
+        label3 = QtWidgets.QLabel()
 
         self.dsb_dist.setDecimals(4)
         self.dsb_dist.setMinimum(0.0001)
         self.dsb_dist.setSingleStep(0.0001)
         self.dsb_dist.setProperty("value", 0.001)
 
-        spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-                                   QtGui.QSizePolicy.Expanding)
+        self.radio_geog.setChecked(True)
+
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                       QtWidgets.QSizePolicy.Expanding)
 
         self.setWindowTitle("Fault Plane Solution (FPS)")
         label2.setText('FPS Algorithm:')
@@ -227,9 +233,11 @@ class BeachBall(QtGui.QDialog):
         vbl_raster.addWidget(self.cbox_alg)
         vbl_raster.addWidget(label3)
         vbl_raster.addWidget(self.dsb_dist)
+        vbl_raster.addWidget(self.radio_geog)
+        vbl_raster.addWidget(self.radio_proj)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveshp)
-        vbl_right = QtGui.QVBoxLayout()
+        vbl_right = QtWidgets.QVBoxLayout()
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
         hbl_all.addLayout(vbl_raster)
@@ -237,14 +245,14 @@ class BeachBall(QtGui.QDialog):
 
         self.btn_saveshp.clicked.connect(self.save_shp)
         self.dsb_dist.valueChanged.connect(self.change_alg)
+        self.radio_geog.toggled.connect(self.change_alg)
 
     def save_shp(self):
         """Save Beachballs """
-#        data = self.indata['Seis']
 
         ext = "Shape file (*.shp)"
 
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save Shape File', '.', ext)
         if filename == '':
             return False
@@ -353,6 +361,7 @@ class BeachBall(QtGui.QDialog):
 
     def change_alg(self):
         """ Change algorithm """
+
         txt = str(self.cbox_alg.currentText())
         self.algorithm = txt
         data = self.indata['Seis']
@@ -367,6 +376,7 @@ class BeachBall(QtGui.QDialog):
                        i['1'].magnitude_1]
                 indata.append(tmp)
 
+        self.mmc.isgeog = self.radio_geog.isChecked()
         self.mmc.data = np.array(indata)
         self.mmc.pwidth = self.dsb_dist.value()
         self.mmc.init_graph()
@@ -378,12 +388,12 @@ class BeachBall(QtGui.QDialog):
             return False
 
         self.show()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.mmc.init_graph()
 
 
-def beachball(fm, centerx, centery, diam):
+def beachball(fm, centerx, centery, diam, isgeog):
     """
     Source code provided here are adopted from MatLab script
     `bb.m` written by Andy Michael and Oliver Boyd.
@@ -448,7 +458,6 @@ def beachball(fm, centerx, centery, diam):
         d1 = fm[:, 1]
         r1 = fm[:, 2]
 
-    # r2d = 180/np.pi
     d2r = np.pi/180
     ampy = np.cos(np.mean(centery)*d2r)
 
@@ -470,7 +479,6 @@ def beachball(fm, centerx, centery, diam):
     mech[j] = 1
 
     # Get azimuth and dip of second plane
-#    s2, d2, r2 = auxplane(s1, d1, r1)
     s2, d2, _ = auxplane(s1, d1, r1)
 
     for ev in range(ne1):
@@ -532,12 +540,12 @@ def beachball(fm, centerx, centery, diam):
 
     Xs2, Ys2 = pol2cart(th2*d2r, 90*np.ones_like(th2))
 
-#    X = np.concatenate((X1, Xs1, X2, Xs2), 1)
-#    Y = np.concatenate((Y1, Ys1, Y2, Ys2), 1)
     X = np.hstack((X1, Xs1, X2, Xs2))
     Y = np.hstack((Y1, Ys1, Y2, Ys2))
 
-    ampy = 1.0
+    if isgeog:
+        ampy = 1.0
+
     if D > 0:
         X = ampy*X*D/90 + CY
         Y = Y*D/90 + CX

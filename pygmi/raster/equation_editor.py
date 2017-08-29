@@ -25,13 +25,13 @@
 """ This is the function which calls the equation editor """
 
 import copy
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import numexpr as ne
 import pygmi.raster.dataprep as dataprep
 
 
-class EquationEditor(QtGui.QDialog):
+class EquationEditor(QtWidgets.QDialog):
     """
     Equation Editor
 
@@ -55,7 +55,7 @@ class EquationEditor(QtGui.QDialog):
         list of all bands
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.indata = {}
         self.outdata = {}
@@ -67,11 +67,11 @@ class EquationEditor(QtGui.QDialog):
 
         self.bands['all data'] = 'iall'
 
-        self.combobox = QtGui.QComboBox()
+        self.combobox = QtWidgets.QComboBox()
 
-        self.textbrowser = QtGui.QTextEdit()
-        self.textbrowser2 = QtGui.QTextBrowser()
-        self.label = QtGui.QLabel()
+        self.textbrowser = QtWidgets.QTextEdit()
+        self.textbrowser2 = QtWidgets.QTextBrowser()
+        self.label = QtWidgets.QLabel()
 
         self.setupui()
 
@@ -81,9 +81,9 @@ class EquationEditor(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
-        label_2 = QtGui.QLabel()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        label_2 = QtWidgets.QLabel()
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)
@@ -96,7 +96,7 @@ class EquationEditor(QtGui.QDialog):
         ptmp.setColor(1, 9, ptmp.color(10))
         ptmp.setColor(2, 9, ptmp.color(10))
         self.textbrowser2.setPalette(ptmp)
-        self.textbrowser2.setFrameShape(QtGui.QFrame.NoFrame)
+        self.textbrowser2.setFrameShape(QtWidgets.QFrame.NoFrame)
 
         self.setWindowTitle("Equation Editor")
         self.label.setText(": iall")
@@ -174,7 +174,8 @@ class EquationEditor(QtGui.QDialog):
 
         indata = dataprep.merge(self.indata[intype])
 
-        mask = indata[-1].data.mask
+        mask = np.ma.getmaskarray(indata[-1].data)
+
         for i in indata:
             mask = np.logical_or(mask, i.data.mask)
         for i in indata:
@@ -207,24 +208,24 @@ class EquationEditor(QtGui.QDialog):
         try:
             findat = ne.evaluate(neweq, self.localdict)
         except:
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self.parent, 'Error',
                 ' Nothing processed! Your equation most likely had an error.',
-                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+                QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
             return
 
         outdata = []
 
         if np.size(findat) == 1:
-            QtGui.QMessageBox.warning(
+            QtWidgets.QMessageBox.warning(
                 self.parent, 'Warning',
                 ' Nothing processed! Your equation outputs a single ' +
                 'value instead of a minimum of one band.',
-                QtGui.QMessageBox.Ok, QtGui.QMessageBox.Ok)
+                QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
             return
         elif len(findat.shape) == 2:
             findat[np.isnan(findat)] = indata[0].nullvalue
-            mask = indata[0].data.mask
+            mask = np.ma.getmaskarray(indata[0].data)
             findat[mask] = indata[0].nullvalue
 
             outdata = [copy.copy(indata[0])]
@@ -233,7 +234,7 @@ class EquationEditor(QtGui.QDialog):
         else:
             for i, findati in enumerate(findat):
                 findat[i][np.isnan(findati)] = indata[i].nullvalue
-                mask = indata[i].data.mask
+                mask = np.ma.getmaskarray(indata[i].data)
                 findat[i][mask] = indata[i].nullvalue
                 outdata.append(copy.copy(indata[i]))
                 outdata[-1].data = np.ma.masked_equal(findati,
@@ -241,10 +242,8 @@ class EquationEditor(QtGui.QDialog):
 
         # This is needed to get rid of bad, unmasked values etc.
         for i, _ in enumerate(outdata):
-            mask = np.logical_or(mask, np.isinf(outdata[i].data))
-            mask = np.logical_or(mask, np.isnan(outdata[i].data))
-            outdata[i].data.mask = mask
-            outdata[i].data.fill_value = indata[i].data.fill_value
+            outdata[i].data.set_fill_value(indata[i].data.fill_value)
+            outdata[i].data = np.ma.fix_invalid(outdata[i].data)
 
         self.outdata[intype] = outdata
 
@@ -275,6 +274,5 @@ def hmode(data):
         mmax = mhist[1][mind+1]
 
     mode2 = (mmax-mmin)/2 + mmin
-#        mcnt = mhist[0][mind]
 
     return mode2

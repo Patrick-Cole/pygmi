@@ -31,27 +31,22 @@ References:
 """
 
 import os
-from math import atan2, pi
+from math import pi
 import numpy as np
-import numexpr as ne
 
-from PyQt4 import QtGui
-import matplotlib
-import matplotlib.pyplot as plt
+from PyQt5 import QtWidgets
 from matplotlib.figure import Figure
 import matplotlib.cm as cm
-from matplotlib.backends.backend_qt4agg import FigureCanvas
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from numba import jit
-# import scipy.spatial.distance as sd
 import pygmi.raster.cooper as cooper
-import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
 
 
-class TiltDepth(QtGui.QDialog):
+class TiltDepth(QtWidgets.QDialog):
     """
     This is the primary class for the Tilt Depth.
 
@@ -89,12 +84,12 @@ class TiltDepth(QtGui.QDialog):
         self.mmc = FigureCanvas(self.figure)
         self.axes = self.figure.add_subplot(111)
 
-        self.cbox_band1 = QtGui.QComboBox()
-        self.cbox_cbar = QtGui.QComboBox(self)
-        self.dsb_inc = QtGui.QDoubleSpinBox()
-        self.dsb_dec = QtGui.QDoubleSpinBox()
-        self.btn_apply = QtGui.QPushButton()
-        self.btn_save = QtGui.QPushButton()
+        self.cbox_band1 = QtWidgets.QComboBox()
+        self.cbox_cbar = QtWidgets.QComboBox(self)
+        self.dsb_inc = QtWidgets.QDoubleSpinBox()
+        self.dsb_dec = QtWidgets.QDoubleSpinBox()
+        self.btn_apply = QtWidgets.QPushButton()
+        self.btn_save = QtWidgets.QPushButton()
         self.pbar = misc.ProgressBar()
 
         self.setupui()
@@ -102,10 +97,10 @@ class TiltDepth(QtGui.QDialog):
     def setupui(self):
         """ Setup UI """
         helpdocs = menu_default.HelpButton('pygmi.raster.tiltdepth')
-        label2 = QtGui.QLabel()
-        labelc = QtGui.QLabel()
-        label_inc = QtGui.QLabel()
-        label_dec = QtGui.QLabel()
+        label2 = QtWidgets.QLabel()
+        labelc = QtWidgets.QLabel()
+        label_inc = QtWidgets.QLabel()
+        label_dec = QtWidgets.QLabel()
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
@@ -114,13 +109,13 @@ class TiltDepth(QtGui.QDialog):
         self.dsb_dec.setMinimum(-360.0)
         self.dsb_dec.setValue(-17.)
 
-        vbl_raster = QtGui.QVBoxLayout()
-        hbl_all = QtGui.QHBoxLayout(self)
-        vbl_right = QtGui.QVBoxLayout()
+        vbl_raster = QtWidgets.QVBoxLayout()
+        hbl_all = QtWidgets.QHBoxLayout(self)
+        vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum,
-                                   QtGui.QSizePolicy.Expanding)
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+                                       QtWidgets.QSizePolicy.Expanding)
         tmp = sorted(cm.datad.keys())
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
@@ -153,7 +148,6 @@ class TiltDepth(QtGui.QDialog):
         hbl_all.addLayout(vbl_right)
 
         self.cbox_cbar.currentIndexChanged.connect(self.change_cbar)
-#        self.cbox_band1.currentIndexChanged.connect(self.change_band1)
         self.btn_apply.clicked.connect(self.change_band1)
         self.btn_save.clicked.connect(self.save_depths)
 
@@ -165,9 +159,9 @@ class TiltDepth(QtGui.QDialog):
 
         ext = "Text File (*.csv)"
 
-        filename = QtGui.QFileDialog.getSaveFileName(self.parent,
-                                                     'Save File',
-                                                     '.', ext)
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                            'Save File',
+                                                            '.', ext)
         if filename == '':
             return False
 
@@ -187,13 +181,13 @@ class TiltDepth(QtGui.QDialog):
         self.axes.contour(self.X, self.Y, self.Z, [45], linestyles='dashed')
         self.axes.contour(self.X, self.Y, self.Z, [-45], linestyles='dashed')
 
-        cmap = plt.get_cmap(txt)
+        cmap = cm.get_cmap(txt)
         cmap2 = np.array([cmap(i) for i in range(cmap.N)])
         low = int(cmap.N*(45/180))
         high = int(cmap.N*(135/180))
         cmap2[low:high] = cmap2[int(cmap.N/2)]
 
-        cmap3 = matplotlib.colors.ListedColormap(cmap2)
+        cmap3 = cm.colors.ListedColormap(cmap2)
         ims = self.axes.imshow(self.Z, extent=dataprep.dat_extent(zout),
                                cmap=cmap3)
 
@@ -202,8 +196,6 @@ class TiltDepth(QtGui.QDialog):
             self.axes.plot(self.x1[i], self.y1[i], 'oy')
             self.axes.plot(self.x0[i], self.y0[i], 'sy')
             self.axes.plot(self.x2[i], self.y2[i], 'oy')
-
-#        self.axes.contourf(self.X, self.Y, self.Z, [-45, 45], cmap=cmap3)
 
         self.figure.colorbar(ims)
 
@@ -217,7 +209,7 @@ class TiltDepth(QtGui.QDialog):
         txt = str(self.cbox_band1.currentText())
 
         self.btn_apply.setText('Calculating...')
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.btn_apply.setEnabled(False)
 
         for i in self.indata['Raster']:
@@ -227,7 +219,7 @@ class TiltDepth(QtGui.QDialog):
 
         self.btn_apply.setEnabled(True)
         self.btn_apply.setText('Calculate Tilt Depth')
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
     def settings(self):
         """ This is called when the used double clicks the routine from the
@@ -242,16 +234,11 @@ class TiltDepth(QtGui.QDialog):
         for i in data:
             blist.append(i.dataid)
 
-#        self.cbox_band1.currentIndexChanged.disconnect()
         self.cbox_band1.clear()
         self.cbox_band1.addItems(blist)
 
-#        self.cbox_band1.currentIndexChanged.connect(self.change_band1)
-
-#        self.change_band1()
-
         self.show()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         return True
 
@@ -301,9 +288,6 @@ class TiltDepth(QtGui.QDialog):
 
         self.pbar.setValue(4)
 
-#        dmin1 = distpc2(dx, dy, gx0, gy0, np.zeros(gx0.size, dtype=int))
-#        dmin2 = distpc2(dxm, dym, gx0, gy0, np.zeros(gx0.size, dtype=int))
-
         dmin1 = []
         dmin2 = []
 
@@ -340,7 +324,6 @@ class TiltDepth(QtGui.QDialog):
         dist1 = np.sqrt(dx1**2+dy1**2)
         dist2 = np.sqrt(dx2**2+dy2**2)
 
-#        dist = (dist1+dist2)/2
         dist = np.min([dist1, dist2], 0)
 
         self.x0 = gx0
@@ -387,19 +370,6 @@ def distpc(dx, dy, dx0, dy0, dcnt):
             dmin = dist
 
     return dcnt
-
-
-def main():
-    """ Main """
-    ifile = r'C:\Work\Programming\pygmi\data\m2920ac.ers'
-
-    data = iodefs.get_raster(ifile)
-    data = data[0]
-
-#    x, y, depth = tiltdepth(data, -17, -67)
-
-    dmin = distpc(np.array([1., 2.]), np.array([1., 2.]), 3, 4, 0)
-    print(dmin)
 
 
 def vgrad(cnt):
@@ -458,127 +428,3 @@ def vgrad2(cnt):
     cgrad[cgrad < -90] += 180.
 
     return gx, gy, cgrad, np.zeros_like(gx)
-
-
-def tiltdepth(data, dec, inc):
-    """ Calculate tilt depth """
-# RTP
-    zout = dataprep.rtp(data, inc, dec)
-
-# Tilt
-    nr, nc = zout.data.shape
-    dy, dx = np.gradient(zout.data)
-    dxtot = np.sqrt(dx**2+dy**2)
-    dz = cooper.vertical(zout.data)
-    t1 = np.arctan(dz/dxtot)
-    # A negative number implies we are straddling 0
-
-# Contour tilt
-    x = zout.tlx + np.arange(nc)*zout.xdim+zout.xdim/2
-    y = zout.tly - np.arange(nr)*zout.ydim-zout.ydim/2
-
-#    x = zout.tlx + np.arange(nc)*zout.xdim
-#    y = zout.tly - np.arange(nr)*zout.ydim
-    X, Y = np.meshgrid(x, y)
-    Z = np.rad2deg(t1)
-
-    cnt0 = plt.contour(X, Y, Z, [0])
-    cnt45 = plt.contour(X, Y, Z, [45], alpha=0)
-    cntm45 = plt.contour(X, Y, Z, [-45], alpha=0)
-    plt.contourf(X, Y, Z, [-45, 45])
-
-#    plt.imshow(zout.data, extent=dataprep.dat_extent(zout))
-    plt.imshow(Z, extent=dataprep.dat_extent(zout))
-    plt.colorbar()
-
-    gx0, gy0, cgrad0, _ = vgrad(cnt0)
-    gx45, gy45, _, _ = vgrad(cnt45)
-    gxm45, gym45, _, _ = vgrad(cntm45)
-
-    pairs0 = []
-    pairs1 = []
-    pairs2 = []
-
-    g0 = np.transpose([gx0, gy0, cgrad0])
-
-    dx = gx45
-    dy = gy45
-    dxm = gxm45
-    dym = gym45
-    dmin1 = []
-    dmin2 = []
-
-    for i, j, k in g0:
-        dist = ne.evaluate('(dx-i)**2+(dy-j)**2')
-        dmin = np.nonzero(dist == dist.min())[0]
-        dmin1.append(dmin)
-        dx1 = dx[dmin]
-        dy1 = dy[dmin]
-        dist1 = dx1**2+dy1**2
-
-        grad = atan2(dy1-j, dx1-i)*180/pi
-        if grad > 90:
-            grad -= 180
-        elif grad < -90:
-            grad += 180
-        gtmp = abs(90-abs(grad-k))
-        if gtmp > 10:
-            continue  # means all angles greater than 10 are excluded
-
-        dist = ne.evaluate('(dxm-i)**2+(dym-j)**2')
-        dmin = np.nonzero(dist == dist.min())[0]
-        dmin2.append(dmin)
-        dx2 = dxm[dmin]
-        dy2 = dym[dmin]
-        dist2 = dx2**2+dy2**2
-
-        grad = atan2(dy2-j, dx2-i)*180/pi
-        if grad > 90:
-            grad -= 180
-        elif grad < -90:
-            grad += 180
-        gtmp = abs(90-abs(grad-k))
-        if gtmp > 10:
-            continue
-
-        pairs0.append([i, j])
-        pairs1.append([dx1, dy1, dist1])
-        pairs2.append([dx2, dy2, dist2])
-
-    dmin1 = np.array(dmin1).flatten()
-    dmin2 = np.array(dmin2).flatten()
-
-    pairs0 = np.array(pairs0)
-    pairs1 = np.array(pairs1)
-    pairs2 = np.array(pairs2)
-
-    dist1 = pairs1[:, 2]
-    dist2 = pairs2[:, 2]
-
-    dist = np.min([dist1, dist2], 0)
-
-    gx0f = pairs0[:, 0]
-    gy0f = pairs0[:, 1]
-    gx45f = pairs1[:, 0]
-    gy45f = pairs1[:, 1]
-    gxm45f = pairs2[:, 0]
-    gym45f = pairs2[:, 1]
-
-    plt.axes().set_aspect('equal')
-
-
-#    plt.plot(gx0, gy0, '.')
-#    plt.plot(gx45, gy45, '.')
-#    plt.plot(gxm45, gym45, '.')
-    i = 200
-    plt.plot(gx45f[i], gy45f[i], 'o')
-    plt.plot(gx0f[i], gy0f[i], 's')
-    plt.plot(gxm45f[i], gym45f[i], 'o')
-
-    plt.show()
-
-    return gx0f, gy0f, dist.flatten()
-
-
-if __name__ == "__main__":
-    main()

@@ -86,7 +86,7 @@ class LithModel(object):
         self.tmpfiles = None
 
         # Next line calls a function to update the variables above.
-        self.update(100, 75, 40, 0, 150000, 0, 1500, 100, 100, 0)
+        self.update(50, 40, 5, 0, 0, 0, 100, 100, 100, 0)
 
         self.olith_index = None
         self.odxy = None
@@ -105,12 +105,6 @@ class LithModel(object):
         """
         if self.olith_index is None:
             return
-#        xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy) + \
-#            .5 * self.dxy
-#        yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy) + \
-#            .5 * self.dxy
-#        zvals = np.arange(self.zrange[0], self.zrange[1], self.d_z) + \
-#            .5 * self.d_z
 
         xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy)
         yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy)
@@ -175,11 +169,14 @@ class LithModel(object):
         self.lith_index[:, :, :] = 0
 
         for i in range(self.numx):
+            xcrd = self.xrange[0] + (i + .5) * self.dxy
+            xcrd2 = int((xcrd - gxmin) / d_x)
             for j in range(self.numy):
-                xcrd = self.xrange[0] + (i + .5) * self.dxy
                 ycrd = self.yrange[1] - (j + .5) * self.dxy
-                xcrd2 = int((xcrd - gxmin) / d_x)
                 ycrd2 = grows - int((gymax - ycrd) / d_y)
+                if ycrd2 == grows:
+                    ycrd2 = grows-1
+                
                 if (ycrd2 >= 0 and xcrd2 >= 0 and ycrd2 < grows and
                         xcrd2 < gcols):
                     alt = curgrid.data.data[ycrd2, xcrd2]
@@ -282,7 +279,7 @@ class LithModel(object):
         self.init_calc_grids()
         if usedtm:
             self.dtm_to_lith()
-        self.lithold_to_lith(not(usedtm))
+        self.lithold_to_lith(not usedtm)
         self.update_lithlist()
         self.is_modified()
 
@@ -299,7 +296,7 @@ class LithModel(object):
         keys = list(self.lith_list.keys())
         values = list(self.lith_list.values())
 
-        if len(keys) == 0:
+        if not keys:
             return
 
         self.lith_list_reverse = {}

@@ -27,7 +27,7 @@ the about box """
 
 import os
 import webbrowser
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 
 
 class FileMenu(object):
@@ -49,23 +49,20 @@ class FileMenu(object):
 
 # File Menu
 
-        self.menufile = QtGui.QMenu(parent.menubar)
+        self.menufile = QtWidgets.QMenu(parent.menubar)
         self.menufile.setTitle("File")
         parent.menubar.addAction(self.menufile.menuAction())
 
-        self.action_exit = QtGui.QAction(parent)
+        self.action_exit = QtWidgets.QAction(parent)
         self.action_exit.setText("Exit")
         self.menufile.addAction(self.action_exit)
 
         self.action_exit.triggered.connect(parent.close)
 
-#        QtCore.QObject.connect(self.action_exit, QtCore.SIGNAL("triggered()"),
-#                               parent.close)
-
 # Context menus
         context_menu['Basic'].addSeparator()
 
-        self.action_bandselect = QtGui.QAction(self.parent)
+        self.action_bandselect = QtWidgets.QAction(self.parent)
         self.action_bandselect.setText("Select Bands")
         context_menu['Basic'].addAction(self.action_bandselect)
         self.action_bandselect.triggered.connect(self.bandselect)
@@ -75,7 +72,7 @@ class FileMenu(object):
         self.parent.launch_context_item_indata(ComboBoxBasic)
 
 
-class ComboBoxBasic(QtGui.QDialog):
+class ComboBoxBasic(QtWidgets.QDialog):
     """
     A basic combo box application
 
@@ -89,7 +86,7 @@ class ComboBoxBasic(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -98,19 +95,19 @@ class ComboBoxBasic(QtGui.QDialog):
         # create GUI
         self.setWindowTitle('Band Selection')
 
-        self.vbox = QtGui.QVBoxLayout()
+        self.vbox = QtWidgets.QVBoxLayout()
         self.setLayout(self.vbox)
 
-        self.combo = QtGui.QListWidget()
-        self.combo.setSelectionMode(QtGui.QAbstractItemView.MultiSelection)
+        self.combo = QtWidgets.QListWidget()
+        self.combo.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
 
         self.vbox.addWidget(self.combo)
 
-        self.buttonbox = QtGui.QDialogButtonBox()
+        self.buttonbox = QtWidgets.QDialogButtonBox()
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setCenterButtons(True)
         self.buttonbox.setStandardButtons(
-            QtGui.QDialogButtonBox.Cancel | QtGui.QDialogButtonBox.Ok)
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
 
         self.vbox.addWidget(self.buttonbox)
 
@@ -125,7 +122,7 @@ class ComboBoxBasic(QtGui.QDialog):
         data = my_class.indata.copy()
 
         for j in data:
-            if j is 'Model3D' or j is 'Seis':
+            if j == 'Model3D' or j == 'Seis':
                 continue
 
             tmp = []
@@ -133,7 +130,7 @@ class ComboBoxBasic(QtGui.QDialog):
                 tmp.append(i.dataid)
             self.combo.addItems(tmp)
 
-        if len(tmp) == 0:
+        if not tmp:
             return
 
         tmp = self.exec_()
@@ -142,18 +139,20 @@ class ComboBoxBasic(QtGui.QDialog):
             return
 
         for j in data:
-            if j is 'Model3D' or j is 'Seis':
+            if j == 'Model3D' or j == 'Seis':
                 continue
-            atmp = [i.text() for i in self.combo.selectedItems()]
+            atmp = [i.row() for i in self.combo.selectedIndexes()]
 
-            if len(atmp) > 0:
+            if atmp:
                 dtmp = []
-                for i in data[j]:
-                    if i.dataid in atmp:
-                        dtmp.append(i)
+                for i in atmp:
+                    dtmp.append(data[j][i])
                 data[j] = dtmp
 
         my_class.indata = data
+
+        if hasattr(my_class, 'data_reset'):
+            my_class.data_reset()
 
         if hasattr(my_class, 'data_init'):
             my_class.data_init()
@@ -177,11 +176,11 @@ class HelpMenu(object):
 
 # Help Menu
 
-        self.menuhelp = QtGui.QMenu(parent.menubar)
+        self.menuhelp = QtWidgets.QMenu(parent.menubar)
         parent.menubar.addAction(self.menuhelp.menuAction())
 
-        self.action_help = QtGui.QAction(self.parent)
-        self.action_about = QtGui.QAction(self.parent)
+        self.action_help = QtWidgets.QAction(self.parent)
+        self.action_about = QtWidgets.QAction(self.parent)
 
         self.menuhelp.addAction(self.action_help)
         self.menuhelp.addAction(self.action_about)
@@ -218,21 +217,21 @@ See the GNU General Public License for more details.
 You should have received a copy of the GNU General Public License along
 with this program. If not, see http://www.gnu.org/licenses/'''
 
-        QtGui.QMessageBox.about(self.parent, 'PyGMI', msg)
+        QtWidgets.QMessageBox.about(self.parent, 'PyGMI', msg)
 
     def webhelp(self):
         """ Help File"""
         webbrowser.open(self.webpage)
 
 
-class HelpButton(QtGui.QPushButton):
+class HelpButton(QtWidgets.QPushButton):
     """
     Help Button
 
     Convenience class to add an image to a pushbutton
     """
     def __init__(self, htmlfile=None, parent=None):
-        QtGui.QPushButton.__init__(self, parent)
+        QtWidgets.QPushButton.__init__(self, parent)
 
         self.htmlfile = htmlfile
 
@@ -252,7 +251,7 @@ class HelpButton(QtGui.QPushButton):
         HelpDocs(self, self.htmlfile)
 
 
-class HelpDocs(QtGui.QDialog):
+class HelpDocs(QtWidgets.QDialog):
     """
     A basic combo box application
 
@@ -266,7 +265,7 @@ class HelpDocs(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent=None, helptxt=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -286,15 +285,15 @@ class HelpDocs(QtGui.QDialog):
         # create GUI
         self.setWindowTitle('Help!')
 
-        self.vbox = QtGui.QVBoxLayout()
+        self.vbox = QtWidgets.QVBoxLayout()
         self.setLayout(self.vbox)
 
-        self.text = QtGui.QTextBrowser()
+        self.text = QtWidgets.QTextBrowser()
         self.text.setOpenExternalLinks(True)
         self.text.append(helptxt)
         self.text.setMinimumWidth(480)
         self.text.setMinimumHeight(360)
-        self.text.setFrameShape(QtGui.QFrame.NoFrame)
+        self.text.setFrameShape(QtWidgets.QFrame.NoFrame)
         cursor = QtGui.QTextCursor()
         cursor.setPosition(0)
         self.text.setTextCursor(cursor)
@@ -307,10 +306,10 @@ class HelpDocs(QtGui.QDialog):
 
         self.vbox.addWidget(self.text)
 
-        self.buttonbox = QtGui.QDialogButtonBox()
+        self.buttonbox = QtWidgets.QDialogButtonBox()
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(QtGui.QDialogButtonBox.Ok)
+        self.buttonbox.setStandardButtons(QtWidgets.QDialogButtonBox.Ok)
 
         self.vbox.addWidget(self.buttonbox)
 

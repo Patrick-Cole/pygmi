@@ -25,14 +25,14 @@
 """ Profile Display Tab Routines """
 
 import os
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import scipy.ndimage as ndimage
 
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib import cm
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from pygmi.pfmod import misc
 
 
@@ -50,40 +50,40 @@ class ProfileDisplay(object):
         self.pcntmax = len(self.xnodes)-1
         self.viewmagnetics = True
 
-        self.userint = QtGui.QWidget()
+        self.userint = QtWidgets.QWidget()
 
         self.mmc = MyMplCanvas(self, self.lmod1)
         self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
-        self.sb_profnum2 = QtGui.QSpinBox()
-        self.hslider_profile2 = QtGui.QSlider()
-        self.combo_profpic = QtGui.QComboBox()
-        self.hs_ppic_opacity = QtGui.QSlider()
+        self.sb_profnum2 = QtWidgets.QSpinBox()
+        self.hslider_profile2 = QtWidgets.QSlider()
+        self.combo_profpic = QtWidgets.QComboBox()
+        self.hs_ppic_opacity = QtWidgets.QSlider()
 
-        self.rb_axis_datamax = QtGui.QRadioButton()
-        self.rb_axis_profmax = QtGui.QRadioButton()
-        self.rb_axis_calcmax = QtGui.QRadioButton()
+        self.rb_axis_datamax = QtWidgets.QRadioButton()
+        self.rb_axis_profmax = QtWidgets.QRadioButton()
+        self.rb_axis_calcmax = QtWidgets.QRadioButton()
 
-        self.sb_profile_linethick = QtGui.QSpinBox()
-        self.gridlayout_20 = QtGui.QGridLayout()
-        self.lw_prof_defs = QtGui.QListWidget()
+        self.sb_profile_linethick = QtWidgets.QSpinBox()
+        self.gridlayout_20 = QtWidgets.QGridLayout()
+        self.lw_prof_defs = QtWidgets.QListWidget()
 
-        self.pb_add_prof = QtGui.QPushButton()
-        self.pb_export_csv = QtGui.QPushButton()
+        self.pb_add_prof = QtWidgets.QPushButton()
+        self.pb_export_csv = QtWidgets.QPushButton()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self.userint)
-        groupbox = QtGui.QGroupBox()
-        verticallayout = QtGui.QVBoxLayout(groupbox)
+        gridlayout = QtWidgets.QGridLayout(self.userint)
+        groupbox = QtWidgets.QGroupBox()
+        verticallayout = QtWidgets.QVBoxLayout(groupbox)
 
         self.sb_profnum2.setWrapping(True)
         self.sb_profnum2.setMaximum(999999999)
 
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Fixed)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                       QtWidgets.QSizePolicy.Fixed)
         self.hslider_profile2.setSizePolicy(sizepolicy)
         self.hs_ppic_opacity.setSizePolicy(sizepolicy)
 
@@ -92,7 +92,7 @@ class ProfileDisplay(object):
         self.hs_ppic_opacity.setMaximum(255)
         self.hs_ppic_opacity.setProperty("value", 255)
         self.hs_ppic_opacity.setOrientation(QtCore.Qt.Horizontal)
-        self.hs_ppic_opacity.setTickPosition(QtGui.QSlider.TicksAbove)
+        self.hs_ppic_opacity.setTickPosition(QtWidgets.QSlider.TicksAbove)
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
         self.rb_axis_datamax.setChecked(True)
@@ -139,22 +139,22 @@ class ProfileDisplay(object):
     def addprof(self):
         """ add another profile """
         self.update_model()
-        (tx0, okay) = QtGui.QInputDialog.getDouble(
+        (tx0, okay) = QtWidgets.QInputDialog.getDouble(
             self.parent, 'Add Custom Profile',
             'Please enter first x coordinate', self.lmod1.xrange[0])
         if not okay:
             return
-        (ty0, okay) = QtGui.QInputDialog.getDouble(
+        (ty0, okay) = QtWidgets.QInputDialog.getDouble(
             self.parent, 'Add Custom Profile',
             'Please enter first y coordinate', self.lmod1.yrange[0])
         if not okay:
             return
-        (tx1, okay) = QtGui.QInputDialog.getDouble(
+        (tx1, okay) = QtWidgets.QInputDialog.getDouble(
             self.parent, 'Add Custom Profile',
             'Please enter last x coordinate', self.lmod1.xrange[-1])
         if not okay:
             return
-        (ty1, okay) = QtGui.QInputDialog.getDouble(
+        (ty1, okay) = QtWidgets.QInputDialog.getDouble(
             self.parent, 'Add Custom Profile',
             'Please enter last y coordinate', self.lmod1.yrange[-1])
         if not okay:
@@ -228,10 +228,6 @@ class ProfileDisplay(object):
         else:
             self.mmc.init_grid(gtmp, extent, gtmpl, opac)
 
-#        alt = self.lmod1.zrange[1]-self.lmod1.curlayer*self.lmod1.d_z
-
-#        self.mmc.update_line(self.lmod1.xrange, [alt, alt])
-
     def cp_init(self, data):
         """ Initializes stuff for custom profile """
         x_0, x_1 = self.xnodes[self.curprof]
@@ -253,7 +249,7 @@ class ProfileDisplay(object):
     def export_csv(self):
         """ Export Profile to csv """
         self.parent.pbars.resetall()
-        filename = QtGui.QFileDialog.getSaveFileName(
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
         if filename == '':
             return
@@ -317,9 +313,6 @@ class ProfileDisplay(object):
         self.ynodes = self.lmod1.custprofy
         self.pcntmax = len(self.xnodes)-1
 
-#        self.xnodes[0] = self.lmod1.xrange
-#        self.ynodes[0] = [self.lmod1.yrange[0], self.lmod1.yrange[0]]
-
         misc.update_lith_lw(self.lmod1, self.lw_prof_defs)
 
         self.hslider_profile2.valueChanged.disconnect()
@@ -344,11 +337,6 @@ class ProfileDisplay(object):
 
     def update_model(self):
         """ Update model itself """
-#        tmp = self.lmod1.lith_index[:, self.curprof, ::-1]
-#        if tmp.shape != self.mmc.mdata.T.shape:
-#            return
-#        self.lmod1.lith_index[:, self.curprof, ::-1] = (
-#            self.mmc.mdata.T.copy())
 
         data = self.lmod1.griddata['Calculated Gravity']
         xxx, yyy = self.cp_init(data)[:2]
@@ -425,7 +413,7 @@ class ProfileDisplay(object):
                 extent[2:] = [tmpprof2.min(), tmpprof2.max()]
 
         if slide is True:
-            self.mmc.slide_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
+            self.mmc.slide_plot(tmprng, tmpprof, tmprng2, tmpprof2)
         else:
             self.mmc.init_plot(tmprng, tmpprof, extent, tmprng2, tmpprof2)
 
@@ -468,8 +456,8 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.yaxis.set_label_text("mGal")
         self.paxes.ticklabel_format(useOffset=False)
 
-        self.cal = self.paxes.plot([], [])
-        self.obs = self.paxes.plot([], [], 'o')
+        self.cal = self.paxes.plot([], [], zorder=10, color='blue')
+        self.obs = self.paxes.plot([], [], '.', zorder=1, color='orange')
 
         self.axes = fig.add_subplot(212)
         self.axes.xaxis.set_label_text(self.xlabel)
@@ -586,7 +574,6 @@ class MyMplCanvas(FigureCanvas):
         if yend > gheight:
             yend = gheight
 
-#        for i in range(xstart, xend):
         i = xstart
         while i < xend:
             tmp = (self.crd == self.crd[i])
@@ -632,7 +619,7 @@ class MyMplCanvas(FigureCanvas):
             self.ims2.set_clim(dat2.data.min(), dat2.data.max())
 
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
         self.ims.set_visible(True)
@@ -643,7 +630,7 @@ class MyMplCanvas(FigureCanvas):
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.mdata = dat
 
@@ -656,12 +643,10 @@ class MyMplCanvas(FigureCanvas):
 
         self.figure.canvas.restore_region(self.bbox)
         self.axes.draw_artist(self.ims)
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def update_line(self, xrng, yrng):
@@ -669,7 +654,6 @@ class MyMplCanvas(FigureCanvas):
         self.prf[0].set_data([xrng, yrng])
         self.figure.canvas.restore_region(self.lbbox)
         self.axes.draw_artist(self.prf[0])
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def dat_extent(self, dat):
@@ -702,36 +686,32 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.set_ylim(dmin, dmax)
         self.paxes.set_xlim(extent[0], extent[1])
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.pbbox = self.figure.canvas.copy_from_bbox(self.paxes.bbox)
 
         self.paxes.set_autoscalex_on(False)
-        self.cal = self.paxes.plot(xdat, dat)
         if xdat2 is not None:
-            self.obs = self.paxes.plot(xdat2, dat2, 'o')
+            self.obs = self.paxes.plot(xdat2, dat2, '.', zorder=1, color='orange')
         else:
-            self.obs = self.paxes.plot([], [], 'o')
+            self.obs = self.paxes.plot([], [], '.', zorder=1, color='orange')
+        self.cal = self.paxes.plot(xdat, dat, zorder=10, color='blue')
         self.figure.canvas.draw()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.plotisinit = True
 
-    def slide_plot(self, xdat, dat, extent, xdat2, dat2):
+    def slide_plot(self, xdat, dat, xdat2, dat2):
         """ Slider """
-#        dmin, dmax = self.extentchk(extent)
-
         self.figure.canvas.restore_region(self.pbbox)
-        self.cal[0].set_data([xdat, dat])
         if xdat2 is not None:
             self.obs[0].set_data([xdat2, dat2])
         else:
             self.obs[0].set_data([[], []])
-#        self.paxes.set_ylim(dmin, dmax)
-#        self.paxes.set_xlim(extent[0], extent[1])
+        self.cal[0].set_data([xdat, dat])
 
-        self.paxes.draw_artist(self.cal[0])
         if xdat2 is not None:
             self.paxes.draw_artist(self.obs[0])
-#        self.figure.canvas.blit(self.paxes.bbox)
+        self.paxes.draw_artist(self.cal[0])
+
         self.figure.canvas.update()
 
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()

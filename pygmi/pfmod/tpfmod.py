@@ -30,11 +30,10 @@ from PyQt5 import QtWidgets, QtCore
 from pygmi.pfmod import misc
 from pygmi.pfmod import tab_ddisp
 from pygmi.pfmod import tab_layer
-from pygmi.pfmod import tab_prof
-from pygmi.pfmod import tab_pview
-from pygmi.pfmod import tab_param
-from pygmi.pfmod import tab_mext
-from pygmi.pfmod import grvmag3d
+from pygmi.pfmod import tab_tprof
+from pygmi.pfmod import tab_tparam as tab_param
+from pygmi.pfmod import tab_tmext
+from pygmi.pfmod import tensor3d
 from pygmi.pfmod import iodefs
 from pygmi.pfmod.datatypes import LithModel
 import pygmi.menu_default as menu_default
@@ -74,7 +73,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.outdata['Raster'] = tmp
 
 # Model Extent Tab
-        self.mext = tab_mext.MextDisplay(self)
+        self.mext = tab_tmext.MextDisplay(self)
         self.tabwidget.addTab(self.mext.userint, "Model Extent Parameters")
 
 # Geophysical Parameters Tab
@@ -90,15 +89,11 @@ class MainWidget(QtWidgets.QMainWindow):
         self.tabwidget.addTab(self.layer.userint, "Layer Editor")
 
 # Profile Editor Tab
-        self.profile = tab_prof.ProfileDisplay(self)
+        self.profile = tab_tprof.ProfileDisplay(self)
         self.tabwidget.addTab(self.profile.userint, "Profile Editor")
 
-# Profile Viewer Tab
-        self.pview = tab_pview.ProfileDisplay(self)
-        self.tabwidget.addTab(self.pview.userint, "Custom Profile Editor")
-
 # Gravity and magnetic modelling routines
-        self.grvmag = grvmag3d.GravMag(self)
+        self.grvmag = tensor3d.GravMag(self)
 
         self.setupui()
 
@@ -120,7 +115,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolbar.addWidget(self.actionsave)
 
-        self.setWindowTitle("Potential Field Modelling")
+        self.setWindowTitle("Tensor Potential Field Modelling")
         self.actionsave.setText("Save Model")
 
         hlayout.addWidget(self.textbrowser)
@@ -161,8 +156,8 @@ class MainWidget(QtWidgets.QMainWindow):
         if self.tabwidget.tabText(index) == 'Profile Editor':
             htmlfile += 'pygmi.pfmod.prof'
 
-        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
-            htmlfile += 'pygmi.pfmod.pview'
+#        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
+#            htmlfile += 'pygmi.pfmod.pview'
 
         if self.tabwidget.tabText(index) == 'Layer Editor':
             htmlfile += 'pygmi.pfmod.layer'
@@ -234,8 +229,8 @@ class MainWidget(QtWidgets.QMainWindow):
         if self.oldtab == 'Profile Editor':
             self.profile.update_model()
 
-        if self.oldtab == 'Custom Profile Editor':
-            self.pview.update_model()
+#        if self.oldtab == 'Custom Profile Editor':
+#            self.pview.update_model()
 
         if self.tabwidget.tabText(index) == 'Geophysical Parameters':
             self.param.tab_activate()
@@ -246,8 +241,8 @@ class MainWidget(QtWidgets.QMainWindow):
         if self.tabwidget.tabText(index) == 'Profile Editor':
             self.profile.tab_activate()
 
-        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
-            self.pview.tab_activate()
+#        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
+#            self.pview.tab_activate()
 
         if self.tabwidget.tabText(index) == 'Layer Editor':
             self.layer.tab_activate()

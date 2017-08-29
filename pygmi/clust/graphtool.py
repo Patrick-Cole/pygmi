@@ -27,11 +27,16 @@ Graph tool is a multi-function graphing tool for use with cluster analysis
 """
 
 import numpy as np
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 from matplotlib.figure import Figure
-import matplotlib.pylab as plt
+from matplotlib import cm
+from matplotlib.artist import Artist
+from matplotlib.patches import Polygon
+from matplotlib.lines import Line2D
 from matplotlib.path import Path
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.ticker import NullFormatter
+from matplotlib.mlab import dist_point_to_segment
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 
 class GraphHist(FigureCanvas):
@@ -44,7 +49,7 @@ class GraphHist(FigureCanvas):
         FigureCanvas.__init__(self, self.figure)
         self.setParent(parent)
 
-        self.nullfmt = plt.NullFormatter()
+        self.nullfmt = NullFormatter()
         self.pntxy = None
         self.polyi = None
         self.axhistx = None
@@ -73,7 +78,7 @@ class GraphHist(FigureCanvas):
     def get_clust_scat(self, bins, dattmp, ctmp):
         """ Routine to get the scattergram with cluster overlay """
         clust = np.ma.array(dattmp[ctmp[2] - 1].data.flatten())
-        clust.mask = self.xcoord.mask
+        clust.mask = np.ma.getmaskarray(self.xcoord)
         clust = clust.compressed()
         xxx = self.xcoord.compressed()
         yyy = self.ycoord.compressed()
@@ -115,8 +120,10 @@ class GraphHist(FigureCanvas):
         self.axscatter.get_yaxis().set_visible(False)
 
         self.csp = self.axscatter.imshow(xymahist.T, interpolation='nearest',
-                                         cmap=plt.cm.jet, aspect='auto')
+                                         cmap=cm.jet, aspect='auto')
 
+        self.csp.set_clim(xymahist.min(), xymahist.max())
+        self.csp.changed()
         self.figure.canvas.draw()
 
     def polyint(self):
@@ -202,14 +209,6 @@ class GraphMap(FigureCanvas):
         self.csp = None
         self.subplot = None
 
-#    def dat_extent(self, dat):
-#        """ Gets the extend of the dat variable """
-#        left = dat.tlx
-#        top = dat.tly
-#        right = left + dat.cols*dat.xdim
-#        bottom = top - dat.rows*dat.ydim
-#        return (left, right, bottom, top)
-
     def init_graph(self):
         """ Initialize the Graph """
         mtmp = self.mindx
@@ -220,7 +219,7 @@ class GraphMap(FigureCanvas):
         self.subplot.get_xaxis().set_visible(False)
         self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, cmap=plt.cm.jet)
+        self.csp = self.subplot.imshow(dat.data, cmap=cm.jet)
         self.subplot.figure.colorbar(self.csp)
 
         self.figure.canvas.draw()
@@ -254,15 +253,15 @@ class GraphMap(FigureCanvas):
         self.subplot.get_yaxis().set_visible(False)
 
         if mtmp[1] > 0:
-            cdat = self.cdata[mtmp[1] - 1].data + 1
-            self.csp = self.subplot.imshow(cdat, cmap=plt.cm.jet)
+            cdat = self.cdata[mtmp[1] - 1].data
+            self.csp = self.subplot.imshow(cdat, cmap=cm.jet)
             vals = np.unique(cdat)
             vals = vals.compressed()
             bnds = (vals - 0.5).tolist() + [vals.max() + .5]
             self.subplot.figure.colorbar(self.csp, boundaries=bnds,
                                          values=vals, ticks=vals)
         else:
-            self.csp = self.subplot.imshow(dat.data, cmap=plt.cm.jet)
+            self.csp = self.subplot.imshow(dat.data, cmap=cm.jet)
             self.subplot.figure.colorbar(self.csp)
 
         self.figure.canvas.draw()
@@ -287,7 +286,7 @@ class PolygonInteractor(QtCore.QObject):
     def __init__(self, axtmp, pntxy):
         QtCore.QObject.__init__(self)
         self.ax = axtmp
-        self.poly = plt.Polygon([(1, 1)], animated=True)
+        self.poly = Polygon([(1, 1)], animated=True)
         self.ax.add_patch(self.poly)
         self.canvas = self.poly.figure.canvas
         self.poly.set_alpha(0.5)
@@ -297,10 +296,9 @@ class PolygonInteractor(QtCore.QObject):
 
         xtmp, ytmp = list(zip(*self.poly.xy))
 
-        self.line = plt.Line2D(xtmp, ytmp, marker='o', markerfacecolor='r',
-                               color='y', animated=True)
+        self.line = Line2D(xtmp, ytmp, marker='o', markerfacecolor='r',
+                           color='y', animated=True)
         self.ax.add_line(self.line)
-#        self._update_line(poly)
 
         self.poly.add_callback(self.poly_changed)
         self._ind = None  # the active vert
@@ -315,12 +313,11 @@ class PolygonInteractor(QtCore.QObject):
     def draw_callback(self):
         """ Draw callback """
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
-#        self.canvas.blit(self.ax.bbox)
         self.canvas.update()
 
     def new_poly(self, npoly):
@@ -336,7 +333,7 @@ class PolygonInteractor(QtCore.QObject):
         # this method is called whenever the polygon object is called
         # only copy the artist props to the line (except visibility)
         vis = self.line.get_visible()
-        plt.Artist.update_from(self.line, poly)
+        Artist.update_from(self.line, poly)
         self.line.set_visible(vis)  # don't use the poly visibility state
 
     def get_ind_under_point(self, event):
@@ -376,7 +373,6 @@ class PolygonInteractor(QtCore.QObject):
                 self.canvas.restore_region(self.background)
                 self.ax.draw_artist(self.poly)
                 self.ax.draw_artist(self.line)
-#                self.canvas.blit(self.ax.bbox)
                 self.canvas.update()
                 return
             dmin = -1
@@ -384,7 +380,7 @@ class PolygonInteractor(QtCore.QObject):
             for i in range(len(xys) - 1):
                 s0tmp = xys[i]
                 s1tmp = xys[i + 1]
-                dtmp = plt.dist_point_to_segment(ptmp, s0tmp, s1tmp)
+                dtmp = dist_point_to_segment(ptmp, s0tmp, s1tmp)
                 if dmin == -1:
                     dmin = dtmp
                     imin = i
@@ -400,7 +396,6 @@ class PolygonInteractor(QtCore.QObject):
             self.canvas.restore_region(self.background)
             self.ax.draw_artist(self.poly)
             self.ax.draw_artist(self.line)
-#            self.canvas.blit(self.ax.bbox)
             self.canvas.update()
 
     def button_release_callback(self, event):
@@ -434,11 +429,10 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.restore_region(self.background)
         self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
-#        self.canvas.blit(self.ax.bbox)
         self.canvas.update()
 
 
-class ScatterPlot(QtGui.QDialog):
+class ScatterPlot(QtWidgets.QDialog):
     """
     Main Graph Tool Routine
 
@@ -452,7 +446,7 @@ class ScatterPlot(QtGui.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.indata = {}
         self.outdata = {}
         self.parent = parent
@@ -464,13 +458,13 @@ class ScatterPlot(QtGui.QDialog):
         self.map = GraphMap(self)
         self.hist = GraphHist(self)
 
-        self.cp_dpoly = QtGui.QPushButton()
-        self.cp_combo = QtGui.QComboBox()
-        self.cp_combo2 = QtGui.QComboBox()
-        self.cp_combo3 = QtGui.QComboBox()
-        self.map_dpoly = QtGui.QPushButton()
-        self.map_combo = QtGui.QComboBox()
-        self.map_combo2 = QtGui.QComboBox()
+        self.cp_dpoly = QtWidgets.QPushButton()
+        self.cp_combo = QtWidgets.QComboBox()
+        self.cp_combo2 = QtWidgets.QComboBox()
+        self.cp_combo3 = QtWidgets.QComboBox()
+        self.map_dpoly = QtWidgets.QPushButton()
+        self.map_combo = QtWidgets.QComboBox()
+        self.map_combo2 = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -479,21 +473,21 @@ class ScatterPlot(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        grid_main = QtGui.QGridLayout(self)
-        group_cp = QtGui.QGroupBox()
-        grid_left = QtGui.QGridLayout(group_cp)
-        group_map = QtGui.QGroupBox()
-        grid_right = QtGui.QGridLayout(group_map)
+        grid_main = QtWidgets.QGridLayout(self)
+        group_cp = QtWidgets.QGroupBox()
+        grid_left = QtWidgets.QGridLayout(group_cp)
+        group_map = QtWidgets.QGroupBox()
+        grid_right = QtWidgets.QGridLayout(group_map)
 
         self.setWindowTitle("Graph Window")
         group_map.setTitle("Map Settings")
         group_cp.setTitle('Cross Plot Settings')
 
-        lbl_combo_left = QtGui.QLabel()
-        lbl_combo2_left = QtGui.QLabel()
-        lbl_combo3_left = QtGui.QLabel()
-        lbl_combo_right = QtGui.QLabel()
-        lbl_combo2_right = QtGui.QLabel()
+        lbl_combo_left = QtWidgets.QLabel()
+        lbl_combo2_left = QtWidgets.QLabel()
+        lbl_combo3_left = QtWidgets.QLabel()
+        lbl_combo_right = QtWidgets.QLabel()
+        lbl_combo2_right = QtWidgets.QLabel()
 
         lbl_combo_left.setText('X Data Band:')
         lbl_combo2_left.setText('Y Data Band:')
@@ -535,7 +529,7 @@ class ScatterPlot(QtGui.QDialog):
         """ map dpoly """
         self.map.polyi.new_poly([[10, 10]])
         dattmp = self.hist.csp.get_array()
-        dattmp.mask = np.ma.masked_equal(dattmp.data, 0.).mask
+        dattmp.mask = np.ma.getmaskarray(np.ma.masked_equal(dattmp.data, 0.))
         self.hist.csp.changed()
         self.hist.figure.canvas.draw()
 
@@ -600,10 +594,8 @@ class ScatterPlot(QtGui.QDialog):
         if 'Cluster' in self.indata:
             self.hist.cdata = self.indata['Cluster']
             self.map.cdata = self.indata['Cluster']
-            cbands += ['Clusters: ' + str(i.data.ptp()) for i in
-                       self.indata['Cluster']]
-            mbands += ['Clusters: ' + str(i.data.ptp()) for i in
-                       self.indata['Cluster']]
+            cbands += [i.dataid for i in self.indata['Cluster']]
+            mbands += [i.dataid for i in self.indata['Cluster']]
 
         self.cp_combo3.clear()
         self.map_combo2.clear()
@@ -623,6 +615,9 @@ class ScatterPlot(QtGui.QDialog):
 
         self.hist.polyi.polyi_changed.connect(self.update_map)
         self.map.polyi.polyi_changed.connect(self.update_hist)
+
+        self.hist.update_graph(clearaxis=True)
+        self.map.update_graph()
 
         return True
 
@@ -645,7 +640,7 @@ class ScatterPlot(QtGui.QDialog):
         dattmp = self.hist.csp.get_array()
         atmp = np.array([self.hist.xcoord[polymask],
                          self.hist.ycoord[polymask]]).T
-        dattmp.mask = np.ones_like(dattmp.mask)
+        dattmp.mask = np.ones_like(np.ma.getmaskarray(dattmp))
         for i in atmp:
             dattmp.mask[i[1], i[0]] = False
         self.hist.csp.changed()

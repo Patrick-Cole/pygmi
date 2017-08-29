@@ -40,7 +40,7 @@ import pkgutil
 import math
 import importlib
 from distutils.version import StrictVersion
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import pygmi
 import pygmi.menu_default as menu_default
@@ -48,7 +48,7 @@ import pygmi.misc as misc
 from OpenGL import GL  # Loading this now to prevent an error later
 
 
-class Arrow(QtGui.QGraphicsLineItem):
+class Arrow(QtWidgets.QGraphicsLineItem):
     """
     Class responsible for drawing arrows on the main interface.
 
@@ -70,7 +70,7 @@ class Arrow(QtGui.QGraphicsLineItem):
 
         self.my_start_item = start_item
         self.my_end_item = end_item
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
         self.my_color = QtCore.Qt.black
         self.setPen(QtGui.QPen(self.my_color, 2, QtCore.Qt.SolidLine,
                                QtCore.Qt.RoundCap, QtCore.Qt.RoundJoin))
@@ -162,7 +162,7 @@ class Arrow(QtGui.QGraphicsLineItem):
             painter.drawLine(my_line)
 
 
-class DiagramItem(QtGui.QGraphicsPolygonItem):
+class DiagramItem(QtWidgets.QGraphicsPolygonItem):
     """
     Diagram Item
 
@@ -243,8 +243,8 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
             self.my_polygon = QtGui.QPolygonF(my_points)
 
         self.setPolygon(self.my_polygon)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsMovable, True)
-        self.setFlag(QtGui.QGraphicsItem.ItemIsSelectable, True)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsMovable, True)
+        self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
 
     def add_arrow(self, arrow):
         """Add Arrow
@@ -267,21 +267,6 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
                 else:
                     data[j] = odata[j]
 
-#        if 'Model3D' not in data and 'Seis' not in data:
-#            for j in data:
-#                tmp = []
-#                for i in data[j]:
-#                    tmp.append(i.dataid)
-#                tmp = ComboBoxBasic(txt='Select Datasets', dlist=tmp)
-#                atmp = [i.text() for i in tmp.combo.selectedItems()]
-#        #        aa.show()
-#                if len(atmp) > 0:
-#                    dtmp = []
-#                    for i in data[j]:
-#                        if i.dataid in atmp:
-#                            dtmp.append(i)
-#                    data[j] = dtmp
-
         self.my_class.indata = data
         if hasattr(self.my_class, 'data_init'):
             self.my_class.data_init()
@@ -299,14 +284,13 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
 
         tmplist = ['Basic']+list(self.my_class.outdata.keys())
         tmp = []
-#        exclude = ['ProfPic', 'Seis']
         exclude = ['ProfPic']
         for i in tmplist:
             if i not in exclude:
                 tmp += self.context_menu[i].actions()
             if i == 'ProfPic' and 'Raster' not in tmplist:
                 tmp += self.context_menu['Raster'].actions()
-        local_menu = QtGui.QMenu()
+        local_menu = QtWidgets.QMenu()
         local_menu.addActions(tmp)
         local_menu.exec_(event.screenPos())
 
@@ -360,10 +344,10 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
         if self.is_import is True:
             pass
         elif self.my_class.indata == {} and self.is_import is False:
-            QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Warning',
-                                      ' You need to connect data first!',
-                                      QtGui.QMessageBox.Ok,
-                                      QtGui.QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Warning',
+                                          ' You need to connect data first!',
+                                          QtWidgets.QMessageBox.Ok,
+                                          QtWidgets.QMessageBox.Ok)
             return
 
         self.my_class.parent.process_is_active()
@@ -374,7 +358,7 @@ class DiagramItem(QtGui.QGraphicsPolygonItem):
         return iflag
 
 
-class DiagramScene(QtGui.QGraphicsScene):
+class DiagramScene(QtWidgets.QGraphicsScene):
     """ Diagram Scene """
     def __init__(self, item_menu, parent):
         super(DiagramScene, self).__init__(parent)
@@ -401,7 +385,7 @@ class DiagramScene(QtGui.QGraphicsScene):
         if mouse_event.button() != QtCore.Qt.LeftButton:
             return
         if self.my_mode == "InsertLine":
-            self.line = QtGui.QGraphicsLineItem(
+            self.line = QtWidgets.QGraphicsLineItem(
                 QtCore.QLineF(mouse_event.scenePos(), mouse_event.scenePos()))
             self.line.setPen(QtGui.QPen(self.my_line_color, 2))
             self.addItem(self.line)
@@ -410,7 +394,7 @@ class DiagramScene(QtGui.QGraphicsScene):
 
 # now display the information about the selected data
         tmp = self.selectedItems()
-        if len(tmp) == 0:
+        if not tmp:
             return
         try:
             odata = tmp[0].my_class.outdata
@@ -455,16 +439,16 @@ class DiagramScene(QtGui.QGraphicsScene):
         """
         if self.line and self.my_mode == "InsertLine":
             start_items = self.items(self.line.line().p1())
-            if len(start_items) and start_items[0] == self.line:
+            if start_items and start_items[0] == self.line:
                 start_items.pop(0)
             end_items = self.items(self.line.line().p2())
-            if len(end_items) and end_items[0] == self.line:
+            if end_items and end_items[0] == self.line:
                 end_items.pop(0)
 
             self.removeItem(self.line)
             self.line = None
 
-            if (len(start_items) and len(end_items) and
+            if (start_items and end_items and
                     isinstance(start_items[-1], DiagramItem) and
                     isinstance(end_items[-1], DiagramItem) and
                     start_items[-1] != end_items[-1]):
@@ -483,7 +467,7 @@ class DiagramScene(QtGui.QGraphicsScene):
         super(DiagramScene, self).mouseReleaseEvent(mouse_event)
 
 
-class MainWidget(QtGui.QMainWindow):
+class MainWidget(QtWidgets.QMainWindow):
     """
     Widget class to call the main interface
 
@@ -493,7 +477,7 @@ class MainWidget(QtGui.QMainWindow):
     context_menu : dictionary
     """
     def __init__(self, parent=None):
-        QtGui.QMainWindow.__init__(self, parent)
+        QtWidgets.QMainWindow.__init__(self, parent)
 
         ipth = os.path.dirname(menu_default.__file__)+r'/images/'
 
@@ -502,25 +486,25 @@ class MainWidget(QtGui.QMainWindow):
         self.context_menu = {}
         self.add_to_context('Basic')
 
-        self.menubar = QtGui.QMenuBar()
+        self.menubar = QtWidgets.QMenuBar()
 
-        self.statusbar = QtGui.QStatusBar()
-        self.toolbar = QtGui.QToolBar()
+        self.statusbar = QtWidgets.QStatusBar()
+        self.toolbar = QtWidgets.QToolBar()
 
-        self.centralwidget = QtGui.QWidget()
-        self.grid_layout = QtGui.QGridLayout(self.centralwidget)
-        self.graphics_view = QtGui.QGraphicsView()
-        self.textbrowser_datainfo = QtGui.QTextBrowser()
-        self.textbrowser_processlog = QtGui.QTextBrowser()
+        self.centralwidget = QtWidgets.QWidget()
+        self.grid_layout = QtWidgets.QGridLayout(self.centralwidget)
+        self.graphics_view = QtWidgets.QGraphicsView()
+        self.textbrowser_datainfo = QtWidgets.QTextBrowser()
+        self.textbrowser_processlog = QtWidgets.QTextBrowser()
         self.pbar = misc.ProgressBar()
 
-        self.action_help = QtGui.QAction(self)
-        self.action_delete = QtGui.QAction(self)
-        self.action_bring_to_front = QtGui.QAction(self)
-        self.action_send_to_back = QtGui.QAction(self)
-        self.action_pointer = QtGui.QAction(self)
-        self.action_linepointer = QtGui.QAction(self)
-        self.actiongroup_pointer = QtGui.QActionGroup(self)
+        self.action_help = QtWidgets.QAction(self)
+        self.action_delete = QtWidgets.QAction(self)
+        self.action_bring_to_front = QtWidgets.QAction(self)
+        self.action_send_to_back = QtWidgets.QAction(self)
+        self.action_pointer = QtWidgets.QAction(self)
+        self.action_linepointer = QtWidgets.QAction(self)
+        self.actiongroup_pointer = QtWidgets.QActionGroup(self)
         self.actiongroup_pointer.addAction(self.action_pointer)
         self.actiongroup_pointer.addAction(self.action_linepointer)
         self.action_pointer.setCheckable(True)
@@ -536,7 +520,6 @@ class MainWidget(QtGui.QMainWindow):
         self.action_help.setIcon(QtGui.QIcon(ipth+'help.png'))
 
         self.setWindowIcon(QtGui.QIcon(ipth+'logo256.ico'))
-
         self.setupui()
 
         menus = []
@@ -551,7 +534,7 @@ class MainWidget(QtGui.QMainWindow):
 
         start = Startup(len(menus)+1)
         start.update()
-        self.pypiver = misc.getpypiversion()
+
         menuimports = []
         for i in menus:
             if i == 'pygmi.__pycache__.menu':
@@ -584,8 +567,8 @@ class MainWidget(QtGui.QMainWindow):
     def setupui(self):
         """ Setup UI """
         self.resize(800, 600)
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Expanding)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                           QtWidgets.QSizePolicy.Expanding)
         sizepolicy.setHorizontalStretch(0)
         sizepolicy.setVerticalStretch(0)
         sizepolicy.setHeightForWidth(
@@ -593,7 +576,7 @@ class MainWidget(QtGui.QMainWindow):
 
         self.graphics_view.setSizePolicy(sizepolicy)
         self.graphics_view.setTransformationAnchor(
-            QtGui.QGraphicsView.AnchorUnderMouse)
+            QtWidgets.QGraphicsView.AnchorUnderMouse)
 
         self.textbrowser_datainfo.setSizePolicy(sizepolicy)
         self.textbrowser_processlog.setSizePolicy(sizepolicy)
@@ -605,8 +588,8 @@ class MainWidget(QtGui.QMainWindow):
         self.grid_layout.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
         self.grid_layout.addWidget(self.pbar, 5, 0, 1, 3)
 
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
         self.grid_layout.addWidget(label, 0, 2, 1, 1)
         self.grid_layout.addWidget(label_2, 2, 2, 1, 1)
 
@@ -655,7 +638,7 @@ class MainWidget(QtGui.QMainWindow):
 
         if self.context_menu.get(txt) is not None:
             return
-        self.context_menu[txt] = QtGui.QMenu()
+        self.context_menu[txt] = QtWidgets.QMenu()
 
     def bring_to_front(self):
         """Bring the selected item to front."""
@@ -753,9 +736,6 @@ class MainWidget(QtGui.QMainWindow):
 
         item.my_class_name = item_name.replace('\n', ' ')
 
-        if item_name == "Potential\nField\nModelling":
-            item.my_class.indata['tmp'] = True
-
         if 'Import' in item_name:
             item.is_import = True
             iflag = item.settings()
@@ -770,15 +750,14 @@ class MainWidget(QtGui.QMainWindow):
             item_color = QtGui.QColor(0, 255, 0, 127)
 
 # Do text first, since this determines size of polygon
-#        text_item = DiagramTextItem()
-        text_item = QtGui.QGraphicsTextItem()
+        text_item = QtWidgets.QGraphicsTextItem()
         text_item.setPlainText(item_name)
         text_item.setFont(self.scene.my_font)
         text_item.setZValue(1000.0)
         text_item.setDefaultTextColor(self.scene.my_text_color)
 
 # Rectangle for text label
-        rect_item = QtGui.QGraphicsRectItem(text_item.boundingRect())
+        rect_item = QtWidgets.QGraphicsRectItem(text_item.boundingRect())
         rect_item.setZValue(500.0)
         rect_item.setBrush(self.scene.my_item_color)
 
@@ -824,10 +803,6 @@ class MainWidget(QtGui.QMainWindow):
             newitem is the class to be called by the context menu item
         """
         outdata = self.get_outdata()
-
-#        if outdata[0] == {}:
-#            self.run()
-#            outdata = self.get_outdata()
 
         for odata in outdata:
             if odata is not None and odata != {}:
@@ -880,26 +855,6 @@ class MainWidget(QtGui.QMainWindow):
             self.textbrowser_processlog.setStyleSheet(
                 "* { background-color: rgb(255, 255, 255); }")
 
-#    def run(self):
-#        """Runs program to end. Currently this is unused."""
-#        item_list = []
-#
-#        # First get the data import items
-#        for item in self.scene.items():
-#            if isinstance(item, DiagramItem):
-#                if item.is_import is True:
-#                    item_list.append(item)
-#
-#        # Then get the rest of the items in sequence, while running them
-#        while len(item_list) > 0:
-#            item = item_list.pop(0)
-#            if item.is_import is False:
-#                item.settings()
-#            for i in item.arrows:
-#                newitem = i.my_end_item
-#                if newitem != item and newitem not in item_list:
-#                    item_list.append(newitem)
-
     def send_to_back(self):
         """Send the selected item to the back."""
         if not self.scene.selectedItems():
@@ -940,7 +895,7 @@ class MainWidget(QtGui.QMainWindow):
             overwritten.
         """
         self.showtext(self.textbrowser_processlog, txt, replacelast)
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
     def showtext(self, txtobj, txt, replacelast=False):
         """
@@ -988,19 +943,19 @@ class MainWidget(QtGui.QMainWindow):
         self.pdlg.append(dlg)
 
 
-class Startup(QtGui.QDialog):
+class Startup(QtWidgets.QDialog):
     """ Class to provide a startup display while PyGMI loads into memory """
     def __init__(self, pbarmax, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
         self.setWindowFlags(QtCore.Qt.ToolTip)
 
-        self.gridlayout_main = QtGui.QVBoxLayout(self)
-        self.label_info = QtGui.QLabel(self)
-        self.label_pic = QtGui.QLabel(self)
+        self.gridlayout_main = QtWidgets.QVBoxLayout(self)
+        self.label_info = QtWidgets.QLabel(self)
+        self.label_pic = QtWidgets.QLabel(self)
         self.label_pic.setPixmap(QtGui.QPixmap(pygmi.__path__[0] +
                                                r'/images/logo256.ico'))
         self.label_info.setScaledContents(True)
-        self.pbar = QtGui.QProgressBar(self)
+        self.pbar = QtWidgets.QProgressBar(self)
 
         labeltext = "<font color='red'>Py</font><font color='blue'>GMI</font>"
 
@@ -1018,12 +973,14 @@ class Startup(QtGui.QDialog):
     def update(self):
         """ Updates the text on the dialog """
         self.pbar.setValue(self.pbar.value() + 1)
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
 
 def main():
     """ Main entry point for the PyGMI software. """
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
+    app.aboutToQuit.connect(app.deleteLater)
+
     wid = MainWidget()
     wid.show()
 
@@ -1033,18 +990,12 @@ def main():
     # this will activate the window
     wid.activateWindow()
 
-    if wid.pypiver == 'no internet' or wid.pypiver == '':
-        wid.pypiver = pygmi.__version__
-
-    if StrictVersion(wid.pypiver)>StrictVersion(pygmi.__version__):
-        text = 'There is an update available on the web.\nYour Version: ' + \
-               pygmi.__version__+'\nNew Version: '+wid.pypiver
-        QtGui.QMessageBox.warning(QtGui.QMessageBox(), 'Update Available!',
-                                  text,
-                                  QtGui.QMessageBox.Ok,
-                                  QtGui.QMessageBox.Ok)
-
-    sys.exit(app.exec_())
+    try:
+        __IPYTHON__
+    except NameError:
+        sys.exit(app.exec_())
+    else:
+        app.exec_()
 
 if __name__ == "__main__":
     main()

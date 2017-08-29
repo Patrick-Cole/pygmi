@@ -31,25 +31,13 @@
 """
 
 import copy
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import scipy.signal as si
-# import scipy.interpolate as sint
-from numba import jit
 import pygmi.menu_default as menu_default
 
-#        data = np.array([   [1, 2, 3, 4, 5, 6, 7, 8, 9],
-#                            [1, 2, 3, 4, 5, 7, 6, 8, 9],
-#                            [1, 2, 3, 4, 5, 7, 6, 8, 9],
-#                            [4, 3, 2, 1, 0, 1, 2, 9, 0],
-#                            [4, 3, 1, 1, 0, 1, 2, 3, 4],
-#                            [4, 3, 1, 1, 0, 1, 1, 1, 2],
-#                            [4, 3, 1, 1, 0, 1, 2, 3, 4],
-#                            [4, 3, 1, 1, 0, 1, 1, 1, 2],
-#                            [4, 3, 1, 1, 0, 1, 1, 2, 2]])
 
-
-class Gradients(QtGui.QDialog):
+class Gradients(QtWidgets.QDialog):
     """
     Class used to gather information via a GUI, for function gradients
 
@@ -68,7 +56,7 @@ class Gradients(QtGui.QDialog):
         Order of DR filter - see paper. Try 1 first.
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -78,8 +66,8 @@ class Gradients(QtGui.QDialog):
         self.order = 1
         self.pbar = self.parent.pbar
 
-        self.sb_order = QtGui.QSpinBox()
-        self.sb_azi = QtGui.QSpinBox()
+        self.sb_order = QtWidgets.QSpinBox()
+        self.sb_azi = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -88,11 +76,10 @@ class Gradients(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-#        self.resize(289, 166)
-        gridlayout = QtGui.QGridLayout(self)
-        label_az = QtGui.QLabel()
-        label_or = QtGui.QLabel()
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        label_az = QtWidgets.QLabel()
+        label_or = QtWidgets.QLabel()
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
         self.sb_order.setMinimum(1)
@@ -135,7 +122,7 @@ class Gradients(QtGui.QDialog):
         return True
 
 
-class VGradients(QtGui.QDialog):
+class VGradients(QtWidgets.QDialog):
     """
     Class used to gather information via a GUI, for function gradients
 
@@ -154,7 +141,7 @@ class VGradients(QtGui.QDialog):
         Order of DR filter - see paper. Try 1 first.
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -164,8 +151,8 @@ class VGradients(QtGui.QDialog):
         self.order = 1
         self.pbar = self.parent.pbar
 
-        self.sb_order = QtGui.QSpinBox()
-        self.sb_azi = QtGui.QSpinBox()
+        self.sb_order = QtWidgets.QSpinBox()
+        self.sb_azi = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -174,11 +161,10 @@ class VGradients(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-#        self.resize(289, 166)
-        gridlayout = QtGui.QGridLayout(self)
-        label_az = QtGui.QLabel()
-        label_or = QtGui.QLabel()
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        label_az = QtWidgets.QLabel()
+        label_or = QtWidgets.QLabel()
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
         self.sb_order.setMinimum(1)
@@ -192,10 +178,6 @@ class VGradients(QtGui.QDialog):
         label_az.setText("Azimuth")
         label_or.setText("Order")
 
-#        gridlayout.addWidget(label_az, 0, 0, 1, 1)
-#        gridlayout.addWidget(self.sb_azi, 0, 1, 1, 1)
-#        gridlayout.addWidget(label_or, 3, 0, 1, 1)
-#        gridlayout.addWidget(self.sb_order, 3, 1, 1, 1)
         gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
 
@@ -214,15 +196,13 @@ class VGradients(QtGui.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
 
         for i in self.pbar.iter(range(len(data))):
-#            data[i].data = gradients(data[i].data, self.azi, 0., self.order)
-            mask = data[i].data.mask
+            mask = np.ma.getmaskarray(data[i].data)
             data[i].data = np.ma.array(vertical(data[i].data))
             data[i].data.mask = mask
 
         self.outdata['Raster'] = data
 
         return True
-
 
 
 def gradients(data, azi, elev, order):
@@ -235,7 +215,7 @@ def gradients(data, azi, elev, order):
     Parameters
     ----------
     data : numpy array
-        input numy data array
+        input numpy data array
     azi : float
         Filter direction (degrees)
     elev : float
@@ -250,29 +230,21 @@ def gradients(data, azi, elev, order):
     """
     # Directional derivative
 
-    azi = azi*np.pi/180
-    elev = elev*np.pi/180
+    azi = np.deg2rad(azi)
+    elev = np.deg2rad(elev)
     dx, dy = np.gradient(data)
     dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
-
-    # Sunshading
-
-#        cAzi = np.cos(azi)
-#        sAzi = np.sin(azi)
-#        tElev = np.tan(elev)
-#        top = (1.0-dx*cAzi*tElev-dy*sAzi*tElev)
-#        bottom = np.sqrt(1.0+dx*dx+dy*dy)+np.sqrt(1.0+tElev*tElev)
-#        sun = top/bottom
 
     # Derivative ratio
 
     dt2 = -dy*np.sin(azi+np.pi/2)-dx*np.cos(azi+np.pi/2)
+    dt2 = dt2.astype(np.float64)
     dr = np.arctan2(dt1, abs(dt2)**order)
 
     return dr
 
 
-class Visibility2d(QtGui.QDialog):
+class Visibility2d(QtWidgets.QDialog):
     """
     Class used to gather information via a GUI, for function visibility2d
 
@@ -289,7 +261,7 @@ class Visibility2d(QtGui.QDialog):
         height of observer above surface
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -298,8 +270,8 @@ class Visibility2d(QtGui.QDialog):
         self.dh = 10
         self.pbar = self.parent.pbar
 
-        self.sb_dh = QtGui.QSpinBox()
-        self.sb_wsize = QtGui.QSpinBox()
+        self.sb_dh = QtWidgets.QSpinBox()
+        self.sb_wsize = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -308,11 +280,11 @@ class Visibility2d(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
 
         self.sb_dh.setMinimum(1)
         self.sb_dh.setMaximum(10000)
@@ -355,7 +327,6 @@ class Visibility2d(QtGui.QDialog):
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
                                             self.dh*data[i].data.std()/100.,
                                             self.pbar.iter)
-#            data[i].data = vtot
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
@@ -407,26 +378,23 @@ def visibility2d(data, wsize, dh, piter=iter):
     vd3 = np.zeros([nr, nc])
     vd4 = np.zeros([nr, nc])
     vstd = np.zeros([nr, nc])
-    mask = data.mask
+    mask = np.ma.getmaskarray(data)
     mean = data.mean()
     data = data.data
     data[mask] = mean
 
-#    self.parent.showprocesslog('NS')
     for j in piter(range(nc)):    # Columns
         for i in range(w2, nr-w2):
             dtmp = data[i-w2:i+w2+1, j]
             vn[i, j] = __visible1(dtmp, wsize, w2+1, dh)
             vs[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
-#    self.parent.showprocesslog('EW')
     for j in piter(range(w2, nc-w2)):    # Rows
         for i in range(nr):
             dtmp = data[i, j-w2:j+w2+1]
             ve[i, j] = __visible1(dtmp, wsize, w2+1, dh)
             vw[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
-#    self.parent.showprocesslog('Diag')
     for j in piter(range(w2, nc-w2)):
         for i in range(w2, nr-w2):
             dtmp = np.zeros(wsize)
@@ -440,7 +408,6 @@ def visibility2d(data, wsize, dh, piter=iter):
             vd3[i, j] = __visible1(dtmp, wsize, w2+1, dh)
             vd4[i, j] = __visible2(dtmp, wsize, w2+1, dh)
 
-#    self.parent.showprocesslog('Computing std of visibility')
     vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
     vtot = vtot[w2:nr-w2, w2:nc-w2]
 
@@ -473,9 +440,8 @@ def visibility2d(data, wsize, dh, piter=iter):
 def __visible1(dat, nr, cp, dh):
     """ Visible 1 """
     num = 1
-#        d = d[d.nonzero()].tolist()
 
-    if cp < nr-1 and len(dat) > 0:
+    if cp < nr-1 and dat.size > 0:
         num = 2
         cpn = cp-1
         thetamax = float(dat[cpn+1]-dat[cpn]-dh)
@@ -491,9 +457,8 @@ def __visible1(dat, nr, cp, dh):
 def __visible2(dat, nr, cp, dh):
     """ Visible 2 """
     num = 0
-#        d = d[d.nonzero()].tolist()
 
-    if cp > 2 and len(dat) > 0:
+    if cp > 2 and dat.size > 0:
         num = 1
         cpn = cp-1
         thetamax = (dat[cpn-1]-dat[cpn]-dh)
@@ -505,7 +470,7 @@ def __visible2(dat, nr, cp, dh):
     return num
 
 
-class Tilt1(QtGui.QDialog):
+class Tilt1(QtWidgets.QDialog):
     """
     Class used to gather information via a GUI, for function tilt1
 
@@ -522,7 +487,7 @@ class Tilt1(QtGui.QDialog):
         size of smoothing matrix to use - must be odd input 0 for no smoothing
     """
     def __init__(self, parent):
-        QtGui.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -531,8 +496,8 @@ class Tilt1(QtGui.QDialog):
         self.smooth = 0
         self.pbar = self.parent.pbar
 
-        self.sb_azi = QtGui.QSpinBox()
-        self.sb_s = QtGui.QSpinBox()
+        self.sb_azi = QtWidgets.QSpinBox()
+        self.sb_s = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -541,11 +506,11 @@ class Tilt1(QtGui.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtGui.QGridLayout(self)
-        buttonbox = QtGui.QDialogButtonBox()
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
-        label = QtGui.QLabel()
-        label_2 = QtGui.QLabel()
+        label = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -651,10 +616,11 @@ def tilt1(data, azi, s):
     nr, nc = data.shape
     dtr = np.pi/180.0
     azi = azi*dtr
-#        thresh = thresh*dtr
 
     dy, dx = np.gradient(data)
-    dxtot = np.sqrt(dx*dx+dy*dy)
+#    dx = dx.astype(np.float64)
+#    dy = dy.astype(np.float64)
+    dxtot = np.ma.sqrt(dx*dx+dy*dy)
     nmax = np.max([nr, nc])
     npts = int(2**__nextpow2(nmax))
     dz = vertical(data, npts, 1)
@@ -673,7 +639,6 @@ def tilt1(data, azi, s):
     if s < 3:
         s = 3
     se = np.ones([s, s])/(s*s)
-#        s2 = np.floor(s/2)
     ts = si.convolve2d(t1, se, 'same')
     [dxs, dys] = np.gradient(ts)
     dzs = vertical(ts, npts, 1)
@@ -684,9 +649,9 @@ def tilt1(data, azi, s):
     # Tilt Based Directional Derivative, Total Derivative
     t1 = np.ma.array(t1)
     th = np.ma.array(th)
-    th.mask = t1.mask
+    th.mask = np.ma.getmaskarray(t1)
     t2 = np.ma.array(t2)
-    t2.mask = t1.mask
+    t2.mask = np.ma.getmaskarray(t1)
     ta = np.ma.array(ta)
     tdx = np.ma.array(tdx)
 
@@ -699,7 +664,6 @@ def __nextpow2(n):
     return m_i
 
 
-@jit
 def vertical(data, npts=None, xint=1):
     """ Vertical """
 
@@ -712,7 +676,6 @@ def vertical(data, npts=None, xint=1):
     cdiff = int(np.floor((npts-nc)/2))
     rdiff = int(np.floor((npts-nr)/2))
     data1 = __taper2d(data, npts, nc, nr, cdiff, rdiff)
-#    data1 = np.pad(data, ((rdiff, cdiff), (rdiff,cdiff)), 'edge')
 
     f = np.fft.fft2(data1)
     fz = f
@@ -729,6 +692,7 @@ def vertical(data, npts=None, xint=1):
     fz = np.fft.fftshift(fz)
     fzinv = np.fft.ifft2(fz)
     dz = np.real(fzinv[rdiff:nr+rdiff, cdiff:nc+cdiff])
+
     return dz
 
 
@@ -739,10 +703,8 @@ def __taper2d(g, npts, n, m, ndiff, mdiff):
 
     npts2 = npts-1
     gm = g.mean()
-    gf = np.zeros([npts, npts])+np.median(g-gm)
+    gf = np.zeros([npts, npts])+np.ma.median(g-gm)
     gf[mdiff:mdiff+m, ndiff:ndiff+n] = g-gm
-
-#    gf = np.pad(g-gm, ((mdiff, mdiff), (ndiff, ndiff)), 'median')
 
     for j in range(mdiff, mdiff+m):
         for i in range(ndiff):
@@ -803,6 +765,5 @@ def __taper2d(g, npts, n, m, ndiff, mdiff):
                 gf[i, j] = (gf[i, j] *
                             np.cos((i+1-ndiff)*np.pi/(2*ndiff)) *
                             np.cos((j+1-ndiff-m)*np.pi/(2*mdiff)))
-
 
     return gf

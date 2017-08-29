@@ -34,7 +34,7 @@ from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import pygmi.raster.iodefs as ir
 from pygmi.pfmod import misc
-from pygmi.pfmod.grvmag3d import gridmatch
+from pygmi.pfmod.tensor3d import gridmatch
 
 
 class ProfileDisplay(object):
@@ -46,6 +46,7 @@ class ProfileDisplay(object):
         self.showtext = parent.showtext
         self.pbar = self.parent.pbar_sub
         self.viewmagnetics = True
+        self.dcomptxt = 'Calculated Magnetics'
 
         self.userint = QtWidgets.QWidget()
 
@@ -54,8 +55,8 @@ class ProfileDisplay(object):
 
         self.sb_profnum = QtWidgets.QSpinBox()
         self.hs_profnum = MySlider()
-        self.combo_profpic = QtWidgets.QComboBox()
-        self.hs_ppic_opacity = MySlider()
+#        self.combo_profpic = QtWidgets.QComboBox()
+        self.hs_comp = MySlider()
         self.rb_axis_datamax = QtWidgets.QRadioButton()
         self.rb_axis_profmax = QtWidgets.QRadioButton()
         self.rb_axis_calcmax = QtWidgets.QRadioButton()
@@ -75,21 +76,22 @@ class ProfileDisplay(object):
         gridlayout = QtWidgets.QGridLayout(self.userint)
         groupbox = QtWidgets.QGroupBox()
         verticallayout = QtWidgets.QVBoxLayout(groupbox)
+        hlayout = QtWidgets.QHBoxLayout()
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Fixed)
 
         self.hs_profnum.setSizePolicy(sizepolicy)
-        self.hs_ppic_opacity.setSizePolicy(sizepolicy)
+        self.hs_comp.setSizePolicy(sizepolicy)
 
         self.lw_prof_defs.setFixedWidth(220)
         self.sb_profnum.setWrapping(True)
         self.sb_profnum.setMaximum(999999999)
         self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
-        self.hs_ppic_opacity.setMaximum(255)
-        self.hs_ppic_opacity.setProperty("value", 0)
-        self.hs_ppic_opacity.setOrientation(QtCore.Qt.Horizontal)
-        self.hs_ppic_opacity.setTickPosition(QtWidgets.QSlider.TicksAbove)
+        self.hs_comp.setMaximum(9)
+        self.hs_comp.setProperty("value", 0)
+        self.hs_comp.setOrientation(QtCore.Qt.Horizontal)
+        self.hs_comp.setTickPosition(QtWidgets.QSlider.TicksAbove)
         self.dsb_axis_custmin.setValue(0.)
         self.dsb_axis_custmax.setValue(50.)
         self.dsb_axis_custmin.setMinimum(-1000000.)
@@ -111,12 +113,45 @@ class ProfileDisplay(object):
         self.pb_lbound.setText("Add Lithological Boundary")
         self.pb_export_csv.setText("Export All Profiles")
 
+        lbl_f = QtWidgets.QLabel()
+        lbl_x = QtWidgets.QLabel()
+        lbl_y = QtWidgets.QLabel()
+        lbl_z = QtWidgets.QLabel()
+        lbl_xx = QtWidgets.QLabel()
+        lbl_xy = QtWidgets.QLabel()
+        lbl_xz = QtWidgets.QLabel()
+        lbl_yy = QtWidgets.QLabel()
+        lbl_yz = QtWidgets.QLabel()
+        lbl_zz = QtWidgets.QLabel()
+
+        lbl_f.setText(' f')
+        lbl_x.setText(' x')
+        lbl_y.setText(' y')
+        lbl_z.setText(' z')
+        lbl_xx.setText('xx')
+        lbl_xy.setText('xy')
+        lbl_xz.setText('xz')
+        lbl_yy.setText('yy')
+        lbl_yz.setText('yz')
+        lbl_zz.setText('zz')
+
+        hlayout.addWidget(lbl_f)
+        hlayout.addWidget(lbl_x)
+        hlayout.addWidget(lbl_y)
+        hlayout.addWidget(lbl_z)
+        hlayout.addWidget(lbl_xx)
+        hlayout.addWidget(lbl_xy)
+        hlayout.addWidget(lbl_xz)
+        hlayout.addWidget(lbl_yy)
+        hlayout.addWidget(lbl_yz)
+        hlayout.addWidget(lbl_zz)
+
         gridlayout.addWidget(self.mpl_toolbar, 0, 0, 1, 1)
         gridlayout.addWidget(self.mmc, 1, 0, 9, 1)
         gridlayout.addWidget(self.sb_profnum, 0, 1, 1, 1)
         gridlayout.addWidget(self.hs_profnum, 1, 1, 1, 1)
-        gridlayout.addWidget(self.combo_profpic, 2, 1, 1, 1)
-        gridlayout.addWidget(self.hs_ppic_opacity, 3, 1, 1, 1)
+        gridlayout.addLayout(hlayout, 2, 1, 1, 1)
+        gridlayout.addWidget(self.hs_comp, 3, 1, 1, 1)
         gridlayout.addWidget(self.lw_prof_defs, 4, 1, 1, 1)
         gridlayout.addWidget(self.sb_profile_linethick, 5, 1, 1, 1)
         gridlayout.addWidget(groupbox, 6, 1, 1, 1)
@@ -146,8 +181,7 @@ class ProfileDisplay(object):
         self.dsb_axis_custmin.valueChanged.connect(self.rb_plot_scale)
         self.dsb_axis_custmax.valueChanged.connect(self.rb_plot_scale)
         self.pb_export_csv.clicked.connect(self.export_csv)
-        self.hs_ppic_opacity.valueChanged.connect(self.profpic_hs)
-        self.combo_profpic.currentIndexChanged.connect(self.profpic_hs)
+        self.hs_comp.valueChanged.connect(self.data_comp)
 
     def change_defs(self):
         """ List box in profile tab for definitions """
@@ -183,13 +217,13 @@ class ProfileDisplay(object):
 
         extent = (left, right, bottom, top)
 
-        ctxt = str(self.combo_profpic.currentText())
-        if self.lmod1.profpics and ctxt != u'':
-            gtmpl = self.lmod1.profpics[ctxt]
-            opac = self.hs_ppic_opacity.value()/self.hs_ppic_opacity.maximum()
-        else:
-            gtmpl = None
-            opac = 1.0
+#        ctxt = str(self.combo_profpic.currentText())
+#        if self.lmod1.profpics and ctxt != u'':
+#            gtmpl = self.lmod1.profpics[ctxt]
+#            opac = self.hs_ppic_opacity.value()/self.hs_ppic_opacity.maximum()
+#        else:
+        gtmpl = None
+        opac = 1.0
 
         if slide is True:
             self.mmc.slide_grid(gtmp, gtmpl, opac)
@@ -202,6 +236,23 @@ class ProfileDisplay(object):
             self.mmc.update_line(self.lmod1.xrange, [alt, alt])
         else:
             self.mmc.update_line(self.lmod1.yrange, [alt, alt])
+
+    def data_comp(self):
+        """ change data component on plot """
+        dcomp = ['f', 'x', 'y', 'z', 'xx', 'xy', 'xz', 'yy', 'yz', 'zz']
+
+        if self.viewmagnetics:
+            if dcomp[self.hs_comp.value()] == 'f':
+                self.dcomptxt = 'Calculated Magnetics'
+            else:
+                self.dcomptxt = 'Calculated b'+dcomp[self.hs_comp.value()]
+        else:
+            if dcomp[self.hs_comp.value()] == 'f':
+                self.dcomptxt = 'Calculated Gravity'
+            else:
+                self.dcomptxt = 'Calculated g'+dcomp[self.hs_comp.value()]
+
+        self.update_plot()
 
     def export_csv(self):
         """ Export Profile to csv """
@@ -216,7 +267,6 @@ class ProfileDisplay(object):
                 self.lmod1.xrange[0]+self.lmod1.dxy/2.)
         yrng = (np.arange(self.lmod1.numy)*self.lmod1.dxy +
                 self.lmod1.yrange[0]+self.lmod1.dxy/2.)
-        yrng = yrng[::-1]
         xx, yy = np.meshgrid(xrng, yrng)
         xlines = np.arange(self.lmod1.numx)
         ylines = np.arange(self.lmod1.numy, 0, -1)-1
@@ -240,8 +290,7 @@ class ProfileDisplay(object):
                     data = data + self.lmod1.gregional
 
             if not self.lmod1.is_ew:
-#                data = data[::-1].T
-                data = data.T
+                data = data[::-1].T
             newdata.append(np.array(data.flatten()))
             header = header+',"'+i+'"'
         newdata = np.transpose(newdata)
@@ -431,13 +480,13 @@ class ProfileDisplay(object):
         data = None
         if self.viewmagnetics:
             if 'Calculated Magnetics' in self.lmod1.griddata:
-                data = self.lmod1.griddata['Calculated Magnetics'].data
+                data = self.lmod1.griddata[self.dcomptxt].data
             self.mmc.ptitle = 'Magnetic Intensity: '
             self.mmc.punit = 'nT'
             regtmp = 0.0
         else:
             if 'Calculated Gravity' in self.lmod1.griddata:
-                data = self.lmod1.griddata['Calculated Gravity'].data
+                data = self.lmod1.griddata[self.dcomptxt].data
             self.mmc.ptitle = 'Gravity: '
             self.mmc.punit = 'mGal'
             regtmp = self.lmod1.gregional
@@ -482,7 +531,7 @@ class ProfileDisplay(object):
 
         if data2 is not None:
             if self.lmod1.is_ew:
-                ycrdl = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy+self.lmod1.dxy/2
+                ycrdl = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy
                 ycrd = int((data2.tly - ycrdl)/data2.ydim)
 
                 if ycrd < 0 or ycrd >= data2.rows:
@@ -497,7 +546,7 @@ class ProfileDisplay(object):
                     tmprng2 = (data2.tlx + np.arange(data2.cols)*data2.xdim +
                                data2.xdim/2)
             else:
-                xcrdl = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy+self.lmod1.dxy/2
+                xcrdl = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy
                 xcrd = int((xcrdl-data2.tlx)/data2.xdim)
 
                 if xcrd < 0 or xcrd >= data2.cols:
@@ -536,7 +585,6 @@ class ProfileDisplay(object):
 
         self.mmc.mywidth = width
 
-
     def tab_activate(self):
         """ Runs when the tab is activated """
         self.lmod1 = self.parent.lmod1
@@ -553,7 +601,7 @@ class ProfileDisplay(object):
         misc.update_lith_lw(self.lmod1, self.lw_prof_defs)
 
         self.hs_profnum.valueChanged.disconnect()
-        self.combo_profpic.currentIndexChanged.disconnect()
+#        self.combo_profpic.currentIndexChanged.disconnect()
         self.sb_profnum.valueChanged.disconnect()
 
         self.hs_profnum.setMinimum(0)
@@ -562,10 +610,10 @@ class ProfileDisplay(object):
         else:
             self.hs_profnum.setMaximum(self.lmod1.numx-1)
 
-        if self.lmod1.profpics:
-            self.combo_profpic.clear()
-            self.combo_profpic.addItems(list(self.lmod1.profpics.keys()))
-            self.combo_profpic.setCurrentIndex(0)
+#        if self.lmod1.profpics:
+#            self.combo_profpic.clear()
+#            self.combo_profpic.addItems(list(self.lmod1.profpics.keys()))
+#            self.combo_profpic.setCurrentIndex(0)
 
         self.change_model()  # needs to happen before profnum set value
         self.sb_profnum.setValue(self.lmod1.curprof)
@@ -573,7 +621,7 @@ class ProfileDisplay(object):
         self.update_plot()
         self.sb_profnum.valueChanged.connect(self.sprofnum)
         self.hs_profnum.valueChanged.connect(self.hprofnum)
-        self.combo_profpic.currentIndexChanged.connect(self.profpic_hs)
+#        self.combo_profpic.currentIndexChanged.connect(self.profpic_hs)
 
 
 class LithBound(QtWidgets.QDialog):
@@ -876,7 +924,8 @@ class MyMplCanvas(FigureCanvas):
 
         self.paxes.set_autoscalex_on(False)
         if xdat2 is not None:
-            self.obs = self.paxes.plot(xdat2, dat2, '.', zorder=1, color='orange')
+            self.obs = self.paxes.plot(xdat2, dat2, '.', zorder=1,
+                                       color='orange')
         else:
             self.obs = self.paxes.plot([], [], '.', zorder=1, color='orange')
         self.cal = self.paxes.plot(xdat, dat, zorder=10, color='blue')

@@ -35,13 +35,14 @@ menu. The following are supported:
 """
 
 import numpy as np
-from PyQt4 import QtGui, QtCore
-import matplotlib.pyplot as plt
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from PyQt5 import QtWidgets, QtCore
+import matplotlib.cm as cm
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as \
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
     NavigationToolbar
 import matplotlib.colors as mcolors
+from mpl_toolkits.mplot3d import axes3d
 
 
 class MyMplCanvas(FigureCanvas):
@@ -90,7 +91,6 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_yticklabels(dat_mat, rotation='horizontal')
         self.axes.set_xlim(0, len(data1))
         self.axes.set_ylim(0, len(data1))
-#        self.figure.colorbar()
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -203,25 +203,26 @@ class MyMplCanvas(FigureCanvas):
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)
 
-        z[z.mask] = np.nan
-        z.mask = data.data.mask.copy()
-        cmap = plt.cm.jet
-        cmap.set_bad('w', 0.)
-        cmap.set_under('w', 0.)
+        cmap = cm.jet
 
-        lev = np.arange(z.min(), z.max(), 1)
-        norml = mcolors.BoundaryNorm(lev, 256)
+        norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
+
+        z.set_fill_value(np.nan)
+        z = z.filled()
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
-        ax = self.axes
-        ax.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
-                        shade=True)
+        ax1 = self.axes
 
-        ax.set_title('')
-        ax.set_xlabel("X")
-        ax.set_ylabel("Y")
-        ax.set_zlabel("Z")
+        surf = ax1.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
+                                vmin=z.min(), vmax=z.max(), shade=False,
+                                antialiased=False)
+        self.figure.colorbar(surf)
+
+        ax1.set_title('')
+        ax1.set_xlabel("X")
+        ax1.set_ylabel("Y")
+        ax1.set_zlabel("Z")
 
         self.figure.canvas.draw()
 
@@ -247,7 +248,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
 
-class GraphWindow(QtGui.QDialog):
+class GraphWindow(QtWidgets.QDialog):
     """
     Graph Window - The QDialog window which will contain our image
 
@@ -257,21 +258,21 @@ class GraphWindow(QtGui.QDialog):
         reference to the parent routine
     """
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent=None)
+        QtWidgets.QDialog.__init__(self, parent=None)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Graph Window")
 
-        vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtGui.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
 
-        self.combobox1 = QtGui.QComboBox()
-        self.combobox2 = QtGui.QComboBox()
-        self.label1 = QtGui.QLabel()
-        self.label2 = QtGui.QLabel()
+        self.combobox1 = QtWidgets.QComboBox()
+        self.combobox2 = QtWidgets.QComboBox()
+        self.label1 = QtWidgets.QLabel()
+        self.label2 = QtWidgets.QLabel()
         self.label1.setText('Bands:')
         self.label2.setText('Bands:')
         self.hbl.addWidget(self.label1)

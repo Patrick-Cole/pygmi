@@ -24,17 +24,17 @@
 # -----------------------------------------------------------------------------
 """ Data Display Routines found on Data Display Tab"""
 
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import matplotlib.cm as cm
 import matplotlib.colors as clrs
-from matplotlib.backends.backend_qt4agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 
 class DataDisplay(object):
-    """ Widget class to call the main interface """
+    """ DataDisplay - Widget class to call the main interface """
     def __init__(self, parent):
         self.parent = parent
         self.lmod1 = parent.lmod1
@@ -44,31 +44,31 @@ class DataDisplay(object):
         self.grid1txt = 'Calculated Magnetics'
         self.grid2txt = 'Calculated Gravity'
 
-        self.userint = QtGui.QWidget()
+        self.userint = QtWidgets.QWidget()
         self.mmc = MyMplCanvas(len(self.lmod1.custprofx))
         self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self.userint)
 
         self.ddisp_plot = self.mmc
-        self.sb_profnum = QtGui.QSpinBox()
-        self.label_profile_xy = QtGui.QLabel()
-        self.hslider_profile = QtGui.QSlider()
-        self.hslider_grid = QtGui.QSlider()
-        self.combo_grid1 = QtGui.QComboBox()
-        self.combo_grid2 = QtGui.QComboBox()
-        self.rb_ew = QtGui.QRadioButton()
-        self.rb_ns = QtGui.QRadioButton()
+        self.sb_profnum = QtWidgets.QSpinBox()
+        self.label_profile_xy = QtWidgets.QLabel()
+        self.hslider_profile = QtWidgets.QSlider()
+        self.hslider_grid = QtWidgets.QSlider()
+        self.combo_grid1 = QtWidgets.QComboBox()
+        self.combo_grid2 = QtWidgets.QComboBox()
+        self.rb_ew = QtWidgets.QRadioButton()
+        self.rb_ns = QtWidgets.QRadioButton()
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
         gtmp = ['Calculated Magnetics', 'Calculated Gravity']
-        gridlayout = QtGui.QGridLayout(self.userint)
-        groupbox = QtGui.QGroupBox()
-        verticallayout = QtGui.QVBoxLayout(groupbox)
+        gridlayout = QtWidgets.QGridLayout(self.userint)
+        groupbox = QtWidgets.QGroupBox()
+        verticallayout = QtWidgets.QVBoxLayout(groupbox)
 
-        sizepolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred,
-                                       QtGui.QSizePolicy.Fixed)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                           QtWidgets.QSizePolicy.Fixed)
 
         self.label_profile_xy.setSizePolicy(sizepolicy)
         self.hslider_profile.setSizePolicy(sizepolicy)
@@ -137,7 +137,7 @@ class DataDisplay(object):
         self.grid2 = self.lmod1.griddata[ctxt]
         self.mmc.init_grid2(self.grid2, reg, ctxt)
     # Needed to force the drawing of colorbar
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.hs_grid()
 
     def hs_grid(self):
@@ -182,17 +182,22 @@ class DataDisplay(object):
         ytmp = np.array([ytmp, ytmp])
 
         if self.rb_ew.isChecked():
-            xys = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy
+            xys = self.lmod1.yrange[0]+self.lmod1.curprof*self.lmod1.dxy+self.lmod1.dxy/2
             self.label_profile_xy.setText('Northing: '+str(xys))
             self.mmc.init_line(self.lmod1.xrange, [xys, xys], self.lmod1)
         elif self.rb_ns.isChecked():
-            xys = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy
+            xys = self.lmod1.xrange[0]+self.lmod1.curprof*self.lmod1.dxy+self.lmod1.dxy/2
             self.label_profile_xy.setText('Easting: '+str(xys))
             self.mmc.init_line([xys, xys], self.lmod1.yrange, self.lmod1)
 
     def update_combos(self):
         """ Update the combos """
         tmp = list(self.lmod1.griddata.keys())
+
+        if self.grid1txt not in tmp:
+            self.grid1txt = 'Calculated Magnetics'
+        if self.grid2txt not in tmp:
+            self.grid2txt = 'Calculated Gravity'
 
         self.combo_grid1.blockSignals(True)
         self.combo_grid2.blockSignals(True)
@@ -251,11 +256,6 @@ class MyMplCanvas(FigureCanvas):
 
         FigureCanvas.__init__(self, fig)
 
-#        FigureCanvas.setSizePolicy(self,
-#                                   QtGui.QSizePolicy.Expanding,
-#                                   QtGui.QSizePolicy.Expanding)
-#        FigureCanvas.updateGeometry(self)
-
         dat = np.zeros([100, 100])
 
         self.ims2 = self.axes.imshow(dat, cmap=self.cbar,
@@ -268,8 +268,6 @@ class MyMplCanvas(FigureCanvas):
         self.ibar.set_label('')
         self.ibar2.set_label('')
         self.ibar.ax.yaxis.set_label_position('left')
-
-#        self.ibar2.ax.yaxis.set_ticks_position('left')
 
         self.figure.canvas.draw()
         self.bbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
@@ -306,7 +304,6 @@ class MyMplCanvas(FigureCanvas):
             dmax = dmin+1
         self.ims.set_clim(dmin, dmax)
 
-#        cnorm = clrs.Normalize()(dat1.data[::-1]-reg)
         cnorm = clrs.Normalize()(dat1.data+reg)
         if cnorm.mask.size == 1:
             cnorm.mask = (cnorm.mask*np.ones_like(cnorm.data)).astype(bool)
@@ -334,7 +331,6 @@ class MyMplCanvas(FigureCanvas):
         for i in self.prf:
             i.set_visible(False)
         self.ims.set_visible(False)
-#        self.ims2.set_data(dat2.data[::-1]+reg)
         self.ims2.set_data(dat2.data+reg)
         self.ims2.set_extent(self.dat_extent(dat2))
         if self.xlims is not None:
@@ -359,13 +355,11 @@ class MyMplCanvas(FigureCanvas):
         self.ims.set_alpha(perc)
         self.figure.canvas.restore_region(self.bbox)
         self.axes.draw_artist(self.ims)
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
         self.lbbox = self.figure.canvas.copy_from_bbox(self.axes.bbox)
         for i in self.prf:
             self.axes.draw_artist(i)
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def init_line(self, xrng, yrng, lmod):
@@ -387,7 +381,6 @@ class MyMplCanvas(FigureCanvas):
         for i in range(len(lmod.custprofx)):
             self.axes.draw_artist(self.prf[i+1])
         self.figure.canvas.update()
-#        self.figure.canvas.blit(self.axes.bbox)
 
     def dat_extent(self, dat):
         """ Gets the extent of the dat variable """
@@ -395,17 +388,6 @@ class MyMplCanvas(FigureCanvas):
         top = dat.tly
         right = left + dat.cols*dat.xdim
         bottom = top - dat.rows*dat.ydim
-
-#        if (right-left) > 10000 or (top-bottom) > 10000:
-#            self.axes.xaxis.set_label_text("Eastings (km)")
-#            self.axes.yaxis.set_label_text("Northings (km)")
-#            left /= 1000.
-#            right /= 1000.
-#            top /= 1000.
-#            bottom /= 1000.
-#        else:
-#            self.axes.xaxis.set_label_text("Eastings (m)")
-#            self.axes.yaxis.set_label_text("Northings (m)")
 
         self.axes.xaxis.set_label_text("Eastings (m)")
         self.axes.yaxis.set_label_text("Northings (m)")
@@ -416,11 +398,6 @@ class MyMplCanvas(FigureCanvas):
         """ Sets limits for the axes """
         left, right = lmod.xrange
         bottom, top = lmod.yrange
-#        if (right-left) > 10000 or (top-bottom) > 10000:
-#            left /= 1000.
-#            right /= 1000.
-#            top /= 1000.
-#            bottom /= 1000.
 
         self.xlims = (left, right)
         self.ylims = (bottom, top)

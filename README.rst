@@ -27,22 +27,29 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.5.2
-* NumPy 1.11.1
-* SciPy 0.18.0
-* Matplotlib 1.5.2
-* six 1.10.0 (used by Matplotlib, should be installed automatically)
-* pytz 2016.6.1 (used by Matplotlib, should be installed automatically)
-* python-dateutil 2.5.3 (used by Matplotlib, should be installed automatically)
-* pyparsing 2.1.8 (used by Matplotlib, should be installed automatically)
-* cycler 0.10.0 (used by Matplotlib, should be installed automatically)
-* PyQt 4.11.4
+* Python 3.5.3
+* appdirs 1.4.3
+* cycler 0.10.0
 * GDAL 2.0.3
-* numexpr 2.6.1
-* numba 0.27.0
-* llvmlite 0.12.1
-* PyOpenGL 3.1.1
-* pip 8.1.2
+* llvmlite 0.16.0
+* matplotlib 2.0.0
+* numba 0.31.0
+* numexpr 2.6.2
+* numpy 1.11.3
+* olefile 0.44
+* packaging 16.8
+* pandas 0.19.2
+* pillow 4.0.0
+* pyopengl 3.1.1
+* pyparsing 2.2.0
+* pyqt5 5.8.1
+* python-dateutil 2.6.0
+* pytz 2016.10
+* scikit_learn 0.18.1
+* SciPy 0.19.0
+* setuptools 34.3.2
+* sip 4.19.1
+* six 1.10.0
 
 Windows Users
 -------------
@@ -65,11 +72,11 @@ Linux normally comes with python installed, but the additional libraries will st
 
 Anaconda
 --------
-Anaconda does not find pyqt4 on its system even if it is there already. To install pygmi on anaconda, download the zip file manually, edit the setup.py file, and replace the install_requires switch with the following:
+Anaconda does not find pyqt5 on its system even if it is there already. To install pygmi on anaconda, download the zip file manually, edit the setup.py file, and replace the install_requires switch with the following:
 
    install_requires=["numpy", "scipy", "matplotlib", "gdal", "numexpr", "numba", "Pillow", "PyOpenGL"],
 
-As you can see, all we have done is removed PyQt4 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:
+As you can see, all we have done is removed PyQt5 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:
 
    python setup.py install
 

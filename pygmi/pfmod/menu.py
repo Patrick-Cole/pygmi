@@ -24,7 +24,8 @@
 # -----------------------------------------------------------------------------
 """ Potential Field Modelling """
 
-from PyQt4 import QtGui
+from PyQt5 import QtWidgets
+import pygmi.pfmod.tpfmod as tpfmod
 import pygmi.pfmod.pfmod as pfmod
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.pfmod.iodefs as iodefs
@@ -50,41 +51,54 @@ class MenuWidget(object):
         context_menu = self.parent.context_menu
 
 # Normal menus
-        self.menu = QtGui.QMenu(parent.menubar)
+        self.menu = QtWidgets.QMenu(parent.menubar)
         self.menu.setTitle("Potential Field Modelling")
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_mod3d = QtGui.QAction(parent)
+        self.action_import_mod3d = QtWidgets.QAction(parent)
         self.action_import_mod3d.setText("Import 3D Model")
         self.menu.addAction(self.action_import_mod3d)
         self.action_import_mod3d.triggered.connect(self.import_mod3d)
 
-        self.action_merge_mod3d = QtGui.QAction(parent)
+        self.action_pfmod = QtWidgets.QAction(self.parent)
+        self.action_pfmod.setText("Model Creation and Editing")
+        self.menu.addAction(self.action_pfmod)
+        self.action_pfmod.triggered.connect(self.pfmod)
+
+        self.menu.addSeparator()
+
+        self.action_merge_mod3d = QtWidgets.QAction(parent)
         self.action_merge_mod3d.setText("Merge two 3D Models")
         self.menu.addAction(self.action_merge_mod3d)
         self.action_merge_mod3d.triggered.connect(self.merge_mod3d)
 
-        self.action_prof_pic = QtGui.QAction(parent)
+        self.action_prof_pic = QtWidgets.QAction(parent)
         self.action_prof_pic.setText("Import Profile Picture")
         self.menu.addAction(self.action_prof_pic)
         self.action_prof_pic.triggered.connect(self.import_prof_pic)
 
         self.menu.addSeparator()
 
-        self.action_pfmod = QtGui.QAction(self.parent)
-        self.action_pfmod.setText("Model Creation and Editing")
-        self.menu.addAction(self.action_pfmod)
-        self.action_pfmod.triggered.connect(self.pfmod)
+        self.action_import_tmod3d = QtWidgets.QAction(parent)
+        self.action_import_tmod3d.setText("Import 3D Model for Tensor Modelling (Beta)")
+        self.menu.addAction(self.action_import_tmod3d)
+        self.action_import_tmod3d.triggered.connect(self.import_tmod3d)
+
+        self.action_tpfmod = QtWidgets.QAction(self.parent)
+        self.action_tpfmod.setText("Tensor Model Creation and Editing (Beta)")
+        self.menu.addAction(self.action_tpfmod)
+        self.action_tpfmod.triggered.connect(self.tpfmod)
+
 
 # Context Menu
         context_menu['Model3D'].addSeparator()
 
-        self.action_mod3d = QtGui.QAction(self.parent)
+        self.action_mod3d = QtWidgets.QAction(self.parent)
         self.action_mod3d.setText("3D Model Display")
         context_menu['Model3D'].addAction(self.action_mod3d)
         self.action_mod3d.triggered.connect(self.mod3d)
 
-        self.action_export_mod3d = QtGui.QAction(self.parent)
+        self.action_export_mod3d = QtWidgets.QAction(self.parent)
         self.action_export_mod3d.setText("Export 3D Model")
         context_menu['Model3D'].addAction(self.action_export_mod3d)
         self.action_export_mod3d.triggered.connect(self.export_mod3d)
@@ -98,6 +112,12 @@ class MenuWidget(object):
         fnc = pfmod.MainWidget(self.parent)
         self.parent.item_insert("Step", "Potential\nField\nModelling", fnc)
 
+    def tpfmod(self):
+        """ voxel modelling of data"""
+        fnc = tpfmod.MainWidget(self.parent)
+        self.parent.item_insert("Step", "Tensor\nPotential\nField\nModelling",
+                                fnc)
+
     def mod3d(self):
         """ 3D display of data"""
         self.parent.launch_context_item(mvis3d.Mod3dDisplay)
@@ -105,6 +125,11 @@ class MenuWidget(object):
     def import_mod3d(self):
         """ Imports data"""
         fnc = iodefs.ImportMod3D(self.parent)
+        self.parent.item_insert("Io", "Import 3D Model", fnc)
+
+    def import_tmod3d(self):
+        """ Imports data"""
+        fnc = iodefs.ImportTMod3D(self.parent)
         self.parent.item_insert("Io", "Import 3D Model", fnc)
 
     def merge_mod3d(self):

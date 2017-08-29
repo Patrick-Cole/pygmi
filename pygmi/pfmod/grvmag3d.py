@@ -40,10 +40,10 @@ import copy
 import tempfile
 from math import sqrt
 from multiprocessing import Pool
-from PyQt4 import QtGui, QtCore
+from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
-import pylab as plt
+import matplotlib.pyplot as plt
 from scipy.linalg import norm
 from osgeo import gdal
 from numba import jit
@@ -75,11 +75,11 @@ class GravMag(object):
         self.mfname = self.parent.modelfilename
         self.tmpfiles = {}
 
-        self.actionregionaltest = QtGui.QPushButton(self.parent)
-        self.actioncalculate = QtGui.QPushButton(self.parent)
-        self.actioncalculate2 = QtGui.QPushButton(self.parent)
-        self.actioncalculate3 = QtGui.QPushButton(self.parent)
-        self.actioncalculate4 = QtGui.QPushButton(self.parent)
+        self.actionregionaltest = QtWidgets.QPushButton(self.parent)
+        self.actioncalculate = QtWidgets.QPushButton(self.parent)
+        self.actioncalculate2 = QtWidgets.QPushButton(self.parent)
+        self.actioncalculate3 = QtWidgets.QPushButton(self.parent)
+        self.actioncalculate4 = QtWidgets.QPushButton(self.parent)
         self.setupui()
 
     def setupui(self):
@@ -174,7 +174,6 @@ class GravMag(object):
 
         self.actioncalculate3.setEnabled(True)
 
-
     def calc_field_mag_changes(self):
         """ calculates only mag changes """
         self.lmod1 = self.parent.lmod1
@@ -256,7 +255,7 @@ class GravMag(object):
         ltmp = list(self.lmod1.lith_list.keys())
         ltmp.pop(ltmp.index('Background'))
 
-        text, okay = QtGui.QInputDialog.getItem(
+        text, okay = QtWidgets.QInputDialog.getItem(
             self.parent, 'Regional Test',
             'Please choose the lithology to use:',
             ltmp)
@@ -266,8 +265,6 @@ class GravMag(object):
 
         lmod1 = self.lmod1
         self.lmod2 = LithModel()
-# This line ensures that lmod2 is different to lmod1
-#        self.lmod2 = copy.copy(self.lmod2)
         self.lmod2.lith_list.clear()
 
         numlayers = lmod1.numz
@@ -349,7 +346,7 @@ class GravMag(object):
         grvtmp = self.lmod2.griddata['Calculated Gravity'].data
 
         regplt = plt.figure()
-        axes = plt.subplot(1, 2, 1)
+        axes = plt.subplot(121)
         etmp = dat_extent(self.lmod2.griddata['Calculated Magnetics'], axes)
         plt.title('Magnetic Data')
         ims = plt.imshow(magtmp, extent=etmp)
@@ -363,7 +360,7 @@ class GravMag(object):
         cbar = plt.colorbar(ims, orientation='horizontal')
         cbar.set_label('nT')
 
-        axes = plt.subplot(1, 2, 2)
+        axes = plt.subplot(122)
         etmp = dat_extent(self.lmod2.griddata['Calculated Gravity'], axes)
         plt.title('Gravity Data')
         ims = plt.imshow(grvtmp, extent=etmp)
@@ -444,6 +441,7 @@ class GeoData(object):
         self.zobsg = None
 
         self.mlayers = None
+        self.mtmp = None
         self.glayers = None
 
         self.x12 = None
@@ -452,7 +450,7 @@ class GeoData(object):
 
         self.set_xyz(ncols, nrows, numz, dxy, mht, ght, d_z)
 
-    def calc_origin(self):
+    def calc_origin_grav(self, hcor=None):
         """ Calculate the field values for the lithologies"""
 
         if self.modified is True:
@@ -463,21 +461,20 @@ class GeoData(object):
 # cell
             xdist = np.arange(self.g_dxy/2, numx+self.g_dxy/2, self.g_dxy,
                               dtype=float)
-            ydist = np.arange(numy-self.g_dxy/2, -self.g_dxy/2, -self.g_dxy,
-                              dtype=float)
+            ydist = np.arange(numy-self.g_dxy/2, -1*self.g_dxy/2,
+                              -1*self.g_dxy, dtype=float)
 
-#            self.showtext('   Calculate magnetic origin field')
-#            self.mboxmain(xdist, ydist, self.zobsm)
+            if hcor is None:
+                hcor2 = 0
+            else:
+                hcor2 = int(self.numz-hcor.max())
+
             self.showtext('   Calculate gravity origin field')
-            self.gboxmain(xdist, ydist, self.zobsg)
+            self.gboxmain(xdist, ydist, self.zobsg, hcor2)
 
             self.modified = False
-#        else:
-#            pass
-#            self.pbars.incrmain(2)
-        return self.glayers, self.lith_index
 
-    def calc_origin2(self):
+    def calc_origin_mag(self, hcor=None):
         """ Calculate the field values for the lithologies"""
 
         if self.modified is True:
@@ -488,41 +485,21 @@ class GeoData(object):
 # cell
             xdist = np.arange(self.g_dxy/2, numx+self.g_dxy/2, self.g_dxy,
                               dtype=float)
-            ydist = np.arange(numy-self.g_dxy/2, -self.g_dxy/2, -self.g_dxy,
-                              dtype=float)
+            ydist = np.arange(numy-self.g_dxy/2, -1*self.g_dxy/2,
+                              -1*self.g_dxy, dtype=float)
 
             self.showtext('   Calculate magnetic origin field')
-            self.gmmain(xdist, ydist)
+
+            if hcor is None:
+                hcor2 = 0
+            else:
+                hcor2 = int(self.numz-hcor.max())
+
+            self.mboxmain(xdist, ydist, self.zobsm, hcor2)
+#            self.mtmp = self.mlayers.copy()
+#            self.gmmain(xdist, ydist)
 
             self.modified = False
-#        else:
-#            pass
-#            self.pbars.incrmain(2)
-        return self.mlayers, self.lith_index
-
-    def netmagn(self):
-        """ Calculate the net magnetization """
-        theta = 0.
-        fcx, fcy, fcz = dircos(self.finc, self.fdec, theta)
-        unith = np.array([fcx, fcy, fcz])
-        hintn = self.hintn * 10**-9          # in Tesla
-        mu0 = 4*np.pi*10**-7
-        hstrength = self.susc*hintn/mu0  # Induced magnetization, needs susc.
-        ind_magn = hstrength*unith
-
-#       B is Induced Field (Tesla)
-#       M is Magnetization (A/m)
-#       H is Magnetic Field (A/m)
-#       k is Susceptibility and is M/H
-#   `   B = mu0(H+M)
-#       Q = Jr/Ji = mstrength/hstrength = Jr/kH
-
-        mcx, mcy, mcz = dircos(self.minc, self.mdec, theta)
-        unitm = np.array([mcx, mcy, mcz])
-        rem_magn = self.mstrength*unitm   # Remnant magnetization
-        net_magn = rem_magn+ind_magn      # Net magnetization
-        netmagscalar = np.sqrt((net_magn**2).sum())
-        return netmagscalar
 
     def rho(self):
         """ Returns the density contrast """
@@ -599,7 +576,6 @@ class GeoData(object):
         for f in range(nf):
             indx = face[f].tolist() + [face[f, 0]]
             for t in range(4):
-                # edgeno = sum(face(1:f-1,1))+t
                 edgeno = f*4+t
                 ends = indx[t:t+2]
                 p1 = corner[ends[0]]
@@ -626,95 +602,6 @@ class GeoData(object):
         npro, nstn = X.shape
         # Initialise
 
-        # Grav stuff
-#        Gc = 6.6732e-3            # Universal gravitational constant
-
-        # Mag stuff
-        """
-
-        SI
-        mu0 = 4*pi*10**-7  (Henry/m)
-        B = mu0(H+M)   (Telsa, A/m)
-
-        1 A/m = 4pi/1000 Oersted
-        1 Gauss = 100000 gamma/nT
-        1 Gauss = 1 Oersted
-        1 A/m = 400pi  nT/gamma
-
-        or (for conversion)
-
-        1 A/m = Oersted*1000/4pi
-        1 Gauss = gamma/nT*1/100000
-        1 Gauss = Oersted*1
-        1 A/m = nT/gamma*1/400pi
-        1 Gauss = emu/cm3*4pi
-        A/m  = emu/cm3 * 1000
-        A/m = Gauss*1000/4pi
-        Gauss = A/m*4pi/1000
-        nT = A/m*100*4pi
-        Mcgs = Msi / 1000
-
-        CGS
-        mu0 = 1
-        B = H + 4*pi*M  (gauss, Oersted, emu/cm3)
-        gauss == Oersted == 4*pi* emu/cm3
-        B = H + 4*pi*M  (gauss, Oersted, emu/cm3)
-        M = Mi + Mr
-        M = k*H + Mr  (from Blakely)
-        B = H + 4*pi*(k*H+Mr)
-        B = H + 4*pi*k*H+4*pi*Mr
-
-        if k is SI then this becomes:
-        k(cgs) = k(SI)/(4*pi)
-
-        B = H + k(SI)*H + 4*pi*Mr
-
-        if Mr is in A/m, and H is in gauss, then Mr(cgs) = Mr(SI)/1000
-
-        B = H + k*H + 4*pi*Mr(SI)/1000
-
-        if H is in gamma (nT), then mult Mr term by 100000
-
-        B = H + k(SI)*H + 400*pi*Mr(SI)
-
-        Equations in code divide susc by 4pi because susc is SI. This is
-        evident because of code comparison between two papers, one of which
-        uses SI susc, and other uses CGS susc.
-
-        However, the software uses M(CGS) only, i.e.
-
-        M = Mi(CGS) + Mr(CGS)
-          = H*k(CGS) + Mr(CGS)
-          = H*k(SI)/4pi + Mr(SI)/1000  (H in gauss)
-          = H*k(SI)/4pi + 100 * Mr(SI)  (H in nT/gamma)
-
-        QED
-        --->
-
-
-        nT = 400*pi A/m
-        mur = 1+k
-        k = mur-1
-        M = kH
-        J = mu0M
-        B = mu0(1+k)H
-        B = mu0murH
-        k(SI) = 4pi*k (cgs)
-
-        M = B(mur-1)/mu0 * 10**-9  (if B is nT or gammas)
-        M = kB/mu0 * 10**-9
-        M = kB / 400pi
-
-        B = mu0(H+M)
-          = mu0(H+kH+Mr)
-
-        B = mu0kH
-          = 400pi*k*H  (H is A/m)
-
-
-         1 Gauss is 100 000 nT
-
-        """
         cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
 
         uh = np.array([cx, cy, cz])
@@ -723,7 +610,7 @@ class GeoData(object):
 
         mcx, mcy, mcz = dircos(self.minc, self.mdec, 90.0)
         um = np.array([mcx, mcy, mcz])
-#        rem_magn = (400*np.pi*self.mstrength)*um/(4*np.pi)     # Remanent magnetization
+#        rem_magn = (400*np.pi*self.mstrength)*um/(4*np.pi)
         rem_magn = (100*self.mstrength)*um     # Remanent magnetization
 
         net_magn = rem_magn+ind_magn  # Net magnetization
@@ -744,7 +631,7 @@ class GeoData(object):
         for depth in piter(newdepth):
             if depth == 0.0:
                 cor = (corner + [0., 0., depth+self.d_z/10000.])
-            elif depth == -self.d_z:
+            elif depth == (-1*self.d_z):
                 cor = (corner + [0., 0., depth-self.d_z/10000.])
             else:
                 cor = (corner + [0., 0., depth])
@@ -766,7 +653,7 @@ class GeoData(object):
 
         self.mlayers = np.array(mval)
 
-    def gboxmain(self, xobs, yobs, zobs):
+    def gboxmain(self, xobs, yobs, zobs, hcor):
         """ Gbox routine by Blakely
             Note: xobs, yobs and zobs must be floats or there will be problems
             later.
@@ -791,7 +678,7 @@ class GeoData(object):
             piter = self.pbars.iter
         else:
             piter = iter
-#        piter = iter
+
         z1122 = self.z12.copy()
         x_1 = float(self.x12[0])
         y_1 = float(self.y12[0])
@@ -804,25 +691,110 @@ class GeoData(object):
         if zobs == 0:
             zobs = -0.01
 
-        if z_0 == 0.:
-            z1122 = np.arange(0., self.z12[-1]+self.d_z, self.d_z)
-        for i in piter(z1122[:-1]):
-            z12 = np.array([i, i+self.d_z])
+        for z1 in piter(z1122[:-1]):
+            if z1 < z1122[hcor]:
+                glayers.append(np.zeros((self.g_cols, self.g_rows)))
+                continue
 
-            z_1 = float(z12[0])
-            z_2 = float(z12[1])
+            z2 = z1 + self.d_z
+
             gval = np.zeros([self.g_cols, self.g_rows])
 
-            gval = gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1,
-                             x_2, y_2, z_2, np.ones(2), np.ones(2), np.ones(2),
-                             np.array([-1, 1]))
+            gval = gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z1,
+                        x_2, y_2, z2, np.ones(2), np.ones(2), np.ones(2),
+                        np.array([-1, 1]))
 
             gval *= 6.6732e-3
-            if z_0 != 0.:
-                glayers.append(gval)
-            else:
-                glayers = [-gval]+glayers+[gval]
+            glayers.append(gval)
+
         self.glayers = np.array(glayers)
+
+    def mboxmain(self, xobs, yobs, zobs, hcor):
+        """ Mbox routine by Blakely
+            Note: xobs, yobs and zobs must be floats or there will be problems
+            later.
+
+        Subroutine MBOX computes the total field anomaly of an infinitely
+        extended rectangular prism.  Sides of prism are parallel to x,y,z
+        axes, and z is vertical down.  Bottom of prism extends to infinity.
+        Two calls to mbox can provide the anomaly of a prism with finite
+        thickness; e.g.,
+
+            call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
+            call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
+            t=t1-t2
+
+        Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).
+
+        Input parameters:
+            Observation point is (x0,y0,z0).  Prism extends from x1 to
+            x2, y1 to y2, and z1 to infinity in x, y, and z directions,
+            respectively.  Magnetization defined by inclination mi,
+            declination md, intensity m.  Ambient field defined by
+            inclination fi and declination fd.  X axis has declination
+            theta. Distance units are irrelevant but must be consistent.
+            Angles are in degrees, with inclinations positive below
+            horizontal and declinations positive east of true north.
+            Magnetization in A/m.
+
+        Output paramters:
+            Total field anomaly t, in nT."""
+
+        mlayers = []
+        if self.pbars is not None:
+            piter = self.pbars.iter
+        else:
+            piter = iter
+
+        z1122 = self.z12.copy()
+        z1122 = z1122.astype(float)
+        x1 = float(self.x12[0])
+        y1 = float(self.y12[0])
+        x2 = float(self.x12[1])
+        y2 = float(self.y12[1])
+        z0 = float(zobs)
+        numx = int(self.g_cols)
+        numy = int(self.g_rows)
+
+        ma, mb, mc = dircos(self.minc, self.mdec, self.theta)
+        fa, fb, fc = dircos(self.finc, self.fdec, self.theta)
+
+        mr = self.mstrength * np.array([ma, mb, mc])
+        mi = self.susc*self.hintn*np.array([fa, fb, fc]) / (400*np.pi)
+        m3 = mr+mi
+
+        mt = np.sqrt(m3 @ m3)
+        if mt > 0:
+            m3 /= mt
+
+        ma, mb, mc = m3
+
+        fm1 = ma*fb + mb*fa
+        fm2 = ma*fc + mc*fa
+        fm3 = mb*fc + mc*fb
+        fm4 = ma*fa
+        fm5 = mb*fb
+        fm6 = mc*fc
+
+        if zobs == 0:
+            zobs = -0.01
+
+        z1122 = np.append(z1122, [2*z1122[-1]-z1122[-2]])
+
+        for z1 in piter(z1122):
+            if z1 < z1122[hcor]:
+                mlayers.append(np.zeros((self.g_cols, self.g_rows)))
+                continue
+
+            mval = np.zeros([self.g_cols, self.g_rows])
+
+            mval = mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2,
+                        fm1, fm2, fm3, fm4, fm5, fm6, np.ones(2), np.ones(2))
+
+            mlayers.append(mval)
+
+        self.mlayers = np.array(mlayers) * mt * 100.
+        self.mlayers = self.mlayers[:-1]-self.mlayers[1:]
 
 
 def save_layer(mlist):
@@ -843,54 +815,6 @@ def save_layer(mlist):
     return outfile
 
 
-# def gridmatch2(lmod, ctxt, rtxt):
-#    """ Matches the rows and columns of the second grid to the first
-#    grid """
-#    rgrv = lmod.griddata[rtxt]
-#    cgrv = lmod.griddata[ctxt]
-#    x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
-#                  rgrv.xdim)+0.5*rgrv.xdim
-#    y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
-#                  rgrv.ydim)+0.5*rgrv.ydim
-#    x_2, y_2 = np.meshgrid(x, y)
-#    z_2 = rgrv.data
-#    x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
-#    y_i = (np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - cgrv.rows*cgrv.ydim +
-#           0.5*cgrv.ydim)
-#
-#    xi2, yi2 = np.meshgrid(x_i, y_i)
-#
-#    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
-#                       (xi2.flatten(), yi2.flatten()), method='nearest')
-#    zfin = np.ma.masked_invalid(zfin)
-#    zfin.shape = cgrv.data.shape
-#
-#    output_file("image.html", title="pygmi test")
-#    ppp = figure(x_range=[cgrv.tlx, cgrv.tlx+cgrv.cols*cgrv.xdim],
-#               y_range=[cgrv.tly - cgrv.rows*cgrv.ydim, cgrv.tly])
-#
-#
-#    x1 = int((cgrv.tlx-rgrv.tlx)/rgrv.xdim)
-#    x2 = int((cgrv.tlx+cgrv.cols*cgrv.xdim-rgrv.tlx)/rgrv.xdim)
-#    y1 = int((rgrv.tly-cgrv.tly)/rgrv.ydim)
-#    y2 = int((rgrv.tly-cgrv.tly+cgrv.rows*cgrv.ydim)/rgrv.ydim)
-#
-#    hope = rgrv.data[y1:y2, x1:x2]
-#
-#    ppp.image(image=[hope[::-1]], x=[cgrv.tlx],
-#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
-#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-#    ppp.image(image=[cgrv.data[::-1]], x=[cgrv.tlx+cgrv.xdim*cgrv.cols],
-#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
-#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-#    ppp.image(image=[zfin[::-1]], x=[cgrv.tlx-cgrv.xdim*cgrv.cols],
-#              y=[cgrv.tly - cgrv.rows*cgrv.ydim], dw=[cgrv.xdim*cgrv.cols],
-#              dh=[cgrv.ydim*cgrv.rows], palette="Spectral11")
-#    show(ppp)
-#
-#    return zfin
-
-
 def gridmatch(lmod, ctxt, rtxt):
     """ Matches the rows and columns of the second grid to the first
     grid """
@@ -905,7 +829,7 @@ def gridmatch(lmod, ctxt, rtxt):
     doffset = 0.0
     if data.data.min() <= 0:
         doffset = data.data.min()-1.
-        data.data -= doffset
+        data.data = data.data - doffset
 
     gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
     gtr = (data2.tlx, data2.xdim, 0.0, data2.tly, 0.0, -data2.ydim)
@@ -917,226 +841,10 @@ def gridmatch(lmod, ctxt, rtxt):
     dat = gdal_to_dat(dest, data.dataid)
 
     if doffset != 0.0:
-        dat.data += doffset
-        data.data += doffset
+        dat.data = dat.data + doffset
+        data.data = data.data + doffset
 
     return dat.data
-
-# def gridmatch2(lmod, ctxt, rtxt):
-#    """ Matches the rows and columns of the second grid to the first
-#    grid """
-#    rgrv = lmod.griddata[rtxt]
-#    cgrv = lmod.griddata[ctxt]
-#    x = np.arange(rgrv.tlx, rgrv.tlx+rgrv.cols*rgrv.xdim,
-#                  rgrv.xdim)+0.5*rgrv.xdim
-#    y = np.arange(rgrv.tly-rgrv.rows*rgrv.ydim, rgrv.tly,
-#                  rgrv.xdim)+0.5*rgrv.ydim
-#    x_2, y_2 = np.meshgrid(x, y)
-#    z_2 = rgrv.data
-#    x_i = np.arange(cgrv.cols)*cgrv.xdim + cgrv.tlx + 0.5*cgrv.xdim
-#    y_i = np.arange(cgrv.rows)*cgrv.ydim + cgrv.tly - \
-#        cgrv.rows*cgrv.ydim + 0.5*cgrv.ydim
-#    xi2, yi2 = np.meshgrid(x_i, y_i)
-#
-#    zfin = si.griddata((x_2.flatten(), y_2.flatten()), z_2.flatten(),
-#                       (xi2.flatten(), yi2.flatten()))
-#    zfin = np.ma.masked_invalid(zfin)
-#    zfin.shape = cgrv.data.shape
-#
-#    return zfin
-
-
-def calc_field2(lmod, pbars=None, showtext=None, parent=None,
-                showreports=False, magcalc=False):
-    """ Calculate magnetic and gravity field
-
-    This function calculates the magnetic and gravity field. It has two
-    different modes of operation, by using the magcalc switch. If magcalc=True
-    then magnetic fields are calculated, otherwize only gravity is calculated.
-
-    Parameters
-    ----------
-    lmod : LithModel
-        PyGMI lithological model
-    pbars : module
-        progress bar routine if available. (internal use)
-    showtext : module
-        showtext routine if available. (internal use)
-    showreports : bool
-        show extra reports
-    magcalc : bool
-        if true, calculates magnetic data, otherwize only gravity.
-
-    Returns
-    -------
-    lmod.griddata : dictionary
-        dictionary of items of type Data.
-    """
-
-    if showtext is None:
-        showtext = print
-    if pbars is not None:
-        pbars.resetall(mmax=2*(len(lmod.lith_list)-1)+1)
-        piter = pbars.iter
-    else:
-        piter = iter
-    if np.max(lmod.lith_index) == -1:
-        showtext('Error: Create a model first')
-        return
-
-    # Init some variables for convenience
-    lmod.update_lithlist()
-
-    numx = int(lmod.numx)
-    numy = int(lmod.numy)
-    numz = int(lmod.numz)
-    tmpfiles = {}
-
-# model index
-    modind = lmod.lith_index.copy()
-    modindcheck = lmod.lith_index.copy()
-    modind[modind == 0] = -1
-    modindcheck[modind == 0] = -1
-
-    if abs(np.sum(modind == -1)) == modind.size:
-        showtext('No changes to model!')
-        return
-
-    for mlist in lmod.lith_list.items():
-        mijk = mlist[1].lith_index
-        if mijk not in modind:
-            continue
-        if mlist[0] != 'Background':  # and 'Penge' in mlist[0]:
-            mlist[1].modified = True
-            showtext(mlist[0]+':')
-            if parent is not None:
-                mlist[1].parent = parent
-                mlist[1].pbars = parent.pbars
-                mlist[1].showtext = parent.showtext
-            if magcalc:
-                mlist[1].calc_origin2()
-            else:
-                mlist[1].calc_origin()
-            tmpfiles[mlist[0]] = save_layer(mlist)
-
-    if showreports is True:
-        showtext('Summing data')
-
-    QtCore.QCoreApplication.processEvents()
-# get height corrections
-    tmp = np.copy(lmod.lith_index)
-    tmp[tmp > -1] = 0
-    hcor = np.abs(tmp.sum(2))
-
-# Get mlayers and glayers with correct rho and netmagn
-
-    if pbars is not None:
-        pbars.resetsub(maximum=(len(lmod.lith_list)-1))
-        piter = pbars.iter
-
-#    magval = np.zeros(numx*numy)
-#    grvval = np.zeros(numx*numy)
-    mgvalin = np.zeros(numx*numy)
-    mgval = np.zeros(numx*numy)
-
-    hcorflat = numz-hcor.flatten()
-    aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
-
-    for mlist in piter(lmod.lith_list.items()):
-        if mlist[0] == 'Background':
-            continue
-        mijk = mlist[1].lith_index
-        if mijk not in modind:
-            continue
-        tmpfiles[mlist[0]].seek(0)
-        mfile = np.load(tmpfiles[mlist[0]])
-
-        if magcalc:
-            mglayers = mfile['mlayers']
-        else:
-            mglayers = mfile['glayers']*mlist[1].rho()
-
-        showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
-                 ' during this calculation)')
-
-        if abs(np.sum(modind == -1)) < modind.size and mijk in modind:
-            QtGui.QApplication.processEvents()
-            i, j, k = np.nonzero(modind == mijk)
-            iuni = np.array(np.unique(i), dtype=np.int32)
-            juni = np.array(np.unique(j), dtype=np.int32)
-            kuni = np.array(np.unique(k), dtype=np.int32)
-
-            for k in kuni:
-                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0], aaa[1],
-                                  mglayers, hcorflat, mijk, juni, iuni)
-                mgvalin += baba
-
-        showtext('Done')
-
-        if pbars is not None:
-            pbars.incrmain()
-        QtGui.QApplication.processEvents()
-
-    mgvalin.resize([numx, numy])
-    mgvalin = mgvalin.T
-    mgvalin = mgvalin[::-1]
-    mgvalin = np.ma.array(mgvalin)
-
-    if magcalc:
-        lmod.griddata['Calculated Magnetics'].data = mgvalin
-    else:
-        lmod.griddata['Calculated Gravity'].data = mgvalin
-
-#    if magcalc:
-#        magval = mgvalin
-#    else:
-#        grvval = mgvalin
-
-#    magval.resize([numx, numy])
-#    grvval.resize([numx, numy])
-#    magval = magval.T
-#    grvval = grvval.T
-#    magval = magval[::-1]
-#    grvval = grvval[::-1]
-
-# Update variables
-#    lmod.griddata['Calculated Magnetics'].data = magval
-#    lmod.griddata['Calculated Gravity'].data = grvval
-
-# This addoldcalc has has flaws w.r.t. regional if you change the regional
-    if 'Gravity Regional' in lmod.griddata and not magcalc:
-        zfin = gridmatch(lmod, 'Calculated Gravity', 'Gravity Regional')
-        lmod.griddata['Calculated Gravity'].data += zfin
-#        zfin2 = gridmatch2(lmod, 'Calculated Gravity', 'Gravity Regional')
-#        lmod.griddata['Calculated Magnetics'].data = zfin2
-
-    if lmod.lith_index.max() <= 0:
-        lmod.griddata['Calculated Magnetics'].data *= 0.
-        lmod.griddata['Calculated Gravity'].data *= 0.
-
-    if 'Magnetic Dataset' in lmod.griddata:
-        ztmp = gridmatch(lmod, 'Magnetic Dataset', 'Calculated Magnetics')
-        lmod.griddata['Magnetic Residual'] = copy.deepcopy(
-            lmod.griddata['Magnetic Dataset'])
-        lmod.griddata['Magnetic Residual'].data = (
-            lmod.griddata['Magnetic Dataset'].data - ztmp)
-        lmod.griddata['Magnetic Residual'].dataid = 'Magnetic Residual'
-
-    if 'Gravity Dataset' in lmod.griddata:
-        ztmp = gridmatch(lmod, 'Gravity Dataset', 'Calculated Gravity')
-        lmod.griddata['Gravity Residual'] = copy.deepcopy(
-            lmod.griddata['Gravity Dataset'])
-        lmod.griddata['Gravity Residual'].data = (
-            lmod.griddata['Gravity Dataset'].data - ztmp - lmod.gregional)
-        lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
-
-    if parent is not None:
-        parent.outdata['Raster'] = list(lmod.griddata.values())
-    showtext('Calculation Finished')
-    if pbars is not None:
-        pbars.maxall()
-
-    return lmod.griddata
 
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None,
@@ -1190,44 +898,46 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 # model index
     modind = lmod.lith_index.copy()
     modindcheck = lmod.lith_index_old.copy()
-#    modind[modind == 0] = -1
-#    modindcheck[modindcheck == 0] = -1
 
     tmp = (modind == modindcheck)
-    modind[tmp] = -1
-    modindcheck[tmp] = -1
+# If modind and modindcheck have different shapes, then tmp == False. The next
+# line checks for that.
+    if not isinstance(tmp, bool):
+        modind[tmp] = -1
+        modindcheck[tmp] = -1
 
     if np.unique(modind).size == 1:
         showtext('No changes to model!')
         return
 
-    if np.unique(modindcheck).size == 1 and np.unique(modindcheck)[0] == -1:
-        for mlist in lmod.lith_list.items():
-            mijk = mlist[1].lith_index
-            if mijk not in modind and mijk not in modindcheck:
-                continue
-            if mlist[0] != 'Background':
-                mlist[1].modified = True
-                showtext(mlist[0]+':')
-                if parent is not None:
-                    mlist[1].parent = parent
-                    mlist[1].pbars = parent.pbars
-                    mlist[1].showtext = parent.showtext
-                if magcalc:
-                    mlist[1].calc_origin2()
-                else:
-                    mlist[1].calc_origin()
-                tmpfiles[mlist[0]] = save_layer(mlist)
+# get height corrections
+    tmp = np.copy(lmod.lith_index)
+    tmp[tmp > -1] = 0
+    hcor = np.abs(tmp.sum(2))
+
+#    if np.unique(modindcheck).size == 1 and np.unique(modindcheck)[0] == -1:
+    for mlist in lmod.lith_list.items():
+        mijk = mlist[1].lith_index
+        if mijk not in modind and mijk not in modindcheck:
+            continue
+        if mlist[0] != 'Background':
+            mlist[1].modified = True
+            showtext(mlist[0]+':')
+            if parent is not None:
+                mlist[1].parent = parent
+                mlist[1].pbars = parent.pbars
+                mlist[1].showtext = parent.showtext
+            if magcalc:
+                mlist[1].calc_origin_mag(hcor)
+            else:
+                mlist[1].calc_origin_grav()
+            tmpfiles[mlist[0]] = save_layer(mlist)
         lmod.tmpfiles = tmpfiles
 
     if showreports is True:
         showtext('Summing data')
 
     QtCore.QCoreApplication.processEvents()
-# get height corrections
-    tmp = np.copy(lmod.lith_index)
-    tmp[tmp > -1] = 0
-    hcor = np.abs(tmp.sum(2))
 
 # Get mlayers and glayers with correct rho and netmagn
 
@@ -1235,15 +945,11 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         pbars.resetsub(maximum=(len(lmod.lith_list)-1))
         piter = pbars.iter
 
-#    magval = np.zeros(numx*numy)
-#    grvval = np.zeros(numx*numy)
     mgvalin = np.zeros(numx*numy)
     mgval = np.zeros(numx*numy)
 
     hcorflat = numz-hcor.flatten()
     aaa = np.reshape(np.mgrid[0:numx, 0:numy], [2, numx*numy])
-
-#    results = []
 
     for mlist in piter(lmod.lith_list.items()):
         if mlist[0] == 'Background':
@@ -1251,7 +957,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         mijk = mlist[1].lith_index
         if mijk not in modind and mijk not in modindcheck:
             continue
-        lmod.tmpfiles[mlist[0]].seek(0)
+        try:
+            lmod.tmpfiles[mlist[0]].seek(0)
+        except:
+            pdb.set_trace()
 
         mfile = np.load(lmod.tmpfiles[mlist[0]])
 
@@ -1264,35 +973,44 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                  ' during this calculation)')
 
         if np.unique(modind).size > 1 and mijk in modind:
-            QtGui.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modind == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
             juni = np.array(np.unique(j), dtype=np.int32)
             kuni = np.array(np.unique(k), dtype=np.int32)
 
-            if i.size < 50000:
-                for k in kuni:
-                    baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
-                                      aaa[1], mglayers, hcorflat, mijk, juni,
-                                      iuni)
-                    mgvalin += baba
-            else:
-                pool = Pool()
-                baba = []
+# This is temporary to try and fix a bug.
 
-                for k in kuni:
-                    baba.append(pool.apply_async(sum_fields,
-                                                 args=(k, mgval, numx, numy,
-                                                       modind, aaa[0], aaa[1],
-                                                       mglayers, hcorflat,
-                                                       mijk, juni, iuni,)))
-                for p in baba:
-                    mgvalin += p.get()
-                pool.close()
-                del baba
+            for k in kuni:
+                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
+                                  aaa[1], mglayers, hcorflat, mijk, juni,
+                                  iuni)
+                mgvalin += baba
+
+#
+#            if i.size < 50000:
+#                for k in kuni:
+#                    baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
+#                                      aaa[1], mglayers, hcorflat, mijk, juni,
+#                                      iuni)
+#                    mgvalin += baba
+#            else:
+#                pool = Pool()
+#                baba = []
+#
+#                for k in kuni:
+#                    baba.append(pool.apply_async(sum_fields,
+#                                                 args=(k, mgval, numx, numy,
+#                                                       modind, aaa[0], aaa[1],
+#                                                       mglayers, hcorflat,
+#                                                       mijk, juni, iuni,)))
+#                for p in baba:
+#                    mgvalin += p.get()
+#                pool.close()
+#                del baba
 
         if np.unique(modindcheck).size > 1 and mijk in modindcheck:
-            QtGui.QApplication.processEvents()
+            QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modindcheck == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
             juni = np.array(np.unique(j), dtype=np.int32)
@@ -1325,7 +1043,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
         if pbars is not None:
             pbars.incrmain()
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
 
     mgvalin.resize([numx, numy])
     mgvalin = mgvalin.T
@@ -1369,7 +1087,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
 
     if parent is not None:
-        parent.outdata['Raster'] = list(lmod.griddata.values())
+        tmp = [i for i in set(lmod.griddata.values())]
+        parent.outdata['Raster'] = tmp
     showtext('Calculation Finished')
     if pbars is not None:
         pbars.maxall()
@@ -1408,10 +1127,10 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
     return mgval
 
 
-def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
-                tlx=0, tly=0, tlz=0, mht=100, ght=0, finc=-67, fdec=-17,
+def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
+                tlx=0., tly=0., tlz=0., mht=100., ght=0., finc=-67, fdec=-17,
                 inputliths=None, susc=None, dens=None, minc=None, mdec=None,
-                mstrength=None, hintn=30000):
+                mstrength=None, hintn=30000.):
     """ Create a quick model """
     if inputliths is None:
         inputliths = ['Generic']
@@ -1462,8 +1181,77 @@ def quick_model(numx=50, numy=50, numz=50, dxy=1000, d_z=100,
 
 
 @jit(nopython=True)
-def gboxmain2(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
-              x, y, z, isign):
+def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
+         fm4, fm5, fm6, alpha, beta):
+    """
+
+    Subroutine MBOX computes the total field anomaly of an infinitely
+    extended rectangular prism.  Sides of prism are parallel to x,y,z
+    axes, and z is vertical down.  Bottom of prism extends to infinity.
+    Two calls to mbox can provide the anomaly of a prism with finite
+    thickness; e.g.,
+
+        call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
+        call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
+        t=t1-t2
+
+    Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).
+
+    Input parameters:
+        Observation point is (x0,y0,z0).  Prism extends from x1 to
+        x2, y1 to y2, and z1 to infinity in x, y, and z directions,
+        respectively.  Magnetization defined by inclination mi,
+        declination md, intensity m.  Ambient field defined by
+        inclination fi and declination fd.  X axis has declination
+        theta. Distance units are irrelevant but must be consistent.
+        Angles are in degrees, with inclinations positive below
+        horizontal and declinations positive east of true north.
+        Magnetization in A/m.
+
+    Output paramters:
+        Total field anomaly t, in nT.
+    """
+
+    h = z1-z0
+    hsq = h**2
+
+    for ii in range(numx):
+        alpha[0] = x1-xobs[ii]
+        alpha[1] = x2-xobs[ii]
+        for jj in range(numy):
+            beta[0] = y1-yobs[jj]
+            beta[1] = y2-yobs[jj]
+            t = 0.
+
+            for i in range(2):
+                alphasq = alpha[i]**2
+                for j in range(2):
+                    sign = 1.
+                    if i != j:
+                        sign = -1.
+                    r0sq = alphasq+beta[j]**2+hsq
+                    r0 = np.sqrt(r0sq)
+                    r0h = r0*h
+                    alphabeta = alpha[i]*beta[j]
+                    arg1 = (r0-alpha[i])/(r0+alpha[i])
+                    arg2 = (r0-beta[j])/(r0+beta[j])
+                    arg3 = alphasq+r0h+hsq
+                    arg4 = r0sq+r0h-alphasq
+                    tlog = (fm3*np.log(arg1)/2.+fm2*np.log(arg2)/2. -
+                            fm1*np.log(r0+h))
+                    tatan = (-fm4*np.arctan2(alphabeta, arg3) -
+                             fm5*np.arctan2(alphabeta, arg4) +
+                             fm6*np.arctan2(alphabeta, r0h))
+
+                    t = t+sign*(tlog+tatan)
+            mval[ii, jj] = t
+
+    return mval
+
+
+@jit(nopython=True)
+def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
+         x, y, z, isign):
     """ Gbox routine by Blakely
         Note: xobs, yobs and zobs must be floats or there will be problems
         later.
@@ -1630,6 +1418,7 @@ def dircos(incl, decl, azim):
     aaa = np.cos(xincl)*np.cos(xdecl-xazim)
     bbb = np.cos(xincl)*np.sin(xdecl-xazim)
     ccc = np.sin(xincl)
+
     return aaa, bbb, ccc
 
 
@@ -1658,36 +1447,29 @@ def test():
     """ This routine is for testing purposes """
     from pygmi.pfmod.iodefs import ImportMod3D
 
-    ttt = PTime()
 # Import model file
-    filename = r'C:\Work\Programming\pygmi\data\Magmodel_South_Delph_copy.npz'
-    imod = ImportMod3D(None)
-    imod.ifile = filename
-    imod.lmod.griddata.clear()
-    imod.lmod.lith_list.clear()
-    indict = np.load(filename)
-    imod.dict2lmod(indict)
+#    filename = r'C:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
+#    imod = ImportMod3D(None)
+#    imod.ifile = filename
+#    imod.lmod.griddata.clear()
+#    imod.lmod.lith_list.clear()
+#    indict = np.load(filename)
+#    imod.dict2lmod(indict)
+#    calc_field(imod.lmod, magcalc=True)
 
-#    imod.outdata['Model3D'] = [imod.lmod]
-#    imod.lmod.name = filename.rpartition('/')[-1]
-#
-#    for i in imod.lmod.griddata:
-#        if imod.lmod.griddata[i].dataid == '':
-#            imod.lmod.griddata[i].dataid = i
-#
-#    imod.outdata['Raster'] = list(imod.lmod.griddata.values())
+
+# quick model
+    lmod = quick_model(numz=5)
+    lmod.lith_index[10, 10, 0] = 1
+    lmod.mht = 100
+    calc_field(lmod, magcalc=True)
 
 # Calculate the field
-#    calc_field(imod.lmod)
-    calc_field(imod.lmod)
 
-    ttt.since_last_call()
-    # since last call time(s): 280.0313334835183 since last call
-    # since last call time(s): 200.0313334835183 since last call
-    # since last call time(s): 385.0313334835183 since last call
+    magval = lmod.griddata['Calculated Magnetics'].data
 
-# since last call time(s): 1632.1685698633316 since last call
-# since last call time(s): 1324.5173409631864 since last call
+    plt.imshow(magval, cmap=cm.jet)
+    plt.show()
 
 if __name__ == "__main__":
     test()

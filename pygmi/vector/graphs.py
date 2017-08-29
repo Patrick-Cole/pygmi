@@ -25,34 +25,34 @@
 """ Plot Vector Data using Matplotlib """
 
 import numpy as np
-from PyQt4 import QtGui, QtCore
-import matplotlib.pyplot as plt
+from PyQt5 import QtWidgets, QtCore
 import matplotlib.collections as mc
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg
+from matplotlib import cm
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 
-class GraphWindow(QtGui.QDialog):
+class GraphWindow(QtWidgets.QDialog):
     """Graph Window - Main QT Dialog class for graphs."""
     def __init__(self, parent=None):
-        QtGui.QDialog.__init__(self, parent=None)
+        QtWidgets.QDialog.__init__(self, parent=None)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("Graph Window")
 
-        vbl = QtGui.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtGui.QHBoxLayout()
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtGui.QComboBox()
-        self.combobox2 = QtGui.QComboBox()
-        self.spinbox = QtGui.QSpinBox()
-        self.label1 = QtGui.QLabel()
-        self.label2 = QtGui.QLabel()
-        self.label3 = QtGui.QLabel()
+        self.combobox1 = QtWidgets.QComboBox()
+        self.combobox2 = QtWidgets.QComboBox()
+        self.spinbox = QtWidgets.QSpinBox()
+        self.label1 = QtWidgets.QLabel()
+        self.label2 = QtWidgets.QLabel()
+        self.label3 = QtWidgets.QLabel()
 
         self.label1.setText('Bands:')
         self.label2.setText('Bands:')
@@ -125,7 +125,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.restore_region(self.background)
         self.axes.draw_artist(self.line)
-#        self.figure.canvas.blit(self.axes.bbox)
         self.figure.canvas.update()
 
     def onpick(self, event):
@@ -174,7 +173,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
         for i in data:
-            tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
+            try:
+                tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
+            except:
+                pass
             ax2.plot(tmp, label=i.dataid)
         ax2.set_ylim([-.1, 1.1])
         ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
@@ -226,7 +228,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(121, polar=True)
-#        ax1.set_title('Rose')
         ax1.set_theta_direction(-1)
         ax1.set_theta_zero_location('N')
         ax1.yaxis.set_ticklabels([])
@@ -234,8 +235,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = ax1
 
         ax2 = self.figure.add_subplot(1, 2, 2)
-        # ax2.set_title('Lineaments')
-        # ax2.axis('equal')
         ax2.set_aspect('equal')
 
         fangle = []
@@ -260,7 +259,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fcnt = np.array(fcnt)
         flen = np.array(flen)
         bwidth = np.pi/nbins
-        bcols = plt.cm.Set1(np.arange(nbins+1)/nbins)
+        bcols = cm.Set1(np.arange(nbins+1)/nbins)
         np.random.shuffle(bcols)
 
         if rtype == 0:
@@ -310,7 +309,6 @@ class PlotPoints(GraphWindow):
         """ Combo box to choose band """
         data = self.indata['Point']
         i = self.combobox1.currentIndex()
-#        j = self.combobox2.currentIndex()
         self.mmc.update_line(data, i)
 
     def run(self):
@@ -376,14 +374,6 @@ class PlotVector(GraphWindow):
         self.show()
         data = self.indata['Vector']
         self.mmc.update_vector(data)
-#        for i in data:
-#            self.combobox1.addItem(i.dataid)
-#            self.combobox2.addItem(i.dataid)
-
-#        self.label1.setText('Top Profile:')
-#        self.label2.setText('Bottom Profile:')
-#        self.combobox1.setCurrentIndex(0)
-#        self.combobox2.setCurrentIndex(1)
 
 
 def histogram(x, y=None, xmin=None, xmax=None, bins=10):

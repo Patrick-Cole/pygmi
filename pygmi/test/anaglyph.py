@@ -1,7 +1,29 @@
-# -*- coding: utf-8 -*-
+# -----------------------------------------------------------------------------
+# Name:        anaglyph.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2017 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
 """
-Anaglyph
-
+Anaglyph routine
 """
 
 import pdb
@@ -268,7 +290,7 @@ def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
     theta: sun elevation
     cell: between 1 and 100 - controls sunshade detail.
     """
-    mask = data.mask
+    mask = np.ma.getmaskarray(data)
 
     sunshader = currentshader(data, cell, elev, azim, alpha)
     snorm = norm2(sunshader)
@@ -373,22 +395,22 @@ def histcomp(img, nbr_bins=256, perc=5.):
     return img2
 
 
-def anaglyph(red, blue, type='dubois'):
+def anaglyph(red, blue, atype='dubois'):
     """ color Aanaglyph """
 
-    if type == 'dubois':
+    if atype == 'dubois':
         mat = np.array([[0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
                         [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
                         [-0.048, -0.050, -0.017, -0.026, -0.093, 1.234]])
-    elif type == 'color':
+    elif atype == 'color':
         mat = np.array([[1.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
-    elif type == 'true':
+    elif atype == 'true':
         mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
-    elif type == 'gray':
+    elif atype == 'gray':
         mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
@@ -647,23 +669,23 @@ def main_rotate():
 #    plt.plot(zr[50], 'r')
 #    plt.plot(zb[50], 'b')
 #    plt.show()
-#
-#    plt.subplot(211)
-#    plt.imshow(red, origin='lower')
-#    plt.subplot(212)
-#    plt.imshow(blue, origin='lower')
-#    plt.show()
+
+    plt.subplot(211)
+    plt.imshow(red, origin='lower')
+    plt.subplot(212)
+    plt.imshow(blue, origin='lower')
+    plt.show()
 
     adata = anaglyph(red, blue, 'dubois')
 
-    plt.imshow(adata, origin='lower')
+    plt.imshow(adata, origin='lower', interpolation='spline36')
 #    plt.contour(zr, colors='r', origin='lower')
 #    plt.contour(zb, colors='c', origin='lower')
     plt.show()
 
-    x, y = np.indices(zr.shape)
-    ax = plt.gca()
-    ax.set_axis_bgcolor('black')
+#    x, y = np.indices(zr.shape)
+#    ax = plt.gca()
+#    ax.set_axis_bgcolor('black')
 #    plt.contour(zr, colors='r', origin='lower')
 #    plt.contour(zb, colors='c', origin='lower')
 #    plt.show()
