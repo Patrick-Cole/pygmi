@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pygmi.vector package &#8212; PyGMI 2.2.15 documentation</title>
-    
+    <title>pygmi.vector package &#8212; PyGMI 2.4.1 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.15',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -26,12 +24,10 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="PyGMI 2.2.15 documentation" href="index.html" />
-    <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="quickstart module" href="quickstart.html" />
     <link rel="prev" title="pygmi.test package" href="pygmi.test.html" /> 
   </head>
-  <body role="document">
+  <body>
 
 <div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
 <a href="index.html">
@@ -92,7 +88,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/pygmi.vector.txt"
+      <li><a href="_sources/pygmi.vector.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -130,25 +126,25 @@
 <dl class="attribute">
 <dt id="pygmi.vector.datatypes.PData.xdata">
 <code class="descname">xdata</code><a class="headerlink" href="#pygmi.vector.datatypes.PData.xdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy array</em> &#8211; array of x coordinates</p>
+<dd><p><em>numpy array</em> – array of x coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.datatypes.PData.ydata">
 <code class="descname">ydata</code><a class="headerlink" href="#pygmi.vector.datatypes.PData.ydata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy array</em> &#8211; array of y coordinates</p>
+<dd><p><em>numpy array</em> – array of y coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.datatypes.PData.zdata">
 <code class="descname">zdata</code><a class="headerlink" href="#pygmi.vector.datatypes.PData.zdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy array</em> &#8211; array of z coordinates</p>
+<dd><p><em>numpy array</em> – array of z coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.datatypes.PData.dataid">
 <code class="descname">dataid</code><a class="headerlink" href="#pygmi.vector.datatypes.PData.dataid" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; data description</p>
+<dd><p><em>str</em> – data description</p>
 </dd></dl>
 
 </dd></dl>
@@ -161,25 +157,25 @@
 <dl class="attribute">
 <dt id="pygmi.vector.datatypes.VData.crds">
 <code class="descname">crds</code><a class="headerlink" href="#pygmi.vector.datatypes.VData.crds" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> &#8211; List of coordinates</p>
+<dd><p><em>list</em> – List of coordinates</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.datatypes.VData.attrib">
 <code class="descname">attrib</code><a class="headerlink" href="#pygmi.vector.datatypes.VData.attrib" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> &#8211; list of dictionaries, where each dictionary is the column in a table</p>
+<dd><p><em>list</em> – list of dictionaries, where each dictionary is the column in a table</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.datatypes.VData.dataid">
 <code class="descname">dataid</code><a class="headerlink" href="#pygmi.vector.datatypes.VData.dataid" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; data description</p>
+<dd><p><em>str</em> – data description</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.datatypes.VData.dtype">
 <code class="descname">dtype</code><a class="headerlink" href="#pygmi.vector.datatypes.VData.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; type of data - Line, Point, Poly</p>
+<dd><p><em>str</em> – type of data - Line, Point, Poly</p>
 </dd></dl>
 
 </dd></dl>
@@ -191,7 +187,7 @@
 <dl class="class">
 <dt id="pygmi.vector.graphs.GraphWindow">
 <em class="property">class </em><code class="descclassname">pygmi.vector.graphs.</code><code class="descname">GraphWindow</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt4.QtGui.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Graph Window - Main QT Dialog class for graphs.</p>
 <dl class="method">
 <dt id="pygmi.vector.graphs.GraphWindow.change_band">
@@ -204,7 +200,7 @@
 <dl class="class">
 <dt id="pygmi.vector.graphs.MyMplCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.vector.graphs.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt4agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>MPL Canvas class.</p>
 <p>This routine will also allow the pciking and movement of nodes of data.</p>
 <dl class="method">
@@ -234,8 +230,8 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data1</strong> (<em>PData object</em>) &#8211; Point data</li>
-<li><strong>data2</strong> (<em>PData object</em>) &#8211; Point Data</li>
+<li><strong>data1</strong> (<em>PData object</em>) – Point data</li>
+<li><strong>data2</strong> (<em>PData object</em>) – Point Data</li>
 </ul>
 </td>
 </tr>
@@ -252,9 +248,9 @@
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> (<a class="reference internal" href="#pygmi.vector.datatypes.VData" title="pygmi.vector.datatypes.VData"><em>VData</em></a>) &#8211; Vector data. It should be &#8216;Line&#8217;</li>
-<li><strong>rtype</strong> (<em>int</em>) &#8211; Rose diagram type. Can be either 0 or 1.</li>
-<li><strong>nbins</strong> (<em>int, optional</em>) &#8211; Number of bins used in rose diagram.</li>
+<li><strong>data</strong> (<a class="reference internal" href="#pygmi.vector.datatypes.VData" title="pygmi.vector.datatypes.VData"><em>VData</em></a>) – Vector data. It should be ‘Line’</li>
+<li><strong>rtype</strong> (<em>int</em>) – Rose diagram type. Can be either 0 or 1.</li>
+<li><strong>nbins</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bins used in rose diagram.</li>
 </ul>
 </td>
 </tr>
@@ -270,7 +266,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference internal" href="#pygmi.vector.datatypes.VData" title="pygmi.vector.datatypes.VData"><em>VData</em></a>) &#8211; Vector data. It can either be &#8216;Line&#8217; or &#8216;Poly&#8217; and typically is
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference internal" href="#pygmi.vector.datatypes.VData" title="pygmi.vector.datatypes.VData"><em>VData</em></a>) – Vector data. It can either be ‘Line’ or ‘Poly’ and typically is
 imported from a shapefile.</td>
 </tr>
 </tbody>
@@ -342,17 +338,17 @@ element basis.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> (<em>numpy array</em>) &#8211; Input data</li>
-<li><strong>y</strong> (<em>numpy array</em>) &#8211; Input data weights. A value of 1 is default behaviour</li>
-<li><strong>xmin</strong> (<em>float</em>) &#8211; Lower value for the bins</li>
-<li><strong>xmax</strong> (<em>float</em>) &#8211; Upper value for the bins</li>
-<li><strong>bins</strong> (<em>int</em>) &#8211; number of bins</li>
+<li><strong>x</strong> (<em>numpy array</em>) – Input data</li>
+<li><strong>y</strong> (<em>numpy array</em>) – Input data weights. A value of 1 is default behaviour</li>
+<li><strong>xmin</strong> (<em>float</em>) – Lower value for the bins</li>
+<li><strong>xmax</strong> (<em>float</em>) – Upper value for the bins</li>
+<li><strong>bins</strong> (<em>int</em>) – number of bins</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><ul class="simple">
-<li><strong>hist</strong> (<em>numpy array</em>) &#8211; The values of the histogram</li>
-<li><strong>bin_edges</strong> (<em>numpy array</em>) &#8211; bin edges of the histogram</li>
+<li><strong>hist</strong> (<em>numpy array</em>) – The values of the histogram</li>
+<li><strong>bin_edges</strong> (<em>numpy array</em>) – bin edges of the histogram</li>
 </ul>
 </p>
 </td>
@@ -373,31 +369,31 @@ element basis.</p>
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ExportPoint.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.vector.iodefs.ExportPoint.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; item name</p>
+<dd><p><em>str</em> – item name</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ExportPoint.pbar">
 <code class="descname">pbar</code><a class="headerlink" href="#pygmi.vector.iodefs.ExportPoint.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>progressbar</em> &#8211; reference to a progress bar.</p>
+<dd><p><em>progressbar</em> – reference to a progress bar.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ExportPoint.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.vector.iodefs.ExportPoint.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
+<dd><p><em>parent</em> – reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ExportPoint.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.vector.iodefs.ExportPoint.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> &#8211; dictionary of input datasets</p>
+<dd><p><em>dictionary</em> – dictionary of input datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ExportPoint.showtext">
 <code class="descname">showtext</code><a class="headerlink" href="#pygmi.vector.iodefs.ExportPoint.showtext" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>text output</em> &#8211; reference to the show process log text output on the main interface</p>
+<dd><p><em>text output</em> – reference to the show process log text output on the main interface</p>
 </dd></dl>
 
 <dl class="method">
@@ -417,31 +413,31 @@ element basis.</p>
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportLEMI417Data.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportLEMI417Data.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; item name</p>
+<dd><p><em>str</em> – item name</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportLEMI417Data.pbar">
 <code class="descname">pbar</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportLEMI417Data.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>progressbar</em> &#8211; reference to a progress bar.</p>
+<dd><p><em>progressbar</em> – reference to a progress bar.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportLEMI417Data.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportLEMI417Data.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
+<dd><p><em>parent</em> – reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportLEMI417Data.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportLEMI417Data.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
+<dd><p><em>dictionary</em> – dictionary of output datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportLEMI417Data.ifile">
 <code class="descname">ifile</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportLEMI417Data.ifile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; input file name. Used in main.py</p>
+<dd><p><em>str</em> – input file name. Used in main.py</p>
 </dd></dl>
 
 <dl class="method">
@@ -455,43 +451,49 @@ element basis.</p>
 <dl class="class">
 <dt id="pygmi.vector.iodefs.ImportPointData">
 <em class="property">class </em><code class="descclassname">pygmi.vector.iodefs.</code><code class="descname">ImportPointData</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Import Point Data</p>
 <p>This class imports ASCII point data.</p>
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportPointData.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; item name</p>
+<dd><p><em>str</em> – item name</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportPointData.pbar">
 <code class="descname">pbar</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>progressbar</em> &#8211; reference to a progress bar.</p>
+<dd><p><em>progressbar</em> – reference to a progress bar.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportPointData.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
+<dd><p><em>parent</em> – reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportPointData.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
+<dd><p><em>dictionary</em> – dictionary of output datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportPointData.ifile">
 <code class="descname">ifile</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.ifile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; input file name. Used in main.py</p>
+<dd><p><em>str</em> – input file name. Used in main.py</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.iodefs.ImportPointData.settings">
 <code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item. Data imported from here.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.vector.iodefs.ImportPointData.setupui">
+<code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
 </dd></dl>
 
 </dd></dl>
@@ -504,31 +506,31 @@ element basis.</p>
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportShapeData.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; item name</p>
+<dd><p><em>str</em> – item name</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportShapeData.pbar">
 <code class="descname">pbar</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>progressbar</em> &#8211; reference to a progress bar.</p>
+<dd><p><em>progressbar</em> – reference to a progress bar.</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportShapeData.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> &#8211; reference to the parent routine</p>
+<dd><p><em>parent</em> – reference to the parent routine</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportShapeData.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> &#8211; dictionary of output datasets</p>
+<dd><p><em>dictionary</em> – dictionary of output datasets</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.vector.iodefs.ImportShapeData.ifile">
 <code class="descname">ifile</code><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.ifile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> &#8211; input file name. Used in main.py</p>
+<dd><p><em>str</em> – input file name. Used in main.py</p>
 </dd></dl>
 
 <dl class="method">
@@ -537,6 +539,88 @@ element basis.</p>
 <dd><p>Entry point into item. Data imported from here.</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.vector.iodefs.PointCut">
+<em class="property">class </em><code class="descclassname">pygmi.vector.iodefs.</code><code class="descname">PointCut</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.PointCut" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Cut Data using shapefiles</p>
+<p>This class cuts point datasets using a boundary defined by a polygon
+shapefile.</p>
+<dl class="attribute">
+<dt id="pygmi.vector.iodefs.PointCut.ifile">
+<code class="descname">ifile</code><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.ifile" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – input file name.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.vector.iodefs.PointCut.name">
+<code class="descname">name</code><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.name" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – item name</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.vector.iodefs.PointCut.ext">
+<code class="descname">ext</code><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.ext" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>str</em> – file name extension.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.vector.iodefs.PointCut.pbar">
+<code class="descname">pbar</code><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.pbar" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>progressbar</em> – reference to a progress bar.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.vector.iodefs.PointCut.parent">
+<code class="descname">parent</code><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>parent</em> – reference to the parent routine</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.vector.iodefs.PointCut.indata">
+<code class="descname">indata</code><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.vector.iodefs.PointCut.outdata">
+<code class="descname">outdata</code><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.vector.iodefs.PointCut.settings">
+<code class="descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show Info</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.vector.iodefs.cut_point">
+<code class="descclassname">pygmi.vector.iodefs.</code><code class="descname">cut_point</code><span class="sig-paren">(</span><em>data</em>, <em>ifile</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.cut_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cuts a point dataset</p>
+<p>Cut a point dataset using a shapefile</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference internal" href="pygmi.raster.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>Data</em></a>) – PyGMI Dataset</li>
+<li><strong>ifile</strong> (<em>str</em>) – shapefile used to cut data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">PyGMI Dataset</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference internal" href="pygmi.raster.html#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">Data</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -553,7 +637,13 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.vector.menu.MenuWidget.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MainWidget</em> &#8211; Reference to MainWidget class found in main.py</p>
+<dd><p><em>MainWidget</em> – Reference to MainWidget class found in main.py</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.vector.menu.MenuWidget.cut_data">
+<code class="descname">cut_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.menu.MenuWidget.cut_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export point data</p>
 </dd></dl>
 
 <dl class="method">
@@ -638,7 +728,7 @@ interface. Normal as well as context menus are defined here.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

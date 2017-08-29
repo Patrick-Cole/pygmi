@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>pygmi.test package &#8212; PyGMI 2.2.15 documentation</title>
-    
+    <title>pygmi.test package &#8212; PyGMI 2.4.1 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.15',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -26,12 +24,10 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="PyGMI 2.2.15 documentation" href="index.html" />
-    <link rel="up" title="pygmi package" href="pygmi.html" />
     <link rel="next" title="pygmi.vector package" href="pygmi.vector.html" />
     <link rel="prev" title="pygmi.raster package" href="pygmi.raster.html" /> 
   </head>
-  <body role="document">
+  <body>
 
 <div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
 <a href="index.html">
@@ -89,7 +85,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/pygmi.test.txt"
+      <li><a href="_sources/pygmi.test.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -121,6 +117,11 @@
 <p>These are pfmod tests. Run this file from within this directory to do the
 tests</p>
 <dl class="function">
+<dt id="pygmi.test.pfmod.dircos">
+<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">dircos</code><span class="sig-paren">(</span><em>inc</em>, <em>dec</em>, <em>azim</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.dircos" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
 <dt id="pygmi.test.pfmod.get_float">
 <code class="descclassname">pygmi.test.pfmod.</code><code class="descname">get_float</code><span class="sig-paren">(</span><em>tmp</em>, <em>row</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.get_float" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets a float from a list of strings.</p>
@@ -129,13 +130,13 @@ tests</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tmp</strong> (<em>list</em>) &#8211; list of strings</li>
-<li><strong>row</strong> (<em>int</em>) &#8211; row in list to extract. First row is 0</li>
-<li><strong>word</strong> (<em>int</em>) &#8211; word to extract from row. First word is 0</li>
+<li><strong>tmp</strong> (<em>list</em>) – list of strings</li>
+<li><strong>row</strong> (<em>int</em>) – row in list to extract. First row is 0</li>
+<li><strong>word</strong> (<em>int</em>) – word to extract from row. First word is 0</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> &#8211; return a float from the row.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> – return a float from the row.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
@@ -154,13 +155,13 @@ tests</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tmp</strong> (<em>list</em>) &#8211; list of strings</li>
-<li><strong>row</strong> (<em>int</em>) &#8211; row in list to extract. First row is 0</li>
-<li><strong>word</strong> (<em>int</em>) &#8211; word to extract from row. First word is 0</li>
+<li><strong>tmp</strong> (<em>list</em>) – list of strings</li>
+<li><strong>row</strong> (<em>int</em>) – row in list to extract. First row is 0</li>
+<li><strong>word</strong> (<em>int</em>) – word to extract from row. First word is 0</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> &#8211; return an integer from the row.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> – return an integer from the row.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
@@ -168,6 +169,35 @@ tests</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.test.pfmod.mbox">
+<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">mbox</code><span class="sig-paren">(</span><em>x0</em>, <em>y0</em>, <em>z0</em>, <em>x1</em>, <em>y1</em>, <em>z1</em>, <em>x2</em>, <em>y2</em>, <em>mi</em>, <em>md</em>, <em>fi</em>, <em>fd</em>, <em>m</em>, <em>theta</em>, <em>h</em>, <em>k</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.mbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subroutine MBOX computes the total field anomaly of an infinitely
+extended rectangular prism.  Sides of prism are parallel to x,y,z
+axes, and z is vertical down.  Bottom of prism extends to infinity.
+Two calls to mbox can provide the anomaly of a prism with finite
+thickness; e.g.,</p>
+<blockquote>
+<div>call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
+call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
+t=t1-t2</div></blockquote>
+<p>Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).</p>
+<dl class="docutils">
+<dt>Input parameters:</dt>
+<dd>Observation point is (x0,y0,z0).  Prism extends from x1 to
+x2, y1 to y2, and z1 to infinity in x, y, and z directions,
+respectively.  Magnetization defined by inclination mi,
+declination md, intensity m.  Ambient field defined by
+inclination fi and declination fd.  X axis has declination
+theta. Distance units are irrelevant but must be consistent.
+Angles are in degrees, with inclinations positive below
+horizontal and declinations positive east of true north.
+Magnetization in A/m.</dd>
+<dt>Output paramters:</dt>
+<dd>Total field anomaly t, in nT.</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -230,7 +260,7 @@ lines on the graphs will coincide.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>

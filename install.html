@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Installation &#8212; PyGMI 2.2.15 documentation</title>
-    
+    <title>Installation &#8212; PyGMI 2.4.1 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '2.2.15',
+        VERSION:     '2.4.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -26,12 +24,10 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="PyGMI 2.2.15 documentation" href="index.html" />
-    <link rel="up" title="PyGMI Wiki" href="wiki.html" />
     <link rel="next" title="Quick Start to use PyGMI" href="qstart.html" />
     <link rel="prev" title="PyGMI Wiki" href="wiki.html" /> 
   </head>
-  <body role="document">
+  <body>
 
 <div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
 <a href="index.html">
@@ -95,7 +91,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/install.txt"
+      <li><a href="_sources/install.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -182,11 +178,11 @@
 <h3>Anaconda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <p>Anaconda does not find pyqt4 on its system even if it is there already. To install pygmi on anaconda, edit the setup.py file, and replace the install_requires switch with the following:</p>
 <blockquote>
-<div>install_requires=[&#8220;numpy&#8221;, &#8220;scipy&#8221;, &#8220;matplotlib&#8221;, &#8220;gdal&#8221;, &#8220;numexpr&#8221;, &#8220;numba&#8221;, &#8220;Pillow&#8221;, &#8220;PyOpenGL&#8221;],</div></blockquote>
+<div>install_requires=[“numpy”, “scipy”, “matplotlib”, “gdal”, “numexpr”, “numba”, “Pillow”, “PyOpenGL”],</div></blockquote>
 <p>As you can see, all we have done is removed PyQt4 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:</p>
 <blockquote>
 <div>python setup.py install</div></blockquote>
-<p>Note that you can simply install Anaconda use its &#8216;conda install&#8217; command to satisfy dependencies. For example:</p>
+<p>Note that you can simply install Anaconda use its ‘conda install’ command to satisfy dependencies. For example:</p>
 <blockquote>
 <div><p>conda install gdal</p>
 <p>conda install krb5</p>
@@ -232,7 +228,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2017, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
     </div>
   </body>
 </html>
