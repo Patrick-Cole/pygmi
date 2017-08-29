@@ -1,6 +1,24 @@
 =========
 Changelog
 =========
+
+v2.4.1, 29 August 2017
+----------------------
+* Added axis and orthographic projection option to 3D display view.
+* Added perspective change to beachball plots
+* Corrected clustering label. 
+* Bugfix on lithmodel. 
+* Correction to profile coordinates to place profile in centre of cell, as opposed to beginning of it. 
+* Added IGRF report backs.
+* Fixed bugs with tensor calculations
+* fix for error exporting text columns
+* fixed a bug with calculating changes only on model
+* made changed to the way matplotlib calls are made.
+* speed improvements to gravity and magnetic calcs
+* Fuzzy and Crisp clustering replaced by scikit_learn cluster analysis.
+* Import of csv point data enhanced and new cut tool added for point data.
+* Dependancies updated. Minor bugs fixed
+
 v2.3.0, 11 May 2017
 -------------------
 * Removed the auto update check due to problems it was giving on many pc's
