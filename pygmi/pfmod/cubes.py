@@ -27,6 +27,7 @@
 from __future__ import print_function
 
 import pdb
+from math import cos
 import ctypes
 import os
 import sys
@@ -41,6 +42,14 @@ import scipy.ndimage.filters as sf
 from numba import jit
 from PIL import Image
 import pygmi.pfmod.misc as misc
+from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.figure import Figure
+#import matplotlib.gridspec as gridspec
+#import matplotlib.cm as cm
+#import matplotlib.image as mi
+#import matplotlib.colors as mcolors
+#import matplotlib.colorbar as mcolorbar
+#from matplotlib import rcParams
 
 
 class Mod3dDisplay(QtWidgets.QDialog):
@@ -90,12 +99,13 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.label2 = QtWidgets.QLabel()
         self.pb_save = QtWidgets.QPushButton()
         self.pb_refresh = QtWidgets.QPushButton()
-        self.checkbox_smooth = QtWidgets.QCheckBox()
+        self.checkbox_smooth = QtWidgets.QCheckBox('Smooth Model')
         self.checkbox_ortho = QtWidgets.QCheckBox('Orthographic Projection')
         self.checkbox_axis = QtWidgets.QCheckBox('Display Axis')
         self.pbar = QtWidgets.QProgressBar()
         self.glwidget = GLWidget()
         self.vslider_3dmodel = QtWidgets.QSlider()
+        self.msc = MySunCanvas(self)
 
         self.setupui()
 
@@ -127,11 +137,13 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.checkbox_ortho.setChecked(True)
         self.checkbox_axis.setChecked(True)
 
-        self.checkbox_smooth.setText("Smooth Model")
+
         self.pb_save.setText("Save to Image File (JPG or PNG)")
         self.pb_refresh.setText('Refresh Model')
 
         verticallayout.addWidget(self.lw_3dmod_defs)
+        verticallayout.addWidget(QtWidgets.QLabel('Light Position:'))
+        verticallayout.addWidget(self.msc)
         verticallayout.addWidget(self.checkbox_smooth)
         verticallayout.addWidget(self.checkbox_ortho)
         verticallayout.addWidget(self.checkbox_axis)
@@ -150,6 +162,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.checkbox_smooth.stateChanged.connect(self.update_plot)
         self.checkbox_ortho.stateChanged.connect(self.update_model2)
         self.checkbox_axis.stateChanged.connect(self.update_model2)
+        self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
 
     def save(self):
         """ This saves a jpg """
@@ -226,6 +239,39 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
         self.zmult = 1.0 + perc*xy_z_ratio
         self.update_model2()
+
+    def move(self, event):
+        """
+        Move event is used to track changes to the sunshading.
+
+        Parameters
+        ----------
+        event - matplotlib button press event
+             event returned by matplotlib when a button is pressed
+        """
+        if event.inaxes == self.msc.axes:
+            self.msc.sun.set_xdata(event.xdata)
+            self.msc.sun.set_ydata(event.ydata)
+            self.msc.figure.canvas.draw()
+
+            phi = -event.xdata
+            theta = np.pi/2.-event.ydata
+
+            x = np.cos(phi)
+            y = -np.sin(phi)
+            z = np.sin(theta)
+
+#            print(x, y, z)
+
+            self.glwidget.setlightdir(x, y, z)
+            self.glwidget.init_object()
+            self.glwidget.updateGL()
+#            self.update_model2()
+#            phi = -event.xdata
+#            theta = np.pi/2. - np.arccos(event.ydata)
+#            self.mmc.phi = phi
+#            self.mmc.theta = theta
+#            self.mmc.update_graph()
 
     def update_color(self):
         """ Update color only """
@@ -604,6 +650,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.zmax = 1.
         self.has_axis = True
         self.is_ortho = True
+        self.lightpos = [1, 1, 1, 0]
 
         self.cubeVtxArray = np.array([[0.0, 0.0, 0.0],
                                       [1.0, 0.0, 0.0],
@@ -687,7 +734,12 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnable(GL.GL_COLOR_MATERIAL)
         GL.glEnable(GL.GL_LIGHTING)
         GL.glEnable(GL.GL_LIGHT0)
-        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [-1., -1., 1., 0.])
+        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [-0.7071, -0.7071, 0.7071, 0.])
+
+    def setlightdir(self, x, y, z):
+        """ sets light direction """
+        lightpos = [x, y, z, 0]
+        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightpos)
 
     def initGeometry(self):
         """ Initialize Geometry """
@@ -925,6 +977,45 @@ class GLWidget(QtOpenGL.QGLWidget):
         while angle > 360 * 16:
             angle -= 360 * 16
         return angle
+
+
+class MySunCanvas(FigureCanvas):
+    """
+    Canvas for the sunshading tool.
+
+    Attributes
+    ----------
+    sun: matplotlib plot instance
+        plot of a circle 'o' showing where the sun is
+    axes: matplotlib axes instance
+        axes on which the sun is drawn
+    """
+    def __init__(self, parent):
+        fig = Figure()
+        super(MySunCanvas, self).__init__(fig)
+
+        self.sun = None
+        self.axes = fig.add_subplot(111, polar=True)
+        fig.set_facecolor('None')
+
+        self.setParent(parent)
+        self.setMaximumSize(120, 120)
+        self.setMinimumSize(120, 120)
+
+        self.init_graph()
+
+    def init_graph(self):
+        """ Init graph """
+        self.axes.clear()
+        self.axes.set_xticklabels(self.axes.get_xticklabels(), fontsize=8)
+        self.axes.set_yticklabels(self.axes.get_yticklabels(), visible=False)
+
+        self.axes.set_autoscaley_on(False)
+        self.axes.set_rmax(np.pi/2.)
+        self.axes.set_rmin(0.0)
+
+        self.sun, = self.axes.plot(5*np.pi/4., np.pi/4., 'yo')
+        self.figure.canvas.draw()
 
 
 def calc_norms(faces, vtx):
