@@ -511,6 +511,7 @@ def get_aster(ifile):
     dat : PyGMI raster Data
         dataset imported
     """
+
     dat = []
     ifile = ifile[:]
 
@@ -730,22 +731,20 @@ def get_aster_ged_bin(ifile):
     Get ASTER GED binary format
 
     Emissivity_Mean_Description: Mean Emissivity for each pixel on grid-box
-                                 using all ASTER data from 2000-2010
+    using all ASTER data from 2000-2010
     Emissivity_SDev_Description: Emissivity Standard Deviation for each pixel
-                                 on grid-box using all ASTER data from
-                                 2000-2010
+    on grid-box using all ASTER data from 2000-2010
     Temperature_Mean_Description: Mean Temperature (K) for each pixel on
-                                  grid-box using all ASTER data from 2000-2010
+    grid-box using all ASTER data from 2000-2010
     Temperature_SDev_Description: Temperature Standard Deviation for each pixel
-                                  on grid-box using all ASTER data from
-                                  2000-2010
+    on grid-box using all ASTER data from 2000-2010
     NDVI_Mean_Description: Mean NDVI for each pixel on grid-box using all ASTER
-                           data from 2000-2010',
+    data from 2000-2010
     NDVI_SDev_Description: NDVI Standard Deviation for each pixel on grid-box
-                           using all ASTER data from 2000-2010,
+    using all ASTER data from 2000-2010
     Land_Water_Map_LWmap_Description: Land Water Map using ASTER visible bands
     Observations_NumObs_Description: Number of values used in computing mean
-                                     and standard deviation for each pixel
+    and standard deviation for each pixel.
     Geolocation_Latitude_Description: Latitude
     Geolocation_Longitude_Description: Longitude
     ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED
