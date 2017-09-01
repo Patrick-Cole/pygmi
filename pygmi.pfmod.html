@@ -234,6 +234,12 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.cubes.GLWidget.setlightdir">
+<code class="descname">setlightdir</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.setlightdir" title="Permalink to this definition">¶</a></dt>
+<dd><p>sets light direction</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.cubes.GLWidget.sizeHint">
 <code class="descname">sizeHint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget.sizeHint" title="Permalink to this definition">¶</a></dt>
 <dd><p>size hint</p>
@@ -316,6 +322,20 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.cubes.Mod3dDisplay.move">
+<code class="descname">move</code><span class="sig-paren">(</span><em>event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move event is used to track changes to the sunshading.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>- matplotlib button press event</strong> (<em>event</em>) – event returned by matplotlib when a button is pressed</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.cubes.Mod3dDisplay.run">
 <code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process data</p>
@@ -369,6 +389,31 @@ here, from the voxel model.</p>
 <dt id="pygmi.pfmod.cubes.Mod3dDisplay.update_plot">
 <code class="descname">update_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay.update_plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update 3D Model</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.cubes.MySunCanvas">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">MySunCanvas</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.MySunCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<p>Canvas for the sunshading tool.</p>
+<dl class="attribute">
+<dt id="pygmi.pfmod.cubes.MySunCanvas.sun">
+<code class="descname">sun</code><a class="headerlink" href="#pygmi.pfmod.cubes.MySunCanvas.sun" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>matplotlib plot instance</em> – plot of a circle ‘o’ showing where the sun is</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.pfmod.cubes.MySunCanvas.axes">
+<code class="descname">axes</code><a class="headerlink" href="#pygmi.pfmod.cubes.MySunCanvas.axes" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>matplotlib axes instance</em> – axes on which the sun is drawn</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.cubes.MySunCanvas.init_graph">
+<code class="descname">init_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.MySunCanvas.init_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Init graph</p>
 </dd></dl>
 
 </dd></dl>
