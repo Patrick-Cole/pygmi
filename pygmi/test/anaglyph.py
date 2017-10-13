@@ -39,6 +39,8 @@ import OpenGL.GLUT as GLUT
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 
+import pygmi.raster.iodefs as io
+
 animationAngle = 0.0
 frameRate = 20
 stereoMode = "NONE"
@@ -466,20 +468,32 @@ def offsets(data, sdata, scale=2.0):
 def load_data():
     """ load data """
 
-    z = np.loadtxt('mag.asc', skiprows=6)
+    ifile = r'C:\Work\Programming\pygmi\data\anaglyph\Subset_Thelon_River_TMI.ers'
+
+    idat = io.get_raster(ifile)
+    idat = idat[0]
+
+    z = idat.data
+    dxy = idat.xdim
+
+
+#    pdb.set_trace()
+#
+#
+#    z = np.loadtxt(r'c:\work\programming\pygmi\data\test\mag.asc', skiprows=6)
     z = np.ma.masked_equal(z, 1e+20)
 
     y, x = np.indices(z.shape)
 
-    dxy = 125
-    dxy = 125
+#    dxy = 125
+#    dxy = 125
 
-    x *= dxy
-    y *= dxy
+    x *= int(dxy)
+    y *= int(dxy)
 
-    x = x[20:100, 25:150]
-    y = y[20:100, 25:150]
-    z = z[20:100, 25:150]
+#    x = x[20:100, 25:150]
+#    y = y[20:100, 25:150]
+#    z = z[20:100, 25:150]
 
 #    z.set_fill_value(np.nan)
 #    z = z.filled()
@@ -607,7 +621,7 @@ def main_gsc():
 
     x, y, data = load_data()
 
-    alpha = 1.
+    alpha = .5
     cell = 5
     azim = np.deg2rad(0)
     elev = np.deg2rad(45)
@@ -669,15 +683,15 @@ def main_rotate():
 #    plt.plot(zr[50], 'r')
 #    plt.plot(zb[50], 'b')
 #    plt.show()
+#    plt.imshow(red, origin='lower')
+#    plt.show()
+#    plt.imshow(blue, origin='lower')
+#    plt.show()
 
-    plt.subplot(211)
-    plt.imshow(red, origin='lower')
-    plt.subplot(212)
-    plt.imshow(blue, origin='lower')
-    plt.show()
 
     adata = anaglyph(red, blue, 'dubois')
 
+    plt.figure(figsize=(8,8))
     plt.imshow(adata, origin='lower', interpolation='spline36')
 #    plt.contour(zr, colors='r', origin='lower')
 #    plt.contour(zb, colors='c', origin='lower')
@@ -694,4 +708,5 @@ def main_rotate():
 
 
 if __name__ == "__main__":
+#    main_gsc()
     main_rotate()

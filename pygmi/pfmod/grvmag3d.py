@@ -759,8 +759,8 @@ class GeoData(object):
         ma, mb, mc = dircos(self.minc, self.mdec, self.theta)
         fa, fb, fc = dircos(self.finc, self.fdec, self.theta)
 
-        mr = self.mstrength * np.array([ma, mb, mc])
-        mi = self.susc*self.hintn*np.array([fa, fb, fc]) / (400*np.pi)
+        mr = self.mstrength * np.array([ma, mb, mc]) * 100
+        mi = self.susc*self.hintn*np.array([fa, fb, fc]) / (4*np.pi)
         m3 = mr+mi
 
         mt = np.sqrt(m3 @ m3)
@@ -793,7 +793,7 @@ class GeoData(object):
 
             mlayers.append(mval)
 
-        self.mlayers = np.array(mlayers) * mt * 100.
+        self.mlayers = np.array(mlayers) * mt
         self.mlayers = self.mlayers[:-1]-self.mlayers[1:]
 
 
@@ -957,10 +957,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         mijk = mlist[1].lith_index
         if mijk not in modind and mijk not in modindcheck:
             continue
-        try:
-            lmod.tmpfiles[mlist[0]].seek(0)
-        except:
-            pdb.set_trace()
+        lmod.tmpfiles[mlist[0]].seek(0)
 
         mfile = np.load(lmod.tmpfiles[mlist[0]])
 

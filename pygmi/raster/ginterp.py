@@ -62,6 +62,7 @@ It can be very effectively used in conjunction with a GIS package which
 supports GeoTiff files.
 """
 
+import pdb
 import os
 import copy
 from math import cos, sin, tan
@@ -323,6 +324,10 @@ class ModestImage2(mi.AxesImage):
 
         # This loop forces the histograms to remain static
         for argb in self.figure.axes[1:]:
+            if np.inf in argb.dataLim.extents:
+                continue
+            if np.nan in argb.dataLim.extents:
+                continue
             argb.set_xlim(argb.dataLim.x0, argb.dataLim.x1)
             argb.set_ylim(argb.dataLim.y0, argb.dataLim.y1*1.2)
 

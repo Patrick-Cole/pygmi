@@ -11,4 +11,7 @@ datasets. It includes:
 It is released under the Gnu General Public License version 3.0
 """
 
-__version__ = '2.4.1'
+from pygmi.main import main
+
+__version__ = '2.4.2'
+
