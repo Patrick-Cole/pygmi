@@ -311,7 +311,8 @@ class BeachBall(QtWidgets.QDialog):
             np1 = idat[3:-1]
             depth = idat[2]
             pwidth = self.mmc.pwidth*idat[-1]
-            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth)
+            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
+                                             self.mmc.isgeog)
 
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])

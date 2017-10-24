@@ -27,6 +27,7 @@ Anaglyph routine
 """
 
 import pdb
+from math import cos, sin
 from time import sleep
 import scipy.interpolate as si
 from scipy import ndimage
@@ -34,12 +35,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib import collections  as mc
+
 
 import OpenGL.GLUT as GLUT
 import OpenGL.GL as GL
 import OpenGL.GLU as GLU
 
 import pygmi.raster.iodefs as io
+from pygmi.misc import PTime
 
 animationAngle = 0.0
 frameRate = 20
@@ -417,6 +421,11 @@ def anaglyph(red, blue, atype='dubois'):
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
 
+    elif atype == 'optimized':
+        mat = np.array([[0.0, 0.7, 0.3, 0.0, 0.0, 0.0],
+                        [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
+                        [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
+
     newshape = (red.shape[0]*red.shape[1], 3)
     data1 = red[:, :, :3].copy()
     data2 = blue[:, :, :3].copy()
@@ -469,40 +478,29 @@ def load_data():
     """ load data """
 
     ifile = r'C:\Work\Programming\pygmi\data\anaglyph\Subset_Thelon_River_TMI.ers'
+    ifile = r'C:\Work\Programming\pygmi\data\testdata.hdr'
+#    ifile = r'C:\Work\Programming\pygmi\data\anaglyph\seqld2_vrtp.ers'
 
     idat = io.get_raster(ifile)
-    idat = idat[0]
+    idat = idat[1]
 
     z = idat.data
     dxy = idat.xdim
 
+    plt.imshow(z)
+    plt.show()
 
-#    pdb.set_trace()
-#
-#
-#    z = np.loadtxt(r'c:\work\programming\pygmi\data\test\mag.asc', skiprows=6)
     z = np.ma.masked_equal(z, 1e+20)
 
     y, x = np.indices(z.shape)
 
-#    dxy = 125
-#    dxy = 125
-
     x *= int(dxy)
     y *= int(dxy)
-
-#    x = x[20:100, 25:150]
-#    y = y[20:100, 25:150]
-#    z = z[20:100, 25:150]
-
-#    z.set_fill_value(np.nan)
-#    z = z.filled()
-#    z = np.ma.masked_invalid(z)
 
     return x, y, z
 
 
-def rot_and_clean(x, y, z, rotang=5, rtype='red', doshade=False):
+def rot_and_clean_old(x, y, z, rotang=5, rtype='red', doshade=False):
     """ rotates and cleans rotated data for 2d view """
 
     cmap = cm.viridis
@@ -515,7 +513,8 @@ def rot_and_clean(x, y, z, rotang=5, rtype='red', doshade=False):
 
     x = x-x.min()
     y = y-y.min()
-    z = z-np.median(z)
+    z = z-np.mean(z)
+#    z = z-np.median(z)
     xa = [x.min(), x.max()]
     ya = [y.min(), y.max()]
     za = [0, 0]
@@ -575,7 +574,6 @@ def rot_and_clean(x, y, z, rotang=5, rtype='red', doshade=False):
                         cmap=cmap)
 
     return zmap, z3
-
 
 def main_sunshade():
     """ main """
@@ -667,46 +665,218 @@ def main_gsc():
     plt.imshow(adata)
     plt.show()
 
+def main_contour():
+    """ main rotate """
+    ttt = PTime()
+
+    scale = 1
+    rotang = 5  # 0.5 to 10 degrees
+
+    x, y, z = load_data()
+
+#    import matplotlib.mlab as mlab
+#    delta = 0.025
+#    x = np.arange(-3.0, 3.0, delta)
+#    y = np.arange(-2.0, 2.0, delta)
+#    X, Y = np.meshgrid(x, y)
+#    Z1 = mlab.bivariate_normal(X, Y, 1.0, 1.0, 0.0, 0.0)
+#    Z2 = mlab.bivariate_normal(X, Y, 1.5, 0.5, 1, 1)
+#    Z = 10.0 * (Z2 - Z1)
+#    x,y,z = X,Y,Z
+
+    z *= scale
+
+    plt.figure(figsize=(8,8))
+    tmp = plt.contour(x, y, z, 10)
+    plt.show()
+
+    fig = plt.figure(figsize=(8,8))
+    ax = plt.gca()
+#    ax = plt.axes([0., 0., 1., 1.])
+#    plt.margins(0, 0)
+#    ax.axis('off')
+
+    asegs = tmp.allsegs
+    lvls = tmp.levels
+    xmin = x.min()
+    xmax = x.max()
+    a = np.deg2rad(rotang)
+    m = [[cos(a), 0, sin(a)], [0, 1, 0], [-sin(a), 0, cos(a)]]
+
+
+    lines = []
+    for i, lvl in enumerate(asegs):
+        print(lvls[i])
+        for j in lvl:
+
+            x1 = j[:,0]
+            y1 = j[:, 1]
+            z1 = [lvls[i]]*x1.size
+            x1 = x1-xmin
+            t = np.transpose([x1, y1, z1])
+            x1, y1, _ = np.transpose(t @ m)
+            x1 = x1 + xmin
+            lines.append(np.transpose([x1, y1]))
+#            plt.plot(x1, y1, c=[1, 0, 0, 0.7])
+
+    lc = mc.LineCollection(lines, colors=[1, 0, 0, 0.5])
+    ax.add_collection(lc)
+#    plt.show()
+#    fig.canvas.draw()
+#    redimage = np.array(fig.canvas.renderer.renderer)
+#
+#    fig = plt.figure(figsize=(8,8))
+#    ax = plt.axes([0., 0., 1., 1.])
+#    plt.margins(0, 0)
+#    ax.axis('off')
+
+
+    a = np.deg2rad(-rotang)
+    m = [[cos(a), 0, sin(a)], [0, 1, 0], [-sin(a), 0, cos(a)]]
+
+    lines = []
+    for i, lvl in enumerate(asegs):
+        print(lvls[i])
+        for j in lvl:
+
+            x1 = j[:,0]
+            y1 = j[:, 1]
+            z1 = [lvls[i]]*x1.size
+            x1 = x1-xmax
+            t = np.transpose([x1, y1, z1])
+            x1, y1, _ = np.transpose(t @ m)
+            x1 = x1 + xmax
+            lines.append(np.transpose([x1, y1]))
+
+#            plt.plot(x1, y1, c=[0, 1, 1, 0.7])
+
+    lc = mc.LineCollection(lines, colors=[0, 1, 1, 0.5])
+    ax.add_collection(lc)
+
+    ttt.since_last_call()
+
+#    fig.canvas.draw()
+#    blueimage = np.array(fig.canvas.renderer._renderer)
+
+#    dx = x1.ptp()/blueimage.shape[1]
+#
+#    image = redimage
+#    image[image == 255] = blueimage[image == 255]
+#
+#    plt.figure(figsize=(8, 8))
+#    plt.imshow(image)
+
+    ax.autoscale()
+    plt.show()
+    pdb.set_trace()
+
+
+def rot_and_clean(x, y, z, rotang=5, rtype='red', doshade=False):
+    """ rotates and cleans rotated data for 2d view """
+
+    cmap = cm.jet
+
+    if rtype == 'red':
+        rotang = -1. * abs(rotang)
+    else:
+        rotang = -1. * abs(rotang)
+        z = z[:, ::-1]
+
+    a = np.deg2rad(rotang)
+    m = [[cos(a), 0, sin(a)], [0, 1, 0], [-sin(a), 0, cos(a)]]
+
+    x = x-x.min()
+    y = y-y.min()
+    z = z-np.mean(z)
+
+    zmask = z.mask
+
+    z.set_fill_value(0)
+    z = z.filled()
+
+    t = np.transpose([x, y, z])
+    x1, _, z1 = np.transpose(t @ m)
+
+    zmap = np.zeros(x.shape)
+
+# Note that when you rotate about the y-axis, a peak will be rotated
+# this means that you can have more that one solution for an x coordinate
+# np.interp always takes the first solution, which co-incidentally happens
+# to be the one we want in this case.
+
+    zi = np.ma.filled(z)
+#    zi = np.ma.filled(z1)
+    for j, xi in enumerate(x1):
+        zmap[j] = np.interp(x[0], xi, zi[j])
+
+    tmp = x.max()
+
+    if rtype != 'red':
+        zmap = zmap[:, ::-1]
+        x1 = -1*x1
+        x1 = x1-1*x1.min()
+
+    zmap = np.ma.masked_equal(zmap, 0)
+    z3 = zmap.copy()
+    zmask = zmap.mask.copy()
+
+    if not doshade:
+        zmin = np.median(z) - 2 * np.std(z)
+        zmax = np.median(z) + 2 * np.std(z)
+
+        tmp = norm2(zmap, zmin, zmax)
+        tmp[tmp < 0] = 0.
+        tmp[tmp > 1] = 1.
+
+        zmap = cmap(tmp)
+        zmap[:, :, 3] = np.logical_not(zmask)
+    else:
+        alpha = 0.5
+        cell = 10
+        azim = np.deg2rad(45)
+        elev = np.deg2rad(45)
+        zmap = sunshade(z3, azim=azim, elev=elev, alpha=alpha, cell=cell,
+                        cmap=cmap)
+
+    return zmap
+
 
 def main_rotate():
     """ main rotate """
+    ttt = PTime()
 
-    scale = 7
+    scale = 5
     rotang = 10  # 0.5 to 10 degrees
 
     x, y, z = load_data()
     z *= scale
 
-    red, zr = rot_and_clean(x, y, z, rotang, 'red', True)
-    blue, zb = rot_and_clean(x, y, z, rotang, 'blue', True)
-
-#    plt.plot(zr[50], 'r')
-#    plt.plot(zb[50], 'b')
-#    plt.show()
-#    plt.imshow(red, origin='lower')
-#    plt.show()
-#    plt.imshow(blue, origin='lower')
-#    plt.show()
-
+    ttt.since_last_call('load data')
+    red = rot_and_clean(x, y, z, rotang, 'red', True)
+    ttt.since_last_call('rot and clean')
+    blue = rot_and_clean(x, y, z, rotang, 'blue', True)
+    ttt.since_last_call('rot and clean')
 
     adata = anaglyph(red, blue, 'dubois')
 
-    plt.figure(figsize=(8,8))
-    plt.imshow(adata, origin='lower', interpolation='spline36')
-#    plt.contour(zr, colors='r', origin='lower')
-#    plt.contour(zb, colors='c', origin='lower')
+    plt.figure(figsize=(8, 8))
+    plt.title('red')
+    plt.imshow(red, origin='lower')
     plt.show()
 
-#    x, y = np.indices(zr.shape)
-#    ax = plt.gca()
-#    ax.set_axis_bgcolor('black')
-#    plt.contour(zr, colors='r', origin='lower')
-#    plt.contour(zb, colors='c', origin='lower')
-#    plt.show()
+    plt.figure(figsize=(8, 8))
+    plt.title('blue')
+    plt.imshow(blue, origin='lower')
+    plt.show()
 
-    pdb.set_trace()
+    plt.figure(figsize=(8, 8))
+    plt.title('final')
+    plt.imshow(adata, origin='lower')
+    plt.show()
+
+    ttt.since_last_call()
 
 
 if __name__ == "__main__":
-#    main_gsc()
-    main_rotate()
+#    main_rotate()
+    main_contour()

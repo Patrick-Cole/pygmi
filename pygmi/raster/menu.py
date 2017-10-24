@@ -36,6 +36,7 @@ from pygmi.raster import dataprep
 from pygmi.raster import iodefs
 from pygmi.raster import igrf
 from pygmi.raster import tiltdepth
+from pygmi.raster import anaglyph
 
 
 class MenuWidget(object):
@@ -172,6 +173,11 @@ class MenuWidget(object):
         context_menu['Raster'].addAction(self.action_show_raster_data)
         self.action_show_raster_data.triggered.connect(self.show_raster_data)
 
+        self.action_show_anaglyph = QtWidgets.QAction(self.parent)
+        self.action_show_anaglyph.setText("Show Anaglyph")
+        context_menu['Raster'].addAction(self.action_show_anaglyph)
+        self.action_show_anaglyph.triggered.connect(self.show_anaglyph)
+
         self.action_show_surface = QtWidgets.QAction(self.parent)
         self.action_show_surface.setText("Show Surface")
         context_menu['Raster'].addAction(self.action_show_surface)
@@ -267,6 +273,10 @@ class MenuWidget(object):
     def show_raster_data(self):
         """ Show raster data """
         self.parent.launch_context_item(graphs.PlotRaster)
+
+    def show_anaglyph(self):
+        """ Show raster data """
+        self.parent.launch_context_item(anaglyph.PlotAnaglyph)
 
     def show_surface(self):
         """ Show surface """

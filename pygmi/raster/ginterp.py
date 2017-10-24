@@ -988,7 +988,10 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider.setMinimum(1)
         self.kslider.setMaximum(100)
         self.kslider.setValue(1)
-        tmp = sorted(cm.datad.keys())
+#        tmp = sorted(cm.datad.keys())
+        tmp = sorted(m for m in cm.cmap_d.keys() if not
+                     m.startswith(('spectral', 'Vega', 'jet')))
+
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
         self.cbox_dtype.addItems(['Single Color Map', 'Contour', 'RGB Ternary',
