@@ -90,8 +90,8 @@ class MyMplCanvas(FigureCanvas):
         self.z = data1.data*scale
         dxy = data1.xdim
         y, x = np.indices(self.z.shape)
-        self.x = x*int(dxy)
-        y = y*int(dxy)
+        self.x = x*int(dxy) + data1.tlx
+        y = data1.tly - y*int(dxy)
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
