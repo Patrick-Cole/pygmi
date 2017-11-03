@@ -33,7 +33,7 @@ import numpy as np
 import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib import collections  as mc
+from matplotlib import collections as mc
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
     NavigationToolbar
 
@@ -63,6 +63,7 @@ class MyMplCanvas(FigureCanvas):
         self.extent = None
         self.x = None
         self.z = None
+        self.cnum = 10
 
 #        FigureCanvas.__init__(self, fig)
         FigureCanvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding,
@@ -96,7 +97,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        tmp = self.axes.contour(self.x, y, self.z, 10)
+        tmp = self.axes.contour(self.x, y, self.z, self.cnum)
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -266,7 +267,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.indata = {}
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Anaglyph (3D Image: Red-Blue Glasses Needed)")
+        self.setWindowTitle("Anaglyph (3D Image: Glasses Needed)")
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum,
                                            QtWidgets.QSizePolicy.Minimum)
@@ -286,9 +287,10 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.cbox_cbar = QtWidgets.QComboBox()
         self.doshade = QtWidgets.QCheckBox('Sunshade:')
         self.doimage = QtWidgets.QRadioButton('Full Image:')
-        self.docontour = QtWidgets.QRadioButton('Contour:')
+        self.docontour = QtWidgets.QRadioButton('Contour (Slider sets number):')
         self.slider_scale = QtWidgets.QSlider()
         self.slider_angle = QtWidgets.QSlider()
+        self.slider_cnt = QtWidgets.QSlider()
 
 # Size policies
         self.combobox1.setSizePolicy(sizepolicy)
@@ -299,12 +301,15 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.docontour.setSizePolicy(sizepolicy)
         self.slider_scale.setSizePolicy(sizepolicy)
         self.slider_angle.setSizePolicy(sizepolicy)
+        self.slider_cnt.setSizePolicy(sizepolicy)
 
 # Configure Widgets
-        self.combobox2.addItem('dubois')
-        self.combobox2.addItem('true')
-        self.combobox2.addItem('gray')
-        self.combobox2.addItem('optimized')
+        self.combobox2.addItem('Dubois (Red-Green)')
+        self.combobox2.addItem('Green-Magenta')
+        self.combobox2.addItem('Amber-Blue')
+        self.combobox2.addItem('True (Red-Green)')
+        self.combobox2.addItem('Gray (Red-Green)')
+        self.combobox2.addItem('Optimized (Red-Green)')
 
         maps = sorted(m for m in cm.cmap_d.keys() if not
                       m.startswith(('spectral', 'Vega', 'jet')))
@@ -312,6 +317,11 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(maps)
         self.doimage.setChecked(True)
+        self.slider_cnt.setMinimum(3)
+        self.slider_cnt.setMaximum(30)
+        self.slider_cnt.setOrientation(QtCore.Qt.Horizontal)
+        self.slider_cnt.setTickPosition(QtWidgets.QSlider.TicksAbove)
+        self.slider_cnt.setValue(10)
         self.slider_scale.setMinimum(1)
         self.slider_scale.setMaximum(30)
         self.slider_scale.setOrientation(QtCore.Qt.Horizontal)
@@ -326,6 +336,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
 # Add widgets to layout
         vbl_left.addWidget(self.doimage)
         vbl_left.addWidget(self.docontour)
+        vbl_left.addWidget(self.slider_cnt)
         vbl_left.addWidget(QtWidgets.QLabel('Bands:'))
         vbl_left.addWidget(self.combobox1)
         vbl_left.addWidget(QtWidgets.QLabel('Type:'))
@@ -353,6 +364,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.cbox_cbar.currentIndexChanged.connect(self.change_colors)
         self.slider_scale.sliderReleased.connect(self.change_all)
         self.slider_angle.sliderReleased.connect(self.change_all)
+        self.slider_cnt.sliderReleased.connect(self.change_contours)
 
     def change_all(self):
         """ Combo box to choose band """
@@ -388,8 +400,9 @@ class PlotAnaglyph(QtWidgets.QDialog):
     def change_contours(self):
         """ Combo box to choose band """
 
-        self.slider_scale.setValue(3)
-        self.slider_angle.setValue(5)
+#        self.slider_scale.setValue(3)
+#        self.slider_angle.setValue(5)
+        self.docontour.setChecked(True)
 
         i = self.combobox1.currentIndex()
         scale = self.slider_scale.value()
@@ -401,6 +414,8 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.cbox_cbar.setDisabled(True)
 
         data = self.indata['Raster']
+
+        self.mmc.cnum = self.slider_cnt.value()
         self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
 
     def change_image(self):
@@ -413,8 +428,6 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.cbox_cbar.setEnabled(True)
 
         self.change_all()
-
-
 
     def run(self):
         """ Run """
@@ -546,20 +559,32 @@ def histcomp(img, nbr_bins=256, perc=5.):
 def anaglyph(red, blue, atype='dubois'):
     """ color Aanaglyph """
 
-    if atype == 'dubois':
+    if 'Dubois' in atype:
         mat = np.array([[0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
                         [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
                         [-0.048, -0.050, -0.017, -0.026, -0.093, 1.234]])
-    elif atype == 'true':
+
+        mat = np.array([[456, 500, 176, -43, -88, -2],
+                        [-40, -38, -16, 378, 734, -18],
+                        [-15, -21, -5, -72, -113, 1226]])/1000.
+    elif 'Green-Magenta' in atype:
+        mat = np.array([[-62, -158, -39, 529, 705, 24],
+                        [284, 668, 143, -16, -15, -65],
+                        [-15, -27, 21, 9, 75, 937]])/1000.
+    elif 'Amber-Blue' in atype:
+        mat = np.array([[1062, -205, 299, -16, -123, -17],
+                        [-26, 908, 68, 6, 62, -17],
+                        [-38, -173, 22, 94, 185, 911]])/1000.
+    elif 'True' in atype:
         mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
-    elif atype == 'gray':
+    elif 'Gray' in atype:
         mat = np.array([[0.299, 0.587, 0.114, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114],
                         [0.0, 0.0, 0.0, 0.299, 0.587, 0.114]])
 
-    elif atype == 'optimized':
+    elif 'Optimized' in atype:
         mat = np.array([[0.0, 0.7, 0.3, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
@@ -590,60 +615,6 @@ def anaglyph(red, blue, atype='dubois'):
 #    blue2 = (-RR*0.0651 - GR*0.1287 + BR*1.2971)
 
     return rgb
-
-
-def rot_and_clean2(x, y, z, rotang=5, rtype='red'):
-    """ rotates and cleans rotated data for 2d view """
-
-    if rtype == 'red':
-        rotang = -1. * abs(rotang)
-    else:
-        rotang = -1. * abs(rotang)
-        z = z[:, ::-1]
-
-    x = np.ma.array(x, mask=z.mask)
-    y = np.ma.array(y, mask=z.mask)
-
-    x = x-x.min()
-    y = y-y.min()
-    z = z-np.mean(z)
-    xa = [0, x.max()]
-    ya = [0, y.max()]
-    za = [0, 0]
-
-    a = np.deg2rad(rotang)
-    m = [[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]]
-
-    t = np.transpose([xa, ya, za])
-    xa1, _, _ = np.transpose(t @ m)
-
-    t = np.ma.array([x, y, z])
-    t = np.transpose(t)
-    x1, _, zmap = np.transpose(np.ma.dot(t, m))
-
-# This next line is to put back the old colors
-#    zi = np.ma.filled(z)
-    zi = z.copy()
-    x2 = np.linspace(xa1.min(), xa1.max(), x1.shape[1])
-
-    for j, xi in enumerate(x1):
-#        xmask = np.ones(xi.shape, dtype=bool)
-#        xmask[xi < xa1[0]] = False
-#        xmask[xi > xa1[1]] = False
-
-# Note that when you rotate about the y-axis, a peak will be rotated
-# this means that you can have more that one solution for an x coordinate
-# np.interp always takes the first solution, which co-incidentally happens
-# to be the one we want in this case.
-#        zmap[j] = np.interp(x2, xi[xmask], zi[j][xmask])
-        zmap[j] = np.interp(x2, xi, zi[j])
-
-    if rtype != 'red':
-        zmap = zmap[:, ::-1]
-
-    zmap = np.ma.masked_greater(zmap, z.max())
-
-    return zmap, x1
 
 
 def rot_and_clean(x, y, z, rotang=5, rtype='red'):
