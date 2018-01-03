@@ -62,10 +62,6 @@ class EquationEditor(QtWidgets.QDialog):
         self.parent = parent
         self.equation = ''
         self.bands = {}
-        self.bandsall = []
-        self.localdict = {}
-
-        self.bands['all data'] = 'iall'
 
         self.combobox = QtWidgets.QComboBox()
 
@@ -75,9 +71,9 @@ class EquationEditor(QtWidgets.QDialog):
 
         self.setupui()
 
-    def textchanged(self):
-        """ Text Changed """
-        self.equation = self.textbrowser.toPlainText()
+#    def textchanged(self):
+#        """ Text Changed """
+#        self.equation = self.textbrowser.toPlainText()
 
     def setupui(self):
         """ Setup UI """
@@ -137,7 +133,6 @@ class EquationEditor(QtWidgets.QDialog):
         gridlayout.addWidget(buttonbox, 6, 0, 1, 2)
 
         self.combobox.currentIndexChanged.connect(self.combo)
-        self.textbrowser.textChanged.connect(self.textchanged)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -148,9 +143,9 @@ class EquationEditor(QtWidgets.QDialog):
             return
         self.label.setText(': '+self.bands[txt])
 
-    def eq_fix(self, indata):
+    def eq_fix(self, indata, equation):
         """ Corrects names in equation to variable names """
-        neweq = str(self.equation)
+        neweq = str(equation)
         neweq = neweq.replace('ln', 'log')
         neweq = neweq.replace('^', '**')
         neweq = neweq.replace('nodata', str(indata[0].nullvalue))
@@ -159,10 +154,13 @@ class EquationEditor(QtWidgets.QDialog):
 
     def settings(self):
         """ Settings """
+        localdict = {}
+        bandsall = []
+        self.bands = {}
+        self.bands['all data'] = 'iall'
+
         self.combobox.clear()
         self.combobox.addItem('all data')
-
-        self.bandsall = []
 
         if 'Cluster' in self.indata:
             intype = 'Cluster'
@@ -174,40 +172,28 @@ class EquationEditor(QtWidgets.QDialog):
 
         indata = dataprep.merge(self.indata[intype])
 
-        mask = np.ma.getmaskarray(indata[-1].data)
-
-        for i in indata:
-            mask = np.logical_or(mask, i.data.mask)
-        for i in indata:
-            i.data.mask = mask
-
-        self.localdict = {}
-        j = 0
-        for i in indata:
-            j += 1
-            self.localdict['i'+str(j)] = i.data
-            self.bands[i.dataid] = 'i'+str(j)
-            self.bandsall.append(i.data)
+        for j, i in enumerate(indata):
             self.combobox.addItem(i.dataid)
-        self.localdict['iall'] = np.ma.array(self.bandsall)
-
-        self.bandsall = np.ma.array(self.bandsall)
+            self.bands[i.dataid] = 'i'+str(j)
+            bandsall.append(i.data)
+            localdict['i'+str(j)] = i.data
+        localdict['iall'] = np.ma.array(bandsall)
 
         temp = self.exec_()
 
         if temp == 0:
             return
 
-        self.equation = self.textbrowser.toPlainText()
+        equation = self.textbrowser.toPlainText()
 
-        if self.equation == '':
+        if equation == '':
             return
 
-        neweq = self.eq_fix(indata)
+        neweq = self.eq_fix(indata, equation)
 
         try:
-            findat = ne.evaluate(neweq, self.localdict)
-        except:
+            findat = ne.evaluate(neweq, localdict)
+        except Exception:
             QtWidgets.QMessageBox.warning(
                 self.parent, 'Error',
                 ' Nothing processed! Your equation most likely had an error.',
@@ -224,26 +210,22 @@ class EquationEditor(QtWidgets.QDialog):
                 QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
             return
         elif len(findat.shape) == 2:
-            findat[np.isnan(findat)] = indata[0].nullvalue
-            mask = np.ma.getmaskarray(indata[0].data)
-            findat[mask] = indata[0].nullvalue
+            findat.shape = (1, findat.shape[0], findat.shape[1])
 
-            outdata = [copy.copy(indata[0])]
-            outdata[0].data = np.ma.masked_equal(findat, indata[0].nullvalue)
-            outdata[0].dataid = 'equation output'
-        else:
-            for i, findati in enumerate(findat):
-                findat[i][np.isnan(findati)] = indata[i].nullvalue
-                mask = np.ma.getmaskarray(indata[i].data)
-                findat[i][mask] = indata[i].nullvalue
-                outdata.append(copy.copy(indata[i]))
-                outdata[-1].data = np.ma.masked_equal(findati,
-                                                      indata[i].nullvalue)
+        for i, findati in enumerate(findat):
+            mask = np.ma.getmaskarray(indata[i].data)
+            findati[mask] = indata[i].nullvalue
+
+            outdata.append(copy.copy(indata[i]))
+            outdata[-1].data = np.ma.masked_equal(findati, indata[i].nullvalue)
 
         # This is needed to get rid of bad, unmasked values etc.
-        for i, _ in enumerate(outdata):
-            outdata[i].data.set_fill_value(indata[i].data.fill_value)
-            outdata[i].data = np.ma.fix_invalid(outdata[i].data)
+        for i, outdatai in enumerate(outdata):
+            outdatai.data.set_fill_value(indata[i].nullvalue)
+            outdatai.data = np.ma.fix_invalid(outdatai.data)
+
+        if len(outdata) == 1:
+            outdata[0].dataid = equation
 
         self.outdata[intype] = outdata
 
