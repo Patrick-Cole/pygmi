@@ -398,7 +398,8 @@ class DataMerge(QtWidgets.QDialog):
                                 gdal.GRA_Bilinear)
 
             dat.append(gdal_to_dat(dest, data.dataid))
-            dat[-1].data += doffset
+#            dat[-1].data += doffset
+            dat[-1].data = dat[-1].data + doffset
 
         self.outdata['Raster'] = dat
 
