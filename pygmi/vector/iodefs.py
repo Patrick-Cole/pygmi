@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
+import pdb
 import os
 import copy
 from PyQt5 import QtWidgets, QtCore
@@ -34,6 +35,7 @@ import pandas as pd
 from pygmi.vector.datatypes import PData
 from pygmi.vector.datatypes import VData
 import pygmi.menu_default as menu_default
+import pandas as pd
 
 
 class ImportLEMI417Data(object):
@@ -164,26 +166,12 @@ class ImportPointData(QtWidgets.QDialog):
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
+
         os.chdir(filename.rpartition('/')[0])
         self.ifile = str(filename)
 
-        dlim = None
-        if filename[-3:] == 'csv':
-            dlim = ','
-
-        pntfile = open(filename)
-        ltmp = pntfile.readline()
-        pntfile.close()
-        ltmp = ltmp.lower()
-
-        isheader = any(c.isalpha() for c in ltmp)
-
-        if ',' in ltmp:
-            dlim = ','
-
-        srows = 0
-        ltmp = ltmp.split(dlim)
-        ltmp[-1] = ltmp[-1].strip('\n')
+        datatmp = pd.read_csv(filename, sep=None, engine='python')
+        ltmp = datatmp.columns.values
 
         self.xchan.addItems(ltmp)
         self.ychan.addItems(ltmp)
@@ -196,45 +184,22 @@ class ImportPointData(QtWidgets.QDialog):
         if tmp != 1:
             return tmp
 
-        xcol = self.xchan.currentIndex()
-        ycol = self.ychan.currentIndex()
+        xcol = self.xchan.currentText()
+        ycol = self.ychan.currentText()
 
-        if isheader:
-            srows = 1
-        else:
-            ltmp = [str(c) for c in range(len(ltmp))]
+        ltmp = ltmp[ltmp != xcol]
+        ltmp = ltmp[ltmp != ycol]
 
-#        datatmp = np.genfromtxt(filename, unpack=True, delimiter=dlim,
-#                                skip_header=srows, usemask=True)
-        datatmp = np.genfromtxt(filename, unpack=True, delimiter=dlim,
-                                skip_header=srows, dtype=None)
-
-        datanames = datatmp.dtype.names
         dat = []
-        if datanames is None:
-            datatmp = np.transpose(datatmp)
-            dat = []
-            for i, datatmpi in enumerate(datatmp):
-                if i == xcol or i == ycol:
-                    continue
-                dat.append(PData())
-                dat[-1].xdata = datatmp[xcol]
-                dat[-1].ydata = datatmp[ycol]
-                dat[-1].zdata = datatmpi
-                dat[-1].dataid = ltmp[i]
-        else:
-            for i in datanames:
-                if i == 'f'+str(xcol) or i == 'f'+str(ycol):
-                    continue
-                dat.append(PData())
-                dat[-1].xdata = datatmp['f'+str(xcol)]
-                dat[-1].ydata = datatmp['f'+str(ycol)]
-                dat[-1].zdata = datatmp[i]
-                dat[-1].dataid = ltmp[int(i[1:])]
+        for i in ltmp:
+            dat.append(PData())
+            dat[-1].xdata = datatmp[xcol].values
+            dat[-1].ydata = datatmp[ycol].values
+            dat[-1].zdata = datatmp[i].values
+            dat[-1].dataid = i
 
         self.outdata['Point'] = dat
         return True
-
 
 
 class PointCut(object):

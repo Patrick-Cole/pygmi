@@ -576,8 +576,11 @@ class ExportMod3D(object):
         outdict = self.lmod2dict(outdict)
 
 # Save data
-        np.savez_compressed(filename, **outdict)
-        self.showtext('Model save complete!')
+        try:
+            np.savez_compressed(filename, **outdict)
+            self.showtext('Model save complete!')
+        except:
+            self.showtext('ERROR! Model save failed!')
 
     def lmod2dict(self, outdict, pre=''):
         """ place lmod in dictionary """
