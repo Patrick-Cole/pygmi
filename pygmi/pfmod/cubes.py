@@ -32,6 +32,12 @@ import ctypes
 import os
 import sys
 import numpy as np
+
+# The next two lines are fixes for types in PyOpenGL. They are not used, so
+# just avoid a crash when these types are not on certain platforms.
+np.float128 = np.float64
+np.complex256 = np.complex128
+
 from PyQt5 import QtCore, QtWidgets, QtOpenGL, QtGui
 from OpenGL import GL
 from OpenGL import GLU
