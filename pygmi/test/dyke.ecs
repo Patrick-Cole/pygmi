@@ -1,0 +1,13 @@
+[XYZ.ECS]
+@SECTION=XYZ.ECS
+   Origin=0 0  0
+   CosTheta=1
+   SinTheta=0
+   Scale=1000
+
+@SECTION=Geosoft.Projection
+   Projection=*unknown
+   Datum=
+   Method=
+   Unit=
+   Local=

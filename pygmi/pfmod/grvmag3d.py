@@ -759,13 +759,19 @@ class GeoData(object):
         ma, mb, mc = dircos(self.minc, self.mdec, self.theta)
         fa, fb, fc = dircos(self.finc, self.fdec, self.theta)
 
-        mr = self.mstrength * np.array([ma, mb, mc]) * 100
+        mr = self.mstrength * np.array([ma, mb, mc])*100
         mi = self.susc*self.hintn*np.array([fa, fb, fc]) / (4*np.pi)
         m3 = mr+mi
 
-        mt = np.sqrt(m3 @ m3)
-        if mt > 0:
-            m3 /= mt
+        # The line below accounts for roundoff earlier in the program, needing
+        # mr to be *100
+        if np.max(np.abs(m3)) < np.finfo(float).eps*100:
+            m3 = np.array([0., 0., 0.])
+            mt = 0.
+        else:
+            mt = np.sqrt(m3 @ m3)
+            if mt > 0:
+                m3 /= mt
 
         ma, mb, mc = m3
 
@@ -873,7 +879,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     lmod.griddata : dictionary
         dictionary of items of type Data.
     """
-
     if showtext is None:
         showtext = print
     if pbars is not None:

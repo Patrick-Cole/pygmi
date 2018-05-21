@@ -2,6 +2,20 @@
 Changelog
 =========
 
+v2.4.1.2, 1 March 2018
+----------------------
+* Added updated IGRF coefficients
+* Bug fixes in saving of 3d model, when it is used by another process, and in reading csv vector data.
+* IGRF bugfix: fixed a bug relating to newer numpy
+* Maintenance: Cleaned code in the equation editor.
+* Add more control to Anaglyphs
+* Fixed the orientation of anaglyph contours
+* Fixed a bug in beachball code.
+* Introduced anaglyphs for raster data.
+* Updated color bar list to new standards
+* Minor changes and a bugfix between ginterp.py and the latest matplotlib.
+* Added directional lighting to 3D display
+
 v2.4.1, 29 August 2017
 ----------------------
 * Added axis and orthographic projection option to 3D display view.
