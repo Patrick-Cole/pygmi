@@ -26,9 +26,54 @@
 
 import os
 import re
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pygmi.seis.datatypes as sdt
+import pygmi.menu_default as menu_default
+
+
+def sform(strform, val, tmp, col1, col2=None, nval=-999):
+    """
+    Formats strings
+
+    Formats strings according with a mod for values containing the value -999
+    or None. In that case it will output spaces instead. In the case of strings
+    being output, they are truncated to fit the format statement. This routine
+    also  puts the new strings in the correct columns
+
+    Parameters
+    ----------
+    strform : python format string
+        This string must be of the form {0:4.1f}, where 4.1f can be changed.
+    val : float, int, str
+        input value
+    nval : float, int
+        null value which gets substituted by spaces
+    col1 : int
+        start column (1 is first column)
+    col2 : inr
+        end column
+
+    Returns
+    -------
+    tmp : str
+        Output formatted string.
+    """
+
+    if col2 is None:
+        col2 = col1
+
+    slen = int(re.findall("[0-9]+", strform)[1])
+
+    if val == nval or val is None:
+        tmp2 = slen*' '
+    elif 's' in strform:
+        tmp2 = strform.format(val[:slen])
+    else:
+        tmp2 = strform.format(val)
+
+    tmp = tmp[:col1-1]+tmp2[:slen]+tmp[col2:]
+    return tmp
 
 
 def str2float(inp):
@@ -46,8 +91,13 @@ def str2float(inp):
         all columns returned as floats
     """
     if inp.strip() == '':
-        return None
-    return float(inp)
+        return np.nan
+
+    fval = float(inp)
+    if abs(fval) == 99.99 or abs(fval) == 999.9:
+        fval = np.nan
+
+    return fval
 
 
 def str2int(inp):
@@ -65,7 +115,7 @@ def str2int(inp):
         all columns returned as integers
     """
     if inp.strip() == '':
-        return None
+        return np.nan
     return int(inp)
 
 
@@ -80,16 +130,23 @@ class ImportSeisan(object):
         self.indata = {}
         self.outdata = {}
 
-    def settings(self):
+    def settings(self, filename=None):
         """ Settings """
+
+        if self.parent is None:
+            showprocesslog = print
+        else:
+            showprocesslog = self.parent.showprocesslog
+
         ext = \
             "Seisan Format (*.out);;" +\
             "All Files (*.*)"
-
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+        if filename is None:
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                    self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
+
         os.chdir(filename.rpartition('/')[0])
 
         self.ifile = str(filename)
@@ -100,7 +157,7 @@ class ImportSeisan(object):
         pntfile.close()
 
         if len(ltmp[0]) < 80:
-            self.parent.showprocesslog('Error: Problem with file')
+            showprocesslog('Error: Problem with file')
             return False
 
         # This constructs a dictionary of functions
@@ -122,7 +179,9 @@ class ImportSeisan(object):
         event['F'] = {}
         dat = []
 
-        for i in ltmp:
+        file_errors = []
+
+        for iii, i in enumerate(ltmp):
             if i.strip() == '':
                 if event:
                     dat.append(event)
@@ -131,30 +190,56 @@ class ImportSeisan(object):
                     event['F'] = {}
                 continue
 
+            # Fix short lines
+            if len(i) < 81:
+                i = i[:-1].ljust(80)+'\n'
+
             ltype = i[79]
+
+            if ltype in '367':
+                continue
+
+            if ltype == ' ' and 'PRE' in i:
+                ltype = '1'
+            elif ltype == ' ':
+                ltype = '4'
 
             if ltype == '1' and event.get('1') is not None:
                 continue
 
-            if ltype == '7' or ltype == '3':
+            try:
+                tmp = read_record_type[ltype](i)
+            except KeyError:
+                errs = ['Error: Invalid line type: ' + str(ltype) +
+                        ' on line '+str(iii+1), i]
+                file_errors.append(errs)
+                continue
+            except ValueError:
+                errs = ['Error: Problem on line: '+str(iii+1), i]
+                file_errors.append(errs)
                 continue
 
-            if ltype == ' ':
-                ltype = '4'
-
             if ltype == 'F':
-                event[ltype].update(read_record_type[ltype](i))
-            elif ltype == '4':
-                event[ltype].append(read_record_type[ltype](i))
+                event[ltype].update(tmp)
+            elif ltype == '4' or ltype == ' ':
+                ltype = '4'
+                event[ltype].append(tmp)
             elif ltype == 'M' and event.get('M') is not None:
-                event[ltype] = read_record_type[ltype](i, event[ltype])
+                event[ltype] = merge_m(event[ltype], tmp)
             else:
-                try:
-                    event[ltype] = read_record_type[ltype](i)
-                except:
-                    self.parent.showprocesslog('Error: Problem with file on line:')
-                    self.parent.showprocesslog(i)
-                    return False
+                event[ltype] = tmp
+
+        if file_errors:
+            showprocesslog('Error: Problem with file')
+            showprocesslog('Please see errors in '+filename+'.log')
+            fout = open(filename+'.log', 'w')
+            for i in file_errors:
+                fout.write(i[0]+'\n')
+                fout.write(i[1]+'\n')
+            fout.close()
+            return False
+
+        showprocesslog('No errors in the file')
 
         if event:
             dat.append(event)
@@ -236,7 +321,10 @@ def read_record_type_4(i):
     tmp.component = i[7]
     tmp.quality = i[9]
     tmp.phase_id = i[10:14]
-    tmp.weighting_indicator = str2int(i[14])
+
+    tmp.weighting_indicator = np.nan
+    if i[14] != '_':
+        tmp.weighting_indicator = str2int(i[14])
     tmp.flag_auto_pick = i[15]
     tmp.first_motion = i[16]
     tmp.hour = str2int(i[18:20])
@@ -249,7 +337,9 @@ def read_record_type_4(i):
     tmp.phase_velocity = str2float(i[52:56])
     tmp.angle_of_incidence = str2float(i[56:60])
     tmp.azimuth_residual = str2int(i[60:63])
-    tmp.travel_time_residual = str2float(i[63:68])
+    tmp.travel_time_residual = np.nan
+    if '*' not in i[63:68]:
+        tmp.travel_time_residual = str2float(i[63:68])
     tmp.weight = str2int(i[68:70])
     tmp.epicentral_distance = str2float(i[70:75])
     tmp.azimuth_at_source = str2int(i[76:79])
@@ -355,7 +445,7 @@ def read_record_type_i(i):
     return tmp
 
 
-def read_record_type_m(i, vtmp=None):
+def read_record_type_m(i):
     """ Reads record type M"""
 
     if i[1:3] != 'MT':
@@ -376,7 +466,6 @@ def read_record_type_m(i, vtmp=None):
         tmp.method_used = i[70:77]
         tmp.quality = i[77]
     else:
-        tmp = vtmp['M']
         tmp.mrr_mzz = i[3:9]
         tmp.mtt_mxx = i[10:16]
         tmp.mpp_myy = i[17:23]
@@ -392,6 +481,22 @@ def read_record_type_m(i, vtmp=None):
 
     return tmp
 
+def merge_m(rec1, rec2):
+    """ merge M records """
+    rec1.mrr_mzz = rec2.mrr_mzz
+    rec1.mtt_mxx = rec2.mtt_mxx
+    rec1.mpp_myy = rec2.mpp_myy
+    rec1.mrt_mzx = rec2.mrt_mzx
+    rec1.mrp_mzy = rec2.mrp_mzy
+    rec1.mtp_mxy = rec2.mtp_mxy
+    rec1.reporting_agency2 = rec2.reporting_agency2
+    rec1.mt_coordinate_system = rec2.mt_coordinate_system
+    rec1.exponential = rec2.exponential
+    rec1.scalar_moment = rec2.scalar_moment
+    rec1.method_used_2 = rec2.method_used_2
+    rec1.quality_2 = rec2.quality_2
+
+    return rec1
 
 def read_record_type_p(i):
     """ Reads record type P"""
@@ -1217,45 +1322,314 @@ class ExportCSV(object):
         return tmp
 
 
-def sform(strform, val, tmp, col1, col2=None, nval=-999):
+class FilterSeisan(QtWidgets.QDialog):
     """
-    Formats strings
+    Filter Data
 
-    Formats strings according with a mod for values containing the value -999
-    or None. In that case it will output spaces instead. In the case of strings
-    being output, they are truncated to fit the format statement. This routine
-    also  puts the new strings in the correct columns
+    This filters data using thresholds.
 
-    Parameters
+    Attributes
     ----------
-    strform : python format string
-        This string must be of the form {0:4.1f}, where 4.1f can be changed.
-    val : float, int, str
-        input value
-    nval : float, int
-        null value which gets substituted by spaces
-    col1 : int
-        start column (1 is first column)
-    col2 : inr
-        end column
-
-    Returns
-    -------
-    tmp : str
-        Output formatted string.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
     """
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
 
-    if col2 is None:
-        col2 = col1
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.pbar = parent.pbar
 
-    slen = int(re.findall("[0-9]+", strform)[1])
+        self.datlimits = None
 
-    if val == nval or val is None:
-        tmp2 = slen*' '
-    elif 's' in strform:
-        tmp2 = strform.format(val[:slen])
-    else:
-        tmp2 = strform.format(val)
+        self.dsb_from = QtWidgets.QDoubleSpinBox()
+        self.dsb_to = QtWidgets.QDoubleSpinBox()
+        self.rectype = QtWidgets.QComboBox()
+        self.recdesc = QtWidgets.QComboBox()
+        self.dind = 'LRD'
+        self.dind_L = QtWidgets.QCheckBox('Local (L)')
+        self.dind_R = QtWidgets.QCheckBox('Regional (R)')
+        self.dind_D = QtWidgets.QCheckBox('Distant (D)')
+        self.rinc = QtWidgets.QRadioButton()
+        self.rexc = QtWidgets.QRadioButton()
 
-    tmp = tmp[:col1-1]+tmp2[:slen]+tmp[col2:]
-    return tmp
+        self.setupui()
+
+    def setupui(self):
+        """ Setup UI """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
+        label_dind = QtWidgets.QLabel()
+        label_rectype = QtWidgets.QLabel()
+        label_recdesc = QtWidgets.QLabel()
+        label_from = QtWidgets.QLabel()
+        label_to = QtWidgets.QLabel()
+        grp_dind = QtWidgets.QGroupBox("Distance Indicator")
+        vbox = QtWidgets.QVBoxLayout()
+        vbox.addWidget(self.dind_L)
+        vbox.addWidget(self.dind_R)
+        vbox.addWidget(self.dind_D)
+        grp_dind.setLayout(vbox)
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle("Data Filtering")
+        label_dind.setText("Distance Indicator:")
+        label_rectype.setText("Record Type:")
+        label_recdesc.setText("Description:")
+        self.dind_D.setChecked(True)
+        self.dind_R.setChecked(True)
+        self.dind_L.setChecked(True)
+
+        self.rectype.addItems(['1', '4', 'E'])
+        self.recdesc.addItems(['None'])
+        self.rinc.setText('Include')
+        self.rexc.setText('Exclude')
+        self.rinc.setChecked(True)
+        label_from.setText('From')
+        label_to.setText('To')
+
+        self.rectype.currentTextChanged.connect(self.rectype_init)
+        self.recdesc.currentTextChanged.connect(self.recdesc_init)
+
+        gridlayout_main.addWidget(grp_dind, 0, 0, 1, 2)
+        gridlayout_main.addWidget(label_rectype, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.rectype, 1, 1, 1, 1)
+        gridlayout_main.addWidget(label_recdesc, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.recdesc, 2, 1, 1, 1)
+        gridlayout_main.addWidget(self.rinc, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.rexc, 3, 1, 1, 1)
+        gridlayout_main.addWidget(label_from, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_from, 4, 1, 1, 1)
+        gridlayout_main.addWidget(label_to, 5, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_to, 5, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        self.dind_L.stateChanged.connect(self.dind_click)
+        self.dind_R.stateChanged.connect(self.dind_click)
+        self.dind_D.stateChanged.connect(self.dind_click)
+
+    def dind_click(self, state):
+        """ check checkboxes """
+        self.dind = ""
+        if self.dind_L.isChecked():
+            self.dind += 'L'
+        if self.dind_R.isChecked():
+            self.dind += 'R'
+        if self.dind_D.isChecked():
+            self.dind += 'D'
+
+        if self.dind != "":
+            self.get_limits()
+            self.rectype.setCurrentText('1')
+            self.rectype_init('1')
+        else:
+            self.recdesc.disconnect()
+            self.recdesc.clear()
+            self.recdesc_init('')
+            self.recdesc.currentTextChanged.connect(self.recdesc_init)
+
+    def rectype_init(self, txt):
+        """ Change combo """
+        self.rectype.disconnect()
+        self.recdesc.disconnect()
+
+        tmp = list(self.datlimits.keys())
+        tmp = [i[2:] for i in tmp if i[0] == txt]
+
+        self.recdesc.clear()
+        self.recdesc.addItems(tmp)
+
+        self.rectype.currentTextChanged.connect(self.rectype_init)
+        self.recdesc.currentTextChanged.connect(self.recdesc_init)
+        self.recdesc_init(self.recdesc.currentText())
+
+    def recdesc_init(self, txt):
+
+        """ Change Description """
+        if txt == '':
+            minval = 0
+            maxval = 0
+        else:
+            rectxt = self.rectype.currentText()+'_'+txt
+            minval, maxval = self.datlimits[rectxt]
+
+        self.dsb_from.setMinimum(minval)
+        self.dsb_from.setMaximum(maxval)
+        self.dsb_to.setMinimum(minval)
+        self.dsb_to.setMaximum(maxval)
+        self.dsb_from.setValue(minval)
+        self.dsb_to.setValue(maxval)
+
+    def get_limits(self):
+        """ gets limits for seisan data """
+        dat = self.indata['Seis']
+        datd = {}
+
+        for event in dat:
+            if '1' not in event:
+                continue
+            if event['1'].distance_indicator not in self.dind:
+                continue
+
+            allitems = [self.rectype.itemText(i)
+                        for i in range(self.rectype.count())]
+            for rectype in allitems:
+                if rectype not in event:
+                    continue
+                if rectype != '4':
+                    tmp = vars(event[rectype])
+
+                    for j in tmp:
+                        if isinstance(tmp[j], str):
+                            continue
+                        if tmp[j] is None or np.isnan(tmp[j]):
+                            continue
+                        newkey = rectype+'_'+j
+                        if newkey not in datd:
+                            datd[newkey] = []
+                        datd[newkey].append(tmp[j])
+                else:
+                    for i in event[rectype]:
+                        tmp = vars(i)
+                        for j in tmp:
+                            if isinstance(tmp[j], str):
+                                continue
+                            if tmp[j] is None or np.isnan(tmp[j]):
+                                continue
+                            newkey = rectype+'_'+j
+                            if newkey not in datd:
+                                datd[newkey] = []
+                            datd[newkey].append(tmp[j])
+
+        slist = []
+        for event in datd:
+            datd[event] = [min(datd[event]), max(datd[event])]
+            if isinstance(datd[event][0], str):
+                slist.append(event)
+
+        for i in slist:
+            del datd[i]
+
+        self.datlimits = datd
+
+    def settings(self):
+        """ Settings """
+        tmp = []
+        if 'Seis' not in self.indata:
+            return False
+
+        # Get distance indicators
+        dat = self.indata['Seis']
+        dind = ''
+        for event in dat:
+            if '1' not in event:
+                continue
+            if event['1'].distance_indicator not in dind:
+                dind += event['1'].distance_indicator
+
+        self.dind = ''
+        if 'L' in dind:
+            self.dind_L.setEnabled(True)
+            self.dind_L.setChecked(True)
+            self.dind += 'L'
+        else:
+            self.dind_L.setEnabled(False)
+            self.dind_L.setChecked(False)
+
+        if 'R' in dind:
+            self.dind_R.setEnabled(True)
+            self.dind_R.setChecked(True)
+            self.dind += 'R'
+        else:
+            self.dind_R.setEnabled(False)
+            self.dind_R.setChecked(False)
+
+        if 'D' in dind:
+            self.dind_D.setEnabled(True)
+            self.dind_D.setChecked(True)
+            self.dind += 'D'
+        else:
+            self.dind_D.setEnabled(False)
+            self.dind_D.setChecked(False)
+
+        self.get_limits()
+        self.rectype.setCurrentText('1')
+        self.rectype_init('1')
+
+        tmp = self.exec_()
+
+        if tmp == 1:
+            self.acceptall()
+            tmp = True
+
+        return tmp
+
+    def acceptall(self):
+        """ accept """
+        data = self.indata['Seis']
+        rectype = self.rectype.currentText()
+        recdesc = self.recdesc.currentText()
+        minval = self.dsb_from.value()
+        maxval = self.dsb_to.value()
+
+        newdat = []
+        for i in data:
+            if '1' not in i:
+                continue
+            if i['1'].distance_indicator not in self.dind:
+                continue
+            if rectype not in i:
+                continue
+
+            if rectype != '4':
+                tmp = vars(i[rectype])
+
+                if recdesc not in tmp:
+                    continue
+
+                testval = tmp[recdesc]
+                if testval is None:
+                    continue
+
+                if self.rinc.isChecked() and (testval < minval or
+                                              testval > maxval):
+                    continue
+                elif not self.rinc.isChecked() and (testval >= minval and
+                                                    testval <= maxval):
+                    continue
+            else:
+                for j in i[rectype]:
+                    badrec = True
+                    tmp = vars(j)
+                    if recdesc not in tmp:
+                        break
+
+                    testval = tmp[recdesc]
+                    if testval is None:
+                        break
+
+                    if self.rinc.isChecked() and (testval < minval or
+                                                  testval > maxval):
+                        break
+                    elif not self.rinc.isChecked() and (testval >= minval and
+                                                        testval <= maxval):
+                        break
+                    badrec = False
+                if badrec is True:
+                    continue
+
+            newdat.append(i)
+
+        self.outdata['Seis'] = newdat

@@ -25,7 +25,6 @@
 """ These are pfmod tests. Run this file from within this directory to do the
 tests """
 
-import pdb
 import numpy as np
 import matplotlib.pyplot as plt
 from pygmi.pfmod.grvmag3d import quick_model

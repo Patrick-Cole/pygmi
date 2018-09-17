@@ -121,6 +121,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
 
         data = my_class.indata.copy()
 
+        tmp = []
         for j in data:
             if j == 'Model3D' or j == 'Seis':
                 continue

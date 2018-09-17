@@ -35,7 +35,6 @@ References:
 
 from __future__ import print_function
 
-import pdb
 import copy
 import tempfile
 from math import sqrt
@@ -110,32 +109,35 @@ class GravMag(object):
         self.lmod1 = self.parent.lmod1
         self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
-        self.parent.pview.viewmagnetics = True
+#        self.parent.pview.viewmagnetics = True
         self.parent.profile.viewmagnetics = True
 
         self.lmod.lith_index_old[:] = -1
 
+#        self.parent.profile.update_model()
+
         # Update the model from the view
-        indx = self.parent.tabwidget.currentIndex()
-        tlabel = self.parent.tabwidget.tabText(indx)
-
-        if tlabel == 'Layer Editor':
-            self.parent.layer.update_model()
-
-        if tlabel == 'Profile Editor':
-            self.parent.profile.update_model()
-
-        if tlabel == 'Custom Profile Editor':
-            self.parent.pview.update_model()
+#        indx = self.parent.tabwidget.currentIndex()
+#        tlabel = self.parent.tabwidget.tabText(indx)
+#
+#        if tlabel == 'Layer Editor':
+#            self.parent.layer.update_model()
+#
+#        if tlabel == 'Profile Editor':
+#            self.parent.profile.update_model()
+#
+#        if tlabel == 'Custom Profile Editor':
+#            self.parent.pview.update_model()
 
         # now do the calculations
         self.calc_field2(True, True)
+        self.parent.profile.update_plot()
 
-        if tlabel == 'Profile Editor':
-            self.parent.profile.update_plot()
-
-        if tlabel == 'Custom Profile Editor':
-            self.parent.pview.update_plot()
+#        if tlabel == 'Profile Editor':
+#            self.parent.profile.update_plot()
+#
+#        if tlabel == 'Custom Profile Editor':
+#            self.parent.pview.update_plot()
 
         self.actioncalculate4.setEnabled(True)
 
@@ -146,31 +148,34 @@ class GravMag(object):
         self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = False
-        self.parent.pview.viewmagnetics = False
+#        self.parent.pview.viewmagnetics = False
 
         self.lmod.lith_index_old[:] = -1
 
         # Update the model from the view
-        indx = self.parent.tabwidget.currentIndex()
-        tlabel = self.parent.tabwidget.tabText(indx)
+#        indx = self.parent.tabwidget.currentIndex()
+#        tlabel = self.parent.tabwidget.tabText(indx)
+#
+#        if tlabel == 'Layer Editor':
+#            self.parent.layer.update_model()
+#
+#        if tlabel == 'Profile Editor':
+#            self.parent.profile.update_model()
+#
+#        if tlabel == 'Custom Profile Editor':
+#            self.parent.pview.update_model()
 
-        if tlabel == 'Layer Editor':
-            self.parent.layer.update_model()
-
-        if tlabel == 'Profile Editor':
-            self.parent.profile.update_model()
-
-        if tlabel == 'Custom Profile Editor':
-            self.parent.pview.update_model()
+#        self.parent.profile.update_model()
 
         # now do the calculations
         self.calc_field2(True)
+        self.parent.profile.update_plot()
 
-        if tlabel == 'Profile Editor':
-            self.parent.profile.update_plot()
-
-        if tlabel == 'Custom Profile Editor':
-            self.parent.pview.update_plot()
+#        if tlabel == 'Profile Editor':
+#            self.parent.profile.update_plot()
+#
+#        if tlabel == 'Custom Profile Editor':
+#            self.parent.pview.update_plot()
 
         self.actioncalculate3.setEnabled(True)
 

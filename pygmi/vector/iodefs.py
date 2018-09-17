@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
-import pdb
 import os
 import copy
 from PyQt5 import QtWidgets, QtCore

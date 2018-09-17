@@ -25,7 +25,6 @@
 """ These are tests. Run this file from within this directory to do the
 tests """
 
-import pdb
 import sys
 import nose
 from PyQt5 import QtWidgets
@@ -52,7 +51,7 @@ def tests():
     aaa = dp.GroupProj('Input Projection')
 
     ttt.since_last_call()
-    pdb.set_trace()
+    breakpoint()
 
     points = np.random.rand(1000000, 2)
     values = dp.func(points[:, 0], points[:, 1])

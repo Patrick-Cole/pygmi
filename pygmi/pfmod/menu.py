@@ -25,7 +25,6 @@
 """ Potential Field Modelling """
 
 from PyQt5 import QtWidgets
-import pygmi.pfmod.tpfmod as tpfmod
 import pygmi.pfmod.pfmod as pfmod
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.pfmod.iodefs as iodefs
@@ -77,19 +76,6 @@ class MenuWidget(object):
         self.menu.addAction(self.action_prof_pic)
         self.action_prof_pic.triggered.connect(self.import_prof_pic)
 
-        self.menu.addSeparator()
-
-        self.action_import_tmod3d = QtWidgets.QAction(parent)
-        self.action_import_tmod3d.setText("Import 3D Model for Tensor Modelling (Beta)")
-        self.menu.addAction(self.action_import_tmod3d)
-        self.action_import_tmod3d.triggered.connect(self.import_tmod3d)
-
-        self.action_tpfmod = QtWidgets.QAction(self.parent)
-        self.action_tpfmod.setText("Tensor Model Creation and Editing (Beta)")
-        self.menu.addAction(self.action_tpfmod)
-        self.action_tpfmod.triggered.connect(self.tpfmod)
-
-
 # Context Menu
         context_menu['Model3D'].addSeparator()
 
@@ -111,12 +97,6 @@ class MenuWidget(object):
         """ voxel modelling of data"""
         fnc = pfmod.MainWidget(self.parent)
         self.parent.item_insert("Step", "Potential\nField\nModelling", fnc)
-
-    def tpfmod(self):
-        """ voxel modelling of data"""
-        fnc = tpfmod.MainWidget(self.parent)
-        self.parent.item_insert("Step", "Tensor\nPotential\nField\nModelling",
-                                fnc)
 
     def mod3d(self):
         """ 3D display of data"""

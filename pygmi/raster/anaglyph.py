@@ -26,7 +26,6 @@
 Anaglyph routine
 """
 
-import pdb
 from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 import numpy as np
@@ -589,7 +588,7 @@ def anaglyph(red, blue, atype='dubois'):
                         [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
     else:
-        pdb.set_trace()
+        breakpoint()
 
     newshape = (red.shape[0]*red.shape[1], 3)
     data1 = red[:, :, :3].copy()

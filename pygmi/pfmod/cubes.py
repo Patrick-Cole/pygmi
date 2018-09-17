@@ -26,8 +26,6 @@
 
 from __future__ import print_function
 
-import pdb
-from math import cos
 import ctypes
 import os
 import sys
@@ -50,12 +48,6 @@ from PIL import Image
 import pygmi.pfmod.misc as misc
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-#import matplotlib.gridspec as gridspec
-#import matplotlib.cm as cm
-#import matplotlib.image as mi
-#import matplotlib.colors as mcolors
-#import matplotlib.colorbar as mcolorbar
-#from matplotlib import rcParams
 
 
 class Mod3dDisplay(QtWidgets.QDialog):
@@ -740,7 +732,8 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnable(GL.GL_COLOR_MATERIAL)
         GL.glEnable(GL.GL_LIGHTING)
         GL.glEnable(GL.GL_LIGHT0)
-        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, [-0.7071, -0.7071, 0.7071, 0.])
+        GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION,
+                     [-0.7071, -0.7071, 0.7071, 0.])
 
     def setlightdir(self, x, y, z):
         """ sets light direction """

@@ -29,6 +29,7 @@ from pygmi.seis import scan_imp
 from pygmi.seis import del_rec
 from pygmi.seis import iodefs
 from pygmi.seis import beachball
+from pygmi.seis import graphs
 
 
 class MenuWidget(object):
@@ -58,6 +59,11 @@ class MenuWidget(object):
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
 
+        self.action_filter_seisan = QtWidgets.QAction(parent)
+        self.action_filter_seisan.setText("Filter Seisan Data")
+        self.menu.addAction(self.action_filter_seisan)
+        self.action_filter_seisan.triggered.connect(self.filter_seisan)
+
         self.action_import_genfps = QtWidgets.QAction(parent)
         self.action_import_genfps.setText("Import Generic FPS")
         self.menu.addAction(self.action_import_genfps)
@@ -85,7 +91,15 @@ class MenuWidget(object):
         self.menu.addAction(self.action_quarry)
         self.action_quarry.triggered.connect(self.quarry)
 
+
+# Context menus
+
         context_menu['Seis'].addSeparator()
+
+        self.action_show_QC_plots = QtWidgets.QAction(self.parent)
+        self.action_show_QC_plots.setText("Show QC Plots")
+        context_menu['Seis'].addAction(self.action_show_QC_plots)
+        self.action_show_QC_plots.triggered.connect(self.show_QC_plots)
 
         self.action_export_seisan = QtWidgets.QAction(self.parent)
         self.action_export_seisan.setText("Export Seisan Data")
@@ -120,6 +134,11 @@ class MenuWidget(object):
         fnc = iodefs.ImportSeisan(self.parent)
         self.parent.item_insert("Io", "Import\nSeisan\nData", fnc)
 
+    def filter_seisan(self):
+        """ Imports Seisan"""
+        fnc = iodefs.FilterSeisan(self.parent)
+        self.parent.item_insert("Step", "Filter\nSeisan\nData", fnc)
+
     def import_genfps(self):
         """ Imports Generic Fault Plane Solution"""
         fnc = iodefs.ImportGenericFPS(self.parent)
@@ -134,3 +153,7 @@ class MenuWidget(object):
         """ Removes quarry events """
         fnc = del_rec.Quarry(self.parent)
         self.parent.item_insert("Step", "Remove\nQuarry\nEvents", fnc)
+
+    def show_QC_plots(self):
+        """ Show QC plots """
+        self.parent.launch_context_item(graphs.PlotQC)

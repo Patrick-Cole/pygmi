@@ -45,7 +45,7 @@ class MergeLith(QtWidgets.QDialog):
         """ Setup UI """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
+#        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
         label_1 = QtWidgets.QLabel()
         label_2 = QtWidgets.QLabel()
@@ -63,16 +63,18 @@ class MergeLith(QtWidgets.QDialog):
         gridlayout.addWidget(self.lw_lithmaster, 0, 1, 1, 1)
         gridlayout.addWidget(label_2, 1, 0, 1, 1)
         gridlayout.addWidget(self.lw_lithmerge, 1, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
+#        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
 
-class ParamDisplay(object):
+class ParamDisplay(QtWidgets.QDialog):
     """ Widget class to call the main interface """
     def __init__(self, parent):
+        QtWidgets.QDialog.__init__(self, parent)
+
         self.parent = parent
         self.lmod1 = parent.lmod1
         self.lmod2 = parent.lmod2
@@ -81,29 +83,25 @@ class ParamDisplay(object):
         self.showtext = parent.showtext
         self.islmod1 = True
 
-        self.userint = QtWidgets.QWidget()
-
         self.dsb_mht = QtWidgets.QDoubleSpinBox()
         self.dsb_hdec = QtWidgets.QDoubleSpinBox()
         self.dsb_hint = QtWidgets.QDoubleSpinBox()
         self.dsb_hinc = QtWidgets.QDoubleSpinBox()
-        self.pb_autoregional = QtWidgets.QPushButton()
+        self.pb_autoregional = QtWidgets.QPushButton("Lithology Based Regional Estimation")
         self.dsb_ght = QtWidgets.QDoubleSpinBox()
-        self.pb_apply_prop_changes = QtWidgets.QPushButton()
         self.dsb_gregional = QtWidgets.QDoubleSpinBox()
 
-        self.pb_rename_def = QtWidgets.QPushButton()
-        self.pb_rem_def = QtWidgets.QPushButton()
-        self.pb_merge_def = QtWidgets.QPushButton()
+        self.pb_rename_def = QtWidgets.QPushButton("Rename Current Definition")
+        self.pb_rem_def = QtWidgets.QPushButton("Remove Current Definition")
+        self.pb_merge_def = QtWidgets.QPushButton("Merge Definitions")
+        self.pb_add_def = QtWidgets.QPushButton("Add New Lithological Definition")
         self.lw_param_defs = QtWidgets.QListWidget()
-        self.pb_add_def = QtWidgets.QPushButton()
 
         self.gbox_lithprops = QtWidgets.QGroupBox()
         self.dsb_mdec = QtWidgets.QDoubleSpinBox()
         self.dsb_density = QtWidgets.QDoubleSpinBox()
         self.dsb_minc = QtWidgets.QDoubleSpinBox()
         self.dsb_susc = QtWidgets.QDoubleSpinBox()
-        self.pb_apply_lith_changes = QtWidgets.QPushButton()
         self.dsb_rmi = QtWidgets.QDoubleSpinBox()
         self.dsb_qratio = QtWidgets.QDoubleSpinBox()
         self.dsb_magnetization = QtWidgets.QDoubleSpinBox()
@@ -113,27 +111,49 @@ class ParamDisplay(object):
 
     def setupui(self):
         """ Setup UI """
-        verticallayout = QtWidgets.QVBoxLayout(self.userint)
+        self.setWindowTitle("Geophysical Parameters")
 
-        gbox1 = QtWidgets.QGroupBox()
-        gbox2 = QtWidgets.QGroupBox()
-        glayout = QtWidgets.QGridLayout(gbox1)
-        glayout2 = QtWidgets.QGridLayout(gbox2)
-        glayout3 = QtWidgets.QGridLayout(self.gbox_lithprops)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                                           QtWidgets.QSizePolicy.Preferred)
+        sizepolicy.setHorizontalStretch(0)
+        sizepolicy.setVerticalStretch(0)
+        sizepolicy.setHeightForWidth(
+            self.lw_param_defs.sizePolicy().hasHeightForWidth())
 
-        label_1 = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
-        label_3 = QtWidgets.QLabel()
-        label_4 = QtWidgets.QLabel()
-        label_5 = QtWidgets.QLabel()
-        label_6 = QtWidgets.QLabel()
-        label_7 = QtWidgets.QLabel()
-        label_8 = QtWidgets.QLabel()
-        label_9 = QtWidgets.QLabel()
-        label_10 = QtWidgets.QLabel()
-        label_11 = QtWidgets.QLabel()
-        label_12 = QtWidgets.QLabel()
-        label_13 = QtWidgets.QLabel()
+        verticallayout = QtWidgets.QVBoxLayout(self)
+
+        buttonbox = QtWidgets.QDialogButtonBox()
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+# General Properties
+        gb_gen_prop = QtWidgets.QGroupBox("General Properties")
+        gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
+
+        label_1 = QtWidgets.QLabel("Gravity Regional (mgal)")
+        label_2 = QtWidgets.QLabel("Height of observation - Gravity")
+        label_3 = QtWidgets.QLabel("Height of observation - Magnetic")
+        label_4 = QtWidgets.QLabel("Magnetic Field Intensity (nT)")
+        label_5 = QtWidgets.QLabel("Magnetic Inclination")
+        label_6 = QtWidgets.QLabel("Magnetic Declination")
+
+        gl_gen_prop.addWidget(label_1, 0, 0, 1, 1)
+        gl_gen_prop.addWidget(self.dsb_gregional, 0, 1, 1, 1)
+        gl_gen_prop.addWidget(self.pb_autoregional, 1, 0, 1, 2)
+        gl_gen_prop.addWidget(label_2, 2, 0, 1, 1)
+        gl_gen_prop.addWidget(self.dsb_ght, 2, 1, 1, 1)
+        gl_gen_prop.addWidget(label_3, 3, 0, 1, 1)
+        gl_gen_prop.addWidget(self.dsb_mht, 3, 1, 1, 1)
+        gl_gen_prop.addWidget(label_4, 4, 0, 1, 1)
+        gl_gen_prop.addWidget(self.dsb_hint, 4, 1, 1, 1)
+        gl_gen_prop.addWidget(label_5, 5, 0, 1, 1)
+        gl_gen_prop.addWidget(self.dsb_hinc, 5, 1, 1, 1)
+        gl_gen_prop.addWidget(label_6, 6, 0, 1, 1)
+        gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
+
+# Lithological Properties
+        gb_lith_prop = QtWidgets.QGroupBox("Lithological Properties")
+        gl_lith_prop = QtWidgets.QGridLayout(gb_lith_prop)
 
         self.dsb_gregional.setMinimum(-10000.0)
         self.dsb_gregional.setMaximum(10000.0)
@@ -151,15 +171,27 @@ class ParamDisplay(object):
         self.dsb_hdec.setMaximum(360.0)
         self.dsb_hdec.setProperty("value", -17.0)
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
-                                           QtWidgets.QSizePolicy.Preferred)
-        sizepolicy.setHorizontalStretch(0)
-        sizepolicy.setVerticalStretch(0)
-        sizepolicy.setHeightForWidth(
-            self.lw_param_defs.sizePolicy().hasHeightForWidth())
         self.lw_param_defs.setSizePolicy(sizepolicy)
         self.lw_param_defs.setEditTriggers(
             QtWidgets.QAbstractItemView.NoEditTriggers)
+
+        gl_lith_prop.addWidget(self.pb_add_def, 0, 0, 1, 1)
+        gl_lith_prop.addWidget(self.gbox_lithprops, 0, 1, 5, 1)
+        gl_lith_prop.addWidget(self.lw_param_defs, 1, 0, 1, 1)
+        gl_lith_prop.addWidget(self.pb_rename_def, 2, 0, 1, 1)
+        gl_lith_prop.addWidget(self.pb_rem_def, 3, 0, 1, 1)
+        gl_lith_prop.addWidget(self.pb_merge_def, 4, 0, 1, 1)
+
+        gl_lithprops = QtWidgets.QGridLayout(self.gbox_lithprops)
+
+        label_7 = QtWidgets.QLabel("Magnetic Susceptibility (SI)")
+        label_8 = QtWidgets.QLabel("Remanent Magnetization Intensity (nT)")
+        label_9 = QtWidgets.QLabel("Q Ratio")
+        label_10 = QtWidgets.QLabel("Remanent Magnetization (A/m)")
+        label_11 = QtWidgets.QLabel("Remanent Inclination")
+        label_12 = QtWidgets.QLabel("Remanent Declination")
+        label_13 = QtWidgets.QLabel("Density (g/cm3)")
+
         self.dsb_susc.setDecimals(4)
         self.dsb_susc.setMaximum(999999999.0)
         self.dsb_susc.setSingleStep(0.01)
@@ -184,67 +216,24 @@ class ParamDisplay(object):
         self.dsb_density.setSingleStep(0.01)
         self.dsb_density.setProperty("value", 2.75)
 
-        gbox1.setTitle("General Properties")
-        gbox2.setTitle("Lithological Properties")
-        label_1.setText("Gravity Regional (mgal)")
-        label_2.setText("Height of observation - Gravity")
-        label_3.setText("Height of observation - Magnetic")
-        label_4.setText("Magnetic Field Intensity (nT)")
-        label_5.setText("Magnetic Inclination")
-        label_6.setText("Magnetic Declination")
-        label_7.setText("Magnetic Susceptibility (SI)")
-        label_8.setText("Remanent Magnetization Intensity (nT)")
-        label_9.setText("Q Ratio")
-        label_10.setText("Remanent Magnetization (A/m)")
-        label_11.setText("Remanent Inclination")
-        label_12.setText("Remanent Declination")
-        label_13.setText("Density (g/cm3)")
-        self.gbox_lithprops.setTitle("Lithological Properties")
-        self.pb_apply_lith_changes.setText("Apply Changes")
-        self.pb_apply_prop_changes.setText("Apply Changes")
-        self.pb_autoregional.setText("Lithology Based Regional Estimation")
-        self.pb_add_def.setText("Add New Lithological Definition")
-        self.pb_rename_def.setText("Rename Current Definition")
-        self.pb_rem_def.setText("Remove Current Definition")
-        self.pb_merge_def.setText("Merge Definitions")
+        gl_lithprops.addWidget(label_13, 3, 0, 1, 1)
+        gl_lithprops.addWidget(self.dsb_density, 3, 1, 1, 1)
+        gl_lithprops.addWidget(label_7, 4, 0, 1, 1)
+        gl_lithprops.addWidget(self.dsb_susc, 4, 1, 1, 1)
+        gl_lithprops.addWidget(label_8, 5, 0, 1, 1)
+        gl_lithprops.addWidget(self.dsb_rmi, 5, 1, 1, 1)
+        gl_lithprops.addWidget(label_10, 6, 0, 1, 1)
+        gl_lithprops.addWidget(self.dsb_magnetization, 6, 1, 1, 1)
+        gl_lithprops.addWidget(label_9, 7, 0, 1, 1)
+        gl_lithprops.addWidget(self.dsb_qratio, 7, 1, 1, 1)
+        gl_lithprops.addWidget(label_11, 8, 0, 1, 1)
+        gl_lithprops.addWidget(self.dsb_minc, 8, 1, 1, 1)
+        gl_lithprops.addWidget(label_12, 9, 0, 1, 1)
+        gl_lithprops.addWidget(self.dsb_mdec, 9, 1, 1, 1)
 
-        verticallayout.addWidget(gbox1)
-        verticallayout.addWidget(gbox2)
-        glayout.addWidget(label_1, 0, 0, 1, 1)
-        glayout.addWidget(self.dsb_gregional, 0, 1, 1, 1)
-        glayout.addWidget(self.pb_autoregional, 1, 0, 1, 2)
-        glayout.addWidget(label_2, 2, 0, 1, 1)
-        glayout.addWidget(self.dsb_ght, 2, 1, 1, 1)
-        glayout.addWidget(label_3, 3, 0, 1, 1)
-        glayout.addWidget(self.dsb_mht, 3, 1, 1, 1)
-        glayout.addWidget(label_4, 4, 0, 1, 1)
-        glayout.addWidget(self.dsb_hint, 4, 1, 1, 1)
-        glayout.addWidget(label_5, 5, 0, 1, 1)
-        glayout.addWidget(self.dsb_hinc, 5, 1, 1, 1)
-        glayout.addWidget(label_6, 6, 0, 1, 1)
-        glayout.addWidget(self.dsb_hdec, 6, 1, 1, 1)
-        glayout.addWidget(self.pb_apply_prop_changes, 7, 0, 1, 2)
-        glayout2.addWidget(self.pb_add_def, 0, 0, 1, 1)
-        glayout2.addWidget(self.gbox_lithprops, 0, 1, 5, 1)
-        glayout2.addWidget(self.lw_param_defs, 1, 0, 1, 1)
-        glayout2.addWidget(self.pb_rename_def, 2, 0, 1, 1)
-        glayout2.addWidget(self.pb_rem_def, 3, 0, 1, 1)
-        glayout2.addWidget(self.pb_merge_def, 4, 0, 1, 1)
-        glayout3.addWidget(label_13, 3, 0, 1, 1)
-        glayout3.addWidget(self.dsb_density, 3, 1, 1, 1)
-        glayout3.addWidget(label_7, 4, 0, 1, 1)
-        glayout3.addWidget(self.dsb_susc, 4, 1, 1, 1)
-        glayout3.addWidget(label_8, 5, 0, 1, 1)
-        glayout3.addWidget(self.dsb_rmi, 5, 1, 1, 1)
-        glayout3.addWidget(label_10, 6, 0, 1, 1)
-        glayout3.addWidget(self.dsb_magnetization, 6, 1, 1, 1)
-        glayout3.addWidget(label_9, 7, 0, 1, 1)
-        glayout3.addWidget(self.dsb_qratio, 7, 1, 1, 1)
-        glayout3.addWidget(label_11, 8, 0, 1, 1)
-        glayout3.addWidget(self.dsb_minc, 8, 1, 1, 1)
-        glayout3.addWidget(label_12, 9, 0, 1, 1)
-        glayout3.addWidget(self.dsb_mdec, 9, 1, 1, 1)
-        glayout3.addWidget(self.pb_apply_lith_changes, 10, 0, 1, 2)
+        verticallayout.addWidget(gb_gen_prop)
+        verticallayout.addWidget(gb_lith_prop)
+        verticallayout.addWidget(buttonbox)
 
         self.add_defs(deftxt='Background')  # First call is for background
         self.add_defs()  # Second is for the first lithology type
@@ -255,14 +244,15 @@ class ParamDisplay(object):
         self.pb_rem_def.clicked.connect(self.rem_defs)
         self.pb_merge_def.clicked.connect(self.merge_defs)
         self.pb_rename_def.clicked.connect(self.rename_defs)
-        self.pb_apply_lith_changes.clicked.connect(self.apply_lith_changes)
-        self.pb_apply_prop_changes.clicked.connect(self.apply_prop_changes)
         self.lw_param_defs.itemChanged.connect(self.change_defs)
         self.dsb_susc.valueChanged.connect(self.change_qratio)
         self.dsb_rmi.valueChanged.connect(self.change_rmi)
         self.dsb_magnetization.valueChanged.connect(self.change_magnetization)
         self.dsb_qratio.valueChanged.connect(self.change_qratio)
         self.pb_autoregional.clicked.connect(self.autoregional)
+
+        buttonbox.accepted.connect(self.apply_changes)
+        buttonbox.rejected.connect(self.reject)
 
     def autoregional(self):
         """ Automatically estimates the regional """
@@ -330,8 +320,8 @@ class ParamDisplay(object):
 
         self.lw_index_change()
 
-    def apply_prop_changes(self):
-        """ Applies geophysical property changes """
+    def apply_changes(self):
+        """ Applies changes """
 
         self.lmod1.gregional = self.dsb_gregional.value()
         self.lmod1.mht = self.dsb_mht.value()
@@ -344,9 +334,6 @@ class ParamDisplay(object):
             lith.fdec = self.dsb_hdec.value()
             lith.modified = True
         self.showtext('Geophysical properties applied.')
-
-    def apply_lith_changes(self):
-        """ Applies lithological changes """
 
         lith = self.get_lith()
         lith.density = self.dsb_density.value()
@@ -364,6 +351,7 @@ class ParamDisplay(object):
         self.lmod1.lith_index_old[:] = -1
 
         self.showtext('Lithological changes applied.')
+        self.accept()
 
     def change_rmi(self):
         """ update spinboxes when rmi is changed """
@@ -503,7 +491,7 @@ class ParamDisplay(object):
         self.dsb_density.setValue(lith.density)
         self.dsb_ght.setValue(-lith.zobsg)
 
-        self.gbox_lithprops.setTitle('Lithological Properties - ' + itxt)
+        self.gbox_lithprops.setTitle(itxt)
 
     def add_def(self):
         """ Routine being called by button push """
@@ -594,3 +582,6 @@ class ParamDisplay(object):
 # Need this to init the first values.
         self.lw_index_change()
         self.dsb_gregional.setValue(self.lmod1.gregional)
+        self.exec_()
+        self.parent.tab_change()
+

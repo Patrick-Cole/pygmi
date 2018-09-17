@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ These are miscellaneous functions for the program """
 
-import pdb
 import time
 from PyQt5 import QtWidgets, QtCore, QtGui
 import pygmi.menu_default as menu_default
@@ -45,138 +44,6 @@ def update_lith_lw(lmod, lwidget):
         tindex = lmod.lith_list[str(tmp.text())].lith_index
         tcol = lmod.mlut[tindex]
         tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
-
-
-class RangedCopy(QtWidgets.QDialog):
-    """ Class to call up a dialog for ranged copying """
-    def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
-
-        self.sb_master = QtWidgets.QSpinBox()
-        self.sb_start = QtWidgets.QSpinBox()
-        self.lw_lithdel = QtWidgets.QListWidget()
-        self.lw_lithcopy = QtWidgets.QListWidget()
-        self.sb_end = QtWidgets.QSpinBox()
-
-        self.setupui()
-
-    def setupui(self):
-        """ Setup UI """
-        gridlayout = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
-
-        label = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
-        label_3 = QtWidgets.QLabel()
-        label_4 = QtWidgets.QLabel()
-        label_5 = QtWidgets.QLabel()
-
-        self.sb_master.setMaximum(999999999)
-        self.sb_start.setMaximum(999999999)
-        self.lw_lithcopy.setSelectionMode(self.lw_lithcopy.MultiSelection)
-        self.lw_lithdel.setSelectionMode(self.lw_lithdel.MultiSelection)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-        self.sb_end.setMaximum(999999999)
-
-        self.setWindowTitle("Ranged Copy")
-        label.setText("Range Start")
-        label_2.setText("Master Profile")
-        label_3.setText("Lithologies To Copy")
-        label_4.setText("Lithologies To Overwrite")
-        label_5.setText("Range End")
-
-        gridlayout.addWidget(label_2, 0, 0, 1, 1)
-        gridlayout.addWidget(self.sb_master, 0, 1, 1, 1)
-        gridlayout.addWidget(label, 1, 0, 1, 1)
-        gridlayout.addWidget(self.sb_start, 1, 1, 1, 1)
-        gridlayout.addWidget(label_5, 2, 0, 1, 1)
-        gridlayout.addWidget(self.sb_end, 2, 1, 1, 1)
-        gridlayout.addWidget(label_3, 3, 0, 1, 1)
-        gridlayout.addWidget(self.lw_lithcopy, 3, 1, 1, 1)
-        gridlayout.addWidget(label_4, 4, 0, 1, 1)
-        gridlayout.addWidget(self.lw_lithdel, 4, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 5, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-
-
-def rcopy_dialog(lmod1, islayer=True, is_ew=True):
-    """ Main routine to perform actual ranged copy """
-    rcopy = RangedCopy()
-    for i in lmod1.lith_list:
-        rcopy.lw_lithcopy.addItem(i)
-        rcopy.lw_lithdel.addItem(i)
-
-    if islayer is True:
-        rmax = lmod1.numz-1
-    elif is_ew is True:
-        rmax = lmod1.numy-1
-    else:
-        rmax = lmod1.numx-1
-
-    rcopy.sb_start.setMaximum(rmax)
-    rcopy.sb_end.setMaximum(rmax)
-    rcopy.sb_end.setValue(rmax)
-
-    if islayer is True:
-        rcopy.sb_master.setValue(lmod1.curlayer)
-    else:
-        rcopy.sb_master.setValue(lmod1.curprof)
-
-    tmp = rcopy.exec_()
-    if tmp == 0:
-        return
-
-    lithcopy = rcopy.lw_lithcopy.selectedItems()
-    lithdel = rcopy.lw_lithdel.selectedItems()
-    lstart = rcopy.sb_start.value()
-    lend = rcopy.sb_end.value()
-    lmaster = rcopy.sb_master.value()
-
-    if lstart > lend:
-        lstart, lend = lend, lstart
-
-    if islayer is True:
-        mtmp = lmod1.lith_index[:, :, lmaster]
-        if lend > lmod1.numz:
-            lend = lmod1.numz
-    else:
-        if is_ew is True:
-            mtmp = lmod1.lith_index[:, lmaster, ::-1]
-            if lend > lmod1.numy:
-                lend = lmod1.numy
-        else:
-            mtmp = lmod1.lith_index[lmaster, :, ::-1]
-            if lend > lmod1.numx:
-                lend = lmod1.numx
-
-    mslice = mtmp * 0
-    for i in lithcopy:
-        mslice[mtmp == lmod1.lith_list[i.text()].lith_index] = 1
-
-    for i in range(lstart, lend+1):
-        if islayer is True:
-            ltmp = lmod1.lith_index[:, :, i]
-        else:
-            if is_ew is True:
-                ltmp = lmod1.lith_index[:, i, ::-1]
-            else:
-                ltmp = lmod1.lith_index[i, :, ::-1]
-
-        lslice = ltmp * 0
-        for j in lithdel:
-            lslice[ltmp == lmod1.lith_list[j.text()].lith_index] = 1
-        mlslice = mslice + lslice
-        mlslice[mlslice == 1] = 0
-        mlslice[mlslice > 0] = 1
-        mtmp2 = mtmp.copy()
-        mtmp2[mlslice == 0] = 0
-        ltmp[mlslice == 1] = 0
-        ltmp += mtmp2
 
 
 class ProgressBar(object):
@@ -216,7 +83,7 @@ class ProgressBar(object):
         self.pbar.setMinimum(0)
         self.pbar.setValue(0)
 
-        self.otime = time.clock()
+        self.otime = time.perf_counter()
         time1 = self.otime
         time2 = self.otime
 
@@ -225,7 +92,7 @@ class ProgressBar(object):
             yield obj
             i += 1
 
-            time2 = time.clock()
+            time2 = time.perf_counter()
             if time2-time1 > 1:
                 self.pbar.setValue(i)
                 tleft = (total-i)*(time2-self.otime)/i
@@ -252,7 +119,7 @@ class ProgressBar(object):
 
         n = self.mvalue
         total = self.mmax
-        tleft = (total-n)*(time.clock()-self.mtime)/n
+        tleft = (total-n)*(time.perf_counter()-self.mtime)/n
         if tleft > 60:
             tleft = int(tleft // 60)
             self.pbarmain.setFormat('%p% '+str(tleft)+'min left')
@@ -275,7 +142,7 @@ class ProgressBar(object):
 
         self.pbar.setFormat('%p%')
         self.pbarmain.setFormat('%p%')
-        self.mtime = time.clock()
+        self.mtime = time.perf_counter()
 
         self.max = maximum
         self.value = 0

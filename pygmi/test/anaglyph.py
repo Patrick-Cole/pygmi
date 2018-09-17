@@ -26,7 +26,6 @@
 Anaglyph routine
 """
 
-import pdb
 from math import cos, sin
 from time import sleep
 import scipy.interpolate as si
@@ -284,7 +283,7 @@ def main_parallel():
 
     GLUT.glutIdleFunc(animationStep)
     GLUT.glutMainLoop()
-    pdb.set_trace()
+    breakpoint()
 
 
 def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
@@ -599,7 +598,7 @@ def main_sunshade():
     plt.imshow(adata)
     plt.show()
 
-    pdb.set_trace()
+    breakpoint()
 
 
 def main_gsc():
@@ -768,7 +767,7 @@ def main_contour():
 
     ax.autoscale()
     plt.show()
-    pdb.set_trace()
+    breakpoint()
 
 
 def rot_and_clean(x, y, z, rotang=5, rtype='red', doshade=False):

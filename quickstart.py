@@ -29,18 +29,11 @@ formally install PyGMI as a library and prefer to run it from within the
 default extracted directory structure.
 """
 
-import traceback
-import sys
-from PyQt5 import QtCore
+import warnings
 from pygmi.main import main
 
-
-def excepthook(type_, value, traceback_):
-    """ Excepthook bugfix for Qt5 debugging """
-    traceback.print_exception(type_, value, traceback_)
-    QtCore.qFatal('')
+warnings.filterwarnings('default')
 
 
 if __name__ == "__main__":
-    sys.excepthook = excepthook
     main()

@@ -24,7 +24,6 @@
 # -----------------------------------------------------------------------------
 """ These are helper routines for gridding up data. """
 
-import pdb
 import pprint
 import numpy as np
 from pygmi.raster import iodefs as pio
@@ -114,7 +113,7 @@ def grid():
     plt.colorbar()
     plt.show()
 
-    pdb.set_trace()
+    breakpoint()
 
 
 def model_to_grid_thickness():
@@ -150,7 +149,7 @@ def model_to_grid_thickness():
     tmp.ifile = ofile
     tmp.export_gdal([gout], 'GTiff')
 
-    pdb.set_trace()
+    breakpoint()
 
 
 def model_to_lith_depth():

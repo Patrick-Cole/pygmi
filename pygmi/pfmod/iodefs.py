@@ -36,7 +36,6 @@ import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from pygmi.pfmod.datatypes import Data, LithModel
 import pygmi.pfmod.grvmag3d as grvmag3d
-import pygmi.pfmod.tensor3d as tensor3d
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.menu_default as menu_default
 import pygmi.raster.dataprep as dp
@@ -154,8 +153,6 @@ class ImportMod3D(object):
         lmod.numz = z_u.shape[0]
         lmod.dxy = max(xcell, ycell)
         lmod.d_z = zcell
-        lmod.curprof = 0
-        lmod.curlayer = 0
         lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
         lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
         lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
@@ -240,8 +237,6 @@ class ImportMod3D(object):
 
         lmod.dxy = min(xcell, ycell)
         lmod.d_z = zcell
-        lmod.curprof = 0
-        lmod.curlayer = 0
         lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
         lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
         lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
@@ -281,8 +276,7 @@ class ImportMod3D(object):
                 lmod.lith_index[col, row, layer] = \
                     lmod.lith_list[label[i]].lith_index
             except:
-                import pdb
-                pdb.set_trace()
+                breakpoint()
 
     def dict2lmod(self, indict, pre=''):
         """ routine to convert a dictionary to an lmod """
@@ -299,8 +293,6 @@ class ImportMod3D(object):
         lmod.dxy = indict[pre+'dxy']
         lmod.d_z = indict[pre+'d_z']
         lmod.lith_index = indict[pre+'lith_index']
-        lmod.curprof = 0
-        lmod.curlayer = 0
         lmod.xrange = np.array(indict[pre+'xrange']).tolist()
         lmod.yrange = np.array(indict[pre+'yrange']).tolist()
         lmod.zrange = np.array(indict[pre+'zrange']).tolist()
@@ -348,147 +340,6 @@ class ImportMod3D(object):
         for itxt in lithkeys:
             if itxt != 'Background':
                 lmod.lith_list[itxt] = grvmag3d.GeoData(self.parent)
-
-            lmod.lith_list[itxt].hintn = np.asscalar(indict[pre+itxt+'_hintn'])
-            lmod.lith_list[itxt].finc = np.asscalar(indict[pre+itxt+'_finc'])
-            lmod.lith_list[itxt].fdec = np.asscalar(indict[pre+itxt+'_fdec'])
-            lmod.lith_list[itxt].zobsm = np.asscalar(indict[pre+itxt+'_zobsm'])
-            lmod.lith_list[itxt].susc = np.asscalar(indict[pre+itxt+'_susc'])
-            lmod.lith_list[itxt].mstrength = np.asscalar(
-                indict[pre+itxt+'_mstrength'])
-            lmod.lith_list[itxt].qratio = np.asscalar(
-                indict[pre+itxt+'_qratio'])
-            lmod.lith_list[itxt].minc = np.asscalar(indict[pre+itxt+'_minc'])
-            lmod.lith_list[itxt].mdec = np.asscalar(indict[pre+itxt+'_mdec'])
-            lmod.lith_list[itxt].density = np.asscalar(
-                indict[pre+itxt+'_density'])
-            lmod.lith_list[itxt].bdensity = np.asscalar(
-                indict[pre+itxt+'_bdensity'])
-            lmod.lith_list[itxt].lith_index = np.asscalar(
-                indict[pre+itxt+'_lith_index'])
-            lmod.lith_list[itxt].g_cols = np.asscalar(indict[pre+itxt+'_numx'])
-            lmod.lith_list[itxt].g_rows = np.asscalar(indict[pre+itxt+'_numy'])
-            lmod.lith_list[itxt].numz = np.asscalar(indict[pre+itxt+'_numz'])
-            lmod.lith_list[itxt].g_dxy = np.asscalar(indict[pre+itxt+'_dxy'])
-            lmod.lith_list[itxt].dxy = np.asscalar(indict[pre+itxt+'_dxy'])
-            lmod.lith_list[itxt].d_z = np.asscalar(indict[pre+itxt+'_d_z'])
-            lmod.lith_list[itxt].zobsm = np.asscalar(indict[pre+itxt+'_zobsm'])
-            lmod.lith_list[itxt].zobsg = np.asscalar(indict[pre+itxt+'_zobsg'])
-            lmod.lith_list[itxt].modified = True
-            lmod.lith_list[itxt].set_xyz12()
-
-
-class ImportTMod3D(object):
-    """ Import Data """
-    def __init__(self, parent):
-        self.parent = parent
-        self.lmod = LithModel()
-
-        self.ifile = ""
-        self.name = "Import 3D Model: "
-        self.ext = ""
-        self.indata = {}
-        self.outdata = {}
-
-        if parent is not None:
-            self.pbars = parent.pbar
-
-    def settings(self):
-        """ Settings """
-        ext = ('npz (*.npz)')
-
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
-
-        if filename == '':
-            return False
-        os.chdir(filename.rpartition('/')[0])
-        self.ifile = str(filename)
-        self.parent.modelfilename = filename.rpartition('.')[0]
-
-# Reset Variables
-        self.lmod.griddata.clear()
-        self.lmod.lith_list.clear()
-
-        indict = np.load(filename)
-        self.dict2lmod(indict)
-
-        self.outdata['Model3D'] = [self.lmod]
-        self.lmod.name = filename.rpartition('/')[-1]
-
-        for i in self.lmod.griddata:
-            if self.lmod.griddata[i].dataid == '':
-                self.lmod.griddata[i].dataid = i
-
-        tmp = [i for i in set(self.lmod.griddata.values())]
-        self.outdata['Raster'] = tmp
-
-        return True
-
-    def dict2lmod(self, indict, pre=''):
-        """ routine to convert a dictionary to an lmod """
-        lithkeys = indict[pre+'lithkeys']
-
-        lmod = self.lmod
-
-        lmod.gregional = indict[pre+'gregional']
-        lmod.ght = indict[pre+'ght']
-        lmod.mht = indict[pre+'mht']
-        lmod.numx = indict[pre+'numx']
-        lmod.numy = indict[pre+'numy']
-        lmod.numz = indict[pre+'numz']
-        lmod.dxy = indict[pre+'dxy']
-        lmod.d_z = indict[pre+'d_z']
-        lmod.lith_index = indict[pre+'lith_index']
-        lmod.curprof = 0
-        lmod.curlayer = 0
-        lmod.xrange = np.array(indict[pre+'xrange']).tolist()
-        lmod.yrange = np.array(indict[pre+'yrange']).tolist()
-        lmod.zrange = np.array(indict[pre+'zrange']).tolist()
-        if pre+'custprofx' in indict:
-            lmod.custprofx = np.asscalar(indict[pre+'custprofx'])
-        else:
-            lmod.custprofx = {0: (lmod.xrange[0], lmod.xrange[1])}
-        if pre+'custprofy' in indict:
-            lmod.custprofy = np.asscalar(indict[pre+'custprofy'])
-        else:
-            lmod.custprofy = {0: (lmod.yrange[0], lmod.yrange[0])}
-
-        lmod.mlut = np.asscalar(indict[pre+'mlut'])
-        lmod.init_calc_grids()
-
-        lmod.griddata = np.asscalar(indict[pre+'griddata'])
-
-        for i in lmod.griddata:
-            lmod.griddata[i].data = np.ma.array(lmod.griddata[i].data)
-
-        # This gets rid of a legacy variable name
-        for i in lmod.griddata:
-            if not hasattr(lmod.griddata[i], 'dataid'):
-                lmod.griddata[i].dataid = ''
-            if hasattr(lmod.griddata[i], 'bandid'):
-                if lmod.griddata[i].dataid == '':
-                    lmod.griddata[i].dataid = lmod.griddata[i].bandid
-                del lmod.griddata[i].bandid
-
-        wktfin = None
-        for i in lmod.griddata:
-            wkt = lmod.griddata[i].wkt
-            if wkt != '' and wkt is not None:
-                wktfin = wkt
-
-        if wktfin is not None:
-            for i in lmod.griddata:
-                wkt = lmod.griddata[i].wkt
-                if wkt == '' or wkt is None:
-                    lmod.griddata[i].wkt = wktfin
-
-# Section to load lithologies.
-        lmod.lith_list['Background'] = tensor3d.GeoData(self.parent)
-
-        for itxt in lithkeys:
-            if itxt != 'Background':
-                lmod.lith_list[itxt] = tensor3d.GeoData(self.parent)
 
             lmod.lith_list[itxt].hintn = np.asscalar(indict[pre+itxt+'_hintn'])
             lmod.lith_list[itxt].finc = np.asscalar(indict[pre+itxt+'_finc'])

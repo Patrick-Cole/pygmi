@@ -57,8 +57,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib import patches
-import ogr
-import osr
+from osgeo import ogr, osr
 import scipy.spatial.distance as sdist
 
 

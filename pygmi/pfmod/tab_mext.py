@@ -24,25 +24,24 @@
 # -----------------------------------------------------------------------------
 """ Model Extension Display Tab Routines """
 
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import scipy.interpolate as si
 
 
-class MextDisplay(object):
+class MextDisplay(QtWidgets.QDialog):
     """ MextDisplay - Widget class to call the main interface """
     def __init__(self, parent):
+        QtWidgets.QDialog.__init__(self, parent)
         self.parent = parent
         self.lmod1 = parent.lmod1  # actual model
         self.lmod2 = parent.lmod2
         self.showtext = parent.showtext
         self.pbars = self.parent.pbars
 
-        self.userint = QtWidgets.QWidget()
-
         self.combo_model = QtWidgets.QComboBox()
         self.combo_regional = QtWidgets.QComboBox()
-        self.pb_regional = QtWidgets.QPushButton()
+        self.cb_regional = QtWidgets.QCheckBox("Apply Regional Model")
         self.combo_dtm = QtWidgets.QComboBox()
         self.combo_mag = QtWidgets.QComboBox()
         self.combo_grv = QtWidgets.QComboBox()
@@ -59,50 +58,83 @@ class MextDisplay(object):
         self.sb_cols = QtWidgets.QSpinBox()
         self.sb_rows = QtWidgets.QSpinBox()
         self.sb_layers = QtWidgets.QSpinBox()
-        self.pb_apply_changes = QtWidgets.QPushButton()
 
         self.setupui()
         self.init()
 
     def setupui(self):
         """ Setup UI """
-        verticallayout = QtWidgets.QVBoxLayout(self.userint)
-        groupbox_model = QtWidgets.QGroupBox()
-        groupbox_extent = QtWidgets.QGroupBox()
-        groupbox_data_info = QtWidgets.QGroupBox()
+        self.setWindowTitle("Model Extent Parameters")
 
-        gridlayout_model = QtWidgets.QGridLayout(groupbox_model)
-        gridlayout = QtWidgets.QGridLayout(groupbox_extent)
-        gridlayout_2 = QtWidgets.QGridLayout(groupbox_data_info)
+        verticallayout = QtWidgets.QVBoxLayout(self)
 
-        sizepolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                            QtWidgets.QSizePolicy.Preferred)
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                           QtWidgets.QSizePolicy.Preferred)
+
+        buttonbox = QtWidgets.QDialogButtonBox()
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
 # Current Models Groupbox
-        lbl1_model = QtWidgets.QLabel()
-        lbl2_model = QtWidgets.QLabel()
-        self.pb_regional.setSizePolicy(sizepolicy2)
+        gb_model = QtWidgets.QGroupBox("Current Models")
+        gl_model = QtWidgets.QGridLayout(gb_model)
+
+        lbl1_model = QtWidgets.QLabel("Current Model:")
+        lbl2_model = QtWidgets.QLabel("Regional Model:")
+
+        self.combo_model.addItems(['None'])
+        self.combo_regional.addItems(['None'])
+
+        self.cb_regional.setSizePolicy(sizepolicy)
+
+        gl_model.addWidget(lbl1_model, 0, 0, 1, 1)
+        gl_model.addWidget(lbl2_model, 1, 0, 1, 1)
+        gl_model.addWidget(self.combo_model, 0, 1, 1, 1)
+        gl_model.addWidget(self.combo_regional, 1, 1, 1, 1)
+        gl_model.addWidget(self.cb_regional, 0, 2, 2, 1)
 
 # Data Information Groupbox
-        lbl1_2 = QtWidgets.QLabel()
-        lbl2_2 = QtWidgets.QLabel()
-        lbl3_2 = QtWidgets.QLabel()
-        lbl4_2 = QtWidgets.QLabel()
+        gb_data_info = QtWidgets.QGroupBox("Dataset Information")
+        gl_data_info = QtWidgets.QGridLayout(gb_data_info)
 
-        gridlayout_2.setColumnStretch(0, 1)
-        gridlayout_2.setColumnStretch(1, 1)
-        gridlayout_2.setColumnStretch(2, 1)
+        self.combo_mag.addItems(['None'])
+        self.combo_grv.addItems(['None'])
+        self.combo_reggrv.addItems(['None'])
+        self.combo_dtm.addItems(['None'])
+
+        gl_data_info.setColumnStretch(0, 1)
+        gl_data_info.setColumnStretch(1, 1)
+        gl_data_info.setColumnStretch(2, 1)
+
+        lbl1_data_info = QtWidgets.QLabel("DTM Dataset:")
+        lbl2_data_info = QtWidgets.QLabel("Magnetic Dataset:")
+        lbl3_data_info = QtWidgets.QLabel("Gravity Dataset:")
+        lbl4_data_info = QtWidgets.QLabel("Gravity Regional Dataset:")
+
+        gl_data_info.addWidget(lbl1_data_info, 0, 0, 1, 1)
+        gl_data_info.addWidget(lbl2_data_info, 1, 0, 1, 1)
+        gl_data_info.addWidget(lbl3_data_info, 2, 0, 1, 1)
+        gl_data_info.addWidget(lbl4_data_info, 3, 0, 1, 1)
+        gl_data_info.addWidget(self.combo_dtm, 0, 1, 1, 1)
+        gl_data_info.addWidget(self.combo_mag, 1, 1, 1, 1)
+        gl_data_info.addWidget(self.combo_grv, 2, 1, 1, 1)
+        gl_data_info.addWidget(self.combo_reggrv, 3, 1, 1, 1)
 
 # Data Extents Groupbox
-        lbl0 = QtWidgets.QLabel()
-        lbl3 = QtWidgets.QLabel()
-        lbl4 = QtWidgets.QLabel()
-        lbl1 = QtWidgets.QLabel()
-        lbl8 = QtWidgets.QLabel()
-        lbl9 = QtWidgets.QLabel()
-        lbl10 = QtWidgets.QLabel()
-        lbl5 = QtWidgets.QLabel()
-        lbl6 = QtWidgets.QLabel()
+        gb_extent = QtWidgets.QGroupBox("Model Extent Properties")
+        gl_extent = QtWidgets.QGridLayout(gb_extent)
+
+        self.combo_dataset.addItems(['None'])
+
+        lbl0 = QtWidgets.QLabel("Get Study Area from following Dataset:")
+        lbl3 = QtWidgets.QLabel("Upper Top Left X Coordinate:")
+        lbl4 = QtWidgets.QLabel("Upper Top Left Y Coordinate:")
+        lbl1 = QtWidgets.QLabel("Upper Top Left Z Coordinate (from DTM):")
+        lbl8 = QtWidgets.QLabel("Total X Extent:")
+        lbl9 = QtWidgets.QLabel("Total Y Extent:")
+        lbl10 = QtWidgets.QLabel("Total Z Extent (Depth):")
+        lbl5 = QtWidgets.QLabel("X and Y Cell Size:")
+        lbl6 = QtWidgets.QLabel("Z Cell Size:")
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)
@@ -139,75 +171,37 @@ class MextDisplay(object):
         self.sb_layers.setMinimum(1)
         self.sb_layers.setMaximum(1000000)
         self.sb_layers.setPrefix('Layers (Z): ')
-        self.pb_apply_changes.setSizePolicy(sizepolicy2)
 
-        groupbox_model.setTitle("Current Models")
-        lbl1_model.setText("Current Model:")
-        lbl2_model.setText("Regional Model:")
-        self.pb_regional.setText("Apply Regional Model")
-        groupbox_data_info.setTitle("Dataset Information")
-        lbl1_2.setText("DTM Dataset:")
-        lbl2_2.setText("Magnetic Dataset:")
-        lbl3_2.setText("Gravity Dataset:")
-        lbl4_2.setText("Gravity Regional Dataset:")
-        groupbox_extent.setTitle("Model Extent Properties")
-        lbl0.setText("Get Study Area from following Dataset:")
-        lbl3.setText("Upper Top Left X Coordinate:")
-        lbl4.setText("Upper Top Left Y Coordinate:")
-        lbl1.setText("Upper Top Left Z Coordinate (from DTM):")
-        lbl8.setText("Total X Extent:")
-        lbl9.setText("Total Y Extent:")
-        lbl10.setText("Total Z Extent (Depth):")
-        lbl5.setText("X and Y Cell Size:")
-        lbl6.setText("Z Cell Size:")
-        self.pb_apply_changes.setText("Accept Proposed Changes")
+        gl_extent.addWidget(lbl0, 0, 0, 1, 1)
+        gl_extent.addWidget(lbl3, 1, 0, 1, 1)
+        gl_extent.addWidget(lbl4, 2, 0, 1, 1)
+        gl_extent.addWidget(lbl1, 3, 0, 1, 1)
+        gl_extent.addWidget(lbl8, 4, 0, 1, 1)
+        gl_extent.addWidget(lbl9, 5, 0, 1, 1)
+        gl_extent.addWidget(lbl10, 6, 0, 1, 1)
+        gl_extent.addWidget(lbl5, 7, 0, 1, 1)
+        gl_extent.addWidget(lbl6, 8, 0, 1, 1)
+        gl_extent.addWidget(self.combo_dataset, 0, 1, 1, 1)
+        gl_extent.addWidget(self.dsb_utlx, 1, 1, 1, 1)
+        gl_extent.addWidget(self.dsb_utly, 2, 1, 1, 1)
+        gl_extent.addWidget(self.dsb_utlz, 3, 1, 1, 1)
+        gl_extent.addWidget(self.dsb_xextent, 4, 1, 1, 1)
+        gl_extent.addWidget(self.dsb_yextent, 5, 1, 1, 1)
+        gl_extent.addWidget(self.dsb_zextent, 6, 1, 1, 1)
+        gl_extent.addWidget(self.dsb_xycell, 7, 1, 1, 1)
+        gl_extent.addWidget(self.dsb_zcell, 8, 1, 1, 1)
+        gl_extent.addWidget(self.sb_cols, 1, 2, 1, 1)
+        gl_extent.addWidget(self.sb_rows, 2, 2, 1, 1)
+        gl_extent.addWidget(self.sb_layers, 3, 2, 1, 1)
 
-# Apply Groupboxes to main layout
-        gridlayout_model.addWidget(lbl1_model, 0, 0, 1, 1)
-        gridlayout_model.addWidget(lbl2_model, 1, 0, 1, 1)
-        gridlayout_model.addWidget(self.combo_model, 0, 1, 1, 1)
-        gridlayout_model.addWidget(self.combo_regional, 1, 1, 1, 1)
-        gridlayout_model.addWidget(self.pb_regional, 0, 2, 2, 1)
+# Assign to main layout
 
-        gridlayout_2.addWidget(lbl1_2, 0, 0, 1, 1)
-        gridlayout_2.addWidget(lbl2_2, 1, 0, 1, 1)
-        gridlayout_2.addWidget(lbl3_2, 2, 0, 1, 1)
-        gridlayout_2.addWidget(lbl4_2, 3, 0, 1, 1)
-        gridlayout_2.addWidget(self.combo_dtm, 0, 1, 1, 1)
-        gridlayout_2.addWidget(self.combo_mag, 1, 1, 1, 1)
-        gridlayout_2.addWidget(self.combo_grv, 2, 1, 1, 1)
-        gridlayout_2.addWidget(self.combo_reggrv, 3, 1, 1, 1)
-
-        gridlayout.addWidget(lbl0, 0, 0, 1, 1)
-        gridlayout.addWidget(lbl3, 1, 0, 1, 1)
-        gridlayout.addWidget(lbl4, 2, 0, 1, 1)
-        gridlayout.addWidget(lbl1, 3, 0, 1, 1)
-        gridlayout.addWidget(lbl8, 4, 0, 1, 1)
-        gridlayout.addWidget(lbl9, 5, 0, 1, 1)
-        gridlayout.addWidget(lbl10, 6, 0, 1, 1)
-        gridlayout.addWidget(lbl5, 7, 0, 1, 1)
-        gridlayout.addWidget(lbl6, 8, 0, 1, 1)
-        gridlayout.addWidget(self.combo_dataset, 0, 1, 1, 1)
-        gridlayout.addWidget(self.dsb_utlx, 1, 1, 1, 1)
-        gridlayout.addWidget(self.dsb_utly, 2, 1, 1, 1)
-        gridlayout.addWidget(self.dsb_utlz, 3, 1, 1, 1)
-        gridlayout.addWidget(self.dsb_xextent, 4, 1, 1, 1)
-        gridlayout.addWidget(self.dsb_yextent, 5, 1, 1, 1)
-        gridlayout.addWidget(self.dsb_zextent, 6, 1, 1, 1)
-        gridlayout.addWidget(self.dsb_xycell, 7, 1, 1, 1)
-        gridlayout.addWidget(self.dsb_zcell, 8, 1, 1, 1)
-        gridlayout.addWidget(self.sb_cols, 1, 2, 1, 1)
-        gridlayout.addWidget(self.sb_rows, 2, 2, 1, 1)
-        gridlayout.addWidget(self.sb_layers, 3, 2, 1, 1)
-        gridlayout.addWidget(self.pb_apply_changes, 7, 2, 2, 1)
-
-        verticallayout.addWidget(groupbox_model)
-        verticallayout.addWidget(groupbox_data_info)
-        verticallayout.addWidget(groupbox_extent)
+        verticallayout.addWidget(gb_model)
+        verticallayout.addWidget(gb_data_info)
+        verticallayout.addWidget(gb_extent)
+        verticallayout.addWidget(buttonbox)
 
 # Link functions
-        self.pb_regional.clicked.connect(self.apply_regional)
-        self.pb_apply_changes.clicked.connect(self.apply_changes)
         self.dsb_xycell.valueChanged.connect(self.xycell)
         self.dsb_zcell.valueChanged.connect(self.zcell)
         self.dsb_utlx.valueChanged.connect(self.upd_layers)
@@ -216,23 +210,21 @@ class MextDisplay(object):
         self.dsb_xextent.valueChanged.connect(self.upd_layers)
         self.dsb_yextent.valueChanged.connect(self.upd_layers)
         self.dsb_zextent.valueChanged.connect(self.upd_layers)
-
-        self.combo_dataset.addItems(['None'])
         self.combo_dataset.currentIndexChanged.connect(self.get_area)
-        self.combo_mag.addItems(['None'])
-        self.combo_grv.addItems(['None'])
-        self.combo_reggrv.addItems(['None'])
-        self.combo_dtm.addItems(['None'])
         self.combo_dtm.currentIndexChanged.connect(self.choose_dtm)
-
-        self.combo_model.addItems(['None'])
-        self.combo_regional.addItems(['None'])
         self.combo_model.currentIndexChanged.connect(self.choose_model)
         self.combo_regional.currentIndexChanged.connect(self.choose_regional)
+
+        buttonbox.accepted.connect(self.apply_changes)
+        buttonbox.rejected.connect(self.reject)
 
     def apply_changes(self):
         """ Update when changing from this tab """
         self.pbars.resetall()
+
+        if self.cb_regional.isChecked():
+            self.apply_regional()
+
         self.showtext('Working...')
 
         self.choose_combo(self.combo_dtm, 'DTM Dataset')
@@ -260,6 +252,8 @@ class MextDisplay(object):
         tmp = [i for i in set(self.lmod1.griddata.values())]
         self.parent.outdata['Raster'] = tmp
         self.showtext('Changes applied.')
+
+        self.accept()
 
     def apply_regional(self):
         """ Applies the regional model to the current model """
@@ -530,3 +524,7 @@ class MextDisplay(object):
         self.choose_regional()
         self.update_vals()
         self.update_combos()
+
+        self.exec_()
+
+        self.parent.tab_change()

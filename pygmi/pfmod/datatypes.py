@@ -67,11 +67,9 @@ class LithModel(object):
         self.d_z = None
         self.lith_index = None
         self.lith_index_old = None
-        self.curlayer = None
         self.xrange = [None, None]
         self.yrange = [None, None]
         self.zrange = [None, None]
-        self.curprof = None
         self.griddata = {}
         self.custprofx = {}
         self.custprofy = {}
@@ -98,7 +96,10 @@ class LithModel(object):
         self.onumy = None
         self.onumz = None
 
-        self.is_ew = True
+        # Obsolete
+#        self.curlayer = None
+#        self.is_ew = True
+#        self.curprof = None
 
     def lithold_to_lith(self, nodtm=False):
         """ Transfers an old lithology to the new one, using updates parameters
@@ -176,7 +177,7 @@ class LithModel(object):
                 ycrd2 = grows - int((gymax - ycrd) / d_y)
                 if ycrd2 == grows:
                     ycrd2 = grows-1
-                
+
                 if (ycrd2 >= 0 and xcrd2 >= 0 and ycrd2 < grows and
                         xcrd2 < gcols):
                     alt = curgrid.data.data[ycrd2, xcrd2]
@@ -268,8 +269,6 @@ class LithModel(object):
 
         self.dxy = dxy
         self.d_z = d_z
-        self.curlayer = 0
-        self.curprof = 0
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
                                    dtype=int)
         self.lith_index_old = np.zeros([self.numx, self.numy, self.numz],

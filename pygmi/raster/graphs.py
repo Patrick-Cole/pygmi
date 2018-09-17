@@ -258,7 +258,7 @@ class GraphWindow(QtWidgets.QDialog):
         reference to the parent routine
     """
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent=None)
+        super(QtWidgets.QDialog, self).__init__(parent)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)

@@ -62,7 +62,6 @@ It can be very effectively used in conjunction with a GIS package which
 supports GeoTiff files.
 """
 
-import pdb
 import os
 import copy
 from math import cos, sin, tan

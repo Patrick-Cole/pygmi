@@ -28,10 +28,7 @@ from PyQt5 import QtWidgets, QtCore
 
 # Other dependancies
 from pygmi.pfmod import misc
-from pygmi.pfmod import tab_ddisp
-from pygmi.pfmod import tab_layer
 from pygmi.pfmod import tab_prof
-from pygmi.pfmod import tab_pview
 from pygmi.pfmod import tab_param
 from pygmi.pfmod import tab_mext
 from pygmi.pfmod import grvmag3d
@@ -43,7 +40,7 @@ import pygmi.misc as pmisc
 
 class MainWidget(QtWidgets.QMainWindow):
     """ MainWidget - Widget class to call the main interface """
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         QtWidgets.QMainWindow.__init__(self, parent)
 
         self.indata = {'tmp': True}
@@ -60,61 +57,76 @@ class MainWidget(QtWidgets.QMainWindow):
         self.modelfilename = r'./tmp'
 
         self.toolbar = QtWidgets.QToolBar()
+        self.toolbardock = QtWidgets.QToolBar()
         self.statusbar = QtWidgets.QStatusBar()
-        self.tabwidget = QtWidgets.QTabWidget()
+        self.menubar = QtWidgets.QMenuBar()
+
         self.pbar_sub = pmisc.ProgressBar()
         self.pbar_main = pmisc.ProgressBar()
         self.textbrowser = QtWidgets.QTextBrowser()
         self.actionsave = QtWidgets.QPushButton()
 
-        self.tabwidget.setCurrentIndex(0)
-        self.oldtab = self.tabwidget.tabText(0)
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
         tmp = [i for i in set(self.lmod1.griddata.values())]
         self.outdata['Raster'] = tmp
 
-# Model Extent Tab
         self.mext = tab_mext.MextDisplay(self)
-        self.tabwidget.addTab(self.mext.userint, "Model Extent Parameters")
-
-# Geophysical Parameters Tab
         self.param = tab_param.ParamDisplay(self)
-        self.tabwidget.addTab(self.param.userint, "Geophysical Parameters")
-
-# Data Display Tab
-        self.ddisp = tab_ddisp.DataDisplay(self)
-        self.tabwidget.addTab(self.ddisp.userint, "Data Display")
-
-# Layer Editor Tab
-        self.layer = tab_layer.LayerDisplay(self)
-        self.tabwidget.addTab(self.layer.userint, "Layer Editor")
-
-# Profile Editor Tab
         self.profile = tab_prof.ProfileDisplay(self)
-        self.tabwidget.addTab(self.profile.userint, "Profile Editor")
 
-# Profile Viewer Tab
-        self.pview = tab_pview.ProfileDisplay(self)
-        self.tabwidget.addTab(self.pview.userint, "Custom Profile Editor")
-
-# Gravity and magnetic modelling routines
         self.grvmag = grvmag3d.GravMag(self)
 
         self.setupui()
 
     def setupui(self):
         """ Setup for the GUI """
+# Menus
+        menufile = QtWidgets.QMenu(self.menubar)
+        menufile.setTitle("File")
+        self.menubar.addAction(menufile.menuAction())
+
+        menuview = QtWidgets.QMenu(self.menubar)
+        menuview.setTitle("View")
+        self.menubar.addAction(menuview.menuAction())
+
+        self.action_exit = QtWidgets.QAction(self.parent)
+        self.action_exit.setText("Exit")
+        menufile.addAction(self.action_exit)
+        self.action_exit.triggered.connect(self.parent.close)
+
+# Toolbars
+        self.action_mext = QtWidgets.QAction(self)
+        self.action_mext.setText("Model Extent Parameters")
+        self.toolbardock.addAction(self.action_mext)
+        self.action_mext.triggered.connect(self.mext.tab_activate)
+
+        self.action_param = QtWidgets.QAction(self)
+        self.action_param.setText("Geophysical Parameters")
+        self.toolbardock.addAction(self.action_param)
+        self.action_param.triggered.connect(self.param.tab_activate)
+
+# Dock Widgets
+        dock = QtWidgets.QDockWidget("Profile Editor")
+        dock.setWidget(self.profile)
+        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
+        menuview.addAction(dock.toggleViewAction())
+        self.toolbardock.addAction(dock.toggleViewAction())
+#        dock.hide()
+
         centralwidget = QtWidgets.QWidget(self)
         verticallayout = QtWidgets.QVBoxLayout(centralwidget)
         hlayout = QtWidgets.QHBoxLayout()
 
         helpdocs = menu_default.HelpButton()
 
-        self.setCentralWidget(centralwidget)
-        self.resize(1024, 768)
-        self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
+        self.setMenuBar(self.menubar)
         self.setStatusBar(self.statusbar)
+        self.setCentralWidget(centralwidget)
+
+        self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
         self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
+        self.addToolBarBreak()
+        self.addToolBar(self.toolbardock)
         self.textbrowser.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.toolbar.setMovable(True)
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
@@ -125,7 +137,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         hlayout.addWidget(self.textbrowser)
         hlayout.addWidget(helpdocs)
-        verticallayout.addWidget(self.tabwidget)
+#        verticallayout.addWidget(self.tabwidget)
+#        verticallayout.addWidget(self.dockwidget)
         verticallayout.addLayout(hlayout)
         verticallayout.addWidget(self.pbar_sub)
         verticallayout.addWidget(self.pbar_main)
@@ -133,7 +146,8 @@ class MainWidget(QtWidgets.QMainWindow):
         helpdocs.clicked.disconnect()
         helpdocs.clicked.connect(self.help_docs)
         self.actionsave.clicked.connect(self.savemodel)
-        self.tabwidget.currentChanged.connect(self.tab_change)
+
+        self.resize(self.parent.width(), self.parent.height())
 
     def savemodel(self):
         """ Model Save """
@@ -220,39 +234,12 @@ class MainWidget(QtWidgets.QMainWindow):
         tmp.setValue(tmp.maximumHeight())
         self.repaint()
 
-    def tab_change(self, index=None):
+    def tab_change(self):
         """ This gets called any time we change a tab, and activates the
         routines behind the new tab """
 
-        index = self.tabwidget.currentIndex()
         self.profile.change_defs()
-        self.layer.change_defs()
+#        self.layer.change_defs()
 
-        if self.oldtab == 'Layer Editor':
-            self.layer.update_model()
-
-        if self.oldtab == 'Profile Editor':
-            self.profile.update_model()
-
-        if self.oldtab == 'Custom Profile Editor':
-            self.pview.update_model()
-
-        if self.tabwidget.tabText(index) == 'Geophysical Parameters':
-            self.param.tab_activate()
-
-        if self.tabwidget.tabText(index) == 'Model Extent Parameters':
-            self.mext.tab_activate()
-
-        if self.tabwidget.tabText(index) == 'Profile Editor':
-            self.profile.tab_activate()
-
-        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
-            self.pview.tab_activate()
-
-        if self.tabwidget.tabText(index) == 'Layer Editor':
-            self.layer.tab_activate()
-
-        if self.tabwidget.tabText(index) == 'Data Display':
-            self.ddisp.tab_activate()
-
-        self.oldtab = self.tabwidget.tabText(index)
+        self.profile.tab_activate()
+#        self.layer.tab_activate()

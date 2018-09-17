@@ -981,13 +981,17 @@ def main():
     app = QtWidgets.QApplication(sys.argv)
     app.aboutToQuit.connect(app.deleteLater)
 
+    screen_resolution = app.desktop().screenGeometry()
+    width, height = screen_resolution.width(), screen_resolution.height()
+
     wid = MainWidget()
-    wid.show()
+    wid.resize(width*0.75, height*0.75)
 
     wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
                        QtCore.Qt.WindowActive)
 
     # this will activate the window
+    wid.show()
     wid.activateWindow()
 
     try:

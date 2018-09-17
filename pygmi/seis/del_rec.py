@@ -28,6 +28,7 @@ import os
 import numpy as np
 from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
+from sklearn.cluster import DBSCAN
 
 
 class DeleteRecord(object):
@@ -99,11 +100,16 @@ class Quarry(object):
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.showtext = self.parent.showprocesslog
         self.name = "Quarry: "
         self.pbar = None
 
+        if parent is None:
+            self.showtext = print
+        else:
+            self.showtext = self.parent.showprocesslog
+
         self.events = []
+        self.day = [6, 19]  # daytime start at 6am and ends at 7pm
 
     def settings(self):
         """ Settings """
@@ -139,24 +145,22 @@ class Quarry(object):
         lat = []
         lon = []
         for i in self.events:
-            if i.latitude is None or i.longitude is None:
+            if np.isnan(i.latitude) or np.isnan(i.longitude):
                 continue
             hour.append(i.hour)
             lat.append(i.latitude)
             lon.append(i.longitude)
 
-        day = [6, 19]  # daytime start at 6am and ends at 7pm
+        day = self.day
         hour = np.array(hour)
-        hour[hour < day[0]] = -99
-        hour[hour > day[1]] = -99
-        hour[hour != -99] = True
-        hour[hour == -99] = False
+        hour2 = hour.copy()
+        hour = np.logical_and(hour >= day[0], hour <= day[1])
 
         lon = np.array(lon)
         lat = np.array(lat)
-        ld = day[1]-day[0]
-        ln = 24-ld
-        rdist = 0.2
+        ld = day[1]-day[0]  # number of daylight hours
+        ln = 24-ld  # number of nightime hours
+        rdist = 0.2  # max distance for event to qualify. In degrees
         nmin = 50
         nmax = 400
         nstep = 50
@@ -169,7 +173,32 @@ class Quarry(object):
         ihour = []
 
         rperc = self.randrq(nmax, nstep, nrange, day)
+
+        self.showtext('Calculating clusters')
+
+        # use DBscan to identify cluster centers and numbers of clusters.
+        # eps is max distance between samples
+
+        X = np.transpose([lon, lat])
+        db = DBSCAN(eps=0.01, min_samples=10).fit(X)
+        labels = db.labels_  # noisy samples are -1
+
+        print('now calculate means')
+        clusters = []
+        for i in np.unique(labels):
+            if i == -1:
+                continue
+            lontmp = lon[labels == i].mean()
+            lattmp = lat[labels == i].mean()
+            clusters.append([lontmp, lattmp])
+
+        clusters = np.array(clusters)
+        breakpoint()
         self.showtext('Calculating Rq values')
+
+        tmp = np.arange(np.min(lat), np.max(lat), 0.1)
+
+        latbins = np.digitize(lat, tmp, right=True)
 
         while stayinloop:
             cnt = hour.shape[0]
@@ -177,58 +206,64 @@ class Quarry(object):
             nn = np.zeros([cnt, rlyrs])
             mask = np.ones(cnt).astype(bool)
 
-            for i in range(cnt):
+            for i in range(cnt):  # i is node number
                 londiff = lon-lon[i]
                 latdiff = lat-lat[i]
                 r = np.sqrt(londiff**2+latdiff**2)
-                if r.min() > rdist:
-                    nn[i] = 1.
-                    continue
-                rs = np.argsort(r)
-                rs = rs[:nmax]
-                r = r[rs]
-                rs = rs[r < rdist]
-                hrs = hour[rs]
-                for N in nrange:
-                    ndx = N/nstep-1
+
+#                if r.min() > rdist:
+#                    nn[i] = 1.
+#                    continue
+                rs = np.argsort(r)  # gets indices for sort
+                rs = rs[:nmax]  # get top nmax indices
+#                r = r[rs]
+#                rs = rs[r < rdist]
+                hrs = hour[rs]  # daylight hours for this node, using closest N events
+                for ndx, N in enumerate(nrange):
+#                    ndx = N//nstep-1
                     nd[i, ndx] = hrs[:N].sum()
                     nn[i, ndx] = N-nd[i, ndx]
-                    if nn[i, ndx] == 0:
+                    if nn[i, ndx] == 0:  # to avoid divide by zero.
                         mask[i] = False
                         nn[i, ndx] = N
                         nd[i, ndx] = 0
 
             rq = (nd*ln)/(nn*ld)
 
-            for ndx in range(len(nrange)):
-                rq[:, ndx][rq[:, ndx] > rperc[ndx][1]] = rperc[ndx][1]
-                rq[:, ndx] -= rperc[ndx][0]
-                rq[:, ndx] /= (rperc[ndx][1]-rperc[ndx][0])
-                rq[:, ndx] *= 100.
+            rperc = np.array(rperc)
+            rq[rq > rperc[:, 0]] += 100  # anything over 99 perc is flagged.
 
-            tmpcnt = []
-            for i in range(rlyrs):
-                tmpcnt.append(np.where(rq[:, i] > 99.)[0].shape[0])
+#            for ndx in range(len(nrange)):
+#                rq[:, ndx][rq[:, ndx] > rperc[ndx][1]] = rperc[ndx][1]
+#                rq[:, ndx] -= rperc[ndx][0]
+#                rq[:, ndx] /= (rperc[ndx][1]-rperc[ndx][0])
+#                rq[:, ndx] *= 100.
 
-            self.showtext(str(tmpcnt)+' possible eliminations in '
-                          ' event groups: ' + str(nrange), True)
+#            tmpcnt = []
+#            for i in range(rlyrs):
+#                tmpcnt.append(np.where(rq[:, i] > 99.)[0].shape[0])
+#
+#            self.showtext(str(tmpcnt)+' possible eliminations in '
+#                          ' event groups: ' + str(nrange), True)
 
             tmax = np.transpose(np.where(rq == rq.max()))[0]
             i, ndx = tmax
+            breakpoint()
 
-            if rq[i, ndx] > 99.:
+            if rq[i, ndx] > 100.:  # this does relate to over 99% see above
+                print(rq[i, ndx])
                 londiff = lon-lon[i]
                 latdiff = lat-lat[i]
                 r = np.sqrt(londiff**2+latdiff**2)
                 rs = np.argsort(r)
                 rs = rs[:(ndx+1)*nstep]
-                r = r[rs]
-                rs = rs[r < rdist]
+#                r = r[rs]
+#                rs = rs[r < rdist]
 
                 mask[rs] = False
-                ilat += lat[np.logical_not(mask)].tolist()
-                ilon += lon[np.logical_not(mask)].tolist()
-                ihour += hour[np.logical_not(mask)].tolist()
+#                ilat += lat[np.logical_not(mask)].tolist()
+#                ilon += lon[np.logical_not(mask)].tolist()
+#                ihour += hour[np.logical_not(mask)].tolist()
                 lat = lat[mask]
                 lon = lon[mask]
                 hour = hour[mask]
@@ -236,7 +271,7 @@ class Quarry(object):
                 stayinloop = False
 
         plt.plot(lon, lat, 'r.')
-        plt.plot(ilon, ilat, 'b.')
+#        plt.plot(ilon, ilat, 'b.')
         plt.show()
 
         self.showtext('Completed!')
@@ -254,10 +289,13 @@ class Quarry(object):
             self.showtext(str(N)+' of '+str(nmax), True)
             tmp = np.random.rand(1000000, nstep)
             tmp *= 24
-            tmp[tmp < day[0]] = -99
-            tmp[tmp > day[1]] = -99
-            tmp[tmp != -99] = True
-            tmp[tmp == -99] = False
+
+            tmp = np.logical_and(tmp >= day[0], tmp <= day[1])
+
+#            tmp[tmp < day[0]] = -99
+#            tmp[tmp > day[1]] = -99
+#            tmp[tmp != -99] = True
+#            tmp[tmp == -99] = False
 
             nd += tmp.sum(1)
             nn = N-nd
@@ -265,3 +303,31 @@ class Quarry(object):
             rperc.append(np.percentile(rq, [99, 100]))
 
         return rperc
+
+
+def main():
+    import iodefs
+
+    ifile = r'C:\Work\Programming\pygmi3\data/pygmi.out'
+
+    quarry = Quarry()
+
+    dat = iodefs.ImportSeisan()
+    dat.settings(ifile)
+
+    quarry.indata = dat.outdata
+
+#    quarry.indata['Seis'] = dat
+    quarry.settings()
+
+
+    breakpoint()
+
+
+
+if __name__ == "__main__":
+    main()
+
+
+
+
