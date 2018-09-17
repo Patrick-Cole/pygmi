@@ -61,6 +61,432 @@ class TensorCube(object):
     """
     def __init__(self):
 
+        self.minc = -60.0
+        self.mdec = -15.0
+        self.mstrength = 0
+        self.inc = -60.0
+        self.dec = -15.0
+        self.hintn = 28000
+        self.azim = 90
+        self.dxy = 10
+        self.susc = 0.1
+        self.dens = 2.85
+        self.bdens = 2.67
+        self.height = 0.0
+        self.Gc = 6.6732e-3  # includes 100000 factor to convert to mGal
+
+
+# the 0.5 values below are to avoid divide by zero errors later.
+        self.u = [100, 300]
+        self.v = [100, 300]
+        self.w = [-20, -300]
+        self.rc = 400
+
+        self.cx = None
+        self.cy = None
+        self.cz = None
+        self.pmag = None
+        self.pbx = None
+        self.pby = None
+        self.pbz = None
+
+        self.pgrv = None
+        self.pgx = None
+        self.pgy = None
+        self.pgz = None
+
+        self.bx = None
+        self.by = None
+        self.bz = None
+        self.bxx = None
+        self.byy = None
+        self.bzz = None
+        self.bxy = None
+        self.byz = None
+        self.bxz = None
+        self.magval = None
+
+        self.gx = None
+        self.gy = None
+        self.gz = None
+        self.gxx = None
+        self.gyy = None
+        self.gzz = None
+        self.gxy = None
+        self.gyz = None
+        self.gxz = None
+        self.grvval = None
+        self.xyall = None
+        self.coords = None
+
+    def calc_pygmi(self):
+        """ Do pygmi calc """
+
+        finc = self.inc
+        fdec = self.dec
+        dxy = self.dxy
+        d_z = self.dxy
+        numx = int(self.rc//dxy)
+        numy = int(self.rc//dxy)
+        numz = int(self.rc//d_z)
+        numz = abs(int(self.w[1]//d_z))
+
+        tlx = 0.
+        tly = 0.
+        tlz = 0.
+        mht = 0
+        ght = 0
+        hintn = self.hintn
+        u1 = int(self.u[0]//dxy)
+        u2 = int(self.u[1]//dxy)
+        v1 = int(self.v[0]//dxy)
+        v2 = int(self.v[1]//dxy)
+        w1 = abs(int(self.w[0]//dxy))
+        w2 = abs(int(self.w[1]//dxy))
+
+        inputliths = ['Generic']
+        susc = [self.susc]
+        dens = [self.dens]
+        minc = [self.minc]
+        mdec = [self.mdec]
+        mstrength = [self.mstrength]
+
+        lmod = quick_model(numx, numy, numz, dxy, d_z, tlx, tly, tlz, mht, ght,
+                           finc, fdec, inputliths, susc, dens, minc, mdec,
+                           mstrength, hintn)
+
+        lmod.lith_index[u1:u2, v1:v2, w1:w2] = 1
+        magobs = calc_field(lmod)
+        self.pmag = magobs['Calculated Magnetics'].data
+        self.pbx = magobs['Calculated Magnetics x']
+        self.pby = magobs['Calculated Magnetics y']
+        self.pbz = magobs['Calculated Magnetics z']
+
+        self.pgrv = magobs['Calculated Gravity'].data
+        self.pgx = magobs['Calculated Gravity x']
+        self.pgy = magobs['Calculated Gravity y']
+        self.pgz = magobs['Calculated Gravity z']
+
+    def calc_mag(self, xobs=None, yobs=None):
+        """ calc all """
+        if xobs is None or yobs is None:
+            return
+
+        tmp = (xobs.size, yobs.size)
+
+        self.bx = np.zeros(tmp)
+        self.by = np.zeros(tmp)
+        self.bz = np.zeros(tmp)
+        self.bxx = np.zeros(tmp)
+        self.byy = np.zeros(tmp)
+        self.bzz = np.zeros(tmp)
+        self.bxy = np.zeros(tmp)
+        self.byz = np.zeros(tmp)
+        self.bxz = np.zeros(tmp)
+
+        ma, mb, mc = dircos(self.minc, self.mdec, self.azim)
+        fa, fb, fc = dircos(self.inc, self.dec, self.azim)
+
+        mr = self.mstrength*np.array([ma, mb, mc])*100
+        mi = self.susc*self.hintn/(4*np.pi)*np.array([fa, fb, fc])
+        m3 = mr+mi
+        m = np.sqrt(m3 @ m3)
+        m3 /= m
+        self.cx, self.cy, self.cz = m3
+
+        const = m
+
+        for j, y in enumerate(yobs):
+            for i, x in enumerate(xobs):
+                self.bx[i, j] = self.fsum(self.Bx, x, y, self.height)
+                self.by[i, j] = self.fsum(self.By, x, y, self.height)
+                self.bz[i, j] = self.fsum(self.Bz, x, y, self.height)
+                self.bxx[i, j] = self.fsum(self.Bxx, x, y, self.height)
+                self.byy[i, j] = self.fsum(self.Byy, x, y, self.height)
+                self.bzz[i, j] = self.fsum(self.Bzz, x, y, self.height)
+                self.bxy[i, j] = self.fsum(self.Bxy, x, y, self.height)
+                self.byz[i, j] = self.fsum(self.Byz, x, y, self.height)
+                self.bxz[i, j] = self.fsum(self.Bxz, x, y, self.height)
+#                self.coords[-i-1, j, 0] = x
+#                self.coords[-i-1, j, 1] = y
+
+        self.bx *= const
+        self.by *= const
+        self.bz *= const
+        self.bxx *= const
+        self.byy *= const
+        self.bzz *= const
+        self.byz *= const
+        self.bxz *= const
+        self.bxy *= const
+
+        self.magval = self.cx*self.bx+self.cy*self.by+self.cz*self.bz
+        self.magval2 = np.sqrt((self.bx+self.hintn*self.cx)**2 +
+                               (self.by+self.hintn*self.cy)**2 +
+                               (self.bz+self.hintn*self.cz)**2)-self.hintn
+
+    def calc_grav(self, xobs=None, yobs=None):
+        """ calc all """
+        if xobs is None or yobs is None:
+            return
+
+        tmp = (xobs.size, yobs.size)
+
+        self.gx = np.zeros(tmp)
+        self.gy = np.zeros(tmp)
+        self.gz = np.zeros(tmp)
+        self.gxx = np.zeros(tmp)
+        self.gyy = np.zeros(tmp)
+        self.gzz = np.zeros(tmp)
+        self.gxy = np.zeros(tmp)
+        self.gyz = np.zeros(tmp)
+        self.gxz = np.zeros(tmp)
+
+
+        for i, x in enumerate(xobs):
+            for j, y in enumerate(yobs):
+                self.gx[-i-1, j] = self.fsum(self.Gx, x, y, 0.0)
+                self.gy[-i-1, j] = self.fsum(self.Gy, x, y, 0.0)
+                self.gz[-i-1, j] = self.fsum(self.Gz, x, y, 0.0)
+                self.gxx[-i-1, j] = self.fsum(self.Gxx, x, y, 0.0)
+                self.gyy[-i-1, j] = self.fsum(self.Gyy, x, y, 0.0)
+                self.gzz[-i-1, j] = self.fsum(self.Gzz, x, y, 0.0)
+                self.gxy[-i-1, j] = self.fsum(self.Gxy, x, y, 0.0)
+                self.gyz[-i-1, j] = self.fsum(self.Gyz, x, y, 0.0)
+                self.gxz[-i-1, j] = self.fsum(self.Gxz, x, y, 0.0)
+
+        constg = (self.dens-self.bdens)*self.Gc
+        self.gx *= constg
+        self.gy *= constg
+        self.gz *= constg
+        self.gxx *= constg
+        self.gyy *= constg
+        self.gzz *= constg
+        self.gyz *= constg
+        self.gxz *= constg
+        self.gxy *= constg
+
+        self.grvval = self.gz
+
+    def fsum(self, func, x, y, z):
+        """ function """
+        # y and z sign reversals convert this from ENU to ESD (dircos with 90)
+
+        x1 = (x-self.u[0])
+        x2 = (x-self.u[1])
+        y1 = -(y-self.v[0])
+        y2 = -(y-self.v[1])
+        z1 = -(z-self.w[0])
+        z2 = -(z-self.w[1])
+
+        tmp = (func(x2, y2, z2) - func(x1, y2, z2) - func(x2, y1, z2) +
+               func(x1, y1, z2) - func(x2, y2, z1) + func(x1, y2, z1) +
+               func(x2, y1, z1) - func(x1, y1, z1))
+
+        return tmp
+
+    def getabg(self):
+        """ gets alpha, beta and gamma """
+
+        a, b, g = dircos(self.inc, self.dec, self.azim)
+
+        return a, b, g
+
+    def Gx(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        tmp = -1*x*np.arctan2((y*z), (x*r))
+
+        if y != 0:
+            tmp += y*np.log(z+r)
+
+        if z != 0:
+            tmp += z*np.log(y+r)
+
+        return tmp
+
+    def Gy(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        tmp = -1*y*np.arctan2(x*z, y*r)
+
+        if x != 0:
+            tmp += x*np.log(z+r)
+
+        if z != 0:
+            tmp += z*np.log(x+r)
+
+        return tmp
+
+    def Gz(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        tmp = -1*z*np.arctan((x*y)/(z*r))+x*np.log(y+r)+y*np.log(x+r)
+
+        return tmp
+
+    def Gxx(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        tmp = -np.arctan2((y*z), (x*r))
+
+        return tmp
+
+    def Gyy(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        tmp = -np.arctan2((x*z), (y*r))
+
+        return tmp
+
+    def Gzz(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+
+        x = np.array(x)
+        y = np.array(y)
+        z = np.array(z)
+
+        tmp = -np.arctan2((x*y), (z*r))
+
+        return tmp
+
+    def Gxy(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+
+        if z+r == 0:
+            tmp = np.nan
+        else:
+            tmp = np.log(z+r)
+        return tmp
+
+    def Gyz(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+        tmp = np.log(x+r)
+        return tmp
+
+    def Gxz(self, x, y, z):
+        """ function """
+        r = np.sqrt(x**2+y**2+z**2)
+        tmp = np.log(y+r)
+        return tmp
+
+    def Bx(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+
+        tmp = a*self.Gxx(x, y, z) + b*self.Gxy(x, y, z) + g*self.Gxz(x, y, z)
+
+        return tmp
+
+    def By(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+        r = np.sqrt(x**2+y**2+z**2)
+        tmp = -(-a*np.log(z+r) + b*np.arctan2((x*z), (y*r)) - g*np.log(x+r))
+
+        return tmp
+
+    def Bz(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+
+        tmp = a*self.Gxz(x, y, z) + b*self.Gyz(x, y, z) + g*self.Gzz(x, y, z)
+
+        return tmp
+
+    def Bxx(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+        r = np.sqrt(x**2+y**2+z**2)
+
+        tmp = (a*y*z*(r**2 + x**2)/(r*(r**2*x**2 + y**2*z**2)) +
+               b*x/(r**2 + r*z) + g*x/(r**2 + r*y))
+
+        return tmp
+
+    def Byy(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+        r = np.sqrt(x**2+y**2+z**2)
+
+        tmp = (a*y/(r**2 + r*z) +
+               b*x*z*(r**2 + y**2)/(r*(r**2*y**2 + x**2*z**2)) +
+               g*y/(r**2 + r*x))
+
+        return tmp
+
+    def Bzz(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+        r = np.sqrt(x**2+y**2+z**2)
+
+        tmp = (a*z/(r**2 + r*y) + b*z/(r**2 + r*x) +
+               g*x*y*(r**2 + z**2)/(r*(r**2*z**2 + x**2*y**2)))
+        return tmp
+
+    def Bxy(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+        r = np.sqrt(x**2+y**2+z**2)
+
+        tmp = -a*x*z/(r*(x**2 + y**2)) + b*y/(r**2 + r*z) + g/r
+
+        return tmp
+
+    def Byz(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+        r = np.sqrt(x**2+y**2+z**2)
+
+        tmp = a/r - b*x*y/(r*(y**2 + z**2)) + g*z/(r**2 + r*x)
+
+        return tmp
+
+    def Bxz(self, x, y, z):
+        """ function """
+        a, b, g = self.getabg()
+        r = np.sqrt(x**2+y**2+z**2)
+
+        tmp = -a*x*y/(r*(x**2 + z**2)) + b/r + g*z/(r**2 + r*y)
+
+        return tmp
+
+
+
+class TensorCubeOld(object):
+    """
+    This class computes the forward modelled tensor responses for a cube.
+    """
+    def __init__(self):
+
         self.minc = -62.0
         self.mdec = -16.0
         self.mstrength = 0
@@ -157,6 +583,7 @@ class TensorCube(object):
                 self.bxz[i, j] = self.fsum(self.Bxz, x, y, self.height)
 
         const = self.susc*hnew/(4*np.pi)
+        const = 100*m
 
 #        self.bx = self.regrid(self.bx)*const
 #        self.by = self.regrid(self.by)*const
@@ -1758,17 +2185,19 @@ def test():
 ##    calc_grv_field(lmod)
 
     prof = 20
-    magval = lmod.griddata['Calculated Magnetics'].data[::-1]
-    bx = lmod.griddata['Calculated bx'].data[::-1]
-    by = lmod.griddata['Calculated by'].data[::-1]
-    bz = lmod.griddata['Calculated bz'].data[::-1]
-    bxx = lmod.griddata['Calculated bxx'].data[::-1]
-    byy = lmod.griddata['Calculated byy'].data[::-1]
-    bxy = lmod.griddata['Calculated bxy'].data[::-1]
-    byz = lmod.griddata['Calculated byz'].data[::-1]
-    bxz = lmod.griddata['Calculated bxz'].data[::-1]
+    magval = lmod.griddata['Calculated Magnetics'].data
+    bx = lmod.griddata['Calculated bx'].data
+    by = lmod.griddata['Calculated by'].data
+    bz = lmod.griddata['Calculated bz'].data
+    bxx = lmod.griddata['Calculated bxx'].data
+    byy = lmod.griddata['Calculated byy'].data
+    bxy = lmod.griddata['Calculated bxy'].data
+    byz = lmod.griddata['Calculated byz'].data
+    bxz = lmod.griddata['Calculated bxz'].data
+    bzz = lmod.griddata['Calculated bzz'].data
 
-    x = range(0,400,10)
+
+    x = np.arange(lmod.xrange[0], lmod.xrange[1], lmod.dxy)
 
     plt.figure(figsize=(8,11))
     plt.subplot(411)
@@ -1847,6 +2276,42 @@ def test():
 #    plt.grid(True)
 #    plt.imshow(lmod.griddata['Calculated gy'].data[::-1])
 #    plt.show()
+
+    plt.figure(figsize=(8,11))
+    plt.subplot(4,3,10)
+    plt.title('$B_{tmi}$')
+    plt.imshow(magval, cmap=plt.cm.jet)
+
+    plt.subplot(4,3,1)
+    plt.title('$B_{x}$')
+    plt.imshow(bx, cmap=plt.cm.jet)
+    plt.subplot(4,3,2)
+    plt.title('$B_{y}$')
+    plt.imshow(by, cmap=plt.cm.jet)
+    plt.subplot(4,3,3)
+    plt.title('$B_{z}$')
+    plt.imshow(bz, cmap=plt.cm.jet)
+    plt.subplot(4,3,4)
+    plt.title('$B_{xx}$')
+    plt.imshow(bxx, cmap=plt.cm.jet)
+    plt.subplot(4,3,5)
+    plt.title('$B_{xy}$')
+    plt.imshow(bxy, cmap=plt.cm.jet)
+    plt.subplot(4,3,6)
+    plt.title('$B_{xz}$')
+    plt.imshow(bxz, cmap=plt.cm.jet)
+    plt.subplot(4,3,8)
+    plt.title('$B_{yy}$')
+    plt.imshow(byy, cmap=plt.cm.jet)
+    plt.subplot(4,3,9)
+    plt.title('$B_{yz}$')
+    plt.imshow(byz, cmap=plt.cm.jet)
+    plt.subplot(4,3,12)
+    plt.title('$B_{zz}$')
+    plt.imshow(bzz, cmap=plt.cm.jet)
+
+    plt.tight_layout()
+    plt.show()
 
 
     print('Finished!')

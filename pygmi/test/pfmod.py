@@ -195,19 +195,42 @@ def test(doplt=False):
     m = mstrength
     k = susc
 
-    t1 = []
-    for x0 in xpos:
-        t1.append(mbox(x0, y0, z0, x1, y1, -z1, x2, y2, mi, md, fi, fd, m,
-                       theta, h, k))
+    # Note: technically mbox is NED, so when rotated by 90 (theta)
+    # this becomes ESD. Therefore, new y axis is negaitive on top, and
+    # positive at bottom. This is what is below. The code below tests against
+    # axis orientation in PyGMI.
 
-    t2 = []
-    for x0 in xpos:
-        t2.append(mbox(x0, y0, z0, x1, y1, -z2, x2, y2, mi, md, fi, fd, m,
-                       theta, h, k))
+    tt1 = []
+    for y0 in ypos:
+        t1 = []
+        for x0 in xpos:
+            t1.append(mbox(x0, y0, z0, x1, y1, -z1, x2, y2, mi, md, fi, fd, m,
+                           theta, h, k))
+        tt1.append(t1)
+
+    tt2 = []
+    for y0 in ypos:
+        t2 = []
+        for x0 in xpos:
+            t2.append(mbox(x0, y0, z0, x1, y1, -z2, x2, y2, mi, md, fi, fd, m,
+                           theta, h, k))
+        tt2.append(t2)
 
     t1 = np.array(t1)
     t2 = np.array(t2)
     t = t1-t2
+
+    ttall = np.array(tt1)-np.array(tt2)
+
+
+    plt.subplot(211)
+    plt.imshow(ttall)
+    plt.subplot(212)
+    plt.imshow(lmod.griddata['Calculated Magnetics'].data)
+    plt.show()
+
+#    pdb.set_trace()
+
 
 ###############################################################################
 
@@ -247,9 +270,26 @@ def test(doplt=False):
             for j, col in enumerate(row):
                 if col < 1:
                     continue
-                y2 = np.array([-i*d_z, -i*d_z, -(i+1)*d_z, -(i+1)*d_z, -i*d_z])
-                x2 = np.array([j*dxy, (j+1)*dxy, (j+1)*dxy, j*dxy, j*dxy])+xmin
+                print(i)
+#                y2 = np.array([-i*d_z, -i*d_z, -(i+1)*d_z, -(i+1)*d_z, -i*d_z])
+#                x2 = np.array([j*dxy, (j+1)*dxy, (j+1)*dxy, j*dxy, j*dxy])+xmin
+                y2 = np.array([-i*d_z, -(i+1)*d_z])
+                x2 = np.array([j*dxy, j*dxy])+xmin
                 ax3.plot(x2, y2, 'c', linewidth=0.5)
+                y2 = np.array([-i*d_z, -(i+1)*d_z])
+                x2 = np.array([(j+1)*dxy, (j+1)*dxy])+xmin
+                ax3.plot(x2, y2, 'c', linewidth=0.5)
+
+                if i==3 or i==8 or i==9:
+                    y2 = np.array([-(i+1)*d_z, -(i+1)*d_z])
+                    x2 = np.array([(j+1)*dxy, j*dxy])+xmin
+                    ax3.plot(x2, y2, 'c', linewidth=0.5)
+
+                if i==1 or i==4 or i==9:
+                    y2 = np.array([-i*d_z, -i*d_z])
+                    x2 = np.array([j*dxy, (j+1)*dxy])+xmin
+                    ax3.plot(x2, y2, 'c', linewidth=0.5)
+
 
         ax3.plot(x,z, 'k')
         plt.show()
