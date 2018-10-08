@@ -826,6 +826,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.sb_profnum.setValue(0.0)
         self.hs_sideview.setEnabled(False)
 
+        self.sb_layer.setMaximum(self.lmod1.numz-1)
         if pdirval == 0. or pdirval == 180:
             self.sb_profnum.setMaximum(self.lmod1.numy-1)
             self.hs_profnum.setMaximum(self.lmod1.numy-1)

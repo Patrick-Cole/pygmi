@@ -29,6 +29,8 @@ import numpy as np
 from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
+import scipy.spatial.distance as ssd
+from pygmi.misc import PTime
 
 
 class DeleteRecord(object):
@@ -109,7 +111,7 @@ class Quarry(object):
             self.showtext = self.parent.showprocesslog
 
         self.events = []
-        self.day = [6, 19]  # daytime start at 6am and ends at 7pm
+        self.day = [4, 16]  # daytime start at 6am and ends at 7pm
 
     def settings(self):
         """ Settings """
@@ -131,7 +133,7 @@ class Quarry(object):
 
         self.events = alist
 
-        data = self.calcrq2()
+        data = self.calcrq2b()
         self.outdata['Seis'] = data
 
         return True
@@ -139,145 +141,221 @@ class Quarry(object):
     def calcrq2(self):
         """ Calculates the Rq value """
 
+        ttt = PTime()
         self.showtext('Working...')
+
 
         hour = []
         lat = []
         lon = []
+        newevents = []
+
         for i in self.events:
             if np.isnan(i.latitude) or np.isnan(i.longitude):
                 continue
             hour.append(i.hour)
             lat.append(i.latitude)
             lon.append(i.longitude)
+            newevents.append(i)
 
         day = self.day
-        hour = np.array(hour)
-        hour2 = hour.copy()
-        hour = np.logical_and(hour >= day[0], hour <= day[1])
+        ehour = np.array(hour)
+        ehourall = ehour.copy()
+        hour = np.logical_and(ehour >= day[0], ehour <= day[1])
 
         lon = np.array(lon)
         lat = np.array(lat)
         ld = day[1]-day[0]  # number of daylight hours
         ln = 24-ld  # number of nightime hours
         rdist = 0.2  # max distance for event to qualify. In degrees
+        stayinloop = True
+        N = 50
+
         nmin = 50
         nmax = 400
         nstep = 50
         nrange = list(range(nmin, nmax+nstep, nstep))
-        rlyrs = len(nrange)
-        stayinloop = True
-
-        ilat = []
-        ilon = []
-        ihour = []
-
         rperc = self.randrq(nmax, nstep, nrange, day)
 
-        self.showtext('Calculating clusters')
-
-        # use DBscan to identify cluster centers and numbers of clusters.
-        # eps is max distance between samples
-
-        X = np.transpose([lon, lat])
-        db = DBSCAN(eps=0.01, min_samples=10).fit(X)
-        labels = db.labels_  # noisy samples are -1
-
-        print('now calculate means')
-        clusters = []
-        for i in np.unique(labels):
-            if i == -1:
-                continue
-            lontmp = lon[labels == i].mean()
-            lattmp = lat[labels == i].mean()
-            clusters.append([lontmp, lattmp])
-
-        clusters = np.array(clusters)
-        breakpoint()
+#        self.showtext('Calculating clusters')
+#
+#        # use DBscan to identify cluster centers and numbers of clusters.
+#        # eps is max distance between samples
+#
+#        X = np.transpose([lon, lat])
+#        db = DBSCAN(eps=0.01, min_samples=10).fit(X)
+#        labels = db.labels_  # noisy samples are -1
+#
+#        print('now calculate means')
+#        clusters = []
+#        for i in np.unique(labels):
+#            if i == -1:
+#                continue
+#            lontmp = lon[labels == i].mean()
+#            lattmp = lat[labels == i].mean()
+#            clusters.append([lontmp, lattmp])
+#
+#        clusters = np.array(clusters)
         self.showtext('Calculating Rq values')
 
-        tmp = np.arange(np.min(lat), np.max(lat), 0.1)
-
-        latbins = np.digitize(lat, tmp, right=True)
-
         while stayinloop:
-            cnt = hour.shape[0]
-            nd = np.zeros([cnt, rlyrs])
-            nn = np.zeros([cnt, rlyrs])
-            mask = np.ones(cnt).astype(bool)
+#            ttt.since_last_call('iteration')
+            lls = np.transpose([lat, lon])
+#            lls2 = lls[hour]
+            cnt = lls.shape[0]
+            nd = []
+            rstot = []
+            print('daylight events left:', hour.sum(), 'of', hour.size)
 
-            for i in range(cnt):  # i is node number
-                londiff = lon-lon[i]
-                latdiff = lat-lat[i]
-                r = np.sqrt(londiff**2+latdiff**2)
+            # instead of a grid, we are using an actual event location
+            # instead of centering on every event, we should use only daytime
+            # events
+            # also, it must not use an event if it is further than a certain
+            # distance
+            # also, perhaps if total events less than 50, is that even allowed?
 
-#                if r.min() > rdist:
-#                    nn[i] = 1.
-#                    continue
-                rs = np.argsort(r)  # gets indices for sort
-                rs = rs[:nmax]  # get top nmax indices
-#                r = r[rs]
-#                rs = rs[r < rdist]
-                hrs = hour[rs]  # daylight hours for this node, using closest N events
-                for ndx, N in enumerate(nrange):
-#                    ndx = N//nstep-1
-                    nd[i, ndx] = hrs[:N].sum()
-                    nn[i, ndx] = N-nd[i, ndx]
-                    if nn[i, ndx] == 0:  # to avoid divide by zero.
-                        mask[i] = False
-                        nn[i, ndx] = N
-                        nd[i, ndx] = 0
+            for i in range(cnt):  # i is node number, centered on an event
+                r = ((lls-lls[i])**2).sum(1)
+
+                rs = np.argpartition(r, N)[:N]
+                hrs = hour[rs]  # daylight hours for this node
+                rstot.append(rs[hrs])
+                nd.append(hrs)
+
+            nd = np.sum(nd, 1)
+            nn = N-nd
+            nd[nn == 0] = 0
+            nn[nn == 0] = N
+#            ttt.since_last_call('for loop')
 
             rq = (nd*ln)/(nn*ld)
 
-            rperc = np.array(rperc)
-            rq[rq > rperc[:, 0]] += 100  # anything over 99 perc is flagged.
+            rstot = np.array(rstot)
 
-#            for ndx in range(len(nrange)):
-#                rq[:, ndx][rq[:, ndx] > rperc[ndx][1]] = rperc[ndx][1]
-#                rq[:, ndx] -= rperc[ndx][0]
-#                rq[:, ndx] /= (rperc[ndx][1]-rperc[ndx][0])
-#                rq[:, ndx] *= 100.
+            maxel = np.argmax(rq-rperc[0])
 
-#            tmpcnt = []
-#            for i in range(rlyrs):
-#                tmpcnt.append(np.where(rq[:, i] > 99.)[0].shape[0])
-#
-#            self.showtext(str(tmpcnt)+' possible eliminations in '
-#                          ' event groups: ' + str(nrange), True)
-
-            tmax = np.transpose(np.where(rq == rq.max()))[0]
-            i, ndx = tmax
-            breakpoint()
-
-            if rq[i, ndx] > 100.:  # this does relate to over 99% see above
-                print(rq[i, ndx])
-                londiff = lon-lon[i]
-                latdiff = lat-lat[i]
-                r = np.sqrt(londiff**2+latdiff**2)
-                rs = np.argsort(r)
-                rs = rs[:(ndx+1)*nstep]
-#                r = r[rs]
-#                rs = rs[r < rdist]
-
-                mask[rs] = False
-#                ilat += lat[np.logical_not(mask)].tolist()
-#                ilon += lon[np.logical_not(mask)].tolist()
-#                ihour += hour[np.logical_not(mask)].tolist()
-                lat = lat[mask]
-                lon = lon[mask]
-                hour = hour[mask]
+            if rq[maxel]-rperc[0] > 0:
+#                maxel = np.nonzero(hour)[0][maxel]
+                lat = np.delete(lat, rstot[maxel])
+                lon = np.delete(lon, rstot[maxel])
+                hour = np.delete(hour, rstot[maxel])
+                ehour = np.delete(ehour, rstot[maxel])
+                newevents = np.delete(newevents, rstot[maxel])
             else:
                 stayinloop = False
 
-        plt.plot(lon, lat, 'r.')
-#        plt.plot(ilon, ilat, 'b.')
+        ttt.since_last_call('Total')
+        self.showtext('Completed!')
+
+        plt.hist(ehourall, 24)
         plt.show()
 
+        plt.hist(ehour, 24)
+        plt.show()
+
+
+        breakpoint()
+
+        return newevents.tolist()
+
+    def calcrq2b(self):
+        """ Calculates the Rq value """
+
+        ttt = PTime()
+        self.showtext('Working...')
+
+
+        hour = []
+        lat = []
+        lon = []
+        newevents = []
+
+        for i in self.events:
+            if np.isnan(i.latitude) or np.isnan(i.longitude):
+                continue
+            hour.append(i.hour)
+            lat.append(i.latitude)
+            lon.append(i.longitude)
+            newevents.append(i)
+
+        day = self.day
+        day = [11, 18]
+
+        ehour = np.array(hour)
+        ehourall = ehour.copy()
+        hour = np.logical_and(ehour >= day[0], ehour <= day[1])
+
+        lon = np.array(lon)
+        lat = np.array(lat)
+        ld = day[1]-day[0]  # number of daylight hours
+        ln = 24-ld  # number of nightime hours
+        rdist = 0.2  # max distance for event to qualify. In degrees
+        stayinloop = True
+        N = 50
+
+        rperc = self.randrqb(N, day)
+
+        self.showtext('Calculating Rq values')
+
+        lls = np.transpose([lat, lon])
+        cnt = lls.shape[0]
+        nd = []
+        rstot = []
+        print('daylight events left:', hour.sum(), 'of', hour.size)
+
+        for i in range(cnt):  # i is node number, centered on an event
+            r = np.sqrt(((lls-lls[i])**2).sum(1))
+
+            rs = np.argpartition(r, N)[:N]
+
+            if r[rs].max()>rdist:
+                continue
+
+            hrs = hour[rs]  # daylight hours for this node
+            rstot.append(rs[hrs])
+            nd.append(hrs)
+
+        nd = np.sum(nd, 1)
+        nn = (N-nd).astype(float)
+        nn[nn == 0] = 0.00001
+        rq = (nd*ln)/(nn*ld)
+
+        rstot = np.array(rstot)
+
+        filt = (rq-rperc)>0
+
+        rstot2 = []
+        for i in rstot[filt]:
+            rstot2 += i.tolist()
+
+        maxel = np.unique(rstot2)
+
+        lat = np.delete(lat, maxel)
+        lon = np.delete(lon, maxel)
+        hour = np.delete(hour, maxel)
+        ehour = np.delete(ehour, maxel)
+        newevents = np.delete(newevents, maxel)
+
+        ttt.since_last_call('Total')
         self.showtext('Completed!')
+
+        plt.hist(ehourall, 24)
+        plt.show()
+
+        plt.hist(ehour, 24)
+        plt.show()
+
+
+        breakpoint()
+
+        return newevents.tolist()
+
 
     def randrq(self, nmax, nstep, nrange, day):
         """ Calculates random Rq values """
+        rperc = [1.97435897, 1.64253394, 1.46153846, 1.41025641, 1.35737179,
+                 1.3234714, 1.28444936, 1.26923077]
+#        rperc[0] = 2.5
 
         self.showtext('Calculating random Rq values for calibration')
         rperc = []
@@ -285,6 +363,7 @@ class Quarry(object):
         ld = day[1]-day[0]
         ln = 24-ld
 
+        nrange = [10]
         for N in nrange:
             self.showtext(str(N)+' of '+str(nmax), True)
             tmp = np.random.rand(1000000, nstep)
@@ -292,15 +371,34 @@ class Quarry(object):
 
             tmp = np.logical_and(tmp >= day[0], tmp <= day[1])
 
-#            tmp[tmp < day[0]] = -99
-#            tmp[tmp > day[1]] = -99
-#            tmp[tmp != -99] = True
-#            tmp[tmp == -99] = False
-
             nd += tmp.sum(1)
             nn = N-nd
             rq = (nd*ln)/(nn*ld)
-            rperc.append(np.percentile(rq, [99, 100]))
+            rperc.append(np.percentile(rq, 99))
+
+        return rperc
+
+    def randrqb(self, N, day):
+        """ Calculates random Rq values """
+
+        self.showtext('Calculating random Rq values for calibration')
+        nd = 0
+        ld = day[1]-day[0]
+        ln = 24-ld
+
+        self.showtext(str(N))
+        tmp = np.random.rand(1000000, N)
+        tmp *= 24
+
+        tmp = np.logical_and(tmp >= day[0], tmp <= day[1])
+
+        nd = tmp.sum(1)
+        nn = (N-nd).astype(float)
+        nn[nn == 0] = 0.00001
+        rq = (nd*ln)/(nn*ld)
+        rperc = np.percentile(rq, 99)
+
+        print(rperc)
 
         return rperc
 
@@ -308,7 +406,7 @@ class Quarry(object):
 def main():
     import iodefs
 
-    ifile = r'C:\Work\Programming\pygmi3\data/pygmi.out'
+    ifile = r'C:\Work\Programming\pygmi\data/pygmi.out'
 
     quarry = Quarry()
 
@@ -316,8 +414,6 @@ def main():
     dat.settings(ifile)
 
     quarry.indata = dat.outdata
-
-#    quarry.indata['Seis'] = dat
     quarry.settings()
 
 
