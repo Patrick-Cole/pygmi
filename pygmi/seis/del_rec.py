@@ -111,7 +111,7 @@ class Quarry(object):
             self.showtext = self.parent.showprocesslog
 
         self.events = []
-        self.day = [4, 16]  # daytime start at 6am and ends at 7pm
+        self.day = [10, 16]  # daytime start at 6am and ends at 7pm
 
     def settings(self):
         """ Settings """
@@ -279,7 +279,6 @@ class Quarry(object):
             newevents.append(i)
 
         day = self.day
-        day = [11, 18]
 
         ehour = np.array(hour)
         ehourall = ehour.copy()
@@ -290,10 +289,10 @@ class Quarry(object):
         ld = day[1]-day[0]  # number of daylight hours
         ln = 24-ld  # number of nightime hours
         rdist = 0.2  # max distance for event to qualify. In degrees
-        stayinloop = True
         N = 50
 
-        rperc = self.randrqb(N, day)
+        rperc = self.randrqb(N, day, ehourall.shape[0])
+        rperc = 3.0
 
         self.showtext('Calculating Rq values')
 
@@ -301,14 +300,14 @@ class Quarry(object):
         cnt = lls.shape[0]
         nd = []
         rstot = []
-        print('daylight events left:', hour.sum(), 'of', hour.size)
+        print('daylight events:', hour.sum(), 'of', hour.size)
 
         for i in range(cnt):  # i is node number, centered on an event
             r = np.sqrt(((lls-lls[i])**2).sum(1))
 
             rs = np.argpartition(r, N)[:N]
 
-            if r[rs].max()>rdist:
+            if r[rs].max() > rdist:
                 continue
 
             hrs = hour[rs]  # daylight hours for this node
@@ -322,7 +321,7 @@ class Quarry(object):
 
         rstot = np.array(rstot)
 
-        filt = (rq-rperc)>0
+        filt = (rq-rperc) > 0
 
         rstot2 = []
         for i in rstot[filt]:
@@ -338,6 +337,8 @@ class Quarry(object):
 
         ttt.since_last_call('Total')
         self.showtext('Completed!')
+
+        print('New total number of events:', ehour.size)
 
         plt.hist(ehourall, 24)
         plt.show()
@@ -378,27 +379,68 @@ class Quarry(object):
 
         return rperc
 
-    def randrqb(self, N, day):
+    def randrqb(self, N, day, num):
         """ Calculates random Rq values """
 
         self.showtext('Calculating random Rq values for calibration')
-        nd = 0
-        ld = day[1]-day[0]
-        ln = 24-ld
+#        nd = 0
+        elist = [50, 100, 150, 200]
+#        elist = [150]
 
-        self.showtext(str(N))
-        tmp = np.random.rand(1000000, N)
-        tmp *= 24
+        for N in elist:
+            rqmean = []
+            for ld in range(1, 24):
+                day = (0, ld)
+    #            ld = day[1]-day[0]
+                ln = 24-ld
 
-        tmp = np.logical_and(tmp >= day[0], tmp <= day[1])
+                ln_over_ld = ln/ld
 
-        nd = tmp.sum(1)
-        nn = (N-nd).astype(float)
-        nn[nn == 0] = 0.00001
-        rq = (nd*ln)/(nn*ld)
-        rperc = np.percentile(rq, 99)
+    #        self.showtext(str(N))
 
-        print(rperc)
+
+ #               print('random '+str(N)+' dat hours '+str(ld))
+
+                tmp = np.random.rand(1000000, N)
+                tmp *= 24
+
+#                tmp2 = tmp.flatten()[:num]
+#                plt.title('random '+str(N)+' dat hours '+str(ld))
+#                plt.hist(tmp2, 24)
+#                plt.show()
+
+                tmp = np.logical_and(tmp >= day[0], tmp <= day[1])
+
+                nd = tmp.sum(1)
+                nn = (N-nd).astype(float)
+
+
+#                nd = nd[nn!=0]
+#                nn = nn[nn!=0]
+
+#                nn[nn == 0] = 0.00001
+
+    #            rq = (nd*ln)/(nn*ld)
+    #            rq = ln_over_ld*nd/nn
+                rq = nd/nn
+                rperc = np.percentile(rq, 99)
+                rperc = rperc*ln_over_ld
+
+#                print(rperc)
+#                print(np.mean(rq))
+#                rqmean.append(np.mean(rq))
+#                rqmean.append(np.median(rq))
+                rqmean.append(rperc)
+
+            plt.plot(rqmean)
+            plt.xlim(0,24)
+            plt.xticks([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24])
+            plt.grid(True)
+            plt.show()
+
+
+        breakpoint()
+
 
         return rperc
 
@@ -417,13 +459,15 @@ def main():
     quarry.settings()
 
 
-    breakpoint()
+#    breakpoint()
 
+
+# search for events closer than a certain distance (0.2 deg)
+# order by highest number of events to lowest
+# eliminate nodes with only daytime, then one nighttime etc until
+#    a horizontal distibution is achieved.
 
 
 if __name__ == "__main__":
     main()
-
-
-
 

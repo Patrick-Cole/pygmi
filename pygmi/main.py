@@ -532,6 +532,7 @@ class MainWidget(QtWidgets.QMainWindow):
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
         menus = [raster_menu, vector_menu]+menus
 
+        menus = [i for i in menus if 'menu' in i[-5:]]
         start = Startup(len(menus)+1)
         start.update()
 
@@ -539,9 +540,8 @@ class MainWidget(QtWidgets.QMainWindow):
         for i in menus:
             if i == 'pygmi.__pycache__.menu':
                 continue
-            if i[-5:] == '.menu':
-                start.update()
-                menuimports.append(importlib.import_module(i))
+            start.update()
+            menuimports.append(importlib.import_module(i))
         start.close()
 
         self.menus = []
@@ -979,7 +979,6 @@ class Startup(QtWidgets.QDialog):
 def main():
     """ Main entry point for the PyGMI software. """
     app = QtWidgets.QApplication(sys.argv)
-    app.aboutToQuit.connect(app.deleteLater)
 
     screen_resolution = app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()

@@ -42,6 +42,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.combo_model = QtWidgets.QComboBox()
         self.combo_regional = QtWidgets.QComboBox()
         self.cb_regional = QtWidgets.QCheckBox("Apply Regional Model")
+        self.combo_other = QtWidgets.QComboBox()
         self.combo_dtm = QtWidgets.QComboBox()
         self.combo_mag = QtWidgets.QComboBox()
         self.combo_grv = QtWidgets.QComboBox()
@@ -101,6 +102,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.combo_grv.addItems(['None'])
         self.combo_reggrv.addItems(['None'])
         self.combo_dtm.addItems(['None'])
+        self.combo_other.addItems(['None'])
 
         gl_data_info.setColumnStretch(0, 1)
         gl_data_info.setColumnStretch(1, 1)
@@ -110,15 +112,18 @@ class MextDisplay(QtWidgets.QDialog):
         lbl2_data_info = QtWidgets.QLabel("Magnetic Dataset:")
         lbl3_data_info = QtWidgets.QLabel("Gravity Dataset:")
         lbl4_data_info = QtWidgets.QLabel("Gravity Regional Dataset:")
+        lbl5_data_info = QtWidgets.QLabel("Other:")
 
         gl_data_info.addWidget(lbl1_data_info, 0, 0, 1, 1)
         gl_data_info.addWidget(lbl2_data_info, 1, 0, 1, 1)
         gl_data_info.addWidget(lbl3_data_info, 2, 0, 1, 1)
         gl_data_info.addWidget(lbl4_data_info, 3, 0, 1, 1)
+        gl_data_info.addWidget(lbl5_data_info, 4, 0, 1, 1)
         gl_data_info.addWidget(self.combo_dtm, 0, 1, 1, 1)
         gl_data_info.addWidget(self.combo_mag, 1, 1, 1, 1)
         gl_data_info.addWidget(self.combo_grv, 2, 1, 1, 1)
         gl_data_info.addWidget(self.combo_reggrv, 3, 1, 1, 1)
+        gl_data_info.addWidget(self.combo_other, 4, 1, 1, 1)
 
 # Data Extents Groupbox
         gb_extent = QtWidgets.QGroupBox("Model Extent Properties")
@@ -232,6 +237,7 @@ class MextDisplay(QtWidgets.QDialog):
         self.choose_combo(self.combo_grv, 'Gravity Dataset')
         self.choose_combo(self.combo_reggrv, 'Gravity Regional')
         self.choose_combo(self.combo_dataset, 'Study Area Dataset')
+        self.choose_combo(self.combo_other, 'Other')
 
         cols = self.sb_cols.value()
         rows = self.sb_rows.value()
@@ -434,6 +440,9 @@ class MextDisplay(QtWidgets.QDialog):
         gkeys = ['None'] + gkeys
 
         if len(gkeys) > 1:
+            self.combo_other.clear()
+            self.combo_other.addItems(gkeys)
+            self.combo_other.setCurrentIndex(0)
             self.combo_dtm.clear()
             self.combo_dtm.addItems(gkeys)
             self.combo_dtm.setCurrentIndex(0)

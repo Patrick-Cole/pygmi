@@ -121,3 +121,25 @@ class Data(object):
         self.gtr = (0.0, 1.0, 0.0, 0.0, -1.0)
         self.wkt = ''
         self.units = ''
+
+    def get_extent(self):
+        """ Get extent
+
+        Parameters
+        ----------
+        dat - PyGMI Data format
+            Data class for grid
+
+        Returns
+        -------
+        extent - tuple
+            tuple containg the extent as (left, right, bottom, top)
+
+        """
+        left = self.gtr[0]
+        right = left + self.xdim*self.cols
+        top = self.gtr[3]
+        bottom = top - self.ydim*self.rows
+        extent = (left, right, bottom, top)
+
+        return extent

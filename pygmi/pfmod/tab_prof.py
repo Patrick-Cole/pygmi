@@ -564,8 +564,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
             gtmp.append(tmp)
 
-# --- debug
-#        breakpoint()
+    ### debug
 
         gtmp = np.array(gtmp[::-1])
 
@@ -847,7 +846,6 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.update_plot(slide=True)
 
-
     def sprofdir(self):
         """ spinbox prof dir """
         pdirval = self.sb_prof_dir.value()
@@ -862,15 +860,13 @@ class ProfileDisplay(QtWidgets.QWidget):
         """ Update the profile on the model view """
 
 # Display the calculated profile
-#        extent = [self.extent_side[0], self.extent_side[1]]
-
         if self.viewmagnetics:
-            data = self.lmod1.griddata['Calculated Magnetics'].data
+            data = self.lmod1.griddata['Calculated Magnetics']
             self.mmc.ptitle = 'Magnetic Intensity: '
             self.mmc.punit = 'nT'
             regtmp = 0.0
         else:
-            data = self.lmod1.griddata['Calculated Gravity'].data
+            data = self.lmod1.griddata['Calculated Gravity']
             self.mmc.ptitle = 'Gravity: '
             self.mmc.punit = 'mGal'
             regtmp = self.lmod1.gregional
@@ -892,11 +888,11 @@ class ProfileDisplay(QtWidgets.QWidget):
         if self.pscale_type == 'custmax':
             extent = [self.plot_custmin, self.plot_custmax]
         elif self.pscale_type == 'calcmax':
-            extent = [data.min()+regtmp, data.max()+regtmp]
+            extent = [data.data.min()+regtmp, data.data.max()+regtmp]
         elif tmpprof.size > 0:
             extent = [tmpprof.min(), tmpprof.max()]
         else:
-            extent = [data.min()+regtmp, data.max()+regtmp]
+            extent = [data.data.min()+regtmp, data.data.max()+regtmp]
 
 # Load in observed data - if there is any
         data2 = None
@@ -909,10 +905,16 @@ class ProfileDisplay(QtWidgets.QWidget):
             data2 = self.lmod1.griddata['Gravity Dataset']
 
         if data2 is not None:
-            tmprng2 = np.linspace(px1, px2, len(self.rxxx))
+            xratio = data.xdim/data2.xdim
+            yratio = data.ydim/data2.ydim
+
+            rxxx2 = (data.tlx-data2.tlx)/data2.xdim+self.rxxx*xratio
+            ryyy2 = (data2.tly-data.tly)/data2.ydim+self.ryyy*yratio
+
+            tmprng2 = np.linspace(px1, px2, len(rxxx2))
             tmpprof2 = ndimage.map_coordinates(data2.data[::-1],
-                                               [self.ryyy-0.5,
-                                                self.rxxx-0.5],
+                                               [ryyy2-0.5,
+                                                rxxx2-0.5],
                                                order=1, cval=np.nan)
 
             tmprng2 = tmprng2[np.logical_not(np.isnan(tmpprof2))]
@@ -1087,7 +1089,8 @@ class MyMplCanvas(FigureCanvas):
         if curaxes == self.axes:
             mdata = self.mdata
             xptp = self.lmod1.xrange[1]-self.lmod1.xrange[0]
-            xmin = self.lmod1.xrange[0]
+#            xmin = self.lmod1.xrange[0]
+            xmin = 0
 
             dx = self.parent.pdxy
             dy = self.lmod1.d_z

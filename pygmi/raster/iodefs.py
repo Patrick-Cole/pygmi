@@ -221,6 +221,7 @@ def get_ascii(ifile):
     dat[i].cols = ncols
     dat[i].xdim = xdim
     dat[i].ydim = ydim
+    dat[i].gtr = (dat[i].tlx, dat[i].xdim, 0, dat[i].tly, 0, -dat[i].ydim)
 
     return dat
 
@@ -1289,6 +1290,7 @@ def get_geopak(hfile):
     dat[i].cols = ncols
     dat[i].xdim = dx
     dat[i].ydim = dy
+    dat[i].gtr = (dat[i].tlx, dat[i].xdim, 0, dat[i].tly, 0, -dat[i].ydim)
 
     return dat
 
@@ -1375,5 +1377,6 @@ def get_geosoft(hfile):
     dat[i].cols = ncols
     dat[i].xdim = dx
     dat[i].ydim = dy
+    dat[i].gtr = (dat[i].tlx, dat[i].xdim, 0, dat[i].tly, 0, -dat[i].ydim)
 
     return dat

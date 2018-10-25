@@ -95,7 +95,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_raster(self, data1, data2=None):
+    def update_raster(self, data1):
         """
         Update the raster plot
 
@@ -108,10 +108,10 @@ class MyMplCanvas(FigureCanvas):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
 
-        extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
-                  data1.tly - data1.rows * data1.ydim, data1.tly)
-
+        extent = data1.get_extent()
         rdata = self.axes.imshow(data1.data, extent=extent,
                                  interpolation='nearest')
 
@@ -122,11 +122,6 @@ class MyMplCanvas(FigureCanvas):
             pass
         self.axes.set_xlabel("Eastings")
         self.axes.set_ylabel("Northings")
-
-        tmp = self.axes.get_yticks()
-        self.axes.set_yticklabels(tmp, rotation='horizontal')
-        tmp = self.axes.get_xticks()
-        self.axes.set_xticklabels(tmp, rotation='vertical')
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -207,8 +202,8 @@ class MyMplCanvas(FigureCanvas):
 
         norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
 
-        z.set_fill_value(np.nan)
-        z = z.filled()
+        z.data[z.mask] = np.nan
+        z = z.data
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
@@ -217,6 +212,7 @@ class MyMplCanvas(FigureCanvas):
         surf = ax1.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
                                 vmin=z.min(), vmax=z.max(), shade=False,
                                 antialiased=False)
+
         self.figure.colorbar(surf)
 
         ax1.set_title('')
@@ -390,12 +386,9 @@ class PlotRaster(GraphWindow):
     def change_band(self):
         """ Combo box to choose band """
         i = self.combobox1.currentIndex()
-        data2 = None
-        if 'Point' in self.indata:
-            data2 = self.indata['Point'][0]
         if 'Raster' in self.indata:
             data = self.indata['Raster']
-            self.mmc.update_raster(data[i], data2)
+            self.mmc.update_raster(data[i])
         elif 'ProfPic' in self.indata:
             data = self.indata['ProfPic']
             self.mmc.update_rgb(data[i])
