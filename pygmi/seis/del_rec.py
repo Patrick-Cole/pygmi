@@ -30,7 +30,11 @@ from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
 from sklearn.cluster import DBSCAN
 import scipy.spatial.distance as ssd
+import cartopy.crs as ccrs
+import cartopy.io.img_tiles as cimgt
 from pygmi.misc import PTime
+import pygmi.seis.iodefs as iodefs
+
 
 
 class DeleteRecord(object):
@@ -144,7 +148,6 @@ class Quarry(object):
         ttt = PTime()
         self.showtext('Working...')
 
-
         hour = []
         lat = []
         lon = []
@@ -199,7 +202,6 @@ class Quarry(object):
         self.showtext('Calculating Rq values')
 
         while stayinloop:
-#            ttt.since_last_call('iteration')
             lls = np.transpose([lat, lon])
 #            lls2 = lls[hour]
             cnt = lls.shape[0]
@@ -253,9 +255,6 @@ class Quarry(object):
         plt.hist(ehour, 24)
         plt.show()
 
-
-        breakpoint()
-
         return newevents.tolist()
 
     def calcrq2b(self):
@@ -263,7 +262,6 @@ class Quarry(object):
 
         ttt = PTime()
         self.showtext('Working...')
-
 
         hour = []
         lat = []
@@ -277,6 +275,8 @@ class Quarry(object):
             lat.append(i.latitude)
             lon.append(i.longitude)
             newevents.append(i)
+
+        breakpoint()
 
         day = self.day
 
@@ -346,9 +346,6 @@ class Quarry(object):
         plt.hist(ehour, 24)
         plt.show()
 
-
-        breakpoint()
-
         return newevents.tolist()
 
 
@@ -396,8 +393,7 @@ class Quarry(object):
 
                 ln_over_ld = ln/ld
 
-    #        self.showtext(str(N))
-
+    #            self.showtext(str(N))
 
  #               print('random '+str(N)+' dat hours '+str(ld))
 
@@ -433,33 +429,124 @@ class Quarry(object):
                 rqmean.append(rperc)
 
             plt.plot(rqmean)
-            plt.xlim(0,24)
+            plt.xlim(0, 24)
             plt.xticks([0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24])
             plt.grid(True)
             plt.show()
 
-
-        breakpoint()
-
-
         return rperc
 
 
-def main():
-    import iodefs
+def import_for_plots(ifile, dind='R'):
+    """ imports data to plot """
+    iseis = iodefs.ImportSeisan()
+    iseis.settings(ifile)
 
+    dat = iseis.outdata['Seis']
+    datd = {}
+
+    for event in dat:
+        if '1' not in event:
+            continue
+        if event['1'].distance_indicator not in dind:
+            continue
+
+        for rectype in event:
+            if rectype not in datd:
+                datd[rectype] = []
+            datd[rectype].append(event[rectype])
+
+            if rectype == '1' or rectype == 'E':
+                tmp = vars(event[rectype])
+                for j in tmp:
+                    newkey = rectype+'_'+j
+                    if newkey not in datd:
+                        datd[newkey] = []
+                    datd[newkey].append(tmp[j])
+# Custom
+                    if 'type_of_magnitude' in j:
+                        newkey = '1_M'+tmp[j]
+                        if newkey not in datd:
+                            datd[newkey] = []
+                        datd[newkey].append(tmp[j.split('_of_')[1]])
+
+#                        time = tmp['hour']+tmp['minutes']/60.+tmp['seconds']/3600.
+#                        newkey = '1_M'+tmp[j]+'_time'
+#                        if newkey not in datd:
+#                            datd[newkey] = []
+#                        datd[newkey].append(time)
+
+                        newkey = '1_M'+tmp[j]+'_year'
+                        if newkey not in datd:
+                            datd[newkey] = []
+                        datd[newkey].append(tmp['year'])
+
+
+
+            if rectype == '4':
+                for i in event[rectype]:
+                    tmp = vars(i)
+                    for j in tmp:
+                        newkey = rectype+'_'+j
+                        if newkey not in datd:
+                            datd[newkey] = []
+                        datd[newkey].append(tmp[j])
+    return datd
+
+
+def gearth_plot(ifile):
+    """ Plot with google earth background """
+    datd = import_for_plots(ifile, 'R')
+
+    extent = [16, 33, -22, -35]
+#    extent = [29, 29.05, -26, -26.05]
+    request = cimgt.GoogleTiles(style='satellite')
+
+    plt.figure(figsize=(9, 7))
+    ax = plt.axes(projection=ccrs.PlateCarree())
+    ax.set_extent(extent, crs=ccrs.PlateCarree())
+
+    # https://wiki.openstreetmap.org/wiki/Zoom_levels
+    ax.add_image(request, 6)
+#    ax.add_image(request, 14)
+
+    ax.gridlines(draw_labels=True)
+
+    filt1 = np.equal(datd['1_longitude'], None)
+    filt2 = np.equal(datd['1_latitude'], None)
+    filt = np.logical_or(filt1, filt2)
+    filt1 = np.isnan(datd['1_longitude'])
+    filt2 = np.isnan(datd['1_latitude'])
+    filtb = np.logical_or(filt1, filt2)
+    filt = np.logical_or(filt, filtb)
+
+    lat1 = np.array(datd['1_latitude'])[~filt].astype(float)
+    lon1 = np.array(datd['1_longitude'])[~filt].astype(float)
+
+    X = np.transpose([lon1, lat1])
+    db = DBSCAN(eps=0.05, min_samples=10).fit(X)
+
+    filt = (db.labels_ != -1)
+    plt.scatter(lon1[filt], lat1[filt], s=1, c=db.labels_[filt],
+                cmap=plt.cm.jet)
+    plt.colorbar()
+
+    plt.show()
+
+
+def main():
+    """ Main routine for testing """
     ifile = r'C:\Work\Programming\pygmi\data/pygmi.out'
 
-    quarry = Quarry()
+    gearth_plot(ifile)
 
-    dat = iodefs.ImportSeisan()
-    dat.settings(ifile)
-
-    quarry.indata = dat.outdata
-    quarry.settings()
-
-
-#    breakpoint()
+#    quarry = Quarry()
+#
+#    dat = iodefs.ImportSeisan()
+#    dat.settings(ifile)
+#
+#    quarry.indata = dat.outdata
+#    quarry.settings()
 
 
 # search for events closer than a certain distance (0.2 deg)
@@ -470,4 +557,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

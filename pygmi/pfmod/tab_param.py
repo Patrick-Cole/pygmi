@@ -155,6 +155,8 @@ class ParamDisplay(QtWidgets.QDialog):
         gb_lith_prop = QtWidgets.QGroupBox("Lithological Properties")
         gl_lith_prop = QtWidgets.QGridLayout(gb_lith_prop)
 
+        pb_applylith = QtWidgets.QPushButton("Apply")
+
         self.dsb_gregional.setMinimum(-10000.0)
         self.dsb_gregional.setMaximum(10000.0)
         self.dsb_gregional.setSingleStep(1.0)
@@ -230,6 +232,7 @@ class ParamDisplay(QtWidgets.QDialog):
         gl_lithprops.addWidget(self.dsb_minc, 8, 1, 1, 1)
         gl_lithprops.addWidget(label_12, 9, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_mdec, 9, 1, 1, 1)
+        gl_lithprops.addWidget(pb_applylith, 10, 0, 1, 2)
 
         verticallayout.addWidget(gb_gen_prop)
         verticallayout.addWidget(gb_lith_prop)
@@ -250,6 +253,8 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_magnetization.valueChanged.connect(self.change_magnetization)
         self.dsb_qratio.valueChanged.connect(self.change_qratio)
         self.pb_autoregional.clicked.connect(self.autoregional)
+
+        pb_applylith.clicked.connect(self.apply_lith)
 
         buttonbox.accepted.connect(self.apply_changes)
         buttonbox.rejected.connect(self.reject)
@@ -320,21 +325,8 @@ class ParamDisplay(QtWidgets.QDialog):
 
         self.lw_index_change()
 
-    def apply_changes(self):
+    def apply_lith(self):
         """ Applies changes """
-
-        self.lmod1.gregional = self.dsb_gregional.value()
-        self.lmod1.mht = self.dsb_mht.value()
-        self.lmod1.ght = self.dsb_ght.value()
-        for lith in list(self.lmod1.lith_list.values()):
-            lith.zobsg = -self.dsb_ght.value()
-            lith.zobsm = -self.dsb_mht.value()
-            lith.hintn = self.dsb_hint.value()
-            lith.finc = self.dsb_hinc.value()
-            lith.fdec = self.dsb_hdec.value()
-            lith.modified = True
-        self.showtext('Geophysical properties applied.')
-
         lith = self.get_lith()
         lith.density = self.dsb_density.value()
         if lith == self.lmod1.lith_list['Background']:
@@ -351,6 +343,23 @@ class ParamDisplay(QtWidgets.QDialog):
         self.lmod1.lith_index_old[:] = -1
 
         self.showtext('Lithological changes applied.')
+
+    def apply_changes(self):
+        """ Applies changes """
+
+        self.lmod1.gregional = self.dsb_gregional.value()
+        self.lmod1.mht = self.dsb_mht.value()
+        self.lmod1.ght = self.dsb_ght.value()
+        for lith in list(self.lmod1.lith_list.values()):
+            lith.zobsg = -self.dsb_ght.value()
+            lith.zobsm = -self.dsb_mht.value()
+            lith.hintn = self.dsb_hint.value()
+            lith.finc = self.dsb_hinc.value()
+            lith.fdec = self.dsb_hdec.value()
+            lith.modified = True
+        self.showtext('Geophysical properties applied.')
+
+        self.apply_lith()
         self.accept()
 
     def change_rmi(self):

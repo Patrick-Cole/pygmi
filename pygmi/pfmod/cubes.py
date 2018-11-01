@@ -578,7 +578,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
             if lno not in lcheck:
                 continue
-            if self.corners[lno] == []:
+            if len(self.corners[lno]) == 0:
                 continue
             if lno in self.sliths:
                 clrtmp = lut[lno].tolist()+[1.]
