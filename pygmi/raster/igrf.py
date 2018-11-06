@@ -253,8 +253,8 @@ class IGRF(QtWidgets.QDialog):
         else:
             return False
 
-        mdf = open(__file__.rpartition('\\')[0]+'\\IGRF12.cof')
-        modbuff = mdf.readlines()
+        with open(__file__.rpartition('\\')[0]+'\\IGRF12.cof') as mdf:
+            modbuff = mdf.readlines()
         fileline = -1                            # First line will be 1
         model = []
         epoch = []

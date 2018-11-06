@@ -152,9 +152,8 @@ class ImportSeisan(object):
         self.ifile = str(filename)
         self.ext = filename[-3:]
 
-        pntfile = open(filename)
-        ltmp = pntfile.readlines()
-        pntfile.close()
+        with open(filename) as pntfile:
+            ltmp = pntfile.readlines()
 
         if len(ltmp[0]) < 80:
             showprocesslog('Error: Problem with file')
@@ -542,9 +541,8 @@ class ImportGenericFPS(object):
 
         dlim = ','
 
-        pntfile = open(filename)
-        ltmp = pntfile.readline()
-        pntfile.close()
+        with open(filename) as pntfile:
+            ltmp = pntfile.readline()
 
         isheader = any(c.isalpha() for c in ltmp)
 

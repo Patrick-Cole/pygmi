@@ -683,8 +683,8 @@ class SIMP(object):
 def read_ifile(ifile):
     """ Routine to read and clean some of the input file """
     # Read entire file
-    inputf = open(ifile)
-    idata = inputf.read()
+    with open(ifile) as inputf:
+        idata = inputf.read()
 
 # Fix bad characters
     idata = idata.replace('\xb1', '+-')
@@ -693,7 +693,6 @@ def read_ifile(ifile):
     idata = idata.replace('(S)', 'S')
     idata = idata.replace(',', '.')
     idata = re.sub(r'[^\x21-x7E\n]', ' ', idata)
-    inputf.close()
 
 # Split into lines
     idata = idata.splitlines()

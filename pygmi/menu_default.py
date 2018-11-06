@@ -279,9 +279,8 @@ class HelpDocs(QtWidgets.QDialog):
             helptxt = 'No Help Available.'
         else:
             os.chdir(ipth)
-            itxt = open(helptxt+'.html')
-            helptxt = itxt.read()
-            itxt.close()
+            with open(helptxt+'.html') as itxt:
+                helptxt = itxt.read()
 
         # create GUI
         self.setWindowTitle('Help!')

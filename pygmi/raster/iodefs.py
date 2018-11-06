@@ -177,14 +177,14 @@ def get_ascii(ifile):
         dataset imported
     """
 
-    afile = open(ifile, 'r')
-    adata = afile.read()
+    with open(ifile, 'r') as afile:
+        adata = afile.read()
 
     adata = adata.split()
     adata = np.array(adata, dtype=float)
 
-    hfile = open(ifile[:-3]+'hdr', 'r')
-    tmp = hfile.readlines()
+    with open(ifile[:-3]+'hdr', 'r') as hfile:
+        tmp = hfile.readlines()
 
     xdim = float(tmp[0].split()[-1])
     ydim = float(tmp[1].split()[-1])
@@ -339,6 +339,7 @@ def get_raster(ifile):
         if 'Cluster' in bandid:
             dat[i].no_clusters = int(dat[i].data.max()+1)
 
+        dataset = None
     return dat
 
 
@@ -375,6 +376,8 @@ def get_hdf(ifile):
     else:
         dat = None
 
+    dataset = None
+
     return dat
 
 
@@ -401,6 +404,8 @@ def get_modis(ifile):
 
     latentry = [i for i in subdata if 'Latitude' in i[1]]
     subdata.pop(subdata.index(latentry[0]))
+    dataset = None
+
     dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
     rtmp = dataset.GetRasterBand(1)
     lats = rtmp.ReadAsArray()
@@ -408,6 +413,8 @@ def get_modis(ifile):
 
     lonentry = [i for i in subdata if 'Longitude' in i[1]]
     subdata.pop(subdata.index(lonentry[0]))
+
+    dataset = None
     dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
     rtmp = dataset.GetRasterBand(1)
     lons = rtmp.ReadAsArray()
@@ -431,6 +438,7 @@ def get_modis(ifile):
 
     i = -1
     for ifile2, bandid2 in subdata:
+        dataset = None
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
 
         gtr = dataset.GetGeoTransform()
@@ -504,6 +512,7 @@ def get_modis(ifile):
 
             dat[i].wkt = srs.ExportToWkt()
 
+    dataset = None
     return dat
 
 
@@ -531,6 +540,8 @@ def get_aster(ifile):
 
     latentry = [i for i in subdata if 'Latitude' in i[1]]
     subdata.pop(subdata.index(latentry[0]))
+
+    dataset = None
     dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
     rtmp = dataset.GetRasterBand(1)
     lats = rtmp.ReadAsArray()
@@ -538,6 +549,8 @@ def get_aster(ifile):
 
     lonentry = [i for i in subdata if 'Longitude' in i[1]]
     subdata.pop(subdata.index(lonentry[0]))
+
+    dataset = None
     dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
     rtmp = dataset.GetRasterBand(1)
     lons = rtmp.ReadAsArray()
@@ -557,6 +570,7 @@ def get_aster(ifile):
 
     i = -1
     for ifile2, bandid2 in subdata:
+        dataset = None
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
 
         rtmp2 = dataset.ReadAsArray()
@@ -611,6 +625,7 @@ def get_aster(ifile):
 
     if dat == []:
         dat = None
+    dataset = None
     return dat
 
 
@@ -637,6 +652,7 @@ def get_aster_ged(ifile):
 
     latentry = [i for i in subdata if 'Latitude' in i[1]]
     subdata.pop(subdata.index(latentry[0]))
+    dataset = None
     dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
     rtmp = dataset.GetRasterBand(1)
     lats = rtmp.ReadAsArray()
@@ -644,6 +660,8 @@ def get_aster_ged(ifile):
 
     lonentry = [i for i in subdata if 'Longitude' in i[1]]
     subdata.pop(subdata.index(lonentry[0]))
+
+    dataset = None
     dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
     rtmp = dataset.GetRasterBand(1)
     lons = rtmp.ReadAsArray()
@@ -654,6 +672,7 @@ def get_aster_ged(ifile):
 
     i = -1
     for ifile2, bandid2 in subdata:
+        dataset = None
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
         bandid = bandid2
         units = ''
@@ -733,6 +752,7 @@ def get_aster_ged(ifile):
 
             dat[i].wkt = srs.ExportToWkt()
 
+    dataset = None
     return dat
 
 
@@ -991,20 +1011,20 @@ class ExportData(object):
 
             # This section tries to overcome null values with round off error
             # in 32-bit numbers.
-            if dtype == np.float32:
-                datai.nullvalue = np.float64(np.float32(datai.nullvalue))
-                if datai.data.min() > -1e+10:
-                    datai.nullvalue = np.float64(np.float32(-1e+10))
-                elif datai.data.max() < 1e+10:
-                    datai.nullvalue = np.float64(np.float32(1e+10))
+#            if dtype == np.float32:
+#                datai.nullvalue = np.float64(np.float32(datai.nullvalue))
+#                if datai.data.min() > -1e+10:
+#                    datai.nullvalue = np.float64(np.float32(-1e+10))
+#                elif datai.data.max() < 1e+10:
+#                    datai.nullvalue = np.float64(np.float32(1e+10))
 
-            elif dtype == np.float or dtype == np.float64:
-                datai.nullvalue = np.float64(dtmp.fill_value)
-
-            elif dtype == np.uint8:
-                datai.nullvalue = 0  # specify 0, since fill value is 999999
-            elif dtype == np.int32:
-                datai.nullvalue = np.uint32(dtmp.fill_value)
+#            elif dtype == np.float or dtype == np.float64:
+#                datai.nullvalue = np.float64(dtmp.fill_value)
+#
+#            elif dtype == np.uint8:
+#                datai.nullvalue = 0  # specify 0, since fill value is 999999
+#            elif dtype == np.int32:
+#                datai.nullvalue = np.uint32(dtmp.fill_value)
 
             dtmp.set_fill_value(datai.nullvalue)
             dtmp = dtmp.filled()
@@ -1012,10 +1032,11 @@ class ExportData(object):
             if dtype == np.uint8:
                 datai.nullvalue = int(datai.nullvalue)
 
-            if drv != 'GTiff':
-                rtmp.SetNoDataValue(datai.nullvalue)
-            elif len(data) == 1:
-                rtmp.SetNoDataValue(datai.nullvalue)
+            rtmp.SetNoDataValue(datai.nullvalue)
+#            if drv != 'GTiff':
+#                rtmp.SetNoDataValue(datai.nullvalue)
+#            elif len(data) == 1:
+#                rtmp.SetNoDataValue(datai.nullvalue)
             rtmp.WriteArray(dtmp)
 
         out = None  # Close File
@@ -1199,9 +1220,8 @@ def get_geopak(hfile):
         dataset imported
     """
 
-    fin = open(hfile, 'rb')
-    fall = fin.read()
-    fin.close()
+    with open(hfile, 'rb') as fin:
+        fall = fin.read()
 
     off = 0
     fnew = []

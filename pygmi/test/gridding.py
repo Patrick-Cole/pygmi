@@ -46,9 +46,9 @@ def grid():
     dxy = 15
 
     # This bit reads in the first line to see if it is a header
-    pntfile = open(filename)
-    ltmp = pntfile.readline()
-    pntfile.close()
+    with open(filename) as pntfile:
+        ltmp = pntfile.readline()
+
     ltmp = ltmp.lower()
     isheader = any(c.isalpha() for c in ltmp)
 

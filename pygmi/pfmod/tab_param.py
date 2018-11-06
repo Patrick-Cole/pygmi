@@ -488,17 +488,18 @@ class ParamDisplay(QtWidgets.QDialog):
         itxt = str(self.lw_param_defs.item(i).text())
         lith = self.lmod1.lith_list[itxt]
 
-        self.dsb_hint.setValue(lith.hintn)
-        self.dsb_hinc.setValue(lith.finc)
-        self.dsb_hdec.setValue(lith.fdec)
-        self.dsb_mht.setValue(-lith.zobsm)
+#        self.dsb_ght.setValue(-lith.zobsg)
+#        self.dsb_hint.setValue(lith.hintn)
+#        self.dsb_hinc.setValue(lith.finc)
+#        self.dsb_hdec.setValue(lith.fdec)
+#        self.dsb_mht.setValue(-lith.zobsm)
+
         self.dsb_susc.setValue(lith.susc)
         self.dsb_magnetization.setValue(lith.mstrength)
         self.dsb_qratio.setValue(lith.qratio)
         self.dsb_minc.setValue(lith.minc)
         self.dsb_mdec.setValue(lith.mdec)
         self.dsb_density.setValue(lith.density)
-        self.dsb_ght.setValue(-lith.zobsg)
 
         self.gbox_lithprops.setTitle(itxt)
 
@@ -589,8 +590,18 @@ class ParamDisplay(QtWidgets.QDialog):
         self.lmod1 = self.parent.lmod1
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
 # Need this to init the first values.
+        itxt = str(self.lw_param_defs.item(0).text())
+        lith = self.lmod1.lith_list[itxt]
+
+        self.dsb_ght.setValue(-lith.zobsg)
+        self.dsb_hint.setValue(lith.hintn)
+        self.dsb_hinc.setValue(lith.finc)
+        self.dsb_hdec.setValue(lith.fdec)
+        self.dsb_mht.setValue(-lith.zobsm)
+
         self.lw_index_change()
         self.dsb_gregional.setValue(self.lmod1.gregional)
         self.exec_()
-        self.parent.tab_change()
+#        self.parent.tab_change()
+        self.parent.profile.change_defs()
 

@@ -168,7 +168,7 @@ class EquationEditor(QtWidgets.QDialog):
             intype = 'Raster'
         else:
             self.parent.showprocesslog('No raster data')
-            return
+            return False
 
         indata = dataprep.merge(self.indata[intype])
 
@@ -217,7 +217,8 @@ class EquationEditor(QtWidgets.QDialog):
             findati[mask] = indata[i].nullvalue
 
             outdata.append(copy.copy(indata[i]))
-            outdata[-1].data = np.ma.masked_equal(findati, indata[i].nullvalue)
+            outdata[-1].data = np.ma.masked_equal(findati,
+                                                  indata[i].nullvalue)
 
         # This is needed to get rid of bad, unmasked values etc.
         for i, outdatai in enumerate(outdata):

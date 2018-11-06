@@ -389,7 +389,7 @@ class DataMerge(QtWidgets.QDialog):
             doffset = 0.0
             if data.data.min() <= 0:
                 doffset = data.data.min()-1.
-                data.data -= doffset
+                data.data = data.data - doffset
             gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
             src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
             dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
@@ -398,8 +398,8 @@ class DataMerge(QtWidgets.QDialog):
                                 gdal.GRA_Bilinear)
 
             dat.append(gdal_to_dat(dest, data.dataid))
-#            dat[-1].data += doffset
             dat[-1].data = dat[-1].data + doffset
+            data.data = data.data + doffset
 
         self.outdata['Raster'] = dat
 
@@ -656,6 +656,7 @@ class GetProf(object):
             allpoints[-1].zdata = tmpprof
             allpoints[-1].dataid = idata.dataid
 
+        shapef = None
         self.outdata['Point'] = allpoints
 
         return True
@@ -1232,6 +1233,8 @@ def cut_raster(data, ifile):
         idata.rows = idata.data.shape[0]
         idata.tlx = ulX*idata.xdim + idata.tlx  # minX
         idata.tly = idata.tly - ulY*idata.ydim  # maxY
+
+    shapef = None
     data = trim_raster(data)
     return data
 
@@ -1354,9 +1357,8 @@ def getepsgcodes():
     Convenience function used to get a list of EPSG codes
     """
 
-    dfile = open(os.environ['GDAL_DATA']+'\\gcs.csv')
-    dlines = dfile.readlines()
-    dfile.close()
+    with open(os.environ['GDAL_DATA']+'\\gcs.csv') as dfile:
+        dlines = dfile.readlines()
 
     dlines = dlines[1:]
     dcodes = {}
@@ -1368,9 +1370,8 @@ def getepsgcodes():
         if wkttmp != '':
             dcodes[tmp[1]] = wkttmp
 
-    pfile = open(os.environ['GDAL_DATA']+'\\pcs.csv')
-    plines = pfile.readlines()
-    pfile.close()
+    with open(os.environ['GDAL_DATA']+'\\pcs.csv') as pfile:
+        plines = pfile.readlines()
 
     orig = osr.SpatialReference()
 

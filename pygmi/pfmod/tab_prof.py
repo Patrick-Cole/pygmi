@@ -233,10 +233,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         newdata = np.transpose(newdata)
         header = header+'\n'
 
-        fno = open(filename, 'wb')
-        fno.write(bytes(header, 'utf-8'))
-        np.savetxt(fno, newdata, delimiter=',')
-        fno.close()
+        with open(filename, 'wb') as fno:
+            fno.write(bytes(header, 'utf-8'))
+            np.savetxt(fno, newdata, delimiter=',')
+
         self.parent.pbars.incr()
         self.showtext('Profile save complete')
 
@@ -823,6 +823,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.sb_prof_dir.valueChanged.connect(self.sprofdir)
 
         self.sb_profnum.setValue(0.0)
+        self.hs_profnum.setValue(0.0)
         self.hs_sideview.setEnabled(False)
 
         self.sb_layer.setMaximum(self.lmod1.numz-1)
@@ -943,7 +944,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         """ Runs when the tab is activated """
         self.lmod1 = self.parent.lmod1
         self.mmc.lmod1 = self.lmod1
-        curprof = self.sb_profnum.value()
+#        curprof = self.sb_profnum.value()
 
         txtmsg = ('Note: The display of gravity or magnetic data is '
                   'triggered off their respective calculations. Press '
@@ -964,12 +965,19 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_profnum.setMinimum(0)
 
         self.prof_dir()
+        curprof = 0
         self.calc_prof_limits()
         gtmp = self.get_model()
 
+        curtext = self.combo_overview.currentText()
         self.combo_overview.clear()
         self.combo_overview.addItems(list(self.lmod1.griddata.keys()))
-        self.combo_overview.setCurrentIndex(0)
+
+        cindex = self.combo_overview.findText(curtext,
+                                              QtCore.Qt.MatchFixedString)
+        if cindex == -1:
+            cindex = 0
+        self.combo_overview.setCurrentIndex(cindex)
 
         self.sb_profnum.setValue(curprof)
         self.hs_profnum.setValue(curprof)

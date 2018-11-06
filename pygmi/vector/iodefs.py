@@ -433,6 +433,7 @@ class ImportShapeData(object):
         dat.crds = allcrds
         dat.attrib = attrib
         self.outdata['Vector'] = dat
+        shapef = None
         return True
 
 
@@ -459,6 +460,7 @@ def cut_point(data, ifile):
     lyr = shapef.GetLayer()
     poly = lyr.GetNextFeature()
     if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
+        shapef = None
         return
 
     points = []
@@ -489,4 +491,5 @@ def cut_point(data, ifile):
         idata.ydata = idata.ydata[chk]
         idata.zdata = idata.zdata[chk]
 
+    shapef = None
     return data

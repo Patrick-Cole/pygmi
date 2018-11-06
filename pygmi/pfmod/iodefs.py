@@ -1272,4 +1272,6 @@ def gtiff(filename):
     dat[0].data = np.ma.array(itmp)
     dat[0].nullvalue = np.nan  # This was erread.nullvalue, is changed above
 
+    dataset = None
+
     return dat
