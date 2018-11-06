@@ -27,7 +27,7 @@
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import matplotlib.collections as mc
-from matplotlib import cm
+from matplotlib.cm import Set1
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
@@ -130,9 +130,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
     def onpick(self, event):
         """Picker event """
         if event.mouseevent.inaxes is None:
-            return
+            return False
         if event.mouseevent.button != 1:
-            return
+            return False
         if event.artist != self.line:
             return True
 
@@ -173,10 +173,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
         for i in data:
-            try:
-                tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
-            except:
-                pass
+            tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
             ax2.plot(tmp, label=i.dataid)
         ax2.set_ylim([-.1, 1.1])
         ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
@@ -259,7 +256,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fcnt = np.array(fcnt)
         flen = np.array(flen)
         bwidth = np.pi/nbins
-        bcols = cm.Set1(np.arange(nbins+1)/nbins)
+        bcols = Set1(np.arange(nbins+1)/nbins)
         np.random.shuffle(bcols)
 
         if rtype == 0:

@@ -41,7 +41,7 @@ from pygmi.vector.datatypes import PData
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
 
-class DataCut(object):
+class DataCut():
     """
     Cut Data using shapefiles
 
@@ -80,7 +80,7 @@ class DataCut(object):
             data = copy.deepcopy(self.indata['Raster'])
         else:
             self.parent.showprocesslog('No raster data')
-            return
+            return False
 
         ext = "Shape file (*.shp)"
 
@@ -558,7 +558,7 @@ class DataReproj(QtWidgets.QDialog):
         return tmp
 
 
-class GetProf(object):
+class GetProf():
     """
     Get a Profile
 
@@ -596,7 +596,7 @@ class GetProf(object):
             data = copy.deepcopy(self.indata['Raster'])
         else:
             self.parent.showprocesslog('No raster data')
-            return
+            return False
 
         ext = "Shape file (*.shp)"
 
@@ -623,7 +623,7 @@ class GetProf(object):
         line = lyr.GetNextFeature()
         if lyr.GetGeomType() is not ogr.wkbLineString:
             self.parent.showprocesslog('You need lines in that shape file')
-            return
+            return False
 
         allpoints = []
         for idata in self.pbar.iter(data):
@@ -1187,7 +1187,7 @@ def cut_raster(data, ifile):
     lyr = shapef.GetLayer()
     poly = lyr.GetNextFeature()
     if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
-        return
+        return None
 
     for idata in data:
         # Convert the layer extent to image pixel coordinates
@@ -1588,9 +1588,3 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
 def func(x, y):
     """ Function """
     return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2
-
-
-
-
-if __name__ == "__main__":
-    tests()

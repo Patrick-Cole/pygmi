@@ -147,7 +147,7 @@ class Smooth(QtWidgets.QDialog):
         """ Settings """
         temp = self.exec_()
         if temp == 0:
-            return
+            return False
 
         self.parent.process_is_active(True)
         self.parent.showprocesslog('Smoothing ')

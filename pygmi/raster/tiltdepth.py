@@ -155,7 +155,7 @@ class TiltDepth(QtWidgets.QDialog):
         """ Save Depths """
 
         if self.depths is None:
-            return
+            return False
 
         ext = "Text File (*.csv)"
 
@@ -168,6 +168,8 @@ class TiltDepth(QtWidgets.QDialog):
         os.chdir(filename.rpartition('/')[0])
         np.savetxt(filename, self.depths, delimiter=',',
                    header='x, y, id, depth')
+
+        return True
 
     def change_cbar(self):
         """ Change the color map for the color bar """
@@ -225,7 +227,7 @@ class TiltDepth(QtWidgets.QDialog):
         """ This is called when the used double clicks the routine from the
         main PyGMI interface"""
         if 'Raster' not in self.indata:
-            return
+            return False
 
         self.indata['Raster'] = dataprep.merge(self.indata['Raster'])
 

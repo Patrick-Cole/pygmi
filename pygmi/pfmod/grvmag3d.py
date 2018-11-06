@@ -42,18 +42,18 @@ from multiprocessing import Pool
 from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
-import matplotlib.pyplot as plt
 from scipy.linalg import norm
 from osgeo import gdal
 from numba import jit
 from matplotlib import cm
+import matplotlib.pyplot as plt
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import PTime
 
 
-class GravMag(object):
+class GravMag():
     """This class holds the generic magnetic and gravity modelling routines
 
     Routine that will calculate the final versions of the field. Other,
@@ -359,7 +359,7 @@ class GravMag(object):
             self.parent.profile.update_plot(slide=True)
 
 
-class GeoData(object):
+class GeoData():
     """ Data layer class:
         This class defines each geological type and calculates the field
         for one cube from the standard definitions.
@@ -850,7 +850,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         piter = iter
     if np.max(lmod.lith_index) == -1:
         showtext('Error: Create a model first')
-        return
+        return None
 
     ttt = PTime()
     # Init some variables for convenience
@@ -875,7 +875,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
     if np.unique(modind).size == 1:
         showtext('No changes to model!')
-        return
+        return None
 
 # get height corrections
     tmp = np.copy(lmod.lith_index)
@@ -1412,7 +1412,7 @@ def dat_extent(dat, axes):
 
 def test():
     """ This routine is for testing purposes """
-    from pygmi.pfmod.iodefs import ImportMod3D
+#    from pygmi.pfmod.iodefs import ImportMod3D
 
 # Import model file
 #    filename = r'C:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
@@ -1437,6 +1437,7 @@ def test():
 
     plt.imshow(magval, cmap=cm.jet)
     plt.show()
+
 
 if __name__ == "__main__":
     test()

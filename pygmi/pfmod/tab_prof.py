@@ -703,7 +703,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             x1 = np.array([xrng[0]+dxy/2+curprof*dxy])
             x2 = x1
 
-        elif pdirval > 0 and pdirval < 90:
+        elif 0 < pdirval < 90:
             x1 = np.arange(xrng[1]-dxy/2, xrng[0], -dxy)
             y1 = np.ones_like(x1)*yrng[0]
             y1a = np.arange(yrng[0]+dxy/2, yrng[1], dxy)
@@ -721,7 +721,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             y2[filt] = yrng[1]
             x2[filt] = (yrng[1]-c[filt])/m
 
-        elif pdirval > 90 and pdirval < 180:
+        elif 90 < pdirval < 180:
             x1 = np.arange(xrng[1]-dxy/2, xrng[0], -dxy)
             y1 = np.ones_like(x1)*yrng[1]
             y1a = np.arange(yrng[1]-dxy/2, yrng[0], -dxy)
@@ -742,7 +742,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             x1, x2 = x2, x1
             y1, y2 = y2, y1
 
-        elif pdirval > 180 and pdirval < 270:
+        elif 180 < pdirval < 270:
             x1 = np.arange(xrng[0]+dxy/2, xrng[1], dxy)
             y1 = np.ones_like(x1)*yrng[1]
             y1a = np.arange(yrng[1]-dxy/2, yrng[0], -dxy)
@@ -827,10 +827,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_sideview.setEnabled(False)
 
         self.sb_layer.setMaximum(self.lmod1.numz-1)
-        if pdirval == 0. or pdirval == 180:
+        if pdirval in (0., 180):
             self.sb_profnum.setMaximum(self.lmod1.numy-1)
             self.hs_profnum.setMaximum(self.lmod1.numy-1)
-        elif pdirval == 90. or pdirval == 270:
+        elif pdirval in (90., 270):
             self.sb_profnum.setMaximum(self.lmod1.numx-1)
             self.hs_profnum.setMaximum(self.lmod1.numx-1)
         else:
@@ -1090,7 +1090,7 @@ class MyMplCanvas(FigureCanvas):
     def move(self, event):
         """ Mouse is moving """
         curaxes = event.inaxes
-        if curaxes != self.axes and curaxes != self.laxes:
+        if curaxes not in (self.axes, self.laxes):
             self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
             return
 

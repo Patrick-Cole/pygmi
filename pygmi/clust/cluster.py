@@ -218,14 +218,14 @@ class Cluster(QtWidgets.QDialog):
         if tst.size > 2:
             self.reportback('Error: Your input datasets have different ' +
                             'sizes. Merge the data first')
-            return
+            return False
 
         self.min_samples = len(self.indata['Raster'])+1
         self.spinbox_minsamples.setProperty("value", self.min_samples)
 
         temp = self.exec_()
         if temp == 0:
-            return
+            return False
 
         self.parent.process_is_active()
         self.run()

@@ -27,7 +27,7 @@
 import numpy as np
 
 
-class PData(object):
+class PData():
     """
     Class for point data
 
@@ -50,7 +50,7 @@ class PData(object):
         self.dataid = ""
 
 
-class VData(object):
+class VData():
     """
     Class for Vector data. Typically used for storage of shape files.
 

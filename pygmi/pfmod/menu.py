@@ -31,7 +31,7 @@ import pygmi.pfmod.iodefs as iodefs
 import pygmi.pfmod.misc as misc
 
 
-class MenuWidget(object):
+class MenuWidget():
     """
     Widget class to call the main interface
 
@@ -105,11 +105,6 @@ class MenuWidget(object):
     def import_mod3d(self):
         """ Imports data"""
         fnc = iodefs.ImportMod3D(self.parent)
-        self.parent.item_insert("Io", "Import 3D Model", fnc)
-
-    def import_tmod3d(self):
-        """ Imports data"""
-        fnc = iodefs.ImportTMod3D(self.parent)
         self.parent.item_insert("Io", "Import 3D Model", fnc)
 
     def merge_mod3d(self):

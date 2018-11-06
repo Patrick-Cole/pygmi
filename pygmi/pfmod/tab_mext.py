@@ -294,7 +294,7 @@ class MextDisplay(QtWidgets.QDialog):
     def choose_combo(self, combo, dtxt):
         """ Combo box choice routine """
         ctxt = str(combo.currentText())
-        if ctxt != 'None' and ctxt != '':
+        if ctxt not in ('None', ''):
             self.lmod1.griddata[dtxt] = self.parent.inraster[ctxt]
         elif ctxt == 'None' and dtxt in self.lmod1.griddata:
             self.lmod1.griddata.pop(dtxt)
@@ -302,7 +302,7 @@ class MextDisplay(QtWidgets.QDialog):
     def choose_dtm(self):
         """ Combo box to choose current dataset """
         ctxt = str(self.combo_dtm.currentText())
-        if ctxt != 'None' and ctxt != '':
+        if ctxt not in ('None', ''):
             curgrid = self.parent.inraster[ctxt]
 
             self.dsb_utlz.setValue(curgrid.data.max())
@@ -358,7 +358,7 @@ class MextDisplay(QtWidgets.QDialog):
     def get_area(self):
         """ Get area """
         ctxt = str(self.combo_dataset.currentText())
-        if ctxt != 'None' and ctxt != u'':
+        if ctxt not in ('None', u''):
             curgrid = self.parent.inraster[ctxt]
 
             utlx = curgrid.tlx

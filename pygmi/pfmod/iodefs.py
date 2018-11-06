@@ -45,7 +45,7 @@ from pygmi.pfmod import datatypes
 sys.modules['datatypes'] = datatypes
 
 
-class ImportMod3D(object):
+class ImportMod3D():
     """ Import Data """
     def __init__(self, parent):
         self.parent = parent
@@ -82,7 +82,7 @@ class ImportMod3D(object):
 
         if filt == 'Leapfrog Block Model (*.csv)':
             self.import_leapfrog_csv(filename)
-        elif filt == 'x,y,z,label (*.csv)' or filt == 'x,y,z,label (*.txt)':
+        elif filt in ('x,y,z,label (*.csv)', 'x,y,z,label (*.txt)'):
             self.import_ascii_xyz_model(filename)
         else:
             indict = np.load(filename)
@@ -272,11 +272,8 @@ class ImportMod3D(object):
             col = int((xi-lmod.xrange[0])/lmod.dxy)
             row = int((lmod.yrange[1]-y[i])/lmod.dxy)
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
-            try:
-                lmod.lith_index[col, row, layer] = \
-                    lmod.lith_list[label[i]].lith_index
-            except:
-                breakpoint()
+            lmod.lith_index[col, row, layer] = \
+                lmod.lith_list[label[i]].lith_index
 
     def dict2lmod(self, indict, pre=''):
         """ routine to convert a dictionary to an lmod """
@@ -370,7 +367,7 @@ class ImportMod3D(object):
             lmod.lith_list[itxt].set_xyz12()
 
 
-class ExportMod3D(object):
+class ExportMod3D():
     """ Export Data """
     def __init__(self, parent):
         self.ifile = ""
@@ -1195,9 +1192,9 @@ class ImportPicture(QtWidgets.QDialog):
 
         if (self.dsb_picimp_west.value() >=
                 self.dsb_picimp_east.value()):
-            return
+            return False
         if self.dsb_picimp_depth.value() == 0.0:
-            return
+            return False
 
         self.update_var()
         self.outdata['ProfPic'] = [self.grid]

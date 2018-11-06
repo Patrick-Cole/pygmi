@@ -26,11 +26,11 @@
 
 import time
 from PyQt5 import QtWidgets, QtCore, QtGui
+import numpy as np
+from osgeo import gdal
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.raster.dataprep import gdal_to_dat
-from osgeo import gdal
-import numpy as np
 
 
 def update_lith_lw(lmod, lwidget):
@@ -46,7 +46,7 @@ def update_lith_lw(lmod, lwidget):
         tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 
 
-class ProgressBar(object):
+class ProgressBar():
     """ Wrapper for a progress bar """
     def __init__(self, pbar, pbarmain):
         self.pbar = pbar
@@ -231,7 +231,7 @@ class MergeMod3D(QtWidgets.QDialog):
         tmp = []
         if 'Model3D' not in self.indata:
             return False
-        elif len(self.indata['Model3D']) != 2:
+        if len(self.indata['Model3D']) != 2:
             self.parent.showprocesslog('You need two datasets connected!')
             return False
 
@@ -292,9 +292,9 @@ class MergeMod3D(QtWidgets.QDialog):
         self.outdata['Raster'] = []
 
         for i in datmaster.griddata:
-            if (i == 'DTM Dataset' or i == 'Magnetic Dataset' or
-                    i == 'Gravity Dataset' or i == 'Study Area Dataset' or
-                    i == 'Gravity Regional'):
+            if (i in ('DTM Dataset', 'Magnetic Dataset',
+                      'Gravity Dataset', 'Study Area Dataset',
+                      'Gravity Regional')):
                 if i in datslave.griddata:
                     datmaster.griddata[i] = gmerge(datmaster.griddata[i],
                                                    datslave.griddata[i],

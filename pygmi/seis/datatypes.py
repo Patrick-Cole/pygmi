@@ -25,7 +25,7 @@
 """ Class for seismic data types """
 
 
-class seisan_1(object):
+class seisan_1():
     """
 Class to hold Seisan Type 1 data.
 
@@ -111,7 +111,7 @@ for 6 magnitudes.
         self.dataid = ""
 
 
-class seisan_2(object):
+class seisan_2():
     """
 Type 2 line (Macroseismic information)
 
@@ -200,7 +200,7 @@ Type 2 line (Macroseismic information)
         self.dataid = ""
 
 
-class seisan_3(object):
+class seisan_3():
     """
 Type 3 Line (Optional):
 
@@ -214,7 +214,7 @@ Columns Format Description 	Comments
         self.dataid = ""
 
 
-class seisan_4(object):
+class seisan_4():
     """
 Type 4 line:
 
@@ -292,7 +292,7 @@ Type 4 cards should be followed by a Blank Card (Type 0)
         self.dataid = ""
 
 
-class seisan_5(object):
+class seisan_5():
     """
 Type 5 line (optional): Error estimates of previous line, currently not used
                         by any SEISAN programs.
@@ -307,7 +307,7 @@ Columns Format Description 	Comments
         self.dataid = ""
 
 
-class seisan_6(object):
+class seisan_6():
     """
 Type 6 Line (Optional):
 
@@ -321,7 +321,7 @@ Columns Format Description 	Comments
         self.dataid = ""
 
 
-class seisan_7(object):
+class seisan_7():
     """
 Type 7 Line (Optional):
 
@@ -369,7 +369,7 @@ CAZ : Azimuth from event to station
         self.dataid = ""
 
 
-class seisan_E(object):
+class seisan_E():
     """
 Type E Line (Optional): Hyp error estimates
 
@@ -399,7 +399,7 @@ Columns Format Description
         self.dataid = ""
 
 
-class seisan_F(object):
+class seisan_F():
     """
 Type F Line (Optional): Fault plane solution
 
@@ -437,7 +437,7 @@ Columns Format Description
         self.dataid = ""
 
 
-class seisan_H(object):
+class seisan_H():
     """
 Type H line, High accuracy hypocenter line
 
@@ -472,7 +472,7 @@ Columns
         self.dataid = ""
 
 
-class seisan_I(object):
+class seisan_I():
     """
 Type I Line, ID line
 
@@ -513,7 +513,7 @@ Columns Format description1 Free
         self.region = ''
 
 
-class seisan_M(object):
+class seisan_M():
     """
 Type M Line (Optional): Moment tensor solution
 
@@ -592,7 +592,7 @@ Columns Format Description
         self.dataid = ""
 
 
-class seisan_P(object):
+class seisan_P():
     """
 Type P line, file name of a picture file
 

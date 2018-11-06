@@ -46,7 +46,7 @@ QProgressBar::chunk {
 """
 
 
-class PTime(object):
+class PTime():
     """ Main class in the ptimer module. Once activated, this class keeps track
     of all time since activation. Times are stored whenever its methods are
     called.

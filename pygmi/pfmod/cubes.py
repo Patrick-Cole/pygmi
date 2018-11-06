@@ -901,7 +901,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         """ Prints a 2D text string """
 
         GL.glRasterPos3f(x, y, z)
-        for i, ch in enumerate(text):
+        for _, ch in enumerate(text):
             GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_HELVETICA_10,
                                      ctypes.c_int(ord(ch)))
 
@@ -922,8 +922,8 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glLoadIdentity()
 
-        xmin, ymin, zmin = self.cubeVtxArray.min(0)
-        xmax, ymax, zmax = self.cubeVtxArray.max(0)
+        xmin, ymin, _ = self.cubeVtxArray.min(0)
+        xmax, ymax, _ = self.cubeVtxArray.max(0)
 
         if self.is_ortho is True:
             GL.glOrtho(xmin*self.zoomfactor,

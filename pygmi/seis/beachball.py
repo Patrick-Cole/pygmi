@@ -157,7 +157,7 @@ class BeachBall(QtWidgets.QDialog):
     def data_init(self):
         """ data init - entry point into routine """
         if 'Seis' not in self.indata:
-            return
+            return False
 
         data = self.indata['Seis']
 
@@ -170,8 +170,7 @@ class BeachBall(QtWidgets.QDialog):
             self.parent.showprocesslog('Error: no Fault Plane Solutions')
             self.nofps = True
             return False
-        else:
-            self.nofps = False
+        self.nofps = False
 
         try:
             self.cbox_alg.currentIndexChanged.disconnect()
@@ -204,6 +203,8 @@ class BeachBall(QtWidgets.QDialog):
         self.dsb_dist.setValue(pwidth)
 
         self.change_alg()
+
+        return True
 
     def setupui(self):
         """ Setup UI """
@@ -359,6 +360,8 @@ class BeachBall(QtWidgets.QDialog):
         data_source.Destroy()
         data_source2.Destroy()
 
+        return True
+
     def change_alg(self):
         """ Change algorithm """
 
@@ -391,6 +394,7 @@ class BeachBall(QtWidgets.QDialog):
         QtWidgets.QApplication.processEvents()
 
         self.mmc.init_graph()
+        return True
 
 
 def beachball(fm, centerx, centery, diam, isgeog):
@@ -513,7 +517,7 @@ def beachball(fm, centerx, centery, diam, isgeog):
 
     if D == 0:
         print('Enter a diameter for the beachballs!')
-        return
+        return None
 
     inc = 1
     X1, Y1 = pol2cart(phi+S1*d2r, l1)
@@ -745,7 +749,7 @@ def TDL(AN, BN):
         FD = fdh*fdh
         SD = np.sin(fdh)
         if SD == 0:
-            return
+            return None
         ST = -XN/SD
         CT = YN/SD
         SX = abs(ST)

@@ -43,7 +43,7 @@ def numpy_to_pygmi(data):
     """
     if data.ndim != 2:
         print("Error: you need 2 dimensions")
-        return
+        return None
     tmp = Data()
     if np.ma.isMaskedArray(data):
         tmp.data = data
@@ -71,7 +71,7 @@ def pygmi_to_numpy(tmp):
     return np.array(tmp.data)
 
 
-class Data(object):
+class Data():
     """
     PyGMI Data Object
 

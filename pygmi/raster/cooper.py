@@ -107,7 +107,7 @@ class Gradients(QtWidgets.QDialog):
         """ Settings """
         temp = self.exec_()
         if temp == 0:
-            return
+            return False
 
         self.azi = self.sb_azi.value()
         self.order = self.sb_order.value()
@@ -188,7 +188,7 @@ class VGradients(QtWidgets.QDialog):
         """ Settings """
         temp = self.exec_()
         if temp == 0:
-            return
+            return False
 
         self.azi = self.sb_azi.value()
         self.order = self.sb_order.value()
@@ -313,7 +313,7 @@ class Visibility2d(QtWidgets.QDialog):
         """ Settings """
         temp = self.exec_()
         if temp == 0:
-            return
+            return False
 
         self.wsize = self.sb_wsize.value()
         self.dh = self.sb_dh.value()
@@ -540,7 +540,7 @@ class Tilt1(QtWidgets.QDialog):
         """ Settings """
         temp = self.exec_()
         if temp == 0:
-            return
+            return False
 
         self.smooth = self.sb_s.value()
         self.azi = self.sb_azi.value()

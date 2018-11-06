@@ -119,7 +119,7 @@ def str2int(inp):
     return int(inp)
 
 
-class ImportSeisan(object):
+class ImportSeisan():
     """ Import Seisan Data """
     def __init__(self, parent=None):
         self.ifile = ""
@@ -143,7 +143,7 @@ class ImportSeisan(object):
             "All Files (*.*)"
         if filename is None:
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                    self.parent, 'Open File', '.', ext)
+                self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
 
@@ -220,7 +220,7 @@ class ImportSeisan(object):
 
             if ltype == 'F':
                 event[ltype].update(tmp)
-            elif ltype == '4' or ltype == ' ':
+            elif ltype in ('4', ' '):
                 ltype = '4'
                 event[ltype].append(tmp)
             elif ltype == 'M' and event.get('M') is not None:
@@ -390,13 +390,13 @@ def read_record_type_f(i):
     tmp.strike = str2float(i[0:10])
     tmp.dip = str2float(i[10:20])
     tmp.rake = str2float(i[20:30])
-    if prg == 'FPFIT' or prg == 'HASH':
+    if prg in ('FPFIT', 'HASH'):
         tmp.err1 = str2float(i[30:35])
         tmp.err2 = str2float(i[35:40])
         tmp.err3 = str2float(i[40:45])
         tmp.fit_error = str2float(i[45:50])
         tmp.station_distribution_ratio = str2float(i[50:55])
-    if prg == 'FOCMEC' or prg == 'HASH':
+    if prg in ('FOCMEC', 'HASH'):
         tmp.amplitude_ratio = str2float(i[55:60])
     tmp.agency_code = i[66:69]
     tmp.solution_quality = i[77]
@@ -505,7 +505,7 @@ def read_record_type_p(i):
     return tmp
 
 
-class ImportGenericFPS(object):
+class ImportGenericFPS():
     """
     Import Generic Fault Plane Solution Data. This is stored in a csv file.
     """
@@ -589,7 +589,7 @@ class ImportGenericFPS(object):
         return True
 
 
-class ExportSeisan(object):
+class ExportSeisan():
     """ Export Seisan Data """
     def __init__(self, parent):
         self.ifile = ""
@@ -639,8 +639,8 @@ class ExportSeisan(object):
         """ Writes record type 1"""
         if '1' not in data:
             return
-        else:
-            dat = data['1']
+        dat = data['1']
+
         tmp = ' '*80+'\n'
         tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
         tmp = sform('{0:2d}', dat.month, tmp, 7, 8)
@@ -677,8 +677,7 @@ class ExportSeisan(object):
         """ Writes record type 2"""
         if '2' not in data:
             return
-        else:
-            dat = data['2']
+        dat = data['2']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:15s}', dat.description, tmp, 6, 20)
@@ -720,8 +719,7 @@ class ExportSeisan(object):
         """ Writes record type 4"""
         if '4' not in data:
             return
-        else:
-            dat = data['4']
+        dat = data['4']
 
         self.write_record_type_7()
 
@@ -756,8 +754,7 @@ class ExportSeisan(object):
         """ Writes record type 5"""
         if '5' not in data:
             return
-        else:
-            dat = data['5']
+        dat = data['5']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:78s}', dat.text, tmp, 2, 79)
@@ -769,8 +766,7 @@ class ExportSeisan(object):
         """ Writes record type 6"""
         if '6' not in data:
             return
-        else:
-            dat = data['6']
+        dat = data['6']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:78s}', dat.tracedata_files, tmp, 2, 79)
@@ -788,8 +784,7 @@ class ExportSeisan(object):
         """ Writes record type E"""
         if 'E' not in data:
             return
-        else:
-            dat = data['E']
+        dat = data['E']
 
         if dat.latitude_error == -999 or dat.latitude_error is None:
             return
@@ -841,8 +836,8 @@ class ExportSeisan(object):
 
         if 'H' not in data:
             return
-        else:
-            dat = data['1']
+
+        dat = data['1']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
@@ -864,8 +859,8 @@ class ExportSeisan(object):
         """ Writes record type I"""
         if 'I' not in data:
             return
-        else:
-            dat = data['I']
+
+        dat = data['I']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:7s}', 'ACTION:', tmp, 2, 8)
@@ -888,8 +883,8 @@ class ExportSeisan(object):
 
         if 'M' not in data:
             return
-        else:
-            dat = data['M']
+
+        dat = data['M']
 
         tmp = ' '*80+'\n'
 
@@ -937,8 +932,8 @@ class ExportSeisan(object):
 
         if 'P' not in data:
             return
-        else:
-            dat = data['P']
+
+        dat = data['P']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:78s}', dat.filename, tmp, 2, 79)
@@ -947,7 +942,7 @@ class ExportSeisan(object):
         self.fobj.write(tmp)
 
 
-class ExportCSV(object):
+class ExportCSV():
     """ Export Seisan Data """
     def __init__(self, parent):
         self.ifile = ""
@@ -1020,8 +1015,8 @@ class ExportCSV(object):
         """ Writes record type 1"""
         if '1' not in data:
             return ', '*27
-        else:
-            dat = data['1']
+
+        dat = data['1']
         tmp = str(dat.year)+', '
         tmp += str(dat.month)+', '
         tmp += str(dat.day)+', '
@@ -1056,9 +1051,9 @@ class ExportCSV(object):
     def write_record_type_2(self, data):
         """ Writes record type 2"""
         if '2' not in data:
-            return
-        else:
-            dat = data['2']
+            return None
+
+        dat = data['2']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:15s}', dat.description, tmp, 6, 20)
@@ -1089,7 +1084,7 @@ class ExportCSV(object):
         """ Writes record type 3 - this changes depending on the preceding line
         """
         if '3' not in tmp:
-            return
+            return None
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:1s}', '3', tmp, 80)
@@ -1100,8 +1095,8 @@ class ExportCSV(object):
         """ Writes record type 4"""
         if '4' not in data:
             return [', '*22]
-        else:
-            dat = data['4']
+
+        dat = data['4']
 
         self.write_record_type_7()
 
@@ -1138,9 +1133,8 @@ class ExportCSV(object):
     def write_record_type_5(self, data):
         """ Writes record type 5"""
         if '5' not in data:
-            return
-        else:
-            dat = data['5']
+            return None
+        dat = data['5']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:78s}', dat.text, tmp, 2, 79)
@@ -1151,9 +1145,8 @@ class ExportCSV(object):
     def write_record_type_6(self, data):
         """ Writes record type 6"""
         if '6' not in data:
-            return
-        else:
-            dat = data['6']
+            return None
+        dat = data['6']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:78s}', dat.tracedata_files, tmp, 2, 79)
@@ -1171,8 +1164,8 @@ class ExportCSV(object):
         """ Writes record type E"""
         if 'E' not in data:
             return ', '*8
-        else:
-            dat = data['E']
+
+        dat = data['E']
 
         if dat.latitude_error == -999 or dat.latitude_error is None:
             return ', '*8
@@ -1193,7 +1186,7 @@ class ExportCSV(object):
         """ Writes record type F"""
 
         if 'F' not in data:
-            return
+            return None
 
         for dat in data['F'].values():
             tmp = ' '*80+'\n'
@@ -1221,9 +1214,9 @@ class ExportCSV(object):
         """ Writes record type H"""
 
         if 'H' not in data:
-            return
-        else:
-            dat = data['1']
+            return None
+
+        dat = data['1']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:4d}', dat.year, tmp, 2, 5)
@@ -1245,8 +1238,8 @@ class ExportCSV(object):
         """ Writes record type I"""
         if 'I' not in data:
             return ', '*7
-        else:
-            dat = data['I']
+
+        dat = data['I']
 
         tmp = str(dat.last_action_done)+', '
         tmp += str(dat.date_time_of_last_action)+', '
@@ -1262,9 +1255,9 @@ class ExportCSV(object):
         """ Writes record type M"""
 
         if 'M' not in data:
-            return
-        else:
-            dat = data['M']
+            return None
+
+        dat = data['M']
 
         tmp = ' '*80+'\n'
 
@@ -1309,8 +1302,7 @@ class ExportCSV(object):
         """ Writes record type P"""
 
         if 'P' not in data:
-            return
-        else:
+            return None
             dat = data['P']
 
         tmp = ' '*80+'\n'
@@ -1604,8 +1596,7 @@ class FilterSeisan(QtWidgets.QDialog):
                 if self.rinc.isChecked() and (testval < minval or
                                               testval > maxval):
                     continue
-                elif not self.rinc.isChecked() and (testval >= minval and
-                                                    testval <= maxval):
+                elif not self.rinc.isChecked() and (minval <= testval <= maxval):
                     continue
             else:
                 for j in i[rectype]:
@@ -1621,8 +1612,7 @@ class FilterSeisan(QtWidgets.QDialog):
                     if self.rinc.isChecked() and (testval < minval or
                                                   testval > maxval):
                         break
-                    elif not self.rinc.isChecked() and (testval >= minval and
-                                                        testval <= maxval):
+                    elif not self.rinc.isChecked() and (minval <= testval <= maxval):
                         break
                     badrec = False
                 if badrec is True:

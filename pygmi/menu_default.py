@@ -30,7 +30,7 @@ import webbrowser
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 
-class FileMenu(object):
+class FileMenu():
     """
     Widget class to call the main interface
 
@@ -123,7 +123,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
 
         tmp = []
         for j in data:
-            if j == 'Model3D' or j == 'Seis':
+            if j in ('Model3D', 'Seis'):
                 continue
 
             tmp = []
@@ -132,15 +132,15 @@ class ComboBoxBasic(QtWidgets.QDialog):
             self.combo.addItems(tmp)
 
         if not tmp:
-            return
+            return False
 
         tmp = self.exec_()
 
         if tmp != 1:
-            return
+            return False
 
         for j in data:
-            if j == 'Model3D' or j == 'Seis':
+            if j in ('Model3D', 'Seis'):
                 continue
             atmp = [i.row() for i in self.combo.selectedIndexes()]
 
@@ -161,7 +161,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
         return True
 
 
-class HelpMenu(object):
+class HelpMenu():
     """
     Widget class to call the main interface
 

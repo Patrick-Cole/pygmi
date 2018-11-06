@@ -97,7 +97,7 @@ class Normalisation(QtWidgets.QDialog):
         """ Settings """
         temp = self.exec_()
         if temp == 0:
-            return
+            return False
 
         data = copy.deepcopy(self.indata['Raster'])
         transform = np.zeros((2, 2))

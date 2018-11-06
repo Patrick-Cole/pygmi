@@ -69,7 +69,7 @@ def str2int(inp):
     return int(inp)
 
 
-class SIMP(object):
+class SIMP():
     """ Main form which does the GUI and the program """
     def __init__(self, parent=None):
         # PyGMI variables

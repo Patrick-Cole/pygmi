@@ -28,7 +28,7 @@ import numpy as np
 from pygmi.raster.datatypes import Data
 
 
-class LithModel(object):
+class LithModel():
     """ Lithological Model Data.
 
     This is the main data structure for the modelling program

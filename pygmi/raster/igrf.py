@@ -305,7 +305,7 @@ class IGRF(QtWidgets.QDialog):
         modelI = sum(yrmax < sdate)
         igdgc = 1
 
-        if (sdate > maxyr) and (sdate < maxyr+1):
+        if (maxyr < sdate < maxyr+1):
             self.reportback("Warning: The date " + str(sdate) +
                             " is out of range,")
             self.reportback("but still within one year of model expiration"
@@ -420,8 +420,6 @@ class IGRF(QtWidgets.QDialog):
                 if m != 0:
                     ii = ii + 1
                     self.gh[gh][ii] = hh
-
-        return
 
     def extrapsh(self, date, dte1, nmax1, nmax2, gh):
         """

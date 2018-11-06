@@ -32,7 +32,7 @@ from pygmi.seis import beachball
 from pygmi.seis import graphs
 
 
-class MenuWidget(object):
+class MenuWidget():
     """
     Widget class to call the main interface
 

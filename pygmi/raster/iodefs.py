@@ -36,7 +36,7 @@ from pygmi.raster.dataprep import merge
 from pygmi.raster.dataprep import quickgrid
 
 
-class ImportData(object):
+class ImportData():
     """
     Import Data - Interfaces with GDAL routines
 
@@ -339,7 +339,7 @@ def get_raster(ifile):
         if 'Cluster' in bandid:
             dat[i].no_clusters = int(dat[i].data.max()+1)
 
-        dataset = None
+    dataset = None
     return dat
 
 
@@ -857,7 +857,7 @@ def get_aster_ged_bin(ifile):
     return dat
 
 
-class ExportData(object):
+class ExportData():
     """
     Export Data
 
@@ -896,7 +896,7 @@ class ExportData(object):
         else:
             self.parent.showprocesslog('No raster data')
             self.parent.process_is_active(False)
-            return
+            return False
 
         ext = \
             "GeoTiff (*.tif);;" + \
@@ -940,6 +940,7 @@ class ExportData(object):
 
         self.parent.showprocesslog('Export Data Finished!')
         self.parent.process_is_active(False)
+        return True
 
     def export_gdal(self, dat, drv):
         """

@@ -182,12 +182,12 @@ class EquationEditor(QtWidgets.QDialog):
         temp = self.exec_()
 
         if temp == 0:
-            return
+            return False
 
         equation = self.textbrowser.toPlainText()
 
         if equation == '':
-            return
+            return False
 
         neweq = self.eq_fix(indata, equation)
 
@@ -198,7 +198,7 @@ class EquationEditor(QtWidgets.QDialog):
                 self.parent, 'Error',
                 ' Nothing processed! Your equation most likely had an error.',
                 QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
-            return
+            return False
 
         outdata = []
 
@@ -208,8 +208,8 @@ class EquationEditor(QtWidgets.QDialog):
                 ' Nothing processed! Your equation outputs a single ' +
                 'value instead of a minimum of one band.',
                 QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
-            return
-        elif len(findat.shape) == 2:
+            return False
+        if len(findat.shape) == 2:
             findat.shape = (1, findat.shape[0], findat.shape[1])
 
         for i, findati in enumerate(findat):

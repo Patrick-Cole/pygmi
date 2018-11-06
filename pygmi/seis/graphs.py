@@ -162,8 +162,8 @@ class MyMplCanvas(FigureCanvas):
         nmax = np.percentile(num3, 75)
         nmin = np.percentile(num3, 25)
 
-        i1 = np.nonzero(num3<nmax)[0][0]
-        i2 = np.nonzero(num3<nmin)[0][0]
+        i1 = np.nonzero(num3 < nmax)[0][0]
+        i2 = np.nonzero(num3 < nmin)[0][0]
 
         xtmp = bins2[i1:i2+1]
         ytmp = num3[i1:i2+1]
@@ -249,7 +249,7 @@ class MyMplCanvas(FigureCanvas):
                 if rec.travel_time_residual is not None:
                     T1[rec.station_name] = rec.travel_time_residual
 
-            if len(A1) > 0:
+            if A1:
                 A1mean = np.mean((list(A1.values())))
             for i in A1:
                 if i not in A:
@@ -518,7 +518,7 @@ def import_for_plots(dat, dind='R'):
             continue
 
         for rectype in event:
-            if rectype == '1' or rectype == 'E':
+            if rectype in('1', 'E'):
                 tmp = vars(event[rectype])
                 for j in tmp:
                     newkey = rectype+'_'+j

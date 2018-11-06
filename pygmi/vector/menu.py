@@ -29,7 +29,7 @@ from pygmi.vector import iodefs
 from pygmi.vector import graphs
 
 
-class MenuWidget(object):
+class MenuWidget():
     """
     Widget class to call the main interface
 

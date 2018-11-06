@@ -34,10 +34,9 @@ import pandas as pd
 from pygmi.vector.datatypes import PData
 from pygmi.vector.datatypes import VData
 import pygmi.menu_default as menu_default
-import pandas as pd
 
 
-class ImportLEMI417Data(object):
+class ImportLEMI417Data():
     """
     Import LEMI-417 ASCII MT Data
 
@@ -201,7 +200,7 @@ class ImportPointData(QtWidgets.QDialog):
         return True
 
 
-class PointCut(object):
+class PointCut():
     """
     Cut Data using shapefiles
 
@@ -240,7 +239,7 @@ class PointCut(object):
             data = copy.deepcopy(self.indata['Point'])
         else:
             self.parent.showprocesslog('No point data')
-            return
+            return False
 
         ext = "Shape file (*.shp)"
 
@@ -270,7 +269,7 @@ class PointCut(object):
         return True
 
 
-class ExportPoint(object):
+class ExportPoint():
     """
     Export Point Data
 
@@ -299,13 +298,13 @@ class ExportPoint(object):
         """ Runs routine """
         if 'Point' not in self.indata:
             self.showtext('Error: You need to have a point data first!')
-            return
+            return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'csv (*.csv)')
 
         if filename == '':
-            return
+            return False
 
         os.chdir(filename.rpartition('/')[0])
         ofile = str(filename.rpartition('/')[-1][:-4])
@@ -331,7 +330,7 @@ class ExportPoint(object):
         return True
 
 
-class ImportShapeData(object):
+class ImportShapeData():
     """
     Import Shapefile Data
 
@@ -461,7 +460,7 @@ def cut_point(data, ifile):
     poly = lyr.GetNextFeature()
     if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
         shapef = None
-        return
+        return None
 
     points = []
     geom = poly.GetGeometryRef()

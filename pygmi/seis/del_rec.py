@@ -37,7 +37,7 @@ import pygmi.seis.iodefs as iodefs
 
 
 
-class DeleteRecord(object):
+class DeleteRecord():
     """ Main form which does the GUI and the program """
     def __init__(self, parent=None):
         # Initialize Variables
@@ -54,7 +54,7 @@ class DeleteRecord(object):
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName()
         if ifile == '':
-            return
+            return False
         os.chdir(ifile.rpartition('/')[0])
 
         self.delrec(ifile)
@@ -99,7 +99,7 @@ class DeleteRecord(object):
         self.showtext('Completed!')
 
 
-class Quarry(object):
+class Quarry():
     """ Main form which does the GUI and the program """
     def __init__(self, parent=None):
         # Initialize Variables
@@ -122,7 +122,7 @@ class Quarry(object):
         self.showtext('Delete quarry events starting')
 
         if 'Seis' not in self.indata:
-            return
+            return False
 
         data = self.indata['Seis']
 
@@ -456,7 +456,7 @@ def import_for_plots(ifile, dind='R'):
                 datd[rectype] = []
             datd[rectype].append(event[rectype])
 
-            if rectype == '1' or rectype == 'E':
+            if rectype in ('1', 'E'):
                 tmp = vars(event[rectype])
                 for j in tmp:
                     newkey = rectype+'_'+j

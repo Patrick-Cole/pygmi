@@ -105,6 +105,8 @@ class BasicStats(QtWidgets.QDialog):
 
         savetable(ifile, self.bands, self.cols, self.data)
 
+        return True
+
 
 def basicstats_calc(data):
     """ Calculate stats """
@@ -221,6 +223,8 @@ class ClusterStats(QtWidgets.QDialog):
             return False
 
         savetable(ifile, self.bands, self.cols, self.data)
+
+        return True
 
 
 def savetable(ifile, bands, cols, data):

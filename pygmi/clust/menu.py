@@ -32,7 +32,7 @@ from pygmi.raster import show_table
 from pygmi.raster import iodefs
 
 
-class MenuWidget(object):
+class MenuWidget():
     """
     Widget class to call the main interface
 
@@ -113,10 +113,6 @@ class MenuWidget(object):
     def show_raster_data(self):
         """ Show raster data """
         self.parent.launch_context_item(graphs.PlotRaster)
-
-    def show_raster_data2(self):
-        """ Show raster data """
-        self.parent.launch_context_item(graphs.PlotRaster2)
 
     def show_vrc_etc(self):
         """ Show vrc, xbi, obj, nce graphs """

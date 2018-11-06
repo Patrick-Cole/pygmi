@@ -39,7 +39,7 @@ from pygmi.raster import tiltdepth
 from pygmi.raster import anaglyph
 
 
-class MenuWidget(object):
+class MenuWidget():
     """
     Widget class to call the main interface
 

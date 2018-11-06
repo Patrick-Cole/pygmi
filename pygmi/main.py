@@ -39,13 +39,11 @@ import os
 import pkgutil
 import math
 import importlib
-from distutils.version import StrictVersion
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
-from OpenGL import GL  # Loading this now to prevent an error later
 
 
 class Arrow(QtWidgets.QGraphicsLineItem):
@@ -348,7 +346,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
                                           ' You need to connect data first!',
                                           QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
-            return
+            return False
 
         self.my_class.parent.process_is_active()
         self.my_class.parent.showprocesslog(self.my_class_name+' busy...')
@@ -404,7 +402,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         text = ''
         for i in odata:
             text += '\n' + i + ' dataset:\n'
-            if i == 'Raster' or i == 'Cluster':
+            if i in ('Raster', 'Cluster'):
                 for j in odata[i]:
                     text += '  '+j.dataid + '\n'
             if i == 'Model3D':
@@ -740,7 +738,7 @@ class MainWidget(QtWidgets.QMainWindow):
             item.is_import = True
             iflag = item.settings()
             if iflag is False:
-                return
+                return None
             ifile = item.my_class.ifile.split('/')[-1]
             if len(ifile) > len(item_name):
                 ifile = ifile[:len(item_name)]+'\n'+ifile[len(item_name):]
