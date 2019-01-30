@@ -47,7 +47,7 @@ class PData():
         self.xdata = np.array([])
         self.ydata = np.array([])
         self.zdata = np.array([])
-        self.dataid = ""
+        self.dataid = ''
 
 
 class VData():
@@ -70,5 +70,5 @@ class VData():
         # store in a list
         self.crds = []
         self.attrib = [{}]
-        self.dataid = ""
-        self.dtype = ""
+        self.dataid = ''
+        self.dtype = ''

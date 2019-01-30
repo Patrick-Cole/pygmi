@@ -184,7 +184,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
 #        self.combo_sideview.currentIndexChanged.connect(self.pic_sideview)
 
-        self.hs_overview.valueChanged.connect(self.pic_overview)
+        self.hs_overview.valueChanged.connect(self.pic_overview2)
         self.combo_overview.currentIndexChanged.connect(self.pic_overview)
 
         pb_export_csv.clicked.connect(self.export_csv)
@@ -649,6 +649,17 @@ class ProfileDisplay(QtWidgets.QWidget):
         """
         self.mmc.init_grid_top(self.combo_overview.currentText(),
                                self.hs_overview.value())
+#        self.mmc.slide_grid_top()
+        self.mmc.figure.canvas.draw()
+
+    def pic_overview2(self):
+        """
+        Horizontal slider to change the opacity of profile and overlain
+        picture
+        """
+#        self.mmc.init_grid_top(self.combo_overview.currentText(),
+#                               self.hs_overview.value())
+        self.mmc.slide_grid_top(self.hs_overview.value())
         self.mmc.figure.canvas.draw()
 
     def slayer(self):
@@ -811,7 +822,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.lmod1.custprofx['adhoc'] = [x1[curprof], x2[curprof]]
         self.lmod1.custprofy['adhoc'] = [y1[curprof], y2[curprof]]
 
-    def prof_dir(self):
+    def prof_dir(self, slide=True):
         """ Radio button profile direction """
         dirval = self.dial_prof_dir.value()
         pdirval = 360-dirval
@@ -845,7 +856,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                                self.hs_overview.value())
         self.mmc.update_line_top()
 
-        self.update_plot(slide=True)
+        self.update_plot(slide=slide)
 
     def sprofdir(self):
         """ spinbox prof dir """
@@ -924,7 +935,8 @@ class ProfileDisplay(QtWidgets.QWidget):
             if self.pscale_type == 'datamax':
                 extent = [data2.data.min(), data2.data.max()]
             elif self.pscale_type == 'profmax':
-                extent = [tmpprof2.min(), tmpprof2.max()]
+                if tmpprof2.size > 0:
+                    extent = [tmpprof2.min(), tmpprof2.max()]
 
         if slide is True:
             xlim = self.mmc.axes.get_xlim()
@@ -944,7 +956,17 @@ class ProfileDisplay(QtWidgets.QWidget):
         """ Runs when the tab is activated """
         self.lmod1 = self.parent.lmod1
         self.mmc.lmod1 = self.lmod1
-#        curprof = self.sb_profnum.value()
+
+        citems = list(self.lmod1.griddata.keys())
+        self.combo_overview.clear()
+        self.combo_overview.addItems(citems)
+
+        curtext = self.combo_overview.currentText()
+        cindex = self.combo_overview.findText(curtext,
+                                              QtCore.Qt.MatchFixedString)
+        if cindex == -1:
+            cindex = 0
+        self.combo_overview.setCurrentIndex(cindex)
 
         txtmsg = ('Note: The display of gravity or magnetic data is '
                   'triggered off their respective calculations. Press '
@@ -961,38 +983,17 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.combo_overview.currentIndexChanged.disconnect()
 
         self.hs_layer.setMaximum(self.lmod1.numz-1)
-
         self.hs_profnum.setMinimum(0)
 
-        self.prof_dir()
-        curprof = 0
+        self.prof_dir(slide=False)
         self.calc_prof_limits()
-        gtmp = self.get_model()
 
-        curtext = self.combo_overview.currentText()
-        self.combo_overview.clear()
-        self.combo_overview.addItems(list(self.lmod1.griddata.keys()))
-
-        cindex = self.combo_overview.findText(curtext,
-                                              QtCore.Qt.MatchFixedString)
-        if cindex == -1:
-            cindex = 0
-        self.combo_overview.setCurrentIndex(cindex)
-
-        self.sb_profnum.setValue(curprof)
-        self.hs_profnum.setValue(curprof)
+        self.sb_profnum.setValue(0)
+        self.hs_profnum.setValue(0)
 
         self.sb_profnum.valueChanged.connect(self.sprofnum)
         self.hs_profnum.valueChanged.connect(self.hprofnum)
-#        self.combo_sideview.currentIndexChanged.connect(self.pic_sideview)
         self.combo_overview.currentIndexChanged.connect(self.pic_overview)
-
-        self.mmc.init_grid(gtmp)
-        self.mmc.init_grid_top(self.combo_overview.currentText(),
-                               self.hs_overview.value())
-
-        self.mmc.update_line_top()
-        self.update_plot()  # figure.canvas.draw is done in here
 
 
 class MyMplCanvas(FigureCanvas):
@@ -1042,6 +1043,7 @@ class MyMplCanvas(FigureCanvas):
 #        self.axes.callbacks.connect('xlim_changed', self.paxes_lim_update)
 
         self.laxes = fig.add_subplot(121)
+
         self.laxes.set_title("Layer View")
         self.laxes.xaxis.set_label_text("Eastings (m)")
         self.laxes.yaxis.set_label_text("Northings (m)")
@@ -1064,16 +1066,18 @@ class MyMplCanvas(FigureCanvas):
             return
 
         nmode = event.inaxes.get_navigate_mode()
+#        nmode = self.figure.canvas.toolbar._active
         if event.button == 1 and nmode is None:
             self.press = True
             self.newline = True
             self.move(event)
 
     def button_release(self, event):
-        """ Button press """
-        nmode = self.axes.get_navigate_mode()
-        if event.button == 1:
-            self.press = False
+        """ Button release """
+        self.press = False
+
+#        nmode = self.axes.get_navigate_mode()
+#        if event.button == 1:
 #            if nmode == 'ZOOM':
 #                extent = self.axes.get_xbound()
 #                self.paxes.set_xbound(extent[0], extent[1])
@@ -1239,16 +1243,13 @@ class MyMplCanvas(FigureCanvas):
 
     def init_grid_top(self, dat2=None, opac=100.0):
         """ init grid top """
+        dat2 = self.parent.combo_overview.currentText()
 
+        extent = self.lmod1.xrange+self.lmod1.yrange
         curlayer = self.parent.sb_layer.value()
 
         self.lopac = 1.0 - float(opac) / 100.
         dat = self.lmod1.lith_index[:, :, curlayer].T
-
-        left, right = self.lmod1.xrange
-        bottom, top = self.lmod1.yrange
-
-        extent = self.lmod1.xrange+self.lmod1.yrange
 
         self.lmdata = dat
         tmp = self.luttodat(dat)
@@ -1259,18 +1260,22 @@ class MyMplCanvas(FigureCanvas):
         self.lims.set_extent(extent)
         self.lims.set_alpha(self.lopac)
 
-        if dat2 is not None and self.lopac < 1.0:
+        if dat2 is not None:
             self.lims2.set_visible(True)
             dat2 = self.lmod1.griddata[str(dat2)]
             self.lims2.set_data(dat2.data)
             self.lims2.set_extent(dat_extent(dat2))
             self.lims2.set_clim(dat2.data.min(), dat2.data.max())
 
+
+        left, right = self.lmod1.xrange
+        bottom, top = self.lmod1.yrange
+
         self.xlims = (left, right)
         self.ylims = (bottom, top)
         self.laxes.set_xlim(self.xlims)
         self.laxes.set_ylim(self.ylims)
-
+#
         self.lims.set_visible(True)
         self.figure.canvas.draw()
 
@@ -1292,8 +1297,12 @@ class MyMplCanvas(FigureCanvas):
         self.axes.draw_artist(self.ims2)
         self.axes.draw_artist(self.prf[0])
 
-    def slide_grid_top(self, dat2=None):
+    def slide_grid_top(self, opac=None):
         """ Slider """
+
+        if opac is not None:
+            self.lopac = 1.0 - float(opac) / 100.
+
         curlayer = self.parent.sb_layer.value()
 
         dat = self.lmod1.lith_index[:, :, curlayer].T
@@ -1303,9 +1312,9 @@ class MyMplCanvas(FigureCanvas):
         self.lims.set_data(tmp)
         self.lims.set_alpha(self.lopac)
 
-        if dat2 is not None:
-            dat2 = self.lmod1.griddata[str(dat2)]
-            self.lims2.set_data(dat2.data)
+#        if dat2 is not None:
+#            dat2 = self.lmod1.griddata[str(dat2)]
+#            self.lims2.set_data(dat2.data)
 
         self.laxes.draw_artist(self.lims2)
         self.laxes.draw_artist(self.lims)
@@ -1326,7 +1335,6 @@ class MyMplCanvas(FigureCanvas):
 
     def update_line_top(self):
         """ Updates the line position """
-
         xrng = self.lmod1.custprofx['adhoc']
         yrng = self.lmod1.custprofy['adhoc']
 

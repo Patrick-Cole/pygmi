@@ -277,13 +277,10 @@ class GravMag():
         """ Assign the DTM to the lithology model """
         d_x = curgrid.xdim
         d_y = curgrid.ydim
-        utlx = curgrid.tlx
-        utly = curgrid.tly
+        gxmin = curgrid.tlx
+        gymax = curgrid.tly
         gcols = curgrid.cols
         grows = curgrid.rows
-
-        gxmin = utlx
-        gymax = utly
 
         ndata = np.zeros([self.lmod.numy, self.lmod.numx])
 
@@ -370,6 +367,9 @@ class GeoData():
         """
     def __init__(self, parent, ncols=10, nrows=10, numz=10, dxy=10.,
                  d_z=10., mht=80., ght=0.):
+        self.lithcode = 0
+        self.lithnotes = ""
+
         self.hintn = 30000.
         self.susc = 0.01
         self.mstrength = 0.
@@ -1391,10 +1391,7 @@ def dircos(incl, decl, azim):
 
 def dat_extent(dat, axes):
     """ Gets the extent of the dat variable """
-    left = dat.tlx
-    top = dat.tly
-    right = left + dat.cols*dat.xdim
-    bottom = top - dat.rows*dat.ydim
+    left, right, bottom, top = dat.get_extent()
 
     if (right-left) > 10000 or (top-bottom) > 10000:
         axes.xaxis.set_label_text("Eastings (km)")

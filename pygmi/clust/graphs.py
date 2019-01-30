@@ -57,11 +57,8 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
-                  data1.tly - data1.rows * data1.ydim, data1.tly)
-
         cdat = data1.data
-        csp = self.axes.imshow(cdat, cmap=cm.jet, extent=extent)
+        csp = self.axes.imshow(cdat, cmap=cm.jet, extent=data1.extent)
         vals = np.unique(cdat)
         vals = vals.compressed()
         bnds = (vals - 0.5).tolist() + [vals.max() + .5]

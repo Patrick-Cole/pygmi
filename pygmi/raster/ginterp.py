@@ -492,6 +492,8 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.updateGeometry(self)
 
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
+        self.cid = self.figure.canvas.mpl_connect('resize_event',
+                                                  self.init_graph)
 
 # sun shading stuff
         self.pinit = None
@@ -504,22 +506,16 @@ class MyMplCanvas(FigureCanvas):
 # cmyk stuff
         self.kval = 0.01
 
-    def dat_extent(self, dat):
-        """ Gets the extend of the dat variable """
-        left = dat.tlx
-        top = dat.tly
-        right = left + dat.cols*dat.xdim
-        bottom = top - dat.rows*dat.ydim
-        return (left, right, bottom, top)
-
-    def init_graph(self):
+    def init_graph(self, event=None):
         """ Initialize the graph """
+        self.figure.canvas.mpl_disconnect(self.cid)
 
         self.axes.clear()
         for i in range(3):
             self.argb[i].clear()
 
-        x_1, x_2, y_1, y_2 = self.dat_extent(self.data[0])
+        x_1, x_2, y_1, y_2 = self.data[0].extent
+
         self.axes.set_xlim(x_1, x_2)
         self.axes.set_ylim(y_1, y_2)
         self.axes.set_aspect('equal')
@@ -539,6 +535,9 @@ class MyMplCanvas(FigureCanvas):
                             extent=(x_1, x_2, y_1, y_2))
 
         self.update_graph()
+
+        self.cid = self.figure.canvas.mpl_connect('resize_event', self.init_graph)
+
 
     def lamb_horn(self):
         """ Lambert by horn """
@@ -600,7 +599,7 @@ class MyMplCanvas(FigureCanvas):
         """ Updates the contour map """
         self.image.dtype = 'Single Color Map'
 
-        x1, x2, y1, y2 = self.dat_extent(self.data[0])
+        x1, x2, y1, y2 = self.data[0].extent
         self.image.set_visible(False)
 
         for i in self.data:
@@ -1148,7 +1147,7 @@ class PlotInterp(QtWidgets.QDialog):
             self.mmc.argb[2].set_visible(False)
             self.mmc.cell = self.sslider.value()
             self.mmc.alpha = float(self.aslider.value())/100.
-            QtWidgets.QApplication.processEvents()
+#            QtWidgets.QApplication.processEvents()
             self.msc.init_graph()
             self.mmc.init_graph()
 
@@ -1458,6 +1457,10 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[3].data = img[:, :, 3]
 
         mask = img[:, :, 3]
+        newimg[0].data[newimg[0].data == 0] = 1
+        newimg[1].data[newimg[1].data == 0] = 1
+        newimg[2].data[newimg[2].data == 0] = 1
+
         newimg[0].data[mask <= 1] = 0
         newimg[1].data[mask <= 1] = 0
         newimg[2].data[mask <= 1] = 0

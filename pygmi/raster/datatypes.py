@@ -108,19 +108,18 @@ class Data():
     """
     def __init__(self):
         self.data = np.ma.array([])
+        self.extent = (0, 1, -1, 0)  # left, right, bottom, top
         self.tlx = 0.0  # Top Left X coordinate
         self.tly = 0.0  # Top Left Y coordinate
         self.xdim = 1.0
         self.ydim = 1.0
-        self.nrofbands = 1
         self.dataid = ''
         self.rows = -1
         self.cols = -1
         self.nullvalue = 1e+20
-        self.norm = {}
-        self.gtr = (0.0, 1.0, 0.0, 0.0, -1.0)
         self.wkt = ''
         self.units = ''
+        self.isrgb = False
 
     def get_extent(self):
         """ Get extent
@@ -133,13 +132,31 @@ class Data():
         Returns
         -------
         extent - tuple
-            tuple containg the extent as (left, right, bottom, top)
+            tuple containing the extent as (left, right, bottom, top)
 
         """
-        left = self.gtr[0]
+        left = self.tlx
         right = left + self.xdim*self.cols
-        top = self.gtr[3]
+        top = self.tly
         bottom = top - self.ydim*self.rows
-        extent = (left, right, bottom, top)
+        self.extent = (left, right, bottom, top)
 
-        return extent
+        return self.extent
+
+    def get_gtr(self):
+        """ Get gtr
+
+        Parameters
+        ----------
+        dat - PyGMI Data format
+            Data class for grid
+
+        Returns
+        -------
+        extent - tuple
+            tuple containing the gtr as (left, xdim, 0, top, 0., -ydim)
+        """
+
+        gtr = (self.tlx, self.xdim, 0.0, self.tly, 0.0, -self.ydim)
+
+        return gtr

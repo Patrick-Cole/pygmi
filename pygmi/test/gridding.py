@@ -91,10 +91,10 @@ def grid():
     odat.tly = newydata.max()
     odat.xdim = dxy
     odat.ydim = dxy
-    odat.nrofbands = 1
     odat.nullvalue = 1e+20
     odat.rows, odat.cols = grid.shape
     odat.data = np.ma.masked_invalid(grid)
+    odat.extent = odat.get_extent()
 
     tmp = pio.ExportData(None)
     tmp.ifile = ofile

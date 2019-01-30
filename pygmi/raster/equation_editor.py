@@ -177,6 +177,8 @@ class EquationEditor(QtWidgets.QDialog):
             self.bands[i.dataid] = 'i'+str(j)
             bandsall.append(i.data)
             localdict['i'+str(j)] = i.data
+
+        localdict_list = list(localdict.keys())
         localdict['iall'] = np.ma.array(bandsall)
 
         temp = self.exec_()
@@ -188,6 +190,17 @@ class EquationEditor(QtWidgets.QDialog):
 
         if equation == '':
             return False
+        usedbands = []
+        for i in localdict_list:
+            if i in equation:
+                usedbands.append(i)
+
+        mask = None
+        for i in usedbands:
+            if mask is None:
+                mask = localdict[i].mask
+            else:
+                mask = np.logical_or(mask, localdict[i].mask)
 
         neweq = self.eq_fix(indata, equation)
 
@@ -213,12 +226,13 @@ class EquationEditor(QtWidgets.QDialog):
             findat.shape = (1, findat.shape[0], findat.shape[1])
 
         for i, findati in enumerate(findat):
-            mask = np.ma.getmaskarray(indata[i].data)
+#            mask = np.ma.getmaskarray(indata[i].data)
             findati[mask] = indata[i].nullvalue
 
             outdata.append(copy.copy(indata[i]))
             outdata[-1].data = np.ma.masked_equal(findati,
                                                   indata[i].nullvalue)
+            outdata[-1].nullvalue = indata[i].nullvalue
 
         # This is needed to get rid of bad, unmasked values etc.
         for i, outdatai in enumerate(outdata):
@@ -229,6 +243,7 @@ class EquationEditor(QtWidgets.QDialog):
             outdata[0].dataid = equation
 
         self.outdata[intype] = outdata
+#        breakpoint()
 
         return True
 

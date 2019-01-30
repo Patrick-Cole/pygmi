@@ -94,6 +94,8 @@ class ImportMod3D():
         for i in self.lmod.griddata:
             if self.lmod.griddata[i].dataid == '':
                 self.lmod.griddata[i].dataid = i
+            if hasattr(self.lmod.griddata[i], 'isrgb') is False:
+                self.lmod.griddata[i].isrgb = False
 
         tmp = [i for i in set(self.lmod.griddata.values())]
         self.outdata['Raster'] = tmp
@@ -826,10 +828,7 @@ class ExportMod3D():
             zfile.writestr('models\\mod3d'+str(i)+'.dae', modeldae[i])
 
         for i in self.lmod.griddata:
-            x_1 = self.lmod.griddata[i].tlx
-            x_2 = x_1 + self.lmod.griddata[i].xdim*self.lmod.griddata[i].cols
-            y_2 = self.lmod.griddata[i].tly
-            y_1 = y_2 - self.lmod.griddata[i].ydim*self.lmod.griddata[i].rows
+            x_1, x_2, y_1, y_2 = self.lmod.griddata[i].get_extent()
 
             res = prj.TransformPoint(x_1, y_1)
             lonwest, latsouth = res[0], res[1]
@@ -1245,30 +1244,3 @@ class MessageCombo(QtWidgets.QDialog):
     def acceptall(self):
         """ accept """
         return self.master.currentText()
-
-
-def gtiff(filename):
-    """ Utility to import geotiffs """
-
-    dataset = gdal.Open(filename, gdal.GA_ReadOnly)
-    nred = dataset.GetRasterBand(1).ReadAsArray()
-    ngreen = dataset.GetRasterBand(2).ReadAsArray()
-    nblue = dataset.GetRasterBand(3).ReadAsArray()
-    itmp = np.uint32(nred*65536+ngreen*256+nblue+int('FF000000', 16))
-
-    gtr = dataset.GetGeoTransform()
-    dat = [Data()]
-
-    dat[0].tlx = gtr[0]
-    dat[0].tly = gtr[3]
-    dat[0].dataid = "Image"
-    dat[0].rows = dataset.RasterYSize
-    dat[0].cols = dataset.RasterXSize
-    dat[0].xdim = abs(gtr[1])
-    dat[0].ydim = abs(gtr[5])
-    dat[0].data = np.ma.array(itmp)
-    dat[0].nullvalue = np.nan  # This was erread.nullvalue, is changed above
-
-    dataset = None
-
-    return dat

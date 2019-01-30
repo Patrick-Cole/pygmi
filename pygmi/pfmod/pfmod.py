@@ -72,6 +72,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         self.mext = tab_mext.MextDisplay(self)
         self.param = tab_param.ParamDisplay(self)
+        self.lithnotes = tab_param.LithNotes(self)
         self.profile = tab_prof.ProfileDisplay(self)
 
         self.grvmag = grvmag3d.GravMag(self)
@@ -104,6 +105,11 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_param.setText("Geophysical Parameters")
         self.toolbardock.addAction(self.action_param)
         self.action_param.triggered.connect(self.param.tab_activate)
+
+        self.action_lnotes = QtWidgets.QAction(self)
+        self.action_lnotes.setText("Lithology Notes")
+        self.toolbardock.addAction(self.action_lnotes)
+        self.action_lnotes.triggered.connect(self.lithnotes.tab_activate)
 
 # Dock Widgets
         dock = QtWidgets.QDockWidget("Profile Editor")

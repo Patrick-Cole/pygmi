@@ -83,15 +83,13 @@ class MyMplCanvas(FigureCanvas):
 
         self.scale = scale
         self.rotang = rotang
-
-        self.extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
-                       data1.tly - data1.rows * data1.ydim, data1.tly)
+        self.extent = data1.extent
 
         self.z = data1.data*scale
         dxy = data1.xdim
         y, x = np.indices(self.z.shape)
-        self.x = x*int(dxy) + data1.tlx
-        y = data1.tly - y*int(dxy)
+        self.x = x*int(dxy) + data1.extent[0]
+        y = data1.extent[-1] - y*int(dxy)
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -168,8 +166,7 @@ class MyMplCanvas(FigureCanvas):
         self.scale = scale
         self.rotang = rotang
 
-        self.extent = (data1.tlx, data1.tlx + data1.cols * data1.xdim,
-                       data1.tly - data1.rows * data1.ydim, data1.tly)
+        self.extent = data1.extent
 
         self.z = data1.data*scale
         dxy = data1.xdim

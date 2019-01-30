@@ -480,6 +480,10 @@ class MextDisplay(QtWidgets.QDialog):
                 tmp = self.lmod1.griddata['Study Area Dataset'].dataid
                 self.combo_dataset.setCurrentIndex(gkeys.index(tmp))
 
+            if 'Other' in lkeys:
+                tmp = self.lmod1.griddata['Other'].dataid
+                self.combo_other.setCurrentIndex(gkeys.index(tmp))
+
     def update_vals(self):
         """ Updates the visible model extent parameters"""
         utlx = self.lmod1.xrange[0]

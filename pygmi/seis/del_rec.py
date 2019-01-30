@@ -28,13 +28,12 @@ import os
 import numpy as np
 from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
-from sklearn.cluster import DBSCAN
-import scipy.spatial.distance as ssd
-import cartopy.crs as ccrs
-import cartopy.io.img_tiles as cimgt
 from pygmi.misc import PTime
 import pygmi.seis.iodefs as iodefs
-
+#from sklearn.cluster import DBSCAN
+#import scipy.spatial.distance as ssd
+#import cartopy.crs as ccrs
+#import cartopy.io.img_tiles as cimgt
 
 
 class DeleteRecord():
@@ -116,6 +115,7 @@ class Quarry():
 
         self.events = []
         self.day = [10, 16]  # daytime start at 6am and ends at 7pm
+        self.day = [9, 19]  # daytime start at 6am and ends at 7pm
 
     def settings(self):
         """ Settings """
@@ -137,6 +137,7 @@ class Quarry():
 
         self.events = alist
 
+#        data = self.calcrq2()
         data = self.calcrq2b()
         self.outdata['Seis'] = data
 
@@ -245,6 +246,7 @@ class Quarry():
                 newevents = np.delete(newevents, rstot[maxel])
             else:
                 stayinloop = False
+            stayinloop = False
 
         ttt.since_last_call('Total')
         self.showtext('Completed!')
@@ -255,7 +257,8 @@ class Quarry():
         plt.hist(ehour, 24)
         plt.show()
 
-        return newevents.tolist()
+#        return newevents.tolist()
+        return newevents
 
     def calcrq2b(self):
         """ Calculates the Rq value """
@@ -276,7 +279,7 @@ class Quarry():
             lon.append(i.longitude)
             newevents.append(i)
 
-        breakpoint()
+#        breakpoint()
 
         day = self.day
 
@@ -291,8 +294,9 @@ class Quarry():
         rdist = 0.2  # max distance for event to qualify. In degrees
         N = 50
 
-        rperc = self.randrqb(N, day, ehourall.shape[0])
+#        rperc = self.randrqb(N, day, ehourall.shape[0])
         rperc = 3.0
+#        rperc = 1.97435897
 
         self.showtext('Calculating Rq values')
 
@@ -321,6 +325,11 @@ class Quarry():
 
         rstot = np.array(rstot)
 
+        plt.xlabel('R')
+        plt.ylabel('Event Counts')
+        plt.hist(rq[nn!=0.00001], 50)
+        plt.show()
+
         filt = (rq-rperc) > 0
 
         rstot2 = []
@@ -340,9 +349,13 @@ class Quarry():
 
         print('New total number of events:', ehour.size)
 
+        plt.xlabel('Hours')
+        plt.ylabel('Event Counts')
         plt.hist(ehourall, 24)
         plt.show()
 
+        plt.xlabel('Hours')
+        plt.ylabel('Event Counts')
         plt.hist(ehour, 24)
         plt.show()
 
@@ -494,59 +507,118 @@ def import_for_plots(ifile, dind='R'):
     return datd
 
 
-def gearth_plot(ifile):
-    """ Plot with google earth background """
-    datd = import_for_plots(ifile, 'R')
-
-    extent = [16, 33, -22, -35]
-#    extent = [29, 29.05, -26, -26.05]
-    request = cimgt.GoogleTiles(style='satellite')
-
-    plt.figure(figsize=(9, 7))
-    ax = plt.axes(projection=ccrs.PlateCarree())
-    ax.set_extent(extent, crs=ccrs.PlateCarree())
-
-    # https://wiki.openstreetmap.org/wiki/Zoom_levels
-    ax.add_image(request, 6)
-#    ax.add_image(request, 14)
-
-    ax.gridlines(draw_labels=True)
-
-    filt1 = np.equal(datd['1_longitude'], None)
-    filt2 = np.equal(datd['1_latitude'], None)
-    filt = np.logical_or(filt1, filt2)
-    filt1 = np.isnan(datd['1_longitude'])
-    filt2 = np.isnan(datd['1_latitude'])
-    filtb = np.logical_or(filt1, filt2)
-    filt = np.logical_or(filt, filtb)
-
-    lat1 = np.array(datd['1_latitude'])[~filt].astype(float)
-    lon1 = np.array(datd['1_longitude'])[~filt].astype(float)
-
-    X = np.transpose([lon1, lat1])
-    db = DBSCAN(eps=0.05, min_samples=10).fit(X)
-
-    filt = (db.labels_ != -1)
-    plt.scatter(lon1[filt], lat1[filt], s=1, c=db.labels_[filt],
-                cmap=plt.cm.jet)
-    plt.colorbar()
-
-    plt.show()
+#def gearth_plot(ifile):
+#    """ Plot with google earth background """
+#    datd = import_for_plots(ifile, 'R')
+#
+#    extent = [16, 33, -22, -35]
+##    extent = [29, 29.05, -26, -26.05]
+#    request = cimgt.GoogleTiles(style='satellite')
+#
+#    plt.figure(figsize=(9, 7))
+#    ax = plt.axes(projection=ccrs.PlateCarree())
+#    ax.set_extent(extent, crs=ccrs.PlateCarree())
+#
+#    # https://wiki.openstreetmap.org/wiki/Zoom_levels
+#    ax.add_image(request, 6)
+##    ax.add_image(request, 14)
+#
+#    ax.gridlines(draw_labels=True)
+#
+#    filt1 = np.equal(datd['1_longitude'], None)
+#    filt2 = np.equal(datd['1_latitude'], None)
+#    filt = np.logical_or(filt1, filt2)
+#    filt1 = np.isnan(datd['1_longitude'])
+#    filt2 = np.isnan(datd['1_latitude'])
+#    filtb = np.logical_or(filt1, filt2)
+#    filt = np.logical_or(filt, filtb)
+#
+#    lat1 = np.array(datd['1_latitude'])[~filt].astype(float)
+#    lon1 = np.array(datd['1_longitude'])[~filt].astype(float)
+#
+#    X = np.transpose([lon1, lat1])
+#    db = DBSCAN(eps=0.05, min_samples=10).fit(X)
+#
+#    filt = (db.labels_ != -1)
+#    plt.scatter(lon1[filt], lat1[filt], s=1, c=db.labels_[filt],
+#                cmap=plt.cm.jet)
+#    plt.colorbar()
+#
+#    plt.show()
+#
+#def test():
+#    """ test for google earth stuff """
+#    import matplotlib as mpl
+#    glookup = np.array([156412, 78206, 39103, 19551, 9776, 4888, 2444, 1222,
+#                        610.984, 305.492, 152.746, 76.373, 38.187, 19.093,
+#                        9.547, 4.773, 2.387, 1.193, 0.596, 0.298])
+#
+#
+##    extent = [16, 33, -22, -35]
+#    extent = [227800, 540000, 7110000, 6950000]
+#    extent = [227800, 540000, 6950000, 7110000]
+##    extent = [0, 100, 100, 0]
+#
+##    extent = [29, 29.05, -26, -26.05]
+#    request = cimgt.GoogleTiles(style='satellite')
+##    request = cimgt.GoogleTiles(style='street')
+##    custproj = ccrs.PlateCarree()
+#    custproj = ccrs.epsg(32736)
+##    custproj = ccrs.epsg(3857)
+#
+#    fig = plt.figure(figsize=(9, 7))
+#    ax = plt.axes(projection=custproj)
+#    ax.set_extent(extent, crs=custproj)
+#
+#    xrange = extent[1]-extent[0]
+#    yrange = abs(extent[2]-extent[3])
+#    width = xrange/(fig.get_figwidth()*fig.get_dpi())
+#    height = yrange/(fig.get_figheight()*fig.get_dpi())
+#    mindim = min(width, height)
+#
+#    pchk1 = np.abs(glookup-mindim)
+#    pchk2 = np.min(pchk1)
+#    pchk = np.nonzero(pchk1 == pchk2)
+#    pchk = int(pchk[0][0])
+#
+#    # https://wiki.openstreetmap.org/wiki/Zoom_levels
+#    ax.add_image(request, pchk)
+##    ax.add_image(request, 9)
+#
+#    plt.xticks([227800, 300000, 400000, 500000, 540000])
+#    plt.yticks([6950000, 7000000, 7050000, 7100000, 7110000])
+#    plt.grid(True)
+#
+#    plt.plot(400000, 7050000, 'o')
+#    plt.show()
+#
+##    imgs = [obj for obj in ax.get_children() if isinstance(obj, mpl.image.AxesImage)]
+##
+##    image = imgs[0].get_array()[::-1]
+##
+##    plt.imshow(image)
+##    plt.show()
+#    lims2 = ax.get_images()[0]
+#
+#    lims2.set_alpha(0)
+#
+#    plt.show()
 
 
 def main():
     """ Main routine for testing """
     ifile = r'C:\Work\Programming\pygmi\data/pygmi.out'
 
-    gearth_plot(ifile)
+#    gearth_plot(ifile)
+#    test()
 
-#    quarry = Quarry()
-#
-#    dat = iodefs.ImportSeisan()
-#    dat.settings(ifile)
-#
-#    quarry.indata = dat.outdata
-#    quarry.settings()
+    quarry = Quarry()
+
+    dat = iodefs.ImportSeisan()
+    dat.settings(ifile)
+
+    quarry.indata = dat.outdata
+    quarry.settings()
 
 
 # search for events closer than a certain distance (0.2 deg)

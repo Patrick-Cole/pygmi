@@ -157,6 +157,7 @@ class ImportData():
                                      dat[2].data.T])
                 dat = [dat[0]]
                 dat[0].data = dat2
+                dat[0].isrgb = True
 
         self.outdata[output_type] = dat
         return True
@@ -212,7 +213,6 @@ def get_ascii(ifile):
         dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                             dat[i].data.mask)
 
-    dat[i].nrofbands = nbands
     dat[i].tlx = ulxmap
     dat[i].tly = ulymap
     dat[i].dataid = bandid
@@ -221,7 +221,7 @@ def get_ascii(ifile):
     dat[i].cols = ncols
     dat[i].xdim = xdim
     dat[i].ydim = ydim
-    dat[i].gtr = (dat[i].tlx, dat[i].xdim, 0, dat[i].tly, 0, -dat[i].ydim)
+    dat[i].get_extent()
 
     return dat
 
@@ -312,7 +312,6 @@ def get_raster(ifile):
             dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                 np.ma.getmaskarray(dat[i].data))
 
-        dat[i].nrofbands = dataset.RasterCount
         dat[i].tlx = gtr[0]
         dat[i].tly = gtr[3]
         if bandid == '':
@@ -326,7 +325,7 @@ def get_raster(ifile):
         dat[i].cols = dataset.RasterXSize
         dat[i].xdim = abs(gtr[1])
         dat[i].ydim = abs(gtr[5])
-        dat[i].gtr = gtr
+        dat[i].get_extent()
 
         if custom_wkt is None:
             srs = osr.SpatialReference()
@@ -441,7 +440,6 @@ def get_modis(ifile):
         dataset = None
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
 
-        gtr = dataset.GetGeoTransform()
         rtmp2 = dataset.ReadAsArray()
 
         if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
@@ -495,7 +493,6 @@ def get_modis(ifile):
                 dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                     np.ma.getmaskarray(dat[i].data))
 
-            dat[i].nrofbands = dataset.RasterCount
             dat[i].tlx = tlx
             dat[i].tly = tly
             dat[i].dataid = bandid2+' '+bandid
@@ -504,7 +501,7 @@ def get_modis(ifile):
             dat[i].cols = dat[i].data.shape[1]
             dat[i].xdim = abs(lonsdim)
             dat[i].ydim = abs(latsdim)
-            dat[i].gtr = gtr
+            dat[i].get_extent()
 
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
@@ -606,7 +603,6 @@ def get_aster(ifile):
             dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                 dat[i].data.mask)
 
-        dat[i].nrofbands = dataset.RasterCount
         dat[i].tlx = tlx
         dat[i].tly = tly
         dat[i].dataid = bandid2
@@ -615,7 +611,7 @@ def get_aster(ifile):
         dat[i].cols = dat[i].data.shape[1]
         dat[i].xdim = abs(lonsdim)
         dat[i].ydim = abs(latsdim)
-        dat[i].gtr = gtr
+        dat[i].get_extent()
 
         srs = osr.SpatialReference()
         srs.ImportFromWkt(dataset.GetProjection())
@@ -686,7 +682,6 @@ def get_aster_ged(ifile):
             bandid = 'Observations'
             units = 'number per pixel'
 
-        gtr = dataset.GetGeoTransform()
         rtmp2 = dataset.ReadAsArray()
 
         if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
@@ -734,7 +729,6 @@ def get_aster_ged(ifile):
                 units = 'Kelvin'
                 dat[i].data = dat[i].data * 0.01
 
-            dat[i].nrofbands = dataset.RasterCount
             dat[i].tlx = tlx
             dat[i].tly = tly
             dat[i].dataid = bandid
@@ -743,8 +737,8 @@ def get_aster_ged(ifile):
             dat[i].cols = dat[i].data.shape[1]
             dat[i].xdim = abs(lonsdim)
             dat[i].ydim = abs(latsdim)
-            dat[i].gtr = gtr
             dat[i].units = units
+            dat[i].get_extent()
 
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
@@ -840,7 +834,6 @@ def get_aster_ged_bin(ifile):
 
         dat[i].data = data[i]*scale[i]
 
-        dat[i].nrofbands = 1
         dat[i].tlx = tlx
         dat[i].tly = tly
         dat[i].dataid = bandid[i]
@@ -850,6 +843,7 @@ def get_aster_ged_bin(ifile):
         dat[i].xdim = lonsdim
         dat[i].ydim = latsdim
         dat[i].units = units[i]
+        dat[i].get_extent()
 
     dat.pop(17)
     dat.pop(16)
@@ -955,8 +949,6 @@ class ExportData():
         """
 
         data = merge(dat)
-        xmin = data[0].tlx
-        ymax = data[0].tly
 
         driver = gdal.GetDriverByName(drv)
         dtype = data[0].data.dtype
@@ -1000,7 +992,7 @@ class ExportData():
         else:
             out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
                                 len(data), fmt)
-        out.SetGeoTransform([xmin, data[0].xdim, 0, ymax, 0, -data[0].ydim])
+        out.SetGeoTransform(data[0].get_gtr())
 
         out.SetProjection(data[0].wkt)
 
@@ -1039,6 +1031,7 @@ class ExportData():
 #            elif len(data) == 1:
 #                rtmp.SetNoDataValue(datai.nullvalue)
             rtmp.WriteArray(dtmp)
+            rtmp.GetStatistics(False, True)
 
         out = None  # Close File
         if drv == 'ENVI':
@@ -1058,8 +1051,8 @@ class ExportData():
             file_out = self.get_filename(k, 'gxf')
             fno = open(file_out, 'w')
 
-            xmin = k.tlx
-            ymin = k.tly - k.rows*k.ydim
+            xmin = k.extent[0]
+            ymin = k.extent[2]
 
             fno.write("#TITLE\n")
             fno.write(self.name)
@@ -1109,10 +1102,7 @@ class ExportData():
             file_out = self.get_filename(k, 'grd')
             fno = open(file_out, 'wb')
 
-            xmin = k.tlx
-            xmax = k.tlx + k.cols*k.xdim
-            ymin = k.tly - k.rows*k.ydim
-            ymax = k.tly
+            xmin, xmax, ymin, ymax = k.extent
 
             bintmp = struct.pack('cccchhdddddd', b'D', b'S', b'B', b'B',
                                  k.cols, k.rows,
@@ -1143,8 +1133,8 @@ class ExportData():
             file_out = self.get_filename(k, 'asc')
             fno = open(file_out, 'w')
 
-            xmin = k.tlx
-            ymin = k.tly - k.rows*k.ydim
+            xmin = extent[0]
+            ymin = extent[2]
 
             fno.write("ncols \t\t\t" + str(k.cols))
             fno.write("\nnrows \t\t\t" + str(k.rows))
@@ -1177,8 +1167,8 @@ class ExportData():
 
             tmp = k.data.filled(k.nullvalue)
 
-            xmin = k.tlx
-            ymax = k.tly
+            xmin = k.extent[0]
+            ymax = k.extent[-1]
 
             for j in range(k.rows):
                 for i in range(k.cols):
@@ -1301,7 +1291,6 @@ def get_geopak(hfile):
     i = 0
 
     dat[i].data = data
-    dat[i].nrofbands = 1
     dat[i].tlx = x0
     dat[i].tly = y0+dy*nrows
     dat[i].dataid = hfile[:-4]
@@ -1311,7 +1300,7 @@ def get_geopak(hfile):
     dat[i].cols = ncols
     dat[i].xdim = dx
     dat[i].ydim = dy
-    dat[i].gtr = (dat[i].tlx, dat[i].xdim, 0, dat[i].tly, 0, -dat[i].ydim)
+    dat[i].get_extent()
 
     return dat
 
@@ -1388,7 +1377,6 @@ def get_geosoft(hfile):
     i = 0
 
     dat[i].data = data
-    dat[i].nrofbands = 1
     dat[i].tlx = x0
     dat[i].tly = y0+dy*nrows
     dat[i].dataid = hfile[:-4]
@@ -1398,6 +1386,6 @@ def get_geosoft(hfile):
     dat[i].cols = ncols
     dat[i].xdim = dx
     dat[i].ydim = dy
-    dat[i].gtr = (dat[i].tlx, dat[i].xdim, 0, dat[i].tly, 0, -dat[i].ydim)
+    dat[i].get_extent()
 
     return dat

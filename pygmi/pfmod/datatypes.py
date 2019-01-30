@@ -82,7 +82,6 @@ class LithModel():
         self.name = '3D Model'
         self.dataid = '3D Model'
         self.tmpfiles = None
-
         # Next line calls a function to update the variables above.
         self.update(50, 40, 5, 0, 0, 0, 100, 100, 100, 0)
 
@@ -158,13 +157,11 @@ class LithModel():
 
         d_x = curgrid.xdim
         d_y = curgrid.ydim
-        utlx = curgrid.tlx
-        utly = curgrid.tly
+        gxmin = curgrid.tlx
+        gymax = curgrid.tly
         gcols = curgrid.cols
         grows = curgrid.rows
 
-        gxmin = utlx
-        gymax = utly
         utlz = curgrid.data.max()
 
         self.lith_index[:, :, :] = 0
@@ -201,6 +198,8 @@ class LithModel():
         grid.ydim = self.dxy
         grid.tlx = self.xrange[0]
         grid.tly = self.yrange[1]
+        grid.extent = grid.get_extent()
+
         return grid
 
     def init_calc_grids(self):

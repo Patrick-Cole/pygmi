@@ -103,7 +103,6 @@ class DataCut():
                                           QtWidgets.QMessageBox.Ok)
             return False
 
-
         self.pbar.to_max()
         self.outdata['Raster'] = data
 
@@ -250,6 +249,7 @@ class DataGrid(QtWidgets.QDialog):
             dat.tly = y.max()
             dat.xdim = dxy
             dat.ydim = dxy
+            dat.extent = dat.get_extent()
             newdat.append(dat)
 
         self.outdata['Raster'] = newdat
@@ -322,16 +322,14 @@ class DataMerge(QtWidgets.QDialog):
         data = self.indata['Raster'][0]
         dxy = self.dsb_dxy.value()
 
-        xmin0 = data.tlx
-        xmax0 = data.tlx+data.xdim*data.cols
-        ymax0 = data.tly
-        ymin0 = data.tly-data.ydim*data.rows
+        xmin0, xmax0, ymin0, ymax0 = data.extent
 
         for data in self.indata['Raster']:
-            xmin = min(data.tlx, xmin0)
-            xmax = max(data.tlx+data.xdim*data.cols, xmax0)
-            ymax = max(data.tly, ymax0)
-            ymin = min(data.tly-data.ydim*data.rows, ymin0)
+            xmin, xmax, ymin, ymax = data.extent
+            xmin = min(xmin, xmin0)
+            xmax = max(xmax, xmax0)
+            ymin = min(ymin, ymin0)
+            ymax = max(ymax, ymax0)
 
         cols = int((xmax - xmin)/dxy)
         rows = int((ymax - ymin)/dxy)
@@ -364,16 +362,14 @@ class DataMerge(QtWidgets.QDialog):
         data = self.indata['Raster'][0]
         orig_wkt = data.wkt
 
-        xmin = data.tlx
-        xmax = data.tlx+data.xdim*data.cols
-        ymax = data.tly
-        ymin = data.tly-data.ydim*data.rows
+        xmin0, xmax0, ymin0, ymax0 = data.extent
 
         for data in self.indata['Raster']:
-            xmin = min(data.tlx, xmin)
-            xmax = max(data.tlx+data.xdim*data.cols, xmax)
-            ymax = max(data.tly, ymax)
-            ymin = min(data.tly-data.ydim*data.rows, ymin)
+            xmin, xmax, ymin, ymax = data.extent
+            xmin = min(xmin, xmin0)
+            xmax = max(xmax, xmax0)
+            ymin = min(ymin, ymin0)
+            ymax = max(ymax, ymax0)
 
         cols = int((xmax - xmin)/dxy)
         rows = int((ymax - ymin)/dxy)
@@ -390,7 +386,7 @@ class DataMerge(QtWidgets.QDialog):
             if data.data.min() <= 0:
                 doffset = data.data.min()-1.
                 data.data = data.data - doffset
-            gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
+            gtr0 = data.get_gtr()
             src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
             dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
 
@@ -464,6 +460,10 @@ class DataReproj(QtWidgets.QDialog):
         the main routine.
         """
 
+        if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
+            self.parent.showprocesslog("Could not reproject")
+            return
+
 # Input stuff
         orig_wkt = self.in_proj.wkt
 
@@ -519,7 +519,7 @@ class DataReproj(QtWidgets.QDialog):
                 return
 
 # top left x, w-e pixel size, rotation, top left y, rotation, n-s pixel size
-            old_geo = (data.tlx, data.xdim, 0, data.tly, 0, -data.ydim)
+            old_geo = data.get_gtr()
             src = data_to_gdal_mem(data, old_geo, orig_wkt, data.cols,
                                    data.rows)
 
@@ -530,6 +530,8 @@ class DataReproj(QtWidgets.QDialog):
                                 gdal.GRA_Bilinear)
 
             data2 = gdal_to_dat(dest, data.dataid)
+            data2.data = data2.data.astype(data.data.dtype)
+
             if datamin <= 0:
                 data2.data = data2.data+(datamin-1)
                 data.data = data.data+(datamin-1)
@@ -707,8 +709,12 @@ class GroupProj(QtWidgets.QWidget):
 
         self.wkt = self.epsg_proj[txt]
 
+        if type(self.wkt) is not str:
+            self.wkt = epsgtowkt(self.wkt)
+
         srs = osr.SpatialReference()
         srs.ImportFromWkt(self.wkt)
+
         self.label.setText(srs.ExportToPrettyWkt())
 
 
@@ -861,6 +867,7 @@ class Metadata(QtWidgets.QDialog):
                     tmp.ydim = i.ydim
                     tmp.rows = i.rows
                     tmp.cols = i.cols
+                    tmp.extent = i.get_extent()
                     tmp.nullvalue = i.nullvalue
                     tmp.wkt = wkt
                     tmp.units = i.units
@@ -899,6 +906,7 @@ class Metadata(QtWidgets.QDialog):
             odata.tly = float(self.dsb_tly.text())
             odata.xdim = float(self.dsb_xdim.text())
             odata.ydim = float(self.dsb_ydim.text())
+            odata.extent = odata.get_extent()
         except ValueError:
             self.parent.showprocesslog('Value error - abandoning changes')
 
@@ -1113,6 +1121,7 @@ def rtp(data, I_deg, D_deg):
     dat.tly = data.tly
     dat.xdim = data.xdim
     dat.ydim = data.ydim
+    dat.get_extent()
 
     return dat
 
@@ -1239,15 +1248,6 @@ def cut_raster(data, ifile):
     return data
 
 
-def dat_extent(dat):
-    """ Gets the extend of the dat variable """
-    left = dat.tlx
-    top = dat.tly
-    right = left + dat.cols*dat.xdim
-    bottom = top - dat.rows*dat.ydim
-    return (left, right, bottom, top)
-
-
 def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
     """
     Data to GDAL mem format
@@ -1277,6 +1277,11 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
     cols = int(cols)
     rows = int(rows)
 
+    if data.isrgb is True:
+        nbands = data.data.shape[2]
+    else:
+        nbands = 1
+
     if dtype == np.uint8:
         fmt = gdal.GDT_Byte
     elif dtype == np.int32:
@@ -1287,20 +1292,24 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
         fmt = gdal.GDT_Float32
 
     driver = gdal.GetDriverByName('MEM')
-    src = driver.Create('', cols, rows, 1, fmt)
+    src = driver.Create('', cols, rows, nbands, fmt)
 
     src.SetGeoTransform(gtr)
     src.SetProjection(wkt)
 
-    if nodata is False:
-        if data.nullvalue is not None:
-            src.GetRasterBand(1).SetNoDataValue(data.nullvalue)
-        src.GetRasterBand(1).WriteArray(data.data)
-    else:
-        tmp = np.zeros((rows, cols))
-        tmp = np.ma.masked_equal(tmp, 0)
-        src.GetRasterBand(1).SetNoDataValue(0)  # Set to this because of Reproj
-        src.GetRasterBand(1).WriteArray(tmp)
+    for i in range(nbands):
+        if nodata is False:
+            if data.nullvalue is not None:
+                src.GetRasterBand(i+1).SetNoDataValue(data.nullvalue)
+            if data.isrgb is True:
+                src.GetRasterBand(i+1).WriteArray(data.data[:, :, i])
+            else:
+                src.GetRasterBand(i+1).WriteArray(data.data)
+        else:
+            tmp = np.zeros((rows, cols))
+            tmp = np.ma.masked_equal(tmp, 0)
+            src.GetRasterBand(i+1).SetNoDataValue(0)  # Set to this because of Reproj
+            src.GetRasterBand(i+1).WriteArray(tmp)
 
     return src
 
@@ -1310,7 +1319,7 @@ def epsgtowkt(epsg):
     orig = osr.SpatialReference()
     err = orig.ImportFromEPSG(int(epsg))
     if err != 0:
-        return ''
+        return 'Unknown'
     out = orig.ExportToWkt()
     return out
 
@@ -1329,15 +1338,25 @@ def gdal_to_dat(dest, bandid='Data'):
     dat = Data()
     gtr = dest.GetGeoTransform()
 
-    rtmp = dest.GetRasterBand(1)
-    dat.data = rtmp.ReadAsArray()
+    nbands = dest.RasterCount
+
+    if nbands == 1:
+        rtmp = dest.GetRasterBand(1)
+        dat.data = rtmp.ReadAsArray()
+    else:
+        dat.data = []
+        for i in range(nbands):
+            rtmp = dest.GetRasterBand(i+1)
+            dat.data.append(rtmp.ReadAsArray())
+        dat.data = np.array(dat.data)
+        dat.data = np.moveaxis(dat.data, 0, -1)
+
     nval = rtmp.GetNoDataValue()
 
     dat.data = np.ma.masked_equal(dat.data, nval)
     dat.data.set_fill_value(nval)
     dat.data = np.ma.fix_invalid(dat.data)
 
-    dat.nrofbands = dest.RasterCount
     dat.tlx = gtr[0]
     dat.tly = gtr[3]
     dat.dataid = bandid
@@ -1347,7 +1366,7 @@ def gdal_to_dat(dest, bandid='Data'):
     dat.xdim = abs(gtr[1])
     dat.ydim = abs(gtr[5])
     dat.wkt = dest.GetProjection()
-    dat.gtr = gtr
+    dat.extent = dat.get_extent()
 
     return dat
 
@@ -1366,9 +1385,10 @@ def getepsgcodes():
         tmp = i.split(',')
         if tmp[1][0] == '"':
             tmp[1] = tmp[1][1:-1]
-        wkttmp = epsgtowkt(tmp[0])
-        if wkttmp != '':
-            dcodes[tmp[1]] = wkttmp
+#        wkttmp = epsgtowkt(tmp[0])
+#        if wkttmp != '':
+#            dcodes[tmp[1]] = wkttmp
+        dcodes[tmp[1]] = int(tmp[0])
 
     with open(os.environ['GDAL_DATA']+'\\pcs.csv') as pfile:
         plines = pfile.readlines()
@@ -1384,9 +1404,10 @@ def getepsgcodes():
         tmp = i.split(',')
         if tmp[1][0] == '"':
             tmp[1] = tmp[1][1:-1]
-        err = orig.ImportFromEPSG(int(tmp[0]))
-        if err == 0:
-            pcodes[tmp[1]] = orig.ExportToWkt()
+#        err = orig.ImportFromEPSG(int(tmp[0]))
+#        if err == 0:
+#            pcodes[tmp[1]] = orig.ExportToWkt()
+        pcodes[tmp[1]] = int(tmp[0])
 
     clat = 0.
     scale = 1.
@@ -1395,7 +1416,8 @@ def getepsgcodes():
     orig = osr.SpatialReference()
 
     for datum in ['Cape', 'Hartebeesthoek94']:
-        orig.ImportFromWkt(dcodes[datum])
+        orig.ImportFromEPSG(dcodes[datum])
+#        orig.ImportFromWkt(dcodes[datum])
         for clong in range(15, 35, 2):
             orig.SetTM(clat, clong, scale, f_e, f_n)
             orig.SetProjCS(datum+r' / TM'+str(clong))
@@ -1584,6 +1606,7 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz = np.ma.array(zfin)
     newz.mask = newmask
     return newz
+
 
 def func(x, y):
     """ Function """

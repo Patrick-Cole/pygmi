@@ -270,6 +270,7 @@ class TiltDepth(QtWidgets.QDialog):
     # Contour tilt
         x = zout.tlx + np.arange(nc)*zout.xdim+zout.xdim/2
         y = zout.tly - np.arange(nr)*zout.ydim-zout.ydim/2
+
         X, Y = np.meshgrid(x, y)
         Z = np.rad2deg(t1)
         self.X = X

@@ -108,7 +108,7 @@ for 6 magnitudes.
         self.magnitude_3 = None
         self.type_of_magnitude_3 = ' '
         self.magnitude_reporting_agency_3 = ' '
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_2():
@@ -197,7 +197,7 @@ Type 2 line (Macroseismic information)
         self.intensity_bordering_area_2 = None
         self.quality_rank = ' '
         self.reporting_agency = ' '
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_3():
@@ -211,7 +211,7 @@ Columns Format Description 	Comments
     """
     def __init__(self):
         self.text = ''
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_4():
@@ -289,7 +289,7 @@ Type 4 cards should be followed by a Blank Card (Type 0)
         self.weight = None
         self.epicentral_distance = None
         self.azimuth_at_source = None
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_5():
@@ -304,7 +304,7 @@ Columns Format Description 	Comments
     """
     def __init__(self):
         self.text = ' '
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_6():
@@ -318,7 +318,7 @@ Columns Format Description 	Comments
     """
     def __init__(self):
         self.tracedata_files = ' '
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_7():
@@ -366,7 +366,7 @@ CAZ : Azimuth from event to station
         self.location_weight = None
         self.distance = None
         self.caz = None
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_E():
@@ -396,7 +396,7 @@ Columns Format Description
         self.cov_xy = None
         self.cov_xz = None
         self.cov_yz = None
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_F():
@@ -434,7 +434,7 @@ Columns Format Description
         self.agency_code = ' '
         self.program_used = ' '
         self.solution_quality = ' '
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_H():
@@ -469,7 +469,7 @@ Columns
         self.longitude = None
         self.depth = None
         self.rms = None
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_I():
@@ -589,7 +589,7 @@ Columns Format Description
         self.scalar_moment = None
         self.method_used_2 = ' '
         self.quality_2 = ' '
-        self.dataid = ""
+        self.dataid = ''
 
 
 class seisan_P():
@@ -602,4 +602,4 @@ Type P line, file name of a picture file
     """
     def __init__(self):
         self.filename = ' '
-        self.dataid = ""
+        self.dataid = ''

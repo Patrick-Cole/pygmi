@@ -69,6 +69,103 @@ class MergeLith(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
 
+class LithNotes(QtWidgets.QDialog):
+    """ Class to call up a dialog for lithology descriptions """
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+
+        self.parent = parent
+        self.lmod1 = self.parent.lmod1
+        self.oldrowtext = None
+        self.codelist = {}
+        self.noteslist = {}
+
+        self.lithcode = QtWidgets.QSpinBox()
+        self.notes = QtWidgets.QTextEdit()
+        self.lw_param_defs = QtWidgets.QListWidget()
+
+        self.setupui()
+
+    def setupui(self):
+        """ Setup UI """
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+#        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
+
+        label_1 = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel()
+
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                                           QtWidgets.QSizePolicy.Preferred)
+        sizepolicy.setHorizontalStretch(0)
+        sizepolicy.setVerticalStretch(0)
+        sizepolicy.setHeightForWidth(
+            self.lw_param_defs.sizePolicy().hasHeightForWidth())
+
+        self.lw_param_defs.setSizePolicy(sizepolicy)
+        self.lw_param_defs.setEditTriggers(
+            QtWidgets.QAbstractItemView.NoEditTriggers)
+
+        self.lithcode.setMaximum(9999999)
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle("Lithology Notes")
+        label_1.setText("Lithology Code")
+        label_2.setText("Notes")
+
+        gridlayout.addWidget(self.lw_param_defs, 0, 1, 1, 1)
+        gridlayout.addWidget(label_1, 1, 0, 1, 1)
+        gridlayout.addWidget(self.lithcode, 1, 1, 1, 1)
+        gridlayout.addWidget(label_2, 2, 0, 1, 1)
+        gridlayout.addWidget(self.notes, 2, 1, 1, 1)
+#        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 3, 1, 1, 1)
+
+        self.lw_param_defs.currentItemChanged.connect(self.lw_index_change)
+
+        buttonbox.accepted.connect(self.apply_changes)
+        buttonbox.rejected.connect(self.reject)
+
+    def apply_changes(self):
+        """ Applies changes """
+
+        for i in self.lmod1.lith_list:
+            self.lmod1.lith_list[i].lithcode = self.codelist[i]
+            self.lmod1.lith_list[i].lithnotes = self.noteslist[i]
+
+        self.accept()
+
+    def lw_index_change(self):
+        """ List box in parameter tab for definitions """
+        if self.oldrowtext is not None:
+            self.codelist[self.oldrowtext] = self.lithcode.value()
+            self.noteslist[self.oldrowtext] = self.notes.toPlainText()
+
+        i = self.lw_param_defs.currentRow()
+        if i == -1:
+            i = 0
+        itxt = str(self.lw_param_defs.item(i).text())
+
+        self.lithcode.setValue(self.codelist[itxt])
+        self.notes.setPlainText(self.noteslist[itxt])
+        self.oldrowtext = itxt
+
+    def tab_activate(self):
+        """ Runs when the tab is activated """
+        self.lmod1 = self.parent.lmod1
+        misc.update_lith_lw(self.lmod1, self.lw_param_defs)
+# Need this to init the first values.
+        self.codelist = {}
+        self.noteslist = {}
+        for i in self.lmod1.lith_list:
+            self.codelist[i] = self.lmod1.lith_list[i].lithcode
+            self.noteslist[i] = self.lmod1.lith_list[i].lithnotes
+
+        self.exec_()
+
+
 class ParamDisplay(QtWidgets.QDialog):
     """ Widget class to call the main interface """
     def __init__(self, parent):
@@ -86,14 +183,16 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_hdec = QtWidgets.QDoubleSpinBox()
         self.dsb_hint = QtWidgets.QDoubleSpinBox()
         self.dsb_hinc = QtWidgets.QDoubleSpinBox()
-        self.pb_autoregional = QtWidgets.QPushButton("Lithology Based Regional Estimation")
+        self.pb_autoregional = QtWidgets.QPushButton("Lithology Based "
+                                                     "Regional Estimation")
         self.dsb_ght = QtWidgets.QDoubleSpinBox()
         self.dsb_gregional = QtWidgets.QDoubleSpinBox()
 
         self.pb_rename_def = QtWidgets.QPushButton("Rename Current Definition")
         self.pb_rem_def = QtWidgets.QPushButton("Remove Current Definition")
         self.pb_merge_def = QtWidgets.QPushButton("Merge Definitions")
-        self.pb_add_def = QtWidgets.QPushButton("Add New Lithological Definition")
+        self.pb_add_def = QtWidgets.QPushButton("Add New Lithological"
+                                                " Definition")
         self.lw_param_defs = QtWidgets.QListWidget()
 
         self.gbox_lithprops = QtWidgets.QGroupBox()

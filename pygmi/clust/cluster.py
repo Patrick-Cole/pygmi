@@ -275,8 +275,6 @@ class Cluster(QtWidgets.QDialog):
                 continue
 
             if self.cltype == 'k-means':
-#                cfit = skc.KMeans(n_clusters=i, tol=self.tol,
-#                                  max_iter=self.max_iter).fit(X)
                 cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
                                            max_iter=self.max_iter).fit(X)
             elif self.cltype == 'DBSCAN':
@@ -313,13 +311,13 @@ class Cluster(QtWidgets.QDialog):
             i.tly = data[0].tly
             i.xdim = data[0].xdim
             i.ydim = data[0].ydim
-            i.nrofbands = 1
             i.dataid = 'Clusters: '+str(i.no_clusters)
             if self.cltype == 'DBSCAN':
                 i.dataid = 'Clusters: '+str(int(i.data.max()+1))
             i.rows = data[0].rows
             i.cols = data[0].cols
             i.nullvalue = data[0].nullvalue
+            i.extent = data[0].extent
 
         self.reportback("Cluster complete" + ' ('+self.cltype + ' ' + ')')
 
