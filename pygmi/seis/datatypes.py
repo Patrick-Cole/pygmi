@@ -386,16 +386,27 @@ Columns Format Description
  44-55 E12.4 Covariance (x,y) km*km
  56-67 E12.4 Covarience (x,z) km*km
  68-79 E14.4 Covariance (y,z) km*km
+
+covarriance matrix
+    var(1,1)=erx*erx
+    var(2,2)=ery*ery
+    var(3,3)=erz*erz
+    var(1,2)=cvxy
+    var(1,3)=cvxz
+    var(2,3)=cvyz
+    var(2,1)=var(1,2)
+    var(3,1)=var(1,3)
+    var(3,2)=var(2,3)
     """
     def __init__(self):
         self.gap = None
         self.origin_time_error = None
-        self.latitude_error = None
-        self.longitude_error = None
-        self.depth_error = None
-        self.cov_xy = None
-        self.cov_xz = None
-        self.cov_yz = None
+        self.latitude_error = None  # ery
+        self.longitude_error = None  # erx
+        self.depth_error = None  # erz
+        self.cov_xy = None  # cvxy
+        self.cov_xz = None  # cvxz
+        self.cov_yz = None  # cvyz
         self.dataid = ''
 
 

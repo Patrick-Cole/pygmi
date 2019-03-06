@@ -69,10 +69,19 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
         tmp2 = slen*' '
     elif 's' in strform:
         tmp2 = strform.format(val[:slen])
+    elif np.isnan(val):
+        tmp2 = slen*' '
     else:
         tmp2 = strform.format(val)
 
+    if len(tmp2) > slen and 'e+0' in tmp2:
+        tmp2 = tmp2.replace('e+0', 'e')
+
+    if len(tmp2) > slen and 'e+' in tmp2:
+        tmp2 = tmp2.replace('e+', 'e')
+
     tmp = tmp[:col1-1]+tmp2[:slen]+tmp[col2:]
+
     return tmp
 
 
@@ -614,7 +623,7 @@ class ExportSeisan():
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
                                                             'Save File',
-                                                            '.', 'sei (*.sei)')
+                                                            '.', 'out (*.out)')
 
         if filename == '':
             return
@@ -737,15 +746,15 @@ class ExportSeisan():
             tmp = sform('{0:2d}', dat.minutes, tmp, 21, 22, 0)
             tmp = sform('{0:>6.2f}', dat.seconds, tmp, 23, 28, 0)
             tmp = sform('{0:4d}', dat.duration, tmp, 30, 33)
-            tmp = sform('{0:>7.5G}', dat.amplitude, tmp, 34, 40, 0)
-            tmp = sform('{0:4.3G}', dat.period, tmp, 42, 45, 0)
+            tmp = sform('{0:>7.4g}', dat.amplitude, tmp, 34, 40, 0)
+            tmp = sform('{0:4.3g}', dat.period, tmp, 42, 45, 0)
             tmp = sform('{0:5.1f}', dat.direction_of_approach, tmp, 47, 51)
             tmp = sform('{0:4.0f}', dat.phase_velocity, tmp, 53, 56)
             tmp = sform('{0:4.0f}', dat.angle_of_incidence, tmp, 57, 60)
             tmp = sform('{0:3d}', dat.azimuth_residual, tmp, 61, 63)
             tmp = sform('{0:5.2f}', dat.travel_time_residual, tmp, 64, 68, 0)
             tmp = sform('{0:2d}', dat.weight, tmp, 69, 70)
-            tmp = sform('{0:5.4G}', dat.epicentral_distance, tmp, 71, 75, 0)
+            tmp = sform('{0:5.4g}', dat.epicentral_distance, tmp, 71, 75, 0)
             tmp = sform('{0:3d}', dat.azimuth_at_source, tmp, 77, 79, 0)
 
             self.fobj.write(tmp)
@@ -920,7 +929,7 @@ class ExportSeisan():
         tmp = sform('{0:3s}', dat.reporting_agency2, tmp, 46, 48)
         tmp = sform('{0:1s}', dat.mt_coordinate_system, tmp, 49)
         tmp = sform('{0:2d}', dat.exponential, tmp, 50, 51)
-        tmp = sform('{0:6.3g}', dat.scalar_moment, tmp, 53, 62)
+        tmp = sform('{0:6.3G}', dat.scalar_moment, tmp, 53, 62)
         tmp = sform('{0:7s}', dat.method_used_2, tmp, 71, 77)
         tmp = sform('{0:1s}', dat.quality_2, tmp, 78)
         tmp = sform('{0:1s}', 'M', tmp, 80)

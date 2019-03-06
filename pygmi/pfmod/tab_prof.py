@@ -34,10 +34,13 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.figure import Figure
 from matplotlib import cm
 from matplotlib import rcParams
+from osgeo import gdal
 import pygmi.raster.iodefs as ir
 from pygmi.pfmod import misc
 from pygmi.pfmod.grvmag3d import gridmatch
 import pygmi.menu_default as menu_default
+from pygmi.raster.dataprep import gdal_to_dat
+from pygmi.raster.dataprep import data_to_gdal_mem
 
 rcParams['savefig.dpi'] = 600.
 
@@ -249,7 +252,8 @@ class ProfileDisplay(QtWidgets.QWidget):
         tmp = dtmp.settings()
         if tmp is False:
             return
-        curgrid = dtmp.outdata['Raster'][0].data[::-1]
+#        curgrid = dtmp.outdata['Raster'][0].data[::-1]
+        curgrid = dtmp.outdata['Raster'][0]
 
         self.pbar.setValue(100)
 
@@ -260,6 +264,8 @@ class ProfileDisplay(QtWidgets.QWidget):
         tmp = lbnd.exec_()
         if tmp == 0:
             return
+
+        isdepths = lbnd.rb_depth.isChecked()
 
         lowerb, upperb = lbnd.get_lith()
         if lowerb == -999 and upperb == -999:
@@ -280,14 +286,26 @@ class ProfileDisplay(QtWidgets.QWidget):
 # This section gets rid of null values quickly
         xt, yt = np.meshgrid(gxrng, gyrng)
         zt = curgrid.data.data
+
+        if isdepths is True:
+            zt2 = 0
+            if 'DTM Dataset' in self.lmod1.griddata:
+                zt2 = gridmatch2(curgrid, self.lmod1.griddata['DTM Dataset'])
+            zt = zt2 - curgrid.data
+            zt = zt.data
+
         msk = np.logical_not(np.logical_or(curgrid.data.mask, np.isnan(zt)))
-        zt = zt[msk]
-        xy1 = np.transpose([xt[msk], yt[msk]])
-        xy2 = np.transpose([xt, yt])
-        newgrid = np.transpose(si.griddata(xy1, zt, xy2, 'nearest'))
+
+#        zt = zt[msk]
+#        xy1 = np.transpose([xt[msk], yt[msk]])
+#        xy2 = np.transpose([xt, yt])
+#        newgrid = np.transpose(si.griddata(xy1, zt, xy2, 'nearest'))
+
+        import matplotlib.pyplot as plt
+#        breakpoint()
 
 # Back to splines
-        fgrid = si.RectBivariateSpline(gyrng, gxrng, newgrid)
+#        fgrid = si.RectBivariateSpline(gyrng, gxrng, newgrid)
 
         for i in range(self.lmod1.numx):
             for j in range(self.lmod1.numy):
@@ -298,7 +316,12 @@ class ProfileDisplay(QtWidgets.QWidget):
                 jgrd = int((tly-jmod)/d_y)
 
                 if igrd >= 0 and jgrd >= 0 and igrd < cols and jgrd < rows:
-                    k_2 = int((regz-fgrid(jmod, imod))/d_z)
+                    if msk[jgrd, igrd] == False:
+                        continue
+
+                    k_2 = int((regz - zt[jgrd, igrd])/d_z)
+
+#                    k_2 = int((regz-fgrid(jmod, imod))/d_z)
                     if k_2 < 0:
                         k_2 = 0
                     lfilt = self.lmod1.lith_index[i, j, k_2:] != -1
@@ -504,13 +527,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         y1, y2 = self.lmod1.custprofy['adhoc']
         px1, px2 = self.lmod1.custprofx['rotate']
 
-#        print('dir', self.sb_prof_dir.value())
-#        print('extents', self.extent_side)
-#        print('x:', x1, x2)
-#        print('y:', y1, y2)
-#        print('px:', px1, px2)
-#        print('-------------------------------------------')
-
         # convert units to cells
         bly = self.lmod1.yrange[0]
         tlx = self.lmod1.xrange[0]
@@ -521,7 +537,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         y1 = (y1-bly)/dxy
         y2 = (y2-bly)/dxy
 
-#        print(x1, x2, y1, y2)
         # this is number of samples times 10
         self.pdxy = dxy/10  # ten times the cells
         rcell = int((px2-px1)/self.pdxy)
@@ -565,7 +580,6 @@ class ProfileDisplay(QtWidgets.QWidget):
             gtmp.append(tmp)
 
     ### debug
-
         gtmp = np.array(gtmp[::-1])
 
         return gtmp
@@ -1173,9 +1187,17 @@ class MyMplCanvas(FigureCanvas):
             ipdx2 = self.parent.ipdx2
 
             if curaxes == self.axes:
-                self.lmod1.lith_index[xxx, yyy, ::-1] = mdata[:, ipdx1:ipdx2].T
-                self.mdata = mdata
+                tmp = (mdata[:, ipdx1:ipdx2] == self.curmodel)
+                for i, rpix in enumerate(tmp[::-1]):
+                    xxx2 = xxx[rpix]
+                    yyy2 = yyy[rpix]
+                    self.lmod1.lith_index[xxx2, yyy2, i] = self.curmodel
+
+#                self.lmod1.lith_index[xxx, yyy, ::-1] = mdata[:, ipdx1:ipdx2].T
+#                self.mdata = mdata
                 self.lmdata = self.lmod1.lith_index[:, :, curlayer].T
+                self.mdata[:, ipdx1:ipdx2] = self.lmod1.lith_index[xxx, yyy, ::-1].T
+
             else:
                 self.lmod1.lith_index[:, :, curlayer] = mdata.T
                 self.lmdata = mdata
@@ -1416,6 +1438,8 @@ class LithBound(QtWidgets.QDialog):
         self.buttonbox = QtWidgets.QDialogButtonBox(self)
         self.lw_lithupper = QtWidgets.QListWidget(self)
         self.lw_lithlower = QtWidgets.QListWidget(self)
+        self.rb_depth = QtWidgets.QRadioButton()
+        self.rb_height = QtWidgets.QRadioButton()
         self.setupui()
 
     def setupui(self):
@@ -1435,7 +1459,16 @@ class LithBound(QtWidgets.QDialog):
         self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonbox.setStandardButtons(
             QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
-        gridlayout.addWidget(self.buttonbox, 2, 0, 1, 2)
+
+        self.rb_depth.setChecked(True)
+        self.rb_depth.setText(
+                "Z-coordinate is in units of depth(positive down)")
+        self.rb_height.setText(
+                "Z-coordinate is in units of height above sea level")
+
+        gridlayout.addWidget(self.rb_depth, 2, 0, 1, 2)
+        gridlayout.addWidget(self.rb_height, 3, 0, 1, 2)
+        gridlayout.addWidget(self.buttonbox, 4, 0, 1, 2)
 
         self.setWindowTitle("Add Lithological Boundary")
 
@@ -1693,6 +1726,39 @@ def dat_extent(dat):
     bottom = top - dat.rows*dat.ydim
 
     return (left, right, bottom, top)
+
+
+def gridmatch2(cgrv, rgrv):
+    """ Matches the rows and columns of the second grid to the first
+    grid """
+#    rgrv = lmod.griddata[rtxt]
+#    cgrv = lmod.griddata[ctxt]
+
+    data = rgrv
+    data2 = cgrv
+    orig_wkt = data.wkt
+    orig_wkt2 = data2.wkt
+
+    doffset = 0.0
+    if data.data.min() <= 0:
+        doffset = data.data.min()-1.
+        data.data = data.data - doffset
+
+    gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
+    gtr = (data2.tlx, data2.xdim, 0.0, data2.tly, 0.0, -data2.ydim)
+    src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
+    dest = data_to_gdal_mem(data, gtr, orig_wkt2, data2.cols, data2.rows, True)
+
+    gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt2, gdal.GRA_Bilinear)
+
+    dat = gdal_to_dat(dest, data.dataid)
+
+    if doffset != 0.0:
+        dat.data = dat.data + doffset
+        data.data = data.data + doffset
+
+    return dat.data
+
 
 
 def rotate2d(pts, cntr, ang=np.pi/4):

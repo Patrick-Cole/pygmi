@@ -29,7 +29,9 @@ This module provides a variety of methods to plot raster data via the context
 menu.
 """
 
+import os
 import numpy as np
+from osgeo import ogr, osr
 from PyQt5 import QtWidgets, QtCore
 from scipy.spatial.distance import cdist
 from scipy.stats import linregress
@@ -37,6 +39,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
     NavigationToolbar
+from matplotlib.patches import Ellipse
 
 
 class MyMplCanvas(FigureCanvas):
@@ -54,7 +57,92 @@ class MyMplCanvas(FigureCanvas):
         self.axes = fig.add_subplot(111)
         self.parent = parent
 
+        self.ellipses = []
+
         FigureCanvas.__init__(self, fig)
+
+    def update_ellipse(self, datd, nodepth=False):
+        """ Update error ellipse plot """
+
+        self.figure.clear()
+
+        x = np.ma.masked_invalid(datd['1_longitude'])
+        y = np.ma.masked_invalid(datd['1_latitude'])
+
+        xmin = x.min()-0.5
+        xmax = x.max()+0.5
+        ymin = y.min()-0.5
+        ymax = y.max()+0.5
+
+        self.axes = self.figure.add_subplot(111)  # , projection=ccrs.PlateCarree())
+        self.axes.set_xlim(xmin, xmax)
+        self.axes.set_ylim(ymin, ymax)
+
+#        extent = [xmin, xmax, ymax, ymin]
+#        request = cimgt.GoogleTiles(style='satellite')
+#        self.axes.set_extent(extent, crs=ccrs.PlateCarree())
+
+#        self.axes.add_image(request, 6)
+#        self.axes.gridlines(draw_labels=True)
+
+        for dat in self.parent.indata['Seis']:
+            if 'E' not in dat:
+                continue
+
+            lon = dat['1'].longitude
+            lat = dat['1'].latitude
+
+            erx = dat['E'].longitude_error
+            ery = dat['E'].latitude_error
+            erz = dat['E'].depth_error
+            cvxy = dat['E'].cov_xy
+            cvxz = dat['E'].cov_xz
+            cvyz = dat['E'].cov_yz
+
+            if nodepth is True:
+                cvxz = 0
+                cvyz = 0
+                erz = 0
+
+            cov = np.array([[erx*erx, cvxy, cvxz],
+                            [cvxy, ery*ery, cvyz],
+                            [cvxz, cvyz, erz*erz]])
+
+            if True in np.isnan(cov):
+                continue
+
+            vals, vecs = eigsorted(cov)
+            abc = (2*np.sqrt(abs(vals)) *
+                   np.cos(np.arctan2(vecs[2, :],
+                                     np.sqrt(vecs[0, :]**2+vecs[1, :]**2))))
+
+            if abc[0] == abc.max():
+                ang = np.rad2deg(np.arctan2(vecs[1, 0], vecs[0, 0]))
+            if abc[1] == abc.max():
+                ang = np.rad2deg(np.arctan2(vecs[1, 1], vecs[0, 1]))
+            if abc[2] == abc.max():
+                ang = np.rad2deg(np.arctan2(vecs[1, 2], vecs[0, 2]))
+
+            abc[::-1].sort()  # sort in reverse order
+            emaj = abc[0]
+            emin = abc[1]
+
+            # approx conversion to degrees
+            demin = emin/110.93  # lat
+            demaj = emaj/(111.3*np.cos(np.deg2rad(lat+demin)))  # long from lat
+
+            ell = Ellipse(xy=(lon, lat),
+                          width=demaj, height=demin,
+                          angle=ang, color='black')
+            ell.set_facecolor('none')
+            #    ell.set_edgecolor('black')
+
+#            self.axes.add_artist(ell)
+            self.ellipses.append(ell.get_verts())
+            self.axes.add_artist(ell)
+
+        self.figure.tight_layout()
+        self.figure.canvas.draw()
 
     def update_hexbin(self, data1, data2, xlbl="Time", ylbl="ML",
                       xbin=None, xrng=None):
@@ -379,6 +467,8 @@ class GraphWindow(QtWidgets.QDialog):
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
 
+        self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
+
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
         self.label1 = QtWidgets.QLabel()
@@ -393,14 +483,20 @@ class GraphWindow(QtWidgets.QDialog):
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
         vbl.addLayout(self.hbl)
+        vbl.addWidget(self.btn_saveshp)
 
         self.setFocus()
 
         self.combobox1.currentIndexChanged.connect(self.change_band)
         self.combobox2.currentIndexChanged.connect(self.change_band)
+        self.btn_saveshp.clicked.connect(self.save_shp)
 
     def change_band(self):
         """ Combo box to choose band """
+        pass
+
+    def save_shp(self):
+        """ saver shapefile """
         pass
 
 
@@ -429,6 +525,8 @@ class PlotQC(GraphWindow):
 
     def change_band(self):
         """ Combo box to choose band """
+        self.btn_saveshp.hide()
+
         i = self.combobox1.currentText()
         if i == 'Hour Histogram':
             self.mmc.update_hist(self.datd['1_hour'], 'Hour', bins=24,
@@ -454,6 +552,12 @@ class PlotQC(GraphWindow):
         elif i == 'ML vs Year':
             self.mmc.update_hexbin(self.datd['1_ML_year'], self.datd['1_ML'],
                                    'Year', 'ML')
+        elif i == 'Error Ellipse':
+            self.btn_saveshp.show()
+            self.mmc.update_ellipse(self.datd)
+        elif i == 'Error Ellipse (No depth errors)':
+            self.btn_saveshp.show()
+            self.mmc.update_ellipse(self.datd, True)
         elif i == 'GAP':
             self.mmc.update_hist(self.datd['E_gap'], i)
         elif i == 'Longitude Error':
@@ -479,6 +583,11 @@ class PlotQC(GraphWindow):
         data = self.indata['Seis']
         self.datd = import_for_plots(data)
 
+        if len(self.datd) == 0:
+            self.parent.showprocesslog('There is no compatible '
+                                       'data in the file')
+            return
+
         products = ['Hour Histogram',
                     'Month Histogram',
                     'Year Histogram',
@@ -488,7 +597,9 @@ class PlotQC(GraphWindow):
                     'ML vs Year',
                     'b-Value']
         if 'E_gap' in self.datd:
-            products += ['GAP',
+            products += ['Error Ellipse',
+                         'Error Ellipse (No depth errors)',
+                         'GAP',
                          'Longitude Error',
                          'Latitude Error']
         if '4_phase_id' in self.datd:
@@ -505,16 +616,72 @@ class PlotQC(GraphWindow):
         self.combobox1.setCurrentIndex(0)
         self.change_band()
 
+    def save_shp(self):
+        """Save shapefile """
 
-def import_for_plots(dat, dind='R'):
+        ext = "Shape file (*.shp)"
+
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save Shape File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(filename.rpartition('/')[0])
+
+        ifile = str(filename)
+
+        if os.path.isfile(ifile):
+            tmp = ifile[:-4]
+            os.remove(tmp+'.shp')
+            os.remove(tmp+'.shx')
+            os.remove(tmp+'.prj')
+            os.remove(tmp+'.dbf')
+
+        driver = ogr.GetDriverByName("ESRI Shapefile")
+        data_source = driver.CreateDataSource(ifile)
+
+        # create the spatial reference, WGS84
+        srs = osr.SpatialReference()
+        srs.ImportFromEPSG(4326)
+
+        # create the layer
+        layer = data_source.CreateLayer("Fault Plane Solution", srs,
+                                        ogr.wkbPolygon)
+#        layer.CreateField(ogr.FieldDefn("Strike", ogr.OFTReal))
+
+        # Calculate BeachBall
+        indata = self.mmc.ellipses
+        for pvert in indata:
+            # Create Geometry
+            outring = ogr.Geometry(ogr.wkbLinearRing)
+            for i in pvert:
+                outring.AddPoint(i[0], i[1])
+
+            poly = ogr.Geometry(ogr.wkbPolygon)
+            poly.AddGeometry(outring)
+
+            feature = ogr.Feature(layer.GetLayerDefn())
+
+#            feature.SetField("Strike", np1[0])
+
+            feature.SetGeometry(poly)
+            # Create the feature in the layer (shapefile)
+            layer.CreateFeature(feature)
+            # Destroy the feature to free resources
+
+            feature.Destroy()
+
+        data_source.Destroy()
+
+        return True
+
+
+def import_for_plots(dat):
     """ imports data to plot """
 
     datd = {}
 
     for event in dat:
         if '1' not in event:
-            continue
-        if event['1'].distance_indicator not in dind:
             continue
 
         for rectype in event:
@@ -532,7 +699,8 @@ def import_for_plots(dat, dind='R'):
                             datd[newkey] = []
                         datd[newkey].append(tmp[j.split('_of_')[1]])
 
-                        time = tmp['hour']+tmp['minutes']/60.+tmp['seconds']/3600.
+                        time = (tmp['hour'] + tmp['minutes']/60. +
+                                tmp['seconds']/3600.)
                         newkey = '1_M'+tmp[j]+'_time'
                         if newkey not in datd:
                             datd[newkey] = []
@@ -551,4 +719,11 @@ def import_for_plots(dat, dind='R'):
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j])
+
     return datd
+
+
+def eigsorted(cov):
+    vals, vecs = np.linalg.eigh(cov)
+    order = vals.argsort()[::-1]
+    return vals[order], vecs[:, order]

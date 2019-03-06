@@ -44,6 +44,8 @@ import pygmi.raster.cooper as cooper
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
+from pygmi.raster.datatypes import Data
+import matplotlib.pyplot as plt
 
 
 class TiltDepth(QtWidgets.QDialog):
@@ -190,7 +192,7 @@ class TiltDepth(QtWidgets.QDialog):
         cmap2[low:high] = cmap2[int(cmap.N/2)]
 
         cmap3 = cm.colors.ListedColormap(cmap2)
-        ims = self.axes.imshow(self.Z, extent=dataprep.dat_extent(zout),
+        ims = self.axes.imshow(self.Z, extent=zout.get_extent(),
                                cmap=cmap3)
 
         if self.x0 is not None:
@@ -337,6 +339,33 @@ class TiltDepth(QtWidgets.QDialog):
         self.y2 = dy2+gy0
 
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
+
+#        plt.imshow(data.data, extent=data.extent)
+#        plt.plot(gx0, gy0, '.')
+#
+#        plt.show()
+
+        tmp = dataprep.quickgrid(gx0, gy0, dist, data.xdim,
+                                 showtext=self.showtext)
+
+        mask = np.ma.getmaskarray(tmp)
+        gdat = tmp.data
+
+#        breakpoint()
+
+        dat = Data()
+        dat.data = np.ma.masked_invalid(gdat[::-1])
+        dat.data.mask = mask[::-1]
+        dat.rows, dat.cols = gdat.shape
+        dat.nullvalue = dat.data.fill_value
+        dat.dataid = data.dataid
+        dat.tlx = gx0.min()
+        dat.tly = gy0.max()
+        dat.xdim = data.xdim
+        dat.ydim = data.xdim
+        dat.extent = dat.get_extent()
+
+        self.outdata['Raster'] = [dat]
 
 
 @jit(nopython=True, nogil=True)
