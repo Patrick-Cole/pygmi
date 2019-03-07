@@ -41,7 +41,7 @@ import tempfile
 from math import sqrt, atan2, log, atan
 from multiprocessing import Pool
 from PyQt5 import QtWidgets, QtCore
-import winsound
+#import winsound
 
 import numpy as np
 import scipy.interpolate as si
@@ -2315,9 +2315,9 @@ def test():
 
 
     print('Finished!')
-    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
+#    winsound.PlaySound('SystemQuestion', winsound.SND_ALIAS)
 
-    pdb.set_trace()
+#    pdb.set_trace()
 
 
 if __name__ == "__main__":

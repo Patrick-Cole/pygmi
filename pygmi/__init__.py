@@ -13,5 +13,5 @@ It is released under the Gnu General Public License version 3.0
 
 from pygmi.main import main
 
-__version__ = '2.4.1.2'
+__version__ = '2.4.3.0'
 

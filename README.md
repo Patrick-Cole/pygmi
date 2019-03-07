@@ -73,20 +73,29 @@ Linux normally comes with python installed, but the additional libraries will st
 After installation of python, you can follow the instructions under General.
 
 ### Anaconda
-Anaconda does not find pyqt5 on its system even if it is there already. To install pygmi on anaconda, edit the setup.py file, and replace the install_requires switch with the following:
+Anaconda users are advised not to use pip since it can break PyQt5. Instead, you can install anaconda3 using the regular method, and then:
 
-	install_requires=["numpy", "scipy", "matplotlib", "gdal", "numexpr", "numba", "Pillow", "PyOpenGL"],
-
-As you can see, all we have done is removed PyQt5 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:
-
-	python setup.py install
-
-Note that you can simply install Anaconda use its 'conda install' command to satisfy dependencies. For example:
-
+	conda update --all
+	conda install numba=0.42.1
+	conda install scipy
+	conda install pyopengl
 	conda install gdal
-	conda install krb5
+	conda install scikit-learn
+	conda install pandas
+	conda install matplotlib
+	conda install numexpr
+	conda install numpy
+	conda install pillow
+	conda install setuptools
 
-Make sure that krb5 is installed, or gdal will not work.
+Please notice the version of numba. Older versions can cause PyGMI to crash on startup.
+
+Alternatively if you use environmnets you can simply use the following command: 
+	conda create -n pygmi2 scipy numba=0.42.1 gdal pandas matplotlib numexpr numpy setuptools pillow pyopengl scikit-learn
+
+Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:
+   python quickstart.py
+
 
 ### Alternative execution
 

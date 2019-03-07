@@ -2,6 +2,12 @@
 Changelog
 =========
 
+v2.4.3, 7 March 2019
+----------------------
+* Fixed bug in IGRF for linux systems
+* Fixed dependency on winsound for linux systems
+* Fixed bug on metadata for linux systems
+
 v2.4.1.2, 1 March 2018
 ----------------------
 * Added updated IGRF coefficients
