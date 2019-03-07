@@ -4,30 +4,22 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pygmi.pfmod package &#8212; PyGMI 2.4.1 documentation</title>
+    <title>pygmi.pfmod package &#8212; PyGMI 2.4.3 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '2.4.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.raster package" href="pygmi.raster.html" />
     <link rel="prev" title="pygmi.clust package" href="pygmi.clust.html" /> 
-  </head>
-  <body>
+  </head><body>
 
 <div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
 <a href="index.html">
@@ -66,7 +58,7 @@
 
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pygmi.pfmod package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -108,12 +100,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -135,7 +129,7 @@
 <dl class="class">
 <dt id="pygmi.pfmod.cubes.GLWidget">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">GLWidget</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.GLWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtOpenGL.QGLWidget</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtOpenGL.QGLWidget</span></code></p>
 <p>OpenGL Widget</p>
 <dl class="method">
 <dt id="pygmi.pfmod.cubes.GLWidget.draw_with_axis">
@@ -301,7 +295,7 @@
 <dl class="class">
 <dt id="pygmi.pfmod.cubes.Mod3dDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">Mod3dDisplay</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.Mod3dDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.cubes.Mod3dDisplay.change_defs">
@@ -396,18 +390,34 @@ here, from the voxel model.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.cubes.MySunCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.cubes.</code><code class="descname">MySunCanvas</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.cubes.MySunCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the sunshading tool.</p>
 <dl class="attribute">
 <dt id="pygmi.pfmod.cubes.MySunCanvas.sun">
 <code class="descname">sun</code><a class="headerlink" href="#pygmi.pfmod.cubes.MySunCanvas.sun" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib plot instance</em> – plot of a circle ‘o’ showing where the sun is</p>
+<dd><p>plot of a circle ‘o’ showing where the sun is</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib plot instance</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.cubes.MySunCanvas.axes">
 <code class="descname">axes</code><a class="headerlink" href="#pygmi.pfmod.cubes.MySunCanvas.axes" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib axes instance</em> – axes on which the sun is drawn</p>
+<dd><p>axes on which the sun is drawn</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib axes instance</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -471,139 +481,315 @@ here, from the voxel model.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.datatypes.LithModel">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.datatypes.</code><code class="descname">LithModel</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Lithological Model Data.</p>
 <p>This is the main data structure for the modelling program</p>
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.mlut">
 <code class="descname">mlut</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.mlut" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – color table for lithologies</p>
+<dd><p>color table for lithologies</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.numx">
 <code class="descname">numx</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numx" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of columns per layer in model</p>
+<dd><p>number of columns per layer in model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.numy">
 <code class="descname">numy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of rows per layer in model</p>
+<dd><p>number of rows per layer in model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.numz">
 <code class="descname">numz</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.numz" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of layers in model</p>
+<dd><p>number of layers in model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.dxy">
 <code class="descname">dxy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.dxy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – dimension of cubes in the x and y directions</p>
+<dd><p>dimension of cubes in the x and y directions</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.d_z">
 <code class="descname">d_z</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.d_z" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – dimension of cubes in the z direction</p>
+<dd><p>dimension of cubes in the z direction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.lith_index">
 <code class="descname">lith_index</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_index" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy array</em> – 3D array of lithological indices.</p>
+<dd><p>3D array of lithological indices.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.curlayer">
 <code class="descname">curlayer</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.curlayer" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – Current layer</p>
+<dd><p>Current layer</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.xrange">
 <code class="descname">xrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.xrange" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – minimum and maximum x coordinates</p>
+<dd><p>minimum and maximum x coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.yrange">
 <code class="descname">yrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.yrange" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – minimum and maximum y coordinates</p>
+<dd><p>minimum and maximum y coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.zrange">
 <code class="descname">zrange</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.zrange" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – minimum and maximum z coordinates</p>
+<dd><p>minimum and maximum z coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.curprof">
 <code class="descname">curprof</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.curprof" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – current profile (in x or y direction)</p>
+<dd><p>current profile (in x or y direction)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.griddata">
 <code class="descname">griddata</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.griddata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of Data classes with raster data</p>
+<dd><p>dictionary of Data classes with raster data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.custprofx">
 <code class="descname">custprofx</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.custprofx" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – custom profile x coordinates</p>
+<dd><p>custom profile x coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.custprofy">
 <code class="descname">custprofy</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.custprofy" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – custom profile y coordinates</p>
+<dd><p>custom profile y coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.profpics">
 <code class="descname">profpics</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.profpics" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – = profile pictures</p>
+<dd><p>= profile pictures</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.lith_list">
 <code class="descname">lith_list</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_list" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – = list of lithologies</p>
+<dd><p>= list of lithologies</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.lith_list_reverse">
 <code class="descname">lith_list_reverse</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.lith_list_reverse" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – = reverse lookup for lith_list</p>
+<dd><p>= reverse lookup for lith_list</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.mht">
 <code class="descname">mht</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.mht" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – height of magnetic sensor</p>
+<dd><p>height of magnetic sensor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.ght">
 <code class="descname">ght</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.ght" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – height of gravity sensor</p>
+<dd><p>height of gravity sensor</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.gregional">
 <code class="descname">gregional</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.gregional" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – gravity regional correction</p>
+<dd><p>gravity regional correction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.datatypes.LithModel.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.pfmod.datatypes.LithModel.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – name of the model</p>
+<dd><p>name of the model</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -707,7 +893,7 @@ and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.grvmag3d.GeoData">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">GeoData</code><span class="sig-paren">(</span><em>parent</em>, <em>ncols=10</em>, <em>nrows=10</em>, <em>numz=10</em>, <em>dxy=10.0</em>, <em>d_z=10.0</em>, <em>mht=80.0</em>, <em>ght=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GeoData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data layer class:
 This class defines each geological type and calculates the field
 for one cube from the standard definitions.</p>
@@ -815,7 +1001,7 @@ Magnetization in A/m.</dd>
 <dl class="class">
 <dt id="pygmi.pfmod.grvmag3d.GravMag">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.grvmag3d.</code><code class="descname">GravMag</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.grvmag3d.GravMag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class holds the generic magnetic and gravity modelling routines</p>
 <p>Routine that will calculate the final versions of the field. Other,
 related code is here as well, such as the inversion routines.</p>
@@ -1038,7 +1224,7 @@ Magnetization in A/m.</dd>
 <dl class="class">
 <dt id="pygmi.pfmod.iodefs.ExportMod3D">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">ExportMod3D</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ExportMod3D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Export Data</p>
 <dl class="method">
 <dt id="pygmi.pfmod.iodefs.ExportMod3D.lmod2dict">
@@ -1087,7 +1273,7 @@ are still in meters.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.iodefs.Exportkmz">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">Exportkmz</code><span class="sig-paren">(</span><em>wkt</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.Exportkmz" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class to call up a dialog</p>
 <dl class="method">
 <dt id="pygmi.pfmod.iodefs.Exportkmz.setupui">
@@ -1100,7 +1286,7 @@ are still in meters.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.iodefs.ImportMod3D">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">ImportMod3D</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportMod3D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Import Data</p>
 <dl class="method">
 <dt id="pygmi.pfmod.iodefs.ImportMod3D.dict2lmod">
@@ -1131,7 +1317,7 @@ are still in meters.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.iodefs.ImportPicture">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">ImportPicture</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportPicture" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class to call up a dialog</p>
 <dl class="method">
 <dt id="pygmi.pfmod.iodefs.ImportPicture.lmod2var">
@@ -1168,7 +1354,7 @@ are still in meters.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.iodefs.ImportTMod3D">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">ImportTMod3D</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.ImportTMod3D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Import Data</p>
 <dl class="method">
 <dt id="pygmi.pfmod.iodefs.ImportTMod3D.dict2lmod">
@@ -1187,12 +1373,20 @@ are still in meters.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.iodefs.MessageCombo">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.iodefs.</code><code class="descname">MessageCombo</code><span class="sig-paren">(</span><em>combotext</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.iodefs.MessageCombo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Message combo box.</p>
 <dl class="attribute">
 <dt id="pygmi.pfmod.iodefs.MessageCombo.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.pfmod.iodefs.MessageCombo.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1222,14 +1416,22 @@ are still in meters.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.menu.MenuWidget">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.menu.</code><code class="descname">MenuWidget</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <p>This widget class creates the modelling menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.pfmod.menu.MenuWidget.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.pfmod.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MainWidget</em> – Reference to MainWidget class found in main.py</p>
+<dd><p>Reference to MainWidget class found in main.py</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1289,24 +1491,48 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.misc.MergeMod3D">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">MergeMod3D</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Perform Merge of two models.</p>
 <dl class="attribute">
 <dt id="pygmi.pfmod.misc.MergeMod3D.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.misc.MergeMod3D.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.misc.MergeMod3D.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.pfmod.misc.MergeMod3D.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1332,7 +1558,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.misc.ProgressBar">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">ProgressBar</code><span class="sig-paren">(</span><em>pbar</em>, <em>pbarmain</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.ProgressBar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Wrapper for a progress bar</p>
 <dl class="method">
 <dt id="pygmi.pfmod.misc.ProgressBar.busysub">
@@ -1381,7 +1607,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.misc.RangedCopy">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.misc.</code><code class="descname">RangedCopy</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.misc.RangedCopy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class to call up a dialog for ranged copying</p>
 <dl class="method">
 <dt id="pygmi.pfmod.misc.RangedCopy.setupui">
@@ -1416,7 +1642,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.pfmod.MainWidget">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.pfmod.</code><code class="descname">MainWidget</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.pfmod.MainWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
 <p>MainWidget - Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.pfmod.MainWidget.data_reset">
@@ -1470,7 +1696,7 @@ routines behind the new tab</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_ddisp.DataDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_ddisp.</code><code class="descname">DataDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.DataDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>DataDisplay - Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_ddisp.DataDisplay.combo1">
@@ -1525,7 +1751,7 @@ routines behind the new tab</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_ddisp.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>ncust=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_ddisp.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the actual plot</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_ddisp.MyMplCanvas.dat_extent">
@@ -1579,7 +1805,7 @@ while doing so - in order to update the blit</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_layer.LayerDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_layer.</code><code class="descname">LayerDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.LayerDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_layer.LayerDisplay.change_defs">
@@ -1652,7 +1878,7 @@ while doing so - in order to update the blit</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_layer.MyMplCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_layer.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent</em>, <em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_layer.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the actual plot</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_layer.MyMplCanvas.button_press">
@@ -1723,7 +1949,7 @@ while doing so - in order to update the blit</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_mext.MextDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_mext.</code><code class="descname">MextDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_mext.MextDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>MextDisplay - Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_mext.MextDisplay.apply_changes">
@@ -1836,7 +2062,7 @@ while doing so - in order to update the blit</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_param.MergeLith">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_param.</code><code class="descname">MergeLith</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.MergeLith" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class to call up a dialog for ranged copying</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_param.MergeLith.setupui">
@@ -1849,7 +2075,7 @@ while doing so - in order to update the blit</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_param.ParamDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_param.</code><code class="descname">ParamDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_param.ParamDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_param.ParamDisplay.add_def">
@@ -1986,7 +2212,7 @@ while doing so - in order to update the blit</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_prof.LithBound">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">LithBound</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.LithBound" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class to call up a dialog for lithological boundary</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_prof.LithBound.setupui">
@@ -1999,7 +2225,7 @@ while doing so - in order to update the blit</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_prof.MyMplCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent</em>, <em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>This is a QWidget</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_prof.MyMplCanvas.button_press">
@@ -2066,7 +2292,7 @@ while doing so - in order to update the blit</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_prof.MySlider">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">MySlider</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MySlider" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QSlider</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QSlider</span></code></p>
 <p>My Slider</p>
 <p>Custom class which allows clicking on slider bar with slider moving to
 click in a single step.</p>
@@ -2081,7 +2307,7 @@ click in a single step.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_prof.</code><code class="descname">ProfileDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.change_defs">
@@ -2201,7 +2427,7 @@ picture</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_pview.MyMplCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_pview.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent</em>, <em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>This is a QWidget</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_pview.MyMplCanvas.button_press">
@@ -2280,7 +2506,7 @@ picture</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_pview.ProfileDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_pview.</code><code class="descname">ProfileDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_pview.ProfileDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_pview.ProfileDisplay.addprof">
@@ -2381,7 +2607,7 @@ picture</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_tmext.MextDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_tmext.</code><code class="descname">MextDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_tmext.MextDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>MextDisplay - Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_tmext.MextDisplay.apply_changes">
@@ -2494,7 +2720,7 @@ picture</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_tparam.MergeLith">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_tparam.</code><code class="descname">MergeLith</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_tparam.MergeLith" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class to call up a dialog for ranged copying</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_tparam.MergeLith.setupui">
@@ -2507,7 +2733,7 @@ picture</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_tparam.ParamDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_tparam.</code><code class="descname">ParamDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_tparam.ParamDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_tparam.ParamDisplay.add_def">
@@ -2644,7 +2870,7 @@ picture</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_tprof.LithBound">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_tprof.</code><code class="descname">LithBound</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_tprof.LithBound" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class to call up a dialog for lithological boundary</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_tprof.LithBound.setupui">
@@ -2657,7 +2883,7 @@ picture</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_tprof.MyMplCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_tprof.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent</em>, <em>lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_tprof.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>This is a QWidget</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_tprof.MyMplCanvas.button_press">
@@ -2724,7 +2950,7 @@ picture</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_tprof.MySlider">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_tprof.</code><code class="descname">MySlider</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_tprof.MySlider" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QSlider</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QSlider</span></code></p>
 <p>My Slider</p>
 <p>Custom class which allows clicking on slider bar with slider moving to
 click in a single step.</p>
@@ -2739,7 +2965,7 @@ click in a single step.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tab_tprof.ProfileDisplay">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tab_tprof.</code><code class="descname">ProfileDisplay</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_tprof.ProfileDisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tab_tprof.ProfileDisplay.change_defs">
@@ -2871,7 +3097,7 @@ and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tensor3d.GeoData">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tensor3d.</code><code class="descname">GeoData</code><span class="sig-paren">(</span><em>parent</em>, <em>ncols=10</em>, <em>nrows=10</em>, <em>numz=10</em>, <em>dxy=10.0</em>, <em>d_z=10.0</em>, <em>mht=80.0</em>, <em>ght=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.GeoData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Data layer class:
 This class defines each geological type and calculates the field
 for one cube from the standard definitions.</p>
@@ -2971,7 +3197,7 @@ Magnetization in A/m.</dd>
 <dl class="class">
 <dt id="pygmi.pfmod.tensor3d.GravMag">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tensor3d.</code><code class="descname">GravMag</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.GravMag" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class holds the generic magnetic and gravity modelling routines</p>
 <p>Routine that will calculate the final versions of the field. Other,
 related code is here as well, such as the inversion routines.</p>
@@ -3048,7 +3274,7 @@ field on the edge of the model is.</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tensor3d.TensorCube">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tensor3d.</code><code class="descname">TensorCube</code><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCube" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class computes the forward modelled tensor responses for a cube.</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tensor3d.TensorCube.Bx">
@@ -3161,13 +3387,19 @@ field on the edge of the model is.</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tensor3d.TensorCube.calc_grav">
 <code class="descname">calc_grav</code><span class="sig-paren">(</span><em>xobs=None</em>, <em>yobs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCube.calc_grav" title="Permalink to this definition">¶</a></dt>
-<dd><p>calc grav</p>
+<dd><p>calc all</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.pfmod.tensor3d.TensorCube.calc_mag">
 <code class="descname">calc_mag</code><span class="sig-paren">(</span><em>xobs=None</em>, <em>yobs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCube.calc_mag" title="Permalink to this definition">¶</a></dt>
-<dd><p>calc mag</p>
+<dd><p>calc all</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCube.calc_pygmi">
+<code class="descname">calc_pygmi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCube.calc_pygmi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do pygmi calc</p>
 </dd></dl>
 
 <dl class="method">
@@ -3182,9 +3414,148 @@ field on the edge of the model is.</p>
 <dd><p>gets alpha, beta and gamma</p>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld">
+<em class="property">class </em><code class="descclassname">pygmi.pfmod.tensor3d.</code><code class="descname">TensorCubeOld</code><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class computes the forward modelled tensor responses for a cube.</p>
 <dl class="method">
-<dt id="pygmi.pfmod.tensor3d.TensorCube.regrid">
-<code class="descname">regrid</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCube.regrid" title="Permalink to this definition">¶</a></dt>
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Bx">
+<code class="descname">Bx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Bx" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Bxx">
+<code class="descname">Bxx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Bxx" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Bxy">
+<code class="descname">Bxy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Bxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Bxz">
+<code class="descname">Bxz</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Bxz" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.By">
+<code class="descname">By</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.By" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Byy">
+<code class="descname">Byy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Byy" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Byz">
+<code class="descname">Byz</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Byz" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Bz">
+<code class="descname">Bz</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Bz" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Bzz">
+<code class="descname">Bzz</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Bzz" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gx">
+<code class="descname">Gx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gx" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gxx">
+<code class="descname">Gxx</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gxx" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gxy">
+<code class="descname">Gxy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gxz">
+<code class="descname">Gxz</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gxz" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gy">
+<code class="descname">Gy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gy" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gyy">
+<code class="descname">Gyy</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gyy" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gyz">
+<code class="descname">Gyz</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gyz" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gz">
+<code class="descname">Gz</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gz" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.Gzz">
+<code class="descname">Gzz</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.Gzz" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.calc_grav">
+<code class="descname">calc_grav</code><span class="sig-paren">(</span><em>xobs=None</em>, <em>yobs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.calc_grav" title="Permalink to this definition">¶</a></dt>
+<dd><p>calc grav</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.calc_mag">
+<code class="descname">calc_mag</code><span class="sig-paren">(</span><em>xobs=None</em>, <em>yobs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.calc_mag" title="Permalink to this definition">¶</a></dt>
+<dd><p>calc mag</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.fsum">
+<code class="descname">fsum</code><span class="sig-paren">(</span><em>func</em>, <em>x</em>, <em>y</em>, <em>z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.fsum" title="Permalink to this definition">¶</a></dt>
+<dd><p>function</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.getabg">
+<code class="descname">getabg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.getabg" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets alpha, beta and gamma</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tensor3d.TensorCubeOld.regrid">
+<code class="descname">regrid</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tensor3d.TensorCubeOld.regrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>fills holes</p>
 </dd></dl>
 
@@ -3303,7 +3674,7 @@ grid</p>
 <dl class="class">
 <dt id="pygmi.pfmod.tpfmod.MainWidget">
 <em class="property">class </em><code class="descclassname">pygmi.pfmod.tpfmod.</code><code class="descname">MainWidget</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tpfmod.MainWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
 <p>MainWidget - Widget class to call the main interface</p>
 <dl class="method">
 <dt id="pygmi.pfmod.tpfmod.MainWidget.data_reset">
@@ -3387,8 +3758,8 @@ routines behind the new tab</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+        &#169; Copyright 2019, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>

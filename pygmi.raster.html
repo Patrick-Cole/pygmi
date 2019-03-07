@@ -4,30 +4,22 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pygmi.raster package &#8212; PyGMI 2.4.1 documentation</title>
+    <title>pygmi.raster package &#8212; PyGMI 2.4.3 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '2.4.1',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.test package" href="pygmi.test.html" />
     <link rel="prev" title="pygmi.pfmod package" href="pygmi.pfmod.html" /> 
-  </head>
-  <body>
+  </head><body>
 
 <div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
 <a href="index.html">
@@ -66,7 +58,7 @@
 
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
+  <h3><a href="index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">pygmi.raster package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -103,12 +95,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -136,18 +130,33 @@
 <dl class="class">
 <dt id="pygmi.raster.cooper.Gradients">
 <em class="property">class </em><code class="descclassname">pygmi.raster.cooper.</code><code class="descname">Gradients</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Gradients" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class used to gather information via a GUI, for function gradients</p>
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Gradients.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.cooper.Gradients.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Gradients.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.cooper.Gradients.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – PyGMI input data in a dictionary</p>
+<dd><p>PyGMI input data in a dictionary</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -159,19 +168,43 @@
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Gradients.azi">
 <code class="descname">azi</code><a class="headerlink" href="#pygmi.raster.cooper.Gradients.azi" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – Azimuth/filter direction (degrees)</p>
+<dd><p>Azimuth/filter direction (degrees)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Gradients.elev">
 <code class="descname">elev</code><a class="headerlink" href="#pygmi.raster.cooper.Gradients.elev" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – Elevation (for sunshading, degrees from horizontal)</p>
+<dd><p>Elevation (for sunshading, degrees from horizontal)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Gradients.order">
 <code class="descname">order</code><a class="headerlink" href="#pygmi.raster.cooper.Gradients.order" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – Order of DR filter - see paper. Try 1 first.</p>
+<dd><p>Order of DR filter - see paper. Try 1 first.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -191,18 +224,33 @@
 <dl class="class">
 <dt id="pygmi.raster.cooper.Tilt1">
 <em class="property">class </em><code class="descclassname">pygmi.raster.cooper.</code><code class="descname">Tilt1</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Tilt1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class used to gather information via a GUI, for function tilt1</p>
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Tilt1.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.cooper.Tilt1.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Tilt1.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.cooper.Tilt1.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – PyGMI input data in a dictionary</p>
+<dd><p>PyGMI input data in a dictionary</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -214,13 +262,29 @@
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Tilt1.azi">
 <code class="descname">azi</code><a class="headerlink" href="#pygmi.raster.cooper.Tilt1.azi" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – directional filter azimuth in degrees from East</p>
+<dd><p>directional filter azimuth in degrees from East</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Tilt1.smooth">
 <code class="descname">smooth</code><a class="headerlink" href="#pygmi.raster.cooper.Tilt1.smooth" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – size of smoothing matrix to use - must be odd input 0 for no smoothing</p>
+<dd><p>size of smoothing matrix to use - must be odd input 0 for no smoothing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -240,18 +304,33 @@
 <dl class="class">
 <dt id="pygmi.raster.cooper.VGradients">
 <em class="property">class </em><code class="descclassname">pygmi.raster.cooper.</code><code class="descname">VGradients</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.VGradients" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class used to gather information via a GUI, for function gradients</p>
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.VGradients.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.VGradients.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – PyGMI input data in a dictionary</p>
+<dd><p>PyGMI input data in a dictionary</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -263,19 +342,43 @@
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.VGradients.azi">
 <code class="descname">azi</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.azi" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – Azimuth/filter direction (degrees)</p>
+<dd><p>Azimuth/filter direction (degrees)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.VGradients.elev">
 <code class="descname">elev</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.elev" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – Elevation (for sunshading, degrees from horizontal)</p>
+<dd><p>Elevation (for sunshading, degrees from horizontal)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.VGradients.order">
 <code class="descname">order</code><a class="headerlink" href="#pygmi.raster.cooper.VGradients.order" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – Order of DR filter - see paper. Try 1 first.</p>
+<dd><p>Order of DR filter - see paper. Try 1 first.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -295,18 +398,33 @@
 <dl class="class">
 <dt id="pygmi.raster.cooper.Visibility2d">
 <em class="property">class </em><code class="descclassname">pygmi.raster.cooper.</code><code class="descname">Visibility2d</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Visibility2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class used to gather information via a GUI, for function visibility2d</p>
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Visibility2d.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.cooper.Visibility2d.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em></p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Visibility2d.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.cooper.Visibility2d.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – PyGMI input data in a dictionary</p>
+<dd><p>PyGMI input data in a dictionary</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
@@ -318,13 +436,29 @@
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Visibility2d.wsize">
 <code class="descname">wsize</code><a class="headerlink" href="#pygmi.raster.cooper.Visibility2d.wsize" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – window size, must be odd</p>
+<dd><p>window size, must be odd</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.cooper.Visibility2d.dh">
 <code class="descname">dh</code><a class="headerlink" href="#pygmi.raster.cooper.Visibility2d.dh" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – height of observer above surface</p>
+<dd><p>height of observer above surface</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -440,50 +574,106 @@ heights above the surface (see paper)</p>
 <dl class="class">
 <dt id="pygmi.raster.dataprep.DataCut">
 <em class="property">class </em><code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">DataCut</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataCut" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Cut Data using shapefiles</p>
 <p>This class cuts raster datasets using a boundary defined by a polygon
 shapefile.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataCut.ifile">
 <code class="descname">ifile</code><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.ifile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – input file name.</p>
+<dd><p>input file name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataCut.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – item name</p>
+<dd><p>item name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataCut.ext">
 <code class="descname">ext</code><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.ext" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – file name extension.</p>
+<dd><p>file name extension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataCut.pbar">
 <code class="descname">pbar</code><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>progressbar</em> – reference to a progress bar.</p>
+<dd><p>reference to a progress bar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">progressbar</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataCut.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataCut.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataCut.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -497,25 +687,49 @@ shapefile.</p>
 <dl class="class">
 <dt id="pygmi.raster.dataprep.DataGrid">
 <em class="property">class </em><code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">DataGrid</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Grid Point Data</p>
 <p>This class grids point data using a nearest neighbourhood technique.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataGrid.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataGrid.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataGrid.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -547,26 +761,50 @@ shapefile.</p>
 <dl class="class">
 <dt id="pygmi.raster.dataprep.DataMerge">
 <em class="property">class </em><code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">DataMerge</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Data Merge</p>
 <p>This class merges datasets which have different rows and columns. It
 resamples them so that they have the same rows and columns.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataMerge.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataMerge.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataMerge.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -600,25 +838,49 @@ directions.</p>
 <dl class="class">
 <dt id="pygmi.raster.dataprep.DataReproj">
 <em class="property">class </em><code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">DataReproj</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Reprojections</p>
 <p>This class reprojects datasets using the GDAL routines.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataReproj.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataReproj.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.DataReproj.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -645,49 +907,105 @@ the main routine.</p>
 <dl class="class">
 <dt id="pygmi.raster.dataprep.GetProf">
 <em class="property">class </em><code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">GetProf</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.GetProf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Get a Profile</p>
 <p>This class extracts a profile from a raster dataset using a line shapefile.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.GetProf.ifile">
 <code class="descname">ifile</code><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.ifile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – input file name.</p>
+<dd><p>input file name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.GetProf.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – item name</p>
+<dd><p>item name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.GetProf.ext">
 <code class="descname">ext</code><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.ext" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – file name extension.</p>
+<dd><p>file name extension.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.GetProf.pbar">
 <code class="descname">pbar</code><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>progressbar</em> – reference to a progress bar.</p>
+<dd><p>reference to a progress bar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">progressbar</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.GetProf.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.GetProf.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.GetProf.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -701,7 +1019,7 @@ the main routine.</p>
 <dl class="class">
 <dt id="pygmi.raster.dataprep.GroupProj">
 <em class="property">class </em><code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">GroupProj</code><span class="sig-paren">(</span><em>title='Projection'</em>, <em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.GroupProj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
 <p>Group Proj</p>
 <p>Custom widget</p>
 <dl class="method">
@@ -721,44 +1039,92 @@ the main routine.</p>
 <dl class="class">
 <dt id="pygmi.raster.dataprep.Metadata">
 <em class="property">class </em><code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">Metadata</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Edit Metadata</p>
 <p>This class allows the editing of the metadata for a raster dataset using a
 GUI.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.Metadata.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>oldtxt</em> – old text</p>
+<dd><p>old text</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">oldtxt</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.Metadata.banddata">
 <code class="descname">banddata</code><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.banddata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – band data</p>
+<dd><p>band data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.Metadata.bandid">
 <code class="descname">bandid</code><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.bandid" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of strings containing band names.</p>
+<dd><p>dictionary of strings containing band names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.Metadata.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.Metadata.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.Metadata.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -797,25 +1163,49 @@ the main routine.</p>
 <dl class="class">
 <dt id="pygmi.raster.dataprep.RTP">
 <em class="property">class </em><code class="descclassname">pygmi.raster.dataprep.</code><code class="descname">RTP</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.RTP" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Perform Reduction to the Pole on Magnetic data.</p>
 <p>This class grids point data using a nearest neighbourhood technique.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.RTP.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.dataprep.RTP.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.RTP.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.dataprep.RTP.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.dataprep.RTP.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.dataprep.RTP.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -946,7 +1336,7 @@ This provides a work-around for that.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>- GDAL format</strong> (<em>dest</em>) – GDAL format</li>
-<li><strong>- str</strong> (<a class="reference internal" href="#pygmi.raster.dataprep.Metadata.bandid" title="pygmi.raster.dataprep.Metadata.bandid"><em>bandid</em></a>) – band identity</li>
+<li><strong>- str</strong> (<em>bandid</em>) – band identity</li>
 </ul>
 </td>
 </tr>
@@ -1042,90 +1432,202 @@ and are on the edges of the dataset.</p>
 <dl class="class">
 <dt id="pygmi.raster.datatypes.Data">
 <em class="property">class </em><code class="descclassname">pygmi.raster.datatypes.</code><code class="descname">Data</code><a class="headerlink" href="#pygmi.raster.datatypes.Data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>PyGMI Data Object</p>
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.data">
 <code class="descname">data</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.data" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy masked array</em> – array to contain raster data</p>
+<dd><p>array to contain raster data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">numpy masked array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.tlx">
 <code class="descname">tlx</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.tlx" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – Top Left X coordinate of raster grid</p>
+<dd><p>Top Left X coordinate of raster grid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.tly">
 <code class="descname">tly</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.tly" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – Top Left Y coordinate of raster grid</p>
+<dd><p>Top Left Y coordinate of raster grid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.xdim">
 <code class="descname">xdim</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.xdim" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – x-dimension of grid cell</p>
+<dd><p>x-dimension of grid cell</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.ydim">
 <code class="descname">ydim</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.ydim" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – y-dimension of grid cell</p>
+<dd><p>y-dimension of grid cell</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.nrofbands">
 <code class="descname">nrofbands</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.nrofbands" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of raster bands</p>
+<dd><p>number of raster bands</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.dataid">
 <code class="descname">dataid</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.dataid" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – band name or id</p>
+<dd><p>band name or id</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.rows">
 <code class="descname">rows</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.rows" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of rows for each raster grid/band</p>
+<dd><p>number of rows for each raster grid/band</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.cols">
 <code class="descname">cols</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.cols" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of columns for each raster grid/band</p>
+<dd><p>number of columns for each raster grid/band</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.nullvalue">
 <code class="descname">nullvalue</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.nullvalue" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – grid null or nodata value</p>
+<dd><p>grid null or nodata value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.norm">
 <code class="descname">norm</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.norm" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – normalized data</p>
+<dd><p>normalized data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.gtr">
 <code class="descname">gtr</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.gtr" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>tuple</em> – projection information</p>
+<dd><p>projection information</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">tuple</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.wkt">
 <code class="descname">wkt</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.wkt" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – projection information</p>
+<dd><p>projection information</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.units">
 <code class="descname">units</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.units" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – description of units to be used with color bars</p>
+<dd><p>description of units to be used with color bars</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </dd></dl>
@@ -1173,7 +1675,7 @@ and are on the edges of the dataset.</p>
 <dl class="class">
 <dt id="pygmi.raster.equation_editor.EquationEditor">
 <em class="property">class </em><code class="descclassname">pygmi.raster.equation_editor.</code><code class="descname">EquationEditor</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Equation Editor</p>
 <p>This class allows the input of equations using raster datasets as
 variables. This is commonly done in remote sensing applications, where
@@ -1181,37 +1683,85 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.equation_editor.EquationEditor.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.equation_editor.EquationEditor.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.equation_editor.EquationEditor.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.equation_editor.EquationEditor.equation">
 <code class="descname">equation</code><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.equation" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – string with the equation in it</p>
+<dd><p>string with the equation in it</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.equation_editor.EquationEditor.bands">
 <code class="descname">bands</code><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.bands" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of bands</p>
+<dd><p>dictionary of bands</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.equation_editor.EquationEditor.bandsall">
 <code class="descname">bandsall</code><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.bandsall" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of all bands</p>
+<dd><p>list of all bands</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1222,7 +1772,7 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 
 <dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.eq_fix">
-<code class="descname">eq_fix</code><span class="sig-paren">(</span><em>indata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.eq_fix" title="Permalink to this definition">¶</a></dt>
+<code class="descname">eq_fix</code><span class="sig-paren">(</span><em>indata</em>, <em>equation</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.eq_fix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Corrects names in equation to variable names</p>
 </dd></dl>
 
@@ -1236,12 +1786,6 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 <dt id="pygmi.raster.equation_editor.EquationEditor.setupui">
 <code class="descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Setup UI</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.equation_editor.EquationEditor.textchanged">
-<code class="descname">textchanged</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.textchanged" title="Permalink to this definition">¶</a></dt>
-<dd><p>Text Changed</p>
 </dd></dl>
 
 </dd></dl>
@@ -1287,14 +1831,14 @@ supports GeoTiff files.</p>
 <dl class="class">
 <dt id="pygmi.raster.ginterp.ModestImage">
 <em class="property">class </em><code class="descclassname">pygmi.raster.ginterp.</code><code class="descname">ModestImage</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.ModestImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.ginterp.ModestImage2" title="pygmi.raster.ginterp.ModestImage2"><code class="xref py py-class docutils literal"><span class="pre">pygmi.raster.ginterp.ModestImage2</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.ginterp.ModestImage2" title="pygmi.raster.ginterp.ModestImage2"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.ginterp.ModestImage2</span></code></a></p>
 <p>Modest Image</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="pygmi.raster.ginterp.ModestImage2">
 <em class="property">class </em><code class="descclassname">pygmi.raster.ginterp.</code><code class="descname">ModestImage2</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.ModestImage2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.image.AxesImage</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.image.AxesImage</span></code></p>
 <p>Computationally modest image class - modified for use in PyGMI.</p>
 <p>ModestImage is an extension of the Matplotlib AxesImage class
 better suited for the interactive display of larger images. Before
@@ -1342,158 +1886,358 @@ DEALINGS IN THE SOFTWARE.</p>
 <dl class="class">
 <dt id="pygmi.raster.ginterp.MyMplCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.raster.ginterp.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the actual plot</p>
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.htype">
 <code class="descname">htype</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.htype" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – string indicating the histogram stretch to apply to the data</p>
+<dd><p>string indicating the histogram stretch to apply to the data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.hstype">
 <code class="descname">hstype</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.hstype" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – string indicating the histogram stretch to apply to the sun data</p>
+<dd><p>string indicating the histogram stretch to apply to the sun data</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.cbar">
 <code class="descname">cbar</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.cbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib color map</em> – color map to be used for pseudo color bars</p>
+<dd><p>color map to be used for pseudo color bars</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib color map</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.data">
 <code class="descname">data</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.data" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of PyGMI raster data objects - used for color images</p>
+<dd><p>list of PyGMI raster data objects - used for color images</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.sdata">
 <code class="descname">sdata</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.sdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of PyGMI raster data objects - used for shaded images</p>
+<dd><p>list of PyGMI raster data objects - used for shaded images</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.gmode">
 <code class="descname">gmode</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.gmode" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – string contaning the graphics mode - Contour, Ternary, Sunshade,
+<dd><p>string contaning the graphics mode - Contour, Ternary, Sunshade,
 Single Color Map.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.argb">
 <code class="descname">argb</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.argb" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of matplotlib subplots. There are up to three.</p>
+<dd><p>list of matplotlib subplots. There are up to three.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.hhist">
 <code class="descname">hhist</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.hhist" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – matplotlib hist associated with argb</p>
+<dd><p>matplotlib hist associated with argb</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.hband">
 <code class="descname">hband</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.hband" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of strings containing the band names to be used.</p>
+<dd><p>list of strings containing the band names to be used.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.htxt">
 <code class="descname">htxt</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.htxt" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>list</em> – list of strings associated with hhist, denoting a raster value (where
+<dd><p>list of strings associated with hhist, denoting a raster value (where
 mouse is currently hovering over on image)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.image">
 <code class="descname">image</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.image" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>Modestimage imshow</em> – imshow instance - this is the primary way of displaying an image.</p>
+<dd><p>imshow instance - this is the primary way of displaying an image.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">Modestimage imshow</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.cnt">
 <code class="descname">cnt</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.cnt" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib contour</em> – contour instance - used for the contour image</p>
+<dd><p>contour instance - used for the contour image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib contour</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.cntf">
 <code class="descname">cntf</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.cntf" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib contourf</em> – contourf instance - used for the contour image</p>
+<dd><p>contourf instance - used for the contour image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib contourf</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.background">
 <code class="descname">background</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.background" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib bounding box</em> – image bounding box - used in blitting</p>
+<dd><p>image bounding box - used in blitting</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib bounding box</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.bbox_hist_red">
 <code class="descname">bbox_hist_red</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.bbox_hist_red" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib bounding box</em> – red histogram bounding box</p>
+<dd><p>red histogram bounding box</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib bounding box</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.bbox_hist_green">
 <code class="descname">bbox_hist_green</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.bbox_hist_green" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib bounding box</em> – green histogram bounding box</p>
+<dd><p>green histogram bounding box</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib bounding box</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.bbox_hist_blue">
 <code class="descname">bbox_hist_blue</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.bbox_hist_blue" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib bounding box</em> – blue histogram bounding box</p>
+<dd><p>blue histogram bounding box</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib bounding box</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.axes">
 <code class="descname">axes</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.axes" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matpolotlib axes</em> – axes for the plot</p>
+<dd><p>axes for the plot</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matpolotlib axes</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.pinit">
 <code class="descname">pinit</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.pinit" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy array</em> – calculated with aspect - used in sunshading</p>
+<dd><p>calculated with aspect - used in sunshading</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.qinit">
 <code class="descname">qinit</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.qinit" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>numpy array</em> – calculated with aspect - used in sunshading</p>
+<dd><p>calculated with aspect - used in sunshading</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">numpy array</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.phi">
 <code class="descname">phi</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.phi" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – azimuth (sunshading)</p>
+<dd><p>azimuth (sunshading)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.theta">
 <code class="descname">theta</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.theta" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – sun elevation (sunshading)</p>
+<dd><p>sun elevation (sunshading)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.cell">
 <code class="descname">cell</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.cell" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – between 1 and 100 - controls sunshade detail.</p>
+<dd><p>between 1 and 100 - controls sunshade detail.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.alpha">
 <code class="descname">alpha</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.alpha" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – how much incident light is reflected (0 to 1)</p>
+<dd><p>how much incident light is reflected (0 to 1)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.kval">
 <code class="descname">kval</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.kval" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>float</em> – k value for cmyk mode</p>
+<dd><p>k value for cmyk mode</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1579,18 +2323,34 @@ mouse is currently hovering over on image)</p>
 <dl class="class">
 <dt id="pygmi.raster.ginterp.MySunCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.raster.ginterp.</code><code class="descname">MySunCanvas</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MySunCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the sunshading tool.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MySunCanvas.sun">
 <code class="descname">sun</code><a class="headerlink" href="#pygmi.raster.ginterp.MySunCanvas.sun" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib plot instance</em> – plot of a circle ‘o’ showing where the sun is</p>
+<dd><p>plot of a circle ‘o’ showing where the sun is</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib plot instance</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MySunCanvas.axes">
 <code class="descname">axes</code><a class="headerlink" href="#pygmi.raster.ginterp.MySunCanvas.axes" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib axes instance</em> – axes on which the sun is drawn</p>
+<dd><p>axes on which the sun is drawn</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib axes instance</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1604,7 +2364,7 @@ mouse is currently hovering over on image)</p>
 <dl class="class">
 <dt id="pygmi.raster.ginterp.PlotInterp">
 <em class="property">class </em><code class="descclassname">pygmi.raster.ginterp.</code><code class="descname">PlotInterp</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>This is the primary class for the raster data interpretation module. The
 main interface is set up from here, as well as monitoring of the mouse
 over the sunshading.</p>
@@ -1613,31 +2373,71 @@ modes, as well as the export of that display to GeoTiff format.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.PlotInterp.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.PlotInterp.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.PlotInterp.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.PlotInterp.self.mmc">
 <code class="descclassname">self.</code><code class="descname">mmc</code><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.self.mmc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MyMplCanvas, FigureCanvas</em> – main canvas containing the image</p>
+<dd><p>main canvas containing the image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#pygmi.raster.ginterp.MyMplCanvas" title="pygmi.raster.ginterp.MyMplCanvas">pygmi.raster.ginterp.MyMplCanvas</a>, FigureCanvas</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.PlotInterp.self.msc">
 <code class="descclassname">self.</code><code class="descname">msc</code><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.self.msc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MySunCanvas, FigureCanvas</em> – small canvas containing the sunshading control</p>
+<dd><p>small canvas containing the sunshading control</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="#pygmi.raster.ginterp.MySunCanvas" title="pygmi.raster.ginterp.MySunCanvas">pygmi.raster.ginterp.MySunCanvas</a>, FigureCanvas</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1908,12 +2708,20 @@ menu. The following are supported:</p>
 <dl class="class">
 <dt id="pygmi.raster.graphs.GraphWindow">
 <em class="property">class </em><code class="descclassname">pygmi.raster.graphs.</code><code class="descname">GraphWindow</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Graph Window - The QDialog window which will contain our image</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.GraphWindow.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.graphs.GraphWindow.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1927,18 +2735,33 @@ menu. The following are supported:</p>
 <dl class="class">
 <dt id="pygmi.raster.graphs.MyMplCanvas">
 <em class="property">class </em><code class="descclassname">pygmi.raster.graphs.</code><code class="descname">MyMplCanvas</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the actual plot</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.MyMplCanvas.axes">
 <code class="descname">axes</code><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas.axes" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>matplotlib subplot</em></p>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">matplotlib subplot</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.MyMplCanvas.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2042,42 +2865,90 @@ menu. The following are supported:</p>
 <dl class="class">
 <dt id="pygmi.raster.graphs.PlotCCoef">
 <em class="property">class </em><code class="descclassname">pygmi.raster.graphs.</code><code class="descname">PlotCCoef</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
 <p>Plot 2D Correlation Coeffiecients</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotCCoef.label1">
 <code class="descname">label1</code><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef.label1" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QLabel</em> – reference to GraphWindow’s label1</p>
+<dd><p>reference to GraphWindow’s label1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QLabel</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotCCoef.combobox1">
 <code class="descname">combobox1</code><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef.combobox1" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QComboBox</em> – reference to GraphWindow’s combobox1</p>
+<dd><p>reference to GraphWindow’s combobox1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QComboBox</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotCCoef.label2">
 <code class="descname">label2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef.label2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QLabel</em> – reference to GraphWindow’s label2</p>
+<dd><p>reference to GraphWindow’s label2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QLabel</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotCCoef.combobox2">
 <code class="descname">combobox2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef.combobox2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QComboBox</em> – reference to GraphWindow’s combobox2</p>
+<dd><p>reference to GraphWindow’s combobox2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QComboBox</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotCCoef.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotCCoef.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2097,30 +2968,62 @@ menu. The following are supported:</p>
 <dl class="class">
 <dt id="pygmi.raster.graphs.PlotHist">
 <em class="property">class </em><code class="descclassname">pygmi.raster.graphs.</code><code class="descname">PlotHist</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotHist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
 <p>Plot Hist Class</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotHist.label2">
 <code class="descname">label2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotHist.label2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QLabel</em> – reference to GraphWindow’s label2</p>
+<dd><p>reference to GraphWindow’s label2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QLabel</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotHist.combobox2">
 <code class="descname">combobox2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotHist.combobox2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QComboBox</em> – reference to GraphWindow’s combobox2</p>
+<dd><p>reference to GraphWindow’s combobox2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QComboBox</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotHist.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.graphs.PlotHist.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotHist.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.graphs.PlotHist.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2140,30 +3043,62 @@ menu. The following are supported:</p>
 <dl class="class">
 <dt id="pygmi.raster.graphs.PlotRaster">
 <em class="property">class </em><code class="descclassname">pygmi.raster.graphs.</code><code class="descname">PlotRaster</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
 <p>Plot Raster Class</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotRaster.label2">
 <code class="descname">label2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster.label2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QLabel</em> – reference to GraphWindow’s label2</p>
+<dd><p>reference to GraphWindow’s label2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QLabel</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotRaster.combobox2">
 <code class="descname">combobox2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster.combobox2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QComboBox</em> – reference to GraphWindow’s combobox2</p>
+<dd><p>reference to GraphWindow’s combobox2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QComboBox</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotRaster.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotRaster.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2183,18 +3118,34 @@ menu. The following are supported:</p>
 <dl class="class">
 <dt id="pygmi.raster.graphs.PlotScatter">
 <em class="property">class </em><code class="descclassname">pygmi.raster.graphs.</code><code class="descname">PlotScatter</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotScatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
 <p>Plot Hexbin Class. A Hexbin is a type of scatter plot which is raster.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotScatter.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.graphs.PlotScatter.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotScatter.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.graphs.PlotScatter.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2214,30 +3165,62 @@ menu. The following are supported:</p>
 <dl class="class">
 <dt id="pygmi.raster.graphs.PlotSurface">
 <em class="property">class </em><code class="descclassname">pygmi.raster.graphs.</code><code class="descname">PlotSurface</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
 <p>Plot Raster Class</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotSurface.label2">
 <code class="descname">label2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface.label2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QLabel</em> – reference to GraphWindow’s label2</p>
+<dd><p>reference to GraphWindow’s label2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QLabel</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotSurface.combobox2">
 <code class="descname">combobox2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface.combobox2" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>QComboBox</em> – reference to GraphWindow’s combobox2</p>
+<dd><p>reference to GraphWindow’s combobox2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">QComboBox</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotSurface.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotSurface.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2319,7 +3302,7 @@ translated into Python from the Geomag code.</p>
 <dl class="class">
 <dt id="pygmi.raster.igrf.IGRF">
 <em class="property">class </em><code class="descclassname">pygmi.raster.igrf.</code><code class="descname">IGRF</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>IGRF field calculation</p>
 <p>This produces two datasets. The first is an IGRF dataset for the area of
 interest, defined by some input magnetic dataset. The second is the IGRF
@@ -2330,19 +3313,43 @@ this class.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.igrf.IGRF.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.igrf.IGRF.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.igrf.IGRF.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.igrf.IGRF.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.igrf.IGRF.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.igrf.IGRF.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <table class="docutils field-list" frame="void" rules="none">
@@ -2587,42 +3594,90 @@ or components</li>
 <dl class="class">
 <dt id="pygmi.raster.iodefs.ExportData">
 <em class="property">class </em><code class="descclassname">pygmi.raster.iodefs.</code><code class="descname">ExportData</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ExportData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Export Data</p>
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ExportData.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – item name</p>
+<dd><p>item name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ExportData.pbar">
 <code class="descname">pbar</code><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>progressbar</em> – reference to a progress bar.</p>
+<dd><p>reference to a progress bar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">progressbar</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ExportData.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ExportData.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ExportData.ifile">
 <code class="descname">ifile</code><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.ifile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – input file name. Used in main.py</p>
+<dd><p>input file name. Used in main.py</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ExportData.ext">
 <code class="descname">ext</code><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.ext" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – filename extension</p>
+<dd><p>filename extension</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2728,42 +3783,90 @@ or components</li>
 <dl class="class">
 <dt id="pygmi.raster.iodefs.ImportData">
 <em class="property">class </em><code class="descclassname">pygmi.raster.iodefs.</code><code class="descname">ImportData</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ImportData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Import Data - Interfaces with GDAL routines</p>
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ImportData.name">
 <code class="descname">name</code><a class="headerlink" href="#pygmi.raster.iodefs.ImportData.name" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – item name</p>
+<dd><p>item name</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ImportData.pbar">
 <code class="descname">pbar</code><a class="headerlink" href="#pygmi.raster.iodefs.ImportData.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>progressbar</em> – reference to a progress bar.</p>
+<dd><p>reference to a progress bar.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">progressbar</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ImportData.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.iodefs.ImportData.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ImportData.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.iodefs.ImportData.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ImportData.ifile">
 <code class="descname">ifile</code><a class="headerlink" href="#pygmi.raster.iodefs.ImportData.ifile" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – input file name. Used in main.py</p>
+<dd><p>input file name. Used in main.py</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.iodefs.ImportData.ext">
 <code class="descname">ext</code><a class="headerlink" href="#pygmi.raster.iodefs.ImportData.ext" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – filename extension</p>
+<dd><p>filename extension</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -2963,14 +4066,22 @@ libraries. It returns the data in a PyGMI data object.</p>
 <dl class="class">
 <dt id="pygmi.raster.menu.MenuWidget">
 <em class="property">class </em><code class="descclassname">pygmi.raster.menu.</code><code class="descname">MenuWidget</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface</p>
 <p>This widget class creates the raster menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.menu.MenuWidget.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MainWidget</em> – Reference to MainWidget class found in main.py</p>
+<dd><p>Reference to MainWidget class found in main.py</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body"><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -3070,6 +4181,12 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.raster.menu.MenuWidget.show_anaglyph">
+<code class="descname">show_anaglyph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.show_anaglyph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show raster data</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.show_ccoef">
 <code class="descname">show_ccoef</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.show_ccoef" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show 2D correlation coefficients</p>
@@ -3132,7 +4249,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="class">
 <dt id="pygmi.raster.normalisation.Normalisation">
 <em class="property">class </em><code class="descclassname">pygmi.raster.normalisation.</code><code class="descname">Normalisation</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.normalisation.Normalisation" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class Normalisation</p>
 <dl class="method">
 <dt id="pygmi.raster.normalisation.Normalisation.settings">
@@ -3161,7 +4278,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="class">
 <dt id="pygmi.raster.show_table.BasicStats">
 <em class="property">class </em><code class="descclassname">pygmi.raster.show_table.</code><code class="descname">BasicStats</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.BasicStats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Show a summary of basic stats</p>
 <dl class="method">
 <dt id="pygmi.raster.show_table.BasicStats.combo">
@@ -3191,7 +4308,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="class">
 <dt id="pygmi.raster.show_table.ClusterStats">
 <em class="property">class </em><code class="descclassname">pygmi.raster.show_table.</code><code class="descname">ClusterStats</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.ClusterStats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Show a summary of basic stats</p>
 <dl class="method">
 <dt id="pygmi.raster.show_table.ClusterStats.combo">
@@ -3238,7 +4355,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="class">
 <dt id="pygmi.raster.smooth.Smooth">
 <em class="property">class </em><code class="descclassname">pygmi.raster.smooth.</code><code class="descname">Smooth</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <dl class="method">
 <dt id="pygmi.raster.smooth.Smooth.choosefilter">
 <code class="descname">choosefilter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.choosefilter" title="Permalink to this definition">¶</a></dt>
@@ -3351,30 +4468,62 @@ Based on work by EH Stettler</p>
 <dl class="class">
 <dt id="pygmi.raster.tiltdepth.TiltDepth">
 <em class="property">class </em><code class="descclassname">pygmi.raster.tiltdepth.</code><code class="descname">TiltDepth</code><span class="sig-paren">(</span><em>parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>This is the primary class for the Tilt Depth.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.parent">
 <code class="descname">parent</code><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.parent" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>parent</em> – reference to the parent routine</p>
+<dd><p>reference to the parent routine</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">parent</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.indata">
 <code class="descname">indata</code><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.indata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of input datasets</p>
+<dd><p>dictionary of input datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.outdata">
 <code class="descname">outdata</code><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.outdata" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dictionary</em> – dictionary of output datasets</p>
+<dd><p>dictionary of output datasets</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.self.mmc">
 <code class="descclassname">self.</code><code class="descname">mmc</code><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.self.mmc" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>MyMplCanvas, FigureCanvas</em> – main canvas containing the image</p>
+<dd><p>main canvas containing the image</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">FigureCanvas</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -3478,8 +4627,8 @@ main PyGMI interface</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2017, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.3.
+        &#169; Copyright 2019, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
     </div>
   </body>
 </html>
