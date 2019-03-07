@@ -40,11 +40,13 @@ It is possible that it might work on earlier versions, especially on non-windows
 
 ## Installation
 ### General
-The easiest way to install pygmi if you are worning in a python environment is to use the pip command as follows:
+The easiest way to install pygmi if you are working in a python environment is to use the pip command as follows:
 
 	pip install pygmi
 
-This will download pygmi from PyPI and install it within your python repository. Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:
+This will download pygmi from PyPI and install it within your python repository. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below. 
+
+Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:
 
 	python setup.py install
 
