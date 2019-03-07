@@ -92,7 +92,7 @@ Anaconda users are advised not to use pip since it can break PyQt5. Instead, you
 
 Please notice the version of numba. Older versions can cause PyGMI to crash on startup.
 
-Alternatively if you use environmnets you can simply use the following command: 
+Alternatively if you use environments you can simply use the following command: 
 	conda create -n pygmi2 scipy numba=0.42.1 gdal pandas matplotlib numexpr numpy setuptools pillow pyopengl scikit-learn
 
 Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:
