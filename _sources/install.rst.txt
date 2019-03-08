@@ -9,39 +9,43 @@ PyGMI can be downloaded through `GitHub <https://github.com/Patrick-Cole/pygmi/r
 
 Requirements
 ------------
-PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.5 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.7 on Windows.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* Python 3.5.2
-* NumPy 1.11.1
-* SciPy 0.18.0
-* Matplotlib 1.5.2
-* six 1.10.0 (used by Matplotlib, should be installed automatically)
-* pytz 2016.6.1 (used by Matplotlib, should be installed automatically)
-* python-dateutil 2.5.3 (used by Matplotlib, should be installed automatically)
-* pyparsing 2.1.8 (used by Matplotlib, should be installed automatically)
-* cycler 0.10.0 (used by Matplotlib, should be installed automatically)
-* PyQt 4.11.4
-* GDAL 2.0.3
-* numexpr 2.6.1
-* numba 0.27.0
-* llvmlite 0.12.1
-* PyOpenGL 3.1.1
-* pip 8.1.2
-
-It is possible that it might work on earlier versions, especially on non-windows operating systems.
+* python 3.5.4
+* cycler 0.10.0
+* GDAL 2.1.4
+* llvmlite 0.19.0
+* matplotlib 2.0.2
+* numba 0.34.0
+* numexpr 2.6.2
+* numpy 1.13.1
+* pillow 4.2.1
+* pip 9.0.1
+* pyopengl 3.1.1
+* pyparsing 2.2.0
+* pyqt5 5.9
+* python_dateutil 2.6.1
+* pytz 2017.2
+* scipy 0.19.1
+* scikit_learn 0.18.2
+* setuptools 36.2.7
+* sip 4.19.3
+* six 1.10.0
 
 Installation
 ------------
 
-General
-^^^^^^^
+General (Not Anaconda)
+^^^^^^^^^^^^^^^^^^^^^^
 The easiest way to install pygmi if you are worning in a python environment is to use the pip command as follows:
 
    pip install pygmi
 
-This will download pygmi from PyPI and install it within your python repository. Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:
+This will download pygmi from PyPI and install it within your python repository. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below.
+
+Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:
 
    python setup.py install
 
@@ -55,6 +59,9 @@ If you are in python, you can run PyGMI by using the following commands:
 
    pygmi.main()
 
+If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
+
+   python quickstart.py
 
 Windows
 ^^^^^^^
@@ -89,15 +96,16 @@ Anaconda users are advised not to use pip since it can break PyQt5. Instead, you
 
 Please notice the version of numba. Older versions can cause PyGMI to crash on startup.
 
-Alternatively if you use environmnets you can simply use the following command: 
+Alternatively if you use environments you can simply use the following command:
    conda create -n pygmi2 scipy numba=0.42.1 gdal pandas matplotlib numexpr numpy setuptools pillow pyopengl scikit-learn
 
 Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:
    python quickstart.py
 
+Alternatively, if you satisfy the requirements, you can run the following command from within the extracted directory:
 
-Alternative execution
-^^^^^^^^^^^^^^^^^^^^^
-If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
+   python setup_anaconda.py install
 
-   python quickstart.py
+Running pygmi can be now done at the command prompt as follows:
+
+   pygmi
