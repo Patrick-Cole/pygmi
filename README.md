@@ -11,7 +11,7 @@ It is released under the Gnu General Public License version 3.0
 For license information see the file LICENSE.txt
 
 ## Requirements
-PyGMI will run on both Windows and Linux. It should be noted that the main development is now being done in Python 3.5 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is now being done in Python 3.7 on Windows.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
@@ -36,15 +36,15 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * sip 4.19.3
 * six 1.10.0
 
-It is possible that it might work on earlier versions, especially on non-windows operating systems.
-
 ## Installation
-### General
-The easiest way to install pygmi if you are worning in a python environment is to use the pip command as follows:
+### General (Not Anaconda)
+The easiest way to install pygmi if you are working in a python environment is to use the pip command as follows:
 
 	pip install pygmi
 
-This will download pygmi from PyPI and install it within your python repository. Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:
+This will download pygmi from PyPI and install it within your python repository. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below.
+
+Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:
 
 	python setup.py install
 
@@ -57,6 +57,10 @@ If you are in python, you can run PyGMI by using the following commands:
 	import pygmi
 	pygmi.main()
 
+
+If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
+
+	python quickstart.py
 
 ### Windows
 I have now made available convenient installers for PyGMI, thanks to Cyrille Rossant.
@@ -73,23 +77,35 @@ Linux normally comes with python installed, but the additional libraries will st
 After installation of python, you can follow the instructions under General.
 
 ### Anaconda
-Anaconda does not find pyqt5 on its system even if it is there already. To install pygmi on anaconda, edit the setup.py file, and replace the install_requires switch with the following:
+Anaconda users are advised not to use pip since it can break PyQt5. Instead, you can install anaconda3 using the regular method, and then:
 
-	install_requires=["numpy", "scipy", "matplotlib", "gdal", "numexpr", "numba", "Pillow", "PyOpenGL"],
-
-As you can see, all we have done is removed PyQt5 from the requirements. You will need to make sure it is a part of your conda installation though. From this point the regular command will install pygmi:
-
-	python setup.py install
-
-Note that you can simply install Anaconda use its 'conda install' command to satisfy dependencies. For example:
-
+	conda update --all
+	conda install numba=0.42.1
+	conda install scipy
+	conda install pyopengl
 	conda install gdal
-	conda install krb5
+	conda install scikit-learn
+	conda install pandas
+	conda install matplotlib
+	conda install numexpr
+	conda install numpy
+	conda install pillow
+	conda install setuptools
 
-Make sure that krb5 is installed, or gdal will not work.
+Please notice the version of numba. Older versions can cause PyGMI to crash on startup.
 
-### Alternative execution
+Alternatively if you use environments you can simply use the following command:
 
-If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
+	conda create -n pygmi2 scipy numba=0.42.1 gdal pandas matplotlib numexpr numpy setuptools pillow pyopengl scikit-learn
 
-	python quickstart.py
+Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:
+
+   python quickstart.py
+
+Alternatively, if you satisfy the requirements, you can run the following command from within the extracted directory:
+
+	python setup_anaconda.py install
+
+Running pygmi can be now done at the command prompt as follows:
+
+	pygmi

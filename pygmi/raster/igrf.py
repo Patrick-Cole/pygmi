@@ -48,6 +48,7 @@ translated into Python from the Geomag code.
 |                Boulder, CO  80303
 """
 
+import os
 from math import sin
 from math import cos
 from math import sqrt
@@ -253,7 +254,7 @@ class IGRF(QtWidgets.QDialog):
         else:
             return False
 
-        with open(__file__.rpartition('\\')[0]+'\\IGRF12.cof') as mdf:
+        with open(os.path.join(os.path.dirname(__file__), 'IGRF12.cof')) as mdf:
             modbuff = mdf.readlines()
         fileline = -1                            # First line will be 1
         model = []

@@ -1376,7 +1376,7 @@ def getepsgcodes():
     Convenience function used to get a list of EPSG codes
     """
 
-    with open(os.environ['GDAL_DATA']+'\\gcs.csv') as dfile:
+    with open(os.path.join(os.environ['GDAL_DATA'], 'gcs.csv')) as dfile:
         dlines = dfile.readlines()
 
     dlines = dlines[1:]
@@ -1390,7 +1390,7 @@ def getepsgcodes():
 #            dcodes[tmp[1]] = wkttmp
         dcodes[tmp[1]] = int(tmp[0])
 
-    with open(os.environ['GDAL_DATA']+'\\pcs.csv') as pfile:
+    with open(os.path.join(os.environ['GDAL_DATA'], 'pcs.csv')) as pfile:
         plines = pfile.readlines()
 
     orig = osr.SpatialReference()
