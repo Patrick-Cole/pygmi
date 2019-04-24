@@ -30,8 +30,7 @@ import re
 import zipfile
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import osr, gdal
-from osgeo import ogr
+from osgeo import osr, ogr
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 from pygmi.pfmod.datatypes import Data, LithModel

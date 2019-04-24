@@ -25,16 +25,16 @@
 """ Import Data """
 
 import os
-import glob
-import struct
+#import glob
+#import struct
 from PyQt5 import QtWidgets
-import numpy as np
-from osgeo import gdal, osr
+#import numpy as np
+#from osgeo import gdal, osr
 import pandas as pd
-from pygmi.raster.datatypes import Data
-from pygmi.clust.datatypes import Clust
-from pygmi.raster.dataprep import merge
-from pygmi.raster.dataprep import quickgrid
+#from pygmi.raster.datatypes import Data
+#from pygmi.clust.datatypes import Clust
+#from pygmi.raster.dataprep import merge
+#from pygmi.raster.dataprep import quickgrid
 
 
 class ImportData():
@@ -64,6 +64,7 @@ class ImportData():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        self.hfile = ""
 
     def settings(self):
         """ Settings """
@@ -83,7 +84,7 @@ class ImportData():
 
         filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open CGS Header File', '.', ext)
-        if filename == '':
+        if filename == "":
             return False
 #        os.chdir(filename.rpartition('/')[0])
         self.hfile = str(filename)

@@ -28,7 +28,7 @@ import os
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import scipy.ndimage as ndimage
-import scipy.interpolate as si
+#import scipy.interpolate as si
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.figure import Figure
@@ -301,9 +301,6 @@ class ProfileDisplay(QtWidgets.QWidget):
 #        xy2 = np.transpose([xt, yt])
 #        newgrid = np.transpose(si.griddata(xy1, zt, xy2, 'nearest'))
 
-        import matplotlib.pyplot as plt
-#        breakpoint()
-
 # Back to splines
 #        fgrid = si.RectBivariateSpline(gyrng, gxrng, newgrid)
 
@@ -316,7 +313,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                 jgrd = int((tly-jmod)/d_y)
 
                 if igrd >= 0 and jgrd >= 0 and igrd < cols and jgrd < rows:
-                    if msk[jgrd, igrd] == False:
+                    if not msk[jgrd, igrd]:
                         continue
 
                     k_2 = int((regz - zt[jgrd, igrd])/d_z)
@@ -1282,13 +1279,12 @@ class MyMplCanvas(FigureCanvas):
         self.lims.set_extent(extent)
         self.lims.set_alpha(self.lopac)
 
-        if dat2 is not None:
+        if dat2 is not None and dat2 != '':
             self.lims2.set_visible(True)
             dat2 = self.lmod1.griddata[str(dat2)]
             self.lims2.set_data(dat2.data)
             self.lims2.set_extent(dat_extent(dat2))
             self.lims2.set_clim(dat2.data.min(), dat2.data.max())
-
 
         left, right = self.lmod1.xrange
         bottom, top = self.lmod1.yrange
@@ -1462,9 +1458,9 @@ class LithBound(QtWidgets.QDialog):
 
         self.rb_depth.setChecked(True)
         self.rb_depth.setText(
-                "Z-coordinate is in units of depth(positive down)")
+            "Z-coordinate is in units of depth(positive down)")
         self.rb_height.setText(
-                "Z-coordinate is in units of height above sea level")
+            "Z-coordinate is in units of height above sea level")
 
         gridlayout.addWidget(self.rb_depth, 2, 0, 1, 2)
         gridlayout.addWidget(self.rb_height, 3, 0, 1, 2)

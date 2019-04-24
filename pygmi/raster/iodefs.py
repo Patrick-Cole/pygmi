@@ -1133,6 +1133,7 @@ class ExportData():
             file_out = self.get_filename(k, 'asc')
             fno = open(file_out, 'w')
 
+            extent = k.get_extent()
             xmin = extent[0]
             ymin = extent[2]
 

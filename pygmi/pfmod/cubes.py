@@ -522,7 +522,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
                 faces, vtx = MarchingCubes(xx, yy, zz, c, .1)
 
-                if vtx == []:
+                if vtx.size == 0:
                     self.lmod1.update_lith_list_reverse()
                     lithtext = self.lmod1.lith_list_reverse[lno]
                     print(lithtext)

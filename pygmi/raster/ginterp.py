@@ -252,7 +252,6 @@ class ModestImage2(mi.AxesImage):
             if self.hstype == 'Histogram Equalization':
                 sun = histeq(sun)
 
-
             self.smallres = np.ma.ones((sun.shape[0], sun.shape[1], 2))
             self.smallres[:, :, 0] = pseudo
             self.smallres[:, :, 1] = sun
@@ -534,10 +533,13 @@ class MyMplCanvas(FigureCanvas):
         self.image = imshow(self.axes, self.data[0].data, origin='upper',
                             extent=(x_1, x_2, y_1, y_2))
 
+        # This line prevents imshow from generating color values on the
+        # toolbar
+        self.image.format_cursor_data = lambda x: ""
         self.update_graph()
 
-        self.cid = self.figure.canvas.mpl_connect('resize_event', self.init_graph)
-
+        self.cid = self.figure.canvas.mpl_connect('resize_event',
+                                                  self.init_graph)
 
     def lamb_horn(self):
         """ Lambert by horn """
@@ -670,7 +672,8 @@ class MyMplCanvas(FigureCanvas):
 
             binnum = (bins < zval[i]).sum()-1
 
-            if binnum > -1 and binnum < len(patches):
+#            if binnum > -1 and binnum < len(patches):
+            if -1 < binnum < len(patches):
                 patches[binnum].set_color('k')
                 bnum.append(binnum)
             else:
@@ -689,7 +692,7 @@ class MyMplCanvas(FigureCanvas):
         else:
             bincol = cm.gray(binave)
 
-        for j, patchesj in enumerate(patches):
+        for j, _ in enumerate(patches):
             patches[j].set_color(bincol[j])
 
 # This section draws the black line.
@@ -974,7 +977,7 @@ class PlotInterp(QtWidgets.QDialog):
         vbl_right = QtWidgets.QVBoxLayout()
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
+        spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Fixed,
                                        QtWidgets.QSizePolicy.Expanding)
         self.sslider.setMinimum(1)
         self.sslider.setMaximum(100)
@@ -986,6 +989,13 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider.setMinimum(1)
         self.kslider.setMaximum(100)
         self.kslider.setValue(1)
+
+        self.sslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                   QtWidgets.QSizePolicy.Fixed)
+        self.aslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                   QtWidgets.QSizePolicy.Fixed)
+        self.kslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
+                                   QtWidgets.QSizePolicy.Fixed)
 #        tmp = sorted(cm.datad.keys())
         tmp = sorted(m for m in cm.cmap_d.keys() if not
                      m.startswith(('spectral', 'Vega', 'jet')))
@@ -1257,7 +1267,7 @@ class PlotInterp(QtWidgets.QDialog):
             QtWidgets.QLineEdit.Normal, "8")
 
         if not okay:
-            return
+            return False
 
         blen = float(text)
         bwid = blen/16.
@@ -1271,7 +1281,7 @@ class PlotInterp(QtWidgets.QDialog):
                 self.units[str(self.cbox_band1.currentText())])
 
             if not okay:
-                return
+                return False
         else:
             units = str(self.cbox_band1.currentText())
             rtext, okay = QtWidgets.QInputDialog.getText(
@@ -1279,7 +1289,7 @@ class PlotInterp(QtWidgets.QDialog):
                 QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
-                return
+                return False
 
             units = str(self.cbox_band2.currentText())
             gtext, okay = QtWidgets.QInputDialog.getText(
@@ -1287,7 +1297,7 @@ class PlotInterp(QtWidgets.QDialog):
                 QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
-                return
+                return False
 
             units = str(self.cbox_band3.currentText())
             btext, okay = QtWidgets.QInputDialog.getText(
@@ -1295,7 +1305,7 @@ class PlotInterp(QtWidgets.QDialog):
                 QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
-                return
+                return False
 
         img = self.mmc.image.get_array()
         htype = str(self.cbox_htype.currentText())
@@ -1604,7 +1614,7 @@ class PlotInterp(QtWidgets.QDialog):
         main PyGMI interface"""
 
         if 'Raster' not in self.indata:
-            return
+            return False
 
         self.show()
         QtWidgets.QApplication.processEvents()

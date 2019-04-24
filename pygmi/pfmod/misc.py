@@ -391,7 +391,7 @@ def gmerge(master, slave, xrange=None, yrange=None):
         dat[-1].data = np.ma.masked_equal(tmp, 1e+20)
         dat[-1].nullvalue = 1e+20
 
-    imask = np.logical_and(dat[0].data.mask == True, dat[1].data.mask == False)
+    imask = np.logical_and(dat[0].data.mask, np.logical_not(dat[1].data.mask))
     if imask.size > 1:
         dat[0].data.data[imask] = dat[1].data.data[imask]
         dat[0].data.mask[imask] = False

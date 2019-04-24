@@ -478,8 +478,8 @@ def cut_point(data, ifile):
         geom = geom.GetGeometryRef(ifin)
 
     pts = geom.GetGeometryRef(0)
-    for p in range(pts.GetPointCount()):
-        points.append((pts.GetX(p), pts.GetY(p)))
+    for pnt in range(pts.GetPointCount()):
+        points.append((pts.GetX(pnt), pts.GetY(pnt)))
 
     bbpath = mplPath.Path(points)
 

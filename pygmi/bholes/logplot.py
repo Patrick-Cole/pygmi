@@ -5,15 +5,14 @@ Logplot
 Software to plot CGS log files.
 """
 
-import glob
+#import glob
 import os
 import xml
 import re
 import textwrap
 import numpy as np
 import pandas as pd
-import ogr
-import gdal
+from osgeo import gdal, ogr
 import matplotlib.pyplot as plt
 from matplotlib.path import Path
 import matplotlib.patches as mpatches
@@ -930,7 +929,7 @@ def profile():
         try:
             hfilt.append((hdf['Boreholeid'] == bid).nonzero()[0][0])
         except:
-            print('Error with boreholeid ',bid)
+            print('Error with boreholeid ', bid)
             return
 
     for bid in boreholes:

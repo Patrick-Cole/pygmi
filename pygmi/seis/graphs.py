@@ -274,7 +274,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_pres(self, data1, phase='P', bins='doane'):
+    def update_pres(self, data1, phase='P'):
         """
         Update the histogram plot
 
@@ -493,11 +493,9 @@ class GraphWindow(QtWidgets.QDialog):
 
     def change_band(self):
         """ Combo box to choose band """
-        pass
 
     def save_shp(self):
         """ saver shapefile """
-        pass
 
 
 class PlotQC(GraphWindow):
@@ -583,7 +581,7 @@ class PlotQC(GraphWindow):
         data = self.indata['Seis']
         self.datd = import_for_plots(data)
 
-        if len(self.datd) == 0:
+        if not self.datd:
             self.parent.showprocesslog('There is no compatible '
                                        'data in the file')
             return
@@ -724,6 +722,7 @@ def import_for_plots(dat):
 
 
 def eigsorted(cov):
+    """ Sort eigen values """
     vals, vecs = np.linalg.eigh(cov)
     order = vals.argsort()[::-1]
     return vals[order], vecs[:, order]

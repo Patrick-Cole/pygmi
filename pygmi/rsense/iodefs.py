@@ -25,16 +25,16 @@
 """ Import Data """
 
 import os
-import glob
-import struct
+#import glob
+#import struct
 from PyQt5 import QtWidgets
-import numpy as np
-from osgeo import gdal, osr
 import pandas as pd
-from pygmi.raster.datatypes import Data
-from pygmi.clust.datatypes import Clust
-from pygmi.raster.dataprep import merge
-from pygmi.raster.dataprep import quickgrid
+#import numpy as np
+#from osgeo import gdal, osr
+#from pygmi.raster.datatypes import Data
+#from pygmi.clust.datatypes import Clust
+#from pygmi.raster.dataprep import merge
+#from pygmi.raster.dataprep import quickgrid
 
 
 class ImportData():

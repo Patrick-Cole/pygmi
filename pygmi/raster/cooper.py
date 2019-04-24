@@ -387,13 +387,13 @@ def visibility2d(data, wsize, dh, piter=iter):
         for i in range(w2, nr-w2):
             dtmp = data[i-w2:i+w2+1, j]
             vn[i, j] = __visible1(dtmp, wsize, w2+1, dh)
-            vs[i, j] = __visible2(dtmp, wsize, w2+1, dh)
+            vs[i, j] = __visible2(dtmp, w2+1, dh)
 
     for j in piter(range(w2, nc-w2)):    # Rows
         for i in range(nr):
             dtmp = data[i, j-w2:j+w2+1]
             ve[i, j] = __visible1(dtmp, wsize, w2+1, dh)
-            vw[i, j] = __visible2(dtmp, wsize, w2+1, dh)
+            vw[i, j] = __visible2(dtmp, w2+1, dh)
 
     for j in piter(range(w2, nc-w2)):
         for i in range(w2, nr-w2):
@@ -401,12 +401,12 @@ def visibility2d(data, wsize, dh, piter=iter):
             for k in range(wsize):
                 dtmp[k] = data[i-w2+k, j-w2+k]
             vd1[i, j] = __visible1(dtmp, wsize, w2+1, dh)
-            vd2[i, j] = __visible2(dtmp, wsize, w2+1, dh)
+            vd2[i, j] = __visible2(dtmp, w2+1, dh)
             dtmp = np.zeros(wsize)
             for k in range(wsize):
                 dtmp[k] = data[i+w2-k, j-w2+k]
             vd3[i, j] = __visible1(dtmp, wsize, w2+1, dh)
-            vd4[i, j] = __visible2(dtmp, wsize, w2+1, dh)
+            vd4[i, j] = __visible2(dtmp, w2+1, dh)
 
     vtot = vn+vs+ve+vw+vd1+vd2+vd3+vd4
     vtot = vtot[w2:nr-w2, w2:nc-w2]
@@ -454,7 +454,7 @@ def __visible1(dat, nr, cp, dh):
     return num
 
 
-def __visible2(dat, nr, cp, dh):
+def __visible2(dat, cp, dh):
     """ Visible 2 """
     num = 0
 

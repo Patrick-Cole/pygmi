@@ -31,7 +31,6 @@ import matplotlib.pyplot as plt
 from pygmi.misc import PTime
 import pygmi.seis.iodefs as iodefs
 #from sklearn.cluster import DBSCAN
-#import scipy.spatial.distance as ssd
 #import cartopy.crs as ccrs
 #import cartopy.io.img_tiles as cimgt
 
@@ -171,7 +170,7 @@ class Quarry():
         lat = np.array(lat)
         ld = day[1]-day[0]  # number of daylight hours
         ln = 24-ld  # number of nightime hours
-        rdist = 0.2  # max distance for event to qualify. In degrees
+#        rdist = 0.2  # max distance for event to qualify. In degrees
         stayinloop = True
         N = 50
 
@@ -238,12 +237,12 @@ class Quarry():
             maxel = np.argmax(rq-rperc[0])
 
             if rq[maxel]-rperc[0] > 0:
-#                maxel = np.nonzero(hour)[0][maxel]
                 lat = np.delete(lat, rstot[maxel])
                 lon = np.delete(lon, rstot[maxel])
                 hour = np.delete(hour, rstot[maxel])
                 ehour = np.delete(ehour, rstot[maxel])
                 newevents = np.delete(newevents, rstot[maxel])
+#                maxel = np.nonzero(hour)[0][maxel]
             else:
                 stayinloop = False
             stayinloop = False
@@ -327,7 +326,7 @@ class Quarry():
 
         plt.xlabel('R')
         plt.ylabel('Event Counts')
-        plt.hist(rq[nn!=0.00001], 50)
+        plt.hist(rq[nn != 0.00001], 50)
         plt.show()
 
         filt = (rq-rperc) > 0

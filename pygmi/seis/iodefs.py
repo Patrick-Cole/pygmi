@@ -1312,7 +1312,7 @@ class ExportCSV():
 
         if 'P' not in data:
             return None
-            dat = data['P']
+        dat = data['P']
 
         tmp = ' '*80+'\n'
         tmp = sform('{0:78s}', dat.filename, tmp, 2, 79)

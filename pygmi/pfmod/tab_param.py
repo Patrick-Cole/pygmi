@@ -411,7 +411,7 @@ class ParamDisplay(QtWidgets.QDialog):
             lithn.density = lithn.bdensity
 
         if getcol is True:
-            col = QtWidgets.QColorDialog.getColor()
+            col = QtWidgets.QColorDialog.getColor(parent=self.parent)
             lmod.mlut[lithn.lith_index] = [col.red(), col.green(), col.blue()]
 
 # setup list widgets
@@ -700,5 +700,6 @@ class ParamDisplay(QtWidgets.QDialog):
         self.lw_index_change()
         self.dsb_gregional.setValue(self.lmod1.gregional)
         self.exec_()
-#        self.parent.tab_change()
+
+        self.parent.profile.lw_prof_defs.setCurrentRow(-1)
         self.parent.profile.change_defs()

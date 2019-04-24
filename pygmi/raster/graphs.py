@@ -287,7 +287,6 @@ class GraphWindow(QtWidgets.QDialog):
 
     def change_band(self):
         """ Combo box to choose band """
-        pass
 
 
 class PlotCCoef(GraphWindow):
@@ -320,7 +319,6 @@ class PlotCCoef(GraphWindow):
 
     def change_band(self):
         """ Combo box to choose band """
-        pass
 
     def run(self):
         """ Run """

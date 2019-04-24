@@ -131,7 +131,6 @@ class GraphWindow(QtWidgets.QDialog):
 
     def change_band(self):
         """ Combo box to choose band """
-        pass
 
 
 class PlotRaster(GraphWindow):

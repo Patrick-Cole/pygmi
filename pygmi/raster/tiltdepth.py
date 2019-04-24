@@ -39,13 +39,13 @@ from matplotlib.figure import Figure
 import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+#import matplotlib.pyplot as plt
 from numba import jit
 import pygmi.raster.cooper as cooper
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
 from pygmi.raster.datatypes import Data
-import matplotlib.pyplot as plt
 
 
 class TiltDepth(QtWidgets.QDialog):

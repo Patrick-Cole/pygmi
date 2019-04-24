@@ -43,8 +43,8 @@ import matplotlib.patches as mpatches
 from matplotlib.backends.backend_pdf import PdfPages
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
-    NavigationToolbar
+#from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
+#    NavigationToolbar
 
 
 class MyMplCanvas(FigureCanvas):
@@ -202,10 +202,10 @@ class MyMplCanvas(FigureCanvas):
         idir = __file__.rpartition('\\')[0]
         logfile = idir+'\\logplot.xlsx'
 
-        pagewidth = 8
+#        pagewidth = 8
         pageheight = 8
         dpp = 25  # depth per page
-        wpp = dpp*pagewidth/pageheight
+#        wpp = dpp*pagewidth/pageheight
         fontsize = 10
         dpi = (fontsize/72)*(dpp/pageheight)
 
@@ -346,7 +346,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         self.mmc2 = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
+#        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
 #        self.mmc.setFixedHeight(3000)
         self.label_topleft = QtWidgets.QLabel()
         self.label_topright = QtWidgets.QLabel()
@@ -390,7 +390,6 @@ class GraphWindow(QtWidgets.QDialog):
 
     def change_band(self):
         """ Combo box to choose band """
-        pass
 
 
 class PlotLog(GraphWindow):
@@ -933,7 +932,6 @@ def legend(pagewidth, pageheight, dpp, hdf, strat1, lith1, indx, props,
     else:
         pdf.savefig(bbox_inches='tight')
     plt.close()
-    return
 
 
 def gethatch(svgfile):

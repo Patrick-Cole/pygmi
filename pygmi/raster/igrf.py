@@ -306,7 +306,7 @@ class IGRF(QtWidgets.QDialog):
         modelI = sum(yrmax < sdate)
         igdgc = 1
 
-        if (maxyr < sdate < maxyr+1):
+        if maxyr < sdate < maxyr+1:
             self.reportback("Warning: The date " + str(sdate) +
                             " is out of range,")
             self.reportback("but still within one year of model expiration"
@@ -333,7 +333,7 @@ class IGRF(QtWidgets.QDialog):
         maxlen = xdat.size
 
         for i in self.pbar.iter(range(maxlen)):
-            if igrf_F.mask[i] == True:
+            if igrf_F.mask[i]:
                 continue
 
             tmp = int(i*100/maxlen)
