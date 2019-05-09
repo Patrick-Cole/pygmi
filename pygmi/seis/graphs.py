@@ -55,7 +55,6 @@ class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None):
         fig = Figure()
         self.axes = fig.add_subplot(111)
-        self.parent = parent
 
         self.ellipses = []
 

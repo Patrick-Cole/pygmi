@@ -2,7 +2,8 @@
 <html>
 	<body>
 		<h1>Model Extents Parameters</h1>
-		<p>This tab sets up the extents of the model. The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, dtm data can be obtained from the SRTM archives.</p>
+		<p>This dialog sets up the extents of the model. The Current Models section displays the imported models. The current model is the model being edited. The regional model is a mdoel used to apply a regional correction to field calculations.</p>
+		<p>The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, dtm data can be obtained from the SRTM archives.</p>
 		<p>The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.</p>
 		<h2>Current Models</h2>
 		<ul>
@@ -17,6 +18,7 @@
 			<li>Magnetic Dataset - This is the magnetic data to be modelled.</li>
 			<li>Gravity Dataset - This is the gravity data to be modelled.</li>
 			<li>Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data.</li>
+			<li>Other - This option can be used to add an additional layer for comparison purposes - for example a geotiff of the geological map.</li>
 		</ul>
 		<h2>Model Extent Properties</h2>
 		<p>The model extents control the area size and depth of your model, as well as its resolution. Typically one of your datasets are used to fill in most of the fields automatically. Because the DTM is compulsory to the modelling, this is normally the default choice.</p>
@@ -33,7 +35,6 @@
 			<li>Number of Columns (X Direction) - This is calculated automatically from extents and cell sizes.</li>
 			<li>Number of Rows (Y Direction) - This is calculated automatically from extents and cell sizes.</li>
 			<li>Number of Layers (Z Direction) - This is calculated automatically from extents and cell sizes.</li>
-			<li>Accept Proposed Changes - This is calculated automatically from extents and cell sizes.</li>
 		</ul>
 		<h2>Tips</h2>
 		<ul>

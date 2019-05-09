@@ -109,42 +109,17 @@ class Data():
     def __init__(self):
         self.data = np.ma.array([])
         self.extent = (0, 1, -1, 0)  # left, right, bottom, top
-        self.tlx = 0.0  # Top Left X coordinate
-        self.tly = 0.0  # Top Left Y coordinate
         self.xdim = 1.0
         self.ydim = 1.0
         self.dataid = ''
-        self.rows = -1
-        self.cols = -1
         self.nullvalue = 1e+20
         self.wkt = ''
         self.units = ''
         self.isrgb = False
 
-    def get_extent(self):
-        """ Get extent
-
-        Parameters
-        ----------
-        dat - PyGMI Data format
-            Data class for grid
-
-        Returns
-        -------
-        extent - tuple
-            tuple containing the extent as (left, right, bottom, top)
-
-        """
-        left = self.tlx
-        right = left + self.xdim*self.cols
-        top = self.tly
-        bottom = top - self.ydim*self.rows
-        self.extent = (left, right, bottom, top)
-
-        return self.extent
-
     def get_gtr(self):
-        """ Get gtr
+        """
+        Get gtr
 
         Parameters
         ----------
@@ -157,6 +132,25 @@ class Data():
             tuple containing the gtr as (left, xdim, 0, top, 0., -ydim)
         """
 
-        gtr = (self.tlx, self.xdim, 0.0, self.tly, 0.0, -self.ydim)
+        gtr = (self.extent[0], self.xdim, 0.0, self.extent[-1], 0.0,
+               -self.ydim)
 
         return gtr
+
+    def extent_from_gtr(self, gtr):
+        """
+        Imports extent, xdim and ydim from a gtr string. Requires data
+        for rows and columns
+        """
+
+        rows, cols = self.data.shape
+
+        self.xdim = gtr[1]
+        self.ydim = -gtr[5]
+
+        left = gtr[0]
+        top = gtr[3]
+        right = left + self.xdim*cols
+        bottom = top - self.ydim*rows
+
+        self.extent = (left, right, bottom, top)

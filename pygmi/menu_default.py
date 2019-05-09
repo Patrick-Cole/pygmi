@@ -63,7 +63,7 @@ class FileMenu():
         context_menu['Basic'].addSeparator()
 
         self.action_bandselect = QtWidgets.QAction(self.parent)
-        self.action_bandselect.setText("Select Bands")
+        self.action_bandselect.setText("Select Input Bands")
         context_menu['Basic'].addAction(self.action_bandselect)
         self.action_bandselect.triggered.connect(self.bandselect)
 

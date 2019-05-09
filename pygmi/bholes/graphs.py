@@ -59,7 +59,6 @@ class MyMplCanvas(FigureCanvas):
     """
     def __init__(self, parent=None):
         fig = Figure()
-        self.parent = parent
 
         FigureCanvas.__init__(self, fig)
 

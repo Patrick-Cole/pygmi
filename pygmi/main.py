@@ -526,6 +526,8 @@ class MainWidget(QtWidgets.QMainWindow):
                 onerror=lambda x: None):
             menus.append(modname)
 
+    ### Menu List
+        menus.pop(menus.index('pygmi.rsense.menu'))
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
         menus = [raster_menu, vector_menu]+menus

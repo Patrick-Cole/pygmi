@@ -169,26 +169,27 @@ class MainWidget(QtWidgets.QMainWindow):
         Help Routine
         """
 
-        index = self.tabwidget.currentIndex()
+#        index = self.tabwidget.currentIndex()
         htmlfile = ''
+        htmlfile += 'pygmi.pfmod.prof'
 
-        if self.tabwidget.tabText(index) == 'Geophysical Parameters':
-            htmlfile += 'pygmi.pfmod.param'
-
-        if self.tabwidget.tabText(index) == 'Model Extent Parameters':
-            htmlfile += 'pygmi.pfmod.mext'
-
-        if self.tabwidget.tabText(index) == 'Profile Editor':
-            htmlfile += 'pygmi.pfmod.prof'
-
-        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
-            htmlfile += 'pygmi.pfmod.pview'
-
-        if self.tabwidget.tabText(index) == 'Layer Editor':
-            htmlfile += 'pygmi.pfmod.layer'
-
-        if self.tabwidget.tabText(index) == 'Data Display':
-            htmlfile += 'pygmi.pfmod.ddisp'
+#        if self.tabwidget.tabText(index) == 'Geophysical Parameters':
+#            htmlfile += 'pygmi.pfmod.param'
+#
+#        if self.tabwidget.tabText(index) == 'Model Extent Parameters':
+#            htmlfile += 'pygmi.pfmod.mext'
+#
+#        if self.tabwidget.tabText(index) == 'Profile Editor':
+#            htmlfile += 'pygmi.pfmod.prof'
+#
+#        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
+#            htmlfile += 'pygmi.pfmod.pview'
+#
+#        if self.tabwidget.tabText(index) == 'Layer Editor':
+#            htmlfile += 'pygmi.pfmod.layer'
+#
+#        if self.tabwidget.tabText(index) == 'Data Display':
+#            htmlfile += 'pygmi.pfmod.ddisp'
 
         menu_default.HelpDocs(self, htmlfile)
 
@@ -209,6 +210,10 @@ class MainWidget(QtWidgets.QMainWindow):
         self.outdata['Model3D'] = [self.lmod1]
         self.mext.update_combos()
         self.mext.tab_activate()
+
+        self.profile.change_defs()
+        self.profile.tab_activate()
+
         self.outdata['Raster'] = datatmp
 
         if 'ProfPic' in self.indata:
@@ -239,13 +244,3 @@ class MainWidget(QtWidgets.QMainWindow):
         tmp = self.textbrowser.verticalScrollBar()
         tmp.setValue(tmp.maximumHeight())
         self.repaint()
-
-    def tab_change(self):
-        """ This gets called any time we change a tab, and activates the
-        routines behind the new tab """
-
-        self.profile.change_defs()
-#        self.layer.change_defs()
-
-        self.profile.tab_activate()
-#        self.layer.tab_activate()

@@ -35,7 +35,6 @@ from matplotlib.patches import Polygon
 from matplotlib.lines import Line2D
 from matplotlib.path import Path
 from matplotlib.ticker import NullFormatter
-from matplotlib.mlab import dist_point_to_segment
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 
@@ -238,6 +237,8 @@ class GraphMap(FigureCanvas):
         ymesh = ymesh.flatten()
         xmesh = xmesh.filled(np.nan)
         ymesh = ymesh.filled(np.nan)
+#        xmesh = xmesh.compressed()
+#        ymesh = ymesh.compressed()
         pntxy = np.transpose([xmesh, ymesh])
         self.polyi = PolygonInteractor(self.subplot, pntxy)
         self.polyi.ishist = False
@@ -247,23 +248,15 @@ class GraphMap(FigureCanvas):
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
 
-        self.figure.clf()
-        self.subplot = self.figure.add_subplot(111)
-        self.subplot.get_xaxis().set_visible(False)
-        self.subplot.get_yaxis().set_visible(False)
-
         if mtmp[1] > 0:
             cdat = self.cdata[mtmp[1] - 1].data
-            self.csp = self.subplot.imshow(cdat, cmap=cm.jet)
-            vals = np.unique(cdat)
-            vals = vals.compressed()
-            bnds = (vals - 0.5).tolist() + [vals.max() + .5]
-            self.subplot.figure.colorbar(self.csp, boundaries=bnds,
-                                         values=vals, ticks=vals)
+            self.csp.set_data(cdat)
+            self.csp.set_clim(cdat.min(), cdat.max())
         else:
-            self.csp = self.subplot.imshow(dat.data, cmap=cm.jet)
-            self.subplot.figure.colorbar(self.csp)
+            self.csp.set_data(dat.data)
+            self.csp.set_clim(dat.data.min(), dat.data.max())
 
+        self.csp.changed()
         self.figure.canvas.draw()
         self.polyi.draw_callback()
 
@@ -362,7 +355,8 @@ class PolygonInteractor(QtCore.QObject):
 
         if self._ind is None:
             xys = self.poly.get_transform().transform(self.poly.xy)
-            ptmp = event.x, event.y  # display coords
+            ptmp = self.poly.get_transform().transform([event.xdata, event.ydata])
+#            ptmp = event.x, event.y  # display coords
 
             if len(xys) == 1:
                 self.poly.xy = np.array(
@@ -381,6 +375,7 @@ class PolygonInteractor(QtCore.QObject):
                 s0tmp = xys[i]
                 s1tmp = xys[i + 1]
                 dtmp = dist_point_to_segment(ptmp, s0tmp, s1tmp)
+
                 if dmin == -1:
                     dmin = dtmp
                     imin = i
@@ -388,6 +383,8 @@ class PolygonInteractor(QtCore.QObject):
                     dmin = dtmp
                     imin = i
             i = imin
+
+#            breakpoint()
             self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
                                     [(event.xdata, event.ydata)] +
                                     list(self.poly.xy[i + 1:]))
@@ -458,11 +455,11 @@ class ScatterPlot(QtWidgets.QDialog):
         self.map = GraphMap(self)
         self.hist = GraphHist(self)
 
-        self.cp_dpoly = QtWidgets.QPushButton()
+        self.cp_dpoly = QtWidgets.QPushButton('Delete Polygon')
         self.cp_combo = QtWidgets.QComboBox()
         self.cp_combo2 = QtWidgets.QComboBox()
         self.cp_combo3 = QtWidgets.QComboBox()
-        self.map_dpoly = QtWidgets.QPushButton()
+        self.map_dpoly = QtWidgets.QPushButton('Delete Polygon')
         self.map_combo = QtWidgets.QComboBox()
         self.map_combo2 = QtWidgets.QComboBox()
 
@@ -492,10 +489,8 @@ class ScatterPlot(QtWidgets.QDialog):
         lbl_combo_left.setText('X Data Band:')
         lbl_combo2_left.setText('Y Data Band:')
         lbl_combo3_left.setText('Cluster Overlay:')
-        self.cp_dpoly.setText('Delete Polygon')
         lbl_combo_right.setText('Data Band:')
         lbl_combo2_right.setText('Cluster Overlay:')
-        self.map_dpoly.setText('Delete Polygon')
 
         grid_left.addWidget(lbl_combo_left, 0, 0, 1, 1)
         grid_left.addWidget(lbl_combo2_left, 1, 0, 1, 1)
@@ -520,8 +515,12 @@ class ScatterPlot(QtWidgets.QDialog):
     def on_cp_dpoly(self):
         """ cp dpoly """
         self.hist.polyi.new_poly([[10, 10]])
+
+        mtmp = self.map_combo.currentIndex()
+        mask = self.indata['Raster'][mtmp].data.mask
+
         dattmp = self.map.csp.get_array()
-        dattmp.mask = np.zeros_like(dattmp.mask)
+        dattmp.mask = mask
         self.map.csp.changed()
         self.map.figure.canvas.draw()
 
@@ -539,6 +538,7 @@ class ScatterPlot(QtWidgets.QDialog):
         if gstmp != self.c[0]:
             self.c[0] = gstmp
             self.hist.update_graph(clearaxis=True)
+            self.map.polyi.update_plots()
 
     def on_cp_combo2(self):
         """ On Combo 2 """
@@ -546,21 +546,25 @@ class ScatterPlot(QtWidgets.QDialog):
         if gstmp != self.c[1]:
             self.c[1] = gstmp
             self.hist.update_graph(clearaxis=True)
+            self.map.polyi.update_plots()
 
     def on_cp_combo3(self):
         """ On combo 3 """
         self.c[2] = self.cp_combo3.currentIndex()
         self.hist.update_graph()
+        self.map.polyi.update_plots()
 
     def on_map_combo(self):
         """ On map combo """
         self.m[0] = self.map_combo.currentIndex()
         self.map.update_graph()
+        self.hist.polyi.update_plots()
 
     def on_map_combo2(self):
         """ On map combo 2 """
         self.m[1] = self.map_combo2.currentIndex()
         self.map.update_graph()
+        self.hist.polyi.update_plots()
 
     def settings(self):
         """ run """
@@ -625,7 +629,14 @@ class ScatterPlot(QtWidgets.QDialog):
         """ update """
         if max(polymask) is False:
             return
+
+        mtmp = self.map_combo.currentIndex()
+        mask = self.indata['Raster'][mtmp].data.mask
+
         polymask = np.array(polymask)
+        polymask.shape = mask.shape
+        polymask = np.logical_or(polymask, mask)
+
         dattmp = self.map.csp.get_array()
         dattmp.mask = polymask
         self.map.csp.changed()
@@ -645,3 +656,29 @@ class ScatterPlot(QtWidgets.QDialog):
             dattmp.mask[i[1], i[0]] = False
         self.hist.csp.changed()
         self.hist.figure.canvas.draw()
+
+
+def dist_point_to_segment(p, s0, s1):
+    """
+    Reimplementation of Matplotlib's dist_point_to_segment, after it was
+    depreciated. Follows http://geomalgorithms.com/a02-_lines.html
+    """
+    p = np.array(p)
+    s0 = np.array(s0)
+    s1 = np.array(s1)
+
+    v = s1 - s0
+    w = p - s0
+
+    c1 = np.dot(w, v)
+    if c1 <= 0:
+        return np.linalg.norm(p - s0)
+
+    c2 = np.dot(v, v)
+    if c2 <= c1:
+        return np.linalg.norm(p - s1)
+
+    b = c1/c2
+    pb = s0 + b*v
+
+    return np.linalg.norm(p - pb)

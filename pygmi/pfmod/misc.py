@@ -376,8 +376,10 @@ def gmerge(master, slave, xrange=None, yrange=None):
         data.data = np.ma.masked_equal(tmp, 0)
         data.nullvalue = 0
 
-        gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
-        src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
+        drows, dcols = data.data.shape
+
+        gtr0 = data.get_gtr()
+        src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
         dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
 
         gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt, gdal.GRA_Bilinear)

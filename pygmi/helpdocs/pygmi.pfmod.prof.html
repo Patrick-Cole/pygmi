@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<h1>Profile Editor</h1>
-		<p>The profile editor allows for the voxel model to be edited from the side. Simply select a lithology and draw the model in, as you would in a paint program. Changing the profile allows for the drawing in of lithologies at different locations.</p>
-		<p>The orientation of east-west or north-south can be changed on the data display tab.</p>
+		<h1>Editor</h1>
+		<p>The layer view allows for the voxel model to be edited from above. Simply select a lithology and draw the model in, as you would in a paint program. Changing the layer allows for the drawing in of lithologies at deeper depths. Please note that on the first few layers there may be sections which are air (due to the DTM), and are thus not editable.</p>
+		<p>The profile view allows for the voxel model to be edited from the side. Simply select a lithology and draw the model in, as you would in a paint program. Changing the profile allows for the drawing in of lithologies at different locations.</p>
 		<p>The display of magnetic data or gravity data is changed upon calculation of either data type.</p>
 		<h2>Options</h2>
 		<ul>
+			<li>Profile Orientation- allows for the selection of the profile direction.</li>
 			<li>Profile - allows for the selection of the profile being modelled. A slider provides convenient setting of this parameter.</li>
-			<li>Dataset Drop Box - Allows for a vertical image to be faded in and out of the layer with the aid of a slider. This can help when you need to know where the boundaries of geological units are. The image is specially imported using 'Import Profile Picture' from the 'Potential Field Modelling' Menu on the main PyGMI interface.</li>
+			<li>Layer - allows for the display and/or selection of the profile being modelled. The Altitude associated with the layer is also displayed.</li>
 			<li>Lithology List - Use this to select which lithology that you are currently drawing. To erase, simply select the Background lithology and draw with that.</li>
 			<li>Line Thickness - This allows you to change the pen thickness, which you are drawing with.</li>
 			<li>Ranged Copy - The ranged copy function allows for the copying of a lithology on the current layer over a range of layers. You can choose which layers to copy to, and which lithologies can be overwritten.</li>
-			<li>Profile Y-Axis Scale - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.</li>
+			<li>Field Display Limits - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.</li>
 			<li>Add Lithological Boundary - Adds a grid to be used as a horizontal lithological boundary. It can be used if you have, say, a grid of the crust or the bedrock to add to your model. </li>
-			<li>Export Profile - Export an X,Y,Z file of the profile data.</li>
+			<li>Export All Profiles - Export an X,Y,Z file of the profile data.</li>
+			<li>Dataset Drop Box - Allows for a dataset to be faded in and out of the layer with the aid of a slider. This can help when you need to know where the boundaries of geological units are.</li>
 		</ul>
 		<h2>Calculations</h2>
 		<p>Calculations  can be done by choosing one of two options from the menu bar at the top of the program:</p>
@@ -22,6 +24,9 @@
 			<li>Regional Test - This is used to display a graph showing the regional decay of your model. It is a fast way to see if either your model extents are large enough, or how the calculated field would fall off near the end of your model.</li>
 			<li>Calculate Gravity - This calculates the gravity at the gravity height specified in the Geophysical Parameters Tab.</li>
 			<li>Calculate Magnetics - This is used if you want Magnetic data. The height chosen is the magnetic height.</li>
+			<li>Calculate Gravity (Changes Only)- This calculates only the changes to the gravity since the last calculation.</li>
+			<li>Calculate Magnetics (Changes Only)- This calculates only the changes to the magnetic data since the last calculation.</li>
+			<li>Save Model - Convenience option to save the model from within the interface.</li>
 		</ul>
 		<h2>Tips</h2>
 		<p>The ranged copy function can be very useful in getting a starting model going. Draw in your basic lithology boundary and copy it over a range of applicable depths. You can now quickly correct this either in the Layer Editor or the Profile Editor</p>

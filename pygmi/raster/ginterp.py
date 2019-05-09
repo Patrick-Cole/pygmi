@@ -348,8 +348,8 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     Unlike matplotlib version, must explicitly specify axes
     """
 
-    if not axes._hold:
-        axes.cla()
+#    if not axes._hold:
+#        axes.cla()
     if norm is not None:
         assert isinstance(norm, mcolors.Normalize)
     if aspect is None:
@@ -556,10 +556,12 @@ class MyMplCanvas(FigureCanvas):
             zval = [-999, -999, -999]
 
             for i in self.data:
+                itlx = i.extent[0]
+                itly = i.extent[-1]
                 for j in range(3):
                     if i.dataid == self.hband[j]:
-                        col = int((event.xdata - i.tlx)/i.xdim)
-                        row = int((i.tly - event.ydata)/i.ydim)
+                        col = int((event.xdata - itlx)/i.xdim)
+                        row = int((itly - event.ydata)/i.ydim)
                         zval[j] = i.data[row, col]
 
             if self.gmode == 'Single Color Map':
@@ -583,10 +585,12 @@ class MyMplCanvas(FigureCanvas):
 
             if self.gmode == 'Sunshade':
                 for i in self.sdata:
+                    itlx = i.extent[0]
+                    itly = i.extent[-1]
                     for j in [1]:
                         if i.dataid == self.hband[j]:
-                            col = int((event.xdata - i.tlx)/i.xdim)
-                            row = int((i.tly - event.ydata)/i.ydim)
+                            col = int((event.xdata - itlx)/i.xdim)
+                            row = int((itly - event.ydata)/i.ydim)
                             zval[j] = i.data[row, col]
                 bnum = self.update_hist_sun(zval)
                 self.figure.canvas.restore_region(self.bbox_hist_red)
@@ -1059,6 +1063,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
         self.btn_saveimg.clicked.connect(self.save_img)
 
+        self.resize(self.parent.width(), self.parent.height())
+
     def change_blue(self):
         """ Combo box to change the blue or third display band"""
         txt = str(self.cbox_band3.currentText())
@@ -1480,28 +1486,28 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[2].nullvalue = 0
         newimg[3].nullvalue = 0
 
-        imgshape0 = img.shape[0]
-        imgshape1 = img.shape[1]
-
-        newimg[0].xdim = (newimg[0].xdim*newimg[0].cols)/imgshape1
-        newimg[1].xdim = (newimg[1].xdim*newimg[1].cols)/imgshape1
-        newimg[2].xdim = (newimg[2].xdim*newimg[2].cols)/imgshape1
-        newimg[3].xdim = (newimg[3].xdim*newimg[3].cols)/imgshape1
-
-        newimg[0].ydim = (newimg[0].ydim*newimg[0].rows)/imgshape0
-        newimg[1].ydim = (newimg[1].ydim*newimg[1].rows)/imgshape0
-        newimg[2].ydim = (newimg[2].ydim*newimg[2].rows)/imgshape0
-        newimg[3].ydim = (newimg[3].ydim*newimg[3].rows)/imgshape0
-
-        newimg[0].cols = imgshape1
-        newimg[1].cols = imgshape1
-        newimg[2].cols = imgshape1
-        newimg[3].cols = imgshape1
-
-        newimg[0].rows = imgshape0
-        newimg[1].rows = imgshape0
-        newimg[2].rows = imgshape0
-        newimg[3].rows = imgshape0
+#        imgshape0 = img.shape[0]
+#        imgshape1 = img.shape[1]
+#
+#        newimg[0].xdim = (newimg[0].xdim*newimg[0].cols)/imgshape1
+#        newimg[1].xdim = (newimg[1].xdim*newimg[1].cols)/imgshape1
+#        newimg[2].xdim = (newimg[2].xdim*newimg[2].cols)/imgshape1
+#        newimg[3].xdim = (newimg[3].xdim*newimg[3].cols)/imgshape1
+#
+#        newimg[0].ydim = (newimg[0].ydim*newimg[0].rows)/imgshape0
+#        newimg[1].ydim = (newimg[1].ydim*newimg[1].rows)/imgshape0
+#        newimg[2].ydim = (newimg[2].ydim*newimg[2].rows)/imgshape0
+#        newimg[3].ydim = (newimg[3].ydim*newimg[3].rows)/imgshape0
+#
+#        newimg[0].cols = imgshape1
+#        newimg[1].cols = imgshape1
+#        newimg[2].cols = imgshape1
+#        newimg[3].cols = imgshape1
+#
+#        newimg[0].rows = imgshape0
+#        newimg[1].rows = imgshape0
+#        newimg[2].rows = imgshape0
+#        newimg[3].rows = imgshape0
 
         export.ifile = str(filename)
         export.ext = filename[-3:]

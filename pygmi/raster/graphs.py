@@ -39,8 +39,7 @@ from PyQt5 import QtWidgets, QtCore
 import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 from mpl_toolkits.mplot3d import axes3d
 
@@ -58,7 +57,6 @@ class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None):
         fig = Figure()
         self.axes = fig.add_subplot(111)
-        self.parent = parent
 
         FigureCanvas.__init__(self, fig)
 
@@ -111,7 +109,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
 
-        extent = data1.get_extent()
+        extent = data1.extent
         rdata = self.axes.imshow(data1.data, extent=extent,
                                  interpolation='nearest')
 
@@ -120,6 +118,7 @@ class MyMplCanvas(FigureCanvas):
             cbar.set_label(data1.units)
         except AttributeError:
             pass
+
         self.axes.set_xlabel("Eastings")
         self.axes.set_ylabel("Northings")
 
@@ -188,10 +187,15 @@ class MyMplCanvas(FigureCanvas):
             raster dataset to be used
         """
 
-        x = data.tlx+np.arange(data.cols)*data.xdim+data.xdim/2
-        y = data.tly-np.arange(data.rows)*data.ydim-data.ydim/2
+        rows, cols = data.data.shape
+
+        dtlx = data.extent[0]
+        dtly = data.extent[-1]
+        x = dtlx+np.arange(cols)*data.xdim+data.xdim/2
+        y = dtly-np.arange(rows)*data.ydim-data.ydim/2
         x, y = np.meshgrid(x, y)
         z = data.data.copy()
+
         if not np.ma.is_masked(z):
             z = np.ma.array(z)
 
@@ -253,7 +257,7 @@ class GraphWindow(QtWidgets.QDialog):
     parent : parent
         reference to the parent routine
     """
-    def __init__(self, parent=None):
+    def __init__(self, parent):
         super(QtWidgets.QDialog, self).__init__(parent)
         self.parent = parent
 
@@ -263,7 +267,7 @@ class GraphWindow(QtWidgets.QDialog):
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()

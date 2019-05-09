@@ -192,8 +192,7 @@ class TiltDepth(QtWidgets.QDialog):
         cmap2[low:high] = cmap2[int(cmap.N/2)]
 
         cmap3 = cm.colors.ListedColormap(cmap2)
-        ims = self.axes.imshow(self.Z, extent=zout.get_extent(),
-                               cmap=cmap3)
+        ims = self.axes.imshow(self.Z, extent=zout.extent, cmap=cmap3)
 
         if self.x0 is not None:
             i = 0
@@ -270,8 +269,8 @@ class TiltDepth(QtWidgets.QDialog):
         # A negative number implies we are straddling 0
 
     # Contour tilt
-        x = zout.tlx + np.arange(nc)*zout.xdim+zout.xdim/2
-        y = zout.tly - np.arange(nr)*zout.ydim-zout.ydim/2
+        x = zout.extent[0] + np.arange(nc)*zout.xdim+zout.xdim/2
+        y = zout.extent[-1] - np.arange(nr)*zout.ydim-zout.ydim/2
 
         X, Y = np.meshgrid(x, y)
         Z = np.rad2deg(t1)
@@ -356,14 +355,11 @@ class TiltDepth(QtWidgets.QDialog):
         dat = Data()
         dat.data = np.ma.masked_invalid(gdat[::-1])
         dat.data.mask = mask[::-1]
-        dat.rows, dat.cols = gdat.shape
         dat.nullvalue = dat.data.fill_value
         dat.dataid = data.dataid
-        dat.tlx = gx0.min()
-        dat.tly = gy0.max()
         dat.xdim = data.xdim
         dat.ydim = data.xdim
-        dat.extent = dat.get_extent()
+        dat.extent = [gx0.min(), gx0.max(), gy0.min(), gy0.max()]
 
         self.outdata['Raster'] = [dat]
 

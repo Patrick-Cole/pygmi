@@ -84,7 +84,7 @@ class ImportMod3D():
         elif filt in ('x,y,z,label (*.csv)', 'x,y,z,label (*.txt)'):
             self.import_ascii_xyz_model(filename)
         else:
-            indict = np.load(filename)
+            indict = np.load(filename, allow_pickle=True)
             self.dict2lmod(indict)
 
         self.outdata['Model3D'] = [self.lmod]
@@ -827,7 +827,7 @@ class ExportMod3D():
             zfile.writestr('models\\mod3d'+str(i)+'.dae', modeldae[i])
 
         for i in self.lmod.griddata:
-            x_1, x_2, y_1, y_2 = self.lmod.griddata[i].get_extent()
+            x_1, x_2, y_1, y_2 = self.lmod.griddata[i].extent
 
             res = prj.TransformPoint(x_1, y_1)
             lonwest, latsouth = res[0], res[1]
@@ -1148,14 +1148,14 @@ class ImportPicture(QtWidgets.QDialog):
             self.grid.dataid = r'South to North'
 
         self.grid.dataid = "Image"
-        self.grid.rows = self.grid.data.shape[0]
-        self.grid.cols = self.grid.data.shape[1]
         self.grid.nullvalue = 0
 
-        self.grid.xdim = (self.max_coord-self.min_coord)/self.grid.cols
-        self.grid.ydim = (self.max_alt-self.min_alt)/self.grid.rows
-        self.grid.tlx = self.min_coord
-        self.grid.tly = self.max_alt
+        rows, cols = self.grid.data.shape
+
+        self.grid.xdim = (self.max_coord-self.min_coord)/cols
+        self.grid.ydim = (self.max_alt-self.min_alt)/rows
+        self.grid.extent = [self.min_coord, self.max_coord, self.min_alt,
+                            self.max_alt]
 
     def update_win(self):
         """ Updates the window values """

@@ -28,6 +28,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
+import pygmi.menu_default as menu_default
 
 
 class MergeLith(QtWidgets.QDialog):
@@ -210,6 +211,7 @@ class ParamDisplay(QtWidgets.QDialog):
     def setupui(self):
         """ Setup UI """
         self.setWindowTitle("Geophysical Parameters")
+        helpdocs = menu_default.HelpButton('pygmi.pfmod.param')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Preferred)
@@ -219,6 +221,7 @@ class ParamDisplay(QtWidgets.QDialog):
             self.lw_param_defs.sizePolicy().hasHeightForWidth())
 
         verticallayout = QtWidgets.QVBoxLayout(self)
+        hlayout = QtWidgets.QHBoxLayout(self)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -228,7 +231,7 @@ class ParamDisplay(QtWidgets.QDialog):
         gb_gen_prop = QtWidgets.QGroupBox("General Properties")
         gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
 
-        label_1 = QtWidgets.QLabel("Gravity Regional (mgal)")
+        label_1 = QtWidgets.QLabel("Gravity Regional (mGal)")
         label_2 = QtWidgets.QLabel("Height of observation - Gravity")
         label_3 = QtWidgets.QLabel("Height of observation - Magnetic")
         label_4 = QtWidgets.QLabel("Magnetic Field Intensity (nT)")
@@ -332,9 +335,12 @@ class ParamDisplay(QtWidgets.QDialog):
         gl_lithprops.addWidget(self.dsb_mdec, 9, 1, 1, 1)
         gl_lithprops.addWidget(pb_applylith, 10, 0, 1, 2)
 
+        hlayout.addWidget(helpdocs)
+        hlayout.addWidget(buttonbox)
+
         verticallayout.addWidget(gb_gen_prop)
         verticallayout.addWidget(gb_lith_prop)
-        verticallayout.addWidget(buttonbox)
+        verticallayout.addLayout(hlayout)
 
         self.add_defs(deftxt='Background')  # First call is for background
         self.add_defs()  # Second is for the first lithology type

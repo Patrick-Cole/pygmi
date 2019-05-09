@@ -277,10 +277,9 @@ class GravMag():
         """ Assign the DTM to the lithology model """
         d_x = curgrid.xdim
         d_y = curgrid.ydim
-        gxmin = curgrid.tlx
-        gymax = curgrid.tly
-        gcols = curgrid.cols
-        grows = curgrid.rows
+        gxmin = curgrid.extent[0]
+        gymax = curgrid.extent[-1]
+        grows, gcols = curgrid.data.shape
 
         ndata = np.zeros([self.lmod.numy, self.lmod.numx])
 
@@ -337,7 +336,7 @@ class GravMag():
             cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
             plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal')
-        cbar.set_label('mgal')
+        cbar.set_label('mGal')
 
         regplt.show()
 
@@ -798,10 +797,13 @@ def gridmatch(lmod, ctxt, rtxt):
         doffset = data.data.min()-1.
         data.data = data.data - doffset
 
-    gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
-    gtr = (data2.tlx, data2.xdim, 0.0, data2.tly, 0.0, -data2.ydim)
-    src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
-    dest = data_to_gdal_mem(data, gtr, orig_wkt2, data2.cols, data2.rows, True)
+    rows, cols = data.data.shape
+    rows2, cols2 = data2.data.shape
+
+    gtr0 = data.get_gtr()
+    gtr = data2.get_gtr()
+    src = data_to_gdal_mem(data, gtr0, orig_wkt, cols, rows)
+    dest = data_to_gdal_mem(data, gtr, orig_wkt2, cols2, rows2, True)
 
     gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt2, gdal.GRA_Bilinear)
 
@@ -1391,7 +1393,7 @@ def dircos(incl, decl, azim):
 
 def dat_extent(dat, axes):
     """ Gets the extent of the dat variable """
-    left, right, bottom, top = dat.get_extent()
+    left, right, bottom, top = dat.extent
 
     if (right-left) > 10000 or (top-bottom) > 10000:
         axes.xaxis.set_label_text("Eastings (km)")

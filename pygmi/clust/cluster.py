@@ -31,6 +31,7 @@ import sklearn.cluster as skc
 import sklearn.metrics as skm
 import sklearn.preprocessing as skp
 from pygmi.clust.datatypes import Clust
+import pygmi.menu_default as menu_default
 
 
 class Cluster(QtWidgets.QDialog):
@@ -90,6 +91,7 @@ class Cluster(QtWidgets.QDialog):
 
     def setupui(self):
         """ setup UI """
+        helpdocs = menu_default.HelpButton('pygmi.clust.cluster')
         gridlayout = QtWidgets.QGridLayout(self)
 
         buttonbox = QtWidgets.QDialogButtonBox()
@@ -161,6 +163,7 @@ class Cluster(QtWidgets.QDialog):
         gridlayout.addWidget(self.radiobutton_noscale, 7, 2, 1, 1)
         gridlayout.addWidget(self.radiobutton_sscale, 8, 2, 1, 1)
         gridlayout.addWidget(self.radiobutton_rscale, 9, 2, 1, 1)
+        gridlayout.addWidget(helpdocs, 10, 2, 1, 1)
         gridlayout.addWidget(buttonbox, 10, 4, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
@@ -307,15 +310,11 @@ class Cluster(QtWidgets.QDialog):
             self.log = ("Cluster complete" + ' (' + self.cltype+')')
 
         for i in dat_out:
-            i.tlx = data[0].tlx
-            i.tly = data[0].tly
             i.xdim = data[0].xdim
             i.ydim = data[0].ydim
             i.dataid = 'Clusters: '+str(i.no_clusters)
             if self.cltype == 'DBSCAN':
                 i.dataid = 'Clusters: '+str(int(i.data.max()+1))
-            i.rows = data[0].rows
-            i.cols = data[0].cols
             i.nullvalue = data[0].nullvalue
             i.extent = data[0].extent
 

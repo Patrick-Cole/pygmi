@@ -87,14 +87,12 @@ def grid():
     # export data
     odat = Data()
     odat.dataid = ''
-    odat.tlx = newxdata.min()
-    odat.tly = newydata.max()
     odat.xdim = dxy
     odat.ydim = dxy
     odat.nullvalue = 1e+20
-    odat.rows, odat.cols = grid.shape
     odat.data = np.ma.masked_invalid(grid)
-    odat.extent = odat.get_extent()
+    odat.extent = [newxdata.min(), newxdata.max(),
+                   newydata.min(), newydata.max()]
 
     tmp = pio.ExportData(None)
     tmp.ifile = ofile
@@ -128,7 +126,7 @@ def model_to_grid_thickness():
     tmp.lmod.lith_list.clear()
 
     # load model
-    indict = np.load(tmp.ifile)
+    indict = np.load(tmp.ifile, allow_pickle=True)
     tmp.dict2lmod(indict)
 
     lith_index = tmp.lmod.lith_index
@@ -164,7 +162,7 @@ def model_to_lith_depth():
     tmp.lmod.lith_list.clear()
 
     # load model
-    indict = np.load(tmp.ifile)
+    indict = np.load(tmp.ifile, allow_pickle=True)
     tmp.dict2lmod(indict)
 
     tmp.lmod.update_lith_list_reverse()

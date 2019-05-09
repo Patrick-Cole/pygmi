@@ -48,7 +48,6 @@ class MyMplCanvas(FigureCanvas):
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
-        self.parent = parent
 
         FigureCanvas.__init__(self, fig)
 

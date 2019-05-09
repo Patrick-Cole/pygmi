@@ -157,10 +157,9 @@ class LithModel():
 
         d_x = curgrid.xdim
         d_y = curgrid.ydim
-        gxmin = curgrid.tlx
-        gymax = curgrid.tly
-        gcols = curgrid.cols
-        grows = curgrid.rows
+        gxmin = curgrid.extent[0]
+        gymax = curgrid.extent[-1]
+        grows, gcols = curgrid.data.shape
 
         utlz = curgrid.data.max()
 
@@ -193,13 +192,10 @@ class LithModel():
 
         grid = Data()
         grid.data = data
-        grid.cols = self.numx
-        grid.rows = self.numy
         grid.xdim = self.dxy
         grid.ydim = self.dxy
-        grid.tlx = self.xrange[0]
-        grid.tly = self.yrange[1]
-        grid.extent = grid.get_extent()
+        grid.extent = [self.xrange[0], self.xrange[1], self.yrange[0],
+                       self.yrange[1]]
 
         return grid
 
@@ -211,7 +207,7 @@ class LithModel():
         self.griddata['Calculated Magnetics'].units = 'nT'
         self.griddata['Calculated Gravity'] = self.init_grid(tmp.copy())
         self.griddata['Calculated Gravity'].dataid = 'Calculated Gravity'
-        self.griddata['Calculated Gravity'].units = 'mgal'
+        self.griddata['Calculated Gravity'].units = 'mGal'
 
     def is_modified(self, modified=True):
         """ Updates modified flag

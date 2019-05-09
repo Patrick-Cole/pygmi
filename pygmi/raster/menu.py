@@ -25,8 +25,8 @@
 """ Raster Menu Routines """
 
 from PyQt5 import QtWidgets
-from pygmi.raster import equation_editor
 from pygmi.raster import smooth
+from pygmi.raster import equation_editor
 from pygmi.raster import normalisation
 from pygmi.raster import cooper
 from pygmi.raster import ginterp
@@ -85,14 +85,9 @@ class MenuWidget():
         self.action_normalisation.triggered.connect(self.norm_data)
 
         self.action_gradients = QtWidgets.QAction(self.parent)
-        self.action_gradients.setText("Horizontal Gradients")
+        self.action_gradients.setText("Gradients")
         self.menu.addAction(self.action_gradients)
         self.action_gradients.triggered.connect(self.gradients)
-
-        self.action_vgradients = QtWidgets.QAction(self.parent)
-        self.action_vgradients.setText("Vertical Gradients")
-        self.menu.addAction(self.action_vgradients)
-        self.action_vgradients.triggered.connect(self.vgradients)
 
         self.action_visibility = QtWidgets.QAction(self.parent)
         self.action_visibility.setText("Visibility")
@@ -235,11 +230,6 @@ class MenuWidget():
         """ Compute different gradients """
         fnc = cooper.Gradients(self.parent)
         self.parent.item_insert("Step", "Gradients", fnc)
-
-    def vgradients(self):
-        """ Compute different gradients """
-        fnc = cooper.VGradients(self.parent)
-        self.parent.item_insert("Step", "Vertical\nGradients", fnc)
 
     def norm_data(self):
         """ Normalisation of data"""

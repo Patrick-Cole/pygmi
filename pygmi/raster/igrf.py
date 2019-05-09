@@ -294,8 +294,12 @@ class IGRF(QtWidgets.QDialog):
         sdate = self.dateedit.date()
         sdate = sdate.year()+sdate.dayOfYear()/sdate.daysInYear()
         alt = self.dsb_alt.value()
-        xrange = data.tlx+data.xdim/2.+np.arange(data.cols)*data.xdim
-        yrange = data.tly-data.ydim/2.-np.arange(data.rows)*data.ydim
+
+        drows, dcols = data.data.shape
+        dtlx = data.extent[0]
+        dtly = data.extent[-1]
+        xrange = dtlx+data.xdim/2.+np.arange(dcols)*data.xdim
+        yrange = dtly-data.ydim/2.-np.arange(drows)*data.ydim
         xdat, ydat = np.meshgrid(xrange, yrange)
         xdat = xdat.flatten()
         ydat = ydat.flatten()

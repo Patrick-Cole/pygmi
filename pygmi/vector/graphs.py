@@ -28,15 +28,15 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import matplotlib.collections as mc
 from matplotlib.cm import Set1
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 
 class GraphWindow(QtWidgets.QDialog):
     """Graph Window - Main QT Dialog class for graphs."""
-    def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent=None)
+    def __init__(self, parent):
+        super(QtWidgets.QDialog, self).__init__(parent)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -80,21 +80,19 @@ class GraphWindow(QtWidgets.QDialog):
         pass
 
 
-class MyMplCanvas(FigureCanvasQTAgg):
+class MyMplCanvas(FigureCanvas):
     """
     MPL Canvas class.
 
     This routine will also allow the pciking and movement of nodes of data."""
     def __init__(self, parent=None):
-        # figure stuff
         fig = Figure()
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
         self.background = None
-        self.parent = parent
 
-        FigureCanvasQTAgg.__init__(self, fig)
+        FigureCanvas.__init__(self, fig)
 
         self.figure.canvas.mpl_connect('pick_event', self.onpick)
         self.figure.canvas.mpl_connect('button_release_event',
@@ -137,7 +135,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             return True
 
         self.ind = event.ind
-        self.ind = self.ind[len(self.ind) / 2]  # get center-ish value
+        self.ind = self.ind[len(self.ind) // 2]  # get center-ish value
 
         return True
 
@@ -157,27 +155,29 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(3, 1, 1)
+        ax1 = self.figure.add_subplot(1, 1, 1)
+
+#        ax1 = self.figure.add_subplot(3, 1, 1)
         ax1.set_title(data1.dataid)
         self.axes = ax1
 
-        ax2 = self.figure.add_subplot(3, 1, 2, sharex=ax1)
-        ax2.set_title('Normalised stacked graphs')
-        ax2.set_xlabel('sample number')
-        ax2.set_ylabel('normalised value')
-
-        ax1.set_xlabel('sample number')
-        ax1.set_ylabel('value')
+#        ax2 = self.figure.add_subplot(3, 1, 2, sharex=ax1)
+#        ax2.set_title('Normalised stacked graphs')
+#        ax2.set_xlabel('sample number')
+#        ax2.set_ylabel('normalised value')
+#
+#        ax1.set_xlabel('sample number')
+#        ax1.set_ylabel('value')
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
-        for i in data:
-            tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
-            ax2.plot(tmp, label=i.dataid)
-        ax2.set_ylim([-.1, 1.1])
-        ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
-                   mode='expand', borderaxespad=0., title='Legend')
+#        for i in data:
+#            tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
+#            ax2.plot(tmp, label=i.dataid)
+#        ax2.set_ylim([-.1, 1.1])
+#        ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
+#                   mode='expand', borderaxespad=0., title='Legend')
         self.line, = ax1.plot(data1.zdata, '.-', picker=5)
         self.figure.tight_layout()
         self.figure.canvas.draw()

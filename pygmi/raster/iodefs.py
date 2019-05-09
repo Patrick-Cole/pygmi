@@ -213,15 +213,18 @@ def get_ascii(ifile):
         dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                             dat[i].data.mask)
 
-    dat[i].tlx = ulxmap
-    dat[i].tly = ulymap
     dat[i].dataid = bandid
     dat[i].nullvalue = nval
-    dat[i].rows = nrows
-    dat[i].cols = ncols
     dat[i].xdim = xdim
     dat[i].ydim = ydim
-    dat[i].get_extent()
+
+    rows, cols = dat[i].data.shape
+    xmin = ulxmap
+    ymax = ulymap
+    ymin = ymax - rows*ydim
+    xmax = xmin + cols*xdim
+
+    dat[i].extent = [xmin, xmax, ymin, ymax]
 
     return dat
 
@@ -312,8 +315,7 @@ def get_raster(ifile):
             dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                 np.ma.getmaskarray(dat[i].data))
 
-        dat[i].tlx = gtr[0]
-        dat[i].tly = gtr[3]
+        dat[i].extent_from_gtr(gtr)
         if bandid == '':
             bandid = bname+str(i+1)
         dat[i].dataid = bandid
@@ -321,11 +323,6 @@ def get_raster(ifile):
             dat[i].units = bandid[bandid.rfind('(')+1:-1]
 
         dat[i].nullvalue = nval
-        dat[i].rows = dataset.RasterYSize
-        dat[i].cols = dataset.RasterXSize
-        dat[i].xdim = abs(gtr[1])
-        dat[i].ydim = abs(gtr[5])
-        dat[i].get_extent()
 
         if custom_wkt is None:
             srs = osr.SpatialReference()
@@ -493,15 +490,18 @@ def get_modis(ifile):
                 dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                     np.ma.getmaskarray(dat[i].data))
 
-            dat[i].tlx = tlx
-            dat[i].tly = tly
             dat[i].dataid = bandid2+' '+bandid
             dat[i].nullvalue = nval
-            dat[i].rows = dat[i].data.shape[0]
-            dat[i].cols = dat[i].data.shape[1]
             dat[i].xdim = abs(lonsdim)
             dat[i].ydim = abs(latsdim)
-            dat[i].get_extent()
+
+            rows, cols = dat[i].data.shape
+            xmin = tlx
+            ymax = tly
+            ymin = ymax - rows*dat[i].ydim
+            xmax = xmin + cols*dat[i].xdim
+
+            dat[i].extent = [xmin, xmax, ymin, ymax]
 
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
@@ -603,15 +603,18 @@ def get_aster(ifile):
             dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                 dat[i].data.mask)
 
-        dat[i].tlx = tlx
-        dat[i].tly = tly
         dat[i].dataid = bandid2
         dat[i].nullvalue = nval
-        dat[i].rows = dat[i].data.shape[0]
-        dat[i].cols = dat[i].data.shape[1]
         dat[i].xdim = abs(lonsdim)
         dat[i].ydim = abs(latsdim)
-        dat[i].get_extent()
+
+        rows, cols = dat[i].data.shape
+        xmin = tlx
+        ymax = tly
+        ymin = ymax - rows*dat[i].ydim
+        xmax = xmin + cols*dat[i].xdim
+
+        dat[i].extent = [xmin, xmax, ymin, ymax]
 
         srs = osr.SpatialReference()
         srs.ImportFromWkt(dataset.GetProjection())
@@ -729,16 +732,20 @@ def get_aster_ged(ifile):
                 units = 'Kelvin'
                 dat[i].data = dat[i].data * 0.01
 
-            dat[i].tlx = tlx
-            dat[i].tly = tly
             dat[i].dataid = bandid
             dat[i].nullvalue = nval
-            dat[i].rows = dat[i].data.shape[0]
-            dat[i].cols = dat[i].data.shape[1]
             dat[i].xdim = abs(lonsdim)
             dat[i].ydim = abs(latsdim)
             dat[i].units = units
-            dat[i].get_extent()
+
+            rows, cols = dat[i].data.shape
+            xmin = tlx
+            ymax = tly
+            ymin = ymax - rows*dat[i].ydim
+            xmax = xmin + cols*dat[i].xdim
+
+            dat[i].extent = [xmin, xmax, ymin, ymax]
+
 
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
@@ -834,16 +841,19 @@ def get_aster_ged_bin(ifile):
 
         dat[i].data = data[i]*scale[i]
 
-        dat[i].tlx = tlx
-        dat[i].tly = tly
         dat[i].dataid = bandid[i]
         dat[i].nullvalue = nval*scale[i]
-        dat[i].rows = dat[i].data.shape[0]
-        dat[i].cols = dat[i].data.shape[1]
         dat[i].xdim = lonsdim
         dat[i].ydim = latsdim
         dat[i].units = units[i]
-        dat[i].get_extent()
+
+        rows, cols = dat[i].data.shape
+        xmin = tlx
+        ymax = tly
+        ymin = ymax - rows*dat[i].ydim
+        xmax = xmin + cols*dat[i].xdim
+
+        dat[i].extent = [xmin, xmax, ymin, ymax]
 
     dat.pop(17)
     dat.pop(16)
@@ -973,24 +983,25 @@ class ExportData():
         else:
             tmpfile = tmp[0]
 
+        drows, dcols = data[0].data.shape
         if drv == 'GTiff' and dtype == np.uint8:
-            out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
+            out = driver.Create(tmpfile, int(dcols), int(drows),
                                 len(data), fmt, options=['COMPRESS=NONE',
                                                          'TFW=YES'])
         elif drv == 'ERS' and 'Cape / TM' in data[0].wkt:
             tmp = data[0].wkt.split('TM')[1][:2]
-            out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
+            out = driver.Create(tmpfile, int(dcols), int(drows),
                                 len(data), fmt,
                                 options=['PROJ=STMLO'+tmp, 'DATUM=CAPE',
                                          'UNITS=METERS'])
         elif drv == 'ERS' and 'Hartebeesthoek94 / TM' in data[0].wkt:
             tmp = data[0].wkt.split('TM')[1][:2]
-            out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
+            out = driver.Create(tmpfile, int(dcols), int(drows),
                                 len(data), fmt,
                                 options=['PROJ=STMLO'+tmp, 'DATUM=WGS84',
                                          'UNITS=METERS'])
         else:
-            out = driver.Create(tmpfile, int(data[0].cols), int(data[0].rows),
+            out = driver.Create(tmpfile, int(dcols), int(drows),
                                 len(data), fmt)
         out.SetGeoTransform(data[0].get_gtr())
 
@@ -1047,19 +1058,29 @@ class ExportData():
         data : PyGMI raster Data
             dataset to export
         """
+        if len(data) > 1:
+            self.parent.showprocesslog('Band names will be appended to the '
+                                       'output filenames since you have a '
+                                       'multiple band image')
+
+        file_out = self.ifile.rpartition(".")[0]+'.gxf'
         for k in data:
-            file_out = self.get_filename(k, 'gxf')
+            if len(data) > 1:
+                file_out = self.get_filename(k, 'gxf')
+
             fno = open(file_out, 'w')
 
             xmin = k.extent[0]
             ymin = k.extent[2]
 
+            krows, kcols = k.data.shape
+
             fno.write("#TITLE\n")
             fno.write(self.name)
             fno.write("\n#POINTS\n")
-            fno.write(str(k.cols))
+            fno.write(str(kcols))
             fno.write("\n#ROWS\n")
-            fno.write(str(k.rows))
+            fno.write(str(krows))
             fno.write("\n#PTSEPARATION\n")
             fno.write(str(k.xdim))
             fno.write("\n#RWSEPARATION\n")
@@ -1098,14 +1119,24 @@ class ExportData():
         data : PyGMI raster Data
             dataset to export
         """
+        if len(data) > 1:
+            self.parent.showprocesslog('Band names will be appended to the '
+                                       'output filenames since you have a '
+                                       'multiple band image')
+
+
+        file_out = self.ifile.rpartition(".")[0]+'.grd'
         for k in data:
-            file_out = self.get_filename(k, 'grd')
+            if len(data) > 1:
+                file_out = self.get_filename(k, 'grd')
+
             fno = open(file_out, 'wb')
 
             xmin, xmax, ymin, ymax = k.extent
 
+            krows, kcols = k.data.shape
             bintmp = struct.pack('cccchhdddddd', b'D', b'S', b'B', b'B',
-                                 k.cols, k.rows,
+                                 kcols, krows,
                                  xmin, xmax,
                                  ymin, ymax,
                                  np.min(k.data),
@@ -1129,26 +1160,35 @@ class ExportData():
         data : PyGMI raster Data
             dataset to export
         """
+        if len(data) > 1:
+            self.parent.showprocesslog('Band names will be appended to the '
+                                       'output filenames since you have a '
+                                       'multiple band image')
+
+        file_out = self.ifile.rpartition(".")[0]+'.asc'
         for k in data:
-            file_out = self.get_filename(k, 'asc')
+            if len(data) > 1:
+                file_out = self.get_filename(k, 'asc')
             fno = open(file_out, 'w')
 
-            extent = k.get_extent()
+            extent = k.extent
             xmin = extent[0]
             ymin = extent[2]
+            krows, kcols = k.data.shape
 
-            fno.write("ncols \t\t\t" + str(k.cols))
-            fno.write("\nnrows \t\t\t" + str(k.rows))
+            fno.write("ncols \t\t\t" + str(kcols))
+            fno.write("\nnrows \t\t\t" + str(krows))
             fno.write("\nxllcorner \t\t\t" + str(xmin))
             fno.write("\nyllcorner \t\t\t" + str(ymin))
             fno.write("\ncellsize \t\t\t" + str(k.xdim))
             fno.write("\nnodata_value \t\t" + str(k.nullvalue))
 
             tmp = k.data.filled(k.nullvalue)
+            krows, kcols = k.data.shape
 
-            for j in range(k.rows):
+            for j in range(krows):
                 fno.write("\n")
-                for i in range(k.cols):
+                for i in range(kcols):
                     fno.write(str(tmp[j, i]) + " ")
 
             fno.close()
@@ -1162,17 +1202,25 @@ class ExportData():
         data : PyGMI raster Data
             dataset to export
         """
+        if len(data) > 1:
+            self.parent.showprocesslog('Band names will be appended to the '
+                                       'output filenames since you have a '
+                                       'multiple band image')
+
+        file_out = self.ifile.rpartition(".")[0]+'.xyz'
         for k in data:
-            file_out = self.get_filename(k, 'xyz')
+            if len(data) > 1:
+                file_out = self.get_filename(k, 'xyz')
             fno = open(file_out, 'w')
 
             tmp = k.data.filled(k.nullvalue)
 
             xmin = k.extent[0]
             ymax = k.extent[-1]
+            krows, kcols = k.data.shape
 
-            for j in range(k.rows):
-                for i in range(k.cols):
+            for j in range(krows):
+                for i in range(kcols):
                     fno.write(str(xmin+i*k.xdim) + " " +
                               str(ymax-j*k.ydim) + " " +
                               str(tmp[j, i]) + "\n")
@@ -1180,7 +1228,7 @@ class ExportData():
 
     def get_filename(self, data, ext):
         """
-        Gets a valid filename
+        Gets a valid filename in teh case of multi band image
 
         Parameters
         ----------
@@ -1292,16 +1340,18 @@ def get_geopak(hfile):
     i = 0
 
     dat[i].data = data
-    dat[i].tlx = x0
-    dat[i].tly = y0+dy*nrows
     dat[i].dataid = hfile[:-4]
 
     dat[i].nullvalue = nval
-    dat[i].rows = nrows
-    dat[i].cols = ncols
     dat[i].xdim = dx
     dat[i].ydim = dy
-    dat[i].get_extent()
+
+    xmin = x0
+    ymax = y0 + dy*nrows
+    ymin = y0
+    xmax = xmin + ncols*dx
+
+    dat[i].extent = [xmin, xmax, ymin, ymax]
 
     return dat
 
@@ -1378,15 +1428,18 @@ def get_geosoft(hfile):
     i = 0
 
     dat[i].data = data
-    dat[i].tlx = x0
-    dat[i].tly = y0+dy*nrows
     dat[i].dataid = hfile[:-4]
-
     dat[i].nullvalue = nval
-    dat[i].rows = nrows
-    dat[i].cols = ncols
     dat[i].xdim = dx
     dat[i].ydim = dy
-    dat[i].get_extent()
+
+    xmin = x0
+    ymax = y0 + dy*nrows
+    ymin = y0
+    xmax = xmin + ncols*dx
+
+    dat[i].extent = [xmin, xmax, ymin, ymax]
+
+
 
     return dat

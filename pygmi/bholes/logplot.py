@@ -65,15 +65,10 @@ def get_tiff(ifile, bandid=None):
                 nval = 1e+20
             nval = float(nval)
 
-        dat.tlx = gtr[0]
-        dat.tly = gtr[3]
+        dat.extent(gtr)
         dat.dataid = bandid
 
         dat.nullvalue = nval
-        dat.rows = dataset.RasterYSize
-        dat.cols = dataset.RasterXSize
-        dat.xdim = abs(gtr[1])
-        dat.ydim = abs(gtr[5])
         dat.wkt = dataset.GetProjection()
         datall[i+1] = dat
 
@@ -986,10 +981,12 @@ def profile():
             outLayer.CreateFeature(outFeature)
 
     for i in range(1, len(x)):
-        c1 = (x[i-1]-dtm.tlx)/dtm.xdim
-        c2 = (x[i]-dtm.tlx)/dtm.xdim
-        r1 = (dtm.tly-y[i-1])/dtm.ydim
-        r2 = (dtm.tly-y[i])/dtm.ydim
+        tlx = dtm.extent[0]
+        tly = tmp.extent[-1]
+        c1 = (x[i-1]-tlx)/dtm.xdim
+        c2 = (x[i]-tlx)/dtm.xdim
+        r1 = (tly-y[i-1])/dtm.ydim
+        r2 = (tly-y[i])/dtm.ydim
 
         numpnts = int(max(abs(c1-c2), abs(r1-r2)))
 

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Cluster Analysis</h1>
+		<p>The tool uses clustering methodologies implemented by the sckit-learn team (scikit-learn.org). This clustering is unsupervised, meaning that a multiple band dataset is supplied, and regions of the dataset is automatically grouped into classes.</p>
+		<h2>Cluster Algorithm</h2>
+		<p>This can be k-means, DBSCAN or Birch.</p>
+		<h2>Minimum Clusters and Maximum Clusters (k-means, Birch)</h2>
+		<p>It refers to the generation of a range of solutions. For example, if minimum clusters is 5, and maximum clusters is 7, then 3 interpretations are produced - one with 5 classes, one with 6 classes and one with 7 classes.</p>
+		<h2>Maximum iterations (k-means)</h2>
+		<p>Maximum number of iterations to use when generating a solution.</p>
+		<h2>Tolerance (k-means)</h2>
+		<p>Refers to the relative tolerance with regards to inertia to declare convergence and stop iterating. When the relative decrease in the objective function between iterations is less than the given tolerance value, this results in the stopping of the iterations.</p>
+		<h2>eps (DBSCAN)</h2>
+		<p>The maximum distance between two samples for them to be considered as in the same neighborhood.</p>
+		<h2>Minimum samples (DBSCAN)</h2>
+		<p>The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.</p>
+		<h2>Threshold(Birch)</h2>
+		<p>The radius of the subcluster obtained by merging a new sample and the closest subcluster should be lesser than the threshold. Otherwise a new subcluster is started. Setting this value to be very low promotes splitting and vice-versa.</p>
+		<h2>Branching factor (Birch)</h2>
+		<p>Maximum number of Charactersitic Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching_factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the 2 split nodes.</p>
+		<h2>Scaling</h2>
+		<p>This refers to the scaling of data as a preprocessing step. It can be one of the following:</p>
+		<ul>
+			<li>No Scaling</li>
+			<li>Standard Scaling - standardize features by removing the mean and scaling to unit variance.</li>
+			<li>Robust Scaling - scale features using statistics that are robust to outliers.</li>
+		</ul>
+	</body>
+</html>

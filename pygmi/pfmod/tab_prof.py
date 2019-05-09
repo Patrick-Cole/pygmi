@@ -57,7 +57,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.viewmagnetics = True
         self.plot_custmin = 0.
         self.plot_custmax = 50.
-        self.pscale_type = 'datamax'
+        self.pscale_type = 'allmax'
         self.pcntmax = len(self.lmod1.custprofx)-1
         self.lmod1.custprofx['adhoc'] = [0., 1.]
         self.lmod1.custprofy['adhoc'] = [0., 1.]
@@ -271,20 +271,19 @@ class ProfileDisplay(QtWidgets.QWidget):
         if lowerb == -999 and upperb == -999:
             return
 
-        cols = curgrid.cols
-        rows = curgrid.rows
-        tlx = curgrid.tlx
-        tly = curgrid.tly
+        rows, cols = curgrid.data.shape
+        tlx = curgrid.extent[0]
+        tly = curgrid.extent[-1]
         d_x = curgrid.xdim
         d_y = curgrid.ydim
         regz = self.lmod1.zrange[1]
         d_z = self.lmod1.d_z
 
-        gxrng = np.array([tlx+i*d_x for i in range(cols)])
-        gyrng = np.array([(tly-(rows-1)*d_y)+i*d_y for i in range(rows)])
+#        gxrng = np.array([tlx+i*d_x for i in range(cols)])
+#        gyrng = np.array([(tly-(rows-1)*d_y)+i*d_y for i in range(rows)])
 
 # This section gets rid of null values quickly
-        xt, yt = np.meshgrid(gxrng, gyrng)
+#        xt, yt = np.meshgrid(gxrng, gyrng)
         zt = curgrid.data.data
 
         if isdepths is True:
@@ -312,7 +311,8 @@ class ProfileDisplay(QtWidgets.QWidget):
                 igrd = int((imod-tlx)/d_x)
                 jgrd = int((tly-jmod)/d_y)
 
-                if igrd >= 0 and jgrd >= 0 and igrd < cols and jgrd < rows:
+#                if igrd >= 0 and jgrd >= 0 and igrd < cols and jgrd < rows:
+                if 0 <= igrd < cols and 0 <= jgrd < rows:
                     if not msk[jgrd, igrd]:
                         continue
 
@@ -331,7 +331,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         gtmp = self.get_model()
         self.mmc.init_grid(gtmp)
         self.mmc.init_grid_top()
-        self.mmc.figure.canvas.draw()
+#        self.mmc.figure.canvas.draw()
 
     def rcopy(self):
         """ Do a ranged copy on a profile """
@@ -613,6 +613,8 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.pscale_type = 'custmax'
         elif pscale.rb_axis_datamax.isChecked():
             self.pscale_type = 'datamax'
+        elif pscale.rb_axis_allmax.isChecked():
+            self.pscale_type = 'allmax'
         else:
             self.pscale_type = 'profmax'
 
@@ -646,7 +648,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.update_plot(slide=True)
 
-        self.mmc.figure.canvas.draw()
+#        self.mmc.figure.canvas.draw()
 
     ### Layers
     def hlayer(self):
@@ -910,7 +912,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         if self.pscale_type == 'custmax':
             extent = [self.plot_custmin, self.plot_custmax]
-        elif self.pscale_type == 'calcmax':
+        elif self.pscale_type == 'calcmax' or self.pscale_type == 'allmax':
             extent = [data.data.min()+regtmp, data.data.max()+regtmp]
         elif tmpprof.size > 0:
             extent = [tmpprof.min(), tmpprof.max()]
@@ -931,8 +933,13 @@ class ProfileDisplay(QtWidgets.QWidget):
             xratio = data.xdim/data2.xdim
             yratio = data.ydim/data2.ydim
 
-            rxxx2 = (data.tlx-data2.tlx)/data2.xdim+self.rxxx*xratio
-            ryyy2 = (data2.tly-data.tly)/data2.ydim+self.ryyy*yratio
+            dtlx = data.extent[0]
+            d2tlx = data2.extent[0]
+            dtly = data.extent[-1]
+            d2tly = data2.extent[-1]
+
+            rxxx2 = (dtlx-d2tlx)/data2.xdim+self.rxxx*xratio
+            ryyy2 = (d2tly-dtly)/data2.ydim+self.ryyy*yratio
 
             tmprng2 = np.linspace(px1, px2, len(rxxx2))
             tmpprof2 = ndimage.map_coordinates(data2.data[::-1],
@@ -945,13 +952,16 @@ class ProfileDisplay(QtWidgets.QWidget):
 
             if self.pscale_type == 'datamax':
                 extent = [data2.data.min(), data2.data.max()]
+            elif self.pscale_type == 'allmax':
+                extent = [min(extent[0], data2.data.min()),
+                          max(extent[1], data2.data.max())]
             elif self.pscale_type == 'profmax':
                 if tmpprof2.size > 0:
                     extent = [tmpprof2.min(), tmpprof2.max()]
 
         if slide is True:
-            xlim = self.mmc.axes.get_xlim()
-            extent = [xlim[0], xlim[1]] + extent
+#            xlim = self.mmc.axes.get_xlim()
+#            extent = [xlim[0], xlim[1]] + extent
             self.mmc.slide_plot(tmprng, tmpprof, tmprng2, tmpprof2)
             self.mmc.figure.canvas.draw()
         else:
@@ -962,9 +972,14 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.mmc.init_grid(gtmp)
             self.mmc.figure.canvas.draw()
             self.mpl_toolbar.update()  # used to set original view limits.
+            self.pic_overview()
 
     def tab_activate(self):
         """ Runs when the tab is activated """
+        self.sb_profnum.valueChanged.disconnect()
+        self.hs_profnum.valueChanged.disconnect()
+        self.combo_overview.currentIndexChanged.disconnect()
+
         self.lmod1 = self.parent.lmod1
         self.mmc.lmod1 = self.lmod1
 
@@ -989,10 +1004,6 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         misc.update_lith_lw(self.lmod1, self.lw_prof_defs)
 
-        self.sb_profnum.valueChanged.disconnect()
-        self.hs_profnum.valueChanged.disconnect()
-        self.combo_overview.currentIndexChanged.disconnect()
-
         self.hs_layer.setMaximum(self.lmod1.numz-1)
         self.hs_profnum.setMinimum(0)
 
@@ -1013,7 +1024,6 @@ class MyMplCanvas(FigureCanvas):
         fig = Figure()
         FigureCanvas.__init__(self, fig)
 
-        self.parent = parent
         self.lmod1 = parent.lmod1
         self.cbar = cm.jet
         self.curmodel = 0
@@ -1033,12 +1043,14 @@ class MyMplCanvas(FigureCanvas):
         self.xlims = None
         self.ylims = None
         self.crd = None
+        self.myparent = parent
 
 # Events
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
         self.figure.canvas.mpl_connect('button_press_event', self.button_press)
         self.figure.canvas.mpl_connect('button_release_event',
                                        self.button_release)
+        self.figure.canvas.mpl_connect('resize_event', self.on_resize)
 
 # Initial Images
         self.paxes = fig.add_subplot(222)
@@ -1061,15 +1073,24 @@ class MyMplCanvas(FigureCanvas):
 
         self.lims2 = self.laxes.imshow(self.lmdata, cmap=self.cbar,
                                        aspect='equal')
+
+        self.colbar = fig.colorbar(self.lims2)
+
         self.lims = self.laxes.imshow(self.cbar(self.lmdata), aspect='equal')
         self.lprf = self.laxes.plot([0, 1], [0, 1])
 
         self.ims2 = self.axes.imshow(self.cbar(self.mdata), aspect='auto')
         self.ims = self.axes.imshow(self.cbar(self.mdata), aspect='auto')
+
+        self.ims.format_cursor_data = lambda x: ""
+        self.ims2.format_cursor_data = lambda x: ""
+        self.lims.format_cursor_data = lambda x: ""
+        self.lims2.format_cursor_data = lambda x: ""
+
         self.prf = self.axes.plot([0, 0])
 
-        self.figure.tight_layout()
-        self.figure.canvas.draw()
+#        self.figure.tight_layout()
+#        self.figure.canvas.draw()
 
     def button_press(self, event):
         """ Button press """
@@ -1092,15 +1113,15 @@ class MyMplCanvas(FigureCanvas):
 #            if nmode == 'ZOOM':
 #                extent = self.axes.get_xbound()
 #                self.paxes.set_xbound(extent[0], extent[1])
-#                self.parent.mpl_toolbar.zoom()
+#                self.myparent.mpl_toolbar.zoom()
 #        if nmode == 'PAN':
-#            self.parent.mpl_toolbar.pan()
+#            self.myparent.mpl_toolbar.pan()
 
-    def paxes_lim_update(self, event):
-        """ plot axes limit update """
-        extent = self.axes.get_xbound()
-        self.paxes.set_xbound(extent[0], extent[1])
-        self.figure.canvas.draw()
+#    def paxes_lim_update(self, event):
+#        """ plot axes limit update """
+#        extent = self.axes.get_xbound()
+#        self.paxes.set_xbound(extent[0], extent[1])
+#        self.figure.canvas.draw()
 
     def move(self, event):
         """ Mouse is moving """
@@ -1115,7 +1136,7 @@ class MyMplCanvas(FigureCanvas):
 #            xmin = self.lmod1.xrange[0]
             xmin = 0
 
-            dx = self.parent.pdxy
+            dx = self.myparent.pdxy
             dy = self.lmod1.d_z
             yptp = self.lmod1.zrange[1]-self.lmod1.zrange[0]
             ymin = self.lmod1.zrange[0]
@@ -1176,12 +1197,12 @@ class MyMplCanvas(FigureCanvas):
             self.xold = xdata
             self.yold = ydata
 
-            curlayer = self.parent.sb_layer.value()
+            curlayer = self.myparent.sb_layer.value()
 
-            xxx = self.parent.xxx
-            yyy = self.parent.yyy
-            ipdx1 = self.parent.ipdx1
-            ipdx2 = self.parent.ipdx2
+            xxx = self.myparent.xxx
+            yyy = self.myparent.yyy
+            ipdx1 = self.myparent.ipdx1
+            ipdx2 = self.myparent.ipdx2
 
             if curaxes == self.axes:
                 tmp = (mdata[:, ipdx1:ipdx2] == self.curmodel)
@@ -1230,11 +1251,19 @@ class MyMplCanvas(FigureCanvas):
 
         return tmp
 
+    def on_resize(self, event):
+        """
+        matplotlib resize event - used to make sure tight_layout happens on
+        startup
+        """
+        self.figure.tight_layout()
+        self.figure.canvas.draw()
+
     def init_grid(self, dat, dat2=None, opac=100.0):
         """ Updates the single color map """
         self.opac = 1.0 - float(opac) / 100.
 
-        extent = self.parent.extent_side
+        extent = self.myparent.extent_side
 
         self.paxes.set_xbound(extent[0], extent[1])
 
@@ -1246,7 +1275,7 @@ class MyMplCanvas(FigureCanvas):
         if dat2 is not None and self.opac < 1.0:
             self.ims2.set_visible(True)
             self.ims2.set_data(dat2.data)
-            self.ims2.set_extent(dat_extent(dat2))
+            self.ims2.set_extent(dat2.extent)
             self.ims2.set_clim(dat2.data.min(), dat2.data.max())
             self.ims2.set_alpha(self.opac)
 
@@ -1256,16 +1285,16 @@ class MyMplCanvas(FigureCanvas):
         self.ims.set_data(tmp)
 
         self.figure.canvas.draw()
-        self.parent.mpl_toolbar.update()  # used to set original view limits.
+        self.myparent.mpl_toolbar.update()  # used to set original view limits.
 
         self.mdata = dat
 
     def init_grid_top(self, dat2=None, opac=100.0):
         """ init grid top """
-        dat2 = self.parent.combo_overview.currentText()
+        dat2 = self.myparent.combo_overview.currentText()
 
         extent = self.lmod1.xrange+self.lmod1.yrange
-        curlayer = self.parent.sb_layer.value()
+        curlayer = self.myparent.sb_layer.value()
 
         self.lopac = 1.0 - float(opac) / 100.
         dat = self.lmod1.lith_index[:, :, curlayer].T
@@ -1283,8 +1312,9 @@ class MyMplCanvas(FigureCanvas):
             self.lims2.set_visible(True)
             dat2 = self.lmod1.griddata[str(dat2)]
             self.lims2.set_data(dat2.data)
-            self.lims2.set_extent(dat_extent(dat2))
+            self.lims2.set_extent(dat2.extent)
             self.lims2.set_clim(dat2.data.min(), dat2.data.max())
+            self.colbar.ax.set_xlabel(dat2.units)
 
         left, right = self.lmod1.xrange
         bottom, top = self.lmod1.yrange
@@ -1295,6 +1325,8 @@ class MyMplCanvas(FigureCanvas):
         self.laxes.set_ylim(self.ylims)
 #
         self.lims.set_visible(True)
+
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def slide_grid(self, dat, dat2=None):
@@ -1317,11 +1349,10 @@ class MyMplCanvas(FigureCanvas):
 
     def slide_grid_top(self, opac=None):
         """ Slider """
-
         if opac is not None:
             self.lopac = 1.0 - float(opac) / 100.
 
-        curlayer = self.parent.sb_layer.value()
+        curlayer = self.myparent.sb_layer.value()
 
         dat = self.lmod1.lith_index[:, :, curlayer].T
         self.lmdata = dat
@@ -1341,8 +1372,8 @@ class MyMplCanvas(FigureCanvas):
     def update_line(self):
         """ Updates the line position """
 
-        curlayer = self.parent.sb_layer.value()
-        extent = self.parent.extent_side
+        curlayer = self.myparent.sb_layer.value()
+        extent = self.myparent.extent_side
         xrng = [extent[0], extent[1]]
 
         alt = self.lmod1.zrange[1]-curlayer*self.lmod1.d_z
@@ -1506,6 +1537,7 @@ class PlotScale(QtWidgets.QDialog):
 
         self.lmod1 = lmod
         self.buttonbox = QtWidgets.QDialogButtonBox(self)
+        self.rb_axis_allmax = QtWidgets.QRadioButton("Scale to all maximum")
         self.rb_axis_datamax = QtWidgets.QRadioButton("Scale to dataset "
                                                       "maximum")
         self.rb_axis_profmax = QtWidgets.QRadioButton("Scale to profile "
@@ -1523,7 +1555,7 @@ class PlotScale(QtWidgets.QDialog):
         """ Setup UI """
         self.setWindowTitle("Field Display Limits")
 
-        self.rb_axis_datamax.setChecked(True)
+        self.rb_axis_allmax.setChecked(True)
         self.dsb_axis_custmin.setValue(0.)
         self.dsb_axis_custmax.setValue(50.)
         self.dsb_axis_custmin.setMinimum(-1000000.)
@@ -1536,6 +1568,7 @@ class PlotScale(QtWidgets.QDialog):
                                           QtWidgets.QDialogButtonBox.Ok)
 
         vl_scale = QtWidgets.QVBoxLayout(self)
+        vl_scale.addWidget(self.rb_axis_allmax)
         vl_scale.addWidget(self.rb_axis_datamax)
         vl_scale.addWidget(self.rb_axis_profmax)
         vl_scale.addWidget(self.rb_axis_calcmax)
@@ -1667,9 +1700,9 @@ class MyToolbar(NavigationToolbar2QT):
     toolitems = NavigationToolbar2QT.toolitems
     toolitems += ((None, None, None, None),
                   ('Field\nDisplay\nLimits',
-                   'Axis Scale', 'Axis Scale', 'axis_scale'),
-                  ('Ad-Hoc\nCustom\nProfile',
-                   'Custom Profile', 'Custom Profile', 'custom_profile'),)
+                   'Axis Scale', 'Axis Scale', 'axis_scale'),)
+#                  ('Ad-Hoc\nCustom\nProfile',
+#                   'Custom Profile', 'Custom Profile', 'custom_profile'),)
 
     def __init__(self, parent):
         NavigationToolbar2QT.__init__(self, parent.mmc, parent)
@@ -1714,16 +1747,6 @@ class GaugeWidget(QtWidgets.QDial):
         painter.end()
 
 
-def dat_extent(dat):
-    """ Gets the extend of the dat variable """
-    left = dat.tlx
-    top = dat.tly
-    right = left + dat.cols*dat.xdim
-    bottom = top - dat.rows*dat.ydim
-
-    return (left, right, bottom, top)
-
-
 def gridmatch2(cgrv, rgrv):
     """ Matches the rows and columns of the second grid to the first
     grid """
@@ -1740,10 +1763,13 @@ def gridmatch2(cgrv, rgrv):
         doffset = data.data.min()-1.
         data.data = data.data - doffset
 
-    gtr0 = (data.tlx, data.xdim, 0.0, data.tly, 0.0, -data.ydim)
-    gtr = (data2.tlx, data2.xdim, 0.0, data2.tly, 0.0, -data2.ydim)
-    src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
-    dest = data_to_gdal_mem(data, gtr, orig_wkt2, data2.cols, data2.rows, True)
+    drows, dcols = data.data.shape
+    d2rows, d2cols = data2.data.shape
+
+    gtr0 = data.get_gtr()
+    gtr = data2.get_gtr()
+    src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
+    dest = data_to_gdal_mem(data, gtr, orig_wkt2, d2cols, d2rows, True)
 
     gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt2, gdal.GRA_Bilinear)
 
@@ -1756,7 +1782,6 @@ def gridmatch2(cgrv, rgrv):
     return dat.data
 
 
-
 def rotate2d(pts, cntr, ang=np.pi/4):
     """ pts = {} Rotates points(nx2) about center cntr(2) by angle ang(1) in
     radian"""
@@ -1764,26 +1789,3 @@ def rotate2d(pts, cntr, ang=np.pi/4):
     trans = np.array([[np.cos(ang), np.sin(ang)], [-np.sin(ang), np.cos(ang)]])
     pts2 = np.dot(pts-cntr, trans) + cntr
     return pts2
-
-
-def main():
-    """ test """
-    import matplotlib.pyplot as plt
-
-    pts = np.array([[0, 1], [1, 2]])
-    pts2 = np.array([[0, 0], [1, 1]])
-    plt.plot(pts[:, 0], pts[:, 1])
-    plt.plot(pts2[:, 0], pts2[:, 1])
-    cntr = np.array([0, 0])
-    ang = -np.pi/4
-    pts = rotate2d(pts, cntr, ang)
-    pts2 = rotate2d(pts2, cntr, ang)
-
-    plt.plot(pts[:, 0], pts[:, 1])
-    plt.plot(pts2[:, 0], pts2[:, 1])
-
-    print(pts)
-
-
-if __name__ == "__main__":
-    main()

@@ -52,7 +52,6 @@ class MyMplCanvas(FigureCanvas):
         super(MyMplCanvas, self).__init__(fig)
 
         self.axes = fig.add_subplot(111)
-        self.parent = parent
         self.scale = 7
         self.rotang = 10
         self.red1 = None

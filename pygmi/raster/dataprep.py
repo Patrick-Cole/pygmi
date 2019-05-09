@@ -242,14 +242,11 @@ class DataGrid(QtWidgets.QDialog):
             dat = Data()
             dat.data = np.ma.masked_invalid(gdat[::-1])
             dat.data.mask = mask[::-1]
-            dat.rows, dat.cols = gdat.shape
             dat.nullvalue = dat.data.fill_value
             dat.dataid = data.dataid
-            dat.tlx = x.min()
-            dat.tly = y.max()
             dat.xdim = dxy
             dat.ydim = dxy
-            dat.extent = dat.get_extent()
+            dat.extent = [x.min(), x.max(), y.min(), y.max()]
             newdat.append(dat)
 
         self.outdata['Raster'] = newdat
@@ -387,7 +384,9 @@ class DataMerge(QtWidgets.QDialog):
                 doffset = data.data.min()-1.
                 data.data = data.data - doffset
             gtr0 = data.get_gtr()
-            src = data_to_gdal_mem(data, gtr0, orig_wkt, data.cols, data.rows)
+
+            drows, dcols = data.data.shape
+            src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
             dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
 
             gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt,
@@ -487,11 +486,11 @@ class DataReproj(QtWidgets.QDialog):
                 data.data = data.data-(datamin-1)
 
 # Work out the boundaries of the new dataset in the target projection
-            u_l = ctrans.TransformPoint(data.tlx, data.tly)
-            u_r = ctrans.TransformPoint(data.tlx+data.xdim*data.cols, data.tly)
-            l_l = ctrans.TransformPoint(data.tlx, data.tly-data.ydim*data.rows)
-            l_r = ctrans.TransformPoint(data.tlx+data.xdim*data.cols,
-                                        data.tly - data.ydim*data.rows)
+            rows, cols = data.data.shape
+            u_l = ctrans.TransformPoint(data.extent[0], data.extent[-1])
+            u_r = ctrans.TransformPoint(data.extent[1], data.extent[-1])
+            l_l = ctrans.TransformPoint(data.extent[0], data.extent[-2])
+            l_r = ctrans.TransformPoint(data.extent[1], data.extent[-2])
 
             lrx = l_r[0]
             llx = l_l[0]
@@ -502,12 +501,13 @@ class DataReproj(QtWidgets.QDialog):
             uly = u_l[1]
             ury = u_r[1]
 
+            drows, dcols = data.data.shape
             minx = min(llx, ulx, urx, lrx)
             maxx = max(llx, ulx, urx, lrx)
             miny = min(lly, lry, ury, uly)
             maxy = max(lly, lry, ury, uly)
-            newdimx = (maxx-minx)/data.cols
-            newdimy = (maxy-miny)/data.rows
+            newdimx = (maxx-minx)/dcols
+            newdimy = (maxy-miny)/drows
             newdim = min(newdimx, newdimy)
             cols = round((maxx - minx)/newdim)
             rows = round((maxy - miny)/newdim)
@@ -520,8 +520,8 @@ class DataReproj(QtWidgets.QDialog):
 
 # top left x, w-e pixel size, rotation, top left y, rotation, n-s pixel size
             old_geo = data.get_gtr()
-            src = data_to_gdal_mem(data, old_geo, orig_wkt, data.cols,
-                                   data.rows)
+            drows, dcols = data.data.shape
+            src = data_to_gdal_mem(data, old_geo, orig_wkt, dcols, drows)
 
             new_geo = (minx, newdim, 0, maxy, 0, -newdim)
             dest = data_to_gdal_mem(data, new_geo, targ_wkt, cols, rows, True)
@@ -635,9 +635,10 @@ class GetProf():
             x_0, y_0 = points[0]
             x_1, y_1 = points[1]
 
-            bly = idata.tly-idata.ydim*idata.rows
-            x_0 = (x_0-idata.tlx)/idata.xdim
-            x_1 = (x_1-idata.tlx)/idata.xdim
+            bly = idata.extent[-2]
+            tlx = idata.extent[0]
+            x_0 = (x_0-tlx)/idata.xdim
+            x_1 = (x_1-tlx)/idata.xdim
             y_0 = (y_0-bly)/idata.ydim
             y_1 = (y_1-bly)/idata.ydim
             rcell = int(np.sqrt((x_1-x_0)**2+(y_1-y_0)**2))
@@ -650,7 +651,7 @@ class GetProf():
             xxx = xxx[np.logical_not(np.isnan(tmpprof))]
             yyy = yyy[np.logical_not(np.isnan(tmpprof))]
             tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
-            xxx = xxx*idata.xdim+idata.tlx
+            xxx = xxx*idata.xdim+tlx
             yyy = yyy*idata.ydim+bly
             allpoints.append(PData())
             allpoints[-1].xdata = xxx
@@ -861,13 +862,9 @@ class Metadata(QtWidgets.QDialog):
                 if j[1] == tmp.dataid:
                     i = self.banddata[j[0]]
                     tmp.dataid = j[0]
-                    tmp.tlx = i.tlx
-                    tmp.tly = i.tly
                     tmp.xdim = i.xdim
                     tmp.ydim = i.ydim
-                    tmp.rows = i.rows
-                    tmp.cols = i.cols
-                    tmp.extent = i.get_extent()
+                    tmp.extent = i.extent
                     tmp.nullvalue = i.nullvalue
                     tmp.wkt = wkt
                     tmp.units = i.units
@@ -902,11 +899,17 @@ class Metadata(QtWidgets.QDialog):
 
         try:
             odata.nullvalue = float(self.txt_null.text())
-            odata.tlx = float(self.dsb_tlx.text())
-            odata.tly = float(self.dsb_tly.text())
+            left = float(self.dsb_tlx.text())
+            top = float(self.dsb_tly.text())
             odata.xdim = float(self.dsb_xdim.text())
             odata.ydim = float(self.dsb_ydim.text())
-            odata.extent = odata.get_extent()
+
+            rows, cols = odata.data.shape
+            right = left + odata.xdim*cols
+            bottom = top - odata.ydim*rows
+
+            odata.extent = (left, right, bottom, top)
+
         except ValueError:
             self.parent.showprocesslog('Value error - abandoning changes')
 
@@ -915,16 +918,18 @@ class Metadata(QtWidgets.QDialog):
         self.oldtxt = txt
         idata = self.banddata[txt]
 
-        self.lbl_cols.setText(str(idata.cols))
-        self.lbl_rows.setText(str(idata.rows))
+        irows, icols = idata.data.shape
+
+        self.lbl_cols.setText(str(icols))
+        self.lbl_rows.setText(str(irows))
         self.txt_null.setText(str(idata.nullvalue))
-        self.dsb_tlx.setText(str(idata.tlx))
-        self.dsb_tly.setText(str(idata.tly))
+        self.dsb_tlx.setText(str(idata.extent[0]))
+        self.dsb_tly.setText(str(idata.extent[-1]))
         self.dsb_xdim.setText(str(idata.xdim))
         self.dsb_ydim.setText(str(idata.ydim))
-        self.lbl_min.setText(str(idata.min))
-        self.lbl_max.setText(str(idata.max))
-        self.lbl_mean.setText(str(idata.mean))
+        self.lbl_min.setText(str(idata.data.min()))
+        self.lbl_max.setText(str(idata.data.max()))
+        self.lbl_mean.setText(str(idata.data.mean()))
         self.led_units.setText(str(idata.units))
 
     def run(self):
@@ -938,21 +943,13 @@ class Metadata(QtWidgets.QDialog):
             self.banddata[i.dataid] = Data()
             tmp = self.banddata[i.dataid]
             self.dataid[i.dataid] = i.dataid
-            tmp.tlx = i.tlx
-            tmp.tly = i.tly
             tmp.xdim = i.xdim
             tmp.ydim = i.ydim
-            tmp.rows = i.rows
-            tmp.cols = i.cols
             tmp.nullvalue = i.nullvalue
             tmp.wkt = i.wkt
-            tmp.min = i.data.min()
-            tmp.max = i.data.max()
-            tmp.mean = i.data.mean()
-            try:
-                tmp.units = i.units
-            except AttributeError:
-                tmp.units = ''
+            tmp.extent = i.extent
+            tmp.data = i.data
+            tmp.units = i.units
 
         self.combobox_bandid.currentIndexChanged.disconnect()
         self.combobox_bandid.addItems(bandid)
@@ -961,16 +958,19 @@ class Metadata(QtWidgets.QDialog):
         self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
 
         idata = self.banddata[self.oldtxt]
-        self.lbl_cols.setText(str(idata.cols))
-        self.lbl_rows.setText(str(idata.rows))
+
+        irows, icols = idata.data.shape
+
+        self.lbl_cols.setText(str(icols))
+        self.lbl_rows.setText(str(irows))
         self.txt_null.setText(str(idata.nullvalue))
-        self.dsb_tlx.setText(str(idata.tlx))
-        self.dsb_tly.setText(str(idata.tly))
+        self.dsb_tlx.setText(str(idata.extent[0]))
+        self.dsb_tly.setText(str(idata.extent[-1]))
         self.dsb_xdim.setText(str(idata.xdim))
         self.dsb_ydim.setText(str(idata.ydim))
-        self.lbl_min.setText(str(idata.min))
-        self.lbl_max.setText(str(idata.max))
-        self.lbl_mean.setText(str(idata.mean))
+        self.lbl_min.setText(str(idata.data.min()))
+        self.lbl_max.setText(str(idata.data.max()))
+        self.lbl_mean.setText(str(idata.data.mean()))
         self.led_units.setText(str(idata.units))
 
         self.update_vals()
@@ -1114,14 +1114,11 @@ def rtp(data, I_deg, D_deg):
     dat = Data()
     dat.data = np.ma.masked_invalid(zrtp)
     dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.rows, dat.cols = zrtp.shape
     dat.nullvalue = data.data.fill_value
     dat.dataid = data.dataid
-    dat.tlx = data.tlx
-    dat.tly = data.tly
+    dat.extent = data.extent
     dat.xdim = data.xdim
     dat.ydim = data.ydim
-    dat.get_extent()
 
     return dat
 
@@ -1200,11 +1197,14 @@ def cut_raster(data, ifile):
 
     for idata in data:
         # Convert the layer extent to image pixel coordinates
-        minX, maxX, minY, maxY = lyr.GetExtent()
-        ulX = max(0, int((minX - idata.tlx) / idata.xdim))
-        ulY = max(0, int((idata.tly - maxY) / idata.ydim))
-        lrX = int((maxX - idata.tlx) / idata.xdim)
-        lrY = int((idata.tly - minY) / idata.ydim)
+        minX, maxX, minY, maxY = lyr.extent
+        itlx = idata.extent[0]
+        itly = idata.extent[-1]
+
+        ulX = max(0, int((minX - itlx) / idata.xdim))
+        ulY = max(0, int((itly - maxY) / idata.ydim))
+        lrX = int((maxX - itlx) / idata.xdim)
+        lrY = int((itly - minY) / idata.ydim)
 
         # Map points to pixels for drawing the
         # boundary on a mas image
@@ -1228,20 +1228,22 @@ def cut_raster(data, ifile):
         for p in range(pts.GetPointCount()):
             points.append((pts.GetX(p), pts.GetY(p)))
         for p in points:
-            tmpx = int((p[0] - idata.tlx) / idata.xdim)
-            tmpy = int((idata.tly - p[1]) / idata.ydim)
+            tmpx = int((p[0] - idata.extent[0]) / idata.xdim)
+            tmpy = int((idata.extent[-1] - p[1]) / idata.ydim)
             pixels.append((tmpx, tmpy))
-        rasterPoly = Image.new("L", (idata.cols, idata.rows), 1)
+        irows, icols = idata.data.shape
+        rasterPoly = Image.new("L", (icols, irows), 1)
         rasterize = ImageDraw.Draw(rasterPoly)
         rasterize.polygon(pixels, 0)
         mask = np.array(rasterPoly)
 
         idata.data.mask = mask
         idata.data = idata.data[ulY:lrY, ulX:lrX]
-        idata.cols = idata.data.shape[1]
-        idata.rows = idata.data.shape[0]
-        idata.tlx = ulX*idata.xdim + idata.tlx  # minX
-        idata.tly = idata.tly - ulY*idata.ydim  # maxY
+        ixmin = ulX*idata.xdim + idata.extent[0]  # minX
+        iymax = idata.extent[-1] - ulY*idata.ydim  # maxY
+        ixmax = ixmin + icols*idata.xdim
+        iymin = iymax - irows*idata.ydim
+        idata.extent = [ixmin, ixmax, iymin, iymax]
 
     shapef = None
     data = trim_raster(data)
@@ -1357,16 +1359,10 @@ def gdal_to_dat(dest, bandid='Data'):
     dat.data.set_fill_value(nval)
     dat.data = np.ma.fix_invalid(dat.data)
 
-    dat.tlx = gtr[0]
-    dat.tly = gtr[3]
+    dat.extent_from_gtr(gtr)
     dat.dataid = bandid
     dat.nullvalue = nval
-    dat.rows = dest.RasterYSize
-    dat.cols = dest.RasterXSize
-    dat.xdim = abs(gtr[1])
-    dat.ydim = abs(gtr[5])
     dat.wkt = dest.GetProjection()
-    dat.extent = dat.get_extent()
 
     return dat
 
@@ -1443,8 +1439,10 @@ def merge(dat):
         data object which stores datasets
     """
     needsmerge = False
+    rows, cols = dat[0].data.shape
     for i in dat:
-        if i.rows != dat[0].rows or i.cols != dat[0].cols:
+        irows, icols = i.data.shape
+        if irows != rows or icols != cols:
             needsmerge = True
 
     if needsmerge is False:
@@ -1512,11 +1510,14 @@ def trim_raster(olddata):
                 break
             colend -= 1
 
+        drows, dcols = data.data.shape
         data.data = data.data[rowstart:rowend, colstart:colend]
         data.data.mask = (data.data.data == data.nullvalue)
-        data.rows, data.cols = data.data.shape
-        data.tlx = data.tlx + colstart*data.xdim
-        data.tly = data.tly - rowstart*data.ydim
+        xmin = data.extent[0] + colstart*data.xdim
+        ymax = data.extent[-1] - rowstart*data.ydim
+        xmax = xmin + data.xdim*dcols
+        ymin = ymax - data.ydim*drows
+        data.extent = [xmin, xmax, ymin, ymax]
 
     return olddata
 

@@ -27,6 +27,7 @@
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import scipy.interpolate as si
+import pygmi.menu_default as menu_default
 
 
 class MextDisplay(QtWidgets.QDialog):
@@ -66,8 +67,10 @@ class MextDisplay(QtWidgets.QDialog):
     def setupui(self):
         """ Setup UI """
         self.setWindowTitle("Model Extent Parameters")
+        helpdocs = menu_default.HelpButton('pygmi.pfmod.mext')
 
         verticallayout = QtWidgets.QVBoxLayout(self)
+        hlayout = QtWidgets.QHBoxLayout(self)
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Preferred)
@@ -199,12 +202,15 @@ class MextDisplay(QtWidgets.QDialog):
         gl_extent.addWidget(self.sb_rows, 2, 2, 1, 1)
         gl_extent.addWidget(self.sb_layers, 3, 2, 1, 1)
 
+        hlayout.addWidget(helpdocs)
+        hlayout.addWidget(buttonbox)
+
 # Assign to main layout
 
         verticallayout.addWidget(gb_model)
         verticallayout.addWidget(gb_data_info)
         verticallayout.addWidget(gb_extent)
-        verticallayout.addWidget(buttonbox)
+        verticallayout.addLayout(hlayout)
 
 # Link functions
         self.dsb_xycell.valueChanged.connect(self.xycell)
@@ -361,10 +367,12 @@ class MextDisplay(QtWidgets.QDialog):
         if ctxt not in ('None', u''):
             curgrid = self.parent.inraster[ctxt]
 
-            utlx = curgrid.tlx
-            utly = curgrid.tly
-            xextent = curgrid.cols*curgrid.xdim
-            yextent = curgrid.rows*curgrid.ydim
+            crows, ccols = curgrid.data.shape
+
+            utlx = curgrid.extent[0]
+            utly = curgrid.extent[-1]
+            xextent = ccols*curgrid.xdim
+            yextent = crows*curgrid.ydim
             cols = xextent/self.dsb_xycell.value()
             rows = yextent/self.dsb_xycell.value()
 
@@ -540,4 +548,5 @@ class MextDisplay(QtWidgets.QDialog):
 
         self.exec_()
 
-        self.parent.tab_change()
+        # The next line is necessary to update any dataset changes.
+        self.parent.profile.tab_activate()

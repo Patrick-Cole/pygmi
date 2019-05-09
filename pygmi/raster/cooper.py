@@ -34,6 +34,8 @@ import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import scipy.signal as si
+import scipy.interpolate as si2
+
 import pygmi.menu_default as menu_default
 
 
@@ -68,6 +70,11 @@ class Gradients(QtWidgets.QDialog):
 
         self.sb_order = QtWidgets.QSpinBox()
         self.sb_azi = QtWidgets.QSpinBox()
+        self.rb_ddir = QtWidgets.QRadioButton()
+        self.rb_vgrad = QtWidgets.QRadioButton()
+        self.rb_dratio = QtWidgets.QRadioButton()
+        self.label_or = QtWidgets.QLabel()
+        self.label_az = QtWidgets.QLabel()
 
         self.setupui()
 
@@ -77,8 +84,6 @@ class Gradients(QtWidgets.QDialog):
     def setupui(self):
         """ Setup UI """
         gridlayout = QtWidgets.QGridLayout(self)
-        label_az = QtWidgets.QLabel()
-        label_or = QtWidgets.QLabel()
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
 
@@ -88,20 +93,30 @@ class Gradients(QtWidgets.QDialog):
         self.sb_azi.setMaximum(360)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        self.rb_ddir.setChecked(True)
+        self.sb_order.hide()
+        self.label_or.hide()
 
         self.setWindowTitle("Gradient Calculation")
-        label_az.setText("Azimuth")
-        label_or.setText("Order")
+        self.label_az.setText("Azimuth")
+        self.label_or.setText("Strength Factor")
+        self.rb_ddir.setText("Directional Derivative")
+        self.rb_dratio.setText("Derivative Ratio")
+        self.rb_vgrad.setText("Vertical Derivative")
 
-        gridlayout.addWidget(label_az, 0, 0, 1, 1)
-        gridlayout.addWidget(self.sb_azi, 0, 1, 1, 1)
-        gridlayout.addWidget(label_or, 3, 0, 1, 1)
-        gridlayout.addWidget(self.sb_order, 3, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
+        gridlayout.addWidget(self.rb_ddir, 0, 0, 1, 1)
+        gridlayout.addWidget(self.rb_dratio, 1, 0, 1, 1)
+        gridlayout.addWidget(self.rb_vgrad, 2, 0, 1, 1)
+        gridlayout.addWidget(self.label_az, 3, 0, 1, 1)
+        gridlayout.addWidget(self.sb_azi, 3, 1, 1, 1)
+        gridlayout.addWidget(self.label_or, 4, 0, 1, 1)
+        gridlayout.addWidget(self.sb_order, 4, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 5, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 5, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
+        self.rb_ddir.toggled.connect(self.radiochange)
 
     def settings(self):
         """ Settings """
@@ -115,101 +130,40 @@ class Gradients(QtWidgets.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
 
         for i in self.pbar.iter(range(len(data))):
-            data[i].data = gradients(data[i].data, self.azi, 0., self.order)
+            if self.rb_ddir.isChecked():
+                data[i].data = gradients(data[i].data, self.azi)
+            elif self.rb_dratio.isChecked():
+                data[i].data = derivative_ratio(data[i].data, self.azi,
+                                                self.order)
+            else:
+                mask = np.ma.getmaskarray(data[i].data)
+                data[i].data = np.ma.array(vertical(data[i].data))
+                data[i].data.mask = mask
 
         self.outdata['Raster'] = data
 
         return True
 
+    def radiochange(self):
+        """ Check radio button state """
+        self.sb_order.hide()
+        self.label_or.hide()
+        self.sb_azi.hide()
+        self.label_az.hide()
 
-class VGradients(QtWidgets.QDialog):
+        if self.rb_dratio.isChecked():
+            self.sb_order.show()
+            self.label_or.show()
+            self.sb_azi.show()
+            self.label_az.show()
+        elif self.rb_ddir.isChecked():
+            self.sb_azi.show()
+            self.label_az.show()
+
+
+def gradients(data, azi):
     """
-    Class used to gather information via a GUI, for function gradients
-
-    Attributes
-    ----------
-    parent : parent
-    indata : dictionary
-        PyGMI input data in a dictionary
-    outdata :
-        PyGMI input data in a dictionary
-    azi : float
-        Azimuth/filter direction (degrees)
-    elev : float
-        Elevation (for sunshading, degrees from horizontal)
-    order : int
-        Order of DR filter - see paper. Try 1 first.
-    """
-    def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.azi = 45.
-        self.elev = 45.
-        self.order = 1
-        self.pbar = self.parent.pbar
-
-        self.sb_order = QtWidgets.QSpinBox()
-        self.sb_azi = QtWidgets.QSpinBox()
-
-        self.setupui()
-
-        self.sb_azi.setValue(self.azi)
-        self.sb_order.setValue(self.order)
-
-    def setupui(self):
-        """ Setup UI """
-        gridlayout = QtWidgets.QGridLayout(self)
-        label_az = QtWidgets.QLabel()
-        label_or = QtWidgets.QLabel()
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
-
-        self.sb_order.setMinimum(1)
-        self.sb_azi.setPrefix("")
-        self.sb_azi.setMinimum(-360)
-        self.sb_azi.setMaximum(360)
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-
-        self.setWindowTitle("Vertical Gradient Calculation")
-        label_az.setText("Azimuth")
-        label_or.setText("Order")
-
-        gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-
-    def settings(self):
-        """ Settings """
-        temp = self.exec_()
-        if temp == 0:
-            return False
-
-        self.azi = self.sb_azi.value()
-        self.order = self.sb_order.value()
-
-        data = copy.deepcopy(self.indata['Raster'])
-
-        for i in self.pbar.iter(range(len(data))):
-            mask = np.ma.getmaskarray(data[i].data)
-            data[i].data = np.ma.array(vertical(data[i].data))
-            data[i].data.mask = mask
-
-        self.outdata['Raster'] = data
-
-        return True
-
-
-def gradients(data, azi, elev, order):
-    """
-    Compute different gradients of image data
-
-    Compute different horizontal gradients of image data. Based on code by
+    Compute directional derivative of image data. Based on code by
     Gordon Cooper.
 
     Parameters
@@ -218,8 +172,31 @@ def gradients(data, azi, elev, order):
         input numpy data array
     azi : float
         Filter direction (degrees)
-    elev : float
-        Elevation (for sunshading, degrees from horizontal)
+
+    Returns
+    -------
+    dr : float
+        returns derivative ratio
+    """
+    # Directional derivative
+
+    azi = np.deg2rad(azi)
+    dx, dy = np.gradient(data)
+    dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
+
+    return dt1
+
+
+def derivative_ratio(data, azi, order):
+    """
+    Compute derivative ratio of image data. Based on code by Gordon Cooper.
+
+    Parameters
+    ----------
+    data : numpy array
+        input numpy data array
+    azi : float
+        Filter direction (degrees)
     order : int
         Order of DR filter - see paper. Try 1 first.
 
@@ -231,7 +208,6 @@ def gradients(data, azi, elev, order):
     # Directional derivative
 
     azi = np.deg2rad(azi)
-    elev = np.deg2rad(elev)
     dx, dy = np.gradient(data)
     dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
 
@@ -622,7 +598,7 @@ def tilt1(data, azi, s):
 #    dy = dy.astype(np.float64)
     dxtot = np.ma.sqrt(dx*dx+dy*dy)
     nmax = np.max([nr, nc])
-    npts = int(2**__nextpow2(nmax))
+    npts = int(2**nextpow2(nmax))
     dz = vertical(data, npts, 1)
     t1 = np.ma.arctan(dz/dxtot)
     th = np.real(np.arctanh(np.nan_to_num(dz/dxtot)+(0+0j)))
@@ -658,7 +634,7 @@ def tilt1(data, azi, s):
     return t1, th, t2, ta, tdx
 
 
-def __nextpow2(n):
+def nextpow2(n):
     """ nextpow2 """
     m_i = np.ceil(np.log2(n))
     return m_i
@@ -669,13 +645,22 @@ def vertical(data, npts=None, xint=1):
 
     nr, nc = data.shape
 
+    z = data-np.ma.median(data)
+    z = z.filled(0.)
+
     if npts is None:
         nmax = np.max([nr, nc])
-        npts = int(2**__nextpow2(nmax))
+        npts = int(2**nextpow2(nmax))
 
     cdiff = int(np.floor((npts-nc)/2))
     rdiff = int(np.floor((npts-nr)/2))
-    data1 = __taper2d(data, npts, nc, nr, cdiff, rdiff)
+    cdiff2 = npts-cdiff-nc
+    rdiff2 = npts-rdiff-nr
+#    data1 = __taper2d(data, npts, nc, nr, cdiff, rdiff)
+    data1 = np.pad(z, [[rdiff, rdiff2], [cdiff, cdiff2]], 'edge')
+#    data1 = data - np.median(data)
+#    data1 = np.pad(data, [[rdiff, rdiff2], [cdiff, cdiff2]], 'linear_ramp',
+#                   end_values=(0, 0))
 
     f = np.fft.fft2(data1)
     fz = f
@@ -696,74 +681,213 @@ def vertical(data, npts=None, xint=1):
     return dz
 
 
-def __taper2d(g, npts, n, m, ndiff, mdiff):
+def __taper2d(g, npts, c, r, cdiff, rdiff):
     """ Taper 2D """
 
 # n is cols, m is rows
 
     npts2 = npts-1
     gm = g.mean()
-    gf = np.zeros([npts, npts])+np.ma.median(g-gm)
-    gf[mdiff:mdiff+m, ndiff:ndiff+n] = g-gm
+    gf = np.zeros([npts, npts])
+    gf[rdiff:rdiff+r, cdiff:cdiff+c] = g-gm
 
-    for j in range(mdiff, mdiff+m):
-        for i in range(ndiff):
-            gf[i, j] = gf[i, j]*((1+np.sin(-np.pi/2+i*np.pi/ndiff))*0.5)
-            gf[npts2-i, j] = gf[npts2-i, j]*((1+np.sin(-np.pi/2 +
-                                                       i*np.pi/ndiff))*0.5)
-
-    for j in range(mdiff):
-        tmp = ((1+np.sin(-np.pi/2+j*np.pi/(mdiff)))*0.5)
-        for i in range(ndiff, ndiff+n):
-            gf[i, j] = gf[i, j]*tmp
-            gf[i, npts2-j-1] = gf[i, npts2-j-1]*tmp
-
-    for i in range(ndiff):
-        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(ndiff)))*0.5)
-        for j in range(mdiff):
+    for i in range(cdiff):
+        tmp = ((1+np.sin(-np.pi/2+i*np.pi/cdiff))*0.5)
+        for j in range(rdiff, rdiff+r):
             gf[i, j] = gf[i, j]*tmp
             gf[npts2-i, j] = gf[npts2-i, j]*tmp
 
-    for i in range(ndiff):
-        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(ndiff)))*0.5)
-        for j in range(mdiff+m-1, npts):
-            gf[i, j] = gf[i, j]*tmp
-            gf[npts2-i, j] = gf[npts2-i, j]*tmp
-
-    for j in range(mdiff+m-1, npts):  # Corners
-        for i in range(ndiff+n-1, npts):
-            if ndiff == 0 or mdiff == 0:
-                gf[i, j] = np.nan
-            else:
-                gf[i, j] = (gf[i, j] *
-                            np.cos((i+1-ndiff-n)*np.pi/(2*ndiff)) *
-                            np.cos((j+1-ndiff-m)*np.pi/(2*mdiff)))
-
-    for j in range(mdiff):
-        for i in range(ndiff):
-            if ndiff == 0 or mdiff == 0:
-                gf[i, j] = np.nan
-            else:
-                gf[i, j] = (gf[i, j] *
-                            np.cos((i+1-ndiff)*np.pi/(2*ndiff)) *
-                            np.cos((j+1-ndiff)*np.pi/(2*mdiff)))
-
-    for j in range(mdiff):
-        for i in range(ndiff+n-1, npts):
-            if ndiff == 0 or mdiff == 0:
-                gf[i, j] = np.nan
-            else:
-                gf[i, j] = (gf[i, j] *
-                            np.cos((i+1-ndiff-n)*np.pi/(2*ndiff)) *
-                            np.cos((j+1-ndiff)*np.pi/(2*mdiff)))
-
-    for j in range(mdiff+m, npts):
-        for i in range(ndiff):
-            if ndiff == 0 or mdiff == 0:
-                gf[i, j] = np.nan
-            else:
-                gf[i, j] = (gf[i, j] *
-                            np.cos((i+1-ndiff)*np.pi/(2*ndiff)) *
-                            np.cos((j+1-ndiff-m)*np.pi/(2*mdiff)))
+#    for j in range(rdiff):
+#        tmp = ((1+np.sin(-np.pi/2+j*np.pi/(rdiff)))*0.5)
+#        for i in range(cdiff, cdiff+c):
+#            gf[i, j] = gf[i, j]*tmp
+#            gf[i, npts2-j-1] = gf[i, npts2-j-1]*tmp
+#
+#    for i in range(cdiff):
+#        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(cdiff)))*0.5)
+#        for j in range(rdiff):
+#            gf[i, j] = gf[i, j]*tmp
+#            gf[npts2-i, j] = gf[npts2-i, j]*tmp
+#
+#    for i in range(cdiff):
+#        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(cdiff)))*0.5)
+#        for j in range(rdiff+m-1, npts):
+#            gf[i, j] = gf[i, j]*tmp
+#            gf[npts2-i, j] = gf[npts2-i, j]*tmp
+#
+#    for j in range(rdiff+m-1, npts):  # Corners
+#        for i in range(cdiff+n-1, npts):
+#            if cdiff == 0 or rdiff == 0:
+#                gf[i, j] = np.nan
+#            else:
+#                gf[i, j] = (gf[i, j] *
+#                            np.cos((i+1-cdiff-n)*np.pi/(2*cdiff)) *
+#                            np.cos((j+1-cdiff-m)*np.pi/(2*rdiff)))
+#
+#    for j in range(rdiff):
+#        for i in range(cdiff):
+#            if cdiff == 0 or rdiff == 0:
+#                gf[i, j] = np.nan
+#            else:
+#                gf[i, j] = (gf[i, j] *
+#                            np.cos((i+1-cdiff)*np.pi/(2*cdiff)) *
+#                            np.cos((j+1-cdiff)*np.pi/(2*rdiff)))
+#
+#    for j in range(rdiff):
+#        for i in range(cdiff+n-1, npts):
+#            if cdiff == 0 or rdiff == 0:
+#                gf[i, j] = np.nan
+#            else:
+#                gf[i, j] = (gf[i, j] *
+#                            np.cos((i+1-cdiff-n)*np.pi/(2*cdiff)) *
+#                            np.cos((j+1-cdiff)*np.pi/(2*rdiff)))
+#
+#    for j in range(rdiff+m, npts):
+#        for i in range(cdiff):
+#            if cdiff == 0 or rdiff == 0:
+#                gf[i, j] = np.nan
+#            else:
+#                gf[i, j] = (gf[i, j] *
+#                            np.cos((i+1-cdiff)*np.pi/(2*cdiff)) *
+#                            np.cos((j+1-cdiff-m)*np.pi/(2*rdiff)))
 
     return gf
+
+
+def test():
+    """ test routine """
+    import pygmi.raster.iodefs as io
+    import matplotlib.pyplot as plt
+
+    ifile = r'C:\Work\Programming\pygmi\data\testdata.hdr'
+    idat = io.get_raster(ifile)
+
+    idat = idat[2]  # Get magnetic data
+    z = idat.data
+    nr, nc = z.shape
+
+# Gridding test
+#    y, x = np.mgrid[0:nr, 0:nc]
+#    x1 = x[~z.mask]
+#    y1 = y[~z.mask]
+#    z1 = z[~z.mask]
+#
+#    z1 = z1-np.median(z1)
+#
+#    data = si2.griddata((x1, y1), z1, (x, y), 'nearest')
+
+    data = z
+
+    z2 = vertical(data)
+    z2 = np.ma.array(z2, mask=z.mask)
+
+    plt.figure(figsize=(8, 8))
+    plt.title('original')
+    plt.imshow(data)
+    plt.colorbar()
+    plt.show()
+
+    plt.figure(figsize=(8, 8))
+    plt.title('vertical')
+    plt.imshow(z2, vmin=-2, vmax=2)
+    plt.colorbar()
+    plt.show()
+
+
+    z2a = z2
+
+# Gridding test 2
+    y, x = np.mgrid[0:nr, 0:nc]
+    x1 = x[~z.mask]
+    y1 = y[~z.mask]
+    z1 = z[~z.mask]
+
+    npts = 512
+    cdiff = int(np.floor((npts-nc)/2))
+    rdiff = int(np.floor((npts-nr)/2))
+    x1 = x1 + cdiff
+    y1 = y1 + rdiff
+
+    y, x = np.mgrid[0:npts, 0:npts]
+
+    data = si2.griddata((x1, y1), z1, (x, y), 'nearest')
+    z2 = vertical(data)
+    rdiff = rdiff-1
+    cdiff = cdiff-1
+    z2 = z2[rdiff:rdiff+nr, cdiff:cdiff+nc]
+    z2 = np.ma.array(z2, mask=z.mask)
+
+
+    plt.figure(figsize=(8, 8))
+    plt.title('original')
+    plt.imshow(data)
+    plt.colorbar()
+    plt.show()
+
+    plt.figure(figsize=(8, 8))
+    plt.title('vertical')
+    plt.imshow(z2, vmin=-2, vmax=2)
+    plt.colorbar()
+    plt.show()
+
+
+    z2b = z2
+
+    # Difference
+
+    z3 = z2a-z2b
+
+    plt.figure(figsize=(8, 8))
+    plt.title('difference')
+    plt.imshow(z3)
+    plt.colorbar()
+    plt.show()
+
+    x = np.arange(-2*np.pi, 2*np.pi, 0.1)
+    y = np.sinc(x)
+
+    plt.plot(x, y)
+    plt.show()
+
+    z4 = z2.compressed()
+
+    plt.hist(z4, 100)
+    plt.show()
+
+
+#    z2 = z.filled(0.)
+
+#    x, y = np.mgrid[0:z.shape[0], 0:z.shape[1]]
+#    x1 = x[~z.mask]
+#    y1 = y[~z.mask]
+#    z1 = z[~z.mask]
+#
+#    z2 = si2.griddata((x1, y1), z1, (x, y), 'linear', fill_value=0.0)
+#
+#    nr, nc = z2.shape
+#
+#    nmax = np.max([nr, nc])
+#    npts = int(2**nextpow2(nmax))
+#    cdiff = int(np.floor((npts-nc)/2))
+#    rdiff = int(np.floor((npts-nr)/2))
+#
+#    z2 = z2*0 + np.random.rand(nr, nc)
+#
+#    z3 = __taper2d(z2, npts, nc, nr, cdiff, rdiff)
+#
+#
+#    z2 = z.filled(0)
+
+#    z3 = vertical(z)
+
+#    ff = si2.interpolate.CloughTocher2DInterpolator
+
+#    z3 = np.ma.array(z3, mask=z.mask)
+
+    breakpoint()
+
+
+
+if __name__ == "__main__":
+    # doctest.testmod(pygmi.raster)
+    test()
