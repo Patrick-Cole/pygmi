@@ -333,7 +333,7 @@ class GraphWindow(QtWidgets.QDialog):
         reference to the parent routine
     """
     def __init__(self, parent=None):
-        super(QtWidgets.QDialog, self).__init__(parent)
+        super().__init__(parent)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
@@ -420,7 +420,7 @@ class PlotLog(GraphWindow):
             self.mmc.setFixedHeight(depth)
 
             hcompanyno = hdf['Companyno'].iloc[0]
-            hfilt = (hdf['Companyno'] == hcompanyno).nonzero()[0][0]
+            hfilt = (hdf['Companyno'] == hcompanyno).to_numpy().nonzero()[0][0]
             hrow = hdf.iloc[hfilt].astype(str)
             topleft = hrow['Company']+'\n'+hrow['Farmname']+' ('+hrow['Farmno']+')'
             topright = 'Hole no: '+hrow['Companyno']+'\n Sheet 1 of 1'

@@ -62,7 +62,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         Color
     """
     def __init__(self, start_item, end_item, parent=None):
-        super(Arrow, self).__init__(parent)
+        super().__init__(parent)
 
         self.arrow_head = QtGui.QPolygonF()
 
@@ -181,7 +181,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         Class name being referenced
     """
     def __init__(self, diagram_type, context_menu, my_class, parent=None):
-        super(DiagramItem, self).__init__(parent)
+        super().__init__(parent)
 
         self.arrows = []
 
@@ -359,7 +359,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 class DiagramScene(QtWidgets.QGraphicsScene):
     """ Diagram Scene """
     def __init__(self, item_menu, parent):
-        super(DiagramScene, self).__init__(parent)
+        super().__init__(parent)
 
         self.my_item_menu = item_menu
         self.my_mode = "MoveItem"
@@ -388,7 +388,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
             self.line.setPen(QtGui.QPen(self.my_line_color, 2))
             self.addItem(self.line)
 
-        super(DiagramScene, self).mousePressEvent(mouse_event)
+        super().mousePressEvent(mouse_event)
 
 # now display the information about the selected data
         tmp = self.selectedItems()
@@ -424,7 +424,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                                      mouse_event.scenePos())
             self.line.setLine(new_line)
         elif self.my_mode == "MoveItem":
-            super(DiagramScene, self).mouseMoveEvent(mouse_event)
+            super().mouseMoveEvent(mouse_event)
 
     def mouseReleaseEvent(self, mouse_event):
         """
@@ -462,7 +462,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         self.line = None
         self.my_mode = "MoveItem"
         self.parent.action_pointer.setChecked(True)
-        super(DiagramScene, self).mouseReleaseEvent(mouse_event)
+        super().mouseReleaseEvent(mouse_event)
 
 
 class MainWidget(QtWidgets.QMainWindow):

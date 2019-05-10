@@ -629,7 +629,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 class GLWidget(QtOpenGL.QGLWidget):
     """ OpenGL Widget """
     def __init__(self, parent=None):
-        super(GLWidget, self).__init__(parent)
+        super().__init__(parent)
 
         self.data = None
         self.idx = None
@@ -991,7 +991,7 @@ class MySunCanvas(FigureCanvas):
     """
     def __init__(self, parent):
         fig = Figure()
-        super(MySunCanvas, self).__init__(fig)
+        super().__init__(fig)
 
         self.sun = None
         self.axes = fig.add_subplot(111, polar=True)

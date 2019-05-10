@@ -65,7 +65,7 @@ class MyMplCanvas(FigureCanvas):
     """Canvas for the actual plot"""
     def __init__(self, parent):
         fig = Figure()
-        super(MyMplCanvas, self).__init__(fig)
+        super().__init__(fig)
 
         # figure stuff
         self.htype = 'Linear'
@@ -124,8 +124,10 @@ class MyMplCanvas(FigureCanvas):
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
 
-            self.axes.add_patch(patches.Polygon(pvert1, edgecolor=(0.0, 0.0, 0.0)))
-            self.axes.add_patch(patches.Polygon(pvert0, facecolor='none', edgecolor=(0.0, 0.0, 0.0)))
+            self.axes.add_patch(patches.Polygon(pvert1,
+                                                edgecolor=(0.0, 0.0, 0.0)))
+            self.axes.add_patch(patches.Polygon(pvert0, facecolor='none',
+                                                edgecolor=(0.0, 0.0, 0.0)))
 
         self.figure.canvas.draw()
 
@@ -133,7 +135,7 @@ class MyMplCanvas(FigureCanvas):
 class BeachBall(QtWidgets.QDialog):
     """ Create shapefiles with beachballs """
     def __init__(self, parent=None):
-        super(BeachBall, self).__init__(parent)
+        super().__init__(parent)
 
         self.ifile = ""
         self.name = "Beachball: "

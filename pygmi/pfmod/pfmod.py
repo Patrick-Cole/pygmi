@@ -168,30 +168,7 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         Help Routine
         """
-
-#        index = self.tabwidget.currentIndex()
-        htmlfile = ''
-        htmlfile += 'pygmi.pfmod.prof'
-
-#        if self.tabwidget.tabText(index) == 'Geophysical Parameters':
-#            htmlfile += 'pygmi.pfmod.param'
-#
-#        if self.tabwidget.tabText(index) == 'Model Extent Parameters':
-#            htmlfile += 'pygmi.pfmod.mext'
-#
-#        if self.tabwidget.tabText(index) == 'Profile Editor':
-#            htmlfile += 'pygmi.pfmod.prof'
-#
-#        if self.tabwidget.tabText(index) == 'Custom Profile Editor':
-#            htmlfile += 'pygmi.pfmod.pview'
-#
-#        if self.tabwidget.tabText(index) == 'Layer Editor':
-#            htmlfile += 'pygmi.pfmod.layer'
-#
-#        if self.tabwidget.tabText(index) == 'Data Display':
-#            htmlfile += 'pygmi.pfmod.ddisp'
-
-        menu_default.HelpDocs(self, htmlfile)
+        menu_default.HelpDocs(self, 'pygmi.pfmod.prof')
 
     def settings(self):
         """ Settings """

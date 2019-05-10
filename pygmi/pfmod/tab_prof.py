@@ -1722,7 +1722,7 @@ class GaugeWidget(QtWidgets.QDial):
     """ Gauge widget """
 
     def __init__(self, *args, **kwargs):
-        super(GaugeWidget, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         ipth = os.path.dirname(misc.__file__)+'//'
 
         self._bg = QtGui.QPixmap(ipth+"DirectionDial.png")

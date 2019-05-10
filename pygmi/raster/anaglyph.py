@@ -49,7 +49,7 @@ class MyMplCanvas(FigureCanvas):
     """
     def __init__(self, parent=None):
         fig = Figure()
-        super(MyMplCanvas, self).__init__(fig)
+        super().__init__(fig)
 
         self.axes = fig.add_subplot(111)
         self.scale = 7
@@ -256,8 +256,8 @@ class PlotAnaglyph(QtWidgets.QDialog):
         reference to the parent routine
     """
     def __init__(self, parent=None):
-        super(PlotAnaglyph, self).__init__(parent)
-#        QtWidgets.QDialog.__init__(self, parent=None)
+        super().__init__(parent)
+
         self.parent = parent
         self.indata = {}
 

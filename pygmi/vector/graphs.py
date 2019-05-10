@@ -36,7 +36,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 class GraphWindow(QtWidgets.QDialog):
     """Graph Window - Main QT Dialog class for graphs."""
     def __init__(self, parent):
-        super(QtWidgets.QDialog, self).__init__(parent)
+        super().__init__(parent)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)

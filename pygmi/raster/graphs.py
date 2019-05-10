@@ -57,8 +57,9 @@ class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None):
         fig = Figure()
         self.axes = fig.add_subplot(111)
+        super().__init__(fig)
 
-        FigureCanvas.__init__(self, fig)
+#        FigureCanvas.__init__(self, fig)
 
     def update_pcolor(self, data1, dmat):
         """
@@ -258,7 +259,7 @@ class GraphWindow(QtWidgets.QDialog):
         reference to the parent routine
     """
     def __init__(self, parent):
-        super(QtWidgets.QDialog, self).__init__(parent)
+        super().__init__(parent)
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)

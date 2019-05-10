@@ -130,7 +130,7 @@ class ModestImage2(mi.AxesImage):
         self._full_res = None
         self._sx, self._sy = None, None
         self._bounds = (None, None, None, None)
-        super(ModestImage2, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.smallres = None
         self.cbar = cm.jet
@@ -444,7 +444,7 @@ class MyMplCanvas(FigureCanvas):
     """
     def __init__(self, parent):
         fig = Figure()
-        super(MyMplCanvas, self).__init__(fig)
+        super().__init__(fig)
 
         # figure stuff
         self.htype = 'Linear'
@@ -875,7 +875,7 @@ class MySunCanvas(FigureCanvas):
     """
     def __init__(self, parent):
         fig = Figure()
-        super(MySunCanvas, self).__init__(fig)
+        super().__init__(fig)
 
         self.sun = None
         self.axes = fig.add_subplot(111, polar=True)
@@ -921,7 +921,7 @@ class PlotInterp(QtWidgets.QDialog):
         small canvas containing the sunshading control
     """
     def __init__(self, parent=None):
-        super(PlotInterp, self).__init__(parent)
+        super().__init__(parent)
         self.indata = {}
         self.outdata = {}
         self.parent = parent
