@@ -155,7 +155,7 @@ class MyMplCanvas(FigureCanvas):
 
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(1, 1, 1)
+        ax1 = self.figure.add_subplot(111, label='Profile')
 
 #        ax1 = self.figure.add_subplot(3, 1, 1)
         ax1.set_title(data1.dataid)
@@ -194,7 +194,7 @@ class MyMplCanvas(FigureCanvas):
         """
         self.figure.clear()
 
-        self.axes = self.figure.add_subplot(1, 1, 1)
+        self.axes = self.figure.add_subplot(111, label='map')
 
         if data.dtype == 'Line' or data.dtype == 'Poly':
             lcol = mc.LineCollection(data.crds)
@@ -224,14 +224,14 @@ class MyMplCanvas(FigureCanvas):
         """
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(121, polar=True)
+        ax1 = self.figure.add_subplot(121, polar=True, label='Rose')
         ax1.set_theta_direction(-1)
         ax1.set_theta_zero_location('N')
         ax1.yaxis.set_ticklabels([])
 
         self.axes = ax1
 
-        ax2 = self.figure.add_subplot(1, 2, 2)
+        ax2 = self.figure.add_subplot(122, label='Map')
         ax2.set_aspect('equal')
 
         fangle = []

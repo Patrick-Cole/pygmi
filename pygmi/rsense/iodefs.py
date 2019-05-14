@@ -113,7 +113,6 @@ class ImportData():
                                               'Could not import dataset. '
                                               'Please make sure it not '
                                               'another format.',
-                                              QtWidgets.QMessageBox.Ok,
                                               QtWidgets.QMessageBox.Ok)
             return False
 

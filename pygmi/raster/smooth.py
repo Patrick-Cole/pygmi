@@ -260,7 +260,6 @@ class Smooth(QtWidgets.QDialog):
     def msgbox(self, title, message):
         """ Msgbox """
         QtWidgets.QMessageBox.warning(self.parent, title, message,
-                                      QtWidgets.QMessageBox.Ok,
                                       QtWidgets.QMessageBox.Ok)
 
     def mov_win_filt(self, dat, fmat, itype, title):

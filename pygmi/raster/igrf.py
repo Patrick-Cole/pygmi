@@ -305,6 +305,8 @@ class IGRF(QtWidgets.QDialog):
         ydat = ydat.flatten()
 
         igrf_F = altgrid * 0
+        igrf_I = altgrid * 0
+        igrf_D = altgrid * 0
         # Pick model
         yrmax = np.array(yrmax)
         modelI = sum(yrmax < sdate)
@@ -336,6 +338,9 @@ class IGRF(QtWidgets.QDialog):
         progress = 0
         maxlen = xdat.size
 
+        alli = []
+        alld = []
+        allf = []
         for i in self.pbar.iter(range(maxlen)):
             if igrf_F.mask[i]:
                 continue
@@ -353,24 +358,56 @@ class IGRF(QtWidgets.QDialog):
             self.dihf(3)
 
             igrf_F[i] = self.f
+            igrf_I[i] = np.rad2deg(self.i)
+            igrf_D[i] = np.rad2deg(self.d)
+
+            alli.append(self.i)
+            alld.append(self.d)
+            allf.append(self.f)
+
+        fmean = np.mean(allf)
+        imean = np.rad2deg(np.mean(alli))
+        dmean = np.rad2deg(np.mean(alld))
+        bname = 'Magnetic Data: IGRF Corrected '
+        bname = bname + 'F:{0:.2f} I:{1:.2f} D:{2:.2f}'
+        bname = bname.format(fmean, imean, dmean)
 
         self.outdata['Raster'] = copy.deepcopy(self.indata['Raster'])
+
         igrf_F = np.ma.array(igrf_F)
         igrf_F.shape = data.data.shape
         igrf_F.mask = np.ma.getmaskarray(data.data)
+
+        igrf_I = np.ma.array(igrf_I)
+        igrf_I.shape = data.data.shape
+        igrf_I.mask = np.ma.getmaskarray(data.data)
+
+        igrf_D = np.ma.array(igrf_D)
+        igrf_D.shape = data.data.shape
+        igrf_D.mask = np.ma.getmaskarray(data.data)
+
         self.outdata['Raster'].append(copy.deepcopy(data))
         self.outdata['Raster'][-1].data = igrf_F
         self.outdata['Raster'][-1].dataid = 'IGRF'
+
+        self.outdata['Raster'].append(copy.deepcopy(data))
+        self.outdata['Raster'][-1].data = igrf_I
+        self.outdata['Raster'][-1].dataid = 'Inclinations'
+
+        self.outdata['Raster'].append(copy.deepcopy(data))
+        self.outdata['Raster'][-1].data = igrf_D
+        self.outdata['Raster'][-1].dataid = 'Declinations'
+
         self.outdata['Raster'].append(copy.deepcopy(maggrid))
         self.outdata['Raster'][-1].data -= igrf_F
-        self.outdata['Raster'][-1].dataid = 'Magnetic Data: IGRF Corrected'
+        self.outdata['Raster'][-1].dataid = bname
 
         self.reportback('')
-        self.reportback('Latest Values in Calculation')
+        self.reportback('Mean Values in Calculation')
         self.reportback('=============================')
-        self.reportback('Total Intensity: '+str(self.f))
-        self.reportback('Inclination: '+str(np.rad2deg(self.i)))
-        self.reportback('Declination: '+str(np.rad2deg(self.d)))
+        self.reportback('Total Intensity: {0:.2f}'.format(fmean))
+        self.reportback('Inclination: {0:.2f}'.format(imean))
+        self.reportback('Declination: {0:.2f}'.format(dmean))
         self.reportback('')
         self.reportback('Calculation: Completed', True)
 

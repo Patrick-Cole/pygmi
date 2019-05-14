@@ -81,6 +81,7 @@ class ImportData():
             "Geosoft (*.gxf);;" + \
             "Surfer grid (v.6) (*.grd);;" + \
             "GeoPak grid (*.grd);;" + \
+            "ESRI ASCII (*.asc);;" + \
             "ASCII with .hdr header (*.asc);;" + \
             "ASCII XYZ (*.xyz);;" + \
             "Arcinfo Binary Grid (hdr.adf);;" + \
@@ -105,8 +106,19 @@ class ImportData():
             dat = get_hdf(self.ifile)
         elif filt == 'ASCII with .hdr header (*.asc)':
             dat = get_ascii(self.ifile)
+        elif filt == 'ESRI ASCII (*.asc)':
+            dat = get_ascii(self.ifile)
         elif filt == 'ASTER GED (*.bin)':
             dat = get_aster_ged_bin(self.ifile)
+        elif filt == 'ASCII XYZ (*.xyz)':
+            nval = 0.0
+            nval, ok = QtWidgets.QInputDialog.getDouble(self.parent,
+                                                        'Null Value',
+                                                        'Enter Null Value',
+                                                        nval)
+            if not ok:
+                nval = 0.0
+            dat = get_raster(self.ifile, nval)
         else:
             dat = get_raster(self.ifile)
 
@@ -117,7 +129,6 @@ class ImportData():
                                               'grid. Please make sure it not '
                                               'another format, such as '
                                               'geosoft.',
-                                              QtWidgets.QMessageBox.Ok,
                                               QtWidgets.QMessageBox.Ok)
             elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -128,19 +139,16 @@ class ImportData():
                                               'export your grid to '
                                               'this format using the Geosoft '
                                               'Viewer.',
-                                              QtWidgets.QMessageBox.Ok,
                                               QtWidgets.QMessageBox.Ok)
             elif filt == 'hdf (*.hdf)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the data.'
                                               'Currently only ASTER and MODIS'
                                               'are supported.',
-                                              QtWidgets.QMessageBox.Ok,
                                               QtWidgets.QMessageBox.Ok)
             else:
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the grid.',
-                                              QtWidgets.QMessageBox.Ok,
                                               QtWidgets.QMessageBox.Ok)
             return False
 
@@ -177,38 +185,56 @@ def get_ascii(ifile):
     dat : PyGMI raster Data
         dataset imported
     """
+    isESRI = False
 
     with open(ifile, 'r') as afile:
         adata = afile.read()
 
     adata = adata.split()
-    adata = np.array(adata, dtype=float)
 
-    with open(ifile[:-3]+'hdr', 'r') as hfile:
-        tmp = hfile.readlines()
+    if adata[0] == 'ncols':
+        isESRI = True
 
-    xdim = float(tmp[0].split()[-1])
-    ydim = float(tmp[1].split()[-1])
-    ncols = int(tmp[2].split()[-1])
-    nrows = int(tmp[3].split()[-1])
-    nbands = int(tmp[4].split()[-1])
-    ulxmap = float(tmp[5].split()[-1])
-    ulymap = float(tmp[6].split()[-1])
+    if isESRI:
+        nbands = 1
+        ncols = int(adata[1])
+        nrows = int(adata[3])
+        xdim = float(adata[9])
+        ydim = float(adata[9])
+        nval = float(adata[11])
+        ulxmap = float(adata[5])
+        ulymap = float(adata[7])+ydim*nrows
+        if 'center' in adata[4].lower():
+            ulxmap = ulxmap - xdim/2
+        if 'center' in adata[6].lower():
+            ulymap = ulymap - ydim/2
+        adata = adata[12:]
+    else:
+        with open(ifile[:-3]+'hdr', 'r') as hfile:
+            tmp = hfile.readlines()
+
+        xdim = float(tmp[0].split()[-1])
+        ydim = float(tmp[1].split()[-1])
+        ncols = int(tmp[2].split()[-1])
+        nrows = int(tmp[3].split()[-1])
+        nbands = int(tmp[4].split()[-1])
+        ulxmap = float(tmp[5].split()[-1])
+        ulymap = float(tmp[6].split()[-1])
+        nval = -9999.0
+
     bandid = ifile[:-4].rsplit('/')[-1]
 
+    adata = np.array(adata, dtype=float)
     adata.shape = (nrows, ncols)
 
     if nbands > 1:
-        print('PyGMI only supports single band ASCII files')
+        print('PyGMI only supports single band ASCII files. '
+              'Only first band will be exported.')
 
     dat = [Data()]
     i = 0
 
-    dat[i].data = adata
-
-    nval = -9999.0
-
-    dat[i].data = np.ma.masked_equal(dat[i].data, nval)
+    dat[i].data = np.ma.masked_equal(adata, nval)
     if dat[i].data.mask.size == 1:
         dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                             dat[i].data.mask)
@@ -229,7 +255,7 @@ def get_ascii(ifile):
     return dat
 
 
-def get_raster(ifile):
+def get_raster(ifile, nval=None):
     """
     This function loads a raster dataset off the disk using the GDAL
     libraries. It returns the data in a PyGMI data object.
@@ -285,7 +311,8 @@ def get_raster(ifile):
     for i in range(dataset.RasterCount):
         rtmp = dataset.GetRasterBand(i+1)
         bandid = rtmp.GetDescription()
-        nval = rtmp.GetNoDataValue()
+        if nval is None:
+            nval = rtmp.GetNoDataValue()
 
         if 'Cluster' in bandid:
             dat.append(Clust())
@@ -304,6 +331,7 @@ def get_raster(ifile):
             if nval is None:
                 nval = 1e+20
             nval = float(nval)
+
         if ext == 'ers' and nval == -1.0e+32:
             dat[i].data[np.ma.less_equal(dat[i].data, nval)] = -1.0e+32
 

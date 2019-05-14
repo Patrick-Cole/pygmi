@@ -171,6 +171,9 @@ class TiltDepth(QtWidgets.QDialog):
         np.savetxt(filename, self.depths, delimiter=',',
                    header='x, y, id, depth')
 
+        QtWidgets.QMessageBox.information(self.parent, 'Information',
+                                          'Save completed!')
+
         return True
 
     def change_cbar(self):

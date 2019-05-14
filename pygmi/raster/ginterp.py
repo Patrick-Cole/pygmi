@@ -1612,7 +1612,6 @@ class PlotInterp(QtWidgets.QDialog):
 
         QtWidgets.QMessageBox.information(self, "Information",
                                           "Save to GeoTiff is complete!",
-                                          QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
 
     def settings(self):

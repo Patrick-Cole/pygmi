@@ -288,6 +288,11 @@ class Cluster(QtWidgets.QDialog):
                 cfit = skc.Birch(n_clusters=i, threshold=self.bthres,
                                  branching_factor=self.branchfac).fit(X)
 
+            if cfit.labels_.max() < i-1:
+                self.reportback('Could not find '+str(i)+' clusters. '
+                                'Please change settings.')
+                return False
+
             dat_out.append(Clust())
             for k in data:
                 dat_out[-1].input_type.append(k.dataid)
@@ -301,7 +306,7 @@ class Cluster(QtWidgets.QDialog):
             dat_out[-1].no_clusters = i
             dat_out[-1].center = np.zeros([i, len(data)])
             dat_out[-1].center_std = np.zeros([i, len(data)])
-            if cfit.labels_.max() > -1:
+            if cfit.labels_.max() > 0:
                 dat_out[-1].vrc = skm.calinski_harabaz_score(X, cfit.labels_)
 
             if self.cltype == 'k-means':

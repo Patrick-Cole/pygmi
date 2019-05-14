@@ -142,9 +142,9 @@ class Normalisation(QtWidgets.QDialog):
                 tmpd = np.ma.array(ndat_eq)
                 i.data = tmpd.astype('float32')
                 i.data = np.ma.masked_invalid(i.data)
-                n_norms = len(i.norm)
-                i.norm[n_norms] = {'type': 'histeq',
-                                   'transform': transform}
+#                n_norms = len(i.norm)
+#                i.norm[n_norms] = {'type': 'histeq',
+#                                   'transform': transform}
 
         # Correct the null value
         for i in data:
@@ -168,6 +168,6 @@ def datacommon(data, tmp1, tmp2, tmp3):
         dtmp /= tmp2
 
         data.data = np.ma.array(dtmp, mask=mtmp)
-        n_norms = len(data.norm)
-        data.norm[n_norms] = {'type': tmp3, 'transform': transform}
+#        n_norms = len(data.norm)
+#        data.norm[n_norms] = {'type': tmp3, 'transform': transform}
     return data, transform

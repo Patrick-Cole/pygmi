@@ -295,18 +295,18 @@ class ImportMod3D():
         lmod.yrange = np.array(indict[pre+'yrange']).tolist()
         lmod.zrange = np.array(indict[pre+'zrange']).tolist()
         if pre+'custprofx' in indict:
-            lmod.custprofx = np.asscalar(indict[pre+'custprofx'])
+            lmod.custprofx = indict[pre+'custprofx'].item()
         else:
             lmod.custprofx = {0: (lmod.xrange[0], lmod.xrange[1])}
         if pre+'custprofy' in indict:
-            lmod.custprofy = np.asscalar(indict[pre+'custprofy'])
+            lmod.custprofy = indict[pre+'custprofy'].item()
         else:
             lmod.custprofy = {0: (lmod.yrange[0], lmod.yrange[0])}
 
-        lmod.mlut = np.asscalar(indict[pre+'mlut'])
+        lmod.mlut = indict[pre+'mlut'].item()
         lmod.init_calc_grids()
 
-        lmod.griddata = np.asscalar(indict[pre+'griddata'])
+        lmod.griddata = indict[pre+'griddata'].item()
 
         for i in lmod.griddata:
             lmod.griddata[i].data = np.ma.array(lmod.griddata[i].data)
@@ -319,6 +319,17 @@ class ImportMod3D():
                 if lmod.griddata[i].dataid == '':
                     lmod.griddata[i].dataid = lmod.griddata[i].bandid
                 del lmod.griddata[i].bandid
+            if not hasattr(lmod.griddata[i], 'extent'):
+                rows, cols = lmod.griddata[i].data.shape
+
+                xmin = lmod.griddata[i].tlx
+                ymax = lmod.griddata[i].tly
+                ymin = ymax - rows*lmod.griddata[i].ydim
+                xmax = xmin + cols*lmod.griddata[i].xdim
+
+                lmod.griddata[i].extent = [xmin, xmax, ymin, ymax]
+                del lmod.griddata[i].tlx
+                del lmod.griddata[i].tly
 
         wktfin = None
         for i in lmod.griddata:
@@ -339,31 +350,26 @@ class ImportMod3D():
             if itxt != 'Background':
                 lmod.lith_list[itxt] = grvmag3d.GeoData(self.parent)
 
-            lmod.lith_list[itxt].hintn = np.asscalar(indict[pre+itxt+'_hintn'])
-            lmod.lith_list[itxt].finc = np.asscalar(indict[pre+itxt+'_finc'])
-            lmod.lith_list[itxt].fdec = np.asscalar(indict[pre+itxt+'_fdec'])
-            lmod.lith_list[itxt].zobsm = np.asscalar(indict[pre+itxt+'_zobsm'])
-            lmod.lith_list[itxt].susc = np.asscalar(indict[pre+itxt+'_susc'])
-            lmod.lith_list[itxt].mstrength = np.asscalar(
-                indict[pre+itxt+'_mstrength'])
-            lmod.lith_list[itxt].qratio = np.asscalar(
-                indict[pre+itxt+'_qratio'])
-            lmod.lith_list[itxt].minc = np.asscalar(indict[pre+itxt+'_minc'])
-            lmod.lith_list[itxt].mdec = np.asscalar(indict[pre+itxt+'_mdec'])
-            lmod.lith_list[itxt].density = np.asscalar(
-                indict[pre+itxt+'_density'])
-            lmod.lith_list[itxt].bdensity = np.asscalar(
-                indict[pre+itxt+'_bdensity'])
-            lmod.lith_list[itxt].lith_index = np.asscalar(
-                indict[pre+itxt+'_lith_index'])
-            lmod.lith_list[itxt].g_cols = np.asscalar(indict[pre+itxt+'_numx'])
-            lmod.lith_list[itxt].g_rows = np.asscalar(indict[pre+itxt+'_numy'])
-            lmod.lith_list[itxt].numz = np.asscalar(indict[pre+itxt+'_numz'])
-            lmod.lith_list[itxt].g_dxy = np.asscalar(indict[pre+itxt+'_dxy'])
-            lmod.lith_list[itxt].dxy = np.asscalar(indict[pre+itxt+'_dxy'])
-            lmod.lith_list[itxt].d_z = np.asscalar(indict[pre+itxt+'_d_z'])
-            lmod.lith_list[itxt].zobsm = np.asscalar(indict[pre+itxt+'_zobsm'])
-            lmod.lith_list[itxt].zobsg = np.asscalar(indict[pre+itxt+'_zobsg'])
+            lmod.lith_list[itxt].hintn = indict[pre+itxt+'_hintn'].item()
+            lmod.lith_list[itxt].finc = indict[pre+itxt+'_finc'].item()
+            lmod.lith_list[itxt].fdec = indict[pre+itxt+'_fdec'].item()
+            lmod.lith_list[itxt].zobsm = indict[pre+itxt+'_zobsm'].item()
+            lmod.lith_list[itxt].susc = indict[pre+itxt+'_susc'].item()
+            lmod.lith_list[itxt].mstrength = indict[pre+itxt+'_mstrength'].item()
+            lmod.lith_list[itxt].qratio = indict[pre+itxt+'_qratio'].item()
+            lmod.lith_list[itxt].minc = indict[pre+itxt+'_minc'].item()
+            lmod.lith_list[itxt].mdec = indict[pre+itxt+'_mdec'].item()
+            lmod.lith_list[itxt].density = indict[pre+itxt+'_density'].item()
+            lmod.lith_list[itxt].bdensity = indict[pre+itxt+'_bdensity'].item()
+            lmod.lith_list[itxt].lith_index = indict[pre+itxt+'_lith_index'].item()
+            lmod.lith_list[itxt].g_cols = indict[pre+itxt+'_numx'].item()
+            lmod.lith_list[itxt].g_rows = indict[pre+itxt+'_numy'].item()
+            lmod.lith_list[itxt].numz = indict[pre+itxt+'_numz'].item()
+            lmod.lith_list[itxt].g_dxy = indict[pre+itxt+'_dxy'].item()
+            lmod.lith_list[itxt].dxy = indict[pre+itxt+'_dxy'].item()
+            lmod.lith_list[itxt].d_z = indict[pre+itxt+'_d_z'].item()
+            lmod.lith_list[itxt].zobsm = indict[pre+itxt+'_zobsm'].item()
+            lmod.lith_list[itxt].zobsg = indict[pre+itxt+'_zobsg'].item()
             lmod.lith_list[itxt].modified = True
             lmod.lith_list[itxt].set_xyz12()
 
@@ -552,9 +558,8 @@ class ExportMod3D():
             return
 
         if prjkmz.proj.wkt == '':
-            QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Warning',
+            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need a projection!',
-                                          QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
             return
 

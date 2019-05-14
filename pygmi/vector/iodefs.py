@@ -258,7 +258,6 @@ class PointCut():
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                          QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
             return False
 
@@ -375,7 +374,6 @@ class ImportShapeData():
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                          QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
             return False
 

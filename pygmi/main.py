@@ -184,6 +184,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         super().__init__(parent)
 
         self.arrows = []
+        self.parent = my_class.parent
 
         self.diagram_type = diagram_type
         self.context_menu = context_menu
@@ -342,9 +343,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         if self.is_import is True:
             pass
         elif self.my_class.indata == {} and self.is_import is False:
-            QtWidgets.QMessageBox.warning(QtWidgets.QMessageBox(), 'Warning',
+            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need to connect data first!',
-                                          QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
             return False
 

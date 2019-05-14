@@ -158,6 +158,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes = self.figure.add_subplot(111)
         x = data1.copy()
         y = data2.copy()
+
         msk = np.logical_or(x.mask, y.mask)
         x.mask = msk
         y.mask = msk
@@ -327,13 +328,34 @@ class PlotCCoef(GraphWindow):
 
     def run(self):
         """ Run """
-        self.show()
         data = self.indata['Raster']
+
+        if not check_bands(data):
+            QtWidgets.QMessageBox.warning(self, 'Warning',
+                                          'Different size input datasets. '
+                                          'Merge and resample your input data '
+                                          'to fix this.',
+                                          QtWidgets.QMessageBox.Ok)
+            return
+
+        self.show()
 
         dummy_mat = [[corr2d(i.data, j.data) for j in data] for i in data]
         dummy_mat = np.array(dummy_mat)
 
         self.mmc.update_pcolor(data, dummy_mat)
+
+
+def check_bands(data):
+    """ Checks that band sizes are the same """
+    chk = True
+
+    dshape = data[0].data.shape
+    for i in data:
+        if i.data.shape != dshape:
+            chk = False
+
+    return chk
 
 
 def corr2d(dat1, dat2):
@@ -472,7 +494,19 @@ class PlotScatter(GraphWindow):
         data = self.indata['Raster']
         i = self.combobox1.currentIndex()
         j = self.combobox2.currentIndex()
-        self.mmc.update_hexbin(data[i].data, data[j].data)
+
+        x = data[i].data
+        y = data[j].data
+        if x.mask.shape != y.mask.shape:
+            QtWidgets.QMessageBox.warning(self, 'Warning',
+                                          'Different size input datasets. '
+                                          'Merge and resample your input data '
+                                          'to fix this.',
+                                          QtWidgets.QMessageBox.Ok)
+            return
+
+
+        self.mmc.update_hexbin(x, y)
 
     def run(self):
         """ Run """

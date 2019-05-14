@@ -116,7 +116,9 @@ class Gradients(QtWidgets.QDialog):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.rb_ddir.toggled.connect(self.radiochange)
+        self.rb_ddir.clicked.connect(self.radiochange)
+        self.rb_dratio.clicked.connect(self.radiochange)
+        self.rb_vgrad.clicked.connect(self.radiochange)
 
     def settings(self):
         """ Settings """
@@ -139,6 +141,7 @@ class Gradients(QtWidgets.QDialog):
                 mask = np.ma.getmaskarray(data[i].data)
                 data[i].data = np.ma.array(vertical(data[i].data))
                 data[i].data.mask = mask
+            data[i].units = ''
 
         self.outdata['Raster'] = data
 
@@ -646,7 +649,8 @@ def vertical(data, npts=None, xint=1):
     nr, nc = data.shape
 
     z = data-np.ma.median(data)
-    z = z.filled(0.)
+    if np.ma.is_masked(z):
+        z = z.filled(0.)
 
     if npts is None:
         nmax = np.max([nr, nc])

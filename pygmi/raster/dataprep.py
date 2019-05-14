@@ -99,7 +99,6 @@ class DataCut():
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                          QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
             return False
 
@@ -133,6 +132,7 @@ class DataGrid(QtWidgets.QDialog):
         self.pbar = parent.pbar
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
+        self.dsb_null = QtWidgets.QDoubleSpinBox()
         self.dataid = QtWidgets.QComboBox()
         self.label_rows = QtWidgets.QLabel()
         self.label_cols = QtWidgets.QLabel()
@@ -144,9 +144,12 @@ class DataGrid(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
-        label_band = QtWidgets.QLabel()
-        label_dxy = QtWidgets.QLabel()
+        label_band = QtWidgets.QLabel("Column to Grid:")
+        label_dxy = QtWidgets.QLabel("Cell Size:")
+        label_null = QtWidgets.QLabel("Null Value:")
 
+        self.dsb_null.setMaximum(np.finfo(np.double).max)
+        self.dsb_null.setMinimum(np.finfo(np.double).min)
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
         self.dsb_dxy.setDecimals(5)
@@ -157,8 +160,6 @@ class DataGrid(QtWidgets.QDialog):
         self.setWindowTitle("Dataset Gridding")
         self.label_rows.setText("Rows: 0")
         self.label_cols.setText("Columns: 0")
-        label_dxy.setText("Cell Size:")
-        label_band.setText("Column to Grid:")
 
         gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
@@ -166,8 +167,10 @@ class DataGrid(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
         gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
         gridlayout_main.addWidget(self.dataid, 3, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 4, 1, 1, 3)
+        gridlayout_main.addWidget(label_null, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_null, 4, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -205,6 +208,7 @@ class DataGrid(QtWidgets.QDialog):
         dy = y.ptp()/np.sqrt(y.size)
         dxy = max(dx, dy)
 
+        self.dsb_null.setValue(data.zdata.min())
         self.dsb_dxy.setValue(dxy)
         self.dxy_change()
         tmp = self.exec_()
@@ -218,15 +222,18 @@ class DataGrid(QtWidgets.QDialog):
     def acceptall(self):
         """ accept """
         dxy = self.dsb_dxy.value()
+        nullvalue = self.dsb_null.value()
         data = self.indata['Point'][0]
 
         newdat = []
         for data in self.pbar.iter(self.indata['Point']):
             if data.dataid != self.dataid.currentText():
                 continue
-            x = data.xdata
-            y = data.ydata
-            z = data.zdata
+
+            filt = (data.zdata != nullvalue)
+            x = data.xdata[filt]
+            y = data.ydata[filt]
+            z = data.zdata[filt]
 
             for i in [x, y, z]:
                 filt = np.logical_not(np.isnan(i))
@@ -242,7 +249,7 @@ class DataGrid(QtWidgets.QDialog):
             dat = Data()
             dat.data = np.ma.masked_invalid(gdat[::-1])
             dat.data.mask = mask[::-1]
-            dat.nullvalue = dat.data.fill_value
+            dat.nullvalue = nullvalue
             dat.dataid = data.dataid
             dat.xdim = dxy
             dat.ydim = dxy
@@ -617,7 +624,6 @@ class GetProf():
                    'sure you have at all the individual files which make up '
                    'the shapefile.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                          QtWidgets.QMessageBox.Ok,
                                           QtWidgets.QMessageBox.Ok)
             return False
 
@@ -1109,6 +1115,7 @@ def rtp(data, I_deg, D_deg):
 
     zrtp = np.fft.ifft2(fftmod*filt)
     zrtp = zrtp.real + datamedian
+    zrtp[data.data.mask] = data.data.fill_value
 
 # Create dataset
     dat = Data()
@@ -1197,7 +1204,7 @@ def cut_raster(data, ifile):
 
     for idata in data:
         # Convert the layer extent to image pixel coordinates
-        minX, maxX, minY, maxY = lyr.extent
+        minX, maxX, minY, maxY = lyr.GetExtent()
         itlx = idata.extent[0]
         itly = idata.extent[-1]
 
