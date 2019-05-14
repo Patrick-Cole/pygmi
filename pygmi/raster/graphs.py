@@ -59,8 +59,6 @@ class MyMplCanvas(FigureCanvas):
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
-#        FigureCanvas.__init__(self, fig)
-
     def update_pcolor(self, data1, dmat):
         """
         Update the correlation coefficient plot
@@ -115,10 +113,8 @@ class MyMplCanvas(FigureCanvas):
                                  interpolation='nearest')
 
         cbar = self.figure.colorbar(rdata)
-        try:
-            cbar.set_label(data1.units)
-        except AttributeError:
-            pass
+
+        cbar.set_label(data1.units)
 
         self.axes.set_xlabel("Eastings")
         self.axes.set_ylabel("Northings")

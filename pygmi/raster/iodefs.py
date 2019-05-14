@@ -161,7 +161,7 @@ class ImportData():
             tmp = QtWidgets.QMessageBox.question(self.parent, 'Question',
                                                  'Is this an RGB image?')
             if tmp == QtWidgets.QMessageBox.Yes:
-                dat2 = np.transpose([dat[0].data.T, dat[1].data.T,
+                dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
                                      dat[2].data.T])
                 dat = [dat[0]]
                 dat[0].data = dat2

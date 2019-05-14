@@ -924,7 +924,8 @@ class Metadata(QtWidgets.QDialog):
         self.oldtxt = txt
         idata = self.banddata[txt]
 
-        irows, icols = idata.data.shape
+        irows = idata.data.shape[0]
+        icols = idata.data.shape[1]
 
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
@@ -965,7 +966,8 @@ class Metadata(QtWidgets.QDialog):
 
         idata = self.banddata[self.oldtxt]
 
-        irows, icols = idata.data.shape
+        irows = idata.data.shape[0]
+        icols = idata.data.shape[1]
 
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
