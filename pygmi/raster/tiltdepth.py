@@ -90,8 +90,8 @@ class TiltDepth(QtWidgets.QDialog):
         self.cbox_cbar = QtWidgets.QComboBox(self)
         self.dsb_inc = QtWidgets.QDoubleSpinBox()
         self.dsb_dec = QtWidgets.QDoubleSpinBox()
-        self.btn_apply = QtWidgets.QPushButton()
-        self.btn_save = QtWidgets.QPushButton()
+        self.btn_apply = QtWidgets.QPushButton('Calculate Tilt Depth')
+        self.btn_save = QtWidgets.QPushButton('Save Depths to Text File')
         self.pbar = misc.ProgressBar()
 
         self.setupui()
@@ -99,10 +99,10 @@ class TiltDepth(QtWidgets.QDialog):
     def setupui(self):
         """ Setup UI """
         helpdocs = menu_default.HelpButton('pygmi.raster.tiltdepth')
-        label2 = QtWidgets.QLabel()
-        labelc = QtWidgets.QLabel()
-        label_inc = QtWidgets.QLabel()
-        label_dec = QtWidgets.QLabel()
+        label2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
+        labelc = QtWidgets.QLabel('Color Bar:')
+        label_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
+        label_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
@@ -122,13 +122,7 @@ class TiltDepth(QtWidgets.QDialog):
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
 
-        self.setWindowTitle("Tilt Depth Interpretation")
-        label2.setText('Band to perform Tilt Depth:')
-        labelc.setText('Color Bar:')
-        label_inc.setText("Inclination of Magnetic Field:")
-        label_dec.setText("Declination of Magnetic Field:")
-        self.btn_apply.setText('Calculate Tilt Depth')
-        self.btn_save.setText('Save Depths to Text File')
+        self.setWindowTitle('Tilt Depth Interpretation')
 
         vbl_raster.addWidget(label2)
         vbl_raster.addWidget(self.cbox_band1)
@@ -159,7 +153,7 @@ class TiltDepth(QtWidgets.QDialog):
         if self.depths is None:
             return False
 
-        ext = "Text File (*.csv)"
+        ext = 'Text File (*.csv)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
                                                             'Save File',

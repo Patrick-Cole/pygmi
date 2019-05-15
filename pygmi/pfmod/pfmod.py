@@ -64,7 +64,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.pbar_sub = pmisc.ProgressBar()
         self.pbar_main = pmisc.ProgressBar()
         self.textbrowser = QtWidgets.QTextBrowser()
-        self.actionsave = QtWidgets.QPushButton()
+        self.actionsave = QtWidgets.QPushButton('Save Model')
 
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
         tmp = [i for i in set(self.lmod1.griddata.values())]
@@ -83,36 +83,36 @@ class MainWidget(QtWidgets.QMainWindow):
         """ Setup for the GUI """
 # Menus
         menufile = QtWidgets.QMenu(self.menubar)
-        menufile.setTitle("File")
+        menufile.setTitle('File')
         self.menubar.addAction(menufile.menuAction())
 
         menuview = QtWidgets.QMenu(self.menubar)
-        menuview.setTitle("View")
+        menuview.setTitle('View')
         self.menubar.addAction(menuview.menuAction())
 
         self.action_exit = QtWidgets.QAction(self.parent)
-        self.action_exit.setText("Exit")
+        self.action_exit.setText('Exit')
         menufile.addAction(self.action_exit)
         self.action_exit.triggered.connect(self.parent.close)
 
 # Toolbars
         self.action_mext = QtWidgets.QAction(self)
-        self.action_mext.setText("Model Extent Parameters")
+        self.action_mext.setText('Model Extent Parameters')
         self.toolbardock.addAction(self.action_mext)
         self.action_mext.triggered.connect(self.mext.tab_activate)
 
         self.action_param = QtWidgets.QAction(self)
-        self.action_param.setText("Geophysical Parameters")
+        self.action_param.setText('Geophysical Parameters')
         self.toolbardock.addAction(self.action_param)
         self.action_param.triggered.connect(self.param.tab_activate)
 
         self.action_lnotes = QtWidgets.QAction(self)
-        self.action_lnotes.setText("Lithology Notes")
+        self.action_lnotes.setText('Lithology Notes')
         self.toolbardock.addAction(self.action_lnotes)
         self.action_lnotes.triggered.connect(self.lithnotes.tab_activate)
 
 # Dock Widgets
-        dock = QtWidgets.QDockWidget("Profile Editor")
+        dock = QtWidgets.QDockWidget('Profile Editor')
         dock.setWidget(self.profile)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
         menuview.addAction(dock.toggleViewAction())
@@ -138,8 +138,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolbar.addWidget(self.actionsave)
 
-        self.setWindowTitle("Potential Field Modelling")
-        self.actionsave.setText("Save Model")
+        self.setWindowTitle('Potential Field Modelling')
 
         hlayout.addWidget(self.textbrowser)
         hlayout.addWidget(helpdocs)

@@ -471,26 +471,18 @@ class ScatterPlot(QtWidgets.QDialog):
     def setupui(self):
         """ Setup UI """
         grid_main = QtWidgets.QGridLayout(self)
-        group_cp = QtWidgets.QGroupBox()
+        group_cp = QtWidgets.QGroupBox('Cross Plot Settings')
         grid_left = QtWidgets.QGridLayout(group_cp)
-        group_map = QtWidgets.QGroupBox()
+        group_map = QtWidgets.QGroupBox('Map Settings')
         grid_right = QtWidgets.QGridLayout(group_map)
 
-        self.setWindowTitle("Graph Window")
-        group_map.setTitle("Map Settings")
-        group_cp.setTitle('Cross Plot Settings')
+        self.setWindowTitle('Graph Window')
 
-        lbl_combo_left = QtWidgets.QLabel()
-        lbl_combo2_left = QtWidgets.QLabel()
-        lbl_combo3_left = QtWidgets.QLabel()
-        lbl_combo_right = QtWidgets.QLabel()
-        lbl_combo2_right = QtWidgets.QLabel()
-
-        lbl_combo_left.setText('X Data Band:')
-        lbl_combo2_left.setText('Y Data Band:')
-        lbl_combo3_left.setText('Cluster Overlay:')
-        lbl_combo_right.setText('Data Band:')
-        lbl_combo2_right.setText('Cluster Overlay:')
+        lbl_combo_left = QtWidgets.QLabel('X Data Band:')
+        lbl_combo2_left = QtWidgets.QLabel('Y Data Band:')
+        lbl_combo3_left = QtWidgets.QLabel('Cluster Overlay:')
+        lbl_combo_right = QtWidgets.QLabel('Data Band:')
+        lbl_combo2_right = QtWidgets.QLabel('Cluster Overlay:')
 
         grid_left.addWidget(lbl_combo_left, 0, 0, 1, 1)
         grid_left.addWidget(lbl_combo2_left, 1, 0, 1, 1)

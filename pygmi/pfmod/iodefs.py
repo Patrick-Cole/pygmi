@@ -50,9 +50,9 @@ class ImportMod3D():
         self.parent = parent
         self.lmod = LithModel()
 
-        self.ifile = ""
-        self.name = "Import 3D Model: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Import 3D Model: '
+        self.ext = ''
         self.indata = {}
         self.outdata = {}
 
@@ -377,9 +377,9 @@ class ImportMod3D():
 class ExportMod3D():
     """ Export Data """
     def __init__(self, parent):
-        self.ifile = ""
-        self.name = "Import Data: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Import Data: '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -440,50 +440,50 @@ class ExportMod3D():
     def lmod2dict(self, outdict, pre=''):
         """ place lmod in dictionary """
 
-        outdict[pre+"gregional"] = self.lmod.gregional
-        outdict[pre+"ght"] = self.lmod.ght
-        outdict[pre+"mht"] = self.lmod.mht
-        outdict[pre+"numx"] = self.lmod.numx
-        outdict[pre+"numy"] = self.lmod.numy
-        outdict[pre+"numz"] = self.lmod.numz
-        outdict[pre+"dxy"] = self.lmod.dxy
-        outdict[pre+"d_z"] = self.lmod.d_z
-        outdict[pre+"lith_index"] = self.lmod.lith_index
-        outdict[pre+"xrange"] = self.lmod.xrange
-        outdict[pre+"yrange"] = self.lmod.yrange
-        outdict[pre+"zrange"] = self.lmod.zrange
-        outdict[pre+"mlut"] = self.lmod.mlut
-        outdict[pre+"griddata"] = self.lmod.griddata
-        outdict[pre+"custprofx"] = self.lmod.custprofx
-        outdict[pre+"custprofy"] = self.lmod.custprofy
+        outdict[pre+'gregional'] = self.lmod.gregional
+        outdict[pre+'ght'] = self.lmod.ght
+        outdict[pre+'mht'] = self.lmod.mht
+        outdict[pre+'numx'] = self.lmod.numx
+        outdict[pre+'numy'] = self.lmod.numy
+        outdict[pre+'numz'] = self.lmod.numz
+        outdict[pre+'dxy'] = self.lmod.dxy
+        outdict[pre+'d_z'] = self.lmod.d_z
+        outdict[pre+'lith_index'] = self.lmod.lith_index
+        outdict[pre+'xrange'] = self.lmod.xrange
+        outdict[pre+'yrange'] = self.lmod.yrange
+        outdict[pre+'zrange'] = self.lmod.zrange
+        outdict[pre+'mlut'] = self.lmod.mlut
+        outdict[pre+'griddata'] = self.lmod.griddata
+        outdict[pre+'custprofx'] = self.lmod.custprofx
+        outdict[pre+'custprofy'] = self.lmod.custprofy
 
 # Section to save lithologies.
-        outdict[pre+"lithkeys"] = list(self.lmod.lith_list.keys())
+        outdict[pre+'lithkeys'] = list(self.lmod.lith_list.keys())
 
         for i in self.lmod.lith_list.items():
             curkey = i[0]
-            outdict[pre+curkey+"_hintn"] = i[1].hintn
-            outdict[pre+curkey+"_finc"] = i[1].finc
-            outdict[pre+curkey+"_fdec"] = i[1].fdec
-            outdict[pre+curkey+"_zobsm"] = i[1].zobsm
-            outdict[pre+curkey+"_susc"] = i[1].susc
-            outdict[pre+curkey+"_mstrength"] = i[1].mstrength
-            outdict[pre+curkey+"_qratio"] = i[1].qratio
-            outdict[pre+curkey+"_minc"] = i[1].minc
-            outdict[pre+curkey+"_mdec"] = i[1].mdec
-            outdict[pre+curkey+"_density"] = i[1].density
-            outdict[pre+curkey+"_bdensity"] = i[1].bdensity
-            outdict[pre+curkey+"_lith_index"] = i[1].lith_index
-            outdict[pre+curkey+"_numx"] = i[1].g_cols
-            outdict[pre+curkey+"_numy"] = i[1].g_rows
-            outdict[pre+curkey+"_numz"] = i[1].numz
-            outdict[pre+curkey+"_dxy"] = i[1].g_dxy
-            outdict[pre+curkey+"_d_z"] = i[1].d_z
-            outdict[pre+curkey+"_zobsm"] = i[1].zobsm
-            outdict[pre+curkey+"_zobsg"] = i[1].zobsg
-            outdict[pre+curkey+"_x12"] = i[1].x12
-            outdict[pre+curkey+"_y12"] = i[1].y12
-            outdict[pre+curkey+"_z12"] = i[1].z12
+            outdict[pre+curkey+'_hintn'] = i[1].hintn
+            outdict[pre+curkey+'_finc'] = i[1].finc
+            outdict[pre+curkey+'_fdec'] = i[1].fdec
+            outdict[pre+curkey+'_zobsm'] = i[1].zobsm
+            outdict[pre+curkey+'_susc'] = i[1].susc
+            outdict[pre+curkey+'_mstrength'] = i[1].mstrength
+            outdict[pre+curkey+'_qratio'] = i[1].qratio
+            outdict[pre+curkey+'_minc'] = i[1].minc
+            outdict[pre+curkey+'_mdec'] = i[1].mdec
+            outdict[pre+curkey+'_density'] = i[1].density
+            outdict[pre+curkey+'_bdensity'] = i[1].bdensity
+            outdict[pre+curkey+'_lith_index'] = i[1].lith_index
+            outdict[pre+curkey+'_numx'] = i[1].g_cols
+            outdict[pre+curkey+'_numy'] = i[1].g_rows
+            outdict[pre+curkey+'_numz'] = i[1].numz
+            outdict[pre+curkey+'_dxy'] = i[1].g_dxy
+            outdict[pre+curkey+'_d_z'] = i[1].d_z
+            outdict[pre+curkey+'_zobsm'] = i[1].zobsm
+            outdict[pre+curkey+'_zobsg'] = i[1].zobsg
+            outdict[pre+curkey+'_x12'] = i[1].x12
+            outdict[pre+curkey+'_y12'] = i[1].y12
+            outdict[pre+curkey+'_z12'] = i[1].z12
 
         return outdict
 
@@ -953,9 +953,9 @@ class ExportMod3D():
             layer = datasource.CreateLayer('Model',
                                            geom_type=ogr.wkbMultiPolygon25D)
 
-            layer.CreateField(ogr.FieldDefn("Lithology", ogr.OFTString))
-            layer.CreateField(ogr.FieldDefn("Susc", ogr.OFTReal))
-            layer.CreateField(ogr.FieldDefn("Density", ogr.OFTReal))
+            layer.CreateField(ogr.FieldDefn('Lithology', ogr.OFTString))
+            layer.CreateField(ogr.FieldDefn('Susc', ogr.OFTReal))
+            layer.CreateField(ogr.FieldDefn('Density', ogr.OFTReal))
 
             points = mvis_3d.gpoints[lith]
 
@@ -979,9 +979,9 @@ class ExportMod3D():
 
                 feature = ogr.Feature(layer.GetLayerDefn())
                 feature.SetGeometry(multipolygon)
-                feature.SetField("Lithology", lithtext)
-                feature.SetField("Susc", lithsusc)
-                feature.SetField("Density", lithdens)
+                feature.SetField('Lithology', lithtext)
+                feature.SetField('Susc', lithsusc)
+                feature.SetField('Density', lithdens)
                 layer.CreateFeature(feature)
 
                 multipolygon = None
@@ -1020,8 +1020,8 @@ class Exportkmz(QtWidgets.QDialog):
         gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
 
-        self.setWindowTitle("Google Earth kmz Export")
-        self.checkbox_smooth.setText("Smooth Model")
+        self.setWindowTitle('Google Earth kmz Export')
+        self.checkbox_smooth.setText('Smooth Model')
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -1035,9 +1035,9 @@ class ImportPicture(QtWidgets.QDialog):
         self.parent = parent
         self.lmod = LithModel()
 
-        self.ifile = ""
-        self.name = "Import 3D Model: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Import 3D Model: '
+        self.ext = ''
         self.pbar = None
         self.indata = {}
         self.outdata = {}
@@ -1046,8 +1046,10 @@ class ImportPicture(QtWidgets.QDialog):
         self.dsb_picimp_west = QtWidgets.QDoubleSpinBox()
         self.dsb_picimp_east = QtWidgets.QDoubleSpinBox()
         self.dsb_picimp_depth = QtWidgets.QDoubleSpinBox()
-        self.rb_picimp_westeast = QtWidgets.QRadioButton()
-        self.rb_picimp_southnorth = QtWidgets.QRadioButton()
+        self.rb_picimp_westeast = QtWidgets.QRadioButton('Profile is from West'
+                                                         ' to East')
+        self.rb_picimp_southnorth = QtWidgets.QRadioButton('Profile is from '
+                                                           'South to North')
         self.dsb_picimp_maxalt = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
@@ -1062,17 +1064,18 @@ class ImportPicture(QtWidgets.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        groupbox = QtWidgets.QGroupBox()
+        groupbox = QtWidgets.QGroupBox('Profile Coordinates')
         gridlayout_2 = QtWidgets.QGridLayout(self)
         gridlayout_3 = QtWidgets.QGridLayout(groupbox)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.importpicture')
 
-        label = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
-        label_3 = QtWidgets.QLabel()
-        label_4 = QtWidgets.QLabel()
-        label_5 = QtWidgets.QLabel()
+        label = QtWidgets.QLabel('West/South Coordinate')
+        label_2 = QtWidgets.QLabel('East/North Coordinate')
+        label_3 = QtWidgets.QLabel('Depth')
+        label_4 = QtWidgets.QLabel('Maximum Altitude')
+        label_5 = QtWidgets.QLabel('Press Cancel if you wish to connect '
+                                   'profile information from a 3D model')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -1080,31 +1083,22 @@ class ImportPicture(QtWidgets.QDialog):
         self.dsb_picimp_west.setDecimals(6)
         self.dsb_picimp_west.setMinimum(-999999999.0)
         self.dsb_picimp_west.setMaximum(999999999.0)
-        self.dsb_picimp_west.setProperty("value", 0.0)
+        self.dsb_picimp_west.setProperty('value', 0.0)
         self.dsb_picimp_east.setDecimals(6)
         self.dsb_picimp_east.setMinimum(-999999999.0)
         self.dsb_picimp_east.setMaximum(999999999.0)
-        self.dsb_picimp_east.setProperty("value", 1000.0)
+        self.dsb_picimp_east.setProperty('value', 1000.0)
         self.dsb_picimp_depth.setDecimals(6)
         self.dsb_picimp_depth.setMinimum(0.0)
         self.dsb_picimp_depth.setMaximum(999999999.0)
-        self.dsb_picimp_depth.setProperty("value", 1000.0)
+        self.dsb_picimp_depth.setProperty('value', 1000.0)
         self.rb_picimp_westeast.setChecked(True)
         self.dsb_picimp_maxalt.setDecimals(6)
         self.dsb_picimp_maxalt.setMinimum(-999999999.0)
         self.dsb_picimp_maxalt.setMaximum(999999999.0)
-        self.dsb_picimp_maxalt.setProperty("value", 1000.0)
+        self.dsb_picimp_maxalt.setProperty('value', 1000.0)
 
-        self.setWindowTitle("Profile Picture Importer")
-        groupbox.setTitle("Profile Coordinates")
-        self.rb_picimp_westeast.setText("Profile is from West to East")
-        self.rb_picimp_southnorth.setText("Profile is from South to North")
-        label.setText("West/South Coordinate")
-        label_2.setText("East/North Coordinate")
-        label_3.setText("Depth")
-        label_4.setText("Maximum Altitude")
-        label_5.setText('Press Cancel if you wish to connect profile '
-                        'information from a 3D model')
+        self.setWindowTitle('Profile Picture Importer')
 
         gridlayout_2.addWidget(groupbox, 0, 0, 1, 2)
         gridlayout_2.addWidget(label_5, 1, 0, 1, 2)
@@ -1152,7 +1146,7 @@ class ImportPicture(QtWidgets.QDialog):
         else:
             self.grid.dataid = r'South to North'
 
-        self.grid.dataid = "Image"
+        self.grid.dataid = 'Image'
         self.grid.nullvalue = 0
 
         rows, cols = self.grid.data.shape
@@ -1236,8 +1230,8 @@ class MessageCombo(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Ok)
 
-        self.setWindowTitle("Model Choice")
-        label_master.setText("Choose Model:")
+        self.setWindowTitle('Model Choice')
+        label_master.setText('Choose Model:')
 
         gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.master, 0, 1, 1, 1)

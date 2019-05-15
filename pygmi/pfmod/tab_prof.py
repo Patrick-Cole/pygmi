@@ -76,7 +76,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_overview = MySlider()
         self.hs_sideview = MySlider()
         self.combo_overview = QtWidgets.QComboBox()
-        self.label_sideview = QtWidgets.QLabel("None")
+        self.label_sideview = QtWidgets.QLabel('None')
 
         self.sb_layer = QtWidgets.QSpinBox()
         self.hs_layer = MySlider()
@@ -97,9 +97,9 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.lw_prof_defs.setFixedWidth(220)
 
-        pb_rcopy = QtWidgets.QPushButton("Ranged Copy")
-        pb_lbound = QtWidgets.QPushButton("Add Lithological Boundary")
-        pb_export_csv = QtWidgets.QPushButton("Export All Profiles")
+        pb_rcopy = QtWidgets.QPushButton('Ranged Copy')
+        pb_lbound = QtWidgets.QPushButton('Add Lithological Boundary')
+        pb_export_csv = QtWidgets.QPushButton('Export All Profiles')
 
         lbl_dial_value = QtWidgets.QLabel('Profile Direction: ')
 
@@ -108,15 +108,15 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_sideview.setEnabled(False)
 
         self.sb_layer.setMaximum(self.lmod1.numz-1)
-        self.sb_layer.setPrefix("Layer:")
+        self.sb_layer.setPrefix('Layer:')
         self.sb_layer.setWrapping(True)
 
         self.hs_overview.setMaximum(100)
-        self.hs_overview.setProperty("value", 0)
+        self.hs_overview.setProperty('value', 0)
         self.hs_overview.setOrientation(QtCore.Qt.Horizontal)
 
         self.hs_sideview.setMaximum(100)
-        self.hs_sideview.setProperty("value", 0)
+        self.hs_sideview.setProperty('value', 0)
         self.hs_sideview.setOrientation(QtCore.Qt.Horizontal)
 
         self.hs_layer.setSizePolicy(sizepolicy)
@@ -125,12 +125,12 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_profnum.setSizePolicy(sizepolicy)
         self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
 
-        self.sb_profnum.setPrefix("Profile:")
+        self.sb_profnum.setPrefix('Profile:')
         self.sb_profnum.setWrapping(True)
 
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
-        self.sb_profile_linethick.setPrefix("Line Thickness: ")
+        self.sb_profile_linethick.setPrefix('Line Thickness: ')
 
 # Set groupboxes and layouts
         gridlayout = QtWidgets.QGridLayout(self)
@@ -149,7 +149,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         hl_pics.addWidget(self.label_sideview)
         hl_pics.addWidget(self.hs_sideview)
 
-        gb_dir = QtWidgets.QGroupBox("Profile Orientation")
+        gb_dir = QtWidgets.QGroupBox('Profile Orientation')
         hl_dir = QtWidgets.QHBoxLayout(gb_dir)
         hl_dir.addWidget(self.dial_prof_dir)
         hl_dir.addWidget(lbl_dial_value)
@@ -896,7 +896,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.mmc.punit = 'mGal'
             regtmp = self.lmod1.gregional
 
-        self.mmc.xlabel = "Distance (m)"
+        self.mmc.xlabel = 'Distance (m)'
 
         px1, px2 = self.lmod1.custprofx['rotate']
 
@@ -1054,7 +1054,7 @@ class MyMplCanvas(FigureCanvas):
 
 # Initial Images
         self.paxes = fig.add_subplot(222)
-        self.paxes.yaxis.set_label_text("mGal")
+        self.paxes.yaxis.set_label_text('mGal')
         self.paxes.ticklabel_format(useOffset=False)
 
         self.cal = self.paxes.plot([], [], zorder=10, color='blue')
@@ -1062,14 +1062,14 @@ class MyMplCanvas(FigureCanvas):
 
         self.axes = fig.add_subplot(224, sharex=self.paxes)
         self.axes.xaxis.set_label_text(self.xlabel)
-        self.axes.yaxis.set_label_text("Altitude (m)")
+        self.axes.yaxis.set_label_text('Altitude (m)')
 #        self.axes.callbacks.connect('xlim_changed', self.paxes_lim_update)
 
         self.laxes = fig.add_subplot(121)
 
-        self.laxes.set_title("Layer View")
-        self.laxes.xaxis.set_label_text("Eastings (m)")
-        self.laxes.yaxis.set_label_text("Northings (m)")
+        self.laxes.set_title('Layer View')
+        self.laxes.xaxis.set_label_text('Eastings (m)')
+        self.laxes.yaxis.set_label_text('Northings (m)')
 
         self.lims2 = self.laxes.imshow(self.lmdata, cmap=self.cbar,
                                        aspect='equal')
@@ -1082,10 +1082,10 @@ class MyMplCanvas(FigureCanvas):
         self.ims2 = self.axes.imshow(self.cbar(self.mdata), aspect='auto')
         self.ims = self.axes.imshow(self.cbar(self.mdata), aspect='auto')
 
-        self.ims.format_cursor_data = lambda x: ""
-        self.ims2.format_cursor_data = lambda x: ""
-        self.lims.format_cursor_data = lambda x: ""
-        self.lims2.format_cursor_data = lambda x: ""
+        self.ims.format_cursor_data = lambda x: ''
+        self.ims2.format_cursor_data = lambda x: ''
+        self.lims.format_cursor_data = lambda x: ''
+        self.lims2.format_cursor_data = lambda x: ''
 
         self.prf = self.axes.plot([0, 0])
 
@@ -1465,15 +1465,17 @@ class LithBound(QtWidgets.QDialog):
         self.buttonbox = QtWidgets.QDialogButtonBox(self)
         self.lw_lithupper = QtWidgets.QListWidget(self)
         self.lw_lithlower = QtWidgets.QListWidget(self)
-        self.rb_depth = QtWidgets.QRadioButton()
-        self.rb_height = QtWidgets.QRadioButton()
+        self.rb_depth = QtWidgets.QRadioButton('Z-coordinate is in units of '
+                                               'depth(positive down)')
+        self.rb_height = QtWidgets.QRadioButton('Z-coordinate is in units of '
+                                                'height above sea level')
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
         gridlayout = QtWidgets.QGridLayout(self)
-        label_3 = QtWidgets.QLabel("Lithologies Above Layer")
-        label_4 = QtWidgets.QLabel("Lithologies Below Layer")
+        label_3 = QtWidgets.QLabel('Lithologies Above Layer')
+        label_4 = QtWidgets.QLabel('Lithologies Below Layer')
 
         gridlayout.addWidget(label_3, 0, 0, 1, 1)
         self.lw_lithupper.setSelectionMode(
@@ -1488,16 +1490,12 @@ class LithBound(QtWidgets.QDialog):
             QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
 
         self.rb_depth.setChecked(True)
-        self.rb_depth.setText(
-            "Z-coordinate is in units of depth(positive down)")
-        self.rb_height.setText(
-            "Z-coordinate is in units of height above sea level")
 
         gridlayout.addWidget(self.rb_depth, 2, 0, 1, 2)
         gridlayout.addWidget(self.rb_height, 3, 0, 1, 2)
         gridlayout.addWidget(self.buttonbox, 4, 0, 1, 2)
 
-        self.setWindowTitle("Add Lithological Boundary")
+        self.setWindowTitle('Add Lithological Boundary')
 
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
@@ -1537,15 +1535,15 @@ class PlotScale(QtWidgets.QDialog):
 
         self.lmod1 = lmod
         self.buttonbox = QtWidgets.QDialogButtonBox(self)
-        self.rb_axis_allmax = QtWidgets.QRadioButton("Scale to all maximum")
-        self.rb_axis_datamax = QtWidgets.QRadioButton("Scale to dataset "
-                                                      "maximum")
-        self.rb_axis_profmax = QtWidgets.QRadioButton("Scale to profile "
-                                                      "maximum")
-        self.rb_axis_calcmax = QtWidgets.QRadioButton("Scale to calculated "
-                                                      "maximum")
-        self.rb_axis_custmax = QtWidgets.QRadioButton("Scale to custom "
-                                                      "maximum")
+        self.rb_axis_allmax = QtWidgets.QRadioButton('Scale to all maximum')
+        self.rb_axis_datamax = QtWidgets.QRadioButton('Scale to dataset '
+                                                      'maximum')
+        self.rb_axis_profmax = QtWidgets.QRadioButton('Scale to profile '
+                                                      'maximum')
+        self.rb_axis_calcmax = QtWidgets.QRadioButton('Scale to calculated '
+                                                      'maximum')
+        self.rb_axis_custmax = QtWidgets.QRadioButton('Scale to custom '
+                                                      'maximum')
         self.dsb_axis_custmin = QtWidgets.QDoubleSpinBox()
         self.dsb_axis_custmax = QtWidgets.QDoubleSpinBox()
 
@@ -1553,7 +1551,7 @@ class PlotScale(QtWidgets.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        self.setWindowTitle("Field Display Limits")
+        self.setWindowTitle('Field Display Limits')
 
         self.rb_axis_allmax.setChecked(True)
         self.dsb_axis_custmin.setValue(0.)
@@ -1593,8 +1591,8 @@ class RangedCopy(QtWidgets.QDialog):
         QtWidgets.QDialog.__init__(self, parent)
 
 #        if parent.rb_cust.isChecked():
-#            parent.showtext("You cannot perform a ranged copy "
-#                            "on a custom profile")
+#            parent.showtext('You cannot perform a ranged copy '
+#                            'on a custom profile')
 #            self.reject()
 
         self.parent = parent
@@ -1605,25 +1603,25 @@ class RangedCopy(QtWidgets.QDialog):
         self.lw_lithdel = QtWidgets.QListWidget()
         self.lw_lithcopy = QtWidgets.QListWidget()
         self.sb_end = QtWidgets.QSpinBox()
-        self.rb_sideview = QtWidgets.QRadioButton("Side View")
-        self.rb_overview = QtWidgets.QRadioButton("Top View")
+        self.rb_sideview = QtWidgets.QRadioButton('Side View')
+        self.rb_overview = QtWidgets.QRadioButton('Top View')
 
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
 
-        self.setWindowTitle("Ranged Copy")
+        self.setWindowTitle('Ranged Copy')
 
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
-        label = QtWidgets.QLabel("Range Start")
-        label_2 = QtWidgets.QLabel("Master Profile")
-        label_3 = QtWidgets.QLabel("Lithologies To Copy")
-        label_4 = QtWidgets.QLabel("Lithologies To Overwrite")
-        label_5 = QtWidgets.QLabel("Range End")
+        label = QtWidgets.QLabel('Range Start')
+        label_2 = QtWidgets.QLabel('Master Profile')
+        label_3 = QtWidgets.QLabel('Lithologies To Copy')
+        label_4 = QtWidgets.QLabel('Lithologies To Overwrite')
+        label_5 = QtWidgets.QLabel('Range End')
 
         self.sb_master.setMaximum(999999999)
         self.sb_start.setMaximum(999999999)
@@ -1647,7 +1645,7 @@ class RangedCopy(QtWidgets.QDialog):
         self.sb_end.setValue(rmax)
         self.sb_master.setValue(rval)
 
-        gb_target = QtWidgets.QGroupBox("Target:")
+        gb_target = QtWidgets.QGroupBox('Target:')
         vl_dir = QtWidgets.QHBoxLayout(gb_target)
         vl_dir.addWidget(self.rb_sideview)
         vl_dir.addWidget(self.rb_overview)
@@ -1725,7 +1723,7 @@ class GaugeWidget(QtWidgets.QDial):
         super().__init__(*args, **kwargs)
         ipth = os.path.dirname(misc.__file__)+'//'
 
-        self._bg = QtGui.QPixmap(ipth+"DirectionDial.png")
+        self._bg = QtGui.QPixmap(ipth+'DirectionDial.png')
         self.setValue(0)
         self.setMaximum(359)
         self.setFixedWidth(60)

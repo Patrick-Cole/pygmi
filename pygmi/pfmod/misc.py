@@ -204,16 +204,14 @@ class MergeMod3D(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
-        label_master = QtWidgets.QLabel()
-        label_slave = QtWidgets.QLabel()
+        label_master = QtWidgets.QLabel('Master Dataset:')
+        label_slave = QtWidgets.QLabel('Slave Dataset:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("3D Model Merge")
-        label_master.setText("Master Dataset:")
-        label_slave.setText("Slave Dataset:")
+        self.setWindowTitle('3D Model Merge')
 
         gridlayout_main.addWidget(label_master, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.master, 0, 1, 1, 1)

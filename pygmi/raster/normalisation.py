@@ -45,14 +45,14 @@ class Normalisation(QtWidgets.QDialog):
         self.pbar = parent.pbar
         self.reportback = self.parent.showprocesslog
 
-        self.radiobutton_interval = QtWidgets.QRadioButton()
-        self.radiobutton_mean = QtWidgets.QRadioButton()
-        self.radiobutton_median = QtWidgets.QRadioButton()
-        self.radiobutton_8bit = QtWidgets.QRadioButton()
+        self.radiobutton_interval = QtWidgets.QRadioButton('Interval [0 1]')
+        self.radiobutton_mean = QtWidgets.QRadioButton('Mean: zero,  Standard deviation: unity')
+        self.radiobutton_median = QtWidgets.QRadioButton('Median: zero,  Median absolute deviation: unity')
+        self.radiobutton_8bit = QtWidgets.QRadioButton('8-bit histogram equalisation [0 255]')
 
         self.setupui()
 
-        self.name = "Normalisation"
+        self.name = 'Normalisation'
         self.normtype = 'minmax'  # mimax/meanstd/medmad/histeq
 
     def setupui(self):
@@ -65,7 +65,7 @@ class Normalisation(QtWidgets.QDialog):
 
         self.radiobutton_interval.setChecked(True)
 
-        groupbox = QtWidgets.QGroupBox()
+        groupbox = QtWidgets.QGroupBox('Normalisation/Scaling')
         verticallayout_2 = QtWidgets.QVBoxLayout(groupbox)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -82,13 +82,7 @@ class Normalisation(QtWidgets.QDialog):
         verticallayout.addWidget(groupbox)
         verticallayout.addLayout(horizontallayout)
 
-        self.setWindowTitle("Normalisation")
-        groupbox.setTitle("Normalisation/Scaling")
-        self.radiobutton_interval.setText("Interval [0 1]")
-        self.radiobutton_mean.setText("Mean: zero,  Standard deviation: unity")
-        self.radiobutton_8bit.setText("8-bit histogram equalisation [0 255]")
-        self.radiobutton_median.setText(
-            "Median: zero,  Median absolute deviation: unity")
+        self.setWindowTitle('Normalisation')
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)

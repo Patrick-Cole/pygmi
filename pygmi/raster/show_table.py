@@ -36,7 +36,7 @@ class BasicStats(QtWidgets.QDialog):
 
         self.combobox = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
-        self.pushbutton_save = QtWidgets.QPushButton()
+        self.pushbutton_save = QtWidgets.QPushButton('Save')
 
         self.setupui()
         self.indata = {}
@@ -53,7 +53,6 @@ class BasicStats(QtWidgets.QDialog):
         self.tablewidget.setColumnCount(1)
 
         self.setWindowTitle('Basic Statistics')
-        self.pushbutton_save.setText("Save")
 
         gridlayout.addWidget(self.tablewidget, 0, 0, 2, 1)
         gridlayout.addWidget(self.pushbutton_save, 0, 3, 1, 1)
@@ -97,7 +96,7 @@ class BasicStats(QtWidgets.QDialog):
 
     def save(self):
         """ Save """
-        ext = "CSV Format (*.csv)"
+        ext = 'CSV Format (*.csv)'
         ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
                                                          '.', ext)
         if ifile == '':
@@ -144,9 +143,9 @@ class ClusterStats(QtWidgets.QDialog):
         QtWidgets.QDialog.__init__(self)
 
         self.gridlayout = QtWidgets.QGridLayout(self)
-        self.combobox = QtWidgets.QComboBox(self)
-        self.tablewidget = QtWidgets.QTableWidget(self)
-        self.pushbutton_save = QtWidgets.QPushButton(self)
+        self.combobox = QtWidgets.QComboBox()
+        self.tablewidget = QtWidgets.QTableWidget()
+        self.pushbutton_save = QtWidgets.QPushButton('Save')
 
         self.setupui()
         self.indata = {}
@@ -165,7 +164,6 @@ class ClusterStats(QtWidgets.QDialog):
 
         self.setWindowTitle(
             'Cluster Statistics (Center Value : Std Deviation)')
-        self.pushbutton_save.setText("Save")
 
         self.combobox.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
@@ -216,7 +214,7 @@ class ClusterStats(QtWidgets.QDialog):
 
     def save(self):
         """ Save """
-        ext = "CSV Format (*.csv)"
+        ext = 'CSV Format (*.csv)'
         ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
                                                          '.', ext)
         if ifile == '':

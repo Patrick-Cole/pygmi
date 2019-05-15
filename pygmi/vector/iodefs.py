@@ -56,15 +56,15 @@ class ImportLEMI417Data():
         input file name. Used in main.py
     """
     def __init__(self, parent=None):
-        self.name = "Import LEMI-417 Data: "
+        self.name = 'Import LEMI-417 Data: '
         self.pbar = None
         self.parent = parent
         self.outdata = {}
-        self.ifile = ""
+        self.ifile = ''
 
     def settings(self):
         """Entry point into item. Data imported from here."""
-        ext = "LEMI-417 Text DataAll Files (*.t*)"
+        ext = 'LEMI-417 Text DataAll Files (*.t*)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -116,12 +116,12 @@ class ImportPointData(QtWidgets.QDialog):
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
-        self.name = "Import Point/Line Data: "
+        self.name = 'Import Point/Line Data: '
         self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.ifile = ""
+        self.ifile = ''
 
         self.xchan = QtWidgets.QComboBox()
         self.ychan = QtWidgets.QComboBox()
@@ -133,16 +133,14 @@ class ImportPointData(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
-        label_xchan = QtWidgets.QLabel()
-        label_ychan = QtWidgets.QLabel()
+        label_xchan = QtWidgets.QLabel('X Channel:')
+        label_ychan = QtWidgets.QLabel('Y Channel:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle(r"Import Point/Line Data")
-        label_xchan.setText("X Channel:")
-        label_ychan.setText("Y Channel:")
+        self.setWindowTitle(r'Import Point/Line Data')
 
         gridlayout_main.addWidget(label_xchan, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
@@ -157,8 +155,8 @@ class ImportPointData(QtWidgets.QDialog):
 
     def settings(self):
         """Entry point into item. Data imported from here."""
-        ext = ("Common Formats (*.csv *.dat *.xyz *.txt);;"
-               "All Files (*.*)")
+        ext = ('Common Formats (*.csv *.dat *.xyz *.txt);;'
+               'All Files (*.*)')
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -225,9 +223,9 @@ class PointCut():
         dictionary of output datasets
     """
     def __init__(self, parent):
-        self.ifile = ""
-        self.name = "Cut Data:"
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Cut Data:'
+        self.ext = ''
         self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
@@ -241,7 +239,7 @@ class PointCut():
             self.parent.showprocesslog('No point data')
             return False
 
-        ext = "Shape file (*.shp)"
+        ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
@@ -260,7 +258,6 @@ class PointCut():
             QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
                                           QtWidgets.QMessageBox.Ok)
             return False
-
 
         self.pbar.to_max()
         self.outdata['Point'] = data
@@ -287,7 +284,7 @@ class ExportPoint():
     """
 
     def __init__(self, parent):
-        self.name = "Export Point: "
+        self.name = 'Export Point: '
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -347,15 +344,15 @@ class ImportShapeData():
         input file name. Used in main.py
     """
     def __init__(self, parent=None):
-        self.name = "Import Shapefile Data: "
+        self.name = 'Import Shapefile Data: '
         self.pbar = None
         self.parent = parent
         self.outdata = {}
-        self.ifile = ""
+        self.ifile = ''
 
     def settings(self):
         """Entry point into item. Data imported from here."""
-        ext = "Shapefile (*.shp);;" + "All Files (*.*)"
+        ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
                                                             'Open File',

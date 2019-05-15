@@ -51,41 +51,41 @@ class MenuWidget():
 
 # Normal menus
         self.menu = QtWidgets.QMenu(parent.menubar)
-        self.menu.setTitle("Potential Field Modelling")
+        self.menu.setTitle('Potential Field Modelling')
         parent.menubar.addAction(self.menu.menuAction())
 
         self.action_import_mod3d = QtWidgets.QAction(parent)
-        self.action_import_mod3d.setText("Import 3D Model")
+        self.action_import_mod3d.setText('Import 3D Model')
         self.menu.addAction(self.action_import_mod3d)
         self.action_import_mod3d.triggered.connect(self.import_mod3d)
 
         self.action_pfmod = QtWidgets.QAction(self.parent)
-        self.action_pfmod.setText("Model Creation and Editing")
+        self.action_pfmod.setText('Model Creation and Editing')
         self.menu.addAction(self.action_pfmod)
         self.action_pfmod.triggered.connect(self.pfmod)
 
         self.menu.addSeparator()
 
         self.action_merge_mod3d = QtWidgets.QAction(parent)
-        self.action_merge_mod3d.setText("Merge two 3D Models")
+        self.action_merge_mod3d.setText('Merge two 3D Models')
         self.menu.addAction(self.action_merge_mod3d)
         self.action_merge_mod3d.triggered.connect(self.merge_mod3d)
 
-        self.action_prof_pic = QtWidgets.QAction(parent)
-        self.action_prof_pic.setText("Import Profile Picture")
-        self.menu.addAction(self.action_prof_pic)
-        self.action_prof_pic.triggered.connect(self.import_prof_pic)
+#        self.action_prof_pic = QtWidgets.QAction(parent)
+#        self.action_prof_pic.setText('Import Profile Picture')
+#        self.menu.addAction(self.action_prof_pic)
+#        self.action_prof_pic.triggered.connect(self.import_prof_pic)
 
 # Context Menu
         context_menu['Model3D'].addSeparator()
 
         self.action_mod3d = QtWidgets.QAction(self.parent)
-        self.action_mod3d.setText("3D Model Display")
+        self.action_mod3d.setText('3D Model Display')
         context_menu['Model3D'].addAction(self.action_mod3d)
         self.action_mod3d.triggered.connect(self.mod3d)
 
         self.action_export_mod3d = QtWidgets.QAction(self.parent)
-        self.action_export_mod3d.setText("Export 3D Model")
+        self.action_export_mod3d.setText('Export 3D Model')
         context_menu['Model3D'].addAction(self.action_export_mod3d)
         self.action_export_mod3d.triggered.connect(self.export_mod3d)
 
@@ -96,7 +96,7 @@ class MenuWidget():
     def pfmod(self):
         """ voxel modelling of data"""
         fnc = pfmod.MainWidget(self.parent)
-        self.parent.item_insert("Step", "Potential\nField\nModelling", fnc)
+        self.parent.item_insert('Step', 'Potential\nField\nModelling', fnc)
 
     def mod3d(self):
         """ 3D display of data"""
@@ -105,14 +105,14 @@ class MenuWidget():
     def import_mod3d(self):
         """ Imports data"""
         fnc = iodefs.ImportMod3D(self.parent)
-        self.parent.item_insert("Io", "Import 3D Model", fnc)
+        self.parent.item_insert('Io', 'Import 3D Model', fnc)
 
     def merge_mod3d(self):
         """ Imports data"""
         fnc = misc.MergeMod3D(self.parent)
-        self.parent.item_insert("Step", "Merge 3D Models", fnc)
+        self.parent.item_insert('Step', 'Merge 3D Models', fnc)
 
     def import_prof_pic(self):
         """ Imports data"""
         fnc = iodefs.ImportPicture(self.parent)
-        self.parent.item_insert("Io", "Import Profile\n Picture", fnc)
+        self.parent.item_insert('Io', 'Import Profile\n Picture', fnc)

@@ -66,9 +66,9 @@ class DataCut():
         dictionary of output datasets
     """
     def __init__(self, parent):
-        self.ifile = ""
-        self.name = "Cut Data:"
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Cut Data:'
+        self.ext = ''
         self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
@@ -82,7 +82,7 @@ class DataCut():
             self.parent.showprocesslog('No raster data')
             return False
 
-        ext = "Shape file (*.shp)"
+        ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
@@ -134,8 +134,8 @@ class DataGrid(QtWidgets.QDialog):
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.dsb_null = QtWidgets.QDoubleSpinBox()
         self.dataid = QtWidgets.QComboBox()
-        self.label_rows = QtWidgets.QLabel()
-        self.label_cols = QtWidgets.QLabel()
+        self.label_rows = QtWidgets.QLabel('Rows: 0')
+        self.label_cols = QtWidgets.QLabel('Columns: 0')
 
         self.setupui()
 
@@ -144,9 +144,9 @@ class DataGrid(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
-        label_band = QtWidgets.QLabel("Column to Grid:")
-        label_dxy = QtWidgets.QLabel("Cell Size:")
-        label_null = QtWidgets.QLabel("Null Value:")
+        label_band = QtWidgets.QLabel('Column to Grid:')
+        label_dxy = QtWidgets.QLabel('Cell Size:')
+        label_null = QtWidgets.QLabel('Null Value:')
 
         self.dsb_null.setMaximum(np.finfo(np.double).max)
         self.dsb_null.setMinimum(np.finfo(np.double).min)
@@ -157,9 +157,7 @@ class DataGrid(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Dataset Gridding")
-        self.label_rows.setText("Rows: 0")
-        self.label_cols.setText("Columns: 0")
+        self.setWindowTitle('Dataset Gridding')
 
         gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
@@ -186,8 +184,8 @@ class DataGrid(QtWidgets.QDialog):
         cols = int(x.ptp()/dxy)
         rows = int(y.ptp()/dxy)
 
-        self.label_rows.setText("Rows: "+str(rows))
-        self.label_cols.setText("Columns: "+str(cols))
+        self.label_rows.setText('Rows: '+str(rows))
+        self.label_cols.setText('Columns: '+str(cols))
 
     def settings(self):
         """ Settings """
@@ -284,8 +282,8 @@ class DataMerge(QtWidgets.QDialog):
         self.parent = parent
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
-        self.label_rows = QtWidgets.QLabel()
-        self.label_cols = QtWidgets.QLabel()
+        self.label_rows = QtWidgets.QLabel('Rows: 0')
+        self.label_cols = QtWidgets.QLabel('Columns: 0')
 
         self.setupui()
 
@@ -295,7 +293,7 @@ class DataMerge(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
-        label_dxy = QtWidgets.QLabel()
+        label_dxy = QtWidgets.QLabel('Cell Size:')
 
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
@@ -304,10 +302,7 @@ class DataMerge(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Dataset Merge and Resample")
-        self.label_rows.setText("Rows: 0")
-        self.label_cols.setText("Columns: 0")
-        label_dxy.setText("Cell Size:")
+        self.setWindowTitle('Dataset Merge and Resample')
 
         gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
@@ -338,8 +333,8 @@ class DataMerge(QtWidgets.QDialog):
         cols = int((xmax - xmin)/dxy)
         rows = int((ymax - ymin)/dxy)
 
-        self.label_rows.setText("Rows: "+str(rows))
-        self.label_cols.setText("Columns: "+str(cols))
+        self.label_rows.setText('Rows: '+str(rows))
+        self.label_cols.setText('Columns: '+str(cols))
 
     def settings(self):
         """ Settings """
@@ -380,8 +375,8 @@ class DataMerge(QtWidgets.QDialog):
         gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
 
         if cols == 0 or rows == 0:
-            self.parent.showprocesslog("Your rows or cols are zero. " +
-                                       "Your input projection may be wrong")
+            self.parent.showprocesslog('Your rows or cols are zero. ' +
+                                       'Your input projection may be wrong')
             return
 
         dat = []
@@ -450,7 +445,7 @@ class DataReproj(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Dataset Reprojection")
+        self.setWindowTitle('Dataset Reprojection')
 
         gridlayout_main.addWidget(self.in_proj, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.out_proj, 0, 1, 1, 1)
@@ -467,7 +462,7 @@ class DataReproj(QtWidgets.QDialog):
         """
 
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            self.parent.showprocesslog("Could not reproject")
+            self.parent.showprocesslog('Could not reproject')
             return
 
 # Input stuff
@@ -520,9 +515,9 @@ class DataReproj(QtWidgets.QDialog):
             rows = round((maxy - miny)/newdim)
 
             if cols == 0 or rows == 0:
-                self.parent.showprocesslog("Your rows or cols are zero. " +
-                                           "Your input projection may be " +
-                                           "wrong")
+                self.parent.showprocesslog('Your rows or cols are zero. ' +
+                                           'Your input projection may be ' +
+                                           'wrong')
                 return
 
 # top left x, w-e pixel size, rotation, top left y, rotation, n-s pixel size
@@ -591,9 +586,9 @@ class GetProf():
         dictionary of output datasets
     """
     def __init__(self, parent):
-        self.ifile = ""
-        self.name = "Get Profile: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Get Profile: '
+        self.ext = ''
         self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
@@ -607,7 +602,7 @@ class GetProf():
             self.parent.showprocesslog('No raster data')
             return False
 
-        ext = "Shape file (*.shp)"
+        ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open Shape File', '.', ext)
@@ -683,13 +678,12 @@ class GroupProj(QtWidgets.QWidget):
         self.wkt = ''
 
         self.gridlayout = QtWidgets.QGridLayout(self)
-        self.groupbox = QtWidgets.QGroupBox()
+        self.groupbox = QtWidgets.QGroupBox(title)
         self.combobox = QtWidgets.QComboBox()
         self.label = QtWidgets.QLabel()
 
         self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
 
-        self.groupbox.setTitle(title)
         gridlayout = QtWidgets.QGridLayout(self.groupbox)
         gridlayout.addWidget(self.combobox, 0, 0, 1, 1)
         gridlayout.addWidget(self.label, 1, 0, 1, 1)
@@ -757,9 +751,8 @@ class Metadata(QtWidgets.QDialog):
         self.oldtxt = ''
         self.parent = parent
 
-        self.groupbox = QtWidgets.QGroupBox()
         self.combobox_bandid = QtWidgets.QComboBox()
-        self.pb_rename_id = QtWidgets.QPushButton()
+        self.pb_rename_id = QtWidgets.QPushButton('Rename Band Name')
         self.lbl_rows = QtWidgets.QLabel()
         self.lbl_cols = QtWidgets.QLabel()
         self.inp_epsg_info = QtWidgets.QLabel()
@@ -781,48 +774,35 @@ class Metadata(QtWidgets.QDialog):
         """ Setup UI """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
+        groupbox = QtWidgets.QGroupBox('Dataset')
 
-        gridlayout = QtWidgets.QGridLayout(self.groupbox)
-        label_tlx = QtWidgets.QLabel()
-        label_tly = QtWidgets.QLabel()
-        label_xdim = QtWidgets.QLabel()
-        label_ydim = QtWidgets.QLabel()
-        label_null = QtWidgets.QLabel()
-        label_rows = QtWidgets.QLabel()
-        label_cols = QtWidgets.QLabel()
-        label_min = QtWidgets.QLabel()
-        label_max = QtWidgets.QLabel()
-        label_mean = QtWidgets.QLabel()
-        label_units = QtWidgets.QLabel()
-        label_bandid = QtWidgets.QLabel()
+        gridlayout = QtWidgets.QGridLayout(groupbox)
+        label_tlx = QtWidgets.QLabel('Top Left X Coordinate:')
+        label_tly = QtWidgets.QLabel('Top Left Y Coordinate:')
+        label_xdim = QtWidgets.QLabel('X Dimension:')
+        label_ydim = QtWidgets.QLabel('Y Dimension:')
+        label_null = QtWidgets.QLabel('Null/Nodata value:')
+        label_rows = QtWidgets.QLabel('Rows:')
+        label_cols = QtWidgets.QLabel('Columns:')
+        label_min = QtWidgets.QLabel('Dataset Minimum:')
+        label_max = QtWidgets.QLabel('Dataset Maximum:')
+        label_mean = QtWidgets.QLabel('Dataset Mean:')
+        label_units = QtWidgets.QLabel('Dataset Units:')
+        label_bandid = QtWidgets.QLabel('Band Name:')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
-        self.groupbox.setSizePolicy(sizepolicy)
+        groupbox.setSizePolicy(sizepolicy)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Dataset Metadata")
-        self.pb_rename_id.setText("Rename Band Name")
-        self.groupbox.setTitle("Dataset")
-        label_bandid.setText('Band Name:')
-        label_tlx.setText("Top Left X Coordinate:")
-        label_tly.setText("Top Left Y Coordinate:")
-        label_xdim.setText("X Dimension:")
-        label_ydim.setText("Y Dimension:")
-        label_null.setText("Null/Nodata value:")
-        label_rows.setText("Rows:")
-        label_cols.setText("Columns:")
-        label_min.setText("Dataset Minimum:")
-        label_max.setText("Dataset Maximum:")
-        label_mean.setText("Dataset Mean:")
-        label_units.setText("Dataset Units:")
+        self.setWindowTitle('Dataset Metadata')
 
         gridlayout_main.addWidget(label_bandid, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.combobox_bandid, 0, 1, 1, 3)
         gridlayout_main.addWidget(self.pb_rename_id, 1, 1, 1, 3)
-        gridlayout_main.addWidget(self.groupbox, 2, 0, 1, 2)
+        gridlayout_main.addWidget(groupbox, 2, 0, 1, 2)
         gridlayout_main.addWidget(self.proj, 2, 2, 1, 2)
         gridlayout_main.addWidget(buttonbox, 4, 0, 1, 4)
 
@@ -1025,9 +1005,9 @@ class RTP(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.rtp')
-        label_band = QtWidgets.QLabel()
-        label_inc = QtWidgets.QLabel()
-        label_dec = QtWidgets.QLabel()
+        label_band = QtWidgets.QLabel('Band to Reduce to the Pole:')
+        label_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
+        label_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
 
         self.dsb_inc.setMaximum(90.0)
         self.dsb_inc.setMinimum(-90.0)
@@ -1037,10 +1017,7 @@ class RTP(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Reduction to the Pole")
-        label_band.setText("Band to Reduce to the Pole:")
-        label_inc.setText("Inclination of Magnetic Field:")
-        label_dec.setText("Declination of Magnetic Field:")
+        self.setWindowTitle('Reduction to the Pole')
 
         gridlayout_main.addWidget(label_band, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
@@ -1241,7 +1218,7 @@ def cut_raster(data, ifile):
             tmpy = int((idata.extent[-1] - p[1]) / idata.ydim)
             pixels.append((tmpx, tmpy))
         irows, icols = idata.data.shape
-        rasterPoly = Image.new("L", (icols, irows), 1)
+        rasterPoly = Image.new('L', (icols, irows), 1)
         rasterize = ImageDraw.Draw(rasterPoly)
         rasterize.polygon(pixels, 0)
         mask = np.array(rasterPoly)

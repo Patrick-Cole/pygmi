@@ -95,8 +95,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.lw_3dmod_defs = QtWidgets.QListWidget()
         self.label = QtWidgets.QLabel()
         self.label2 = QtWidgets.QLabel()
-        self.pb_save = QtWidgets.QPushButton()
-        self.pb_refresh = QtWidgets.QPushButton()
+        self.pb_save = QtWidgets.QPushButton('Save to Image File (JPG or PNG)')
+        self.pb_refresh = QtWidgets.QPushButton('Refresh Model')
         self.checkbox_smooth = QtWidgets.QCheckBox('Smooth Model')
         self.checkbox_ortho = QtWidgets.QCheckBox('Orthographic Projection')
         self.checkbox_axis = QtWidgets.QCheckBox('Display Axis')
@@ -134,10 +134,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
         self.checkbox_ortho.setChecked(True)
         self.checkbox_axis.setChecked(True)
-
-
-        self.pb_save.setText("Save to Image File (JPG or PNG)")
-        self.pb_refresh.setText('Refresh Model')
 
         verticallayout.addWidget(self.lw_3dmod_defs)
         verticallayout.addWidget(QtWidgets.QLabel('Light Position:'))
@@ -350,7 +346,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.gdata = self.lmod1.lith_index[::1, ::1, ::-1]
 
 #     update colors
-        i = self.lw_3dmod_defs.findItems("*", QtCore.Qt.MatchWildcard)
+        i = self.lw_3dmod_defs.findItems('*', QtCore.Qt.MatchWildcard)
         itxt = [j.text() for j in i]
         itmp = []
         for i in itxt:

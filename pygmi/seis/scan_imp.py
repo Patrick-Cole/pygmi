@@ -73,9 +73,9 @@ class SIMP():
     """ Main form which does the GUI and the program """
     def __init__(self, parent=None):
         # PyGMI variables
-        self.ifile = ""
-        self.name = "Import Data: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Import Data: '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -125,7 +125,7 @@ class SIMP():
         self.parent.clearprocesslog()
         self.showtext('Import Bulletin to Seisan Format')
 
-        ext = "Scanned Bulletin Text File (*.txt)"
+        ext = 'Scanned Bulletin Text File (*.txt)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
                                                             'Open File',

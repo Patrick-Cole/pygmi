@@ -64,11 +64,19 @@ class Cluster(QtWidgets.QDialog):
         self.doublespinbox_eps = QtWidgets.QDoubleSpinBox()
         self.doublespinbox_bthres = QtWidgets.QDoubleSpinBox()
         self.spinbox_maxiterations = QtWidgets.QSpinBox()
-        self.radiobutton_sscale = QtWidgets.QRadioButton()
-        self.radiobutton_rscale = QtWidgets.QRadioButton()
-        self.radiobutton_noscale = QtWidgets.QRadioButton()
+        self.radiobutton_sscale = QtWidgets.QRadioButton('Standard Scaling')
+        self.radiobutton_rscale = QtWidgets.QRadioButton('Robust Scaling')
+        self.radiobutton_noscale = QtWidgets.QRadioButton('No Scaling')
+        self.label_minclusters = QtWidgets.QLabel('Minimum Clusters:')
+        self.label_maxclusters = QtWidgets.QLabel('Maximum Clusters:')
+        self.label_maxiter = QtWidgets.QLabel('Maximum Iterations:')
+        self.label_maxerror = QtWidgets.QLabel('Tolerance:')
+        self.label_eps = QtWidgets.QLabel('eps:')
+        self.label_minsamples = QtWidgets.QLabel('Minimum Samples:')
+        self.label_bthres = QtWidgets.QLabel('Threshold:')
+        self.label_branchfac = QtWidgets.QLabel('Branching Factor:')
 
-        self.name = "Clustering"
+        self.name = 'Clustering'
         self.cltype = 'k-means'
         self.min_cluster = 5
         self.max_cluster = 5
@@ -95,52 +103,32 @@ class Cluster(QtWidgets.QDialog):
         gridlayout = QtWidgets.QGridLayout(self)
 
         buttonbox = QtWidgets.QDialogButtonBox()
-        label = QtWidgets.QLabel()
-        self.label_minclusters = QtWidgets.QLabel()
-        self.label_maxclusters = QtWidgets.QLabel()
-        self.label_maxiter = QtWidgets.QLabel()
-        self.label_maxerror = QtWidgets.QLabel()
-        self.label_eps = QtWidgets.QLabel()
-        self.label_minsamples = QtWidgets.QLabel()
-        self.label_bthres = QtWidgets.QLabel()
-        self.label_branchfac = QtWidgets.QLabel()
+        label = QtWidgets.QLabel('Cluster Algorithm:')
 
         self.spinbox_minclusters.setMinimum(1)
-        self.spinbox_minclusters.setProperty("value", self.min_cluster)
+        self.spinbox_minclusters.setProperty('value', self.min_cluster)
         self.spinbox_maxclusters.setMinimum(1)
-        self.spinbox_maxclusters.setProperty("value", self.max_cluster)
+        self.spinbox_maxclusters.setProperty('value', self.max_cluster)
         self.spinbox_maxiterations.setMinimum(1)
         self.spinbox_maxiterations.setMaximum(1000)
-        self.spinbox_maxiterations.setProperty("value", self.max_iter)
+        self.spinbox_maxiterations.setProperty('value', self.max_iter)
         self.spinbox_minsamples.setMinimum(2)
-        self.spinbox_minsamples.setProperty("value", self.min_samples)
+        self.spinbox_minsamples.setProperty('value', self.min_samples)
         self.doublespinbox_eps.setDecimals(5)
-        self.doublespinbox_eps.setProperty("value", self.eps)
+        self.doublespinbox_eps.setProperty('value', self.eps)
         self.doublespinbox_eps.setSingleStep(0.1)
         self.doublespinbox_maxerror.setDecimals(5)
-        self.doublespinbox_maxerror.setProperty("value", self.tol)
+        self.doublespinbox_maxerror.setProperty('value', self.tol)
         self.radiobutton_sscale.setChecked(True)
         self.spinbox_branchfac.setMinimum(2)
-        self.spinbox_branchfac.setProperty("value", self.branchfac)
+        self.spinbox_branchfac.setProperty('value', self.branchfac)
         self.doublespinbox_bthres.setDecimals(5)
-        self.doublespinbox_bthres.setProperty("value", self.bthres)
+        self.doublespinbox_bthres.setProperty('value', self.bthres)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Cluster Analysis")
-        label.setText("Cluster Algorithm:")
-        self.label_minclusters.setText("Minimum Clusters:")
-        self.label_maxclusters.setText("Maximum Clusters")
-        self.label_maxiter.setText("Maximum Iterations:")
-        self.label_maxerror.setText("Tolerance:")
-        self.label_eps.setText("eps:")
-        self.label_minsamples.setText("Minimum Samples:")
-        self.radiobutton_noscale.setText("No Scaling")
-        self.radiobutton_sscale.setText("Standard Scaling")
-        self.radiobutton_rscale.setText("Robust Scaling")
-        self.label_branchfac.setText("Branching Factor:")
-        self.label_bthres.setText("Threshold:")
+        self.setWindowTitle('Cluster Analysis')
 
         gridlayout.addWidget(label, 0, 2, 1, 1)
         gridlayout.addWidget(self.combobox_alg, 0, 4, 1, 1)
@@ -224,7 +212,7 @@ class Cluster(QtWidgets.QDialog):
             return False
 
         self.min_samples = len(self.indata['Raster'])+1
-        self.spinbox_minsamples.setProperty("value", self.min_samples)
+        self.spinbox_minsamples.setProperty('value', self.min_samples)
 
         temp = self.exec_()
         if temp == 0:
@@ -312,7 +300,7 @@ class Cluster(QtWidgets.QDialog):
             if self.cltype == 'k-means':
                 dat_out[-1].center = np.array(cfit.cluster_centers_)
 
-            self.log = ("Cluster complete" + ' (' + self.cltype+')')
+            self.log = ('Cluster complete' + ' (' + self.cltype+')')
 
         for i in dat_out:
             i.xdim = data[0].xdim
@@ -323,7 +311,7 @@ class Cluster(QtWidgets.QDialog):
             i.nullvalue = data[0].nullvalue
             i.extent = data[0].extent
 
-        self.reportback("Cluster complete" + ' ('+self.cltype + ' ' + ')')
+        self.reportback('Cluster complete' + ' ('+self.cltype + ' ' + ')')
 
         for i in dat_out:
             i.data += 1

@@ -116,8 +116,8 @@ class MyMplCanvas(FigureCanvas):
 
         cbar.set_label(data1.units)
 
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
+        self.axes.set_xlabel('Eastings')
+        self.axes.set_ylabel('Northings')
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -218,9 +218,9 @@ class MyMplCanvas(FigureCanvas):
         self.figure.colorbar(surf)
 
         ax1.set_title('')
-        ax1.set_xlabel("X")
-        ax1.set_ylabel("Y")
-        ax1.set_zlabel("Z")
+        ax1.set_xlabel('X')
+        ax1.set_ylabel('Y')
+        ax1.set_zlabel('Z')
 
         self.figure.canvas.draw()
 
@@ -239,8 +239,8 @@ class MyMplCanvas(FigureCanvas):
         dattmp = data1.data[data1.data.mask == 0].flatten()
         self.axes.hist(dattmp, 50)
         self.axes.set_title(data1.dataid, fontsize=12)
-        self.axes.set_xlabel("Data Value", fontsize=8)
-        self.axes.set_ylabel("Counts", fontsize=8)
+        self.axes.set_xlabel('Data Value', fontsize=8)
+        self.axes.set_ylabel('Counts', fontsize=8)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -260,7 +260,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Graph Window")
+        self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
@@ -269,10 +269,8 @@ class GraphWindow(QtWidgets.QDialog):
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel()
-        self.label2 = QtWidgets.QLabel()
-        self.label1.setText('Bands:')
-        self.label2.setText('Bands:')
+        self.label1 = QtWidgets.QLabel('Bands:')
+        self.label2 = QtWidgets.QLabel('Bands:')
         self.hbl.addWidget(self.label1)
         self.hbl.addWidget(self.combobox1)
         self.hbl.addWidget(self.label2)

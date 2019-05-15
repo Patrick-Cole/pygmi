@@ -337,7 +337,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Borehole Log")
+        self.setWindowTitle('Borehole Log')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl1 = QtWidgets.QHBoxLayout()
@@ -361,8 +361,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.scroll.setWidget(self.mmc)
 
         self.combobox1 = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel()
-        self.label1.setText('Borehole ID:')
+        self.label1 = QtWidgets.QLabel('Borehole ID:')
         self.hbl.addWidget(self.label1)
         self.hbl.addWidget(self.combobox1)
 
@@ -451,7 +450,7 @@ class PlotLog(GraphWindow):
 
 def main_pages():
     """ main """
-    idir = r"C:\Work\Programming\Remote_Sensing\bh2\\"
+    idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
     logfile = idir + r'logplot.xlsx'
 
@@ -670,7 +669,7 @@ def main_pages():
 
 def main_single():
     """ main """
-    idir = r"C:\Work\Programming\Remote_Sensing\bh2\\"
+    idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
     logfile = idir + r'logplot.xlsx'
 

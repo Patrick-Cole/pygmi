@@ -186,21 +186,17 @@ class IGRF(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
 
-        label_0 = QtWidgets.QLabel()
-        label_1 = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
-        label_3 = QtWidgets.QLabel()
+        label_0 = QtWidgets.QLabel('Sensor clearance above ground')
+        label_1 = QtWidgets.QLabel('Date')
+        label_2 = QtWidgets.QLabel('Digital Elevation Model')
+        label_3 = QtWidgets.QLabel('Magnetic Data')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.dsb_alt.setMaximum(99999.9)
 
-        self.setWindowTitle("IGRF")
-        label_0.setText("Sensor clearance above ground")
-        label_1.setText("Date")
-        label_2.setText("Digital Elevation Model")
-        label_3.setText("Magnetic Data")
+        self.setWindowTitle('IGRF')
 
         gridlayout.addWidget(self.proj, 0, 0, 1, 2)
         gridlayout.addWidget(label_0, 2, 0, 1, 1)
@@ -313,11 +309,11 @@ class IGRF(QtWidgets.QDialog):
         igdgc = 1
 
         if maxyr < sdate < maxyr+1:
-            self.reportback("Warning: The date " + str(sdate) +
-                            " is out of range,")
-            self.reportback("but still within one year of model expiration"
-                            " date.")
-            self.reportback("An updated model file is available before 1.1." +
+            self.reportback('Warning: The date ' + str(sdate) +
+                            ' is out of range,')
+            self.reportback('but still within one year of model expiration'
+                            ' date.')
+            self.reportback('An updated model file is available before 1.1.' +
                             str(maxyr))
 
         if max2[modelI] == 0:
@@ -722,7 +718,7 @@ class IGRF(QtWidgets.QDialog):
                     self.xtemp = self.xtemp + aa * q[k]
                     self.ztemp = self.ztemp - aa * p[k]
                 else:
-                    print("\nError in subroutine shval3")
+                    print('\nError in subroutine shval3')
 
                 l = l + 1
             else:

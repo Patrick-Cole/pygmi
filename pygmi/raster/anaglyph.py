@@ -139,8 +139,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes.add_collection(lc)
 
         self.axes.autoscale()
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
+        self.axes.set_xlabel('Eastings')
+        self.axes.set_ylabel('Northings')
 
         tmp = self.axes.get_yticks()
         self.axes.set_yticklabels(tmp, rotation='horizontal')
@@ -234,8 +234,8 @@ class MyMplCanvas(FigureCanvas):
 
         self.axes.imshow(adata, extent=self.extent, interpolation='nearest')
 
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
+        self.axes.set_xlabel('Eastings')
+        self.axes.set_ylabel('Northings')
 
         tmp = self.axes.get_yticks()
         self.axes.set_yticklabels(tmp, rotation='horizontal')
@@ -262,7 +262,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.indata = {}
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Anaglyph (3D Image: Glasses Needed)")
+        self.setWindowTitle('Anaglyph (3D Image: Glasses Needed)')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum,
                                            QtWidgets.QSizePolicy.Minimum)

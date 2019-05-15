@@ -74,20 +74,15 @@ class GravMag():
         self.mfname = self.parent.modelfilename
         self.tmpfiles = {}
 
-        self.actionregionaltest = QtWidgets.QPushButton(self.parent)
-        self.actioncalculate = QtWidgets.QPushButton(self.parent)
-        self.actioncalculate2 = QtWidgets.QPushButton(self.parent)
-        self.actioncalculate3 = QtWidgets.QPushButton(self.parent)
-        self.actioncalculate4 = QtWidgets.QPushButton(self.parent)
+        self.actionregionaltest = QtWidgets.QPushButton('Regional Test')
+        self.actioncalculate = QtWidgets.QPushButton('Calculate Gravity (All)')
+        self.actioncalculate2 = QtWidgets.QPushButton('Calculate Magnetics (All)')
+        self.actioncalculate3 = QtWidgets.QPushButton('Calculate Gravity (Changes Only)')
+        self.actioncalculate4 = QtWidgets.QPushButton('Calculate Magnetics (Changes Only)')
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        self.actionregionaltest.setText("Regional Test")
-        self.actioncalculate.setText("Calculate Gravity (All)")
-        self.actioncalculate2.setText("Calculate Magnetics (All)")
-        self.actioncalculate3.setText("Calculate Gravity (Changes Only)")
-        self.actioncalculate4.setText("Calculate Magnetics (Changes Only)")
         self.parent.toolbar.addWidget(self.actionregionaltest)
         self.parent.toolbar.addSeparator()
         self.parent.toolbar.addWidget(self.actioncalculate)
@@ -367,7 +362,7 @@ class GeoData():
     def __init__(self, parent, ncols=10, nrows=10, numz=10, dxy=10.,
                  d_z=10., mht=80., ght=0.):
         self.lithcode = 0
-        self.lithnotes = ""
+        self.lithnotes = ''
 
         self.hintn = 30000.
         self.susc = 0.01
@@ -1396,15 +1391,15 @@ def dat_extent(dat, axes):
     left, right, bottom, top = dat.extent
 
     if (right-left) > 10000 or (top-bottom) > 10000:
-        axes.xaxis.set_label_text("Eastings (km)")
-        axes.yaxis.set_label_text("Northings (km)")
+        axes.xaxis.set_label_text('Eastings (km)')
+        axes.yaxis.set_label_text('Northings (km)')
         left /= 1000.
         right /= 1000.
         top /= 1000.
         bottom /= 1000.
     else:
-        axes.xaxis.set_label_text("Eastings (m)")
-        axes.yaxis.set_label_text("Northings (m)")
+        axes.xaxis.set_label_text('Eastings (m)')
+        axes.yaxis.set_label_text('Northings (m)')
 
     return (left, right, bottom, top)
 

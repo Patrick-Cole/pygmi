@@ -67,7 +67,7 @@ class EquationEditor(QtWidgets.QDialog):
 
         self.textbrowser = QtWidgets.QTextEdit()
         self.textbrowser2 = QtWidgets.QTextBrowser()
-        self.label = QtWidgets.QLabel()
+        self.label = QtWidgets.QLabel(': iall')
 
         self.setupui()
 
@@ -79,7 +79,7 @@ class EquationEditor(QtWidgets.QDialog):
         """ Setup UI """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        label_2 = QtWidgets.QLabel()
+        label_2 = QtWidgets.QLabel('Output Equation:')
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)
@@ -94,9 +94,7 @@ class EquationEditor(QtWidgets.QDialog):
         self.textbrowser2.setPalette(ptmp)
         self.textbrowser2.setFrameShape(QtWidgets.QFrame.NoFrame)
 
-        self.setWindowTitle("Equation Editor")
-        self.label.setText(": iall")
-        label_2.setText("Output Equation:")
+        self.setWindowTitle('Equation Editor')
         self.textbrowser.setText('iall')
         tmp = ('<h1>Instructions:</h1>'
                '<p>Equation editor uses the numexpr library. Use the variables'

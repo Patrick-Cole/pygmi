@@ -57,21 +57,21 @@ class ImportData():
         filename extension
     """
     def __init__(self, parent=None):
-        self.ifile = ""
-        self.name = "Import Data: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Import Data: '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.hfile = ""
+        self.hfile = ''
 
     def settings(self):
         """ Settings """
         ext = \
-            "Common formats (*.xls *.xlsx *.csv);;" + \
-            "Excel (*.xls *.xlsx);;" + \
-            "Comma Delimited (*.csv)"
+            'Common formats (*.xls *.xlsx *.csv);;' + \
+            'Excel (*.xls *.xlsx);;' + \
+            'Comma Delimited (*.csv)'
 
         filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open CGS Lithology File', '.', ext)
@@ -84,29 +84,14 @@ class ImportData():
 
         filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open CGS Header File', '.', ext)
-        if filename == "":
+        if filename == '':
             return False
-#        os.chdir(filename.rpartition('/')[0])
+
         self.hfile = str(filename)
         self.ext = filename[-3:]
         self.ext = self.ext.lower()
 
         dat = get_CGS(self.ifile, self.hfile)
-
-#        if filt == 'GeoPak grid (*.grd)':
-#            dat = get_geopak(self.ifile)
-#        elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
-#            dat = get_geosoft(self.ifile)
-#        elif filt == 'hdf (*.hdf)':
-#            dat = get_hdf(self.ifile)
-#        elif filt == "hdf (*.h5)":
-#            dat = get_hdf(self.ifile)
-#        elif filt == 'ASCII with .hdr header (*.asc)':
-#            dat = get_ascii(self.ifile)
-#        elif filt == 'ASTER GED (*.bin)':
-#            dat = get_aster_ged_bin(self.ifile)
-#        else:
-#            dat = get_raster(self.ifile)
 
         if dat is None:
             if 'CGS' in filt:

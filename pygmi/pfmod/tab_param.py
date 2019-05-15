@@ -47,17 +47,15 @@ class MergeLith(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
 #        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
-        label_1 = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
+        label_1 = QtWidgets.QLabel('Master Lithology')
+        label_2 = QtWidgets.QLabel('Lithologies To Merge')
 
         self.lw_lithmaster.setSelectionMode(self.lw_lithmaster.SingleSelection)
         self.lw_lithmerge.setSelectionMode(self.lw_lithmerge.MultiSelection)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Merge Lithologies")
-        label_1.setText("Master Lithology")
-        label_2.setText("Lithologies To Merge")
+        self.setWindowTitle('Merge Lithologies')
 
         gridlayout.addWidget(label_1, 0, 0, 1, 1)
         gridlayout.addWidget(self.lw_lithmaster, 0, 1, 1, 1)
@@ -93,8 +91,8 @@ class LithNotes(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
 #        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
-        label_1 = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
+        label_1 = QtWidgets.QLabel('Lithology Code')
+        label_2 = QtWidgets.QLabel('Notes')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Preferred)
@@ -112,9 +110,7 @@ class LithNotes(QtWidgets.QDialog):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Lithology Notes")
-        label_1.setText("Lithology Code")
-        label_2.setText("Notes")
+        self.setWindowTitle('Lithology Notes')
 
         gridlayout.addWidget(self.lw_param_defs, 0, 1, 1, 1)
         gridlayout.addWidget(label_1, 1, 0, 1, 1)
@@ -184,16 +180,16 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_hdec = QtWidgets.QDoubleSpinBox()
         self.dsb_hint = QtWidgets.QDoubleSpinBox()
         self.dsb_hinc = QtWidgets.QDoubleSpinBox()
-        self.pb_autoregional = QtWidgets.QPushButton("Lithology Based "
-                                                     "Regional Estimation")
+        self.pb_autoregional = QtWidgets.QPushButton('Lithology Based '
+                                                     'Regional Estimation')
         self.dsb_ght = QtWidgets.QDoubleSpinBox()
         self.dsb_gregional = QtWidgets.QDoubleSpinBox()
 
-        self.pb_rename_def = QtWidgets.QPushButton("Rename Current Definition")
-        self.pb_rem_def = QtWidgets.QPushButton("Remove Current Definition")
-        self.pb_merge_def = QtWidgets.QPushButton("Merge Definitions")
-        self.pb_add_def = QtWidgets.QPushButton("Add New Lithological"
-                                                " Definition")
+        self.pb_rename_def = QtWidgets.QPushButton('Rename Current Definition')
+        self.pb_rem_def = QtWidgets.QPushButton('Remove Current Definition')
+        self.pb_merge_def = QtWidgets.QPushButton('Merge Definitions')
+        self.pb_add_def = QtWidgets.QPushButton('Add New Lithological'
+                                                ' Definition')
         self.lw_param_defs = QtWidgets.QListWidget()
 
         self.gbox_lithprops = QtWidgets.QGroupBox()
@@ -210,7 +206,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        self.setWindowTitle("Geophysical Parameters")
+        self.setWindowTitle('Geophysical Parameters')
         helpdocs = menu_default.HelpButton('pygmi.pfmod.param')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
@@ -228,15 +224,15 @@ class ParamDisplay(QtWidgets.QDialog):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
 # General Properties
-        gb_gen_prop = QtWidgets.QGroupBox("General Properties")
+        gb_gen_prop = QtWidgets.QGroupBox('General Properties')
         gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
 
-        label_1 = QtWidgets.QLabel("Gravity Regional (mGal)")
-        label_2 = QtWidgets.QLabel("Height of observation - Gravity")
-        label_3 = QtWidgets.QLabel("Height of observation - Magnetic")
-        label_4 = QtWidgets.QLabel("Magnetic Field Intensity (nT)")
-        label_5 = QtWidgets.QLabel("Magnetic Inclination")
-        label_6 = QtWidgets.QLabel("Magnetic Declination")
+        label_1 = QtWidgets.QLabel('Gravity Regional (mGal)')
+        label_2 = QtWidgets.QLabel('Height of observation - Gravity')
+        label_3 = QtWidgets.QLabel('Height of observation - Magnetic')
+        label_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
+        label_5 = QtWidgets.QLabel('Magnetic Inclination')
+        label_6 = QtWidgets.QLabel('Magnetic Declination')
 
         gl_gen_prop.addWidget(label_1, 0, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_gregional, 0, 1, 1, 1)
@@ -253,26 +249,26 @@ class ParamDisplay(QtWidgets.QDialog):
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
 # Lithological Properties
-        gb_lith_prop = QtWidgets.QGroupBox("Lithological Properties")
+        gb_lith_prop = QtWidgets.QGroupBox('Lithological Properties')
         gl_lith_prop = QtWidgets.QGridLayout(gb_lith_prop)
 
-        pb_applylith = QtWidgets.QPushButton("Apply")
+        pb_applylith = QtWidgets.QPushButton('Apply')
 
         self.dsb_gregional.setMinimum(-10000.0)
         self.dsb_gregional.setMaximum(10000.0)
         self.dsb_gregional.setSingleStep(1.0)
-        self.dsb_gregional.setProperty("value", 100.0)
+        self.dsb_gregional.setProperty('value', 100.0)
         self.dsb_ght.setMaximum(999999999.0)
         self.dsb_mht.setMaximum(999999999.0)
-        self.dsb_mht.setProperty("value", 100.0)
+        self.dsb_mht.setProperty('value', 100.0)
         self.dsb_hint.setMaximum(999999999.0)
-        self.dsb_hint.setProperty("value", 27000.0)
+        self.dsb_hint.setProperty('value', 27000.0)
         self.dsb_hinc.setMinimum(-90.0)
         self.dsb_hinc.setMaximum(90.0)
-        self.dsb_hinc.setProperty("value", -63.0)
+        self.dsb_hinc.setProperty('value', -63.0)
         self.dsb_hdec.setMinimum(-360.0)
         self.dsb_hdec.setMaximum(360.0)
-        self.dsb_hdec.setProperty("value", -17.0)
+        self.dsb_hdec.setProperty('value', -17.0)
 
         self.lw_param_defs.setSizePolicy(sizepolicy)
         self.lw_param_defs.setEditTriggers(
@@ -287,18 +283,18 @@ class ParamDisplay(QtWidgets.QDialog):
 
         gl_lithprops = QtWidgets.QGridLayout(self.gbox_lithprops)
 
-        label_7 = QtWidgets.QLabel("Magnetic Susceptibility (SI)")
-        label_8 = QtWidgets.QLabel("Remanent Magnetization Intensity (nT)")
-        label_9 = QtWidgets.QLabel("Q Ratio")
-        label_10 = QtWidgets.QLabel("Remanent Magnetization (A/m)")
-        label_11 = QtWidgets.QLabel("Remanent Inclination")
-        label_12 = QtWidgets.QLabel("Remanent Declination")
-        label_13 = QtWidgets.QLabel("Density (g/cm3)")
+        label_7 = QtWidgets.QLabel('Magnetic Susceptibility (SI)')
+        label_8 = QtWidgets.QLabel('Remanent Magnetization Intensity (nT)')
+        label_9 = QtWidgets.QLabel('Q Ratio')
+        label_10 = QtWidgets.QLabel('Remanent Magnetization (A/m)')
+        label_11 = QtWidgets.QLabel('Remanent Inclination')
+        label_12 = QtWidgets.QLabel('Remanent Declination')
+        label_13 = QtWidgets.QLabel('Density (g/cm3)')
 
         self.dsb_susc.setDecimals(4)
         self.dsb_susc.setMaximum(999999999.0)
         self.dsb_susc.setSingleStep(0.01)
-        self.dsb_susc.setProperty("value", 0.01)
+        self.dsb_susc.setProperty('value', 0.01)
         self.dsb_rmi.setEnabled(True)
         self.dsb_rmi.setDecimals(3)
         self.dsb_rmi.setMaximum(999999999.0)
@@ -310,14 +306,14 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_minc.setEnabled(True)
         self.dsb_minc.setMinimum(-90.0)
         self.dsb_minc.setMaximum(90.0)
-        self.dsb_minc.setProperty("value", -63.0)
+        self.dsb_minc.setProperty('value', -63.0)
         self.dsb_mdec.setEnabled(True)
         self.dsb_mdec.setMinimum(-360.0)
         self.dsb_mdec.setMaximum(360.0)
-        self.dsb_mdec.setProperty("value", -17.0)
+        self.dsb_mdec.setProperty('value', -17.0)
         self.dsb_density.setDecimals(3)
         self.dsb_density.setSingleStep(0.01)
-        self.dsb_density.setProperty("value", 2.75)
+        self.dsb_density.setProperty('value', 2.75)
 
         gl_lithprops.addWidget(label_13, 3, 0, 1, 1)
         gl_lithprops.addWidget(self.dsb_density, 3, 1, 1, 1)

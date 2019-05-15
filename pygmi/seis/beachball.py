@@ -100,7 +100,7 @@ class MyMplCanvas(FigureCanvas):
         """ Initialize the graph """
 
         self.axes.clear()
-        self.axes.set_aspect("equal")
+        self.axes.set_aspect('equal')
 
         maxdiam = self.pwidth*self.data[:, -1].max()
         xmin = self.data[:, 0].min()-maxdiam
@@ -137,9 +137,9 @@ class BeachBall(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.ifile = ""
-        self.name = "Beachball: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Beachball: '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -148,7 +148,7 @@ class BeachBall(QtWidgets.QDialog):
         self.nofps = False
 
         self.mmc = MyMplCanvas(self)
-        self.btn_saveshp = QtWidgets.QPushButton()
+        self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
         self.cbox_alg = QtWidgets.QComboBox()
         self.dsb_dist = QtWidgets.QDoubleSpinBox()
         self.radio_geog = QtWidgets.QRadioButton('Geographic Units')
@@ -213,23 +213,20 @@ class BeachBall(QtWidgets.QDialog):
         hbl_all = QtWidgets.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         vbl_raster = QtWidgets.QVBoxLayout()
-        label2 = QtWidgets.QLabel()
-        label3 = QtWidgets.QLabel()
+        label2 = QtWidgets.QLabel('FPS Algorithm:')
+        label3 = QtWidgets.QLabel('Width Scale Factor:')
 
         self.dsb_dist.setDecimals(4)
         self.dsb_dist.setMinimum(0.0001)
         self.dsb_dist.setSingleStep(0.0001)
-        self.dsb_dist.setProperty("value", 0.001)
+        self.dsb_dist.setProperty('value', 0.001)
 
         self.radio_geog.setChecked(True)
 
         spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
                                        QtWidgets.QSizePolicy.Expanding)
 
-        self.setWindowTitle("Fault Plane Solution (FPS)")
-        label2.setText('FPS Algorithm:')
-        label3.setText('Width Scale Factor:')
-        self.btn_saveshp.setText('Save Shapefile')
+        self.setWindowTitle('Fault Plane Solution (FPS)')
 
         vbl_raster.addWidget(label2)
         vbl_raster.addWidget(self.cbox_alg)
@@ -252,7 +249,7 @@ class BeachBall(QtWidgets.QDialog):
     def save_shp(self):
         """Save Beachballs """
 
-        ext = "Shape file (*.shp)"
+        ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save Shape File', '.', ext)
@@ -279,7 +276,7 @@ class BeachBall(QtWidgets.QDialog):
             os.remove(tmp+'.prj')
             os.remove(tmp+'.dbf')
 
-        driver = ogr.GetDriverByName("ESRI Shapefile")
+        driver = ogr.GetDriverByName('ESRI Shapefile')
         data_source = driver.CreateDataSource(self.ifile)
         data_source2 = driver.CreateDataSource(ifile_bnd)
 
@@ -288,24 +285,24 @@ class BeachBall(QtWidgets.QDialog):
         srs.ImportFromEPSG(4326)
 
         # create the layer
-        layer = data_source.CreateLayer("Fault Plane Solution", srs,
+        layer = data_source.CreateLayer('Fault Plane Solution', srs,
                                         ogr.wkbPolygon)
-        layer.CreateField(ogr.FieldDefn("Strike", ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn("Dip", ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn("Rake", ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn("Magnitude", ogr.OFTReal))
-        layer.CreateField(ogr.FieldDefn("Quadrant", ogr.OFTString))
-        layer.CreateField(ogr.FieldDefn("Depth", ogr.OFTReal))
+        layer.CreateField(ogr.FieldDefn('Strike', ogr.OFTReal))
+        layer.CreateField(ogr.FieldDefn('Dip', ogr.OFTReal))
+        layer.CreateField(ogr.FieldDefn('Rake', ogr.OFTReal))
+        layer.CreateField(ogr.FieldDefn('Magnitude', ogr.OFTReal))
+        layer.CreateField(ogr.FieldDefn('Quadrant', ogr.OFTString))
+        layer.CreateField(ogr.FieldDefn('Depth', ogr.OFTReal))
 
-        layer2 = data_source2.CreateLayer("Fault Plane Solution Boundaries",
+        layer2 = data_source2.CreateLayer('Fault Plane Solution Boundaries',
                                           srs, ogr.wkbPolygon)
 
-        layer2.CreateField(ogr.FieldDefn("Strike", ogr.OFTReal))
-        layer2.CreateField(ogr.FieldDefn("Dip", ogr.OFTReal))
-        layer2.CreateField(ogr.FieldDefn("Rake", ogr.OFTReal))
-        layer2.CreateField(ogr.FieldDefn("Magnitude", ogr.OFTReal))
-        layer2.CreateField(ogr.FieldDefn("Quadrant", ogr.OFTString))
-        layer2.CreateField(ogr.FieldDefn("Depth", ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Strike', ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Dip', ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Rake', ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Magnitude', ogr.OFTReal))
+        layer2.CreateField(ogr.FieldDefn('Quadrant', ogr.OFTString))
+        layer2.CreateField(ogr.FieldDefn('Depth', ogr.OFTReal))
 
         # Calculate BeachBall
         for idat in indata:
@@ -336,12 +333,12 @@ class BeachBall(QtWidgets.QDialog):
 
             feature = ogr.Feature(layer.GetLayerDefn())
 
-            feature.SetField("Strike", np1[0])
-            feature.SetField("Dip", np1[1])
-            feature.SetField("Rake", np1[2])
-            feature.SetField("Magnitude", idat[-1])
-            feature.SetField("Quadrant", "Compressional")
-            feature.SetField("Depth", depth)
+            feature.SetField('Strike', np1[0])
+            feature.SetField('Dip', np1[1])
+            feature.SetField('Rake', np1[2])
+            feature.SetField('Magnitude', idat[-1])
+            feature.SetField('Quadrant', 'Compressional')
+            feature.SetField('Depth', depth)
 
             feature.SetGeometry(poly)
             # Create the feature in the layer (shapefile)
@@ -349,8 +346,8 @@ class BeachBall(QtWidgets.QDialog):
             # Destroy the feature to free resources
 
             feature2 = ogr.Feature(layer2.GetLayerDefn())
-            feature2.SetField("Quadrant", "Tensional and Compressional")
-            feature2.SetField("Depth", depth)
+            feature2.SetField('Quadrant', 'Tensional and Compressional')
+            feature2.SetField('Depth', depth)
             feature2.SetGeometry(poly1)
             # Create the feature in the layer (shapefile)
             layer2.CreateFeature(feature2)

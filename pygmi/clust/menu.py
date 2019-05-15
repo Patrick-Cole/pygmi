@@ -52,18 +52,18 @@ class MenuWidget():
 
 # Normal menus
         self.menuclustering = QtWidgets.QMenu(parent.menubar)
-        self.menuclustering.setTitle("Clustering")
+        self.menuclustering.setTitle('Clustering')
         parent.menubar.addAction(self.menuclustering.menuAction())
 
         self.action_clustering = QtWidgets.QAction(self.parent)
-        self.action_clustering.setText("Cluster Analysis")
+        self.action_clustering.setText('Cluster Analysis')
         self.menuclustering.addAction(self.action_clustering)
         self.action_clustering.triggered.connect(self.cluster)
 
         self.menuclustering.addSeparator()
 
         self.action_scatter_plot = QtWidgets.QAction(self.parent)
-        self.action_scatter_plot.setText("Scatter Plot Tool")
+        self.action_scatter_plot.setText('Scatter Plot Tool')
         self.menuclustering.addAction(self.action_scatter_plot)
         self.action_scatter_plot.triggered.connect(self.scatter_plot)
 
@@ -71,24 +71,24 @@ class MenuWidget():
         context_menu['Cluster'].addSeparator()
 
         self.action_cluster_statistics = QtWidgets.QAction(self.parent)
-        self.action_cluster_statistics.setText("Cluster Statistics")
+        self.action_cluster_statistics.setText('Cluster Statistics')
         context_menu['Cluster'].addAction(self.action_cluster_statistics)
         self.action_cluster_statistics.triggered.connect(self.cluster_stats)
 
         self.action_show_class_data = QtWidgets.QAction(self.parent)
-        self.action_show_class_data.setText("Show Class Data")
+        self.action_show_class_data.setText('Show Class Data')
         context_menu['Cluster'].addAction(self.action_show_class_data)
         self.action_show_class_data.triggered.connect(self.show_raster_data)
 
         self.action_show_objvrcncexbigraphs = QtWidgets.QAction(self.parent)
         self.action_show_objvrcncexbigraphs.setText(
-            "Show VRC Graphs")
+            'Show VRC Graphs')
         context_menu['Cluster'].addAction(self.action_show_objvrcncexbigraphs)
         self.action_show_objvrcncexbigraphs.triggered.connect(
             self.show_vrc_etc)
 
         self.action_export_data = QtWidgets.QAction(self.parent)
-        self.action_export_data.setText("Export Data")
+        self.action_export_data.setText('Export Data')
         context_menu['Cluster'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 
@@ -99,7 +99,7 @@ class MenuWidget():
     def cluster(self):
         """ Clustering of data"""
         fnc = cluster.Cluster(self.parent)
-        self.parent.item_insert("Step", "Cluster\nAnalysis", fnc)
+        self.parent.item_insert('Step', 'Cluster\nAnalysis', fnc)
 
     def export_data(self):
         """ Export raster data """
@@ -108,7 +108,7 @@ class MenuWidget():
     def scatter_plot(self):
         """ Scatter Plot Tool"""
         fnc = graphtool.ScatterPlot(self.parent)
-        self.parent.item_insert("Step", "Scatter\nPlot\nTool", fnc)
+        self.parent.item_insert('Step', 'Scatter\nPlot\nTool', fnc)
 
     def show_raster_data(self):
         """ Show raster data """

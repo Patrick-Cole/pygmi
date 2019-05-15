@@ -54,19 +54,19 @@ class MenuWidget():
         self.menu2 = self.menu.addMenu('Change Detection')
 
         self.action_create_list = QtWidgets.QAction(parent)
-        self.action_create_list.setText("Create Scene List")
+        self.action_create_list.setText('Create Scene List')
         self.menu2.addAction(self.action_create_list)
         self.action_create_list.triggered.connect(self.import_data)
 
         self.action_load_list = QtWidgets.QAction(parent)
-        self.action_load_list.setText("Load Scene List")
+        self.action_load_list.setText('Load Scene List')
         self.menu2.addAction(self.action_load_list)
         self.action_load_list.triggered.connect(self.import_data)
 
         self.menu.addSeparator()
 
         self.action_data_viewer = QtWidgets.QAction(parent)
-        self.action_data_viewer.setText("View Change Data")
+        self.action_data_viewer.setText('View Change Data')
         self.menu2.addAction(self.action_data_viewer)
         self.action_data_viewer.triggered.connect(self.import_data)
 
@@ -77,12 +77,12 @@ class MenuWidget():
 #        context_menu['Remote Sensing'].addSeparator()
 #
 #        self.action_show_log = QtWidgets.QAction(self.parent)
-#        self.action_show_log.setText("Show Borehole Log")
+#        self.action_show_log.setText('Show Borehole Log')
 #        context_menu['Remote Sensing'].addAction(self.action_show_log)
 #        self.action_show_log.triggered.connect(self.show_log)
 #
 #        self.action_export_data = QtWidgets.QAction(self.parent)
-#        self.action_export_data.setText("Export Data")
+#        self.action_export_data.setText('Export Data')
 #        context_menu['Cluster'].addAction(self.action_export_data)
 #        self.action_export_data.triggered.connect(self.export_data)
 
@@ -93,7 +93,7 @@ class MenuWidget():
     def import_data(self):
         """ Imports data"""
         fnc = iodefs.ImportData(self.parent)
-        self.parent.item_insert("Io", "Import Data", fnc)
+        self.parent.item_insert('Io', 'Import Data', fnc)
 
 #    def export_data(self):
 #        """ Export raster data """

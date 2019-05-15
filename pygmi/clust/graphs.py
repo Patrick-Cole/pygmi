@@ -64,8 +64,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes.figure.colorbar(csp, boundaries=bnds, values=vals,
                                   ticks=vals)
 
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
+        self.axes.set_xlabel('Eastings')
+        self.axes.set_ylabel('Northings')
         self.figure.canvas.draw()
 
     def update_scatter(self, x, y):
@@ -80,7 +80,7 @@ class MyMplCanvas(FigureCanvas):
 
         self.axes.scatter(x, y)
         self.axes.axis([xmin, xmax, ymin, ymax])
-        self.axes.set_xlabel("Number of Classes")
+        self.axes.set_xlabel('Number of Classes')
         self.axes.xaxis.set_ticks(x)
         self.figure.canvas.draw()
 
@@ -99,7 +99,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Graph Window")
+        self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
@@ -108,11 +108,8 @@ class GraphWindow(QtWidgets.QDialog):
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel()
-        self.label2 = QtWidgets.QLabel()
-
-        self.label1.setText('Bands:')
-        self.label2.setText('Bands:')
+        self.label1 = QtWidgets.QLabel('Bands:')
+        self.label2 = QtWidgets.QLabel('Bands:')
 
         hbl.addWidget(self.label1)
         hbl.addWidget(self.combobox1)

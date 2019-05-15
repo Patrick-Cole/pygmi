@@ -81,7 +81,7 @@ def get_tiff(ifile, bandid=None):
 
 def main_pages():
     """ main """
-    idir = r"C:\Work\Programming\Remote_Sensing\bh2\\"
+    idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
     logfile = idir + r'logplot.xlsx'
 
@@ -300,7 +300,7 @@ def main_pages():
 
 def main_single():
     """ main """
-    idir = r"C:\Work\Programming\Remote_Sensing\bh2\\"
+    idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
     logfile = idir + r'logplot.xlsx'
 
@@ -798,7 +798,7 @@ def temp():
 
 def mainmerge():
     """ merge log header and core files """
-    idir = r"C:\Work\Programming\Remote_Sensing\bh2\\"
+    idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
 #    logfile = idir + r'logplot.xlsx'
 
@@ -844,7 +844,7 @@ def profile():
 #Line 5
 #    boreholes = [14425, 15554, 15754, 4064633]
 
-    idir = r"C:\Work\Programming\Remote_Sensing\bh2\\"
+    idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     dfile = idir+'dem\\s27_e028_TM29.tif'
     sfile = idir+'line1.shp'
 
@@ -892,7 +892,7 @@ def profile():
     hdf = hdf1.append(hdf2)
 
    # Create the output shapefile
-    shpDriver = ogr.GetDriverByName("ESRI Shapefile")
+    shpDriver = ogr.GetDriverByName('ESRI Shapefile')
     if os.path.exists(sfile):
         shpDriver.DeleteDataSource(sfile)
     outDataSource = shpDriver.CreateDataSource(sfile)

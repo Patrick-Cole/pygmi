@@ -143,7 +143,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_hexbin(self, data1, data2, xlbl="Time", ylbl="ML",
+    def update_hexbin(self, data1, data2, xlbl='Time', ylbl='ML',
                       xbin=None, xrng=None):
         """
         Update the hexbin plot
@@ -196,8 +196,8 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_hist(self, data1, xlbl="Data Value",
-                    ylbl="Number of Observations", bins='doane', rng=None):
+    def update_hist(self, data1, xlbl='Data Value',
+                    ylbl='Number of Observations', bins='doane', rng=None):
         """
         Update the histogram plot
 
@@ -459,7 +459,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Graph Window")
+        self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
@@ -470,10 +470,8 @@ class GraphWindow(QtWidgets.QDialog):
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel()
-        self.label2 = QtWidgets.QLabel()
-        self.label1.setText('Bands:')
-        self.label2.setText('Bands:')
+        self.label1 = QtWidgets.QLabel('Bands:')
+        self.label2 = QtWidgets.QLabel('Bands:')
         self.hbl.addWidget(self.label1)
         self.hbl.addWidget(self.combobox1)
         self.hbl.addWidget(self.label2)
@@ -616,7 +614,7 @@ class PlotQC(GraphWindow):
     def save_shp(self):
         """Save shapefile """
 
-        ext = "Shape file (*.shp)"
+        ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save Shape File', '.', ext)
@@ -633,7 +631,7 @@ class PlotQC(GraphWindow):
             os.remove(tmp+'.prj')
             os.remove(tmp+'.dbf')
 
-        driver = ogr.GetDriverByName("ESRI Shapefile")
+        driver = ogr.GetDriverByName('ESRI Shapefile')
         data_source = driver.CreateDataSource(ifile)
 
         # create the spatial reference, WGS84
@@ -641,9 +639,9 @@ class PlotQC(GraphWindow):
         srs.ImportFromEPSG(4326)
 
         # create the layer
-        layer = data_source.CreateLayer("Fault Plane Solution", srs,
+        layer = data_source.CreateLayer('Fault Plane Solution', srs,
                                         ogr.wkbPolygon)
-#        layer.CreateField(ogr.FieldDefn("Strike", ogr.OFTReal))
+#        layer.CreateField(ogr.FieldDefn('Strike', ogr.OFTReal))
 
         # Calculate BeachBall
         indata = self.mmc.ellipses
@@ -658,7 +656,7 @@ class PlotQC(GraphWindow):
 
             feature = ogr.Feature(layer.GetLayerDefn())
 
-#            feature.SetField("Strike", np1[0])
+#            feature.SetField('Strike', np1[0])
 
             feature.SetGeometry(poly)
             # Create the feature in the layer (shapefile)

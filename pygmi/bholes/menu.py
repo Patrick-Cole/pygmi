@@ -49,18 +49,18 @@ class MenuWidget():
 
 # Normal menus
         self.menu = QtWidgets.QMenu(parent.menubar)
-        self.menu.setTitle("Boreholes")
+        self.menu.setTitle('Boreholes')
         parent.menubar.addAction(self.menu.menuAction())
 
         self.action_import_data = QtWidgets.QAction(parent)
-        self.action_import_data.setText("Import Borehole Data")
+        self.action_import_data.setText('Import Borehole Data')
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
         self.menu.addSeparator()
 
 #        self.action_scatter_plot = QtWidgets.QAction(self.parent)
-#        self.action_scatter_plot.setText("Scatter Plot Tool")
+#        self.action_scatter_plot.setText('Scatter Plot Tool')
 #        self.menubholes.addAction(self.action_scatter_plot)
 #        self.action_scatter_plot.triggered.connect(self.scatter_plot)
 
@@ -68,12 +68,12 @@ class MenuWidget():
         context_menu['Borehole'].addSeparator()
 
         self.action_show_log = QtWidgets.QAction(self.parent)
-        self.action_show_log.setText("Show Borehole Log")
+        self.action_show_log.setText('Show Borehole Log')
         context_menu['Borehole'].addAction(self.action_show_log)
         self.action_show_log.triggered.connect(self.show_log)
 #
 #        self.action_export_data = QtWidgets.QAction(self.parent)
-#        self.action_export_data.setText("Export Data")
+#        self.action_export_data.setText('Export Data')
 #        context_menu['Cluster'].addAction(self.action_export_data)
 #        self.action_export_data.triggered.connect(self.export_data)
 
@@ -84,7 +84,7 @@ class MenuWidget():
     def import_data(self):
         """ Imports data"""
         fnc = iodefs.ImportData(self.parent)
-        self.parent.item_insert("Io", "Import Data", fnc)
+        self.parent.item_insert('Io', 'Import Data', fnc)
 
 #    def export_data(self):
 #        """ Export raster data """

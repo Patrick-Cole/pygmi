@@ -46,11 +46,11 @@ from pygmi.misc import PTime
 
 animationAngle = 0.0
 frameRate = 20
-stereoMode = "NONE"
-lightColors = {"white": (1.0, 1.0, 1.0, 1.0),
-               "red": (1.0, 0.0, 0.0, 1.0),
-               "green": (0.0, 1.0, 0.0, 1.0),
-               "blue": (0.0, 0.0, 1.0, 1.0)}
+stereoMode = 'NONE'
+lightColors = {'white': (1.0, 1.0, 1.0, 1.0),
+               'red': (1.0, 0.0, 0.0, 1.0),
+               'green': (0.0, 1.0, 0.0, 1.0),
+               'blue': (0.0, 0.0, 1.0, 1.0)}
 
 lightPosition = (5.0, 5.0, 20.0, 1.0)
 
@@ -232,11 +232,11 @@ def display():
 
     GL.glDrawBuffer(GL.GL_BACK_LEFT)
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-    setLightColor("red")
+    setLightColor('red')
     render(GL.GL_BACK_LEFT)
     GL.glClear(GL.GL_DEPTH_BUFFER_BIT)
     GL.glColorMask(False, True, False, False)
-    setLightColor("blue")
+    setLightColor('blue')
     render(GL.GL_BACK_RIGHT)
     GL.glColorMask(True, True, True, True)
     GLUT.glutSwapBuffers()
@@ -271,8 +271,8 @@ def main_parallel():
     global stereoMode
 
     sC = StereoCamera()
-    GLUT.glutInit([b'anaglyph.py', b"ANAGLYPH"])
-    stereoMode = "ANAGLYPH"
+    GLUT.glutInit([b'anaglyph.py', b'ANAGLYPH'])
+    stereoMode = 'ANAGLYPH'
     GLUT.glutInitDisplayMode(GLUT.GLUT_DOUBLE | GLUT.GLUT_RGB |
                              GLUT.GLUT_DEPTH)
     GLUT.glutInitWindowSize(800, 600)
@@ -574,6 +574,7 @@ def rot_and_clean_old(x, y, z, rotang=5, rtype='red', doshade=False):
 
     return zmap, z3
 
+
 def main_sunshade():
     """ main """
 
@@ -663,6 +664,7 @@ def main_gsc():
 
     plt.imshow(adata)
     plt.show()
+
 
 def main_contour():
     """ main rotate """

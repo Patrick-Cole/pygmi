@@ -42,7 +42,7 @@ class MextDisplay(QtWidgets.QDialog):
 
         self.combo_model = QtWidgets.QComboBox()
         self.combo_regional = QtWidgets.QComboBox()
-        self.cb_regional = QtWidgets.QCheckBox("Apply Regional Model")
+        self.cb_regional = QtWidgets.QCheckBox('Apply Regional Model')
         self.combo_other = QtWidgets.QComboBox()
         self.combo_dtm = QtWidgets.QComboBox()
         self.combo_mag = QtWidgets.QComboBox()
@@ -66,7 +66,7 @@ class MextDisplay(QtWidgets.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        self.setWindowTitle("Model Extent Parameters")
+        self.setWindowTitle('Model Extent Parameters')
         helpdocs = menu_default.HelpButton('pygmi.pfmod.mext')
 
         verticallayout = QtWidgets.QVBoxLayout(self)
@@ -80,11 +80,11 @@ class MextDisplay(QtWidgets.QDialog):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
 # Current Models Groupbox
-        gb_model = QtWidgets.QGroupBox("Current Models")
+        gb_model = QtWidgets.QGroupBox('Current Models')
         gl_model = QtWidgets.QGridLayout(gb_model)
 
-        lbl1_model = QtWidgets.QLabel("Current Model:")
-        lbl2_model = QtWidgets.QLabel("Regional Model:")
+        lbl1_model = QtWidgets.QLabel('Current Model:')
+        lbl2_model = QtWidgets.QLabel('Regional Model:')
 
         self.combo_model.addItems(['None'])
         self.combo_regional.addItems(['None'])
@@ -98,7 +98,7 @@ class MextDisplay(QtWidgets.QDialog):
         gl_model.addWidget(self.cb_regional, 0, 2, 2, 1)
 
 # Data Information Groupbox
-        gb_data_info = QtWidgets.QGroupBox("Dataset Information")
+        gb_data_info = QtWidgets.QGroupBox('Dataset Information')
         gl_data_info = QtWidgets.QGridLayout(gb_data_info)
 
         self.combo_mag.addItems(['None'])
@@ -111,11 +111,11 @@ class MextDisplay(QtWidgets.QDialog):
         gl_data_info.setColumnStretch(1, 1)
         gl_data_info.setColumnStretch(2, 1)
 
-        lbl1_data_info = QtWidgets.QLabel("DTM Dataset:")
-        lbl2_data_info = QtWidgets.QLabel("Magnetic Dataset:")
-        lbl3_data_info = QtWidgets.QLabel("Gravity Dataset:")
-        lbl4_data_info = QtWidgets.QLabel("Gravity Regional Dataset:")
-        lbl5_data_info = QtWidgets.QLabel("Other:")
+        lbl1_data_info = QtWidgets.QLabel('DTM Dataset:')
+        lbl2_data_info = QtWidgets.QLabel('Magnetic Dataset:')
+        lbl3_data_info = QtWidgets.QLabel('Gravity Dataset:')
+        lbl4_data_info = QtWidgets.QLabel('Gravity Regional Dataset:')
+        lbl5_data_info = QtWidgets.QLabel('Other:')
 
         gl_data_info.addWidget(lbl1_data_info, 0, 0, 1, 1)
         gl_data_info.addWidget(lbl2_data_info, 1, 0, 1, 1)
@@ -129,20 +129,20 @@ class MextDisplay(QtWidgets.QDialog):
         gl_data_info.addWidget(self.combo_other, 4, 1, 1, 1)
 
 # Data Extents Groupbox
-        gb_extent = QtWidgets.QGroupBox("Model Extent Properties")
+        gb_extent = QtWidgets.QGroupBox('Model Extent Properties')
         gl_extent = QtWidgets.QGridLayout(gb_extent)
 
         self.combo_dataset.addItems(['None'])
 
-        lbl0 = QtWidgets.QLabel("Get Study Area from following Dataset:")
-        lbl3 = QtWidgets.QLabel("Upper Top Left X Coordinate:")
-        lbl4 = QtWidgets.QLabel("Upper Top Left Y Coordinate:")
-        lbl1 = QtWidgets.QLabel("Upper Top Left Z Coordinate (from DTM):")
-        lbl8 = QtWidgets.QLabel("Total X Extent:")
-        lbl9 = QtWidgets.QLabel("Total Y Extent:")
-        lbl10 = QtWidgets.QLabel("Total Z Extent (Depth):")
-        lbl5 = QtWidgets.QLabel("X and Y Cell Size:")
-        lbl6 = QtWidgets.QLabel("Z Cell Size:")
+        lbl0 = QtWidgets.QLabel('Get Study Area from following Dataset:')
+        lbl3 = QtWidgets.QLabel('Upper Top Left X Coordinate:')
+        lbl4 = QtWidgets.QLabel('Upper Top Left Y Coordinate:')
+        lbl1 = QtWidgets.QLabel('Upper Top Left Z Coordinate (from DTM):')
+        lbl8 = QtWidgets.QLabel('Total X Extent:')
+        lbl9 = QtWidgets.QLabel('Total Y Extent:')
+        lbl10 = QtWidgets.QLabel('Total Z Extent (Depth):')
+        lbl5 = QtWidgets.QLabel('X and Y Cell Size:')
+        lbl6 = QtWidgets.QLabel('Z Cell Size:')
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)

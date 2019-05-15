@@ -125,7 +125,7 @@ class ModestImage2(mi.AxesImage):
     """
     def __init__(self, *args, **kwargs):
         if 'extent' in kwargs and kwargs['extent'] is not None:
-            raise NotImplementedError("ModestImage does not support extents")
+            raise NotImplementedError('ModestImage does not support extents')
 
         self._full_res = None
         self._sx, self._sy = None, None
@@ -929,7 +929,7 @@ class PlotInterp(QtWidgets.QDialog):
 
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
-        self.btn_saveimg = QtWidgets.QPushButton()
+        self.btn_saveimg = QtWidgets.QPushButton('Save GeoTiff')
         self.cbox_dtype = QtWidgets.QComboBox()
         self.cbox_band1 = QtWidgets.QComboBox()
         self.cbox_band2 = QtWidgets.QComboBox()
@@ -940,11 +940,11 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # cmyK
         self.sslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # sunshade
         self.aslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        self.slabel = QtWidgets.QLabel()
-        self.labels = QtWidgets.QLabel()
-        self.labela = QtWidgets.QLabel()
-        self.labelc = QtWidgets.QLabel()
-        self.labelk = QtWidgets.QLabel()
+        self.slabel = QtWidgets.QLabel('Sunshade Stretch:')
+        self.labels = QtWidgets.QLabel('Sunshade Detail')
+        self.labela = QtWidgets.QLabel('Light Reflectance')
+        self.labelc = QtWidgets.QLabel('Color Bar:')
+        self.labelk = QtWidgets.QLabel('K value:')
 
         self.setupui()
 
@@ -972,9 +972,9 @@ class PlotInterp(QtWidgets.QDialog):
     def setupui(self):
         """ Setup UI """
         helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
-        label1 = QtWidgets.QLabel()
-        label2 = QtWidgets.QLabel()
-        label3 = QtWidgets.QLabel()
+        label1 = QtWidgets.QLabel('Display Type:')
+        label2 = QtWidgets.QLabel('Data Bands:')
+        label3 = QtWidgets.QLabel('Histogram Stretch:')
 
         vbl_raster = QtWidgets.QVBoxLayout()
         hbl_all = QtWidgets.QHBoxLayout(self)
@@ -1013,16 +1013,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.cbox_hstype.addItems(['Linear', '95% Linear, 5% Compact',
                                    'Histogram Equalization'])
 
-        self.setWindowTitle("Raster Data Interpretation")
-        label1.setText('Display Type:')
-        label2.setText('Data Bands:')
-        label3.setText('Histogram Stretch:')
-        self.slabel.setText('Sunshade Stretch:')
-        self.labelc.setText('Color Bar:')
-        self.labelk.setText('K value:')
-        self.labels.setText('Sunshade Detail')
-        self.labela.setText('Light Reflectance')
-        self.btn_saveimg.setText('Save GeoTiff')
+        self.setWindowTitle('Raster Data Interpretation')
 
         vbl_raster.addWidget(label1)
         vbl_raster.addWidget(self.cbox_dtype)
@@ -1262,15 +1253,15 @@ class PlotInterp(QtWidgets.QDialog):
     def save_img(self):
         """Save image as a GeoTiff"""
 
-        ext = "GeoTiff (*.tif)"
+        ext = 'GeoTiff (*.tif)'
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
             return False
 
         text, okay = QtWidgets.QInputDialog.getText(
-            self, "Colorbar", "Enter length in inches:",
-            QtWidgets.QLineEdit.Normal, "8")
+            self, 'Colorbar', 'Enter length in inches:',
+            QtWidgets.QLineEdit.Normal, '8')
 
         if not okay:
             return False
@@ -1282,7 +1273,7 @@ class PlotInterp(QtWidgets.QDialog):
 
         if 'Ternary' not in dtype:
             text, okay = QtWidgets.QInputDialog.getText(
-                self, "Colorbar", "Enter colorbar unit label:",
+                self, 'Colorbar', 'Enter colorbar unit label:',
                 QtWidgets.QLineEdit.Normal,
                 self.units[str(self.cbox_band1.currentText())])
 
@@ -1291,7 +1282,7 @@ class PlotInterp(QtWidgets.QDialog):
         else:
             units = str(self.cbox_band1.currentText())
             rtext, okay = QtWidgets.QInputDialog.getText(
-                self, "Ternary Colorbar", "Enter red/cyan label:",
+                self, 'Ternary Colorbar', 'Enter red/cyan label:',
                 QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
@@ -1299,7 +1290,7 @@ class PlotInterp(QtWidgets.QDialog):
 
             units = str(self.cbox_band2.currentText())
             gtext, okay = QtWidgets.QInputDialog.getText(
-                self, "Ternary Colorbar", "Enter green/magenta label:",
+                self, 'Ternary Colorbar', 'Enter green/magenta label:',
                 QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
@@ -1307,7 +1298,7 @@ class PlotInterp(QtWidgets.QDialog):
 
             units = str(self.cbox_band3.currentText())
             btext, okay = QtWidgets.QInputDialog.getText(
-                self, "Ternary Colorbar", "Enter blue/yelow label:",
+                self, 'Ternary Colorbar', 'Enter blue/yelow label:',
                 QtWidgets.QLineEdit.Normal, units)
 
             if not okay:
@@ -1610,8 +1601,8 @@ class PlotInterp(QtWidgets.QDialog):
             fname = filename[:-4]+'_tern.tif'
             canvas.print_figure(fname, dpi=300)
 
-        QtWidgets.QMessageBox.information(self, "Information",
-                                          "Save to GeoTiff is complete!",
+        QtWidgets.QMessageBox.information(self, 'Information',
+                                          'Save to GeoTiff is complete!',
                                           QtWidgets.QMessageBox.Ok)
 
     def settings(self):

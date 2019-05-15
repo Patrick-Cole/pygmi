@@ -50,11 +50,11 @@ class FileMenu():
 # File Menu
 
         self.menufile = QtWidgets.QMenu(parent.menubar)
-        self.menufile.setTitle("File")
+        self.menufile.setTitle('File')
         parent.menubar.addAction(self.menufile.menuAction())
 
         self.action_exit = QtWidgets.QAction(parent)
-        self.action_exit.setText("Exit")
+        self.action_exit.setText('Exit')
         self.menufile.addAction(self.action_exit)
 
         self.action_exit.triggered.connect(parent.close)
@@ -63,7 +63,7 @@ class FileMenu():
         context_menu['Basic'].addSeparator()
 
         self.action_bandselect = QtWidgets.QAction(self.parent)
-        self.action_bandselect.setText("Select Input Bands")
+        self.action_bandselect.setText('Select Input Bands')
         context_menu['Basic'].addAction(self.action_bandselect)
         self.action_bandselect.triggered.connect(self.bandselect)
 
@@ -186,9 +186,9 @@ class HelpMenu():
         self.menuhelp.addAction(self.action_help)
         self.menuhelp.addAction(self.action_about)
 
-        self.menuhelp.setTitle("Help")
-        self.action_help.setText("Help")
-        self.action_about.setText("About")
+        self.menuhelp.setTitle('Help')
+        self.action_help.setText('Help')
+        self.action_about.setText('About')
 
         self.action_about.triggered.connect(self.about)
         self.action_help.triggered.connect(self.webhelp)

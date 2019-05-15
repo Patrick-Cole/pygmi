@@ -51,43 +51,43 @@ class MenuWidget():
         context_menu = self.parent.context_menu
 
         self.menu = QtWidgets.QMenu(parent.menubar)
-        self.menu.setTitle("Seismology")
+        self.menu.setTitle('Seismology')
         parent.menubar.addAction(self.menu.menuAction())
 
         self.action_import_seisan = QtWidgets.QAction(parent)
-        self.action_import_seisan.setText("Import Seisan Data")
+        self.action_import_seisan.setText('Import Seisan Data')
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
 
         self.action_filter_seisan = QtWidgets.QAction(parent)
-        self.action_filter_seisan.setText("Filter Seisan Data")
+        self.action_filter_seisan.setText('Filter Seisan Data')
         self.menu.addAction(self.action_filter_seisan)
         self.action_filter_seisan.triggered.connect(self.filter_seisan)
 
         self.action_import_genfps = QtWidgets.QAction(parent)
-        self.action_import_genfps.setText("Import Generic FPS")
+        self.action_import_genfps.setText('Import Generic FPS')
         self.menu.addAction(self.action_import_genfps)
         self.action_import_genfps.triggered.connect(self.import_genfps)
 
         self.action_import_scans = QtWidgets.QAction(parent)
-        self.action_import_scans.setText("Import Scanned Bulletins")
+        self.action_import_scans.setText('Import Scanned Bulletins')
         self.menu.addAction(self.action_import_scans)
         self.action_import_scans.triggered.connect(self.import_scans)
 
         self.menu.addSeparator()
 
         self.action_beachball = QtWidgets.QAction(self.parent)
-        self.action_beachball.setText("Fault Plane Solutions")
+        self.action_beachball.setText('Fault Plane Solutions')
         self.menu.addAction(self.action_beachball)
         self.action_beachball.triggered.connect(self.beachball)
 
         self.action_delete_recs = QtWidgets.QAction(parent)
-        self.action_delete_recs.setText("Delete Records")
+        self.action_delete_recs.setText('Delete Records')
         self.menu.addAction(self.action_delete_recs)
         self.action_delete_recs.triggered.connect(self.delete_recs)
 
         self.action_quarry = QtWidgets.QAction(parent)
-        self.action_quarry.setText("Remove Quarry Events")
+        self.action_quarry.setText('Remove Quarry Events')
         self.menu.addAction(self.action_quarry)
         self.action_quarry.triggered.connect(self.quarry)
 
@@ -97,17 +97,17 @@ class MenuWidget():
         context_menu['Seis'].addSeparator()
 
         self.action_show_QC_plots = QtWidgets.QAction(self.parent)
-        self.action_show_QC_plots.setText("Show QC Plots")
+        self.action_show_QC_plots.setText('Show QC Plots')
         context_menu['Seis'].addAction(self.action_show_QC_plots)
         self.action_show_QC_plots.triggered.connect(self.show_QC_plots)
 
         self.action_export_seisan = QtWidgets.QAction(self.parent)
-        self.action_export_seisan.setText("Export Seisan Data")
+        self.action_export_seisan.setText('Export Seisan Data')
         context_menu['Seis'].addAction(self.action_export_seisan)
         self.action_export_seisan.triggered.connect(self.export_seisan)
 
         self.action_export_csv = QtWidgets.QAction(self.parent)
-        self.action_export_csv.setText("Export to CSV")
+        self.action_export_csv.setText('Export to CSV')
         context_menu['Seis'].addAction(self.action_export_csv)
         self.action_export_csv.triggered.connect(self.export_csv)
 
@@ -122,37 +122,37 @@ class MenuWidget():
     def beachball(self):
         """ Create Beachballs from Fault Plane Solutions """
         fnc = beachball.BeachBall(self.parent)
-        self.parent.item_insert("Step", "Fault\nPlane\nSolutions", fnc)
+        self.parent.item_insert('Step', 'Fault\nPlane\nSolutions', fnc)
 
     def import_scans(self):
         """ Imports scanned records"""
         fnc = scan_imp.SIMP(self.parent)
-        self.parent.item_insert("Io", "Import\nScanned\nBulletins", fnc)
+        self.parent.item_insert('Io', 'Import\nScanned\nBulletins', fnc)
 
     def import_seisan(self):
         """ Imports Seisan"""
         fnc = iodefs.ImportSeisan(self.parent)
-        self.parent.item_insert("Io", "Import\nSeisan\nData", fnc)
+        self.parent.item_insert('Io', 'Import\nSeisan\nData', fnc)
 
     def filter_seisan(self):
         """ Imports Seisan"""
         fnc = iodefs.FilterSeisan(self.parent)
-        self.parent.item_insert("Step", "Filter\nSeisan\nData", fnc)
+        self.parent.item_insert('Step', 'Filter\nSeisan\nData', fnc)
 
     def import_genfps(self):
         """ Imports Generic Fault Plane Solution"""
         fnc = iodefs.ImportGenericFPS(self.parent)
-        self.parent.item_insert("Io", "Import\nGeneric\nFPS", fnc)
+        self.parent.item_insert('Io', 'Import\nGeneric\nFPS', fnc)
 
     def delete_recs(self):
         """ Deletes Records """
         fnc = del_rec.DeleteRecord(self.parent)
-        self.parent.item_insert("Io", "Delete Records", fnc)
+        self.parent.item_insert('Io', 'Delete Records', fnc)
 
     def quarry(self):
         """ Removes quarry events """
         fnc = del_rec.Quarry(self.parent)
-        self.parent.item_insert("Step", "Remove\nQuarry\nEvents", fnc)
+        self.parent.item_insert('Step', 'Remove\nQuarry\nEvents', fnc)
 
     def show_QC_plots(self):
         """ Show QC plots """

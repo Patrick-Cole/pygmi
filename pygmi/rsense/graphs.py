@@ -337,7 +337,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Graph Window")
+        self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl1 = QtWidgets.QHBoxLayout()
@@ -362,10 +362,8 @@ class GraphWindow(QtWidgets.QDialog):
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel()
-        self.label2 = QtWidgets.QLabel()
-        self.label1.setText('Bands:')
-        self.label2.setText('Bands:')
+        self.label1 = QtWidgets.QLabel('Bands:')
+        self.label2 = QtWidgets.QLabel('Bands:')
         self.hbl.addWidget(self.label1)
         self.hbl.addWidget(self.combobox1)
         self.hbl.addWidget(self.label2)
@@ -456,7 +454,7 @@ class PlotLog(GraphWindow):
 
 def main_pages():
     """ main """
-    idir = r"C:\Work\Programming\Remote_Sensing\bh2\\"
+    idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
     logfile = idir + r'logplot.xlsx'
 
@@ -675,7 +673,7 @@ def main_pages():
 
 def main_single():
     """ main """
-    idir = r"C:\Work\Programming\Remote_Sensing\bh2\\"
+    idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
     logfile = idir + r'logplot.xlsx'
 

@@ -63,7 +63,7 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
     if col2 is None:
         col2 = col1
 
-    slen = int(re.findall("[0-9]+", strform)[1])
+    slen = int(re.findall('[0-9]+', strform)[1])
 
     if val == nval or val is None:
         tmp2 = slen*' '
@@ -131,9 +131,9 @@ def str2int(inp):
 class ImportSeisan():
     """ Import Seisan Data """
     def __init__(self, parent=None):
-        self.ifile = ""
-        self.name = "Import Seisan Data"
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Import Seisan Data'
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -148,8 +148,8 @@ class ImportSeisan():
             showprocesslog = self.parent.showprocesslog
 
         ext = \
-            "Seisan Format (*.out);;" +\
-            "All Files (*.*)"
+            'Seisan Format (*.out);;' +\
+            'All Files (*.*)'
         if filename is None:
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
@@ -489,6 +489,7 @@ def read_record_type_m(i):
 
     return tmp
 
+
 def merge_m(rec1, rec2):
     """ merge M records """
     rec1.mrr_mzz = rec2.mrr_mzz
@@ -506,6 +507,7 @@ def merge_m(rec1, rec2):
 
     return rec1
 
+
 def read_record_type_p(i):
     """ Reads record type P"""
 
@@ -519,9 +521,9 @@ class ImportGenericFPS():
     Import Generic Fault Plane Solution Data. This is stored in a csv file.
     """
     def __init__(self, parent=None):
-        self.ifile = ""
-        self.name = "Import Generic FPS: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Import Generic FPS: '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -536,8 +538,8 @@ class ImportGenericFPS():
                                           'magnitude.')
 
         ext = \
-            "Comma Delimeted Text (*.csv);;" +\
-            "All Files (*.*)"
+            'Comma Delimeted Text (*.csv);;' +\
+            'All Files (*.*)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -601,9 +603,9 @@ class ImportGenericFPS():
 class ExportSeisan():
     """ Export Seisan Data """
     def __init__(self, parent):
-        self.ifile = ""
-        self.name = "Export Seisan Data "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Export Seisan Data '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -954,9 +956,9 @@ class ExportSeisan():
 class ExportCSV():
     """ Export Seisan Data """
     def __init__(self, parent):
-        self.ifile = ""
-        self.name = "Export CSV Data "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Export CSV Data '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -1354,8 +1356,8 @@ class FilterSeisan(QtWidgets.QDialog):
         self.dind_L = QtWidgets.QCheckBox('Local (L)')
         self.dind_R = QtWidgets.QCheckBox('Regional (R)')
         self.dind_D = QtWidgets.QCheckBox('Distant (D)')
-        self.rinc = QtWidgets.QRadioButton()
-        self.rexc = QtWidgets.QRadioButton()
+        self.rinc = QtWidgets.QRadioButton('Include')
+        self.rexc = QtWidgets.QRadioButton('Exclude')
 
         self.setupui()
 
@@ -1364,12 +1366,12 @@ class FilterSeisan(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
-        label_dind = QtWidgets.QLabel()
-        label_rectype = QtWidgets.QLabel()
-        label_recdesc = QtWidgets.QLabel()
-        label_from = QtWidgets.QLabel()
-        label_to = QtWidgets.QLabel()
-        grp_dind = QtWidgets.QGroupBox("Distance Indicator")
+#        label_dind = QtWidgets.QLabel('Distance Indicator:')
+        label_rectype = QtWidgets.QLabel('Record Type:')
+        label_recdesc = QtWidgets.QLabel('Description:')
+        label_from = QtWidgets.QLabel('From')
+        label_to = QtWidgets.QLabel('To')
+        grp_dind = QtWidgets.QGroupBox('Distance Indicator')
         vbox = QtWidgets.QVBoxLayout()
         vbox.addWidget(self.dind_L)
         vbox.addWidget(self.dind_R)
@@ -1380,21 +1382,14 @@ class FilterSeisan(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Data Filtering")
-        label_dind.setText("Distance Indicator:")
-        label_rectype.setText("Record Type:")
-        label_recdesc.setText("Description:")
+        self.setWindowTitle('Data Filtering')
         self.dind_D.setChecked(True)
         self.dind_R.setChecked(True)
         self.dind_L.setChecked(True)
 
         self.rectype.addItems(['1', '4', 'E'])
         self.recdesc.addItems(['None'])
-        self.rinc.setText('Include')
-        self.rexc.setText('Exclude')
         self.rinc.setChecked(True)
-        label_from.setText('From')
-        label_to.setText('To')
 
         self.rectype.currentTextChanged.connect(self.rectype_init)
         self.recdesc.currentTextChanged.connect(self.recdesc_init)
@@ -1421,7 +1416,7 @@ class FilterSeisan(QtWidgets.QDialog):
 
     def dind_click(self, state):
         """ check checkboxes """
-        self.dind = ""
+        self.dind = ''
         if self.dind_L.isChecked():
             self.dind += 'L'
         if self.dind_R.isChecked():
@@ -1429,7 +1424,7 @@ class FilterSeisan(QtWidgets.QDialog):
         if self.dind_D.isChecked():
             self.dind += 'D'
 
-        if self.dind != "":
+        if self.dind != '':
             self.get_limits()
             self.rectype.setCurrentText('1')
             self.rectype_init('1')

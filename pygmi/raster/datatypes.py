@@ -42,7 +42,7 @@ def numpy_to_pygmi(data):
         PyGMI raster dataset
     """
     if data.ndim != 2:
-        print("Error: you need 2 dimensions")
+        print('Error: you need 2 dimensions')
         return None
     tmp = Data()
     if np.ma.isMaskedArray(data):

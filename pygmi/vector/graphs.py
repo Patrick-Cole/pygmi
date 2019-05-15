@@ -40,7 +40,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.parent = parent
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Graph Window")
+        self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
@@ -50,13 +50,9 @@ class GraphWindow(QtWidgets.QDialog):
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
-        self.label1 = QtWidgets.QLabel()
-        self.label2 = QtWidgets.QLabel()
-        self.label3 = QtWidgets.QLabel()
-
-        self.label1.setText('Bands:')
-        self.label2.setText('Bands:')
-        self.label3.setText('Value:')
+        self.label1 = QtWidgets.QLabel('Bands:')
+        self.label2 = QtWidgets.QLabel('Bands:')
+        self.label3 = QtWidgets.QLabel('Value:')
 
         self.hbl.addWidget(self.label1)
         self.hbl.addWidget(self.combobox1)
@@ -333,7 +329,7 @@ class PlotRose(GraphWindow):
         self.spinbox.setValue(8)
         self.spinbox.setMinimum(2)
         self.spinbox.setMaximum(360)
-        self.setWindowTitle("Rose Diagram")
+        self.setWindowTitle('Rose Diagram')
 
     def change_band(self):
         """ Combo box to choose band """

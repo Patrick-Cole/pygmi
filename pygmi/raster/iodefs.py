@@ -56,9 +56,9 @@ class ImportData():
         filename extension
     """
     def __init__(self, parent=None):
-        self.ifile = ""
-        self.name = "Import Data: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Import Data: '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -67,25 +67,25 @@ class ImportData():
     def settings(self):
         """ Settings """
         ext = \
-            "Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;" + \
-            "hdf (*.hdf);;" + \
-            "hdf (*.h5);;" + \
-            "ASTER GED (*.bin);;" + \
-            "ERMapper (*.ers);;" + \
-            "ENVI (*.hdr);;" + \
-            "ERDAS Imagine (*.img);;" + \
-            "PCI Geomatics Database File (*.pix);;" + \
-            "GeoTiff (*.tif);;" + \
-            "SAGA binary grid (*.sdat);;" + \
-            "Geosoft UNCOMPRESSED grid (*.grd);;" + \
-            "Geosoft (*.gxf);;" + \
-            "Surfer grid (v.6) (*.grd);;" + \
-            "GeoPak grid (*.grd);;" + \
-            "ESRI ASCII (*.asc);;" + \
-            "ASCII with .hdr header (*.asc);;" + \
-            "ASCII XYZ (*.xyz);;" + \
-            "Arcinfo Binary Grid (hdr.adf);;" + \
-            "ArcGIS BIL (*.bil)"
+            'Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;' + \
+            'hdf (*.hdf);;' + \
+            'hdf (*.h5);;' + \
+            'ASTER GED (*.bin);;' + \
+            'ERMapper (*.ers);;' + \
+            'ENVI (*.hdr);;' + \
+            'ERDAS Imagine (*.img);;' + \
+            'PCI Geomatics Database File (*.pix);;' + \
+            'GeoTiff (*.tif);;' + \
+            'SAGA binary grid (*.sdat);;' + \
+            'Geosoft UNCOMPRESSED grid (*.grd);;' + \
+            'Geosoft (*.gxf);;' + \
+            'Surfer grid (v.6) (*.grd);;' + \
+            'GeoPak grid (*.grd);;' + \
+            'ESRI ASCII (*.asc);;' + \
+            'ASCII with .hdr header (*.asc);;' + \
+            'ASCII XYZ (*.xyz);;' + \
+            'Arcinfo Binary Grid (hdr.adf);;' + \
+            'ArcGIS BIL (*.bil)'
 
         filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -102,7 +102,7 @@ class ImportData():
             dat = get_geosoft(self.ifile)
         elif filt == 'hdf (*.hdf)':
             dat = get_hdf(self.ifile)
-        elif filt == "hdf (*.h5)":
+        elif filt == 'hdf (*.h5)':
             dat = get_hdf(self.ifile)
         elif filt == 'ASCII with .hdr header (*.asc)':
             dat = get_ascii(self.ifile)
@@ -909,9 +909,9 @@ class ExportData():
         filename extension
     """
     def __init__(self, parent):
-        self.ifile = ""
-        self.name = "Export Data: "
-        self.ext = ""
+        self.ifile = ''
+        self.name = 'Export Data: '
+        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -931,14 +931,14 @@ class ExportData():
             return False
 
         ext = \
-            "GeoTiff (*.tif);;" + \
-            "ENVI (*.hdr);;" + \
-            "ERMapper (*.ers);;" + \
-            "Geosoft (*.gxf);;" + \
-            "Surfer grid (v.6) (*.grd);;" + \
-            "ArcInfo ASCII (*.asc);;" + \
-            "ASCII XYZ (*.xyz);;" + \
-            "ArcGIS BIL (*.bil)"
+            'GeoTiff (*.tif);;' + \
+            'ENVI (*.hdr);;' + \
+            'ERMapper (*.ers);;' + \
+            'Geosoft (*.gxf);;' + \
+            'Surfer grid (v.6) (*.grd);;' + \
+            'ArcInfo ASCII (*.asc);;' + \
+            'ASCII XYZ (*.xyz);;' + \
+            'ArcGIS BIL (*.bil)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
@@ -1091,7 +1091,7 @@ class ExportData():
                                        'output filenames since you have a '
                                        'multiple band image')
 
-        file_out = self.ifile.rpartition(".")[0]+'.gxf'
+        file_out = self.ifile.rpartition('.')[0]+'.gxf'
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'gxf')
@@ -1103,25 +1103,25 @@ class ExportData():
 
             krows, kcols = k.data.shape
 
-            fno.write("#TITLE\n")
+            fno.write('#TITLE\n')
             fno.write(self.name)
-            fno.write("\n#POINTS\n")
+            fno.write('\n#POINTS\n')
             fno.write(str(kcols))
-            fno.write("\n#ROWS\n")
+            fno.write('\n#ROWS\n')
             fno.write(str(krows))
-            fno.write("\n#PTSEPARATION\n")
+            fno.write('\n#PTSEPARATION\n')
             fno.write(str(k.xdim))
-            fno.write("\n#RWSEPARATION\n")
+            fno.write('\n#RWSEPARATION\n')
             fno.write(str(k.ydim))
-            fno.write("\n#XORIGIN\n")
+            fno.write('\n#XORIGIN\n')
             fno.write(str(xmin))
-            fno.write("\n#YORIGIN\n")
+            fno.write('\n#YORIGIN\n')
             fno.write(str(ymin))
-            fno.write("\n#SENSE\n")
-            fno.write("1")
-            fno.write("\n#DUMMY\n")
+            fno.write('\n#SENSE\n')
+            fno.write('1')
+            fno.write('\n#DUMMY\n')
             fno.write(str(k.nullvalue))
-            fno.write("\n#GRID\n")
+            fno.write('\n#GRID\n')
             tmp = k.data.filled(k.nullvalue)
 
             for i in range(k.data.shape[0]-1, -1, -1):
@@ -1131,9 +1131,9 @@ class ExportData():
                     if kkk == 5:
                         kkk = 0
                     if kkk == 0:
-                        fno.write("\n")
+                        fno.write('\n')
 
-                    fno.write(str(tmp[i, j]) + "  ")
+                    fno.write(str(tmp[i, j]) + '  ')
                     kkk += 1
 
             fno.close()
@@ -1153,7 +1153,7 @@ class ExportData():
                                        'multiple band image')
 
 
-        file_out = self.ifile.rpartition(".")[0]+'.grd'
+        file_out = self.ifile.rpartition('.')[0]+'.grd'
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'grd')
@@ -1193,7 +1193,7 @@ class ExportData():
                                        'output filenames since you have a '
                                        'multiple band image')
 
-        file_out = self.ifile.rpartition(".")[0]+'.asc'
+        file_out = self.ifile.rpartition('.')[0]+'.asc'
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'asc')
@@ -1204,20 +1204,20 @@ class ExportData():
             ymin = extent[2]
             krows, kcols = k.data.shape
 
-            fno.write("ncols \t\t\t" + str(kcols))
-            fno.write("\nnrows \t\t\t" + str(krows))
-            fno.write("\nxllcorner \t\t\t" + str(xmin))
-            fno.write("\nyllcorner \t\t\t" + str(ymin))
-            fno.write("\ncellsize \t\t\t" + str(k.xdim))
-            fno.write("\nnodata_value \t\t" + str(k.nullvalue))
+            fno.write('ncols \t\t\t' + str(kcols))
+            fno.write('\nnrows \t\t\t' + str(krows))
+            fno.write('\nxllcorner \t\t\t' + str(xmin))
+            fno.write('\nyllcorner \t\t\t' + str(ymin))
+            fno.write('\ncellsize \t\t\t' + str(k.xdim))
+            fno.write('\nnodata_value \t\t' + str(k.nullvalue))
 
             tmp = k.data.filled(k.nullvalue)
             krows, kcols = k.data.shape
 
             for j in range(krows):
-                fno.write("\n")
+                fno.write('\n')
                 for i in range(kcols):
-                    fno.write(str(tmp[j, i]) + " ")
+                    fno.write(str(tmp[j, i]) + ' ')
 
             fno.close()
 
@@ -1235,7 +1235,7 @@ class ExportData():
                                        'output filenames since you have a '
                                        'multiple band image')
 
-        file_out = self.ifile.rpartition(".")[0]+'.xyz'
+        file_out = self.ifile.rpartition('.')[0]+'.xyz'
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'xyz')
@@ -1249,9 +1249,9 @@ class ExportData():
 
             for j in range(krows):
                 for i in range(kcols):
-                    fno.write(str(xmin+i*k.xdim) + " " +
-                              str(ymax-j*k.ydim) + " " +
-                              str(tmp[j, i]) + "\n")
+                    fno.write(str(xmin+i*k.xdim) + ' ' +
+                              str(ymax-j*k.ydim) + ' ' +
+                              str(tmp[j, i]) + '\n')
             fno.close()
 
     def get_filename(self, data, ext):
@@ -1268,7 +1268,7 @@ class ExportData():
         file_band = data.dataid.split('_')[0].strip('"')
         file_band = file_band.replace('/', '')
         file_band = file_band.replace(':', '')
-        file_out = self.ifile.rpartition(".")[0]+"_"+file_band+'.'+ext
+        file_out = self.ifile.rpartition('.')[0]+'_'+file_band+'.'+ext
 
         return file_out
 

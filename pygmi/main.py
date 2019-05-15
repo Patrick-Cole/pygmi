@@ -197,7 +197,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             self.my_class.arrows = self.arrows
 
         path = QtGui.QPainterPath()
-        if self.diagram_type == "StartEnd":
+        if self.diagram_type == 'StartEnd':
             path.moveTo(200, 50)
             path.arcTo(150, 0, 50, 50, 0, 90)
             path.arcTo(50, 0, 50, 50, 90, 90)
@@ -205,7 +205,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             path.arcTo(150, 50, 50, 50, 270, 90)
             path.lineTo(200, 25)
             self.my_polygon = path.toFillPolygon()
-        elif self.diagram_type == "Conditional":
+        elif self.diagram_type == 'Conditional':
             self.np_poly = np.array([[-100., 0.],
                                      [0., 100.],
                                      [100., 0.],
@@ -217,7 +217,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
                 my_points.append(QtCore.QPointF(i[0], i[1]))
             self.my_polygon = QtGui.QPolygonF(my_points)
 
-        elif self.diagram_type == "Step":
+        elif self.diagram_type == 'Step':
             self.np_poly = np.array([[-100., -100.],
                                      [100., -100.],
                                      [100., 100.],
@@ -362,8 +362,8 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         super().__init__(parent)
 
         self.my_item_menu = item_menu
-        self.my_mode = "MoveItem"
-        self.my_item_type = "Step"
+        self.my_mode = 'MoveItem'
+        self.my_item_type = 'Step'
         self.line = None
         self.text_item = None
         self.my_item_color = QtCore.Qt.cyan
@@ -382,7 +382,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         """
         if mouse_event.button() != QtCore.Qt.LeftButton:
             return
-        if self.my_mode == "InsertLine":
+        if self.my_mode == 'InsertLine':
             self.line = QtWidgets.QGraphicsLineItem(
                 QtCore.QLineF(mouse_event.scenePos(), mouse_event.scenePos()))
             self.line.setPen(QtGui.QPen(self.my_line_color, 2))
@@ -419,11 +419,11 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         mouse_event: QGraphicsSceneMouseEvent
             mouse event.
         """
-        if self.my_mode == "InsertLine" and self.line:
+        if self.my_mode == 'InsertLine' and self.line:
             new_line = QtCore.QLineF(self.line.line().p1(),
                                      mouse_event.scenePos())
             self.line.setLine(new_line)
-        elif self.my_mode == "MoveItem":
+        elif self.my_mode == 'MoveItem':
             super().mouseMoveEvent(mouse_event)
 
     def mouseReleaseEvent(self, mouse_event):
@@ -435,7 +435,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         mouse_event: QGraphicsSceneMouseEvent
             mouse event.
         """
-        if self.line and self.my_mode == "InsertLine":
+        if self.line and self.my_mode == 'InsertLine':
             start_items = self.items(self.line.line().p1())
             if start_items and start_items[0] == self.line:
                 start_items.pop(0)
@@ -460,7 +460,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                 end_item.update_indata()
 
         self.line = None
-        self.my_mode = "MoveItem"
+        self.my_mode = 'MoveItem'
         self.parent.action_pointer.setChecked(True)
         super().mouseReleaseEvent(mouse_event)
 
@@ -581,15 +581,15 @@ class MainWidget(QtWidgets.QMainWindow):
         self.textbrowser_datainfo.setSizePolicy(sizepolicy)
         self.textbrowser_processlog.setSizePolicy(sizepolicy)
         self.textbrowser_processlog.setStyleSheet(
-            "* { background-color: rgb(255, 255, 255); }")
+            '* { background-color: rgb(255, 255, 255); }')
 
         self.grid_layout.addWidget(self.graphics_view, 0, 0, 4, 2)
         self.grid_layout.addWidget(self.textbrowser_datainfo, 1, 2, 1, 1)
         self.grid_layout.addWidget(self.textbrowser_processlog, 3, 2, 1, 1)
         self.grid_layout.addWidget(self.pbar, 5, 0, 1, 3)
 
-        label = QtWidgets.QLabel()
-        label_2 = QtWidgets.QLabel()
+        label = QtWidgets.QLabel('Dataset Information:')
+        label_2 = QtWidgets.QLabel('Process Log:')
         self.grid_layout.addWidget(label, 0, 2, 1, 1)
         self.grid_layout.addWidget(label_2, 2, 2, 1, 1)
 
@@ -608,14 +608,12 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbar.addAction(self.action_help)
 
         self.setWindowTitle(
-            "PyGMI - Python Geophysical Modelling and Interpretation")
-        label.setText("Dataset Information:")
-        label_2.setText("Process Log:")
-        self.action_delete.setText("Delete")
-        self.action_bring_to_front.setText("Bring to Front")
-        self.action_send_to_back.setText("Send to Back")
-        self.action_pointer.setText("Pointer")
-        self.action_linepointer.setText("LinePointer")
+            'PyGMI - Python Geophysical Modelling and Interpretation')
+        self.action_delete.setText('Delete')
+        self.action_bring_to_front.setText('Bring to Front')
+        self.action_send_to_back.setText('Send to Back')
+        self.action_pointer.setText('Pointer')
+        self.action_linepointer.setText('LinePointer')
 
         item_menu = self.context_menu['Basic']
         item_menu.addAction(self.action_delete)
@@ -790,7 +788,7 @@ class MainWidget(QtWidgets.QMainWindow):
         rect_item.setParentItem(item)
 
 # Enable moving
-        self.scene.my_mode = "MoveItem"
+        self.scene.my_mode = 'MoveItem'
         return item
 
     def launch_context_item(self, newitem):
@@ -831,11 +829,11 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def linepointer(self):
         """Select line pointer."""
-        self.scene.my_mode = "InsertLine"
+        self.scene.my_mode = 'InsertLine'
 
     def pointer(self):
         """Select pointer."""
-        self.scene.my_mode = "MoveItem"
+        self.scene.my_mode = 'MoveItem'
 
     def process_is_active(self, isactive=True):
         """
@@ -849,11 +847,11 @@ class MainWidget(QtWidgets.QMainWindow):
 
         if isactive:
             self.textbrowser_processlog.setStyleSheet(
-                "* { background-color: rgba(255, 0, 0, 127); }")
+                '* { background-color: rgba(255, 0, 0, 127); }')
             self.pbar.setValue(0)
         else:
             self.textbrowser_processlog.setStyleSheet(
-                "* { background-color: rgb(255, 255, 255); }")
+                '* { background-color: rgb(255, 255, 255); }')
 
     def send_to_back(self):
         """Send the selected item to the back."""
@@ -959,7 +957,7 @@ class Startup(QtWidgets.QDialog):
 
         labeltext = "<font color='red'>Py</font><font color='blue'>GMI</font>"
 
-        fnt = QtGui.QFont("Arial", 72, QtGui.QFont.Bold)
+        fnt = QtGui.QFont('Arial', 72, QtGui.QFont.Bold)
         self.label_info.setFont(fnt)
         self.label_info.setText(labeltext)
         self.gridlayout_main.addWidget(self.label_info)

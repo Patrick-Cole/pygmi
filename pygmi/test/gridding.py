@@ -170,7 +170,7 @@ def model_to_lith_depth():
     print('These are the lithologies and their codes:')
     pprint.pprint(tmp.lmod.lith_list_reverse)
     print('')
-    lithcode = int(input("what lithology code do you wish? "))
+    lithcode = int(input('what lithology code do you wish? '))
 
     lith_index = tmp.lmod.lith_index
 
