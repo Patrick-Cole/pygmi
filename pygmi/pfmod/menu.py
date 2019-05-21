@@ -50,42 +50,35 @@ class MenuWidget():
         context_menu = self.parent.context_menu
 
 # Normal menus
-        self.menu = QtWidgets.QMenu(parent.menubar)
-        self.menu.setTitle('Potential Field Modelling')
+        self.menu = QtWidgets.QMenu('Potential Field Modelling')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_mod3d = QtWidgets.QAction(parent)
-        self.action_import_mod3d.setText('Import 3D Model')
+        self.action_import_mod3d = QtWidgets.QAction('Import 3D Model')
         self.menu.addAction(self.action_import_mod3d)
         self.action_import_mod3d.triggered.connect(self.import_mod3d)
 
-        self.action_pfmod = QtWidgets.QAction(self.parent)
-        self.action_pfmod.setText('Model Creation and Editing')
+        self.action_pfmod = QtWidgets.QAction('Model Creation and Editing')
         self.menu.addAction(self.action_pfmod)
         self.action_pfmod.triggered.connect(self.pfmod)
 
         self.menu.addSeparator()
 
-        self.action_merge_mod3d = QtWidgets.QAction(parent)
-        self.action_merge_mod3d.setText('Merge two 3D Models')
+        self.action_merge_mod3d = QtWidgets.QAction('Merge two 3D Models')
         self.menu.addAction(self.action_merge_mod3d)
         self.action_merge_mod3d.triggered.connect(self.merge_mod3d)
 
-#        self.action_prof_pic = QtWidgets.QAction(parent)
-#        self.action_prof_pic.setText('Import Profile Picture')
+#        self.action_prof_pic = QtWidgets.QAction('Import Profile Picture')
 #        self.menu.addAction(self.action_prof_pic)
 #        self.action_prof_pic.triggered.connect(self.import_prof_pic)
 
 # Context Menu
         context_menu['Model3D'].addSeparator()
 
-        self.action_mod3d = QtWidgets.QAction(self.parent)
-        self.action_mod3d.setText('3D Model Display')
+        self.action_mod3d = QtWidgets.QAction('3D Model Display')
         context_menu['Model3D'].addAction(self.action_mod3d)
         self.action_mod3d.triggered.connect(self.mod3d)
 
-        self.action_export_mod3d = QtWidgets.QAction(self.parent)
-        self.action_export_mod3d.setText('Export 3D Model')
+        self.action_export_mod3d = QtWidgets.QAction('Export 3D Model')
         context_menu['Model3D'].addAction(self.action_export_mod3d)
         self.action_export_mod3d.triggered.connect(self.export_mod3d)
 

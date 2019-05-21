@@ -50,6 +50,29 @@ class PData():
         self.dataid = ''
 
 
+class LData():
+    """
+    Class for point data
+
+    Attributes
+    ----------
+    xchannel : string
+        channel for x coordinates
+    ychannel : string
+        channel for y coordinates
+    data : dictionary
+        dictionary of groups/lines, each having a structured array of data
+    dataid : str
+        data description
+    """
+
+    def __init__(self):
+        self.xchannel = ''
+        self.ychannel = ''
+        self.data = {}
+        self.dataid = ''
+
+
 class VData():
     """
     Class for Vector data. Typically used for storage of shape files.

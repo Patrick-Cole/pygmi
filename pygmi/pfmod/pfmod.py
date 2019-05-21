@@ -56,15 +56,14 @@ class MainWidget(QtWidgets.QMainWindow):
         self.txtmsg = ''
         self.modelfilename = r'./tmp'
 
-        self.toolbar = QtWidgets.QToolBar()
+#        self.toolbar = QtWidgets.QToolBar()
         self.toolbardock = QtWidgets.QToolBar()
         self.statusbar = QtWidgets.QStatusBar()
-        self.menubar = QtWidgets.QMenuBar()
 
         self.pbar_sub = pmisc.ProgressBar()
         self.pbar_main = pmisc.ProgressBar()
         self.textbrowser = QtWidgets.QTextBrowser()
-        self.actionsave = QtWidgets.QPushButton('Save Model')
+        self.actionsave = QtWidgets.QAction('Save Model')
 
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
         tmp = [i for i in set(self.lmod1.griddata.values())]
@@ -75,82 +74,60 @@ class MainWidget(QtWidgets.QMainWindow):
         self.lithnotes = tab_param.LithNotes(self)
         self.profile = tab_prof.ProfileDisplay(self)
 
+# Toolbars
+        self.action_mext = QtWidgets.QAction('Model\nExtent\nParameters')
+        self.toolbardock.addAction(self.action_mext)
+        self.action_mext.triggered.connect(self.mext.tab_activate)
+
+        self.action_param = QtWidgets.QAction('Geophysical\nParameters')
+        self.toolbardock.addAction(self.action_param)
+        self.action_param.triggered.connect(self.param.tab_activate)
+
+        self.action_lnotes = QtWidgets.QAction('Lithology\nNotes')
+        self.toolbardock.addAction(self.action_lnotes)
+        self.action_lnotes.triggered.connect(self.lithnotes.tab_activate)
+
+# Dock Widgets
+        dock = QtWidgets.QDockWidget('Editor')
+        dock.setWidget(self.profile)
+        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
+        self.toolbardock.addAction(dock.toggleViewAction())
+
         self.grvmag = grvmag3d.GravMag(self)
 
         self.setupui()
 
     def setupui(self):
         """ Setup for the GUI """
-# Menus
-        menufile = QtWidgets.QMenu(self.menubar)
-        menufile.setTitle('File')
-        self.menubar.addAction(menufile.menuAction())
-
-        menuview = QtWidgets.QMenu(self.menubar)
-        menuview.setTitle('View')
-        self.menubar.addAction(menuview.menuAction())
-
-        self.action_exit = QtWidgets.QAction(self.parent)
-        self.action_exit.setText('Exit')
-        menufile.addAction(self.action_exit)
-        self.action_exit.triggered.connect(self.parent.close)
-
-# Toolbars
-        self.action_mext = QtWidgets.QAction(self)
-        self.action_mext.setText('Model Extent Parameters')
-        self.toolbardock.addAction(self.action_mext)
-        self.action_mext.triggered.connect(self.mext.tab_activate)
-
-        self.action_param = QtWidgets.QAction(self)
-        self.action_param.setText('Geophysical Parameters')
-        self.toolbardock.addAction(self.action_param)
-        self.action_param.triggered.connect(self.param.tab_activate)
-
-        self.action_lnotes = QtWidgets.QAction(self)
-        self.action_lnotes.setText('Lithology Notes')
-        self.toolbardock.addAction(self.action_lnotes)
-        self.action_lnotes.triggered.connect(self.lithnotes.tab_activate)
-
-# Dock Widgets
-        dock = QtWidgets.QDockWidget('Profile Editor')
-        dock.setWidget(self.profile)
-        self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
-        menuview.addAction(dock.toggleViewAction())
-        self.toolbardock.addAction(dock.toggleViewAction())
-#        dock.hide()
-
         centralwidget = QtWidgets.QWidget(self)
         verticallayout = QtWidgets.QVBoxLayout(centralwidget)
         hlayout = QtWidgets.QHBoxLayout()
 
         helpdocs = menu_default.HelpButton()
 
-        self.setMenuBar(self.menubar)
         self.setStatusBar(self.statusbar)
         self.setCentralWidget(centralwidget)
 
-        self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
-        self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
-        self.addToolBarBreak()
+#        self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
+#        self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
+#        self.addToolBarBreak()
         self.addToolBar(self.toolbardock)
         self.textbrowser.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.toolbar.setMovable(True)
-        self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
-        self.toolbar.addWidget(self.actionsave)
+#        self.toolbar.setMovable(True)
+#        self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
+        self.toolbardock.addAction(self.actionsave)
 
         self.setWindowTitle('Potential Field Modelling')
 
         hlayout.addWidget(self.textbrowser)
         hlayout.addWidget(helpdocs)
-#        verticallayout.addWidget(self.tabwidget)
-#        verticallayout.addWidget(self.dockwidget)
         verticallayout.addLayout(hlayout)
         verticallayout.addWidget(self.pbar_sub)
         verticallayout.addWidget(self.pbar_main)
 
         helpdocs.clicked.disconnect()
         helpdocs.clicked.connect(self.help_docs)
-        self.actionsave.clicked.connect(self.savemodel)
+        self.actionsave.triggered.connect(self.savemodel)
 
         self.resize(self.parent.width(), self.parent.height())
 

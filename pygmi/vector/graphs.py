@@ -24,10 +24,12 @@
 # -----------------------------------------------------------------------------
 """ Plot Vector Data using Matplotlib """
 
+import math
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import matplotlib.collections as mc
 from matplotlib.cm import Set1
+from matplotlib.cm import jet
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
@@ -73,7 +75,6 @@ class GraphWindow(QtWidgets.QDialog):
 
     def change_band(self):
         """Combo box to choose band """
-        pass
 
 
 class MyMplCanvas(FigureCanvas):
@@ -175,6 +176,121 @@ class MyMplCanvas(FigureCanvas):
 #        ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
 #                   mode='expand', borderaxespad=0., title='Legend')
         self.line, = ax1.plot(data1.zdata, '.-', picker=5)
+        self.figure.tight_layout()
+        self.figure.canvas.draw()
+
+    def update_lines(self, r, data):
+        """
+        Update the plot from point data.
+
+        Parameters
+        ----------
+        data1 : PData object
+            Point data
+        data2 : PData object
+            Point Data
+        """
+
+        self.figure.clear()
+
+        ax1 = self.figure.add_subplot(111, label='Profile')
+
+        ax1.set_title('Profile')
+        self.axes = ax1
+
+        ax1.set_xlabel('Distance')
+        ax1.set_ylabel('Value')
+
+        self.figure.canvas.draw()
+        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
+
+        self.line, = ax1.plot(r, data, '.-', picker=5)
+        self.figure.tight_layout()
+        self.figure.canvas.draw()
+
+    def update_map(self, data, ival):
+        """
+        Update the plot from point data.
+
+        Parameters
+        ----------
+        data1 : PData object
+            Point data
+        data2 : PData object
+            Point Data
+        """
+
+        data1 = data[ival]
+
+        self.figure.clear()
+
+        ax1 = self.figure.add_subplot(111, label='Map')
+        ax1.set_title(data1.dataid)
+        self.axes = ax1
+
+        self.figure.canvas.draw()
+        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
+
+        scat = ax1.scatter(data1.xdata, data1.ydata, c=data1.zdata, cmap=jet)
+        self.figure.colorbar(scat, ax=ax1)
+
+        self.figure.tight_layout()
+        self.figure.canvas.draw()
+
+    def update_lmap(self, data, ival, scale):
+        """
+        Update the plot from point data.
+
+        Parameters
+        ----------
+        data1 : PData object
+            Point data
+        data2 : PData object
+            Point Data
+        """
+
+        self.figure.clear()
+
+        ax1 = self.figure.add_subplot(111, label='Map')
+#        ax1.set_title(data1.dataid)
+        self.axes = ax1
+
+        self.figure.canvas.draw()
+        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
+
+        zdata = []
+        for line in data.data:
+            zdata += data.data[line][ival].tolist()
+
+        med = np.median(zdata)
+        std = 2.5 * np.std(zdata)
+
+        if std == 0:
+            std = 1
+
+        for line in data.data:
+            data1 = data.data[line]
+            x = data1[data.xchannel]
+            y = data1[data.ychannel]
+            z = data1[ival]
+
+            ang = np.arctan2((y[1:]-y[:-1]), (x[1:]-x[:-1]))
+            ang = np.append(ang, ang[-1])
+
+            if x.ptp() > y.ptp() and (x[-1]-x[0]) < 0:
+                ang += np.pi
+
+            elif y.ptp() > x.ptp() and (y[-1]-y[0]) < 0:
+                ang += np.pi
+
+            py = y + scale*(z - med)/std
+
+            qx = x - np.sin(ang) * (py - y)
+            qy = y + np.cos(ang) * (py - y)
+
+            ax1.plot(x, y, 'c')
+            ax1.plot(qx, qy, 'k')
+
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
@@ -318,6 +434,138 @@ class PlotPoints(GraphWindow):
         self.combobox2.setCurrentIndex(1)
 
 
+class PlotPoints2(GraphWindow):
+    """ Plot Raster Class """
+    def __init__(self, parent):
+        GraphWindow.__init__(self, parent)
+        self.indata = {}
+        self.parent = parent
+        self.spinbox.hide()
+        self.label3.hide()
+        self.combobox2.hide()
+        self.label2.hide()
+
+    def change_band(self):
+        """ Combo box to choose band """
+        data = self.indata['Point']
+        i = self.combobox1.currentIndex()
+        self.mmc.update_map(data, i)
+
+    def run(self):
+        """ Run """
+        self.show()
+        data = self.indata['Point']
+        for i in data:
+            self.combobox1.addItem(i.dataid)
+
+        self.label1.setText('Map')
+        self.combobox1.setCurrentIndex(0)
+
+
+class PlotLines(GraphWindow):
+    """ Plot Raster Class """
+    def __init__(self, parent):
+        GraphWindow.__init__(self, parent)
+        self.indata = {}
+        self.parent = parent
+        self.spinbox.hide()
+        self.label3.hide()
+        self.xcol = ''
+        self.ycol = ''
+
+    def change_line(self):
+        """ Combo to change line number """
+
+    def change_band(self):
+        """ Combo box to choose band """
+        data = self.indata['Line'].data
+        i = self.combobox1.currentText()
+        i2 = self.combobox2.currentText()
+
+        data2 = data[i][i2]
+        x = data[i][self.xcol]
+        y = data[i][self.ycol]
+
+        r = np.sqrt((x[1:]-x[:-1])**2+(y[1:]-y[:-1])**2)
+        r = np.cumsum(r)
+        r = np.concatenate(([0.], r))
+
+        self.mmc.update_lines(r, data2)
+
+    def run(self):
+        """ Run """
+
+        self.combobox1.currentIndexChanged.disconnect()
+        self.combobox2.currentIndexChanged.disconnect()
+
+        self.show()
+        data = self.indata['Line'].data
+        self.xcol = self.indata['Line'].xchannel
+        self.ycol = self.indata['Line'].ychannel
+
+        for i in data:
+            self.combobox1.addItem(i)
+            i2 = i
+
+        for i in data[i2].dtype.names:
+            self.combobox2.addItem(i)
+
+        self.label1.setText('Line:')
+        self.label2.setText('Column:')
+
+        self.combobox1.setCurrentIndex(0)
+        self.combobox2.setCurrentIndex(0)
+
+        self.change_band()
+
+        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.combobox2.currentIndexChanged.connect(self.change_band)
+
+
+class PlotLines2(GraphWindow):
+    """ Plot Raster Class """
+    def __init__(self, parent):
+        GraphWindow.__init__(self, parent)
+        self.indata = {}
+        self.parent = parent
+        self.combobox2.hide()
+        self.label2.hide()
+
+    def change_band(self):
+        """ Combo box to choose band """
+        data = self.indata['Line']
+        scale = self.spinbox.value()
+        i = self.combobox1.currentText()
+        self.mmc.update_lmap(data, i, scale)
+
+    def run(self):
+        """ Run """
+
+        self.combobox1.currentIndexChanged.disconnect()
+        self.spinbox.valueChanged.disconnect()
+
+        self.show()
+        data = self.indata['Line'].data
+
+        i2 = list(data.keys())[0]
+
+        for i in data[i2].dtype.names:
+            self.combobox1.addItem(i)
+
+        self.label1.setText('Column:')
+        self.label3.setText('Scale:')
+        self.spinbox.setMinimum(1)
+        self.spinbox.setMaximum(1000000)
+        self.spinbox.setValue(100)
+
+        self.combobox1.setCurrentIndex(0)
+
+        self.change_band()
+
+        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.spinbox.valueChanged.connect(self.change_band)
+
+
 class PlotRose(GraphWindow):
     """ Plot Raster Class """
     def __init__(self, parent):
@@ -423,3 +671,17 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
     hist = radii
     bin_edges = theta
     return hist, bin_edges
+
+
+def rotate(origin, point, angle):
+    """
+    Rotate a point counterclockwise by a given angle around a given origin.
+
+    The angle should be given in radians.
+    """
+    ox, oy = origin
+    px, py = point
+
+    qx = ox + math.cos(angle) * (px - ox) - math.sin(angle) * (py - oy)
+    qy = oy + math.sin(angle) * (px - ox) + math.cos(angle) * (py - oy)
+    return qx, qy

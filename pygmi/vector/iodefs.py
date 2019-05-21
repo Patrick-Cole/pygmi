@@ -26,12 +26,14 @@
 
 import os
 import copy
+import re
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import ogr
 import matplotlib.path as mplPath
 import pandas as pd
 from pygmi.vector.datatypes import PData
+from pygmi.vector.datatypes import LData
 from pygmi.vector.datatypes import VData
 import pygmi.menu_default as menu_default
 
@@ -140,7 +142,7 @@ class ImportPointData(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle(r'Import Point/Line Data')
+        self.setWindowTitle(r'Import Point Data')
 
         gridlayout_main.addWidget(label_xchan, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
@@ -196,6 +198,177 @@ class ImportPointData(QtWidgets.QDialog):
 
         self.outdata['Point'] = dat
         return True
+
+
+class ImportLineData(QtWidgets.QDialog):
+    """
+    Import Point Data
+
+    This class imports ASCII point data.
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
+    """
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+
+        self.name = 'Import Line Data: '
+        self.pbar = None  # self.parent.pbar
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+        self.ifile = ''
+
+        self.xchan = QtWidgets.QComboBox()
+        self.ychan = QtWidgets.QComboBox()
+
+        self.setupui()
+
+    def setupui(self):
+        """ Setup UI """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
+        label_xchan = QtWidgets.QLabel('X Channel:')
+        label_ychan = QtWidgets.QLabel('Y Channel:')
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle(r'Import Point/Line Data')
+
+        gridlayout_main.addWidget(label_xchan, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_ychan, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.ychan, 1, 1, 1, 1)
+
+        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self):
+        """Entry point into item. Data imported from here."""
+        ext = ('Geosoft XYZ (*.xyz);;'
+               'All Files (*.*)')
+
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+        if filename == '':
+            return False
+
+        os.chdir(filename.rpartition('/')[0])
+        self.ifile = str(filename)
+
+        if filt == 'Geosoft XYZ (*.xyz)':
+            dat = self.get_GXYZ()
+        else:
+            return
+#            dat = self.get_delimited()
+
+        i = list(dat.keys())[0]
+        ltmp = dat[i].dtype.names
+
+        self.xchan.addItems(ltmp)
+        self.ychan.addItems(ltmp)
+
+        self.xchan.setCurrentIndex(0)
+        self.ychan.setCurrentIndex(1)
+
+        tmp = self.exec_()
+
+        if tmp != 1:
+            return tmp
+
+        xcol = self.xchan.currentText()
+        ycol = self.ychan.currentText()
+
+        ltmp = ltmp[ltmp != xcol]
+        ltmp = ltmp[ltmp != ycol]
+
+        dat2 = LData()
+        dat2.xchannel = xcol
+        dat2.ychannel = ycol
+        dat2.data = dat
+
+        self.outdata['Line'] = dat2
+        return True
+
+    def get_GXYZ(self):
+        """ Gets geosoft XYZ """
+        dat = []
+
+        with open(self.ifile) as fno:
+            head = fno.readline()
+            tmp = fno.read()
+
+        head = head.split()
+        head.pop(0)
+        tmp = tmp.lower()
+        tmp = re.split('(line|tie)', tmp)
+        if tmp[0] == '':
+            tmp.pop(0)
+
+        dtype = {}
+        dtype['names'] = head
+        dtype['formats'] = ['f4']*len(head)
+
+        dat = {}
+        for i in range(0, len(tmp), 2):
+            tmp2 = tmp[i+1]
+            tmp2 = tmp2.split('\n')
+            line = tmp[i]+tmp2.pop(0)
+            tmp2 = np.genfromtxt(tmp2, names=head)
+            dat[line] = tmp2
+
+        return dat
+
+
+    def get_delimited(self):
+        """ Gets a delimited line file """
+        datatmp = pd.read_csv(self.ifile, sep=None, engine='python')
+        ltmp = datatmp.columns.values
+
+        self.xchan.addItems(ltmp)
+        self.ychan.addItems(ltmp)
+
+        self.xchan.setCurrentIndex(0)
+        self.ychan.setCurrentIndex(1)
+
+        tmp = self.exec_()
+
+        if tmp != 1:
+            return tmp
+
+        xcol = self.xchan.currentText()
+        ycol = self.ychan.currentText()
+
+        ltmp = ltmp[ltmp != xcol]
+        ltmp = ltmp[ltmp != ycol]
+
+        dat = []
+        for i in ltmp:
+            dat.append(PData())
+            dat[-1].xdata = datatmp[xcol].values
+            dat[-1].ydata = datatmp[ycol].values
+            dat[-1].zdata = datatmp[i].values
+            dat[-1].dataid = i
+
+        return dat
+
 
 
 class PointCut():

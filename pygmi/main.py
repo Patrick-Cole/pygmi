@@ -608,7 +608,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbar.addAction(self.action_help)
 
         self.setWindowTitle(
-            'PyGMI - Python Geophysical Modelling and Interpretation')
+            'PyGMI - Python Geoscience Modelling and Interpretation')
         self.action_delete.setText('Delete')
         self.action_bring_to_front.setText('Bring to Front')
         self.action_send_to_back.setText('Send to Back')

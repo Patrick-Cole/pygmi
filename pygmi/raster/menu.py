@@ -58,144 +58,113 @@ class MenuWidget():
         context_menu = self.parent.context_menu
 
 # Normal menus
-        self.menu = QtWidgets.QMenu(parent.menubar)
-        self.menu.setTitle('Raster')
+        self.menu = QtWidgets.QMenu('Raster')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_data = QtWidgets.QAction(parent)
-        self.action_import_data.setText('Import Raster Data')
+        self.action_import_data = QtWidgets.QAction('Import Raster Data')
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
         self.menu.addSeparator()
 
-        self.action_equation_editor = QtWidgets.QAction(self.parent)
-        self.action_equation_editor.setText('Equation Editor')
+        self.action_equation_editor = QtWidgets.QAction('Equation Editor')
         self.menu.addAction(self.action_equation_editor)
         self.action_equation_editor.triggered.connect(self.equation_editor)
 
-        self.action_smoothing = QtWidgets.QAction(self.parent)
-        self.action_smoothing.setText('Smoothing')
+        self.action_smoothing = QtWidgets.QAction('Smoothing')
         self.menu.addAction(self.action_smoothing)
         self.action_smoothing.triggered.connect(self.smoothing)
 
-        self.action_normalisation = QtWidgets.QAction(self.parent)
-        self.action_normalisation.setText('Normalisation')
+        self.action_normalisation = QtWidgets.QAction('Normalisation')
         self.menu.addAction(self.action_normalisation)
         self.action_normalisation.triggered.connect(self.norm_data)
 
-        self.action_gradients = QtWidgets.QAction(self.parent)
-        self.action_gradients.setText('Gradients')
+        self.action_gradients = QtWidgets.QAction('Gradients')
         self.menu.addAction(self.action_gradients)
         self.action_gradients.triggered.connect(self.gradients)
 
-        self.action_visibility = QtWidgets.QAction(self.parent)
-        self.action_visibility.setText('Visibility')
+        self.action_visibility = QtWidgets.QAction('Visibility')
         self.menu.addAction(self.action_visibility)
         self.action_visibility.triggered.connect(self.visibility)
 
-        self.action_tilt = QtWidgets.QAction(self.parent)
-        self.action_tilt.setText('Tilt Angle')
+        self.action_tilt = QtWidgets.QAction('Tilt Angle')
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
 
-        self.action_rtp = QtWidgets.QAction(self.parent)
-        self.action_rtp.setText('Reduction to the Pole')
+        self.action_rtp = QtWidgets.QAction('Reduction to the Pole')
         self.menu.addAction(self.action_rtp)
         self.action_rtp.triggered.connect(self.rtp)
 
-        self.action_igrf = QtWidgets.QAction(self.parent)
-        self.action_igrf.setText('Calculate IGRF Corrected Data')
+        self.action_igrf = QtWidgets.QAction('Calculate IGRF Corrected Data')
         self.menu.addAction(self.action_igrf)
         self.action_igrf.triggered.connect(self.igrf)
 
         self.menu.addSeparator()
 
-        self.action_merge = QtWidgets.QAction(self.parent)
-        self.action_merge.setText('Merge and Resampling')
+        self.action_merge = QtWidgets.QAction('Merge and Resampling')
         self.menu.addAction(self.action_merge)
         self.action_merge.triggered.connect(self.merge)
 
-        self.action_reproj = QtWidgets.QAction(self.parent)
-        self.action_reproj.setText('Reprojection')
+        self.action_reproj = QtWidgets.QAction('Reprojection')
         self.menu.addAction(self.action_reproj)
         self.action_reproj.triggered.connect(self.reproj)
 
-        self.action_cut_data = QtWidgets.QAction(self.parent)
-        self.action_cut_data.setText('Cut Raster using Polygon')
+        self.action_cut_data = QtWidgets.QAction('Cut Raster using Polygon')
         self.menu.addAction(self.action_cut_data)
         self.action_cut_data.triggered.connect(self.cut_data)
 
         self.menu.addSeparator()
 
-        self.action_get_prof = QtWidgets.QAction(self.parent)
-        self.action_get_prof.setText('Extract Profile from Raster')
+        self.action_get_prof = QtWidgets.QAction('Extract Profile from Raster')
         self.menu.addAction(self.action_get_prof)
         self.action_get_prof.triggered.connect(self.get_prof)
 
-        self.action_grid = QtWidgets.QAction(self.parent)
-        self.action_grid.setText('Grid Point Data (Linear)')
-        self.menu.addAction(self.action_grid)
-        self.action_grid.triggered.connect(self.grid)
-
         self.menu.addSeparator()
 
-        self.action_raster_data_interp = QtWidgets.QAction(self.parent)
-        self.action_raster_data_interp.setText('Raster Data Interpretation')
+        self.action_raster_data_interp = QtWidgets.QAction('Raster Data Interpretation')
         self.menu.addAction(self.action_raster_data_interp)
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
 
-        self.action_depth_susc = QtWidgets.QAction(self.parent)
-        self.action_depth_susc.setText('Tilt Depth Interpretation')
+        self.action_depth_susc = QtWidgets.QAction('Tilt Depth Interpretation')
         self.menu.addAction(self.action_depth_susc)
         self.action_depth_susc.triggered.connect(self.depth_susc)
 
 # Context menus
         context_menu['Raster'].addSeparator()
 
-        self.action_metadata = QtWidgets.QAction(self.parent)
-        self.action_metadata.setText('Display/Edit Metadata')
+        self.action_metadata = QtWidgets.QAction('Display/Edit Metadata')
         context_menu['Raster'].addAction(self.action_metadata)
         self.action_metadata.triggered.connect(self.metadata)
 
-        self.action_basic_statistics = QtWidgets.QAction(self.parent)
-        self.action_basic_statistics.setText('Basic Statistics')
+        self.action_basic_statistics = QtWidgets.QAction('Basic Statistics')
         context_menu['Raster'].addAction(self.action_basic_statistics)
         self.action_basic_statistics.triggered.connect(self.basic_stats)
 
-        self.action_show_raster_data = QtWidgets.QAction(self.parent)
-        self.action_show_raster_data.setText('Show Raster Data')
+        self.action_show_raster_data = QtWidgets.QAction('Show Raster Data')
         context_menu['Raster'].addAction(self.action_show_raster_data)
         self.action_show_raster_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_anaglyph = QtWidgets.QAction(self.parent)
-        self.action_show_anaglyph.setText('Show Anaglyph')
+        self.action_show_anaglyph = QtWidgets.QAction('Show Anaglyph')
         context_menu['Raster'].addAction(self.action_show_anaglyph)
         self.action_show_anaglyph.triggered.connect(self.show_anaglyph)
 
-        self.action_show_surface = QtWidgets.QAction(self.parent)
-        self.action_show_surface.setText('Show Surface')
+        self.action_show_surface = QtWidgets.QAction('Show Surface')
         context_menu['Raster'].addAction(self.action_show_surface)
         self.action_show_surface.triggered.connect(self.show_surface)
 
-        self.action_show_scatter_plot = QtWidgets.QAction(self.parent)
-        self.action_show_scatter_plot.setText('Show Hexbin Plot')
+        self.action_show_scatter_plot = QtWidgets.QAction('Show Hexbin Plot')
         context_menu['Raster'].addAction(self.action_show_scatter_plot)
         self.action_show_scatter_plot.triggered.connect(self.show_scatter_plot)
 
-        self.action_show_histogram = QtWidgets.QAction(self.parent)
-        self.action_show_histogram.setText('Show Histogram')
+        self.action_show_histogram = QtWidgets.QAction('Show Histogram')
         context_menu['Raster'].addAction(self.action_show_histogram)
         self.action_show_histogram.triggered.connect(self.show_histogram)
 
-        self.action_show_2d_corr_coef = QtWidgets.QAction(self.parent)
-        self.action_show_2d_corr_coef.setText(
-            'Show 2D Correlation Coefficients')
+        self.action_show_2d_corr_coef = QtWidgets.QAction('Show 2D Correlation Coefficients')
         context_menu['Raster'].addAction(self.action_show_2d_corr_coef)
         self.action_show_2d_corr_coef.triggered.connect(self.show_ccoef)
 
-        self.action_export_data = QtWidgets.QAction(self.parent)
-        self.action_export_data.setText('Export Data')
+        self.action_export_data = QtWidgets.QAction('Export Data')
         context_menu['Raster'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 
@@ -300,11 +269,6 @@ class MenuWidget():
         """ Merge datasets """
         fnc = dataprep.DataMerge(self.parent)
         self.parent.item_insert('Step', 'Data\nMerge', fnc)
-
-    def grid(self):
-        """ Grid datasets """
-        fnc = dataprep.DataGrid(self.parent)
-        self.parent.item_insert('Step', 'Grid\nPoint Data', fnc)
 
     def igrf(self):
         """ Grid datasets """

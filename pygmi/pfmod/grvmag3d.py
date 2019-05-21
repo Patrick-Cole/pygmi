@@ -74,28 +74,29 @@ class GravMag():
         self.mfname = self.parent.modelfilename
         self.tmpfiles = {}
 
-        self.actionregionaltest = QtWidgets.QPushButton('Regional Test')
-        self.actioncalculate = QtWidgets.QPushButton('Calculate Gravity (All)')
-        self.actioncalculate2 = QtWidgets.QPushButton('Calculate Magnetics (All)')
-        self.actioncalculate3 = QtWidgets.QPushButton('Calculate Gravity (Changes Only)')
-        self.actioncalculate4 = QtWidgets.QPushButton('Calculate Magnetics (Changes Only)')
+        self.actionregionaltest = QtWidgets.QAction('Regional\nTest')
+        self.actioncalculate = QtWidgets.QAction('Calculate\nGravity\n(All)')
+        self.actioncalculate2 = QtWidgets.QAction('Calculate\nMagnetics\n(All)')
+        self.actioncalculate3 = QtWidgets.QAction('Calculate\nGravity\n(Changes Only)')
+        self.actioncalculate4 = QtWidgets.QAction('Calculate\nMagnetics\n(Changes Only)')
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
-        self.parent.toolbar.addWidget(self.actionregionaltest)
-        self.parent.toolbar.addSeparator()
-        self.parent.toolbar.addWidget(self.actioncalculate)
-        self.parent.toolbar.addWidget(self.actioncalculate2)
-        self.parent.toolbar.addWidget(self.actioncalculate3)
-        self.parent.toolbar.addWidget(self.actioncalculate4)
-        self.parent.toolbar.addSeparator()
+        self.parent.toolbardock.addSeparator()
+        self.parent.toolbardock.addAction(self.actionregionaltest)
+        self.parent.toolbardock.addSeparator()
+        self.parent.toolbardock.addAction(self.actioncalculate)
+        self.parent.toolbardock.addAction(self.actioncalculate2)
+        self.parent.toolbardock.addAction(self.actioncalculate3)
+        self.parent.toolbardock.addAction(self.actioncalculate4)
+        self.parent.toolbardock.addSeparator()
 
-        self.actionregionaltest.clicked.connect(self.test_pattern)
-        self.actioncalculate.clicked.connect(self.calc_field_grav)
-        self.actioncalculate2.clicked.connect(self.calc_field_mag)
-        self.actioncalculate3.clicked.connect(self.calc_field_grav_changes)
-        self.actioncalculate4.clicked.connect(self.calc_field_mag_changes)
+        self.actionregionaltest.triggered.connect(self.test_pattern)
+        self.actioncalculate.triggered.connect(self.calc_field_grav)
+        self.actioncalculate2.triggered.connect(self.calc_field_mag)
+        self.actioncalculate3.triggered.connect(self.calc_field_grav_changes)
+        self.actioncalculate4.triggered.connect(self.calc_field_mag_changes)
         self.actioncalculate3.setEnabled(False)
         self.actioncalculate4.setEnabled(False)
 

@@ -1,5 +1,5 @@
 """
-PyGMI stands for Python Geophysical Modelling and Interpretation. It is a
+PyGMI stands for Python Geoscience Modelling and Interpretation. It is a
 modelling and interpretation suite aimed at magnetic, gravity and other
 datasets. It includes:
 
