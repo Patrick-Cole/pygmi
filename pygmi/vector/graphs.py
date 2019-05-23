@@ -45,7 +45,7 @@ class GraphWindow(QtWidgets.QDialog):
         self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtWidgets.QHBoxLayout()
+        hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -55,23 +55,29 @@ class GraphWindow(QtWidgets.QDialog):
         self.label1 = QtWidgets.QLabel('Bands:')
         self.label2 = QtWidgets.QLabel('Bands:')
         self.label3 = QtWidgets.QLabel('Value:')
+        self.checkbox = QtWidgets.QCheckBox('Option:')
 
-        self.hbl.addWidget(self.label1)
-        self.hbl.addWidget(self.combobox1)
-        self.hbl.addWidget(self.label2)
-        self.hbl.addWidget(self.combobox2)
-        self.hbl.addWidget(self.label3)
-        self.hbl.addWidget(self.spinbox)
+        self.checkbox.hide()
+
+        hbl.addWidget(self.label1)
+        hbl.addWidget(self.combobox1)
+        hbl.addWidget(self.label2)
+        hbl.addWidget(self.combobox2)
+        hbl.addWidget(self.label3)
+        hbl.addWidget(self.spinbox)
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(self.hbl)
+        vbl.addWidget(self.checkbox)
+        vbl.addLayout(hbl)
 
         self.setFocus()
 
         self.combobox1.currentIndexChanged.connect(self.change_band)
         self.combobox2.currentIndexChanged.connect(self.change_band)
         self.spinbox.valueChanged.connect(self.change_band)
+        self.checkbox.stateChanged.connect(self.change_band)
+
 
     def change_band(self):
         """Combo box to choose band """
@@ -237,7 +243,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_lmap(self, data, ival, scale):
+    def update_lmap(self, data, ival, scale, uselabels):
         """
         Update the plot from point data.
 
@@ -288,6 +294,9 @@ class MyMplCanvas(FigureCanvas):
             qx = x - np.sin(ang) * (py - y)
             qy = y + np.cos(ang) * (py - y)
 
+            if uselabels:
+                textang = np.rad2deg(ang[0])
+                ax1.text(x[0], y[0], line, rotation=textang)
             ax1.plot(x, y, 'c')
             ax1.plot(qx, qy, 'k')
 
@@ -530,19 +539,21 @@ class PlotLines2(GraphWindow):
         self.parent = parent
         self.combobox2.hide()
         self.label2.hide()
+        self.checkbox.show()
 
     def change_band(self):
         """ Combo box to choose band """
         data = self.indata['Line']
         scale = self.spinbox.value()
         i = self.combobox1.currentText()
-        self.mmc.update_lmap(data, i, scale)
+        self.mmc.update_lmap(data, i, scale, self.checkbox.isChecked())
 
     def run(self):
         """ Run """
 
         self.combobox1.currentIndexChanged.disconnect()
         self.spinbox.valueChanged.disconnect()
+        self.checkbox.stateChanged.disconnect()
 
         self.show()
         data = self.indata['Line'].data
@@ -552,6 +563,7 @@ class PlotLines2(GraphWindow):
         for i in data[i2].dtype.names:
             self.combobox1.addItem(i)
 
+        self.checkbox.setText('Show Line Labels:')
         self.label1.setText('Column:')
         self.label3.setText('Scale:')
         self.spinbox.setMinimum(1)
@@ -564,6 +576,7 @@ class PlotLines2(GraphWindow):
 
         self.combobox1.currentIndexChanged.connect(self.change_band)
         self.spinbox.valueChanged.connect(self.change_band)
+        self.checkbox.stateChanged.connect(self.change_band)
 
 
 class PlotRose(GraphWindow):
