@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Import Data """
+"""Import Data."""
 
 import os
 from PyQt5 import QtWidgets
@@ -31,7 +31,7 @@ import pandas as pd
 
 class ImportData():
     """
-    Import Data - Interfaces with GDAL routines
+    Import Data - Interfaces with GDAL routines.
 
     Attributes
     ----------
@@ -48,6 +48,7 @@ class ImportData():
     ext : str
         filename extension
     """
+
     def __init__(self, parent=None):
         self.ifile = ''
         self.name = 'Import Data: '
@@ -58,7 +59,7 @@ class ImportData():
         self.outdata = {}
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         ext = \
             'Common formats (*.xls *.xlsx *.csv);;' + \
             'Excel (*.xls *.xlsx);;' + \
@@ -101,7 +102,7 @@ class ImportData():
 
 def get_CGS(lithfile, headerfile):
     """
-    GeoPak Import
+    Geopak Import.
 
     Parameters
     ----------
@@ -113,7 +114,6 @@ def get_CGS(lithfile, headerfile):
     dat : PyGMI raster Data
         dataset imported
     """
-
     xl = pd.ExcelFile(lithfile)
     df = xl.parse(xl.sheet_names[0])
     xl.close()

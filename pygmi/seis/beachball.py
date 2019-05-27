@@ -44,9 +44,12 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 # -----------------------------------------------------------------------------
-""" Plot fault plane solutions.
+"""
+Plot fault plane solutions.
+
 The code below is translated from bb.m written by Andy Michael and Oliver Boyd
-at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html"""
+at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html
+"""
 
 import os
 import numpy as np
@@ -62,7 +65,8 @@ import scipy.spatial.distance as sdist
 
 
 class MyMplCanvas(FigureCanvas):
-    """Canvas for the actual plot"""
+    """Canvas for the actual plot."""
+
     def __init__(self, parent):
         fig = Figure()
         super().__init__(fig)
@@ -97,8 +101,7 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.updateGeometry(self)
 
     def init_graph(self):
-        """ Initialize the graph """
-
+        """Initialize the graph."""
         self.axes.clear()
         self.axes.set_aspect('equal')
 
@@ -133,7 +136,8 @@ class MyMplCanvas(FigureCanvas):
 
 
 class BeachBall(QtWidgets.QDialog):
-    """ Create shapefiles with beachballs """
+    """Create shapefiles with beachballs."""
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -157,7 +161,7 @@ class BeachBall(QtWidgets.QDialog):
         self.setupui()
 
     def data_init(self):
-        """ data init - entry point into routine """
+        """Initialise Data - entry point into routine."""
         if 'Seis' not in self.indata:
             return False
 
@@ -209,7 +213,7 @@ class BeachBall(QtWidgets.QDialog):
         return True
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         hbl_all = QtWidgets.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         vbl_raster = QtWidgets.QVBoxLayout()
@@ -247,8 +251,7 @@ class BeachBall(QtWidgets.QDialog):
         self.radio_geog.toggled.connect(self.change_alg)
 
     def save_shp(self):
-        """Save Beachballs """
-
+        """Save Beachballs."""
         ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -362,8 +365,7 @@ class BeachBall(QtWidgets.QDialog):
         return True
 
     def change_alg(self):
-        """ Change algorithm """
-
+        """Change algorithm."""
         txt = str(self.cbox_alg.currentText())
         self.algorithm = txt
         data = self.indata['Seis']
@@ -384,7 +386,7 @@ class BeachBall(QtWidgets.QDialog):
         self.mmc.init_graph()
 
     def settings(self):
-        """ run """
+        """Run."""
         if self.nofps:
             self.parent.showprocesslog('Error: no Fault Plane Solutions')
             return False
@@ -398,6 +400,8 @@ class BeachBall(QtWidgets.QDialog):
 
 def beachball(fm, centerx, centery, diam, isgeog):
     """
+    Beachball.
+
     Source code provided here are adopted from MatLab script
     `bb.m` written by Andy Michael and Oliver Boyd.
 
@@ -437,7 +441,6 @@ def beachball(fm, centerx, centery, diam, isgeog):
     yy : numpy array
         array of y coordinates for vertices
     """
-
     fm = np.array(fm)
     diam = np.array([diam])
     centerx = np.array([centerx])
@@ -561,7 +564,7 @@ def beachball(fm, centerx, centery, diam, isgeog):
 
 
 def pol2cart(phi, rho):
-    """ Polar to cartesian coordinates """
+    """Polar to cartesian coordinates."""
     xxx = rho*np.cos(phi)
     yyy = rho*np.sin(phi)
     return xxx, yyy
@@ -569,8 +572,9 @@ def pol2cart(phi, rho):
 
 def auxplane(s1, d1, r1):
     """
-    function [strike, dip, rake] = auxplane(s1,d1,r1)
-    Get Strike and dip of second plane, adapted from Andy Michael bothplanes.c
+    Get Strike and dip of second plane.
+
+    Adapted from Andy Michael bothplanes.c
     """
     r2d = 180/np.pi
 
@@ -605,10 +609,9 @@ def auxplane(s1, d1, r1):
 
 def strikedip(n, e, u):
     """
-    function [strike, dip] = strikedip(n, e, u)
-       Finds strike and dip of plane given normal vector having components n,
-       e, and u
-       Adapted from Andy Michaels stridip.c
+    Find strike and dip of plane given normal vector.
+
+    Adapted from Andy Michaels stridip.c
     """
     r2d = 180/np.pi
 
@@ -631,8 +634,7 @@ def strikedip(n, e, u):
 
 def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
     """
-    function [str,dip,rake] = mij2sdr(mxx,myy,mzz,mxy,mxz,myz)
-    Adapted from code, mij2d.f, created by Chen Ji
+    Adapted from code, mij2d.f, created by Chen Ji.
 
     Parameters
     ----------
@@ -658,7 +660,6 @@ def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
     rake : float
         rake of first focal plane (degrees)
     """
-
     a = np.array([[mxx, mxy, mxz],
                   [mxy, myy, myz],
                   [mxz, myz, mzz]])
@@ -693,7 +694,7 @@ def mij2sdr(mxx, myy, mzz, mxy, mxz, myz):
 
 def TDL(AN, BN):
     """
-    TDL
+    TDL.
 
     Parameters
     ----------

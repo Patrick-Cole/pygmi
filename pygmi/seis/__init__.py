@@ -1,3 +1,1 @@
-"""
-Seismology Routines
-"""
+"""Seismology Routines."""

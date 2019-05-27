@@ -22,9 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Anaglyph routine
-"""
+"""Anaglyph routine."""
 
 from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
@@ -39,7 +37,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
 
 class MyMplCanvas(FigureCanvas):
     """
-    Canvas for the actual plot
+    Canvas for the actual plot.
 
     Attributes
     ----------
@@ -47,6 +45,7 @@ class MyMplCanvas(FigureCanvas):
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         fig = Figure()
         super().__init__(fig)
@@ -70,7 +69,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_contours(self, data1, scale=7, rotang=10):
         """
-        Update the raster plot
+        Update the raster plot.
 
         Parameters
         ----------
@@ -79,7 +78,6 @@ class MyMplCanvas(FigureCanvas):
         data2 : PyGMI point PData
             points to be plotted over raster image
         """
-
         self.scale = scale
         self.rotang = rotang
         self.extent = data1.extent
@@ -153,7 +151,7 @@ class MyMplCanvas(FigureCanvas):
     def update_raster(self, data1, scale=7, rotang=10, atype='dubois',
                       cmap=cm.jet, shade=False):
         """
-        Update the raster plot
+        Update the raster plot.
 
         Parameters
         ----------
@@ -180,7 +178,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_colors(self, doshade=False, cmap=cm.jet, atype='dubois'):
         """
-        Update the raster plot
+        Update the raster plot.
 
         Parameters
         ----------
@@ -218,7 +216,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_atype(self, atype='dubois'):
         """
-        Update the raster plot
+        Update the raster plot.
 
         Parameters
         ----------
@@ -248,13 +246,14 @@ class MyMplCanvas(FigureCanvas):
 
 class PlotAnaglyph(QtWidgets.QDialog):
     """
-    Graph Window - The QDialog window which will contain our image
+    Graph Window - The QDialog window which will contain our image.
 
     Attributes
     ----------
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -291,6 +290,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.combobox1.setSizePolicy(sizepolicy)
         self.combobox2.setSizePolicy(sizepolicy)
         self.cbox_cbar.setSizePolicy(sizepolicy)
+
         self.doshade.setSizePolicy(sizepolicy)
         self.doimage.setSizePolicy(sizepolicy)
         self.docontour.setSizePolicy(sizepolicy)
@@ -362,7 +362,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.slider_cnt.sliderReleased.connect(self.change_contours)
 
     def change_all(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         i = self.combobox1.currentIndex()
         txt = str(self.cbox_cbar.currentText())
         cbar = cm.get_cmap(txt)
@@ -380,7 +380,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
                                    rotang=rotang)
 
     def change_colors(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         txt = str(self.cbox_cbar.currentText())
         cbar = cm.get_cmap(txt)
         shade = self.doshade.isChecked()
@@ -389,15 +389,14 @@ class PlotAnaglyph(QtWidgets.QDialog):
                                cmap=cbar, doshade=shade)
 
     def change_atype(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         self.mmc.update_atype(atype=self.combobox2.currentText())
 
     def change_contours(self):
-        """ Combo box to choose band """
-
+        """Combo box to choose band."""
+        self.docontour.setChecked(True)
 #        self.slider_scale.setValue(3)
 #        self.slider_angle.setValue(5)
-        self.docontour.setChecked(True)
 
         i = self.combobox1.currentIndex()
         scale = self.slider_scale.value()
@@ -414,7 +413,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
 
     def change_image(self):
-        """ Combo """
+        """Combo."""
         self.slider_scale.setValue(5)
         self.slider_angle.setValue(10)
         self.doshade.setEnabled(True)
@@ -425,7 +424,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.change_all()
 
     def run(self):
-        """ Run """
+        """Run."""
         self.show()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
@@ -440,6 +439,8 @@ class PlotAnaglyph(QtWidgets.QDialog):
 def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
              cmap=cm.terrain):
     """
+    Sunshade.
+
     data: input MxN data to be imaged
     alpha: how much incident light is reflected (0 to 1)
     phi: azimuth
@@ -463,8 +464,7 @@ def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
 
 
 def norm2(dat, datmin=None, datmax=None):
-    """ Normalise vector """
-
+    """Normalise vector."""
     if datmin is None:
         datmin = np.min(dat)
     if datmax is None:
@@ -474,13 +474,13 @@ def norm2(dat, datmin=None, datmax=None):
 
 def currentshader(data, cell, theta, phi, alpha):
     """
-    Blinn shader
-        alpha: how much incident light is reflected
-        n: how compact the bright patch is
-        phi: azimuth
-        theta: sun elevation (also called g in code below)
-    """
+    Blinn shader.
 
+    alpha: how much incident light is reflected
+    n: how compact the bright patch is
+    phi: azimuth
+    theta: sun elevation (also called g in code below)
+    """
     cdy = np.array([[1., 2., 1.], [0., 0., 0.], [-1., -2., -1.]])
     cdx = np.array([[1., 0., -1.], [2., 0., -2.], [1., 0., -1.]])
 
@@ -516,7 +516,7 @@ def currentshader(data, cell, theta, phi, alpha):
 
 
 def histcomp(img, nbr_bins=256, perc=5.):
-    """ Histogram Compaction """
+    """Histogram Compaction."""
     tmp = img.compressed()
 
     imhist, bins = np.histogram(tmp, nbr_bins)
@@ -552,8 +552,7 @@ def histcomp(img, nbr_bins=256, perc=5.):
 
 
 def anaglyph(red, blue, atype='dubois'):
-    """ color Aanaglyph """
-
+    """Color Anaglyph."""
     if 'Dubois' in atype:
         mat = np.array([[0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
                         [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
@@ -613,8 +612,7 @@ def anaglyph(red, blue, atype='dubois'):
 
 
 def rot_and_clean(x, y, z, rotang=5, rtype='red'):
-    """ rotates and cleans rotated data for 2d view """
-
+    """Rotate and clean rotated data for 2d view."""
     if rtype == 'red':
         rotang = -1. * abs(rotang)
     else:

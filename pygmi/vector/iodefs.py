@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Import Data """
+"""Import Data."""
 
 import os
 import copy
@@ -40,7 +40,7 @@ import pygmi.menu_default as menu_default
 
 class ImportLEMI417Data():
     """
-    Import LEMI-417 ASCII MT Data
+    Import LEMI-417 ASCII MT Data.
 
     This is a class used to import LEMI-417 MT Data in ASCII format.
 
@@ -57,6 +57,7 @@ class ImportLEMI417Data():
     ifile : str
         input file name. Used in main.py
     """
+
     def __init__(self, parent=None):
         self.name = 'Import LEMI-417 Data: '
         self.pbar = None
@@ -98,7 +99,7 @@ class ImportLEMI417Data():
 
 class ImportPointData(QtWidgets.QDialog):
     """
-    Import Point Data
+    Import Point Data.
 
     This class imports ASCII point data.
 
@@ -115,6 +116,7 @@ class ImportPointData(QtWidgets.QDialog):
     ifile : str
         input file name. Used in main.py
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -131,7 +133,7 @@ class ImportPointData(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
@@ -202,7 +204,7 @@ class ImportPointData(QtWidgets.QDialog):
 
 class ImportLineData(QtWidgets.QDialog):
     """
-    Import Point Data
+    Import Point Data.
 
     This class imports ASCII point data.
 
@@ -219,6 +221,7 @@ class ImportLineData(QtWidgets.QDialog):
     ifile : str
         input file name. Used in main.py
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -235,7 +238,7 @@ class ImportLineData(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
@@ -308,7 +311,7 @@ class ImportLineData(QtWidgets.QDialog):
         return True
 
     def get_GXYZ(self):
-        """ Gets geosoft XYZ """
+        """Get geosoft XYZ."""
         dat = []
 
         with open(self.ifile) as fno:
@@ -338,7 +341,7 @@ class ImportLineData(QtWidgets.QDialog):
 
 
     def get_delimited(self):
-        """ Gets a delimited line file """
+        """Get a delimited line file."""
         datatmp = pd.read_csv(self.ifile, sep=None, engine='python')
         ltmp = datatmp.columns.values
 
@@ -370,10 +373,9 @@ class ImportLineData(QtWidgets.QDialog):
         return dat
 
 
-
 class PointCut():
     """
-    Cut Data using shapefiles
+    Cut Data using shapefiles.
 
     This class cuts point datasets using a boundary defined by a polygon
     shapefile.
@@ -395,6 +397,7 @@ class PointCut():
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent):
         self.ifile = ''
         self.name = 'Cut Data:'
@@ -405,7 +408,7 @@ class PointCut():
         self.outdata = {}
 
     def settings(self):
-        """ Show Info """
+        """Show Info."""
         if 'Point' in self.indata:
             data = copy.deepcopy(self.indata['Point'])
         else:
@@ -440,7 +443,7 @@ class PointCut():
 
 class ExportPoint():
     """
-    Export Point Data
+    Export Point Data.
 
     Attributes
     ----------
@@ -464,7 +467,7 @@ class ExportPoint():
         self.showtext = self.parent.showprocesslog
 
     def run(self):
-        """ Runs routine """
+        """Run routine."""
         if 'Point' not in self.indata:
             self.showtext('Error: You need to have a point data first!')
             return False
@@ -501,7 +504,7 @@ class ExportPoint():
 
 class ImportShapeData():
     """
-    Import Shapefile Data
+    Import Shapefile Data.
 
     Attributes
     ----------
@@ -516,6 +519,7 @@ class ImportShapeData():
     ifile : str
         input file name. Used in main.py
     """
+
     def __init__(self, parent=None):
         self.name = 'Import Shapefile Data: '
         self.pbar = None
@@ -605,9 +609,10 @@ class ImportShapeData():
 
 
 def cut_point(data, ifile):
-    """Cuts a point dataset
+    """
+    Cuts a point dataset.
 
-    Cut a point dataset using a shapefile
+    Cut a point dataset using a shapefile.
 
     Parameters
     ----------

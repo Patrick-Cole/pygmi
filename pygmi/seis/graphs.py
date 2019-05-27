@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Plot Seismology Data
+Plot Seismology Data.
 
 This module provides a variety of methods to plot raster data via the context
 menu.
@@ -44,7 +44,7 @@ from matplotlib.patches import Ellipse
 
 class MyMplCanvas(FigureCanvas):
     """
-    Canvas for the actual plot
+    Canvas for the actual plot.
 
     Attributes
     ----------
@@ -52,6 +52,7 @@ class MyMplCanvas(FigureCanvas):
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         fig = Figure()
         self.axes = fig.add_subplot(111)
@@ -61,8 +62,7 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.__init__(self, fig)
 
     def update_ellipse(self, datd, nodepth=False):
-        """ Update error ellipse plot """
-
+        """Update error ellipse plot."""
         self.figure.clear()
 
         x = np.ma.masked_invalid(datd['1_longitude'])
@@ -146,7 +146,7 @@ class MyMplCanvas(FigureCanvas):
     def update_hexbin(self, data1, data2, xlbl='Time', ylbl='ML',
                       xbin=None, xrng=None):
         """
-        Update the hexbin plot
+        Update the hexbin plot.
 
         Parameters
         ----------
@@ -199,14 +199,13 @@ class MyMplCanvas(FigureCanvas):
     def update_hist(self, data1, xlbl='Data Value',
                     ylbl='Number of Observations', bins='doane', rng=None):
         """
-        Update the histogram plot
+        Update the histogram plot.
 
         Parameters
         ----------
         data1 : PyGMI raster Data
             raster dataset to be used
         """
-
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -230,7 +229,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_bvalue(self, data1a, bins='doane'):
         """
-        Update the histogram plot
+        Update the plot.
 
         Parameters
         ----------
@@ -275,7 +274,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_pres(self, data1, phase='P'):
         """
-        Update the histogram plot
+        Update the plot.
 
         Parameters
         ----------
@@ -310,7 +309,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_residual(self, dat, res='ML'):
         """
-        Update the histogram plot
+        Update the residualplot.
 
         Parameters
         ----------
@@ -378,7 +377,7 @@ class MyMplCanvas(FigureCanvas):
     def update_wadati(self, dat, min_wad=5, min_vps=1.53,
                       max_vps=1.93):
         """
-        Update the histogram plot
+        Update the histogram plot.
 
         Parameters
         ----------
@@ -447,13 +446,14 @@ class MyMplCanvas(FigureCanvas):
 
 class GraphWindow(QtWidgets.QDialog):
     """
-    Graph Window - The QDialog window which will contain our image
+    Graph Window - The QDialog window which will contain our image.
 
     Attributes
     ----------
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
@@ -489,15 +489,15 @@ class GraphWindow(QtWidgets.QDialog):
         self.btn_saveshp.clicked.connect(self.save_shp)
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
 
     def save_shp(self):
-        """ saver shapefile """
+        """Save shapefile."""
 
 
 class PlotQC(GraphWindow):
     """
-    Plot Hist Class
+    Plot Hist Class.
 
     Attributes
     ----------
@@ -510,6 +510,7 @@ class PlotQC(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.label2.hide()
@@ -519,7 +520,7 @@ class PlotQC(GraphWindow):
         self.datd = None
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         self.btn_saveshp.hide()
 
         i = self.combobox1.currentText()
@@ -573,7 +574,7 @@ class PlotQC(GraphWindow):
             self.mmc.update_wadati(self.indata['Seis'])
 
     def run(self):
-        """ Run """
+        """Run."""
         self.show()
         data = self.indata['Seis']
         self.datd = import_for_plots(data)
@@ -612,8 +613,7 @@ class PlotQC(GraphWindow):
         self.change_band()
 
     def save_shp(self):
-        """Save shapefile """
-
+        """Save shapefile."""
         ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -671,8 +671,7 @@ class PlotQC(GraphWindow):
 
 
 def import_for_plots(dat):
-    """ imports data to plot """
-
+    """Import data to plot."""
     datd = {}
 
     for event in dat:
@@ -719,7 +718,7 @@ def import_for_plots(dat):
 
 
 def eigsorted(cov):
-    """ Sort eigen values """
+    """Sort eigen values."""
     vals, vecs = np.linalg.eigh(cov)
     order = vals.argsort()[::-1]
     return vals[order], vecs[:, order]

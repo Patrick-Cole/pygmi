@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is a collection of routines by Gordon Cooper
+"""A collection of routines by Gordon Cooper.
 
 |    School of Geosciences, University of the Witwatersrand
 |    Johannesburg, South Africa
@@ -41,7 +41,7 @@ import pygmi.menu_default as menu_default
 
 class Gradients(QtWidgets.QDialog):
     """
-    Class used to gather information via a GUI, for function gradients
+    Class used to gather information via a GUI, for function gradients.
 
     Attributes
     ----------
@@ -57,6 +57,7 @@ class Gradients(QtWidgets.QDialog):
     order : int
         Order of DR filter - see paper. Try 1 first.
     """
+
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -82,7 +83,7 @@ class Gradients(QtWidgets.QDialog):
         self.sb_order.setValue(self.order)
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
@@ -116,7 +117,7 @@ class Gradients(QtWidgets.QDialog):
         self.rb_vgrad.clicked.connect(self.radiochange)
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         temp = self.exec_()
         if temp == 0:
             return False
@@ -143,7 +144,7 @@ class Gradients(QtWidgets.QDialog):
         return True
 
     def radiochange(self):
-        """ Check radio button state """
+        """Check radio button state."""
         self.sb_order.hide()
         self.label_or.hide()
         self.sb_azi.hide()
@@ -161,6 +162,8 @@ class Gradients(QtWidgets.QDialog):
 
 def gradients(data, azi):
     """
+    Gradients.
+
     Compute directional derivative of image data. Based on code by
     Gordon Cooper.
 
@@ -176,8 +179,6 @@ def gradients(data, azi):
     dr : float
         returns derivative ratio
     """
-    # Directional derivative
-
     azi = np.deg2rad(azi)
     dx, dy = np.gradient(data)
     dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
@@ -220,7 +221,7 @@ def derivative_ratio(data, azi, order):
 
 class Visibility2d(QtWidgets.QDialog):
     """
-    Class used to gather information via a GUI, for function visibility2d
+    Class used to gather information via a GUI, for function visibility2d.
 
     Attributes
     ----------
@@ -234,6 +235,7 @@ class Visibility2d(QtWidgets.QDialog):
     dh : float
         height of observer above surface
     """
+
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -253,7 +255,7 @@ class Visibility2d(QtWidgets.QDialog):
         self.sb_dh.setValue(self.dh)
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
@@ -282,7 +284,7 @@ class Visibility2d(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         temp = self.exec_()
         if temp == 0:
             return False
@@ -317,7 +319,7 @@ class Visibility2d(QtWidgets.QDialog):
 
 def visibility2d(data, wsize, dh, piter=iter):
     """
-    Compute visibility as a textural measure
+    Compute visibility as a textural measure.
 
     Compute vertical derivatives by calculating the visibility at different
     heights above the surface (see paper)
@@ -337,7 +339,6 @@ def visibility2d(data, wsize, dh, piter=iter):
     vstd : numpy array
     vsum : numpy array
     """
-
     nr, nc = np.shape(data)
     wsize = abs(np.real(wsize))
     w2 = int(np.floor(wsize/2))
@@ -410,7 +411,7 @@ def visibility2d(data, wsize, dh, piter=iter):
 
 
 def __visible1(dat, nr, cp, dh):
-    """ Visible 1 """
+    """Visible 1."""
     num = 1
 
     if cp < nr-1 and dat.size > 0:
@@ -427,7 +428,7 @@ def __visible1(dat, nr, cp, dh):
 
 
 def __visible2(dat, cp, dh):
-    """ Visible 2 """
+    """Visible 2."""
     num = 0
 
     if cp > 2 and dat.size > 0:
@@ -444,7 +445,7 @@ def __visible2(dat, cp, dh):
 
 class Tilt1(QtWidgets.QDialog):
     """
-    Class used to gather information via a GUI, for function tilt1
+    Class used to gather information via a GUI, for function tilt1.
 
     Attributes
     ----------
@@ -458,6 +459,7 @@ class Tilt1(QtWidgets.QDialog):
     smooth : int
         size of smoothing matrix to use - must be odd input 0 for no smoothing
     """
+
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -477,7 +479,7 @@ class Tilt1(QtWidgets.QDialog):
         self.sb_azi.setValue(self.azi)
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
@@ -507,7 +509,7 @@ class Tilt1(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         temp = self.exec_()
         if temp == 0:
             return False
@@ -545,7 +547,7 @@ class Tilt1(QtWidgets.QDialog):
 
 def tilt1(data, azi, s):
     """
-    Tilt angle calculations
+    Tilt angle calculations.
 
     Parameters
     ----------
@@ -569,7 +571,6 @@ def tilt1(data, azi, s):
     tdx : numpy masked array
         Total Derivative
     """
-
     dmin = data.min()
     dmax = data.max()
     dm = 0.5*(dmin+dmax)
@@ -629,14 +630,13 @@ def tilt1(data, azi, s):
 
 
 def nextpow2(n):
-    """ nextpow2 """
+    """Next power of 2."""
     m_i = np.ceil(np.log2(n))
     return m_i
 
 
 def vertical(data, npts=None, xint=1):
-    """ Vertical """
-
+    """Vertical derivative."""
     nr, nc = data.shape
 
     z = data-np.ma.median(data)
@@ -677,8 +677,7 @@ def vertical(data, npts=None, xint=1):
 
 
 def __taper2d(g, npts, c, r, cdiff, rdiff):
-    """ Taper 2D """
-
+    """Taper 2D for FFT data."""
 # n is cols, m is rows
 
     npts2 = npts-1
@@ -750,7 +749,7 @@ def __taper2d(g, npts, c, r, cdiff, rdiff):
 
 
 def test():
-    """ test routine """
+    """Test routine."""
     import pygmi.raster.iodefs as io
     import matplotlib.pyplot as plt
 
@@ -787,7 +786,6 @@ def test():
     plt.imshow(z2, vmin=-2, vmax=2)
     plt.colorbar()
     plt.show()
-
 
     z2a = z2
 

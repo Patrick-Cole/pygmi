@@ -22,14 +22,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Module for vector data types """
+"""Module for vector data types."""
 
 import numpy as np
 
 
 class PData():
     """
-    Class for point data
+    Class for point data.
 
     Attributes
     ----------
@@ -52,7 +52,7 @@ class PData():
 
 class LData():
     """
-    Class for point data
+    Class for line data.
 
     Attributes
     ----------
@@ -88,6 +88,7 @@ class VData():
     dtype : str
         type of data - Line, Point, Poly
     """
+
     def __init__(self):
         # Since each line can have variable amount of points, it is best to
         # store in a list

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Vector Menu Routines """
+"""Vector Menu Routines."""
 
 from PyQt5 import QtWidgets
 from pygmi.vector import iodefs
@@ -32,7 +32,7 @@ from pygmi.raster import dataprep
 
 class MenuWidget():
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
     This widget class creates the vector menus to be found on the main
     interface. Normal as well as context menus are defined here.
@@ -42,6 +42,7 @@ class MenuWidget():
     parent : MainWidget
         Reference to MainWidget class found in main.py
     """
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -123,63 +124,63 @@ class MenuWidget():
         self.action_show_rose_diagram.triggered.connect(self.show_rose_diagram)
 
     def grid(self):
-        """ Grid datasets """
+        """Grid datasets."""
         fnc = dataprep.DataGrid(self.parent)
         self.parent.item_insert('Step', 'Grid\nPoint Data', fnc)
 
     def cut_data(self):
-        """ Export point data """
+        """Export point data."""
         fnc = iodefs.PointCut(self.parent)
         self.parent.item_insert('Step', 'Cut\nPoints', fnc)
 
     def export_point(self):
-        """ Export point data """
+        """Export point data."""
         self.parent.launch_context_item(iodefs.ExportPoint)
 
     def export_line(self):
-        """ Export point data """
+        """Export point data."""
         self.parent.launch_context_item(iodefs.ExportPoint)
 
     def import_point_data(self):
-        """ Import point data"""
+        """Import point data."""
         fnc = iodefs.ImportPointData(self.parent)
         self.parent.item_insert('Io', 'Import Point Data', fnc)
 
     def import_line_data(self):
-        """ Import point data"""
+        """Import line data."""
         fnc = iodefs.ImportLineData(self.parent)
         self.parent.item_insert('Io', 'Import Line Data', fnc)
 
     def import_shape_data(self):
-        """ Import shape data"""
+        """Import shape data."""
         fnc = iodefs.ImportShapeData(self.parent)
         self.parent.item_insert('Io', 'Import Shapefile Data', fnc)
 
     def import_lemi417_data(self):
-        """ Imports LEMI-417 MT data"""
+        """Import LEMI-417 MT data."""
         fnc = iodefs.ImportLEMI417Data(self.parent)
         self.parent.item_insert('Io', 'Import LEMI-417 Data', fnc)
 
     def show_point_data(self):
-        """ Show point data """
+        """Show point data."""
         self.parent.launch_context_item(graphs.PlotPoints)
 
     def show_point_data2(self):
-        """ Show point data """
+        """Show point data."""
         self.parent.launch_context_item(graphs.PlotPoints2)
 
     def show_line_data(self):
-        """ Show point data """
+        """Show line data."""
         self.parent.launch_context_item(graphs.PlotLines)
 
     def show_line_data2(self):
-        """ Show point data """
+        """Show line data."""
         self.parent.launch_context_item(graphs.PlotLines2)
 
     def show_vector_data(self):
-        """ Show vector data """
+        """Show vector data."""
         self.parent.launch_context_item(graphs.PlotVector)
 
     def show_rose_diagram(self):
-        """ Show rose diagram """
+        """Show rose diagram."""
         self.parent.launch_context_item(graphs.PlotRose)

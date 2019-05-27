@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Clustering Menu Routines """
+"""Remote Sensing Menu Routines."""
 
 from PyQt5 import QtWidgets
 from pygmi.bholes import iodefs
@@ -31,9 +31,9 @@ from pygmi.bholes import graphs
 
 class MenuWidget():
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
-    This widget class creates the clustering menus to be found on the main
+    This widget class creates menus to be found on the main
     interface. Normal as well as context menus are defined here.
 
     Attributes
@@ -41,6 +41,7 @@ class MenuWidget():
     parent : MainWidget
         Reference to MainWidget class found in main.py
     """
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -66,10 +67,10 @@ class MenuWidget():
         self.action_data_viewer.triggered.connect(self.import_data)
 
     def import_data(self):
-        """ Imports data"""
+        """Import data."""
         fnc = iodefs.ImportData(self.parent)
         self.parent.item_insert('Io', 'Import Data', fnc)
 
     def show_log(self):
-        """ Show log data """
+        """Show log data."""
         self.parent.launch_context_item(graphs.PlotLog)

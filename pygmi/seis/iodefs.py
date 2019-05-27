@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Import Data """
+"""Import Data."""
 
 import os
 import re
@@ -34,7 +34,7 @@ import pygmi.menu_default as menu_default
 
 def sform(strform, val, tmp, col1, col2=None, nval=-999):
     """
-    Formats strings
+    Format strings.
 
     Formats strings according with a mod for values containing the value -999
     or None. In that case it will output spaces instead. In the case of strings
@@ -59,7 +59,6 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
     tmp : str
         Output formatted string.
     """
-
     if col2 is None:
         col2 = col1
 
@@ -87,7 +86,7 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
 
 def str2float(inp):
     """
-    Converts a set number of columns to float, or returns None
+    Convert a set number of columns to float, or returns None.
 
     Parameters
     ----------
@@ -111,7 +110,7 @@ def str2float(inp):
 
 def str2int(inp):
     """
-    Converts a set number of columns to integer, or returns None
+    Convert a set number of columns to integer, or returns None.
 
     Parameters
     ----------
@@ -129,7 +128,8 @@ def str2int(inp):
 
 
 class ImportSeisan():
-    """ Import Seisan Data """
+    """Import Seisan Data."""
+
     def __init__(self, parent=None):
         self.ifile = ''
         self.name = 'Import Seisan Data'
@@ -140,8 +140,7 @@ class ImportSeisan():
         self.outdata = {}
 
     def settings(self, filename=None):
-        """ Settings """
-
+        """Settings."""
         if self.parent is None:
             showprocesslog = print
         else:
@@ -257,8 +256,7 @@ class ImportSeisan():
 
 
 def read_record_type_1(i):
-    """ Reads record type 1"""
-
+    """Read record type 1."""
     tmp = sdt.seisan_1()
     tmp.year = str2int(i[1:5])
     tmp.month = str2int(i[6:8])
@@ -292,8 +290,7 @@ def read_record_type_1(i):
 
 
 def read_record_type_2(i):
-    """ Reads record type 2"""
-
+    """Read record type 2."""
     dat = sdt.seisan_2()
     dat.description = i[5:20]
     dat.diastrophism_code = i[21]
@@ -320,8 +317,7 @@ def read_record_type_2(i):
 
 
 def read_record_type_4(i):
-    """ Reads record type 4"""
-
+    """Read record type 4."""
     tmp = sdt.seisan_4()
 
     tmp.station_name = i[1:6]
@@ -356,16 +352,14 @@ def read_record_type_4(i):
 
 
 def read_record_type_5(i):
-    """ Reads record type 5"""
-
+    """Read record type 5."""
     tmp = sdt.seisan_5()
     tmp.text = i[1:79]
     return tmp
 
 
 def read_record_type_6(i):
-    """ Reads record type 6"""
-
+    """Read record type 6."""
     tmp = sdt.seisan_6()
     tmp.tracedata_files = i[1:79]
 
@@ -373,8 +367,7 @@ def read_record_type_6(i):
 
 
 def read_record_type_e(i):
-    """ Reads record type E"""
-
+    """Read record type E."""
     tmp = sdt.seisan_E()
 
     tmp.gap = str2int(i[5:8])
@@ -390,8 +383,7 @@ def read_record_type_e(i):
 
 
 def read_record_type_f(i):
-    """ Reads record type F"""
-
+    """Read record type F."""
     tmp = sdt.seisan_F()
 
     tmp.program_used = i[70:77]
@@ -419,8 +411,7 @@ def read_record_type_f(i):
 
 
 def read_record_type_h(i):
-    """ Reads record type H"""
-
+    """Read record type H."""
     tmp = sdt.seisan_H()
     tmp.year = str2int(i[1:5])
     tmp.month = str2int(i[6:8])
@@ -438,8 +429,7 @@ def read_record_type_h(i):
 
 
 def read_record_type_i(i):
-    """ Reads record type I"""
-
+    """Read record type I."""
     tmp = sdt.seisan_I()
 
     tmp.last_action_done = i[8:11]
@@ -454,8 +444,7 @@ def read_record_type_i(i):
 
 
 def read_record_type_m(i):
-    """ Reads record type M"""
-
+    """Read record type M."""
     if i[1:3] != 'MT':
         tmp = sdt.seisan_M()
         tmp.year = i[1:5]
@@ -491,7 +480,7 @@ def read_record_type_m(i):
 
 
 def merge_m(rec1, rec2):
-    """ merge M records """
+    """Merge M records."""
     rec1.mrr_mzz = rec2.mrr_mzz
     rec1.mtt_mxx = rec2.mtt_mxx
     rec1.mpp_myy = rec2.mpp_myy
@@ -509,8 +498,7 @@ def merge_m(rec1, rec2):
 
 
 def read_record_type_p(i):
-    """ Reads record type P"""
-
+    """Read record type P."""
     tmp = sdt.seisan_P()
     tmp.filename = i[1:79]
     return tmp
@@ -518,8 +506,11 @@ def read_record_type_p(i):
 
 class ImportGenericFPS():
     """
-    Import Generic Fault Plane Solution Data. This is stored in a csv file.
+    Import Generic Fault Plane Solution Data.
+
+    This is stored in a csv file.
     """
+
     def __init__(self, parent=None):
         self.ifile = ''
         self.name = 'Import Generic FPS: '
@@ -530,7 +521,7 @@ class ImportGenericFPS():
         self.outdata = {}
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         QtWidgets.QMessageBox.information(self.parent, 'File Format',
                                           'The file should have the following '
                                           'columns: longitude, latitude, '
@@ -601,7 +592,8 @@ class ImportGenericFPS():
 
 
 class ExportSeisan():
-    """ Export Seisan Data """
+    """Export Seisan Data."""
+
     def __init__(self, parent):
         self.ifile = ''
         self.name = 'Export Seisan Data '
@@ -615,7 +607,7 @@ class ExportSeisan():
         self.showtext = self.parent.showprocesslog
 
     def run(self):
-        """ Show Info """
+        """Run."""
         if 'Seis' not in self.indata:
             self.parent.showprocesslog(
                 'Error: You need to have a Seisan data first!')
@@ -647,7 +639,7 @@ class ExportSeisan():
         self.fobj.close()
 
     def write_record_type_1(self, data):
-        """ Writes record type 1"""
+        """Write record type 1."""
         if '1' not in data:
             return
         dat = data['1']
@@ -685,7 +677,7 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_2(self, data):
-        """ Writes record type 2"""
+        """Write record type 2."""
         if '2' not in data:
             return
         dat = data['2']
@@ -716,7 +708,10 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_3(self, tmp):
-        """ Writes record type 3 - this changes depending on the preceding line
+        """
+        Write record type 3.
+
+        This changes depending on the preceding line.
         """
         if '3' not in tmp:
             return
@@ -727,7 +722,7 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_4(self, data):
-        """ Writes record type 4"""
+        """Write record type 4."""
         if '4' not in data:
             return
         dat = data['4']
@@ -762,7 +757,7 @@ class ExportSeisan():
             self.fobj.write(tmp)
 
     def write_record_type_5(self, data):
-        """ Writes record type 5"""
+        """Write record type 5."""
         if '5' not in data:
             return
         dat = data['5']
@@ -774,7 +769,7 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_6(self, data):
-        """ Writes record type 6"""
+        """Write record type 6."""
         if '6' not in data:
             return
         dat = data['6']
@@ -786,13 +781,13 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_7(self):
-        """ Writes record type 7 """
+        """Write record type 7."""
         tmp = ' STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO' + \
             ' AIN AR TRES W  DIS CAZ7\n'
         self.fobj.write(tmp)
 
     def write_record_type_e(self, data):
-        """ Writes record type E"""
+        """Write record type E."""
         if 'E' not in data:
             return
         dat = data['E']
@@ -815,8 +810,7 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_f(self, data):
-        """ Writes record type F"""
-
+        """Write record type F."""
         if 'F' not in data:
             return
 
@@ -843,8 +837,7 @@ class ExportSeisan():
             self.fobj.write(tmp)
 
     def write_record_type_h(self, data):
-        """ Writes record type H"""
-
+        """Write record type H."""
         if 'H' not in data:
             return
 
@@ -867,7 +860,7 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_i(self, data):
-        """ Writes record type I"""
+        """Write record type I."""
         if 'I' not in data:
             return
 
@@ -890,8 +883,7 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_m(self, data):
-        """ Writes record type M"""
-
+        """Write record type M."""
         if 'M' not in data:
             return
 
@@ -939,8 +931,7 @@ class ExportSeisan():
         self.fobj.write(tmp)
 
     def write_record_type_p(self, data):
-        """ Writes record type P"""
-
+        """Write record type P."""
         if 'P' not in data:
             return
 
@@ -954,7 +945,8 @@ class ExportSeisan():
 
 
 class ExportCSV():
-    """ Export Seisan Data """
+    """Export Seisan Data."""
+
     def __init__(self, parent):
         self.ifile = ''
         self.name = 'Export CSV Data '
@@ -968,7 +960,7 @@ class ExportCSV():
         self.showtext = self.parent.showprocesslog
 
     def run(self):
-        """ Show Info """
+        """Run."""
         if 'Seis' not in self.indata:
             self.parent.showprocesslog(
                 'Error: You need to have a Seisan data first!')
@@ -1023,7 +1015,7 @@ class ExportCSV():
         self.fobj.close()
 
     def write_record_type_1(self, data):
-        """ Writes record type 1"""
+        """Write record type 1."""
         if '1' not in data:
             return ', '*27
 
@@ -1060,7 +1052,7 @@ class ExportCSV():
         return tmp
 
     def write_record_type_2(self, data):
-        """ Writes record type 2"""
+        """Write record type 2."""
         if '2' not in data:
             return None
 
@@ -1092,7 +1084,10 @@ class ExportCSV():
         return tmp
 
     def write_record_type_3(self, tmp):
-        """ Writes record type 3 - this changes depending on the preceding line
+        """
+        Write record type 3.
+
+        This changes depending on the preceding line.
         """
         if '3' not in tmp:
             return None
@@ -1103,7 +1098,7 @@ class ExportCSV():
         return tmp
 
     def write_record_type_4(self, data):
-        """ Writes record type 4"""
+        """Write record type 4."""
         if '4' not in data:
             return [', '*22]
 
@@ -1142,7 +1137,7 @@ class ExportCSV():
         return tmpfin
 
     def write_record_type_5(self, data):
-        """ Writes record type 5"""
+        """Write record type 5."""
         if '5' not in data:
             return None
         dat = data['5']
@@ -1154,7 +1149,7 @@ class ExportCSV():
         return tmp
 
     def write_record_type_6(self, data):
-        """ Writes record type 6"""
+        """Write record type 6."""
         if '6' not in data:
             return None
         dat = data['6']
@@ -1166,13 +1161,13 @@ class ExportCSV():
         return tmp
 
     def write_record_type_7(self):
-        """ Writes record type 7 """
+        """Write record type 7."""
         tmp = ' STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO' + \
             ' AIN AR TRES W  DIS CAZ7\n'
         return tmp
 
     def write_record_type_e(self, data):
-        """ Writes record type E"""
+        """Write record type E."""
         if 'E' not in data:
             return ', '*8
 
@@ -1194,8 +1189,7 @@ class ExportCSV():
         return tmp
 
     def write_record_type_f(self, data):
-        """ Writes record type F"""
-
+        """Write record type F."""
         if 'F' not in data:
             return None
 
@@ -1222,8 +1216,7 @@ class ExportCSV():
         return tmp
 
     def write_record_type_h(self, data):
-        """ Writes record type H"""
-
+        """Write record type H."""
         if 'H' not in data:
             return None
 
@@ -1246,7 +1239,7 @@ class ExportCSV():
         return tmp
 
     def write_record_type_i(self, data):
-        """ Writes record type I"""
+        """Write record type I."""
         if 'I' not in data:
             return ', '*7
 
@@ -1263,8 +1256,7 @@ class ExportCSV():
         return tmp
 
     def write_record_type_m(self, data):
-        """ Writes record type M"""
-
+        """Write record type M."""
         if 'M' not in data:
             return None
 
@@ -1310,8 +1302,7 @@ class ExportCSV():
         return tmp
 
     def write_record_type_p(self, data):
-        """ Writes record type P"""
-
+        """Write record type P."""
         if 'P' not in data:
             return None
         dat = data['P']
@@ -1325,7 +1316,7 @@ class ExportCSV():
 
 class FilterSeisan(QtWidgets.QDialog):
     """
-    Filter Data
+    Filter Data.
 
     This filters data using thresholds.
 
@@ -1338,6 +1329,7 @@ class FilterSeisan(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -1362,7 +1354,7 @@ class FilterSeisan(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
@@ -1415,7 +1407,7 @@ class FilterSeisan(QtWidgets.QDialog):
         self.dind_D.stateChanged.connect(self.dind_click)
 
     def dind_click(self, state):
-        """ check checkboxes """
+        """Check checkboxes."""
         self.dind = ''
         if self.dind_L.isChecked():
             self.dind += 'L'
@@ -1435,7 +1427,7 @@ class FilterSeisan(QtWidgets.QDialog):
             self.recdesc.currentTextChanged.connect(self.recdesc_init)
 
     def rectype_init(self, txt):
-        """ Change combo """
+        """Change combo."""
         self.rectype.disconnect()
         self.recdesc.disconnect()
 
@@ -1450,8 +1442,7 @@ class FilterSeisan(QtWidgets.QDialog):
         self.recdesc_init(self.recdesc.currentText())
 
     def recdesc_init(self, txt):
-
-        """ Change Description """
+        """Change Description."""
         if txt == '':
             minval = 0
             maxval = 0
@@ -1467,7 +1458,7 @@ class FilterSeisan(QtWidgets.QDialog):
         self.dsb_to.setValue(maxval)
 
     def get_limits(self):
-        """ gets limits for seisan data """
+        """Get limits for seisan data."""
         dat = self.indata['Seis']
         datd = {}
 
@@ -1519,7 +1510,7 @@ class FilterSeisan(QtWidgets.QDialog):
         self.datlimits = datd
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         tmp = []
         if 'Seis' not in self.indata:
             return False
@@ -1571,7 +1562,7 @@ class FilterSeisan(QtWidgets.QDialog):
         return tmp
 
     def acceptall(self):
-        """ accept """
+        """Accept."""
         data = self.indata['Seis']
         rectype = self.rectype.currentText()
         recdesc = self.recdesc.currentText()

@@ -22,8 +22,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the default set of menus for the main interface. It also includes
-the about box """
+"""
+Default set of menus for the main interface.
+
+It also includes the about box.
+"""
 
 import os
 import webbrowser
@@ -32,7 +35,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 class FileMenu():
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
     This widget class creates the raster menus to be found on the main
     interface. Normal as well as context menus are defined here.
@@ -42,6 +45,7 @@ class FileMenu():
     parent : MainWidget
         Reference to MainWidget class found in main.py
     """
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -65,13 +69,13 @@ class FileMenu():
         self.action_bandselect.triggered.connect(self.bandselect)
 
     def bandselect(self):
-        """ Select bands """
+        """Select bands."""
         self.parent.launch_context_item_indata(ComboBoxBasic)
 
 
 class ComboBoxBasic(QtWidgets.QDialog):
     """
-    A basic combo box application
+    A basic combo box application.
 
     Attributes
     ----------
@@ -82,6 +86,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -112,7 +117,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
         self.buttonbox.rejected.connect(self.reject)
 
     def run(self):
-        """ runs class """
+        """Run class."""
         self.parent.scene.selectedItems()[0].update_indata()
         my_class = self.parent.scene.selectedItems()[0].my_class
 
@@ -160,13 +165,14 @@ class ComboBoxBasic(QtWidgets.QDialog):
 
 class HelpMenu():
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
     Attributes
     ----------
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -187,8 +193,7 @@ class HelpMenu():
         self.action_help.triggered.connect(self.webhelp)
 
     def about(self):
-        """ PyGMI About Box """
-
+        """About box for PyGMI."""
         msg = '''\
 Name:         PyGMI - Python Geoscience Modelling and Interpretation
 Version:       '''+self.parent.__version__+'''
@@ -214,16 +219,17 @@ with this program. If not, see http://www.gnu.org/licenses/'''
         QtWidgets.QMessageBox.about(self.parent, 'PyGMI', msg)
 
     def webhelp(self):
-        """ Help File"""
+        """Help File."""
         webbrowser.open(self.webpage)
 
 
 class HelpButton(QtWidgets.QPushButton):
     """
-    Help Button
+    Help Button.
 
     Convenience class to add an image to a pushbutton
     """
+
     def __init__(self, htmlfile=None, parent=None):
         QtWidgets.QPushButton.__init__(self, parent)
 
@@ -239,15 +245,13 @@ class HelpButton(QtWidgets.QPushButton):
         self.setFlat(True)
 
     def help_docs(self):
-        """
-        Help Routine
-        """
+        """Help Routine."""
         HelpDocs(self, self.htmlfile)
 
 
 class HelpDocs(QtWidgets.QDialog):
     """
-    A basic combo box application
+    A basic combo box application.
 
     Attributes
     ----------
@@ -258,6 +262,7 @@ class HelpDocs(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None, helptxt=None):
         QtWidgets.QDialog.__init__(self, parent)
 

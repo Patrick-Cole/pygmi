@@ -23,10 +23,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Plot Borehole Data
+Remote sensing.
 
-This module provides a variety of methods to plot borehole data via the context
-menu. The following are supported:
+This module provides a variety of methods to plot data via the context
+menu.
 """
 
 
@@ -49,7 +49,7 @@ from matplotlib.figure import Figure
 
 class MyMplCanvas(FigureCanvas):
     """
-    Canvas for the actual plot
+    Canvas for the actual plot.
 
     Attributes
     ----------
@@ -57,15 +57,14 @@ class MyMplCanvas(FigureCanvas):
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         fig = Figure()
 
         FigureCanvas.__init__(self, fig)
 
     def update_legend(self, data1):
-        """
-        Update legend
-        """
+        """Update legend."""
         fig = self.figure
         fig.clear()
         ax = fig.gca()
@@ -182,14 +181,13 @@ class MyMplCanvas(FigureCanvas):
 
     def update_log(self, data1):
         """
-        Update the raster plot
+        Update the raster plot.
 
         Parameters
         ----------
         data1 : PyGMI log data
             log dataset to be used
         """
-
         fig = self.figure
         fig.clear()
         ax = fig.gca()
@@ -325,13 +323,14 @@ class MyMplCanvas(FigureCanvas):
 
 class GraphWindow(QtWidgets.QDialog):
     """
-    Graph Window - The QDialog window which will contain our image
+    Graph Window - The QDialog window which will contain our image.
 
     Attributes
     ----------
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
@@ -386,12 +385,12 @@ class GraphWindow(QtWidgets.QDialog):
         self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
 
 
 class PlotLog(GraphWindow):
     """
-    Plot Raster Class
+    Plot Raster Class.
 
     Attributes
     ----------
@@ -404,6 +403,7 @@ class PlotLog(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.label2.hide()
@@ -412,7 +412,7 @@ class PlotLog(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         i = self.combobox1.currentText()
         if 'Borehole' in self.indata:
             data = self.indata['Borehole'][i]
@@ -442,7 +442,7 @@ class PlotLog(GraphWindow):
             self.mmc.update_log(data)
 
     def run(self):
-        """ Run """
+        """Run."""
         self.show()
         if 'Borehole' in self.indata:
             data = self.indata['Borehole']
@@ -453,7 +453,7 @@ class PlotLog(GraphWindow):
 
 
 def main_pages():
-    """ main """
+    """Pages."""
     idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
     logfile = idir + r'logplot.xlsx'
@@ -672,7 +672,7 @@ def main_pages():
 
 
 def main_single():
-    """ main """
+    """Single."""
     idir = r'C:\Work\Programming\Remote_Sensing\bh2\\'
     odir = idir+'pics\\'
     logfile = idir + r'logplot.xlsx'
@@ -841,8 +841,7 @@ def main_single():
 def legend(pagewidth, pageheight, dpp, hdf, strat1, lith1, indx, props,
            stratcol, hatch, clith, col, rank1, odir, dpi, hcompanyno,
            pdf=None):
-    """ Plot legend """
-
+    """Plot legend."""
     wpp = dpp*pagewidth/pageheight
     rlookup = {'SUI': 'Suite',
                'SBSUI': 'Sub Suite',
@@ -932,7 +931,7 @@ def legend(pagewidth, pageheight, dpp, hdf, strat1, lith1, indx, props,
 
 
 def gethatch(svgfile):
-    """ Test stuff """
+    """Test stuff."""
     tree = xml.etree.ElementTree.parse(svgfile)
 
     translate = []
@@ -1054,7 +1053,7 @@ def gethatch(svgfile):
 
 
 def commentprep(mystring, slen=50):
-    """ creates the correct case for a string and inserts carriage returns"""
+    """Create the correct case for a string and inserts carriage returns."""
     finstring = ''
     mystring = mystring.capitalize()
     for word in mystring.split():
@@ -1072,7 +1071,7 @@ def commentprep(mystring, slen=50):
 
 
 def chkname(iname):
-    """ checks filename for illegal characters """
+    """Check filename for illegal characters."""
     charlist = [['#', '_hash_'],
                 ['%', '_perc_'],
                 ['&', '_amp_'],

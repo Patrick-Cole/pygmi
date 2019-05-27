@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is a set of Raster Data Preparation routines """
+"""A set of Raster Data Preparation routines."""
 
 from __future__ import print_function
 
@@ -43,7 +43,7 @@ gdal.PushErrorHandler('CPLQuietErrorHandler')
 
 class DataCut():
     """
-    Cut Data using shapefiles
+    Cut Data using shapefiles.
 
     This class cuts raster datasets using a boundary defined by a polygon
     shapefile.
@@ -65,6 +65,7 @@ class DataCut():
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent):
         self.ifile = ''
         self.name = 'Cut Data:'
@@ -75,7 +76,7 @@ class DataCut():
         self.outdata = {}
 
     def settings(self):
-        """ Show Info """
+        """Settings."""
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
@@ -110,7 +111,7 @@ class DataCut():
 
 class DataGrid(QtWidgets.QDialog):
     """
-    Grid Point Data
+    Grid Point Data.
 
     This class grids point data using a nearest neighbourhood technique.
 
@@ -123,6 +124,7 @@ class DataGrid(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -140,7 +142,7 @@ class DataGrid(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
@@ -175,7 +177,7 @@ class DataGrid(QtWidgets.QDialog):
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
     def dxy_change(self):
-        """ update dxy """
+        """Update dxy."""
         dxy = self.dsb_dxy.value()
         data = self.indata['Point'][0]
         x = data.xdata
@@ -188,7 +190,7 @@ class DataGrid(QtWidgets.QDialog):
         self.label_cols.setText('Columns: '+str(cols))
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         tmp = []
         if 'Point' not in self.indata:
             return False
@@ -218,7 +220,7 @@ class DataGrid(QtWidgets.QDialog):
         return tmp
 
     def acceptall(self):
-        """ accept """
+        """Accept."""
         dxy = self.dsb_dxy.value()
         nullvalue = self.dsb_null.value()
         data = self.indata['Point'][0]
@@ -260,7 +262,7 @@ class DataGrid(QtWidgets.QDialog):
 
 class DataMerge(QtWidgets.QDialog):
     """
-    Data Merge
+    Data Merge.
 
     This class merges datasets which have different rows and columns. It
     resamples them so that they have the same rows and columns.
@@ -274,6 +276,7 @@ class DataMerge(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -288,8 +291,7 @@ class DataMerge(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
-
+        """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
@@ -316,8 +318,11 @@ class DataMerge(QtWidgets.QDialog):
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
     def dxy_change(self):
-        """ Update dxy - which is the size of a grid cell in the x and y
-        directions."""
+        """
+        Update dxy.
+
+        This is the size of a grid cell in the x and y directions.
+        """
         data = self.indata['Raster'][0]
         dxy = self.dsb_dxy.value()
 
@@ -337,7 +342,7 @@ class DataMerge(QtWidgets.QDialog):
         self.label_cols.setText('Columns: '+str(cols))
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         data = self.indata['Raster'][0]
         dxy0 = min(data.xdim, data.ydim)
         for data in self.indata['Raster']:
@@ -354,6 +359,8 @@ class DataMerge(QtWidgets.QDialog):
 
     def acceptall(self):
         """
+        Accept.
+
         This routine is called by settings() if accept is pressed. It contains
         the main merge routine.
         """
@@ -403,7 +410,7 @@ class DataMerge(QtWidgets.QDialog):
 
 class DataReproj(QtWidgets.QDialog):
     """
-    Reprojections
+    Reprojections.
 
     This class reprojects datasets using the GDAL routines.
 
@@ -416,6 +423,7 @@ class DataReproj(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -436,7 +444,7 @@ class DataReproj(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
@@ -457,10 +465,11 @@ class DataReproj(QtWidgets.QDialog):
 
     def acceptall(self):
         """
+        Accept.
+
         This routine is called by settings() if accept is pressed. It contains
         the main routine.
         """
-
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
             self.parent.showprocesslog('Could not reproject')
             return
@@ -549,8 +558,7 @@ class DataReproj(QtWidgets.QDialog):
         self.outdata['Raster'] = dat
 
     def settings(self):
-        """ Settings """
-
+        """Settings."""
         self.in_proj.set_current(self.indata['Raster'][0].wkt)
         self.out_proj.set_current(self.indata['Raster'][0].wkt)
 
@@ -564,7 +572,7 @@ class DataReproj(QtWidgets.QDialog):
 
 class GetProf():
     """
-    Get a Profile
+    Get a Profile.
 
     This class extracts a profile from a raster dataset using a line shapefile.
 
@@ -585,6 +593,7 @@ class GetProf():
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent):
         self.ifile = ''
         self.name = 'Get Profile: '
@@ -595,7 +604,7 @@ class GetProf():
         self.outdata = {}
 
     def settings(self):
-        """ Show Info """
+        """Settings."""
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
@@ -668,10 +677,11 @@ class GetProf():
 
 class GroupProj(QtWidgets.QWidget):
     """
-    Group Proj
+    Group Proj.
 
     Custom widget
     """
+
     def __init__(self, title='Projection', parent=None):
         QtWidgets.QWidget.__init__(self, parent)
 
@@ -698,13 +708,13 @@ class GroupProj(QtWidgets.QWidget):
         self.combobox.currentIndexChanged.connect(self.combo_change)
 
     def set_current(self, wkt):
-        """ Sets new wkt for current """
+        """Set new wkt for current option."""
         self.wkt = wkt
         self.epsg_proj['Current'] = self.wkt
         self.combo_change()
 
     def combo_change(self):
-        """ Change Combo """
+        """Change Combo."""
         indx = self.combobox.currentIndex()
         txt = self.combobox.itemText(indx)
 
@@ -721,7 +731,7 @@ class GroupProj(QtWidgets.QWidget):
 
 class Metadata(QtWidgets.QDialog):
     """
-    Edit Metadata
+    Edit Metadata.
 
     This class allows the editing of the metadata for a raster dataset using a
     GUI.
@@ -741,6 +751,7 @@ class Metadata(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -771,7 +782,7 @@ class Metadata(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         groupbox = QtWidgets.QGroupBox('Dataset')
@@ -837,6 +848,8 @@ class Metadata(QtWidgets.QDialog):
 
     def acceptall(self):
         """
+        Accept.
+
         This routine is called by settings() if accept is pressed. It contains
         the main routine.
         """
@@ -861,7 +874,7 @@ class Metadata(QtWidgets.QDialog):
                     tmp.data.mask = (tmp.data.data == i.nullvalue)
 
     def rename_id(self):
-        """ Renames the band name """
+        """Rename the band name."""
         ctxt = str(self.combobox_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Band Name',
@@ -879,7 +892,7 @@ class Metadata(QtWidgets.QDialog):
             self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
-        """ Updates the values on the interface """
+        """Update the values on the interface."""
         odata = self.banddata[self.oldtxt]
         odata.units = self.led_units.text()
 
@@ -920,8 +933,7 @@ class Metadata(QtWidgets.QDialog):
         self.led_units.setText(str(idata.units))
 
     def run(self):
-        """ Entrypoint to start this routine """
-
+        """Entrypoint to start this routine."""
         bandid = []
         self.proj.set_current(self.indata['Raster'][0].wkt)
 
@@ -986,6 +998,7 @@ class RTP(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -1001,7 +1014,7 @@ class RTP(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.rtp')
@@ -1033,7 +1046,7 @@ class RTP(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         tmp = []
         if 'Raster' not in self.indata:
             return False
@@ -1054,7 +1067,7 @@ class RTP(QtWidgets.QDialog):
         return tmp
 
     def acceptall(self):
-        """ accept """
+        """Accept."""
         I_deg = self.dsb_inc.value()
         D_deg = self.dsb_dec.value()
 
@@ -1069,8 +1082,7 @@ class RTP(QtWidgets.QDialog):
 
 
 def rtp(data, I_deg, D_deg):
-    """ Reduction to the Pole """
-
+    """Reduction to the Pole."""
     datamedian = np.ma.median(data.data)
     ndat = data.data - datamedian
     ndat.data[ndat.mask] = 0
@@ -1110,7 +1122,7 @@ def rtp(data, I_deg, D_deg):
 
 
 def check_dataid(out):
-    """ Checks dataid for duplicates and renames where necessary """
+    """Check dataid for duplicates and renames where necessary."""
     tmplist = []
     for i in out:
         tmplist.append(i.dataid)
@@ -1127,7 +1139,8 @@ def check_dataid(out):
 
 
 def cluster_to_raster(indata):
-    """ Converts cluster datasets to raster datasets
+    """
+    Convert cluster datasets to raster datasets.
 
     Some routines will not understand the datasets produced by cluster
     analysis routines, since they are designated 'Cluster' and not 'Raster'.
@@ -1157,9 +1170,9 @@ def cluster_to_raster(indata):
 
 
 def cut_raster(data, ifile):
-    """Cuts a raster dataset
+    """Cuts a raster dataset.
 
-    Cut a raster dataset using a shapefile
+    Cut a raster dataset using a shapefile.
 
     Parameters
     ----------
@@ -1238,7 +1251,7 @@ def cut_raster(data, ifile):
 
 def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
     """
-    Data to GDAL mem format
+    Input Data to GDAL mem format.
 
     Parameters
     ----------
@@ -1303,7 +1316,7 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
 
 
 def epsgtowkt(epsg):
-    """ Convenience routine to get a wkt from an epsg code """
+    """Routine to get a wkt from an epsg code."""
     orig = osr.SpatialReference()
     err = orig.ImportFromEPSG(int(epsg))
     if err != 0:
@@ -1314,7 +1327,7 @@ def epsgtowkt(epsg):
 
 def gdal_to_dat(dest, bandid='Data'):
     """
-    GDAL to Data format
+    GDAL to Data format.
 
     Parameters
     ----------
@@ -1354,10 +1367,7 @@ def gdal_to_dat(dest, bandid='Data'):
 
 
 def getepsgcodes():
-    """
-    Convenience function used to get a list of EPSG codes
-    """
-
+    """Routine used to get a list of EPSG codes."""
     with open(os.path.join(os.environ['GDAL_DATA'], 'gcs.csv')) as dfile:
         dlines = dfile.readlines()
 
@@ -1409,7 +1419,8 @@ def getepsgcodes():
 
 
 def merge(dat):
-    """ Merges datasets found in a single PyGMI data object.
+    """
+    Merge datasets found in a single PyGMI data object.
 
     The aim is to ensure that all datasets have the same number of rows and
     columns.
@@ -1452,7 +1463,8 @@ def merge(dat):
 
 
 def trim_raster(olddata):
-    """ Function to trim nulls from a raster dataset.
+    """
+    Trim nulls from a raster dataset.
 
     This function trims entire rows or columns of data which have only nulls,
     and are on the edges of the dataset.
@@ -1467,7 +1479,6 @@ def trim_raster(olddata):
     Data
         PyGMI dataset
     """
-
     for data in olddata:
         mask = np.ma.getmaskarray(data.data)
         data.data.data[mask] = data.nullvalue
@@ -1510,7 +1521,7 @@ def trim_raster(olddata):
 
 def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     """
-    Do a quick grid
+    Do a quick grid.
 
     Parameters
     ----------
@@ -1533,7 +1544,6 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz : numpy array
         M x N array of z values
     """
-
     if showtext is None:
         showtext = print
 
@@ -1596,5 +1606,5 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
 
 
 def func(x, y):
-    """ Function """
+    """Function."""
     return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2

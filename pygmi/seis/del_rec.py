@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This program deletes seisan records """
+"""This program deletes seisan records."""
 
 import os
 import numpy as np
@@ -36,7 +36,8 @@ import pygmi.seis.iodefs as iodefs
 
 
 class DeleteRecord():
-    """ Main form which does the GUI and the program """
+    """Main form which does the GUI and the program."""
+
     def __init__(self, parent=None):
         # Initialize Variables
         self.parent = parent
@@ -47,7 +48,7 @@ class DeleteRecord():
         self.settings()
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         self.showtext('Delete Rows starting')
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName()
@@ -60,8 +61,7 @@ class DeleteRecord():
         return True
 
     def delrec(self, ifile):
-        """ Deletes record """
-
+        """Delete record."""
         ofile = ifile[:-4]+'_new.out'
 
         self.showtext('Input Filename: '+ifile)
@@ -98,7 +98,8 @@ class DeleteRecord():
 
 
 class Quarry():
-    """ Main form which does the GUI and the program """
+    """Main form which does the GUI and the program."""
+
     def __init__(self, parent=None):
         # Initialize Variables
         self.parent = parent
@@ -117,7 +118,7 @@ class Quarry():
         self.day = [9, 19]  # daytime start at 6am and ends at 7pm
 
     def settings(self):
-        """ Settings """
+        """Settings."""
         self.showtext('Delete quarry events starting')
 
         if 'Seis' not in self.indata:
@@ -143,8 +144,7 @@ class Quarry():
         return True
 
     def calcrq2(self):
-        """ Calculates the Rq value """
-
+        """Calculate the Rq value."""
         ttt = PTime()
         self.showtext('Working...')
 
@@ -260,8 +260,7 @@ class Quarry():
         return newevents
 
     def calcrq2b(self):
-        """ Calculates the Rq value """
-
+        """Calculate the Rq value."""
         ttt = PTime()
         self.showtext('Working...')
 
@@ -360,9 +359,8 @@ class Quarry():
 
         return newevents.tolist()
 
-
     def randrq(self, nmax, nstep, nrange, day):
-        """ Calculates random Rq values """
+        """Calculate random Rq values."""
         rperc = [1.97435897, 1.64253394, 1.46153846, 1.41025641, 1.35737179,
                  1.3234714, 1.28444936, 1.26923077]
 #        rperc[0] = 2.5
@@ -389,8 +387,7 @@ class Quarry():
         return rperc
 
     def randrqb(self, N, day, num):
-        """ Calculates random Rq values """
-
+        """Calculate random Rq values."""
         self.showtext('Calculating random Rq values for calibration')
 #        nd = 0
         elist = [50, 100, 150, 200]
@@ -450,7 +447,7 @@ class Quarry():
 
 
 def import_for_plots(ifile, dind='R'):
-    """ imports data to plot """
+    """Import data to plot."""
     iseis = iodefs.ImportSeisan()
     iseis.settings(ifile)
 
@@ -493,8 +490,6 @@ def import_for_plots(ifile, dind='R'):
                             datd[newkey] = []
                         datd[newkey].append(tmp['year'])
 
-
-
             if rectype == '4':
                 for i in event[rectype]:
                     tmp = vars(i)
@@ -507,7 +502,7 @@ def import_for_plots(ifile, dind='R'):
 
 
 #def gearth_plot(ifile):
-#    """ Plot with google earth background """
+#    """Plot with google earth background."""
 #    datd = import_for_plots(ifile, 'R')
 #
 #    extent = [16, 33, -22, -35]
@@ -605,7 +600,7 @@ def import_for_plots(ifile, dind='R'):
 
 
 def main():
-    """ Main routine for testing """
+    """Routine for testing."""
     ifile = r'C:\Work\Programming\pygmi\data/pygmi.out'
 
 #    gearth_plot(ifile)

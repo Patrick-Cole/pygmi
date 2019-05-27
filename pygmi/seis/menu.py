@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Seis Menu Routines """
+"""Seis Menu Routines."""
 
 from PyQt5 import QtWidgets
 from pygmi.seis import scan_imp
@@ -34,7 +34,7 @@ from pygmi.seis import graphs
 
 class MenuWidget():
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
     This widget class creates the seismology menus to be found on the main
     interface. Normal as well as context menus are defined here.
@@ -44,6 +44,7 @@ class MenuWidget():
     parent : MainWidget
         Reference to MainWidget class found in main.py
     """
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -100,48 +101,48 @@ class MenuWidget():
         self.action_export_csv.triggered.connect(self.export_csv)
 
     def export_seisan(self):
-        """ Export Seisan data """
+        """Export Seisan data."""
         self.parent.launch_context_item(iodefs.ExportSeisan)
 
     def export_csv(self):
-        """ Export Seisan data to csv"""
+        """Export Seisan data to csv."""
         self.parent.launch_context_item(iodefs.ExportCSV)
 
     def beachball(self):
-        """ Create Beachballs from Fault Plane Solutions """
+        """Create Beachballs from Fault Plane Solutions."""
         fnc = beachball.BeachBall(self.parent)
         self.parent.item_insert('Step', 'Fault\nPlane\nSolutions', fnc)
 
     def import_scans(self):
-        """ Imports scanned records"""
+        """Import scanned records."""
         fnc = scan_imp.SIMP(self.parent)
         self.parent.item_insert('Io', 'Import\nScanned\nBulletins', fnc)
 
     def import_seisan(self):
-        """ Imports Seisan"""
+        """Import Seisan."""
         fnc = iodefs.ImportSeisan(self.parent)
         self.parent.item_insert('Io', 'Import\nSeisan\nData', fnc)
 
     def filter_seisan(self):
-        """ Imports Seisan"""
+        """Filter Seisan."""
         fnc = iodefs.FilterSeisan(self.parent)
         self.parent.item_insert('Step', 'Filter\nSeisan\nData', fnc)
 
     def import_genfps(self):
-        """ Imports Generic Fault Plane Solution"""
+        """Import Generic Fault Plane Solution."""
         fnc = iodefs.ImportGenericFPS(self.parent)
         self.parent.item_insert('Io', 'Import\nGeneric\nFPS', fnc)
 
     def delete_recs(self):
-        """ Deletes Records """
+        """Delete Records."""
         fnc = del_rec.DeleteRecord(self.parent)
         self.parent.item_insert('Io', 'Delete Records', fnc)
 
     def quarry(self):
-        """ Removes quarry events """
+        """Remove quarry events."""
         fnc = del_rec.Quarry(self.parent)
         self.parent.item_insert('Step', 'Remove\nQuarry\nEvents', fnc)
 
     def show_QC_plots(self):
-        """ Show QC plots """
+        """Show QC plots."""
         self.parent.launch_context_item(graphs.PlotQC)

@@ -1,3 +1,1 @@
-"""
-Vector data routines
-"""
+"""Vector data routines."""

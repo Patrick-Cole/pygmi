@@ -22,7 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the main module for PyGMI.
+"""
+Main module for PyGMI.
 
 This module comprises a series of classes which are responsible for the primary
 interface to the software. Credit must go to PyQt's examples, upon which some
@@ -61,6 +62,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
     my_color : QtCore color (default is QtCore.Qt.black)
         Color
     """
+
     def __init__(self, start_item, end_item, parent=None):
         super().__init__(parent)
 
@@ -75,6 +77,8 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
     def boundingRect(self):
         """
+        Bounding Rectangle.
+
         Overloaded bounding rectangle. This is necessary to ensure that the
         line and arrowhead are cleaned properly when moving.
 
@@ -114,8 +118,8 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         x1, y1 = np.mean(self.my_end_item.np_poly, 0)
         my_end_off = QtCore.QPointF(x1, y1)
 
-        center_line = QtCore.QLineF(self.my_start_item.pos()+my_start_off,
-                                    self.my_end_item.pos()+my_end_off)
+        center_line = QtCore.QLineF(self.my_start_item.pos() + my_start_off,
+                                    self.my_end_item.pos() + my_end_off)
         end_polygon = self.my_end_item.polygon()
         p1 = end_polygon.first() + self.my_end_item.pos()
 
@@ -129,12 +133,12 @@ class Arrow(QtWidgets.QGraphicsLineItem):
             p1 = p2
 
         self.setLine(QtCore.QLineF(intersect_point,
-                                   self.my_start_item.pos()+my_start_off))
+                                   self.my_start_item.pos() + my_start_off))
         line = self.line()
 
         angle = math.acos(line.dx() / line.length())
         if line.dy() >= 0:
-            angle = (math.pi*2.0) - angle
+            angle = (math.pi * 2.0) - angle
 
         arrow_p1 = (line.p1() + QtCore.QPointF(math.sin(angle+pi/3) *
                                                arrow_size,
@@ -162,7 +166,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
 
 class DiagramItem(QtWidgets.QGraphicsPolygonItem):
     """
-    Diagram Item
+    Diagram Item.
 
     Attributes
     ----------
@@ -180,6 +184,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
     my_class_name : str
         Class name being referenced
     """
+
     def __init__(self, diagram_type, context_menu, my_class, parent=None):
         super().__init__(parent)
 
@@ -246,7 +251,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.setFlag(QtWidgets.QGraphicsItem.ItemIsSelectable, True)
 
     def add_arrow(self, arrow):
-        """Add Arrow
+        """Add Arrow.
 
         Parameters
         ----------
@@ -256,7 +261,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.arrows.append(arrow)
 
     def update_indata(self):
-        """Routine to add datasets"""
+        """Routine to add datasets."""
         data = {}
         for i in self.arrows:
             odata = i.my_start_item.my_class.outdata
@@ -272,7 +277,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
     def contextMenuEvent(self, event):
         """
-        Overloaded context menu event
+        Overloaded context menu event.
 
         Parameters
         ----------
@@ -295,7 +300,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
     def mouseDoubleClickEvent(self, event):
         """
-        Mouse double click event
+        Mouse double click event.
 
         This event is used to activate an item. It does this by calling the
         settings() method of the item. The event also changes the color of the
@@ -311,7 +316,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
     def remove_arrow(self, arrow):
         """
-        Remove a single Arrow
+        Remove a single Arrow.
 
         Parameters
         ----------
@@ -357,7 +362,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
 
 class DiagramScene(QtWidgets.QGraphicsScene):
-    """ Diagram Scene """
+    """Diagram Scene."""
+
     def __init__(self, item_menu, parent):
         super().__init__(parent)
 
@@ -374,7 +380,8 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
     def mousePressEvent(self, mouse_event):
         """
-        Overloaded Mouse Press Event
+        Overloaded Mouse Press Event.
+
         Parameters
         ----------
         mouse_event: QGraphicsSceneMouseEvent
@@ -412,7 +419,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
     def mouseMoveEvent(self, mouse_event):
         """
-        Overloaded Mouse Move Event
+        Overloaded Mouse Move Event.
 
         Parameters
         ----------
@@ -428,7 +435,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
     def mouseReleaseEvent(self, mouse_event):
         """
-        Overloaded Mouse Release Event
+        Overloaded Mouse Release Event.
 
         Parameters
         ----------
@@ -467,13 +474,14 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
 class MainWidget(QtWidgets.QMainWindow):
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
     Attributes
     ----------
     pdlg : list
     context_menu : dictionary
     """
+
     def __init__(self, parent=None):
         QtWidgets.QMainWindow.__init__(self, parent)
 
@@ -526,7 +534,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 onerror=lambda x: None):
             menus.append(modname)
 
-    ### Menu List
+### Menu List
         menus.pop(menus.index('pygmi.rsense.menu'))
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
@@ -565,7 +573,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
 # Start of Functions
     def setupui(self):
-        """ Setup UI """
+        """Set up UI."""
         self.resize(800, 600)
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
@@ -622,7 +630,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def add_to_context(self, txt):
         """
-        Adds to a context menu.
+        Add to a context menu.
 
         Each dataset type which PyGMI uses can have its own context menu. This
         method allows for the definition of each group of context menu items
@@ -633,14 +641,12 @@ class MainWidget(QtWidgets.QMainWindow):
         txt : str
             Label for a group of context menu items
         """
-
         if self.context_menu.get(txt) is not None:
             return
         self.context_menu[txt] = QtWidgets.QMenu()
 
     def bring_to_front(self):
         """Bring the selected item to front."""
-
         if not self.scene.selectedItems():
             return
 
@@ -654,7 +660,7 @@ class MainWidget(QtWidgets.QMainWindow):
         selected_item.setZValue(zvalue)
 
     def clearprocesslog(self):
-        """Clears the process log."""
+        """Clear the process log."""
         self.textbrowser_processlog.setPlainText('')
 
     def delete_item(self):
@@ -672,14 +678,13 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def get_indata(self):
         """
-        Gets input data from the selected item on the main interface.
+        Get input data from the selected item on the main interface.
 
         Returns
         -------
         idata : list
             Input list of PyGMI dataset
         """
-
         idata = []
         for item in self.scene.selectedItems():
             if isinstance(item, DiagramItem):
@@ -688,7 +693,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def get_outdata(self):
         """
-        Gets output data from the selected item on the main interface.
+        Get output data from the selected item on the main interface.
 
         Returns
         -------
@@ -702,9 +707,7 @@ class MainWidget(QtWidgets.QMainWindow):
         return odata
 
     def help_docs(self):
-        """
-        Help Routine
-        """
+        """Help Routine."""
         menu_default.HelpDocs(self, 'pygmi.main')
 
     def item_insert(self, item_type, item_name, class_name):
@@ -793,7 +796,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def launch_context_item(self, newitem):
         """
-        Launches a context menu item, using output data
+        Launch a context menu item, using output data.
 
         Parameters
         ----------
@@ -811,7 +814,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def launch_context_item_indata(self, newitem):
         """
-        Launches a context menu item, using input data.
+        Launch a context menu item, using input data.
 
         Parameters
         ----------
@@ -837,14 +840,13 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def process_is_active(self, isactive=True):
         """
-        Changes process log color when a process is active.
+        Change process log color when a process is active.
 
         Parameters
         ----------
         isactive : bool, optional
             boolean variable indicating if a process is active.
         """
-
         if isactive:
             self.textbrowser_processlog.setStyleSheet(
                 '* { background-color: rgba(255, 0, 0, 127); }')
@@ -868,7 +870,8 @@ class MainWidget(QtWidgets.QMainWindow):
         selected_item.setZValue(zvalue)
 
     def showdatainfo(self, txt):
-        """ Show text in the dataset information panel
+        """
+        Show text in the dataset information panel.
 
         Parameters
         ----------
@@ -897,7 +900,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def showtext(self, txtobj, txt, replacelast=False):
         """
-        Show text on the text panel
+        Show text on the text panel.
 
         Parameters
         ----------
@@ -919,7 +922,8 @@ class MainWidget(QtWidgets.QMainWindow):
         self.repaint()
 
     def update_pdlg(self, dlg):
-        """ Cleans deleted objects in self.pdlg and appends a new object.
+        """
+        Clean deleted objects in self.pdlg and appends a new object.
 
         self.pdlg allows for modeless dialogs to remain in existance until they
         are closed
@@ -942,7 +946,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
 
 class Startup(QtWidgets.QDialog):
-    """ Class to provide a startup display while PyGMI loads into memory """
+    """Class to provide a startup display while PyGMI loads into memory."""
+
     def __init__(self, pbarmax, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.setWindowFlags(QtCore.Qt.ToolTip)
@@ -969,13 +974,13 @@ class Startup(QtWidgets.QDialog):
         self.open()
 
     def update(self):
-        """ Updates the text on the dialog """
+        """Update the text on the dialog."""
         self.pbar.setValue(self.pbar.value() + 1)
         QtWidgets.QApplication.processEvents()
 
 
 def main():
-    """ Main entry point for the PyGMI software. """
+    """Entry point for the PyGMI software."""
     app = QtWidgets.QApplication(sys.argv)
 
     screen_resolution = app.desktop().screenGeometry()

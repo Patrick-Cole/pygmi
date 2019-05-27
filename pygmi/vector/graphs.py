@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Plot Vector Data using Matplotlib """
+"""Plot Vector Data using Matplotlib."""
 
 import math
 import numpy as np
@@ -37,6 +37,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 class GraphWindow(QtWidgets.QDialog):
     """Graph Window - Main QT Dialog class for graphs."""
+
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -78,16 +79,17 @@ class GraphWindow(QtWidgets.QDialog):
         self.spinbox.valueChanged.connect(self.change_band)
         self.checkbox.stateChanged.connect(self.change_band)
 
-
     def change_band(self):
-        """Combo box to choose band """
+        """Combo box to choose band."""
 
 
 class MyMplCanvas(FigureCanvas):
     """
     MPL Canvas class.
 
-    This routine will also allow the pciking and movement of nodes of data."""
+    This routine will also allow the pciking and movement of nodes of data.
+    """
+
     def __init__(self, parent=None):
         fig = Figure()
         self.axes = fig.add_subplot(111)
@@ -104,7 +106,7 @@ class MyMplCanvas(FigureCanvas):
                                        self.motion_notify_callback)
 
     def button_release_callback(self, event):
-        """mouse button release callback """
+        """Mouse button release callback."""
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -112,7 +114,7 @@ class MyMplCanvas(FigureCanvas):
         self.ind = None
 
     def motion_notify_callback(self, event):
-        """move mouse callback """
+        """Move mouse callback."""
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -129,7 +131,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.update()
 
     def onpick(self, event):
-        """Picker event """
+        """Picker event."""
         if event.mouseevent.inaxes is None:
             return False
         if event.mouseevent.button != 1:
@@ -150,10 +152,9 @@ class MyMplCanvas(FigureCanvas):
         ----------
         data1 : PData object
             Point data
-        data2 : PData object
-            Point Data
+        ival : dictionary key
+            dictionary key Point Data
         """
-
         data1 = data[ival]
 
         self.figure.clear()
@@ -191,12 +192,11 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PData object
-            Point data
-        data2 : PData object
-            Point Data
+        r : numpy array
+            array of distances, for the x-axis
+        data : numpy array
+            array of data to be plotted on the y-axis
         """
-
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='Profile')
@@ -216,16 +216,15 @@ class MyMplCanvas(FigureCanvas):
 
     def update_map(self, data, ival):
         """
-        Update the plot from point data.
+        Update the map from point data.
 
         Parameters
         ----------
-        data1 : PData object
+        data : PData object
             Point data
-        data2 : PData object
-            Point Data
+        ival : dictionary key
+            dictionary key Point Data
         """
-
         data1 = data[ival]
 
         self.figure.clear()
@@ -245,16 +244,19 @@ class MyMplCanvas(FigureCanvas):
 
     def update_lmap(self, data, ival, scale, uselabels):
         """
-        Update the plot from point data.
+        Update the plot from line data.
 
         Parameters
         ----------
-        data1 : PData object
-            Point data
-        data2 : PData object
-            Point Data
+        data : LData object
+            Line data
+        ival : dictionary key
+            dictionary key representing the line data channel to be plotted.
+        scale: float
+            scale of exxageration for the profile data on the map.
+        uselabels: bool
+            boolean choice whether to use labels or not.
         """
-
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='Map')
@@ -305,7 +307,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_vector(self, data):
         """
-        Update the plot from vactor data
+        Update the plot from vactor data.
 
         Parameters
         ----------
@@ -413,7 +415,8 @@ class MyMplCanvas(FigureCanvas):
 
 
 class PlotPoints(GraphWindow):
-    """ Plot Raster Class """
+    """Plot Raster Class."""
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.indata = {}
@@ -424,13 +427,13 @@ class PlotPoints(GraphWindow):
         self.label2.hide()
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         data = self.indata['Point']
         i = self.combobox1.currentIndex()
         self.mmc.update_line(data, i)
 
     def run(self):
-        """ Run """
+        """Run."""
         self.show()
         data = self.indata['Point']
         for i in data:
@@ -444,7 +447,8 @@ class PlotPoints(GraphWindow):
 
 
 class PlotPoints2(GraphWindow):
-    """ Plot Raster Class """
+    """Plot Raster Class."""
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.indata = {}
@@ -455,13 +459,13 @@ class PlotPoints2(GraphWindow):
         self.label2.hide()
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         data = self.indata['Point']
         i = self.combobox1.currentIndex()
         self.mmc.update_map(data, i)
 
     def run(self):
-        """ Run """
+        """Run."""
         self.show()
         data = self.indata['Point']
         for i in data:
@@ -472,7 +476,8 @@ class PlotPoints2(GraphWindow):
 
 
 class PlotLines(GraphWindow):
-    """ Plot Raster Class """
+    """Plot Raster Class."""
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.indata = {}
@@ -483,10 +488,10 @@ class PlotLines(GraphWindow):
         self.ycol = ''
 
     def change_line(self):
-        """ Combo to change line number """
+        """Combo to change line number."""
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         data = self.indata['Line'].data
         i = self.combobox1.currentText()
         i2 = self.combobox2.currentText()
@@ -502,8 +507,7 @@ class PlotLines(GraphWindow):
         self.mmc.update_lines(r, data2)
 
     def run(self):
-        """ Run """
-
+        """Run."""
         self.combobox1.currentIndexChanged.disconnect()
         self.combobox2.currentIndexChanged.disconnect()
 
@@ -532,7 +536,8 @@ class PlotLines(GraphWindow):
 
 
 class PlotLines2(GraphWindow):
-    """ Plot Raster Class """
+    """Plot Raster Class."""
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.indata = {}
@@ -542,15 +547,14 @@ class PlotLines2(GraphWindow):
         self.checkbox.show()
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         data = self.indata['Line']
         scale = self.spinbox.value()
         i = self.combobox1.currentText()
         self.mmc.update_lmap(data, i, scale, self.checkbox.isChecked())
 
     def run(self):
-        """ Run """
-
+        """Run."""
         self.combobox1.currentIndexChanged.disconnect()
         self.spinbox.valueChanged.disconnect()
         self.checkbox.stateChanged.disconnect()
@@ -580,7 +584,8 @@ class PlotLines2(GraphWindow):
 
 
 class PlotRose(GraphWindow):
-    """ Plot Raster Class """
+    """Plot Raster Class."""
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.indata = {}
@@ -593,7 +598,7 @@ class PlotRose(GraphWindow):
         self.setWindowTitle('Rose Diagram')
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         if 'Vector' not in self.indata:
             return
         data = self.indata['Vector']
@@ -602,7 +607,7 @@ class PlotRose(GraphWindow):
             self.mmc.update_rose(data, i, self.spinbox.value())
 
     def run(self):
-        """ Run """
+        """Run."""
         self.show()
         self.combobox1.addItem('Average Angle per Feature')
         self.combobox1.addItem('Angle per segment in Feature')
@@ -611,7 +616,8 @@ class PlotRose(GraphWindow):
 
 
 class PlotVector(GraphWindow):
-    """ Plot Raster Class """
+    """Plot Raster Class."""
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.indata = {}
@@ -624,7 +630,7 @@ class PlotVector(GraphWindow):
         self.label3.hide()
 
     def run(self):
-        """ Run """
+        """Run."""
         self.show()
         data = self.indata['Vector']
         self.mmc.update_vector(data)
@@ -632,6 +638,8 @@ class PlotVector(GraphWindow):
 
 def histogram(x, y=None, xmin=None, xmax=None, bins=10):
     """
+    Histogram.
+
     Calculate histogram of a set of data. It is different from a
     conventional histogram in that instead of summing elements of
     specific values, this allows the sum of weights/probabilities on a per
@@ -657,7 +665,6 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
     bin_edges : numpy array
         bin edges of the histogram
     """
-
     radii = np.zeros(bins)
     theta = np.zeros(bins+1)
 

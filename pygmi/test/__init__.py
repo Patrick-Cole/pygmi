@@ -1,3 +1,1 @@
-"""
-Tests for PyGMI
-"""
+"""Tests for PyGMI."""
