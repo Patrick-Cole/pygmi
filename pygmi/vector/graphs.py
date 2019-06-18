@@ -291,10 +291,10 @@ class MyMplCanvas(FigureCanvas):
             elif y.ptp() > x.ptp() and (y[-1]-y[0]) < 0:
                 ang += np.pi
 
-            py = y + scale*(z - med)/std
+            py = scale*(z - med)/std
 
-            qx = x - np.sin(ang) * (py - y)
-            qy = y + np.cos(ang) * (py - y)
+            qx = x - np.sin(ang) * py
+            qy = y + np.cos(ang) * py
 
             if uselabels:
                 textang = np.rad2deg(ang[0])
