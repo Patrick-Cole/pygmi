@@ -27,6 +27,7 @@
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from matplotlib import cm
+from mpl_toolkits.mplot3d import axes3d  # this is used, ignore warning
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
@@ -34,7 +35,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 
 class MyMplCanvas(FigureCanvas):
     """
-    Canvas for the actual plot
+    Canvas for the actual plot.
 
     Attributes
     ----------
@@ -42,6 +43,7 @@ class MyMplCanvas(FigureCanvas):
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         # figure stuff
         fig = Figure()
@@ -52,7 +54,7 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.__init__(self, fig)
 
     def update_contour(self, data1):
-        """ Update the plot """
+        """Update the plot."""
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -69,7 +71,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_scatter(self, x, y):
-        """ Update the plot """
+        """Update the plot."""
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -84,16 +86,39 @@ class MyMplCanvas(FigureCanvas):
         self.axes.xaxis.set_ticks(x)
         self.figure.canvas.draw()
 
+    def update_wireframe(self, x, y, z):
+        """Update the plot."""
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111, projection='3d')
+        self.axes.plot_wireframe(x, y, z)
+        self.axes.set_title('log(Objective Function)')
+        self.axes.set_xlabel("Number of Classes")
+        self.axes.set_ylabel("Iteration")
+        self.figure.canvas.draw()
+
+    def update_membership(self, data1, mem):
+        """Update the plot."""
+        self.figure.clear()
+        self.axes = self.figure.add_subplot(111)
+
+        rdata = self.axes.imshow(data1.memdat[mem], extent=data1.extent)
+        self.figure.colorbar(rdata)
+#        self.axes.set_title('Data')
+        self.axes.set_xlabel("Eastings")
+        self.axes.set_ylabel("Northings")
+        self.figure.canvas.draw()
+
 
 class GraphWindow(QtWidgets.QDialog):
     """
-    Graph Window
+    Graph Window.
 
     Attributes
     ----------
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
@@ -126,12 +151,12 @@ class GraphWindow(QtWidgets.QDialog):
         self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
 
 
 class PlotRaster(GraphWindow):
     """
-    Plot Raster Class
+    Plot Raster Class.
 
     Attributes
     ----------
@@ -140,6 +165,7 @@ class PlotRaster(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.label2.hide()
@@ -148,13 +174,13 @@ class PlotRaster(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         i = self.combobox1.currentIndex()
         data = self.indata['Cluster']
         self.mmc.update_contour(data[i])
 
     def run(self):
-        """ Run """
+        """Run."""
         self.show()
         data = self.indata['Cluster']
 
@@ -163,9 +189,9 @@ class PlotRaster(GraphWindow):
         self.change_band()
 
 
-class PlotVRCetc(GraphWindow):
+class PlotMembership(GraphWindow):
     """
-    Plot VRC, NCE, OBJ and XBI
+    Plot Fuzzy Membership data.
 
     Attributes
     ----------
@@ -174,6 +200,59 @@ class PlotVRCetc(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
+    def __init__(self, parent):
+        GraphWindow.__init__(self, parent)
+        self.indata = {}
+        self.parent = parent
+
+    def change_band(self):
+        """Combo box to choose band."""
+        data = self.indata['Cluster']
+        i = self.combobox1.currentIndex()
+        self.combobox2.clear()
+        self.combobox2.currentIndexChanged.disconnect()
+
+        for j in range(data[i].no_clusters):
+            self.combobox2.addItem('Membership Map for Cluster ' + str(j + 1))
+
+        self.combobox2.currentIndexChanged.connect(self.change_band_two)
+        self.change_band_two()
+
+    def run(self):
+        """Run."""
+        data = self.indata['Cluster']
+        if len(data[0].memdat) == 0:
+            return
+
+        self.show()
+        for i in data:
+            self.combobox1.addItem(i.dataid)
+
+        self.change_band()
+
+    def change_band_two(self):
+        """Combo box to choose band."""
+        data = self.indata['Cluster']
+
+        i = self.combobox1.currentIndex()
+        j = self.combobox2.currentIndex()
+
+        self.mmc.update_membership(data[i], j)
+
+
+class PlotVRCetc(GraphWindow):
+    """
+    Plot VRC, NCE, OBJ and XBI.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
+
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
         self.combobox2.hide()
@@ -182,25 +261,63 @@ class PlotVRCetc(GraphWindow):
         self.indata = {}
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         data = self.indata['Cluster']
 
         j = str(self.combobox1.currentText())
 
+        if j == 'Objective Function' and data[0].obj_fcn is not None:
+            x = len(data)
+            y = 0
+            for i in data:
+                y = max(y, len(i.obj_fcn))
+
+            z = np.zeros([x, y])
+            x = list(range(x))
+            y = list(range(y))
+
+            for i in x:
+                for j in range(len(data[i].obj_fcn)):
+                    z[i, j] = data[i].obj_fcn[j]
+
+            for i in x:
+                z[i][z[i] == 0] = z[i][z[i] != 0].min()
+
+            x, y = np.meshgrid(x, y)
+            x += data[0].no_clusters
+            self.mmc.update_wireframe(x.T, y.T, np.log(z))
+
         if j == 'Variance Ratio Criterion' and data[0].vrc is not None:
-            x = np.array([k.no_clusters for k in data], dtype=int)
+            x = [k.no_clusters for k in data]
             y = [k.vrc for k in data]
+            self.mmc.update_scatter(x, y)
+        if j == 'Normalized Class Entropy' and data[0].nce is not None:
+            x = [k.no_clusters for k in data]
+            y = [k.nce for k in data]
+            self.mmc.update_scatter(x, y)
+        if j == 'Xie-Beni Index' and data[0].xbi is not None:
+            x = [k.no_clusters for k in data]
+            y = [k.xbi for k in data]
             self.mmc.update_scatter(x, y)
 
     def run(self):
-        """ Run """
+        """Run."""
         items = []
         data = self.indata['Cluster']
 
-        if data[0].vrc is not None:
+        if data[0].obj_fcn is not None:
+            items += ['Objective Function']
+
+        if data[0].vrc is not None and len(data) > 1:
             items += ['Variance Ratio Criterion']
 
-        if not items or len(data) == 1:
+        if data[0].nce is not None and len(data) > 1:
+            items += ['Normalized Class Entropy']
+
+        if data[0].xbi is not None and len(data) > 1:
+            items += ['Xie-Beni Index']
+
+        if len(items) == 0:
             self.parent.showprocesslog('Your dataset does not qualify')
             return
 

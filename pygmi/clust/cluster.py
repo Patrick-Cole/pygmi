@@ -295,7 +295,7 @@ class Cluster(QtWidgets.QDialog):
             dat_out[-1].center = np.zeros([i, len(data)])
             dat_out[-1].center_std = np.zeros([i, len(data)])
             if cfit.labels_.max() > 0:
-                dat_out[-1].vrc = skm.calinski_harabaz_score(X, cfit.labels_)
+                dat_out[-1].vrc = skm.calinski_harabasz_score(X, cfit.labels_)
 
             if self.cltype == 'k-means':
                 dat_out[-1].center = np.array(cfit.cluster_centers_)

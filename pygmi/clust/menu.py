@@ -30,11 +30,13 @@ from pygmi.clust import graphtool
 from pygmi.clust import graphs
 from pygmi.raster import show_table
 from pygmi.raster import iodefs
+from pygmi.clust import crisp_clust
+from pygmi.clust import fuzzy_clust
 
 
 class MenuWidget():
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
     This widget class creates the clustering menus to be found on the main
     interface. Normal as well as context menus are defined here.
@@ -44,6 +46,7 @@ class MenuWidget():
     parent : MainWidget
         Reference to MainWidget class found in main.py
     """
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -57,6 +60,14 @@ class MenuWidget():
         self.action_clustering = QtWidgets.QAction('Cluster Analysis')
         self.menuclustering.addAction(self.action_clustering)
         self.action_clustering.triggered.connect(self.cluster)
+
+        self.action_crisp_clustering = QtWidgets.QAction("Crisp Clustering")
+        self.menuclustering.addAction(self.action_crisp_clustering)
+        self.action_crisp_clustering.triggered.connect(self.crisp_cluster)
+
+        self.action_fuzzy_clustering = QtWidgets.QAction("Fuzzy Clustering")
+        self.menuclustering.addAction(self.action_fuzzy_clustering)
+        self.action_fuzzy_clustering.triggered.connect(self.fuzzy_cluster)
 
         self.menuclustering.addSeparator()
 
@@ -75,7 +86,11 @@ class MenuWidget():
         context_menu['Cluster'].addAction(self.action_show_class_data)
         self.action_show_class_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_objvrcncexbigraphs = QtWidgets.QAction('Show VRC Graphs')
+        self.action_show_membership_data = QtWidgets.QAction("Show Membership Data (Fuzzy Only)")
+        context_menu['Cluster'].addAction(self.action_show_membership_data)
+        self.action_show_membership_data.triggered.connect(self.show_membership_data)
+
+        self.action_show_objvrcncexbigraphs = QtWidgets.QAction("Show OBJ, VRC, NCE, XBI Graphs")
         context_menu['Cluster'].addAction(self.action_show_objvrcncexbigraphs)
         self.action_show_objvrcncexbigraphs.triggered.connect(self.show_vrc_etc)
 
@@ -84,27 +99,41 @@ class MenuWidget():
         self.action_export_data.triggered.connect(self.export_data)
 
     def cluster_stats(self):
-        """ Basic Statistics """
+        """Basic Statistics."""
         self.parent.launch_context_item(show_table.ClusterStats)
 
     def cluster(self):
-        """ Clustering of data"""
+        """Clustering of data."""
         fnc = cluster.Cluster(self.parent)
         self.parent.item_insert('Step', 'Cluster\nAnalysis', fnc)
 
+    def crisp_cluster(self):
+        """Crisp Clustering of data."""
+        fnc = crisp_clust.CrispClust(self.parent)
+        self.parent.item_insert("Step", "Crisp\nClustering", fnc)
+
+    def fuzzy_cluster(self):
+        """Fuzzy Clustering of data."""
+        fnc = fuzzy_clust.FuzzyClust(self.parent)
+        self.parent.item_insert("Step", "Fuzzy\nClustering", fnc)
+
     def export_data(self):
-        """ Export raster data """
+        """Export raster data."""
         self.parent.launch_context_item(iodefs.ExportData)
 
     def scatter_plot(self):
-        """ Scatter Plot Tool"""
+        """Scatter Plot Tool."""
         fnc = graphtool.ScatterPlot(self.parent)
         self.parent.item_insert('Step', 'Scatter\nPlot\nTool', fnc)
 
     def show_raster_data(self):
-        """ Show raster data """
+        """Show raster data."""
         self.parent.launch_context_item(graphs.PlotRaster)
 
+    def show_membership_data(self):
+        """Show raster data."""
+        self.parent.launch_context_item(graphs.PlotMembership)
+
     def show_vrc_etc(self):
-        """ Show vrc, xbi, obj, nce graphs """
+        """Show vrc, xbi, obj, nce graphs."""
         self.parent.launch_context_item(graphs.PlotVRCetc)
