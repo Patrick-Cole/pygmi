@@ -62,6 +62,7 @@ class ImportLEMI417Data():
         self.name = 'Import LEMI-417 Data: '
         self.pbar = None
         self.parent = parent
+        self.indata = {}
         self.outdata = {}
         self.ifile = ''
 
@@ -73,7 +74,7 @@ class ImportLEMI417Data():
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         self.ifile = str(filename)
 
         datatmp = np.loadtxt(filename, unpack=True)
@@ -167,7 +168,7 @@ class ImportPointData(QtWidgets.QDialog):
         if filename == '':
             return False
 
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         self.ifile = str(filename)
 
         datatmp = pd.read_csv(filename, sep=None, engine='python')
@@ -273,7 +274,7 @@ class ImportLineData(QtWidgets.QDialog):
         if filename == '':
             return False
 
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         self.ifile = str(filename)
 
         if filt == 'Geosoft XYZ (*.xyz)':
@@ -421,7 +422,7 @@ class PointCut():
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
         self.ext = filename[-3:]
@@ -478,8 +479,8 @@ class ExportPoint():
         if filename == '':
             return False
 
-        os.chdir(filename.rpartition('/')[0])
-        ofile = str(filename.rpartition('/')[-1][:-4])
+        os.chdir(os.path.dirname(filename))
+        ofile = os.path.basename(filename)[:-4]
         data = self.indata['Point']
 
         dfall = pd.DataFrame()
@@ -524,6 +525,7 @@ class ImportShapeData():
         self.name = 'Import Shapefile Data: '
         self.pbar = None
         self.parent = parent
+        self.indata = {}
         self.outdata = {}
         self.ifile = ''
 
@@ -536,7 +538,7 @@ class ImportShapeData():
                                                             '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         self.ifile = str(filename)
 
         ifile = str(filename)

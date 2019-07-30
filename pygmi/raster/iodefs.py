@@ -27,13 +27,95 @@
 import os
 import glob
 import struct
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import gdal, osr
 from pygmi.raster.datatypes import Data
 from pygmi.clust.datatypes import Clust
 from pygmi.raster.dataprep import merge
 from pygmi.raster.dataprep import quickgrid
+
+
+class ComboBoxBasic(QtWidgets.QDialog):
+    """
+    A combobox to select data bands.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+
+    def __init__(self, parent=None):
+        QtWidgets.QDialog.__init__(self, parent)
+
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+
+        # create GUI
+        self.setWindowTitle('Band Selection')
+
+        self.vbox = QtWidgets.QVBoxLayout()
+        self.setLayout(self.vbox)
+
+        self.combo = QtWidgets.QListWidget()
+        self.combo.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+
+        self.vbox.addWidget(self.combo)
+
+        self.buttonbox = QtWidgets.QDialogButtonBox()
+        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        self.buttonbox.setCenterButtons(True)
+        self.buttonbox.setStandardButtons(
+            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+
+        self.vbox.addWidget(self.buttonbox)
+
+        self.buttonbox.accepted.connect(self.accept)
+        self.buttonbox.rejected.connect(self.reject)
+
+    def run(self):
+        """Run class."""
+        self.parent.scene.selectedItems()[0].update_indata()
+        my_class = self.parent.scene.selectedItems()[0].my_class
+
+        data = my_class.indata.copy()
+
+        tmp = []
+        for i in data['Raster']:
+            tmp.append(i.dataid)
+        self.combo.addItems(tmp)
+
+        if not tmp:
+            return False
+
+        tmp = self.exec_()
+
+        if tmp != 1:
+            return False
+
+        atmp = [i.row() for i in self.combo.selectedIndexes()]
+
+        if atmp:
+            dtmp = []
+            for i in atmp:
+                dtmp.append(data['Raster'][i])
+            data['Raster'] = dtmp
+
+        my_class.indata = data
+
+        if hasattr(my_class, 'data_reset'):
+            my_class.data_reset()
+
+        if hasattr(my_class, 'data_init'):
+            my_class.data_init()
+
+        return True
 
 
 class ImportData():
@@ -91,7 +173,7 @@ class ImportData():
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         self.ifile = str(filename)
         self.ext = filename[-3:]
         self.ext = self.ext.lower()
@@ -945,7 +1027,7 @@ class ExportData():
         if filename == '':
             self.parent.process_is_active(False)
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
         self.ext = filename[-3:]

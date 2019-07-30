@@ -164,7 +164,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
             self.parent, 'Save File', '.', 'JPG (*.jpg);;PNG (*.png)')
         if filename == '':
             return
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         ftype = 'JPEG'
 

@@ -133,7 +133,7 @@ class SIMP():
                                                             '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
         self.ext = filename[-3:]

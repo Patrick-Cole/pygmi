@@ -161,7 +161,7 @@ class TiltDepth(QtWidgets.QDialog):
         if filename == '':
             return False
 
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         np.savetxt(filename, self.depths, delimiter=',',
                    header='x, y, id, depth')
 

@@ -202,7 +202,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
         if filename == '':
             return
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         xrng = (np.arange(self.lmod1.numx)*self.lmod1.dxy +
                 self.lmod1.xrange[0]+self.lmod1.dxy/2.)

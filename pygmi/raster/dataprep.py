@@ -89,7 +89,7 @@ class DataCut():
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
         self.ext = filename[-3:]
@@ -211,6 +211,7 @@ class DataGrid(QtWidgets.QDialog):
         self.dsb_null.setValue(data.zdata.min())
         self.dsb_dxy.setValue(dxy)
         self.dxy_change()
+
         tmp = self.exec_()
 
         if tmp == 1:
@@ -617,7 +618,7 @@ class GetProf():
             self.parent, 'Open Shape File', '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
         self.ext = filename[-3:]

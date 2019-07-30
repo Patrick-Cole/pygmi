@@ -620,7 +620,7 @@ class PlotQC(GraphWindow):
             self.parent, 'Save Shape File', '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         ifile = str(filename)
 

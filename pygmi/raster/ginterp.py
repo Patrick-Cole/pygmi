@@ -1451,7 +1451,7 @@ class PlotInterp(QtWidgets.QDialog):
 
         export = iodefs.ExportData(self.parent)
 
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         newimg = [copy.deepcopy(self.mmc.data[0]),
                   copy.deepcopy(self.mmc.data[0]),

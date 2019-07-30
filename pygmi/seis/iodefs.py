@@ -155,7 +155,7 @@ class ImportSeisan():
         if filename == '':
             return False
 
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
         self.ext = filename[-3:]
@@ -536,7 +536,7 @@ class ImportGenericFPS():
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
         self.ext = filename[-3:]
@@ -622,7 +622,7 @@ class ExportSeisan():
         if filename == '':
             return
 
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         self.ext = filename[-3:]
 
         self.fobj = open(filename, 'w')
@@ -973,7 +973,7 @@ class ExportCSV():
                                                             '.', 'csv (*.csv)')
         if filename == '':
             return
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         self.ext = filename[-3:]
 
         self.fobj = open(filename, 'w')

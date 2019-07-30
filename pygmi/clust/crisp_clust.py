@@ -249,7 +249,7 @@ class CrispClust(QtWidgets.QDialog):
                 self.parent, 'Read Cluster Centers', '.', ext)
             if filename == '':
                 return False
-            os.chdir(filename.rpartition('/')[0])
+            os.chdir(os.path.dirname(filename))
 
             ifile = str(filename)
 
@@ -258,9 +258,9 @@ class CrispClust(QtWidgets.QDialog):
             ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
             if dat_in.shape[1] != co0 or ro0 != ro1:
                 QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                          ' Incorrect matrix size!',
-                                          QtWidgets.QMessageBox.Ok,
-                                          QtWidgets.QMessageBox.Ok)
+                                              ' Incorrect matrix size!',
+                                              QtWidgets.QMessageBox.Ok,
+                                              QtWidgets.QMessageBox.Ok)
             cnt = -1
             for i in range(no_clust[0], no_clust[1] + 1):
                 smtmp = np.zeros(i)
@@ -278,16 +278,16 @@ class CrispClust(QtWidgets.QDialog):
                     'Running cluster analysis without constraints',
                     QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
             else:
-                os.chdir(filename.rpartition('/')[0])
+                os.chdir(os.path.dirname(filename))
                 ifile = str(filename)
                 dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
                 [ro0, co0] = np.shape(dummy_mod)
                 ro1 = np.sum(list(range(no_clust[0], no_clust[1] + 1)))
                 if dat_in.shape[1] != co0 or ro0 != ro1:
                     QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                              ' Incorrect matrix size!',
-                                              QtWidgets.QMessageBox.Ok,
-                                              QtWidgets.QMessageBox.Ok)
+                                                  ' Incorrect matrix size!',
+                                                  QtWidgets.QMessageBox.Ok,
+                                                  QtWidgets.QMessageBox.Ok)
                 cnt = -1
                 for i in range(no_clust[0], no_clust[1] + 1):
                     smtmp = np.zeros(i)
@@ -545,7 +545,7 @@ class CrispClust(QtWidgets.QDialog):
         obj_fcn_prev = obj_fcn_initial
         obj_fcn = np.zeros(maxit)  # This is new - we must initialize this.
 
-        for i in self.pbar.iter(range(maxit)):  # =1:maxit. loop over all iterations
+        for i in self.pbar.iter(range(maxit)):  # =1:maxit. loop over all iters
             cent_prev = cent  # store result of last iteration
             idx_prev = idx
             dist_prev = edist
@@ -597,9 +597,7 @@ class CrispClust(QtWidgets.QDialog):
         vrc = vr.var_ratio(data, idx, cent, edist)
         return idx, cent, obj_fcn, vrc
 
-# -----------------------------------------------------------------------------
 
-# -----------------------------------------------------------------------------
 def gcentroids(data, index, no_clust, mindist):
     """Gcentroids"""
 #    no_samples=data.shape[0]

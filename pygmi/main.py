@@ -286,9 +286,13 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.scene().clearSelection()
         self.setSelected(True)
 
-        tmplist = ['Basic']+list(self.my_class.outdata.keys())
-        tmp = []
         exclude = ['ProfPic']
+
+        tmp = self.context_menu['Basic'].actions()
+        if 'Raster' in self.my_class.indata:
+            tmp += self.context_menu['inRaster'].actions()
+
+        tmplist = list(self.my_class.outdata.keys())
         for i in tmplist:
             if i not in exclude:
                 tmp += self.context_menu[i].actions()
@@ -414,6 +418,9 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                     text += '  '+j.dataid + '\n'
             if i == 'Model3D':
                 for j in odata[i][0].lith_list:
+                    text += '  '+j + '\n'
+            if i == 'MT - EDI':
+                for j in odata[i]:
                     text += '  '+j + '\n'
         parent.showdatainfo(text)
 
@@ -742,7 +749,7 @@ class MainWidget(QtWidgets.QMainWindow):
             iflag = item.settings()
             if iflag is False:
                 return None
-            ifile = item.my_class.ifile.split('/')[-1]
+            ifile = os.path.basename(item.my_class.ifile)
             if len(ifile) > len(item_name):
                 ifile = ifile[:len(item_name)]+'\n'+ifile[len(item_name):]
             if len(ifile) > 2*len(item_name):

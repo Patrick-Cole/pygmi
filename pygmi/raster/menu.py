@@ -55,6 +55,7 @@ class MenuWidget():
 
         self.parent = parent
         self.parent.add_to_context('Raster')
+        self.parent.add_to_context('inRaster')
         context_menu = self.parent.context_menu
 
 # Normal menus
@@ -130,6 +131,12 @@ class MenuWidget():
         self.action_depth_susc.triggered.connect(self.depth_susc)
 
 # Context menus
+        context_menu['inRaster'].addSeparator()
+
+        self.action_bandselect = QtWidgets.QAction('Select Input Raster Bands')
+        context_menu['inRaster'].addAction(self.action_bandselect)
+        self.action_bandselect.triggered.connect(self.bandselect)
+
         context_menu['Raster'].addSeparator()
 
         self.action_metadata = QtWidgets.QAction('Display/Edit Metadata')
@@ -279,3 +286,8 @@ class MenuWidget():
         """ Imports data"""
         fnc = iodefs.ImportData(self.parent)
         self.parent.item_insert('Io', 'Import Data', fnc)
+
+    def bandselect(self):
+        """Select bands."""
+        self.parent.launch_context_item_indata(iodefs.ComboBoxBasic)
+

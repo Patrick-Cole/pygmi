@@ -265,7 +265,7 @@ class FuzzyClust(QtWidgets.QDialog):
             if filename == '':
                 return False
 
-            os.chdir(filename.rpartition('/')[0])
+            os.chdir(os.path.dirname(filename))
             ifile = str(filename)
 
             dummy_mod = np.ma.array(np.genfromtxt(ifile, unpack=True))
@@ -274,9 +274,9 @@ class FuzzyClust(QtWidgets.QDialog):
 
             if dat_in.shape[1] != col or row != ro1:
                 QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                          ' Incorrect matrix size!',
-                                          QtWidgets.QMessageBox.Ok,
-                                          QtWidgets.QMessageBox.Ok)
+                                              ' Incorrect matrix size!',
+                                              QtWidgets.QMessageBox.Ok,
+                                              QtWidgets.QMessageBox.Ok)
 
             cnt = -1
             for i in range(no_clust[0], no_clust[1] + 1):
@@ -500,6 +500,7 @@ class FuzzyClust(QtWidgets.QDialog):
             i.dataid = 'Fuzzy Cluster: ' + str(i.no_clusters)
             i.nullvalue = data[0].nullvalue
             i.extent = data[0].extent
+            i.data += 1
 
         self.reportback("Fuzzy Cluster complete" + ' (' + self.cltype + ' ' +
                         self.init_type + ')')

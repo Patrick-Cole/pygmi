@@ -62,105 +62,105 @@ class FileMenu():
         self.action_exit.triggered.connect(parent.close)
 
 # Context menus
-        context_menu['Basic'].addSeparator()
+#        context_menu['Basic'].addSeparator()
+#
+#        self.action_bandselect = QtWidgets.QAction('Select Input Bands')
+#        context_menu['Basic'].addAction(self.action_bandselect)
+#        self.action_bandselect.triggered.connect(self.bandselect)
+#
+#    def bandselect(self):
+#        """Select bands."""
+#        self.parent.launch_context_item_indata(ComboBoxBasic)
 
-        self.action_bandselect = QtWidgets.QAction('Select Input Bands')
-        context_menu['Basic'].addAction(self.action_bandselect)
-        self.action_bandselect.triggered.connect(self.bandselect)
 
-    def bandselect(self):
-        """Select bands."""
-        self.parent.launch_context_item_indata(ComboBoxBasic)
-
-
-class ComboBoxBasic(QtWidgets.QDialog):
-    """
-    A basic combo box application.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
-
-    def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
-
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-
-        # create GUI
-        self.setWindowTitle('Band Selection')
-
-        self.vbox = QtWidgets.QVBoxLayout()
-        self.setLayout(self.vbox)
-
-        self.combo = QtWidgets.QListWidget()
-        self.combo.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
-
-        self.vbox.addWidget(self.combo)
-
-        self.buttonbox = QtWidgets.QDialogButtonBox()
-        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        self.buttonbox.setCenterButtons(True)
-        self.buttonbox.setStandardButtons(
-            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
-
-        self.vbox.addWidget(self.buttonbox)
-
-        self.buttonbox.accepted.connect(self.accept)
-        self.buttonbox.rejected.connect(self.reject)
-
-    def run(self):
-        """Run class."""
-        self.parent.scene.selectedItems()[0].update_indata()
-        my_class = self.parent.scene.selectedItems()[0].my_class
-
-        data = my_class.indata.copy()
-
-        tmp = []
-        for j in data:
-            if j in ('Model3D', 'Seis'):
-                continue
-
-            tmp = []
-            for i in data[j]:
-                tmp.append(i.dataid)
-            self.combo.addItems(tmp)
-
-        if not tmp:
-            return False
-
-        tmp = self.exec_()
-
-        if tmp != 1:
-            return False
-
-        for j in data:
-            if j in ('Model3D', 'Seis'):
-                continue
-            atmp = [i.row() for i in self.combo.selectedIndexes()]
-
-            if atmp:
-                dtmp = []
-                for i in atmp:
-                    dtmp.append(data[j][i])
-                data[j] = dtmp
-
-        my_class.indata = data
-
-        if hasattr(my_class, 'data_reset'):
-            my_class.data_reset()
-
-        if hasattr(my_class, 'data_init'):
-            my_class.data_init()
-
-        return True
+#class ComboBoxBasic(QtWidgets.QDialog):
+#    """
+#    A basic combo box application.
+#
+#    Attributes
+#    ----------
+#    parent : parent
+#        reference to the parent routine
+#    indata : dictionary
+#        dictionary of input datasets
+#    outdata : dictionary
+#        dictionary of output datasets
+#    """
+#
+#    def __init__(self, parent=None):
+#        QtWidgets.QDialog.__init__(self, parent)
+#
+#        self.parent = parent
+#        self.indata = {}
+#        self.outdata = {}
+#
+#        # create GUI
+#        self.setWindowTitle('Band Selection')
+#
+#        self.vbox = QtWidgets.QVBoxLayout()
+#        self.setLayout(self.vbox)
+#
+#        self.combo = QtWidgets.QListWidget()
+#        self.combo.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+#
+#        self.vbox.addWidget(self.combo)
+#
+#        self.buttonbox = QtWidgets.QDialogButtonBox()
+#        self.buttonbox.setOrientation(QtCore.Qt.Horizontal)
+#        self.buttonbox.setCenterButtons(True)
+#        self.buttonbox.setStandardButtons(
+#            QtWidgets.QDialogButtonBox.Cancel | QtWidgets.QDialogButtonBox.Ok)
+#
+#        self.vbox.addWidget(self.buttonbox)
+#
+#        self.buttonbox.accepted.connect(self.accept)
+#        self.buttonbox.rejected.connect(self.reject)
+#
+#    def run(self):
+#        """Run class."""
+#        self.parent.scene.selectedItems()[0].update_indata()
+#        my_class = self.parent.scene.selectedItems()[0].my_class
+#
+#        data = my_class.indata.copy()
+#
+#        tmp = []
+#        for j in data:
+#            if j in ('Model3D', 'Seis'):
+#                continue
+#
+#            tmp = []
+#            for i in data[j]:
+#                tmp.append(i.dataid)
+#            self.combo.addItems(tmp)
+#
+#        if not tmp:
+#            return False
+#
+#        tmp = self.exec_()
+#
+#        if tmp != 1:
+#            return False
+#
+#        for j in data:
+#            if j in ('Model3D', 'Seis'):
+#                continue
+#            atmp = [i.row() for i in self.combo.selectedIndexes()]
+#
+#            if atmp:
+#                dtmp = []
+#                for i in atmp:
+#                    dtmp.append(data[j][i])
+#                data[j] = dtmp
+#
+#        my_class.indata = data
+#
+#        if hasattr(my_class, 'data_reset'):
+#            my_class.data_reset()
+#
+#        if hasattr(my_class, 'data_init'):
+#            my_class.data_init()
+#
+#        return True
 
 
 class HelpMenu():

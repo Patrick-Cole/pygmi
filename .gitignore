@@ -1,6 +1,7 @@
 __pycache__/
 _modules/
 .doctrees/
+.empty/
 build/
 data/
 dist/
@@ -10,6 +11,7 @@ pygmi.egg-info/
 *.py[co]
 *.cmd
 *.lnk
+*.exe
 grvmagc_*.html
 .spyderproject
 log.txt

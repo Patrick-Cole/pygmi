@@ -71,7 +71,7 @@ class ImportMod3D():
 
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
         self.ifile = str(filename)
         self.parent.modelfilename = filename.rpartition('.')[0]
 
@@ -88,7 +88,7 @@ class ImportMod3D():
             self.dict2lmod(indict)
 
         self.outdata['Model3D'] = [self.lmod]
-        self.lmod.name = filename.rpartition('/')[-1]
+        self.lmod.name = os.path.basename(filename)
 
         for i in self.lmod.griddata:
             if self.lmod.griddata[i].dataid == '':
@@ -405,7 +405,7 @@ class ExportMod3D():
             if filename == '':
                 return
 
-            os.chdir(filename.rpartition('/')[0])
+            os.chdir(os.path.dirname(filename))
             self.ifile = str(filename)
             self.ext = filename[-3:]
 
@@ -1178,7 +1178,7 @@ class ImportPicture(QtWidgets.QDialog):
 
         if filename == '':
             return False
-        os.chdir(filename.rpartition('/')[0])
+        os.chdir(os.path.dirname(filename))
 
         self.ifile = filename
 
