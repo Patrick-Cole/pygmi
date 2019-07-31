@@ -139,7 +139,7 @@ class MenuWidget():
 
     def export_line(self):
         """Export point data."""
-        self.parent.launch_context_item(iodefs.ExportPoint)
+        self.parent.launch_context_item(iodefs.ExportLine)
 
     def import_point_data(self):
         """Import point data."""

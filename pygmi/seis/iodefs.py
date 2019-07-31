@@ -463,6 +463,7 @@ def read_record_type_m(i):
         tmp.method_used = i[70:77]
         tmp.quality = i[77]
     else:
+        tmp = sdt.seisan_M()
         tmp.mrr_mzz = i[3:9]
         tmp.mtt_mxx = i[10:16]
         tmp.mpp_myy = i[17:23]
@@ -586,7 +587,7 @@ class ImportGenericFPS():
             event['F']['Generic'] = tmp2
             dat.append(event)
 
-        self.outdata['Seis'] = dat
+        self.outdata['GenFPS'] = dat
 
         return True
 

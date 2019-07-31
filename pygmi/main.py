@@ -286,7 +286,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.scene().clearSelection()
         self.setSelected(True)
 
-        exclude = ['ProfPic']
+        exclude = ['ProfPic', 'GenFPS']
 
         tmp = self.context_menu['Basic'].actions()
         if 'Raster' in self.my_class.indata:

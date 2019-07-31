@@ -193,11 +193,13 @@ class DataGrid(QtWidgets.QDialog):
         """Settings."""
         tmp = []
         if 'Point' not in self.indata:
+            self.parent.showprocesslog('No Point Data')
             return False
 
         for i in self.indata['Point']:
             tmp.append(i.dataid)
 
+        self.dataid.clear()
         self.dataid.addItems(tmp)
 
         data = self.indata['Point'][0]
@@ -1114,7 +1116,7 @@ def rtp(data, I_deg, D_deg):
     dat.data = np.ma.masked_invalid(zrtp)
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nullvalue = data.data.fill_value
-    dat.dataid = data.dataid
+    dat.dataid = 'RTP_'+data.dataid
     dat.extent = data.extent
     dat.xdim = data.xdim
     dat.ydim = data.ydim

@@ -41,6 +41,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import matplotlib.colors as mcolors
+from matplotlib.ticker import MaxNLocator
 from mpl_toolkits.mplot3d import axes3d
 
 
@@ -109,10 +110,17 @@ class MyMplCanvas(FigureCanvas):
         self.axes.tick_params(axis='y', rotation=0)
 
         extent = data1.extent
+
+        carray = data1.data.compressed()
+        ichk = np.array_equal(carray, carray.astype(int))
+
         rdata = self.axes.imshow(data1.data, extent=extent,
                                  interpolation='nearest')
 
         cbar = self.figure.colorbar(rdata)
+        if ichk:
+            cbar.ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
 
         cbar.set_label(data1.units)
 

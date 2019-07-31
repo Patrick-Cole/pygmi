@@ -150,6 +150,7 @@ class BeachBall(QtWidgets.QDialog):
         self.outdata = {}
         self.algorithm = 'FPFIT'
         self.nofps = False
+        self.stype = 'Seis'
 
         self.mmc = MyMplCanvas(self)
         self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
@@ -162,10 +163,14 @@ class BeachBall(QtWidgets.QDialog):
 
     def data_init(self):
         """Initialise Data - entry point into routine."""
-        if 'Seis' not in self.indata:
+        if 'Seis' in self.indata:
+            self.stype = 'Seis'
+        elif 'GenFPS' in self.indata:
+            self.stype = 'GenFPS'
+        else:
             return False
 
-        data = self.indata['Seis']
+        data = self.indata[self.stype]
 
         alist = []
         for i in data:
@@ -368,7 +373,7 @@ class BeachBall(QtWidgets.QDialog):
         """Change algorithm."""
         txt = str(self.cbox_alg.currentText())
         self.algorithm = txt
-        data = self.indata['Seis']
+        data = self.indata[self.stype]
 
         indata = []
         for i in data:

@@ -162,7 +162,7 @@ class Smooth(QtWidgets.QDialog):
         # since the spinboxes will not permit it.
 
         box_x = self.spinbox_x.value()
-        box_y = self.spinbox_x.value()
+        box_y = self.spinbox_y.value()
         rad = self.spinbox_radius.value()
         sigma = self.spinbox_stddev.value()
         fmat = None

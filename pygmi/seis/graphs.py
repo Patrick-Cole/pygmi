@@ -54,6 +54,7 @@ class MyMplCanvas(FigureCanvas):
     """
 
     def __init__(self, parent=None):
+
         fig = Figure()
         self.axes = fig.add_subplot(111)
 
@@ -61,7 +62,7 @@ class MyMplCanvas(FigureCanvas):
 
         FigureCanvas.__init__(self, fig)
 
-    def update_ellipse(self, datd, nodepth=False):
+    def update_ellipse(self, datd, dats, nodepth=False):
         """Update error ellipse plot."""
         self.figure.clear()
 
@@ -84,7 +85,7 @@ class MyMplCanvas(FigureCanvas):
 #        self.axes.add_image(request, 6)
 #        self.axes.gridlines(draw_labels=True)
 
-        for dat in self.parent.indata['Seis']:
+        for dat in dats:
             if 'E' not in dat:
                 continue
 
@@ -550,10 +551,10 @@ class PlotQC(GraphWindow):
                                    'Year', 'ML')
         elif i == 'Error Ellipse':
             self.btn_saveshp.show()
-            self.mmc.update_ellipse(self.datd)
+            self.mmc.update_ellipse(self.datd, self.indata['Seis'])
         elif i == 'Error Ellipse (No depth errors)':
             self.btn_saveshp.show()
-            self.mmc.update_ellipse(self.datd, True)
+            self.mmc.update_ellipse(self.datd, self.indata['Seis'], True)
         elif i == 'GAP':
             self.mmc.update_hist(self.datd['E_gap'], i)
         elif i == 'Longitude Error':

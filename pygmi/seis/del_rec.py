@@ -28,7 +28,7 @@ import os
 import numpy as np
 from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
-from pygmi.misc import PTime
+#from pygmi.misc import PTime
 import pygmi.seis.iodefs as iodefs
 #from sklearn.cluster import DBSCAN
 #import cartopy.crs as ccrs
@@ -129,7 +129,8 @@ class Quarry():
         alist = []
         for i in data:
             if '1' in i:
-                alist.append(i['1'])
+#                alist.append(i['1'])
+                alist.append(i)
 
         if not alist:
             self.showtext('Error: no Type 1 records')
@@ -145,7 +146,7 @@ class Quarry():
 
     def calcrq2(self):
         """Calculate the Rq value."""
-        ttt = PTime()
+#        ttt = PTime()
         self.showtext('Working...')
 
         hour = []
@@ -247,7 +248,7 @@ class Quarry():
                 stayinloop = False
             stayinloop = False
 
-        ttt.since_last_call('Total')
+#        ttt.since_last_call('Total')
         self.showtext('Completed!')
 
         plt.hist(ehourall, 24)
@@ -261,7 +262,7 @@ class Quarry():
 
     def calcrq2b(self):
         """Calculate the Rq value."""
-        ttt = PTime()
+#        ttt = PTime()
         self.showtext('Working...')
 
         hour = []
@@ -269,15 +270,14 @@ class Quarry():
         lon = []
         newevents = []
 
-        for i in self.events:
+        for i2 in self.events:
+            i = i2['1']
             if np.isnan(i.latitude) or np.isnan(i.longitude):
                 continue
             hour.append(i.hour)
             lat.append(i.latitude)
             lon.append(i.longitude)
-            newevents.append(i)
-
-#        breakpoint()
+            newevents.append(i2)
 
         day = self.day
 
@@ -302,7 +302,7 @@ class Quarry():
         cnt = lls.shape[0]
         nd = []
         rstot = []
-        print('daylight events:', hour.sum(), 'of', hour.size)
+        self.showtext('daylight events:', hour.sum(), 'of', hour.size)
 
         for i in range(cnt):  # i is node number, centered on an event
             r = np.sqrt(((lls-lls[i])**2).sum(1))
@@ -323,10 +323,10 @@ class Quarry():
 
         rstot = np.array(rstot)
 
-        plt.xlabel('R')
-        plt.ylabel('Event Counts')
-        plt.hist(rq[nn != 0.00001], 50)
-        plt.show()
+#        plt.xlabel('R')
+#        plt.ylabel('Event Counts')
+#        plt.hist(rq[nn != 0.00001], 50)
+#        plt.show()
 
         filt = (rq-rperc) > 0
 
@@ -342,20 +342,20 @@ class Quarry():
         ehour = np.delete(ehour, maxel)
         newevents = np.delete(newevents, maxel)
 
-        ttt.since_last_call('Total')
+#        ttt.since_last_call('Total')
         self.showtext('Completed!')
 
-        print('New total number of events:', ehour.size)
-
-        plt.xlabel('Hours')
-        plt.ylabel('Event Counts')
-        plt.hist(ehourall, 24)
-        plt.show()
-
-        plt.xlabel('Hours')
-        plt.ylabel('Event Counts')
-        plt.hist(ehour, 24)
-        plt.show()
+#        print('New total number of events:', ehour.size)
+#
+#        plt.xlabel('Hours')
+#        plt.ylabel('Event Counts')
+#        plt.hist(ehourall, 24)
+#        plt.show()
+#
+#        plt.xlabel('Hours')
+#        plt.ylabel('Event Counts')
+#        plt.hist(ehour, 24)
+#        plt.show()
 
         return newevents.tolist()
 
@@ -601,7 +601,7 @@ def import_for_plots(ifile, dind='R'):
 
 def main():
     """Routine for testing."""
-    ifile = r'C:\Work\Programming\pygmi\data/pygmi.out'
+    ifile = r'C:\Work\Programming\pygmi\data\seismology\pygmi.out'
 
 #    gearth_plot(ifile)
 #    test()

@@ -32,7 +32,7 @@ import scipy.stats.mstats as st
 class BasicStats(QtWidgets.QDialog):
     """ Show a summary of basic stats """
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.combobox = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
@@ -47,16 +47,17 @@ class BasicStats(QtWidgets.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        gridlayout = QtWidgets.QGridLayout(self)
 
-        self.tablewidget.setRowCount(1)
-        self.tablewidget.setColumnCount(1)
+        hbl = QtWidgets.QHBoxLayout(self)
+        vbl = QtWidgets.QVBoxLayout()
+
+        vbl.addWidget(self.pushbutton_save)
+        vbl.addWidget(self.combobox)
+
+        hbl.addWidget(self.tablewidget)
+        hbl.addLayout(vbl)
 
         self.setWindowTitle('Basic Statistics')
-
-        gridlayout.addWidget(self.tablewidget, 0, 0, 2, 1)
-        gridlayout.addWidget(self.pushbutton_save, 0, 3, 1, 1)
-        gridlayout.addWidget(self.combobox, 1, 3, 1, 1)
 
         self.combobox.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
@@ -140,9 +141,8 @@ def basicstats_calc(data):
 class ClusterStats(QtWidgets.QDialog):
     """ Show a summary of basic stats """
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self, parent)
 
-        self.gridlayout = QtWidgets.QGridLayout(self)
         self.combobox = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
         self.pushbutton_save = QtWidgets.QPushButton('Save')
@@ -156,14 +156,17 @@ class ClusterStats(QtWidgets.QDialog):
 
     def setupui(self):
         """ Setup UI """
-        self.gridlayout.addWidget(self.tablewidget, 0, 0, 2, 1)
-        self.gridlayout.addWidget(self.pushbutton_save, 0, 3, 1, 1)
-        self.gridlayout.addWidget(self.combobox, 1, 3, 1, 1)
-        self.tablewidget.setRowCount(1)
-        self.tablewidget.setColumnCount(1)
+        hbl = QtWidgets.QHBoxLayout(self)
+        vbl = QtWidgets.QVBoxLayout()
+
+        vbl.addWidget(self.pushbutton_save)
+        vbl.addWidget(self.combobox)
+
+        hbl.addWidget(self.tablewidget)
+        hbl.addLayout(vbl)
 
         self.setWindowTitle(
-            'Cluster Statistics (Center Value : Std Deviation)')
+            'Cluster Statistics (Mean Value : Std Deviation)')
 
         self.combobox.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
@@ -190,8 +193,8 @@ class ClusterStats(QtWidgets.QDialog):
         self.data = []
 
         for i in data:
-            val = i.center.tolist()
-            std = i.center_std.tolist()
+            val = list(i.center)
+            std = list(i.center_std)
             for j, _ in enumerate(val):
                 for k, _ in enumerate(val[0]):
                     val[j][k] = '{:.4f} : {:.4f}'.format(val[j][k], std[j][k])

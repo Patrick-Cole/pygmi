@@ -252,6 +252,7 @@ class Cluster(QtWidgets.QDialog):
         for i, _ in enumerate(data):
             data[i].data.mask = masktmp
         X = np.array([i.data.compressed() for i in data]).T
+        Xorig = X.copy()
 
         if self.radiobutton_sscale.isChecked():
             X = skp.StandardScaler().fit_transform(X)
@@ -297,8 +298,17 @@ class Cluster(QtWidgets.QDialog):
             if cfit.labels_.max() > 0:
                 dat_out[-1].vrc = skm.calinski_harabasz_score(X, cfit.labels_)
 
-            if self.cltype == 'k-means':
-                dat_out[-1].center = np.array(cfit.cluster_centers_)
+#            if self.cltype == 'k-means':
+#                dat_out[-1].center = np.array(cfit.cluster_centers_)
+
+            m = []
+            s = []
+            for i2 in range(i):
+                m.append(Xorig[cfit.labels_ == i2].mean(0))
+                s.append(Xorig[cfit.labels_ == i2].std(0))
+
+            dat_out[-1].center = np.array(m)
+            dat_out[-1].center_std = np.array(s)
 
             self.log = ('Cluster complete' + ' (' + self.cltype+')')
 

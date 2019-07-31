@@ -236,15 +236,15 @@ class ImportData():
 
         output_type = 'Raster'
 
-        if 'Cluster' in dat[0].dataid:
-            output_type = 'Cluster'
+#        if 'Cluster' in dat[0].dataid:
+#            output_type = 'Cluster'
 
         if len(dat) == 3:
             tmp = QtWidgets.QMessageBox.question(self.parent, 'Question',
                                                  'Is this an RGB image?')
             if tmp == QtWidgets.QMessageBox.Yes:
                 dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
-                                     dat[2].data.T])
+                                        dat[2].data.T])
                 dat = [dat[0]]
                 dat[0].data = dat2
                 dat[0].isrgb = True

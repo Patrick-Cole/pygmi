@@ -116,6 +116,7 @@ class Data():
         self.wkt = ''
         self.units = ''
         self.isrgb = False
+        self.norm = {}
 
     def get_gtr(self):
         """

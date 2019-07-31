@@ -31,7 +31,7 @@ import shutil
 import sys
 import copy
 import glob
-import gdal
+from osgeo import gdal
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvas

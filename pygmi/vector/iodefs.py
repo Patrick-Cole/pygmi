@@ -479,6 +479,8 @@ class ExportPoint():
         if filename == '':
             return False
 
+        self.parent.showprocesslog('Export busy...')
+
         os.chdir(os.path.dirname(filename))
         ofile = os.path.basename(filename)[:-4]
         data = self.indata['Point']
@@ -494,6 +496,67 @@ class ExportPoint():
 
             tmp = datai.zdata.tolist()
             dfall.loc[:, datid] = tmp
+
+        ofile2 = ofile+'_all.csv'
+        dfall.to_csv(ofile2, index=False)
+
+        self.parent.showprocesslog('Export completed')
+
+        return True
+
+
+class ExportLine():
+    """
+    Export Line Data.
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    showtext : text output
+        reference to the show process log text output on the main interface
+    """
+
+    def __init__(self, parent):
+        self.name = 'Export Point: '
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+        self.showtext = self.parent.showprocesslog
+
+    def run(self):
+        """Run routine."""
+        if 'Line' not in self.indata:
+            self.showtext('Error: You need to have line data first!')
+            return False
+
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', 'csv (*.csv)')
+
+        if filename == '':
+            return False
+
+        self.parent.showprocesslog('Export busy...')
+
+        os.chdir(os.path.dirname(filename))
+        ofile = os.path.basename(filename)[:-4]
+        data = self.indata['Line']
+
+        dfall = None
+        for line in data.data:
+            if dfall is None:
+                dfall = pd.DataFrame(data.data[line])
+                dfall.loc[:, 'LINE'] = line
+            else:
+                dtmp = pd.DataFrame(data.data[line])
+                dtmp.loc[:, 'LINE'] = line
+                dfall = dfall.append(dtmp)
 
         ofile2 = ofile+'_all.csv'
         dfall.to_csv(ofile2, index=False)
