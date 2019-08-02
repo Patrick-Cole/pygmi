@@ -109,7 +109,7 @@ class GravMag():
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = True
 
-        self.lmod.lith_index_old[:] = -1
+        self.lmod.lith_index_mag_old[:] = -1
 
 #        self.parent.profile.update_model()
 
@@ -137,7 +137,7 @@ class GravMag():
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = False
 
-        self.lmod.lith_index_old[:] = -1
+        self.lmod.lith_index_grv_old[:] = -1
 
         # Update the model from the view
 #        indx = self.parent.tabwidget.currentIndex()
@@ -317,7 +317,7 @@ class GravMag():
         if magtmp.ptp() > 0:
             csrange = np.arange(mmin, mmax, mint)
             cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
-            plt.clabel(cns, inline=1, fontsize=10)
+#            plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal')
         cbar.set_label('nT')
 
@@ -332,9 +332,12 @@ class GravMag():
         if grvtmp.ptp() > 0:
             csrange = np.arange(mmin, mmax, mint)
             cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
-            plt.clabel(cns, inline=1, fontsize=10)
+#            plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal')
         cbar.set_label('mGal')
+        plt.tight_layout()
+
+        plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
 
         regplt.show()
 
@@ -864,7 +867,10 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
 # model index
     modind = lmod.lith_index.copy()
-    modindcheck = lmod.lith_index_old.copy()
+    if magcalc:
+        modindcheck = lmod.lith_index_mag_old.copy()
+    else:
+        modindcheck = lmod.lith_index_grv_old.copy()
 
     tmp = (modind == modindcheck)
 # If modind and modindcheck have different shapes, then tmp == False. The next
@@ -873,7 +879,13 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         modind[tmp] = -1
         modindcheck[tmp] = -1
 
-    if np.unique(modind).size == 1:
+    modindmax = modind.max()
+    modindcheckmax = modindcheck.max()
+#    if np.unique(modind).size == 1:
+#        showtext('No changes to model!')
+#        return None
+
+    if False not in tmp:
         showtext('No changes to model!')
         return None
 
@@ -936,7 +948,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
 
-        if np.unique(modind).size > 1 and mijk in modind:
+#        if np.unique(modind).size > 1 and mijk in modind:
+        if modindmax > -1 and mijk in modind:
             QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modind == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
@@ -973,7 +986,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 #                pool.close()
 #                del baba
 
-        if np.unique(modindcheck).size > 1 and mijk in modindcheck:
+        if modindcheckmax > -1 and mijk in modindcheck:
+#        if np.unique(modindcheck).size > 1 and mijk in modindcheck:
             QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modindcheck == mijk)
             iuni = np.array(np.unique(i), dtype=np.int32)
@@ -1017,7 +1031,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     mgvalin = mgvalin[::-1]
     mgvalin = np.ma.array(mgvalin)
 
-    if np.unique(modindcheck).size > 1:
+#    if np.unique(modindcheck).size > 1:
+    if modindcheckmax > -1:
         if magcalc:
             mgvalin += lmod.griddata['Calculated Magnetics'].data
         else:
@@ -1064,9 +1079,13 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     mins = int(tdiff/60)
     secs = tdiff-mins*60
 
-    lmod.lith_index_old = np.copy(lmod.lith_index)
+    if magcalc:
+        lmod.lith_index_mag_old = np.copy(lmod.lith_index)
+    else:
+        lmod.lith_index_grv_old = np.copy(lmod.lith_index)
 
     showtext('Total Time: '+str(mins)+' minutes and '+str(secs)+' seconds')
+
     return lmod.griddata
 
 

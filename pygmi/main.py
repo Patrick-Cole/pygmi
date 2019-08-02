@@ -313,6 +313,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.setBrush(QtGui.QColor(255, 0, 0, 127))
 
         temp = self.settings()
+        self.parent.scene.selected_item_info()
+
         if temp is True:
             self.setBrush(QtGui.QColor(0, 255, 0, 127))
         else:
@@ -401,28 +403,43 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
         super().mousePressEvent(mouse_event)
 
+        self.selected_item_info()
+
 # now display the information about the selected data
+    def selected_item_info(self):
+        """Display info about selected item."""
         tmp = self.selectedItems()
         if not tmp:
             return
-        try:
-            odata = tmp[0].my_class.outdata
-        except AttributeError:
-            return
-        parent = self.parent
+
         text = ''
-        for i in odata:
-            text += '\n' + i + ' dataset:\n'
-            if i in ('Raster', 'Cluster'):
-                for j in odata[i]:
-                    text += '  '+j.dataid + '\n'
-            if i == 'Model3D':
-                for j in odata[i][0].lith_list:
-                    text += '  '+j + '\n'
-            if i == 'MT - EDI':
-                for j in odata[i]:
-                    text += '  '+j + '\n'
-        parent.showdatainfo(text)
+
+        if hasattr(tmp[0].my_class, 'indata'):
+            idata = tmp[0].my_class.indata
+
+            for i in idata:
+                text += '\nInput ' + i + ' dataset:\n'
+                if i in ('Raster'):
+                    for j in idata[i]:
+                        text += '  '+j.dataid + '\n'
+
+        if hasattr(tmp[0].my_class, 'outdata'):
+            odata = tmp[0].my_class.outdata
+
+            for i in odata:
+                text += '\nOutput ' + i + ' dataset:\n'
+                if i in ('Raster', 'Cluster'):
+                    for j in odata[i]:
+                        text += '  '+j.dataid + '\n'
+                if i == 'Model3D':
+                    for j in odata[i][0].lith_list:
+                        text += '  '+j + '\n'
+                if i == 'MT - EDI':
+                    for j in odata[i]:
+                        text += '  '+j + '\n'
+
+        self.parent.showdatainfo(text)
+
 
     def mouseMoveEvent(self, mouse_event):
         """
@@ -541,8 +558,8 @@ class MainWidget(QtWidgets.QMainWindow):
                 onerror=lambda x: None):
             menus.append(modname)
 
-### Menu List
         menus.pop(menus.index('pygmi.rsense.menu'))
+        menus.pop(menus.index('pygmi.mt.menu'))
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
         menus = [raster_menu, vector_menu]+menus

@@ -447,7 +447,8 @@ class ParamDisplay(QtWidgets.QDialog):
         lith.qratio = self.dsb_qratio.value()
         lith.modified = True
 
-        self.lmod1.lith_index_old[:] = -1
+        self.lmod1.lith_index_mag_old[:] = -1
+        self.lmod1.lith_index_grv_old[:] = -1
 
         self.showtext('Lithological changes applied.')
 

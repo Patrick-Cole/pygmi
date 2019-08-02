@@ -1746,22 +1746,35 @@ class MyToolbar(NavigationToolbar2QT):
     toolitems = NavigationToolbar2QT.toolitems
     toolitems += ((None, None, None, None),
                   ('Field\nDisplay\nLimits',
-                   'Axis Scale', 'Axis Scale', 'axis_scale'),)
+                   'Axis Scale', 'Axis Scale', 'axis_scale'),
+                  ('View\nMagnetic\nProfile',
+                   'Magnetic Profile', 'Magnetic Profile', 'mag_profile'),
+                  ('View\nGravity\nProfile',
+                   'Gravity Profile', 'Gravity Profile', 'grv_profile'),)
 #                  ('Ad-Hoc\nCustom\nProfile',
 #                   'Custom Profile', 'Custom Profile', 'custom_profile'),)
 
     def __init__(self, parent):
         NavigationToolbar2QT.__init__(self, parent.mmc, parent)
-        self.plotscale = parent.plot_scale
-        self.custom_prof = parent.addprof
+        self.parent = parent
 
     def axis_scale(self):
         """ Axis scale """
-        self.plotscale()
+        self.parent.plot_scale()
+
+    def mag_profile(self):
+        """ Axis scale """
+        self.parent.viewmagnetics = True
+        self.parent.update_plot()
+
+    def grv_profile(self):
+        """ Axis scale """
+        self.parent.viewmagnetics = False
+        self.parent.update_plot()
 
     def custom_profile(self):
         """ Axis scale """
-        self.custom_prof()
+        self.parent.addprof()
 
 
 class GaugeWidget(QtWidgets.QDial):

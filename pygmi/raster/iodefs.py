@@ -115,6 +115,8 @@ class ComboBoxBasic(QtWidgets.QDialog):
         if hasattr(my_class, 'data_init'):
             my_class.data_init()
 
+        self.parent.scene.selected_item_info()
+
         return True
 
 

@@ -66,7 +66,8 @@ class LithModel():
         self.dxy = None
         self.d_z = None
         self.lith_index = None
-        self.lith_index_old = None
+        self.lith_index_grv_old = None
+        self.lith_index_mag_old = None
         self.xrange = [None, None]
         self.yrange = [None, None]
         self.zrange = [None, None]
@@ -279,9 +280,13 @@ class LithModel():
         self.d_z = d_z
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
                                    dtype=int)
-        self.lith_index_old = np.zeros([self.numx, self.numy, self.numz],
-                                       dtype=int)
-        self.lith_index_old[:] = -1
+        self.lith_index_mag_old = np.zeros([self.numx, self.numy, self.numz],
+                                            dtype=int)
+        self.lith_index_mag_old[:] = -1
+
+        self.lith_index_grv_old = np.zeros([self.numx, self.numy, self.numz],
+                                            dtype=int)
+        self.lith_index_grv_old[:] = -1
 
         self.init_calc_grids()
         if usedtm:
