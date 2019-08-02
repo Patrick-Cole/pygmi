@@ -71,6 +71,7 @@ class LData():
         self.ychannel = ''
         self.data = {}
         self.dataid = ''
+        self.nullvalue = -99999
 
 
 class VData():

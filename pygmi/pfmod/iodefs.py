@@ -370,6 +370,11 @@ class ImportMod3D():
             lmod.lith_list[itxt].d_z = indict[pre+itxt+'_d_z'].item()
             lmod.lith_list[itxt].zobsm = indict[pre+itxt+'_zobsm'].item()
             lmod.lith_list[itxt].zobsg = indict[pre+itxt+'_zobsg'].item()
+            if pre+itxt+'_lithcode' in indict:
+                lmod.lith_list[itxt].lithcode = indict[pre+itxt+'_lithcode'].item()
+            if pre+itxt+'_lithnotes' in indict:
+                lmod.lith_list[itxt].lithnotes = indict[pre+itxt+'_lithnotes'].item()
+
             lmod.lith_list[itxt].modified = True
             lmod.lith_list[itxt].set_xyz12()
 
@@ -484,6 +489,8 @@ class ExportMod3D():
             outdict[pre+curkey+'_x12'] = i[1].x12
             outdict[pre+curkey+'_y12'] = i[1].y12
             outdict[pre+curkey+'_z12'] = i[1].z12
+            outdict[pre+curkey+'_lithcode'] = i[1].lithcode
+            outdict[pre+curkey+'_lithnotes'] = i[1].lithnotes
 
         return outdict
 

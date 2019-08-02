@@ -46,6 +46,8 @@ from scipy.linalg import norm
 from osgeo import gdal
 from numba import jit
 from matplotlib import cm
+import matplotlib
+matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem

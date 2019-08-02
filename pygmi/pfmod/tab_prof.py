@@ -35,6 +35,7 @@ from matplotlib.figure import Figure
 from matplotlib import cm
 from matplotlib import rcParams
 from osgeo import gdal
+import pandas as pd
 import pygmi.raster.iodefs as ir
 from pygmi.pfmod import misc
 from pygmi.pfmod.grvmag3d import gridmatch
@@ -99,7 +100,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         pb_rcopy = QtWidgets.QPushButton('Ranged Copy')
         pb_lbound = QtWidgets.QPushButton('Add Lithological Boundary')
-        pb_export_csv = QtWidgets.QPushButton('Export All Profiles')
+        pb_export_csv = QtWidgets.QPushButton('Export All Profiles (In current direction)')
 
         lbl_dial_value = QtWidgets.QLabel('Profile Direction: ')
 
@@ -195,7 +196,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         pb_lbound.clicked.connect(self.lbound)
 
     ### Misc
-    def export_csv(self):
+    def export_csv_old(self):
         """ Export Profile to csv """
         self.parent.pbars.resetall()
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -239,6 +240,55 @@ class ProfileDisplay(QtWidgets.QWidget):
         with open(filename, 'wb') as fno:
             fno.write(bytes(header, 'utf-8'))
             np.savetxt(fno, newdata, delimiter=',')
+
+        self.parent.pbars.incr()
+        self.showtext('Profile save complete')
+
+    def export_csv(self):
+        """ Export Profile to csv """
+        self.parent.pbars.resetall()
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
+        if filename == '':
+            return
+        os.chdir(os.path.dirname(filename))
+
+        bly = self.lmod1.yrange[0]
+        tlx = self.lmod1.xrange[0]
+        dxy = self.lmod1.dxy
+
+        dfall = None
+        for line in range(self.sb_profnum.maximum()+1):
+            self.calc_prof_limits(line)
+            self.get_model()
+
+#            px1, px2 = self.lmod1.custprofx['rotate']
+            data2 = {}
+            data2['LINE'] = np.zeros(self.rxxx.size, dtype=int)+line
+
+            data2['X'] = self.rxxx*dxy+tlx
+            data2['Y'] = self.ryyy*dxy+bly
+
+            for i in self.lmod1.griddata:
+                data = self.lmod1.griddata[i].data
+                if 'Gravity' in i:
+                    data = data + self.lmod1.gregional
+
+                tmpprof = ndimage.map_coordinates(data.data[::-1],
+                                                  [self.ryyy-0.5,
+                                                   self.rxxx-0.5],
+                                                  order=1, cval=np.nan)
+                data2[i] = tmpprof
+#                tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
+
+            if dfall is None:
+                dfall = pd.DataFrame(data2)
+            else:
+                dtmp = pd.DataFrame(data2)
+                dfall = dfall.append(dtmp)
+
+        dfall = dfall.dropna(thresh=4)
+        dfall.to_csv(filename, index=False)
 
         self.parent.pbars.incr()
         self.showtext('Profile save complete')
@@ -647,8 +697,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.mmc.update_line_top()
 
         self.update_plot(slide=True)
-
-#        self.mmc.figure.canvas.draw()
 
     ### Layers
     def hlayer(self):

@@ -235,6 +235,7 @@ class ImportLineData(QtWidgets.QDialog):
 
         self.xchan = QtWidgets.QComboBox()
         self.ychan = QtWidgets.QComboBox()
+        self.nodata = QtWidgets.QLineEdit('-99999')
 
         self.setupui()
 
@@ -245,6 +246,7 @@ class ImportLineData(QtWidgets.QDialog):
         helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
         label_xchan = QtWidgets.QLabel('X Channel:')
         label_ychan = QtWidgets.QLabel('Y Channel:')
+        label_nodata = QtWidgets.QLabel('Null Value:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -257,6 +259,9 @@ class ImportLineData(QtWidgets.QDialog):
 
         gridlayout_main.addWidget(label_ychan, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.ychan, 1, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_nodata, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.nodata, 2, 1, 1, 1)
 
         gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
@@ -280,8 +285,7 @@ class ImportLineData(QtWidgets.QDialog):
         if filt == 'Geosoft XYZ (*.xyz)':
             dat = self.get_GXYZ()
         else:
-            return
-#            dat = self.get_delimited()
+            return False
 
         i = list(dat.keys())[0]
         ltmp = dat[i].dtype.names
@@ -297,6 +301,12 @@ class ImportLineData(QtWidgets.QDialog):
         if tmp != 1:
             return tmp
 
+        try:
+            nodata = float(self.nodata.text())
+        except ValueError:
+            self.parent.showprocesslog('Null Value error - abandoning import')
+            return False
+
         xcol = self.xchan.currentText()
         ycol = self.ychan.currentText()
 
@@ -307,6 +317,7 @@ class ImportLineData(QtWidgets.QDialog):
         dat2.xchannel = xcol
         dat2.ychannel = ycol
         dat2.data = dat
+        dat2.nullvalue = nodata
 
         self.outdata['Line'] = dat2
         return True
@@ -339,7 +350,6 @@ class ImportLineData(QtWidgets.QDialog):
             dat[line] = tmp2
 
         return dat
-
 
     def get_delimited(self):
         """Get a delimited line file."""

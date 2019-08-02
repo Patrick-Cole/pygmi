@@ -27,6 +27,7 @@
 import math
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
+from scipy.stats import median_absolute_deviation
 import matplotlib.collections as mc
 from matplotlib.cm import Set1
 from matplotlib.cm import jet
@@ -270,8 +271,10 @@ class MyMplCanvas(FigureCanvas):
         for line in data.data:
             zdata += data.data[line][ival].tolist()
 
+        zdata = np.array(zdata)
+        zdata = zdata[zdata != data.nullvalue]
         med = np.median(zdata)
-        std = 2.5 * np.std(zdata)
+        std = 2.5 * median_absolute_deviation(zdata, axis=None)
 
         if std == 0:
             std = 1
@@ -281,6 +284,9 @@ class MyMplCanvas(FigureCanvas):
             x = data1[data.xchannel]
             y = data1[data.ychannel]
             z = data1[ival]
+            x = x[z != data.nullvalue]
+            y = y[z != data.nullvalue]
+            z = z[z != data.nullvalue]
 
             ang = np.arctan2((y[1:]-y[:-1]), (x[1:]-x[:-1]))
             ang = np.append(ang, ang[-1])
@@ -565,6 +571,10 @@ class PlotLines2(GraphWindow):
         i2 = list(data.keys())[0]
 
         for i in data[i2].dtype.names:
+            if i == self.indata['Line'].xchannel:
+                continue
+            if i == self.indata['Line'].ychannel:
+                continue
             self.combobox1.addItem(i)
 
         self.checkbox.setText('Show Line Labels:')

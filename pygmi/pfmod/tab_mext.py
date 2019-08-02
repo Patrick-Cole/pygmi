@@ -28,6 +28,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import scipy.interpolate as si
 import pygmi.menu_default as menu_default
+import pygmi.misc as pmisc
 
 
 class MextDisplay(QtWidgets.QDialog):
@@ -38,7 +39,8 @@ class MextDisplay(QtWidgets.QDialog):
         self.lmod1 = parent.lmod1  # actual model
         self.lmod2 = parent.lmod2
         self.showtext = parent.showtext
-        self.pbars = self.parent.pbars
+#        self.pbars = self.parent.pbars
+        self.pbar = pmisc.ProgressBar()
 
         self.combo_model = QtWidgets.QComboBox()
         self.combo_regional = QtWidgets.QComboBox()
@@ -203,6 +205,7 @@ class MextDisplay(QtWidgets.QDialog):
         gl_extent.addWidget(self.sb_layers, 3, 2, 1, 1)
 
         hlayout.addWidget(helpdocs)
+        hlayout.addWidget(self.pbar)
         hlayout.addWidget(buttonbox)
 
 # Assign to main layout
@@ -231,7 +234,7 @@ class MextDisplay(QtWidgets.QDialog):
 
     def apply_changes(self):
         """ Update when changing from this tab """
-        self.pbars.resetall()
+#        self.pbars.resetall()
 
         if self.cb_regional.isChecked():
             self.apply_regional()
@@ -254,11 +257,12 @@ class MextDisplay(QtWidgets.QDialog):
         dxy = self.dsb_xycell.value()
         d_z = self.dsb_zcell.value()
 
-        self.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z)
+        self.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
+                          pbar=self.pbar)
 
         self.update_vals()
 
-        self.pbars.incr()
+#        self.pbars.incr()
         # This line is to avoid duplicates since study area and dtm are often
         # the same dataset
         tmp = [i for i in set(self.lmod1.griddata.values())]
@@ -276,9 +280,9 @@ class MextDisplay(QtWidgets.QDialog):
             self.showtext('No regional model selected!')
             return
 
-        self.pbars.resetall(self.lmod1.numx)
-        for i in range(self.lmod1.numx):
-            self.pbars.incr()
+#        self.pbars.resetall(self.lmod1.numx)
+        for i in self.pbar.iter(range(self.lmod1.numx)):
+#            self.pbars.incr()
             for j in range(self.lmod1.numy):
                 for k in range(self.lmod1.numz):
                     x = self.lmod1.xrange[0]+(i+0.5)*self.lmod1.dxy
@@ -291,9 +295,13 @@ class MextDisplay(QtWidgets.QDialog):
                     if tmp > 0 and ii > -1 and jj > -1 and kk > -1:
                         self.lmod1.lith_index[i, j, k] = 900+tmp
 
+        self.lmod2.update_lith_list_reverse()
+
         for i in np.unique(self.lmod1.lith_index):
             if i > 900:
                 self.lmod1.mlut[i] = self.lmod2.mlut[i-900]
+                l2lith = self.lmod2.lith_list_reverse[i-900]
+                self.lmod1.lith_list[l2lith+' (R)'] = self.lmod2.lith_list[l2lith]
 
         self.showtext('Regional model applied.')
 

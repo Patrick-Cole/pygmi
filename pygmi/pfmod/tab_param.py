@@ -128,6 +128,13 @@ class LithNotes(QtWidgets.QDialog):
     def apply_changes(self):
         """ Applies changes """
 
+        i = self.lw_param_defs.currentRow()
+        if i == -1:
+            i = 0
+        itxt = str(self.lw_param_defs.item(i).text())
+        self.codelist[itxt] = self.lithcode.value()
+        self.noteslist[itxt] = self.notes.toPlainText()
+
         for i in self.lmod1.lith_list:
             self.lmod1.lith_list[i].lithcode = self.codelist[i]
             self.lmod1.lith_list[i].lithnotes = self.noteslist[i]

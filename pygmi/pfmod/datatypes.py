@@ -100,11 +100,17 @@ class LithModel():
 #        self.is_ew = True
 #        self.curprof = None
 
-    def lithold_to_lith(self, nodtm=False):
+    def lithold_to_lith(self, nodtm=False, pbar=None):
         """ Transfers an old lithology to the new one, using updates parameters
         """
         if self.olith_index is None:
             return
+
+        if pbar is not None:
+            piter = pbar.iter
+        else:
+            piter = iter
+
 
         xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy)
         yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy)
@@ -128,7 +134,7 @@ class LithModel():
         zvals = zvals[self.ozrng[0] < zvals]
         zvals = zvals[zvals < self.ozrng[1]]
 
-        for x_i in xvals:
+        for x_i in piter(xvals):
             o_i = int((x_i - self.oxrng[0]) / self.odxy)
             i = int((x_i - self.xrange[0]) / self.dxy)
             for x_j in yvals:
@@ -143,12 +149,18 @@ class LithModel():
                         self.lith_index[i, j, k] = \
                             self.olith_index[o_i, o_j, o_k]
 
-    def dtm_to_lith(self):
+    def dtm_to_lith(self, pbar=None):
         """ Assign the DTM to the model. This means creating nodata values in
         areas above the DTM. These values are assigned a lithology of -1."""
 
         if 'DTM Dataset' not in self.griddata:
             return
+
+        if pbar is not None:
+            piter = pbar.iter
+        else:
+            piter = iter
+
 
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
                                    dtype=int)
@@ -165,7 +177,7 @@ class LithModel():
 
         self.lith_index[:, :, :] = 0
 
-        for i in range(self.numx):
+        for i in piter(range(self.numx)):
             xcrd = self.xrange[0] + (i + .5) * self.dxy
             xcrd2 = int((xcrd - gxmin) / d_x)
             for j in range(self.numy):
@@ -219,7 +231,7 @@ class LithModel():
             self.lith_list[i].modified = modified
 
     def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht=-1,
-               ght=-1, usedtm=True):
+               ght=-1, usedtm=True, pbar=None):
         """ Updates the local variables for the LithModel class
 
         Args:
@@ -273,8 +285,8 @@ class LithModel():
 
         self.init_calc_grids()
         if usedtm:
-            self.dtm_to_lith()
-        self.lithold_to_lith(not usedtm)
+            self.dtm_to_lith(pbar)
+        self.lithold_to_lith(not usedtm, pbar)
         self.update_lithlist()
         self.is_modified()
 
