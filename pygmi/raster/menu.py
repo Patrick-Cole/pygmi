@@ -66,6 +66,10 @@ class MenuWidget():
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
+        self.action_import_rgb_data = QtWidgets.QAction('Import RGB Image')
+        self.menu.addAction(self.action_import_rgb_data)
+        self.action_import_rgb_data.triggered.connect(self.import_rgb_data)
+
         self.menu.addSeparator()
 
         self.action_equation_editor = QtWidgets.QAction('Equation Editor')
@@ -286,6 +290,11 @@ class MenuWidget():
         """ Imports data"""
         fnc = iodefs.ImportData(self.parent)
         self.parent.item_insert('Io', 'Import Data', fnc)
+
+    def import_rgb_data(self):
+        """ Imports data"""
+        fnc = iodefs.ImportRGBData(self.parent)
+        self.parent.item_insert('Io', 'Import RGB Image', fnc)
 
     def bandselect(self):
         """Select bands."""

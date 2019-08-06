@@ -116,7 +116,7 @@ class Data():
         self.wkt = ''
         self.units = ''
         self.isrgb = False
-        self.norm = {}
+        self.metadata = {'Cluster': {}}
 
     def get_gtr(self):
         """

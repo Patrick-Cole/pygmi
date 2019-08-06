@@ -1058,7 +1058,7 @@ class Occam1D(QtWidgets.QDialog):
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
-        hbl2 = QtWidgets.QHBoxLayout(self)
+        hbl2 = QtWidgets.QHBoxLayout()
         gbl = QtWidgets.QGridLayout()
         gbl.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
         self.mmc = MyMplCanvas2(self)

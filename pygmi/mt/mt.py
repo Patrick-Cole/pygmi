@@ -335,12 +335,10 @@ def modelling(datadir):
 
     plt.plot(res, depths)
 
-
     plt.xlabel('Res')
     plt.ylabel('Depth')
 
     plt.show()
-
 
     plt.plot(1/oc1d.freq, oc1d.data['resxy'][0], 'bs')
     plt.plot(1/oc1d.freq, oc1d.data['resxy'][2], 'r')

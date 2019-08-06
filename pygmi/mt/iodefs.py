@@ -64,7 +64,7 @@ class ImportEDI():
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileNames(
             self.parent, 'Open EDI Files (single or multiple)', '.', ext)
-        if filename == '':
+        if not filename:
             return False
 
         os.chdir(os.path.dirname(filename[0]))

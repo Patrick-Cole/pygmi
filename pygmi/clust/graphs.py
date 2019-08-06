@@ -31,6 +31,7 @@ from mpl_toolkits.mplot3d import axes3d  # this is used, ignore warning
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.ticker import MaxNLocator
 
 
 class MyMplCanvas(FigureCanvas):
@@ -90,10 +91,13 @@ class MyMplCanvas(FigureCanvas):
         """Update the plot."""
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
-        self.axes.plot_wireframe(x, y, z)
+        self.axes.plot_wireframe(y, x, z)
         self.axes.set_title('log(Objective Function)')
-        self.axes.set_xlabel("Number of Classes")
-        self.axes.set_ylabel("Iteration")
+        self.axes.set_ylabel("Number of Classes")
+        self.axes.set_xlabel("Iteration")
+        self.axes.yaxis.set_major_locator(MaxNLocator(integer=True))
+        self.axes.xaxis.set_major_locator(MaxNLocator(integer=True))
+
         self.figure.canvas.draw()
 
     def update_membership(self, data1, mem):
@@ -101,7 +105,8 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        rdata = self.axes.imshow(data1.memdat[mem], extent=data1.extent)
+        rdata = self.axes.imshow(data1.metadata['Cluster']['memdat'][mem],
+                                 extent=data1.extent, cmap=cm.jet)
         self.figure.colorbar(rdata)
 #        self.axes.set_title('Data')
         self.axes.set_xlabel("Eastings")
@@ -213,7 +218,7 @@ class PlotMembership(GraphWindow):
         self.combobox2.clear()
         self.combobox2.currentIndexChanged.disconnect()
 
-        for j in range(data[i].no_clusters):
+        for j in range(data[i].metadata['Cluster']['no_clusters']):
             self.combobox2.addItem('Membership Map for Cluster ' + str(j + 1))
 
         self.combobox2.currentIndexChanged.connect(self.change_band_two)
@@ -222,7 +227,7 @@ class PlotMembership(GraphWindow):
     def run(self):
         """Run."""
         data = self.indata['Cluster']
-        if len(data[0].memdat) == 0:
+        if 'memdat' not in data[0].metadata['Cluster'] or len(data[0].metadata['Cluster']['memdat']) == 0:
             return
 
         self.show()
@@ -266,55 +271,56 @@ class PlotVRCetc(GraphWindow):
 
         j = str(self.combobox1.currentText())
 
-        if j == 'Objective Function' and data[0].obj_fcn is not None:
+        if j == 'Objective Function' and data[0].metadata['Cluster']['obj_fcn'] is not None:
             x = len(data)
             y = 0
             for i in data:
-                y = max(y, len(i.obj_fcn))
+                y = max(y, len(i.metadata['Cluster']['obj_fcn']))
 
             z = np.zeros([x, y])
             x = list(range(x))
             y = list(range(y))
 
             for i in x:
-                for j in range(len(data[i].obj_fcn)):
-                    z[i, j] = data[i].obj_fcn[j]
+                for j in range(len(data[i].metadata['Cluster']['obj_fcn'])):
+                    z[i, j] = data[i].metadata['Cluster']['obj_fcn'][j]
 
             for i in x:
                 z[i][z[i] == 0] = z[i][z[i] != 0].min()
 
             x, y = np.meshgrid(x, y)
-            x += data[0].no_clusters
+            x += data[0].metadata['Cluster']['no_clusters']
             self.mmc.update_wireframe(x.T, y.T, np.log(z))
 
-        if j == 'Variance Ratio Criterion' and data[0].vrc is not None:
-            x = [k.no_clusters for k in data]
-            y = [k.vrc for k in data]
+        if j == 'Variance Ratio Criterion' and data[0].metadata['Cluster']['vrc'] is not None:
+            x = [k.metadata['Cluster']['no_clusters'] for k in data]
+            y = [k.metadata['Cluster']['vrc'] for k in data]
             self.mmc.update_scatter(x, y)
-        if j == 'Normalized Class Entropy' and data[0].nce is not None:
-            x = [k.no_clusters for k in data]
-            y = [k.nce for k in data]
+        if j == 'Normalized Class Entropy' and data[0].metadata['Cluster']['nce'] is not None:
+            x = [k.metadata['Cluster']['no_clusters'] for k in data]
+            y = [k.metadata['Cluster']['nce'] for k in data]
             self.mmc.update_scatter(x, y)
-        if j == 'Xie-Beni Index' and data[0].xbi is not None:
-            x = [k.no_clusters for k in data]
-            y = [k.xbi for k in data]
+        if j == 'Xie-Beni Index' and data[0].metadata['Cluster']['xbi'] is not None:
+            x = [k.metadata['Cluster']['no_clusters'] for k in data]
+            y = [k.metadata['Cluster']['xbi'] for k in data]
             self.mmc.update_scatter(x, y)
 
     def run(self):
         """Run."""
         items = []
         data = self.indata['Cluster']
+        meta = data[0].metadata['Cluster']
 
-        if data[0].obj_fcn is not None:
+        if 'obj_fcn' in meta:
             items += ['Objective Function']
 
-        if data[0].vrc is not None and len(data) > 1:
+        if 'vrc' in meta and len(data) > 1:
             items += ['Variance Ratio Criterion']
 
-        if data[0].nce is not None and len(data) > 1:
+        if 'nce' in meta and len(data) > 1:
             items += ['Normalized Class Entropy']
 
-        if data[0].xbi is not None and len(data) > 1:
+        if 'xbi' in meta and len(data) > 1:
             items += ['Xie-Beni Index']
 
         if len(items) == 0:

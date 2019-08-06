@@ -28,7 +28,7 @@ import os
 import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from pygmi.clust.datatypes import Clust
+from pygmi.raster.datatypes import Data
 from pygmi.clust import var_ratio as vr
 from pygmi.clust import xie_beni as xb
 
@@ -63,7 +63,7 @@ class FuzzyClust(QtWidgets.QDialog):
         self.spinbox_repeatedruns = QtWidgets.QSpinBox()
         self.spinbox_minclusters = QtWidgets.QSpinBox()
         self.label_7 = QtWidgets.QLabel()
-        self.checkbox_denorm = QtWidgets.QCheckBox()
+#        self.checkbox_denorm = QtWidgets.QCheckBox()
         self.radiobutton_random = QtWidgets.QRadioButton()
         self.radiobutton_manual = QtWidgets.QRadioButton()
         self.radiobutton_datadriven = QtWidgets.QRadioButton()
@@ -133,7 +133,7 @@ class FuzzyClust(QtWidgets.QDialog):
         label_6.setText("Repeated Runs:")
         self.label_7.setText("Constrain Cluster Shape (0: unconstrained, 1: spherical)")
         label_8.setText("Fuzzyness Exponent")
-        self.checkbox_denorm.setText("De-normalise Results")
+#        self.checkbox_denorm.setText("De-normalise Results")
         self.radiobutton_random.setText("Random")
         self.radiobutton_manual.setText("Manual")
         self.radiobutton_datadriven.setText("Data Driven")
@@ -146,7 +146,7 @@ class FuzzyClust(QtWidgets.QDialog):
         gridlayout.addWidget(label_6, 5, 2, 1, 1)
         gridlayout.addWidget(self.label_7, 6, 2, 1, 1)
         gridlayout.addWidget(label_8, 7, 2, 1, 1)
-        gridlayout.addWidget(self.checkbox_denorm, 8, 2, 1, 1)
+#        gridlayout.addWidget(self.checkbox_denorm, 8, 2, 1, 1)
         gridlayout.addWidget(groupbox, 9, 2, 1, 3)
 
         gridlayout.addWidget(self.combobox_alg, 0, 4, 1, 1)
@@ -205,7 +205,7 @@ class FuzzyClust(QtWidgets.QDialog):
         self.term_thresh = self.doublespinbox_maxerror.value()
         self.runs = self.spinbox_repeatedruns.value()
         self.constrain = self.doublespinbox_constraincluster.value()
-        self.denorm = self.checkbox_denorm.isChecked()
+#        self.denorm = self.checkbox_denorm.isChecked()
         self.fexp = self.doublespinbox_fuzzynessexp.value()
 
 #        self.cltype = tmp.cltype_list[tmp.cltype_val]
@@ -312,7 +312,7 @@ class FuzzyClust(QtWidgets.QDialog):
                     startmfix = {i: smtmp}
 
         cnt = -1
-        dat_out = [Clust() for i in range(no_clust[0], no_clust[1] + 1)]
+        dat_out = [Data() for i in range(no_clust[0], no_clust[1] + 1)]
 
         for i in range(no_clust[0], no_clust[1] + 1):
             self.reportback('Number of Clusters:' + str(i))
@@ -399,75 +399,79 @@ class FuzzyClust(QtWidgets.QDialog):
             den_cent_std1 = np.array(cent_std, copy=True)
 
             if de_norm == 1:
-                for k, _ in enumerate(data):
-                    if np.size(data[k].norm) > 0:
-                        nnorm = len(data[k].norm)
-                        for j in range(nnorm, 0, -1):
-                            if data[k].norm[j - 1]['type'] == 'minmax':
-                                den_cent[:, k] = (
-                                    den_cent[:, k] *
-                                    (data[k].norm[j - 1]['transform'][1, 1] -
-                                     data[k].norm[j - 1]['transform'][0, 1]) +
-                                    data[k].norm[j - 1]['transform'][0, 1])
-                                den_cent_std[:, k] = (
-                                    den_cent_std[:, k] *
-                                    (data[k].norm[j - 1]['transform'][1, 1] -
-                                     data[k].norm[j - 1]['transform'][0, 1]) +
-                                    data[k].norm[j - 1]['transform'][0, 1])
-                                den_cent_std1[:, k] = (
-                                    den_cent_std1[:, k] *
-                                    (data[k].norm[j - 1]['transform'][1, 1] -
-                                     data[k].norm[j - 1]['transform'][0, 1]) +
-                                    data[k].norm[j - 1]['transform'][0, 1])
-                            elif (data[k].norm[j - 1]['type'] == 'meanstd' or
-                                  data[k].norm[j - 1]['type'] == 'medmad'):
-                                den_cent[:, k] = (
-                                    den_cent[:, k] *
-                                    data[k].norm[j - 1]['transform'][1, 1] +
-                                    data[k].norm[j - 1]['transform'][0, 1])
-                                den_cent_std[:, k] = (
-                                    den_cent_std[:, k] *
-                                    data[k].norm[j - 1]['transform'][1, 1] +
-                                    data[k].norm[j - 1]['transform'][0, 1])
-                                den_cent_std1[:, k] = (
-                                    den_cent_std1[:, k] *
-                                    data[k].norm[j - 1]['transform'][1, 1] +
-                                    data[k].norm[j - 1]['transform'][0, 1])
-                            elif data[k].norm[j - 1]['type'] == 'histeq':
-                                den_cent[:, k] = np.interp(
-                                    den_cent[:, k],
-                                    data[k].norm[j - 1]['transform'][:, 0],
-                                    data[k].norm[j - 1]['transform'][:, 1])
-                                den_cent_std[:, k] = np.interp(
-                                    (den_cent[:, k] + den_cent_std[:, k]),
-                                    data[k].norm[j - 1]['transform'][:, 0],
-                                    data[k].norm[j - 1]['transform'][:, 1])
-                                den_cent_std1[:, k] = np.interp(
-                                    (den_cent[:, k] - den_cent_std1[:, k]),
-                                    data[k].norm[j - 1]['transform'][:, 0],
-                                    data[k].norm[j - 1]['transform'][:, 1])
-            else:
-                den_cent = np.array([])
-                den_cent_std = np.array([])
-                den_cent_std1 = np.array([])
+                pass
+#                for k, _ in enumerate(data):
+#                    if np.size(data[k].norm) > 0:
+#                        nnorm = len(data[k].norm)
+#                        for j in range(nnorm, 0, -1):
+#                            if data[k].norm[j - 1]['type'] == 'minmax':
+#                                den_cent[:, k] = (
+#                                    den_cent[:, k] *
+#                                    (data[k].norm[j - 1]['transform'][1, 1] -
+#                                     data[k].norm[j - 1]['transform'][0, 1]) +
+#                                    data[k].norm[j - 1]['transform'][0, 1])
+#                                den_cent_std[:, k] = (
+#                                    den_cent_std[:, k] *
+#                                    (data[k].norm[j - 1]['transform'][1, 1] -
+#                                     data[k].norm[j - 1]['transform'][0, 1]) +
+#                                    data[k].norm[j - 1]['transform'][0, 1])
+#                                den_cent_std1[:, k] = (
+#                                    den_cent_std1[:, k] *
+#                                    (data[k].norm[j - 1]['transform'][1, 1] -
+#                                     data[k].norm[j - 1]['transform'][0, 1]) +
+#                                    data[k].norm[j - 1]['transform'][0, 1])
+#                            elif (data[k].norm[j - 1]['type'] == 'meanstd' or
+#                                  data[k].norm[j - 1]['type'] == 'medmad'):
+#                                den_cent[:, k] = (
+#                                    den_cent[:, k] *
+#                                    data[k].norm[j - 1]['transform'][1, 1] +
+#                                    data[k].norm[j - 1]['transform'][0, 1])
+#                                den_cent_std[:, k] = (
+#                                    den_cent_std[:, k] *
+#                                    data[k].norm[j - 1]['transform'][1, 1] +
+#                                    data[k].norm[j - 1]['transform'][0, 1])
+#                                den_cent_std1[:, k] = (
+#                                    den_cent_std1[:, k] *
+#                                    data[k].norm[j - 1]['transform'][1, 1] +
+#                                    data[k].norm[j - 1]['transform'][0, 1])
+#                            elif data[k].norm[j - 1]['type'] == 'histeq':
+#                                den_cent[:, k] = np.interp(
+#                                    den_cent[:, k],
+#                                    data[k].norm[j - 1]['transform'][:, 0],
+#                                    data[k].norm[j - 1]['transform'][:, 1])
+#                                den_cent_std[:, k] = np.interp(
+#                                    (den_cent[:, k] + den_cent_std[:, k]),
+#                                    data[k].norm[j - 1]['transform'][:, 0],
+#                                    data[k].norm[j - 1]['transform'][:, 1])
+#                                den_cent_std1[:, k] = np.interp(
+#                                    (den_cent[:, k] - den_cent_std1[:, k]),
+#                                    data[k].norm[j - 1]['transform'][:, 0],
+#                                    data[k].norm[j - 1]['transform'][:, 1])
+#            else:
+#                den_cent = np.array([])
+#                den_cent_std = np.array([])
+#                den_cent_std1 = np.array([])
 
+            dat_out[cnt].metadata['Cluster']['input_type'] = []
             for k in data:
-                dat_out[cnt].input_type.append(k.dataid)
+                dat_out[cnt].metadata['Cluster']['input_type'].append(k.dataid)
 #                dat_out[cnt].proc_history.append(k.proc)
 
             dat_out[cnt].data = np.ma.array(zonal)
-            dat_out[cnt].no_clusters = i
-            dat_out[cnt].center = clcent
-            dat_out[cnt].center_std = cent_std
+            dat_out[cnt].metadata['Cluster']['no_clusters'] = i
+            dat_out[cnt].metadata['Cluster']['center'] = clcent
+            dat_out[cnt].metadata['Cluster']['center_std'] = cent_std
+
+            dat_out[cnt].metadata['Cluster']['memdat'] = []
             for k in range(clcent.shape[0]):
                 dummy = np.ones(data[0].data.shape) * np.nan
                 alpha1 = (data[0].data.mask == 0)
                 dummy[alpha1 == 1] = clu[k, :]
-                dat_out[cnt].memdat.append(dummy)
-            dat_out[cnt].vrc = clvrc
-            dat_out[cnt].nce = clnce
-            dat_out[cnt].xbi = clxbi
-            dat_out[cnt].obj_fcn = clobj_fcn
+                dat_out[cnt].metadata['Cluster']['memdat'].append(dummy)
+            dat_out[cnt].metadata['Cluster']['vrc'] = clvrc
+            dat_out[cnt].metadata['Cluster']['nce'] = clnce
+            dat_out[cnt].metadata['Cluster']['xbi'] = clxbi
+            dat_out[cnt].metadata['Cluster']['obj_fcn'] = clobj_fcn
 
 #            dat_out[cnt].type = self.type
 #            dat_out[cnt].algorithm = cltype
@@ -496,8 +500,7 @@ class FuzzyClust(QtWidgets.QDialog):
         for i in dat_out:
             i.xdim = data[0].xdim
             i.ydim = data[0].ydim
-            i.nrofbands = 1
-            i.dataid = 'Fuzzy Cluster: ' + str(i.no_clusters)
+            i.dataid = 'Fuzzy Cluster: ' + str(i.metadata['Cluster']['no_clusters'])
             i.nullvalue = data[0].nullvalue
             i.extent = data[0].extent
             i.data += 1
@@ -506,6 +509,8 @@ class FuzzyClust(QtWidgets.QDialog):
                         self.init_type + ')')
 
         self.outdata['Cluster'] = dat_out
+        self.outdata['Raster'] = self.indata['Raster']
+
         return True
 
     def fuzzy_means(self, data, no_clust, init, centfix, maxit, term_thresh,

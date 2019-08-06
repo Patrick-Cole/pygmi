@@ -30,7 +30,7 @@ import numpy as np
 import sklearn.cluster as skc
 import sklearn.metrics as skm
 import sklearn.preprocessing as skp
-from pygmi.clust.datatypes import Clust
+from pygmi.raster.datatypes import Data
 import pygmi.menu_default as menu_default
 
 
@@ -282,9 +282,11 @@ class Cluster(QtWidgets.QDialog):
                                 'Please change settings.')
                 return False
 
-            dat_out.append(Clust())
+            dat_out.append(Data())
+
+            dat_out[-1].metadata['Cluster']['input_type'] = []
             for k in data:
-                dat_out[-1].input_type.append(k.dataid)
+                dat_out[-1].metadata['Cluster']['input_type'].append(k.dataid)
 
             zonal = np.ma.masked_all(data[0].data.shape)
             alpha = (data[0].data.mask == 0)
@@ -292,11 +294,11 @@ class Cluster(QtWidgets.QDialog):
 
             dat_out[-1].data = zonal
             dat_out[-1].nullvalue = zonal.fill_value
-            dat_out[-1].no_clusters = i
-            dat_out[-1].center = np.zeros([i, len(data)])
-            dat_out[-1].center_std = np.zeros([i, len(data)])
+            dat_out[-1].metadata['Cluster']['no_clusters'] = i
+            dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
+            dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
             if cfit.labels_.max() > 0:
-                dat_out[-1].vrc = skm.calinski_harabasz_score(X, cfit.labels_)
+                dat_out[-1].metadata['Cluster']['vrc'] = skm.calinski_harabasz_score(X, cfit.labels_)
 
 #            if self.cltype == 'k-means':
 #                dat_out[-1].center = np.array(cfit.cluster_centers_)
@@ -307,15 +309,15 @@ class Cluster(QtWidgets.QDialog):
                 m.append(Xorig[cfit.labels_ == i2].mean(0))
                 s.append(Xorig[cfit.labels_ == i2].std(0))
 
-            dat_out[-1].center = np.array(m)
-            dat_out[-1].center_std = np.array(s)
+            dat_out[-1].metadata['Cluster']['center'] = np.array(m)
+            dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
 
             self.log = ('Cluster complete' + ' (' + self.cltype+')')
 
         for i in dat_out:
             i.xdim = data[0].xdim
             i.ydim = data[0].ydim
-            i.dataid = 'Clusters: '+str(i.no_clusters)
+            i.dataid = 'Clusters: '+str(i.metadata['Cluster']['no_clusters'])
             if self.cltype == 'DBSCAN':
                 i.dataid = 'Clusters: '+str(int(i.data.max()+1))
             i.nullvalue = data[0].nullvalue
@@ -326,6 +328,7 @@ class Cluster(QtWidgets.QDialog):
         for i in dat_out:
             i.data += 1
             i.data = i.data.astype(np.uint8)
+            i.nullvalue = 0
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']

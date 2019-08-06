@@ -176,6 +176,10 @@ class ClusterStats(QtWidgets.QDialog):
         i = self.combobox.currentIndex()
         data = self.data[i]
 
+        self.tablewidget.setRowCount(len(data))
+        rows = ['Class '+str(j+1) for j in range(len(data))]
+        self.tablewidget.setVerticalHeaderLabels(rows)
+
         for row, _ in enumerate(data):
             for col, _ in enumerate(data[0]):
                 self.tablewidget.setCellWidget(
@@ -188,20 +192,27 @@ class ClusterStats(QtWidgets.QDialog):
         self.show()
         data = self.indata['Cluster']
 
-        self.bands = ['Clusters: ' + str(i.no_clusters) for i in data]
-        self.cols = [j for j in data[0].input_type]
+        self.bands = ['Clusters: ' + str(i.metadata['Cluster']['no_clusters'])
+                      for i in data]
+
+        if 'input_type' not in data[0].metadata['Cluster']:
+            self.parent.showprocesslog('Your dataset does not qualify')
+            return False
+
+        self.cols = [j for j in data[0].metadata['Cluster']['input_type']]
         self.data = []
 
         for i in data:
-            val = list(i.center)
-            std = list(i.center_std)
+            val = i.metadata['Cluster']['center'].tolist()
+            std = i.metadata['Cluster']['center_std'].tolist()
+
             for j, _ in enumerate(val):
                 for k, _ in enumerate(val[0]):
                     val[j][k] = '{:.4f} : {:.4f}'.format(val[j][k], std[j][k])
             self.data.append(val)
 
         data = self.data[0]
-        rows = np.arange(1, len(self.data[0][0])+1).astype(str).tolist()
+        rows = ['Class '+str(j+1) for j in range(len(data))]
         cols = self.cols
 
         if len(self.data) == 1:

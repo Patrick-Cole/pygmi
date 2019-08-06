@@ -26,12 +26,12 @@
 
 import os
 import glob
+import copy
 import struct
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import gdal, osr
 from pygmi.raster.datatypes import Data
-from pygmi.clust.datatypes import Clust
 from pygmi.raster.dataprep import merge
 from pygmi.raster.dataprep import quickgrid
 
@@ -238,18 +238,88 @@ class ImportData():
 
         output_type = 'Raster'
 
-#        if 'Cluster' in dat[0].dataid:
-#            output_type = 'Cluster'
+        if 'Cluster' in dat[0].dataid:
+            dat = clusterprep(dat)
+            output_type = 'Cluster'
 
-        if len(dat) == 3:
-            tmp = QtWidgets.QMessageBox.question(self.parent, 'Question',
-                                                 'Is this an RGB image?')
-            if tmp == QtWidgets.QMessageBox.Yes:
-                dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
-                                        dat[2].data.T])
-                dat = [dat[0]]
-                dat[0].data = dat2
-                dat[0].isrgb = True
+        self.outdata[output_type] = dat
+        return True
+
+
+def clusterprep(dat):
+    """
+    Prepare Cluster data from raster data.
+    """
+    dat2 = []
+    for i in dat:
+        if 'Cluster' in i.dataid and 'Membership' not in i.dataid:
+            i.metadata['Cluster']['no_clusters'] = int(i.data.max())
+            i.metadata['Cluster']['memdat'] = [[]]*i.metadata['Cluster']['no_clusters']
+            for j in dat:
+                if 'Membership' in j.dataid and i.dataid in j.dataid:
+                    cnt = int(j.dataid.split(':')[0].split()[-1])-1
+                    i.metadata['Cluster']['memdat'][cnt] = j.data
+            dat2.append(i)
+
+    return dat2
+
+
+class ImportRGBData():
+    """
+    Import RGB Image - Interfaces with GDAL routines
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
+    ext : str
+        filename extension
+    """
+    def __init__(self, parent=None):
+        self.ifile = ''
+        self.name = 'Import Data: '
+        self.ext = ''
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+
+    def settings(self):
+        """ Settings """
+        ext = 'GeoTiff (*.tif)'
+
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(os.path.dirname(filename))
+        self.ifile = str(filename)
+        self.ext = filename[-3:]
+        self.ext = self.ext.lower()
+
+        dat = get_raster(self.ifile)
+
+        if dat is None:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'Could not import the image.',
+                                          QtWidgets.QMessageBox.Ok)
+            return False
+
+        output_type = 'Raster'
+
+        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                dat[2].data.T])
+        dat = [dat[0]]
+        dat[0].data = dat2
+        dat[0].isrgb = True
 
         self.outdata[output_type] = dat
         return True
@@ -398,10 +468,7 @@ def get_raster(ifile, nval=None):
         if nval is None:
             nval = rtmp.GetNoDataValue()
 
-        if 'Cluster' in bandid:
-            dat.append(Clust())
-        else:
-            dat.append(Data())
+        dat.append(Data())
         dat[i].data = rtmp.ReadAsArray()
         if dat[i].data.dtype.kind == 'i':
             if nval is None:
@@ -443,9 +510,6 @@ def get_raster(ifile, nval=None):
             dat[i].wkt = srs.ExportToWkt()
         else:
             dat[i].wkt = custom_wkt
-
-        if 'Cluster' in bandid:
-            dat[i].no_clusters = int(dat[i].data.max()+1)
 
     dataset = None
     return dat
@@ -1007,6 +1071,18 @@ class ExportData():
 
         if 'Cluster' in self.indata:
             data = self.indata['Cluster']
+            newdat = copy.deepcopy(data)
+            for i in data:
+                if 'memdat' not in i.metadata['Cluster']:
+                    continue
+                for j, val in enumerate(i.metadata['Cluster']['memdat']):
+                    tmp = copy.deepcopy(i)
+                    tmp.memdat = None
+                    tmp.data = val
+                    tmp.dataid = 'Membership of class '+str(j+1)+': '+tmp.dataid
+                    newdat.append(tmp)
+            data = newdat
+
         elif 'Raster' in self.indata:
             data = self.indata['Raster']
         else:
