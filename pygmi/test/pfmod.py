@@ -25,8 +25,12 @@
 """ These are pfmod tests. Run this file from within this directory to do the
 tests """
 
+import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                             '..//..')))
 from pygmi.pfmod.grvmag3d import quick_model
 from pygmi.pfmod.grvmag3d import calc_field
 import pygmi.misc as ptimer
@@ -322,7 +326,7 @@ def test2(doplt=False):
 
     ttt.since_last_call('magnetic calculation')
 
-    if doplt:
+    if doplt is True:
         # Display results
         _, ax1 = plt.subplots()
 
@@ -332,6 +336,7 @@ def test2(doplt=False):
         ax2.set_ylabel('nT')
         ax2.legend(loc='upper right', shadow=True)
         plt.show()
+        breakpoint()
 
 #    print(mdata[:-1]-m2dc[2::2])
 #    np.testing.assert_almost_equal(gdata[:-1], g2dc[2::2], 1)
