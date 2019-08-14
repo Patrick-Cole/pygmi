@@ -37,14 +37,10 @@ class MextDisplay(QtWidgets.QDialog):
         QtWidgets.QDialog.__init__(self, parent)
         self.parent = parent
         self.lmod1 = parent.lmod1  # actual model
-        self.lmod2 = parent.lmod2
         self.showtext = parent.showtext
-#        self.pbars = self.parent.pbars
         self.pbar = pmisc.ProgressBar()
 
         self.combo_model = QtWidgets.QComboBox()
-        self.combo_regional = QtWidgets.QComboBox()
-        self.cb_regional = QtWidgets.QCheckBox('Apply Regional Model')
         self.combo_other = QtWidgets.QComboBox()
         self.combo_dtm = QtWidgets.QComboBox()
         self.combo_mag = QtWidgets.QComboBox()
@@ -74,7 +70,7 @@ class MextDisplay(QtWidgets.QDialog):
         verticallayout = QtWidgets.QVBoxLayout(self)
         hlayout = QtWidgets.QHBoxLayout(self)
 
-        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
+        sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                            QtWidgets.QSizePolicy.Preferred)
 
         buttonbox = QtWidgets.QDialogButtonBox()
@@ -82,22 +78,21 @@ class MextDisplay(QtWidgets.QDialog):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
 # Current Models Groupbox
-        gb_model = QtWidgets.QGroupBox('Current Models')
-        gl_model = QtWidgets.QGridLayout(gb_model)
+        h_model = QtWidgets.QHBoxLayout()
+
+#        gb_model = QtWidgets.QGroupBox('Current Models')
+#        gl_model = QtWidgets.QGridLayout(gb_model)
 
         lbl1_model = QtWidgets.QLabel('Current Model:')
-        lbl2_model = QtWidgets.QLabel('Regional Model:')
 
         self.combo_model.addItems(['None'])
-        self.combo_regional.addItems(['None'])
+        self.combo_model.setSizePolicy(sizepolicy)
 
-        self.cb_regional.setSizePolicy(sizepolicy)
+#        gl_model.addWidget(lbl1_model, 0, 0, 1, 1)
+#        gl_model.addWidget(self.combo_model, 0, 1, 1, 1)
 
-        gl_model.addWidget(lbl1_model, 0, 0, 1, 1)
-        gl_model.addWidget(lbl2_model, 1, 0, 1, 1)
-        gl_model.addWidget(self.combo_model, 0, 1, 1, 1)
-        gl_model.addWidget(self.combo_regional, 1, 1, 1, 1)
-        gl_model.addWidget(self.cb_regional, 0, 2, 2, 1)
+        h_model.addWidget(lbl1_model)
+        h_model.addWidget(self.combo_model)
 
 # Data Information Groupbox
         gb_data_info = QtWidgets.QGroupBox('Dataset Information')
@@ -210,7 +205,8 @@ class MextDisplay(QtWidgets.QDialog):
 
 # Assign to main layout
 
-        verticallayout.addWidget(gb_model)
+#        verticallayout.addWidget(gb_model)
+        verticallayout.addLayout(h_model)
         verticallayout.addWidget(gb_data_info)
         verticallayout.addWidget(gb_extent)
         verticallayout.addLayout(hlayout)
@@ -227,18 +223,12 @@ class MextDisplay(QtWidgets.QDialog):
         self.combo_dataset.currentIndexChanged.connect(self.get_area)
         self.combo_dtm.currentIndexChanged.connect(self.choose_dtm)
         self.combo_model.currentIndexChanged.connect(self.choose_model)
-        self.combo_regional.currentIndexChanged.connect(self.choose_regional)
 
         buttonbox.accepted.connect(self.apply_changes)
         buttonbox.rejected.connect(self.reject)
 
     def apply_changes(self):
         """ Update when changing from this tab """
-#        self.pbars.resetall()
-
-        if self.cb_regional.isChecked():
-            self.apply_regional()
-
         self.showtext('Working...')
 
         self.choose_combo(self.combo_dtm, 'DTM Dataset')
@@ -262,7 +252,6 @@ class MextDisplay(QtWidgets.QDialog):
 
         self.update_vals()
 
-#        self.pbars.incr()
         # This line is to avoid duplicates since study area and dtm are often
         # the same dataset
         tmp = [i for i in set(self.lmod1.griddata.values())]
@@ -270,40 +259,6 @@ class MextDisplay(QtWidgets.QDialog):
         self.showtext('Changes applied.')
 
         self.accept()
-
-    def apply_regional(self):
-        """ Applies the regional model to the current model """
-        self.lmod1.lith_index[self.lmod1.lith_index > 899] = 0
-
-        ctxt = str(self.combo_regional.currentText())
-        if ctxt == 'None':
-            self.showtext('No regional model selected!')
-            return
-
-#        self.pbars.resetall(self.lmod1.numx)
-        for i in self.pbar.iter(range(self.lmod1.numx)):
-#            self.pbars.incr()
-            for j in range(self.lmod1.numy):
-                for k in range(self.lmod1.numz):
-                    x = self.lmod1.xrange[0]+(i+0.5)*self.lmod1.dxy
-                    y = self.lmod1.yrange[0]+(j+0.5)*self.lmod1.dxy
-                    z = self.lmod1.zrange[-1]-(k+0.5)*self.lmod1.d_z
-                    ii = int((x-self.lmod2.xrange[0])/self.lmod2.dxy)
-                    jj = int((y-self.lmod2.yrange[0])/self.lmod2.dxy)
-                    kk = int((self.lmod2.zrange[-1]-z)/self.lmod2.d_z)
-                    tmp = self.lmod2.lith_index[ii, jj, kk]
-                    if tmp > 0 and ii > -1 and jj > -1 and kk > -1:
-                        self.lmod1.lith_index[i, j, k] = 900+tmp
-
-        self.lmod2.update_lith_list_reverse()
-
-        for i in np.unique(self.lmod1.lith_index):
-            if i > 900:
-                self.lmod1.mlut[i] = self.lmod2.mlut[i-900]
-                l2lith = self.lmod2.lith_list_reverse[i-900]
-                self.lmod1.lith_list[l2lith+' (R)'] = self.lmod2.lith_list[l2lith]
-
-        self.showtext('Regional model applied.')
 
     def choose_combo(self, combo, dtxt):
         """ Combo box choice routine """
@@ -337,16 +292,6 @@ class MextDisplay(QtWidgets.QDialog):
                 self.parent.lmod1 = i
                 self.update_vals()
                 self.update_combos()
-
-    def choose_regional(self):
-        """ Choose which regional model file to use """
-        ctxt = str(self.combo_regional.currentText())
-        if ctxt == 'None' or 'Model3D' not in self.parent.indata:
-            return
-        for i in self.parent.indata['Model3D']:
-            if i.name == ctxt:
-                self.lmod2 = i
-                self.parent.lmod2 = i
 
     def extgrid(self, gdata):
         """ Extrapolates the grid to get rid of nulls. Uses a masked grid """
@@ -429,22 +374,22 @@ class MextDisplay(QtWidgets.QDialog):
                 modnames.append(i.name)
 
         self.combo_model.currentIndexChanged.disconnect()
-        self.combo_regional.currentIndexChanged.disconnect()
+#        self.combo_regional.currentIndexChanged.disconnect()
 
         self.combo_model.clear()
         self.combo_model.addItems(modnames)
         self.combo_model.setCurrentIndex(0)
-        self.combo_regional.clear()
-        self.combo_regional.addItems(modnames)
-        self.combo_regional.setCurrentIndex(0)
+#        self.combo_regional.clear()
+#        self.combo_regional.addItems(modnames)
+#        self.combo_regional.setCurrentIndex(0)
 
         if len(modnames) >= 2:
             self.combo_model.setCurrentIndex(1)
-        if len(modnames) > 2:
-            self.combo_regional.setCurrentIndex(2)
+#        if len(modnames) > 2:
+#            self.combo_regional.setCurrentIndex(2)
 
         self.combo_model.currentIndexChanged.connect(self.choose_model)
-        self.combo_regional.currentIndexChanged.connect(self.choose_regional)
+#        self.combo_regional.currentIndexChanged.connect(self.choose_regional)
 
     def update_combos(self):
         """ Update the combos """
@@ -550,7 +495,7 @@ class MextDisplay(QtWidgets.QDialog):
         """ Runs when the tab is activated """
         self.update_model_combos()
         self.choose_model()
-        self.choose_regional()
+#        self.choose_regional()
         self.update_vals()
         self.update_combos()
 

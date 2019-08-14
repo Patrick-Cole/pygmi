@@ -49,7 +49,6 @@ class MainWidget(QtWidgets.QMainWindow):
         self.parent = parent
         self.showprocesslog = self.parent.showprocesslog
         self.lmod1 = LithModel()  # actual model
-        self.lmod2 = LithModel()  # regional model
         self.showprocesslog = self.showtext
 
 # General
@@ -158,7 +157,6 @@ class MainWidget(QtWidgets.QMainWindow):
             self.inraster[i.dataid] = i
         if 'Model3D' in self.indata:
             self.lmod1 = self.indata['Model3D'][0]
-            self.lmod2 = self.indata['Model3D'][-1]
 
         self.outdata['Model3D'] = [self.lmod1]
         self.mext.update_combos()

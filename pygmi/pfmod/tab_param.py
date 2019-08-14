@@ -177,7 +177,6 @@ class ParamDisplay(QtWidgets.QDialog):
 
         self.parent = parent
         self.lmod1 = parent.lmod1
-        self.lmod2 = parent.lmod2
         self.max_lith_index = -1
         self.grid_stretch = 'linear'
         self.showtext = parent.showtext
@@ -373,7 +372,7 @@ class ParamDisplay(QtWidgets.QDialog):
             return
 
         self.parent.grvmag.calc_regional()
-        grvmax = self.lmod2.griddata['Calculated Gravity'].data.max()
+        grvmax = self.parent.lmod2.griddata['Calculated Gravity'].data.max()
         grvmean = self.lmod1.griddata['Gravity Dataset'].data.mean()
         grvreg = grvmean-grvmax
         self.dsb_gregional.setValue(grvreg)

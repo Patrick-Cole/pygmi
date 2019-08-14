@@ -65,7 +65,6 @@ class GravMag():
 
         self.parent = parent
         self.lmod1 = parent.lmod1
-        self.lmod2 = parent.lmod2
         self.lmod = self.lmod1
         self.showtext = parent.showtext
         if hasattr(parent, 'pbars'):
@@ -105,24 +104,11 @@ class GravMag():
     def calc_field_mag(self):
         """ Pre field-calculation routine """
         self.lmod1 = self.parent.lmod1
-        self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = True
 
         self.lmod.lith_index_mag_old[:] = -1
 
-#        self.parent.profile.update_model()
-
-        # Update the model from the view
-#        indx = self.parent.tabwidget.currentIndex()
-#        tlabel = self.parent.tabwidget.tabText(indx)
-#
-#        if tlabel == 'Layer Editor':
-#            self.parent.layer.update_model()
-#
-#        if tlabel == 'Profile Editor':
-#            self.parent.profile.update_model()
-#
         # now do the calculations
         self.calc_field2(True, True)
         self.parent.profile.update_plot()
@@ -133,23 +119,10 @@ class GravMag():
         """ Pre field-calculation routine """
         # Update this
         self.lmod1 = self.parent.lmod1
-        self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = False
 
         self.lmod.lith_index_grv_old[:] = -1
-
-        # Update the model from the view
-#        indx = self.parent.tabwidget.currentIndex()
-#        tlabel = self.parent.tabwidget.tabText(indx)
-#
-#        if tlabel == 'Layer Editor':
-#            self.parent.layer.update_model()
-#
-#        if tlabel == 'Profile Editor':
-#            self.parent.profile.update_model()
-#
-#        self.parent.profile.update_model()
 
         # now do the calculations
         self.calc_field2(True)
@@ -160,19 +133,8 @@ class GravMag():
     def calc_field_mag_changes(self):
         """ calculates only mag changes """
         self.lmod1 = self.parent.lmod1
-        self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = True
-
-        # Update the model from the view
-#        indx = self.parent.tabwidget.currentIndex()
-#        tlabel = self.parent.tabwidget.tabText(indx)
-#
-#        if tlabel == 'Layer Editor':
-#            self.parent.layer.update_model()
-#
-#        if tlabel == 'Profile Editor':
-#            self.parent.profile.update_model()
 
         # now do the calculations
         self.calc_field2(True, True)
@@ -181,19 +143,8 @@ class GravMag():
     def calc_field_grav_changes(self):
         """ calculates only grav changes """
         self.lmod1 = self.parent.lmod1
-        self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = False
-
-        # Update the model from the view
-#        indx = self.parent.tabwidget.currentIndex()
-#        tlabel = self.parent.tabwidget.tabText(indx)
-#
-#        if tlabel == 'Layer Editor':
-#            self.parent.layer.update_model()
-#
-#        if tlabel == 'Profile Editor':
-#            self.parent.profile.update_model()
 
         # now do the calculations
         self.calc_field2(True)
@@ -298,7 +249,6 @@ class GravMag():
         model field decay. It gives an idea about how reliable the calculated
         field on the edge of the model is. """
         self.lmod1 = self.parent.lmod1
-        self.lmod2 = self.parent.lmod2
         self.lmod = self.lmod1
 
         self.calc_regional()
