@@ -195,8 +195,10 @@ class MyMplCanvas(FigureCanvas):
         ax = fig.gca()
         fig.subplots_adjust(top=0.995)
         fig.subplots_adjust(bottom=0.005)
-        fig.subplots_adjust(left=0.005)
-        fig.subplots_adjust(right=0.25)
+#        fig.subplots_adjust(left=0.005)
+#        fig.subplots_adjust(right=0.25)
+        fig.subplots_adjust(left=0.01)
+        fig.subplots_adjust(right=0.3)
 
         idir = __file__.rpartition('\\')[0]
         logfile = idir+'\\logplot.xlsx'
@@ -279,6 +281,7 @@ class MyMplCanvas(FigureCanvas):
         ax.set_aspect('equal')
         ax.get_xaxis().set_visible(False)
         ax.set_frame_on(False)
+        ax.margins(x=0)
 
         for i in indx:
             # This next line is to skip summary lines for a group.
