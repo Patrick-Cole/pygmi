@@ -196,54 +196,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         pb_lbound.clicked.connect(self.lbound)
 
     ### Misc
-    def export_csv_old(self):
-        """ Export Profile to csv """
-        self.parent.pbars.resetall()
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
-        if filename == '':
-            return
-        os.chdir(os.path.dirname(filename))
-
-        xrng = (np.arange(self.lmod1.numx)*self.lmod1.dxy +
-                self.lmod1.xrange[0]+self.lmod1.dxy/2.)
-        yrng = (np.arange(self.lmod1.numy)*self.lmod1.dxy +
-                self.lmod1.yrange[0]+self.lmod1.dxy/2.)
-        yrng = yrng[::-1]
-        xxx, yyy = np.meshgrid(xrng, yrng)
-        xlines = np.arange(self.lmod1.numx)
-        ylines = np.arange(self.lmod1.numy, 0, -1)-1
-        _, lines = np.meshgrid(xlines, ylines)
-
-        # This is only for ew
-        xxx = xxx.T
-        yyy = yyy.T
-        lines, _ = np.meshgrid(xlines, ylines)
-        lines = lines.T
-
-        header = '"Line","x","y"'
-        newdata = [lines.flatten(), xxx.flatten(), yyy.flatten()]
-
-        for i in self.lmod1.griddata:
-            if 'Calculated' not in i:
-                data = gridmatch(self.lmod1, 'Calculated Magnetics', i)
-            else:
-                data = self.lmod1.griddata[i].data
-                if 'Gravity' in i:
-                    data = data + self.lmod1.gregional
-
-            newdata.append(np.array(data.flatten()))
-            header = header+',"'+i+'"'
-        newdata = np.transpose(newdata)
-        header = header+'\n'
-
-        with open(filename, 'wb') as fno:
-            fno.write(bytes(header, 'utf-8'))
-            np.savetxt(fno, newdata, delimiter=',')
-
-        self.parent.pbars.incr()
-        self.showtext('Profile save complete')
-
     def export_csv(self):
         """ Export Profile to csv """
         self.parent.pbars.resetall()

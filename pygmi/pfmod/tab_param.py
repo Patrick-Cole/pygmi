@@ -186,8 +186,6 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_hdec = QtWidgets.QDoubleSpinBox()
         self.dsb_hint = QtWidgets.QDoubleSpinBox()
         self.dsb_hinc = QtWidgets.QDoubleSpinBox()
-        self.pb_autoregional = QtWidgets.QPushButton('Lithology Based '
-                                                     'Regional Estimation')
         self.dsb_ght = QtWidgets.QDoubleSpinBox()
         self.dsb_gregional = QtWidgets.QDoubleSpinBox()
 
@@ -242,7 +240,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
         gl_gen_prop.addWidget(label_1, 0, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_gregional, 0, 1, 1, 1)
-        gl_gen_prop.addWidget(self.pb_autoregional, 1, 0, 1, 2)
+#        gl_gen_prop.addWidget(self.pb_autoregional, 1, 0, 1, 2)
         gl_gen_prop.addWidget(label_2, 2, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_ght, 2, 1, 1, 1)
         gl_gen_prop.addWidget(label_3, 3, 0, 1, 1)
@@ -263,7 +261,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_gregional.setMinimum(-10000.0)
         self.dsb_gregional.setMaximum(10000.0)
         self.dsb_gregional.setSingleStep(1.0)
-        self.dsb_gregional.setProperty('value', 100.0)
+        self.dsb_gregional.setProperty('value', 0.0)
         self.dsb_ght.setMaximum(999999999.0)
         self.dsb_mht.setMaximum(999999999.0)
         self.dsb_mht.setProperty('value', 100.0)
@@ -358,26 +356,11 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_rmi.valueChanged.connect(self.change_rmi)
         self.dsb_magnetization.valueChanged.connect(self.change_magnetization)
         self.dsb_qratio.valueChanged.connect(self.change_qratio)
-        self.pb_autoregional.clicked.connect(self.autoregional)
 
         pb_applylith.clicked.connect(self.apply_lith)
 
         buttonbox.accepted.connect(self.apply_changes)
         buttonbox.rejected.connect(self.reject)
-
-    def autoregional(self):
-        """ Automatically estimates the regional """
-        if 'Gravity Dataset' not in self.lmod1.griddata:
-            self.showtext('No gravity dataset!')
-            return
-
-        self.parent.grvmag.calc_regional()
-        grvmax = self.parent.lmod2.griddata['Calculated Gravity'].data.max()
-        grvmean = self.lmod1.griddata['Gravity Dataset'].data.mean()
-        grvreg = grvmean-grvmax
-        self.dsb_gregional.setValue(grvreg)
-
-        self.showtext('Regional estimated.')
 
     def add_defs(self, deftxt='', getcol=False, lmod=None):
         """ Add geophysical definitions and make them editable"""
@@ -571,7 +554,7 @@ class ParamDisplay(QtWidgets.QDialog):
     # Gravity Parameters
         self.dsb_ght.setValue(0.0)
         self.dsb_density.setValue(2.75)
-        self.dsb_gregional.setValue(100.00)
+        self.dsb_gregional.setValue(0.0)
 
     # Body Parameters
         self.dsb_mdec.setValue(0.0)

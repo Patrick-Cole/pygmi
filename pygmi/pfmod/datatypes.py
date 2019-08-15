@@ -79,7 +79,7 @@ class LithModel():
         self.lith_list_reverse = {}
         self.mht = None
         self.ght = None
-        self.gregional = 100
+        self.gregional = 0.
         self.name = '3D Model'
         self.dataid = '3D Model'
         self.tmpfiles = None
