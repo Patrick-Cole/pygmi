@@ -223,7 +223,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
             for i in self.lmod1.griddata:
                 data = self.lmod1.griddata[i].data
-                if 'Gravity' in i:
+                if 'Calculated Gravity' in i:
                     data = data + self.lmod1.gregional
 
                 tmpprof = ndimage.map_coordinates(data.data[::-1],
