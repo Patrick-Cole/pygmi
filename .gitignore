@@ -10,6 +10,7 @@ pygmi.egg-info/
 *.py[co]
 *.cmd
 *.lnk
+*.exe
 grvmagc_*.html
 .spyderproject
 log.txt
