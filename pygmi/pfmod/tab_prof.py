@@ -38,7 +38,6 @@ from osgeo import gdal
 import pandas as pd
 import pygmi.raster.iodefs as ir
 from pygmi.pfmod import misc
-from pygmi.pfmod.grvmag3d import gridmatch
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
@@ -214,24 +213,38 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.calc_prof_limits(line)
             self.get_model()
 
-#            px1, px2 = self.lmod1.custprofx['rotate']
             data2 = {}
             data2['LINE'] = np.zeros(self.rxxx.size, dtype=int)+line
 
             data2['X'] = self.rxxx*dxy+tlx
             data2['Y'] = self.ryyy*dxy+bly
 
-            for i in self.lmod1.griddata:
-                data = self.lmod1.griddata[i].data
-                if 'Calculated Gravity' in i:
-                    data = data + self.lmod1.gregional
+            data = self.lmod1.griddata['Calculated Gravity']
 
-                tmpprof = ndimage.map_coordinates(data.data[::-1],
-                                                  [self.ryyy-0.5,
-                                                   self.rxxx-0.5],
-                                                  order=1, cval=np.nan)
-                data2[i] = tmpprof
-#                tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
+            for i in self.lmod1.griddata:
+                data1 = self.lmod1.griddata[i]
+                if i in ('Study Area Dataset', 'Gravity Residual',
+                         'Magnetic Residual'):
+                    continue
+                if 'Calculated Gravity' in i:
+                    data1.data = data1.data + self.lmod1.gregional
+
+                xratio = data.xdim/data1.xdim
+                yratio = data.ydim/data1.ydim
+
+                dtlx = data.extent[0]
+                d2tlx = data1.extent[0]
+                dtly = data.extent[-1]
+                d2tly = data1.extent[-1]
+
+                rxxx2 = (dtlx-d2tlx)/data1.xdim+self.rxxx*xratio
+                ryyy2 = (d2tly-dtly)/data1.ydim+self.ryyy*yratio
+
+                tmp = data1.data.filled(np.nan)
+                data2[i] = ndimage.map_coordinates(tmp[::-1],
+                                                   [ryyy2-0.5,
+                                                    rxxx2-0.5],
+                                                   order=1, cval=np.nan)
 
             if dfall is None:
                 dfall = pd.DataFrame(data2)
