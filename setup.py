@@ -67,7 +67,7 @@ setup(name='pygmi',
 
       packages=(find_packages(exclude=['docs'])),
 
-      install_requires=['gdal',
+      install_requires=['gdal>=2.4,<3',
                         'llvmlite',
                         'matplotlib',
                         'numba',
