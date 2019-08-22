@@ -12,10 +12,18 @@ pygmi.clust.cluster module
     :undoc-members:
     :show-inheritance:
 
-pygmi.clust.datatypes module
-----------------------------
+pygmi.clust.crisp_clust module
+------------------------------
 
-.. automodule:: pygmi.clust.datatypes
+.. automodule:: pygmi.clust.crisp_clust
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+pygmi.clust.fuzzy_clust module
+------------------------------
+
+.. automodule:: pygmi.clust.fuzzy_clust
     :members:
     :undoc-members:
     :show-inheritance:

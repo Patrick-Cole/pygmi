@@ -1,19 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>pygmi.test package &#8212; PyGMI 2.4.3 documentation</title>
+    <meta charset="utf-8" />
+    <title>pygmi.test package &#8212; PyGMI 3.0.0 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -82,13 +80,11 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -111,107 +107,11 @@
 <p>These are pfmod tests. Run this file from within this directory to do the
 tests</p>
 <dl class="function">
-<dt id="pygmi.test.pfmod.dircos">
-<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">dircos</code><span class="sig-paren">(</span><em>inc</em>, <em>dec</em>, <em>azim</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.dircos" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="pygmi.test.pfmod.get_float">
-<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">get_float</code><span class="sig-paren">(</span><em>tmp</em>, <em>row</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.get_float" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets a float from a list of strings.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tmp</strong> (<em>list</em>) – list of strings</li>
-<li><strong>row</strong> (<em>int</em>) – row in list to extract. First row is 0</li>
-<li><strong>word</strong> (<em>int</em>) – word to extract from row. First word is 0</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> – return a float from the row.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">float</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.test.pfmod.get_int">
-<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">get_int</code><span class="sig-paren">(</span><em>tmp</em>, <em>row</em>, <em>word</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.get_int" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets an int from a list of strings.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>tmp</strong> (<em>list</em>) – list of strings</li>
-<li><strong>row</strong> (<em>int</em>) – row in list to extract. First row is 0</li>
-<li><strong>word</strong> (<em>int</em>) – word to extract from row. First word is 0</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><strong>output</strong> – return an integer from the row.</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">int</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.test.pfmod.mbox">
-<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">mbox</code><span class="sig-paren">(</span><em>x0</em>, <em>y0</em>, <em>z0</em>, <em>x1</em>, <em>y1</em>, <em>z1</em>, <em>x2</em>, <em>y2</em>, <em>mi</em>, <em>md</em>, <em>fi</em>, <em>fd</em>, <em>m</em>, <em>theta</em>, <em>h</em>, <em>k</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.mbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subroutine MBOX computes the total field anomaly of an infinitely
-extended rectangular prism.  Sides of prism are parallel to x,y,z
-axes, and z is vertical down.  Bottom of prism extends to infinity.
-Two calls to mbox can provide the anomaly of a prism with finite
-thickness; e.g.,</p>
-<blockquote>
-<div>call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
-call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
-t=t1-t2</div></blockquote>
-<p>Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).</p>
-<dl class="docutils">
-<dt>Input parameters:</dt>
-<dd>Observation point is (x0,y0,z0).  Prism extends from x1 to
-x2, y1 to y2, and z1 to infinity in x, y, and z directions,
-respectively.  Magnetization defined by inclination mi,
-declination md, intensity m.  Ambient field defined by
-inclination fi and declination fd.  X axis has declination
-theta. Distance units are irrelevant but must be consistent.
-Angles are in degrees, with inclinations positive below
-horizontal and declinations positive east of true north.
-Magnetization in A/m.</dd>
-<dt>Output paramters:</dt>
-<dd>Total field anomaly t, in nT.</dd>
-</dl>
-</dd></dl>
-
-<dl class="function">
 <dt id="pygmi.test.pfmod.test">
-<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">test</code><span class="sig-paren">(</span><em>doplt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.test" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.test.pfmod.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><em class="sig-param">doplt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main test function</p>
 <p>This test function compares the calculations performed by PyGMI to
-calculations performed by a external software - namely mag2dc and grav2dc
-by G.R.J Cooper.</p>
-<p>A series of graphs are produced. If the test is successful, points and
-lines on the graphs will coincide.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.test.pfmod.test_old">
-<code class="descclassname">pygmi.test.pfmod.</code><code class="descname">test_old</code><span class="sig-paren">(</span><em>doplt=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.pfmod.test_old" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main test function</p>
-<p>This test function compares the calculations performed by PyGMI to
-calculations performed by a external software - namely mag2dc and grav2dc
-by G.R.J Cooper.</p>
+calculations performed by a external software - GM-SYS</p>
 <p>A series of graphs are produced. If the test is successful, points and
 lines on the graphs will coincide.</p>
 </dd></dl>
@@ -219,7 +119,7 @@ lines on the graphs will coincide.</p>
 </div>
 <div class="section" id="module-pygmi.test">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.test" title="Permalink to this headline">¶</a></h2>
-<p>Tests for PyGMI</p>
+<p>Tests for PyGMI.</p>
 </div>
 </div>
 
@@ -254,7 +154,7 @@ lines on the graphs will coincide.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
     </div>
   </body>
 </html>

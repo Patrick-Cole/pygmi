@@ -1,19 +1,17 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Raster Analysis: Context Menu &#8212; PyGMI 2.4.3 documentation</title>
+    <meta charset="utf-8" />
+    <title>Raster Analysis: Context Menu &#8212; PyGMI 3.0.0 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -87,13 +85,11 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -117,36 +113,36 @@ menu, simply right-click a green module.</p>
 with raster images. It is especially useful for defining nodata values or band
 names.</p>
 <ul class="simple">
-<li>Band Name: Shows the current name of a raster band within the dataset.</li>
-<li>Top Left X-Coordinate: Raster X coordinate in the NW corner of the dataset.</li>
-<li>Top Left Y-Coordinate: Raster Y coordinate in the NW corner of the dataset.</li>
-<li>X-Dimension: width of a grid cell (in the x-direction).</li>
-<li>Y-Dimension: height of a grid cell (in the y-direction).</li>
-<li>Null/Nodata Value: A unique value assigned to areas of the dataset with no
-data.</li>
-<li>Rows: Number of rows in the dataset.</li>
-<li>Columns: Number of columns in the dataset.</li>
-<li>Dataset minimum: Minimum Z value in the dataset.</li>
-<li>Dataset maximum: Maximum Z value in the dataset.</li>
-<li>Dataset mean: Mean Z value in the dataset.</li>
-<li>Dataset units: A label used in graphs to denote the units of Z.</li>
+<li><p>Band Name: Shows the current name of a raster band within the dataset.</p></li>
+<li><p>Top Left X-Coordinate: Raster X coordinate in the NW corner of the dataset.</p></li>
+<li><p>Top Left Y-Coordinate: Raster Y coordinate in the NW corner of the dataset.</p></li>
+<li><p>X-Dimension: width of a grid cell (in the x-direction).</p></li>
+<li><p>Y-Dimension: height of a grid cell (in the y-direction).</p></li>
+<li><p>Null/Nodata Value: A unique value assigned to areas of the dataset with no
+data.</p></li>
+<li><p>Rows: Number of rows in the dataset.</p></li>
+<li><p>Columns: Number of columns in the dataset.</p></li>
+<li><p>Dataset minimum: Minimum Z value in the dataset.</p></li>
+<li><p>Dataset maximum: Maximum Z value in the dataset.</p></li>
+<li><p>Dataset mean: Mean Z value in the dataset.</p></li>
+<li><p>Dataset units: A label used in graphs to denote the units of Z.</p></li>
 </ul>
 </div>
 <div class="section" id="basic-statistics">
 <h2>Basic Statistics<a class="headerlink" href="#basic-statistics" title="Permalink to this headline">¶</a></h2>
 <p>This shows statistics with respect to the output data. The statistics can be saved in a text file. They include:</p>
 <ul class="simple">
-<li>Minimum</li>
-<li>Maximum</li>
-<li>Mean</li>
-<li>Standard Deviation</li>
-<li>Median</li>
-<li>Median Absolute Deviation</li>
-<li>Number of samples</li>
-<li>Number of columns</li>
-<li>Number of rows</li>
-<li>Skewness</li>
-<li>Kurtosis</li>
+<li><p>Minimum</p></li>
+<li><p>Maximum</p></li>
+<li><p>Mean</p></li>
+<li><p>Standard Deviation</p></li>
+<li><p>Median</p></li>
+<li><p>Median Absolute Deviation</p></li>
+<li><p>Number of samples</p></li>
+<li><p>Number of columns</p></li>
+<li><p>Number of rows</p></li>
+<li><p>Skewness</p></li>
+<li><p>Kurtosis</p></li>
 </ul>
 </div>
 <div class="section" id="show-raster-data">
@@ -216,7 +212,7 @@ used.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.8.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
     </div>
   </body>
 </html>

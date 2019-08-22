@@ -5,18 +5,20 @@
 
 Notices
 =======
-Welcome to the new PyGMI website! It contains more information, including API documentation for the project.
+Welcome to the PyGMI website! It contains more information, including API documentation for the project.
 
-March 7, 2019: `PyGMI 2.4.3 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released. It is a bugfix for linux users.
+August 22, 2019: `PyGMI 3.0.0 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
 
-PyGMI is now being developed using python 3.5 and Qt5.
+This is the next major release of PyGMI. It introduces a new modelling interface, which will (hopefully) improve modelling.
 
-I have decided to replace the cluster analysis routines with routines from the impressive scikit-learn library. This is easier to maintain, and opens a wealth of new possibilities. It there are requests or concerns, please contact me.
+PyGMI is being developed using python 3.7 and Qt5.
+
+If there are requests or concerns, please contact me.
 
 Overview
 ========
 
-PyGMI stands for Python Geophysical Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets.
+PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets.
 
 PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>`_ (Geological Survey of South Africa).
 
@@ -38,6 +40,8 @@ If you have any comments or queries, you can contact the author either through `
 
 Videos
 ------
+Note that these videos were for version 2 of PyGMI, but will still be instructive for version 3.
+
 Introduction :download:`mp4 <_downloads/introduction.mp4>`
 
 Raster Context Menus :download:`mp4 <_downloads/Raster 1.mp4>`

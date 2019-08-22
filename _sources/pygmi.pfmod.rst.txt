@@ -60,22 +60,6 @@ pygmi.pfmod.pfmod module
     :undoc-members:
     :show-inheritance:
 
-pygmi.pfmod.tab_ddisp module
-----------------------------
-
-.. automodule:: pygmi.pfmod.tab_ddisp
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pygmi.pfmod.tab_layer module
-----------------------------
-
-.. automodule:: pygmi.pfmod.tab_layer
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 pygmi.pfmod.tab_mext module
 ---------------------------
 
@@ -96,54 +80,6 @@ pygmi.pfmod.tab_prof module
 ---------------------------
 
 .. automodule:: pygmi.pfmod.tab_prof
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pygmi.pfmod.tab_pview module
-----------------------------
-
-.. automodule:: pygmi.pfmod.tab_pview
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pygmi.pfmod.tab_tmext module
-----------------------------
-
-.. automodule:: pygmi.pfmod.tab_tmext
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pygmi.pfmod.tab_tparam module
------------------------------
-
-.. automodule:: pygmi.pfmod.tab_tparam
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pygmi.pfmod.tab_tprof module
-----------------------------
-
-.. automodule:: pygmi.pfmod.tab_tprof
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pygmi.pfmod.tensor3d module
----------------------------
-
-.. automodule:: pygmi.pfmod.tensor3d
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-pygmi.pfmod.tpfmod module
--------------------------
-
-.. automodule:: pygmi.pfmod.tpfmod
     :members:
     :undoc-members:
     :show-inheritance:
