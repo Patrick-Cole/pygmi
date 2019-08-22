@@ -2,6 +2,16 @@
 Changelog
 =========
 
+v3.0.0, 22 August 2019
+----------------------
+* New 3D modelling interface
+* QC for seismology events
+* Added tilt depth to 3D model functionality
+* Gridding now has an option for a null value.
+* Added geosoft line data import and display.
+* Added older crisp and fuzzy cluster routines
+* Numerous bug fixes and improvements.
+
 v2.4.3, 7 March 2019
 ----------------------
 * Fixed bug in IGRF for linux systems
@@ -26,9 +36,9 @@ v2.4.1, 29 August 2017
 ----------------------
 * Added axis and orthographic projection option to 3D display view.
 * Added perspective change to beachball plots
-* Corrected clustering label. 
-* Bugfix on lithmodel. 
-* Correction to profile coordinates to place profile in centre of cell, as opposed to beginning of it. 
+* Corrected clustering label.
+* Bugfix on lithmodel.
+* Correction to profile coordinates to place profile in centre of cell, as opposed to beginning of it.
 * Added IGRF report backs.
 * Fixed bugs with tensor calculations
 * fix for error exporting text columns

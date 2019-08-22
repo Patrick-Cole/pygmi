@@ -221,7 +221,7 @@ class ParamDisplay(QtWidgets.QDialog):
             self.lw_param_defs.sizePolicy().hasHeightForWidth())
 
         verticallayout = QtWidgets.QVBoxLayout(self)
-        hlayout = QtWidgets.QHBoxLayout(self)
+        hlayout = QtWidgets.QHBoxLayout()
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)

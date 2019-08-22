@@ -42,14 +42,14 @@ class FileMenu():
 
     Attributes
     ----------
-    parent : MainWidget
+    parent : pygmi.main.MainWidget
         Reference to MainWidget class found in main.py
     """
 
     def __init__(self, parent):
 
         self.parent = parent
-        context_menu = self.parent.context_menu
+#        context_menu = self.parent.context_menu
 
 # File Menu
 

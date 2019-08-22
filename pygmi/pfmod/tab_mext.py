@@ -68,7 +68,7 @@ class MextDisplay(QtWidgets.QDialog):
         helpdocs = menu_default.HelpButton('pygmi.pfmod.mext')
 
         verticallayout = QtWidgets.QVBoxLayout(self)
-        hlayout = QtWidgets.QHBoxLayout(self)
+        hlayout = QtWidgets.QHBoxLayout()
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding,
                                            QtWidgets.QSizePolicy.Preferred)
