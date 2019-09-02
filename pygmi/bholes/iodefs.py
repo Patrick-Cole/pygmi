@@ -110,17 +110,19 @@ class ImportData():
 
 def get_CGS(lithfile, headerfile):
     """
-    GeoPak Import
+    Borehole Import
 
     Parameters
     ----------
-    hfile : str
+    lithfile : str
+        filename to import
+    headerfile : str
         filename to import
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    dat : dictionary
+        dictionary of Pandas dataframes
     """
 
     xl = pd.ExcelFile(lithfile)

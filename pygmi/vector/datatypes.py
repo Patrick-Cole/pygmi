@@ -69,6 +69,7 @@ class LData():
     def __init__(self):
         self.xchannel = ''
         self.ychannel = ''
+        self.zchannel = ''
         self.data = {}
         self.dataid = ''
         self.nullvalue = -99999

@@ -1113,7 +1113,7 @@ class Occam1D(QtWidgets.QDialog):
         label11 = QtWidgets.QLabel('Depth of first layer:')
         label12 = QtWidgets.QLabel('Number of layers:')
         label13 = QtWidgets.QLabel('Maximum Iterations:')
-        label14 = QtWidgets.QLabel('Target RMS:')
+        label14 = QtWidgets.QLabel('Targer RMS:')
 
         self.lbl_profnum = QtWidgets.QLabel('Solution: 0')
 

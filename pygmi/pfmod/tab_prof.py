@@ -35,6 +35,7 @@ from matplotlib.figure import Figure
 from matplotlib import cm
 from matplotlib import rcParams
 from osgeo import gdal
+from osgeo import ogr, osr
 import pandas as pd
 import pygmi.raster.iodefs as ir
 from pygmi.pfmod import misc
@@ -195,6 +196,61 @@ class ProfileDisplay(QtWidgets.QWidget):
         pb_lbound.clicked.connect(self.lbound)
 
     ### Misc
+    def borehole_import(self):
+        """ Import borehole data """
+        if 'Borehole' not in self.parent.indata:
+            return
+
+        if self.parent.indata['Raster'][0].wkt == '':
+            return
+
+        data = self.parent.indata['Borehole']
+
+        orig = osr.SpatialReference()
+        orig.ImportFromEPSG(4326)  # WGS84 degrees
+
+        targ = osr.SpatialReference()
+        targ.ImportFromWkt(self.parent.indata['Raster'][0].wkt)
+
+        prj = osr.CoordinateTransformation(orig, targ)
+
+        for bnum in data:
+            hdr = data[bnum]['header']
+            log = data[bnum]['log']
+            try:
+                lat = float(hdr['Declat'])
+                lon = float(hdr['Declon'])
+                elev = float(hdr['Elevation'])
+            except TypeError:
+                continue
+            res = prj.TransformPoint(lon, lat)
+            x, y = res[0], res[1]
+
+            if x < self.lmod1.xrange[0] or x > self.lmod1.xrange[1]:
+                continue
+            if y < self.lmod1.yrange[0] or y > self.lmod1.yrange[1]:
+                continue
+            dfrom = log['Depth from'].values + elev
+            dto = log['Depth to'].values + elev
+            lith = log.Lithology.values
+
+            xind = int((x-self.lmod1.xrange[0])//self.lmod1.dxy)
+            yind = int((y-self.lmod1.yrange[0])//self.lmod1.dxy)
+            ifrom = []
+            ito = []
+            for i, _ in enumerate(dfrom):
+                z1 = int((self.lmod1.zrange[1]-dfrom[i])//self.lmod1.d_z)
+                z2 = int((self.lmod1.zrange[1]-dto[i])//self.lmod1.d_z)
+                ifrom.append(z1)
+                ito.append(z2)
+
+            # Now do the bit which creates combos of liths per pixel.
+
+
+
+
+            breakpoint()
+
     def export_csv(self):
         """ Export Profile to csv """
         self.parent.pbars.resetall()
@@ -1715,7 +1771,10 @@ class MyToolbar(NavigationToolbar2QT):
                   ('View\nMagnetic\nProfile',
                    'Magnetic Profile', 'Magnetic Profile', 'mag_profile'),
                   ('View\nGravity\nProfile',
-                   'Gravity Profile', 'Gravity Profile', 'grv_profile'),)
+                   'Gravity Profile', 'Gravity Profile', 'grv_profile'),
+                  ('Import\nBorehole\nLogs',
+                   'Borehole Logs', 'Borehole Logs', 'b_logs'),
+                  )
 #                  ('Ad-Hoc\nCustom\nProfile',
 #                   'Custom Profile', 'Custom Profile', 'custom_profile'),)
 
@@ -1726,6 +1785,10 @@ class MyToolbar(NavigationToolbar2QT):
     def axis_scale(self):
         """ Axis scale """
         self.parent.plot_scale()
+
+    def b_logs(self):
+        """ Borehole Logs """
+        self.parent.borehole_import()
 
     def mag_profile(self):
         """ Axis scale """

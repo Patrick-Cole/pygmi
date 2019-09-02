@@ -205,7 +205,7 @@ class ImportPointData(QtWidgets.QDialog):
 
 class ImportLineData(QtWidgets.QDialog):
     """
-    Import Point Data.
+    Import Line Data.
 
     This class imports ASCII point data.
 
