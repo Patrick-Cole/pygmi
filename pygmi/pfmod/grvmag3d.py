@@ -1066,7 +1066,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
     return lmod
 
 
-@jit(nopython=True)
+@jit(nopython=True, parallel=True)
 def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
          fm4, fm5, fm6, alpha, beta):
     """
@@ -1101,10 +1101,10 @@ def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
     h = z1-z0
     hsq = h**2
 
-    for ii in range(numx):
+    for ii in prange(numx):
         alpha[0] = x1-xobs[ii]
         alpha[1] = x2-xobs[ii]
-        for jj in range(numy):
+        for jj in prange(numy):
             beta[0] = y1-yobs[jj]
             beta[1] = y2-yobs[jj]
             t = 0.
@@ -1135,7 +1135,7 @@ def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
     return mval
 
 
-@jit(nopython=True)
+@jit(nopython=True, parallel=True)
 def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
          x, y, z, isign):
     """ Gbox routine by Blakely
@@ -1160,10 +1160,10 @@ def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
     z[0] = z_0-z_1
     z[1] = z_0-z_2
 
-    for ii in range(numx):
+    for ii in prange(numx):
         x[0] = xobs[ii]-x_1
         x[1] = xobs[ii]-x_2
-        for jj in range(numy):
+        for jj in prange(numy):
             y[0] = yobs[jj]-y_1
             y[1] = yobs[jj]-y_2
             sumi = 0.
@@ -1186,12 +1186,12 @@ def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
     return gval
 
 
-@jit(nopython=True)
+@jit(nopython=True, parallel=True)
 def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
     """ grvmag 3d. mgval MUST be zeros """
 
-    for pr in range(npro):
-        for st in range(nstn):
+    for pr in prange(npro):
+        for st in prange(nstn):
             x = X[pr, st]
             y = Y[pr, st]
             for f in range(6):  # 6 Faces
