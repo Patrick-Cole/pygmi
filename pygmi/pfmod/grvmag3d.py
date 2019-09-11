@@ -38,13 +38,12 @@ from __future__ import print_function
 import copy
 import tempfile
 from math import sqrt
-from multiprocessing import Pool
 from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
 from scipy.linalg import norm
 from osgeo import gdal
-from numba import jit
+from numba import jit, prange
 from matplotlib import cm
 import matplotlib
 matplotlib.use('Qt5Agg')
@@ -898,74 +897,25 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         showtext('Summing '+mlist[0]+' (PyGMI may become non-responsive' +
                  ' during this calculation)')
 
-#        if np.unique(modind).size > 1 and mijk in modind:
         if modindmax > -1 and mijk in modind:
             QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modind == mijk)
-            iuni = np.array(np.unique(i), dtype=np.int32)
-            juni = np.array(np.unique(j), dtype=np.int32)
             kuni = np.array(np.unique(k), dtype=np.int32)
-
-# This is temporary to try and fix a bug.
 
             for k in kuni:
-                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
-                                  aaa[1], mglayers, hcorflat, mijk, juni,
-                                  iuni)
+                baba = sum_fields(k, mgval, numx, numy, modind, aaa[0], aaa[1],
+                                  mglayers, hcorflat, mijk)
                 mgvalin += baba
 
-#
-#            if i.size < 50000:
-#                for k in kuni:
-#                    baba = sum_fields(k, mgval, numx, numy, modind, aaa[0],
-#                                      aaa[1], mglayers, hcorflat, mijk, juni,
-#                                      iuni)
-#                    mgvalin += baba
-#            else:
-#                pool = Pool()
-#                baba = []
-#
-#                for k in kuni:
-#                    baba.append(pool.apply_async(sum_fields,
-#                                                 args=(k, mgval, numx, numy,
-#                                                       modind, aaa[0], aaa[1],
-#                                                       mglayers, hcorflat,
-#                                                       mijk, juni, iuni,)))
-#                for p in baba:
-#                    mgvalin += p.get()
-#                pool.close()
-#                del baba
-
         if modindcheckmax > -1 and mijk in modindcheck:
-#        if np.unique(modindcheck).size > 1 and mijk in modindcheck:
             QtWidgets.QApplication.processEvents()
             i, j, k = np.nonzero(modindcheck == mijk)
-            iuni = np.array(np.unique(i), dtype=np.int32)
-            juni = np.array(np.unique(j), dtype=np.int32)
             kuni = np.array(np.unique(k), dtype=np.int32)
 
-            if i.size < 50000:
-                for k in kuni:
-                    baba = sum_fields(k, mgval, numx, numy, modindcheck,
-                                      aaa[0],
-                                      aaa[1], mglayers, hcorflat, mijk, juni,
-                                      iuni)
-                    mgvalin -= baba
-            else:
-                pool = Pool()
-                baba = []
-
-                for k in kuni:
-                    baba.append(pool.apply_async(sum_fields,
-                                                 args=(k, mgval, numx, numy,
-                                                       modindcheck, aaa[0],
-                                                       aaa[1],
-                                                       mglayers, hcorflat,
-                                                       mijk, juni, iuni,)))
-                for p in baba:
-                    mgvalin -= p.get()
-                pool.close()
-                del baba
+            for k in kuni:
+                baba = sum_fields(k, mgval, numx, numy, modindcheck, aaa[0],
+                                  aaa[1], mglayers, hcorflat, mijk)
+                mgvalin -= baba
 
         showtext('Done')
 
@@ -1039,18 +989,18 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     return lmod.griddata
 
 
-@jit(nopython=True)
+@jit(nopython=True, parallel=True)
 def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
-               mijk, jj, ii):
+               mijk):
     """ Calculate magnetic and gravity field """
 
     b = numx*numy
     for j in range(b):
         mgval[j] = 0.
 
-    for i in ii:
+    for i in prange(numx):
         xoff = numx-i
-        for j in jj:
+        for j in prange(numy):
             yoff = numy-j
             if (modind[i, j, k] != mijk):
                 continue
@@ -1392,8 +1342,9 @@ def test():
 
 
 # quick model
-    lmod = quick_model(numz=5)
-    lmod.lith_index[10, 10, 0] = 1
+    lmod = quick_model(numx=300, numy=300, numz=30)
+    lmod.lith_index[:, :, 0] = 1
+#    lmod.lith_index[:, :, 10] = 1
     lmod.mht = 100
     calc_field(lmod, magcalc=True)
 
@@ -1401,8 +1352,8 @@ def test():
 
     magval = lmod.griddata['Calculated Magnetics'].data
 
-    plt.imshow(magval, cmap=cm.jet)
-    plt.show()
+#    plt.imshow(magval, cmap=cm.jet)
+#    plt.show()
 
 
 if __name__ == "__main__":

@@ -177,7 +177,6 @@ class ParamDisplay(QtWidgets.QDialog):
 
         self.parent = parent
         self.lmod1 = parent.lmod1
-        self.max_lith_index = -1
         self.grid_stretch = 'linear'
         self.showtext = parent.showtext
         self.islmod1 = True
@@ -371,11 +370,10 @@ class ParamDisplay(QtWidgets.QDialog):
             lmod = self.lmod1
             self.islmod1 = True
 
-        if not lmod.lith_list:
-            self.max_lith_index = -1
-        else:
+        new_lith_index = 0
+        if lmod.lith_list:
             lmod.update_lith_list_reverse()
-            self.max_lith_index = max(lmod.lith_list_reverse.keys())
+            new_lith_index = max(lmod.lith_list_reverse.keys())+1
 
         defnum = self.lw_param_defs.count()
         if deftxt == '':
@@ -394,8 +392,7 @@ class ParamDisplay(QtWidgets.QDialog):
         lithn.bdensity = litho.bdensity
         lithn.zobsg = litho.zobsg
 
-        self.max_lith_index += 1
-        lithn.lith_index = self.max_lith_index
+        lithn.lith_index = new_lith_index
 
         if deftxt == 'Background':
             lithn.susc = 0

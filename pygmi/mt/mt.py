@@ -20,6 +20,7 @@ from mtpy.imaging import penetration_depth2d as pen2d
 from mtpy.imaging import penetration_depth3d as pen3d
 import mtpy.modeling.occam1d as occam1d
 
+import mtpy.processing.birrp as MTbp
 
 def core_edi(datadir):
     """ read edi """
@@ -358,6 +359,63 @@ def modelling(datadir):
 
 #    p1.plot()
 
+def birrp():
+    """ birrp """
+    birrp_exe = r"C:\Work\Programming\pygmi\pygmi\bin\birrp.exe"
+    savefn = r"C:\Work\Programming\pygmi\data\MT\biirp\test"
+
+#    MTbp.runbirrp2in2out_simple(birrp_exe, stationname, ts_dir,
+#                                coherence_th, None, None,
+#                                starttime, endtime)
+
+    fn_dtype = np.dtype([('fn', 'S100'),
+                         ('nread', np.int),
+                         ('nskip', np.int),
+                         ('comp', 'S2'),
+                         ('calibration_fn', 'S100'),
+                         ('rr', np.bool),
+                         ('rr_num', np.int),
+                         ('start_dt', 'S19'),
+                         ('end_dt', 'S19')])
+
+    bs = MTbp.ScriptFile()
+
+
+    tmp0 = np.zeros(1, dtype=bs._fn_dtype)
+    tmp0['fn'] = r'C:\Work\Programming\pygmi\data\MT\mtd_files\BP02_1day_20130513_0_microvoltpermeter.ex'
+    tmp0['nread'] = 1
+    tmp0['nskip'] = 0
+    tmp0['calibration_fn'] = r''
+    tmp0['rr'] = False
+    tmp0['rr_num'] = 0
+    tmp0['start_dt'] = r''  # start date ?
+    tmp0['end_dt'] = r''  # end date ?
+    tmp0['comp'] = 'ex'
+
+    tmp1 = np.zeros(1, dtype=bs._fn_dtype)
+    tmp1['nread'] = 1
+    tmp1['nskip'] = 0
+    tmp1['calibration_fn'] = r''
+    tmp1['rr'] = False
+    tmp1['rr_num'] = 0
+    tmp1['start_dt'] = r''  # start date ?
+    tmp1['end_dt'] = r''  # end date ?
+    tmp1['comp'] = 'ey'
+    tmp1['fn'] = r'C:\Work\Programming\pygmi\data\MT\mtd_files\BP02_1day_20130513_0_microvoltpermeter.ey'
+
+    bs.fn_arr = np.array([tmp0, tmp1])
+    bs.script_fn = r'C:\Work\Programming\pygmi\data\MT\mtd_files\hope.txt'
+    bs._validate_fn_arr()
+
+    bs.ninp = 5
+
+    bs.write_script_file()
+
+
+    breakpoint()
+
+
+
 def main():
     """ main """
     datadir = r'C:\Python\mtpy\mtpy-1.0\data\\'
@@ -365,7 +423,8 @@ def main():
 #    core_edi(datadir)
 #    analysis_edi(datadir)
 #    image_edi(datadir)
-    modelling(datadir)
+#    modelling(datadir)
+    birrp()
 
 
 if __name__ == "__main__":

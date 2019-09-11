@@ -25,23 +25,25 @@
 """ Profile Display Tab Routines """
 
 import os
+import random
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import scipy.ndimage as ndimage
-#import scipy.interpolate as si
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.figure import Figure
 from matplotlib import cm
 from matplotlib import rcParams
 from osgeo import gdal
-from osgeo import ogr, osr
+from osgeo import osr
 import pandas as pd
 import pygmi.raster.iodefs as ir
+from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
+
 
 rcParams['savefig.dpi'] = 600.
 
@@ -198,6 +200,7 @@ class ProfileDisplay(QtWidgets.QWidget):
     ### Misc
     def borehole_import(self):
         """ Import borehole data """
+        lmod = self.lmod1
         if 'Borehole' not in self.parent.indata:
             return
 
@@ -215,6 +218,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         prj = osr.CoordinateTransformation(orig, targ)
 
         for bnum in data:
+ #           print(bnum)
             hdr = data[bnum]['header']
             log = data[bnum]['log']
             try:
@@ -230,8 +234,8 @@ class ProfileDisplay(QtWidgets.QWidget):
                 continue
             if y < self.lmod1.yrange[0] or y > self.lmod1.yrange[1]:
                 continue
-            dfrom = log['Depth from'].values + elev
-            dto = log['Depth to'].values + elev
+            dfrom = elev - np.abs(log['Depth from'].values)
+            dto = elev - np.abs(log['Depth to'].values)
             lith = log.Lithology.values
 
             xind = int((x-self.lmod1.xrange[0])//self.lmod1.dxy)
@@ -243,13 +247,72 @@ class ProfileDisplay(QtWidgets.QWidget):
                 z2 = int((self.lmod1.zrange[1]-dto[i])//self.lmod1.d_z)
                 ifrom.append(z1)
                 ito.append(z2)
-
+#                print(self.lmod1.zrange, dfrom[i], dto[i], z1, z2, elev, lat, lon)
             # Now do the bit which creates combos of liths per pixel.
 
+            lithfin = {}
+            for i, _ in enumerate(ifrom):
+                i1 = ifrom[i]
+                i2 = ito[i]
+                if i2 < i1:
+                    i1, i2 = i2, i1
+                fto = [i1, i2]
+                if i2-i1 > 1:
+                    fto = list(range(i1, i2+1))
+
+                for j in fto:
+                    if j < 0 or j >= lmod.numz:
+                        continue
+                    if j not in lithfin:
+                        lithfin[j] = [lith[i]]
+                    else:
+                        lithfin[j].append(lith[i])
+
+            lithlist = []
+            for i in lithfin:
+                lithfin[i] = list(set(lithfin[i]))
+                lithfin[i].sort()
+                lithfin[i] = "".join(i+'/' for i in lithfin[i])[:-1]
+                lithlist.append(lithfin[i])
+
+            lithlist = list(set(lithlist))
 
 
+            for deftxt in lithlist:
+                if deftxt in lmod.lith_list:
+                    continue
 
-            breakpoint()
+                lmod.update_lith_list_reverse()
+                new_lith_index = max(lmod.lith_list_reverse.keys())+1
+
+                lmod.lith_list[deftxt] = grvmag3d.GeoData(
+                    self.parent, lmod.numx, lmod.numy, lmod.numz, lmod.dxy,
+                    lmod.d_z, lmod.mht, lmod.ght)
+
+                litho = lmod.lith_list['Background']
+                lithn = lmod.lith_list[deftxt]
+                lithn.hintn = litho.hintn
+                lithn.finc = litho.finc
+                lithn.fdec = litho.fdec
+                lithn.zobsm = litho.zobsm
+                lithn.bdensity = litho.bdensity
+                lithn.zobsg = litho.zobsg
+                lithn.lith_index = new_lith_index
+
+                lmod.mlut[lithn.lith_index] = [random.randint(1, 255),
+                                               random.randint(1, 255),
+                                               random.randint(1, 255)]
+            lmod.update_lith_list_reverse()
+
+            for zind in lithfin:
+                lind = lmod.lith_list[lithfin[zind]].lith_index
+                lmod.lith_index[xind, yind, zind] = lind
+
+        self.lw_prof_defs.setCurrentRow(-1)
+        self.change_defs()
+
+        self.showtext('Borehole Import Complete.')
+
 
     def export_csv(self):
         """ Export Profile to csv """
@@ -758,12 +821,16 @@ class ProfileDisplay(QtWidgets.QWidget):
     def calc_prof_limits(self, curprof=None):
         """ Calculate profile limits """
 
-        dirval = self.dial_prof_dir.value()
-        pdirval = 360-dirval
-        if pdirval == 360:
-            pdirval = 0.
+        pdirval = self.dial_prof_dir.value()
+#        pdirval = 360-dirval
+#        if pdirval == 360:
+#            pdirval = 0.
 
         m = np.tan(np.deg2rad(pdirval))
+        if m == 0:
+            m = np.tan(np.deg2rad(90))
+        else:
+            m = 1/m
 
         xrng = self.lmod1.xrange
         yrng = self.lmod1.yrange
@@ -772,25 +839,25 @@ class ProfileDisplay(QtWidgets.QWidget):
         if curprof is None:
             curprof = self.sb_profnum.value()
 
-        if pdirval == 0:
+        if pdirval == 90:
             x1 = np.array([xrng[0]])
             x2 = np.array([xrng[1]])
             y1 = np.array([yrng[0]+dxy/2+curprof*dxy])
             y2 = y1
 
-        elif pdirval == 180:
+        elif pdirval == 270:
             x1 = np.array([xrng[1]])
             x2 = np.array([xrng[0]])
             y1 = np.array([yrng[1]-dxy/2-curprof*dxy])
             y2 = y1
 
-        elif pdirval == 90:
+        elif pdirval == 0:
             y1 = np.array([yrng[0]])
             y2 = np.array([yrng[1]])
             x1 = np.array([xrng[1]-dxy/2-curprof*dxy])
             x2 = x1
 
-        elif pdirval == 270:
+        elif pdirval == 180:
             y1 = np.array([yrng[1]])
             y2 = np.array([yrng[0]])
             x1 = np.array([xrng[0]+dxy/2+curprof*dxy])
@@ -814,7 +881,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             y2[filt] = yrng[1]
             x2[filt] = (yrng[1]-c[filt])/m
 
-        elif 90 < pdirval < 180:
+        elif 270 < pdirval < 360:
             x1 = np.arange(xrng[1]-dxy/2, xrng[0], -dxy)
             y1 = np.ones_like(x1)*yrng[1]
             y1a = np.arange(yrng[1]-dxy/2, yrng[0], -dxy)
@@ -835,6 +902,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             x1, x2 = x2, x1
             y1, y2 = y2, y1
 
+
         elif 180 < pdirval < 270:
             x1 = np.arange(xrng[0]+dxy/2, xrng[1], dxy)
             y1 = np.ones_like(x1)*yrng[1]
@@ -853,7 +921,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             y2[filt] = yrng[0]
             x2[filt] = (yrng[0]-c[filt])/m
 
-        elif pdirval > 270:
+        elif 90 < pdirval < 180:
             x1 = np.arange(xrng[0]+dxy/2, xrng[1], dxy)
             y1 = np.ones_like(x1)*yrng[0]
             y1a = np.arange(yrng[0]+dxy/2, yrng[1], dxy)
@@ -877,7 +945,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         if len(x1) == 1:
             curprof = 0
 
-        ang = -np.deg2rad(pdirval)
+        ang =  np.deg2rad(pdirval)
         cntr = np.array([x1[0], y1[0]])
 
         pts1 = np.transpose([x1, y1])
@@ -886,15 +954,28 @@ class ProfileDisplay(QtWidgets.QWidget):
         pts2 = np.transpose([x2, y2])
         pts2r = rotate2d(pts2, cntr, ang)
 
-        px1 = pts1r[:, 0]
-        px2 = pts2r[:, 0]
+#        px1 = pts1r[:, 0]
+#        px2 = pts2r[:, 0]
+#
+#        minx = px1.min()
+#        px1 = px1 - minx
+#        px2 = px2 - minx
 
-        minx = px1.min()
-        px1 = px1 - minx
-        px2 = px2 - minx
+#        right = px2.max()
+
+        py1 = pts1r[:, 1]
+        py2 = pts2r[:, 1]
+
+        miny = py1.min()
+        py1 = py1 - miny
+        py2 = py2 - miny
+
+        px1, px2 = py1, py2
+        right = py2.max()
+
+
 
         bottom, top = self.lmod1.zrange
-        right = px2.max()
 
         self.extent_side = [0., right, bottom, top]
 
@@ -906,10 +987,11 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     def prof_dir(self, slide=True):
         """ Radio button profile direction """
-        dirval = self.dial_prof_dir.value()
-        pdirval = 360-dirval
-        if pdirval == 360:
-            pdirval = 0.
+        pdirval = self.dial_prof_dir.value()
+#        print(dirval)
+#        pdirval = 360-dirval
+#        if pdirval == 360:
+#            pdirval = 0.
 
         self.sb_prof_dir.valueChanged.disconnect()
         self.sb_prof_dir.setValue(pdirval)
@@ -920,15 +1002,28 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_sideview.setEnabled(False)
 
         self.sb_layer.setMaximum(self.lmod1.numz-1)
+
         if pdirval in (0., 180):
-            self.sb_profnum.setMaximum(self.lmod1.numy-1)
-            self.hs_profnum.setMaximum(self.lmod1.numy-1)
-        elif pdirval in (90., 270):
             self.sb_profnum.setMaximum(self.lmod1.numx-1)
             self.hs_profnum.setMaximum(self.lmod1.numx-1)
+        elif pdirval in (90., 270):
+            self.sb_profnum.setMaximum(self.lmod1.numy-1)
+            self.hs_profnum.setMaximum(self.lmod1.numy-1)
         else:
             self.sb_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
             self.hs_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
+
+
+
+#        if pdirval in (0., 180):
+#            self.sb_profnum.setMaximum(self.lmod1.numy-1)
+#            self.hs_profnum.setMaximum(self.lmod1.numy-1)
+#        elif pdirval in (90., 270):
+#            self.sb_profnum.setMaximum(self.lmod1.numx-1)
+#            self.hs_profnum.setMaximum(self.lmod1.numx-1)
+#        else:
+#            self.sb_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
+#            self.hs_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
 
         self.calc_prof_limits()
         gtmp = self.get_model()
@@ -942,10 +1037,10 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     def sprofdir(self):
         """ spinbox prof dir """
-        pdirval = self.sb_prof_dir.value()
-        dirval = 360-pdirval
-        if dirval == 360:
-            dirval = 0.
+        dirval = self.sb_prof_dir.value()
+#        dirval = 360-pdirval
+#        if dirval == 360:
+#            dirval = 0.
 
         self.dial_prof_dir.setValue(dirval)
         self.prof_dir()
