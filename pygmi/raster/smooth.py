@@ -25,6 +25,7 @@
 """ Smooth Data """
 
 import copy
+import warnings
 from PyQt5 import QtWidgets
 import numpy as np
 import scipy.signal as ssig
@@ -39,8 +40,12 @@ class Smooth(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = parent.pbar
-        self.reportback = self.parent.showprocesslog
+        if parent is not None:
+            self.reportback = self.parent.showprocesslog
+            self.piter = self.parent.pbar.iter
+        else:
+            self.reportback = print
+            self.piter = iter
 
         self.label = QtWidgets.QLabel('X:')
         self.spinbox_x = QtWidgets.QSpinBox()
@@ -131,14 +136,15 @@ class Smooth(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self):
+    def settings(self, test=False):
         """ Settings """
-        temp = self.exec_()
-        if temp == 0:
-            return False
+        if test is not True:
+            temp = self.exec_()
+            if temp == 0:
+                return False
+            self.parent.process_is_active(True)
 
-        self.parent.process_is_active(True)
-        self.parent.showprocesslog('Smoothing ')
+        self.reportback('Smoothing ')
         data = copy.deepcopy(self.indata['Raster'])
         if self.radiobutton_2dmean.isChecked():
             for i, _ in enumerate(data):
@@ -150,9 +156,10 @@ class Smooth(QtWidgets.QDialog):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
                                                  '2D Median', data[i].dataid)
 
-        self.parent.process_is_active(False)
+        if test is not True:
+            self.parent.process_is_active(False)
         self.outdata['Raster'] = data
-        self.parent.showprocesslog('Finished!', True)
+        self.reportback('Finished!', True)
 
         return True
 
@@ -271,18 +278,18 @@ class Smooth(QtWidgets.QDialog):
 
         if itype == '2D Mean':
             out = ssig.correlate(dat, fmat, 'same', method='direct')
-            self.pbar.to_max()
+            #self.pbar.to_max()
 
         elif itype == '2D Median':
-            self.parent.showprocesslog('Calculating Median...')
+            self.reportback('Calculating Median...')
             out = np.ma.zeros([rowd, cold])*np.nan
             out.mask = np.ma.getmaskarray(dat)
             fmat = fmat.astype(bool)
             dummy = dummy.data
 
-            for i in self.pbar.iter(range(rowd)):
-                self.parent.showprocesslog(title+' Progress: ' +
-                                           str(round(100*i/rowd))+'%', True)
+            for i in self.piter(range(rowd)):
+                self.reportback(title+' Progress: ' +
+                                str(round(100*i/rowd))+'%', True)
                 for j in range(cold):
                     tmp1 = dummy[i:i+rowf, j:j+colf][fmat]
                     if np.isnan(tmp1).min() == False:
@@ -383,6 +390,6 @@ def filters2d(filtertype, sze, *sigma):
         f = np.exp(-radsqrd/(2*sigma[0]**2))
         f = f/np.sum(f[:])
     else:
-        print('Unrecognized filter type')
+        warnings.warn('Unrecognized filter type')
 
     return f

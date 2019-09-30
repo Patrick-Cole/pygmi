@@ -53,7 +53,14 @@ class Cluster(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = parent.pbar
+        if parent is not None:
+            self.pbar = parent.pbar
+            self.reportback = self.parent.showprocesslog
+            self.piter = parent.pbar.iter
+        else:
+            self.pbar = None
+            self.reportback = print
+            self.piter = iter
 
         self.combobox_alg = QtWidgets.QComboBox()
         self.spinbox_branchfac = QtWidgets.QSpinBox()
@@ -94,8 +101,6 @@ class Cluster(QtWidgets.QDialog):
         self.combobox_alg.addItems(['k-means', 'DBSCAN', 'Birch'])
         self.combobox_alg.currentIndexChanged.connect(self.combo)
         self.combo()
-
-        self.reportback = self.parent.showprocesslog
 
     def setupui(self):
         """ setup UI """
@@ -202,7 +207,7 @@ class Cluster(QtWidgets.QDialog):
             self.label_bthres.show()
             self.doublespinbox_bthres.show()
 
-    def settings(self):
+    def settings(self, test=False):
         """ Settings """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
 
@@ -214,14 +219,18 @@ class Cluster(QtWidgets.QDialog):
         self.min_samples = len(self.indata['Raster'])+1
         self.spinbox_minsamples.setProperty('value', self.min_samples)
 
-        temp = self.exec_()
-        if temp == 0:
-            return False
+        if not test:
+            temp = self.exec_()
+            if temp == 0:
+                return False
 
-        self.parent.process_is_active()
+            self.parent.process_is_active()
+
         self.run()
-        self.parent.process_is_active(False)
-        self.pbar.to_max()
+
+        if not test:
+            self.parent.process_is_active(False)
+            self.pbar.to_max()
         return True
 
     def update_vars(self):
@@ -260,7 +269,7 @@ class Cluster(QtWidgets.QDialog):
             X = skp.RobustScaler().fit_transform(X)
 
         dat_out = []
-        for i in self.pbar.iter(no_clust):
+        for i in self.piter(no_clust):
             if self.cltype != 'DBSCAN':
                 self.reportback('Number of Clusters:'+str(i))
             elif i > no_clust[0]:

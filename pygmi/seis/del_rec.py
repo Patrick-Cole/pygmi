@@ -208,7 +208,7 @@ class Quarry():
             cnt = lls.shape[0]
             nd = []
             rstot = []
-            print('daylight events left:', hour.sum(), 'of', hour.size)
+            self.showtext('daylight events left: '+str(hour.sum())+' of '+str(hour.size))
 
             # instead of a grid, we are using an actual event location
             # instead of centering on every event, we should use only daytime

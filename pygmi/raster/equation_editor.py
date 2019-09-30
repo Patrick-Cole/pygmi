@@ -150,7 +150,7 @@ class EquationEditor(QtWidgets.QDialog):
 
         return neweq
 
-    def settings(self):
+    def settings(self, equation = None):
         """ Settings """
         localdict = {}
         bandsall = []
@@ -179,12 +179,13 @@ class EquationEditor(QtWidgets.QDialog):
         localdict_list = list(localdict.keys())
         localdict['iall'] = np.ma.array(bandsall)
 
-        temp = self.exec_()
+        if equation is None:
+            temp = self.exec_()
 
-        if temp == 0:
-            return False
+            if temp == 0:
+                return False
 
-        equation = self.textbrowser.toPlainText()
+            equation = self.textbrowser.toPlainText()
 
         if equation == '':
             return False

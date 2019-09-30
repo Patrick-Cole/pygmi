@@ -33,7 +33,9 @@ import warnings
 from pygmi.main import main
 
 warnings.filterwarnings('default')
-
+warnings.filterwarnings("ignore", message="numpy.dtype size changed")
+warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
+warnings.filterwarnings("ignore", message="numpy.ndarray size changed")
 
 if __name__ == "__main__":
     main()

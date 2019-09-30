@@ -65,6 +65,7 @@ class ProcessData(QtWidgets.QDialog):
         self.checkbox = QtWidgets.QCheckBox('Apply to all stations:')
         self.density = QtWidgets.QLineEdit('2670')
         self.absbase = QtWidgets.QLineEdit('978032.67715')
+        self.basethres = QtWidgets.QLineEdit('10000')
 
         self.setupui()
 
@@ -75,6 +76,7 @@ class ProcessData(QtWidgets.QDialog):
         helpdocs = menu_default.HelpButton('pygmi.grav.dataprep.processdata')
         label_density = QtWidgets.QLabel('Background Density (kg/m3):')
         label_absbase = QtWidgets.QLabel('Base Station Absolute Gravity (mGal):')
+        label_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
 
 #        self.dsb_null.setMaximum(np.finfo(np.double).max)
 #        self.dsb_null.setMinimum(np.finfo(np.double).min)
@@ -91,6 +93,8 @@ class ProcessData(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.density, 0, 1, 1, 1)
         gridlayout_main.addWidget(label_absbase, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.absbase, 1, 1, 1, 1)
+        gridlayout_main.addWidget(label_bthres, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.basethres, 2, 1, 1, 1)
         gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
@@ -112,6 +116,7 @@ class ProcessData(QtWidgets.QDialog):
         try:
             float(self.density.text())
             float(self.absbase.text())
+            float(self.basethres.text())
         except ValueError:
             self.parent.showprocesslog('Value Error')
             return False
@@ -128,6 +133,7 @@ class ProcessData(QtWidgets.QDialog):
 
         dat = self.indata['Line'].data
 
+        basethres = float(self.basethres.text())
 
 # Convert multiple lines to single dataset.
         pdat = None
@@ -138,7 +144,9 @@ class ProcessData(QtWidgets.QDialog):
             pdat = np.append(pdat, dat[i])
 
 # Drift Correction, to abs base value
-        driftdat = pdat[pdat['STATION'] > self.basethres]
+        driftdat = pdat[pdat['STATION'] > basethres]
+
+        pdat = pdat[pdat['STATION'] < basethres]
 
         x = pdat['DECTIMEDATE']
         xp = driftdat['DECTIMEDATE']

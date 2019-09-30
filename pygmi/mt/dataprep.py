@@ -42,6 +42,8 @@ import mtpy.modeling.occam1d as occam1d
 from mtpy.core.mt import MT
 from mtpy.core.z import Z, Tipper
 
+import pygmi.menu_default as menu_default
+
 
 class Metadata(QtWidgets.QDialog):
     """
@@ -334,6 +336,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
         self.parent = parent
 
         self.setWindowTitle('Remove Static Shift')
+        helpdocs = menu_default.HelpButton('pygmi.mt.static')
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -378,6 +381,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
         hbl3.addWidget(label4)
         hbl3.addWidget(self.shifty)
 
+        hbl2.addWidget(helpdocs)
         hbl2.addWidget(pb_reset)
         hbl2.addWidget(pb_apply)
 
@@ -499,6 +503,8 @@ class RotateEDI(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
+        helpdocs = menu_default.HelpButton('pygmi.mt.rotate')
+
         hbl.addWidget(label1)
         hbl.addWidget(self.combobox1)
         hbl.addWidget(label2)
@@ -506,6 +512,7 @@ class RotateEDI(QtWidgets.QDialog):
         hbl.addWidget(label3)
         hbl.addWidget(self.spinbox)
 
+        hbl2.addWidget(helpdocs)
         hbl2.addWidget(pb_reset)
         hbl2.addWidget(pb_apply)
 
@@ -808,6 +815,7 @@ class EditEDI(QtWidgets.QDialog):
         self.parent = parent
 
         self.setWindowTitle('Edit EDI data')
+        helpdocs = menu_default.HelpButton('pygmi.mt.edit')
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -842,6 +850,7 @@ class EditEDI(QtWidgets.QDialog):
 #        hbl.addWidget(label3)
 #        hbl.addWidget(self.spinbox)
 
+        hbl2.addWidget(helpdocs)
         hbl2.addWidget(pb_reset)
         hbl2.addWidget(pb_apply)
 
@@ -1052,6 +1061,7 @@ class Occam1D(QtWidgets.QDialog):
         self.cursoln = 0
 
         self.setWindowTitle('Occam 1D Inversion')
+        helpdocs = menu_default.HelpButton('pygmi.mt.occam1d')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Fixed)
@@ -1156,6 +1166,7 @@ class Occam1D(QtWidgets.QDialog):
         gbl.addWidget(pb_apply, 14, 0, 1, 2)
         gbl.addWidget(buttonbox, 15, 0, 1, 2)
 
+        hbl2.addWidget(helpdocs)
         hbl2.addWidget(self.lbl_profnum)
         hbl2.addWidget(self.hs_profnum)
 

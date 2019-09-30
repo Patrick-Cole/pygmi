@@ -1380,22 +1380,3 @@ def tonumber(test, alttext=None):
         return float(test)
 
     return int(test)
-
-
-def main():
-    """ main test """
-    datadir = r'C:\Work\Programming\pygmi\data\MT\\'
-    edi_file = datadir+r"synth02.edi"
-
-    # Create an MT object
-    mt_obj = MT(edi_file)
-
-    print('loading complete')
-
-    app = QtWidgets.QApplication(sys.argv)
-    test = Occam1D(None)
-    test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
-    test.settings()
-
-if __name__ == "__main__":
-    main()

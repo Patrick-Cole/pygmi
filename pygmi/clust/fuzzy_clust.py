@@ -51,8 +51,15 @@ class FuzzyClust(QtWidgets.QDialog):
 
         self.indata = {}
         self.outdata = {}
-        self.parent = parent
-        self.pbar = parent.pbar
+        if parent is not None:
+            self.parent = parent
+            self.pbar = parent.pbar
+            self.reportback = parent.showprocesslog
+            self.piter = parent.pbar.iter
+        else:
+            self.pbar = None
+            self.reportback = print
+            self.piter = iter
 
         self.combobox_alg = QtWidgets.QComboBox()
         self.doublespinbox_maxerror = QtWidgets.QDoubleSpinBox()
@@ -89,8 +96,6 @@ class FuzzyClust(QtWidgets.QDialog):
 #                                   , 'Gath-Geva'])
         self.combobox_alg.currentIndexChanged.connect(self.combo)
         self.combo()
-
-        self.reportback = self.parent.showprocesslog
 
     def setupui(self):
         """ Setup UI """
@@ -176,7 +181,7 @@ class FuzzyClust(QtWidgets.QDialog):
             self.label_7.hide()
             self.doublespinbox_constraincluster.hide()
 
-    def settings(self):
+    def settings(self, test=False):
         """ Settings """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
@@ -184,16 +189,19 @@ class FuzzyClust(QtWidgets.QDialog):
                             'sizes. Merge the data first')
             return
 
-        self.update_vars()
-        temp = self.exec_()
-        if temp == 0:
-            return
+        if not test:
+            self.update_vars()
+            temp = self.exec_()
+            if temp == 0:
+                return
 
-        self.parent.process_is_active()
+            self.parent.process_is_active()
         self.run()
-        self.parent.process_is_active(False)
 
-        self.pbar.to_max()
+        if not test:
+            self.parent.process_is_active(False)
+            self.pbar.to_max()
+
         return True
 
     def update_vars(self):
@@ -630,7 +638,7 @@ class FuzzyClust(QtWidgets.QDialog):
 #    num2unicode(info(1)),'/[',num2unicode(info(2)),
 #     ' ',num2unicode(info(3)),'] Run: ',num2unicode(info(4)),'/',
 #    num2unicode(info(5))])
-        for i in self.pbar.iter(range(maxit)):  # loop over all iterations
+        for i in self.piter(range(maxit)):  # loop over all iterations
             # waitbar(i/maxit,hh)
             cent_prev = cent  # store result of last iteration
             uprev = uuu
@@ -652,7 +660,6 @@ class FuzzyClust(QtWidgets.QDialog):
                                                         obj_fcn[i]) /
                                                        obj_fcn[i - 1])), True)
 
-    #        if i > 0:
     # if objective function has increased
                 if obj_fcn[i] > obj_fcn[i - 1]:
                     uuu = uprev  # use memberships and

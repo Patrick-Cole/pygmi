@@ -691,196 +691,58 @@ def __taper2d(g, npts, c, r, cdiff, rdiff):
             gf[i, j] = gf[i, j]*tmp
             gf[npts2-i, j] = gf[npts2-i, j]*tmp
 
-#    for j in range(rdiff):
-#        tmp = ((1+np.sin(-np.pi/2+j*np.pi/(rdiff)))*0.5)
-#        for i in range(cdiff, cdiff+c):
-#            gf[i, j] = gf[i, j]*tmp
-#            gf[i, npts2-j-1] = gf[i, npts2-j-1]*tmp
-#
-#    for i in range(cdiff):
-#        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(cdiff)))*0.5)
-#        for j in range(rdiff):
-#            gf[i, j] = gf[i, j]*tmp
-#            gf[npts2-i, j] = gf[npts2-i, j]*tmp
-#
-#    for i in range(cdiff):
-#        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(cdiff)))*0.5)
-#        for j in range(rdiff+m-1, npts):
-#            gf[i, j] = gf[i, j]*tmp
-#            gf[npts2-i, j] = gf[npts2-i, j]*tmp
-#
-#    for j in range(rdiff+m-1, npts):  # Corners
-#        for i in range(cdiff+n-1, npts):
-#            if cdiff == 0 or rdiff == 0:
-#                gf[i, j] = np.nan
-#            else:
-#                gf[i, j] = (gf[i, j] *
-#                            np.cos((i+1-cdiff-n)*np.pi/(2*cdiff)) *
-#                            np.cos((j+1-cdiff-m)*np.pi/(2*rdiff)))
-#
-#    for j in range(rdiff):
-#        for i in range(cdiff):
-#            if cdiff == 0 or rdiff == 0:
-#                gf[i, j] = np.nan
-#            else:
-#                gf[i, j] = (gf[i, j] *
-#                            np.cos((i+1-cdiff)*np.pi/(2*cdiff)) *
-#                            np.cos((j+1-cdiff)*np.pi/(2*rdiff)))
-#
-#    for j in range(rdiff):
-#        for i in range(cdiff+n-1, npts):
-#            if cdiff == 0 or rdiff == 0:
-#                gf[i, j] = np.nan
-#            else:
-#                gf[i, j] = (gf[i, j] *
-#                            np.cos((i+1-cdiff-n)*np.pi/(2*cdiff)) *
-#                            np.cos((j+1-cdiff)*np.pi/(2*rdiff)))
-#
-#    for j in range(rdiff+m, npts):
-#        for i in range(cdiff):
-#            if cdiff == 0 or rdiff == 0:
-#                gf[i, j] = np.nan
-#            else:
-#                gf[i, j] = (gf[i, j] *
-#                            np.cos((i+1-cdiff)*np.pi/(2*cdiff)) *
-#                            np.cos((j+1-cdiff-m)*np.pi/(2*rdiff)))
+    for j in range(rdiff):
+        tmp = ((1+np.sin(-np.pi/2+j*np.pi/(rdiff)))*0.5)
+        for i in range(cdiff, cdiff+c):
+            gf[i, j] = gf[i, j]*tmp
+            gf[i, npts2-j-1] = gf[i, npts2-j-1]*tmp
+
+    for i in range(cdiff):
+        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(cdiff)))*0.5)
+        for j in range(rdiff):
+            gf[i, j] = gf[i, j]*tmp
+            gf[npts2-i, j] = gf[npts2-i, j]*tmp
+
+    for i in range(cdiff):
+        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(cdiff)))*0.5)
+        for j in range(rdiff+m-1, npts):
+            gf[i, j] = gf[i, j]*tmp
+            gf[npts2-i, j] = gf[npts2-i, j]*tmp
+
+    for j in range(rdiff+m-1, npts):  # Corners
+        for i in range(cdiff+n-1, npts):
+            if cdiff == 0 or rdiff == 0:
+                gf[i, j] = np.nan
+            else:
+                gf[i, j] = (gf[i, j] *
+                            np.cos((i+1-cdiff-n)*np.pi/(2*cdiff)) *
+                            np.cos((j+1-cdiff-m)*np.pi/(2*rdiff)))
+
+    for j in range(rdiff):
+        for i in range(cdiff):
+            if cdiff == 0 or rdiff == 0:
+                gf[i, j] = np.nan
+            else:
+                gf[i, j] = (gf[i, j] *
+                            np.cos((i+1-cdiff)*np.pi/(2*cdiff)) *
+                            np.cos((j+1-cdiff)*np.pi/(2*rdiff)))
+
+    for j in range(rdiff):
+        for i in range(cdiff+n-1, npts):
+            if cdiff == 0 or rdiff == 0:
+                gf[i, j] = np.nan
+            else:
+                gf[i, j] = (gf[i, j] *
+                            np.cos((i+1-cdiff-n)*np.pi/(2*cdiff)) *
+                            np.cos((j+1-cdiff)*np.pi/(2*rdiff)))
+
+    for j in range(rdiff+m, npts):
+        for i in range(cdiff):
+            if cdiff == 0 or rdiff == 0:
+                gf[i, j] = np.nan
+            else:
+                gf[i, j] = (gf[i, j] *
+                            np.cos((i+1-cdiff)*np.pi/(2*cdiff)) *
+                            np.cos((j+1-cdiff-m)*np.pi/(2*rdiff)))
 
     return gf
-
-
-def test():
-    """Test routine."""
-    import pygmi.raster.iodefs as io
-    import matplotlib.pyplot as plt
-
-    ifile = r'C:\Work\Programming\pygmi\data\testdata.hdr'
-    idat = io.get_raster(ifile)
-
-    idat = idat[2]  # Get magnetic data
-    z = idat.data
-    nr, nc = z.shape
-
-# Gridding test
-#    y, x = np.mgrid[0:nr, 0:nc]
-#    x1 = x[~z.mask]
-#    y1 = y[~z.mask]
-#    z1 = z[~z.mask]
-#
-#    z1 = z1-np.median(z1)
-#
-#    data = si2.griddata((x1, y1), z1, (x, y), 'nearest')
-
-    data = z
-
-    z2 = vertical(data)
-    z2 = np.ma.array(z2, mask=z.mask)
-
-    plt.figure(figsize=(8, 8))
-    plt.title('original')
-    plt.imshow(data)
-    plt.colorbar()
-    plt.show()
-
-    plt.figure(figsize=(8, 8))
-    plt.title('vertical')
-    plt.imshow(z2, vmin=-2, vmax=2)
-    plt.colorbar()
-    plt.show()
-
-    z2a = z2
-
-# Gridding test 2
-    y, x = np.mgrid[0:nr, 0:nc]
-    x1 = x[~z.mask]
-    y1 = y[~z.mask]
-    z1 = z[~z.mask]
-
-    npts = 512
-    cdiff = int(np.floor((npts-nc)/2))
-    rdiff = int(np.floor((npts-nr)/2))
-    x1 = x1 + cdiff
-    y1 = y1 + rdiff
-
-    y, x = np.mgrid[0:npts, 0:npts]
-
-    data = si2.griddata((x1, y1), z1, (x, y), 'nearest')
-    z2 = vertical(data)
-    rdiff = rdiff-1
-    cdiff = cdiff-1
-    z2 = z2[rdiff:rdiff+nr, cdiff:cdiff+nc]
-    z2 = np.ma.array(z2, mask=z.mask)
-
-
-    plt.figure(figsize=(8, 8))
-    plt.title('original')
-    plt.imshow(data)
-    plt.colorbar()
-    plt.show()
-
-    plt.figure(figsize=(8, 8))
-    plt.title('vertical')
-    plt.imshow(z2, vmin=-2, vmax=2)
-    plt.colorbar()
-    plt.show()
-
-
-    z2b = z2
-
-    # Difference
-
-    z3 = z2a-z2b
-
-    plt.figure(figsize=(8, 8))
-    plt.title('difference')
-    plt.imshow(z3)
-    plt.colorbar()
-    plt.show()
-
-    x = np.arange(-2*np.pi, 2*np.pi, 0.1)
-    y = np.sinc(x)
-
-    plt.plot(x, y)
-    plt.show()
-
-    z4 = z2.compressed()
-
-    plt.hist(z4, 100)
-    plt.show()
-
-
-#    z2 = z.filled(0.)
-
-#    x, y = np.mgrid[0:z.shape[0], 0:z.shape[1]]
-#    x1 = x[~z.mask]
-#    y1 = y[~z.mask]
-#    z1 = z[~z.mask]
-#
-#    z2 = si2.griddata((x1, y1), z1, (x, y), 'linear', fill_value=0.0)
-#
-#    nr, nc = z2.shape
-#
-#    nmax = np.max([nr, nc])
-#    npts = int(2**nextpow2(nmax))
-#    cdiff = int(np.floor((npts-nc)/2))
-#    rdiff = int(np.floor((npts-nr)/2))
-#
-#    z2 = z2*0 + np.random.rand(nr, nc)
-#
-#    z3 = __taper2d(z2, npts, nc, nr, cdiff, rdiff)
-#
-#
-#    z2 = z.filled(0)
-
-#    z3 = vertical(z)
-
-#    ff = si2.interpolate.CloughTocher2DInterpolator
-
-#    z3 = np.ma.array(z3, mask=z.mask)
-
-    breakpoint()
-
-
-
-if __name__ == "__main__":
-    # doctest.testmod(pygmi.raster)
-    test()

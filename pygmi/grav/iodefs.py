@@ -78,7 +78,7 @@ class ImportCG5(QtWidgets.QDialog):
         """Set up UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
+        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
         label_xchan = QtWidgets.QLabel('Longitude:')
         label_ychan = QtWidgets.QLabel('Latitude:')
         label_zchan = QtWidgets.QLabel('Elevation:')
@@ -131,7 +131,7 @@ class ImportCG5(QtWidgets.QDialog):
             return tmp
 
         dfmerge = pd.merge(self.df_cg5, self.df_gps, left_on='STATION',
-                           right_on='Station')
+                           right_on='Station', how='left')
 
         dat = {}
         lines = dfmerge.LINE.unique()

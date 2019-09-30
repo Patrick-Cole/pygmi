@@ -50,8 +50,16 @@ class CrispClust(QtWidgets.QDialog):
 
         self.indata = {}
         self.outdata = {}
-        self.parent = parent
-        self.pbar = parent.pbar
+
+        if parent is not None:
+            self.parent = parent
+            self.pbar = parent.pbar
+            self.reportback = parent.showprocesslog
+            self.piter = parent.pbar.iter
+        else:
+            self.pbar = None
+            self.reportback = print
+            self.piter = iter
 
         self.spinbox_maxclusters = QtWidgets.QSpinBox()
         self.combobox_alg = QtWidgets.QComboBox()
@@ -85,8 +93,6 @@ class CrispClust(QtWidgets.QDialog):
         self.combobox_alg.addItems(['k-means', 'advanced k-means', 'w-means'])
         self.combobox_alg.currentIndexChanged.connect(self.combo)
         self.combo()
-
-        self.reportback = self.parent.showprocesslog
 
     def setupui(self):
         """ setup UI """
@@ -166,7 +172,7 @@ class CrispClust(QtWidgets.QDialog):
             self.label_7.hide()
             self.doublespinbox_constraincluster.hide()
 
-    def settings(self):
+    def settings(self, test=False):
         """ Settings """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
@@ -175,14 +181,18 @@ class CrispClust(QtWidgets.QDialog):
             return
 
         self.update_vars()
-        temp = self.exec_()
-        if temp == 0:
-            return
 
-        self.parent.process_is_active()
+        if not test:
+            temp = self.exec_()
+            if temp == 0:
+                return
+
+            self.parent.process_is_active()
         self.run()
-        self.parent.process_is_active(False)
-        self.pbar.to_max()
+
+        if not test:
+            self.parent.process_is_active(False)
+            self.pbar.to_max()
         return True
 
     def update_vars(self):
@@ -547,7 +557,7 @@ class CrispClust(QtWidgets.QDialog):
         obj_fcn_prev = obj_fcn_initial
         obj_fcn = np.zeros(maxit)  # This is new - we must initialize this.
 
-        for i in self.pbar.iter(range(maxit)):  # =1:maxit. loop over all iters
+        for i in self.piter(range(maxit)):  # =1:maxit. loop over all iters
             cent_prev = cent  # store result of last iteration
             idx_prev = idx
             dist_prev = edist
@@ -573,17 +583,19 @@ class CrispClust(QtWidgets.QDialog):
     # calc new objective function size
             obj_fcn[i] = np.sum(mindist**2)
 
+            if obj_fcn[i] == 0:
+                obj_fcn_dif = 0
+            else:
+                obj_fcn_dif = 100 * ((obj_fcn_prev-obj_fcn[i]) / obj_fcn[i])
+
             self.reportback('Iteration: ' + str(i) + ' Threshold: ' +
                             str(term_thresh) + ' Current: ' +
-                            '{:.2e}'.format(100 *
-                                            ((obj_fcn_prev-obj_fcn[i]) /
-                                             obj_fcn[i])), True)
+                            '{:.2e}'.format(obj_fcn_dif), True)
     # if no termination threshold provided, ignore this and do all iterations
             if term_thresh > 0:
                 # if the improvement between the last two iterations was less
                 # than a defined threshold in percent
-                if (100*((obj_fcn_prev-obj_fcn[i])/obj_fcn[i]) < term_thresh
-                        or obj_fcn[i] > obj_fcn_prev):
+                if (obj_fcn_dif < term_thresh or obj_fcn[i] > obj_fcn_prev):
                     # go back to the results of the previous iteration
                     idx = idx_prev
                     cent = cent_prev

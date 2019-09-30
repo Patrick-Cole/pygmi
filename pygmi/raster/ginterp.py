@@ -1702,8 +1702,8 @@ def currentshader(data, cell, theta, phi, alpha):
 
 def histcomp(img, nbr_bins=256):
     """
-    Histogram Compaction - this eliminates 5% of the outliers in data, allowing
-    for a cleaner, linear, representation of the data.
+    Histogram Compaction - this compacts 5% of the outliers in data,
+    allowing for a cleaner, linear, representation of the data.
 
     Parameters
     ----------
@@ -1793,7 +1793,7 @@ def histeq(img, nbr_bins=32768):
     return im2
 
 
-def img2rgb(img, cbar):
+def img2rgb(img, cbar=cm.jet):
     """
     convert image to  4 channel rgba color image
 

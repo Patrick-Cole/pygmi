@@ -29,6 +29,7 @@ from __future__ import print_function
 import ctypes
 import os
 import sys
+import warnings
 import numpy as np
 
 # The next two lines are fixes for types in PyOpenGL. They are not used, so
@@ -521,7 +522,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
                 if vtx.size == 0:
                     self.lmod1.update_lith_list_reverse()
                     lithtext = self.lmod1.lith_list_reverse[lno]
-                    print(lithtext)
+#                    print(lithtext)
 
                     self.faces[lno] = []
                     self.corners[lno] = []
@@ -1117,7 +1118,7 @@ def MarchingCubes(x, y, z, c, iso):
     iden = np.nonzero(cedge.flatten(order='F'))[0]
 
     if iden.size == 0:          # all voxels are above or below iso
-        print('No such lithology, or all voxels are above or below iso')
+        warnings.warn('No such lithology, or all voxels are above or below iso')
         F = []
         V = []
         return F, V

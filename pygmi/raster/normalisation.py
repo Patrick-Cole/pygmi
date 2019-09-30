@@ -29,6 +29,7 @@ import warnings
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pygmi.menu_default as menu_default
+from pygmi.raster.ginterp import histeq
 
 
 warnings.simplefilter('always', RuntimeWarning)
@@ -42,8 +43,12 @@ class Normalisation(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = parent.pbar
-        self.reportback = self.parent.showprocesslog
+        if parent is not None:
+            self.pbar = parent.pbar
+            self.reportback = self.parent.showprocesslog
+        else:
+            self.pbar = None
+            self.reportback = print
 
         self.radiobutton_interval = QtWidgets.QRadioButton('Interval [0 1]')
         self.radiobutton_mean = QtWidgets.QRadioButton('Mean: zero,  Standard deviation: unity')
@@ -87,11 +92,12 @@ class Normalisation(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self):
+    def settings(self, test=False):
         """ Settings """
-        temp = self.exec_()
-        if temp == 0:
-            return False
+        if not test:
+            temp = self.exec_()
+            if temp == 0:
+                return False
 
         data = copy.deepcopy(self.indata['Raster'])
         transform = np.zeros((2, 2))
@@ -115,37 +121,16 @@ class Normalisation(QtWidgets.QDialog):
                 i, transform = datacommon(i, tmp1, tmp2, tmp3)
         elif self.radiobutton_8bit.isChecked():
             for i in data:
-                nlevels = 256
-                no_pix = i.data.count()
-                dummy_dat = np.sort(i.data[np.isnan(i.data) != 1],
-                                    axis=None)
-
-                ndat_eq = np.array(i.data, copy=True) * np.nan
-                transform = np.zeros((nlevels, 2))
-                tmp = i.data.flatten('F')
-                tmpndat = ndat_eq.flatten('F')
-                for j in range(nlevels):
-                    cop = np.int(np.round(float(j+1)*(no_pix/nlevels)))
-                    cutoff = dummy_dat[cop-1]
-                    idx = np.nonzero(tmp < cutoff)
-                    transform[j, 0:2] = [j+1, np.nanmedian(tmp[idx])]
-                    tmp[idx] = np.nan
-                    tmp = np.ma.fix_invalid(tmp)
-                    tmpndat[idx] = j+1
-                ndat_eq = np.reshape(tmpndat, i.data.shape, 'F')
-                tmpd = np.ma.array(ndat_eq)
-                i.data = tmpd.astype('float32')
-                i.data = np.ma.masked_invalid(i.data)
-#                n_norms = len(i.norm)
-#                i.norm[n_norms] = {'type': 'histeq',
-#                                   'transform': transform}
+                i.data = histeq(i.data)
+                i.data = 255*(i.data/i.data.ptp())
 
         # Correct the null value
         for i in data:
             i.data.data[i.data.mask] = i.nullvalue
 
         self.outdata['Raster'] = data
-        self.pbar.to_max()
+        if self.pbar is not None:
+            self.pbar.to_max()
         return True
 
 

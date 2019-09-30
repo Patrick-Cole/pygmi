@@ -49,6 +49,7 @@ translated into Python from the Geomag code.
 """
 
 import os
+import warnings
 from math import sin
 from math import cos
 from math import sqrt
@@ -140,8 +141,12 @@ class IGRF(QtWidgets.QDialog):
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.reportback = self.parent.showprocesslog
-        self.pbar = self.parent.pbar
+        if parent is None:
+            self.reportback = print
+            self.piter = iter
+        else:
+            self.reportback = self.parent.showprocesslog
+            self.piter = self.parent.pbar.iter
 
         MAXDEG = 13
         MAXCOEFF = (MAXDEG*(MAXDEG+2)+1)
@@ -219,14 +224,17 @@ class IGRF(QtWidgets.QDialog):
         orig_wkt = self.proj.wkt
 
         orig = osr.SpatialReference()
-        orig.ImportFromWkt(orig_wkt)
+        if orig_wkt == '':
+            orig.SetWellKnownGeogCS('WGS84')
+        else:
+            orig.ImportFromWkt(orig_wkt)
 
         targ = osr.SpatialReference()
         targ.SetWellKnownGeogCS('WGS84')
 
         self.ctrans = osr.CoordinateTransformation(orig, targ)
 
-    def settings(self):
+    def settings(self, test=None):
         """
         Settings Dialog. This is the main entrypoint into this routine. It also
         contains the main IGRF code.
@@ -242,15 +250,19 @@ class IGRF(QtWidgets.QDialog):
             self.combobox_dtm.addItem(i.dataid)
             self.combobox_mag.addItem(i.dataid)
 
-        tmp = self.exec_()
+        if len(data) > 1:
+            self.combobox_dtm.setCurrentIndex(1)
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
-        else:
-            return False
+        if test is None:
+            tmp = self.exec_()
 
-        with open(os.path.join(os.path.dirname(__file__), 'IGRF12.cof')) as mdf:
+            if tmp == 0:
+                return False
+
+        self.acceptall()
+
+        with open(os.path.join(os.path.dirname(__file__),
+                               'IGRF12.cof')) as mdf:
             modbuff = mdf.readlines()
         fileline = -1                            # First line will be 1
         model = []
@@ -337,7 +349,7 @@ class IGRF(QtWidgets.QDialog):
         alli = []
         alld = []
         allf = []
-        for i in self.pbar.iter(range(maxlen)):
+        for i in self.piter(range(maxlen)):
             if igrf_F.mask[i]:
                 continue
 
@@ -718,7 +730,7 @@ class IGRF(QtWidgets.QDialog):
                     self.xtemp = self.xtemp + aa * q[k]
                     self.ztemp = self.ztemp - aa * p[k]
                 else:
-                    print('\nError in subroutine shval3')
+                    warnings.warn('\nError in subroutine shval3')
 
                 l = l + 1
             else:

@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """ Import Data """
 
+import warnings
 import os
 import glob
 import copy
@@ -253,8 +254,9 @@ def clusterprep(dat):
     dat2 = []
     for i in dat:
         if 'Cluster' in i.dataid and 'Membership' not in i.dataid:
-            i.metadata['Cluster']['no_clusters'] = int(i.data.max())
-            i.metadata['Cluster']['memdat'] = [[]]*i.metadata['Cluster']['no_clusters']
+            numclus = int(i.data.max())
+            i.metadata['Cluster']['no_clusters'] = numclus
+            i.metadata['Cluster']['memdat'] = [[]] * numclus
             for j in dat:
                 if 'Membership' in j.dataid and i.dataid in j.dataid:
                     cnt = int(j.dataid.split(':')[0].split()[-1])-1
@@ -296,7 +298,7 @@ class ImportRGBData():
         """ Settings """
         ext = 'GeoTiff (*.tif)'
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
         if filename == '':
             return False
@@ -382,8 +384,8 @@ def get_ascii(ifile):
     adata.shape = (nrows, ncols)
 
     if nbands > 1:
-        print('PyGMI only supports single band ASCII files. '
-              'Only first band will be exported.')
+        warnings.warn('PyGMI only supports single band ASCII files. '
+                      'Only first band will be exported.')
 
     dat = [Data()]
     i = 0
@@ -489,10 +491,11 @@ def get_raster(ifile, nval=None):
 # Note that because the data is stored in a masked array, the array ends up
 # being double the size that it was on the disk.
         dat[i].data = np.ma.masked_invalid(dat[i].data)
-        dat[i].data.mask = np.ma.getmaskarray(dat[i].data) | (dat[i].data == nval)
+        dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
+                            (dat[i].data == nval))
         if dat[i].data.mask.size == 1:
-            dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                np.ma.getmaskarray(dat[i].data))
+            dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape)
+                                + np.ma.getmaskarray(dat[i].data))
 
         dat[i].extent_from_gtr(gtr)
         if bandid == '':
@@ -661,7 +664,8 @@ def get_modis(ifile):
                 nval = float(nval)
 
             dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = np.ma.getmaskarray(dat[i].data) | (dat[i].data == nval)
+            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
+                                (dat[i].data == nval))
             if dat[i].data.mask.size == 1:
                 dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                     np.ma.getmaskarray(dat[i].data))
@@ -881,7 +885,8 @@ def get_aster_ged(ifile):
                 dat[i].data = rtmp2
 
             dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = np.ma.getmaskarray(dat[i].data) | (dat[i].data == nval)
+            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data)
+                                | (dat[i].data == nval))
             if dat[i].data.mask.size == 1:
                 dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
                                     np.ma.getmaskarray(dat[i].data))
@@ -921,7 +926,6 @@ def get_aster_ged(ifile):
             xmax = xmin + cols*dat[i].xdim
 
             dat[i].extent = [xmin, xmax, ymin, ymax]
-
 
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
@@ -1079,7 +1083,8 @@ class ExportData():
                     tmp = copy.deepcopy(i)
                     tmp.memdat = None
                     tmp.data = val
-                    tmp.dataid = 'Membership of class '+str(j+1)+': '+tmp.dataid
+                    tmp.dataid = ('Membership of class ' + str(j+1)
+                                  + ': '+tmp.dataid)
                     newdat.append(tmp)
             data = newdat
 
@@ -1095,12 +1100,14 @@ class ExportData():
             'ENVI (*.hdr);;' + \
             'ERMapper (*.ers);;' + \
             'Geosoft (*.gxf);;' + \
+            'ERDAS Imagine (*.img);;' + \
+            'SAGA binary grid (*.sdat);;' + \
             'Surfer grid (v.6) (*.grd);;' + \
             'ArcInfo ASCII (*.asc);;' + \
             'ASCII XYZ (*.xyz);;' + \
             'ArcGIS BIL (*.bil)'
 
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
             self.parent.process_is_active(False)
@@ -1113,21 +1120,26 @@ class ExportData():
         self.parent.showprocesslog('Export Data Busy...')
 
     # Pop up save dialog box
-        if self.ext == 'ers':
-            self.export_gdal(data, 'ERS')
-        if self.ext == 'gxf':
-            self.export_gxf(data)
-        if self.ext == 'grd':
-            self.export_surfer(data)
-        if self.ext == 'asc':
+        if filt == 'ArcInfo ASCII (*.asc)':
             self.export_ascii(data)
-        if self.ext == 'xyz':
+        if filt == 'ASCII XYZ (*.xyz)':
             self.export_ascii_xyz(data)
-        if self.ext == 'tif':
+        if filt == 'Geosoft (*.gxf)':
+            self.export_gxf(data)
+        if filt == 'Surfer grid (v.6) (*.grd)':
+            self.export_surfer(data)
+#            self.export_gdal(data, 'GSBG')
+        if filt == 'ERDAS Imagine (*.img)':
+            self.export_gdal(data, 'HFA')
+        if filt == 'ERMapper (*.ers)':
+            self.export_gdal(data, 'ERS')
+        if filt == 'SAGA binary grid (*.sdat)':
+            self.export_gdal(data, 'SAGA')
+        if filt == 'GeoTiff (*.tif)':
             self.export_gdal(data, 'GTiff')
-        if self.ext == 'hdr':
+        if filt == 'ENVI (*.hdr)':
             self.export_gdal(data, 'ENVI')
-        if self.ext == 'bil':
+        if filt == 'ArcGIS BIL (*.bil)':
             self.export_gdal(data, 'EHdr')
 
         self.parent.showprocesslog('Export Data Finished!')
@@ -1168,7 +1180,15 @@ class ExportData():
             fmt = gdal.GDT_Float32
             dtype = np.float32
             tmpfile = tmp[0] + '.bil'
-        else:
+        elif drv == 'GSBG':
+            tmpfile = tmp[0]+'.grd'
+            fmt = gdal.GDT_Float32
+            dtype = np.float32
+        elif drv == 'SAGA':
+            tmpfile = tmp[0]+'.sdat'
+        elif drv == 'HFA':
+            tmpfile = tmp[0]+'.img'
+        else:  # ENVI and ER Mapper
             tmpfile = tmp[0]
 
         drows, dcols = data[0].data.shape
@@ -1312,8 +1332,7 @@ class ExportData():
                                        'output filenames since you have a '
                                        'multiple band image')
 
-
-        file_out = self.ifile.rpartition('.')[0]+'.grd'
+        file_out = self.ifile.rpartition('.')[0] + '.grd'
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'grd')
@@ -1416,7 +1435,7 @@ class ExportData():
 
     def get_filename(self, data, ext):
         """
-        Gets a valid filename in teh case of multi band image
+        Gets a valid filename in the case of multi band image
 
         Parameters
         ----------
@@ -1627,7 +1646,5 @@ def get_geosoft(hfile):
     xmax = xmin + ncols*dx
 
     dat[i].extent = [xmin, xmax, ymin, ymax]
-
-
 
     return dat

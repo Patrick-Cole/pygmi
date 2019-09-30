@@ -49,8 +49,8 @@ def test(doplt=False):
     """
     print('Testing modelling of gravity and potential field data')
 
-    ifile = 'block'
-#    ifile = 'dyke'
+    ifile = 'data/block'
+#    ifile = 'data/dyke'
     samplescale = 1.  # Horizontal scale of the samples.
     power = 1.  # This parameter changes thinkness of voxels with depth.
     print('File:', ifile)

@@ -529,7 +529,7 @@ def main_pages():
     rank = np.array(df['Rank'].replace(np.nan, 'none'))
 
     for hcompanyno in df['Companyno'].unique():
-        print(hcompanyno)
+#        print(hcompanyno)
 #        if str(hcompanyno) != 'BN7':
 #            continue
 
@@ -736,7 +736,7 @@ def main_single():
     rank = np.array(df['Rank'].replace(np.nan, 'none'))
 
     for hcompanyno in df['Companyno'].unique():
-        print(hcompanyno)
+#        print(hcompanyno)
 #        if str(hcompanyno) != '411':
 #            continue
         indx = np.nonzero(companyno == hcompanyno)[0]

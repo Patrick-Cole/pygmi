@@ -39,7 +39,6 @@ from matplotlib.figure import Figure
 import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
-#import matplotlib.pyplot as plt
 from numba import jit
 import pygmi.raster.cooper as cooper
 import pygmi.raster.dataprep as dataprep
@@ -74,7 +73,10 @@ class TiltDepth(QtWidgets.QDialog):
         self.Z = None
         self.depths = None
         self.cbar = cm.jet
-        self.showtext = self.parent.showprocesslog
+        if parent is not None:
+            self.showtext = self.parent.showprocesslog
+        else:
+            self.showtext = print
         self.x0 = None
         self.x1 = None
         self.x2 = None
@@ -221,7 +223,7 @@ class TiltDepth(QtWidgets.QDialog):
         self.btn_apply.setText('Calculate Tilt Depth')
         QtWidgets.QApplication.processEvents()
 
-    def settings(self):
+    def settings(self, test=False):
         """ This is called when the used double clicks the routine from the
         main PyGMI interface"""
         if 'Raster' not in self.indata:
@@ -237,7 +239,8 @@ class TiltDepth(QtWidgets.QDialog):
         self.cbox_band1.clear()
         self.cbox_band1.addItems(blist)
 
-        self.show()
+        if test is False:
+            self.show()
         QtWidgets.QApplication.processEvents()
 
         return True
@@ -336,18 +339,11 @@ class TiltDepth(QtWidgets.QDialog):
 
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
 
-#        plt.imshow(data.data, extent=data.extent)
-#        plt.plot(gx0, gy0, '.')
-#
-#        plt.show()
-
         tmp = dataprep.quickgrid(gx0, gy0, dist, data.xdim,
                                  showtext=self.showtext)
 
         mask = np.ma.getmaskarray(tmp)
         gdat = tmp.data
-
-#        breakpoint()
 
         dat = Data()
         dat.data = np.ma.masked_invalid(gdat[::-1])

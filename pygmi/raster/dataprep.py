@@ -1469,8 +1469,9 @@ def trim_raster(olddata):
     """
     Trim nulls from a raster dataset.
 
-    This function trims entire rows or columns of data which have only nulls,
-    and are on the edges of the dataset.
+    This function trims entire rows or columns of data which are masked,
+    and are on the edges of the dataset. Masked values are set to the null
+    value.
 
     Parameters
     ----------
@@ -1586,6 +1587,7 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
 
         filt = zdiv > 0
         newz[filt] = newz[filt]/zdiv[filt]
+#        print(newz)
 
         if j == 0:
             newmask = np.ones([rows, cols])
