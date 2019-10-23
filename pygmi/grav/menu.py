@@ -45,8 +45,8 @@ class MenuWidget():
     def __init__(self, parent):
 
         self.parent = parent
-        self.parent.add_to_context('Gravity')
-        context_menu = self.parent.context_menu
+#        self.parent.add_to_context('Gravity')
+#        context_menu = self.parent.context_menu
 
 # Normal menus
         self.menu = QtWidgets.QMenu('Gravity')
@@ -62,20 +62,19 @@ class MenuWidget():
         self.menu.addAction(self.action_process)
         self.action_process.triggered.connect(self.process_data)
 
-
 # Context menus
-        self.action_export_data = QtWidgets.QAction('Export Gravity')
-        context_menu['Gravity'].addAction(self.action_export_data)
-        self.action_export_data.triggered.connect(self.export_data)
+#        self.action_export_data = QtWidgets.QAction('Export Gravity')
+#        context_menu['Gravity'].addAction(self.action_export_data)
+#        self.action_export_data.triggered.connect(self.export_data)
 
     def import_data(self):
         """Import data."""
         fnc = iodefs.ImportCG5(self.parent)
         self.parent.item_insert('Io', 'Import CG-5 Data', fnc)
 
-    def export_data(self):
-        """ Export raster data """
-#        self.parent.launch_context_item(iodefs.ExportEDI)
+#    def export_data(self):
+#        """ Export raster data """
+#        self.parent.launch_context_item(ExportLine)
 
     def process_data(self):
         """Process data."""

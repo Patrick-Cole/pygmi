@@ -53,7 +53,7 @@ class ImportCG5(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        QtWidgets.QDialog.__init__(self, parent=None)
 
         self.name = 'Import CG-5 Data: '
         self.pbar = None  # self.parent.pbar
@@ -119,16 +119,17 @@ class ImportCG5(QtWidgets.QDialog):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        pb_cg5.clicked.connect(self.get_cg5)
-        pb_gps.clicked.connect(self.get_gps)
+        pb_cg5.pressed.connect(self.get_cg5)
+        pb_gps.pressed.connect(self.get_gps)
 
-    def settings(self):
+    def settings(self, test=False):
         """Entry point into item. Data imported from here."""
 
-        tmp = self.exec_()
+        if not test:
+            tmp = self.exec_()
 
-        if tmp != 1 or self.df_cg5 is None or self.df_gps is None:
-            return tmp
+            if tmp != 1 or self.df_cg5 is None or self.df_gps is None:
+                return tmp
 
         dfmerge = pd.merge(self.df_cg5, self.df_gps, left_on='STATION',
                            right_on='Station', how='left')
@@ -150,14 +151,15 @@ class ImportCG5(QtWidgets.QDialog):
         self.outdata['Line'] = dat2
         return True
 
-    def get_cg5(self):
+    def get_cg5(self, filename=''):
         """ Get CG-5 filename """
         ext = ('CG-5 ASCII (*.txt *.xyz)')
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
         if filename == '':
-            return
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                    self.parent, 'Open File', '.', ext)
+            if filename == '':
+                return
 
         os.chdir(os.path.dirname(filename))
 
@@ -186,14 +188,15 @@ class ImportCG5(QtWidgets.QDialog):
         self.df_cg5 = pd.DataFrame(tmp2)
         self.cg5file.setText(filename)
 
-    def get_gps(self):
+    def get_gps(self, filename=''):
         """ Get GPS filename """
         ext = ('GPS comma delimited (*.csv)')
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
         if filename == '':
-            return
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                    self.parent, 'Open File', '.', ext)
+            if filename == '':
+                return
 
         os.chdir(os.path.dirname(filename))
 

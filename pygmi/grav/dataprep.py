@@ -55,7 +55,7 @@ class ProcessData(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = parent.pbar
+#        self.pbar = parent.pbar
 
         self.basethres = 10000
 
@@ -101,7 +101,7 @@ class ProcessData(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self):
+    def settings(self, test=False):
         """Settings."""
         tmp = []
         if 'Line' not in self.indata:
@@ -111,7 +111,10 @@ class ProcessData(QtWidgets.QDialog):
             self.parent.showprocesslog('Not Gravity Data')
             return False
 
-        tmp = self.exec_()
+        if not test:
+            tmp = self.exec_()
+        else:
+            tmp = 1
 
         try:
             float(self.density.text())

@@ -998,13 +998,13 @@ def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
     for j in range(b):
         mgval[j] = 0.
 
-    for i in prange(numx):
+    for i in range(numx):
         xoff = numx-i
-        for j in prange(numy):
+        for j in range(numy):
             yoff = numy-j
             if (modind[i, j, k] != mijk):
                 continue
-            for ijk in range(b):
+            for ijk in prange(b):
                 xoff2 = xoff + aaa0[ijk]
                 yoff2 = aaa1[ijk]+yoff
                 hcor2 = hcorflat[ijk]+k
@@ -1186,7 +1186,7 @@ def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
     return gval
 
 
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, parallel=False)
 def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
     """ grvmag 3d. mgval MUST be zeros """
 
