@@ -28,6 +28,7 @@ from PyQt5 import QtWidgets
 from pygmi.mt import iodefs
 from pygmi.mt import dataprep
 from pygmi.mt import graphs
+from pygmi.mt import birrp
 
 
 class MenuWidget():
@@ -53,6 +54,12 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('MT')
         parent.menubar.addAction(self.menu.menuAction())
 
+        self.action_birrp = QtWidgets.QAction('BIRRP')
+        self.menu.addAction(self.action_birrp)
+        self.action_birrp.triggered.connect(self.birrp)
+
+        self.menu.addSeparator()
+
         self.action_import_data = QtWidgets.QAction('Import EDI Data')
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
@@ -77,7 +84,6 @@ class MenuWidget():
         self.menu.addAction(self.action_occam1d)
         self.action_occam1d.triggered.connect(self.occam1d)
 
-
 # Context menus
         context_menu['MT - EDI'].addSeparator()
 
@@ -92,6 +98,11 @@ class MenuWidget():
         self.action_export_data = QtWidgets.QAction('Export EDI')
         context_menu['MT - EDI'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
+
+    def birrp(self):
+        """BIRRP."""
+        fnc = birrp.BIRRP(self.parent)
+        self.parent.item_insert('Step', 'BIRRP', fnc)
 
     def import_data(self):
         """Import data."""

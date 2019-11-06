@@ -286,7 +286,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.scene().clearSelection()
         self.setSelected(True)
 
-        exclude = ['ProfPic', 'GenFPS']
+        exclude = ['ProfPic', 'GenFPS', 'SceneList']
 
         tmp = self.context_menu['Basic'].actions()
         if 'Raster' in self.my_class.indata:
@@ -558,7 +558,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 onerror=lambda x: None):
             menus.append(modname)
 
-        menus.pop(menus.index('pygmi.rsense.menu'))
+#        menus.pop(menus.index('pygmi.rsense.menu'))
 #        menus.pop(menus.index('pygmi.mt.menu'))
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))

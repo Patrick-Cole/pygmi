@@ -25,8 +25,7 @@
 """Remote Sensing Menu Routines."""
 
 from PyQt5 import QtWidgets
-from pygmi.bholes import iodefs
-from pygmi.bholes import graphs
+from pygmi.rsense import change
 
 
 class MenuWidget():
@@ -54,23 +53,33 @@ class MenuWidget():
 
         self.action_create_list = QtWidgets.QAction('Create Scene List')
         self.menu2.addAction(self.action_create_list)
-        self.action_create_list.triggered.connect(self.import_data)
+        self.action_create_list.triggered.connect(self.create_scene)
 
         self.action_load_list = QtWidgets.QAction('Load Scene List')
         self.menu2.addAction(self.action_load_list)
-        self.action_load_list.triggered.connect(self.import_data)
+        self.action_load_list.triggered.connect(self.load_scene)
 
         self.menu.addSeparator()
 
         self.action_data_viewer = QtWidgets.QAction('View Change Data')
         self.menu2.addAction(self.action_data_viewer)
-        self.action_data_viewer.triggered.connect(self.import_data)
+        self.action_data_viewer.triggered.connect(self.view_change)
 
-    def import_data(self):
+    def create_scene(self):
         """Import data."""
-        fnc = iodefs.ImportData(self.parent)
-        self.parent.item_insert('Io', 'Import Data', fnc)
+        fnc = change.CreateSceneList(self.parent)
+        self.parent.item_insert('Step', 'Create Scene List', fnc)
 
-    def show_log(self):
-        """Show log data."""
-        self.parent.launch_context_item(graphs.PlotLog)
+    def load_scene(self):
+        """Import data."""
+        fnc = change.LoadSceneList(self.parent)
+        self.parent.item_insert('Io', 'Import Scene List', fnc)
+
+    def view_change(self):
+        """Import data."""
+        fnc = change.SceneViewer(self.parent)
+        self.parent.item_insert('Step', 'Change Detection Viewer', fnc)
+
+#    def show_log(self):
+#        """Show log data."""
+#        self.parent.launch_context_item(graphs.PlotLog)

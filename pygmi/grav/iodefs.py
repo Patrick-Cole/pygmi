@@ -52,8 +52,8 @@ class ImportCG5(QtWidgets.QDialog):
         input file name. Used in main.py
     """
 
-    def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent=None)
+    def __init__(self, parent):
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.name = 'Import CG-5 Data: '
         self.pbar = None  # self.parent.pbar
