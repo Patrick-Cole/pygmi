@@ -1099,11 +1099,11 @@ class ProfileDisplay(QtWidgets.QWidget):
 
             dtlx = data.extent[0]
             d2tlx = data2.extent[0]
-            dtly = data.extent[-1]
-            d2tly = data2.extent[-1]
+            dbly = data.extent[-2]
+            d2bly = data2.extent[-2]
 
             rxxx2 = (dtlx-d2tlx)/data2.xdim+self.rxxx*xratio
-            ryyy2 = (d2tly-dtly)/data2.ydim+self.ryyy*yratio
+            ryyy2 = (dbly-d2bly)/data2.ydim+self.ryyy*yratio
 
             tmprng2 = np.linspace(px1, px2, len(rxxx2))
             tmpprof2 = ndimage.map_coordinates(data2.data[::-1],
@@ -1114,6 +1114,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             tmprng2 = tmprng2[np.logical_not(np.isnan(tmpprof2))]
             tmpprof2 = tmpprof2[np.logical_not(np.isnan(tmpprof2))]
 
+#            breakpoint()
             if self.pscale_type == 'datamax':
                 extent = [data2.data.min(), data2.data.max()]
             elif self.pscale_type == 'allmax':

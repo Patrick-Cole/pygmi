@@ -640,16 +640,16 @@ class ImportShapeData():
                 else:
                     attrib[j] = attrib[j]+[ftmp[j]]
 
-        if lyr.GetGeomType() is ogr.wkbPoint:
+        if lyr.GetGeomType() in [ogr.wkbPoint, ogr.wkbPoint25D]:
             for i in range(lyr.GetFeatureCount()):
                 feat = lyr.GetFeature(i)
                 geom = feat.GetGeometryRef()
-                pnts = np.array(geom.GetPoints()).tolist()
+                pnts = np.array(geom.GetPoints(nCoordDimension=2)).tolist()
                 if pnts[0][0] > -1.e+308:
                     allcrds.append(pnts)
             dat.dtype = 'Point'
 
-        if lyr.GetGeomType() is ogr.wkbPolygon:
+        if lyr.GetGeomType() in [ogr.wkbPolygon, ogr.wkbPolygon25D]:
             for j in range(lyr.GetFeatureCount()):
                 feat = lyr.GetFeature(j)
                 geom = feat.GetGeometryRef()
@@ -664,15 +664,15 @@ class ImportShapeData():
                             imax = itmp
                             ifin = i
                 geom = geom.GetGeometryRef(ifin)
-                pnts = np.array(geom.GetPoints()).tolist()
+                pnts = np.array(geom.GetPoints(nCoordDimension=2)).tolist()
                 allcrds.append(pnts)
             dat.dtype = 'Poly'
 
-        if lyr.GetGeomType() is ogr.wkbLineString:
+        if lyr.GetGeomType() in [ogr.wkbLineString, ogr.wkbLineString25D]:
             for i in range(lyr.GetFeatureCount()):
                 feat = lyr.GetFeature(i)
                 geom = feat.GetGeometryRef()
-                pnts = np.array(geom.GetPoints()).tolist()
+                pnts = np.array(geom.GetPoints(nCoordDimension=2)).tolist()
                 allcrds.append(pnts)
             dat.dtype = 'Line'
 

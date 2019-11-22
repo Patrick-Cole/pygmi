@@ -502,4 +502,4 @@ class MextDisplay(QtWidgets.QDialog):
         self.exec_()
 
         # The next line is necessary to update any dataset changes.
-        self.parent.profile.tab_activate()
+        self.parent.profile.tab_activate()  # Link to tab_prof

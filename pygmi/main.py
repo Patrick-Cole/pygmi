@@ -440,7 +440,6 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
         self.parent.showdatainfo(text)
 
-
     def mouseMoveEvent(self, mouse_event):
         """
         Overloaded Mouse Move Event.

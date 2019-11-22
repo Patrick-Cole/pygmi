@@ -26,6 +26,7 @@
 
 from PyQt5 import QtWidgets
 from pygmi.rsense import change
+from pygmi.rsense import segmentation
 
 
 class MenuWidget():
@@ -59,24 +60,33 @@ class MenuWidget():
         self.menu2.addAction(self.action_load_list)
         self.action_load_list.triggered.connect(self.load_scene)
 
-        self.menu.addSeparator()
-
         self.action_data_viewer = QtWidgets.QAction('View Change Data')
         self.menu2.addAction(self.action_data_viewer)
         self.action_data_viewer.triggered.connect(self.view_change)
 
+        self.menu.addSeparator()
+
+        self.action_segmentation = QtWidgets.QAction('Image Segmentation')
+        self.menu.addAction(self.action_segmentation)
+        self.action_segmentation.triggered.connect(self.segmentation)
+
+    def segmentation(self):
+        """Image Segmentation."""
+        fnc = segmentation.ImageSeg(self.parent)
+        self.parent.item_insert('Step', 'Image Segmentation', fnc)
+
     def create_scene(self):
-        """Import data."""
+        """Create Scene."""
         fnc = change.CreateSceneList(self.parent)
         self.parent.item_insert('Step', 'Create Scene List', fnc)
 
     def load_scene(self):
-        """Import data."""
+        """Load Scene."""
         fnc = change.LoadSceneList(self.parent)
         self.parent.item_insert('Io', 'Import Scene List', fnc)
 
     def view_change(self):
-        """Import data."""
+        """View Change Detection."""
         fnc = change.SceneViewer(self.parent)
         self.parent.item_insert('Step', 'Change Detection Viewer', fnc)
 

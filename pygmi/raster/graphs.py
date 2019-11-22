@@ -121,8 +121,8 @@ class MyMplCanvas(FigureCanvas):
             vals = np.unique(data1.data)
             vals = vals.compressed()
             bnds = (vals - 0.5).tolist() + [vals.max() + .5]
-            cbar = self.axes.figure.colorbar(rdata, boundaries=bnds,
-                                             values=vals, ticks=vals)
+            cbar = self.axes.figure.colorbar(rdata, boundaries=bnds,)
+#                                             values=vals, ticks=vals)
             cbar.set_label(data1.units)
         elif not data1.isrgb:
             cbar = self.figure.colorbar(rdata)

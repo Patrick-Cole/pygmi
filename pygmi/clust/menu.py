@@ -32,6 +32,7 @@ from pygmi.raster import show_table
 from pygmi.raster import iodefs
 from pygmi.clust import crisp_clust
 from pygmi.clust import fuzzy_clust
+from pygmi.clust import super_class
 
 
 class MenuWidget():
@@ -68,6 +69,12 @@ class MenuWidget():
         self.action_fuzzy_clustering = QtWidgets.QAction("Fuzzy Clustering")
         self.menuclustering.addAction(self.action_fuzzy_clustering)
         self.action_fuzzy_clustering.triggered.connect(self.fuzzy_cluster)
+
+        self.menuclustering.addSeparator()
+
+        self.action_super_class = QtWidgets.QAction("Supervised Classification")
+        self.menuclustering.addAction(self.action_super_class)
+        self.action_super_class.triggered.connect(self.super_class)
 
         self.menuclustering.addSeparator()
 
@@ -116,6 +123,11 @@ class MenuWidget():
         """Fuzzy Clustering of data."""
         fnc = fuzzy_clust.FuzzyClust(self.parent)
         self.parent.item_insert("Step", "Fuzzy\nClustering", fnc)
+
+    def super_class(self):
+        """Supervised Classification."""
+        fnc = super_class.SuperClass(self.parent)
+        self.parent.item_insert("Step", "Supervised\nClassification", fnc)
 
     def export_data(self):
         """Export raster data."""

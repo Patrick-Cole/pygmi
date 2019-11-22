@@ -1194,7 +1194,9 @@ def cut_raster(data, ifile):
         return None
     lyr = shapef.GetLayer()
     poly = lyr.GetNextFeature()
-    if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
+    geom = poly.GetGeometryRef()
+
+    if 'POLYGON' not in geom.GetGeometryName() or poly is None:
         return None
 
     for idata in data:
@@ -1212,7 +1214,6 @@ def cut_raster(data, ifile):
         # boundary on a mas image
         points = []
         pixels = []
-        geom = poly.GetGeometryRef()
 
         ifin = 0
         imax = 0
@@ -1371,7 +1372,7 @@ def gdal_to_dat(dest, bandid='Data'):
 
 def getepsgcodes():
     """Routine used to get a list of EPSG codes."""
-    with open(os.path.join(os.environ['GDAL_DATA'], 'gcs.csv')) as dfile:
+    with open(os.path.join(os.path.dirname(__file__), 'gcs.csv')) as dfile:
         dlines = dfile.readlines()
 
     dlines = dlines[1:]
@@ -1385,7 +1386,7 @@ def getepsgcodes():
 #            dcodes[tmp[1]] = wkttmp
         dcodes[tmp[1]] = int(tmp[0])
 
-    with open(os.path.join(os.environ['GDAL_DATA'], 'pcs.csv')) as pfile:
+    with open(os.path.join(os.path.dirname(__file__), 'pcs.csv')) as pfile:
         plines = pfile.readlines()
 
     orig = osr.SpatialReference()
