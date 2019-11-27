@@ -1,16 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<h1>Profile Picture Importer</h1>
-		<p>The profile editor allows for the display of a picture along the profile. The importer allows for a simple set of coordinates to be assigned to the picture.</p>
-		<p>If a .npz file is connected to this module (imported through the import 3D model tool) then appropriate default values for the picture are filled in.</p>
+		<h1>New Custom Profile</h1>
+		<p>The profile editor allows for the creation and display custom profiles. A series of coordinates for the custom profile are entered. The user is allowed load in a picture for superimposition along the section of the profile.</p>
+		<p>Note that if the custom profile extends beyond the model, it will be truncated. However, in the event a picture is loaded, the original coordinates are assumed to belong to the picture and will be assigned to it appropriately, resulting in a truncation of the image in the model.</p>
 		<h2>Options</h2>
 		<ul>
-			<li>Profile Direction - The profile can be defined as being west to east or south to north.</li>
-			<li>West/South Coordinate - This is the coordinate assigned to the left side of the image.</li>
-			<li>East/North Coordinate - This is the coordinate assigned to the right side of the image.</li>
-			<li>Maximum Altitude - this is the altitude at the top of the image.</li>
-			<li>Depth - This is the depth of the image.</li>
+			<li>Get coordinates from last profile - Convenience function used to auto fill coordinates.</li>
+			<li>Load Picture (optional) - An optional picture importer.</li>
 		</ul>
 	</body>
 </html>

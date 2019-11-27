@@ -29,6 +29,7 @@ import random
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import scipy.ndimage as ndimage
+from scipy import interpolate
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.figure import Figure
@@ -43,7 +44,7 @@ from pygmi.pfmod import misc
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
-
+from pygmi.raster.iodefs import get_raster
 
 rcParams['savefig.dpi'] = 600.
 
@@ -79,39 +80,51 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_overview = MySlider()
         self.hs_sideview = MySlider()
         self.combo_overview = QtWidgets.QComboBox()
-        self.label_sideview = QtWidgets.QLabel('None')
+#        self.label_sideview = QtWidgets.QLabel('None')
+        self.combo_proftype = QtWidgets.QComboBox()
 
         self.sb_layer = QtWidgets.QSpinBox()
         self.hs_layer = MySlider()
         self.sb_profnum = QtWidgets.QSpinBox()
         self.hs_profnum = MySlider()
+        self.sb_cprofnum = QtWidgets.QSpinBox()
+        self.hs_cprofnum = MySlider()
 
         self.sb_profile_linethick = QtWidgets.QSpinBox()
         self.lw_prof_defs = QtWidgets.QListWidget()
 
         self.dial_prof_dir = GaugeWidget()
         self.sb_prof_dir = QtWidgets.QSpinBox()
+
         self.setupui()
 
     def setupui(self):
         """ Setup UI """
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Fixed)
+        sizepolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored,
+                                            QtWidgets.QSizePolicy.Fixed)
 
         self.lw_prof_defs.setFixedWidth(220)
 
         pb_rcopy = QtWidgets.QPushButton('Ranged Copy')
         pb_lbound = QtWidgets.QPushButton('Add Lithological Boundary')
-        pb_export_csv = QtWidgets.QPushButton('Export All Profiles (In current direction)')
+        pb_export_csv = QtWidgets.QPushButton('Export All Profiles (In current'
+                                              ' direction)')
+        pb_cprof_add = QtWidgets.QPushButton('New Custom Profile')
+        pb_cprof_delete = QtWidgets.QPushButton('Delete Current Profile')
 
-        lbl_dial_value = QtWidgets.QLabel('Profile Direction: ')
+        lbl_prof_type = QtWidgets.QLabel('Profile Type:')
+        self.combo_proftype.addItems(['Standard Profile', 'Custom Profile'])
 
         self.dial_prof_dir.setMaximum(359)
         self.sb_prof_dir.setMaximum(359)
+        self.sb_prof_dir.setPrefix('Profile Direction: ')
+        self.sb_prof_dir.setSizePolicy(sizepolicy2)
         self.hs_sideview.setEnabled(False)
 
         self.sb_layer.setMaximum(self.lmod1.numz-1)
-        self.sb_layer.setPrefix('Layer:')
+        self.sb_layer.setPrefix('Layer: ')
         self.sb_layer.setWrapping(True)
 
         self.hs_overview.setMaximum(100)
@@ -128,8 +141,17 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_profnum.setSizePolicy(sizepolicy)
         self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
 
-        self.sb_profnum.setPrefix('Profile:')
+        self.sb_profnum.setPrefix('Profile: ')
         self.sb_profnum.setWrapping(True)
+
+        self.hs_cprofnum.setSizePolicy(sizepolicy)
+        self.hs_cprofnum.setOrientation(QtCore.Qt.Horizontal)
+        self.hs_cprofnum.setHidden(True)
+
+        self.sb_cprofnum.setPrefix('Custom: ')
+        self.sb_cprofnum.setWrapping(True)
+        self.sb_cprofnum.setSizePolicy(sizepolicy2)
+        self.sb_cprofnum.setHidden(True)
 
         self.sb_profile_linethick.setMinimum(1)
         self.sb_profile_linethick.setMaximum(1000)
@@ -138,9 +160,17 @@ class ProfileDisplay(QtWidgets.QWidget):
 # Set groupboxes and layouts
         gridlayout = QtWidgets.QGridLayout(self)
 
+        hl_proftype = QtWidgets.QHBoxLayout()
+        hl_proftype.addWidget(lbl_prof_type)
+        hl_proftype.addWidget(self.combo_proftype)
+
         hl_profnum = QtWidgets.QHBoxLayout()
         hl_profnum.addWidget(self.sb_profnum)
         hl_profnum.addWidget(self.hs_profnum)
+
+        hl_cprofnum = QtWidgets.QHBoxLayout()
+        hl_cprofnum.addWidget(self.sb_cprofnum)
+        hl_cprofnum.addWidget(self.hs_cprofnum)
 
         hl_layer = QtWidgets.QHBoxLayout()
         hl_layer.addWidget(self.sb_layer)
@@ -149,13 +179,18 @@ class ProfileDisplay(QtWidgets.QWidget):
         hl_pics = QtWidgets.QHBoxLayout()
         hl_pics.addWidget(self.combo_overview)
         hl_pics.addWidget(self.hs_overview)
-        hl_pics.addWidget(self.label_sideview)
+#        hl_pics.addWidget(self.label_sideview)
         hl_pics.addWidget(self.hs_sideview)
 
-        gb_dir = QtWidgets.QGroupBox('Profile Orientation')
-        hl_dir = QtWidgets.QHBoxLayout(gb_dir)
+        self.gb_cprof = QtWidgets.QGroupBox('Custom Profile')
+        hl_cprof = QtWidgets.QHBoxLayout(self.gb_cprof)
+        hl_cprof.addWidget(pb_cprof_add)
+        hl_cprof.addWidget(pb_cprof_delete)
+        self.gb_cprof.setHidden(True)
+
+        self.gb_dir = QtWidgets.QGroupBox('Profile Orientation')
+        hl_dir = QtWidgets.QHBoxLayout(self.gb_dir)
         hl_dir.addWidget(self.dial_prof_dir)
-        hl_dir.addWidget(lbl_dial_value)
         hl_dir.addWidget(self.sb_prof_dir)
 
         vl_plots = QtWidgets.QVBoxLayout()
@@ -164,8 +199,11 @@ class ProfileDisplay(QtWidgets.QWidget):
         vl_plots.addLayout(hl_pics)
 
         vl_tools = QtWidgets.QVBoxLayout()
-        vl_tools.addWidget(gb_dir)
+        vl_tools.addLayout(hl_proftype)
+        vl_tools.addWidget(self.gb_dir)
+        vl_tools.addWidget(self.gb_cprof)
         vl_tools.addLayout(hl_profnum)
+        vl_tools.addLayout(hl_cprofnum)
         vl_tools.addLayout(hl_layer)
         vl_tools.addWidget(self.lw_prof_defs)
         vl_tools.addWidget(self.sb_profile_linethick)
@@ -181,6 +219,8 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.lw_prof_defs.currentItemChanged.connect(self.change_defs)
         self.hs_profnum.valueChanged.connect(self.hprofnum)
         self.sb_profnum.valueChanged.connect(self.sprofnum)
+        self.hs_cprofnum.valueChanged.connect(self.hcprofnum)
+        self.sb_cprofnum.valueChanged.connect(self.scprofnum)
         self.hs_layer.valueChanged.connect(self.hlayer)
         self.sb_layer.valueChanged.connect(self.slayer)
 
@@ -188,7 +228,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.dial_prof_dir.sliderReleased.connect(self.prof_dir)
         self.sb_prof_dir.valueChanged.connect(self.sprofdir)
 
-#        self.combo_sideview.currentIndexChanged.connect(self.pic_sideview)
+        self.combo_proftype.currentIndexChanged.connect(self.proftype_changed)
 
         self.hs_overview.valueChanged.connect(self.pic_overview2)
         self.combo_overview.currentIndexChanged.connect(self.pic_overview)
@@ -196,6 +236,123 @@ class ProfileDisplay(QtWidgets.QWidget):
         pb_export_csv.clicked.connect(self.export_csv)
         pb_rcopy.clicked.connect(self.rcopy)
         pb_lbound.clicked.connect(self.lbound)
+        pb_cprof_add.clicked.connect(self.cprof_add)
+        pb_cprof_delete.clicked.connect(self.cprof_del)
+
+    ### Custom Profiles
+    def cprof_add(self):
+        """ Add new custom profile """
+        newprof = ImportPicture(self)
+        curline = newprof.settings()
+        if curline is None:
+            return
+
+        if curline not in self.lmod1.profpics:
+            gtmpl = None
+        elif self.lmod1.profpics[curline] is not None:
+            gtmpl = self.lmod1.profpics[curline]
+        else:
+            gtmpl = None
+
+        self.custom_prof_limits(curline)
+        gtmp = self.get_model()
+
+        self.mmc.init_grid(gtmp, gtmpl)
+        self.mmc.init_grid_top(self.combo_overview.currentText(),
+                               self.hs_overview.value())
+        self.mmc.update_line_top()
+
+        self.update_plot(slide=False)
+
+        cnums = [i for i in self.lmod1.custprofx if isinstance(i, int)]
+        self.hs_cprofnum.setMaximum(max(cnums))
+        self.sb_cprofnum.setMaximum(max(cnums))
+        self.hs_cprofnum.setValue(curline)
+
+        self.hs_cprofnum.setEnabled(True)
+        self.sb_cprofnum.setEnabled(True)
+
+    def cprof_del(self):
+        """ Delete current custom profile """
+
+    def proftype_changed(self):
+        """ Profile type changed."""
+        text = self.combo_proftype.currentText()
+        if text == 'Standard Profile':
+            self.gb_dir.setHidden(False)
+            self.gb_cprof.setHidden(True)
+            self.sb_cprofnum.setHidden(True)
+            self.hs_cprofnum.setHidden(True)
+            self.sb_profnum.setHidden(False)
+            self.hs_profnum.setHidden(False)
+            self.hs_sideview.setEnabled(False)
+            self.sprofnum()
+        else:
+            self.gb_dir.setHidden(True)
+            self.gb_cprof.setHidden(False)
+            self.sb_cprofnum.setHidden(False)
+            self.hs_cprofnum.setHidden(False)
+            self.sb_profnum.setHidden(True)
+            self.hs_profnum.setHidden(True)
+            self.hs_sideview.setEnabled(True)
+            self.scprofnum()
+
+            cnums = [i for i in self.lmod1.custprofx if isinstance(i, int)]
+
+            if cnums:
+                self.hs_cprofnum.setMaximum(max(cnums))
+                self.hs_cprofnum.setValue(0)
+                self.sb_cprofnum.setMaximum(max(cnums))
+            else:
+                self.hs_cprofnum.setEnabled(False)
+                self.sb_cprofnum.setEnabled(False)
+
+    def custom_prof_limits(self, curprof=None):
+        """ Calculate profile limits """
+
+        if curprof is None or curprof not in self.lmod1.custprofx:
+            return
+
+        x1, x2 = self.lmod1.custprofx[curprof]
+        y1, y2 = self.lmod1.custprofy[curprof]
+        px1 = 0
+        px2 = np.sqrt((x2-x1)**2+(y2-y1)**2)
+
+        self.lmod1.custprofx['rotate'] = [px1, px2]
+        self.lmod1.custprofx['adhoc'] = [x1, x2]
+        self.lmod1.custprofy['adhoc'] = [y1, y2]
+
+        bottom, top = self.lmod1.zrange
+        self.extent_side = [0., px2, bottom, top]
+
+    def hcprofnum(self):
+        """ Routine to change a profile from spinbox"""
+        self.sb_cprofnum.setValue(self.hs_cprofnum.sliderPosition())
+
+    def scprofnum(self):
+        """ Routine to change a profile from spinbox"""
+        curline = self.sb_cprofnum.value()
+
+        self.hs_cprofnum.valueChanged.disconnect()
+        self.hs_cprofnum.setValue(curline)
+        self.hs_cprofnum.valueChanged.connect(self.hcprofnum)
+
+        if curline not in self.lmod1.profpics:
+            gtmpl = None
+        elif self.lmod1.profpics[curline] is not None:
+            gtmpl = self.lmod1.profpics[curline]
+        else:
+            gtmpl = None
+
+        self.custom_prof_limits(curline)
+
+        gtmp = self.get_model()
+
+        self.mmc.init_grid(gtmp, gtmpl, self.hs_sideview.value())
+        self.mmc.update_line()
+        self.mmc.update_line_top()
+
+        self.update_plot(slide=True)
 
     ### Misc
     def borehole_import(self):
@@ -218,7 +375,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         prj = osr.CoordinateTransformation(orig, targ)
 
         for bnum in data:
- #           print(bnum)
             hdr = data[bnum]['header']
             log = data[bnum]['log']
             try:
@@ -247,7 +403,6 @@ class ProfileDisplay(QtWidgets.QWidget):
                 z2 = int((self.lmod1.zrange[1]-dto[i])//self.lmod1.d_z)
                 ifrom.append(z1)
                 ito.append(z2)
-#                print(self.lmod1.zrange, dfrom[i], dto[i], z1, z2, elev, lat, lon)
             # Now do the bit which creates combos of liths per pixel.
 
             lithfin = {}
@@ -276,7 +431,6 @@ class ProfileDisplay(QtWidgets.QWidget):
                 lithlist.append(lithfin[i])
 
             lithlist = list(set(lithlist))
-
 
             for deftxt in lithlist:
                 if deftxt in lmod.lith_list:
@@ -312,7 +466,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.change_defs()
 
         self.showtext('Borehole Import Complete.')
-
 
     def export_csv(self):
         """ Export Profile to csv """
@@ -595,48 +748,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.calc_prof_limits()
 
     ### Profiles
-    def addprof(self):
-        """ add another profile """
-        xnodes = self.lmod1.custprofx
-        ynodes = self.lmod1.custprofy
-
-        self.update_model()
-        (tx0, okay) = QtWidgets.QInputDialog.getDouble(
-            self.parent, 'Add Custom Profile',
-            'Please enter first x coordinate', self.lmod1.xrange[0])
-        if not okay:
-            return
-        (ty0, okay) = QtWidgets.QInputDialog.getDouble(
-            self.parent, 'Add Custom Profile',
-            'Please enter first y coordinate', self.lmod1.yrange[0])
-        if not okay:
-            return
-        (tx1, okay) = QtWidgets.QInputDialog.getDouble(
-            self.parent, 'Add Custom Profile',
-            'Please enter last x coordinate', self.lmod1.xrange[-1])
-        if not okay:
-            return
-        (ty1, okay) = QtWidgets.QInputDialog.getDouble(
-            self.parent, 'Add Custom Profile',
-            'Please enter last y coordinate', self.lmod1.yrange[-1])
-        if not okay:
-            return
-
-        self.pcntmax += 1
-        xnodes[self.pcntmax] = [float(tx0), float(tx1)]
-        ynodes[self.pcntmax] = [float(ty0), float(ty1)]
-
-        self.hs_profnum.valueChanged.disconnect()
-        self.sb_profnum.valueChanged.disconnect()
-        self.combo_sideview.currentIndexChanged.disconnect()
-
-        self.hs_profnum.setMaximum(self.pcntmax)
-        self.sb_profnum.setMaximum(self.pcntmax)
-
-        self.hs_profnum.valueChanged.connect(self.hprofnum)
-        self.sb_profnum.valueChanged.connect(self.sprofnum)
-#        self.combo_sideview.currentIndexChanged.connect(self.profpic_hs)
-
     def change_defs(self):
         """ List box in profile tab for definitions """
 
@@ -710,7 +821,6 @@ class ProfileDisplay(QtWidgets.QWidget):
 
             gtmp.append(tmp)
 
-    ### debug
         gtmp = np.array(gtmp[::-1])
 
         return gtmp
@@ -726,9 +836,17 @@ class ProfileDisplay(QtWidgets.QWidget):
         """
         # This is used for custom profiles with pictures. I think that below
         # should be slide_grid
+        curline = self.sb_cprofnum.value()
+
+        if curline not in self.lmod1.profpics:
+            gtmpl = None
+        elif self.lmod1.profpics[curline] is not None:
+            gtmpl = self.lmod1.profpics[curline]
+        else:
+            gtmpl = None
 
         gtmp = self.get_model()
-        self.mmc.init_grid(gtmp)
+        self.mmc.slide_grid(gtmp, gtmpl, self.hs_sideview.value())
         self.mmc.figure.canvas.draw()
 
     def plot_scale(self):
@@ -765,18 +883,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_profnum.setValue(self.sb_profnum.value())
         self.hs_profnum.valueChanged.connect(self.hprofnum)
 
-    # First we plot the model stuff
-        ctxt = str(self.label_sideview.text)
-        if self.lmod1.profpics and ctxt != u'':
-            gtmpl = self.lmod1.profpics[ctxt]
-        else:
-            gtmpl = None
-
         self.calc_prof_limits()
-
         gtmp = self.get_model()
 
-        self.mmc.slide_grid(gtmp, gtmpl)
+        self.mmc.slide_grid(gtmp, None)
         self.mmc.update_line()
         self.mmc.update_line_top()
 
@@ -822,9 +932,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         """ Calculate profile limits """
 
         pdirval = self.dial_prof_dir.value()
-#        pdirval = 360-dirval
-#        if pdirval == 360:
-#            pdirval = 0.
 
         m = np.tan(np.deg2rad(pdirval))
         if m == 0:
@@ -902,7 +1009,6 @@ class ProfileDisplay(QtWidgets.QWidget):
             x1, x2 = x2, x1
             y1, y2 = y2, y1
 
-
         elif 180 < pdirval < 270:
             x1 = np.arange(xrng[0]+dxy/2, xrng[1], dxy)
             y1 = np.ones_like(x1)*yrng[1]
@@ -945,7 +1051,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         if len(x1) == 1:
             curprof = 0
 
-        ang =  np.deg2rad(pdirval)
+        ang = np.deg2rad(pdirval)
         cntr = np.array([x1[0], y1[0]])
 
         pts1 = np.transpose([x1, y1])
@@ -973,14 +1079,11 @@ class ProfileDisplay(QtWidgets.QWidget):
         px1, px2 = py1, py2
         right = py2.max()
 
-
-
         bottom, top = self.lmod1.zrange
 
         self.extent_side = [0., right, bottom, top]
 
-        # TODO: 2nd and 4th quadrant offset
-
+        # TODO: 2nd and 4th quadrant offset\
         self.lmod1.custprofx['rotate'] = [px1[curprof], px2[curprof]]
         self.lmod1.custprofx['adhoc'] = [x1[curprof], x2[curprof]]
         self.lmod1.custprofy['adhoc'] = [y1[curprof], y2[curprof]]
@@ -988,10 +1091,6 @@ class ProfileDisplay(QtWidgets.QWidget):
     def prof_dir(self, slide=True):
         """ Radio button profile direction """
         pdirval = self.dial_prof_dir.value()
-#        print(dirval)
-#        pdirval = 360-dirval
-#        if pdirval == 360:
-#            pdirval = 0.
 
         self.sb_prof_dir.valueChanged.disconnect()
         self.sb_prof_dir.setValue(pdirval)
@@ -1013,18 +1112,6 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.sb_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
             self.hs_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
 
-
-
-#        if pdirval in (0., 180):
-#            self.sb_profnum.setMaximum(self.lmod1.numy-1)
-#            self.hs_profnum.setMaximum(self.lmod1.numy-1)
-#        elif pdirval in (90., 270):
-#            self.sb_profnum.setMaximum(self.lmod1.numx-1)
-#            self.hs_profnum.setMaximum(self.lmod1.numx-1)
-#        else:
-#            self.sb_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
-#            self.hs_profnum.setMaximum(self.lmod1.numx+self.lmod1.numy-1)
-
         self.calc_prof_limits()
         gtmp = self.get_model()
 
@@ -1038,9 +1125,6 @@ class ProfileDisplay(QtWidgets.QWidget):
     def sprofdir(self):
         """ spinbox prof dir """
         dirval = self.sb_prof_dir.value()
-#        dirval = 360-pdirval
-#        if dirval == 360:
-#            dirval = 0.
 
         self.dial_prof_dir.setValue(dirval)
         self.prof_dir()
@@ -1143,6 +1227,8 @@ class ProfileDisplay(QtWidgets.QWidget):
         """ Runs when the tab is activated """
         self.sb_profnum.valueChanged.disconnect()
         self.hs_profnum.valueChanged.disconnect()
+        self.hs_cprofnum.valueChanged.disconnect()
+        self.sb_cprofnum.valueChanged.disconnect()
         self.combo_overview.currentIndexChanged.disconnect()
 
         self.lmod1 = self.parent.lmod1
@@ -1171,15 +1257,20 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.hs_layer.setMaximum(self.lmod1.numz-1)
         self.hs_profnum.setMinimum(0)
+        self.hs_cprofnum.setMinimum(0)
 
         self.prof_dir(slide=False)
         self.calc_prof_limits()
 
         self.sb_profnum.setValue(0)
         self.hs_profnum.setValue(0)
+        self.sb_cprofnum.setValue(0)
+        self.hs_cprofnum.setValue(0)
 
         self.sb_profnum.valueChanged.connect(self.sprofnum)
         self.hs_profnum.valueChanged.connect(self.hprofnum)
+        self.sb_cprofnum.valueChanged.connect(self.scprofnum)
+        self.hs_cprofnum.valueChanged.connect(self.hcprofnum)
         self.combo_overview.currentIndexChanged.connect(self.pic_overview)
 
 
@@ -1253,9 +1344,6 @@ class MyMplCanvas(FigureCanvas):
         self.lims2.format_cursor_data = lambda x: ''
 
         self.prf = self.axes.plot([0, 0])
-
-#        self.figure.tight_layout()
-#        self.figure.canvas.draw()
 
     def button_press(self, event):
         """ Button press """
@@ -1380,7 +1468,6 @@ class MyMplCanvas(FigureCanvas):
 #                self.mdata = mdata
                 self.lmdata = self.lmod1.lith_index[:, :, curlayer].T
                 self.mdata[:, ipdx1:ipdx2] = self.lmod1.lith_index[xxx, yyy, ::-1].T
-
             else:
                 self.lmod1.lith_index[:, :, curlayer] = mdata.T
                 self.lmdata = mdata
@@ -1424,7 +1511,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def init_grid(self, dat, dat2=None, opac=100.0):
+    def init_grid(self, dat, dat2=None, opac=0.0):
         """ Updates the single color map """
         self.opac = 1.0 - float(opac) / 100.
 
@@ -1437,12 +1524,14 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_xlim(extent[0], extent[1])
         self.axes.set_ylim(extent[2], extent[3])
 
-        if dat2 is not None and self.opac < 1.0:
+        if dat2 is not None:
+            self.ims.set_alpha(self.opac)
             self.ims2.set_visible(True)
             self.ims2.set_data(dat2.data)
             self.ims2.set_extent(dat2.extent)
             self.ims2.set_clim(dat2.data.min(), dat2.data.max())
-            self.ims2.set_alpha(self.opac)
+        else:
+            self.ims.set_alpha(1.0)
 
         self.ims.set_visible(True)
         self.ims.set_extent(extent)
@@ -1494,7 +1583,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def slide_grid(self, dat, dat2=None):
+    def slide_grid(self, dat, dat2=None, opac=None):
         """ Slider """
 
         # There may be errors here in terms of dat and dat2
@@ -1504,9 +1593,15 @@ class MyMplCanvas(FigureCanvas):
         tmp = self.luttodat(dat)
         self.ims.set_data(tmp)
 
+        if opac is not None:
+            self.opac = 1.0 - float(opac) / 100.
+            self.ims.set_alpha(self.opac)
+        else:
+            self.ims.set_alpha(1.0)
+
         if dat2 is not None:
             self.ims2.set_visible(True)
-            self.ims2.set_alpha(self.opac)
+#            self.ims2.set_alpha(self.opac)
 
         self.axes.draw_artist(self.ims)
         self.axes.draw_artist(self.ims2)
@@ -1871,8 +1966,6 @@ class MyToolbar(NavigationToolbar2QT):
                   ('Import\nBorehole\nLogs',
                    'Borehole Logs', 'Borehole Logs', 'b_logs'),
                   )
-#                  ('Ad-Hoc\nCustom\nProfile',
-#                   'Custom Profile', 'Custom Profile', 'custom_profile'),)
 
     def __init__(self, parent):
         NavigationToolbar2QT.__init__(self, parent.mmc, parent)
@@ -1895,10 +1988,6 @@ class MyToolbar(NavigationToolbar2QT):
         """ Axis scale """
         self.parent.viewmagnetics = False
         self.parent.update_plot()
-
-    def custom_profile(self):
-        """ Axis scale """
-        self.parent.addprof()
 
 
 class GaugeWidget(QtWidgets.QDial):
@@ -1930,12 +2019,246 @@ class GaugeWidget(QtWidgets.QDial):
         painter.end()
 
 
+class ImportPicture(QtWidgets.QDialog):
+    """ Class to call up a dialog """
+    def __init__(self, parent):
+        QtWidgets.QDialog.__init__(self, parent)
+
+        self.parent = parent
+        self.lmod = self.parent.lmod1
+
+        self.ifile = ''
+        self.name = 'Add New Custom Profile: '
+        self.ext = ''
+        self.pbar = None
+        self.indata = {}
+        self.outdata = {}
+        self.grid = None
+
+        self.dsb_x1 = QtWidgets.QDoubleSpinBox()
+        self.dsb_y1 = QtWidgets.QDoubleSpinBox()
+        self.dsb_x2 = QtWidgets.QDoubleSpinBox()
+        self.dsb_y2 = QtWidgets.QDoubleSpinBox()
+        self.dsb_zmax = QtWidgets.QDoubleSpinBox()
+        self.dsb_zmin = QtWidgets.QDoubleSpinBox()
+
+        self.chk_getpicture = QtWidgets.QCheckBox('Import picture for profile')
+        self.chk_getcoords = QtWidgets.QCheckBox('Get coordinates from last '
+                                                 'profile')
+        self.importfile = QtWidgets.QLineEdit('')
+
+        self.setupui()
+
+        self.min_coord = None
+        self.max_coord = None
+        self.max_alt = None
+        self.min_alt = None
+        self.is_eastwest = None
+
+        self.getcoords()
+
+    def setupui(self):
+        """ Setup UI """
+        groupbox = QtWidgets.QGroupBox('Profile Coordinates')
+        gridlayout_2 = QtWidgets.QGridLayout(self)
+        gridlayout_3 = QtWidgets.QGridLayout(groupbox)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.importpicture')
+
+        pb_import = QtWidgets.QPushButton('Load picture (optional)')
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.dsb_x1.setDecimals(6)
+        self.dsb_x1.setMinimum(-999999999.0)
+        self.dsb_x1.setMaximum(999999999.0)
+        self.dsb_x1.setPrefix('First X Coordinate: ')
+        self.dsb_x1.setValue(0.0)
+
+        self.dsb_x2.setDecimals(6)
+        self.dsb_x2.setMinimum(-999999999.0)
+        self.dsb_x2.setMaximum(999999999.0)
+        self.dsb_x2.setPrefix('Second X Coordinate: ')
+        self.dsb_x2.setValue(0.0)
+
+        self.dsb_y1.setDecimals(6)
+        self.dsb_y1.setMinimum(-999999999.0)
+        self.dsb_y1.setMaximum(999999999.0)
+        self.dsb_y1.setPrefix('First Y Coordinate: ')
+        self.dsb_y1.setValue(0.0)
+
+        self.dsb_y2.setDecimals(6)
+        self.dsb_y2.setMinimum(-999999999.0)
+        self.dsb_y2.setMaximum(999999999.0)
+        self.dsb_y2.setPrefix('Second Y Coordinate: ')
+        self.dsb_y2.setValue(0.0)
+
+        self.dsb_zmax.setDecimals(6)
+        self.dsb_zmax.setMinimum(-999999999.0)
+        self.dsb_zmax.setMaximum(999999999.0)
+        self.dsb_zmax.setPrefix('Maximum Altitude: ')
+        self.dsb_zmax.setValue(1000.0)
+
+        self.dsb_zmin.setDecimals(6)
+        self.dsb_zmin.setMinimum(-999999999.0)
+        self.dsb_zmin.setMaximum(999999999.0)
+        self.dsb_zmin.setPrefix('Minimum Altitude: ')
+        self.dsb_zmin.setValue(0.0)
+
+        self.setWindowTitle('New Custom Profile')
+
+        gridlayout_2.addWidget(groupbox, 0, 0, 1, 2)
+        gridlayout_2.addWidget(self.chk_getcoords, 1, 0, 1, 1)
+        gridlayout_2.addWidget(pb_import, 2, 0, 1, 1)
+        gridlayout_2.addWidget(self.importfile, 2, 1, 1, 1)
+        gridlayout_2.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_2.addWidget(buttonbox, 3, 1, 1, 1)
+
+        gridlayout_3.addWidget(self.dsb_x1, 2, 0, 1, 1)
+        gridlayout_3.addWidget(self.dsb_y1, 2, 1, 1, 1)
+        gridlayout_3.addWidget(self.dsb_x2, 4, 0, 1, 1)
+        gridlayout_3.addWidget(self.dsb_y2, 4, 1, 1, 1)
+        gridlayout_3.addWidget(self.dsb_zmax, 5, 0, 1, 1)
+        gridlayout_3.addWidget(self.dsb_zmin, 5, 1, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        self.chk_getcoords.stateChanged.connect(self.getcoords)
+        pb_import.pressed.connect(self.get_filename)
+
+    def get_filename(self):
+        """Get filename of picture."""
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', '*.jpg *.tif *.bmp *.png')
+
+        if filename == '':
+            return
+
+        self.importfile.setText(filename)
+
+    def getcoords(self):
+        """ Get coordinates """
+        zmin, zmax = self.lmod.zrange
+
+        if self.chk_getcoords.isChecked():
+            x1, x2 = self.lmod.custprofx['adhoc']
+            y1, y2 = self.lmod.custprofy['adhoc']
+        else:
+            x1, x2 = self.lmod.xrange
+            y1, y2 = self.lmod.yrange
+
+        self.dsb_x1.setValue(x1)
+        self.dsb_x2.setValue(x2)
+        self.dsb_y1.setValue(y1)
+        self.dsb_y2.setValue(y2)
+        self.dsb_zmin.setValue(zmin)
+        self.dsb_zmax.setValue(zmax)
+
+    def settings(self):
+        """ Load GeoTiff """
+
+        temp = self.exec_()
+        if temp == 0:
+            return None
+
+        x1 = self.dsb_x1.value()
+        x2 = self.dsb_x2.value()
+        y1 = self.dsb_y1.value()
+        y2 = self.dsb_y2.value()
+        zmin = self.dsb_zmin.value()
+        zmax = self.dsb_zmax.value()
+
+        # Check if the profile is within the model area
+
+        maxx = min(max(x1, x2), self.lmod.xrange[1])
+        minx = max(min(x1, x2), self.lmod.xrange[0])
+        if minx > maxx:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'Your profile is not within the '
+                                          'model area.')
+            return None
+
+        maxy = min(max(y1, y2), self.lmod.yrange[1])
+        miny = max(min(y1, y2), self.lmod.yrange[0])
+        if miny > maxy:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'Your profile is not within the '
+                                          'model area.')
+            return None
+
+        if x1 != x2:
+            y1a = np.interp(self.lmod.xrange[0], [x1, x2], [y1, y2])
+            y2a = np.interp(self.lmod.xrange[1], [x1, x2], [y1, y2])
+            x1a, x2a = self.lmod.xrange
+
+            if self.lmod.yrange[0] <= y1a <= self.lmod.yrange[1]:
+                y1 = y1a
+                x1 = x1a
+
+            if self.lmod.yrange[0] <= y2a <= self.lmod.yrange[1]:
+                y2 = y2a
+                x2 = x2a
+
+        if y1 != y2:
+            x1a = np.interp(self.lmod.xrange[0], [y1, y2], [x1, x2])
+            x2a = np.interp(self.lmod.xrange[1], [y1, y2], [x1, x2])
+            y1a, y2a = self.lmod.yrange
+
+            if y1 != y1a:
+                x1 = x1a
+                y1 = y1a
+
+            if y2 != y2a:
+                x2 = x2a
+                y2 = y2a
+
+        curline = 0
+        while curline in self.lmod.custprofx:
+            curline += 1
+
+        self.lmod.custprofx[curline] = [x1, x2]
+        self.lmod.custprofy[curline] = [y1, y2]
+        self.lmod.profpics[curline] = None
+
+        imptext = self.importfile.text()
+        if imptext != '':
+            dat = get_raster(imptext)
+
+            if dat is None:
+                QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                              'Could not import the image.',
+                                              QtWidgets.QMessageBox.Ok)
+                return curline
+
+            dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                    dat[2].data.T])
+            dat = dat[0]
+            dat.data = dat2
+            dat.isrgb = True
+
+            r1 = 0
+            r2 = np.sqrt((x2-x1)**2+(y2-y1)**2)
+            if x1 != x2:
+                f = interpolate.interp1d([x1, x2], [r1, r2],
+                                         fill_value='extrapolate')
+                ra = f(self.dsb_x1.value())
+                rb = f(self.dsb_x2.value())
+            else:
+                f = interpolate.interp1d([y1, y2], [r1, r2],
+                                         fill_value='extrapolate')
+                ra = f(self.dsb_y1.value())
+                rb = f(self.dsb_y2.value())
+
+            dat.extent = (ra, rb, zmin, zmax)
+            self.lmod.profpics[curline] = dat
+
+        return curline
+
+
 def gridmatch2(cgrv, rgrv):
     """ Matches the rows and columns of the second grid to the first
     grid """
-#    rgrv = lmod.griddata[rtxt]
-#    cgrv = lmod.griddata[ctxt]
-
     data = rgrv
     data2 = cgrv
     orig_wkt = data.wkt

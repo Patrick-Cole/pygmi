@@ -273,9 +273,6 @@ class LithModel():
         self.yrange = [utly - yextent, utly]
         self.zrange = [utlz - zextent, utlz]
 
-        self.custprofx[0] = self.xrange
-        self.custprofy[0] = (self.yrange[0], self.yrange[0])
-
         self.dxy = dxy
         self.d_z = d_z
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],

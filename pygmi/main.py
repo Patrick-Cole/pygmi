@@ -46,6 +46,8 @@ import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
 
+QtCore.QLocale.setDefault(QtCore.QLocale.c())
+
 
 class Arrow(QtWidgets.QGraphicsLineItem):
     """
