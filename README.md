@@ -16,19 +16,24 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 PyGMI is developed and has been tested with the following libraries in order to function:
 
 * python 3.7.4
-* GDAL 2.4.1
+* GDAL 3.0.2
 * llvmlite 0.29.0
 * matplotlib 3.1.1
 * numba 0.45.1
-* numexpr 2.6.9
-* numpy 1.16.4
-* pillow 4.2.1
-* pandas 0.24.2
+* numexpr 2.7.0
+* numpy 1.16.5
+* pillow 6.2.1
+* pandas 0.25.1
 * pyopengl 3.1.3b2
-* pyqt5 5.13.0
-* scipy 1.3.0
+* pyqt5 5.13.1
+* scipy 1.3.1
 * scikit_learn 0.21.3
+* scikit_image 0.16.2
 * setuptools 41.0.1
+* segyio 1.8.8
+* geopandas 0.6.1
+* pytest 5.1.2
+* mtpy 1.1.3
 
 ## Installation
 ### General (Not Anaconda)
@@ -85,10 +90,14 @@ Anaconda users are advised not to use pip since it can break PyQt5. Instead, you
 	conda install numpy
 	conda install pillow
 	conda install setuptools
+    conda install segyio
+    conda install geopandas
+    conda install mtpy
+    conda install pytest
 
 Alternatively if you use environments you can simply use the following command:
 
-	conda create -n pygmi2 scipy numba gdal pandas matplotlib numexpr numpy setuptools pillow pyopengl scikit-learn
+	conda create -n pygmi2 scipy numba gdal pandas matplotlib numexpr numpy setuptools pillow pyopengl scikit-learn segyio geopandas mtpy pytest
 
 Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:
 

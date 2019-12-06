@@ -2,6 +2,21 @@
 Changelog
 =========
 
+v3.0.1, 6 December 2019
+-----------------------
+* Added custom profiles to the modelling interface
+* Added test routines for PyGMI modules
+* Added change detection viewer
+* Added BIRRP interface
+* Added supervised classification
+* Added segmentation
+* Fixed a bug causing the measured data in the 3D modeller to shift in the wrong place
+* Added MT processing and inversion
+* Added import and display of SEG-Y data
+* Added basic gravity processing
+* Change line direction to be 0 degrees in N direction. Added parallel processing to magnetic calculations
+* Added parallel processing to core calculations for forward modelling
+
 v3.0.0, 22 August 2019
 ----------------------
 * New 3D modelling interface
