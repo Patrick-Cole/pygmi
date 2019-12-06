@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>pygmi.pfmod package &#8212; PyGMI 3.0.0 documentation</title>
+    <title>pygmi.pfmod package &#8212; PyGMI 3.0.1 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -1805,6 +1805,37 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pygmi.pfmod.tab_prof.ImportPicture">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.pfmod.tab_prof.</code><code class="sig-name descname">ImportPicture</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ImportPicture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Class to call up a dialog</p>
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ImportPicture.get_filename">
+<code class="sig-name descname">get_filename</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ImportPicture.get_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get filename of picture.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ImportPicture.getcoords">
+<code class="sig-name descname">getcoords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ImportPicture.getcoords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get coordinates</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ImportPicture.settings">
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ImportPicture.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load GeoTiff</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ImportPicture.setupui">
+<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ImportPicture.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup UI</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pygmi.pfmod.tab_prof.LithBound">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.pfmod.tab_prof.</code><code class="sig-name descname">LithBound</code><span class="sig-paren">(</span><em class="sig-param">lmod</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.LithBound" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
@@ -1842,7 +1873,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="method">
 <dt id="pygmi.pfmod.tab_prof.MyMplCanvas.init_grid">
-<code class="sig-name descname">init_grid</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">dat2=None</em>, <em class="sig-param">opac=100.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.init_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">init_grid</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">dat2=None</em>, <em class="sig-param">opac=0.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.init_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Updates the single color map</p>
 </dd></dl>
 
@@ -1885,7 +1916,7 @@ startup</p>
 
 <dl class="method">
 <dt id="pygmi.pfmod.tab_prof.MyMplCanvas.slide_grid">
-<code class="sig-name descname">slide_grid</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">dat2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.slide_grid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">slide_grid</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">dat2=None</em>, <em class="sig-param">opac=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyMplCanvas.slide_grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Slider</p>
 </dd></dl>
 
@@ -1948,9 +1979,9 @@ moving to click in a single step.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.pfmod.tab_prof.MyToolbar.custom_profile">
-<code class="sig-name descname">custom_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyToolbar.custom_profile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Axis scale</p>
+<dt id="pygmi.pfmod.tab_prof.MyToolbar.b_logs">
+<code class="sig-name descname">b_logs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyToolbar.b_logs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Borehole Logs</p>
 </dd></dl>
 
 <dl class="method">
@@ -1967,7 +1998,7 @@ moving to click in a single step.</p>
 
 <dl class="attribute">
 <dt id="pygmi.pfmod.tab_prof.MyToolbar.toolitems">
-<code class="sig-name descname">toolitems</code><em class="property"> = (('Home', 'Reset original view', 'home', 'home'), ('Back', 'Back to previous view', 'back', 'back'), ('Forward', 'Forward to next view', 'forward', 'forward'), (None, None, None, None), ('Pan', 'Pan axes with left mouse, zoom with right', 'move', 'pan'), ('Zoom', 'Zoom to rectangle', 'zoom_to_rect', 'zoom'), ('Subplots', 'Configure subplots', 'subplots', 'configure_subplots'), (None, None, None, None), ('Save', 'Save the figure', 'filesave', 'save_figure'), (None, None, None, None), ('Field\nDisplay\nLimits', 'Axis Scale', 'Axis Scale', 'axis_scale'), ('View\nMagnetic\nProfile', 'Magnetic Profile', 'Magnetic Profile', 'mag_profile'), ('View\nGravity\nProfile', 'Gravity Profile', 'Gravity Profile', 'grv_profile'))</em><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyToolbar.toolitems" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">toolitems</code><em class="property"> = (('Home', 'Reset original view', 'home', 'home'), ('Back', 'Back to previous view', 'back', 'back'), ('Forward', 'Forward to next view', 'forward', 'forward'), (None, None, None, None), ('Pan', 'Pan axes with left mouse, zoom with right', 'move', 'pan'), ('Zoom', 'Zoom to rectangle', 'zoom_to_rect', 'zoom'), ('Subplots', 'Configure subplots', 'subplots', 'configure_subplots'), (None, None, None, None), ('Save', 'Save the figure', 'filesave', 'save_figure'), (None, None, None, None), ('Field\nDisplay\nLimits', 'Axis Scale', 'Axis Scale', 'axis_scale'), ('View\nMagnetic\nProfile', 'Magnetic Profile', 'Magnetic Profile', 'mag_profile'), ('View\nGravity\nProfile', 'Gravity Profile', 'Gravity Profile', 'grv_profile'), ('Import\nBorehole\nLogs', 'Borehole Logs', 'Borehole Logs', 'b_logs'))</em><a class="headerlink" href="#pygmi.pfmod.tab_prof.MyToolbar.toolitems" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1991,9 +2022,9 @@ moving to click in a single step.</p>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QWidget</span></code></p>
 <p>Widget class to call the main interface</p>
 <dl class="method">
-<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.addprof">
-<code class="sig-name descname">addprof</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.addprof" title="Permalink to this definition">¶</a></dt>
-<dd><p>add another profile</p>
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.borehole_import">
+<code class="sig-name descname">borehole_import</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.borehole_import" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import borehole data</p>
 </dd></dl>
 
 <dl class="method">
@@ -2009,6 +2040,24 @@ moving to click in a single step.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.cprof_add">
+<code class="sig-name descname">cprof_add</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.cprof_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add new custom profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.cprof_del">
+<code class="sig-name descname">cprof_del</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.cprof_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete current custom profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.custom_prof_limits">
+<code class="sig-name descname">custom_prof_limits</code><span class="sig-paren">(</span><em class="sig-param">curprof=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.custom_prof_limits" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate profile limits</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.export_csv">
 <code class="sig-name descname">export_csv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.export_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export Profile to csv</p>
@@ -2018,6 +2067,12 @@ moving to click in a single step.</p>
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.get_model">
 <code class="sig-name descname">get_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.get_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>gets model slice</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.hcprofnum">
+<code class="sig-name descname">hcprofnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.hcprofnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to change a profile from spinbox</p>
 </dd></dl>
 
 <dl class="method">
@@ -2072,6 +2127,12 @@ picture</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.proftype_changed">
+<code class="sig-name descname">proftype_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.proftype_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Profile type changed.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.rcopy">
 <code class="sig-name descname">rcopy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.rcopy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do a ranged copy on a profile</p>
@@ -2087,6 +2148,12 @@ picture</p>
 <dt id="pygmi.pfmod.tab_prof.ProfileDisplay.rcopy_prof">
 <code class="sig-name descname">rcopy_prof</code><span class="sig-paren">(</span><em class="sig-param">rcopy</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.rcopy_prof" title="Permalink to this definition">¶</a></dt>
 <dd><p>ranged copy on a profile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.pfmod.tab_prof.ProfileDisplay.scprofnum">
+<code class="sig-name descname">scprofnum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.pfmod.tab_prof.ProfileDisplay.scprofnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to change a profile from spinbox</p>
 </dd></dl>
 
 <dl class="method">
@@ -2204,7 +2271,7 @@ radian</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
     </div>
   </body>
 </html>

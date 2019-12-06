@@ -7,7 +7,7 @@ Submodules
 pygmi.test.pfmod module
 -----------------------
 
-.. automodule:: pygmi.test.pfmod
+.. automodule:: pygmi.test.test_pfmod
     :members:
     :undoc-members:
     :show-inheritance:

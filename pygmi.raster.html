@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>pygmi.raster package &#8212; PyGMI 3.0.0 documentation</title>
+    <title>pygmi.raster package &#8212; PyGMI 3.0.1 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -391,12 +391,6 @@ Gordon Cooper.</p>
 <dt id="pygmi.raster.cooper.nextpow2">
 <code class="sig-prename descclassname">pygmi.raster.cooper.</code><code class="sig-name descname">nextpow2</code><span class="sig-paren">(</span><em class="sig-param">n</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.nextpow2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Next power of 2.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.raster.cooper.test">
-<code class="sig-prename descclassname">pygmi.raster.cooper.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test routine.</p>
 </dd></dl>
 
 <dl class="function">
@@ -1180,8 +1174,9 @@ numits will be calculated and used.</p></li>
 <dt id="pygmi.raster.dataprep.trim_raster">
 <code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">trim_raster</code><span class="sig-paren">(</span><em class="sig-param">olddata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.trim_raster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Trim nulls from a raster dataset.</p>
-<p>This function trims entire rows or columns of data which have only nulls,
-and are on the edges of the dataset.</p>
+<p>This function trims entire rows or columns of data which are masked,
+and are on the edges of the dataset. Masked values are set to the null
+value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>olddata</strong> (<a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>Data</em></a>) – PyGMI dataset</p>
@@ -1510,7 +1505,7 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 
 <dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">equation=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Settings</p>
 </dd></dl>
 
@@ -2194,8 +2189,8 @@ main PyGMI interface</p>
 <dl class="function">
 <dt id="pygmi.raster.ginterp.histcomp">
 <code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">histcomp</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">nbr_bins=256</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.histcomp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Histogram Compaction - this eliminates 5% of the outliers in data, allowing
-for a cleaner, linear, representation of the data.</p>
+<dd><p>Histogram Compaction - this compacts 5% of the outliers in data,
+allowing for a cleaner, linear, representation of the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2237,7 +2232,7 @@ the distribution.</p>
 
 <dl class="function">
 <dt id="pygmi.raster.ginterp.img2rgb">
-<code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">img2rgb</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">cbar</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.img2rgb" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">img2rgb</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">cbar=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.img2rgb" title="Permalink to this definition">¶</a></dt>
 <dd><p>convert image to  4 channel rgba color image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3021,7 +3016,7 @@ earlier model and internal model</p></li>
 
 <dl class="method">
 <dt id="pygmi.raster.igrf.IGRF.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Settings Dialog. This is the main entrypoint into this routine. It also
 contains the main IGRF code.</p>
 </dd></dl>
@@ -3253,7 +3248,7 @@ or components</p></li>
 <dl class="method">
 <dt id="pygmi.raster.iodefs.ExportData.get_filename">
 <code class="sig-name descname">get_filename</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">ext</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.get_filename" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets a valid filename in teh case of multi band image</p>
+<dd><p>Gets a valid filename in the case of multi band image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -3800,7 +3795,7 @@ interface. Normal as well as context menus are defined here.</p>
 <p>Class Normalisation</p>
 <dl class="method">
 <dt id="pygmi.raster.normalisation.Normalisation.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.normalisation.Normalisation.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.normalisation.Normalisation.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Settings</p>
 </dd></dl>
 
@@ -3923,7 +3918,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="method">
 <dt id="pygmi.raster.smooth.Smooth.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Settings</p>
 </dd></dl>
 
@@ -4082,7 +4077,7 @@ the first band.</p>
 
 <dl class="method">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is called when the used double clicks the routine from the
 main PyGMI interface</p>
 </dd></dl>
@@ -4163,7 +4158,7 @@ main PyGMI interface</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.1.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
     </div>
   </body>
 </html>

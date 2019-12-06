@@ -7,9 +7,9 @@ Notices
 =======
 Welcome to the PyGMI website! It contains more information, including API documentation for the project.
 
-August 22, 2019: `PyGMI 3.0.0 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
+December 6, 2019: `PyGMI 3.0.1 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
 
-This is the next major release of PyGMI. It introduces a new modelling interface, which will (hopefully) improve modelling.
+This is the next release of PyGMI. It contains various bug fixes and introduces new menus for processing of geophysical data. This includes the amazing `mtpy <https://github.com/MTgeophysics/mtpy>`_ library for MT processing, as well as `segyio <https://pypi.org/project/segyio/>`_ for reading SEG-Y data to view. This is the start of (hopefully) something big in terms of expanding the geoscience capabilities of PyGMI.
 
 PyGMI is being developed using python 3.7 and Qt5.
 
