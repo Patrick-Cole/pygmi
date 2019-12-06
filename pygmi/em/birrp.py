@@ -166,7 +166,7 @@ class BIRRP(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
         pb_importbirrp = QtWidgets.QPushButton('Import BIRRP configuration file')
-        pb_runbirrp = QtWidgets.QPushButton('Save BIRRP configuration file and run BIRRP')
+        pb_runbirrp = QtWidgets.QPushButton('Save BIRRP configuration file')  #' and run BIRRP')
 
         self.ilev.setDisabled(True)
         self.imode.setDisabled(True)
@@ -241,7 +241,7 @@ class BIRRP(QtWidgets.QDialog):
         hbl1.addLayout(self.lay3)
 
         hbl2 = QtWidgets.QHBoxLayout()
-        hbl2.addWidget(helpdocs)
+#        hbl2.addWidget(helpdocs)
         hbl2.addWidget(buttonbox)
 
         vbl.addWidget(pb_importbirrp)
@@ -461,7 +461,7 @@ class BIRRP(QtWidgets.QDialog):
             ofile.write(self.thetab.text()+'\n')
             ofile.write(self.thetar.text()+'\n')
 
-        MTbp.run(birrp_path, filename)
+#        MTbp.run(birrp_path, filename)
 
 
     def get_filename(self, widget):

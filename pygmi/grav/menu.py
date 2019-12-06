@@ -58,7 +58,7 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
-        self.action_process = QtWidgets.QAction('Process Gravity Data')
+        self.action_process = QtWidgets.QAction('Process Gravity Data - Beta')
         self.menu.addAction(self.action_process)
         self.action_process.triggered.connect(self.process_data)
 

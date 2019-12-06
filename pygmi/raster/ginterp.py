@@ -926,6 +926,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
         self.units = {}
+        self.reportback = self.parent.showprocesslog
 
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
@@ -1610,6 +1611,9 @@ class PlotInterp(QtWidgets.QDialog):
         main PyGMI interface"""
 
         if 'Raster' not in self.indata:
+            return False
+        if self.indata['Raster'][0].isrgb:
+            self.reportback('RGB images cannot be used in this module.')
             return False
 
         self.show()

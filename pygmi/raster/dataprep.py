@@ -906,7 +906,9 @@ class Metadata(QtWidgets.QDialog):
             odata.xdim = float(self.dsb_xdim.text())
             odata.ydim = float(self.dsb_ydim.text())
 
-            rows, cols = odata.data.shape
+            rows = odata.data.shape[0]
+            cols = odata.data.shape[1]
+
             right = left + odata.xdim*cols
             bottom = top - odata.ydim*rows
 
@@ -1439,6 +1441,9 @@ def merge(dat):
     Data
         data object which stores datasets
     """
+    if dat[0].isrgb:
+        return dat
+
     needsmerge = False
     rows, cols = dat[0].data.shape
     for i in dat:

@@ -323,7 +323,13 @@ class ImportRGBData():
         dat[0].data = dat2
         dat[0].isrgb = True
 
+        if dat[0].data.dtype == np.uint16:
+            iidat = np.iinfo(dat[0].data.dtype)
+            dat[0].data = dat[0].data.astype(float)
+            dat[0].data = (dat[0].data-iidat.min)/(iidat.max-iidat.min)
+
         self.outdata[output_type] = dat
+
         return True
 
 

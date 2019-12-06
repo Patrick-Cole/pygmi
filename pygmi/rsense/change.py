@@ -101,7 +101,7 @@ class CreateSceneList(QtWidgets.QDialog):
 
         gridlayout_main.addWidget(self.isrecursive, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+#        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
@@ -359,9 +359,16 @@ class MyMplCanvas(FigureCanvas):
             rtmp2 = dat[self.bands[1]].data
             rtmp3 = dat[self.bands[0]].data
 
-            rtmp1 = (rtmp1-rtmp1.min())/rtmp1.ptp()
-            rtmp2 = (rtmp2-rtmp2.min())/rtmp2.ptp()
-            rtmp3 = (rtmp3-rtmp3.min())/rtmp3.ptp()
+            rtmp1 = (rtmp1-rtmp1.min())
+            rtmp2 = (rtmp2-rtmp2.min())
+            rtmp3 = (rtmp3-rtmp3.min())
+
+            if rtmp1.ptp() != 0.:
+                rtmp1 = rtmp1/rtmp1.ptp()
+            if rtmp2.ptp() != 0.:
+                rtmp2 = rtmp2/rtmp2.ptp()
+            if rtmp3.ptp() != 0.:
+                rtmp3 = rtmp3/rtmp3.ptp()
 
             alpha = np.logical_not(rtmp1 == 0.)
 
@@ -406,7 +413,7 @@ class SceneViewer(QtWidgets.QDialog):
         self.isrecursive = QtWidgets.QCheckBox('Recursive file search')
 
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("application main window")
+        self.setWindowTitle("View Change Data")
 
         self.file_menu = QtWidgets.QMenu('&File', self)
         self.help_menu = QtWidgets.QMenu('&Help', self)

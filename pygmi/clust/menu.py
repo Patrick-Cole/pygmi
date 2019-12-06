@@ -33,6 +33,7 @@ from pygmi.raster import iodefs
 from pygmi.clust import crisp_clust
 from pygmi.clust import fuzzy_clust
 from pygmi.clust import super_class
+from pygmi.clust import segmentation
 
 
 class MenuWidget():
@@ -71,6 +72,10 @@ class MenuWidget():
         self.action_fuzzy_clustering.triggered.connect(self.fuzzy_cluster)
 
         self.menuclustering.addSeparator()
+
+        self.action_segmentation = QtWidgets.QAction('Image Segmentation')
+        self.menuclustering.addAction(self.action_segmentation)
+        self.action_segmentation.triggered.connect(self.segmentation)
 
         self.action_super_class = QtWidgets.QAction("Supervised Classification")
         self.menuclustering.addAction(self.action_super_class)
@@ -149,3 +154,8 @@ class MenuWidget():
     def show_vrc_etc(self):
         """Show vrc, xbi, obj, nce graphs."""
         self.parent.launch_context_item(graphs.PlotVRCetc)
+
+    def segmentation(self):
+        """Image Segmentation."""
+        fnc = segmentation.ImageSeg(self.parent)
+        self.parent.item_insert('Step', 'Image Segmentation', fnc)

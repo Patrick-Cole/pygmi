@@ -274,6 +274,33 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     def cprof_del(self):
         """ Delete current custom profile """
+        curline = self.sb_cprofnum.value()
+
+        cnt = len(self.lmod1.profpics)
+        if cnt == 0:
+            return
+
+        j = -1
+        for i in range(cnt):
+            if i == curline:
+                continue
+            j += 1
+            self.lmod1.profpics[j] = self.lmod1.profpics[i]
+            self.lmod1.custprofx[j] = self.lmod1.custprofx[i]
+            self.lmod1.custprofy[j] = self.lmod1.custprofy[i]
+        del self.lmod1.profpics[cnt-1]
+        del self.lmod1.custprofx[cnt-1]
+        del self.lmod1.custprofy[cnt-1]
+
+        cnums = [i for i in self.lmod1.custprofx if isinstance(i, int)]
+
+        if cnums:
+            self.hs_cprofnum.setMaximum(max(cnums))
+            self.hs_cprofnum.setValue(0)
+            self.sb_cprofnum.setMaximum(max(cnums))
+        else:
+            self.hs_cprofnum.setEnabled(False)
+            self.sb_cprofnum.setEnabled(False)
 
     def proftype_changed(self):
         """ Profile type changed."""
@@ -286,7 +313,8 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.sb_profnum.setHidden(False)
             self.hs_profnum.setHidden(False)
             self.hs_sideview.setEnabled(False)
-            self.sprofnum()
+            self.prof_dir()
+#            self.sprofnum()
         else:
             self.gb_dir.setHidden(True)
             self.gb_cprof.setHidden(False)
@@ -2188,9 +2216,15 @@ class ImportPicture(QtWidgets.QDialog):
             return None
 
         if x1 != x2:
-            y1a = np.interp(self.lmod.xrange[0], [x1, x2], [y1, y2])
-            y2a = np.interp(self.lmod.xrange[1], [x1, x2], [y1, y2])
+            f = interpolate.interp1d([x1, x2], [y1, y2],
+                                     fill_value='extrapolate')
             x1a, x2a = self.lmod.xrange
+            y1a = f(x1a)
+            y2a = f(x2a)
+
+#            y1a = np.interp(self.lmod.xrange[0], [x1, x2], [y1, y2])
+#            y2a = np.interp(self.lmod.xrange[1], [x1, x2], [y1, y2])
+#            x1a, x2a = self.lmod.xrange
 
             if self.lmod.yrange[0] <= y1a <= self.lmod.yrange[1]:
                 y1 = y1a
@@ -2201,9 +2235,15 @@ class ImportPicture(QtWidgets.QDialog):
                 x2 = x2a
 
         if y1 != y2:
-            x1a = np.interp(self.lmod.xrange[0], [y1, y2], [x1, x2])
-            x2a = np.interp(self.lmod.xrange[1], [y1, y2], [x1, x2])
+            f = interpolate.interp1d([y1, y2], [x1, x2],
+                                     fill_value='extrapolate')
             y1a, y2a = self.lmod.yrange
+            x1a = f(y1a)
+            x2a = f(y2a)
+
+#            x1a = np.interp(self.lmod.xrange[0], [y1, y2], [x1, x2])
+#            x2a = np.interp(self.lmod.xrange[1], [y1, y2], [x1, x2])
+#            y1a, y2a = self.lmod.yrange
 
             if y1 != y1a:
                 x1 = x1a

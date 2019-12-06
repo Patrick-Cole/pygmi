@@ -25,10 +25,11 @@
 """Remote Sensing Menu Routines."""
 
 from PyQt5 import QtWidgets
-from pygmi.mt import iodefs
-from pygmi.mt import dataprep
-from pygmi.mt import graphs
-from pygmi.mt import birrp
+from pygmi.em import iodefs
+from pygmi.em import dataprep
+from pygmi.em import graphs
+from pygmi.em import birrp
+from pygmi.em import tdem
 
 
 class MenuWidget():
@@ -51,37 +52,39 @@ class MenuWidget():
         context_menu = self.parent.context_menu
 
 # Normal menus
-        self.menu = QtWidgets.QMenu('MT')
+        self.menu = QtWidgets.QMenu('EM')
         parent.menubar.addAction(self.menu.menuAction())
+        self.menumt = self.menu.addMenu('MT')
+        self.menutd = self.menu.addMenu('TDEM')
 
-        self.action_birrp = QtWidgets.QAction('BIRRP')
-        self.menu.addAction(self.action_birrp)
+        self.action_birrp = QtWidgets.QAction('BIRRP - Beta')
+        self.menumt.addAction(self.action_birrp)
         self.action_birrp.triggered.connect(self.birrp)
 
-        self.menu.addSeparator()
+        self.menumt.addSeparator()
 
         self.action_import_data = QtWidgets.QAction('Import EDI Data')
-        self.menu.addAction(self.action_import_data)
+        self.menumt.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
-        self.menu.addSeparator()
+        self.menumt.addSeparator()
 
         self.action_rotate_data = QtWidgets.QAction('Rotate EDI Data')
-        self.menu.addAction(self.action_rotate_data)
+        self.menumt.addAction(self.action_rotate_data)
         self.action_rotate_data.triggered.connect(self.rotate_data)
 
         self.action_sshift_data = QtWidgets.QAction('Remove Static Shift')
-        self.menu.addAction(self.action_sshift_data)
+        self.menumt.addAction(self.action_sshift_data)
         self.action_sshift_data.triggered.connect(self.sshift_data)
 
         self.action_mi_data = QtWidgets.QAction('Mask and Interpolate')
-        self.menu.addAction(self.action_mi_data)
+        self.menumt.addAction(self.action_mi_data)
         self.action_mi_data.triggered.connect(self.mi_data)
 
-        self.menu.addSeparator()
+        self.menumt.addSeparator()
 
         self.action_occam1d = QtWidgets.QAction('Occam 1D Inversion')
-        self.menu.addAction(self.action_occam1d)
+        self.menumt.addAction(self.action_occam1d)
         self.action_occam1d.triggered.connect(self.occam1d)
 
 # Context menus

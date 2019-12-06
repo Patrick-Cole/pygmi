@@ -109,7 +109,7 @@ class ImageSeg(QtWidgets.QDialog):
 #
 #        gridlayout_main.addWidget(self.isrecursive, 2, 0, 1, 2)
 
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+#        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
