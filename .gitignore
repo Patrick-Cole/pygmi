@@ -4,6 +4,7 @@ _modules/
 .pylint.d/
 .hypothesis/
 .empty/
+.spyproject/
 build/
 data/
 dist/
