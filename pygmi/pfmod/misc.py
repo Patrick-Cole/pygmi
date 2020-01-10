@@ -186,6 +186,7 @@ class MergeMod3D(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -200,7 +201,7 @@ class MergeMod3D(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """Setup UI."""
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
@@ -322,8 +323,9 @@ class MergeMod3D(QtWidgets.QDialog):
         datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
                         usedtm=False)
 
-        lithcnt = 9000
+        lithcnt = 0
         newmlut = {0: datmaster.mlut[0]}
+        newslut = {0: datslave.mlut[0]}
         all_liths = list(set(datmaster.lith_list) | set(datslave.lith_list))
 
         for lith in all_liths:
@@ -332,28 +334,32 @@ class MergeMod3D(QtWidgets.QDialog):
             lithcnt += 1
             if lith in datslave.lith_list:
                 oldlithindex = datslave.lith_list[lith].lith_index
-                newmlut[lithcnt-9000] = datslave.mlut[oldlithindex]
+                newslut[lithcnt] = datslave.mlut[oldlithindex]
                 tmp = (datslave.lith_index == oldlithindex)
                 datslave.lith_index[tmp] = lithcnt
-                datslave.lith_list[lith].lith_index = lithcnt-9000
+                datslave.lith_list[lith].lith_index = lithcnt
 
             if lith in datmaster.lith_list:
                 oldlithindex = datmaster.lith_list[lith].lith_index
-                newmlut[lithcnt-9000] = datmaster.mlut[oldlithindex]
+                newmlut[lithcnt] = datmaster.mlut[oldlithindex]
                 tmp = (datmaster.lith_index == oldlithindex)
                 datmaster.lith_index[tmp] = lithcnt
-                datmaster.lith_list[lith].lith_index = lithcnt-9000
+                datmaster.lith_list[lith].lith_index = lithcnt
 
+        datslave.mlut = newslut
         datmaster.mlut = newmlut
         datmaster.lith_index[datmaster.lith_index == 0] = \
             datslave.lith_index[datmaster.lith_index == 0]
-        datmaster.lith_index[datmaster.lith_index > 9000] -= 9000
+#        datmaster.lith_index[datmaster.lith_index > 9000] -= 9000
 
         for lith in datslave.lith_list:
             if lith not in datmaster.lith_list:
                 datmaster.lith_list[lith] = datslave.lith_list[lith]
                 lithnum = datmaster.lith_list[lith].lith_index
-                datmaster.mlut[lithnum] = datslave.mlut[lithnum]
+                try:
+                    datmaster.mlut[lithnum] = datslave.mlut[lithnum]
+                except:
+                    breakpoint()
 
         self.outdata['Model3D'] = [datmaster]
         return True
