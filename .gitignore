@@ -1,6 +1,8 @@
 __pycache__/
 _modules/
 .doctrees/
+.pylint.d/
+.hypothesis/
 .empty/
 build/
 data/
