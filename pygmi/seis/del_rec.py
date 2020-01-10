@@ -48,7 +48,15 @@ class DeleteRecord():
         self.settings()
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.showtext('Delete Rows starting')
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName()
@@ -61,7 +69,19 @@ class DeleteRecord():
         return True
 
     def delrec(self, ifile):
-        """Delete record."""
+        """
+        Delete record.
+
+        Parameters
+        ----------
+        ifile : str
+            Input filename.
+
+        Returns
+        -------
+        None.
+
+        """
         ofile = ifile[:-4]+'_new.out'
 
         self.showtext('Input Filename: '+ifile)
@@ -118,7 +138,15 @@ class Quarry():
         self.day = [9, 19]  # daytime start at 6am and ends at 7pm
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.showtext('Delete quarry events starting')
 
         if 'Seis' not in self.indata:
@@ -145,8 +173,15 @@ class Quarry():
         return True
 
     def calcrq2(self):
-        """Calculate the Rq value."""
-#        ttt = PTime()
+        """
+        Calculate the Rq value.
+
+        Returns
+        -------
+        newevents : list
+            New events
+
+        """
         self.showtext('Working...')
 
         hour = []
@@ -164,7 +199,7 @@ class Quarry():
 
         day = self.day
         ehour = np.array(hour)
-        ehourall = ehour.copy()
+#        ehourall = ehour.copy()
         hour = np.logical_and(ehour >= day[0], ehour <= day[1])
 
         lon = np.array(lon)
@@ -229,7 +264,6 @@ class Quarry():
             nn = N-nd
             nd[nn == 0] = 0
             nn[nn == 0] = N
-#            ttt.since_last_call('for loop')
 
             rq = (nd*ln)/(nn*ld)
 
@@ -248,20 +282,27 @@ class Quarry():
                 stayinloop = False
             stayinloop = False
 
-#        ttt.since_last_call('Total')
         self.showtext('Completed!')
 
-        plt.hist(ehourall, 24)
-        plt.show()
+        # plt.hist(ehourall, 24)
+        # plt.show()
 
-        plt.hist(ehour, 24)
-        plt.show()
+        # plt.hist(ehour, 24)
+        # plt.show()
 
 #        return newevents.tolist()
         return newevents
 
     def calcrq2b(self):
-        """Calculate the Rq value."""
+        """
+        Calculate the Rq value.
+
+        Returns
+        -------
+        newevents : list
+            New events
+
+        """
 #        ttt = PTime()
         self.showtext('Working...')
 
@@ -282,7 +323,7 @@ class Quarry():
         day = self.day
 
         ehour = np.array(hour)
-        ehourall = ehour.copy()
+#        ehourall = ehour.copy()
         hour = np.logical_and(ehour >= day[0], ehour <= day[1])
 
         lon = np.array(lon)
@@ -360,7 +401,26 @@ class Quarry():
         return newevents.tolist()
 
     def randrq(self, nmax, nstep, nrange, day):
-        """Calculate random Rq values."""
+        """
+        Calculate random Rq values.
+
+        Parameters
+        ----------
+        nmax : int
+            DESCRIPTION.
+        nstep : int
+            DESCRIPTION.
+        nrange : list
+            DESCRIPTION.
+        day : tuple
+            DESCRIPTION.
+
+        Returns
+        -------
+        rperc : list
+            Percentiles
+
+        """
         rperc = [1.97435897, 1.64253394, 1.46153846, 1.41025641, 1.35737179,
                  1.3234714, 1.28444936, 1.26923077]
 #        rperc[0] = 2.5
@@ -386,8 +446,25 @@ class Quarry():
 
         return rperc
 
-    def randrqb(self, N, day, num):
-        """Calculate random Rq values."""
+    def randrqb(self, N1, day, num):
+        """
+        Calculate random Rq values.
+
+        Parameters
+        ----------
+        N1 : TYPE
+            DESCRIPTION.
+        day : tuple
+            DESCRIPTION.
+        num : int
+            DESCRIPTION.
+
+        Returns
+        -------
+        rperc : list
+            Percentiles
+
+        """
         self.showtext('Calculating random Rq values for calibration')
 #        nd = 0
         elist = [50, 100, 150, 200]
@@ -447,7 +524,21 @@ class Quarry():
 
 
 def import_for_plots(ifile, dind='R'):
-    """Import data to plot."""
+    """
+    Import data to plot.
+
+    Parameters
+    ----------
+    ifile : str
+        Input file name.
+    dind : str, optional
+        Distance indicator. The default is 'R'.
+
+    Returns
+    -------
+    None.
+
+    """
     iseis = iodefs.ImportSeisan()
     iseis.settings(ifile)
 

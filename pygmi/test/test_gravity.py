@@ -31,22 +31,21 @@ import os
 import sys
 from PyQt5 import QtWidgets
 import numpy as np
-import pytest
 from pygmi.grav import iodefs, dataprep
 
 APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
 
 def test_process_data():
-    """ test process gravity data """
+    """test process gravity data."""
 
     idir = os.path.dirname(os.path.realpath(__file__))
 
-    grvfile = os.path.join(idir, r'data\GravityCG5.txt')
-    gpsfile = os.path.join(idir, r'data\GravityDGPS.csv')
+    grvfile = os.path.join(idir, r'testdata\GravityCG5.txt')
+    gpsfile = os.path.join(idir, r'testdata\GravityDGPS.csv')
 
 # Import Data
-    IO = iodefs.ImportCG5()
+    IO = iodefs.ImportCG5(None)
     IO.get_cg5(grvfile)
     IO.get_gps(gpsfile)
     IO.settings(True)

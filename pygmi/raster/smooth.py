@@ -137,7 +137,15 @@ class Smooth(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self, test=False):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if test is not True:
             temp = self.exec_()
             if temp == 0:

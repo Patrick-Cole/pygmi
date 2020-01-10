@@ -70,7 +70,14 @@ class ProcessData(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.dataprep.processdata')
@@ -102,7 +109,15 @@ class ProcessData(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self, test=False):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         tmp = []
         if 'Line' not in self.indata:
             self.parent.showprocesslog('No Line Data')
@@ -131,7 +146,16 @@ class ProcessData(QtWidgets.QDialog):
         return tmp
 
     def acceptall(self):
-        """Accept."""
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
         newdat = self.indata['Line']
 
         dat = self.indata['Line'].data

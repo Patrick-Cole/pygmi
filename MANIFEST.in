@@ -2,6 +2,9 @@ include *.txt
 include *.py
 include *.cfg
 include *.md
-include pygmi/raster/IGRF11.COF
-recursive-include pygmi *.py *.png *.ico *.emf
+include pygmi/raster/IGRF12.COF
+include pygmi/raster/gcs.csv
+include pygmi/raster/pcs.csv
+include pygmi/bholes/logplot.xlsx
+recursive-include pygmi *.py *.png *.ico *.emf *.svg *.html
 

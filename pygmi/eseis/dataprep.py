@@ -89,7 +89,14 @@ class Metadata(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         groupbox = QtWidgets.QGroupBox('Dataset')
@@ -142,10 +149,12 @@ class Metadata(QtWidgets.QDialog):
 
     def acceptall(self):
         """
-        Accept.
+        Accept option. Updates self.indata.
 
-        This routine is called by settings() if accept is pressed. It contains
-        the main routine.
+        Returns
+        -------
+        None.
+
         """
         self.update_vals()
         self.indata['MT - EDI'] = self.banddata
@@ -397,7 +406,16 @@ class StaticShiftEDI(QtWidgets.QDialog):
         self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def acceptall(self):
-        """Accept."""
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
         self.outdata['MT - EDI'] = self.data
 
     def apply(self):
@@ -433,7 +451,15 @@ class StaticShiftEDI(QtWidgets.QDialog):
         self.mmc.update_line(self.data, i, i2)
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
@@ -524,7 +550,16 @@ class RotateEDI(QtWidgets.QDialog):
         self.combobox1.currentIndexChanged.connect(self.change_band)
 
     def acceptall(self):
-        """Accept."""
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
         self.outdata['MT - EDI'] = self.data
 
     def apply(self):
@@ -562,7 +597,15 @@ class RotateEDI(QtWidgets.QDialog):
         self.mmc.update_line(self.data, i, i2)
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
@@ -860,7 +903,16 @@ class EditEDI(QtWidgets.QDialog):
         self.combobox1.currentIndexChanged.connect(self.change_band)
 
     def acceptall(self):
-        """Accept."""
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
         self.outdata['MT - EDI'] = self.data
 
     def apply(self):
@@ -909,7 +961,15 @@ class EditEDI(QtWidgets.QDialog):
         self.mmc.update_line(self.data, i, i2)
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
@@ -1180,7 +1240,16 @@ class Occam1D(QtWidgets.QDialog):
         self.change_band()
 
     def acceptall(self):
-        """Accept."""
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
         self.outdata['MT - EDI'] = self.data
 
     def apply(self):
@@ -1325,7 +1394,15 @@ class Occam1D(QtWidgets.QDialog):
         self.mmc.update_line(x, pdata, rdata, depths, res, title)
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:

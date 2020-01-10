@@ -122,7 +122,15 @@ class SIMP():
         self.event = {}
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.parent.clearprocesslog()
         self.showtext('Import Bulletin to Seisan Format')
 
@@ -206,7 +214,21 @@ class SIMP():
         return True
 
     def reset_vars(self, mon, mondec):
-        """Use to reset the header variables to their defaults."""
+        """
+        Use to reset the header variables to their defaults.
+
+        Parameters
+        ----------
+        mon : str
+            Month.
+        mondec : int
+            Integer month.
+
+        Returns
+        -------
+        None.
+
+        """
         self.mon = mon
         self.mondec = mondec
         self.region = ''
@@ -226,7 +248,14 @@ class SIMP():
         self.datarms = 0
 
     def reset_data_vars(self):
-        """Reset the various data variables."""
+        """
+        Reset the various data variables.
+
+        Returns
+        -------
+        None.
+
+        """
         self.datanum = -1
         self.timesection = ''
         self.datastat = []
@@ -243,7 +272,14 @@ class SIMP():
         self.dataresid = []
 
     def init_data_var_row(self):
-        """Initialize a data variable row."""
+        """
+        Initialize a data variable row.
+
+        Returns
+        -------
+        None.
+
+        """
         self.datastat.append('   ')
         self.dataphase.append(' ')
         self.datahours.append(0)
@@ -260,19 +296,55 @@ class SIMP():
 # Perhaps we should have a place to load in stations outside of the program?
 
     def extract_date(self, tmp):
-        """Extract the date from the string."""
+        """
+        Extract the date from the string.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         tmp2 = tmp.partition(self.mon)
         self.day = int(tmp2[0])
         tmp2 = tmp2[2].split()
         self.year = int(tmp2[0])
 
     def look_for_magnitude(self, tmp):
-        """Look for the magnitude in the string."""
+        """
+        Look for the magnitude in the string.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         if tmp.find('MAGNITUDE') > -1 and tmp.find('PHASE') == -1:
             self.magnitude = float(tmp.partition('+-')[0][-4:])
 
     def look_for_latitude(self, tmp):
-        """Look for latitude and longitude."""
+        """
+        Look for latitude and longitude.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         if tmp.find('LATITUDE') > -1:
             tmp = tmp.replace(' ', '')
 # remove extra illegal characters
@@ -294,19 +366,55 @@ class SIMP():
             self.lonerr = float(tmp[tmp.find('.')-3:tmp.find('.')+3])
 
     def look_for_depth(self, tmp):
-        """Look for depth."""
+        """
+        Look for depth.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         if tmp.find('DEPTH') > -1:
             tmp = tmp.partition('=')[2]
             tmp = tmp.partition('km')[0]
             self.depth = float(tmp)
 
     def look_for_region(self, tmp):
-        """Look for region."""
+        """
+        Look for region.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         if tmp.find('REGION') > -1:
             self.region = tmp.partition(' ')[2]
 
     def look_for_origin(self, tmp):
-        """Look for origin."""
+        """
+        Look for origin.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         if tmp.find('ORIGIN') > -1:
             self.hour = int(ncor(tmp.partition('h')[0][-2:]))
             self.minute = int(ncor(tmp.partition('m')[0][-2:]))
@@ -314,7 +422,19 @@ class SIMP():
             self.secerr = float(ncor(tmp.partition('s')[0][-5:]))
 
     def get_data_record_a(self, tmp):
-        """Get record type A."""
+        """
+        Get record type A.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         did_alt_phase = False
         self.reset_data_vars()
 # Get rid of spaces
@@ -346,7 +466,19 @@ class SIMP():
         self.datadist = [0.0]*self.datanum
 
     def get_data_record_b(self, tmp):
-        """Get record type B."""
+        """
+        Get record type B.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         self.reset_data_vars()
 # Get rid of spaces
         tmp = clean_string(tmp)
@@ -372,7 +504,19 @@ class SIMP():
         self.data_azim = [0.0]*self.datanum
 
     def get_data_record_c(self, tmp):
-        """Get record type C."""
+        """
+        Get record type C.
+
+        Parameters
+        ----------
+        tmp : str
+            Data string.
+
+        Returns
+        -------
+        None.
+
+        """
         self.reset_data_vars()
 # Get rid of spaces
         tmp = clean_string(tmp)
@@ -398,7 +542,22 @@ class SIMP():
         self.numstations = int(self.datanum/2)
 
     def get_station(self, tmp, station):
-        """Get the station."""
+        """
+        Get the station.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+        station : str
+            Station string.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if not tmp:
             return tmp
 
@@ -412,7 +571,22 @@ class SIMP():
         return tmp
 
     def get_data_dist(self, tmp, station):
-        """Get the distance."""
+        """
+        Get the distance.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+        station : str
+            Station string.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if not tmp:
             return tmp
 
@@ -427,7 +601,22 @@ class SIMP():
         return tmp
 
     def get_data_azim(self, tmp, station):
-        """Get the azimuth."""
+        """
+        Get the azimuth.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+        station : str
+            Station string.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if not tmp:
             return tmp
 
@@ -442,7 +631,24 @@ class SIMP():
         return tmp
 
     def get_data_phase(self, tmp, station, default):
-        """Get the phase."""
+        """
+        Get the phase.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+        station : str
+            Station string.
+        default : str
+            Default data phase.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if not tmp:
             return tmp
 
@@ -463,7 +669,20 @@ class SIMP():
         return tmp
 
     def get_data_d(self, tmp):
-        """Get the D value."""
+        """
+        Get the D value.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if not tmp:
             return tmp
 
@@ -476,7 +695,20 @@ class SIMP():
         return tmp
 
     def get_time_section(self, tmp):
-        """Get the time."""
+        """
+        Get the time.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if not tmp:
             return tmp
         tmp2 = tmp.pop(0)
@@ -500,7 +732,22 @@ class SIMP():
         return tmp
 
     def get_data_resid(self, tmp, station):
-        """Get the data residual."""
+        """
+        Get the data residual.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+        station : str
+            Station string.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if not tmp:
             return tmp
         if (station != '' and isfloat(tmp[0]) is True and
@@ -510,21 +757,54 @@ class SIMP():
         return tmp
 
     def get_data_period(self, tmp):
-        """Get the period."""
+        """
+        Get the period.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if tmp:
             self.dataperiod[-1] = float(tmp[0])
             tmp.pop(0)
         return tmp
 
     def get_data_amplitude(self, tmp):
-        """Get the amplitude."""
+        """
+        Get the amplitude.
+
+        Parameters
+        ----------
+        tmp : list
+            Data string list.
+
+        Returns
+        -------
+        tmp : list
+            Data string list.
+
+        """
         if tmp:
             self.dataamplitude[-1] = float(tmp[0][:4])*1000
             tmp.pop(0)
         return tmp
 
     def calc_rms(self):
-        """Calculate the RMS."""
+        """
+        Calculate the RMS.
+
+        Returns
+        -------
+        None.
+
+        """
         rmscnt = 0
         if self.datanum > -1:
             for i in range(self.datanum):
@@ -538,7 +818,14 @@ class SIMP():
                 self.datarms = 0
 
     def get_record_type_1(self):
-        """Write record type 1."""
+        """
+        Write record type 1.
+
+        Returns
+        -------
+        None.
+
+        """
         tmp = sdt.seisan_1()
         tmp.year = self.year
         tmp.month = self.mondec
@@ -561,7 +848,14 @@ class SIMP():
         self.event['1'] = tmp
 
     def get_record_type_e(self):
-        """Get record type E."""
+        """
+        Get record type E.
+
+        Returns
+        -------
+        None.
+
+        """
         if self.laterr != -999:
             tmp = sdt.seisan_1()
             tmp.gap = 0
@@ -576,7 +870,14 @@ class SIMP():
             self.event['E'] = tmp
 
     def get_record_type_i(self):
-        """Get record type I."""
+        """
+        Get record type I.
+
+        Returns
+        -------
+        None.
+
+        """
         tmp = sdt.seisan_I()
 
         tmp.last_action_done = 'SPL'
@@ -595,7 +896,14 @@ class SIMP():
         self.event['I'] = tmp
 
     def get_record_type_4(self):
-        """Get record type 4."""
+        """
+        Get record type 4.
+
+        Returns
+        -------
+        None.
+
+        """
         tmp2 = []
         for i in range(self.datanum):
             tmp = sdt.seisan_4()
@@ -642,7 +950,19 @@ class SIMP():
         self.event['4'] = tmp2
 
     def inerror(self, eline):
-        """Write an error to the error file."""
+        """
+        Write an error to the error file.
+
+        Parameters
+        ----------
+        eline : str
+            String containging error.
+
+        Returns
+        -------
+        None.
+
+        """
         if eline[0:3].isalpha():
             station = is_stat(eline)
             if station == '':
@@ -651,7 +971,22 @@ class SIMP():
         self.showtext('Line: "'+eline)
 
     def get_record_info(self, idata):
-        """Get the information on when records start and finish etc."""
+        """
+        Get the information on when records start and finish etc.
+
+        Parameters
+        ----------
+        idata : list
+            Input data strings.
+
+        Returns
+        -------
+        mrecs : list
+            List of relevent records.
+        monconv : dictionary
+            Dictionary to convert string months to numbers.
+
+        """
     # Get Dates and the beginnings of sections
         monconv = {'JAN': 1, 'FEB': 2, 'MAR': 3, 'APR': 4, 'MAY': 5, 'JUN': 6,
                    'JUL': 7, 'AUG': 8, 'SEP': 9, 'OCT': 10, 'NOV': 11,
@@ -682,7 +1017,20 @@ class SIMP():
 
 
 def read_ifile(ifile):
-    """Routine to read and clean some of the input file."""
+    """
+    Routine to read and clean some of the input file.
+
+    Parameters
+    ----------
+    ifile : str
+        Input file name.
+
+    Returns
+    -------
+    idata : list
+        List of data strings.
+
+    """
     # Read entire file
     with open(ifile) as inputf:
         idata = inputf.read()
@@ -704,7 +1052,20 @@ def read_ifile(ifile):
 
 
 def isfloat(tmp):
-    """Check if a number is a float. Can take decimal point."""
+    """
+    Check if a number is a float. Can take decimal point.
+
+    Parameters
+    ----------
+    tmp : str
+        Number in string form.
+
+    Returns
+    -------
+    bool
+        True if number is a float, False otherwise..
+
+    """
     try:
         float(tmp)
         return True
@@ -713,7 +1074,20 @@ def isfloat(tmp):
 
 
 def clean_string(tmp):
-    """Clean string of illegal characters."""
+    """
+    Clean string of illegal characters.
+
+    Parameters
+    ----------
+    tmp : list
+        List of strings to be cleaned.
+
+    Returns
+    -------
+    tmp2 : list
+        Cleaned list of strings.
+
+    """
     tmp = np.copy(tmp)
     tmp = tmp[tmp != '']
     tmp = tmp.tolist()
@@ -753,7 +1127,20 @@ def clean_string(tmp):
 
 
 def is_stat(tmp):
-    """Check if the string is a station."""
+    """
+    Check if the string is a station.
+
+    Parameters
+    ----------
+    tmp : str
+        String to check.
+
+    Returns
+    -------
+    station : str
+        station identified.
+
+    """
     station = ''
     stationlist = ['SNA', 'BEW', 'SNA', 'BEW', 'BPI', 'BFT', 'BLE', 'BLF',
                    'BOSA', 'BFS', 'CVN', 'CER', 'ERS', 'FRS', 'GRM', 'HVD',
@@ -779,6 +1166,19 @@ def is_stat(tmp):
 
 
 def ncor(tmp):
-    """Correct number problems."""
+    """
+    Correct number problems.
+
+    Parameters
+    ----------
+    tmp : str
+        String to correct.
+
+    Returns
+    -------
+    tmp : str
+        Corrected string.
+
+    """
     tmp = tmp.replace('I', '1')
     return tmp

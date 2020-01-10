@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """
 These are tests. Run pytest on this file from within this directory to do
-the tests .
+the tests.
 """
 
 import os
@@ -42,7 +42,7 @@ APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
 
 def test_gradients():
-    """ test directional derivative"""
+    """test directional derivative."""
     datin = [[1, 2], [1, 2]]
     dat2 = [[-1, -1], [-1, -1]]
     dat = cooper.gradients(datin, 90)
@@ -50,7 +50,7 @@ def test_gradients():
 
 
 def test_dratio():
-    """ test derivative ratio"""
+    """test derivative ratio."""
     datin = [[1, 2], [1, 2]]
     dat2 = [[-np.pi/2, -np.pi/2], [-np.pi/2, -np.pi/2]]
     dat = cooper.derivative_ratio(datin, 90, 1)
@@ -58,7 +58,7 @@ def test_dratio():
 
 
 def test_viz():
-    """ test vizibility"""
+    """test vizibility."""
     datin = np.ma.array([[1, 2], [1, 2]])
     vtot2 = [[4., 4.], [4., 4.]]
     vstd2 = [[0.5345224838248488, 0.5345224838248488],
@@ -73,7 +73,7 @@ def test_viz():
 
 
 def test_tilt1():
-    """ test tilt angle"""
+    """test tilt angle."""
     datin = np.ma.array([[1, 2], [1, 2]])
     t12 = [[-1.2626272556789115, 1.2626272556789115],
            [-1.2626272556789115, 1.2626272556789115]]
@@ -95,7 +95,7 @@ def test_tilt1():
 
 
 def test_rtp():
-    """ test rtp"""
+    """test rtp."""
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     dat2 = [[0.8763800720931049, 2.123619927906895],
@@ -106,7 +106,7 @@ def test_rtp():
 
 
 def test_check_dataid():
-    """ test check dataid"""
+    """test check dataid."""
     datin = [Data(), Data()]
 
     dat = dataprep.check_dataid(datin)
@@ -115,7 +115,7 @@ def test_check_dataid():
 
 
 def test_trimraster():
-    """ test trim raster"""
+    """test trim raster."""
     datin = Data()
     datin.data = np.ma.masked_equal([[0, 0, 0, 0],
                                      [0, 1, 2, 0],
@@ -131,7 +131,7 @@ def test_trimraster():
 
 
 def test_quickgrid():
-    """ test quick grid"""
+    """test quick grid."""
     dat2 = [[1, 1],
             [2, 1.3333333333333333]]
 
@@ -144,7 +144,7 @@ def test_quickgrid():
 
 
 def test_equation():
-    """ tests equation editor"""
+    """tests equation editor."""
     datin = Data()
     datin.data = np.ma.array([[1., 2.], [1., 2.]])
     datout = datin.data*2
@@ -157,7 +157,7 @@ def test_equation():
 
 
 def test_hmode():
-    """ tests hmode """
+    """tests hmode."""
     datin = [1, 2, 3, 3, 4, 5, 6]
     dat = equation_editor.hmode(datin)
     dat2 = 3.0000384467512493
@@ -165,7 +165,7 @@ def test_hmode():
 
 
 def test_aspect():
-    """ tests aspect"""
+    """tests aspect."""
 
     data = np.array([[0, 1, 2, 1],
                      [0, 1, 2, 1],
@@ -191,7 +191,7 @@ def test_aspect():
 
 
 def test_shader():
-    """ tests shader"""
+    """tests shader."""
 
     data = np.array([[0, 1, 2, 1],
                      [0, 1, 2, 1],
@@ -217,7 +217,7 @@ def test_shader():
 
 
 def test_histcomp():
-    """ tests histogram compaction"""
+    """tests histogram compaction."""
 
     data = np.ma.array([[0, 1, 2, 1],
                         [0, 1, 2, 1],
@@ -234,7 +234,7 @@ def test_histcomp():
 
 
 def test_histeq():
-    """ tests histogram equalisation"""
+    """tests histogram equalisation."""
 
     data = np.ma.array([[0, 1, 2, 1],
                         [0, 1, 2, 1],
@@ -251,7 +251,7 @@ def test_histeq():
 
 
 def test_img2rgb():
-    """ tests img to rgb"""
+    """tests img to rgb."""
 
     data = np.ma.array([[0, 1, 2, 1],
                         [0, 1, 2, 1],
@@ -280,7 +280,7 @@ def test_img2rgb():
 
 
 def test_norm():
-    """ tests norm2"""
+    """tests norm2."""
 
     data = np.ma.array([[0, 1, 2, 1],
                         [0, 1, 2, 1],
@@ -297,7 +297,7 @@ def test_norm():
 
 
 def test_norm255():
-    """ tests norm255"""
+    """tests norm255."""
 
     data = np.ma.array([[0, 1, 2, 1],
                         [0, 1, 2, 1],
@@ -314,7 +314,7 @@ def test_norm255():
 
 
 def test_corr2d():
-    """ tests corr2d"""
+    """tests corr2d."""
 
     data = np.ma.array([[0, 1, 2, 1],
                         [0, 1, 2, 1],
@@ -329,7 +329,7 @@ def test_corr2d():
 
 @pytest.fixture
 def smalldata():
-    """ Small test dataset """
+    """Small test dataset."""
     dat = Data()
     dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
                            mask=[[0, 0], [0, 0]])
@@ -339,7 +339,7 @@ def smalldata():
 
 
 def test_IGRF(smalldata):
-    """ Tests IGRF Calculation """
+    """Tests IGRF Calculation."""
     datin2 = Data()
     datin2.data = np.ma.array([[0., 0.], [0., 0.]], mask=[[0, 0], [0, 0]])
 
@@ -364,7 +364,7 @@ def test_IGRF(smalldata):
                                       ('.grd', 'GSBG'), ('.sdat', 'SAGA'),
                                       ('.img', 'HFA')])
 def test_io_gdal(smalldata, ext, drv):
-    """ Tests IO for gdal files """
+    """Tests IO for gdal files."""
     ofile = tempfile.gettempdir() + '\\iotest'+ext
 
     tmp = iodefs.ExportData(None)
@@ -381,7 +381,7 @@ def test_io_gdal(smalldata, ext, drv):
 
 
 def test_io_ascii(smalldata):
-    """ Tests IO for ascii files """
+    """Tests IO for ascii files."""
     ofile = tempfile.gettempdir() + '\\iotest.asc'
 
     tmp = iodefs.ExportData(None)
@@ -398,7 +398,7 @@ def test_io_ascii(smalldata):
 
 
 def test_io_xyz(smalldata):
-    """ Tests IO for xyz files """
+    """Tests IO for xyz files."""
     ofile = tempfile.gettempdir() + '\\iotest.xyz'
 
     tmp = iodefs.ExportData(None)
@@ -415,7 +415,7 @@ def test_io_xyz(smalldata):
 
 
 def test_normalisation():
-    """ Tests for normalisation """
+    """Tests for normalisation."""
 
     datin = Data()
     datin.data = np.ma.array([[1., 2.], [1., 2.]])
@@ -449,7 +449,7 @@ def test_normalisation():
 
 
 def test_smooth():
-    """ Tests for smoothing """
+    """Tests for smoothing."""
     datin = Data()
     datin.data = np.ma.ones([7, 7])
     datin.data[5, 5] = 2
@@ -540,7 +540,7 @@ def test_smooth():
 
 
 def test_tilt():
-    """ test tilt depth """
+    """test tilt depth."""
 
     datin = Data()
     datin.data = np.ma.array([[0, 0, .1, .5, 1],

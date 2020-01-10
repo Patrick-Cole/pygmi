@@ -150,7 +150,15 @@ class ImportData():
         self.outdata = {}
 
     def settings(self):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = \
             'Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;' + \
             'hdf (*.hdf);;' + \
@@ -295,7 +303,15 @@ class ImportRGBData():
         self.outdata = {}
 
     def settings(self):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'GeoTiff (*.tif)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(

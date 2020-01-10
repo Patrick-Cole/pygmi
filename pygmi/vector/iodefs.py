@@ -67,7 +67,15 @@ class ImportLEMI417Data():
         self.ifile = ''
 
     def settings(self):
-        """Entry point into item. Data imported from here."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'LEMI-417 Text DataAll Files (*.t*)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -134,7 +142,14 @@ class ImportPointData(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
@@ -159,7 +174,15 @@ class ImportPointData(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """Entry point into item. Data imported from here."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = ('Common Formats (*.csv *.dat *.xyz *.txt);;'
                'All Files (*.*)')
 
@@ -240,7 +263,14 @@ class ImportLineData(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
@@ -270,7 +300,15 @@ class ImportLineData(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """Entry point into item. Data imported from here."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = ('Geosoft XYZ (*.xyz);;'
                'All Files (*.*)')
 
@@ -323,7 +361,15 @@ class ImportLineData(QtWidgets.QDialog):
         return True
 
     def get_GXYZ(self):
-        """Get geosoft XYZ."""
+        """
+        Get geosoft XYZ.
+
+        Returns
+        -------
+        dat : dictionary
+            dictionary of numpy, indexed by line number for each line's data.
+
+        """
         dat = []
 
         with open(self.ifile) as fno:
@@ -352,7 +398,15 @@ class ImportLineData(QtWidgets.QDialog):
         return dat
 
     def get_delimited(self):
-        """Get a delimited line file."""
+        """
+        Get a delimited line file.
+
+        Returns
+        -------
+        dat : list
+            List of PData type.
+
+        """
         datatmp = pd.read_csv(self.ifile, sep=None, engine='python')
         ltmp = datatmp.columns.values
 
@@ -419,7 +473,15 @@ class PointCut():
         self.outdata = {}
 
     def settings(self):
-        """Show Info."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Point' in self.indata:
             data = copy.deepcopy(self.indata['Point'])
         else:
@@ -478,7 +540,15 @@ class ExportPoint():
         self.showtext = self.parent.showprocesslog
 
     def run(self):
-        """Run routine."""
+        """
+        Run routine.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Point' not in self.indata:
             self.showtext('Error: You need to have a point data first!')
             return False
@@ -541,7 +611,15 @@ class ExportLine():
         self.showtext = self.parent.showprocesslog
 
     def run(self):
-        """Run routine."""
+        """
+        Run routine.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Line' not in self.indata:
             self.showtext('Error: You need to have line data first!')
             return False
@@ -603,7 +681,15 @@ class ImportShapeData():
         self.ifile = ''
 
     def settings(self):
-        """Entry point into item. Data imported from here."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,

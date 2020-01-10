@@ -915,9 +915,9 @@ class PlotInterp(QtWidgets.QDialog):
         dictionary of input datasets
     outdata : dictionary
         dictionary of output datasets
-    self.mmc : MyMplCanvas, FigureCanvas
+    self.mmc : pygmi.raster.ginterp.MyMplCanvas, FigureCanvas
         main canvas containing the image
-    self.msc : MySunCanvas, FigureCanvas
+    self.msc : pygmi.raster.ginterp.MySunCanvas, FigureCanvas
         small canvas containing the sunshading control
     """
     def __init__(self, parent=None):

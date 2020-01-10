@@ -83,7 +83,14 @@ class Gradients(QtWidgets.QDialog):
         self.sb_order.setValue(self.order)
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.gradients')
@@ -117,7 +124,15 @@ class Gradients(QtWidgets.QDialog):
         self.rb_vgrad.clicked.connect(self.radiochange)
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         temp = self.exec_()
         if temp == 0:
             return False
@@ -255,7 +270,14 @@ class Visibility2d(QtWidgets.QDialog):
         self.sb_dh.setValue(self.dh)
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.visibility')
@@ -284,7 +306,15 @@ class Visibility2d(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         temp = self.exec_()
         if temp == 0:
             return False
@@ -479,7 +509,14 @@ class Tilt1(QtWidgets.QDialog):
         self.sb_azi.setValue(self.azi)
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.cooper.tilt')
@@ -509,7 +546,15 @@ class Tilt1(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         temp = self.exec_()
         if temp == 0:
             return False

@@ -93,7 +93,15 @@ class Normalisation(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self, test=False):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if not test:
             temp = self.exec_()
             if temp == 0:

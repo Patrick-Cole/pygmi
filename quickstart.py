@@ -17,7 +17,7 @@
 # PyGMI is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-1# GNU General Public License for more details.
+# GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
@@ -29,13 +29,7 @@ This routine is used as a convenience function, typically if you do NOT
 formally install PyGMI as a library and prefer to run it from within the
 default extracted directory structure.
 """
-import warnings
 from pygmi.main import main
-
-warnings.filterwarnings('default')
-warnings.filterwarnings("ignore", message="numpy.dtype size changed")
-warnings.filterwarnings("ignore", message="numpy.ufunc size changed")
-warnings.filterwarnings("ignore", message="numpy.ndarray size changed")
 
 if __name__ == "__main__":
     main()

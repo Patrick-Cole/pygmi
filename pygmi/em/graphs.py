@@ -4,7 +4,7 @@
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2013 Council for Geoscience
+# Copyright:   (c) 2019 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI
@@ -239,7 +239,14 @@ class PlotPoints(GraphWindow):
         self.mmc.update_line(data, i, i2)
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         data = self.indata['MT - EDI']
         for i in data:

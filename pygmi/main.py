@@ -421,7 +421,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
             for i in idata:
                 text += '\nInput ' + i + ' dataset:\n'
-                if i in ('Raster'):
+                if i in 'Raster':
                     for j in idata[i]:
                         text += '  '+j.dataid + '\n'
 
@@ -598,7 +598,14 @@ class MainWidget(QtWidgets.QMainWindow):
 
 # Start of Functions
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         self.resize(800, 600)
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Expanding)
@@ -808,8 +815,8 @@ class MainWidget(QtWidgets.QMainWindow):
 # Add item to scene and merge
         self.scene.addItem(item)
 
-        xxyy = self.view.mapToScene(self.view.width()/2.,
-                                    self.view.height()/2.)
+        xxyy = self.view.mapToScene(self.view.width()//2,
+                                    self.view.height()//2)
         item.setPos(xxyy)
 
         text_item.setParentItem(item)
@@ -999,20 +1006,22 @@ class Startup(QtWidgets.QDialog):
         self.open()
 
     def update(self):
-        """Update the text on the dialog."""
+        """Update the text on the dialog"""
         self.pbar.setValue(self.pbar.value() + 1)
         QtWidgets.QApplication.processEvents()
 
 
 def main():
-    """Entry point for the PyGMI software."""
+    """Entry point for the PyGMI software"""
     app = QtWidgets.QApplication(sys.argv)
 
     screen_resolution = app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()
+    width = int(width*0.75)
+    height = int(height*0.75)
 
     wid = MainWidget()
-    wid.resize(width*0.75, height*0.75)
+    wid.resize(width, height)
 
     wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
                        QtCore.Qt.WindowActive)

@@ -32,7 +32,7 @@ achave@whoi.edu
 
 It requires an executable which must be obtained directly from Dr Chave.
 Details can be found at:
-    https://www.whoi.edu/science/AOPE/people/achave/Site/Next1.html
+https://www.whoi.edu/science/AOPE/people/achave/Site/Next1.html
 
 Conditions for the use of the BIRRP bounded influence remote reference
 magnetotelluric processing program:
@@ -162,7 +162,14 @@ class BIRRP(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
         pb_importbirrp = QtWidgets.QPushButton('Import BIRRP configuration file')
@@ -625,7 +632,15 @@ class BIRRP(QtWidgets.QDialog):
             lay.takeRow(widget)
 
     def settings(self, test=False):
-        """Entry point into item. Data imported from here."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         if not test:
             tmp = self.exec_()

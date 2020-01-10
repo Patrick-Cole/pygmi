@@ -63,7 +63,23 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.__init__(self, fig)
 
     def update_ellipse(self, datd, dats, nodepth=False):
-        """Update error ellipse plot."""
+        """
+        Update error ellipse plot.
+
+        Parameters
+        ----------
+        datd : dictionary
+            Dictionary containing latitudes and longitudes
+        dats : list
+            Data list.
+        nodepth : bool, optional
+            Flag to determine if there are depths. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
         self.figure.clear()
 
         x = np.ma.masked_invalid(datd['1_longitude'])
@@ -151,10 +167,23 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
+        data1 : numpy array
             raster dataset to be used
-        data2 : PyGMI raster Data
+        data2 : numpy array
             raster dataset to be used
+        xlbl : str, optional
+            X-axis label. The default is 'Time'.
+        ylbl : str, optional
+            Y-axis label. The default is 'ML'.
+        xbin : int, optional
+            Number of bins in the x direction. The default is None.
+        xrng : list, optional
+            X-range. The default is None.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -204,8 +233,21 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
+        data1 : numpy array.
             raster dataset to be used
+        xlbl : str, optional
+            X-axis label. The default is 'Time'.
+        ylbl : str, optional
+            Y-axis label. The default is 'ML'.
+        bins : int or str, optional
+            Number of bins or binning strategy. See matplotlib.pyplot.hist. The default is 'doane'.
+        rng : tuple or None, optional
+            Bin range. The default is None.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -234,9 +276,17 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used
+        data1a : numpy array
+            Data array.
+        bins : int or str, optional
+            Number of bins or binning strategy. See matplotlib.pyplot.hist. The default is 'doane'.
+
+        Returns
+        -------
+        None.
+
         """
+
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         data1 = np.ma.masked_invalid(data1a)
@@ -279,8 +329,15 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used
+        data1 : numpy array
+            Data array.
+        phase : str, optional
+            Phase. The default is 'P'.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -314,8 +371,15 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used
+        data1 : numpy array
+            Data array.
+        res : str, optional
+            Response type. The default is 'ML'.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -378,12 +442,23 @@ class MyMplCanvas(FigureCanvas):
     def update_wadati(self, dat, min_wad=5, min_vps=1.53,
                       max_vps=1.93):
         """
-        Update the histogram plot.
+        Update the wadati plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used
+        dat : list
+            List of events.
+        min_wad : int, optional
+            Minimum data length for plot. The default is 5.
+        min_vps : float, optional
+            Minimum VPS. The default is 1.53.
+        max_vps : float, optional
+            Maximu VPS. The default is 1.93.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -490,10 +565,24 @@ class GraphWindow(QtWidgets.QDialog):
         self.btn_saveshp.clicked.connect(self.save_shp)
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
 
     def save_shp(self):
-        """Save shapefile."""
+        """
+        Save shapefile.
+
+        Returns
+        -------
+        None.
+
+        """
 
 
 class PlotQC(GraphWindow):
@@ -521,7 +610,14 @@ class PlotQC(GraphWindow):
         self.datd = None
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         self.btn_saveshp.hide()
 
         i = self.combobox1.currentText()
@@ -575,7 +671,14 @@ class PlotQC(GraphWindow):
             self.mmc.update_wadati(self.indata['Seis'])
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         data = self.indata['Seis']
         self.datd = import_for_plots(data)
@@ -614,7 +717,15 @@ class PlotQC(GraphWindow):
         self.change_band()
 
     def save_shp(self):
-        """Save shapefile."""
+        """
+        Save shapefile.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -672,7 +783,20 @@ class PlotQC(GraphWindow):
 
 
 def import_for_plots(dat):
-    """Import data to plot."""
+    """
+    Import data to plot.
+
+    Parameters
+    ----------
+    dat : list
+        List of events.
+
+    Returns
+    -------
+    datd : dictionary
+        Dictionary of data to plot.
+
+    """
     datd = {}
 
     for event in dat:
@@ -719,7 +843,22 @@ def import_for_plots(dat):
 
 
 def eigsorted(cov):
-    """Sort eigen values."""
+    """
+    Calculate and sort eigen values.
+
+    Parameters
+    ----------
+    cov : numpy array
+        matrix to perform calculations on.
+
+    Returns
+    -------
+    vals : numpy array
+        Sorted eigenvalues.
+    vecs : numpy array
+        Sorted eigenvectors.
+
+    """
     vals, vecs = np.linalg.eigh(cov)
     order = vals.argsort()[::-1]
     return vals[order], vecs[:, order]

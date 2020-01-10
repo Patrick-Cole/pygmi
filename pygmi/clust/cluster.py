@@ -208,7 +208,15 @@ class Cluster(QtWidgets.QDialog):
             self.doublespinbox_bthres.show()
 
     def settings(self, test=False):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
 
         if tst.size > 2:

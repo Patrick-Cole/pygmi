@@ -151,7 +151,15 @@ class EquationEditor(QtWidgets.QDialog):
         return neweq
 
     def settings(self, equation = None):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         localdict = {}
         bandsall = []
         self.bands = {}

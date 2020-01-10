@@ -52,7 +52,7 @@ class CreateSceneList(QtWidgets.QDialog):
     ----------
     name : str
         item name
-    pbar : progressbar
+    piter : progressbar
         reference to a progress bar.
     parent : parent
         reference to the parent routine
@@ -80,7 +80,14 @@ class CreateSceneList(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
@@ -110,7 +117,15 @@ class CreateSceneList(QtWidgets.QDialog):
         pb_scene.pressed.connect(self.get_scene)
 
     def settings(self, test=False):
-        """Entry point into item. Data imported from here."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         if not test:
             tmp = self.exec_()
@@ -197,7 +212,19 @@ class CreateSceneList(QtWidgets.QDialog):
         return True
 
     def get_shape(self, filename=''):
-        """ Get shape filename """
+        """
+        Get shape filename.
+
+        Parameters
+        ----------
+        filename : str, optional
+            Input filename. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
         ext = ('Shapefile (*.shp)')
 
         if filename == '':
@@ -209,7 +236,19 @@ class CreateSceneList(QtWidgets.QDialog):
         self.shapefile.setText(filename)
 
     def get_scene(self, directory=''):
-        """ Get Scene Dir """
+        """
+        Get Scene Directory.
+
+        Parameters
+        ----------
+        directory : str, optional
+            Directory path as a string. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
         if directory == '':
             directory = QtWidgets.QFileDialog.getExistingDirectory(
                 self.parent, 'Select Directory')
@@ -250,7 +289,15 @@ class LoadSceneList():
         self.outdata = {}
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'Scene List File (*.xlsx)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -296,7 +343,23 @@ class MyMplCanvas(FigureCanvas):
         self.fig.canvas.mpl_connect('button_release_event', self.onClick)
 
     def compute_initial_figure(self, dat, dates, points):
-        """ Compute initial figure """
+        """
+        Compute initial figure.
+
+        Parameters
+        ----------
+        dat : PyGMI Data
+            PyGMI dataset.
+        dates : str
+            Dates to show on title.
+        points : numpy array
+            Points to plot.
+
+        Returns
+        -------
+        None.
+
+        """
         self.points = points
         extent = []
 
@@ -327,7 +390,21 @@ class MyMplCanvas(FigureCanvas):
         self.fig.suptitle(dates)
 
     def update_plot(self, dat, dates):
-        """ update """
+        """
+        Update plot.
+
+        Parameters
+        ----------
+        dat : PyGMI Data
+            PyGMI dataset.
+        dates : str
+            Dates to show on title.
+
+        Returns
+        -------
+        None.
+
+        """
         extent = dat[self.bands[0]].extent
 #        breakpoint()
         if self.manip == 'NDWI':
@@ -385,11 +462,35 @@ class MyMplCanvas(FigureCanvas):
         self.fig.canvas.draw()
 
     def onClick(self, event):
-        """ onClick event """
+        """
+        onClick event.
+
+        Parameters
+        ----------
+        event : TYPE
+            Unused.
+
+        Returns
+        -------
+        None.
+
+        """
         self.rcid = self.fig.canvas.mpl_connect('draw_event', self.redraw)
 
     def redraw(self, event):
-        """ redraw event """
+        """
+        Redraw event
+
+        Parameters
+        ----------
+        event : TYPE
+            Unused.
+
+        Returns
+        -------
+        None.
+
+        """
         self.fig.canvas.mpl_disconnect(self.rcid)
         self.parent.newdata(self.parent.curimage)
 
@@ -464,7 +565,15 @@ class SceneViewer(QtWidgets.QDialog):
         self.manip.currentIndexChanged.connect(self.manip_change)
 
     def settings(self, test=False):
-        """Entry point into item. Data imported from here."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         if 'SceneList' not in self.indata:
             return False
@@ -489,36 +598,113 @@ class SceneViewer(QtWidgets.QDialog):
                 return tmp
 
     def manip_change(self, event):
-        """ change manipulation """
+        """
+        Change manipulation.
+
+        Parameters
+        ----------
+        event : TYPE
+            Unused.
+
+        Returns
+        -------
+        None.
+
+        """
         self.canvas.manip = self.manip.currentText()
         self.newdata(self.curimage)
 
     def updateanim(self, event):
-        """ update animation file """
+        """
+        Update animation file
+
+        Parameters
+        ----------
+        event : TYPE
+            Unused.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         ext = ('Scene List File (*.xlsx)')
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
-            return
+            return False
 
         self.df.to_excel(filename, index=False)
 
+        return True
+
     def nextscene(self, event):
-        """ gets next scene """
+        """
+        Gets next scene
+
+        Parameters
+        ----------
+        event : TYPE
+            Unused.
+
+        Returns
+        -------
+        None.
+
+        """
         self.slider.setValue(self.slider.value()+1)
 
     def flaguse(self, event):
-        """ flag the scene for use """
+        """
+        Flag the scene for use.
+
+        Parameters
+        ----------
+        event : TYPE
+            Unused.
+
+        Returns
+        -------
+        None.
+
+        """
         self.df.loc[self.curimage, 'Use'] = self.cb_use.isChecked()
 
     def home_callback(self, event):
-        """ home """
+        """
+        Home callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            Unused.
+
+        Returns
+        -------
+        None.
+
+        """
         self.newdata(self.curimage)
 
     def newdata(self, indx, capture=False):
-        """ new dataset """
+        """
+        New dataset.
+
+        Parameters
+        ----------
+        indx : int
+            Current index.
+        capture : bool, optional
+            Option to capture the scene. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
         if not self.df.Use[indx] and self.cb_display.isChecked():
             if capture is False:
                 return
@@ -532,31 +718,60 @@ class SceneViewer(QtWidgets.QDialog):
         self.canvas.update_plot(dat, dates)
 
     def fileQuit(self):
-        """ File Quit """
+        """
+        File quit.
+
+        Returns
+        -------
+        None.
+
+        """
         self.close()
 
     def closeEvent(self, cevent):
-        """ Close Event """
+        """
+        Close event.
+
+        Parameters
+        ----------
+        cevent : TYPE
+            Unused.
+
+        Returns
+        -------
+        None.
+
+        """
         self.fileQuit()
 
     def about(self):
-        """ About """
+        """
+        About.
+
+        Returns
+        -------
+        None.
+
+        """
         QtWidgets.QMessageBox.about(self, "About",
                                     """Timeseries Plot""")
 
     def get_tiff(self, ifile, firstrun=False):
         """
-        Gets planet data
+        Gets tiff images
 
         Parameters
         ----------
         ifile : str
-            filename to import
+            Filename to import.
+        firstrun : bool, optional
+            Option for first time running this routine. The default is False.
 
         Returns
         -------
-        dat : Data object
-            PyGMI Dataset
+        datall : dictionary or None
+            Data images
+
         """
 
         datall = {}
@@ -653,8 +868,22 @@ class SceneViewer(QtWidgets.QDialog):
 
 
 def get_shape_coords(sfile, todegrees=False):
-    """ Gets coords from a shapefile """
+    """
+    Gets coords from a shapefile.
 
+    Parameters
+    ----------
+    sfile : str
+        Shapefile name.
+    todegrees : bool, optional
+        Transform the coordinates to degrees. The default is False.
+
+    Returns
+    -------
+    ddpoints : numpy array
+        Output coordinates.
+
+    """
     sr = osr.SpatialReference()
     sr.ImportFromEPSG(32735)  # utm 35s
     vec = ogr.Open(sfile)

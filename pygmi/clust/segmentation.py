@@ -72,7 +72,14 @@ class ImageSeg(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
@@ -116,7 +123,15 @@ class ImageSeg(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self, test=False):
-        """Entry point into item."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Raster' not in self.indata:
             return False
 

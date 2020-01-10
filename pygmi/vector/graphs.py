@@ -81,7 +81,14 @@ class GraphWindow(QtWidgets.QDialog):
         self.checkbox.stateChanged.connect(self.change_band)
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
 
 
 class MyMplCanvas(FigureCanvas):
@@ -107,7 +114,19 @@ class MyMplCanvas(FigureCanvas):
                                        self.motion_notify_callback)
 
     def button_release_callback(self, event):
-        """Mouse button release callback."""
+        """
+        Mouse button release callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -115,7 +134,19 @@ class MyMplCanvas(FigureCanvas):
         self.ind = None
 
     def motion_notify_callback(self, event):
-        """Move mouse callback."""
+        """
+        Move mouse callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -132,7 +163,20 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.update()
 
     def onpick(self, event):
-        """Picker event."""
+        """
+        Picker event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        bool
+            Return TRUE if pick succeeded.
+
+        """
         if event.mouseevent.inaxes is None:
             return False
         if event.mouseevent.button != 1:
@@ -155,6 +199,12 @@ class MyMplCanvas(FigureCanvas):
             Point data
         ival : dictionary key
             dictionary key Point Data
+
+        Returns
+        -------
+        None.
+
+
         """
         data1 = data[ival]
 
@@ -162,27 +212,12 @@ class MyMplCanvas(FigureCanvas):
 
         ax1 = self.figure.add_subplot(111, label='Profile')
 
-#        ax1 = self.figure.add_subplot(3, 1, 1)
         ax1.set_title(data1.dataid)
         self.axes = ax1
-
-#        ax2 = self.figure.add_subplot(3, 1, 2, sharex=ax1)
-#        ax2.set_title('Normalised stacked graphs')
-#        ax2.set_xlabel('sample number')
-#        ax2.set_ylabel('normalised value')
-#
-#        ax1.set_xlabel('sample number')
-#        ax1.set_ylabel('value')
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
-#        for i in data:
-#            tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
-#            ax2.plot(tmp, label=i.dataid)
-#        ax2.set_ylim([-.1, 1.1])
-#        ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
-#                   mode='expand', borderaxespad=0., title='Legend')
         self.line, = ax1.plot(data1.zdata, '.-', picker=5)
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -197,6 +232,11 @@ class MyMplCanvas(FigureCanvas):
             array of distances, for the x-axis
         data : numpy array
             array of data to be plotted on the y-axis
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
 
@@ -225,6 +265,11 @@ class MyMplCanvas(FigureCanvas):
             Point data
         ival : dictionary key
             dictionary key Point Data
+
+        Returns
+        -------
+        None.
+
         """
         data1 = data[ival]
 
@@ -257,11 +302,15 @@ class MyMplCanvas(FigureCanvas):
             scale of exxageration for the profile data on the map.
         uselabels: bool
             boolean choice whether to use labels or not.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='Map')
-#        ax1.set_title(data1.dataid)
         self.axes = ax1
 
         self.figure.canvas.draw()
@@ -320,6 +369,11 @@ class MyMplCanvas(FigureCanvas):
         data : VData
             Vector data. It can either be 'Line' or 'Poly' and typically is
             imported from a shapefile.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
 
@@ -350,6 +404,11 @@ class MyMplCanvas(FigureCanvas):
             Rose diagram type. Can be either 0 or 1.
         nbins : int, optional
             Number of bins used in rose diagram.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
 
@@ -421,7 +480,7 @@ class MyMplCanvas(FigureCanvas):
 
 
 class PlotPoints(GraphWindow):
-    """Plot Raster Class."""
+    """Plot Points Class."""
 
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
@@ -433,13 +492,27 @@ class PlotPoints(GraphWindow):
         self.label2.hide()
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Point']
         i = self.combobox1.currentIndex()
         self.mmc.update_line(data, i)
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         data = self.indata['Point']
         for i in data:
@@ -453,7 +526,7 @@ class PlotPoints(GraphWindow):
 
 
 class PlotPoints2(GraphWindow):
-    """Plot Raster Class."""
+    """Plot Points2 Class."""
 
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
@@ -465,13 +538,27 @@ class PlotPoints2(GraphWindow):
         self.label2.hide()
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Point']
         i = self.combobox1.currentIndex()
         self.mmc.update_map(data, i)
 
     def run(self):
-        """Run."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         data = self.indata['Point']
         for i in data:
@@ -482,7 +569,7 @@ class PlotPoints2(GraphWindow):
 
 
 class PlotLines(GraphWindow):
-    """Plot Raster Class."""
+    """Plot Lines Class."""
 
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
@@ -494,10 +581,24 @@ class PlotLines(GraphWindow):
         self.ycol = ''
 
     def change_line(self):
-        """Combo to change line number."""
+        """
+        Combo to change line number.
+
+        Returns
+        -------
+        None.
+
+        """
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Line'].data
         i = self.combobox1.currentText()
         i2 = self.combobox2.currentText()
@@ -513,7 +614,14 @@ class PlotLines(GraphWindow):
         self.mmc.update_lines(r, data2)
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.combobox1.currentIndexChanged.disconnect()
         self.combobox2.currentIndexChanged.disconnect()
 
@@ -542,7 +650,7 @@ class PlotLines(GraphWindow):
 
 
 class PlotLines2(GraphWindow):
-    """Plot Raster Class."""
+    """Plot Lines2 Class."""
 
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
@@ -553,14 +661,28 @@ class PlotLines2(GraphWindow):
         self.checkbox.show()
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Line']
         scale = self.spinbox.value()
         i = self.combobox1.currentText()
         self.mmc.update_lmap(data, i, scale, self.checkbox.isChecked())
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.combobox1.currentIndexChanged.disconnect()
         self.spinbox.valueChanged.disconnect()
         self.checkbox.stateChanged.disconnect()
@@ -594,7 +716,7 @@ class PlotLines2(GraphWindow):
 
 
 class PlotRose(GraphWindow):
-    """Plot Raster Class."""
+    """Plot Rose Class."""
 
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
@@ -608,7 +730,14 @@ class PlotRose(GraphWindow):
         self.setWindowTitle('Rose Diagram')
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         if 'Vector' not in self.indata:
             return
         data = self.indata['Vector']
@@ -617,7 +746,14 @@ class PlotRose(GraphWindow):
             self.mmc.update_rose(data, i, self.spinbox.value())
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         self.combobox1.addItem('Average Angle per Feature')
         self.combobox1.addItem('Angle per segment in Feature')
@@ -626,7 +762,7 @@ class PlotRose(GraphWindow):
 
 
 class PlotVector(GraphWindow):
-    """Plot Raster Class."""
+    """Plot Vector Class."""
 
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
@@ -640,7 +776,14 @@ class PlotVector(GraphWindow):
         self.label3.hide()
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         data = self.indata['Vector']
         self.mmc.update_vector(data)
@@ -674,6 +817,7 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
         The values of the histogram
     bin_edges : numpy array
         bin edges of the histogram
+
     """
     radii = np.zeros(bins)
     theta = np.zeros(bins+1)
@@ -708,6 +852,23 @@ def rotate(origin, point, angle):
     Rotate a point counterclockwise by a given angle around a given origin.
 
     The angle should be given in radians.
+
+    Parameters
+    ----------
+    origin : list
+        List containing origin point (ox, oy)
+    point : list
+        List containing point to be rotated (px, py)
+    angle : float
+        Angle in radians.
+
+    Returns
+    -------
+    qx : float
+        Rotated x-coordinate.
+    qy : float
+        Rotated y-coordinate.
+
     """
     ox, oy = origin
     px, py = point

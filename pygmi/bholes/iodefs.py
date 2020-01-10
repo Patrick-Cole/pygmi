@@ -67,7 +67,15 @@ class ImportData():
         self.hfile = ''
 
     def settings(self):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = \
             'Common formats (*.xls *.xlsx *.csv);;' + \
             'Excel (*.xls *.xlsx);;' + \

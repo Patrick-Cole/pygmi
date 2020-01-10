@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gms xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://geosoft.com/gms2model.xsd">
+  <model2D version="1.0" id="bba30d92-fb34-4396-989c-86d67b38366f" type="Depth" last_modified="2018-05-18T14:11:17.9325294+02:00">
+    <coordinate_system>
+      <projection type="UNKNOWN" xmlns="http://www.geosoft.com/schema/geo" />
+    </coordinate_system>
+  </model2D>
+</gms>

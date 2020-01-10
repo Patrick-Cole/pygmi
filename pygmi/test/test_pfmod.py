@@ -22,8 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" These are pfmod tests. Run this file from within this directory to do the
-tests """
+"""
+These are pfmod tests. Run this file from within this directory to do the
+tests.
+"""
 
 import sys
 import os
@@ -46,10 +48,15 @@ def main():
 
     A series of graphs are produced. If the test is successful, points and
     lines on the graphs will coincide.
+
+    Returns
+    -------
+    None.
+
     """
     print('Testing modelling of gravity and potential field data')
 
-    ifile = 'data/block'
+    ifile = 'testdata/block'
 #    ifile = 'data/dyke'
     samplescale = 1.  # Horizontal scale of the samples.
     power = 1.  # This parameter changes thinkness of voxels with depth.

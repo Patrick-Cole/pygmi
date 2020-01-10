@@ -101,7 +101,14 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.updateGeometry(self)
 
     def init_graph(self):
-        """Initialize the graph."""
+        """
+        Initialize the graph.
+
+        Returns
+        -------
+        None.
+
+        """
         self.axes.clear()
         self.axes.set_aspect('equal')
 
@@ -162,7 +169,15 @@ class BeachBall(QtWidgets.QDialog):
         self.setupui()
 
     def data_init(self):
-        """Initialise Data - entry point into routine."""
+        """
+        Initialise Data - entry point into routine.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Seis' in self.indata:
             self.stype = 'Seis'
         elif 'GenFPS' in self.indata:
@@ -218,7 +233,14 @@ class BeachBall(QtWidgets.QDialog):
         return True
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         hbl_all = QtWidgets.QHBoxLayout(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         vbl_raster = QtWidgets.QVBoxLayout()
@@ -256,7 +278,15 @@ class BeachBall(QtWidgets.QDialog):
         self.radio_geog.toggled.connect(self.change_alg)
 
     def save_shp(self):
-        """Save Beachballs."""
+        """
+        Save Beachballs.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'Shape file (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -370,7 +400,14 @@ class BeachBall(QtWidgets.QDialog):
         return True
 
     def change_alg(self):
-        """Change algorithm."""
+        """
+        Change algorithm.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_alg.currentText())
         self.algorithm = txt
         data = self.indata[self.stype]
@@ -391,7 +428,14 @@ class BeachBall(QtWidgets.QDialog):
         self.mmc.init_graph()
 
     def settings(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         if self.nofps:
             self.parent.showprocesslog('Error: no Fault Plane Solutions')
             return False
@@ -434,6 +478,8 @@ def beachball(fm, centerx, centery, diam, isgeog):
         place beachball(s) at position centery
     diam : float
         draw beachball with this diameter.
+    isgeog : bool
+        True if in geographic coordinates, False otherwise.
 
     Returns
     -------
@@ -569,7 +615,24 @@ def beachball(fm, centerx, centery, diam, isgeog):
 
 
 def pol2cart(phi, rho):
-    """Polar to cartesian coordinates."""
+    """
+    Polar to cartesian coordinates.
+
+    Parameters
+    ----------
+    phi : numpy array
+        Polar angles in radians.
+    rho : numpy array
+        Polar r values.
+
+    Returns
+    -------
+    xxx : numpy array
+        X values.
+    yyy : numpy array
+        Y values.
+
+    """
     xxx = rho*np.cos(phi)
     yyy = rho*np.sin(phi)
     return xxx, yyy
@@ -580,6 +643,24 @@ def auxplane(s1, d1, r1):
     Get Strike and dip of second plane.
 
     Adapted from Andy Michael bothplanes.c
+
+    Parameters
+    ----------
+    s1 : numpy array
+        Strike 1.
+    d1 : numpy array
+        Dip 1.
+    r1 : numpy array
+        Rake 1.
+
+    Returns
+    -------
+    strike : numpy array
+        Strike of second plane.
+    dip : numpy array
+        Dip of second plane.
+    rake : numpy array
+        Rake of second plane.
     """
     r2d = 180/np.pi
 
@@ -617,6 +698,23 @@ def strikedip(n, e, u):
     Find strike and dip of plane given normal vector.
 
     Adapted from Andy Michaels stridip.c
+
+    Parameters
+    ----------
+    n : numpy array
+        North coordinates for normal vector.
+    e : numpy array
+        East coordinate for normal vector.
+    u : numpy array
+        Up coordinate for normal vector.
+
+    Returns
+    -------
+    strike : numpy array
+        Strike of plane.
+    dip : numpy array
+        Dip of plane.
+
     """
     r2d = 180/np.pi
 

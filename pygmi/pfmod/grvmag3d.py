@@ -1066,7 +1066,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
     return lmod
 
 
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, parallel=False)
 def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
          fm4, fm5, fm6, alpha, beta):
     """
@@ -1135,7 +1135,7 @@ def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
     return mval
 
 
-@jit(nopython=True, parallel=True)
+@jit(nopython=True, parallel=False)
 def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
          x, y, z, isign):
     """ Gbox routine by Blakely

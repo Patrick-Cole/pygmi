@@ -42,32 +42,32 @@ class seisan_1():
     7-8      I2    Month
     9-10     I2    Day of Month
     11             Fix o. time                    Normally blank, an F fixes
-                                                  origin time
+    -                                             origin time
     12-13    I2    Hour
     14-15    I2    Minutes
     16             Free
     17-20    F4.1  Seconds
     21             Location model indicator       Any character
     22       A1    Distance Indicator             L = Local, R = Regional,
-                                                  D = Distant, etc.
+    -                                             D = Distant, etc.
     23       A1    Event ID                       E = Confirmed explosion
-                                                  P = Probable explosion
-                                                  V = Volcanic
-                                                  Q = Confirmed earthquake
-                                                  ' ' = Presumed earthquake
-                                                  X = Landslide
+    -                                             P = Probable explosion
+    -                                             V = Volcanic
+    -                                             Q = Confirmed earthquake
+    -                                             ' ' = Presumed earthquake
+    -                                             X = Landslide
     24-30    F7.3  Latitude                       Degrees (+ N)
     31-38    F8.3  Longitude                      Degrees (+ E)
     39-43    F5.1  Depth                          Km
     44       A1    Depth Indicator                F = Fixed, S = Starting value
     45       A1    Locating indicator             ----------------------------,
-                                                  * do not locate
+    -                                             * do not locate
     46-48    A3    Hypocenter Reporting Agency
     49-51          Number of Stations Used
     52-55          RMS of Time Residuals
     56-59   F4.1   Magnitude No. 1
     60 A1          Type of Magnitude L=ML, b=mb, B=mB, s=Ms, S=MS, W=MW,
-                                     G=MbLg (not used by SEISAN), C=Mc
+    -                                G=MbLg (not used by SEISAN), C=Mc
     61-63   A3     Magnitude Reporting Agency
     64-67   F4.1   Magnitude No. 2
     68 A1          Type of Magnitude
@@ -76,7 +76,7 @@ class seisan_1():
     76 A1          Type of Magnitude
     77-79   A3     Magnitude Reporting Agency
     80 A1          Type of this line ("1"), can be blank if first
-                   line of event
+    -              line of event
 
     If more than 3 magnitudes need to be associated with the hypocenter in the
     first line, a subsequent additional type one line can be written with the
@@ -120,66 +120,67 @@ class seisan_2():
     """
     Type 2 line (Macroseismic information).
 
-     1-5           Blank
-     6-20          a Any descriptive text
-     21            Free
-     22    a1      Diastrophism code (PDE type)
-                          F = Surface faulting
-                          U = Uplift or subsidence
-                          D = Faulting and Uplift/Subsidence
-     23    a1      Tsunami code (PDE type)
-                          T = Tsunami generated
-                          Q = Possible tsunami
-     24    a1      Seiche code (PDE type)
-                          S = Seiche
-                          Q = Possible seiche
-     25    a1      Cultural effects (PDE type)
-                          C = Casualties reported
-                          D = Damage reported
-                          F = Earthquake was felt
-                          H = Earthquake was heard
-     26    a1      Unusual events (PDE type)
-                          L = Liquefaction
-                          G = Geysir/fumerol
-                          S = Landslides/Avalanches
-                          B = Sand blows
-                          C = Cracking in the ground (not normal faulting).
-                          V = Visual phenomena
-                          O = Olfactory phenomena
-                          M = More than one of the above observed.
-     27            Free
-     28-29 i2      Max Intensity
-     30    a1      Max Intensity qualifier
-                          (+ or - indicating more precicely the intensity)
-     31-32 a2      Intensity scale (ISC type defintions)
-                          MM = Modified Mercalli
-                          RF = Rossi Forel
-                          CS = Mercalli - Cancani - Seberg
-                          SK = Medevev - Sponheur - Karnik
-     33            Free
-     34-39 f6.2    Macroseismic latitude (Decimal)
-     40            Free
-     41-47 f7.2    Macroseismic longitude (Decimal)
-     48            Free
-     49-51 f3.1    Macroseismic magnitude
-     52    a1      Type of magnitudeI = Magnitude based on maximum Intensity.
-                          A = Magnitude based on felt area.
-                          R = Magnitude based on radius of felt area.
-                          * = Magnitude calculated by use of special formulas
-                              developed by some person for a certain area.
-                              Further info should be given on line 3.
-     53-56 f4.2    Logarithm (base 10) of radius of felt area.
-     57-61 f5.2    Logarithm (base 10) of area (km**2) number 1 where
-                          earthquake was felt exceeding a given intensity.
-     62-63 i2      Intensity boardering the area number 1.
-     64-68 f5.2    Logarithm (base 10) of area (km**2) number 2 where
-                          earthquake was felt exceeding a given intensity.
-     69-70 i2      Intensity boardering the area number 2.
-     71            Free
-     72    a1      Quality rank of the report (A, B, C, D)
-     73-75 a3      Reporting agency
-     76-79         Free
-     80    a1      Type of this line ("2")
+    Cols Format Description
+    1-5           Blank
+    6-20          a Any descriptive text
+    21            Free
+    22    a1      Diastrophism code (PDE type)
+    -                    F = Surface faulting
+    -                    U = Uplift or subsidence
+    -                    D = Faulting and Uplift/Subsidence
+    23    a1      Tsunami code (PDE type)
+    -                    T = Tsunami generated
+    -                    Q = Possible tsunami
+    24    a1      Seiche code (PDE type)
+    -                    S = Seiche
+    -                    Q = Possible seiche
+    25    a1      Cultural effects (PDE type)
+    -                    C = Casualties reported
+    -                    D = Damage reported
+    -                    F = Earthquake was felt
+    -                    H = Earthquake was heard
+    26    a1      Unusual events (PDE type)
+    -                    L = Liquefaction
+    -                    G = Geysir/fumerol
+    -                    S = Landslides/Avalanches
+    -                    B = Sand blows
+    -                    C = Cracking in the ground (not normal faulting).
+    -                    V = Visual phenomena
+    -                    O = Olfactory phenomena
+    -                    M = More than one of the above observed.
+    27            Free
+    28-29 i2      Max Intensity
+    30    a1      Max Intensity qualifier
+    -                    (+ or - indicating more precicely the intensity)
+    31-32 a2      Intensity scale (ISC type defintions)
+    -                    MM = Modified Mercalli
+    -                    RF = Rossi Forel
+    -                    CS = Mercalli - Cancani - Seberg
+    -                    SK = Medevev - Sponheur - Karnik
+    33            Free
+    34-39 f6.2    Macroseismic latitude (Decimal)
+    40            Free
+    41-47 f7.2    Macroseismic longitude (Decimal)
+    48            Free
+    49-51 f3.1    Macroseismic magnitude
+    52    a1      Type of magnitudeI = Magnitude based on maximum Intensity.
+    -                    A = Magnitude based on felt area.
+    -                    R = Magnitude based on radius of felt area.
+    -                    * = Magnitude calculated by use of special formulas
+    -                        developed by some person for a certain area.
+    -                        Further info should be given on line 3.
+    53-56 f4.2    Logarithm (base 10) of radius of felt area.
+    57-61 f5.2    Logarithm (base 10) of area (km**2) number 1 where
+    -                    earthquake was felt exceeding a given intensity.
+    62-63 i2      Intensity boardering the area number 1.
+    64-68 f5.2    Logarithm (base 10) of area (km**2) number 2 where
+    -                    earthquake was felt exceeding a given intensity.
+    69-70 i2      Intensity boardering the area number 2.
+    71            Free
+    72    a1      Quality rank of the report (A, B, C, D)
+    73-75 a3      Reporting agency
+    76-79         Free
+    80    a1      Type of this line ("2")
     """
 
     def __init__(self):
@@ -235,20 +236,20 @@ class seisan_4():
     10      A1      Quality Indicator 	I, E, etc.
     11-14   A2      Phase ID 	PN, PG, LG, P, S, etc. **
     15      I1      Weighting Indicator (1-4) 0 or blank= full weight, 1=75%,
-                    2=50%, 3=25%, 4=0%, 9: no weight, use difference time
-                    (e.g. P-S).
+    -               2=50%, 3=25%, 4=0%, 9: no weight, use difference time
+    -               (e.g. P-S).
     16              Free or flag A to indicate automartic pick, removed when
-                    picking
+    -               picking
     17      A1      First Motion    C, D
     18              Note: Currently 15 to 18 can also be used for phase
-                    assuming column 11-14 is not blank. See note ** below.
+    -               assuming column 11-14 is not blank. See note ** below.
     19-20   I2      Hour 	Hour can be up to 48 to indicate next day
     21-22   I2      Minutes
     23-28   F6.0    Seconds
     29              Free
     30-33   I4      Duration (to noise) 	Seconds
     34-40   g7.1    Amplitude (Zero-Peak) in units of nm, nm/s, nm/s^2 or
-                    counts.
+    -               counts.
     41              Free
     42-45   F4.0    Period 	Seconds
     46              Free
@@ -256,7 +257,7 @@ class seisan_4():
     52              Free
     53-56   F4.0    Phase Velocity 	Km/second
     57-60   F4.0    Angle of incidence (was Signal to noise ratio before
-                    version 8)
+    -               version 8)
     61-63   I3      Azimuth residual
     64-68   F5.1    Travel time residual
     69-70   I2      Weight
@@ -264,7 +265,7 @@ class seisan_4():
     76              Free
     77-79   I3      Azimuth at source
     80      A1      Type of this line ("4"), can be blank, which it is most
-                    often.
+    -               often.
 
     NB: Epicentral distance: Had format I5 before version 7.2. All old lines
     can be read with format F5.0 with same results, but now distance can also
@@ -431,20 +432,20 @@ class seisan_F():
 
     Columns Format Description
 
-     1:30   3F10.0 Strike, dip and rake, Aki convention
-     31:45  4F5.1  Error in strike dip and rake (HASH), error in fault plane
-                   and aux. plane (FPFIT)
-     46:50  F5.1   Fit error:  FPFIT and HASH (F-fit)
-     51:55  F5.1   Station distribution ratio (FPFIT, HASH)
-     56:60  F5.1   Amplitude ratio fit (HASH, FOCMEC)
-     61:65  I2     Number of bad polarities (FOCMEC, PINV)
-     64.65  I2     Number of bad amplitude  ratios (FOCMEC)
-     67:69  A3     Agency code
-     71:77  A7     Program used
-     78:78  A1     Quality of solution, A (best), B C or D (worst), added
-                   manually
-     79:79  A1     Blank, can be used by user
-     80:80  A1     F
+    1:30    3F10.0 Strike, dip and rake, Aki convention
+    31:45   4F5.1  Error in strike dip and rake (HASH), error in fault plane
+    -              and aux. plane (FPFIT)
+    46:50   F5.1   Fit error:  FPFIT and HASH (F-fit)
+    51:55   F5.1   Station distribution ratio (FPFIT, HASH)
+    56:60   F5.1   Amplitude ratio fit (HASH, FOCMEC)
+    61:65   I2     Number of bad polarities (FOCMEC, PINV)
+    64.65   I2     Number of bad amplitude  ratios (FOCMEC)
+    67:69   A3     Agency code
+    71:77   A7     Program used
+    78:78   A1     Quality of solution, A (best), B C or D (worst), added
+    -              manually
+    79:79   A1     Blank, can be used by user
+    80:80   A1     F
     """
 
     def __init__(self):
@@ -470,19 +471,19 @@ class seisan_H():
     Type H line, High accuracy hypocenter line.
 
     Columns Format Description
-     1:15   As type 1 line
-     16     Free
-     17     f6.3    Seconds
-     23     Free
-     24:32  f9.5    Latitude
-     33     Free
-     34:43  f10.5   Longitude
-     44     Free
-     45:52  f8.3    Depth
-     53     Free
-     54:59  f6.3    RMS
-     60:79  Free
-     80     H
+    1:15    As type 1 line
+    16      Free
+    17      f6.3    Seconds
+    23      Free
+    24:32   f9.5    Latitude
+    33      Free
+    34:43   f10.5   Longitude
+    44      Free
+    45:52   f8.3    Depth
+    53      Free
+    54:59   f6.3    RMS
+    60:79   Free
+    80      H
     """
 
     def __init__(self):
@@ -504,31 +505,31 @@ class seisan_I():
     """
     Type I Line, ID line.
 
-    Columns Format description1 Free
-
-      2:8 Help text for the action indicator
-      9:11 	Last action done, so far defined:
-               SPL: Split
-               REG: Register
-               ARG: AUTO Register, AUTOREG
-               UPD: Update
-               UP : Update only from EEV
-               REE: Register from EEV
-               DUB: Duplicated event
-               NEW: New event
-     12 Free
-     13:26 Date and time of last action
-     27 Free
-     28:30 Help text for operator
-     36:42 Help text for status
-     43:56 Status flags, not yet defined
-     57 Free
-     58:60 Help text for ID
-     61:74 ID, year to second
-     75 If d, this indicate that a new file id had to be created which was
-            one or more seconds different from an existing ID to avoid
-            overwrite.
-     76 Indicate if ID is locked. Blank means not locked, L means locked.
+    Columns Description
+    1       Free
+    2:8     Help text for the action indicator
+    9:11 	Last action done, so far defined:
+    -        SPL: Split
+    -        REG: Register
+    -        ARG: AUTO Register, AUTOREG
+    -        UPD: Update
+    -        UP : Update only from EEV
+    -        REE: Register from EEV
+    -        DUB: Duplicated event
+    -        NEW: New event
+    12      Free
+    13:26   Date and time of last action
+    27      Free
+    28:30   Help text for operator
+    36:42   Help text for status
+    43:56   Status flags, not yet defined
+    57      Free
+    58:60   Help text for ID
+    61:74   ID, year to second
+    75      If d, this indicate that a new file id had to be created which was
+    -       one or more seconds different from an existing ID to avoid
+    -       overwrite.
+    76      Indicate if ID is locked. Blank means not locked, L means locked.
     """
 
     def __init__(self):
@@ -553,45 +554,45 @@ class seisan_M():
 
     The first moment tensor line:
     Columns Format Description
-      1:1          Free
-      2: 5   I4    Year
-      7: 8   I2    Month
-      9:10   I2    Day of Month
-     12:13   I2    Hour
-     14:15   I2    Minutes
-     17:20   F4.1  Seconds
-     24:30   F7.3  Latitude                       Degrees (+ N)
-     31:38   F8.3  Longitude                      Degrees (+ E)
-     39:43   F5.1  Depth                          Km
-     46:48   A3    Reporting Agency
-     56:59  F4.1   Magnitude
-     60     A1     Type of Magnitude L=ML, b=mb, B=mB, s=Ms, S=MS, W=MW,
-     61:63  A3     Magnitude Reporting Agency
-     71:77  A7     Method used
-     78:78  A1     Quality of solution, A (best), B C or D (worst), added
-                   manually
-     79:79  A1     Blank, can be used by user
-     80:A1         M
+    1:1            Free
+    2:5     I4     Year
+    7:8     I2     Month
+    9:10    I2     Day of Month
+    12:13   I2     Hour
+    14:15   I2     Minutes
+    17:20   F4.1   Seconds
+    24:30   F7.3   Latitude                       Degrees (+ N)
+    31:38   F8.3   Longitude                      Degrees (+ E)
+    39:43   F5.1   Depth                          Km
+    46:48   A3     Reporting Agency
+    56:59   F4.1   Magnitude
+    60      A1     Type of Magnitude L=ML, b=mb, B=mB, s=Ms, S=MS, W=MW,
+    61:63   A3     Magnitude Reporting Agency
+    71:77   A7     Method used
+    78:78   A1     Quality of solution, A (best), B C or D (worst), added
+    -              manually
+    79:79   A1     Blank, can be used by user
+    80:80   A1     M
 
     The second moment tensor line:
     Columns Format Description
-      1:1          Free
-      2:3   A2     MT
-      4:9   F6.3   Mrr or Mzz [Nm]
-     11:16  F6.3   Mtt or Mxx [Nm]
-     18:23  F6.3   Mpp or Myy [Nm]
-     25:30  F6.3   Mrt or Mzx [Nm]
-     32:37  F6.3   Mrp or Mzy [Nm]
-     39:44  F6.3   Mtp or Mxy [Nm]
-     46:48  A3     Reporting Agency
-     49:49  A1     MT coordinate system (S=spherical, C=Cartesian)
-     50:51  i2     Exponental
-     53:62  G6.3   Scalar Moment [Nm]
-     71:77  A7     Method used
-     78:78  A1     Quality of solution, A (best), B C or D (worst), added
-                   manually
-     79:79  A1     Blank, can be used by user
-     80:80  A1     M
+    1:1            Free
+    2:3     A2     MT
+    4:9     F6.3   Mrr or Mzz [Nm]
+    11:16   F6.3   Mtt or Mxx [Nm]
+    18:23   F6.3   Mpp or Myy [Nm]
+    25:30   F6.3   Mrt or Mzx [Nm]
+    32:37   F6.3   Mrp or Mzy [Nm]
+    39:44   F6.3   Mtp or Mxy [Nm]
+    46:48   A3     Reporting Agency
+    49:49   A1     MT coordinate system (S=spherical, C=Cartesian)
+    50:51   i2     Exponental
+    53:62   G6.3   Scalar Moment [Nm]
+    71:77   A7     Method used
+    78:78   A1     Quality of solution, A (best), B C or D (worst), added
+    -              manually
+    79:79   A1     Blank, can be used by user
+    80:80   A1     M
     """
 
     def __init__(self):
@@ -630,9 +631,10 @@ class seisan_P():
     """
     Type P line, file name of a picture file.
 
-      1:1          Free
-      2:79         File name
-      80:80        P
+    Columns Description
+    1:1      Free
+    2:79     File name
+    80:80    P
     """
 
     def __init__(self):

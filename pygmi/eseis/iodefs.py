@@ -4,7 +4,7 @@
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2018 Council for Geoscience
+# Copyright:   (c) 2019 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI
@@ -59,7 +59,15 @@ class ImportSEGY():
         self.outdata = {}
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'SEGY (*.sgy)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(

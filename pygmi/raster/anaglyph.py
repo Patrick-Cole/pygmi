@@ -424,7 +424,14 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.change_all()
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         if 'Raster' in self.indata:
             data = self.indata['Raster']

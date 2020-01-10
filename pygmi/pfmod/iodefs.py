@@ -60,7 +60,15 @@ class ImportMod3D():
             self.pbars = parent.pbar
 
     def settings(self):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = ('npz (*.npz);;'
                'Leapfrog Block Model (*.csv);;'
                'x,y,z,label (*.csv);;'
@@ -1247,5 +1255,13 @@ class MessageCombo(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
 
     def acceptall(self):
-        """ accept """
+        """
+        Accept option.
+
+        Returns
+        -------
+        str
+            Returns current text.
+
+        """
         return self.master.currentText()

@@ -4,7 +4,7 @@
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2018 Council for Geoscience
+# Copyright:   (c) 2019 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI
@@ -75,7 +75,14 @@ class ImportCG5(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
@@ -123,7 +130,15 @@ class ImportCG5(QtWidgets.QDialog):
         pb_gps.pressed.connect(self.get_gps)
 
     def settings(self, test=False):
-        """Entry point into item. Data imported from here."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         if not test:
             tmp = self.exec_()

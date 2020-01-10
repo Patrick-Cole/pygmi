@@ -4,7 +4,7 @@
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2013 Council for Geoscience
+# Copyright:   (c) 2019 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI

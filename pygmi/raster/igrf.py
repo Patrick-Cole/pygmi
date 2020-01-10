@@ -219,8 +219,14 @@ class IGRF(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def acceptall(self):
-        """ Accept button"""
+        """
+        Accept option.
 
+        Returns
+        -------
+        None.
+
+        """
         orig_wkt = self.proj.wkt
 
         orig = osr.SpatialReference()

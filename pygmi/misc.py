@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # Name:        misc.py (part of PyGMI)
 #
@@ -23,10 +22,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Misc is a collection of routines which can be used in PyGMI in general.
+"""
+Misc is a collection of routines which can be used in PyGMI in general.
 
 ptimer is utility module used to simplify checking how much time has passed
-in a program. It also outputs a message at the point when called. """
+in a program. It also outputs a message at the point when called.
+"""
 
 import time
 from PyQt5 import QtWidgets

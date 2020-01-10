@@ -185,7 +185,14 @@ class PlotRaster(GraphWindow):
         self.mmc.update_contour(data[i])
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         data = self.indata['Cluster']
 
@@ -225,7 +232,14 @@ class PlotMembership(GraphWindow):
         self.change_band_two()
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Cluster']
         if 'memdat' not in data[0].metadata['Cluster'] or len(data[0].metadata['Cluster']['memdat']) == 0:
             return
@@ -306,7 +320,14 @@ class PlotVRCetc(GraphWindow):
             self.mmc.update_scatter(x, y)
 
     def run(self):
-        """Run."""
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         items = []
         data = self.indata['Cluster']
         meta = data[0].metadata['Cluster']

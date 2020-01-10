@@ -76,7 +76,15 @@ class DataCut():
         self.outdata = {}
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
@@ -142,7 +150,14 @@ class DataGrid(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
@@ -190,7 +205,15 @@ class DataGrid(QtWidgets.QDialog):
         self.label_cols.setText('Columns: '+str(cols))
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         tmp = []
         if 'Point' not in self.indata:
             self.parent.showprocesslog('No Point Data')
@@ -223,7 +246,16 @@ class DataGrid(QtWidgets.QDialog):
         return tmp
 
     def acceptall(self):
-        """Accept."""
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
         dxy = self.dsb_dxy.value()
         nullvalue = self.dsb_null.value()
         data = self.indata['Point'][0]
@@ -294,7 +326,14 @@ class DataMerge(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
@@ -345,7 +384,15 @@ class DataMerge(QtWidgets.QDialog):
         self.label_cols.setText('Columns: '+str(cols))
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         data = self.indata['Raster'][0]
         dxy0 = min(data.xdim, data.ydim)
         for data in self.indata['Raster']:
@@ -362,10 +409,14 @@ class DataMerge(QtWidgets.QDialog):
 
     def acceptall(self):
         """
-        Accept.
+        Accept option.
 
-        This routine is called by settings() if accept is pressed. It contains
-        the main merge routine.
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
         """
         dxy = self.dsb_dxy.value()
         data = self.indata['Raster'][0]
@@ -447,7 +498,14 @@ class DataReproj(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
@@ -468,10 +526,14 @@ class DataReproj(QtWidgets.QDialog):
 
     def acceptall(self):
         """
-        Accept.
+        Accept option.
 
-        This routine is called by settings() if accept is pressed. It contains
-        the main routine.
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
         """
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
             self.parent.showprocesslog('Could not reproject')
@@ -561,7 +623,15 @@ class DataReproj(QtWidgets.QDialog):
         self.outdata['Raster'] = dat
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.in_proj.set_current(self.indata['Raster'][0].wkt)
         self.out_proj.set_current(self.indata['Raster'][0].wkt)
 
@@ -607,7 +677,15 @@ class GetProf():
         self.outdata = {}
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
@@ -785,7 +863,14 @@ class Metadata(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         groupbox = QtWidgets.QGroupBox('Dataset')
@@ -851,10 +936,12 @@ class Metadata(QtWidgets.QDialog):
 
     def acceptall(self):
         """
-        Accept.
+        Accept option.
 
-        This routine is called by settings() if accept is pressed. It contains
-        the main routine.
+        Returns
+        -------
+        None.
+
         """
         wkt = self.proj.wkt
 
@@ -1019,7 +1106,14 @@ class RTP(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Set up UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.rtp')
@@ -1051,7 +1145,15 @@ class RTP(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """Settings."""
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         tmp = []
         if 'Raster' not in self.indata:
             return False
@@ -1072,7 +1174,16 @@ class RTP(QtWidgets.QDialog):
         return tmp
 
     def acceptall(self):
-        """Accept."""
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
         I_deg = self.dsb_inc.value()
         D_deg = self.dsb_dec.value()
 

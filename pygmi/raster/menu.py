@@ -48,7 +48,7 @@ class MenuWidget():
 
     Attributes
     ----------
-    parent : MainWidget
+    parent : pygmi.main.MainWidget
         Reference to MainWidget class found in main.py
     """
     def __init__(self, parent):

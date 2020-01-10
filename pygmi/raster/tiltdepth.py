@@ -59,7 +59,7 @@ class TiltDepth(QtWidgets.QDialog):
         dictionary of input datasets
     outdata : dictionary
         dictionary of output datasets
-    self.mmc : MyMplCanvas, FigureCanvas
+    self.mmc : FigureCanvas
         main canvas containing the image
     """
     def __init__(self, parent=None):

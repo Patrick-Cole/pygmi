@@ -24,15 +24,12 @@
 # -----------------------------------------------------------------------------
 """
 These are tests. Run pytest on this file from within this directory to do
-the tests .
+the tests.
 """
 
-import os
-import glob
 import sys
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets
 import numpy as np
-import pytest
 from pygmi.raster.datatypes import Data
 from pygmi.clust import cluster, crisp_clust, fuzzy_clust
 
@@ -40,7 +37,7 @@ APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
 
 def test_cluster():
-    """ test cluster """
+    """test cluster."""
 
     dat1 = Data()
     dat1.data = np.ma.identity(3)
@@ -67,7 +64,7 @@ def test_cluster():
 
 
 def test_crisp():
-    """ test crisp cluster """
+    """test crisp cluster."""
 
     dat1 = Data()
     dat1.data = np.ma.identity(3)
@@ -94,7 +91,7 @@ def test_crisp():
 
 
 def test_fuzzy():
-    """ test fuzzy cluster """
+    """test fuzzy cluster."""
 
     dat1 = Data()
     dat1.data = np.ma.identity(3)

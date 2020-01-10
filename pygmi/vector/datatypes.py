@@ -60,10 +60,14 @@ class LData():
         channel for x coordinates
     ychannel : string
         channel for y coordinates
+    zchannel : string
+        channel for z coordinates
     data : dictionary
         dictionary of groups/lines, each having a structured array of data
     dataid : str
         data description
+    nullvalue : int
+        Nullvalue used in data.
     """
 
     def __init__(self):

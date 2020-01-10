@@ -4,7 +4,7 @@
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2018 Council for Geoscience
+# Copyright:   (c) 2019 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI
@@ -37,7 +37,7 @@ class MenuWidget():
 
     Attributes
     ----------
-    parent : MainWidget
+    parent : pygmi.main.MainWidget
         Reference to MainWidget class found in main.py
     """
 
@@ -62,7 +62,6 @@ class MenuWidget():
         self.action_data_viewer = QtWidgets.QAction('View Change Data')
         self.menu2.addAction(self.action_data_viewer)
         self.action_data_viewer.triggered.connect(self.view_change)
-
 
     def create_scene(self):
         """Create Scene."""

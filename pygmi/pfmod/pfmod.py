@@ -146,7 +146,15 @@ class MainWidget(QtWidgets.QMainWindow):
         menu_default.HelpDocs(self, 'pygmi.pfmod.prof')
 
     def settings(self):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         datatmp = [i for i in set(self.lmod1.griddata.values())]
 
         if 'Raster' not in self.indata:

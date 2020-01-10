@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Setup script for packaging PyGMI """
+"""Setup script for packaging PyGMI."""
 
 from setuptools import setup, find_packages
 from pygmi import __version__ as PVER
@@ -66,8 +66,8 @@ setup(name='pygmi',
 
       packages=(find_packages(exclude=['docs'])),
 
-      install_requires=[
-                        'gdal>=2.4,<3',
+      install_requires=['gdal',
+                        'llvmlite',
                         'matplotlib',
                         'numba',
                         'numexpr',
@@ -75,10 +75,16 @@ setup(name='pygmi',
                         'pandas',
                         'pillow',
                         'pyopengl',
-                        'scikit-learn',
+                        'scikit_learn',
+                        'scikit_image',
                         'scipy',
-                        'setuptools',
-                        ],
+                        'mtpy',
+                        'geopandas',
+                        'segyio',
+                        'pytest',
+                        'fiona',
+                        'shapely',
+                        'setuptools'],
 
       package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
                               'helpdocs/*.png', 'images/*.png',

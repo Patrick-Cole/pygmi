@@ -225,7 +225,15 @@ class MergeMod3D(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def settings(self):
-        """ Settings """
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         tmp = []
         if 'Model3D' not in self.indata:
             return False
@@ -250,7 +258,17 @@ class MergeMod3D(QtWidgets.QDialog):
         return tmp
 
     def acceptall(self):
-        """ accept """
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise
+
+        """
         if self.master.currentText() == self.slave.currentText():
             self.parent.showprocesslog('Your master dataset must be different'
                                        ' to the slave dataset!')
@@ -365,13 +383,14 @@ def gmerge(master, slave, xrange=None, yrange=None):
     dat = []
 
     for data in [master, slave]:
-        doffset = 0.0
-        if data.data.min() <= 0:
+        doffset = 0.
+        data.data = data.data.astype(float)
+        if data.data.min() <= 0.:
             doffset = data.data.min()-1.
-            data.data -= doffset
-        data.data.set_fill_value(0)
+            data.data = data.data - doffset
+        data.data.set_fill_value(0.)
         tmp = data.data.filled()
-        data.data = np.ma.masked_equal(tmp, 0)
+        data.data = np.ma.masked_equal(tmp, 0.)
         data.nullvalue = 0
 
         drows, dcols = data.data.shape
@@ -385,7 +404,7 @@ def gmerge(master, slave, xrange=None, yrange=None):
         dat.append(gdal_to_dat(dest, data.dataid))
         dat[-1].data = np.ma.masked_outside(dat[-1].data, 0.1,
                                             data.data.max() + 1000)
-        dat[-1].data += doffset
+        dat[-1].data = dat[-1].data + doffset
         dat[-1].data.set_fill_value(1e+20)
         tmp = dat[-1].data.filled()
         dat[-1].data = np.ma.masked_equal(tmp, 1e+20)
