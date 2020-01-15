@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Import and export data."""
 
 import os
 from PyQt5 import QtWidgets
@@ -94,7 +94,7 @@ class ImportSEGY():
 
 class ExportSEGY():
     """
-    Export Data
+    Export Data.
 
     Attributes
     ----------
@@ -111,6 +111,7 @@ class ExportSEGY():
     ext : str
         filename extension
     """
+
     def __init__(self, parent):
         self.ifile = ''
         self.name = 'Export Data: '
@@ -121,7 +122,15 @@ class ExportSEGY():
         self.outdata = {}
 
     def run(self):
-        """ Show Info """
+        """
+        Run.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.parent.process_is_active(True)
 
         if 'ESEIS' in self.indata:
@@ -154,17 +163,18 @@ class ExportSEGY():
 
     def export_segy(self, dat):
         """
-        Export to SEGY format
+        Export to SEGY format.
 
         Parameters
         ----------
         dat : SEGY Data
             dataset to export
+
+        Returns
+        -------
+        None.
+
         """
-
-#        savepath = os.path.dirname(self.ifile)
-#        basename = os.path.basename(self.ifile)[:-4]
-
         src = self.indata['ESEIS']
 
         spec = segyio.tools.metadata(src)

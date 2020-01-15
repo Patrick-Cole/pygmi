@@ -192,7 +192,14 @@ class DataGrid(QtWidgets.QDialog):
         self.dsb_dxy.valueChanged.connect(self.dxy_change)
 
     def dxy_change(self):
-        """Update dxy."""
+        """
+        Update dxy.
+
+        Returns
+        -------
+        None.
+
+        """
         dxy = self.dsb_dxy.value()
         data = self.indata['Point'][0]
         x = data.xdata
@@ -364,6 +371,11 @@ class DataMerge(QtWidgets.QDialog):
         Update dxy.
 
         This is the size of a grid cell in the x and y directions.
+
+        Returns
+        -------
+        None.
+
         """
         data = self.indata['Raster'][0]
         dxy = self.dsb_dxy.value()
@@ -789,19 +801,38 @@ class GroupProj(QtWidgets.QWidget):
         self.combobox.currentIndexChanged.connect(self.combo_change)
 
     def set_current(self, wkt):
-        """Set new wkt for current option."""
+        """
+        Set new WKT for current option.
+
+        Parameters
+        ----------
+        wkt : str
+            Well Known Text descriptions for coordfinates (WKT) .
+
+        Returns
+        -------
+        None.
+
+        """
         self.wkt = wkt
         self.epsg_proj['Current'] = self.wkt
         self.combo_change()
 
     def combo_change(self):
-        """Change Combo."""
+        """
+        Change Combo.
+
+        Returns
+        -------
+        None.
+
+        """
         indx = self.combobox.currentIndex()
         txt = self.combobox.itemText(indx)
 
         self.wkt = self.epsg_proj[txt]
 
-        if type(self.wkt) is not str:
+        if not isinstance(self.wkt, str):
             self.wkt = epsgtowkt(self.wkt)
 
         srs = osr.SpatialReference()
@@ -964,7 +995,14 @@ class Metadata(QtWidgets.QDialog):
                     tmp.data.mask = (tmp.data.data == i.nullvalue)
 
     def rename_id(self):
-        """Rename the band name."""
+        """
+        Rename the band name.
+
+        Returns
+        -------
+        None.
+
+        """
         ctxt = str(self.combobox_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Band Name',
@@ -982,7 +1020,14 @@ class Metadata(QtWidgets.QDialog):
             self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
-        """Update the values on the interface."""
+        """
+        Update the values on the interface.
+
+        Returns
+        -------
+        None.
+
+        """
         odata = self.banddata[self.oldtxt]
         odata.units = self.led_units.text()
 
@@ -1025,7 +1070,15 @@ class Metadata(QtWidgets.QDialog):
         self.led_units.setText(str(idata.units))
 
     def run(self):
-        """Entrypoint to start this routine."""
+        """
+        Entrypoint to start this routine.
+
+        Returns
+        -------
+        tmp : bool
+            True if successful, False otherwise.
+
+        """
         bandid = []
         self.proj.set_current(self.indata['Raster'][0].wkt)
 
@@ -1198,7 +1251,24 @@ class RTP(QtWidgets.QDialog):
 
 
 def rtp(data, I_deg, D_deg):
-    """Reduction to the Pole."""
+    """
+    Reduction to th epole.
+
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI raster data.
+    I_deg : float
+        Magnetic inclination.
+    D_deg : float
+        Magnetic declination.
+
+    Returns
+    -------
+    dat : PyGMI Data
+        PyGMI raster data.
+
+    """
     datamedian = np.ma.median(data.data)
     ndat = data.data - datamedian
     ndat.data[ndat.mask] = 0
@@ -1238,7 +1308,20 @@ def rtp(data, I_deg, D_deg):
 
 
 def check_dataid(out):
-    """Check dataid for duplicates and renames where necessary."""
+    """
+    Check dataid for duplicates and renames where necessary.
+
+    Parameters
+    ----------
+    out : PyGMI Data
+        PyGMI raster data.
+
+    Returns
+    -------
+    out : PyGMI Data
+        PyGMI raster data.
+
+    """
     tmplist = []
     for i in out:
         tmplist.append(i.dataid)
@@ -1269,7 +1352,7 @@ def cluster_to_raster(indata):
 
     Returns
     -------
-    Data
+    indata : Data
         PyGMI raster dataset
 
     """
@@ -1299,7 +1382,7 @@ def cut_raster(data, ifile):
 
     Returns
     -------
-    Data
+    data : Data
         PyGMI Dataset
     """
     shapef = ogr.Open(ifile)
@@ -1387,7 +1470,9 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
 
     Returns
     -------
-    src - GDAL mem format
+    src : GDAL mem format
+        GDAL memory format data
+
     """
     data.data = np.ma.array(data.data)
     dtype = data.data.dtype
@@ -1433,7 +1518,20 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
 
 
 def epsgtowkt(epsg):
-    """Routine to get a wkt from an epsg code."""
+    """
+    Routine to get a WKT from an epsg code.
+
+    Parameters
+    ----------
+    epsg : str or int
+        EPSG code.
+
+    Returns
+    -------
+    out : str
+        WKT description.
+
+    """
     orig = osr.SpatialReference()
     err = orig.ImportFromEPSG(int(epsg))
     if err != 0:
@@ -1448,10 +1546,16 @@ def gdal_to_dat(dest, bandid='Data'):
 
     Parameters
     ----------
-    dest - GDAL format
+    dest : GDAL format
         GDAL format
-    bandid - str
+    bandid : str
         band identity
+
+    Returns
+    -------
+    dat : PyGMI Data
+        PyGMI raster dataset.
+
     """
     dat = Data()
     gtr = dest.GetGeoTransform()
@@ -1484,7 +1588,15 @@ def gdal_to_dat(dest, bandid='Data'):
 
 
 def getepsgcodes():
-    """Routine used to get a list of EPSG codes."""
+    """
+    Routine used to get a list of EPSG codes.
+
+    Returns
+    -------
+    pcodes : dictionary
+        Dictionary of codes per projection in WKT format.
+
+    """
     with open(os.path.join(os.path.dirname(__file__), 'gcs.csv')) as dfile:
         dlines = dfile.readlines()
 
@@ -1544,12 +1656,12 @@ def merge(dat):
 
     Parameters
     ----------
-    dat : Data
+    dat : PyGMI Data
         data object which stores datasets
 
     Returns
     -------
-    Data
+    out : PyGMI Data
         data object which stores datasets
     """
     if dat[0].isrgb:
@@ -1597,7 +1709,7 @@ def trim_raster(olddata):
 
     Returns
     -------
-    Data
+    olddata : Data
         PyGMI dataset
     """
     for data in olddata:
@@ -1704,7 +1816,6 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
 
         filt = zdiv > 0
         newz[filt] = newz[filt]/zdiv[filt]
-#        print(newz)
 
         if j == 0:
             newmask = np.ones([rows, cols])
@@ -1725,8 +1836,3 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz = np.ma.array(zfin)
     newz.mask = newmask
     return newz
-
-
-def func(x, y):
-    """Function."""
-    return x*(1-x)*np.cos(4*np.pi*x) * np.sin(4*np.pi*y**2)**2

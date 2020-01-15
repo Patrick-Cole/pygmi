@@ -43,31 +43,23 @@ class GraphWindow(QtWidgets.QDialog):
         self.setWindowTitle('Graph Window')
 
         vbl = QtWidgets.QVBoxLayout(self)
-#        hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-#        self.combobox1 = QtWidgets.QComboBox()
-#        self.combobox2 = QtWidgets.QComboBox()
-#        self.label1 = QtWidgets.QLabel('Bands:')
-#        self.label2 = QtWidgets.QLabel('Bands:')
-#
-#        hbl.addWidget(self.label1)
-#        hbl.addWidget(self.combobox1)
-#        hbl.addWidget(self.label2)
-#        hbl.addWidget(self.combobox2)
-
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
-#        vbl.addLayout(hbl)
 
         self.setFocus()
 
-#        self.combobox1.currentIndexChanged.connect(self.change_band)
-#        self.combobox2.currentIndexChanged.connect(self.change_band)
-
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
 
 
 class MyMplCanvas(FigureCanvas):
@@ -93,7 +85,19 @@ class MyMplCanvas(FigureCanvas):
                                        self.motion_notify_callback)
 
     def button_release_callback(self, event):
-        """Mouse button release callback."""
+        """
+        Mouse button release callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -101,7 +105,19 @@ class MyMplCanvas(FigureCanvas):
         self.ind = None
 
     def motion_notify_callback(self, event):
-        """Move mouse callback."""
+        """
+        Move mouse callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -118,7 +134,20 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.update()
 
     def onpick(self, event):
-        """Picker event."""
+        """
+        Picker event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if event.mouseevent.inaxes is None:
             return False
         if event.mouseevent.button != 1:
@@ -137,10 +166,14 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : segyio object
+        data : segyio object
             SEGY data
-        """
 
+        Returns
+        -------
+        None.
+
+        """
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='SEGY')
@@ -185,7 +218,14 @@ class PlotSEGY(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['ESEIS']
         self.mmc.update_segy(data)
 

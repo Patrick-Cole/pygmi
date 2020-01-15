@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-BIRRP -Bounded Influence Remote Reference Processing
+BIRRP -Bounded Influence Remote Reference Processing.
 
 BIRRP is developed by:
 Dr Alan D. Chave
@@ -63,13 +63,9 @@ Note, it will still be necessary for the end-user to compile the code.
 
 import os
 import functools
-import subprocess
 from PyQt5 import QtWidgets, QtCore, QtGui
-import numpy as np
-import pandas as pd
-from pygmi.vector.datatypes import LData
-import pygmi.menu_default as menu_default
-import mtpy.processing.birrp as MTbp
+#import pygmi.menu_default as menu_default
+#import mtpy.processing.birrp as MTbp
 
 
 class BIRRP(QtWidgets.QDialog):
@@ -171,7 +167,7 @@ class BIRRP(QtWidgets.QDialog):
 
         """
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+#        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
         pb_importbirrp = QtWidgets.QPushButton('Import BIRRP configuration file')
         pb_runbirrp = QtWidgets.QPushButton('Save BIRRP configuration file')  #' and run BIRRP')
 
@@ -213,23 +209,29 @@ class BIRRP(QtWidgets.QDialog):
         self.lay.addRow("ILEV: input Level", self.ilev)
         self.lay.addRow("NOUT: number of output time series", self.nout)
         self.lay.addRow("NINP: number of input time series", self.ninp)
-        self.lay.addRow("TBW: time bandwidth for prolate data window", self.tbw)
+        self.lay.addRow("TBW: time bandwidth for prolate data window",
+                        self.tbw)
         self.lay.addRow("DELTAT: sample interval", self.deltat)
         self.lay.addRow("NFFT: initial section length", self.nfft)
         self.lay.addRow("NSCTMAX: maximum number of sections", self.nsctmax)
         self.lay.addRow("UIN: robustness parameter", self.uin)
         self.lay.addRow("AIUIN: leverage parameter", self.ainuin)
-        self.lay.addRow("C2THRESHE: second stage coherence threshold", self.c2threshe)
+        self.lay.addRow("C2THRESHE: second stage coherence threshold",
+                        self.c2threshe)
         self.lay.addRow("OFIL: output filename root", self.ofil)
         self.lay.addRow("NLEV: output level", self.nlev)
         self.lay.addRow("NPCS: numer of data pieces", self.npcs)
-        self.lay.addRow("NAR: length of ar filter (0 for none, <0 for filename)", self.nar)
+        self.lay.addRow("NAR: length of ar filter (0 for none, <0 for filename)",
+                        self.nar)
         self.lay.addRow("IMODE: file mode", self.imode)
         self.lay.addRow("JMODE: input mode", self.jmode)
         self.lay.addRow("NREAD: number of data values to be read", self.nread)
-        self.lay.addRow("THETA1,THETA2,PHI: Rotation angles for electrics", self.thetae)
-        self.lay.addRow("THETA1,THETA2,PHI: Rotation angles for magnetics", self.thetab)
-        self.lay.addRow("THETA1,THETA2,PHI: Rotation angles for calculation", self.thetar)
+        self.lay.addRow("THETA1,THETA2,PHI: Rotation angles for electrics",
+                        self.thetae)
+        self.lay.addRow("THETA1,THETA2,PHI: Rotation angles for magnetics",
+                        self.thetab)
+        self.lay.addRow("THETA1,THETA2,PHI: Rotation angles for calculation",
+                        self.thetar)
 
         for i in ['ex', 'ey']:
             self.lay2.addRow("NFIL: number filter parameters (<0 for filename) of "+i, self.nfil[i])
@@ -274,7 +276,14 @@ class BIRRP(QtWidgets.QDialog):
                                                                   self.arfilnam[i]))
 
     def importbirrp(self):
-        """ imports a birrp config file """
+        """
+        Import a BIRRP config file.
+
+        Returns
+        -------
+        None.
+
+        """
         ext = ('*.birrp (*.birrp)')
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -406,7 +415,14 @@ class BIRRP(QtWidgets.QDialog):
         self.thetar.setText(thetar)
 
     def runbirrp(self):
-        """ saves and runs a birrp config file """
+        """
+        Saves and runs a birrp config file.
+
+        Returns
+        -------
+        None.
+
+        """
         ext = ('*.birrp (*.birrp)')
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -415,7 +431,6 @@ class BIRRP(QtWidgets.QDialog):
             return
 
         birrp_path = os.path.dirname(__file__)[:-2]+r'\bin\birrp.exe'
-
 
         nout = self.nout.currentIndex()+2
         nz = self.nz.currentIndex()
@@ -470,10 +485,20 @@ class BIRRP(QtWidgets.QDialog):
 
 #        MTbp.run(birrp_path, filename)
 
-
     def get_filename(self, widget):
-        """ get filename for a component """
+        """
+        Get filename for a component.
 
+        Parameters
+        ----------
+        widget : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         ext = ('*.* (*.*)')
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -484,7 +509,14 @@ class BIRRP(QtWidgets.QDialog):
         widget.setText(filename)
 
     def nar_changed(self):
-        """ nar changed """
+        """
+        Value of nar changed.
+
+        Returns
+        -------
+        None.
+
+        """
         text = self.nar.text()
         val = int(text)
 
@@ -503,8 +535,14 @@ class BIRRP(QtWidgets.QDialog):
                 self.removerow(self.arfilnam[i], lay)
 
     def nfil_changed(self):
-        """ nfil changed """
+        """
+        Value of nfil changed.
 
+        Returns
+        -------
+        None.
+
+        """
         for i in ['ex', 'ey', 'hz', 'hx', 'hy', 'rx', 'ry']:
             if i in ['ex', 'ey', 'hz']:
                 lay = self.lay2
@@ -531,7 +569,19 @@ class BIRRP(QtWidgets.QDialog):
                 self.removerow(self.fpar[i], lay)
 
     def imode_changed(self, indx):
-        """ imode changed """
+        """
+        Value of imode changed.
+
+        Parameters
+        ----------
+        indx : int
+            Index.
+
+        Returns
+        -------
+        None.
+
+        """
         row1, _ = self.lay.getWidgetPosition(self.nfil)
         row2, _ = self.lay.getWidgetPosition(self.cpar)
         row3, _ = self.lay.getWidgetPosition(self.fpar)
@@ -545,7 +595,14 @@ class BIRRP(QtWidgets.QDialog):
             self.removerow(self.nblock, self.lay)
 
     def jmode_changed(self):
-        """ jmode changed """
+        """
+        Value of jmode changed.
+
+        Returns
+        -------
+        None.
+
+        """
         row, _ = self.lay.getWidgetPosition(self.jmode)
         txt = self.jmode.currentText()
 
@@ -576,7 +633,14 @@ class BIRRP(QtWidgets.QDialog):
                              self.wetim[i], lay)
 
     def nout_changed(self):
-        """ nout changed """
+        """
+        Value of nout changed.
+
+        Returns
+        -------
+        None.
+
+        """
         row, _ = self.lay.getWidgetPosition(self.c2threshe)
 
         txt = self.nout.currentText()
@@ -597,35 +661,65 @@ class BIRRP(QtWidgets.QDialog):
         else:
             self.removerow(self.c2threshe1, self.lay)
 
-
-
 # Now do file stuff
         if txt == '3 = EX, EY, BZ':
             row, _ = self.lay2.getWidgetPosition(self.nskip['ey'])
 
             self.showrow(row+1, "NFIL: number filter parameters (<0 for filename) of hz",
                          self.nfil['hz'], self.lay2)
-            self.showrow(row+2, self.pb_filnam['hz'], self.filnam['hz'], self.lay2)
+            self.showrow(row+2, self.pb_filnam['hz'], self.filnam['hz'],
+                         self.lay2)
             self.showrow(row+3, "NSKIP: leading values to skip in hz",
-                             self.nskip['hz'], self.lay2)
+                         self.nskip['hz'], self.lay2)
         else:
             self.removerow(self.nfil['hz'], self.lay2)
             self.removerow(self.filnam['hz'], self.lay2)
             self.removerow(self.nskip['hz'], self.lay2)
-
 
         self.nar_changed()
         self.nfil_changed()
         self.jmode_changed()
 
     def showrow(self, row, label, widget, lay):
-        """ shows a row with a widget """
+        """
+        Show a row within a widget.
+
+        Parameters
+        ----------
+        row : int
+            Row number.
+        label : str
+            Row label.
+        widget : Qt widget.
+            Qt widget.
+        lay : QtWidgets.QFormLayout
+            Form Layout.
+
+        Returns
+        -------
+        None.
+
+        """
         if lay.getWidgetPosition(widget)[0] == -1:
             lay.insertRow(row, label, widget)
             widget.show()
 
     def removerow(self, widget, lay):
-        """ removes a row """
+        """
+        Remove a row.
+
+        Parameters
+        ----------
+        widget : Qt widget.
+            Qt widget.
+        lay : QtWidgets.QFormLayout
+            Form Layout.
+
+        Returns
+        -------
+        None.
+
+        """
         if lay.getWidgetPosition(widget)[0] > -1:
             widget.hide()
             lay.labelForField(widget).hide()
@@ -641,7 +735,6 @@ class BIRRP(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if not test:
             tmp = self.exec_()
 
@@ -649,84 +742,3 @@ class BIRRP(QtWidgets.QDialog):
                 return tmp
 
         return True
-
-    def get_gps(self, filename=''):
-        """ Get GPS filename """
-        ext = ('GPS comma delimited (*.csv)')
-
-        if filename == '':
-            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if filename == '':
-                return
-
-        os.chdir(os.path.dirname(filename))
-
-        df2 = pd.read_csv(filename)
-
-        df2['Station'] = pd.to_numeric(df2['Station'], errors='coerce')
-
-        self.df_gps = df2
-
-        self.gpsfile.setText(filename)
-
-        ltmp = list(df2.columns)
-
-        xind = 0
-        yind = 1
-        zind = 2
-        for i, tmp in enumerate(ltmp):
-            if 'lon' in tmp.lower():
-                xind = i
-            elif 'lat' in tmp.lower():
-                yind = i
-            elif 'elev' in tmp.lower() or 'alt' in tmp.lower():
-                zind = i
-
-        self.xchan.addItems(ltmp)
-        self.ychan.addItems(ltmp)
-        self.zchan.addItems(ltmp)
-
-        self.xchan.setCurrentIndex(xind)
-        self.ychan.setCurrentIndex(yind)
-        self.zchan.setCurrentIndex(zind)
-
-        self.xchan.setEnabled(True)
-        self.ychan.setEnabled(True)
-        self.zchan.setEnabled(True)
-
-
-#def addrow(vbl, text, widget):
-#    """ routine to simplify adding widgets with labels """
-#    hbl = QtWidgets.QHBoxLayout()
-#    label = QtWidgets.QLabel(text)
-#
-#    hbl.addWidget(label)
-#    hbl.addWidget(widget)
-#    vbl.addLayout(hbl)
-#
-#    return hbl
-#
-#
-#class ComboBox(QtWidgets.QWidget):
-#    """ Custom combo box with text label """
-#    def __init__(self, text, items, parent=None):
-#        QtWidgets.QWidget.__init__(self, parent=parent)
-#        hbl = QtWidgets.QHBoxLayout(self)
-#        label = QtWidgets.QLabel(text)
-#        self.combo = QtWidgets.QComboBox()
-#        for i in items:
-#            self.combo.addItem(str(i))
-#        hbl.addWidget(label)
-#        hbl.addWidget(self.combo)
-#
-#
-#class LineEdit(QtWidgets.QWidget):
-#    """ Custom line edit with text label """
-#    def __init__(self, text, item, parent=None):
-#        QtWidgets.QWidget.__init__(self, parent=parent)
-#        hbl = QtWidgets.QHBoxLayout(self)
-#        label = QtWidgets.QLabel(text)
-#        self.lineedit = QtWidgets.QLineEdit(str(item))
-#        hbl.addWidget(label)
-#        hbl.addWidget(self.lineedit)

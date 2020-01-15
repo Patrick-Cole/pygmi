@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the main Crisp Clustering set of routines """
+"""Main Clustering set of routines."""
 
 import copy
 from PyQt5 import QtWidgets, QtCore
@@ -36,7 +36,7 @@ import pygmi.menu_default as menu_default
 
 class Cluster(QtWidgets.QDialog):
     """
-    Cluster Class
+    Cluster Class.
 
     Attributes
     ----------
@@ -47,6 +47,7 @@ class Cluster(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -103,7 +104,14 @@ class Cluster(QtWidgets.QDialog):
         self.combo()
 
     def setupui(self):
-        """ setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         helpdocs = menu_default.HelpButton('pygmi.clust.cluster')
         gridlayout = QtWidgets.QGridLayout(self)
 
@@ -163,7 +171,14 @@ class Cluster(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def combo(self):
-        """ Combo box """
+        """
+        Set up combo box.
+
+        Returns
+        -------
+        None.
+
+        """
         i = str(self.combobox_alg.currentText())
 
         self.label_minclusters.hide()
@@ -242,7 +257,14 @@ class Cluster(QtWidgets.QDialog):
         return True
 
     def update_vars(self):
-        """ Updates the variables """
+        """
+        Update the variables.
+
+        Returns
+        -------
+        None.
+
+        """
         self.cltype = str(self.combobox_alg.currentText())
         self.min_cluster = self.spinbox_minclusters.value()
         self.max_cluster = self.spinbox_maxclusters.value()
@@ -254,7 +276,14 @@ class Cluster(QtWidgets.QDialog):
         self.branchfac = self.spinbox_branchfac.value()
 
     def run(self):
-        """ Process data """
+        """
+        Run the cluster analysis.
+
+        Returns
+        -------
+        None.
+
+        """
         data = copy.copy(self.indata['Raster'])
         self.update_vars()
 
@@ -316,9 +345,6 @@ class Cluster(QtWidgets.QDialog):
             dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
             if cfit.labels_.max() > 0:
                 dat_out[-1].metadata['Cluster']['vrc'] = skm.calinski_harabasz_score(X, cfit.labels_)
-
-#            if self.cltype == 'k-means':
-#                dat_out[-1].center = np.array(cfit.cluster_centers_)
 
             m = []
             s = []

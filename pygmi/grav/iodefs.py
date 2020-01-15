@@ -89,7 +89,6 @@ class ImportCG5(QtWidgets.QDialog):
         label_xchan = QtWidgets.QLabel('Longitude:')
         label_ychan = QtWidgets.QLabel('Latitude:')
         label_zchan = QtWidgets.QLabel('Elevation:')
-#        label_nodata = QtWidgets.QLabel('Null Value:')
         pb_cg5 = QtWidgets.QPushButton('Load CG-5 File')
         pb_gps = QtWidgets.QPushButton('Load GPS File')
 
@@ -139,7 +138,6 @@ class ImportCG5(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if not test:
             tmp = self.exec_()
 
@@ -167,7 +165,19 @@ class ImportCG5(QtWidgets.QDialog):
         return True
 
     def get_cg5(self, filename=''):
-        """ Get CG-5 filename """
+        """
+        Get CG-5 filename.
+
+        Parameters
+        ----------
+        filename : str, optional
+            CG-5 filename submitted for testing. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
         ext = ('CG-5 ASCII (*.txt *.xyz)')
 
         if filename == '':
@@ -204,7 +214,19 @@ class ImportCG5(QtWidgets.QDialog):
         self.cg5file.setText(filename)
 
     def get_gps(self, filename=''):
-        """ Get GPS filename """
+        """
+        Get GPS filename.
+
+        Parameters
+        ----------
+        filename : str, optional
+            GPS filename (csv). The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
         ext = ('GPS comma delimited (*.csv)')
 
         if filename == '':

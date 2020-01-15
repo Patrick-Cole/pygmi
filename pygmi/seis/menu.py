@@ -136,7 +136,7 @@ class MenuWidget():
     def delete_recs(self):
         """Delete Records."""
         fnc = del_rec.DeleteRecord(self.parent)
-        self.parent.item_insert('Io', 'Delete Records', fnc)
+        self.parent.item_insert('Io', 'Delete\nRecords', fnc)
 
     def quarry(self):
         """Remove quarry events."""

@@ -22,16 +22,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Gravity and magnetic field calculations.
+"""
+Gravity and magnetic field calculations.
+
 This uses the following algorithms:
 
-References:
-    Singh, B., Guptasarma, D., 2001. New method for fast computation of gravity
-    and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.
+References
+----------
+Singh, B., Guptasarma, D., 2001. New method for fast computation of gravity
+and magnetic anomalies from arbitrary polyhedral. Geophysics 66, 521-526.
 
-    Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
-    1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
-    """
+Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
+1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
+"""
 
 from __future__ import print_function
 
@@ -55,14 +58,17 @@ from pygmi.misc import PTime
 
 
 class GravMag():
-    """This class holds the generic magnetic and gravity modelling routines
+    """
+    The GravMag class holds generic magnetic and gravity modelling routines.
 
     Routine that will calculate the final versions of the field. Other,
     related code is here as well, such as the inversion routines.
     """
+
     def __init__(self, parent):
 
         self.parent = parent
+        self.lmod2 = LithModel()
         self.lmod1 = parent.lmod1
         self.lmod = self.lmod1
         self.showtext = parent.showtext
@@ -82,7 +88,14 @@ class GravMag():
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         self.parent.toolbardock.addSeparator()
         self.parent.toolbardock.addAction(self.actionregionaltest)
         self.parent.toolbardock.addSeparator()
@@ -101,7 +114,14 @@ class GravMag():
         self.actioncalculate4.setEnabled(False)
 
     def calc_field_mag(self):
-        """ Pre field-calculation routine """
+        """
+        Pre field-calculation routine.
+
+        Returns
+        -------
+        None.
+
+        """
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = True
@@ -115,7 +135,14 @@ class GravMag():
         self.actioncalculate4.setEnabled(True)
 
     def calc_field_grav(self):
-        """ Pre field-calculation routine """
+        """
+        Pre field-calculation routine.
+
+        Returns
+        -------
+        None.
+
+        """
         # Update this
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
@@ -130,7 +157,14 @@ class GravMag():
         self.actioncalculate3.setEnabled(True)
 
     def calc_field_mag_changes(self):
-        """ calculates only mag changes """
+        """
+        Calculate only magnetic field changes.
+
+        Returns
+        -------
+        None.
+
+        """
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = True
@@ -140,7 +174,14 @@ class GravMag():
         self.parent.profile.update_plot()
 
     def calc_field_grav_changes(self):
-        """ calculates only grav changes """
+        """
+        Calculate only gravity field changes.
+
+        Returns
+        -------
+        None.
+
+        """
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
         self.parent.profile.viewmagnetics = False
@@ -150,14 +191,29 @@ class GravMag():
         self.parent.profile.update_plot()
 
     def calc_field2(self, showreports=False, magcalc=False):
-        """ Calculate magnetic and gravity field """
+        """
+        Calculate magnetic and gravity field.
 
+        Parameters
+        ----------
+        showreports : bool, optional
+            Flag for showing reports. The default is False.
+        magcalc : bool, optional
+            Flac for choosing the magnetic calculation. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
         calc_field(self.lmod, pbars=self.pbars, showtext=self.showtext,
                    parent=self.parent, showreports=showreports,
                    magcalc=magcalc)
 
     def calc_regional(self):
         """
+        Calculate magnetic and gravity regional.
+
         Calculates a gravity and magnetic regional value based on a single
         solid lithology model. This gets used in tab_param. The principle is
         that the maximum value for a solid model with fixed extents and depth,
@@ -165,8 +221,12 @@ class GravMag():
         any model which we would do. Therefore the regional is simply:
         REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
         This routine calculates the last term.
-        """
 
+        Returns
+        -------
+        None.
+
+        """
         ltmp = list(self.lmod1.lith_list.keys())
         ltmp.pop(ltmp.index('Background'))
 
@@ -221,32 +281,19 @@ class GravMag():
         self.calc_field2(False, True)
         self.lmod = self.lmod1
 
-    def grd_to_lith(self, curgrid):
-        """ Assign the DTM to the lithology model """
-        d_x = curgrid.xdim
-        d_y = curgrid.ydim
-        gxmin = curgrid.extent[0]
-        gymax = curgrid.extent[-1]
-        grows, gcols = curgrid.data.shape
-
-        ndata = np.zeros([self.lmod.numy, self.lmod.numx])
-
-        for i in range(self.lmod.numx):
-            for j in range(self.lmod.numy):
-                xcrd = self.lmod.xrange[0]+(i+.5)*self.lmod.dxy
-                ycrd = self.lmod.yrange[1]-(j+.5)*self.lmod.dxy
-                xcrd2 = int((xcrd-gxmin)/d_x)
-                ycrd2 = int((gymax-ycrd)/d_y)
-                if (ycrd2 >= 0 and xcrd2 >= 0 and ycrd2 < grows and
-                        xcrd2 < gcols):
-                    ndata[j, i] = curgrid.data.data[ycrd2, xcrd2]
-
-        return ndata
-
     def test_pattern(self):
-        """ Displays a test pattern of the data - an indication of the edge of
-        model field decay. It gives an idea about how reliable the calculated
-        field on the edge of the model is. """
+        """
+        Displays a test pattern of the data.
+
+        This is an indication of the edge of model field decay. It gives an
+        idea about how reliable the calculated field on the edge of the model
+        is.
+
+        Returns
+        -------
+        None.
+
+        """
         self.lmod1 = self.parent.lmod1
         self.lmod = self.lmod1
 
@@ -265,7 +312,8 @@ class GravMag():
         mint = (magtmp.std()*4)/10.
         if magtmp.ptp() > 0:
             csrange = np.arange(mmin, mmax, mint)
-            cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
+#            cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
+            plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
 #            plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal')
         cbar.set_label('nT')
@@ -280,7 +328,8 @@ class GravMag():
 
         if grvtmp.ptp() > 0:
             csrange = np.arange(mmin, mmax, mint)
-            cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
+            plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
+#            cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
 #            plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal')
         cbar.set_label('mGal')
@@ -291,7 +340,23 @@ class GravMag():
         regplt.show()
 
     def update_graph(self, grvval, magval, modind):
-        """ Updates the graph """
+        """
+        Update the graph.
+
+        Parameters
+        ----------
+        grvval : numpy array
+            Array of gravity values.
+        magval : numpy array
+            Array of magnetic values.
+        modind : numpy array
+            Model indices.
+
+        Returns
+        -------
+        None.
+
+        """
         indx = self.parent.tabwidget.currentIndex()
         tlabel = self.parent.tabwidget.tabText(indx)
 
@@ -306,14 +371,17 @@ class GravMag():
 
 
 class GeoData():
-    """ Data layer class:
-        This class defines each geological type and calculates the field
-        for one cube from the standard definitions.
+    """
+    Data layer class.
 
-        The is a class which contains the geophysical information for a single
-        lithology. This includes the final calculated field for that lithology
-        only.
-        """
+    This class defines each geological type and calculates the field
+    for one cube from the standard definitions.
+
+    The is a class which contains the geophysical information for a single
+    lithology. This includes the final calculated field for that lithology
+    only.
+    """
+
     def __init__(self, parent, ncols=10, nrows=10, numz=10, dxy=10.,
                  d_z=10., mht=80., ght=0.):
         self.lithcode = 0
@@ -367,7 +435,19 @@ class GeoData():
         self.set_xyz(ncols, nrows, numz, dxy, mht, ght, d_z)
 
     def calc_origin_grav(self, hcor=None):
-        """ Calculate the field values for the lithologies"""
+        """
+        Calculate the field values for the lithologies.
+
+        Parameters
+        ----------
+        hcor : numpy array or None, optional
+            Height corrections. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
 
         if self.modified is True:
             numx = self.g_cols*self.g_dxy
@@ -391,7 +471,19 @@ class GeoData():
             self.modified = False
 
     def calc_origin_mag(self, hcor=None):
-        """ Calculate the field values for the lithologies"""
+        """
+        Calculate the field values for the lithologies.
+
+        Parameters
+        ----------
+        hcor : numpy array or None, optional
+            Height corrections. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
 
         if self.modified is True:
             numx = self.g_cols*self.g_dxy
@@ -412,18 +504,52 @@ class GeoData():
                 hcor2 = int(self.numz-hcor.max())
 
             self.mboxmain(xdist, ydist, self.zobsm, hcor2)
-#            self.mtmp = self.mlayers.copy()
-#            self.gmmain(xdist, ydist)
 
             self.modified = False
 
     def rho(self):
-        """ Returns the density contrast """
+        """
+        Return the density contrast.
+
+        Returns
+        -------
+        float
+            Density contrast.
+
+        """
         return self.density - self.bdensity
 
     def set_xyz(self, ncols, nrows, numz, g_dxy, mht, ght, d_z, dxy=None,
                 modified=True):
-        """ Sets/updates xyz parameters again """
+        """
+        Sets/updates xyz parameters.
+
+        Parameters
+        ----------
+        ncols : int
+            Number of columns.
+        nrows : int
+            Number of rows.
+        numz : int
+            Number of layers.
+        g_dxy : float
+            Grid spacing in x and y direction.
+        mht : float
+            Magnetic sensor height.
+        ght : float
+            Gravity sensor height.
+        d_z : float
+            Model spacing in z direction.
+        dxy : float, optional
+            Model spacing in x and y direction. The default is None.
+        modified : bool, optional
+            Whether the model was modified. The default is True.
+
+        Returns
+        -------
+        None.
+
+        """
         self.modified = modified
         self.g_cols = ncols*2+1
         self.g_rows = nrows*2+1
@@ -441,8 +567,16 @@ class GeoData():
         self.set_xyz12()
 
     def set_xyz12(self):
-        """ Set x12, y12, z12. This is the limits of the cubes for the model"""
+        """
+        Set x12, y12, z12.
 
+        This is the limits of the cubes for the model
+
+        Returns
+        -------
+        None.
+
+        """
         numx = self.g_cols*self.g_dxy
         numy = self.g_rows*self.g_dxy
         numz = self.numz*self.d_z
@@ -453,142 +587,46 @@ class GeoData():
         self.y12 = np.array([numy/2-dxy/2, numy/2+dxy/2])
         self.z12 = np.arange(-numz, numz+d_z, d_z)
 
-    def gmmain(self, xobs, yobs):
-        """ Algorithm for simultaneous computation of gravity and magnetic
-            fields is based on the formulation published in GEOPHYSICS v. 66,
-            521-526,2001. by Bijendra Singh and D. Guptasarma """
-        if self.pbars is not None:
-            piter = self.pbars.iter
-        else:
-            piter = iter
 
-        x1 = float(self.x12[0])
-        x2 = float(self.x12[1])
-        y1 = float(self.y12[0])
-        y2 = float(self.y12[1])
-        z1 = 0.0
-        z2 = self.d_z
-
-        corner = np.array([[x1, y1, z1],
-                           [x1, y2, z1],
-                           [x2, y2, z1],
-                           [x2, y1, z1],
-                           [x1, y1, z2],
-                           [x1, y2, z2],
-                           [x2, y2, z2],
-                           [x2, y1, z2]])
-
-        nf = 6
-        face = np.array([[0, 1, 2, 3],
-                         [4, 7, 6, 5],
-                         [1, 5, 6, 2],
-                         [4, 0, 3, 7],
-                         [3, 2, 6, 7],
-                         [4, 5, 1, 0]])
-
-        nedges = 4*nf
-        edge = np.zeros([nedges, 8])
-        # get edge lengths
-        for f in range(nf):
-            indx = face[f].tolist() + [face[f, 0]]
-            for t in range(4):
-                edgeno = f*4+t
-                ends = indx[t:t+2]
-                p1 = corner[ends[0]]
-                p2 = corner[ends[1]]
-                V = p2-p1
-                L = norm(V)
-                edge[edgeno, 0:3] = V
-                edge[edgeno, 3] = L
-                edge[edgeno, 6:8] = ends
-
-        un = np.zeros([nf, 3])
-        # get face normals
-        for t in range(nf):
-            ss = np.zeros([1, 3])
-            for t1 in range(2):
-                v1 = corner[face[t, t1+2]]-corner[face[t, 0]]
-                v2 = corner[face[t, t1+1]]-corner[face[t, 0]]
-                ss = ss+np.cross(v2, v1)
-            un[t, :] = ss/norm(ss)
-
-        # Define the survey grid
-        X, Y = np.meshgrid(xobs, yobs)
-
-        npro, nstn = X.shape
-        # Initialise
-
-        cx, cy, cz = dircos(self.finc, self.fdec, 90.0)
-
-        uh = np.array([cx, cy, cz])
-        H = self.hintn*uh               # The ambient magnetic field (nTesla)
-        ind_magn = self.susc*H/(4*np.pi)   # Induced magnetization
-
-        mcx, mcy, mcz = dircos(self.minc, self.mdec, 90.0)
-        um = np.array([mcx, mcy, mcz])
-#        rem_magn = (400*np.pi*self.mstrength)*um/(4*np.pi)
-        rem_magn = (100*self.mstrength)*um     # Remanent magnetization
-
-        net_magn = rem_magn+ind_magn  # Net magnetization
-        pd = np.transpose(np.dot(un, net_magn.T))   # Pole densities
-
-        # For each observation point do the following.
-        # For each face find the solid angle.
-        # For each side find p,q,r and add p,q,r of sides to get P,Q,R for the
-        # face.
-        # find hx,hy,hz.
-        # find gx,gy,gz.
-        # Add the components from all the faces to get Hx,Hy,Hz and Gx,Gy,Gz.
-
-        mval = []
-        newdepth = self.z12+abs(self.zobsm)
-        indx = np.array([0, 1, 2, 3, 0, 1])
-
-        for depth in piter(newdepth):
-            if depth == 0.0:
-                cor = (corner + [0., 0., depth+self.d_z/10000.])
-            elif depth == (-1*self.d_z):
-                cor = (corner + [0., 0., depth-self.d_z/10000.])
-            else:
-                cor = (corner + [0., 0., depth])
-
-            if depth in newdepth:
-                crs = np.zeros([4, 3])
-                mgval = np.zeros([3, npro, nstn])
-
-                mgval = gm3d(npro, nstn, X, Y, edge, cor, face, pd, un, indx,
-                             crs, mgval)
-
-#                Htot = np.sqrt((Hx+H[0])**2 + (Hy+H[1])**2 + (Hz+H[2])**2)
-#                dta = Htot-self.hintn  # Correct, was originally dt
-                dta = mgval[0]*cx + mgval[1]*cy + mgval[2]*cz
-            else:
-                dta = np.zeros(X.shape)
-
-            mval.append(np.copy(dta.T))
-
-        self.mlayers = np.array(mval)
 
     def gboxmain(self, xobs, yobs, zobs, hcor):
-        """ Gbox routine by Blakely
-            Note: xobs, yobs and zobs must be floats or there will be problems
-            later.
+        """
+        Gbox routine by Blakely.
+
+        Note: xobs, yobs and zobs must be floats or there will be problems
+        later.
 
         Subroutine GBOX computes the vertical attraction of a
         rectangular prism.  Sides of prism are parallel to x,y,z axes,
         and z axis is vertical down.
 
         Input parameters:
-            Observation point is (x0,y0,z0).  The prism extends from x1
-            to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
-            directions, respectively.  Density of prism is rho.  All
-            distance parameters in units of m;
+        |    Observation point is (x0,y0,z0).  The prism extends from x1
+        |    to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
+        |    directions, respectively.  Density of prism is rho.  All
+        |    distance parameters in units of m;
 
         Output parameters:
-            Vertical attraction of gravity, g, in mGal/rho.
-            Must still be multiplied by rho outside routine.
-            Done this way for speed. """
+        |    Vertical attraction of gravity, g, in mGal/rho.
+        |    Must still be multiplied by rho outside routine.
+        |    Done this way for speed.
 
+        Parameters
+        ----------
+        xobs : numpy array
+            Observation X coordinates.
+        yobs : numpy array
+            Observation Y coordinates.
+        zobs : numpy array
+            Observation Z coordinates.
+        hcor : numpy array
+            Height corrections.
+
+        Returns
+        -------
+        None.
+
+        """
         glayers = []
         if self.pbars is not None:
             piter = self.pbars.iter
@@ -616,9 +654,9 @@ class GeoData():
 
             gval = np.zeros([self.g_cols, self.g_rows])
 
-            gval = gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z1,
-                        x_2, y_2, z2, np.ones(2), np.ones(2), np.ones(2),
-                        np.array([-1, 1]))
+            gval = _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z1,
+                         x_2, y_2, z2, np.ones(2), np.ones(2), np.ones(2),
+                         np.array([-1, 1]))
 
             gval *= 6.6732e-3
             glayers.append(gval)
@@ -626,9 +664,11 @@ class GeoData():
         self.glayers = np.array(glayers)
 
     def mboxmain(self, xobs, yobs, zobs, hcor):
-        """ Mbox routine by Blakely
-            Note: xobs, yobs and zobs must be floats or there will be problems
-            later.
+        """
+        Mbox routine by Blakely
+
+        Note: xobs, yobs and zobs must be floats or there will be problems
+        later.
 
         Subroutine MBOX computes the total field anomaly of an infinitely
         extended rectangular prism.  Sides of prism are parallel to x,y,z
@@ -636,26 +676,42 @@ class GeoData():
         Two calls to mbox can provide the anomaly of a prism with finite
         thickness; e.g.,
 
-            call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
-            call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
-            t=t1-t2
+        |    call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
+        |    call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
+        |    t=t1-t2
 
         Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).
 
         Input parameters:
-            Observation point is (x0,y0,z0).  Prism extends from x1 to
-            x2, y1 to y2, and z1 to infinity in x, y, and z directions,
-            respectively.  Magnetization defined by inclination mi,
-            declination md, intensity m.  Ambient field defined by
-            inclination fi and declination fd.  X axis has declination
-            theta. Distance units are irrelevant but must be consistent.
-            Angles are in degrees, with inclinations positive below
-            horizontal and declinations positive east of true north.
-            Magnetization in A/m.
+        |    Observation point is (x0,y0,z0).  Prism extends from x1 to
+        |    x2, y1 to y2, and z1 to infinity in x, y, and z directions,
+        |    respectively.  Magnetization defined by inclination mi,
+        |    declination md, intensity m.  Ambient field defined by
+        |    inclination fi and declination fd.  X axis has declination
+        |    theta. Distance units are irrelevant but must be consistent.
+        |    Angles are in degrees, with inclinations positive below
+        |    horizontal and declinations positive east of true north.
+        |    Magnetization in A/m.
 
         Output paramters:
-            Total field anomaly t, in nT."""
+        |    Total field anomaly t, in nT.
 
+        Parameters
+        ----------
+        xobs : numpy array
+            Observation X coordinates.
+        yobs : numpy array
+            Observation Y coordinates.
+        zobs : numpy array
+            Observation Z coordinates.
+        hcor : numpy array
+            Height corrections.
+
+        Returns
+        -------
+        None.
+
+        """
         mlayers = []
         if self.pbars is not None:
             piter = self.pbars.iter
@@ -704,8 +760,8 @@ class GeoData():
 
             mval = np.zeros([self.g_cols, self.g_rows])
 
-            mval = mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2,
-                        fm1, fm2, fm3, fm4, fm5, fm6, np.ones(2), np.ones(2))
+            mval = _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2,
+                         fm1, fm2, fm3, fm4, fm5, fm6, np.ones(2), np.ones(2))
 
             mlayers.append(mval)
 
@@ -714,7 +770,20 @@ class GeoData():
 
 
 def save_layer(mlist):
-    """ Routine saves the mlayer and glayer to a file """
+    """
+    Routine to save the mlayer and glayer to a file.
+
+    Parameters
+    ----------
+    mlist : list
+        List with 2 elements - lithology name and LithModel.
+
+    Returns
+    -------
+    outfile : TemporaryFile
+        Link to a temporary file.
+
+    """
     outfile = tempfile.TemporaryFile()
 
     outdict = {}
@@ -732,8 +801,25 @@ def save_layer(mlist):
 
 
 def gridmatch(lmod, ctxt, rtxt):
-    """ Matches the rows and columns of the second grid to the first
-    grid """
+    """
+    Matches the rows and columns of the second grid to the first
+    grid.
+
+    Parameters
+    ----------
+    lmod : LithModel
+        Lithology Model.
+    ctxt : str
+        First grid text label.
+    rtxt : str
+        Second grid text label.
+
+    Returns
+    -------
+    dat : numpy array
+        Numpy array of data.
+
+    """
     rgrv = lmod.griddata[rtxt]
     cgrv = lmod.griddata[ctxt]
 
@@ -768,11 +854,12 @@ def gridmatch(lmod, ctxt, rtxt):
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None,
                showreports=False, magcalc=False):
-    """ Calculate magnetic and gravity field
+    """
+    Calculate magnetic and gravity field.
 
     This function calculates the magnetic and gravity field. It has two
     different modes of operation, by using the magcalc switch. If magcalc=True
-    then magnetic fields are calculated, otherwize only gravity is calculated.
+    then magnetic fields are calculated, otherwise only gravity is calculated.
 
     Parameters
     ----------
@@ -785,7 +872,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     showreports : bool
         show extra reports
     magcalc : bool
-        if true, calculates magnetic data, otherwize only gravity.
+        if True, calculates magnetic data, otherwise only gravity.
 
     Returns
     -------
@@ -899,7 +986,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
         if modindmax > -1 and mijk in modind:
             QtWidgets.QApplication.processEvents()
-            i, j, k = np.nonzero(modind == mijk)
+            _, _, k = np.nonzero(modind == mijk)
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             for k in kuni:
@@ -909,7 +996,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
         if modindcheckmax > -1 and mijk in modindcheck:
             QtWidgets.QApplication.processEvents()
-            i, j, k = np.nonzero(modindcheck == mijk)
+            _, _, k = np.nonzero(modindcheck == mijk)
             kuni = np.array(np.unique(k), dtype=np.int32)
 
             for k in kuni:
@@ -992,8 +1079,38 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 @jit(nopython=True, parallel=True)
 def sum_fields(k, mgval, numx, numy, modind, aaa0, aaa1, mlayers, hcorflat,
                mijk):
-    """ Calculate magnetic and gravity field """
+    """
+    Sum magnetic and gravity field datasets to produce final model field.
 
+    Parameters
+    ----------
+    k : int
+        k index.
+    mgval : numpy array
+        DESCRIPTION.
+    numx : int
+        Number of x elements.
+    numy : int
+        Number of y elements.
+    modind : numpy array
+        model with indices representing lithologies.
+    aaa0 : numpy array
+        x indices for offsets.
+    aaa1 : numpy array
+        y indices for offsets.
+    mlayers : numpy array
+        Layer fields for summation.
+    hcorflat : numpy array
+        Height correction.
+    mijk : int
+        Current lithology index.
+
+    Returns
+    -------
+    mgval : numpy array
+        Output summed data.
+
+    """
     b = numx*numy
     for j in range(b):
         mgval[j] = 0.
@@ -1017,7 +1134,56 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
                 tlx=0., tly=0., tlz=0., mht=100., ght=0., finc=-67, fdec=-17,
                 inputliths=None, susc=None, dens=None, minc=None, mdec=None,
                 mstrength=None, hintn=30000.):
-    """ Create a quick model """
+    """
+    Quick model function.
+
+    Parameters
+    ----------
+    numx : int, optional
+        Number of x elements. The default is 50.
+    numy : int, optional
+        Number of y elements. The default is 40.
+    numz : TYPE, optional
+        number of z elements (layers). The default is 5.
+    dxy : float, optional
+        Cell size in x and y direction. The default is 100..
+    d_z : float, optional
+        Layer thickness. The default is 100..
+    tlx : float, optional
+        Top left x coordinate. The default is 0..
+    tly : float, optional
+        Top left y coordinate. The default is 0..
+    tlz : float, optional
+        Top left z coordinate. The default is 0..
+    mht : float, optional
+        Magnetic sensor height. The default is 100..
+    ght : float, optional
+        Gravity sensor height. The default is 0..
+    finc : float, optional
+        Magnetic field inclination (degrees). The default is -67.
+    fdec : TYPE, optional
+        Magnetic field declination (degrees). The default is -17.
+    inputliths : list or None, optional
+        List of input lithologies. The default is None.
+    susc : list or None, optional
+        List of susceptibilities. The default is None.
+    dens : list or None, optional
+        List of densities. The default is None.
+    minc : list or None, optional
+        List of remanent inclinations (degrees). The default is None.
+    mdec : list or None, optional
+        List of remanent declinations (degrees). The default is None.
+    mstrength : list or None, optional
+        List of remanent magnetisations (A/m). The default is None.
+    hintn : float, optional
+        Magnetic field strength (nT). The default is 30000.
+
+    Returns
+    -------
+    lmod : LithModel
+        Output model.
+
+    """
     if inputliths is None:
         inputliths = ['Generic']
     if susc is None:
@@ -1067,9 +1233,14 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
 
 
 @jit(nopython=True, parallel=False)
-def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
-         fm4, fm5, fm6, alpha, beta):
+def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
+          fm4, fm5, fm6, alpha, beta):
     """
+    Mbox routine by Blakely, continued from Geodata.mboxmain. It exists
+    in a separate function for JIT purposes.
+
+    Note: xobs, yobs and zobs must be floats or there will be problems
+    later.
 
     Subroutine MBOX computes the total field anomaly of an infinitely
     extended rectangular prism.  Sides of prism are parallel to x,y,z
@@ -1077,34 +1248,81 @@ def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
     Two calls to mbox can provide the anomaly of a prism with finite
     thickness; e.g.,
 
-        call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
-        call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
-        t=t1-t2
+    |    call mbox(x0,y0,z0,x1,y1,z1,x2,y2,mi,md,fi,fd,m,theta,t1)
+    |    call mbox(x0,y0,z0,x1,y1,z2,x2,y2,mi,md,fi,fd,m,theta,t2)
+    |    t=t1-t2
 
     Requires subroutine DIRCOS.  Method from Bhattacharyya (1964).
 
     Input parameters:
-        Observation point is (x0,y0,z0).  Prism extends from x1 to
-        x2, y1 to y2, and z1 to infinity in x, y, and z directions,
-        respectively.  Magnetization defined by inclination mi,
-        declination md, intensity m.  Ambient field defined by
-        inclination fi and declination fd.  X axis has declination
-        theta. Distance units are irrelevant but must be consistent.
-        Angles are in degrees, with inclinations positive below
-        horizontal and declinations positive east of true north.
-        Magnetization in A/m.
+    |    Observation point is (x0,y0,z0).  Prism extends from x1 to
+    |    x2, y1 to y2, and z1 to infinity in x, y, and z directions,
+    |    respectively.  Magnetization defined by inclination mi,
+    |    declination md, intensity m.  Ambient field defined by
+    |    inclination fi and declination fd.  X axis has declination
+    |    theta. Distance units are irrelevant but must be consistent.
+    |    Angles are in degrees, with inclinations positive below
+    |    horizontal and declinations positive east of true north.
+    |    Magnetization in A/m.
 
     Output paramters:
-        Total field anomaly t, in nT.
-    """
+    |    Total field anomaly t, in nT.
 
+
+    Parameters
+    ----------
+    mval : numpy array
+        DESCRIPTION.
+    xobs : numpy array
+        Observation X coordinates.
+    yobs : numpy array
+        Observation Y coordinates.
+    numx : int
+        Number of x elements.
+    numy : int
+        Number of y elements.
+    z0 : float
+        Observation height.
+    x1 : float
+        Prism coordinate.
+    y1 : float
+        Prism coordinate.
+    z1 : float
+        Prism coordinate.
+    x2 : float
+        Prism coordinate.
+    y2 : float
+        Prism coordinate.
+    fm1 : float
+        Calculation value passed from mboxmain.
+    fm2 : float
+        Calculation value passed from mboxmain.
+    fm3 : float
+        Calculation value passed from mboxmain.
+    fm4 : float
+        Calculation value passed from mboxmain.
+    fm5 : float
+        Calculation value passed from mboxmain.
+    fm6 : float
+        Calculation value passed from mboxmain.
+    alpha : numpy array
+        Calculation value passed from mboxmain.
+    beta : numpy array
+        Calculation value passed from mboxmain.
+
+    Returns
+    -------
+    mval : numpy array
+        Calculated magnetic values.
+
+    """
     h = z1-z0
     hsq = h**2
 
-    for ii in prange(numx):
+    for ii in range(numx):
         alpha[0] = x1-xobs[ii]
         alpha[1] = x2-xobs[ii]
-        for jj in prange(numy):
+        for jj in range(numy):
             beta[0] = y1-yobs[jj]
             beta[1] = y2-yobs[jj]
             t = 0.
@@ -1136,34 +1354,78 @@ def mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
 
 
 @jit(nopython=True, parallel=False)
-def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
-         x, y, z, isign):
-    """ Gbox routine by Blakely
-        Note: xobs, yobs and zobs must be floats or there will be problems
-        later.
+def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
+          x, y, z, isign):
+    """
+    Gbox routine by Blakely, continued from Geodata.gboxmain. It exists
+    in a separate function for JIT purposes.
+
+    Note: xobs, yobs and zobs must be floats or there will be problems
+    later.
 
     Subroutine GBOX computes the vertical attraction of a
     rectangular prism.  Sides of prism are parallel to x,y,z axes,
     and z axis is vertical down.
 
     Input parameters:
-        Observation point is (x0,y0,z0).  The prism extends from x1
-        to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
-        directions, respectively.  Density of prism is rho.  All
-        distance parameters in units of m;
+    |    Observation point is (x0,y0,z0).  The prism extends from x1
+    |    to x2, from y1 to y2, and from z1 to z2 in the x, y, and z
+    |    directions, respectively.  Density of prism is rho.  All
+    |    distance parameters in units of m;
 
     Output parameters:
-        Vertical attraction of gravity, g, in mGal/rho.
-        Must still be multiplied by rho outside routine.
-        Done this way for speed. """
+    |    Vertical attraction of gravity, g, in mGal/rho.
+    |    Must still be multiplied by rho outside routine.
+    |    Done this way for speed.
 
+    Parameters
+    ----------
+    gval : numpy array
+        DESCRIPTION.
+    xobs : numpy array
+        Observation X coordinates.
+    yobs : numpy array
+        Observation Y coordinates.
+    numx : TYPE
+        DESCRIPTION.
+    numy : TYPE
+        DESCRIPTION.
+    z_0 : float
+        Observation height.
+    x_1 : float
+        Prism coordinate.
+    y_1 : float
+        Prism coordinate.
+    z_1 : float
+        Prism coordinate.
+    x_2 : float
+        Prism coordinate.
+    y_2 : float
+        Prism coordinate.
+    z_2 : float
+        Prism coordinate.
+    x : numpy array
+        Calculation value passed from gboxmain.
+    y : numpy array
+        Calculation value passed from gboxmain.
+    z : numpy array
+        Calculation value passed from gboxmain.
+    isign : numpy array
+        Calculation value passed from gboxmain.
+
+    Returns
+    -------
+    gval : numpy array
+        Calculated gravity values.
+
+    """
     z[0] = z_0-z_1
     z[1] = z_0-z_2
 
-    for ii in prange(numx):
+    for ii in range(numx):
         x[0] = xobs[ii]-x_1
         x[1] = xobs[ii]-x_2
-        for jj in prange(numy):
+        for jj in range(numy):
             y[0] = yobs[jj]-y_1
             y[1] = yobs[jj]-y_2
             sumi = 0.
@@ -1186,117 +1448,30 @@ def gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
     return gval
 
 
-@jit(nopython=True, parallel=False)
-def gm3d(npro, nstn, X, Y, edge, corner, face, pd, un, indx, crs, mgval):
-    """ grvmag 3d. mgval MUST be zeros """
-
-    for pr in prange(npro):
-        for st in prange(nstn):
-            x = X[pr, st]
-            y = Y[pr, st]
-            for f in range(6):  # 6 Faces
-                for g in range(4):  # 4 points in a face
-                    # correct corners so that we have distances from obs pnt
-                    cindx = face[f, g]
-                    crs[g, 0] = corner[cindx, 0] - x
-                    crs[g, 1] = corner[cindx, 1] - y
-                    crs[g, 2] = corner[cindx, 2]
-
-                p = 0
-                q = 0
-                r = 0
-                l = un[f, 0]
-                m = un[f, 1]
-                n = un[f, 2]
-
-                p20 = crs[0, 0]
-                p21 = crs[0, 1]
-                p22 = crs[0, 2]
-                r12b = np.sqrt(p20*p20+p21*p21+p22*p22)
-
-                for t in range(4):  # 4 lines in a face
-                    p20 = crs[indx[t+1], 0]
-                    p21 = crs[indx[t+1], 1]
-                    p22 = crs[indx[t+1], 2]
-
-                    eno2 = 4*f+t   # Edge no
-                    L = edge[eno2, 3]  # length of edge?
-                    r12a = r12b
-                    r12b = np.sqrt(p20*p20+p21*p21+p22*p22)
-
-                    r12 = r12a+r12b
-                    I = (1/L)*np.log((r12+L)/(r12-L))
-
-                    p += I*edge[eno2, 0]
-                    q += I*edge[eno2, 1]
-                    r += I*edge[eno2, 2]
-
-                # From omega, l, m, n PQR get components of field due to face f
-                # dp1 is dot product between (l,m,n) and (x,y,z) or un and r.
-
-                p10 = crs[0, 0]
-                p11 = crs[0, 1]
-                p12 = crs[0, 2]
-                p20 = crs[1, 0]
-                p21 = crs[1, 1]
-                p22 = crs[1, 2]
-                p30 = crs[2, 0]
-                p31 = crs[2, 1]
-                p32 = crs[2, 2]
-                p40 = crs[3, 0]
-                p41 = crs[3, 1]
-                p42 = crs[3, 2]
-
-                p1m = sqrt(p10**2 + p11**2 + p12**2)
-                p2m = sqrt(p20**2 + p21**2 + p22**2)
-                p3m = sqrt(p30**2 + p31**2 + p32**2)
-                p4m = sqrt(p40**2 + p41**2 + p42**2)
-
-                wn = (p30*(p11*p22 - p12*p21) + p31*(-p10*p22 + p12*p20) +
-                      p32*(p10*p21 - p11*p20))
-                wd = (p1m*p2m*p3m + p1m*(p20*p30 + p21*p31 + p22*p32) +
-                      p2m*(p10*p30 + p11*p31 + p12*p32) +
-                      p3m*(p10*p20 + p11*p21 + p12*p22))
-                omega = -2*np.arctan2(wn, wd)
-
-                wn = (p10*(p31*p42 - p32*p41) + p11*(-p30*p42 + p32*p40) +
-                      p12*(p30*p41 - p31*p40))
-                wd = (p1m*p3m*p4m + p1m*(p30*p40 + p31*p41 + p32*p42) +
-                      p3m*(p10*p40 + p11*p41 + p12*p42) +
-                      p4m*(p10*p30 + p11*p31 + p12*p32))
-
-                omega += -2*np.arctan2(wn, wd)
-
-                # l, m, n and components of unit normal to a face.
-                gmtf1 = l*omega+n*q-m*r
-                gmtf2 = m*omega+l*r-n*p
-                gmtf3 = n*omega+m*p-l*q
-
-                # gmtf are common to gravity and magnetic, so have no field
-                # info. pd is the field contribution. f is face. pr is profile.
-                # st is station.
-
-                mgval[0, pr, st] += pd[f]*gmtf1  # Hx
-                mgval[1, pr, st] += pd[f]*gmtf2  # Hy
-                mgval[2, pr, st] += pd[f]*gmtf3  # Hz
-
-    return mgval
-
-
 def dircos(incl, decl, azim):
     """
     Subroutine DIRCOS computes direction cosines from inclination
     and declination.
 
-    Input parameters:
-        incl:  inclination in degrees positive below horizontal.
-        decl:  declination in degrees positive east of true north.
-        azim:  azimuth of x axis in degrees positive east of north.
+    Parameters
+    ----------
+    incl : float
+        inclination in degrees positive below horizontal.
+    decl : float
+        declination in degrees positive east of true north.
+    azim : float
+        azimuth of x axis in degrees positive east of north.
 
-        Output parameters:
-        a,b,c:  the three direction cosines.
+    Returns
+    -------
+    aaa : float
+        First direction cosine.
+    bbb : float
+        Second direction cosine.
+    ccc : float
+        Third direction cosine.
+
     """
-
     d2rad = np.pi/180.
     xincl = incl*d2rad
     xdecl = decl*d2rad
@@ -1309,7 +1484,28 @@ def dircos(incl, decl, azim):
 
 
 def dat_extent(dat, axes):
-    """ Gets the extent of the dat variable """
+    """
+    Get the extent of the dat variable.
+
+    Parameters
+    ----------
+    dat : PyGMI Data
+        PyGMI raster dataset.
+    axes : matplotlib.axes._subplots.AxesSubplot
+        Matploltib axes.
+
+    Returns
+    -------
+    left : float
+        Left coordinate.
+    right : float
+        Right coordinate.
+    bottom : float
+        Bottom coordinate.
+    top : float
+        Top coordinate.
+
+    """
     left, right, bottom, top = dat.extent
 
     if (right-left) > 10000 or (top-bottom) > 10000:
@@ -1327,7 +1523,7 @@ def dat_extent(dat, axes):
 
 
 def test():
-    """ This routine is for testing purposes """
+    """This routine is for testing purposes."""
 #    from pygmi.pfmod.iodefs import ImportMod3D
 
 # Import model file

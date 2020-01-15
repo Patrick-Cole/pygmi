@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Plot Raster Data
+Plot Raster Data.
 
 This module provides a variety of methods to plot raster data via the context
 menu. The following are supported:
@@ -47,7 +47,7 @@ from mpl_toolkits.mplot3d import axes3d
 
 class MyMplCanvas(FigureCanvas):
     """
-    Canvas for the actual plot
+    Canvas for the actual plot.
 
     Attributes
     ----------
@@ -67,9 +67,14 @@ class MyMplCanvas(FigureCanvas):
         Parameters
         ----------
         data1 : PyGMI raster Data
-            raster dataset to be used in contouring
+            raster dataset to be used in contouring.
         dmat : numpy array
-            dummy matrix of numbers to be plotted using pcolor
+            dummy matrix of numbers to be plotted using pcolor.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -95,14 +100,17 @@ class MyMplCanvas(FigureCanvas):
 
     def update_raster(self, data1):
         """
-        Update the raster plot
+        Update the raster plot.
 
         Parameters
         ----------
         data1 : PyGMI raster Data
             raster dataset to be used in contouring
-        data2 : PyGMI point PData
-            points to be plotted over raster image
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -136,12 +144,17 @@ class MyMplCanvas(FigureCanvas):
 
     def update_rgb(self, data1):
         """
-        Update the RGB plot
+        Update the RGB plot.
 
         Parameters
         ----------
         data1 : PyGMI raster Data
             raster dataset to be used
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -153,7 +166,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_hexbin(self, data1, data2):
         """
-        Update the hexbin plot
+        Update the hexbin plot.
 
         Parameters
         ----------
@@ -161,6 +174,11 @@ class MyMplCanvas(FigureCanvas):
             raster dataset to be used
         data2 : PyGMI raster Data
             raster dataset to be used
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -189,12 +207,17 @@ class MyMplCanvas(FigureCanvas):
 
     def update_wireframe(self, data):
         """
-        Update the surface wireframe plot
+        Update the surface wireframe plot.
 
         Parameters
         ----------
         data : PyGMI raster Data
             raster dataset to be used
+
+        Returns
+        -------
+        None.
+
         """
 
         rows, cols = data.data.shape
@@ -238,12 +261,17 @@ class MyMplCanvas(FigureCanvas):
 
     def update_hist(self, data1):
         """
-        Update the hiostogram plot
+        Update the hiostogram plot.
 
         Parameters
         ----------
         data1 : PyGMI raster Data
             raster dataset to be used
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -260,7 +288,7 @@ class MyMplCanvas(FigureCanvas):
 
 class GraphWindow(QtWidgets.QDialog):
     """
-    Graph Window - The QDialog window which will contain our image
+    Graph Window - The QDialog window which will contain our image.
 
     Attributes
     ----------
@@ -298,7 +326,14 @@ class GraphWindow(QtWidgets.QDialog):
         self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """ Combo box to choose band """
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
 
 
 class PlotCCoef(GraphWindow):
@@ -330,10 +365,24 @@ class PlotCCoef(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """ Combo box to choose band """
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
 
     def run(self):
-        """ Run """
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Raster']
 
         if not check_bands(data):
@@ -353,7 +402,20 @@ class PlotCCoef(GraphWindow):
 
 
 def check_bands(data):
-    """ Checks that band sizes are the same """
+    """
+    Checks that band sizes are the same.
+
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI raster dataset.
+
+    Returns
+    -------
+    chk : bool
+        True if sizes are the same, False otherwise.
+
+    """
     chk = True
 
     dshape = data[0].data.shape
@@ -366,14 +428,14 @@ def check_bands(data):
 
 def corr2d(dat1, dat2):
     """
-    Calculate the 2D correlation
+    Calculate the 2D correlation.
 
     Parameters
     ----------
     dat1 : numpy array
-        dataset 1 for use in correlation calculation
+        dataset 1 for use in correlation calculation.
     dat2 : numpy array
-        dataset 2 for use in correlation calculation
+        dataset 2 for use in correlation calculation.
 
     Returns
     -------
@@ -394,7 +456,7 @@ def corr2d(dat1, dat2):
 
 class PlotRaster(GraphWindow):
     """
-    Plot Raster Class
+    Plot Raster Class.
 
     Attributes
     ----------
@@ -415,7 +477,14 @@ class PlotRaster(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """ Combo box to choose band """
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentIndex()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
@@ -425,7 +494,14 @@ class PlotRaster(GraphWindow):
             self.mmc.update_rgb(data[i])
 
     def run(self):
-        """ Run """
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
@@ -441,7 +517,7 @@ class PlotRaster(GraphWindow):
 
 class PlotSurface(GraphWindow):
     """
-    Plot Raster Class
+    Plot Raster Class.
 
     Attributes
     ----------
@@ -462,14 +538,28 @@ class PlotSurface(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """ Combo box to choose band """
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentIndex()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
             self.mmc.update_wireframe(data[i])
 
     def run(self):
-        """ Run """
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         if 'Raster' in self.indata:
             self.show()
             data = self.indata['Raster']
@@ -496,7 +586,14 @@ class PlotScatter(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """ Combo box to choose band """
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Raster']
         i = self.combobox1.currentIndex()
         j = self.combobox2.currentIndex()
@@ -515,7 +612,14 @@ class PlotScatter(GraphWindow):
         self.mmc.update_hexbin(x, y)
 
     def run(self):
-        """ Run """
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         data = self.indata['Raster']
         for i in data:
@@ -551,13 +655,27 @@ class PlotHist(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """ Combo box to choose band """
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Raster']
         i = self.combobox1.currentIndex()
         self.mmc.update_hist(data[i])
 
     def run(self):
-        """ Run """
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         self.show()
         data = self.indata['Raster']
         for i in data:

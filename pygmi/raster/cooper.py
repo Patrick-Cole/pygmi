@@ -34,7 +34,6 @@ import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import scipy.signal as si
-import scipy.interpolate as si2
 
 import pygmi.menu_default as menu_default
 
@@ -159,7 +158,14 @@ class Gradients(QtWidgets.QDialog):
         return True
 
     def radiochange(self):
-        """Check radio button state."""
+        """
+        Check radio button state.
+
+        Returns
+        -------
+        None.
+
+        """
         self.sb_order.hide()
         self.label_or.hide()
         self.sb_azi.hide()
@@ -191,8 +197,8 @@ def gradients(data, azi):
 
     Returns
     -------
-    dr : float
-        returns derivative ratio
+    dt1 : float
+        returns directional derivative
     """
     azi = np.deg2rad(azi)
     dx, dy = np.gradient(data)
@@ -366,8 +372,12 @@ def visibility2d(data, wsize, dh, piter=iter):
     Returns
     -------
     vtot : numpy array
+        Total visibility.
     vstd : numpy array
+        Visibility variation.
     vsum : numpy array
+        Visibility vector resultant.
+
     """
     nr, nc = np.shape(data)
     wsize = abs(np.real(wsize))
@@ -441,7 +451,26 @@ def visibility2d(data, wsize, dh, piter=iter):
 
 
 def __visible1(dat, nr, cp, dh):
-    """Visible 1."""
+    """
+    Visible 1.
+
+    Parameters
+    ----------
+    dat : numpy array
+        Input vector.
+    nr : int
+        Window size. Must be odd.
+    cp : int
+        Center point.
+    dh : float
+        Observer height.
+
+    Returns
+    -------
+    num : int
+        Output.
+
+    """
     num = 1
 
     if cp < nr-1 and dat.size > 0:
@@ -458,7 +487,24 @@ def __visible1(dat, nr, cp, dh):
 
 
 def __visible2(dat, cp, dh):
-    """Visible 2."""
+    """
+    Visible 2.
+
+    Parameters
+    ----------
+    dat : numpy array
+        Input vector.
+    cp : int
+        Center point.
+    dh : float
+        Observer height.
+
+    Returns
+    -------
+    num : int
+        Output.
+
+    """
     num = 0
 
     if cp > 2 and dat.size > 0:
@@ -675,13 +721,43 @@ def tilt1(data, azi, s):
 
 
 def nextpow2(n):
-    """Next power of 2."""
-    m_i = np.ceil(np.log2(n))
+    """
+    Next power of 2.
+
+    Parameters
+    ----------
+    n : float or numpy array
+        Current value.
+
+    Returns
+    -------
+    m_i : float or numpy array
+        Output.
+
+    """
+    m_i = np.ceil(np.log2(np.abs(n)))
     return m_i
 
 
 def vertical(data, npts=None, xint=1):
-    """Vertical derivative."""
+    """
+    Vertical derivative.
+
+    Parameters
+    ----------
+    data : numpy array
+        Input data.
+    npts : int, optional
+        Number of points. The default is None.
+    xint : float, optional
+        X interval. The default is 1.
+
+    Returns
+    -------
+    dz : numpy array
+        Output data
+
+    """
     nr, nc = data.shape
 
     z = data-np.ma.median(data)
@@ -696,11 +772,7 @@ def vertical(data, npts=None, xint=1):
     rdiff = int(np.floor((npts-nr)/2))
     cdiff2 = npts-cdiff-nc
     rdiff2 = npts-rdiff-nr
-#    data1 = __taper2d(data, npts, nc, nr, cdiff, rdiff)
     data1 = np.pad(z, [[rdiff, rdiff2], [cdiff, cdiff2]], 'edge')
-#    data1 = data - np.median(data)
-#    data1 = np.pad(data, [[rdiff, rdiff2], [cdiff, cdiff2]], 'linear_ramp',
-#                   end_values=(0, 0))
 
     f = np.fft.fft2(data1)
     fz = f
@@ -719,75 +791,3 @@ def vertical(data, npts=None, xint=1):
     dz = np.real(fzinv[rdiff:nr+rdiff, cdiff:nc+cdiff])
 
     return dz
-
-
-def __taper2d(g, npts, c, r, cdiff, rdiff):
-    """Taper 2D for FFT data."""
-# n is cols, m is rows
-
-    npts2 = npts-1
-    gm = g.mean()
-    gf = np.zeros([npts, npts])
-    gf[rdiff:rdiff+r, cdiff:cdiff+c] = g-gm
-
-    for i in range(cdiff):
-        tmp = ((1+np.sin(-np.pi/2+i*np.pi/cdiff))*0.5)
-        for j in range(rdiff, rdiff+r):
-            gf[i, j] = gf[i, j]*tmp
-            gf[npts2-i, j] = gf[npts2-i, j]*tmp
-
-    for j in range(rdiff):
-        tmp = ((1+np.sin(-np.pi/2+j*np.pi/(rdiff)))*0.5)
-        for i in range(cdiff, cdiff+c):
-            gf[i, j] = gf[i, j]*tmp
-            gf[i, npts2-j-1] = gf[i, npts2-j-1]*tmp
-
-    for i in range(cdiff):
-        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(cdiff)))*0.5)
-        for j in range(rdiff):
-            gf[i, j] = gf[i, j]*tmp
-            gf[npts2-i, j] = gf[npts2-i, j]*tmp
-
-    for i in range(cdiff):
-        tmp = ((1+np.sin(-np.pi/2+i*np.pi/(cdiff)))*0.5)
-        for j in range(rdiff+m-1, npts):
-            gf[i, j] = gf[i, j]*tmp
-            gf[npts2-i, j] = gf[npts2-i, j]*tmp
-
-    for j in range(rdiff+m-1, npts):  # Corners
-        for i in range(cdiff+n-1, npts):
-            if cdiff == 0 or rdiff == 0:
-                gf[i, j] = np.nan
-            else:
-                gf[i, j] = (gf[i, j] *
-                            np.cos((i+1-cdiff-n)*np.pi/(2*cdiff)) *
-                            np.cos((j+1-cdiff-m)*np.pi/(2*rdiff)))
-
-    for j in range(rdiff):
-        for i in range(cdiff):
-            if cdiff == 0 or rdiff == 0:
-                gf[i, j] = np.nan
-            else:
-                gf[i, j] = (gf[i, j] *
-                            np.cos((i+1-cdiff)*np.pi/(2*cdiff)) *
-                            np.cos((j+1-cdiff)*np.pi/(2*rdiff)))
-
-    for j in range(rdiff):
-        for i in range(cdiff+n-1, npts):
-            if cdiff == 0 or rdiff == 0:
-                gf[i, j] = np.nan
-            else:
-                gf[i, j] = (gf[i, j] *
-                            np.cos((i+1-cdiff-n)*np.pi/(2*cdiff)) *
-                            np.cos((j+1-cdiff)*np.pi/(2*rdiff)))
-
-    for j in range(rdiff+m, npts):
-        for i in range(cdiff):
-            if cdiff == 0 or rdiff == 0:
-                gf[i, j] = np.nan
-            else:
-                gf[i, j] = (gf[i, j] *
-                            np.cos((i+1-cdiff)*np.pi/(2*cdiff)) *
-                            np.cos((j+1-cdiff-m)*np.pi/(2*rdiff)))
-
-    return gf

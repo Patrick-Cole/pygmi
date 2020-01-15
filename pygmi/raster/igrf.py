@@ -64,7 +64,7 @@ import pygmi.menu_default as menu_default
 
 class IGRF(QtWidgets.QDialog):
     """
-    IGRF field calculation
+    IGRF field calculation.
 
     This produces two datasets. The first is an IGRF dataset for the area of
     interest, defined by some input magnetic dataset. The second is the IGRF
@@ -135,6 +135,7 @@ class IGRF(QtWidgets.QDialog):
     yrmin : list, float
         array of MAXMOD  Min year of model.
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent=None)
 
@@ -185,8 +186,14 @@ class IGRF(QtWidgets.QDialog):
         self.ctrans = None
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
 
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.igrf')
@@ -242,8 +249,21 @@ class IGRF(QtWidgets.QDialog):
 
     def settings(self, test=None):
         """
-        Settings Dialog. This is the main entrypoint into this routine. It also
+        Setting Dialog.
+
+        This is the main entrypoint into this routine. It also
         contains the main IGRF code.
+
+        Parameters
+        ----------
+        test : bool, optional
+            Flag to allow testing. The default is None.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
         """
 # Variable declaration
 # Control variables
@@ -268,7 +288,7 @@ class IGRF(QtWidgets.QDialog):
         self.acceptall()
 
         with open(os.path.join(os.path.dirname(__file__),
-                               'IGRF12.cof')) as mdf:
+                               'IGRF13.cof')) as mdf:
             modbuff = mdf.readlines()
         fileline = -1                            # First line will be 1
         model = []
@@ -430,7 +450,7 @@ class IGRF(QtWidgets.QDialog):
     def getshc(self, file, iflag, strec, nmax_of_gh, gh):
         """
         Reads spherical harmonic coefficients from the specified model into an
-        array.
+        array (Schmidt quasi-normal internal spherical harmonic coefficients).
 
         | FORTRAN: Bill Flanagan, NOAA CORPS, DESDIS, NGDC, 325 Broadway,
         | Boulder CO.  80301
@@ -447,11 +467,12 @@ class IGRF(QtWidgets.QDialog):
             Starting record number to read from model
         nmax_of_gh : int
             Maximum degree and order of model
+        gh : int
+            Index for gh.
 
         Returns
         -------
-        gh : list
-            Schmidt quasi-normal internal spherical harmonic coefficients
+        None.
         """
         ii = -1
         cnt = 0
@@ -482,6 +503,9 @@ class IGRF(QtWidgets.QDialog):
         Extrapolates linearly a spherical harmonic model with a
         rate-of-change model.
 
+        Updates self.gh (Schmidt quasi-normal internal spherical harmonic
+        coefficients).
+
         | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
         | CO. 80225
         | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
@@ -494,16 +518,14 @@ class IGRF(QtWidgets.QDialog):
             date of base model
         nmax1 : int
             maximum degree and order of base model
+        nmax2 : int
+            maximum degree and order of rate-of-change model
         gh  : numpy array
             Schmidt quasi-normal internal spherical harmonic coefficients of
             base model and rate-of-change model
-        nmax2 : int
-            maximum degree and order of rate-of-change model
 
         Returns
         -------
-        gh : numpy array
-            Schmidt quasi-normal internal spherical harmonic coefficients
         nmax : int
             maximum degree and order of resulting model
         """
@@ -537,6 +559,9 @@ class IGRF(QtWidgets.QDialog):
         Interpolates linearly, in time, between two spherical harmonic
         models.
 
+        Updates self.gh (Schmidt quasi-normal internal spherical harmonic
+        coefficients).
+
         | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
         | CO. 80225
         | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
@@ -549,18 +574,16 @@ class IGRF(QtWidgets.QDialog):
             date of earlier model
         nmax1 : int
             maximum degree and order of earlier model
-        gh : numpy array
-            Schmidt quasi-normal internal spherical harmonic coefficients of
-            earlier model and internal model
         dte2 : float
             date of later model
         nmax2 : int
             maximum degree and order of later model
+        gh : numpy array
+            Schmidt quasi-normal internal spherical harmonic coefficients of
+            earlier model and internal model
 
         Returns
         -------
-        gh : numpy array
-            coefficients of resulting model
         nmax : int
             maximum degree and order of resulting model
         """
@@ -593,6 +616,9 @@ class IGRF(QtWidgets.QDialog):
         """
         Calculates field components from spherical harmonic (sh) models.
 
+        This routine updates self.x, self.y, self.z (Northward, Eastward and
+        vertically downward components respectively NED)
+
         Based on subroutine 'igrf' by D. R. Barraclough and S. R. C. Malin,
         report no. 71/1, institute of geological sciences, U.K.
 
@@ -605,28 +631,22 @@ class IGRF(QtWidgets.QDialog):
         igdgc : int
             indicates coordinate system used set equal to 1 if geodetic, 2 if
             geocentric
-        latitude : float
+        flat : float
             north latitude, in degrees
-        longitude : float
+        flon : float
             east longitude, in degrees
         elev : float
             WGS84 altitude above ellipsoid (igdgc=1), or radial distance from
             earth's center (igdgc=2)
-        a2,b2 : float
-            squares of semi-major and semi-minor axes of the reference spheroid
-            used for transforming between geodetic and geocentric coordinates
-            or components
         nmax : int
             maximum degree and order of coefficients
+        gh : numpy array
+            Schmidt quasi-normal internal spherical harmonic coefficients of
+            earlier model and internal model
 
         Returns
         -------
-        x : float
-            northward component
-        y : float
-            eastward component
-        z : float
-            vertically-downward component
+        None.
         """
 
         sl = np.zeros(14)
@@ -635,6 +655,11 @@ class IGRF(QtWidgets.QDialog):
         q = np.zeros(119)
         earths_radius = 6371.2
         dtr = np.pi/180.0
+
+        # a2,b2 are squares of semi-major and semi-minor axes of the reference
+        # spheroid used for transforming between geodetic and geocentric
+        # coordinates or components
+
         a2 = 40680631.59            # WGS84
         b2 = 40408299.98            # WGS84
         r = elev
@@ -779,6 +804,9 @@ class IGRF(QtWidgets.QDialog):
         """
         Computes the geomagnetic d, i, h, and f from x, y, and z.
 
+        This updates self.d, self.i, self.h and self.f (declination,
+        inclination, horizontal intensity and total intensity).
+
         | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
         | CO. 80225
         | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
@@ -794,14 +822,9 @@ class IGRF(QtWidgets.QDialog):
 
         Returns
         -------
-        d : float
-            declination
-        i : float
-            inclination
-        h : float
-            horizontal intensity
-        f : float
-            total intensity
+
+        None.
+
         """
         sn = 0.0001
 

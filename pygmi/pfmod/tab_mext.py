@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Model Extension Display Tab Routines """
+"""Model Extents Display Routines."""
 
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
@@ -32,7 +32,7 @@ import pygmi.misc as pmisc
 
 
 class MextDisplay(QtWidgets.QDialog):
-    """ MextDisplay - Widget class to call the main interface """
+    """MextDisplay - Widget class to call the main interface."""
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
         self.parent = parent
@@ -63,7 +63,14 @@ class MextDisplay(QtWidgets.QDialog):
         self.init()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         self.setWindowTitle('Model Extent Parameters')
         helpdocs = menu_default.HelpButton('pygmi.pfmod.mext')
 
@@ -228,7 +235,14 @@ class MextDisplay(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def apply_changes(self):
-        """ Update when changing from this tab """
+        """
+        Apply changes.
+
+        Returns
+        -------
+        None.
+
+        """
         self.showtext('Working...')
 
         self.choose_combo(self.combo_dtm, 'DTM Dataset')
@@ -261,7 +275,21 @@ class MextDisplay(QtWidgets.QDialog):
         self.accept()
 
     def choose_combo(self, combo, dtxt):
-        """ Combo box choice routine """
+        """
+        Combo box choice routine.
+
+        Parameters
+        ----------
+        combo : QComboBox
+            Combo box.
+        dtxt : str
+            Text to describe new raster data entry.
+
+        Returns
+        -------
+        None.
+
+        """
         ctxt = str(combo.currentText())
         if ctxt not in ('None', ''):
             self.lmod1.griddata[dtxt] = self.parent.inraster[ctxt]
@@ -269,7 +297,14 @@ class MextDisplay(QtWidgets.QDialog):
             self.lmod1.griddata.pop(dtxt)
 
     def choose_dtm(self):
-        """ Combo box to choose current dataset """
+        """
+        Combo box to choose current DTM.
+
+        Returns
+        -------
+        None.
+
+        """
         ctxt = str(self.combo_dtm.currentText())
         if ctxt not in ('None', ''):
             curgrid = self.parent.inraster[ctxt]
@@ -282,7 +317,14 @@ class MextDisplay(QtWidgets.QDialog):
             self.upd_layers()
 
     def choose_model(self):
-        """ Choose which model file to use """
+        """
+        Choose model file.
+
+        Returns
+        -------
+        None.
+
+        """
         ctxt = str(self.combo_model.currentText())
         if ctxt == 'None' or 'Model3D' not in self.parent.indata:
             return
@@ -294,7 +336,22 @@ class MextDisplay(QtWidgets.QDialog):
                 self.update_combos()
 
     def extgrid(self, gdata):
-        """ Extrapolates the grid to get rid of nulls. Uses a masked grid """
+        """
+        Extrapolates the grid to get rid of nulls.
+
+        Uses a masked grid.
+
+        Parameters
+        ----------
+        gdata : numpy array
+            Raster dataset.
+
+        Returns
+        -------
+        numpy masked array
+            Output dataset.
+
+        """
         gtmp = np.array(gdata)  # gets rid of masked array
         gmask = np.logical_not(np.isnan(gtmp))
 
@@ -315,7 +372,14 @@ class MextDisplay(QtWidgets.QDialog):
         return outg
 
     def get_area(self):
-        """ Get area """
+        """
+        Get current grid extents and parameters.
+
+        Returns
+        -------
+        None.
+
+        """
         ctxt = str(self.combo_dataset.currentText())
         if ctxt not in ('None', u''):
             curgrid = self.parent.inraster[ctxt]
@@ -337,7 +401,14 @@ class MextDisplay(QtWidgets.QDialog):
             self.sb_rows.setValue(rows)
 
     def init(self):
-        """ Initialize parameters """
+        """
+        Initialise parameters.
+
+        Returns
+        -------
+        None.
+
+        """
     # Extent Parameters
         self.dsb_utlx.setValue(0.0)
         self.dsb_utly.setValue(0.0)
@@ -352,7 +423,14 @@ class MextDisplay(QtWidgets.QDialog):
         self.sb_layers.setValue(self.lmod1.numz)
 
     def upd_layers(self):
-        """ Update the layers """
+        """
+        Update layers.
+
+        Returns
+        -------
+        None.
+
+        """
         xextent = self.dsb_xextent.value()
         yextent = self.dsb_yextent.value()
         zextent = self.dsb_zextent.value()
@@ -367,32 +445,39 @@ class MextDisplay(QtWidgets.QDialog):
         self.sb_layers.setValue(numz)
 
     def update_model_combos(self):
-        """ Updates the model combos """
+        """
+        Update model combos.
+
+        Returns
+        -------
+        None.
+
+        """
         modnames = ['None']
         if 'Model3D' in self.parent.indata:
             for i in self.parent.indata['Model3D']:
                 modnames.append(i.name)
 
         self.combo_model.currentIndexChanged.disconnect()
-#        self.combo_regional.currentIndexChanged.disconnect()
 
         self.combo_model.clear()
         self.combo_model.addItems(modnames)
         self.combo_model.setCurrentIndex(0)
-#        self.combo_regional.clear()
-#        self.combo_regional.addItems(modnames)
-#        self.combo_regional.setCurrentIndex(0)
 
         if len(modnames) >= 2:
             self.combo_model.setCurrentIndex(1)
-#        if len(modnames) > 2:
-#            self.combo_regional.setCurrentIndex(2)
 
         self.combo_model.currentIndexChanged.connect(self.choose_model)
-#        self.combo_regional.currentIndexChanged.connect(self.choose_regional)
 
     def update_combos(self):
-        """ Update the combos """
+        """
+        Update combos.
+
+        Returns
+        -------
+        None.
+
+        """
         gkeys = list(self.parent.inraster.keys())
         if 'Calculated Gravity' in gkeys:
             gkeys.remove('Calculated Gravity')
@@ -446,7 +531,14 @@ class MextDisplay(QtWidgets.QDialog):
                 self.combo_other.setCurrentIndex(gkeys.index(tmp))
 
     def update_vals(self):
-        """ Updates the visible model extent parameters"""
+        """
+        Update the visible model extent parameters.
+
+        Returns
+        -------
+        None.
+
+        """
         utlx = self.lmod1.xrange[0]
         utly = self.lmod1.yrange[1]
         utlz = self.lmod1.zrange[1]
@@ -467,7 +559,19 @@ class MextDisplay(QtWidgets.QDialog):
         self.dsb_zcell.setValue(self.lmod1.d_z)
 
     def xycell(self, dxy):
-        """ Function to adjust XY dimensions when cell size changes"""
+        """
+        Adjust XY dimensions when cell size changes.
+
+        Parameters
+        ----------
+        dxy : float
+            Cell dimension.
+
+        Returns
+        -------
+        None.
+
+        """
         xextent = self.dsb_xextent.value()
         yextent = self.dsb_yextent.value()
 
@@ -482,7 +586,19 @@ class MextDisplay(QtWidgets.QDialog):
         self.upd_layers()
 
     def zcell(self, d_z):
-        """ Function to adjust Z dimension when cell size changes"""
+        """
+        Adjust Z dimension when cell size changes.
+
+        Parameters
+        ----------
+        d_z : float
+            Layer thinkcness.
+
+        Returns
+        -------
+        None.
+
+        """
         zextent = self.dsb_zextent.value()
 
         if d_z > zextent:
@@ -492,7 +608,14 @@ class MextDisplay(QtWidgets.QDialog):
         self.upd_layers()
 
     def tab_activate(self):
-        """ Runs when the tab is activated """
+        """
+        Entry point.
+
+        Returns
+        -------
+        None.
+
+        """
         self.update_model_combos()
         self.choose_model()
 #        self.choose_regional()

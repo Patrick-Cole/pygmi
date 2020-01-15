@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" These are miscellaneous functions for the program """
+"""These are miscellaneous functions for the program."""
 
 import time
 from PyQt5 import QtWidgets, QtCore, QtGui
@@ -34,7 +34,21 @@ from pygmi.raster.dataprep import gdal_to_dat
 
 
 def update_lith_lw(lmod, lwidget):
-    """ Updates the lithology list widget """
+    """
+    Update the lithology list widget.
+
+    Parameters
+    ----------
+    lmod : LithModel
+        3D model.
+    lwidget : QListWidget
+        List widget.
+
+    Returns
+    -------
+    None.
+
+    """
     lwidget.clear()
     for i in lmod.lith_list:
         lwidget.addItem(i)
@@ -47,7 +61,8 @@ def update_lith_lw(lmod, lwidget):
 
 
 class ProgressBar():
-    """ Wrapper for a progress bar """
+    """Wrapper for a progress bar. It consists of two progress bars."""
+
     def __init__(self, pbar, pbarmain):
         self.pbar = pbar
         self.pbarmain = pbarmain
@@ -60,7 +75,14 @@ class ProgressBar():
         self.resetall()
 
     def incr(self):
-        """ increases value by one """
+        """
+        Increase value by one.
+
+        Returns
+        -------
+        None.
+
+        """
         if self.value < self.max:
             self.value += 1
             if self.value == self.max and self.mvalue < self.mmax:
@@ -75,7 +97,18 @@ class ProgressBar():
 
     def iter(self, iterable):
         """
-        Iterator Routine
+        Iterate routine.
+
+        Parameters
+        ----------
+        iterable : iterable
+            Iterable.
+
+        Yields
+        ------
+        obj : object
+            Object in iterable.
+
         """
         total = len(iterable)
         self.max = total
@@ -113,7 +146,19 @@ class ProgressBar():
         QtWidgets.QApplication.processEvents()
 
     def incrmain(self, i=1):
-        """ increases value by one """
+        """
+        Increase value by i.
+
+        Parameters
+        ----------
+        i : int, optional
+            Iteration step. The default is 1.
+
+        Returns
+        -------
+        None.
+
+        """
         self.mvalue += i
         self.pbarmain.setValue(self.mvalue)
 
@@ -129,7 +174,14 @@ class ProgressBar():
         QtWidgets.QApplication.processEvents()
 
     def maxall(self):
-        """ Sets all progress bars to maximum value """
+        """
+        Set all progress bars to maximum value.
+
+        Returns
+        -------
+        None.
+
+        """
         self.mvalue = self.mmax
         self.value = self.max
         self.pbarmain.setValue(self.mvalue)
@@ -138,8 +190,21 @@ class ProgressBar():
         self.pbarmain.setFormat('%p%')
 
     def resetall(self, maximum=1, mmax=1):
-        """ Sets min and max and resets all bars to 0 """
+        """
+        Set min and max and resets all bars to 0.
 
+        Parameters
+        ----------
+        maximum : int, optional
+            Maximum value. The default is 1.
+        mmax : int, optional
+            Maximum value. The default is 1.
+
+        Returns
+        -------
+        None.
+
+        """
         self.pbar.setFormat('%p%')
         self.pbarmain.setFormat('%p%')
         self.mtime = time.perf_counter()
@@ -156,8 +221,19 @@ class ProgressBar():
         self.pbarmain.setValue(self.mvalue)
 
     def resetsub(self, maximum=1):
-        """ Sets min and max and resets sub bar to 0 """
+        """
+        Set min and max and resets sub bar to 0.
 
+        Parameters
+        ----------
+        maximum : int, optional
+            Maximum value. The default is 1.
+
+        Returns
+        -------
+        None.
+
+        """
         self.pbar.setFormat('%p%')
         self.max = maximum
         self.value = 0
@@ -166,7 +242,14 @@ class ProgressBar():
         self.pbar.setValue(self.value)
 
     def busysub(self):
-        """ Busy """
+        """
+        Busy.
+
+        Returns
+        -------
+        None.
+
+        """
         self.pbar.setMinimum(0)
         self.pbar.setMaximum(0)
         self.pbar.setValue(-1)
@@ -201,7 +284,14 @@ class MergeMod3D(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """Setup UI."""
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.mergemod3d')
@@ -368,8 +458,24 @@ class MergeMod3D(QtWidgets.QDialog):
 def gmerge(master, slave, xrange=None, yrange=None):
     """
     This routine is used to merge two grids.
-    """
 
+    Parameters
+    ----------
+    master : PyGMI Data
+        PyGMI raster dataset.
+    slave : PyGMI Data
+        PyGMI raster dataset.
+    xrange : list, optional
+        List containg range of minimum and maximum X. The default is None.
+    yrange : list, optional
+        List containg range of minimum and maximum Y. The default is None.
+
+    Returns
+    -------
+    PyGMI Data
+        PyGMI raster dataset.
+
+    """
     if xrange is None or yrange is None:
         return master
 

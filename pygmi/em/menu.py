@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Remote Sensing Menu Routines."""
+"""EM Menu Routines."""
 
 from PyQt5 import QtWidgets
 from pygmi.em import iodefs
@@ -113,11 +113,11 @@ class MenuWidget():
         self.parent.item_insert('Io', 'Import EDI Data', fnc)
 
     def export_data(self):
-        """ Export raster data """
+        """Export data."""
         self.parent.launch_context_item(iodefs.ExportEDI)
 
     def occam1d(self):
-        """Rotate data."""
+        """Occam 1D inversion."""
         fnc = dataprep.Occam1D(self.parent)
         self.parent.item_insert('Step', 'Occam 1D\nInversion', fnc)
 
@@ -127,7 +127,7 @@ class MenuWidget():
         self.parent.item_insert('Step', 'Rotate EDI Data', fnc)
 
     def sshift_data(self):
-        """Static Shift data."""
+        """Calculate Static Shift."""
         fnc = dataprep.StaticShiftEDI(self.parent)
         self.parent.item_insert('Step', 'Static Shift EDI Data', fnc)
 
@@ -137,9 +137,9 @@ class MenuWidget():
         self.parent.item_insert('Step', 'Mask and Interpolate\nEDI Data', fnc)
 
     def metadata(self):
-        """ Basic Statistics """
+        """Metadata."""
         self.parent.launch_context_item(dataprep.Metadata)
 
     def show_graphs(self):
-        """Show point data."""
+        """Show graphs."""
         self.parent.launch_context_item(graphs.PlotPoints)

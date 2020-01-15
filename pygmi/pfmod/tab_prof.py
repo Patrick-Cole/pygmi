@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Profile Display Tab Routines """
+"""Profile Display Tab Routines."""
 
 import os
 import random
@@ -50,7 +50,8 @@ rcParams['savefig.dpi'] = 600.
 
 
 class ProfileDisplay(QtWidgets.QWidget):
-    """ Widget class to call the main interface """
+    """Widget class to call the main interface."""
+
     def __init__(self, parent):
         QtWidgets.QWidget.__init__(self, parent)
 
@@ -99,7 +100,14 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                            QtWidgets.QSizePolicy.Fixed)
         sizepolicy2 = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Ignored,
@@ -241,7 +249,14 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     ### Custom Profiles
     def cprof_add(self):
-        """ Add new custom profile """
+        """
+        Add new custom profile.
+
+        Returns
+        -------
+        None.
+
+        """
         newprof = ImportPicture(self)
         curline = newprof.settings()
         if curline is None:
@@ -273,7 +288,14 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.sb_cprofnum.setEnabled(True)
 
     def cprof_del(self):
-        """ Delete current custom profile """
+        """
+        Delete current custom profile.
+
+        Returns
+        -------
+        None.
+
+        """
         curline = self.sb_cprofnum.value()
 
         cnt = len(self.lmod1.profpics)
@@ -303,7 +325,14 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.sb_cprofnum.setEnabled(False)
 
     def proftype_changed(self):
-        """ Profile type changed."""
+        """
+        Profile type changed.
+
+        Returns
+        -------
+        None.
+
+        """
         text = self.combo_proftype.currentText()
         if text == 'Standard Profile':
             self.gb_dir.setHidden(False)
@@ -336,8 +365,19 @@ class ProfileDisplay(QtWidgets.QWidget):
                 self.sb_cprofnum.setEnabled(False)
 
     def custom_prof_limits(self, curprof=None):
-        """ Calculate profile limits """
+        """
+        Calculate custom profile limits.
 
+        Parameters
+        ----------
+        curprof : int or str, optional
+            Current profile. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         if curprof is None or curprof not in self.lmod1.custprofx:
             return
 
@@ -354,11 +394,25 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.extent_side = [0., px2, bottom, top]
 
     def hcprofnum(self):
-        """ Routine to change a profile from spinbox"""
+        """
+        Change a profile from a horizontal slider.
+
+        Returns
+        -------
+        None.
+
+        """
         self.sb_cprofnum.setValue(self.hs_cprofnum.sliderPosition())
 
     def scprofnum(self):
-        """ Routine to change a profile from spinbox"""
+        """
+        Change a profile from a spinbox.
+
+        Returns
+        -------
+        None.
+
+        """
         curline = self.sb_cprofnum.value()
 
         self.hs_cprofnum.valueChanged.disconnect()
@@ -384,7 +438,14 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     ### Misc
     def borehole_import(self):
-        """ Import borehole data """
+        """
+        Import borehole data.
+
+        Returns
+        -------
+        None.
+
+        """
         lmod = self.lmod1
         if 'Borehole' not in self.parent.indata:
             return
@@ -496,7 +557,14 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.showtext('Borehole Import Complete.')
 
     def export_csv(self):
-        """ Export Profile to csv """
+        """
+        Export profile to csv.
+
+        Returns
+        -------
+        None.
+
+        """
         self.parent.pbars.resetall()
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'Comma separated values (*.csv)')
@@ -559,7 +627,14 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.showtext('Profile save complete')
 
     def lbound(self):
-        """ Insert a lithological boundary """
+        """
+        Insert a lithological boundary.
+
+        Returns
+        -------
+        None.
+
+        """
         self.pbar.setMaximum(100)
         self.pbar.setValue(0)
 
@@ -649,8 +724,14 @@ class ProfileDisplay(QtWidgets.QWidget):
 #        self.mmc.figure.canvas.draw()
 
     def rcopy(self):
-        """ Do a ranged copy on a profile """
+        """
+        Do a ranged copy on a profile.
 
+        Returns
+        -------
+        None.
+
+        """
         rcopy = RangedCopy(self)
 
         tmp = rcopy.exec_()
@@ -666,8 +747,19 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.sprofnum()
 
     def rcopy_layer(self, rcopy):
-        """ ranged copy on a layer """
+        """
+        Do a ranged copy on a layer.
 
+        Parameters
+        ----------
+        rcopy : RangedCopy
+            Handle of ranged copy gui.
+
+        Returns
+        -------
+        None.
+
+        """
         lithcopy = rcopy.lw_lithcopy.selectedItems()
         lithdel = rcopy.lw_lithdel.selectedItems()
         lstart = rcopy.sb_start.value()
@@ -704,7 +796,19 @@ class ProfileDisplay(QtWidgets.QWidget):
             ltmp[mlslice] = mtmp[mlslice]
 
     def rcopy_prof(self, rcopy):
-        """ ranged copy on a profile """
+        """
+        Ranged copy on a profile.
+
+        Parameters
+        ----------
+        rcopy : RangedCopy
+            Handle to RangedCopy GUI.
+
+        Returns
+        -------
+        None.
+
+        """
         lithcopy = rcopy.lw_lithcopy.selectedItems()
         lithdel = rcopy.lw_lithdel.selectedItems()
         lstart = rcopy.sb_start.value()
@@ -716,30 +820,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.calc_prof_limits(lmaster)
         mtmp = self.get_model()
 
-        # TODO: Ranged copy zoom
-#        viewlim = self.mmc.axes.viewLim
-#        z0 = int(round((self.lmod1.zrange[1] - viewlim.y1)/self.lmod1.d_z))
-#        z1 = int(round((self.lmod1.zrange[1] - viewlim.y0)/self.lmod1.d_z))
-#        if z0 == 0:
-#            z0 = None
-#
-#        x0 = int(round((viewlim.x0 - self.extent_side[0]) /
-#                       self.pdxy))
-#        x1 = int(round((viewlim.x1 - self.extent_side[0]) /
-#                       self.pdxy))
-#        if x0 == 0:
-#            x0 = None
-#
-#        mtmp = self.lmod1.lith_index[x0:x1, lmaster, z0:z1]
-#        if lend > self.lmod1.numy:
-#            lend = self.lmod1.numy
-
         # Create a filter for all lithologies to be copied
         mslice = np.zeros_like(mtmp)
-#        lcopynums = []
         for i in lithcopy:
             mslice[mtmp == self.lmod1.lith_list[i.text()].lith_index] = 1
-#            lcopynums.append(self.lmod1.lith_list[i.text()].lith_index)
 
         for i in range(lstart, lend+1):
             self.calc_prof_limits(i)
@@ -777,8 +861,14 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     ### Profiles
     def change_defs(self):
-        """ List box in profile tab for definitions """
+        """
+        Change definitions.
 
+        Returns
+        -------
+        None.
+
+        """
         i = self.lw_prof_defs.currentRow()
         if i == -1:
             misc.update_lith_lw(self.lmod1, self.lw_prof_defs)
@@ -792,7 +882,14 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.mmc.curmodel = lith.lith_index
 
     def get_model(self):
-        """ gets model slice """
+        """
+        Get model slice.
+
+        Returns
+        -------
+        None.
+
+        """
         x1, x2 = self.lmod1.custprofx['adhoc']
         y1, y2 = self.lmod1.custprofy['adhoc']
         px1, px2 = self.lmod1.custprofx['rotate']
@@ -833,10 +930,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.rxxx = self.rxxx[self.ryyy >= 0]
         self.ryyy = self.ryyy[self.ryyy >= 0]
 
-#        tmp = np.transpose([self.xxx, self.yyy])
-#        udata = [list(x) for x in set(tuple(x) for x in tmp)]
-#        udata = np.sort(udata, 0)
-
         # get model now
         self.ipdx1 = int(px1/self.pdxy)
         self.ipdx2 = self.ipdx1+self.xxx.shape[0]
@@ -854,13 +947,27 @@ class ProfileDisplay(QtWidgets.QWidget):
         return gtmp
 
     def hprofnum(self):
-        """ Routine to change a profile from spinbox"""
+        """
+        Change a profile from a horizontal slider.
+
+        Returns
+        -------
+        None.
+
+        """
         self.sb_profnum.setValue(self.hs_profnum.sliderPosition())
 
     def pic_sideview(self):
         """
-        Horizontal slider to change the opacity of profile and overlain
-        picture
+        Horizontal slider for picture opacity.
+
+        Change the opacity of profile and overlain picture.
+
+
+        Returns
+        -------
+        None.
+
         """
         # This is used for custom profiles with pictures. I think that below
         # should be slide_grid
@@ -878,7 +985,14 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.mmc.figure.canvas.draw()
 
     def plot_scale(self):
-        """ plot scale """
+        """
+        Plot scale.
+
+        Returns
+        -------
+        None.
+
+        """
         pscale = PlotScale(self, self.lmod1)
         tmp = pscale.exec_()
         if tmp == 0:
@@ -902,11 +1016,30 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.mpl_toolbar.update()
 
     def setwidth(self, width):
-        """ Sets the width of the edits on the profile view """
+        """
+        Set the width of the edits on the profile view.
+
+        Parameters
+        ----------
+        width : int
+            Edit width.
+
+        Returns
+        -------
+        None.
+
+        """
         self.mmc.mywidth = width
 
     def sprofnum(self):
-        """ Routine to change a profile from spinbox"""
+        """
+        Routine to change a profile from spinbox.
+
+        Returns
+        -------
+        None.
+
+        """
         self.hs_profnum.valueChanged.disconnect()
         self.hs_profnum.setValue(self.sb_profnum.value())
         self.hs_profnum.valueChanged.connect(self.hprofnum)
@@ -922,31 +1055,50 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     ### Layers
     def hlayer(self):
-        """ Horizontal slider to change the layer """
+        """
+        Horizontal slider to change the layer.
+
+        Returns
+        -------
+        None.
+
+        """
         self.sb_layer.setValue(self.hs_layer.sliderPosition())
 
     def pic_overview(self):
         """
-        Horizontal slider to change the opacity of profile and overlain
-        picture
+        Horizontal slider to change picture opacity.
+
+        Returns
+        -------
+        None.
+
         """
         self.mmc.init_grid_top(self.combo_overview.currentText(),
                                self.hs_overview.value())
-#        self.mmc.slide_grid_top()
         self.mmc.figure.canvas.draw()
 
     def pic_overview2(self):
         """
-        Horizontal slider to change the opacity of profile and overlain
-        picture
+        Horizontal slider to change picture opacity.
+
+        Returns
+        -------
+        None.
+
         """
-#        self.mmc.init_grid_top(self.combo_overview.currentText(),
-#                               self.hs_overview.value())
         self.mmc.slide_grid_top(self.hs_overview.value())
         self.mmc.figure.canvas.draw()
 
     def slayer(self):
-        """ This increases or decreases the model layer """
+        """
+        Change model layer.
+
+        Returns
+        -------
+        None.
+
+        """
         self.hs_layer.valueChanged.disconnect()
         self.hs_layer.setValue(self.sb_layer.value())
         self.hs_layer.valueChanged.connect(self.hlayer)
@@ -957,8 +1109,19 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     ### Profile Direction
     def calc_prof_limits(self, curprof=None):
-        """ Calculate profile limits """
+        """
+        Calculate profile limits.
 
+        Parameters
+        ----------
+        curprof : int or None, optional
+            Current profile. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         pdirval = self.dial_prof_dir.value()
 
         m = np.tan(np.deg2rad(pdirval))
@@ -1088,15 +1251,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         pts2 = np.transpose([x2, y2])
         pts2r = rotate2d(pts2, cntr, ang)
 
-#        px1 = pts1r[:, 0]
-#        px2 = pts2r[:, 0]
-#
-#        minx = px1.min()
-#        px1 = px1 - minx
-#        px2 = px2 - minx
-
-#        right = px2.max()
-
         py1 = pts1r[:, 1]
         py2 = pts2r[:, 1]
 
@@ -1111,13 +1265,24 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.extent_side = [0., right, bottom, top]
 
-        # TODO: 2nd and 4th quadrant offset\
         self.lmod1.custprofx['rotate'] = [px1[curprof], px2[curprof]]
         self.lmod1.custprofx['adhoc'] = [x1[curprof], x2[curprof]]
         self.lmod1.custprofy['adhoc'] = [y1[curprof], y2[curprof]]
 
     def prof_dir(self, slide=True):
-        """ Radio button profile direction """
+        """
+        Profile direction.
+
+        Parameters
+        ----------
+        slide : bool, optional
+            Flag to redraw entire plot, or just update. The default is True.
+
+        Returns
+        -------
+        None.
+
+        """
         pdirval = self.dial_prof_dir.value()
 
         self.sb_prof_dir.valueChanged.disconnect()
@@ -1151,15 +1316,33 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.update_plot(slide=slide)
 
     def sprofdir(self):
-        """ spinbox prof dir """
+        """
+        Profile direction spinbox.
+
+        Returns
+        -------
+        None.
+
+        """
         dirval = self.sb_prof_dir.value()
 
         self.dial_prof_dir.setValue(dirval)
         self.prof_dir()
 
     def update_plot(self, slide=False):
-        """ Update the profile on the model view """
+        """
+        Update the profile on the model view.
 
+        Parameters
+        ----------
+        slide : bool, optional
+            Flag to redraw entire plot, or just update. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
 # Display the calculated profile
         if self.viewmagnetics:
             data = self.lmod1.griddata['Calculated Magnetics']
@@ -1226,7 +1409,6 @@ class ProfileDisplay(QtWidgets.QWidget):
             tmprng2 = tmprng2[np.logical_not(np.isnan(tmpprof2))]
             tmpprof2 = tmpprof2[np.logical_not(np.isnan(tmpprof2))]
 
-#            breakpoint()
             if self.pscale_type == 'datamax':
                 extent = [data2.data.min(), data2.data.max()]
             elif self.pscale_type == 'allmax':
@@ -1252,7 +1434,14 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.pic_overview()
 
     def tab_activate(self):
-        """ Runs when the tab is activated """
+        """
+        Entry point.
+
+        Returns
+        -------
+        None.
+
+        """
         self.sb_profnum.valueChanged.disconnect()
         self.hs_profnum.valueChanged.disconnect()
         self.hs_cprofnum.valueChanged.disconnect()
@@ -1303,7 +1492,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
 
 class MyMplCanvas(FigureCanvas):
-    """This is a QWidget"""
+    """Matplotlib Canvas"""
     def __init__(self, parent):
         fig = Figure()
         FigureCanvas.__init__(self, fig)
@@ -1374,7 +1563,19 @@ class MyMplCanvas(FigureCanvas):
         self.prf = self.axes.plot([0, 0])
 
     def button_press(self, event):
-        """ Button press """
+        """
+        Button press event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
 
@@ -1386,26 +1587,35 @@ class MyMplCanvas(FigureCanvas):
             self.move(event)
 
     def button_release(self, event):
-        """ Button release """
+        """
+        Button release event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         self.press = False
 
-#        nmode = self.axes.get_navigate_mode()
-#        if event.button == 1:
-#            if nmode == 'ZOOM':
-#                extent = self.axes.get_xbound()
-#                self.paxes.set_xbound(extent[0], extent[1])
-#                self.myparent.mpl_toolbar.zoom()
-#        if nmode == 'PAN':
-#            self.myparent.mpl_toolbar.pan()
-
-#    def paxes_lim_update(self, event):
-#        """ plot axes limit update """
-#        extent = self.axes.get_xbound()
-#        self.paxes.set_xbound(extent[0], extent[1])
-#        self.figure.canvas.draw()
-
     def move(self, event):
-        """ Mouse is moving """
+        """
+        Mouse move event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         curaxes = event.inaxes
         if curaxes not in (self.axes, self.laxes):
             self.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
@@ -1506,7 +1716,23 @@ class MyMplCanvas(FigureCanvas):
             self.figure.canvas.draw()
 
     def set_mdata(self, xdata, ydata, mdata):
-        """ Routine to 'draw' the line on mdata """
+        """
+        Routine to 'draw' the line on mdata.
+
+        Parameters
+        ----------
+        xdata : float
+            X data.
+        ydata : float
+            Y data.
+        mdata : numpy array
+            Model array.
+
+        Returns
+        -------
+        None.
+
+        """
         width = self.mywidth-1  # 'pen' width
         xstart = max(0, xdata-width-1)
         xend = min(mdata.shape[1], xdata+width)
@@ -1517,7 +1743,20 @@ class MyMplCanvas(FigureCanvas):
             mtmp[np.logical_and(mtmp != -1, mtmp < 900)] = self.curmodel
 
     def luttodat(self, dat):
-        """ lut to dat grid """
+        """
+        LUT to dat grid.
+
+        Parameters
+        ----------
+        dat : numpy array
+            DESCRIPTION.
+
+        Returns
+        -------
+        tmp : numpy array
+            DESCRIPTION.
+
+        """
         mlut = self.lmod1.mlut
         tmp = np.zeros([dat.shape[0], dat.shape[1], 4])
 
@@ -1533,14 +1772,41 @@ class MyMplCanvas(FigureCanvas):
 
     def on_resize(self, event):
         """
-        matplotlib resize event - used to make sure tight_layout happens on
-        startup
+        Resize event.
+
+        Used to make sure tight_layout happens on startup.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def init_grid(self, dat, dat2=None, opac=0.0):
-        """ Updates the single color map """
+        """
+        Initialise grid.
+
+        Parameters
+        ----------
+        dat : numpy array
+            Raster dataset.
+        dat2 : PyGMI Data, optional
+            PyGMI raster dataset. The default is None.
+        opac : float, optional
+            Opacity between 0 and 100. The default is 0.0.
+
+        Returns
+        -------
+        None.
+
+        """
         self.opac = 1.0 - float(opac) / 100.
 
         extent = self.myparent.extent_side
@@ -1572,7 +1838,21 @@ class MyMplCanvas(FigureCanvas):
         self.mdata = dat
 
     def init_grid_top(self, dat2=None, opac=100.0):
-        """ init grid top """
+        """
+        Initialise top grid.
+
+        Parameters
+        ----------
+        dat2 : str, optional
+            Comobox text. The default is None.
+        opac : float, optional
+            Opacity between 0 and 100. The default is 100.0.
+
+        Returns
+        -------
+        None.
+
+        """
         dat2 = self.myparent.combo_overview.currentText()
 
         extent = self.lmod1.xrange+self.lmod1.yrange
@@ -1612,8 +1892,23 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def slide_grid(self, dat, dat2=None, opac=None):
-        """ Slider """
+        """
+        Slide grid.
 
+        Parameters
+        ----------
+        dat : numpy array.
+            Raster data array.
+        dat2 : numpy array, optional
+            Raster data array. The default is None.
+        opac : float, optional
+            Opacity between 0 and 100. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         # There may be errors here in terms of dat and dat2
 
         self.mdata = dat
@@ -1636,7 +1931,19 @@ class MyMplCanvas(FigureCanvas):
         self.axes.draw_artist(self.prf[0])
 
     def slide_grid_top(self, opac=None):
-        """ Slider """
+        """
+        Slide top grid.
+
+        Parameters
+        ----------
+        opac : float, optional
+            Opacity between 0 and 100. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         if opac is not None:
             self.lopac = 1.0 - float(opac) / 100.
 
@@ -1649,17 +1956,19 @@ class MyMplCanvas(FigureCanvas):
         self.lims.set_data(tmp)
         self.lims.set_alpha(self.lopac)
 
-#        if dat2 is not None:
-#            dat2 = self.lmod1.griddata[str(dat2)]
-#            self.lims2.set_data(dat2.data)
-
         self.laxes.draw_artist(self.lims2)
         self.laxes.draw_artist(self.lims)
         self.laxes.draw_artist(self.lprf[0])
 
     def update_line(self):
-        """ Updates the line position """
+        """
+        Update the line position.
 
+        Returns
+        -------
+        None.
+
+        """
         curlayer = self.myparent.sb_layer.value()
         extent = self.myparent.extent_side
         xrng = [extent[0], extent[1]]
@@ -1671,7 +1980,14 @@ class MyMplCanvas(FigureCanvas):
         self.axes.draw_artist(self.prf[0])
 
     def update_line_top(self):
-        """ Updates the line position """
+        """
+        Update the top line position.
+
+        Returns
+        -------
+        None.
+
+        """
         xrng = self.lmod1.custprofx['adhoc']
         yrng = self.lmod1.custprofy['adhoc']
 
@@ -1681,7 +1997,27 @@ class MyMplCanvas(FigureCanvas):
 # This section is just for the profile line plot
 
     def init_plot(self, xdat, dat, extent, xdat2=None, dat2=None):
-        """ Updates the single color map """
+        """
+        Initialise plot.
+
+        Parameters
+        ----------
+        xdat : numpy array
+            X coordinates.
+        dat : numpy array
+            Data values.
+        extent : list
+            Extent list.
+        xdat2 : numpy array, optional
+            X coordinates. The default is None.
+        dat2 : numpy array, optional
+            Data values. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         self.paxes.autoscale(False)
         dmin, dmax = extent[2], extent[3]
         if dmin == dmax:
@@ -1706,7 +2042,25 @@ class MyMplCanvas(FigureCanvas):
         self.plotisinit = True
 
     def slide_plot(self, xdat, dat, xdat2=None, dat2=None):
-        """ Slider """
+        """
+        Slide plot.
+
+        Parameters
+        ----------
+        xdat : numpy array
+            X coordinates.
+        dat : numpy array
+            Data values.
+        xdat2 : numpy array, optional
+            X coordinates. The default is None.
+        dat2 : numpy array, optional
+            Data values. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         if xdat2 is not None:
             self.obs[0].set_data([xdat2, dat2])
         else:
@@ -1721,23 +2075,50 @@ class MyMplCanvas(FigureCanvas):
 
 class MySlider(QtWidgets.QSlider):
     """
-    My Slider
+    My Slider.
 
     Custom class which allows clicking on a horizontal slider bar with slider
     moving to click in a single step.
     """
+
     def __init__(self, parent=None):
         QtWidgets.QSlider.__init__(self, parent)
 
     def mousePressEvent(self, event):
-        """ Mouse Press Event """
+        """
+        Mouse press event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
                                                                self.maximum(),
                                                                event.x(),
                                                                self.width()))
 
     def mouseMoveEvent(self, event):
-        """ Jump to pointer position while moving """
+        """
+        Mouse move event.
+
+        Jump to pointer position while moving.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
                                                                self.maximum(),
                                                                event.x(),
@@ -1745,7 +2126,8 @@ class MySlider(QtWidgets.QSlider):
 
 
 class LithBound(QtWidgets.QDialog):
-    """ Class to call up a dialog for lithological boundary"""
+    """ Class to call up a dialog for lithological boundary."""
+
     def __init__(self, lmod):
         QtWidgets.QDialog.__init__(self, None)
 
@@ -1760,7 +2142,14 @@ class LithBound(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         label_3 = QtWidgets.QLabel('Lithologies Above Layer')
         label_4 = QtWidgets.QLabel('Lithologies Below Layer')
@@ -1798,8 +2187,17 @@ class LithBound(QtWidgets.QDialog):
         self.lw_lithlower.setCurrentItem(self.lw_lithlower.item(1))
 
     def get_lith(self):
-        """ Get Lith """
+        """
+        Get lithology.
 
+        Returns
+        -------
+        lithlower : int
+            Lower lithology index.
+        lithupper : int
+            Upper lithology index.
+
+        """
         tupper = self.lw_lithupper.selectedItems()
         tlower = self.lw_lithlower.selectedItems()
 
@@ -1817,7 +2215,8 @@ class LithBound(QtWidgets.QDialog):
 
 
 class PlotScale(QtWidgets.QDialog):
-    """ Class to call up a dialog for plot axis scale"""
+    """ Class to call up a dialog for plot axis scale."""
+
     def __init__(self, parent, lmod):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -1838,7 +2237,14 @@ class PlotScale(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         self.setWindowTitle('Field Display Limits')
 
         self.rb_axis_allmax.setChecked(True)
@@ -1863,25 +2269,15 @@ class PlotScale(QtWidgets.QDialog):
         vl_scale.addWidget(self.dsb_axis_custmax)
         vl_scale.addWidget(self.buttonbox)
 
-#        self.dsb_axis_custmin.valueChanged.connect(self.rb_plot_scale)
-#        self.dsb_axis_custmax.valueChanged.connect(self.rb_plot_scale)
-#        self.rb_axis_calcmax.clicked.connect(self.rb_plot_scale)
-#        self.rb_axis_profmax.clicked.connect(self.rb_plot_scale)
-#        self.rb_axis_datamax.clicked.connect(self.rb_plot_scale)
-#        self.rb_axis_custmax.clicked.connect(self.rb_plot_scale)
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
 
 
 class RangedCopy(QtWidgets.QDialog):
-    """ Class to call up a dialog for ranged copying """
+    """Class to call up a dialog for ranged copying."""
+
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
-
-#        if parent.rb_cust.isChecked():
-#            parent.showtext('You cannot perform a ranged copy '
-#                            'on a custom profile')
-#            self.reject()
 
         self.parent = parent
         self.lmod1 = self.parent.lmod1
@@ -1897,8 +2293,14 @@ class RangedCopy(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
 
+        Returns
+        -------
+        None.
+
+        """
         self.setWindowTitle('Ranged Copy')
 
         gridlayout = QtWidgets.QGridLayout(self)
@@ -1964,8 +2366,14 @@ class RangedCopy(QtWidgets.QDialog):
         self.rb_overview.clicked.connect(self.target_update)
 
     def target_update(self):
-        """ updates target """
+        """
+        Update target.
 
+        Returns
+        -------
+        None.
+
+        """
         if self.rb_overview.isChecked():
             rmax = self.parent.sb_layer.maximum()
         else:
@@ -1982,7 +2390,8 @@ class RangedCopy(QtWidgets.QDialog):
 
 
 class MyToolbar(NavigationToolbar2QT):
-    """ Custom Matplotlib toolbar """
+    """Custom Matplotlib toolbar."""
+
     toolitems = NavigationToolbar2QT.toolitems
     toolitems += ((None, None, None, None),
                   ('Field\nDisplay\nLimits',
@@ -2000,26 +2409,54 @@ class MyToolbar(NavigationToolbar2QT):
         self.parent = parent
 
     def axis_scale(self):
-        """ Axis scale """
+        """
+        Axis scale.
+
+        Returns
+        -------
+        None.
+
+        """
         self.parent.plot_scale()
 
     def b_logs(self):
-        """ Borehole Logs """
+        """
+        Borehole logs.
+
+        Returns
+        -------
+        None.
+
+        """
         self.parent.borehole_import()
 
     def mag_profile(self):
-        """ Axis scale """
+        """
+        View magnetic profile.
+
+        Returns
+        -------
+        None.
+
+        """
         self.parent.viewmagnetics = True
         self.parent.update_plot()
 
     def grv_profile(self):
-        """ Axis scale """
+        """
+        View gravity profile.
+
+        Returns
+        -------
+        None.
+
+        """
         self.parent.viewmagnetics = False
         self.parent.update_plot()
 
 
 class GaugeWidget(QtWidgets.QDial):
-    """ Gauge widget """
+    """Gauge widget."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -2032,7 +2469,19 @@ class GaugeWidget(QtWidgets.QDial):
         self.setFixedHeight(60)
 
     def paintEvent(self, event):
-        """ Paint event """
+        """
+        Paint event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         painter = QtGui.QPainter(self)
         painter.setRenderHint(painter.Antialiasing)
         rect = event.rect()
@@ -2048,7 +2497,8 @@ class GaugeWidget(QtWidgets.QDial):
 
 
 class ImportPicture(QtWidgets.QDialog):
-    """ Class to call up a dialog """
+    """Import Picture dialog."""
+
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -2086,7 +2536,14 @@ class ImportPicture(QtWidgets.QDialog):
         self.getcoords()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         groupbox = QtWidgets.QGroupBox('Profile Coordinates')
         gridlayout_2 = QtWidgets.QGridLayout(self)
         gridlayout_3 = QtWidgets.QGridLayout(groupbox)
@@ -2156,7 +2613,14 @@ class ImportPicture(QtWidgets.QDialog):
         pb_import.pressed.connect(self.get_filename)
 
     def get_filename(self):
-        """Get filename of picture."""
+        """
+        Get filename of picture.
+
+        Returns
+        -------
+        None.
+
+        """
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', '*.jpg *.tif *.bmp *.png')
 
@@ -2166,7 +2630,14 @@ class ImportPicture(QtWidgets.QDialog):
         self.importfile.setText(filename)
 
     def getcoords(self):
-        """ Get coordinates """
+        """
+        Get coordinates.
+
+        Returns
+        -------
+        None.
+
+        """
         zmin, zmax = self.lmod.zrange
 
         if self.chk_getcoords.isChecked():
@@ -2184,8 +2655,16 @@ class ImportPicture(QtWidgets.QDialog):
         self.dsb_zmax.setValue(zmax)
 
     def settings(self):
-        """ Load GeoTiff """
+        """
+        Settings.
 
+        This section also imports the picture.
+
+        Returns
+        -------
+        None.
+
+        """
         temp = self.exec_()
         if temp == 0:
             return None
@@ -2222,10 +2701,6 @@ class ImportPicture(QtWidgets.QDialog):
             y1a = f(x1a)
             y2a = f(x2a)
 
-#            y1a = np.interp(self.lmod.xrange[0], [x1, x2], [y1, y2])
-#            y2a = np.interp(self.lmod.xrange[1], [x1, x2], [y1, y2])
-#            x1a, x2a = self.lmod.xrange
-
             if self.lmod.yrange[0] <= y1a <= self.lmod.yrange[1]:
                 y1 = y1a
                 x1 = x1a
@@ -2240,10 +2715,6 @@ class ImportPicture(QtWidgets.QDialog):
             y1a, y2a = self.lmod.yrange
             x1a = f(y1a)
             x2a = f(y2a)
-
-#            x1a = np.interp(self.lmod.xrange[0], [y1, y2], [x1, x2])
-#            x2a = np.interp(self.lmod.xrange[1], [y1, y2], [x1, x2])
-#            y1a, y2a = self.lmod.yrange
 
             if y1 != y1a:
                 x1 = x1a
@@ -2297,8 +2768,24 @@ class ImportPicture(QtWidgets.QDialog):
 
 
 def gridmatch2(cgrv, rgrv):
-    """ Matches the rows and columns of the second grid to the first
-    grid """
+    """
+    Grid match.
+
+    Matches the rows and columns of the second grid to the first grid.
+
+    Parameters
+    ----------
+    cgrv : PyGMI Data.
+        Raster dataset.
+    rgrv : PyGMI Data
+        Raster dataset.
+
+    Returns
+    -------
+    numpy array
+        Output data.
+
+    """
     data = rgrv
     data2 = cgrv
     orig_wkt = data.wkt
@@ -2329,9 +2816,26 @@ def gridmatch2(cgrv, rgrv):
 
 
 def rotate2d(pts, cntr, ang=np.pi/4):
-    """ pts = {} Rotates points(nx2) about center cntr(2) by angle ang(1) in
-    radian"""
+    """
+    Rotate 2D.
 
+    Rotates points(nx2) about center cntr(2) by angle ang(1) in radians.
+
+    Parameters
+    ----------
+    pts : numpy array
+        Points to rotate.
+    cntr : numpy array
+        Center of rotation.
+    ang : float, optional
+        Angle to rotate in radians. The default is np.pi/4.
+
+    Returns
+    -------
+    pts2 : TYPE
+        DESCRIPTION.
+
+    """
     trans = np.array([[np.cos(ang), np.sin(ang)], [-np.sin(ang), np.cos(ang)]])
     pts2 = np.dot(pts-cntr, trans) + cntr
     return pts2

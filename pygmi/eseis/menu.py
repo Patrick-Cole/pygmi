@@ -22,11 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Remote Sensing Menu Routines."""
+"""Exploration seismics Menu Routines."""
 
 from PyQt5 import QtWidgets
 from pygmi.eseis import iodefs
-#from pygmi.eseis import dataprep
 from pygmi.eseis import graphs
 
 
@@ -57,17 +56,8 @@ class MenuWidget():
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
-#        self.menu.addSeparator()
-#        self.action_mi_data = QtWidgets.QAction('Mask and Interpolate')
-#        self.menu.addAction(self.action_mi_data)
-#        self.action_mi_data.triggered.connect(self.mi_data)
-
 # Context menus
         context_menu['ESEIS'].addSeparator()
-
-#        self.action_metadata = QtWidgets.QAction('Display/Edit Metadata')
-#        context_menu['ESEIS'].addAction(self.action_metadata)
-#        self.action_metadata.triggered.connect(self.metadata)
 
         self.action_show_graphs = QtWidgets.QAction('Show Graphs')
         context_menu['ESEIS'].addAction(self.action_show_graphs)
@@ -83,12 +73,8 @@ class MenuWidget():
         self.parent.item_insert('Io', 'Import SEGY Data', fnc)
 
     def export_data(self):
-        """ Export data """
+        """Export data."""
         self.parent.launch_context_item(iodefs.ExportSEGY)
-
-#    def metadata(self):
-#        """ Basic Statistics """
-#        self.parent.launch_context_item(dataprep.Metadata)
 
     def show_graphs(self):
         """Show point data."""

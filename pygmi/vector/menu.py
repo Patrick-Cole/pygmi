@@ -126,7 +126,7 @@ class MenuWidget():
     def grid(self):
         """Grid datasets."""
         fnc = dataprep.DataGrid(self.parent)
-        self.parent.item_insert('Step', 'Grid\nPoint Data', fnc)
+        self.parent.item_insert('Step', 'Grid\nPoint\nData', fnc)
 
     def cut_data(self):
         """Export point data."""
@@ -144,22 +144,22 @@ class MenuWidget():
     def import_point_data(self):
         """Import point data."""
         fnc = iodefs.ImportPointData(self.parent)
-        self.parent.item_insert('Io', 'Import Point Data', fnc)
+        self.parent.item_insert('Io', 'Import\nPoint\nData', fnc)
 
     def import_line_data(self):
         """Import line data."""
         fnc = iodefs.ImportLineData(self.parent)
-        self.parent.item_insert('Io', 'Import Line Data', fnc)
+        self.parent.item_insert('Io', 'Import\nLine\nData', fnc)
 
     def import_shape_data(self):
         """Import shape data."""
         fnc = iodefs.ImportShapeData(self.parent)
-        self.parent.item_insert('Io', 'Import Shapefile Data', fnc)
+        self.parent.item_insert('Io', 'Import\nShapefile\nData', fnc)
 
     def import_lemi417_data(self):
         """Import LEMI-417 MT data."""
         fnc = iodefs.ImportLEMI417Data(self.parent)
-        self.parent.item_insert('Io', 'Import LEMI-417 Data', fnc)
+        self.parent.item_insert('Io', 'Import\nLEMI-417\nData', fnc)
 
     def show_point_data(self):
         """Show point data."""

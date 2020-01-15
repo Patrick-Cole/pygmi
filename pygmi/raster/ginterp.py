@@ -45,7 +45,7 @@
 # DEALINGS IN THE SOFTWARE.
 # -----------------------------------------------------------------------------
 """
-Plot Raster Data
+Plot Raster Data.
 
 This is the raster data interpretation module.  This module allows for the
 display of raster data in a variety of modes, as well as the export of that
@@ -85,7 +85,7 @@ import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 
 
-class ModestImage2(mi.AxesImage):
+class ModestImage(mi.AxesImage):
     """
     Computationally modest image class - modified for use in PyGMI.
 
@@ -123,6 +123,7 @@ class ModestImage2(mi.AxesImage):
     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
     """
+
     def __init__(self, *args, **kwargs):
         if 'extent' in kwargs and kwargs['extent'] is not None:
             raise NotImplementedError('ModestImage does not support extents')
@@ -148,9 +149,17 @@ class ModestImage2(mi.AxesImage):
 
     def set_data(self, A):
         """
-        Set the image array
+        Set the image array.
 
-        ACCEPTS: numpy/PIL Image A
+        Parameters
+        ----------
+        A : numpy/PIL Image A
+            numpy/PIL Image A.
+
+        Returns
+        -------
+        None.
+
         """
         self._full_res = A
         self._A = A
@@ -165,9 +174,17 @@ class ModestImage2(mi.AxesImage):
             self._scale_to_res()
 
     def _scale_to_res(self):
-        """ Change self._A and _extent to render an image whose
-        resolution is matched to the eventual rendering."""
+        """
+        Scale to resolution.
 
+        Change self._A and _extent to render an image whose
+        resolution is matched to the eventual rendering.
+
+        Returns
+        -------
+        None.
+
+        """
         ax = self.axes
 
         fx0, fy0, fx1, fy1 = ax.dataLim.extents
@@ -318,8 +335,23 @@ class ModestImage2(mi.AxesImage):
         self.changed()
 
     def draw(self, renderer, *args, **kwargs):
-        """ Draw """
+        """
+        Draw.
 
+        Parameters
+        ----------
+        renderer : Matplotlib renderer.
+            Matplotlib renderer.
+        *args
+            Variable length argument list.
+        **kwargs
+            Arbitrary keyword arguments.
+
+        Returns
+        -------
+        None.
+
+        """
         # This loop forces the histograms to remain static
         for argb in self.figure.axes[1:]:
             if np.inf in argb.dataLim.extents:
@@ -333,19 +365,59 @@ class ModestImage2(mi.AxesImage):
         super().draw(renderer, *args, **kwargs)
 
 
-class ModestImage(ModestImage2):
-    """ Modest Image """
-    def __init__(self, *args, **kwargs):
-        ModestImage2.__init__(self, *args, **kwargs)
-
-
 def imshow(axes, X, cmap=None, norm=None, aspect=None,
            interpolation=None, alpha=None, vmin=None, vmax=None,
            origin=None, extent=None, shape=None, filternorm=1,
            filterrad=4.0, imlim=None, resample=None, url=None, **kwargs):
-    """Similar to matplotlib's imshow command, but produces a ModestImage
+    """
+    Similar to matplotlib's imshow command, but produces a ModestImage.
 
     Unlike matplotlib version, must explicitly specify axes
+
+    Parameters
+    ----------
+    axes : TYPE
+        DESCRIPTION.
+    X : numpy array or PIL image.
+        The image data.
+    cmap : str or Colormap, optional
+        Colormap instance. The default is None.
+    norm : Normalize, optional
+        Normalize instanc used to scale data. The default is None.
+    aspect : {'equal', 'auto'} or float, optional
+        Controls the aspect ratio of the axes.. The default is None.
+    interpolation : str, optional
+        The interpolation method used. The default is None.
+    alpha : scaler, optional
+        The alpha blending value, between 0 (transparent) and 1 (opaque). The default is None.
+    vmin : scalar, optional
+        Minimum data value. The default is None.
+    vmax : scalar, optional
+        Maximum data value. The default is None.
+    origin : {'upper', 'lower'}, optional
+        Origin location. The default is None.
+    extent : scalars (left, right, bottom, top), optional
+        The bounding box in data coordinates that the image will fill. The default is None.
+    shape : TYPE, optional
+        DESCRIPTION. The default is None.
+    filternorm : float, optional
+        A parameter for the antigrain image resize filter. The default is 1.
+    filterrad : float > 0, optional
+        The filter radius for filters that have a radius parameter. The default is 4.0.
+    imlim : TYPE, optional
+        DESCRIPTION. The default is None.
+    resample : bool, optional
+        When True, use a full resampling method. The default is None.
+    url : str, optional
+        URL. The default is None.
+    **kwargs
+        Arbitrary keyword arguments.
+
+    Returns
+    -------
+    im : ModestImage
+        ModestImage output.
+
     """
 
 #    if not axes._hold:
@@ -385,7 +457,7 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
 
 class MyMplCanvas(FigureCanvas):
     """
-    Canvas for the actual plot
+    Canvas for the actual plot.
 
     Attributes
     ----------
@@ -442,6 +514,7 @@ class MyMplCanvas(FigureCanvas):
     kval : float
         k value for cmyk mode
     """
+
     def __init__(self, parent):
         fig = Figure()
         super().__init__(fig)
@@ -506,7 +579,19 @@ class MyMplCanvas(FigureCanvas):
         self.kval = 0.01
 
     def init_graph(self, event=None):
-        """ Initialize the graph """
+        """
+        Initialize the graph.
+
+        Parameters
+        ----------
+        event : TYPE, optional
+            Event. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         self.figure.canvas.mpl_disconnect(self.cid)
 
         self.axes.clear()
@@ -541,14 +626,20 @@ class MyMplCanvas(FigureCanvas):
         self.cid = self.figure.canvas.mpl_connect('resize_event',
                                                   self.init_graph)
 
-    def lamb_horn(self):
-        """ Lambert by horn """
-        R = ((1+self.p0*self.p+self.q0*self.q) /
-             (self.sqrt_1p2q2+np.sqrt(1+self.p0**2+self.q0**2)))
-        return R
-
     def move(self, event):
-        """ Mouse is moving """
+        """
+        Mouse is moving.
+
+        Parameters
+        ----------
+        event : TYPE
+            Event.
+
+        Returns
+        -------
+        None.
+
+        """
         if not self.data or self.gmode == 'Contour':
             return
 
@@ -602,7 +693,14 @@ class MyMplCanvas(FigureCanvas):
                 self.figure.canvas.update()
 
     def update_contour(self):
-        """ Updates the contour map """
+        """
+        Update contours.
+
+        Returns
+        -------
+        None.
+
+        """
         self.image.dtype = 'Single Color Map'
 
         x1, x2, y1, y2 = self.data[0].extent
@@ -628,7 +726,14 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_graph(self):
-        """ Update the plot """
+        """
+        Update plot.
+
+        Returns
+        -------
+        None.
+
+        """
         if not self.data or self.gmode is None:
             return
 
@@ -657,7 +762,20 @@ class MyMplCanvas(FigureCanvas):
             self.update_shade_plot()
 
     def update_hist_rgb(self, zval):
-        """ updates the rgb histograms """
+        """
+        Update the rgb histograms.
+
+        Parameters
+        ----------
+        zval : numpy array
+            Data values.
+
+        Returns
+        -------
+        bnum : list
+            Bin numbers.
+
+        """
         hcol = ['r', 'g', 'b']
         if 'CMY' in self.gmode:
             hcol = ['c', 'm', 'y']
@@ -676,7 +794,6 @@ class MyMplCanvas(FigureCanvas):
 
             binnum = (bins < zval[i]).sum()-1
 
-#            if binnum > -1 and binnum < len(patches):
             if -1 < binnum < len(patches):
                 patches[binnum].set_color('k')
                 bnum.append(binnum)
@@ -686,7 +803,22 @@ class MyMplCanvas(FigureCanvas):
         return bnum
 
     def update_hist_single(self, zval, hno=0):
-        """ updates the color on a single histogram """
+        """
+        Update the color on a single histogram.
+
+        Parameters
+        ----------
+        zval : numpy array
+            Data values.
+        hno : int, optional
+            Histogram number. The default is 0.
+
+        Returns
+        -------
+        binnum : int
+            Number of bins.
+
+        """
         hst = self.hhist[hno]
         bins, patches = hst[1:]
         binave = np.arange(0, 1, 1/(bins.size-2))
@@ -712,7 +844,20 @@ class MyMplCanvas(FigureCanvas):
         return binnum
 
     def update_hist_sun(self, zval=None):
-        """ Updates a sunshade histogram """
+        """
+        Updates a sunshade histogram.
+
+        Parameters
+        ----------
+        zval : numpy array
+            Data values.
+
+        Returns
+        -------
+        bnum : TYPE
+            DESCRIPTION.
+
+        """
         if zval is None:
             zval = [0.0, 0.0]
 
@@ -722,7 +867,21 @@ class MyMplCanvas(FigureCanvas):
         return bnum
 
     def update_hist_text(self, hst, zval):
-        """ Update the value on the histogram """
+        """
+        Update the value on the histogram
+
+        Parameters
+        ----------
+        hst : histogram
+            Histogram.
+        zval : float
+            Data value.
+
+        Returns
+        -------
+        None.
+
+        """
         xmin, xmax, ymin, ymax = hst.axes.axis()
         xnew = 0.95*(xmax-xmin)+xmin
         ynew = 0.95*(ymax-ymin)+ymin
@@ -730,7 +889,14 @@ class MyMplCanvas(FigureCanvas):
         hst.set_text(str(zval))
 
     def update_rgb(self):
-        """ Updates the RGB Ternary Map """
+        """
+        Update the RGB Ternary Map.
+
+        Returns
+        -------
+        None.
+
+        """
         self.image.dtype = self.gmode
         dat = [None, None, None]
         for i in self.data:
@@ -779,7 +945,14 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.flush_events()
 
     def update_single_color_map(self):
-        """ Updates the single color map """
+        """
+        Updates the single color map.
+
+        Returns
+        -------
+        None.
+
+        """
         self.image.dtype = 'Single Color Map'
         for i in self.data:
             if i.dataid == self.hband[0]:
@@ -811,7 +984,14 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.update()
 
     def update_shade_plot(self):
-        """ Updates sun shade plot """
+        """
+        Update sun shade plot.
+
+        Returns
+        -------
+        None.
+
+        """
         self.image.dtype = 'Sunshade'
         data = [None, None]
 
@@ -885,7 +1065,14 @@ class MySunCanvas(FigureCanvas):
         self.setMinimumSize(120, 120)
 
     def init_graph(self):
-        """ Init graph """
+        """
+        Initialise graph.
+
+        Returns
+        -------
+        None.
+
+        """
         self.axes.clear()
         self.axes.set_xticklabels(self.axes.get_xticklabels(), fontsize=8)
         self.axes.set_yticklabels(self.axes.get_yticklabels(), visible=False)
@@ -971,7 +1158,14 @@ class PlotInterp(QtWidgets.QDialog):
         self.labelk.hide()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         helpdocs = menu_default.HelpButton('pygmi.raster.ginterp')
         label1 = QtWidgets.QLabel('Display Type:')
         label2 = QtWidgets.QLabel('Data Bands:')
@@ -1058,19 +1252,40 @@ class PlotInterp(QtWidgets.QDialog):
         self.resize(self.parent.width(), self.parent.height())
 
     def change_blue(self):
-        """ Combo box to change the blue or third display band"""
+        """
+        Change the blue or third display band.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_band3.currentText())
         self.mmc.hband[2] = txt
         self.mmc.init_graph()
 
     def change_cbar(self):
-        """ Change the color map for the color bar """
+        """
+        Change the color map for the color bar.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_cbar.currentText())
         self.mmc.cbar = cm.get_cmap(txt)
         self.mmc.update_graph()
 
     def change_dtype(self):
-        """ Combo box to change display type """
+        """
+        Change display type.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_dtype.currentText())
         self.mmc.gmode = txt
         self.cbox_band1.show()
@@ -1160,34 +1375,70 @@ class PlotInterp(QtWidgets.QDialog):
             self.mmc.init_graph()
 
     def change_green(self):
-        """ Combo box to change the greed or second band"""
+        """
+        Change the greed or second band.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_band2.currentText())
         self.mmc.hband[1] = txt
         self.mmc.init_graph()
 
     def change_hstype(self):
-        """Change the histogram stretch to apply to the sun shaded data"""
+        """
+        Change the histogram stretch to apply to the sun shaded data.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_hstype.currentText())
         self.mmc.hstype = txt
         self.mmc.init_graph()
 
     def change_htype(self):
-        """Change the histogram stretch to apply to the normal data"""
+        """
+        Change the histogram stretch to apply to the normal data.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_htype.currentText())
         self.mmc.htype = txt
         self.mmc.init_graph()
 
     def change_red(self):
-        """ Combo box to change the red or first band"""
+        """
+        Change the red or first band.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_band1.currentText())
         self.mmc.hband[0] = txt
         self.mmc.init_graph()
 
     def data_init(self):
-        """ data init - entry point into routine. This entry point exists for
-        the case  where data must be initialised before entering at the
-        standard 'settings' sub module."""
+        """
+        Data initialise.
 
+        Entry point into routine. This entry point exists for
+        the case  where data must be initialised before entering at the
+        standard 'settings' sub module.
+
+        Returns
+        -------
+        None.
+
+        """
         if 'Cluster' in self.indata:
             self.indata = copy.deepcopy(self.indata)
             self.indata = dataprep.cluster_to_raster(self.indata)
@@ -1237,8 +1488,13 @@ class PlotInterp(QtWidgets.QDialog):
 
         Parameters
         ----------
-        event - matplotlib button press event
-             event returned by matplotlib when a button is pressed
+        event : matplotlib button press event
+            Event returned by matplotlib when a button is pressed
+
+        Returns
+        -------
+        None.
+
         """
         if event.inaxes == self.msc.axes:
             self.msc.sun.set_xdata(event.xdata)
@@ -1252,7 +1508,15 @@ class PlotInterp(QtWidgets.QDialog):
             self.mmc.update_graph()
 
     def save_img(self):
-        """Save image as a GeoTiff"""
+        """
+        Save image as a GeoTiff.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         ext = 'GeoTiff (*.tif)'
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -1523,7 +1787,7 @@ class PlotInterp(QtWidgets.QDialog):
                                         orientation='horizontal')
             cb.set_label(text)
 
-            fname = filename[:-4]+'_hcbar.tif'
+            fname = filename[:-4]+'_hcbar.png'
             canvas.print_figure(fname, dpi=300)
 
 # Vertical Bar
@@ -1538,7 +1802,7 @@ class PlotInterp(QtWidgets.QDialog):
                                         orientation='vertical')
             cb.set_label(text)
 
-            fname = filename[:-4]+'_vcbar.tif'
+            fname = filename[:-4]+'_vcbar.png'
             canvas.print_figure(fname, dpi=300)
         else:
             fig = Figure()
@@ -1599,7 +1863,7 @@ class PlotInterp(QtWidgets.QDialog):
                            labelbottom='off', labelleft='off')
 
             ax.axis('off')
-            fname = filename[:-4]+'_tern.tif'
+            fname = filename[:-4]+'_tern.png'
             canvas.print_figure(fname, dpi=300)
 
         QtWidgets.QMessageBox.information(self, 'Information',
@@ -1607,8 +1871,18 @@ class PlotInterp(QtWidgets.QDialog):
                                           QtWidgets.QMessageBox.Ok)
 
     def settings(self):
-        """ This is called when the used double clicks the routine from the
-        main PyGMI interface"""
+        """
+        Settings.
+
+        This is called when the used double clicks the routine from the
+        main PyGMI interface.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
 
         if 'Raster' not in self.indata:
             return False
@@ -1626,7 +1900,7 @@ class PlotInterp(QtWidgets.QDialog):
 
 def aspect2(data):
     """
-    Aspect of a dataset
+    Aspect of a dataset.
 
     Parameters
     ----------
@@ -1667,19 +1941,22 @@ def currentshader(data, cell, theta, phi, alpha):
 
     Parameters
     ----------
-    phi : float
-        azimuth
-    theta : float
-        sun elevation (also called g in code below)
+    data : numpy array
+        Dataset to be shaded.
     cell : float
         between 1 and 100 - controls sunshade detail.
+    theta : float
+        sun elevation (also called g in code below)
+    phi : float
+        azimuth
     alpha : float
         how much incident light is reflected (0 to 1)
 
     Returns
     -------
     R : numpy array
-        array containg the shaded results
+        array containg the shaded results.
+
     """
     asp = aspect2(data)
     n = 2
@@ -1706,8 +1983,10 @@ def currentshader(data, cell, theta, phi, alpha):
 
 def histcomp(img, nbr_bins=256):
     """
-    Histogram Compaction - this compacts 5% of the outliers in data,
-    allowing for a cleaner, linear, representation of the data.
+    Histogram Compaction
+
+    This compacts 5% of the outliers in data, allowing for a cleaner, linear
+    representation of the data.
 
     Parameters
     ----------
@@ -1764,10 +2043,11 @@ def histcomp(img, nbr_bins=256):
 
 def histeq(img, nbr_bins=32768):
     """
-    Histogram Equalization - equalizes the histogram to colors. This allows for
-    seeing as much data as possible in the image, at the expense of knowing the
-    real value of the data at a point. It bins the data equally - flattening
-    the distribution.
+    Histogram Equalization.
+
+    Equalizes the histogram to colors. This allows for seeing as much data as
+    possible in the image, at the expense of knowing the real value of the
+    data at a point. It bins the data equally - flattening the distribution.
 
     Parameters
     ----------
@@ -1799,7 +2079,9 @@ def histeq(img, nbr_bins=32768):
 
 def img2rgb(img, cbar=cm.jet):
     """
-    convert image to  4 channel rgba color image
+    Image to RGB.
+
+    convert image to 4 channel rgba color image.
 
     Parameters
     ----------
@@ -1827,7 +2109,7 @@ def img2rgb(img, cbar=cm.jet):
 
 def norm2(dat):
     """
-    Normalise array vector between 0. and 1.
+    Normalise array vector between 0 and 1.
 
     Parameters
     ----------
@@ -1848,7 +2130,7 @@ def norm2(dat):
 
 def norm255(dat):
     """
-    Normalise array vector between 1 and 255
+    Normalise array vector between 1 and 255.
 
     Parameters
     ----------

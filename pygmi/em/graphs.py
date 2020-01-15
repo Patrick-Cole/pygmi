@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Plot Vector Data using Matplotlib."""
+"""Plot Data using Matplotlib."""
 
 from PyQt5 import QtWidgets, QtCore
 from matplotlib.backends.backend_qt5agg import FigureCanvas
@@ -91,7 +91,19 @@ class MyMplCanvas(FigureCanvas):
                                        self.motion_notify_callback)
 
     def button_release_callback(self, event):
-        """Mouse button release callback."""
+        """
+        Mouse button release callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -99,7 +111,19 @@ class MyMplCanvas(FigureCanvas):
         self.ind = None
 
     def motion_notify_callback(self, event):
-        """Move mouse callback."""
+        """
+        Move mouse callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -116,7 +140,20 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.update()
 
     def onpick(self, event):
-        """Picker event."""
+        """
+        Picker event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if event.mouseevent.inaxes is None:
             return False
         if event.mouseevent.button != 1:
@@ -135,19 +172,24 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PData object
-            Point data
-        ival : dictionary key
-            dictionary key Point Data
-        """
+        data : EDI data object
+            EDI data.
+        ival : str
+            dictionary key.
+        itype : str
+            dictionary key.
 
+        Returns
+        -------
+        None.
+
+        """
         data1 = data[ival]
 
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(211, label='Profile')
 
-#        ax1 = self.figure.add_subplot(3, 1, 1)
         ax1.set_title(ival)
         self.axes = ax1
         x = 1/data1.Z.freq
@@ -192,7 +234,6 @@ class MyMplCanvas(FigureCanvas):
         ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
 
         ax2 = self.figure.add_subplot(212, sharex=ax1)
-#        ax2.set_title('Normalised stacked graphs')
 
         ax2.errorbar(x, pha1, yerr=pha1_err, label=label3,
                      ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
@@ -210,21 +251,12 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
-#        for i in data:
-#            tmp = (i.zdata-i.zdata.min())/i.zdata.ptp()
-#            ax2.plot(tmp, label=i.dataid)
-#        ax2.set_ylim([-.1, 1.1])
-#        ax2.legend(bbox_to_anchor=(0., -1.7, 1., -.7), loc=3, ncol=2,
-#                   mode='expand', borderaxespad=0., title='Legend')
-#        self.line, = ax1.plot(data1.zdata, '.-', picker=5)
-
-
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
 class PlotPoints(GraphWindow):
-    """Plot Raster Class."""
+    """Plot points class."""
 
     def __init__(self, parent):
         GraphWindow.__init__(self, parent)
@@ -232,7 +264,14 @@ class PlotPoints(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['MT - EDI']
         i = self.combobox1.currentText()
         i2 = self.combobox2.currentText()

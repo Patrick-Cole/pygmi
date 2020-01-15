@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the main program for the modelling package """
+"""This is the main program for the modelling package."""
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -39,7 +39,8 @@ import pygmi.misc as pmisc
 
 
 class MainWidget(QtWidgets.QMainWindow):
-    """ MainWidget - Widget class to call the main interface """
+    """MainWidget - Widget class to call the main interface."""
+
     def __init__(self, parent):
         QtWidgets.QMainWindow.__init__(self, parent)
 
@@ -97,7 +98,14 @@ class MainWidget(QtWidgets.QMainWindow):
         self.setupui()
 
     def setupui(self):
-        """ Setup for the GUI """
+        """
+        Setup for the GUI.
+
+        Returns
+        -------
+        None.
+
+        """
         centralwidget = QtWidgets.QWidget(self)
         verticallayout = QtWidgets.QVBoxLayout(centralwidget)
         hlayout = QtWidgets.QHBoxLayout()
@@ -131,7 +139,14 @@ class MainWidget(QtWidgets.QMainWindow):
         self.resize(self.parent.width(), self.parent.height())
 
     def savemodel(self):
-        """ Model Save """
+        """
+        Save model.
+
+        Returns
+        -------
+        None.
+
+        """
         self.showtext('Saving Model, please do not close the interface...')
         tmp = iodefs.ExportMod3D(self)
         tmp.indata = self.outdata
@@ -141,7 +156,12 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def help_docs(self):
         """
-        Help Routine
+        Help documentation.
+
+        Returns
+        -------
+        None.
+
         """
         menu_default.HelpDocs(self, 'pygmi.pfmod.prof')
 
@@ -186,14 +206,35 @@ class MainWidget(QtWidgets.QMainWindow):
         return True
 
     def data_reset(self):
-        """ resests the data """
+        """
+        Reset the data.
+
+        Returns
+        -------
+        None.
+
+        """
         if 'Model3D' in self.indata:
             self.lmod1 = self.indata['Model3D'][0]
         self.lmod1.griddata = {}
         self.lmod1.init_calc_grids()
 
     def showtext(self, txt, replacelast=False):
-        """ Show text on the text panel of the main user interface"""
+        """
+        Show text on the text panel of the main user interface.
+
+        Parameters
+        ----------
+        txt : str
+            Text to display.
+        replacelast : bool, optional
+            Whether to replace the last text written. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
         if replacelast is True:
             self.txtmsg = self.txtmsg[:self.txtmsg.rfind('\n')]
             self.txtmsg = self.txtmsg[:self.txtmsg.rfind('\n')]

@@ -85,11 +85,6 @@ class ProcessData(QtWidgets.QDialog):
         label_absbase = QtWidgets.QLabel('Base Station Absolute Gravity (mGal):')
         label_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
 
-#        self.dsb_null.setMaximum(np.finfo(np.double).max)
-#        self.dsb_null.setMinimum(np.finfo(np.double).min)
-#        self.dsb_dxy.setMaximum(9999999999.0)
-#        self.dsb_dxy.setMinimum(0.00001)
-#        self.dsb_dxy.setDecimals(5)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)

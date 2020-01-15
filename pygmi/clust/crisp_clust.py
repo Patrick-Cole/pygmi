@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the main Crisp Clustering set of routines """
+"""Main Crisp Clustering set of routines."""
 
 import os
 import copy
@@ -45,6 +45,7 @@ class CrispClust(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -67,7 +68,6 @@ class CrispClust(QtWidgets.QDialog):
         self.spinbox_maxiterations = QtWidgets.QSpinBox()
         self.spinbox_repeatedruns = QtWidgets.QSpinBox()
         self.spinbox_minclusters = QtWidgets.QSpinBox()
-#        self.checkbox_denorm = QtWidgets.QCheckBox()
         self.groupbox = QtWidgets.QGroupBox()
         self.label_7 = QtWidgets.QLabel()
         self.doublespinbox_constraincluster = QtWidgets.QDoubleSpinBox()
@@ -95,7 +95,14 @@ class CrispClust(QtWidgets.QDialog):
         self.combo()
 
     def setupui(self):
-        """ setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         verticallayout = QtWidgets.QVBoxLayout(self.groupbox)
 
@@ -163,7 +170,14 @@ class CrispClust(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def combo(self):
-        """ Combo box """
+        """
+        Set up combo box.
+
+        Returns
+        -------
+        None.
+
+        """
         i = str(self.combobox_alg.currentText())
         if i == 'w-means':
             self.label_7.show()
@@ -204,7 +218,14 @@ class CrispClust(QtWidgets.QDialog):
         return True
 
     def update_vars(self):
-        """ Updates the variables """
+        """
+        Update the variables.
+
+        Returns
+        -------
+        None.
+
+        """
         self.cltype = str(self.combobox_alg.currentText())
         self.min_cluster = self.spinbox_minclusters.value()
         self.max_cluster = self.spinbox_maxclusters.value()
@@ -212,22 +233,18 @@ class CrispClust(QtWidgets.QDialog):
         self.term_thresh = self.doublespinbox_maxerror.value()
         self.runs = self.spinbox_repeatedruns.value()
         self.constrain = self.doublespinbox_constraincluster.value()
-#        self.denorm = self.checkbox_denorm.isChecked()
 
     def run(self):
-        """ Process data """
+        """
+        Process the data.
+
+        Returns
+        -------
+        None.
+
+        """
         data = copy.copy(self.indata['Raster'])
         self.update_vars()
-#        if datachecks.Datachecks(self).multdata(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).isdata(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).equalsize(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).samecoords(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).iscomplete(data) == False:
-#            return data
 
         cltype = self.cltype
         cov_constr = self.constrain
@@ -497,47 +514,60 @@ class CrispClust(QtWidgets.QDialog):
 
     def crisp_means(self, data, no_clust, cent, centfix, maxit, term_thresh,
                     cltype, cov_constr):
-        """ Crisp Means """
+        """
+        Script enables the crisp clustering of COMPLETE multi-variate datasets.
 
-# [idx, cent, obj_fcn] = crisp_means(data, no_clust, cent, maxit, term_thresh,
-# cltype, cov_constr)
+        Parameters
+        ----------
+        data : numpy array
+            NxP matrix containing the data to be clustered, N is number of
+            samples, P is number of different attributes availabe for each
+            sample.
+        no_clust : int
+            Number of clusters to be used.
+        cent : numpy array
+            cluster centre positions, either empty [] --> randomly guessed
+            center positions will be used for initialisation or NO_CLUSTxP
+            matrix
+        centfix : TYPE
+            Constrains the position of cluster centers, if centfix is empty,
+            cluster centers can freely vary during cluster analysis, otherwise
+            CENTFIX is of equal size to CENT and gives an absolut deviation
+            from initial center positions that should not be exceeded during
+            clustering. Note, CETNFIX applies only if center values are
+            provided by the user.
+        maxit : int
+            number of maximal allowed iterations.
+        term_thresh : float
+            Termination threshold, either empty [] --> go for the maximum
+            number of iterations MAXIT or a scalar giving the minimum
+            reduction of the size of the objective function for two consecutive
+            iterations in Percent.
+        cltype : str
+            either 'kmeans' --> kmeans cluster analysis (spherically shaped
+            cluster), 'det' --> uses the determinant criterion of Spath, H.,
+            "Cluster-Formation and Analyse, chapter3" (ellipsoidal clusters,
+            all cluster use the same ellipsoid), or 'vardet' --> Spath, H.,
+            chapter 4 (each cluster uses its individual ellipsoid). Note: the
+            latter is the crisp version of the Gustafson-Kessel algorithm
+        cov_constr : float
+            scalar between [0 1], values > 0 trim the covariance matrix
+            to avoid needle-like ellpsoids for the clusters, applies only for
+            CLTYPE='vardet', but must always be provided.
 
-# script enables the crisp clustering of COMPLETE multi-variate datasets.
-# (no attributes missing!!!!!!!!!)
-
-# NOTE: All input arguments must be provided, even if they are empty!!!!
-# DATA: NxP matrix containing the data to be clustered, N is number of
-# samples, P is number of different attributes availabe for each sample
-# NO_CLUST: number of clusters to be used
-# CENT: cluster centre positions, either empty [] --> randomly
-# guess center positions will be used for initialisation or NO_CLUSTxP
-# matrix
-# CENTFIX: Constrains the position of cluster centers, if centfix is empty,
-# cluster centers can freely vary during cluster analysis, otherwise
-# CENTFIX is of equal size to CENT and gives an absolut deviation from
-# initial center positions that should not be exceeded during clustering.
-# Note, CETNFIX applies only if center values are provided by the user
-# MAXIT: number of maximal allowed iterations
-# TERM_THRESH: Termination threshold, either empty [] --> go for the maximum
-# number of iterations MAXIT or
-# a scalar giving the minimum reduction of the size of the objective function
-# for two consecutive iterations in Percent
-# CLTYPE: either 'kmeans' --> kmeans cluster analysis (spherically shaped
-# cluster), 'det' --> uses the determinant criterion of Spath, H.,
-# "Cluster-Formation and Analyse, chapter3" (ellipsoidal clusters, all
-# cluster use the same ellipsoid), or 'vardet' --> Spath, H., chapter 4
-# (each cluster uses its individual ellipsoid) Note: the latter is the
-# crisp version of the Gustafson-Kessel algorithm
-# COV_CONSTR: scalar between [0 1], values >0 trimm the covariance matrix
-# to avoid needle-like ellpsoids for the clusters, applies only for
-# CLTYPE='vardet', but must always be provided
-
-# IDX: cluster index number for each sample after the last iteration, column
-# vector
-# CENT: matrix with cluster centre positions after last iteration, one cluster
-# centre per row
-# OBJ_FCN: Vector, size of the objective function after each iteration
-# VRC: Variance Ratio Criterion
+        Returns
+        -------
+        idx : numpy array
+            cluster index number for each sample after the last iteration,
+            column vector.
+        cent : numpy array
+            matrix with cluster centre positions after last iteration, one
+            cluster centre per row
+        obj_fcn : numpy array
+            Vector, size of the objective function after each iteration
+        vrc : numpy array
+            Variance Ratio Criterion
+        """
         self.reportback(' ')
 
         no_samples = data.shape[0]
@@ -557,7 +587,7 @@ class CrispClust(QtWidgets.QDialog):
                           for j in range(no_clust)])  # initial distance -->
 #                                                      Euclidian
 
-        mindist = edist.min(0)  # 0 means row wize minimum
+        mindist = edist.min(0)  # 0 means row wise minimum
         idx = edist.argmin(0)
 
     # initial size of objective function
@@ -621,7 +651,28 @@ class CrispClust(QtWidgets.QDialog):
 
 
 def gcentroids(data, index, no_clust, mindist):
-    """Gcentroids"""
+    """
+    G Centroids.
+
+    Parameters
+    ----------
+    data : numpy array
+        Input data.
+    index : numpy array
+        Cluster index number for each sample.
+    no_clust : int
+        Number of clusters to be used.
+    mindist : numpy array
+        Minimum distances.
+
+    Returns
+    -------
+    centroids : numpy array
+        DESC
+    index : numpy array
+        DESC
+
+    """
 #    no_samples=data.shape[0]
     no_datatypes = data.shape[1]
     centroids = np.tile(np.nan, (no_clust, no_datatypes))
@@ -642,7 +693,30 @@ def gcentroids(data, index, no_clust, mindist):
 
 
 def gdist(data, center, index, no_clust, cltype, cov_constr):
-    """ Gdist routine """
+    """
+    G Dist routine.
+
+    Parameters
+    ----------
+    data : numpy array
+        Input data.
+    center : TYPE
+        DESCRIPTION.
+    index : numpy array
+        Cluster index number for each sample.
+    no_clust : int
+        Number of clusters to be used.
+    cltype : str
+        Clustering type.
+    cov_constr : float
+        scalar between [0 1].
+
+    Returns
+    -------
+    bigd : T
+        De
+
+    """
     no_samples = data.shape[0]
     no_datasets = data.shape[1]
     bigd = np.zeros([no_clust, no_samples])

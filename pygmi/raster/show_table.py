@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is a routine which displays a table graphically with various stats """
+"""This is a routine which displays a table graphically with various stats."""
 
 from PyQt5 import QtWidgets
 import numpy as np
@@ -30,7 +30,7 @@ import scipy.stats.mstats as st
 
 
 class BasicStats(QtWidgets.QDialog):
-    """ Show a summary of basic stats """
+    """Show a summary of basic stats."""
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -46,8 +46,14 @@ class BasicStats(QtWidgets.QDialog):
         self.parent = parent
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
 
+        Returns
+        -------
+        None.
+
+        """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
 
@@ -63,7 +69,14 @@ class BasicStats(QtWidgets.QDialog):
         self.pushbutton_save.clicked.connect(self.save)
 
     def combo(self):
-        """ Combo """
+        """
+        Combo.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox.currentIndex()
         data = self.data[i][:, 1:]
 
@@ -75,7 +88,14 @@ class BasicStats(QtWidgets.QDialog):
         self.tablewidget.resizeColumnsToContents()
 
     def run(self):
-        """ run """
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Raster']
         self.bands, self.cols, self.data = basicstats_calc(data)
 
@@ -96,7 +116,15 @@ class BasicStats(QtWidgets.QDialog):
         self.show()
 
     def save(self):
-        """ Save """
+        """
+        Save Table.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'CSV Format (*.csv)'
         ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
                                                          '.', ext)
@@ -109,7 +137,24 @@ class BasicStats(QtWidgets.QDialog):
 
 
 def basicstats_calc(data):
-    """ Calculate stats """
+    """
+    Calculate statistics.
+
+    Parameters
+    ----------
+    data : PyGMI Data.
+        PyGMI raster dataset.
+
+    Returns
+    -------
+    bands : list
+        Band list, currently only 'Data Column'
+    cols : list
+        Columns for the table
+    dattmp : list
+        List of arrays containing statistics.
+
+    """
 # Minimum, maximum, mean, std dev, median, median abs deviation
 # no samples, no samples in x dir, no samples in y dir, band
     stats = []
@@ -139,7 +184,7 @@ def basicstats_calc(data):
 
 
 class ClusterStats(QtWidgets.QDialog):
-    """ Show a summary of basic stats """
+    """Show a summary of basic statistics."""
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -155,7 +200,14 @@ class ClusterStats(QtWidgets.QDialog):
         self.parent = parent
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         hbl = QtWidgets.QHBoxLayout(self)
         vbl = QtWidgets.QVBoxLayout()
 
@@ -172,7 +224,14 @@ class ClusterStats(QtWidgets.QDialog):
         self.pushbutton_save.clicked.connect(self.save)
 
     def combo(self):
-        """ Combo """
+        """
+        Combo.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox.currentIndex()
         data = self.data[i]
 
@@ -188,7 +247,15 @@ class ClusterStats(QtWidgets.QDialog):
         self.tablewidget.resizeColumnsToContents()
 
     def run(self):
-        """ Run """
+        """
+        Run.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.show()
         data = self.indata['Cluster']
 
@@ -227,7 +294,15 @@ class ClusterStats(QtWidgets.QDialog):
         self.combo()
 
     def save(self):
-        """ Save """
+        """
+        Save Table.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'CSV Format (*.csv)'
         ifile, _ = QtWidgets.QFileDialog.getSaveFileName(self, 'Save Table',
                                                          '.', ext)
@@ -239,9 +314,27 @@ class ClusterStats(QtWidgets.QDialog):
         return True
 
 
-def savetable(ifile, bands, cols, data):
-    """ Save tabular data """
-    fobj = open(ifile, 'a')
+def savetable(ofile, bands, cols, data):
+    """
+    Save tabular data.
+
+    Parameters
+    ----------
+    ofile : str
+        Output file name.
+    bands : list
+        List of bands.
+    cols : list
+        List of column headings.
+    data : list
+        List of arrays containing statistics.
+
+    Returns
+    -------
+    None.
+
+    """
+    fobj = open(ofile, 'a')
 
     htmp = cols[0]
     for i in cols[1:]:

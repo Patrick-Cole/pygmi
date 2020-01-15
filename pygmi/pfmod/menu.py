@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Potential Field Modelling """
+"""Potential Field Modelling menus."""
 
 from PyQt5 import QtWidgets
 import pygmi.pfmod.pfmod as pfmod
@@ -43,6 +43,7 @@ class MenuWidget():
     parent : pygmi.main.MainWidget
         Reference to MainWidget class found in main.py
     """
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -83,29 +84,29 @@ class MenuWidget():
         self.action_export_mod3d.triggered.connect(self.export_mod3d)
 
     def export_mod3d(self):
-        """ Export 3D Model """
+        """Export 3D Model."""
         self.parent.launch_context_item(iodefs.ExportMod3D)
 
     def pfmod(self):
-        """ voxel modelling of data"""
+        """Voxel modelling of data."""
         fnc = pfmod.MainWidget(self.parent)
         self.parent.item_insert('Step', 'Potential\nField\nModelling', fnc)
 
     def mod3d(self):
-        """ 3D display of data"""
+        """3D display of data."""
         self.parent.launch_context_item(mvis3d.Mod3dDisplay)
 
     def import_mod3d(self):
-        """ Imports data"""
+        """Import data."""
         fnc = iodefs.ImportMod3D(self.parent)
         self.parent.item_insert('Io', 'Import 3D Model', fnc)
 
     def merge_mod3d(self):
-        """ Imports data"""
+        """Merge models."""
         fnc = misc.MergeMod3D(self.parent)
         self.parent.item_insert('Step', 'Merge 3D Models', fnc)
 
     def import_prof_pic(self):
-        """ Imports data"""
+        """Import profile pictures."""
         fnc = iodefs.ImportPicture(self.parent)
         self.parent.item_insert('Io', 'Import Profile\n Picture', fnc)

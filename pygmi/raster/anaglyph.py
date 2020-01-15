@@ -69,14 +69,21 @@ class MyMplCanvas(FigureCanvas):
 
     def update_contours(self, data1, scale=7, rotang=10):
         """
-        Update the raster plot.
+        Update the contour plot.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used in contouring
-        data2 : PyGMI point PData
-            points to be plotted over raster image
+        data1 : PyGMI raster data.
+            raster dataset to be used in contouring.
+        scale : float, optional
+            Scale. The default is 7.
+        rotang : float, optional
+            Rotation in degrees. The default is 10.
+
+        Returns
+        -------
+        None.
+
         """
         self.scale = scale
         self.rotang = rotang
@@ -157,8 +164,21 @@ class MyMplCanvas(FigureCanvas):
         ----------
         data1 : PyGMI raster Data
             raster dataset to be used in contouring
-        data2 : PyGMI point PData
-            points to be plotted over raster image
+        scale : float, optional
+            Scale. The default is 7.
+        rotang : float, optional
+            Rotation in degrees. The default is 10.
+        atype : str, optional
+            Anaglyph type. The default is 'dubois'.
+        cmap : matplotlib.colors.LinearSegmentedColormap, optional
+            Matplotlib colormap. The default is cm.jet.
+        shade : bool, optional
+            Option to choose sunshading. The default is False.
+
+        Returns
+        -------
+        None.
+
         """
         self.scale = scale
         self.rotang = rotang
@@ -178,14 +198,21 @@ class MyMplCanvas(FigureCanvas):
 
     def update_colors(self, doshade=False, cmap=cm.jet, atype='dubois'):
         """
-        Update the raster plot.
+        Update colors.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used in contouring
-        data2 : PyGMI point PData
-            points to be plotted over raster image
+        doshade : bool, optional
+            Option to choose sunshading. The default is False.
+        cmap : matplotlib.colors.LinearSegmentedColormap, optional
+            Matplotlib colormap. The default is cm.jet.
+        atype : str, optional
+            Anaglyph type. The default is 'dubois'.
+
+        Returns
+        -------
+        None.
+
         """
         if not doshade:
             zmin = -2 * np.std(self.z)
@@ -216,14 +243,17 @@ class MyMplCanvas(FigureCanvas):
 
     def update_atype(self, atype='dubois'):
         """
-        Update the raster plot.
+        Update anaglyph type.
 
         Parameters
         ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used in contouring
-        data2 : PyGMI point PData
-            points to be plotted over raster image
+        atype : str, optional
+            Anaglyph type. The default is 'dubois'.
+
+        Returns
+        -------
+        None.
+
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
@@ -362,7 +392,14 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.slider_cnt.sliderReleased.connect(self.change_contours)
 
     def change_all(self):
-        """Combo box to choose band."""
+        """
+        Update from all combos.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentIndex()
         txt = str(self.cbox_cbar.currentText())
         cbar = cm.get_cmap(txt)
@@ -380,7 +417,14 @@ class PlotAnaglyph(QtWidgets.QDialog):
                                    rotang=rotang)
 
     def change_colors(self):
-        """Combo box to choose band."""
+        """
+        Update color bar.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = str(self.cbox_cbar.currentText())
         cbar = cm.get_cmap(txt)
         shade = self.doshade.isChecked()
@@ -389,11 +433,25 @@ class PlotAnaglyph(QtWidgets.QDialog):
                                cmap=cbar, doshade=shade)
 
     def change_atype(self):
-        """Combo box to choose band."""
+        """
+        Update anaglyph type.
+
+        Returns
+        -------
+        None.
+
+        """
         self.mmc.update_atype(atype=self.combobox2.currentText())
 
     def change_contours(self):
-        """Combo box to choose band."""
+        """
+        Update contours.
+
+        Returns
+        -------
+        None.
+
+        """
         self.docontour.setChecked(True)
 #        self.slider_scale.setValue(3)
 #        self.slider_angle.setValue(5)
@@ -413,7 +471,14 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
 
     def change_image(self):
-        """Combo."""
+        """
+        Change Image, setting defaults.
+
+        Returns
+        -------
+        None.
+
+        """
         self.slider_scale.setValue(5)
         self.slider_angle.setValue(10)
         self.doshade.setEnabled(True)
@@ -446,13 +511,29 @@ class PlotAnaglyph(QtWidgets.QDialog):
 def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
              cmap=cm.terrain):
     """
-    Sunshade.
+    Perform Sunshading on data.
 
-    data: input MxN data to be imaged
-    alpha: how much incident light is reflected (0 to 1)
-    phi: azimuth
-    theta: sun elevation
-    cell: between 1 and 100 - controls sunshade detail.
+    Parameters
+    ----------
+    data : numpy array
+        input MxN data to be imaged.
+    azim : float, optional
+        Sun azimuth. The default is -np.pi/4..
+    elev : float, optional
+        Sun elevation. The default is np.pi/4..
+    alpha : float, optional
+        how much incident light is reflected (0 to 1). The default is 1.
+    cell : float, optional
+        between 1 and 100 - controls sunshade detail. The default is 100.
+    cmap : matplotlib.colors.LinearSegmentedColormap, optional
+        Matplotlib colormap. The default is cm.terrain.
+
+
+    Returns
+    -------
+    colormap : numpy array
+        Output color mapped array (MxNx4).
+
     """
     mask = np.ma.getmaskarray(data)
 
@@ -471,7 +552,24 @@ def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
 
 
 def norm2(dat, datmin=None, datmax=None):
-    """Normalise vector."""
+    """
+    Normalise vector.
+
+    Parameters
+    ----------
+    dat : numpy array
+        Vector to be normalised.
+    datmin : float, optional
+        Minimum dat value. The default is None.
+    datmax : float, optional
+        Maximum dat value. The default is None.
+
+    Returns
+    -------
+    numpy array
+        Normalised output data.
+
+    """
     if datmin is None:
         datmin = np.min(dat)
     if datmax is None:
@@ -483,10 +581,24 @@ def currentshader(data, cell, theta, phi, alpha):
     """
     Blinn shader.
 
-    alpha: how much incident light is reflected
-    n: how compact the bright patch is
-    phi: azimuth
-    theta: sun elevation (also called g in code below)
+    Parameters
+    ----------
+    data : numpy array
+        input MxN data to be imaged.
+    cell : float
+        between 1 and 100 - controls sunshade detail.
+    theta : float
+        sun elevation (also called g in code below).
+    phi : float
+        azimuth.
+    alpha : float
+        how much incident light is reflected.
+
+    Returns
+    -------
+    R : numpy array
+        Output data.
+
     """
     cdy = np.array([[1., 2., 1.], [0., 0., 0.], [-1., -2., -1.]])
     cdx = np.array([[1., 0., -1.], [2., 0., -2.], [1., 0., -1.]])
@@ -523,7 +635,24 @@ def currentshader(data, cell, theta, phi, alpha):
 
 
 def histcomp(img, nbr_bins=256, perc=5.):
-    """Histogram Compaction."""
+    """
+    Histogram compaction.
+
+    Parameters
+    ----------
+    img : numpy masked array
+        Input data.
+    nbr_bins : int, optional
+        Number of bins. The default is 256.
+    perc : float, optional
+        Percentage to clip. The default is 5.
+
+    Returns
+    -------
+    img2 : numpy array
+        Output data.
+
+    """
     tmp = img.compressed()
 
     imhist, bins = np.histogram(tmp, nbr_bins)
@@ -559,7 +688,24 @@ def histcomp(img, nbr_bins=256, perc=5.):
 
 
 def anaglyph(red, blue, atype='dubois'):
-    """Color Anaglyph."""
+    """
+    Color Anaglyph.
+
+    Parameters
+    ----------
+    red : numpy array
+        Dataset for red channel.
+    blue : numpy array
+        Dataset for blue channel.
+    atype : TYPE, optional
+        Anaglyph type. The default is 'dubois'.
+
+    Returns
+    -------
+    rgb : numpy array
+        Output dataset.
+
+    """
     if 'Dubois' in atype:
         mat = np.array([[0.437, 0.449, 0.164, -0.011, -0.032, -0.007],
                         [-0.062, -0.062, -0.024, 0.377, 0.761, 0.009],
@@ -619,7 +765,28 @@ def anaglyph(red, blue, atype='dubois'):
 
 
 def rot_and_clean(x, y, z, rotang=5, rtype='red'):
-    """Rotate and clean rotated data for 2d view."""
+    """
+    Rotate and clean rotated data for 2d view.
+
+    Parameters
+    ----------
+    x : numpy array
+        X coordinates.
+    y : numpy array
+        Y coordinates.
+    z : numpy array
+        Z coordinates (or data values).
+    rotang : float, optional
+        Rotation angle. The default is 5.
+    rtype : str, optional
+        Rotation type. The default is 'red'.
+
+    Returns
+    -------
+    zmap : numpy array
+        Output data.
+
+    """
     if rtype == 'red':
         rotang = -1. * abs(rotang)
     else:

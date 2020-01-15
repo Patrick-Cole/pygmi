@@ -23,11 +23,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Tilt Depth Routine
+Tilt Depth Routine.
+
 Based on work by EH Stettler
 
-References:
-    Salem et al., 2007, Leading Edge, Dec,p1502-5
+References
+----------
+Salem et al., 2007, Leading Edge, Dec,p1502-5
 """
 
 import os
@@ -49,7 +51,7 @@ from pygmi.raster.datatypes import Data
 
 class TiltDepth(QtWidgets.QDialog):
     """
-    This is the primary class for the Tilt Depth.
+    Primary class for the Tilt Depth.
 
     Attributes
     ----------
@@ -62,6 +64,7 @@ class TiltDepth(QtWidgets.QDialog):
     self.mmc : FigureCanvas
         main canvas containing the image
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
@@ -99,7 +102,14 @@ class TiltDepth(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         helpdocs = menu_default.HelpButton('pygmi.raster.tiltdepth')
         label2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
         labelc = QtWidgets.QLabel('Color Bar:')
@@ -150,8 +160,15 @@ class TiltDepth(QtWidgets.QDialog):
         self.btn_save.clicked.connect(self.save_depths)
 
     def save_depths(self):
-        """ Save Depths """
+        """
+        Save depths.
 
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if self.depths is None:
             return False
 
@@ -173,7 +190,14 @@ class TiltDepth(QtWidgets.QDialog):
         return True
 
     def change_cbar(self):
-        """ Change the color map for the color bar """
+        """
+        Change the color map for the color bar.
+
+        Returns
+        -------
+        None.
+
+        """
         zout = self.indata['Raster'][0]
         txt = str(self.cbox_cbar.currentText())
 
@@ -205,8 +229,12 @@ class TiltDepth(QtWidgets.QDialog):
 
     def change_band1(self):
         """
-        Action which occurs when button is pressed. Combo box to change
-        the first band.
+        Action which occurs when apply button is pressed.
+
+        Returns
+        -------
+        None.
+
         """
         txt = str(self.cbox_band1.currentText())
 
@@ -224,8 +252,23 @@ class TiltDepth(QtWidgets.QDialog):
         QtWidgets.QApplication.processEvents()
 
     def settings(self, test=False):
-        """ This is called when the used double clicks the routine from the
-        main PyGMI interface"""
+        """
+        Entry point.
+
+        This is called when the used double clicks the routine from the
+        main PyGMI interface.
+
+        Parameters
+        ----------
+        test : bool, optional
+            Parameter indicating testing. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Raster' not in self.indata:
             return False
 
@@ -246,7 +289,21 @@ class TiltDepth(QtWidgets.QDialog):
         return True
 
     def tiltdepth(self, data):
-        """ Calculate tilt depth """
+        """
+        Calculate tilt depth.
+
+        Output is stored in self.outdata.
+
+        Parameters
+        ----------
+        data : PyGMI Data.
+            PyGMI raster dataset.
+
+        Returns
+        -------
+        None.
+
+        """
         self.pbar.setValue(0)
         self.pbar.setMaximum(4)
 
@@ -358,29 +415,29 @@ class TiltDepth(QtWidgets.QDialog):
 
 
 @jit(nopython=True, nogil=True)
-def distpc2(dx, dy, dx0, dy0, dmin):
-    """ Find closest distances """
-
-    num = dx.size
-    num2 = dx0.size
-
-    dmin2 = (dx0[0]-dx[0])**2+(dy0[0]-dy[0])**2
-    dcnt = 0
-
-    for j in range(num2):
-        for i in range(num):
-            dist = (dx0[j]-dx[i])**2+(dy0[j]-dy[i])**2
-            if dmin2 < dist:
-                dcnt = i
-                dmin2 = dist
-        dmin[j] = dcnt
-    return dmin
-
-
-@jit(nopython=True, nogil=True)
 def distpc(dx, dy, dx0, dy0, dcnt):
-    """ Find closest distances """
+    """
+    Find closest distances.
 
+    Parameters
+    ----------
+    dx : numpy array
+        X array.
+    dy : numpy array
+        Y array.
+    dx0 : float
+        X point to measure distance from.
+    dy0 : float
+        Y point to measure distance from.
+    dcnt : int
+        Starting index to measure distance from.
+
+    Returns
+    -------
+    dcnt : int
+        Index of closest distance found in x and y arrays.
+
+    """
     num = dx.size
     dmin = (dx0-dx[dcnt])**2+(dy0-dy[dcnt])**2
 
@@ -394,8 +451,26 @@ def distpc(dx, dy, dx0, dy0, dcnt):
 
 
 def vgrad(cnt):
-    """ Gets contour gradients at vertices """
+    """
+    Get contour gradients at vertices.
 
+    Parameters
+    ----------
+    cnt : axes.contour
+        Output from Matplotlib's axes.contour.
+
+    Returns
+    -------
+    gx : numpy array
+        X gradients.
+    gy : numpy array
+        Y gradients.
+    cgrad : numpy array
+        Countour gradient.
+    cntid : numpy array
+        Contour index.
+
+    """
     gx = []
     gy = []
     dx2 = []
@@ -422,30 +497,3 @@ def vgrad(cnt):
     cgrad[cgrad < -90] += 180.
 
     return np.array(gx), np.array(gy), cgrad, np.array(cntid)
-
-
-def vgrad2(cnt):
-    """ Gets contour gradients at vertices """
-
-    gx = np.array([])
-    gy = np.array([])
-    dx2 = np.array([])
-    dy2 = np.array([])
-
-    for i in cnt.collections[0].get_paths():
-        cntvert = i.vertices
-
-        dx = cntvert[:, 0][1:] - cntvert[:, 0][:-1]
-        dy = cntvert[:, 1][1:] - cntvert[:, 1][:-1]
-
-        gx = np.append(gx, cntvert[:, 0][:-1] + dx/2)
-        gy = np.append(gy, cntvert[:, 1][:-1] + dy/2)
-        dx2 = np.append(dx2, dx)
-        dy2 = np.append(dy2, dy)
-
-    cgrad = np.arctan2(dy2, dx2)
-    cgrad = np.rad2deg(cgrad)
-    cgrad[cgrad > 90] -= 180.
-    cgrad[cgrad < -90] += 180.
-
-    return gx, gy, cgrad, np.zeros_like(gx)

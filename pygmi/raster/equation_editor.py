@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is the function which calls the equation editor """
+"""This is the function which calls the equation editor."""
 
 import copy
 from PyQt5 import QtWidgets, QtCore
@@ -33,7 +33,7 @@ import pygmi.raster.dataprep as dataprep
 
 class EquationEditor(QtWidgets.QDialog):
     """
-    Equation Editor
+    Equation Editor.
 
     This class allows the input of equations using raster datasets as
     variables. This is commonly done in remote sensing applications, where
@@ -54,6 +54,7 @@ class EquationEditor(QtWidgets.QDialog):
     bandsall : list
         list of all bands
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -76,7 +77,14 @@ class EquationEditor(QtWidgets.QDialog):
 #        self.equation = self.textbrowser.toPlainText()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         label_2 = QtWidgets.QLabel('Output Equation:')
@@ -135,14 +143,35 @@ class EquationEditor(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def combo(self):
-        """ update combo information """
+        """
+        Update combo information.
+
+        Returns
+        -------
+        None.
+
+        """
         txt = self.combobox.currentText()
-        if txt == '':
-            return
-        self.label.setText(': '+self.bands[txt])
+        if txt != '':
+            self.label.setText(': '+self.bands[txt])
 
     def eq_fix(self, indata, equation):
-        """ Corrects names in equation to variable names """
+        """
+        Corrects names in equation to variable names.
+
+        Parameters
+        ----------
+        indata : PyGMI Data
+            PyGMI raster dataset.
+        equation : str
+            Equation written as a string.
+
+        Returns
+        -------
+        neweq : str
+            Corrected equation.
+
+        """
         neweq = str(equation)
         neweq = neweq.replace('ln', 'log')
         neweq = neweq.replace('^', '**')
@@ -150,9 +179,14 @@ class EquationEditor(QtWidgets.QDialog):
 
         return neweq
 
-    def settings(self, equation = None):
+    def settings(self, equation=None):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        equation : str, optional
+            Equation submitted (for testing). The default is None.
 
         Returns
         -------
@@ -233,7 +267,6 @@ class EquationEditor(QtWidgets.QDialog):
             findat.shape = (1, findat.shape[0], findat.shape[1])
 
         for i, findati in enumerate(findat):
-#            mask = np.ma.getmaskarray(indata[i].data)
             findati[mask] = indata[i].nullvalue
 
             outdata.append(copy.copy(indata[i]))
@@ -257,7 +290,7 @@ class EquationEditor(QtWidgets.QDialog):
 
 def hmode(data):
     """
-    Mode - this uses a histogram to generate a fast mode estimate
+    Mode - this uses a histogram to generate a fast mode estimate.
 
     Parameters
     ----------
@@ -267,7 +300,7 @@ def hmode(data):
     Returns
     -------
     mode2 : float
-        mode value
+        mode value.
     """
     mmin = np.min(data)
     mmax = np.max(data)

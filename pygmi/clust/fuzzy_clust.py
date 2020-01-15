@@ -98,7 +98,14 @@ class FuzzyClust(QtWidgets.QDialog):
         self.combo()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         groupbox = QtWidgets.QGroupBox(self)
         verticallayout = QtWidgets.QVBoxLayout(groupbox)
@@ -393,7 +400,7 @@ class FuzzyClust(QtWidgets.QDialog):
                         clvrc = clvrc1
                         startmdat = {i: startm1dat[i]}
 
-            clalp = np.array(clu).max(0)  # 0 means row wize max?
+            clalp = np.array(clu).max(0)  # 0 means row wise max?
             clidx = np.array(clu).argmax(0)
             clalp = clalp - (1.0 / clcent.shape[0])
             clalp = clalp / clalp.max()

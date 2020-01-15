@@ -469,7 +469,14 @@ class ScatterPlot(QtWidgets.QDialog):
         self.map.mindx = self.m
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         grid_main = QtWidgets.QGridLayout(self)
         group_cp = QtWidgets.QGroupBox('Cross Plot Settings')
         grid_left = QtWidgets.QGridLayout(group_cp)

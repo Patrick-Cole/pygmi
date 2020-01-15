@@ -3,6 +3,7 @@ _modules/
 .doctrees/
 .pylint.d/
 .hypothesis/
+.pytest_cache/
 .empty/
 .spyproject/
 build/

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Smooth Data """
+"""Smooth Data."""
 
 import copy
 import warnings
@@ -33,7 +33,8 @@ import pygmi.menu_default as menu_default
 
 
 class Smooth(QtWidgets.QDialog):
-    """ Smooth """
+    """Smooth."""
+
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -70,8 +71,14 @@ class Smooth(QtWidgets.QDialog):
         self.choosefilter()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
 
+        Returns
+        -------
+        None.
+
+        """
         gridlayout = QtWidgets.QGridLayout(self)
         groupbox = QtWidgets.QGroupBox('Filter Size')
         gridlayout_2 = QtWidgets.QGridLayout(groupbox)
@@ -172,7 +179,14 @@ class Smooth(QtWidgets.QDialog):
         return True
 
     def choosefilter(self):
-        """ Section to choose the filter """
+        """
+        Section to choose the filter.
+
+        Returns
+        -------
+        None.
+
+        """
         # Do not need to check whether inputs are greater than zero,
         # since the spinboxes will not permit it.
 
@@ -232,7 +246,14 @@ class Smooth(QtWidgets.QDialog):
         self.updatetable()
 
     def updatetable(self):
-        """ Update Table """
+        """
+        Update table.
+
+        Returns
+        -------
+        None.
+
+        """
         if self.fmat is None:
             return
 
@@ -261,12 +282,45 @@ class Smooth(QtWidgets.QDialog):
         self.tablewidget.resizeColumnsToContents()
 
     def msgbox(self, title, message):
-        """ Msgbox """
+        """
+        Message box.
+
+        Parameters
+        ----------
+        title : str
+            Title for message box.
+        message : str
+            Text for message box.
+
+        Returns
+        -------
+        None.
+
+        """
         QtWidgets.QMessageBox.warning(self.parent, title, message,
                                       QtWidgets.QMessageBox.Ok)
 
     def mov_win_filt(self, dat, fmat, itype, title):
-        """ move win filt function """
+        """
+        Apply moving window filter function to data.
+
+        Parameters
+        ----------
+        dat : numpy array.
+            Data for a PyGMI raster dataset.
+        fmat : TYPE
+            DESCRIPTION.
+        itype : str
+            Filter type. Can be '2D Mean' or '2D Median'.
+        title : str
+            Text for reportback function.
+
+        Returns
+        -------
+        out : numpy array
+            Data for a PyGMI raster dataset.
+
+        """
         out = dat.tolist()
 
         rowf = fmat.shape[0]
@@ -286,7 +340,6 @@ class Smooth(QtWidgets.QDialog):
 
         if itype == '2D Mean':
             out = ssig.correlate(dat, fmat, 'same', method='direct')
-            #self.pbar.to_max()
 
         elif itype == '2D Median':
             self.reportback('Calculating Median...')
@@ -313,21 +366,11 @@ class Smooth(QtWidgets.QDialog):
 
 
 def filters2d(filtertype, sze, *sigma):
-    """ Filters 2D
+    """
+    Filter 2D.
 
     These filter definitions have been translated from the octave function
     'fspecial'.
-
-    Args:
-        filtertype (str): Type of filter. Can be 'average', 'disc' or
-            'gaussian'.
-        sze (numpy array or integer): This is a integer radius for 'disc' or a
-            vector containing rows and columns otherwize.
-        sigma (numpy array): numpy array containing std deviation. Used in
-            'gaussian'
-
-    Return:
-        numpy array: Returns the filter to be used.
 
     Copyright (C) 2005 Peter Kovesi
 
@@ -352,26 +395,41 @@ def filters2d(filtertype, sze, *sigma):
 
     filtertype can be
 
-|       'average'   - Rectangular averaging filter
-|       'disc'      - Circular averaging filter.
-|       'gaussian'  - Gaussian filter.
+    |   'average'   - Rectangular averaging filter
+    |   'disc'      - Circular averaging filter.
+    |   'gaussian'  - Gaussian filter.
 
     The parameters that need to be specified depend on the filtertype
 
     Examples of use and associated default values:
 
-|     f = fspecial('average',sze)           sze can be a 1 or 2 vector
-|                                            default is [3 3].
-|     f = fspecial('disk',radius)           default radius = 5
-|     f = fspecial('gaussian',sze, sigma)   default sigma is 0.5
+    |   f = fspecial('average',sze)           sze can be a 1 or 2 vector
+    |                                         default is [3 3].
+    |   f = fspecial('disk',radius)           default radius = 5
+    |   f = fspecial('gaussian',sze, sigma)   default sigma is 0.5
 
     Where sze is specified as a single value the filter will be square.
 
-|    Author:   Peter Kovesi <pk@csse.uwa.edu.au>
-|    Keywords: image processing, spatial filters
-|    Created:  August 2005
-    """
+    Author:   Peter Kovesi <pk@csse.uwa.edu.au>
+    Keywords: image processing, spatial filters
+    Created:  August 2005
 
+    Parameters
+    ----------
+    filtertype : str
+        Type of filter. Can be 'average', 'disc' or 'gaussian'.
+    sze : numpy array or integer)
+        This is a integer radius for 'disc' or a vector containing rows and
+        columns otherwise.
+    sigma : numpy array
+        numpy array containing std deviation. Used in 'gaussian'.
+
+    Returns
+    -------
+    f : numpy array
+        Returns the filter to be used.
+
+    """
     if filtertype == 'disc':
         radius = sze
         sze = [2*radius+1, 2*radius+1]

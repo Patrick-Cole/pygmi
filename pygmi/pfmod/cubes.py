@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" This is code for the 3d model creation. """
+"""This is code for the 3d model creation."""
 
 from __future__ import print_function
 
@@ -52,7 +52,8 @@ from matplotlib.figure import Figure
 
 
 class Mod3dDisplay(QtWidgets.QDialog):
-    """ Widget class to call the main interface """
+    """Widget class to call the main interface."""
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
         self.parent = parent
@@ -109,7 +110,14 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         horizontallayout = QtWidgets.QHBoxLayout(self)
         vbox_cmodel = QtWidgets.QVBoxLayout()
         verticallayout = QtWidgets.QVBoxLayout()
@@ -160,7 +168,14 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
 
     def save(self):
-        """ This saves a jpg """
+        """
+        Save a jpg.
+
+        Returns
+        -------
+        None.
+
+        """
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'JPG (*.jpg);;PNG (*.png)')
         if filename == '':
@@ -183,8 +198,14 @@ class Mod3dDisplay(QtWidgets.QDialog):
         image.save(filename, ftype)
 
     def update_for_kmz(self):
-        """ Updates for the kmz file """
+        """
+        Update for the kmz file
 
+        Returns
+        -------
+        None.
+
+        """
         self.gpoints = self.corners
         self.gnorms = self.norms
         self.gfaces = {}
@@ -200,18 +221,39 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.glutlith = range(1, len(self.gfaces)+1)
 
     def change_defs(self):
-        """ List box routine """
+        """
+        List box routine
+
+        Returns
+        -------
+        None.
+
+        """
         if not self.lmod1.lith_list:
             return
         self.set_selected_liths()
         self.update_color()
 
     def data_init(self):
-        """ Data initialisation routine """
+        """
+        Data initialisation routine.
+
+        Returns
+        -------
+        None.
+
+        """
         self.outdata = self.indata
 
     def set_selected_liths(self):
-        """ Sets the selected lithologies """
+        """
+        Set the selected lithologies.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.lw_3dmod_defs.selectedItems()
 
         itxt = [j.text() for j in i]
@@ -269,7 +311,14 @@ class Mod3dDisplay(QtWidgets.QDialog):
 #            self.mmc.update_graph()
 
     def update_color(self):
-        """ Update color only """
+        """
+        Update color only.
+
+        Returns
+        -------
+        None.
+
+        """
         liths = np.unique(self.gdata)
         liths = liths[liths < 900]
 
@@ -306,7 +355,15 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.glwidget.updateGL()
 
     def run(self):
-        """ Process data """
+        """
+        Run.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Model3D' not in self.indata:
             self.showprocesslog('No 3D model. You may need to execute' +
                                 ' that module first')
@@ -337,7 +394,14 @@ class Mod3dDisplay(QtWidgets.QDialog):
         return True
 
     def update_plot(self):
-        """ Update 3D Model """
+        """
+        Update 3D Model.
+
+        Returns
+        -------
+        None.
+
+        """
         QtWidgets.QApplication.processEvents()
 
     # Update 3D model
@@ -373,8 +437,22 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.glwidget.updateGL()
 
     def update_model(self, issmooth=None):
-        """ Update the 3d model. Faces, nodes and face normals are calculated
-        here, from the voxel model. """
+        """
+        Update the 3d model.
+
+        Faces, nodes and face normals are calculated here, from the voxel
+        model.
+
+        Parameters
+        ----------
+        issmooth : bool, optional
+            Flag to indicate a smooth model. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         QtWidgets.QApplication.processEvents()
 
         if issmooth is None:
@@ -521,7 +599,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
                 if vtx.size == 0:
                     self.lmod1.update_lith_list_reverse()
-                    lithtext = self.lmod1.lith_list_reverse[lno]
+#                    lithtext = self.lmod1.lith_list_reverse[lno]
 #                    print(lithtext)
 
                     self.faces[lno] = []
@@ -539,8 +617,14 @@ class Mod3dDisplay(QtWidgets.QDialog):
             self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
 
     def update_model2(self):
-        """ Update the 3d model. Faces, nodes and face normals are calculated
-        here, from the voxel model. """
+        """
+        Update the 3d model part 2.
+
+        Returns
+        -------
+        None.
+
+        """
 
         self.glwidget.is_ortho = self.checkbox_ortho.isChecked()
         self.glwidget.has_axis = self.checkbox_axis.isChecked()
@@ -624,7 +708,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
 
 class GLWidget(QtOpenGL.QGLWidget):
-    """ OpenGL Widget """
+    """OpenGL Widget."""
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -684,33 +769,92 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.lastPos = QtCore.QPoint()
 
     def minimumSizeHint(self):
-        """ minimum size hint """
+        """
+        Minimum size hint.
+
+        Returns
+        -------
+        QtCore.QSize
+            Returns a size of (50, 50)
+
+        """
         return QtCore.QSize(50, 50)
 
     def sizeHint(self):
-        """ size hint """
+        """
+        Size hint.
+
+        Returns
+        -------
+        QtCore.QSize
+            Returns a size of (400, 400)
+
+        """
         return QtCore.QSize(400, 400)
 
     def setXRotation(self, angle):
-        """ set X rotation """
+        """
+        Set X rotation.
+
+        Parameters
+        ----------
+        angle : float
+            X angle of rotation.
+
+        Returns
+        -------
+        None.
+
+        """
         angle = self.normalizeAngle(angle)
         if angle != self.xRot:
             self.xRot = angle
 
     def setYRotation(self, angle):
-        """ set Y rotation """
+        """
+        Set Y Rotation.
+
+        Parameters
+        ----------
+        angle : float
+            Y angle of rotation.
+
+        Returns
+        -------
+        None.
+
+        """
         angle = self.normalizeAngle(angle)
         if angle != self.yRot:
             self.yRot = angle
 
     def setZRotation(self, angle):
-        """ set Z rotation """
+        """
+        Set Z rotation.
+
+        Parameters
+        ----------
+        angle : float
+            Z angle of rotation.
+
+        Returns
+        -------
+        None.
+
+        """
         angle = self.normalizeAngle(angle)
         if angle != self.zRot:
             self.zRot = angle
 
     def initializeGL(self):
-        """ initialize OpenGL """
+        """
+        Initialise OpenGL.
+
+        Returns
+        -------
+        None.
+
+        """
         GLUT.glutInit()
         ctmp = QtGui.QColor.fromCmykF(0., 0., 0., 0.0)
         self.qglClearColor(ctmp)
@@ -733,16 +877,46 @@ class GLWidget(QtOpenGL.QGLWidget):
                      [-0.7071, -0.7071, 0.7071, 0.])
 
     def setlightdir(self, x, y, z):
-        """ sets light direction """
+        """
+        Set light direction.
+
+        Parameters
+        ----------
+        x : float
+            X light position.
+        y : float
+            Y light position.
+        z : float
+            Z light position.
+
+        Returns
+        -------
+        None.
+
+        """
         lightpos = [x, y, z, 0]
         GL.glLightfv(GL.GL_LIGHT0, GL.GL_POSITION, lightpos)
 
     def initGeometry(self):
-        """ Initialize Geometry """
+        """
+        Initialise geometry.
+
+        Returns
+        -------
+        None.
+
+        """
         self.init_object()
 
     def init_object(self):
-        """ Initialise VBO """
+        """
+        Initialise VBO.
+
+        Returns
+        -------
+        None.
+
+        """
         self.cubeNrmArray.shape = self.cubeVtxArray.shape
 
         data = np.hstack((self.cubeVtxArray,
@@ -762,7 +936,14 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.init_projection()
 
     def paintGL(self):
-        """ Paint OpenGL """
+        """
+        Paint OpenGL.
+
+        Returns
+        -------
+        None.
+
+        """
         float_size = 4
         voff = 0 * float_size
         coff = 3 * float_size
@@ -807,8 +988,14 @@ class GLWidget(QtOpenGL.QGLWidget):
             self.draw_with_axis()
 
     def draw_with_axis(self):
-        """ draws with a set of axis """
+        """
+        Draw with a set of axes.
 
+        Returns
+        -------
+        None.
+
+        """
         GL.glDisable(GL.GL_LIGHTING)
 
         xmin, ymin, zmin = self.cubeVtxArray.min(0)
@@ -895,15 +1082,46 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnable(GL.GL_LIGHTING)
 
     def print_string(self, x, y, z, text):
-        """ Prints a 2D text string """
+        """
+        Print a 2D text string.
 
+        Parameters
+        ----------
+        x : float
+            X coordinate.
+        y : float
+            Y coordinate.
+        z : float
+            Z coordinate.
+        text : str
+            Text string.
+
+        Returns
+        -------
+        None.
+
+        """
         GL.glRasterPos3f(x, y, z)
         for _, ch in enumerate(text):
             GLUT.glutBitmapCharacter(GLUT.GLUT_BITMAP_HELVETICA_10,
                                      ctypes.c_int(ord(ch)))
 
     def resizeGL(self, width, height):
-        """ Resize OpenGL """
+        """
+        Resize OpenGL.
+
+        Parameters
+        ----------
+        width : float
+            Width of side.
+        height : float
+            Height of side.
+
+        Returns
+        -------
+        None.
+
+        """
         side = min(width, height)
         if side < 0:
             return
@@ -914,8 +1132,14 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.init_projection()
 
     def init_projection(self):
-        """ initialise the projection """
+        """
+        Initialise the projection.
 
+        Returns
+        -------
+        None.
+
+        """
         GL.glMatrixMode(GL.GL_PROJECTION)
         GL.glLoadIdentity()
 
@@ -933,17 +1157,49 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glMatrixMode(GL.GL_MODELVIEW)
 
     def readPixels(self):
-        """ Reads pixels from the window """
+        """
+        Read pixels from the window.
+
+        Returns
+        -------
+        data : numpy array
+            Returned pixel data.
+
+        """
         data = GL.glReadPixels(0, 0, self.width(), self.height(), GL.GL_RGB,
                                GL.GL_UNSIGNED_BYTE)
         return data
 
     def mousePressEvent(self, event):
-        """ Mouse Press Event """
+        """
+        MOuse press event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         self.lastPos = event.pos()
 
     def mouseMoveEvent(self, event):
-        """ Mouse Move Event """
+        """
+        Mouse move event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         dxx = event.x() - self.lastPos.x()
         dyy = event.y() - self.lastPos.y()
 
@@ -958,7 +1214,19 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.lastPos = event.pos()
 
     def wheelEvent(self, event):
-        """ Mouse wheel event """
+        """
+        Mouse wheel event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         angle = event.angleDelta().y()/8
         self.zoomfactor -= angle/1000.
 
@@ -967,7 +1235,20 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.updateGL()
 
     def normalizeAngle(self, angle):
-        """ Normalize angle """
+        """
+        Corrects an angle to between 0 and 360*16.
+
+        Parameters
+        ----------
+        angle : float
+            Input angle.
+
+        Returns
+        -------
+        angle : float
+            Output angle.
+
+        """
         while angle < 0:
             angle += 360 * 16
         while angle > 360 * 16:
@@ -986,6 +1267,7 @@ class MySunCanvas(FigureCanvas):
     axes: matplotlib axes instance
         axes on which the sun is drawn
     """
+
     def __init__(self, parent):
         fig = Figure()
         super().__init__(fig)
@@ -1001,7 +1283,14 @@ class MySunCanvas(FigureCanvas):
         self.init_graph()
 
     def init_graph(self):
-        """ Init graph """
+        """
+        Initialise graph.
+
+        Returns
+        -------
+        None.
+
+        """
         self.axes.clear()
         self.axes.set_xticklabels(self.axes.get_xticklabels(), fontsize=8)
         self.axes.set_yticklabels(self.axes.get_yticklabels(), visible=False)
@@ -1015,8 +1304,21 @@ class MySunCanvas(FigureCanvas):
 
 
 def calc_norms(faces, vtx):
-    """ Calculates normals """
+    """
+    Calculate normals
 
+    Parameters
+    ----------
+    faces : numpy array
+        Array of faces.
+    vtx : numpy array.
+        Array of vertices.
+
+    Returns
+    -------
+    None.
+
+    """
 #    nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
     nrm = np.zeros(vtx.shape, dtype=np.float64)
     tris = vtx[faces]
@@ -1034,7 +1336,20 @@ def calc_norms(faces, vtx):
 
 
 def normalize_v3(arr):
-    ''' Normalize a numpy array of 3 component vectors shape=(n,3) '''
+    """
+    Normalize a numpy array of 3 component vectors shape=(n,3).
+
+    Parameters
+    ----------
+    arr : numpy array
+        Array of 3 component vectors.
+
+    Returns
+    -------
+    arr : numpy array
+        Output array of 3 component vectors.
+
+    """
 
     arr = arr.astype(np.float64)
 
@@ -1078,6 +1393,27 @@ def MarchingCubes(x, y, z, c, iso):
     #    error('grid size must be at least 2x2x2')
     #    error('iso needs to be scalar value')
     #    error( 'color must be matrix of same size as c')
+
+    Parameters
+    ----------
+    x : numpy array
+        X coordinates.
+    y : numpy array
+        Y coordinates.
+    z : numpy array
+        Z coordinates.
+    c : numpy array
+        Data.
+    iso : float
+        Isosurface level.
+
+    Returns
+    -------
+    F : numpy array
+        Face list.
+    V : numpy array
+        Vertex list.
+
     """
     lindex = 4
 
@@ -1213,7 +1549,36 @@ def MarchingCubes(x, y, z, c, iso):
 
 
 def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
-    """Interpolate vertices """
+    """
+    Interpolate verices.
+
+    Parameters
+    ----------
+    isolevel : float
+        Iso level.
+    p1x : numpy array
+        p1 x coordinate.
+    p1y : numpy array
+        p1 y coordinate.
+    p1z : numpy array
+        p1 z coordinate.
+    p2x : numpy array
+        p2 x coordinate.
+    p2y : numpy array
+        p2 y coordinate.
+    p2z : numpy array
+        p2 z coordinate.
+    valp1 : numpy array
+        p1 value.
+    valp2 : numpy array
+        p2 value.
+
+    Returns
+    -------
+    p : numpy array
+        Interpolated verices.
+
+    """
     p = np.zeros([len(p1x), 3])
 
     eps = np.spacing(1)
@@ -1236,8 +1601,28 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
 
 @jit
 def fancyindex(out, var1, ii, jj, kk):
-    """ fancy """
+    """
+    Fancy index.
 
+    Parameters
+    ----------
+    out : numpy array
+        Input data.
+    var1 : numpy array
+        Input data.
+    ii : numpy array
+        i indices.
+    jj : numpy array
+        j indices.
+    kk : numpy array
+        k indices.
+
+    Returns
+    -------
+    out : numpy array
+        Output data with new values.
+
+    """
     i1 = -1
     for i in ii:
         i1 += 1
@@ -1252,24 +1637,92 @@ def fancyindex(out, var1, ii, jj, kk):
 
 
 def bitget(byteval, idx):
-    """ bitget """
+    """
+    Bit get.
+
+    Parameters
+    ----------
+    byteval : int
+        Input value to get bit from.
+    idx : int
+        Position of bit to get.
+
+    Returns
+    -------
+    bool
+        True if not 0, False otherwise.
+
+    """
     return (byteval & (1 << idx)) != 0
 
 
 def bitset(byteval, idx):
-    """ bitset """
+    """
+    Bit set.
+
+    Parameters
+    ----------
+    byteval : int
+        Input value to get bit from.
+    idx : int
+        Position of bit to get.
+
+    Returns
+    -------
+    int
+        Output value with bit set.
+
+    """
     return byteval | (1 << idx)
 
 
 def sub2ind(msize, row, col, layer):
-    """ Sub2ind """
+    """
+    Sub to index
+
+    Parameters
+    ----------
+    msize : tuple
+        Tuple with number of rows and columns as first two elements.
+    row : int
+        Row.
+    col : int
+        Column.
+    layer : numpy array
+        Layer.
+
+    Returns
+    -------
+    tmp : numpy array
+        DESCRIPTION.
+
+    """
     nrows, ncols, _ = msize
     tmp = layer*ncols*nrows+nrows*col+row
     return tmp.astype(int)
 
 
 def ind2sub(msize, idx):
-    """ Sub2ind """
+    """
+    Index to sub.
+
+    Parameters
+    ----------
+    msize : tuple
+        Tuple with number of rows and columns as first two elements.
+    idx : numpy array
+        Array of indices.
+
+    Returns
+    -------
+    row : int
+        Row.
+    col : int
+        Column.
+    layer : numpy array
+        Layer.
+
+    """
     nrows, ncols, _ = msize
     layer = idx/(nrows*ncols)
     layer = layer.astype(int)
@@ -1282,7 +1735,15 @@ def ind2sub(msize, idx):
 
 
 def GetTables():
-    """ Get Tables """
+    """
+    Get tables.
+
+    Returns
+    -------
+    list
+        A list with edgetable and tritable.
+
+    """
     edgeTable = np.array([0, 265, 515, 778, 1030, 1295, 1541, 1804,
                           2060, 2309, 2575, 2822, 3082, 3331, 3593, 3840,
                           400, 153, 915, 666, 1430, 1183, 1941, 1692,
@@ -1578,7 +2039,7 @@ def GetTables():
 
 
 def main():
-    """ Main routine """
+    """Main routine, used for testing."""
 
     c = np.zeros([5, 5, 5])
     c[1:4, 1:4, 1:4] = 1

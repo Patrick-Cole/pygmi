@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Raster Menu Routines """
+"""Raster Menu Routines."""
 
 from PyQt5 import QtWidgets
 from pygmi.raster import smooth
@@ -41,7 +41,7 @@ from pygmi.raster import anaglyph
 
 class MenuWidget():
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
     This widget class creates the raster menus to be found on the main
     interface. Normal as well as context menus are defined here.
@@ -51,6 +51,7 @@ class MenuWidget():
     parent : pygmi.main.MainWidget
         Reference to MainWidget class found in main.py
     """
+
     def __init__(self, parent):
 
         self.parent = parent
@@ -180,123 +181,122 @@ class MenuWidget():
         self.action_export_data.triggered.connect(self.export_data)
 
     def metadata(self):
-        """ Basic Statistics """
+        """Metadata."""
         self.parent.launch_context_item(dataprep.Metadata)
 
     def basic_stats(self):
-        """ Basic Statistics """
+        """Display basic statistics."""
         self.parent.launch_context_item(show_table.BasicStats)
 
     def equation_editor(self):
-        """ Equation Editor """
+        """Equation Editor."""
         fnc = equation_editor.EquationEditor(self.parent)
-        self.parent.item_insert('Step', 'Equation\n  Editor', fnc)
+        self.parent.item_insert('Step', 'Equation\nEditor', fnc)
 
     def export_data(self):
-        """ Export raster data """
+        """Export raster data."""
         self.parent.launch_context_item(iodefs.ExportData)
 
     def cut_data(self):
-        """ Export raster data """
+        """Cut data."""
         fnc = dataprep.DataCut(self.parent)
         self.parent.item_insert('Step', 'Cut\nData', fnc)
 
     def get_prof(self):
-        """ Export raster data """
+        """Get profile."""
         fnc = dataprep.GetProf(self.parent)
         self.parent.item_insert('Step', 'Get\nProfile', fnc)
 
     def gradients(self):
-        """ Compute different gradients """
+        """Compute different gradients."""
         fnc = cooper.Gradients(self.parent)
         self.parent.item_insert('Step', 'Gradients', fnc)
 
     def norm_data(self):
-        """ Normalisation of data"""
+        """Normalisation of data."""
         fnc = normalisation.Normalisation(self.parent)
         self.parent.item_insert('Step', 'Normalisation', fnc)
 
     def raster_interp(self):
-        """ Show raster data """
+        """Show raster data."""
         fnc = ginterp.PlotInterp(self.parent)
-        self.parent.item_insert('Step', 'Raster Data \nInterpretation', fnc)
+        self.parent.item_insert('Step', 'Raster Data\nInterpretation', fnc)
 
     def depth_susc(self):
-        """ Depth and Susceptibility calculations """
+        """Depth and Susceptibility calculations."""
         fnc = tiltdepth.TiltDepth(self.parent)
         self.parent.item_insert('Step',
                                 'Tilt\nDepth\nInterpretation', fnc)
 
     def rtp(self):
-        """ Compute rtp """
+        """Compute RTP."""
         fnc = dataprep.RTP(self.parent)
         self.parent.item_insert('Step', 'RTP\nAngle', fnc)
 
     def show_ccoef(self):
-        """ Show 2D correlation coefficients"""
+        """Show 2D correlation coefficients."""
         self.parent.launch_context_item(graphs.PlotCCoef)
 
     def show_histogram(self):
-        """ Show raster data """
+        """Show histogram of raster data."""
         self.parent.launch_context_item(graphs.PlotHist)
 
     def show_raster_data(self):
-        """ Show raster data """
+        """Show raster data."""
         self.parent.launch_context_item(graphs.PlotRaster)
 
     def show_anaglyph(self):
-        """ Show raster data """
+        """Show anaglyph of raster data."""
         self.parent.launch_context_item(anaglyph.PlotAnaglyph)
 
     def show_surface(self):
-        """ Show surface """
+        """Show surface."""
         self.parent.launch_context_item(graphs.PlotSurface)
 
     def show_scatter_plot(self):
-        """ Show raster data """
+        """Show scatter plot."""
         self.parent.launch_context_item(graphs.PlotScatter)
 
     def smoothing(self):
-        """ Smoothing of Data"""
+        """Smoothing of Data."""
         fnc = smooth.Smooth(self.parent)
         self.parent.item_insert('Step', 'Smoothing', fnc)
 
     def tilt(self):
-        """ Compute visibility """
+        """Compute tilt angle."""
         fnc = cooper.Tilt1(self.parent)
         self.parent.item_insert('Step', 'Tilt\nAngle', fnc)
 
     def visibility(self):
-        """ Compute visibility """
+        """Compute visibility."""
         fnc = cooper.Visibility2d(self.parent)
         self.parent.item_insert('Step', 'Visibility', fnc)
 
     def reproj(self):
-        """ Reproject a dataset """
+        """Reproject a dataset."""
         fnc = dataprep.DataReproj(self.parent)
         self.parent.item_insert('Step', 'Data\nReprojection', fnc)
 
     def merge(self):
-        """ Merge datasets """
+        """Merge datasets."""
         fnc = dataprep.DataMerge(self.parent)
         self.parent.item_insert('Step', 'Data\nMerge', fnc)
 
     def igrf(self):
-        """ Grid datasets """
+        """Compute IGRF."""
         fnc = igrf.IGRF(self.parent)
         self.parent.item_insert('Step', 'Remove\nIGRF', fnc)
 
     def import_data(self):
-        """ Imports data"""
+        """Import data."""
         fnc = iodefs.ImportData(self.parent)
-        self.parent.item_insert('Io', 'Import Data', fnc)
+        self.parent.item_insert('Io', 'Import\nData', fnc)
 
     def import_rgb_data(self):
-        """ Imports data"""
+        """Import RGB data."""
         fnc = iodefs.ImportRGBData(self.parent)
-        self.parent.item_insert('Io', 'Import RGB Image', fnc)
+        self.parent.item_insert('Io', 'Import\nRGB\nImage', fnc)
 
     def bandselect(self):
         """Select bands."""
         self.parent.launch_context_item_indata(iodefs.ComboBoxBasic)
-

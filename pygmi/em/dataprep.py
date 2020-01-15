@@ -27,11 +27,9 @@
 from __future__ import print_function
 
 import os
-import shutil
 import sys
 import copy
 import glob
-from osgeo import gdal
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvas
@@ -49,8 +47,7 @@ class Metadata(QtWidgets.QDialog):
     """
     Edit Metadata.
 
-    This class allows the editing of the metadata for a raster dataset using a
-    GUI.
+    This class allows the editing of the metadata for MT data using a GUI.
 
     Attributes
     ----------
@@ -162,7 +159,14 @@ class Metadata(QtWidgets.QDialog):
         self.indata['MT - EDI'] = self.banddata
 
     def rename_id(self):
-        """Rename the band name."""
+        """
+        Rename station name.
+
+        Returns
+        -------
+        None.
+
+        """
         ctxt = str(self.combobox_bandid.currentText())
         (skey, isokay) = QtWidgets.QInputDialog.getText(
             self.parent, 'Rename Station Name',
@@ -180,7 +184,14 @@ class Metadata(QtWidgets.QDialog):
             self.combobox_bandid.currentIndexChanged.connect(self.update_vals)
 
     def update_vals(self):
-        """Update the values on the interface."""
+        """
+        Update the values on the interface.
+
+        Returns
+        -------
+        None.
+
+        """
         odata = self.banddata[self.oldtxt]
 
         try:
@@ -208,7 +219,15 @@ class Metadata(QtWidgets.QDialog):
         self.dsb_rot.setText(str(idata.rotation_angle))
 
     def run(self):
-        """Entrypoint to start this routine."""
+        """
+        Run.
+
+        Returns
+        -------
+        tmp : bool.
+            True if successful, False otherwise.
+
+        """
         bandid = []
 
         for i in self.indata['MT - EDI']:
@@ -259,12 +278,18 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PData object
-            Point data
-        ival : dictionary key
-            dictionary key Point Data
-        """
+        data : EDI data object
+            EDI data.
+        ival : str
+            dictionary key.
+        itype : str
+            dictionary key.
 
+        Returns
+        -------
+        None.
+
+        """
         data1 = data[ival]
 
         self.figure.clear()
@@ -335,7 +360,7 @@ class MyMplCanvas(FigureCanvas):
 
 
 class StaticShiftEDI(QtWidgets.QDialog):
-    """Plot Raster Class."""
+    """Static shift EDI data."""
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -423,7 +448,14 @@ class StaticShiftEDI(QtWidgets.QDialog):
         self.outdata['MT - EDI'] = self.data
 
     def apply(self):
-        """Applies transform."""
+        """
+        Apply static shift.
+
+        Returns
+        -------
+        None.
+
+        """
         ssx = self.shiftx.value()
         ssy = self.shifty.value()
 
@@ -438,7 +470,14 @@ class StaticShiftEDI(QtWidgets.QDialog):
         self.change_band()
 
     def reset_data(self):
-        """Resets data."""
+        """
+        Reset data.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentText()
 
         if self.checkbox.isChecked():
@@ -449,7 +488,14 @@ class StaticShiftEDI(QtWidgets.QDialog):
         self.change_band()
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to change band.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentText()
         i2 = self.combobox2.currentText()
         self.mmc.update_line(self.data, i, i2)
@@ -492,7 +538,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
 
 
 class RotateEDI(QtWidgets.QDialog):
-    """Plot Raster Class."""
+    """Roitate EDI data."""
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -570,7 +616,14 @@ class RotateEDI(QtWidgets.QDialog):
         self.outdata['MT - EDI'] = self.data
 
     def apply(self):
-        """Applies transform."""
+        """
+        Apply rotation to data.
+
+        Returns
+        -------
+        None.
+
+        """
         rotZ = self.spinbox.value()
 
         if self.checkbox.isChecked():
@@ -585,7 +638,14 @@ class RotateEDI(QtWidgets.QDialog):
         self.change_band()
 
     def reset_data(self):
-        """Resets data."""
+        """
+        Reset data.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentText()
 
         if self.checkbox.isChecked():
@@ -598,7 +658,14 @@ class RotateEDI(QtWidgets.QDialog):
         self.change_band()
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to change band.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentText()
         i2 = self.combobox2.currentText()
         self.mmc.update_line(self.data, i, i2)
@@ -660,6 +727,8 @@ class MyMplCanvasPick(FigureCanvas):
         self.ival = None
         self.data = None
         self.maskrange = None
+        self.axes2 = None
+        self.line2 = None
 
         FigureCanvas.__init__(self, fig)
 
@@ -674,7 +743,19 @@ class MyMplCanvasPick(FigureCanvas):
                                        self.resize)
 
     def button_press_callback(self, event):
-        """Mouse button release callback."""
+        """
+        Mouse button release callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -682,7 +763,19 @@ class MyMplCanvasPick(FigureCanvas):
         self.ind = None
 
     def button_release_callback(self, event):
-        """Mouse button release callback."""
+        """
+        Mouse button release callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -690,14 +783,21 @@ class MyMplCanvasPick(FigureCanvas):
         self.ind = None
 
     def motion_notify_callback(self, event):
-        """Move mouse callback."""
+        """
+        Move mouse callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
-#        if event.button == 1:
-#            print(1)
-#            return
-#    if self.ind is None:
-#        return
 
         rect = None
         if event.button != 1:
@@ -724,11 +824,23 @@ class MyMplCanvasPick(FigureCanvas):
             self.axes.add_patch(rect)
             self.axes2.add_patch(rect2)
 
-#        self.figure.canvas.update()
         self.figure.canvas.draw()
 
     def onpick(self, event):
-        """Picker event."""
+        """
+        Picker event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if event.mouseevent.inaxes is None:
             return False
         if event.mouseevent.button != 1:
@@ -742,7 +854,21 @@ class MyMplCanvasPick(FigureCanvas):
         return True
 
     def resize(self, name, canvas=None):
-        """ resize event """
+        """
+        Resize event.
+
+        Parameters
+        ----------
+        name : TYPE
+            DESCRIPTION.
+        canvas : TYPE, optional
+            DESCRIPTION. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         if self.data is None:
             return
         self.update_line(self.data, self.ival, self.itype)
@@ -753,10 +879,17 @@ class MyMplCanvasPick(FigureCanvas):
 
         Parameters
         ----------
-        data1 : PData object
-            Point data
-        ival : dictionary key
-            dictionary key Point Data
+        data : EDI data object
+            EDI data.
+        ival : str
+            dictionary key.
+        itype : str
+            dictionary key.
+
+        Returns
+        -------
+        None.
+
         """
         self.ival = ival
         self.itype = itype
@@ -848,7 +981,7 @@ class MyMplCanvasPick(FigureCanvas):
 
 
 class EditEDI(QtWidgets.QDialog):
-    """Plot Raster Class."""
+    """Edit EDI Class."""
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -871,13 +1004,8 @@ class EditEDI(QtWidgets.QDialog):
         self.combobox2.addItems(['xy, yx', 'xx, yy'])
         self.combobox2.setCurrentIndex(0)
 
-#        self.spinbox = QtWidgets.QDoubleSpinBox()
-#        self.spinbox.setMinimum(0.)
-#        self.spinbox.setMaximum(360.)
         label1 = QtWidgets.QLabel('Station Name:')
         label2 = QtWidgets.QLabel('Graph Type:')
-#        label3 = QtWidgets.QLabel('Rotate Z (0 is North):')
-#        self.checkbox = QtWidgets.QCheckBox('Apply to all stations:')
         pb_apply = QtWidgets.QPushButton('Mask and Interpolate')
         pb_reset = QtWidgets.QPushButton('Reset data')
 
@@ -890,8 +1018,6 @@ class EditEDI(QtWidgets.QDialog):
         hbl.addWidget(self.combobox1)
         hbl.addWidget(label2)
         hbl.addWidget(self.combobox2)
-#        hbl.addWidget(label3)
-#        hbl.addWidget(self.spinbox)
 
         hbl2.addWidget(helpdocs)
         hbl2.addWidget(pb_reset)
@@ -899,7 +1025,6 @@ class EditEDI(QtWidgets.QDialog):
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
- #       vbl.addWidget(self.checkbox)
         vbl.addLayout(hbl)
         vbl.addLayout(hbl2)
         vbl.addWidget(buttonbox)
@@ -925,8 +1050,14 @@ class EditEDI(QtWidgets.QDialog):
         self.outdata['MT - EDI'] = self.data
 
     def apply(self):
-        """Applies transform."""
+        """
+        Apply edited data.
 
+        Returns
+        -------
+        None.
+
+        """
         if self.mmc.maskrange is None:
             return
 
@@ -958,13 +1089,27 @@ class EditEDI(QtWidgets.QDialog):
         self.change_band()
 
     def reset_data(self):
-        """Resets data."""
+        """
+        Reset data.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentText()
         self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
         self.change_band()
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentText()
         i2 = self.combobox2.currentText()
         self.mmc.update_line(self.data, i, i2)
@@ -994,9 +1139,6 @@ class EditEDI(QtWidgets.QDialog):
         self.combobox1.setCurrentIndex(0)
         self.combobox1.currentIndexChanged.connect(self.change_band)
 
-#        i = self.combobox1.currentText()
-#        self.spinbox.setValue(self.data[i].rotation_angle)
-
         self.change_band()
 
         tmp = self.exec_()
@@ -1019,14 +1161,38 @@ class MySlider(QtWidgets.QSlider):
         QtWidgets.QSlider.__init__(self, parent)
 
     def mousePressEvent(self, event):
-        """ Mouse Press Event """
+        """
+        Mouse press event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
                                                                self.maximum(),
                                                                event.x(),
                                                                self.width()))
 
     def mouseMoveEvent(self, event):
-        """ Jump to pointer position while moving """
+        """
+        Jump to pointer position while moving.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         self.setValue(QtWidgets.QStyle.sliderValueFromPosition(self.minimum(),
                                                                self.maximum(),
                                                                event.x(),
@@ -1036,8 +1202,6 @@ class MySlider(QtWidgets.QSlider):
 class MyMplCanvas2(FigureCanvas):
     """
     MPL Canvas class.
-
-    This routine will also allow the pciking and movement of nodes of data.
     """
 
     def __init__(self, parent=None):
@@ -1046,21 +1210,32 @@ class MyMplCanvas2(FigureCanvas):
 
     def update_line(self, x, pdata, rdata, depths=None, res=None, title=None):
         """
-        Update the plot from point data.
+        Update the plot from data.
 
         Parameters
         ----------
-        data1 : PData object
-            Point data
-        ival : dictionary key
-            dictionary key Point Data
-        """
+        x : numpy array
+            X coordinates (period).
+        pdata : numpy array
+            Phase data.
+        rdata : numpy array
+            Apperent resistivity data.
+        depths : numpy array, optional
+            Model depths. The default is None.
+        res : numpy array, optional
+            Resistivities. The default is None.
+        title : str or None, optional
+            DESCRIPTION. The default is None.
 
+        Returns
+        -------
+        None.
+
+        """
         self.figure.clear()
         gs = self.figure.add_gridspec(3, 3)
 
         ax1 = self.figure.add_subplot(gs[:2, :2], label='Profile')
-#        ax1.set_title(title)
         self.figure.suptitle(title)
         ax1.grid(True, 'both')
 
@@ -1090,7 +1265,6 @@ class MyMplCanvas2(FigureCanvas):
 
         ax2.set_xscale('log')
         ax2.set_yscale('linear')
-#        ax2.legend(loc='upper left')
         ax2.set_xlabel('Period (s)')
         ax2.set_ylabel(r'Phase (Degrees)')
 
@@ -1104,13 +1278,12 @@ class MyMplCanvas2(FigureCanvas):
         if depths is not None:
             ax3.plot(res, np.array(depths)/1000)
 
-#        self.figure.tight_layout()
         gs.tight_layout(self.figure)
         self.figure.canvas.draw()
 
 
 class Occam1D(QtWidgets.QDialog):
-    """Plot Raster Class."""
+    """Occam 1D inversion."""
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -1136,8 +1309,6 @@ class Occam1D(QtWidgets.QDialog):
 
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
-#        self.combobox2.addItems(['xy, yx', 'xx, yy'])
-#        self.combobox2.setCurrentIndex(0)
         self.combomode = QtWidgets.QComboBox()
         self.combomode.addItems(['TE', 'TM', 'DET'])
         self.combomode.setCurrentIndex(0)
@@ -1166,12 +1337,10 @@ class Occam1D(QtWidgets.QDialog):
         self.targetrms.setSizePolicy(sizepolicy)
 
         self.hs_profnum = MySlider()
-#        self.hs_profnum.setSizePolicy(sizepolicy)
         self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
 
         label1 = QtWidgets.QLabel('Station Name:')
         label1.setSizePolicy(sizepolicy)
-        label2 = QtWidgets.QLabel('Graph Type:')
         label3 = QtWidgets.QLabel('Mode:')
         label4 = QtWidgets.QLabel('Resistivity Errorbar (Data or %):')
         label5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
@@ -1196,8 +1365,6 @@ class Occam1D(QtWidgets.QDialog):
 
         gbl.addWidget(label1, 0, 0)
         gbl.addWidget(self.combobox1, 0, 1)
-#        gbl.addWidget(label2, 1, 0)
-#        gbl.addWidget(self.combobox2, 1, 1)
         gbl.addWidget(label3, 2, 0)
         gbl.addWidget(self.combomode, 2, 1)
         gbl.addWidget(label4, 3, 0)
@@ -1240,13 +1407,18 @@ class Occam1D(QtWidgets.QDialog):
         pb_apply.clicked.connect(self.apply)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-#        self.combobox2.currentIndexChanged.connect(self.change_band)
         self.combobox1.currentIndexChanged.connect(self.change_band)
         self.hs_profnum.valueChanged.connect(self.snum)
 
     def snum(self):
-        """ change solution graph """
+        """
+        Change solution graph.
 
+        Returns
+        -------
+        None.
+
+        """
         self.lbl_profnum.setText('Solution: '+str(self.hs_profnum.sliderPosition()))
         self.change_band()
 
@@ -1264,8 +1436,14 @@ class Occam1D(QtWidgets.QDialog):
         self.outdata['MT - EDI'] = self.data
 
     def apply(self):
-        """Applies transform."""
+        """
+        Apply.
 
+        Returns
+        -------
+        None.
+
+        """
         parm = {}
 
         parm['tdepth'] = tonumber(self.targetdepth.text())
@@ -1293,7 +1471,6 @@ class Occam1D(QtWidgets.QDialog):
             r = glob.glob(save_path+r'\*')
             for i in r:
                 os.remove(i)
-#            shutil.rmtree(save_path)
         else:
             os.makedirs(save_path)
 
@@ -1344,14 +1521,27 @@ class Occam1D(QtWidgets.QDialog):
         self.change_band()
 
     def reset_data(self):
-        """Resets data."""
+        """
+        Reset data.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentText()
         self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
         self.change_band()
 
     def change_band(self):
-        """Combo box to choose band."""
-        i2 = self.combobox2.currentText()
+        """
+        Combo to change band.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentText()
         mode = self.combomode.currentText()
         n = self.hs_profnum.value()
@@ -1360,7 +1550,6 @@ class Occam1D(QtWidgets.QDialog):
         save_path = edi_file[:-4]+'-'+mode
 
         if not os.path.exists(save_path):
-#            self.mmc.update_line(self.data, i, i2)
             return
         if os.path.exists(save_path):
             r = glob.glob(save_path+r'\*.resp')
@@ -1429,10 +1618,6 @@ class Occam1D(QtWidgets.QDialog):
         self.combobox1.setCurrentIndex(0)
         self.combobox1.currentIndexChanged.connect(self.change_band)
 
-#        i = self.combobox1.currentText()
-#        self.spinbox.setValue(self.data[i].rotation_angle)
-
-
         i = self.combobox1.currentText()
         mode = self.combomode.currentText()
         edi_file = self.data[i].fn
@@ -1456,8 +1641,22 @@ class Occam1D(QtWidgets.QDialog):
 
 
 def tonumber(test, alttext=None):
-    """ checks if something is a number or matches alttext"""
+    """
+    Checks if something is a number or matches alttext
 
+    Parameters
+    ----------
+    test : str
+        Text to test.
+    alttext : str, optional
+        Alternate text to test. The default is None.
+
+    Returns
+    -------
+    str or int or float
+        Returns a lower case verion of alttext, or a number.
+
+    """
     if alttext is not None and test.lower() == alttext.lower():
         return test.lower()
 

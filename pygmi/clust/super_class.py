@@ -351,7 +351,14 @@ class SuperClass(QtWidgets.QDialog):
         self.map.mindx = self.m
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         grid_main = QtWidgets.QGridLayout(self)
         group_map = QtWidgets.QGroupBox('Class Edit')
         grid_right = QtWidgets.QGridLayout(group_map)

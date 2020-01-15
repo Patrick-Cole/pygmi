@@ -81,7 +81,15 @@ class ComboBoxBasic(QtWidgets.QDialog):
         self.buttonbox.rejected.connect(self.reject)
 
     def run(self):
-        """Run class."""
+        """
+        Run.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.parent.scene.selectedItems()[0].update_indata()
         my_class = self.parent.scene.selectedItems()[0].my_class
 
@@ -258,6 +266,17 @@ class ImportData():
 def clusterprep(dat):
     """
     Prepare Cluster data from raster data.
+
+    Parameters
+    ----------
+    dat : list
+        List of PyGMI datasets.
+
+    Returns
+    -------
+    dat2 : list
+        List of PyGMI datasets.
+
     """
     dat2 = []
     for i in dat:
@@ -442,6 +461,8 @@ def get_raster(ifile, nval=None):
     ----------
     ifile : str
         filename to import
+    nval : float, optional
+        No data/null value. The default is None.
 
     Returns
     -------
@@ -1092,7 +1113,15 @@ class ExportData():
         self.outdata = {}
 
     def run(self):
-        """ Show Info """
+        """
+        Run.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.parent.process_is_active(True)
 
         if 'Cluster' in self.indata:
@@ -1178,6 +1207,11 @@ class ExportData():
             dataset to export
         drv : str
             name of the GDAL driver to use
+
+        Returns
+        -------
+        None.
+
         """
 
         data = merge(dat)
@@ -1243,23 +1277,6 @@ class ExportData():
 
             dtmp = np.ma.array(datai.data).astype(dtype)
 
-            # This section tries to overcome null values with round off error
-            # in 32-bit numbers.
-#            if dtype == np.float32:
-#                datai.nullvalue = np.float64(np.float32(datai.nullvalue))
-#                if datai.data.min() > -1e+10:
-#                    datai.nullvalue = np.float64(np.float32(-1e+10))
-#                elif datai.data.max() < 1e+10:
-#                    datai.nullvalue = np.float64(np.float32(1e+10))
-
-#            elif dtype == np.float or dtype == np.float64:
-#                datai.nullvalue = np.float64(dtmp.fill_value)
-#
-#            elif dtype == np.uint8:
-#                datai.nullvalue = 0  # specify 0, since fill value is 999999
-#            elif dtype == np.int32:
-#                datai.nullvalue = np.uint32(dtmp.fill_value)
-
             dtmp.set_fill_value(datai.nullvalue)
             dtmp = dtmp.filled()
 
@@ -1267,10 +1284,6 @@ class ExportData():
                 datai.nullvalue = int(datai.nullvalue)
 
             rtmp.SetNoDataValue(datai.nullvalue)
-#            if drv != 'GTiff':
-#                rtmp.SetNoDataValue(datai.nullvalue)
-#            elif len(data) == 1:
-#                rtmp.SetNoDataValue(datai.nullvalue)
             rtmp.WriteArray(dtmp)
             rtmp.GetStatistics(False, True)
 
@@ -1287,6 +1300,11 @@ class ExportData():
         ----------
         data : PyGMI raster Data
             dataset to export
+
+        Returns
+        -------
+        None.
+
         """
         if len(data) > 1:
             self.parent.showprocesslog('Band names will be appended to the '
@@ -1348,6 +1366,11 @@ class ExportData():
         ----------
         data : PyGMI raster Data
             dataset to export
+
+        Returns
+        -------
+        None.
+
         """
         if len(data) > 1:
             self.parent.showprocesslog('Band names will be appended to the '
@@ -1388,6 +1411,11 @@ class ExportData():
         ----------
         data : PyGMI raster Data
             dataset to export
+
+        Returns
+        -------
+        None.
+
         """
         if len(data) > 1:
             self.parent.showprocesslog('Band names will be appended to the '
@@ -1430,6 +1458,11 @@ class ExportData():
         ----------
         data : PyGMI raster Data
             dataset to export
+
+        Returns
+        -------
+        None.
+
         """
         if len(data) > 1:
             self.parent.showprocesslog('Band names will be appended to the '
@@ -1465,6 +1498,12 @@ class ExportData():
             dataset to get filename from
         ext : str
             filename extension to use
+
+        Returns
+        -------
+        file_out : str
+            Output filename.
+
         """
         file_band = data.dataid.split('_')[0].strip('"')
         file_band = file_band.replace('/', '')
@@ -1487,6 +1526,12 @@ def get_geopak(hfile):
     -------
     dat : PyGMI raster Data
         dataset imported
+
+    Returns
+    -------
+    dat : PyGMI Data
+        PyGMI raster dataset.
+
     """
 
     with open(hfile, 'rb') as fin:
@@ -1596,8 +1641,8 @@ def get_geosoft(hfile):
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    dat : PyGMI Data
+        Dataset imported
     """
     f = open(hfile, mode='rb')
 

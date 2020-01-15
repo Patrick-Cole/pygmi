@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Normalisation function """
+"""Normalisation function."""
 
 import copy
 import warnings
@@ -36,7 +36,7 @@ warnings.simplefilter('always', RuntimeWarning)
 
 
 class Normalisation(QtWidgets.QDialog):
-    """ Class Normalisation """
+    """Class Normalisation."""
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -61,8 +61,14 @@ class Normalisation(QtWidgets.QDialog):
         self.normtype = 'minmax'  # mimax/meanstd/medmad/histeq
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
 
+        Returns
+        -------
+        None.
+
+        """
         verticallayout = QtWidgets.QVBoxLayout(self)
         horizontallayout = QtWidgets.QHBoxLayout()
         buttonbox = QtWidgets.QDialogButtonBox()
@@ -143,7 +149,28 @@ class Normalisation(QtWidgets.QDialog):
 
 
 def datacommon(data, tmp1, tmp2, tmp3):
-    """ Common stuff used in the process routine """
+    """
+    Common stuff used in the process routine.
+
+    Parameters
+    ----------
+    data : PyGMI Data.
+        PyGMI raster dataset.
+    tmp1 : float
+        Parameter 1. Can be min, mean or median.
+    tmp2 : float
+        Parameter 2. Can be range, std, or mad.
+    tmp3 : str
+        Text label. Can be 'minmax', 'meanstd' or 'medmad'.
+
+    Returns
+    -------
+    data : PyGMI Data
+        PyGMI raster dataset.
+    transform : numpy array.
+        Transformation applied to data.
+
+    """
     transform = np.zeros((2, 2))
     if tmp1 != 0.0 or tmp2 != 1.0:
         transform[0:2, 0] = [0, 1]

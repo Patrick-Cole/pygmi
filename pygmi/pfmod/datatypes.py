@@ -22,41 +22,66 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Class for data types """
+"""Class for data types."""
 
 import numpy as np
 from pygmi.raster.datatypes import Data
 
 
 class LithModel():
-    """ Lithological Model Data.
+    """
+    Lithological Model Data.
 
     This is the main data structure for the modelling program
 
-    Attributes:
-        mlut (dictionary): color table for lithologies
-        numx (int): number of columns per layer in model
-        numy (int): number of rows per layer in model
-        numz (int): number of layers in model
-        dxy (float): dimension of cubes in the x and y directions
-        d_z (float): dimension of cubes in the z direction
-        lith_index (numpy array): 3D array of lithological indices.
-        curlayer (int): Current layer
-        xrange (list): minimum and maximum x coordinates
-        yrange (list): minimum and maximum y coordinates
-        zrange (list): minimum and maximum z coordinates
-        curprof (int): current profile (in x or y direction)
-        griddata (dictionary): dictionary of Data classes with raster data
-        custprofx (dictionary): custom profile x coordinates
-        custprofy (dictionary): custom profile y coordinates
-        profpics (dictionary): = profile pictures
-        lith_list (dictionary): = list of lithologies
-        lith_list_reverse (dictionary): = reverse lookup for lith_list
-        mht (float): height of magnetic sensor
-        ght (float): height of gravity sensor
-        gregional (float): gravity regional correction
-        name (str): name of the model
-        """
+    Attributes
+    ----------
+    mlut : dictionary
+        color table for lithologies
+    numx : int
+        number of columns per layer in model
+    numy : int):
+        number of rows per layer in model
+    numz : int
+        number of layers in model
+    dxy : float
+        dimension of cubes in the x and y directions
+    d_z : float
+        dimension of cubes in the z direction
+    lith_index : numpy array
+        3D array of lithological indices.
+    curlayer : int
+        Current layer
+    xrange : list
+        minimum and maximum x coordinates
+    yrange : list
+        minimum and maximum y coordinates
+    zrange : list
+        minimum and maximum z coordinates
+    curprof : int
+        current profile (in x or y direction)
+    griddata : dictionary
+        dictionary of Data classes with raster data
+    custprofx : dictionary
+        custom profile x coordinates
+    custprofy : dictionary
+        custom profile y coordinates
+    profpics : dictionary
+        profile pictures
+    lith_list : dictionary
+        list of lithologies
+    lith_list_reverse : dictionary
+        reverse lookup for lith_list
+    mht : float
+        height of magnetic sensor
+    ght : float
+        height of gravity sensor
+    gregional : float
+        gravity regional correction
+    name : str
+        name of the model
+
+    """
 
     def __init__(self):
         self.mlut = {0: [170, 125, 90], 1: [255, 255, 0]}
@@ -102,7 +127,20 @@ class LithModel():
 #        self.curprof = None
 
     def lithold_to_lith(self, nodtm=False, pbar=None):
-        """ Transfers an old lithology to the new one, using updates parameters
+        """
+        Transfers an old lithology to the new one, using update parameters.
+
+        Parameters
+        ----------
+        nodtm : bool, optional
+            Flag for a DTM. The default is False.
+        pbar : pygmi.misc.ProgressBar, optional
+            Progressbar. The default is None.
+
+        Returns
+        -------
+        None.
+
         """
         if self.olith_index is None:
             return
@@ -151,9 +189,22 @@ class LithModel():
                             self.olith_index[o_i, o_j, o_k]
 
     def dtm_to_lith(self, pbar=None):
-        """ Assign the DTM to the model. This means creating nodata values in
-        areas above the DTM. These values are assigned a lithology of -1."""
+        """
+        Assign the DTM to the model.
 
+        This means creating nodata values in areas above the DTM. These values
+        are assigned a lithology of -1.
+
+        Parameters
+        ----------
+        pbar : pygmi.misc.ProgressBar, optional
+            Progressbar. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         if 'DTM Dataset' not in self.griddata:
             return
 
@@ -198,22 +249,38 @@ class LithModel():
                     self.lith_index[i, j, :k_2] = -1
 
     def init_grid(self, data):
-        """ Initializes raster variables in the Data class
+        """
+        Initializes raster variables in the Data class.
 
-        Args:
-            data (numpy masked array): masked array containing raster data."""
+        Parameters
+        ----------
+        data : numpy array
+             Masked array containing raster data.
 
+        Returns
+        -------
+        grid : PyGMI Data
+            PyGMI raster dataset.
+
+        """
         grid = Data()
         grid.data = data
         grid.xdim = self.dxy
         grid.ydim = self.dxy
-        grid.extent = [self.xrange[0], self.xrange[1], self.yrange[0],
-                       self.yrange[1]]
+        grid.extent = [self.xrange[0], self.xrange[1],
+                       self.yrange[0], self.yrange[1]]
 
         return grid
 
     def init_calc_grids(self):
-        """ Initializes mag and gravity from the model """
+        """
+        Initializes mag and gravity from the model.
+
+        Returns
+        -------
+        None.
+
+        """
         tmp = np.ma.zeros([self.numy, self.numx])
         self.griddata['Calculated Magnetics'] = self.init_grid(tmp.copy())
         self.griddata['Calculated Magnetics'].dataid = 'Calculated Magnetics'
@@ -223,29 +290,58 @@ class LithModel():
         self.griddata['Calculated Gravity'].units = 'mGal'
 
     def is_modified(self, modified=True):
-        """ Updates modified flag
+        """
+        Updates modified flag.
 
-        Args:
-            modified (bool): flag for whether the lithology has been modified
+        Parameters
+        ----------
+        modified : bool, optional
+            Flag for whether the lithology has been modified. The default is True.
+
+        Returns
+        -------
+        None.
+
         """
         for i in self.lith_list:
             self.lith_list[i].modified = modified
 
     def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht=-1,
                ght=-1, usedtm=True, pbar=None):
-        """ Updates the local variables for the LithModel class
+        """
+        Updates the local variables for the LithModel class.
 
-        Args:
-            cols (int): number of columns per layer in model
-            rows (int): number of rows per layer in model
-            layers (int): number of layers in model
-            utlx (float): upper top left (NW) x coordinate
-            utly (float): upper top left (NW) y coordinate
-            utlz (float): upper top left (NW) z coordinate
-            dxy (float): dimension of cubes in the x and y directions
-            d_z (float): dimension of cubes in the z direction
-            mht (float): height of magnetic sensor
-            ght (float): height of gravity sensor
+        Parameters
+        ----------
+        cols : int
+            Number of columns per layer in model.
+        rows : int
+            Number of rows per layer in model.
+        layers : int
+            Number of layers in model.
+        utlx : float
+            Upper top left (NW) x coordinate.
+        utly : float
+            Upper top left (NW) y coordinate.
+        utlz : float
+            Upper top left (NW) z coordinate.
+        dxy : float
+            Dimension of cubes in the x and y directions.
+        d_z : float
+            Dimension of cubes in the z direction.
+        mht : float, optional
+            Height of magnetic sensor. The default is -1.
+        ght : float, optional
+            Height of gravity sensor. The default is -1.
+        usedtm : bool, optional
+            Flag to use a DTM. The default is True.
+        pbar : pygmi.misc.ProgressBar, optional
+            Progressbar. The default is None.
+
+        Returns
+        -------
+        None.
+
         """
         if mht != -1:
             self.mht = mht
@@ -278,11 +374,11 @@ class LithModel():
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
                                    dtype=int)
         self.lith_index_mag_old = np.zeros([self.numx, self.numy, self.numz],
-                                            dtype=int)
+                                           dtype=int)
         self.lith_index_mag_old[:] = -1
 
         self.lith_index_grv_old = np.zeros([self.numx, self.numy, self.numz],
-                                            dtype=int)
+                                           dtype=int)
         self.lith_index_grv_old[:] = -1
 
         self.init_calc_grids()
@@ -293,15 +389,30 @@ class LithModel():
         self.is_modified()
 
     def update_lithlist(self):
-        """ Updates lith_list from local variables"""
+        """
+        Updates lith_list from local variables.
+
+        Returns
+        -------
+        None.
+
+        """
         for i in self.lith_list:
             self.lith_list[i].set_xyz(self.numx, self.numy, self.numz,
                                       self.dxy, self.mht, self.ght, self.d_z,
                                       modified=False)
 
     def update_lith_list_reverse(self):
-        """ Update the lith_list reverse lookup. It must be run at least once
-        before using lith_list_reverse"""
+        """
+        Update the lith_list reverse lookup.
+
+        It must be run at least once before using lith_list_reverse.
+
+        Returns
+        -------
+        None.
+
+        """
         keys = list(self.lith_list.keys())
         values = list(self.lith_list.values())
 

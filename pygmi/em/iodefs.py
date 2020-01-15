@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Import and export EDI data."""
 
 import os
 from PyQt5 import QtWidgets
@@ -105,8 +105,8 @@ def get_EDI(ifiles):
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    dat : EDI data.
+        Dataset imported
     """
 
     dat = {}
@@ -125,7 +125,7 @@ def get_EDI(ifiles):
 
 class ExportEDI():
     """
-    Export Data
+    Export Data.
 
     Attributes
     ----------
@@ -142,6 +142,7 @@ class ExportEDI():
     ext : str
         filename extension
     """
+
     def __init__(self, parent):
         self.ifile = ''
         self.name = 'Export Data: '
@@ -152,7 +153,15 @@ class ExportEDI():
         self.outdata = {}
 
     def run(self):
-        """ Show Info """
+        """
+        Run.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         self.parent.process_is_active(True)
 
         if 'MT - EDI' in self.indata:
@@ -187,14 +196,18 @@ class ExportEDI():
 
     def export_edi(self, dat):
         """
-        Export to EDI format
+        Export to EDI format.
 
         Parameters
         ----------
         dat : EDI Data
             dataset to export
-        """
 
+        Returns
+        -------
+        None.
+
+        """
         savepath = os.path.dirname(self.ifile)
         basename = os.path.basename(self.ifile)[:-4]
         for i in dat:

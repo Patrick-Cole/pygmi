@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Import Data """
+"""Import Data."""
 
 import sys
 import os
@@ -45,7 +45,8 @@ sys.modules['datatypes'] = datatypes
 
 
 class ImportMod3D():
-    """ Import Data """
+    """Import Data."""
+
     def __init__(self, parent):
         self.parent = parent
         self.lmod = LithModel()
@@ -110,8 +111,19 @@ class ImportMod3D():
         return True
 
     def import_leapfrog_csv(self, filename):
-        """ Imports leapfrog csv block models """
+        """
+        Imports leapfrog csv block models.
 
+        Parameters
+        ----------
+        filename : str
+            Input filename.
+
+        Returns
+        -------
+        None.
+
+        """
         piter = self.pbars.iter
 
         with open(filename) as fno:
@@ -208,8 +220,19 @@ class ImportMod3D():
                     lmod.lith_list[label[i]].lith_index
 
     def import_ascii_xyz_model(self, filename):
-        """ Used to import ASCII XYZ Models of the form x,y,z,label"""
+        """
+        Use to import ASCII XYZ Models of the form x,y,z,label.
 
+        Parameters
+        ----------
+        filename : str
+            Input filename.
+
+        Returns
+        -------
+        None.
+
+        """
         if filename.find('.csv') > -1:
             tmp = np.genfromtxt(filename, delimiter=',', dtype=np.str)
         else:
@@ -285,7 +308,21 @@ class ImportMod3D():
                 lmod.lith_list[label[i]].lith_index
 
     def dict2lmod(self, indict, pre=''):
-        """ routine to convert a dictionary to an lmod """
+        """
+        Convert a dictionary to a LithModel
+
+        Parameters
+        ----------
+        indict : dictionary
+            Imported dictionary.
+        pre : str, optional
+            Text. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
         lithkeys = indict[pre+'lithkeys']
 
         lmod = self.lmod
@@ -388,10 +425,11 @@ class ImportMod3D():
 
 
 class ExportMod3D():
-    """ Export Data """
+    """Export Data."""
+
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Import Data: '
+        self.name = 'Export 3D Model: '
         self.ext = ''
         self.pbar = None
         self.parent = parent
@@ -404,7 +442,14 @@ class ExportMod3D():
             self.showtext = print
 
     def run(self):
-        """ Show Info """
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         if 'Model3D' not in self.indata:
             self.parent.showprocesslog(
                 'Error: You need to have a model first!')
@@ -435,7 +480,14 @@ class ExportMod3D():
                 self.mod3dtocsv()
 
     def savemodel(self):
-        """ Save model """
+        """
+        Save model.
+
+        Returns
+        -------
+        None.
+
+        """
 # Open file
         filename = self.ifile
 
@@ -451,8 +503,22 @@ class ExportMod3D():
             self.showtext('ERROR! Model save failed!')
 
     def lmod2dict(self, outdict, pre=''):
-        """ place lmod in dictionary """
+        """
+        Convert LithModel to a dictionary.
 
+        Parameters
+        ----------
+        outdict : dictionary
+            Output dictionary.
+        pre : str, optional
+            Text. The default is ''.
+
+        Returns
+        -------
+        outdict : dictionary
+            Output dictionary.
+
+        """
         outdict[pre+'gregional'] = self.lmod.gregional
         outdict[pre+'ght'] = self.lmod.ght
         outdict[pre+'mht'] = self.lmod.mht
@@ -503,7 +569,14 @@ class ExportMod3D():
         return outdict
 
     def mod3dtocsv(self):
-        """ Saves the 3D model in a csv file. """
+        """
+        Saves the 3D model in a csv file.
+
+        Returns
+        -------
+        None.
+
+        """
         self.showtext('csv export starting...')
 
         self.lmod.update_lith_list_reverse()
@@ -547,12 +620,17 @@ class ExportMod3D():
         self.showtext('csv export complete!')
 
     def mod3dtokmz(self):
-        """ Saves the 3D model and grids in a kmz file.
-        Note:
+        """
+        Saves the 3D model and grids in a kmz file.
+
         Only the boundary of the area is in degrees. The actual coordinates
         are still in meters.
-        """
 
+        Returns
+        -------
+        None.
+
+        """
         mvis_3d = mvis3d.Mod3dDisplay()
         mvis_3d.lmod1 = self.lmod
 
@@ -895,12 +973,17 @@ class ExportMod3D():
         self.showtext('kmz export complete!')
 
     def mod3dtoshp(self):
-        """ Saves the 3D model and grids in a shapefile file.
-        Note:
+        """
+        Saves the 3D model and grids in a shapefile file.
+
         Only the boundary of the area is in degrees. The actual coordinates
         are still in meters.
-        """
 
+        Returns
+        -------
+        None.
+
+        """
         mvis_3d = mvis3d.Mod3dDisplay()
         mvis_3d.lmod1 = self.lmod
 
@@ -1010,7 +1093,8 @@ class ExportMod3D():
 
 
 class Exportkmz(QtWidgets.QDialog):
-    """ Class to call up a dialog """
+    """Export kmz dialog."""
+
     def __init__(self, wkt, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -1021,7 +1105,14 @@ class Exportkmz(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
 
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
@@ -1043,7 +1134,8 @@ class Exportkmz(QtWidgets.QDialog):
 
 
 class ImportPicture(QtWidgets.QDialog):
-    """ Class to call up a dialog """
+    """Import picture dialog."""
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -1051,7 +1143,7 @@ class ImportPicture(QtWidgets.QDialog):
         self.lmod = LithModel()
 
         self.ifile = ''
-        self.name = 'Import 3D Model: '
+        self.name = 'Import Picture: '
         self.ext = ''
         self.pbar = None
         self.indata = {}
@@ -1078,7 +1170,14 @@ class ImportPicture(QtWidgets.QDialog):
         self.lmod2var()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         groupbox = QtWidgets.QGroupBox('Profile Coordinates')
         gridlayout_2 = QtWidgets.QGridLayout(self)
         gridlayout_3 = QtWidgets.QGridLayout(groupbox)
@@ -1137,7 +1236,14 @@ class ImportPicture(QtWidgets.QDialog):
         self.rb_picimp_southnorth.clicked.connect(self.lmod2var)
 
     def lmod2var(self):
-        """ lmod 2 var """
+        """
+        LithModel to variables.
+
+        Returns
+        -------
+        None.
+
+        """
         self.is_eastwest = self.rb_picimp_westeast.isChecked()
         self.min_alt, self.max_alt = self.lmod.zrange
 
@@ -1149,7 +1255,14 @@ class ImportPicture(QtWidgets.QDialog):
         self.update_win()
 
     def update_var(self):
-        """ Updates the values """
+        """
+        Update variables.
+
+        Returns
+        -------
+        None.
+
+        """
         self.min_coord = self.dsb_picimp_west.value()
         self.max_coord = self.dsb_picimp_east.value()
         self.max_alt = self.dsb_picimp_maxalt.value()
@@ -1172,14 +1285,29 @@ class ImportPicture(QtWidgets.QDialog):
                             self.max_alt]
 
     def update_win(self):
-        """ Updates the window values """
+        """
+        Update window values.
+
+        Returns
+        -------
+        None.
+
+        """
         self.dsb_picimp_west.setValue(self.min_coord)
         self.dsb_picimp_east.setValue(self.max_coord)
         self.dsb_picimp_maxalt.setValue(self.max_alt)
         self.dsb_picimp_depth.setValue(self.max_alt-self.min_alt)
 
     def settings(self):
-        """ Load GeoTiff """
+        """
+        Load GeoTiff
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Model3D' in self.indata:
             self.lmod = self.indata['Model3D'][0]
             self.lmod2var()
@@ -1223,6 +1351,7 @@ class MessageCombo(QtWidgets.QDialog):
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, combotext, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -1236,7 +1365,14 @@ class MessageCombo(QtWidgets.QDialog):
         self.setupui()
 
     def setupui(self):
-        """ Setup UI """
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         label_master = QtWidgets.QLabel()
