@@ -22,9 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Graph tool is a multi-function graphing tool for use with cluster analysis
-"""
+"""Supervised Classification tool."""
 
 import os
 import sys
@@ -56,13 +54,14 @@ from pygmi.raster.datatypes import Data
 
 class GraphMap(FigureCanvas):
     """
-    Plots several lines in distinct colors.
+    Graph Map.
 
     Attributes
     ----------
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent):
         self.figure = Figure()
 
@@ -78,7 +77,14 @@ class GraphMap(FigureCanvas):
         self.subplot = None
 
     def init_graph(self):
-        """ Initialize the Graph """
+        """
+        Initialise the graph.
+
+        Returns
+        -------
+        None.
+
+        """
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
 
@@ -92,7 +98,14 @@ class GraphMap(FigureCanvas):
         self.figure.canvas.draw()
 
     def polyint(self):
-        """ Polygon Integrator """
+        """
+        Polygon integrator.
+
+        Returns
+        -------
+        None.
+
+        """
         mtmp = self.mindx
         dat = self.data[mtmp[0]].data
 
@@ -109,7 +122,14 @@ class GraphMap(FigureCanvas):
         self.polyi = PolygonInteractor(self.subplot, pntxy)
 
     def update_graph(self):
-        """ Draw routine """
+        """
+        Update graph.
+
+        Returns
+        -------
+        None.
+
+        """
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
 
@@ -127,16 +147,8 @@ class GraphMap(FigureCanvas):
 
 
 class PolygonInteractor(QtCore.QObject):
-    """
-    Polygon Interactor
+    """Polygon Interactor."""
 
-    Parameters
-    ----------
-    axtmp : matplotlib axis
-        matplotlib axis
-    pntxy :
-
-    """
     showverts = True
     epsilon = 5  # max pixel distance to count as a vertex hit
     polyi_changed = QtCore.pyqtSignal(list)
@@ -170,7 +182,19 @@ class PolygonInteractor(QtCore.QObject):
                                 self.motion_notify_callback)
 
     def draw_callback(self, event=None):
-        """ Draw callback """
+        """
+        Draw callback.
+
+        Parameters
+        ----------
+        event : TYPE, optional
+            DESCRIPTION. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
 
         if self.isactive is False:
@@ -180,7 +204,19 @@ class PolygonInteractor(QtCore.QObject):
         self.ax.draw_artist(self.line)
 
     def new_poly(self, npoly=None):
-        """ New Polygon """
+        """
+        New polygon.
+
+        Parameters
+        ----------
+        npoly : list or None, optional
+            New polygon coordinates.
+
+        Returns
+        -------
+        None.
+
+        """
         if npoly is None:
             npoly = [[1, 1]]
         self.poly.set_xy(npoly)
@@ -190,7 +226,19 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.draw()
 
     def poly_changed(self, poly):
-        """ Changed Polygon """
+        """
+        Polygon changed.
+
+        Parameters
+        ----------
+        poly : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         # this method is called whenever the polygon object is called
         # only copy the artist props to the line (except visibility)
         vis = self.line.get_visible()
@@ -198,8 +246,20 @@ class PolygonInteractor(QtCore.QObject):
         self.line.set_visible(vis)  # don't use the poly visibility state
 
     def get_ind_under_point(self, event):
-        """get the index of vertex under point if within epsilon tolerance"""
+        """
+        Get the index of vertex under point if within epsilon tolerance.
 
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        ind : int or None
+            Index of vertex under point.
+
+        """
         # display coords
         xytmp = np.asarray(self.poly.xy)
         xyt = self.poly.get_transform().transform(xytmp)
@@ -214,7 +274,19 @@ class PolygonInteractor(QtCore.QObject):
         return ind
 
     def button_press_callback(self, event):
-        """whenever a mouse button is pressed"""
+        """
+        Button press callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -266,7 +338,19 @@ class PolygonInteractor(QtCore.QObject):
             self.canvas.blit(self.ax.bbox)
 
     def button_release_callback(self, event):
-        """Whenever a mouse button is released"""
+        """
+        Button release callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.button != 1:
             return
         if self.isactive is False:
@@ -275,15 +359,32 @@ class PolygonInteractor(QtCore.QObject):
         self.update_plots()
 
     def update_plots(self):
-        """ Update Plots """
+        """
+        Update plots.
+
+        Returns
+        -------
+        None.
+
+        """
         if self.poly.xy.size < 8:
             return
         self.polyi_changed.emit(self.poly.xy.tolist())
-#        polymask = Path(self.poly.xy).contains_points(self.pntxy)
-#        self.polyi_changed.emit(polymask.tolist())
 
     def motion_notify_callback(self, event):
-        """on mouse movement"""
+        """
+        Motion notify on mouse movement.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if self._ind is None:
             return
         if event.inaxes is None:
@@ -306,7 +407,7 @@ class PolygonInteractor(QtCore.QObject):
 
 class SuperClass(QtWidgets.QDialog):
     """
-    Main Graph Tool Routine
+    Main Supervised Classification Tool Routine.
 
     Attributes
     ----------
@@ -441,7 +542,14 @@ class SuperClass(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def class_change(self):
-        """ current classification choice changed """
+        """
+        Current classification choice changed.
+
+        Returns
+        -------
+        None.
+
+        """
         ctext = self.combo_class.currentText()
 
         self.SVCkernel.setHidden(True)
@@ -463,8 +571,14 @@ class SuperClass(QtWidgets.QDialog):
             self.label1.setText('Kernel:')
 
     def calc_metrics(self):
-        """ Calculate Metrics """
+        """
+        Calculate metrics.
 
+        Returns
+        -------
+        None.
+
+        """
         if self.df is None:
             return
 
@@ -486,7 +600,19 @@ class SuperClass(QtWidgets.QDialog):
                                           message)
 
     def updatepoly(self, xycoords=None):
-        """ update poly """
+        """
+        Update polygon.
+
+        Parameters
+        ----------
+        xycoords : TYPE, optional
+            DESCRIPTION. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
         row = self.tablewidget.currentRow()
         if row == -1:
             return
@@ -502,7 +628,21 @@ class SuperClass(QtWidgets.QDialog):
             self.df.loc[row, 'geometry'] = Polygon(xycoords)
 
     def onrowchange(self, current, previous):
-        """ Routine activated whenever a row is changed """
+        """
+        Routine activated whenever a row is changed.
+
+        Parameters
+        ----------
+        current : TYPE
+            DESCRIPTION.
+        previous : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if previous is None or current is None:
             return
         if current.row() == previous.row():
@@ -515,11 +655,32 @@ class SuperClass(QtWidgets.QDialog):
         self.map.polyi.new_poly(coords)
 
     def ontablechange(self, row, column):
-        """ entry in table changes """
+        """
+        Entry on table changes.
+
+        Parameters
+        ----------
+        row : TYPE
+            DESCRIPTION.
+        column : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         print(row, column)
 
     def on_apoly(self):
-        """ map dpoly """
+        """
+        On apoly.
+
+        Returns
+        -------
+        None.
+
+        """
         if self.df is None:
             self.df = gpd.GeoDataFrame(columns=['class', 'geometry'])
             self.df.set_geometry('geometry')
@@ -544,7 +705,14 @@ class SuperClass(QtWidgets.QDialog):
         self.map.polyi.isactive = True
 
     def on_dpoly(self):
-        """ map dpoly """
+        """
+        On dpoly.
+
+        Returns
+        -------
+        None.
+
+        """
         row = self.tablewidget.currentRow()
         self.tablewidget.removeRow(self.tablewidget.currentRow())
         self.df = self.df.drop(row)
@@ -554,12 +722,27 @@ class SuperClass(QtWidgets.QDialog):
             self.map.polyi.isactive = False
 
     def on_combo(self):
-        """ On map combo """
+        """
+        On combo.
+
+        Returns
+        -------
+        None.
+
+        """
         self.m[0] = self.combo.currentIndex()
         self.map.update_graph()
 
     def load_shape(self):
-        """ Load shapefile """
+        """
+        Load shapefile.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         ext = 'Shapefile (*.shp)'
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
@@ -585,7 +768,15 @@ class SuperClass(QtWidgets.QDialog):
         self.map.polyi.new_poly(coords)
 
     def save_shape(self):
-        """ save shapefile """
+        """
+        Save shapefile.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', 'Shapefile (*.shp)')
 
@@ -595,7 +786,15 @@ class SuperClass(QtWidgets.QDialog):
         self.df.to_file(filename)
 
     def settings(self):
-        """ run """
+        """
+        Settings.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Raster' not in self.indata:
             self.reportback('Error: You must have a multi-band ' +
                             'raster dataset in addition to your' +
@@ -685,7 +884,23 @@ class SuperClass(QtWidgets.QDialog):
         return True
 
     def init_classifier(self):
-        """ Initialise classifier """
+        """
+        Initialise classifier.
+
+        Returns
+        -------
+        classifier : object
+            Scikit learn classification object.
+        lbls : numpy array
+            Class labels.
+        datall : numpy array
+            Dataset.
+        X_test : numpy array
+            X test dataset.
+        y_test : numpy array
+            Y test dataset.
+
+        """
         ctext = self.combo_class.currentText()
 
         if ctext == 'K Neighbors Classifier':
@@ -747,7 +962,19 @@ class SuperClass(QtWidgets.QDialog):
         return classifier, lbls, datall, X_test, y_test
 
     def update_map(self, polymask):
-        """ update """
+        """
+        Update map.
+
+        Parameters
+        ----------
+        polymask : numpy array
+            Polygon mask.
+
+        Returns
+        -------
+        None.
+
+        """
         if max(polymask) is False:
             return
 
@@ -766,8 +993,25 @@ class SuperClass(QtWidgets.QDialog):
 
 def dist_point_to_segment(p, s0, s1):
     """
+    Dist point to segment.
+
     Reimplementation of Matplotlib's dist_point_to_segment, after it was
     depreciated. Follows http://geomalgorithms.com/a02-_lines.html
+
+    Parameters
+    ----------
+    p : numpy array
+        Point.
+    s0 : numpy array
+        Start of segment.
+    s1 : numpy array
+        End of segment.
+
+    Returns
+    -------
+    numpy array
+        Distance of point to segment.
+
     """
     p = np.array(p)
     s0 = np.array(s0)
@@ -791,7 +1035,7 @@ def dist_point_to_segment(p, s0, s1):
 
 
 def test():
-    """ test."""
+    """Test."""
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  '..//..')))
     from pygmi.raster import iodefs

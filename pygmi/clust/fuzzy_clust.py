@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Fuzzy clustering """
+"""Fuzzy clustering."""
 
 import os
 import copy
@@ -35,7 +35,7 @@ from pygmi.clust import xie_beni as xb
 
 class FuzzyClust(QtWidgets.QDialog):
     """
-    Fuzzy Clust
+    Fuzzy Clustering class.
 
     Attributes
     ----------
@@ -46,6 +46,7 @@ class FuzzyClust(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent=None):
         QtWidgets.QDialog.__init__(self, parent)
 
@@ -70,7 +71,6 @@ class FuzzyClust(QtWidgets.QDialog):
         self.spinbox_repeatedruns = QtWidgets.QSpinBox()
         self.spinbox_minclusters = QtWidgets.QSpinBox()
         self.label_7 = QtWidgets.QLabel()
-#        self.checkbox_denorm = QtWidgets.QCheckBox()
         self.radiobutton_random = QtWidgets.QRadioButton()
         self.radiobutton_manual = QtWidgets.QRadioButton()
         self.radiobutton_datadriven = QtWidgets.QRadioButton()
@@ -145,7 +145,6 @@ class FuzzyClust(QtWidgets.QDialog):
         label_6.setText("Repeated Runs:")
         self.label_7.setText("Constrain Cluster Shape (0: unconstrained, 1: spherical)")
         label_8.setText("Fuzzyness Exponent")
-#        self.checkbox_denorm.setText("De-normalise Results")
         self.radiobutton_random.setText("Random")
         self.radiobutton_manual.setText("Manual")
         self.radiobutton_datadriven.setText("Data Driven")
@@ -158,7 +157,6 @@ class FuzzyClust(QtWidgets.QDialog):
         gridlayout.addWidget(label_6, 5, 2, 1, 1)
         gridlayout.addWidget(self.label_7, 6, 2, 1, 1)
         gridlayout.addWidget(label_8, 7, 2, 1, 1)
-#        gridlayout.addWidget(self.checkbox_denorm, 8, 2, 1, 1)
         gridlayout.addWidget(groupbox, 9, 2, 1, 3)
 
         gridlayout.addWidget(self.combobox_alg, 0, 4, 1, 1)
@@ -179,9 +177,16 @@ class FuzzyClust(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
 
     def combo(self):
-        """ Combo box """
+        """
+        Set up combo box.
+
+        Returns
+        -------
+        None.
+
+        """
         i = str(self.combobox_alg.currentText())
-        if i == 'Gath-Geva' or i == 'Gustafson-Kessel':
+        if i in ('Gath-Geva', 'Gustafson-Kessel'):
             self.label_7.show()
             self.doublespinbox_constraincluster.show()
         else:
@@ -202,13 +207,13 @@ class FuzzyClust(QtWidgets.QDialog):
         if tst.size > 2:
             self.reportback('Error: Your input datasets have different ' +
                             'sizes. Merge the data first')
-            return
+            return False
 
         if not test:
             self.update_vars()
             temp = self.exec_()
             if temp == 0:
-                return
+                return False
 
             self.parent.process_is_active()
         self.run()
@@ -220,7 +225,14 @@ class FuzzyClust(QtWidgets.QDialog):
         return True
 
     def update_vars(self):
-        """ Updates the variables """
+        """
+        Update the variables.
+
+        Returns
+        -------
+        None.
+
+        """
         self.cltype = str(self.combobox_alg.currentText())
         self.min_cluster = self.spinbox_minclusters.value()
         self.max_cluster = self.spinbox_maxclusters.value()
@@ -228,28 +240,19 @@ class FuzzyClust(QtWidgets.QDialog):
         self.term_thresh = self.doublespinbox_maxerror.value()
         self.runs = self.spinbox_repeatedruns.value()
         self.constrain = self.doublespinbox_constraincluster.value()
-#        self.denorm = self.checkbox_denorm.isChecked()
         self.fexp = self.doublespinbox_fuzzynessexp.value()
 
-#        self.cltype = tmp.cltype_list[tmp.cltype_val]
-#        self.cltype_val = tmp.cltype_val
-#        self.init_type = tmp.init_type
-
     def run(self):
-        """ Entrypoint into routine """
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
         data = copy.copy(self.indata['Raster'])
         self.update_vars()
-
-#        if datachecks.Datachecks(self).multdata(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).isdata(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).equalsize(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).samecoords(data) == False:
-#            return data
-#        if datachecks.Datachecks(self).iscomplete(data) == False:
-#            return data
 
         cltype = self.cltype
         cov_constr = self.constrain
@@ -273,10 +276,6 @@ class FuzzyClust(QtWidgets.QDialog):
 # #############################################################################
 
         dat_in = np.array([i.data.compressed() for i in data]).T
-#        dat_in = np.array([i.data.flatten() for i in data]).T
-
-#        dat_in = np.array([[x for x in data[ii].data.flatten() if x != None]\
-#            for ii in range(len(data))]).T
 
         if self.radiobutton_manual.isChecked() is True:
             ext = \
@@ -345,11 +344,8 @@ class FuzzyClust(QtWidgets.QDialog):
 
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp / i
-#                idx=1
-#                idx=[[idx,(jj-1)*dno_samp] for jj in range(2,ii+1)]
                 idx = np.arange(0, no_samp + dno_samp, dno_samp)
                 idx[0] = 1
-#                idx=np.array([idx,no_samp])
                 startmdat = {i: np.zeros([i, dat_in.shape[1]])}
                 dat_in1 = dat_in
                 smtmp = np.zeros([i, dat_in.shape[1]])
@@ -417,68 +413,16 @@ class FuzzyClust(QtWidgets.QDialog):
             cent_std = np.array([np.std(dat_in[clidx == k], 0)
                                  for k in range(i)])
 
-            den_cent = clcent
-            den_cent_std = np.array(cent_std, copy=True)
-            den_cent_std1 = np.array(cent_std, copy=True)
+#            den_cent = clcent
+#            den_cent_std = np.array(cent_std, copy=True)
+#            den_cent_std1 = np.array(cent_std, copy=True)
 
             if de_norm == 1:
                 pass
-#                for k, _ in enumerate(data):
-#                    if np.size(data[k].norm) > 0:
-#                        nnorm = len(data[k].norm)
-#                        for j in range(nnorm, 0, -1):
-#                            if data[k].norm[j - 1]['type'] == 'minmax':
-#                                den_cent[:, k] = (
-#                                    den_cent[:, k] *
-#                                    (data[k].norm[j - 1]['transform'][1, 1] -
-#                                     data[k].norm[j - 1]['transform'][0, 1]) +
-#                                    data[k].norm[j - 1]['transform'][0, 1])
-#                                den_cent_std[:, k] = (
-#                                    den_cent_std[:, k] *
-#                                    (data[k].norm[j - 1]['transform'][1, 1] -
-#                                     data[k].norm[j - 1]['transform'][0, 1]) +
-#                                    data[k].norm[j - 1]['transform'][0, 1])
-#                                den_cent_std1[:, k] = (
-#                                    den_cent_std1[:, k] *
-#                                    (data[k].norm[j - 1]['transform'][1, 1] -
-#                                     data[k].norm[j - 1]['transform'][0, 1]) +
-#                                    data[k].norm[j - 1]['transform'][0, 1])
-#                            elif (data[k].norm[j - 1]['type'] == 'meanstd' or
-#                                  data[k].norm[j - 1]['type'] == 'medmad'):
-#                                den_cent[:, k] = (
-#                                    den_cent[:, k] *
-#                                    data[k].norm[j - 1]['transform'][1, 1] +
-#                                    data[k].norm[j - 1]['transform'][0, 1])
-#                                den_cent_std[:, k] = (
-#                                    den_cent_std[:, k] *
-#                                    data[k].norm[j - 1]['transform'][1, 1] +
-#                                    data[k].norm[j - 1]['transform'][0, 1])
-#                                den_cent_std1[:, k] = (
-#                                    den_cent_std1[:, k] *
-#                                    data[k].norm[j - 1]['transform'][1, 1] +
-#                                    data[k].norm[j - 1]['transform'][0, 1])
-#                            elif data[k].norm[j - 1]['type'] == 'histeq':
-#                                den_cent[:, k] = np.interp(
-#                                    den_cent[:, k],
-#                                    data[k].norm[j - 1]['transform'][:, 0],
-#                                    data[k].norm[j - 1]['transform'][:, 1])
-#                                den_cent_std[:, k] = np.interp(
-#                                    (den_cent[:, k] + den_cent_std[:, k]),
-#                                    data[k].norm[j - 1]['transform'][:, 0],
-#                                    data[k].norm[j - 1]['transform'][:, 1])
-#                                den_cent_std1[:, k] = np.interp(
-#                                    (den_cent[:, k] - den_cent_std1[:, k]),
-#                                    data[k].norm[j - 1]['transform'][:, 0],
-#                                    data[k].norm[j - 1]['transform'][:, 1])
-#            else:
-#                den_cent = np.array([])
-#                den_cent_std = np.array([])
-#                den_cent_std1 = np.array([])
 
             dat_out[cnt].metadata['Cluster']['input_type'] = []
             for k in data:
                 dat_out[cnt].metadata['Cluster']['input_type'].append(k.dataid)
-#                dat_out[cnt].proc_history.append(k.proc)
 
             dat_out[cnt].data = np.ma.array(zonal)
             dat_out[cnt].metadata['Cluster']['no_clusters'] = i
@@ -538,43 +482,67 @@ class FuzzyClust(QtWidgets.QDialog):
 
     def fuzzy_means(self, data, no_clust, init, centfix, maxit, term_thresh,
                     expo, cltype, cov_constr):
-        """ Fuzzy Means """
-    # Fuzzy clustering, supported algorithms:
-    # fuzzy c-means, Gustafson-Kessel, advanced fuzzy c-means
-    # ATTENTION: all input parameter are required and must be provided!
-    #
-    #
-    #   [CENTER, uuu, OBJ_FCN] = fuzzy_means(DATA, NO_CLUST, INIT, MAXIT,
-    #   TERM_THRESH, EXPO, CLTYPE, COV_CONSTR)
-    #   finds NO_CLUST clusters in the data set DATA.
-    #   DATA is size M-by-N, where M is the number of samples
-    #   and N is the number of coordinates (attributes) for each sample.
-    #   INIT may be set to [], in this case the fcm generates random
-    #   initial center locations to start the algorithm. Alternatively,
-    #   INIT can be of matrix type, either containing a user-given membership
-    #   matrix [NO_CLUST M] or a cluster center matrix [NO_CLUST,
-    #   N].
-    #   MAXIT give the maximum number of iterations.
-    #   TERM_THRESH gives the required minimum improvement in per cent per
-    #   iteration. (termination threshold)
-    #   EXPO: Fuzzification exponent
-    #   CLTYPE: either 'FCM' for fuzy c-means (spherically shaped clusters),
-    #   'DET' for advanced fuzzy c-means (ellipsoidal clusters, all clusters
-    #   use the same ellipsoid), or 'GK' for Gustafson-Kessel clustering
-    #   (ellipsoidal clusters, each cluster uses its own ellipsoid).
-    #   COV_CONSTR applies only to the GK algorithm. constrians the cluster
-    #   shape towards spherical clusters to avoid needle-like clusters.
-    #   COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
-    #   COV_CONSTR = 0 results in no constraining of the covarince matrices of
-    #   the clusters.
-    #
-    #
-    #   The
-    #   coordinates for each cluster center are returned in the rows of the
-    #   matrix CENT. The membership function matrix uuu contains the grade of
-    #   membership of each data sample to each cluster. At each iteration, an
-    #   objective function is minimized to find the best location for the
-    #   clusters and its values are returned in OBJ_FCN.
+        """
+        Fuzzy clustering.
+
+        Finds NO_CLUST clusters in the data set DATA.. Supported algorithms are
+        fuzzy c-means, Gustafson-Kessel, advanced fuzzy c-means.
+
+
+        Parameters
+        ----------
+        data : numpy array
+            DATA is size M-by-N, where M is the number of samples
+            and N is the number of coordinates (attributes) for each sample.
+        no_clust : int
+            Numer of clusters.
+        init : TYPE
+            INIT may be set to [], in this case the fcm generates random
+            initial center locations to start the algorithm. Alternatively,
+            INIT can be of matrix type, either containing a user-given
+            membership matrix [NO_CLUST M] or a cluster center matrix
+            [NO_CLUST, N].
+        centfix : TYPE
+            DESCRIPTION.
+        maxit : int
+            MAXIT give the maximum number of iterations..
+        term_thresh : float
+            Gives the required minimum improvement in per cent per
+            iteration. (termination threshold)
+        expo : float
+            Fuzzification exponent.
+        cltype : str
+            either 'FCM' for fuzy c-means (spherically shaped clusters),
+            'DET' for advanced fuzzy c-means (ellipsoidal clusters, all
+            clusters use the same ellipsoid), or 'GK' for Gustafson-Kessel
+            clustering (ellipsoidal clusters, each cluster uses its own
+            ellipsoid).
+        cov_constr : float
+            COV_CONSTR applies only to the GK algorithm. constrains the cluster
+            shape towards spherical clusters to avoid needle-like clusters.
+            COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
+            COV_CONSTR = 0 results in no constraining of the covarince matrices of
+            the clusters.
+
+        Returns
+        -------
+        uuu : numpy array
+            The membership function matrix uuu contains the grade of
+            membership of each data sample to each cluster.
+        cent : numpy array
+            The coordinates for each cluster center are returned in the rows
+            of the matrix CENT.
+        obj_fcn : numpy array
+            At each iteration, an objective function is minimized to find the
+            best location for the clusters and its values are returned in
+            OBJ_FCN.
+        vrc : numpy array
+            Variance ration criterion.
+        nce :
+            Normalised class entropy.
+        xbi : numpy array
+            Xie beni index.
+        """
         self.reportback(' ')
 
         if cltype == 'fuzzy c-means':
@@ -708,114 +676,33 @@ class FuzzyClust(QtWidgets.QDialog):
     #    close(hh)
         return uuu, cent, obj_fcn, vrc, nce, xbi
 
-# -----------------------------------------------------------------------------
-
-
-def fuzzy_dist2(cent, data, uuu, expo, cltype, cov_constr):
-    """ Fuzzy dist 2 """
-    no_datasets = data.shape[1]
-    ddd = np.zeros([cent.shape[0], data.shape[0]])
-    if cltype == 'FCM' or cltype == 'fcm':
-        for j in range(cent.shape[0]):
-            ddd[j, :] = np.sqrt(np.sum(((data - np.ones([data.shape[0], 1]) *
-                                         cent[j]) ** 2), 1))
-# determinant criterion see Spath, Helmuth,
-# "Cluster-Formation and Analyse",
-# chapter 3
-    elif cltype == 'DET' or cltype == 'det':
-        m_f = uuu ** expo
-        for j in range(cent.shape[0]):
-            # difference between each sample attribute to the corresponding
-            # attribute of the j-th cluster
-            dcent = data - np.ones([data.shape[0], 1]) * cent[j]
-            aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
-                         dcent / np.sum(m_f[j], 0))  # Covariance of the
-#                                                          j-th cluster
-
-# constrain covariance matrix if badly conditioned
-            if np.linalg.cond(aaa) > 1e10:
-                e_d, e_v = np.linalg.eig(aaa)
-                edmax = np.max(e_d)
-                e_d[1e10 * e_d < edmax] = edmax / 1e10
-                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                             np.linalg.inv(e_v))
-            if j == 0:  # sum all covariance matrices for all clusters
-                aaa0 = aaa
-            else:
-                aaa0 = aaa0 + aaa
-        mmm = np.linalg.det(aaa0) ** (1.0 / cent.shape[1]) * \
-            np.linalg.pinv(aaa0)
-        dtmp = []
-#  calc new distances using the same covariance matrix for all clusters -->
-# ellisoidal clusters, all clusters use equal ellipsoids
-        for j in range(cent.shape[0]):
-            #  difference between each sample attribute to the
-            # corresponding attribute of the j-th cluster
-            dcent = data - np.ones([data.shape[0], 1]) * cent[j]
-            dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
-        ddd = np.sqrt(np.array(dtmp))
-    elif cltype == 'GK' or cltype == 'gk':
-        m_f = uuu ** expo
-        dtmp = []
-        for j in range(cent.shape[0]):
-            #  difference between each sample attribute to the
-            # corresponding attribute of the j-th cluster
-            dcent = data - np.ones([data.shape[0], 1]) * cent[j]
-            aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
-                         dcent / np.sum(m_f[j], 0))  # Covariance of the
-#                                                          j-th cluster
-            aaa0 = np.eye(aaa.shape[0])
-#  if cov_constr>0, this enforces not to elongated ellipsoids --> avoid the
-# needle-like cluster
-            aaa = (1.0 - cov_constr) * aaa + cov_constr * (aaa0 /
-                                                           data.shape[0])
-# constrain covariance matrix if badly conditioned
-            if np.linalg.cond(aaa) > 1e10:
-                e_d, e_v = np.linalg.eig(aaa)
-                edmax = np.max(e_d)
-                e_d[1e10 * e_d < edmax] = edmax / 1e10
-                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                             np.linalg.inv(e_v))
-            mmm = (np.linalg.det(aaa) ** (1.0 / cent.shape[1]) *
-                   np.linalg.pinv(aaa))
-            dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
-#            d[j,:] = np.sum((dcent*M*dcent),2).T
-        ddd = np.sqrt(np.array(dtmp))
-    elif cltype == 'GG' or cltype == 'gg':
-        m_f = uuu ** expo
-        dtmp = []
-        for j in range(cent.shape[0]):
-            #  difference between each sample attribute to the
-            # corresponding attribute of the j-th cluster
-            dcent = data - np.ones([data.shape[0], 1]) * cent[j]
-            aaa = np.dot(np.ones([cent.shape[1], 1]) * m_f[j] * dcent.T,
-                         dcent / np.sum(m_f[j], 0))  # Covariance of the
-#                                                          j-th cluster
-            ppp = 1.0 / data.shape[0] * np.sum(m_f[j])
-            aaa0 = np.eye(aaa.shape[0])
-#  if cov_constr>0, this enforces not to elongated ellipsoids --> avoid the
-# needle-like cluster
-            aaa = (1.0 - cov_constr) * aaa + cov_constr * (aaa0 /
-                                                           data.shape[0])
-# constrain covariance matrix if badly conditioned
-            if np.linalg.cond(aaa) > 1e10:
-                e_d, e_v = np.linalg.eig(aaa)
-                edmax = np.max(e_d)
-                e_d[1e10 * e_d < edmax] = edmax / 1e10
-                aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
-                             np.linalg.inv(e_v))
-            dtmp.append(np.sum((np.linalg.det(aaa))**0.5 /
-                               ppp*np.exp(np.dot(dcent,
-                                                 np.linalg.pinv(aaa)) *
-                                          dcent*0.5), 1).T)
-        ddd = np.sqrt(np.array(dtmp))
-    ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster
-#                                center
-    return ddd
-
 
 def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
-    """ Fuzzy Dist """
+    """
+    Fuzzy distance.
+
+    Parameters
+    ----------
+    cent : numpy array
+        DESCRIPTION.
+    data : numpy array
+        Input data.
+    uuu : numpy array
+        Membership function matrix.
+    expo : float
+        Fuzzification exponent.
+    cltype : str
+        Clustering type.
+    cov_constr : float
+        Applies only to the GK algorithm. constrains the cluster shape towards
+        spherical clusters.
+
+    Returns
+    -------
+    ddd : numpy array
+        Output data.
+
+    """
 #        maxnumexp = np.log(np.finfo(np.float64).max)
     no_samples = data.shape[0]
     no_datasets = data.shape[1]
@@ -823,13 +710,13 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
     ddd = np.zeros([cent.shape[0], no_samples])
 
 # FCM
-    if cltype == 'FCM' or cltype == 'fcm':
+    if cltype in ('FCM', 'fcm'):
         for j in range(no_cent):
             ddd[j, :] = np.sqrt(np.sum(((data - np.ones([no_samples, 1]) *
                                          cent[j])**2), 1))
         # determinant criterion see Spath, Helmuth,
         # "Cluster-Formation and Analyse", chapter 3
-    elif cltype == 'DET' or cltype == 'det':
+    elif cltype in ('DET', 'det'):
         m_f = uuu ** expo
         for j in range(no_cent):
             # difference between each sample attribute to the corresponding

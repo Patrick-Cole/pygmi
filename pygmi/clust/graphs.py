@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Plot Cluster Data """
+"""Plot Cluster Data."""
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
@@ -55,7 +55,19 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.__init__(self, fig)
 
     def update_contour(self, data1):
-        """Update the plot."""
+        """
+        Update the plot.
+
+        Parameters
+        ----------
+        data1 : PyGMI Data.
+            Input raster dataset.
+
+        Returns
+        -------
+        None.
+
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -72,7 +84,21 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_scatter(self, x, y):
-        """Update the plot."""
+        """
+        Update the scatter plot.
+
+        Parameters
+        ----------
+        x : numpy array
+            X coordinates (Number of classes).
+        y : numpy array
+            Y Coordinates.
+
+        Returns
+        -------
+        None.
+
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -88,7 +114,23 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_wireframe(self, x, y, z):
-        """Update the plot."""
+        """
+        Update wireframe plot.
+
+        Parameters
+        ----------
+        x : numpy array
+            Iteration number.
+        y : numpy array
+            Number of classes.
+        z : numpy array
+            z coordinate.
+
+        Returns
+        -------
+        None.
+
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
         self.axes.plot_wireframe(y, x, z)
@@ -101,7 +143,21 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_membership(self, data1, mem):
-        """Update the plot."""
+        """
+        Update membership plot.
+
+        Parameters
+        ----------
+        data1 : PyGMI Data.
+            Raster dataset.
+        mem : int
+            Membership.
+
+        Returns
+        -------
+        None.
+
+        """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
@@ -156,7 +212,14 @@ class GraphWindow(QtWidgets.QDialog):
         self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to change band.
+
+        Returns
+        -------
+        None.
+
+        """
 
 
 class PlotRaster(GraphWindow):
@@ -179,7 +242,14 @@ class PlotRaster(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to change band.
+
+        Returns
+        -------
+        None.
+
+        """
         i = self.combobox1.currentIndex()
         data = self.indata['Cluster']
         self.mmc.update_contour(data[i])
@@ -219,7 +289,14 @@ class PlotMembership(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to change band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Cluster']
         i = self.combobox1.currentIndex()
         self.combobox2.clear()
@@ -280,7 +357,14 @@ class PlotVRCetc(GraphWindow):
         self.indata = {}
 
     def change_band(self):
-        """Combo box to choose band."""
+        """
+        Combo to change band.
+
+        Returns
+        -------
+        None.
+
+        """
         data = self.indata['Cluster']
 
         j = str(self.combobox1.currentText())

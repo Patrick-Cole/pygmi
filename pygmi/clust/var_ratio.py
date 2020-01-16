@@ -29,7 +29,7 @@ import numpy as np
 
 def var_ratio(data, uuu, center, dist_orig):
     """
-    Variance Ratio
+    Variance Ratio.
 
     Calculates the Variance ratio criterion after Calinski and Harabasz,
     1974. Does not accept missing data.
@@ -51,7 +51,6 @@ def var_ratio(data, uuu, center, dist_orig):
     vrc : numpy array
         variance ration criterion
     """
-
     if uuu.ndim == 1:   # check whether fuzzy or crisp info is given
         crisp = uuu
     else:

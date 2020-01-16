@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Clustering Menu Routines """
+"""Clustering Menu Routines."""
 
 from PyQt5 import QtWidgets
 from pygmi.clust import cluster
@@ -111,7 +111,7 @@ class MenuWidget():
         self.action_export_data.triggered.connect(self.export_data)
 
     def cluster_stats(self):
-        """Basic Statistics."""
+        """Calculate Statistics."""
         self.parent.launch_context_item(show_table.ClusterStats)
 
     def cluster(self):
@@ -158,4 +158,4 @@ class MenuWidget():
     def segmentation(self):
         """Image Segmentation."""
         fnc = segmentation.ImageSeg(self.parent)
-        self.parent.item_insert('Step', 'Image Segmentation', fnc)
+        self.parent.item_insert('Step', 'Image\nSegmentation', fnc)

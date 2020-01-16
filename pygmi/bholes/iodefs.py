@@ -22,24 +22,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Import Data """
+"""Import Borehole Data."""
 
 import os
-#import glob
-#import struct
 from PyQt5 import QtWidgets
-#import numpy as np
-#from osgeo import gdal, osr
 import pandas as pd
-#from pygmi.raster.datatypes import Data
-#from pygmi.clust.datatypes import Clust
-#from pygmi.raster.dataprep import merge
-#from pygmi.raster.dataprep import quickgrid
 
 
 class ImportData():
     """
-    Import Data - Interfaces with GDAL routines
+    Import Data.
 
     Attributes
     ----------
@@ -56,6 +48,7 @@ class ImportData():
     ext : str
         filename extension
     """
+
     def __init__(self, parent=None):
         self.ifile = ''
         self.name = 'Import Data: '
@@ -118,7 +111,7 @@ class ImportData():
 
 def get_CGS(lithfile, headerfile):
     """
-    Borehole Import
+    Borehole Import.
 
     Parameters
     ----------
@@ -131,8 +124,8 @@ def get_CGS(lithfile, headerfile):
     -------
     dat : dictionary
         dictionary of Pandas dataframes
-    """
 
+    """
     xl = pd.ExcelFile(lithfile)
     df = xl.parse(xl.sheet_names[0])
     xl.close()
@@ -146,9 +139,5 @@ def get_CGS(lithfile, headerfile):
         blog = df[df['Boreholeid'] == i]
         bhead = hdf[hdf['Boreholeid'] == i]
         dat[str(i)] = {'log': blog, 'header': bhead}
-
-#    df['Depth to'] = df['Depth from']-df['Depth to']
-#
-#    dfhdf = pd.merge(df, hdf, on='Companyno')
 
     return dat

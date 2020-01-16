@@ -27,7 +27,6 @@ import copy
 import numpy as np
 import skimage
 import matplotlib.pyplot as plt
-#import rasterio.features
 from numba import jit
 from PyQt5 import QtWidgets, QtCore, QtGui
 import pygmi.menu_default as menu_default
@@ -36,8 +35,6 @@ import pygmi.menu_default as menu_default
 class ImageSeg(QtWidgets.QDialog):
     """
     Image Segmentation.
-
-    This class imports ASCII point data.
 
     Attributes
     ----------
@@ -82,7 +79,7 @@ class ImageSeg(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+#        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
 
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
         lbl_wcolor = QtWidgets.QLabel('Colour weight')
@@ -166,7 +163,28 @@ class ImageSeg(QtWidgets.QDialog):
 
     def segment1(self, data, scale=500, wcolor=0.5, wcompact=0.5,
                  doshape=True):
-        """Segment1."""
+        """
+        Segment Part 1.
+
+        Parameters
+        ----------
+        data : numpy array
+            Input data.
+        scale : TYPE, optional
+            Scale. The default is 500.
+        wcolor : float, optional
+            Color weight. The default is 0.5.
+        wcompact : float, optional
+            Compactness weight. The default is 0.5.
+        doshape : bool, optional
+            Perform shape segmentation. The default is True.
+
+        Returns
+        -------
+        omap : numpy array
+            Output data.
+
+        """
         rows, cols, bands = data.shape
 
         self.reportback('Initialising...')
@@ -207,6 +225,39 @@ class ImageSeg(QtWidgets.QDialog):
 
     def segment2(self, omap, olist, slist, mlist, nlist, bands, doshape,
                  wcompact, wcolor, scale):
+        """
+        Segment Part 2.
+
+        Parameters
+        ----------
+        omap : numpy array
+            DESCRIPTION.
+        olist : dictionary
+            DESCRIPTION.
+        slist : dictionary
+            DESCRIPTION.
+        mlist : dictionary
+            DESCRIPTION.
+        nlist : dictionary
+            DESCRIPTION.
+        bands : int
+            Number of bands in data.
+        doshape : bool, optional
+            Perform shape segmentation. The default is True.
+        wcompact : float, optional
+            Compactness weight. The default is 0.5.
+        wcolor : float, optional
+            Color weight. The default is 0.5.
+        scale : TYPE, optional
+            Scale. The default is 500.
+
+
+        Returns
+        -------
+        omap : TYPE
+            DESCRIPTION.
+
+        """
         """Segment 2."""
         wband = np.ones(bands)/bands
 
@@ -379,11 +430,22 @@ class ImageSeg(QtWidgets.QDialog):
         return omap
 
 
-
 @jit(nopython=True, fastmath=True)
 def get_l(data):
-    """ gets bounding box """
+    """
+    Get bounding box length.
 
+    Parameters
+    ----------
+    data : numpy array
+        Input data.
+
+    Returns
+    -------
+    ltmp : int
+        Bounding box length.
+
+    """
     rows, cols = data.shape
     ltmp = 0
     for i in range(rows):
@@ -398,10 +460,8 @@ def get_l(data):
 
 
 
-def main():
-    """
-    main
-    """
+def test():
+    """Main testing routine."""
     data1 = skimage.data.coffee()  # 400x600 50.6 secs
 
     wcolor = 0.5
@@ -433,6 +493,6 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    test()
 
     print('Finished!')

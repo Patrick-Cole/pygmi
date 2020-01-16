@@ -272,7 +272,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_bvalue(self, data1a, bins='doane'):
         """
-        Update the plot.
+        Update the b value plot.
 
         Parameters
         ----------
@@ -300,7 +300,7 @@ class MyMplCanvas(FigureCanvas):
         nmin = np.percentile(num3, 25)
 
         i1 = np.nonzero(num3 < nmax)[0][0]
-        i2 = np.nonzero(num3 < nmin)[0][0]
+        i2 = np.nonzero(num3 <= nmin)[0][0]
 
         xtmp = bins2[i1:i2+1]
         ytmp = num3[i1:i2+1]

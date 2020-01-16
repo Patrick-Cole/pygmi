@@ -138,7 +138,6 @@ class CrispClust(QtWidgets.QDialog):
         label_5.setText("Terminate if relative change per iteration is less than:")
         label_6.setText("Repeated Runs:")
         self.label_7.setText("Constrain Cluster Shape (0: unconstrained, 1: spherical)")
-#        self.checkbox_denorm.setText("De-normalise Results")
         self.groupbox.setTitle("Initial Guess")
         self.radiobutton_random.setText("Random")
         self.radiobutton_manual.setText("Manual")
@@ -158,7 +157,6 @@ class CrispClust(QtWidgets.QDialog):
         gridlayout.addWidget(self.spinbox_repeatedruns, 5, 4, 1, 1)
         gridlayout.addWidget(self.label_7, 6, 2, 1, 1)
         gridlayout.addWidget(self.doublespinbox_constraincluster, 6, 4, 1, 1)
-#        gridlayout.addWidget(self.checkbox_denorm, 7, 2, 1, 1)
         gridlayout.addWidget(self.groupbox, 8, 2, 1, 3)
         gridlayout.addWidget(buttonbox, 9, 4, 1, 1)
 
@@ -713,8 +711,8 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
 
     Returns
     -------
-    bigd : T
-        De
+    bigd : numpy array
+        Output data.
 
     """
     no_samples = data.shape[0]

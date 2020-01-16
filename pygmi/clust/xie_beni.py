@@ -29,7 +29,7 @@ import numpy as np
 
 def xie_beni(data, expo, uuu, center, edist):
     """
-    Xie Beni
+    Xie Beni.
 
     Calculates the Xie-Beni index
     accepts missing values when given as nan elements in the data base)

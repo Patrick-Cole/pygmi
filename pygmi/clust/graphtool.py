@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Graph tool is a multi-function graphing tool for use with cluster analysis
+Graph tool is a multi-function graphing tool for use with cluster analysis.
 """
 
 import numpy as np
@@ -39,9 +39,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 
 class GraphHist(FigureCanvas):
-    """
-    Plots several lines in distinct colors.
-    """
+    """Graph Hist."""
+
     def __init__(self, parent=None):
         self.figure = Figure()
 
@@ -64,7 +63,20 @@ class GraphHist(FigureCanvas):
         self.csp = None
 
     def get_hist(self, bins):
-        """ Routine to get the scattergram with histogram overlay """
+        """
+        Routine to get the scattergram with histogram overlay.
+
+        Parameters
+        ----------
+        bins : int
+            Number of bins.
+
+        Returns
+        -------
+        xymahist : numpy array
+            Output data.
+
+        """
         xyhist = np.zeros((bins + 1, bins + 1))
         xxx = self.xcoord.compressed()
         yyy = self.ycoord.compressed()
@@ -75,7 +87,24 @@ class GraphHist(FigureCanvas):
         return xymahist
 
     def get_clust_scat(self, bins, dattmp, ctmp):
-        """ Routine to get the scattergram with cluster overlay """
+        """
+        Routine to get the scattergram with cluster overlay.
+
+        Parameters
+        ----------
+        bins : int
+            Number of bins.
+        dattmp : list
+            Data.
+        ctmp : list
+            Cluster indices.
+
+        Returns
+        -------
+        xymahist : numpy array
+            Output data.
+
+        """
         clust = np.ma.array(dattmp[ctmp[2] - 1].data.flatten())
         clust.mask = np.ma.getmaskarray(self.xcoord)
         clust = clust.compressed()
@@ -89,8 +118,14 @@ class GraphHist(FigureCanvas):
         return xymahist
 
     def init_graph(self):
-        """ Initialize the Graph """
-        # definitions for the axes
+        """
+        Initialize the Graph.
+
+        Returns
+        -------
+        None.
+
+        """
         self.figure.clf()
 
         left, width = 0.1, 0.65
@@ -126,13 +161,27 @@ class GraphHist(FigureCanvas):
         self.figure.canvas.draw()
 
     def polyint(self):
-        """ Polygon Interactor routine """
+        """
+        Polygon Interactor routine.
+
+        Returns
+        -------
+        None.
+
+        """
         pntxy = np.transpose([self.xcoord, self.ycoord])
         self.polyi = PolygonInteractor(self.axscatter, pntxy)
         self.polyi.ishist = True
 
     def setup_coords(self):
-        """ Routine to setup the coordinates for the scattergram """
+        """
+        Routine to setup the coordinates for the scattergram.
+
+        Returns
+        -------
+        None.
+
+        """
         self.xcoord = self.data[self.cindx[0]].data.flatten()
         self.ycoord = self.data[self.cindx[1]].data.flatten()
         self.xcoord -= self.xcoord.min()
@@ -147,7 +196,14 @@ class GraphHist(FigureCanvas):
         self.ycoord = self.ycoord.astype(int)
 
     def setup_hist(self):
-        """ Routine to setup the 1d histograms """
+        """
+        Routine to setup the 1D histograms.
+
+        Returns
+        -------
+        None.
+
+        """
         self.axhistx.xaxis.set_major_formatter(self.nullfmt)
         self.axhisty.yaxis.set_major_formatter(self.nullfmt)
         self.axhistx.yaxis.set_major_formatter(self.nullfmt)
@@ -161,7 +217,19 @@ class GraphHist(FigureCanvas):
         self.axhisty.set_ylim(yrng[::-1])
 
     def update_graph(self, clearaxis=False):
-        """ Draw Routine """
+        """
+        Draw Routine.
+
+        Parameters
+        ----------
+        clearaxis : bool, optional
+            True to clear the axis. The default is False.
+
+        Returns
+        -------
+        None.
+
+        """
         if clearaxis is True:
             self.axhistx.cla()
             self.axhisty.cla()
@@ -187,13 +255,14 @@ class GraphHist(FigureCanvas):
 
 class GraphMap(FigureCanvas):
     """
-    Plots several lines in distinct colors.
+    Graph Map.
 
     Attributes
     ----------
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent):
         self.figure = Figure()
 
@@ -209,7 +278,14 @@ class GraphMap(FigureCanvas):
         self.subplot = None
 
     def init_graph(self):
-        """ Initialize the Graph """
+        """
+        Initialize the Graph.
+
+        Returns
+        -------
+        None.
+
+        """
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
 
@@ -224,7 +300,14 @@ class GraphMap(FigureCanvas):
         self.figure.canvas.draw()
 
     def polyint(self):
-        """ Polygon Integrator """
+        """
+        Polygon Integrator.
+
+        Returns
+        -------
+        None.
+
+        """
         mtmp = self.mindx
         dat = self.data[mtmp[0]].data
 
@@ -237,14 +320,19 @@ class GraphMap(FigureCanvas):
         ymesh = ymesh.flatten()
         xmesh = xmesh.filled(np.nan)
         ymesh = ymesh.filled(np.nan)
-#        xmesh = xmesh.compressed()
-#        ymesh = ymesh.compressed()
         pntxy = np.transpose([xmesh, ymesh])
         self.polyi = PolygonInteractor(self.subplot, pntxy)
         self.polyi.ishist = False
 
     def update_graph(self):
-        """ Draw routine """
+        """
+        Draw routine.
+
+        Returns
+        -------
+        None.
+
+        """
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
 
@@ -262,16 +350,8 @@ class GraphMap(FigureCanvas):
 
 
 class PolygonInteractor(QtCore.QObject):
-    """
-    Polygon Interactor
+    """Polygon Interactor."""
 
-    Parameters
-    ----------
-    axtmp : matplotlib axis
-        matplotlib axis
-    pntxy :
-
-    """
     showverts = True
     epsilon = 5  # max pixel distance to count as a vertex hit
     polyi_changed = QtCore.pyqtSignal(list)
@@ -304,7 +384,14 @@ class PolygonInteractor(QtCore.QObject):
                                 self.motion_notify_callback)
 
     def draw_callback(self):
-        """ Draw callback """
+        """
+        Draw callback.
+
+        Returns
+        -------
+        None.
+
+        """
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
         QtWidgets.QApplication.processEvents()
 
@@ -314,7 +401,19 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.update()
 
     def new_poly(self, npoly):
-        """ New Polygon """
+        """
+        New Polygon.
+
+        Parameters
+        ----------
+        npoly : list
+            New polygon coordinates.
+
+        Returns
+        -------
+        None.
+
+        """
         self.poly.set_xy(npoly)
         self.line.set_data(list(zip(*self.poly.xy)))
 
@@ -322,7 +421,19 @@ class PolygonInteractor(QtCore.QObject):
         self.update_plots()
 
     def poly_changed(self, poly):
-        """ Changed Polygon """
+        """
+        Polygon changed.
+
+        Parameters
+        ----------
+        poly : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         # this method is called whenever the polygon object is called
         # only copy the artist props to the line (except visibility)
         vis = self.line.get_visible()
@@ -330,8 +441,20 @@ class PolygonInteractor(QtCore.QObject):
         self.line.set_visible(vis)  # don't use the poly visibility state
 
     def get_ind_under_point(self, event):
-        """get the index of vertex under point if within epsilon tolerance"""
+        """
+        Get the index of vertex under point if within epsilon tolerance.
 
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        ind : int or None
+            Index of vertex under point.
+
+        """
         # display coords
         xytmp = np.asarray(self.poly.xy)
         xyt = self.poly.get_transform().transform(xytmp)
@@ -346,7 +469,19 @@ class PolygonInteractor(QtCore.QObject):
         return ind
 
     def button_press_callback(self, event):
-        """whenever a mouse button is pressed"""
+        """
+        Button press callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -384,7 +519,6 @@ class PolygonInteractor(QtCore.QObject):
                     imin = i
             i = imin
 
-#            breakpoint()
             self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
                                     [(event.xdata, event.ydata)] +
                                     list(self.poly.xy[i + 1:]))
@@ -396,19 +530,50 @@ class PolygonInteractor(QtCore.QObject):
             self.canvas.update()
 
     def button_release_callback(self, event):
-        """Whenever a mouse button is released"""
+        """
+        Button release callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if event.button != 1:
             return
         self._ind = None
         self.update_plots()
 
     def update_plots(self):
-        """ Update Plots """
+        """
+        Update plots.
+
+        Returns
+        -------
+        None.
+
+        """
         polymask = Path(self.poly.xy).contains_points(self.pntxy)
         self.polyi_changed.emit(polymask.tolist())
 
     def motion_notify_callback(self, event):
-        """on mouse movement"""
+        """
+        Mouse notify callback.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
         if self._ind is None:
             return
         if event.inaxes is None:
@@ -431,7 +596,7 @@ class PolygonInteractor(QtCore.QObject):
 
 class ScatterPlot(QtWidgets.QDialog):
     """
-    Main Graph Tool Routine
+    Main Graph Tool Routine.
 
     Attributes
     ----------
@@ -442,6 +607,7 @@ class ScatterPlot(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent):
         QtWidgets.QDialog.__init__(self, parent)
         self.indata = {}
@@ -512,7 +678,14 @@ class ScatterPlot(QtWidgets.QDialog):
         self.map_dpoly.clicked.connect(self.on_map_dpoly)
 
     def on_cp_dpoly(self):
-        """ cp dpoly """
+        """
+        On cp dpoly.
+
+        Returns
+        -------
+        None.
+
+        """
         self.hist.polyi.new_poly([[10, 10]])
 
         mtmp = self.map_combo.currentIndex()
@@ -524,7 +697,14 @@ class ScatterPlot(QtWidgets.QDialog):
         self.map.figure.canvas.draw()
 
     def on_map_dpoly(self):
-        """ map dpoly """
+        """
+        On map dpoly.
+
+        Returns
+        -------
+        None.
+
+        """
         self.map.polyi.new_poly([[10, 10]])
         dattmp = self.hist.csp.get_array()
         dattmp.mask = np.ma.getmaskarray(np.ma.masked_equal(dattmp.data, 0.))
@@ -532,7 +712,14 @@ class ScatterPlot(QtWidgets.QDialog):
         self.hist.figure.canvas.draw()
 
     def on_cp_combo(self):
-        """ On Combo """
+        """
+        On cp combo.
+
+        Returns
+        -------
+        None.
+
+        """
         gstmp = self.cp_combo.currentIndex()
         if gstmp != self.c[0]:
             self.c[0] = gstmp
@@ -540,7 +727,14 @@ class ScatterPlot(QtWidgets.QDialog):
             self.map.polyi.update_plots()
 
     def on_cp_combo2(self):
-        """ On Combo 2 """
+        """
+        On cp combo 2.
+
+        Returns
+        -------
+        None.
+
+        """
         gstmp = self.cp_combo2.currentIndex()
         if gstmp != self.c[1]:
             self.c[1] = gstmp
@@ -548,25 +742,54 @@ class ScatterPlot(QtWidgets.QDialog):
             self.map.polyi.update_plots()
 
     def on_cp_combo3(self):
-        """ On combo 3 """
+        """
+        On cp combo 3.
+
+        Returns
+        -------
+        None.
+
+        """
         self.c[2] = self.cp_combo3.currentIndex()
         self.hist.update_graph()
         self.map.polyi.update_plots()
 
     def on_map_combo(self):
-        """ On map combo """
+        """
+        On map combo.
+
+        Returns
+        -------
+        None.
+
+        """
         self.m[0] = self.map_combo.currentIndex()
         self.map.update_graph()
         self.hist.polyi.update_plots()
 
     def on_map_combo2(self):
-        """ On map combo 2 """
+        """
+        On map combo 2.
+
+        Returns
+        -------
+        None.
+
+        """
         self.m[1] = self.map_combo2.currentIndex()
         self.map.update_graph()
         self.hist.polyi.update_plots()
 
     def settings(self):
-        """ run """
+        """
+        Run.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
         if 'Raster' not in self.indata:
             self.parent.showprocesslog('Error: You must have a multi-band ' +
                                        'raster dataset in addition to your' +
@@ -625,7 +848,19 @@ class ScatterPlot(QtWidgets.QDialog):
         return True
 
     def update_map(self, polymask):
-        """ update """
+        """
+        Update map.
+
+        Parameters
+        ----------
+        polymask : numpy array
+            Polygon mask.
+
+        Returns
+        -------
+        None.
+
+        """
         if max(polymask) is False:
             return
 
@@ -642,7 +877,19 @@ class ScatterPlot(QtWidgets.QDialog):
         self.map.figure.canvas.draw()
 
     def update_hist(self, polymask):
-        """ update """
+        """
+        Update histogram.
+
+        Parameters
+        ----------
+        polymask : numpy array
+            Polygon mask.
+
+        Returns
+        -------
+        None.
+
+        """
         if max(polymask) is False:
             return
 
@@ -659,8 +906,25 @@ class ScatterPlot(QtWidgets.QDialog):
 
 def dist_point_to_segment(p, s0, s1):
     """
+    Dist point to segment.
+
     Reimplementation of Matplotlib's dist_point_to_segment, after it was
     depreciated. Follows http://geomalgorithms.com/a02-_lines.html
+
+    Parameters
+    ----------
+    p : numpy array
+        Point.
+    s0 : numpy array
+        Start of segment.
+    s1 : numpy array
+        End of segment.
+
+    Returns
+    -------
+    numpy array
+        Distance of point to segment.
+
     """
     p = np.array(p)
     s0 = np.array(s0)
