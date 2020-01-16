@@ -11,4 +11,5 @@ docs/
 *.cmd
 grvmagc_*.html
 .spyderproject
+.spyproject
 log.txt
