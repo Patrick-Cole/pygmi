@@ -175,31 +175,30 @@
 </div>
 <div class="section" id="id2">
 <h3>Anaconda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<p>Anaconda users are advised not to use pip since it can break PyQt5. Instead, you can install anaconda3 using the regular method, and then:</p>
+<p>Anaconda users are advised not to use pip since it can break PyQt5. However, two packages are installed only by pip, so a Conda environment should be created. The process to install is as follows:</p>
 <blockquote>
-<div><p>conda update –all
-conda install numba
-conda install scipy
-conda install pyopengl
-conda install gdal
-conda install scikit-learn
-conda install pandas
-conda install matplotlib
-conda install numexpr
+<div><p>conda create -n pygmi python=3.7
+conda install pyqt
 conda install numpy
+conda install scipy
+conda install numexpr
+conda install gdal
 conda install pillow
-conda install setuptools
-conda install segyio
+conda install matplotlib
+conda install numba
+conda install pandas
+conda install scikit-learn
+conda install scikit-image
 conda install geopandas
-conda install mtpy
-conda install pytest</p>
+conda install pyopengl
+conda install pyyaml</p>
+<p>pip install mtpy
+pip install segyio</p>
 </div></blockquote>
-<dl class="simple">
-<dt>Alternatively if you use environments you can simply use the following command:</dt><dd><p>conda create -n pygmi2 scipy numba gdal pandas matplotlib numexpr numpy setuptools pillow pyopengl scikit-learn segyio geopandas mtpy pytest</p>
-</dd>
-<dt>Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:</dt><dd><p>python quickstart.py</p>
-</dd>
-</dl>
+<p>Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:</p>
+<blockquote>
+<div><p>python quickstart.py</p>
+</div></blockquote>
 <p>Alternatively, if you satisfy the requirements, you can run the following command from within the extracted directory:</p>
 <blockquote>
 <div><p>python setup_anaconda.py install</p>
@@ -242,7 +241,7 @@ conda install pytest</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
     </div>
   </body>
 </html>

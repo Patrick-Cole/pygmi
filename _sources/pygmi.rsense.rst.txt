@@ -1,0 +1,30 @@
+pygmi.rsense package
+====================
+
+Submodules
+----------
+
+pygmi.rsense.change module
+--------------------------
+
+.. automodule:: pygmi.rsense.change
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.menu module
+------------------------
+
+.. automodule:: pygmi.rsense.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pygmi.rsense
+   :members:
+   :undoc-members:
+   :show-inheritance:

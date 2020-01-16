@@ -15,8 +15,8 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pygmi.pfmod package" href="pygmi.pfmod.html" />
-    <link rel="prev" title="pygmi package" href="pygmi.html" /> 
+    <link rel="next" title="pygmi.em package" href="pygmi.em.html" />
+    <link rel="prev" title="pygmi.bholes package" href="pygmi.bholes.html" /> 
   </head><body>
 
 <div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
@@ -40,10 +40,10 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pygmi.pfmod.html" title="pygmi.pfmod package"
+          <a href="pygmi.em.html" title="pygmi.em package"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="pygmi.html" title="pygmi package"
+          <a href="pygmi.bholes.html" title="pygmi.bholes package"
              accesskey="P">previous</a> |</li>
         <li><a href="index.html">home</a>|&nbsp;</li>
         <li><a href="search.html">search</a>|&nbsp;</li>
@@ -66,17 +66,21 @@
 <li><a class="reference internal" href="#module-pygmi.clust.graphs">pygmi.clust.graphs module</a></li>
 <li><a class="reference internal" href="#module-pygmi.clust.graphtool">pygmi.clust.graphtool module</a></li>
 <li><a class="reference internal" href="#module-pygmi.clust.menu">pygmi.clust.menu module</a></li>
+<li><a class="reference internal" href="#module-pygmi.clust.segmentation">pygmi.clust.segmentation module</a></li>
+<li><a class="reference internal" href="#module-pygmi.clust.super_class">pygmi.clust.super_class module</a></li>
+<li><a class="reference internal" href="#module-pygmi.clust.var_ratio">pygmi.clust.var_ratio module</a></li>
+<li><a class="reference internal" href="#module-pygmi.clust.xie_beni">pygmi.clust.xie_beni module</a></li>
 <li><a class="reference internal" href="#module-pygmi.clust">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="pygmi.html"
-                        title="previous chapter">pygmi package</a></p>
+  <p class="topless"><a href="pygmi.bholes.html"
+                        title="previous chapter">pygmi.bholes package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pygmi.pfmod.html"
-                        title="next chapter">pygmi.pfmod package</a></p>
+  <p class="topless"><a href="pygmi.em.html"
+                        title="next chapter">pygmi.em package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -109,12 +113,12 @@
 </div>
 <div class="section" id="module-pygmi.clust.cluster">
 <span id="pygmi-clust-cluster-module"></span><h2>pygmi.clust.cluster module<a class="headerlink" href="#module-pygmi.clust.cluster" title="Permalink to this headline">¶</a></h2>
-<p>This is the main Crisp Clustering set of routines</p>
+<p>Main Clustering set of routines.</p>
 <dl class="class">
 <dt id="pygmi.clust.cluster.Cluster">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.cluster.</code><code class="sig-name descname">Cluster</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.cluster.Cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Cluster Class</p>
+<p>Cluster Class.</p>
 <dl class="attribute">
 <dt id="pygmi.clust.cluster.Cluster.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.clust.cluster.Cluster.parent" title="Permalink to this definition">¶</a></dt>
@@ -151,31 +155,71 @@
 <dl class="method">
 <dt id="pygmi.clust.cluster.Cluster.combo">
 <code class="sig-name descname">combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.cluster.Cluster.combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box</p>
+<dd><p>Set up combo box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.cluster.Cluster.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.cluster.Cluster.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process data</p>
+<dd><p>Run the cluster analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.cluster.Cluster.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.cluster.Cluster.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.cluster.Cluster.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.cluster.Cluster.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.cluster.Cluster.update_vars">
 <code class="sig-name descname">update_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.cluster.Cluster.update_vars" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the variables</p>
+<dd><p>Update the variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -183,7 +227,7 @@
 </div>
 <div class="section" id="module-pygmi.clust.crisp_clust">
 <span id="pygmi-clust-crisp-clust-module"></span><h2>pygmi.clust.crisp_clust module<a class="headerlink" href="#module-pygmi.clust.crisp_clust" title="Permalink to this headline">¶</a></h2>
-<p>This is the main Crisp Clustering set of routines</p>
+<p>Main Crisp Clustering set of routines.</p>
 <dl class="class">
 <dt id="pygmi.clust.crisp_clust.CrispClust">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.crisp_clust.</code><code class="sig-name descname">CrispClust</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust" title="Permalink to this definition">¶</a></dt>
@@ -225,37 +269,121 @@
 <dl class="method">
 <dt id="pygmi.clust.crisp_clust.CrispClust.combo">
 <code class="sig-name descname">combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box</p>
+<dd><p>Set up combo box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.crisp_clust.CrispClust.crisp_means">
 <code class="sig-name descname">crisp_means</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">no_clust</em>, <em class="sig-param">cent</em>, <em class="sig-param">centfix</em>, <em class="sig-param">maxit</em>, <em class="sig-param">term_thresh</em>, <em class="sig-param">cltype</em>, <em class="sig-param">cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.crisp_means" title="Permalink to this definition">¶</a></dt>
-<dd><p>Crisp Means</p>
+<dd><p>Script enables the crisp clustering of COMPLETE multi-variate datasets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – NxP matrix containing the data to be clustered, N is number of
+samples, P is number of different attributes availabe for each
+sample.</p></li>
+<li><p><strong>no_clust</strong> (<em>int</em>) – Number of clusters to be used.</p></li>
+<li><p><strong>cent</strong> (<em>numpy array</em>) – cluster centre positions, either empty [] –&gt; randomly guessed
+center positions will be used for initialisation or NO_CLUSTxP
+matrix</p></li>
+<li><p><strong>centfix</strong> (<em>TYPE</em>) – Constrains the position of cluster centers, if centfix is empty,
+cluster centers can freely vary during cluster analysis, otherwise
+CENTFIX is of equal size to CENT and gives an absolut deviation
+from initial center positions that should not be exceeded during
+clustering. Note, CETNFIX applies only if center values are
+provided by the user.</p></li>
+<li><p><strong>maxit</strong> (<em>int</em>) – number of maximal allowed iterations.</p></li>
+<li><p><strong>term_thresh</strong> (<em>float</em>) – Termination threshold, either empty [] –&gt; go for the maximum
+number of iterations MAXIT or a scalar giving the minimum
+reduction of the size of the objective function for two consecutive
+iterations in Percent.</p></li>
+<li><p><strong>cltype</strong> (<em>str</em>) – either ‘kmeans’ –&gt; kmeans cluster analysis (spherically shaped
+cluster), ‘det’ –&gt; uses the determinant criterion of Spath, H.,
+“Cluster-Formation and Analyse, chapter3” (ellipsoidal clusters,
+all cluster use the same ellipsoid), or ‘vardet’ –&gt; Spath, H.,
+chapter 4 (each cluster uses its individual ellipsoid). Note: the
+latter is the crisp version of the Gustafson-Kessel algorithm</p></li>
+<li><p><strong>cov_constr</strong> (<em>float</em>) – scalar between [0 1], values &gt; 0 trim the covariance matrix
+to avoid needle-like ellpsoids for the clusters, applies only for
+CLTYPE=’vardet’, but must always be provided.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>idx</strong> (<em>numpy array</em>) – cluster index number for each sample after the last iteration,
+column vector.</p></li>
+<li><p><strong>cent</strong> (<em>numpy array</em>) – matrix with cluster centre positions after last iteration, one
+cluster centre per row</p></li>
+<li><p><strong>obj_fcn</strong> (<em>numpy array</em>) – Vector, size of the objective function after each iteration</p></li>
+<li><p><strong>vrc</strong> (<em>numpy array</em>) – Variance Ratio Criterion</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.crisp_clust.CrispClust.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process data</p>
+<dd><p>Process the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.crisp_clust.CrispClust.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.crisp_clust.CrispClust.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.crisp_clust.CrispClust.update_vars">
 <code class="sig-name descname">update_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.CrispClust.update_vars" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the variables</p>
+<dd><p>Update the variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -263,24 +391,59 @@
 <dl class="function">
 <dt id="pygmi.clust.crisp_clust.gcentroids">
 <code class="sig-prename descclassname">pygmi.clust.crisp_clust.</code><code class="sig-name descname">gcentroids</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">index</em>, <em class="sig-param">no_clust</em>, <em class="sig-param">mindist</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.gcentroids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gcentroids</p>
+<dd><p>G Centroids.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – Input data.</p></li>
+<li><p><strong>index</strong> (<em>numpy array</em>) – Cluster index number for each sample.</p></li>
+<li><p><strong>no_clust</strong> (<em>int</em>) – Number of clusters to be used.</p></li>
+<li><p><strong>mindist</strong> (<em>numpy array</em>) – Minimum distances.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>centroids</strong> (<em>numpy array</em>) – DESC</p></li>
+<li><p><strong>index</strong> (<em>numpy array</em>) – DESC</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="pygmi.clust.crisp_clust.gdist">
 <code class="sig-prename descclassname">pygmi.clust.crisp_clust.</code><code class="sig-name descname">gdist</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">center</em>, <em class="sig-param">index</em>, <em class="sig-param">no_clust</em>, <em class="sig-param">cltype</em>, <em class="sig-param">cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.crisp_clust.gdist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gdist routine</p>
+<dd><p>G Dist routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – Input data.</p></li>
+<li><p><strong>center</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+<li><p><strong>index</strong> (<em>numpy array</em>) – Cluster index number for each sample.</p></li>
+<li><p><strong>no_clust</strong> (<em>int</em>) – Number of clusters to be used.</p></li>
+<li><p><strong>cltype</strong> (<em>str</em>) – Clustering type.</p></li>
+<li><p><strong>cov_constr</strong> (<em>float</em>) – scalar between [0 1].</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bigd</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-pygmi.clust.fuzzy_clust">
 <span id="pygmi-clust-fuzzy-clust-module"></span><h2>pygmi.clust.fuzzy_clust module<a class="headerlink" href="#module-pygmi.clust.fuzzy_clust" title="Permalink to this headline">¶</a></h2>
-<p>Fuzzy clustering</p>
+<p>Fuzzy clustering.</p>
 <dl class="class">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.fuzzy_clust.</code><code class="sig-name descname">FuzzyClust</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Fuzzy Clust</p>
+<p>Fuzzy Clustering class.</p>
 <dl class="attribute">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.parent" title="Permalink to this definition">¶</a></dt>
@@ -317,37 +480,123 @@
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.combo">
 <code class="sig-name descname">combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box</p>
+<dd><p>Set up combo box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.fuzzy_means">
 <code class="sig-name descname">fuzzy_means</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">no_clust</em>, <em class="sig-param">init</em>, <em class="sig-param">centfix</em>, <em class="sig-param">maxit</em>, <em class="sig-param">term_thresh</em>, <em class="sig-param">expo</em>, <em class="sig-param">cltype</em>, <em class="sig-param">cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.fuzzy_means" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fuzzy Means</p>
+<dd><p>Fuzzy clustering.</p>
+<p>Finds NO_CLUST clusters in the data set DATA.. Supported algorithms are
+fuzzy c-means, Gustafson-Kessel, advanced fuzzy c-means.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – DATA is size M-by-N, where M is the number of samples
+and N is the number of coordinates (attributes) for each sample.</p></li>
+<li><p><strong>no_clust</strong> (<em>int</em>) – Numer of clusters.</p></li>
+<li><p><strong>init</strong> (<em>TYPE</em>) – INIT may be set to [], in this case the fcm generates random
+initial center locations to start the algorithm. Alternatively,
+INIT can be of matrix type, either containing a user-given
+membership matrix [NO_CLUST M] or a cluster center matrix
+[NO_CLUST, N].</p></li>
+<li><p><strong>centfix</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+<li><p><strong>maxit</strong> (<em>int</em>) – MAXIT give the maximum number of iterations..</p></li>
+<li><p><strong>term_thresh</strong> (<em>float</em>) – Gives the required minimum improvement in per cent per
+iteration. (termination threshold)</p></li>
+<li><p><strong>expo</strong> (<em>float</em>) – Fuzzification exponent.</p></li>
+<li><p><strong>cltype</strong> (<em>str</em>) – either ‘FCM’ for fuzy c-means (spherically shaped clusters),
+‘DET’ for advanced fuzzy c-means (ellipsoidal clusters, all
+clusters use the same ellipsoid), or ‘GK’ for Gustafson-Kessel
+clustering (ellipsoidal clusters, each cluster uses its own
+ellipsoid).</p></li>
+<li><p><strong>cov_constr</strong> (<em>float</em>) – COV_CONSTR applies only to the GK algorithm. constrains the cluster
+shape towards spherical clusters to avoid needle-like clusters.
+COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
+COV_CONSTR = 0 results in no constraining of the covarince matrices of
+the clusters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>uuu</strong> (<em>numpy array</em>) – The membership function matrix uuu contains the grade of
+membership of each data sample to each cluster.</p></li>
+<li><p><strong>cent</strong> (<em>numpy array</em>) – The coordinates for each cluster center are returned in the rows
+of the matrix CENT.</p></li>
+<li><p><strong>obj_fcn</strong> (<em>numpy array</em>) – At each iteration, an objective function is minimized to find the
+best location for the clusters and its values are returned in
+OBJ_FCN.</p></li>
+<li><p><strong>vrc</strong> (<em>numpy array</em>) – Variance ration criterion.</p></li>
+<li><p><em>nce</em> – Normalised class entropy.</p></li>
+<li><p><strong>xbi</strong> (<em>numpy array</em>) – Xie beni index.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entrypoint into routine</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.fuzzy_clust.FuzzyClust.update_vars">
 <code class="sig-name descname">update_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.FuzzyClust.update_vars" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the variables</p>
+<dd><p>Update the variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -355,19 +604,32 @@
 <dl class="function">
 <dt id="pygmi.clust.fuzzy_clust.fuzzy_dist">
 <code class="sig-prename descclassname">pygmi.clust.fuzzy_clust.</code><code class="sig-name descname">fuzzy_dist</code><span class="sig-paren">(</span><em class="sig-param">cent</em>, <em class="sig-param">data</em>, <em class="sig-param">uuu</em>, <em class="sig-param">expo</em>, <em class="sig-param">cltype</em>, <em class="sig-param">cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.fuzzy_dist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fuzzy Dist</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.clust.fuzzy_clust.fuzzy_dist2">
-<code class="sig-prename descclassname">pygmi.clust.fuzzy_clust.</code><code class="sig-name descname">fuzzy_dist2</code><span class="sig-paren">(</span><em class="sig-param">cent</em>, <em class="sig-param">data</em>, <em class="sig-param">uuu</em>, <em class="sig-param">expo</em>, <em class="sig-param">cltype</em>, <em class="sig-param">cov_constr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.fuzzy_clust.fuzzy_dist2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fuzzy dist 2</p>
+<dd><p>Fuzzy distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cent</strong> (<em>numpy array</em>) – DESCRIPTION.</p></li>
+<li><p><strong>data</strong> (<em>numpy array</em>) – Input data.</p></li>
+<li><p><strong>uuu</strong> (<em>numpy array</em>) – Membership function matrix.</p></li>
+<li><p><strong>expo</strong> (<em>float</em>) – Fuzzification exponent.</p></li>
+<li><p><strong>cltype</strong> (<em>str</em>) – Clustering type.</p></li>
+<li><p><strong>cov_constr</strong> (<em>float</em>) – Applies only to the GK algorithm. constrains the cluster shape towards
+spherical clusters.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ddd</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-pygmi.clust.graphs">
 <span id="pygmi-clust-graphs-module"></span><h2>pygmi.clust.graphs module<a class="headerlink" href="#module-pygmi.clust.graphs" title="Permalink to this headline">¶</a></h2>
-<p>Plot Cluster Data</p>
+<p>Plot Cluster Data.</p>
 <dl class="class">
 <dt id="pygmi.clust.graphs.GraphWindow">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.graphs.</code><code class="sig-name descname">GraphWindow</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
@@ -387,7 +649,15 @@
 <dl class="method">
 <dt id="pygmi.clust.graphs.GraphWindow.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band.</p>
+<dd><p>Combo to change band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -422,24 +692,78 @@
 <dt id="pygmi.clust.graphs.MyMplCanvas.update_contour">
 <code class="sig-name descname">update_contour</code><span class="sig-paren">(</span><em class="sig-param">data1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.MyMplCanvas.update_contour" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data1</strong> (<em>PyGMI Data.</em>) – Input raster dataset.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphs.MyMplCanvas.update_membership">
 <code class="sig-name descname">update_membership</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">mem</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.MyMplCanvas.update_membership" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the plot.</p>
+<dd><p>Update membership plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<em>PyGMI Data.</em>) – Raster dataset.</p></li>
+<li><p><strong>mem</strong> (<em>int</em>) – Membership.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphs.MyMplCanvas.update_scatter">
 <code class="sig-name descname">update_scatter</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.MyMplCanvas.update_scatter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the plot.</p>
+<dd><p>Update the scatter plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – X coordinates (Number of classes).</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – Y Coordinates.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphs.MyMplCanvas.update_wireframe">
 <code class="sig-name descname">update_wireframe</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.MyMplCanvas.update_wireframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the plot.</p>
+<dd><p>Update wireframe plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – Iteration number.</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – Number of classes.</p></li>
+<li><p><strong>z</strong> (<em>numpy array</em>) – z coordinate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -474,7 +798,15 @@
 <dl class="method">
 <dt id="pygmi.clust.graphs.PlotMembership.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.PlotMembership.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band.</p>
+<dd><p>Combo to change band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -487,6 +819,14 @@
 <dt id="pygmi.clust.graphs.PlotMembership.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.PlotMembership.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -521,13 +861,29 @@
 <dl class="method">
 <dt id="pygmi.clust.graphs.PlotRaster.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.PlotRaster.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band.</p>
+<dd><p>Combo to change band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphs.PlotRaster.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.PlotRaster.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -562,13 +918,29 @@
 <dl class="method">
 <dt id="pygmi.clust.graphs.PlotVRCetc.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.PlotVRCetc.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band.</p>
+<dd><p>Combo to change band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphs.PlotVRCetc.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphs.PlotVRCetc.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -576,52 +948,121 @@
 </div>
 <div class="section" id="module-pygmi.clust.graphtool">
 <span id="pygmi-clust-graphtool-module"></span><h2>pygmi.clust.graphtool module<a class="headerlink" href="#module-pygmi.clust.graphtool" title="Permalink to this headline">¶</a></h2>
-<p>Graph tool is a multi-function graphing tool for use with cluster analysis</p>
+<p>Graph tool is a multi-function graphing tool for use with cluster analysis.</p>
 <dl class="class">
 <dt id="pygmi.clust.graphtool.GraphHist">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.graphtool.</code><code class="sig-name descname">GraphHist</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
-<p>Plots several lines in distinct colors.</p>
+<p>Graph Hist.</p>
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphHist.get_clust_scat">
 <code class="sig-name descname">get_clust_scat</code><span class="sig-paren">(</span><em class="sig-param">bins</em>, <em class="sig-param">dattmp</em>, <em class="sig-param">ctmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist.get_clust_scat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Routine to get the scattergram with cluster overlay</p>
+<dd><p>Routine to get the scattergram with cluster overlay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bins</strong> (<em>int</em>) – Number of bins.</p></li>
+<li><p><strong>dattmp</strong> (<em>list</em>) – Data.</p></li>
+<li><p><strong>ctmp</strong> (<em>list</em>) – Cluster indices.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xymahist</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphHist.get_hist">
 <code class="sig-name descname">get_hist</code><span class="sig-paren">(</span><em class="sig-param">bins</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist.get_hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Routine to get the scattergram with histogram overlay</p>
+<dd><p>Routine to get the scattergram with histogram overlay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>bins</strong> (<em>int</em>) – Number of bins.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xymahist</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphHist.init_graph">
 <code class="sig-name descname">init_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist.init_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the Graph</p>
+<dd><p>Initialize the Graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphHist.polyint">
 <code class="sig-name descname">polyint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist.polyint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Polygon Interactor routine</p>
+<dd><p>Polygon Interactor routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphHist.setup_coords">
 <code class="sig-name descname">setup_coords</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist.setup_coords" title="Permalink to this definition">¶</a></dt>
-<dd><p>Routine to setup the coordinates for the scattergram</p>
+<dd><p>Routine to setup the coordinates for the scattergram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphHist.setup_hist">
 <code class="sig-name descname">setup_hist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist.setup_hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Routine to setup the 1d histograms</p>
+<dd><p>Routine to setup the 1D histograms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphHist.update_graph">
 <code class="sig-name descname">update_graph</code><span class="sig-paren">(</span><em class="sig-param">clearaxis=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphHist.update_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw Routine</p>
+<dd><p>Draw Routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>clearaxis</strong> (<em>bool</em><em>, </em><em>optional</em>) – True to clear the axis. The default is False.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -630,7 +1071,7 @@
 <dt id="pygmi.clust.graphtool.GraphMap">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.graphtool.</code><code class="sig-name descname">GraphMap</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
-<p>Plots several lines in distinct colors.</p>
+<p>Graph Map.</p>
 <dl class="attribute">
 <dt id="pygmi.clust.graphtool.GraphMap.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap.parent" title="Permalink to this definition">¶</a></dt>
@@ -645,19 +1086,43 @@
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphMap.init_graph">
 <code class="sig-name descname">init_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap.init_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the Graph</p>
+<dd><p>Initialize the Graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphMap.polyint">
 <code class="sig-name descname">polyint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap.polyint" title="Permalink to this definition">¶</a></dt>
-<dd><p>Polygon Integrator</p>
+<dd><p>Polygon Integrator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.GraphMap.update_graph">
 <code class="sig-name descname">update_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.GraphMap.update_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw routine</p>
+<dd><p>Draw routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -666,31 +1131,53 @@
 <dt id="pygmi.clust.graphtool.PolygonInteractor">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.graphtool.</code><code class="sig-name descname">PolygonInteractor</code><span class="sig-paren">(</span><em class="sig-param">axtmp</em>, <em class="sig-param">pntxy</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
-<p>Polygon Interactor</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>axtmp</strong> (<em>matplotlib axis</em>) – matplotlib axis</p></li>
-<li><p><strong>pntxy</strong> – </p></li>
-</ul>
-</dd>
-</dl>
+<p>Polygon Interactor.</p>
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.button_press_callback">
 <code class="sig-name descname">button_press_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.button_press_callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>whenever a mouse button is pressed</p>
+<dd><p>Button press callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.button_release_callback">
 <code class="sig-name descname">button_release_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.button_release_callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Whenever a mouse button is released</p>
+<dd><p>Button release callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.draw_callback">
 <code class="sig-name descname">draw_callback</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.draw_callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw callback</p>
+<dd><p>Draw callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
@@ -701,25 +1188,69 @@
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.get_ind_under_point">
 <code class="sig-name descname">get_ind_under_point</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.get_ind_under_point" title="Permalink to this definition">¶</a></dt>
-<dd><p>get the index of vertex under point if within epsilon tolerance</p>
+<dd><p>Get the index of vertex under point if within epsilon tolerance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ind</strong> – Index of vertex under point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int or None</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.motion_notify_callback">
 <code class="sig-name descname">motion_notify_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
-<dd><p>on mouse movement</p>
+<dd><p>Mouse notify callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.new_poly">
 <code class="sig-name descname">new_poly</code><span class="sig-paren">(</span><em class="sig-param">npoly</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.new_poly" title="Permalink to this definition">¶</a></dt>
-<dd><p>New Polygon</p>
+<dd><p>New Polygon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoly</strong> (<em>list</em>) – New polygon coordinates.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.poly_changed">
 <code class="sig-name descname">poly_changed</code><span class="sig-paren">(</span><em class="sig-param">poly</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.poly_changed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Changed Polygon</p>
+<dd><p>Polygon changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>poly</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
@@ -735,7 +1266,15 @@
 <dl class="method">
 <dt id="pygmi.clust.graphtool.PolygonInteractor.update_plots">
 <code class="sig-name descname">update_plots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.PolygonInteractor.update_plots" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update Plots</p>
+<dd><p>Update plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -744,7 +1283,7 @@
 <dt id="pygmi.clust.graphtool.ScatterPlot">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.graphtool.</code><code class="sig-name descname">ScatterPlot</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Main Graph Tool Routine</p>
+<p>Main Graph Tool Routine.</p>
 <dl class="attribute">
 <dt id="pygmi.clust.graphtool.ScatterPlot.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.parent" title="Permalink to this definition">¶</a></dt>
@@ -781,67 +1320,161 @@
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.on_cp_combo">
 <code class="sig-name descname">on_cp_combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.on_cp_combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>On Combo</p>
+<dd><p>On cp combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.on_cp_combo2">
 <code class="sig-name descname">on_cp_combo2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.on_cp_combo2" title="Permalink to this definition">¶</a></dt>
-<dd><p>On Combo 2</p>
+<dd><p>On cp combo 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.on_cp_combo3">
 <code class="sig-name descname">on_cp_combo3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.on_cp_combo3" title="Permalink to this definition">¶</a></dt>
-<dd><p>On combo 3</p>
+<dd><p>On cp combo 3.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.on_cp_dpoly">
 <code class="sig-name descname">on_cp_dpoly</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.on_cp_dpoly" title="Permalink to this definition">¶</a></dt>
-<dd><p>cp dpoly</p>
+<dd><p>On cp dpoly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.on_map_combo">
 <code class="sig-name descname">on_map_combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.on_map_combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>On map combo</p>
+<dd><p>On map combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.on_map_combo2">
 <code class="sig-name descname">on_map_combo2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.on_map_combo2" title="Permalink to this definition">¶</a></dt>
-<dd><p>On map combo 2</p>
+<dd><p>On map combo 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.on_map_dpoly">
 <code class="sig-name descname">on_map_dpoly</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.on_map_dpoly" title="Permalink to this definition">¶</a></dt>
-<dd><p>map dpoly</p>
+<dd><p>On map dpoly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>run</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.update_hist">
 <code class="sig-name descname">update_hist</code><span class="sig-paren">(</span><em class="sig-param">polymask</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.update_hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>update</p>
+<dd><p>Update histogram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>polymask</strong> (<em>numpy array</em>) – Polygon mask.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.clust.graphtool.ScatterPlot.update_map">
 <code class="sig-name descname">update_map</code><span class="sig-paren">(</span><em class="sig-param">polymask</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.ScatterPlot.update_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>update</p>
+<dd><p>Update map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>polymask</strong> (<em>numpy array</em>) – Polygon mask.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -849,14 +1482,30 @@
 <dl class="function">
 <dt id="pygmi.clust.graphtool.dist_point_to_segment">
 <code class="sig-prename descclassname">pygmi.clust.graphtool.</code><code class="sig-name descname">dist_point_to_segment</code><span class="sig-paren">(</span><em class="sig-param">p</em>, <em class="sig-param">s0</em>, <em class="sig-param">s1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.graphtool.dist_point_to_segment" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reimplementation of Matplotlib’s dist_point_to_segment, after it was
+<dd><p>Dist point to segment.</p>
+<p>Reimplementation of Matplotlib’s dist_point_to_segment, after it was
 depreciated. Follows <a class="reference external" href="http://geomalgorithms.com/a02-_lines.html">http://geomalgorithms.com/a02-_lines.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>numpy array</em>) – Point.</p></li>
+<li><p><strong>s0</strong> (<em>numpy array</em>) – Start of segment.</p></li>
+<li><p><strong>s1</strong> (<em>numpy array</em>) – End of segment.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Distance of point to segment.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-pygmi.clust.menu">
 <span id="pygmi-clust-menu-module"></span><h2>pygmi.clust.menu module<a class="headerlink" href="#module-pygmi.clust.menu" title="Permalink to this headline">¶</a></h2>
-<p>Clustering Menu Routines</p>
+<p>Clustering Menu Routines.</p>
 <dl class="class">
 <dt id="pygmi.clust.menu.MenuWidget">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
@@ -870,7 +1519,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">MainWidget</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -884,7 +1533,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="method">
 <dt id="pygmi.clust.menu.MenuWidget.cluster_stats">
 <code class="sig-name descname">cluster_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.menu.MenuWidget.cluster_stats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Basic Statistics.</p>
+<dd><p>Calculate Statistics.</p>
 </dd></dl>
 
 <dl class="method">
@@ -944,6 +1593,740 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-pygmi.clust.segmentation">
+<span id="pygmi-clust-segmentation-module"></span><h2>pygmi.clust.segmentation module<a class="headerlink" href="#module-pygmi.clust.segmentation" title="Permalink to this headline">¶</a></h2>
+<p>Image segmentation routines.</p>
+<dl class="class">
+<dt id="pygmi.clust.segmentation.ImageSeg">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.segmentation.</code><code class="sig-name descname">ImageSeg</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Image Segmentation.</p>
+<dl class="attribute">
+<dt id="pygmi.clust.segmentation.ImageSeg.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>item name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.segmentation.ImageSeg.pbar">
+<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.pbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to a progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>progressbar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.segmentation.ImageSeg.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.segmentation.ImageSeg.outdata">
+<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.segmentation.ImageSeg.ifile">
+<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.ifile" title="Permalink to this definition">¶</a></dt>
+<dd><p>input file name. Used in main.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.segmentation.ImageSeg.segment1">
+<code class="sig-name descname">segment1</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">scale=500</em>, <em class="sig-param">wcolor=0.5</em>, <em class="sig-param">wcompact=0.5</em>, <em class="sig-param">doshape=True</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.segment1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment Part 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – Input data.</p></li>
+<li><p><strong>scale</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – Scale. The default is 500.</p></li>
+<li><p><strong>wcolor</strong> (<em>float</em><em>, </em><em>optional</em>) – Color weight. The default is 0.5.</p></li>
+<li><p><strong>wcompact</strong> (<em>float</em><em>, </em><em>optional</em>) – Compactness weight. The default is 0.5.</p></li>
+<li><p><strong>doshape</strong> (<em>bool</em><em>, </em><em>optional</em>) – Perform shape segmentation. The default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>omap</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.segmentation.ImageSeg.segment2">
+<code class="sig-name descname">segment2</code><span class="sig-paren">(</span><em class="sig-param">omap</em>, <em class="sig-param">olist</em>, <em class="sig-param">slist</em>, <em class="sig-param">mlist</em>, <em class="sig-param">nlist</em>, <em class="sig-param">bands</em>, <em class="sig-param">doshape</em>, <em class="sig-param">wcompact</em>, <em class="sig-param">wcolor</em>, <em class="sig-param">scale</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.segment2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Segment Part 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>omap</strong> (<em>numpy array</em>) – DESCRIPTION.</p></li>
+<li><p><strong>olist</strong> (<em>dictionary</em>) – DESCRIPTION.</p></li>
+<li><p><strong>slist</strong> (<em>dictionary</em>) – DESCRIPTION.</p></li>
+<li><p><strong>mlist</strong> (<em>dictionary</em>) – DESCRIPTION.</p></li>
+<li><p><strong>nlist</strong> (<em>dictionary</em>) – DESCRIPTION.</p></li>
+<li><p><strong>bands</strong> (<em>int</em>) – Number of bands in data.</p></li>
+<li><p><strong>doshape</strong> (<em>bool</em><em>, </em><em>optional</em>) – Perform shape segmentation. The default is True.</p></li>
+<li><p><strong>wcompact</strong> (<em>float</em><em>, </em><em>optional</em>) – Compactness weight. The default is 0.5.</p></li>
+<li><p><strong>wcolor</strong> (<em>float</em><em>, </em><em>optional</em>) – Color weight. The default is 0.5.</p></li>
+<li><p><strong>scale</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – Scale. The default is 500.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>omap</strong> – DESCRIPTION.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>TYPE</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.segmentation.ImageSeg.settings">
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.segmentation.ImageSeg.setupui">
+<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.segmentation.ImageSeg.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.segmentation.get_l">
+<code class="sig-prename descclassname">pygmi.clust.segmentation.</code><code class="sig-name descname">get_l</code><a class="headerlink" href="#pygmi.clust.segmentation.get_l" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bounding box length.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>numpy array</em>) – Input data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ltmp</strong> – Bounding box length.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.clust.segmentation.test">
+<code class="sig-prename descclassname">pygmi.clust.segmentation.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.segmentation.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main testing routine.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.clust.super_class">
+<span id="pygmi-clust-super-class-module"></span><h2>pygmi.clust.super_class module<a class="headerlink" href="#module-pygmi.clust.super_class" title="Permalink to this headline">¶</a></h2>
+<p>Supervised Classification tool.</p>
+<dl class="class">
+<dt id="pygmi.clust.super_class.GraphMap">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.super_class.</code><code class="sig-name descname">GraphMap</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.GraphMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<p>Graph Map.</p>
+<dl class="attribute">
+<dt id="pygmi.clust.super_class.GraphMap.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.clust.super_class.GraphMap.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.GraphMap.init_graph">
+<code class="sig-name descname">init_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.GraphMap.init_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.GraphMap.polyint">
+<code class="sig-name descname">polyint</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.GraphMap.polyint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polygon integrator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.GraphMap.update_graph">
+<code class="sig-name descname">update_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.GraphMap.update_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.clust.super_class.PolygonInteractor">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.super_class.</code><code class="sig-name descname">PolygonInteractor</code><span class="sig-paren">(</span><em class="sig-param">axtmp</em>, <em class="sig-param">pntxy</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
+<p>Polygon Interactor.</p>
+<dl class="method">
+<dt id="pygmi.clust.super_class.PolygonInteractor.button_press_callback">
+<code class="sig-name descname">button_press_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.button_press_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.PolygonInteractor.button_release_callback">
+<code class="sig-name descname">button_release_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.button_release_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button release callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.PolygonInteractor.draw_callback">
+<code class="sig-name descname">draw_callback</code><span class="sig-paren">(</span><em class="sig-param">event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.draw_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.super_class.PolygonInteractor.epsilon">
+<code class="sig-name descname">epsilon</code><em class="property"> = 5</em><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.epsilon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.PolygonInteractor.get_ind_under_point">
+<code class="sig-name descname">get_ind_under_point</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.get_ind_under_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the index of vertex under point if within epsilon tolerance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ind</strong> – Index of vertex under point.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.PolygonInteractor.motion_notify_callback">
+<code class="sig-name descname">motion_notify_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Motion notify on mouse movement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.PolygonInteractor.new_poly">
+<code class="sig-name descname">new_poly</code><span class="sig-paren">(</span><em class="sig-param">npoly=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.new_poly" title="Permalink to this definition">¶</a></dt>
+<dd><p>New polygon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoly</strong> (<em>list</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – New polygon coordinates.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.PolygonInteractor.poly_changed">
+<code class="sig-name descname">poly_changed</code><span class="sig-paren">(</span><em class="sig-param">poly</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.poly_changed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Polygon changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>poly</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.super_class.PolygonInteractor.polyi_changed">
+<code class="sig-name descname">polyi_changed</code><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.polyi_changed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.super_class.PolygonInteractor.showverts">
+<code class="sig-name descname">showverts</code><em class="property"> = True</em><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.showverts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.PolygonInteractor.update_plots">
+<code class="sig-name descname">update_plots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.PolygonInteractor.update_plots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.clust.super_class.SuperClass">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.clust.super_class.</code><code class="sig-name descname">SuperClass</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Main Supervised Classification Tool Routine.</p>
+<dl class="attribute">
+<dt id="pygmi.clust.super_class.SuperClass.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.super_class.SuperClass.indata">
+<code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of input datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.clust.super_class.SuperClass.outdata">
+<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.calc_metrics">
+<code class="sig-name descname">calc_metrics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.calc_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.class_change">
+<code class="sig-name descname">class_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.class_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Current classification choice changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.init_classifier">
+<code class="sig-name descname">init_classifier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.init_classifier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise classifier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><ul class="simple">
+<li><p><strong>classifier</strong> (<em>object</em>) – Scikit learn classification object.</p></li>
+<li><p><strong>lbls</strong> (<em>numpy array</em>) – Class labels.</p></li>
+<li><p><strong>datall</strong> (<em>numpy array</em>) – Dataset.</p></li>
+<li><p><strong>X_test</strong> (<em>numpy array</em>) – X test dataset.</p></li>
+<li><p><strong>y_test</strong> (<em>numpy array</em>) – Y test dataset.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.load_shape">
+<code class="sig-name descname">load_shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.load_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.on_apoly">
+<code class="sig-name descname">on_apoly</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.on_apoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>On apoly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.on_combo">
+<code class="sig-name descname">on_combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.on_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>On combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.on_dpoly">
+<code class="sig-name descname">on_dpoly</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.on_dpoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>On dpoly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.onrowchange">
+<code class="sig-name descname">onrowchange</code><span class="sig-paren">(</span><em class="sig-param">current</em>, <em class="sig-param">previous</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.onrowchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine activated whenever a row is changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>current</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+<li><p><strong>previous</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.ontablechange">
+<code class="sig-name descname">ontablechange</code><span class="sig-paren">(</span><em class="sig-param">row</em>, <em class="sig-param">column</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.ontablechange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry on table changes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>row</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+<li><p><strong>column</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.save_shape">
+<code class="sig-name descname">save_shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.save_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.settings">
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.setupui">
+<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.update_map">
+<code class="sig-name descname">update_map</code><span class="sig-paren">(</span><em class="sig-param">polymask</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.update_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>polymask</strong> (<em>numpy array</em>) – Polygon mask.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.clust.super_class.SuperClass.updatepoly">
+<code class="sig-name descname">updatepoly</code><span class="sig-paren">(</span><em class="sig-param">xycoords=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.SuperClass.updatepoly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update polygon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>xycoords</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.clust.super_class.dist_point_to_segment">
+<code class="sig-prename descclassname">pygmi.clust.super_class.</code><code class="sig-name descname">dist_point_to_segment</code><span class="sig-paren">(</span><em class="sig-param">p</em>, <em class="sig-param">s0</em>, <em class="sig-param">s1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.dist_point_to_segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dist point to segment.</p>
+<p>Reimplementation of Matplotlib’s dist_point_to_segment, after it was
+depreciated. Follows <a class="reference external" href="http://geomalgorithms.com/a02-_lines.html">http://geomalgorithms.com/a02-_lines.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>numpy array</em>) – Point.</p></li>
+<li><p><strong>s0</strong> (<em>numpy array</em>) – Start of segment.</p></li>
+<li><p><strong>s1</strong> (<em>numpy array</em>) – End of segment.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Distance of point to segment.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.clust.super_class.test">
+<code class="sig-prename descclassname">pygmi.clust.super_class.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.super_class.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.clust.var_ratio">
+<span id="pygmi-clust-var-ratio-module"></span><h2>pygmi.clust.var_ratio module<a class="headerlink" href="#module-pygmi.clust.var_ratio" title="Permalink to this headline">¶</a></h2>
+<p>Variance Ratio</p>
+<dl class="function">
+<dt id="pygmi.clust.var_ratio.var_ratio">
+<code class="sig-prename descclassname">pygmi.clust.var_ratio.</code><code class="sig-name descname">var_ratio</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">uuu</em>, <em class="sig-param">center</em>, <em class="sig-param">dist_orig</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.var_ratio.var_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>Variance Ratio.</p>
+<p>Calculates the Variance ratio criterion after Calinski and Harabasz,
+1974. Does not accept missing data.
+Max VRC is optimal.
+U can either be membership matrix (FCM) or cluster index values (k-means)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – input dataset</p></li>
+<li><p><strong>uuu</strong> (<em>numpy array</em>) – membership matrix (FCM) or cluster index values (k-means)</p></li>
+<li><p><strong>center</strong> (<em>numpy array</em>) – cluster centers</p></li>
+<li><p><strong>dist_orig</strong> (<em>numpy array</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>vrc</strong> – variance ration criterion</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.clust.xie_beni">
+<span id="pygmi-clust-xie-beni-module"></span><h2>pygmi.clust.xie_beni module<a class="headerlink" href="#module-pygmi.clust.xie_beni" title="Permalink to this headline">¶</a></h2>
+<p>Xie Beni</p>
+<dl class="function">
+<dt id="pygmi.clust.xie_beni.xie_beni">
+<code class="sig-prename descclassname">pygmi.clust.xie_beni.</code><code class="sig-name descname">xie_beni</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">expo</em>, <em class="sig-param">uuu</em>, <em class="sig-param">center</em>, <em class="sig-param">edist</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.clust.xie_beni.xie_beni" title="Permalink to this definition">¶</a></dt>
+<dd><p>Xie Beni.</p>
+<p>Calculates the Xie-Beni index
+accepts missing values when given as nan elements in the data base)
+min xbi is optimal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – input dataset</p></li>
+<li><p><strong>expo</strong> (<em>float</em>) – </p></li>
+<li><p><strong>uuu</strong> (<em>numpy array</em>) – membership matrix (FCM) or cluster index values (k-means)</p></li>
+<li><p><strong>center</strong> (<em>numpy array</em>) – cluster centers</p></li>
+<li><p><strong>edist</strong> (<em>numpy array</em>) – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>xbi</strong> – xie beni index</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pygmi.clust">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.clust" title="Permalink to this headline">¶</a></h2>
 <p>Cluster analysis routines</p>
@@ -966,10 +2349,10 @@ interface. Normal as well as context menus are defined here.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pygmi.pfmod.html" title="pygmi.pfmod package"
+          <a href="pygmi.em.html" title="pygmi.em package"
              >next</a> |</li>
         <li class="right" >
-          <a href="pygmi.html" title="pygmi package"
+          <a href="pygmi.bholes.html" title="pygmi.bholes package"
              >previous</a> |</li>
         <li><a href="index.html">home</a>|&nbsp;</li>
         <li><a href="search.html">search</a>|&nbsp;</li>
@@ -981,7 +2364,7 @@ interface. Normal as well as context menus are defined here.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
     </div>
   </body>
 </html>

@@ -1,0 +1,70 @@
+pygmi.seis package
+==================
+
+Submodules
+----------
+
+pygmi.seis.beachball module
+---------------------------
+
+.. automodule:: pygmi.seis.beachball
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.seis.datatypes module
+---------------------------
+
+.. automodule:: pygmi.seis.datatypes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.seis.del\_rec module
+--------------------------
+
+.. automodule:: pygmi.seis.del_rec
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.seis.graphs module
+------------------------
+
+.. automodule:: pygmi.seis.graphs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.seis.iodefs module
+------------------------
+
+.. automodule:: pygmi.seis.iodefs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.seis.menu module
+----------------------
+
+.. automodule:: pygmi.seis.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.seis.scan\_imp module
+---------------------------
+
+.. automodule:: pygmi.seis.scan_imp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pygmi.seis
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -1,0 +1,400 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>pygmi.grav package &#8212; PyGMI 3.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pygmi.pfmod package" href="pygmi.pfmod.html" />
+    <link rel="prev" title="pygmi.eseis package" href="pygmi.eseis.html" /> 
+  </head><body>
+
+<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+<a href="index.html">
+<img src="_static/logo.png" border="0" alt="py4sci"/>
+</a>
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+</a>
+
+</div>
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pygmi.pfmod.html" title="pygmi.pfmod package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pygmi.eseis.html" title="pygmi.eseis package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" accesskey="U">pygmi package</a> &#187;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pygmi.grav package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pygmi.grav.dataprep">pygmi.grav.dataprep module</a></li>
+<li><a class="reference internal" href="#module-pygmi.grav.iodefs">pygmi.grav.iodefs module</a></li>
+<li><a class="reference internal" href="#module-pygmi.grav.menu">pygmi.grav.menu module</a></li>
+<li><a class="reference internal" href="#module-pygmi.grav">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pygmi.eseis.html"
+                        title="previous chapter">pygmi.eseis package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pygmi.pfmod.html"
+                        title="next chapter">pygmi.pfmod package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pygmi.grav.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pygmi-grav-package">
+<h1>pygmi.grav package<a class="headerlink" href="#pygmi-grav-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pygmi.grav.dataprep">
+<span id="pygmi-grav-dataprep-module"></span><h2>pygmi.grav.dataprep module<a class="headerlink" href="#module-pygmi.grav.dataprep" title="Permalink to this headline">¶</a></h2>
+<p>A set of Data Preparation routines.</p>
+<dl class="class">
+<dt id="pygmi.grav.dataprep.ProcessData">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">ProcessData</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Process Gravity Data.</p>
+<p>This class grids point data using a nearest neighbourhood technique.</p>
+<dl class="attribute">
+<dt id="pygmi.grav.dataprep.ProcessData.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.grav.dataprep.ProcessData.indata">
+<code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of input datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.grav.dataprep.ProcessData.outdata">
+<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.dataprep.ProcessData.acceptall">
+<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.acceptall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.dataprep.ProcessData.settings">
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.dataprep.ProcessData.setupui">
+<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.grav.iodefs">
+<span id="pygmi-grav-iodefs-module"></span><h2>pygmi.grav.iodefs module<a class="headerlink" href="#module-pygmi.grav.iodefs" title="Permalink to this headline">¶</a></h2>
+<p>Import Data.</p>
+<dl class="class">
+<dt id="pygmi.grav.iodefs.ImportCG5">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.grav.iodefs.</code><code class="sig-name descname">ImportCG5</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Import Line Data.</p>
+<p>This class imports ASCII point data.</p>
+<dl class="attribute">
+<dt id="pygmi.grav.iodefs.ImportCG5.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>item name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.grav.iodefs.ImportCG5.pbar">
+<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.pbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to a progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>progressbar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.grav.iodefs.ImportCG5.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.grav.iodefs.ImportCG5.outdata">
+<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.grav.iodefs.ImportCG5.ifile">
+<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.ifile" title="Permalink to this definition">¶</a></dt>
+<dd><p>input file name. Used in main.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.iodefs.ImportCG5.get_cg5">
+<code class="sig-name descname">get_cg5</code><span class="sig-paren">(</span><em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.get_cg5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get CG-5 filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – CG-5 filename submitted for testing. The default is ‘’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.iodefs.ImportCG5.get_gps">
+<code class="sig-name descname">get_gps</code><span class="sig-paren">(</span><em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.get_gps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get GPS filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – GPS filename (csv). The default is ‘’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.iodefs.ImportCG5.settings">
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.iodefs.ImportCG5.setupui">
+<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.grav.menu">
+<span id="pygmi-grav-menu-module"></span><h2>pygmi.grav.menu module<a class="headerlink" href="#module-pygmi.grav.menu" title="Permalink to this headline">¶</a></h2>
+<p>Gravity Menu Routines.</p>
+<dl class="class">
+<dt id="pygmi.grav.menu.MenuWidget">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.grav.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface.</p>
+<p>This widget class creates menus to be found on the main
+interface. Normal as well as context menus are defined here.</p>
+<dl class="attribute">
+<dt id="pygmi.grav.menu.MenuWidget.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference to MainWidget class found in main.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.menu.MenuWidget.import_data">
+<code class="sig-name descname">import_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.grav.menu.MenuWidget.process_data">
+<code class="sig-name descname">process_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.process_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process data.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.grav">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.grav" title="Permalink to this headline">¶</a></h2>
+<p>Gravity Routines</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pygmi.pfmod.html" title="pygmi.pfmod package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pygmi.eseis.html" title="pygmi.eseis package"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" >pygmi package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
+    </div>
+  </body>
+</html>

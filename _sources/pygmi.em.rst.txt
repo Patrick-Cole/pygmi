@@ -1,0 +1,62 @@
+pygmi.em package
+================
+
+Submodules
+----------
+
+pygmi.em.birrp module
+---------------------
+
+.. automodule:: pygmi.em.birrp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.em.dataprep module
+------------------------
+
+.. automodule:: pygmi.em.dataprep
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.em.graphs module
+----------------------
+
+.. automodule:: pygmi.em.graphs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.em.iodefs module
+----------------------
+
+.. automodule:: pygmi.em.iodefs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.em.menu module
+--------------------
+
+.. automodule:: pygmi.em.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.em.tdem module
+--------------------
+
+.. automodule:: pygmi.em.tdem
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pygmi.em
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -136,6 +136,17 @@
 </dd></dl>
 
 <dl class="attribute">
+<dt id="pygmi.vector.datatypes.LData.zchannel">
+<code class="sig-name descname">zchannel</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.zchannel" title="Permalink to this definition">¶</a></dt>
+<dd><p>channel for z coordinates</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
 <dt id="pygmi.vector.datatypes.LData.data">
 <code class="sig-name descname">data</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of groups/lines, each having a structured array of data</p>
@@ -153,6 +164,17 @@
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.vector.datatypes.LData.nullvalue">
+<code class="sig-name descname">nullvalue</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.nullvalue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Nullvalue used in data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -274,6 +296,14 @@
 <dt id="pygmi.vector.graphs.GraphWindow.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -288,18 +318,51 @@
 <dt id="pygmi.vector.graphs.MyMplCanvas.button_release_callback">
 <code class="sig-name descname">button_release_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.button_release_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse button release callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.graphs.MyMplCanvas.motion_notify_callback">
 <code class="sig-name descname">motion_notify_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move mouse callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.graphs.MyMplCanvas.onpick">
 <code class="sig-name descname">onpick</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.onpick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Picker event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Return TRUE if pick succeeded.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -312,6 +375,12 @@
 <li><p><strong>data1</strong> (<em>PData object</em>) – Point data</p></li>
 <li><p><strong>ival</strong> (<em>dictionary key</em>) – dictionary key Point Data</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -326,6 +395,12 @@
 <li><p><strong>r</strong> (<em>numpy array</em>) – array of distances, for the x-axis</p></li>
 <li><p><strong>data</strong> (<em>numpy array</em>) – array of data to be plotted on the y-axis</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -343,6 +418,12 @@
 <li><p><strong>uselabels</strong> (<em>bool</em>) – boolean choice whether to use labels or not.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -356,6 +437,12 @@
 <li><p><strong>data</strong> (<em>PData object</em>) – Point data</p></li>
 <li><p><strong>ival</strong> (<em>dictionary key</em>) – dictionary key Point Data</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -372,6 +459,12 @@
 <li><p><strong>nbins</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bins used in rose diagram.</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -384,6 +477,12 @@
 <dd class="field-odd"><p><strong>data</strong> (<a class="reference internal" href="#pygmi.vector.datatypes.VData" title="pygmi.vector.datatypes.VData"><em>VData</em></a>) – Vector data. It can either be ‘Line’ or ‘Poly’ and typically is
 imported from a shapefile.</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -393,23 +492,47 @@ imported from a shapefile.</p>
 <dt id="pygmi.vector.graphs.PlotLines">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.graphs.</code><code class="sig-name descname">PlotLines</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.vector.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class.</p>
+<p>Plot Lines Class.</p>
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotLines.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotLines.change_line">
 <code class="sig-name descname">change_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.change_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to change line number.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotLines.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -418,17 +541,33 @@ imported from a shapefile.</p>
 <dt id="pygmi.vector.graphs.PlotLines2">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.graphs.</code><code class="sig-name descname">PlotLines2</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.vector.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class.</p>
+<p>Plot Lines2 Class.</p>
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotLines2.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines2.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotLines2.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotLines2.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -437,17 +576,33 @@ imported from a shapefile.</p>
 <dt id="pygmi.vector.graphs.PlotPoints">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.graphs.</code><code class="sig-name descname">PlotPoints</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotPoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.vector.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class.</p>
+<p>Plot Points Class.</p>
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotPoints.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotPoints.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotPoints.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotPoints.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -456,17 +611,33 @@ imported from a shapefile.</p>
 <dt id="pygmi.vector.graphs.PlotPoints2">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.graphs.</code><code class="sig-name descname">PlotPoints2</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotPoints2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.vector.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class.</p>
+<p>Plot Points2 Class.</p>
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotPoints2.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotPoints2.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotPoints2.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotPoints2.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run.</p>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -475,17 +646,33 @@ imported from a shapefile.</p>
 <dt id="pygmi.vector.graphs.PlotRose">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.graphs.</code><code class="sig-name descname">PlotRose</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotRose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.vector.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class.</p>
+<p>Plot Rose Class.</p>
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotRose.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotRose.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotRose.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotRose.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -494,11 +681,19 @@ imported from a shapefile.</p>
 <dt id="pygmi.vector.graphs.PlotVector">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.graphs.</code><code class="sig-name descname">PlotVector</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotVector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.vector.graphs.GraphWindow" title="pygmi.vector.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.vector.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class.</p>
+<p>Plot Vector Class.</p>
 <dl class="method">
 <dt id="pygmi.vector.graphs.PlotVector.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.PlotVector.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -536,6 +731,22 @@ element basis.</p>
 <code class="sig-prename descclassname">pygmi.vector.graphs.</code><code class="sig-name descname">rotate</code><span class="sig-paren">(</span><em class="sig-param">origin</em>, <em class="sig-param">point</em>, <em class="sig-param">angle</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.rotate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rotate a point counterclockwise by a given angle around a given origin.</p>
 <p>The angle should be given in radians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>origin</strong> (<em>list</em>) – List containing origin point (ox, oy)</p></li>
+<li><p><strong>point</strong> (<em>list</em>) – List containing point to be rotated (px, py)</p></li>
+<li><p><strong>angle</strong> (<em>float</em>) – Angle in radians.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>qx</strong> (<em>float</em>) – Rotated x-coordinate.</p></li>
+<li><p><strong>qy</strong> (<em>float</em>) – Rotated y-coordinate.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -606,6 +817,14 @@ element basis.</p>
 <dt id="pygmi.vector.iodefs.ExportLine.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportLine.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -674,6 +893,14 @@ element basis.</p>
 <dt id="pygmi.vector.iodefs.ExportPoint.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ExportPoint.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -742,7 +969,15 @@ element basis.</p>
 <dl class="method">
 <dt id="pygmi.vector.iodefs.ImportLEMI417Data.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLEMI417Data.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point into item. Data imported from here.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -812,24 +1047,56 @@ element basis.</p>
 <dt id="pygmi.vector.iodefs.ImportLineData.get_GXYZ">
 <code class="sig-name descname">get_GXYZ</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.get_GXYZ" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get geosoft XYZ.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>dat</strong> – dictionary of numpy, indexed by line number for each line’s data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.iodefs.ImportLineData.get_delimited">
 <code class="sig-name descname">get_delimited</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.get_delimited" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a delimited line file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>dat</strong> – List of PData type.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.iodefs.ImportLineData.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point into item. Data imported from here.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.iodefs.ImportLineData.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportLineData.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -898,13 +1165,29 @@ element basis.</p>
 <dl class="method">
 <dt id="pygmi.vector.iodefs.ImportPointData.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point into item. Data imported from here.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.vector.iodefs.ImportPointData.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportPointData.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -972,7 +1255,15 @@ element basis.</p>
 <dl class="method">
 <dt id="pygmi.vector.iodefs.ImportShapeData.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.ImportShapeData.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Entry point into item. Data imported from here.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1064,7 +1355,15 @@ shapefile.</p>
 <dl class="method">
 <dt id="pygmi.vector.iodefs.PointCut.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.iodefs.PointCut.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show Info.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1107,7 +1406,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">MainWidget</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1236,7 +1535,7 @@ interface. Normal as well as context menus are defined here.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
     </div>
   </body>
 </html>

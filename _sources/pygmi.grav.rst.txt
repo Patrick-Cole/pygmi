@@ -1,0 +1,38 @@
+pygmi.grav package
+==================
+
+Submodules
+----------
+
+pygmi.grav.dataprep module
+--------------------------
+
+.. automodule:: pygmi.grav.dataprep
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.grav.iodefs module
+------------------------
+
+.. automodule:: pygmi.grav.iodefs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.grav.menu module
+----------------------
+
+.. automodule:: pygmi.grav.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pygmi.grav
+   :members:
+   :undoc-members:
+   :show-inheritance:

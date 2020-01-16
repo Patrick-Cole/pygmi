@@ -1,0 +1,697 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+    <title>pygmi.rsense package &#8212; PyGMI 3.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pygmi.seis package" href="pygmi.seis.html" />
+    <link rel="prev" title="pygmi.raster package" href="pygmi.raster.html" /> 
+  </head><body>
+
+<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+<a href="index.html">
+<img src="_static/logo.png" border="0" alt="py4sci"/>
+</a>
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+</a>
+
+</div>
+
+
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pygmi.seis.html" title="pygmi.seis package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="pygmi.raster.html" title="pygmi.raster package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" accesskey="U">pygmi package</a> &#187;</li> 
+      </ul>
+    </div>
+
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">pygmi.rsense package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pygmi.rsense.change">pygmi.rsense.change module</a></li>
+<li><a class="reference internal" href="#module-pygmi.rsense.menu">pygmi.rsense.menu module</a></li>
+<li><a class="reference internal" href="#module-pygmi.rsense">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="pygmi.raster.html"
+                        title="previous chapter">pygmi.raster package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="pygmi.seis.html"
+                        title="next chapter">pygmi.seis package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/pygmi.rsense.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="pygmi-rsense-package">
+<h1>pygmi.rsense package<a class="headerlink" href="#pygmi-rsense-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pygmi.rsense.change">
+<span id="pygmi-rsense-change-module"></span><h2>pygmi.rsense.change module<a class="headerlink" href="#module-pygmi.rsense.change" title="Permalink to this headline">¶</a></h2>
+<p>Change Detection.</p>
+<dl class="class">
+<dt id="pygmi.rsense.change.CreateSceneList">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.rsense.change.</code><code class="sig-name descname">CreateSceneList</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Import Line Data.</p>
+<p>This class imports ASCII point data.</p>
+<dl class="attribute">
+<dt id="pygmi.rsense.change.CreateSceneList.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>item name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.CreateSceneList.piter">
+<code class="sig-name descname">piter</code><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.piter" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to a progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>progressbar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.CreateSceneList.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.CreateSceneList.outdata">
+<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.CreateSceneList.ifile">
+<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.ifile" title="Permalink to this definition">¶</a></dt>
+<dd><p>input file name. Used in main.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.CreateSceneList.get_scene">
+<code class="sig-name descname">get_scene</code><span class="sig-paren">(</span><em class="sig-param">directory=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.get_scene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get Scene Directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory path as a string. The default is ‘’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.CreateSceneList.get_shape">
+<code class="sig-name descname">get_shape</code><span class="sig-paren">(</span><em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.get_shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get shape filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – Input filename. The default is ‘’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.CreateSceneList.settings">
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.CreateSceneList.setupui">
+<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.CreateSceneList.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.rsense.change.LoadSceneList">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.rsense.change.</code><code class="sig-name descname">LoadSceneList</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.LoadSceneList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Load scene list</p>
+<dl class="attribute">
+<dt id="pygmi.rsense.change.LoadSceneList.name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.rsense.change.LoadSceneList.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>item name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.LoadSceneList.pbar">
+<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.rsense.change.LoadSceneList.pbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to a progress bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>progressbar</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.LoadSceneList.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.rsense.change.LoadSceneList.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.LoadSceneList.outdata">
+<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.rsense.change.LoadSceneList.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.LoadSceneList.ifile">
+<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.rsense.change.LoadSceneList.ifile" title="Permalink to this definition">¶</a></dt>
+<dd><p>input file name. Used in main.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.rsense.change.LoadSceneList.ext">
+<code class="sig-name descname">ext</code><a class="headerlink" href="#pygmi.rsense.change.LoadSceneList.ext" title="Permalink to this definition">¶</a></dt>
+<dd><p>filename extension</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.LoadSceneList.settings">
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.LoadSceneList.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.rsense.change.MyMplCanvas">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.rsense.change.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em>, <em class="sig-param">width=10</em>, <em class="sig-param">height=8</em>, <em class="sig-param">dpi=100</em>, <em class="sig-param">bands=(0</em>, <em class="sig-param">1</em>, <em class="sig-param">2)</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<p>Simple canvas with a sine plot.</p>
+<dl class="method">
+<dt id="pygmi.rsense.change.MyMplCanvas.compute_initial_figure">
+<code class="sig-name descname">compute_initial_figure</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">dates</em>, <em class="sig-param">points</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.MyMplCanvas.compute_initial_figure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute initial figure.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dat</strong> (<em>PyGMI Data</em>) – PyGMI dataset.</p></li>
+<li><p><strong>dates</strong> (<em>str</em>) – Dates to show on title.</p></li>
+<li><p><strong>points</strong> (<em>numpy array</em>) – Points to plot.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.MyMplCanvas.onClick">
+<code class="sig-name descname">onClick</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.MyMplCanvas.onClick" title="Permalink to this definition">¶</a></dt>
+<dd><p>onClick event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Unused.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.MyMplCanvas.redraw">
+<code class="sig-name descname">redraw</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.MyMplCanvas.redraw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Redraw event</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Unused.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.MyMplCanvas.update_plot">
+<code class="sig-name descname">update_plot</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">dates</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.MyMplCanvas.update_plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dat</strong> (<em>PyGMI Data</em>) – PyGMI dataset.</p></li>
+<li><p><strong>dates</strong> (<em>str</em>) – Dates to show on title.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.rsense.change.SceneViewer">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.rsense.change.</code><code class="sig-name descname">SceneViewer</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Application Window</p>
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.about">
+<code class="sig-name descname">about</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.about" title="Permalink to this definition">¶</a></dt>
+<dd><p>About.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.closeEvent">
+<code class="sig-name descname">closeEvent</code><span class="sig-paren">(</span><em class="sig-param">cevent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.closeEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Close event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cevent</strong> (<em>TYPE</em>) – Unused.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.fileQuit">
+<code class="sig-name descname">fileQuit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.fileQuit" title="Permalink to this definition">¶</a></dt>
+<dd><p>File quit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.flaguse">
+<code class="sig-name descname">flaguse</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.flaguse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flag the scene for use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Unused.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.get_tiff">
+<code class="sig-name descname">get_tiff</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">firstrun=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.get_tiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets tiff images</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – Filename to import.</p></li>
+<li><p><strong>firstrun</strong> (<em>bool</em><em>, </em><em>optional</em>) – Option for first time running this routine. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>datall</strong> – Data images</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.home_callback">
+<code class="sig-name descname">home_callback</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.home_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Home callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Unused.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.manip_change">
+<code class="sig-name descname">manip_change</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.manip_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change manipulation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Unused.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.newdata">
+<code class="sig-name descname">newdata</code><span class="sig-paren">(</span><em class="sig-param">indx</em>, <em class="sig-param">capture=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.newdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>New dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indx</strong> (<em>int</em>) – Current index.</p></li>
+<li><p><strong>capture</strong> (<em>bool</em><em>, </em><em>optional</em>) – Option to capture the scene. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.nextscene">
+<code class="sig-name descname">nextscene</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.nextscene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets next scene</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Unused.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.settings">
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.change.SceneViewer.updateanim">
+<code class="sig-name descname">updateanim</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.updateanim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update animation file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Unused.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.rsense.change.get_shape_coords">
+<code class="sig-prename descclassname">pygmi.rsense.change.</code><code class="sig-name descname">get_shape_coords</code><span class="sig-paren">(</span><em class="sig-param">sfile</em>, <em class="sig-param">todegrees=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.get_shape_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets coords from a shapefile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sfile</strong> (<em>str</em>) – Shapefile name.</p></li>
+<li><p><strong>todegrees</strong> (<em>bool</em><em>, </em><em>optional</em>) – Transform the coordinates to degrees. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>ddpoints</strong> – Output coordinates.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.rsense.menu">
+<span id="pygmi-rsense-menu-module"></span><h2>pygmi.rsense.menu module<a class="headerlink" href="#module-pygmi.rsense.menu" title="Permalink to this headline">¶</a></h2>
+<p>Remote Sensing Menu Routines.</p>
+<dl class="class">
+<dt id="pygmi.rsense.menu.MenuWidget">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.rsense.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Widget class to call the main interface.</p>
+<p>This widget class creates menus to be found on the main
+interface. Normal as well as context menus are defined here.</p>
+<dl class="attribute">
+<dt id="pygmi.rsense.menu.MenuWidget.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.rsense.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reference to MainWidget class found in main.py</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.menu.MenuWidget.create_scene">
+<code class="sig-name descname">create_scene</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.menu.MenuWidget.create_scene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create Scene.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.menu.MenuWidget.load_scene">
+<code class="sig-name descname">load_scene</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.menu.MenuWidget.load_scene" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load Scene.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.rsense.menu.MenuWidget.view_change">
+<code class="sig-name descname">view_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.menu.MenuWidget.view_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>View Change Detection.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.rsense">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.rsense" title="Permalink to this headline">¶</a></h2>
+<p>Remote Sensing Routines</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="pygmi.seis.html" title="pygmi.seis package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="pygmi.raster.html" title="pygmi.raster package"
+             >previous</a> |</li>
+        <li><a href="index.html">home</a>|&nbsp;</li>
+        <li><a href="search.html">search</a>|&nbsp;</li>
+        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+
+          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="pygmi.html" >pygmi package</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Council for Geoscience.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
+    </div>
+  </body>
+</html>

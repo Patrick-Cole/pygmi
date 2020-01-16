@@ -1,0 +1,38 @@
+pygmi.bholes package
+====================
+
+Submodules
+----------
+
+pygmi.bholes.graphs module
+--------------------------
+
+.. automodule:: pygmi.bholes.graphs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.bholes.iodefs module
+--------------------------
+
+.. automodule:: pygmi.bholes.iodefs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.bholes.menu module
+------------------------
+
+.. automodule:: pygmi.bholes.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pygmi.bholes
+   :members:
+   :undoc-members:
+   :show-inheritance:

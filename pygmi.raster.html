@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pygmi.test package" href="pygmi.test.html" />
+    <link rel="next" title="pygmi.rsense package" href="pygmi.rsense.html" />
     <link rel="prev" title="pygmi.pfmod package" href="pygmi.pfmod.html" /> 
   </head><body>
 
@@ -40,7 +40,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pygmi.test.html" title="pygmi.test package"
+          <a href="pygmi.rsense.html" title="pygmi.rsense package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pygmi.pfmod.html" title="pygmi.pfmod package"
@@ -60,6 +60,7 @@
   <ul>
 <li><a class="reference internal" href="#">pygmi.raster package</a><ul>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-pygmi.raster.anaglyph">pygmi.raster.anaglyph module</a></li>
 <li><a class="reference internal" href="#module-pygmi.raster.cooper">pygmi.raster.cooper module</a></li>
 <li><a class="reference internal" href="#module-pygmi.raster.dataprep">pygmi.raster.dataprep module</a></li>
 <li><a class="reference internal" href="#module-pygmi.raster.datatypes">pygmi.raster.datatypes module</a></li>
@@ -82,8 +83,8 @@
   <p class="topless"><a href="pygmi.pfmod.html"
                         title="previous chapter">pygmi.pfmod package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pygmi.test.html"
-                        title="next chapter">pygmi.test package</a></p>
+  <p class="topless"><a href="pygmi.rsense.html"
+                        title="next chapter">pygmi.rsense package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -113,6 +114,356 @@
 <h1>pygmi.raster package<a class="headerlink" href="#pygmi-raster-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-pygmi.raster.anaglyph">
+<span id="pygmi-raster-anaglyph-module"></span><h2>pygmi.raster.anaglyph module<a class="headerlink" href="#module-pygmi.raster.anaglyph" title="Permalink to this headline">¶</a></h2>
+<p>Anaglyph routine.</p>
+<dl class="class">
+<dt id="pygmi.raster.anaglyph.MyMplCanvas">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.anaglyph.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<p>Canvas for the actual plot.</p>
+<dl class="attribute">
+<dt id="pygmi.raster.anaglyph.MyMplCanvas.axes">
+<code class="sig-name descname">axes</code><a class="headerlink" href="#pygmi.raster.anaglyph.MyMplCanvas.axes" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>matplotlib subplot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.raster.anaglyph.MyMplCanvas.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.raster.anaglyph.MyMplCanvas.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.MyMplCanvas.update_atype">
+<code class="sig-name descname">update_atype</code><span class="sig-paren">(</span><em class="sig-param">atype='dubois'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.MyMplCanvas.update_atype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update anaglyph type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atype</strong> (<em>str</em><em>, </em><em>optional</em>) – Anaglyph type. The default is ‘dubois’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.MyMplCanvas.update_colors">
+<code class="sig-name descname">update_colors</code><span class="sig-paren">(</span><em class="sig-param">doshade=False</em>, <em class="sig-param">cmap=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;</em>, <em class="sig-param">atype='dubois'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.MyMplCanvas.update_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update colors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>doshade</strong> (<em>bool</em><em>, </em><em>optional</em>) – Option to choose sunshading. The default is False.</p></li>
+<li><p><strong>cmap</strong> (<em>matplotlib.colors.LinearSegmentedColormap</em><em>, </em><em>optional</em>) – Matplotlib colormap. The default is cm.jet.</p></li>
+<li><p><strong>atype</strong> (<em>str</em><em>, </em><em>optional</em>) – Anaglyph type. The default is ‘dubois’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.MyMplCanvas.update_contours">
+<code class="sig-name descname">update_contours</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">scale=7</em>, <em class="sig-param">rotang=10</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.MyMplCanvas.update_contours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the contour plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<em>PyGMI raster data.</em>) – raster dataset to be used in contouring.</p></li>
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – Scale. The default is 7.</p></li>
+<li><p><strong>rotang</strong> (<em>float</em><em>, </em><em>optional</em>) – Rotation in degrees. The default is 10.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.MyMplCanvas.update_raster">
+<code class="sig-name descname">update_raster</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">scale=7</em>, <em class="sig-param">rotang=10</em>, <em class="sig-param">atype='dubois'</em>, <em class="sig-param">cmap=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;</em>, <em class="sig-param">shade=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.MyMplCanvas.update_raster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the raster plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data1</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used in contouring</p></li>
+<li><p><strong>scale</strong> (<em>float</em><em>, </em><em>optional</em>) – Scale. The default is 7.</p></li>
+<li><p><strong>rotang</strong> (<em>float</em><em>, </em><em>optional</em>) – Rotation in degrees. The default is 10.</p></li>
+<li><p><strong>atype</strong> (<em>str</em><em>, </em><em>optional</em>) – Anaglyph type. The default is ‘dubois’.</p></li>
+<li><p><strong>cmap</strong> (<em>matplotlib.colors.LinearSegmentedColormap</em><em>, </em><em>optional</em>) – Matplotlib colormap. The default is cm.jet.</p></li>
+<li><p><strong>shade</strong> (<em>bool</em><em>, </em><em>optional</em>) – Option to choose sunshading. The default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pygmi.raster.anaglyph.PlotAnaglyph">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.anaglyph.</code><code class="sig-name descname">PlotAnaglyph</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.PlotAnaglyph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Graph Window - The QDialog window which will contain our image.</p>
+<dl class="attribute">
+<dt id="pygmi.raster.anaglyph.PlotAnaglyph.parent">
+<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.raster.anaglyph.PlotAnaglyph.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.PlotAnaglyph.change_all">
+<code class="sig-name descname">change_all</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.PlotAnaglyph.change_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update from all combos.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.PlotAnaglyph.change_atype">
+<code class="sig-name descname">change_atype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.PlotAnaglyph.change_atype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update anaglyph type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.PlotAnaglyph.change_colors">
+<code class="sig-name descname">change_colors</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.PlotAnaglyph.change_colors" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update color bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.PlotAnaglyph.change_contours">
+<code class="sig-name descname">change_contours</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.PlotAnaglyph.change_contours" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update contours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.PlotAnaglyph.change_image">
+<code class="sig-name descname">change_image</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.PlotAnaglyph.change_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change Image, setting defaults.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.raster.anaglyph.PlotAnaglyph.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.PlotAnaglyph.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.raster.anaglyph.anaglyph">
+<code class="sig-prename descclassname">pygmi.raster.anaglyph.</code><code class="sig-name descname">anaglyph</code><span class="sig-paren">(</span><em class="sig-param">red</em>, <em class="sig-param">blue</em>, <em class="sig-param">atype='dubois'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.anaglyph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Color Anaglyph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>red</strong> (<em>numpy array</em>) – Dataset for red channel.</p></li>
+<li><p><strong>blue</strong> (<em>numpy array</em>) – Dataset for blue channel.</p></li>
+<li><p><strong>atype</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – Anaglyph type. The default is ‘dubois’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>rgb</strong> – Output dataset.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.raster.anaglyph.currentshader">
+<code class="sig-prename descclassname">pygmi.raster.anaglyph.</code><code class="sig-name descname">currentshader</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">cell</em>, <em class="sig-param">theta</em>, <em class="sig-param">phi</em>, <em class="sig-param">alpha</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.currentshader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Blinn shader.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – input MxN data to be imaged.</p></li>
+<li><p><strong>cell</strong> (<em>float</em>) – between 1 and 100 - controls sunshade detail.</p></li>
+<li><p><strong>theta</strong> (<em>float</em>) – sun elevation (also called g in code below).</p></li>
+<li><p><strong>phi</strong> (<em>float</em>) – azimuth.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em>) – how much incident light is reflected.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>R</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.raster.anaglyph.histcomp">
+<code class="sig-prename descclassname">pygmi.raster.anaglyph.</code><code class="sig-name descname">histcomp</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">nbr_bins=256</em>, <em class="sig-param">perc=5.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.histcomp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Histogram compaction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>img</strong> (<em>numpy masked array</em>) – Input data.</p></li>
+<li><p><strong>nbr_bins</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of bins. The default is 256.</p></li>
+<li><p><strong>perc</strong> (<em>float</em><em>, </em><em>optional</em>) – Percentage to clip. The default is 5.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>img2</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.raster.anaglyph.norm2">
+<code class="sig-prename descclassname">pygmi.raster.anaglyph.</code><code class="sig-name descname">norm2</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">datmin=None</em>, <em class="sig-param">datmax=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.norm2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalise vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dat</strong> (<em>numpy array</em>) – Vector to be normalised.</p></li>
+<li><p><strong>datmin</strong> (<em>float</em><em>, </em><em>optional</em>) – Minimum dat value. The default is None.</p></li>
+<li><p><strong>datmax</strong> (<em>float</em><em>, </em><em>optional</em>) – Maximum dat value. The default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Normalised output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.raster.anaglyph.rot_and_clean">
+<code class="sig-prename descclassname">pygmi.raster.anaglyph.</code><code class="sig-name descname">rot_and_clean</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em>, <em class="sig-param">rotang=5</em>, <em class="sig-param">rtype='red'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.rot_and_clean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rotate and clean rotated data for 2d view.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>numpy array</em>) – X coordinates.</p></li>
+<li><p><strong>y</strong> (<em>numpy array</em>) – Y coordinates.</p></li>
+<li><p><strong>z</strong> (<em>numpy array</em>) – Z coordinates (or data values).</p></li>
+<li><p><strong>rotang</strong> (<em>float</em><em>, </em><em>optional</em>) – Rotation angle. The default is 5.</p></li>
+<li><p><strong>rtype</strong> (<em>str</em><em>, </em><em>optional</em>) – Rotation type. The default is ‘red’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>zmap</strong> – Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.raster.anaglyph.sunshade">
+<code class="sig-prename descclassname">pygmi.raster.anaglyph.</code><code class="sig-name descname">sunshade</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">azim=-0.7853981633974483</em>, <em class="sig-param">elev=0.7853981633974483</em>, <em class="sig-param">alpha=1</em>, <em class="sig-param">cell=100</em>, <em class="sig-param">cmap=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.anaglyph.sunshade" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform Sunshading on data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – input MxN data to be imaged.</p></li>
+<li><p><strong>azim</strong> (<em>float</em><em>, </em><em>optional</em>) – Sun azimuth. The default is -np.pi/4..</p></li>
+<li><p><strong>elev</strong> (<em>float</em><em>, </em><em>optional</em>) – Sun elevation. The default is np.pi/4..</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>optional</em>) – how much incident light is reflected (0 to 1). The default is 1.</p></li>
+<li><p><strong>cell</strong> (<em>float</em><em>, </em><em>optional</em>) – between 1 and 100 - controls sunshade detail. The default is 100.</p></li>
+<li><p><strong>cmap</strong> (<em>matplotlib.colors.LinearSegmentedColormap</em><em>, </em><em>optional</em>) – Matplotlib colormap. The default is cm.terrain.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>colormap</strong> – Output color mapped array (MxNx4).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-pygmi.raster.cooper">
 <span id="pygmi-raster-cooper-module"></span><h2>pygmi.raster.cooper module<a class="headerlink" href="#module-pygmi.raster.cooper" title="Permalink to this headline">¶</a></h2>
@@ -192,18 +543,42 @@
 <dt id="pygmi.raster.cooper.Gradients.radiochange">
 <code class="sig-name descname">radiochange</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Gradients.radiochange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check radio button state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.cooper.Gradients.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Gradients.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.cooper.Gradients.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Gradients.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -265,13 +640,29 @@
 <dl class="method">
 <dt id="pygmi.raster.cooper.Tilt1.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Tilt1.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.cooper.Tilt1.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Tilt1.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -333,13 +724,29 @@
 <dl class="method">
 <dt id="pygmi.raster.cooper.Visibility2d.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Visibility2d.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.cooper.Visibility2d.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.Visibility2d.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -379,7 +786,7 @@ Gordon Cooper.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>dr</strong> – returns derivative ratio</p>
+<dd class="field-even"><p><strong>dt1</strong> – returns directional derivative</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -391,6 +798,17 @@ Gordon Cooper.</p>
 <dt id="pygmi.raster.cooper.nextpow2">
 <code class="sig-prename descclassname">pygmi.raster.cooper.</code><code class="sig-name descname">nextpow2</code><span class="sig-paren">(</span><em class="sig-param">n</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.nextpow2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Next power of 2.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n</strong> (<em>float</em><em> or </em><em>numpy array</em>) – Current value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>m_i</strong> – Output.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>float or numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -422,6 +840,21 @@ Gordon Cooper.</p>
 <dt id="pygmi.raster.cooper.vertical">
 <code class="sig-prename descclassname">pygmi.raster.cooper.</code><code class="sig-name descname">vertical</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">npts=None</em>, <em class="sig-param">xint=1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.vertical" title="Permalink to this definition">¶</a></dt>
 <dd><p>Vertical derivative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – Input data.</p></li>
+<li><p><strong>npts</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of points. The default is None.</p></li>
+<li><p><strong>xint</strong> (<em>float</em><em>, </em><em>optional</em>) – X interval. The default is 1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dz</strong> – Output data</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -440,9 +873,9 @@ heights above the surface (see paper)</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><ul class="simple">
-<li><p><strong>vtot</strong> (<em>numpy array</em>)</p></li>
-<li><p><strong>vstd</strong> (<em>numpy array</em>)</p></li>
-<li><p><strong>vsum</strong> (<em>numpy array</em>)</p></li>
+<li><p><strong>vtot</strong> (<em>numpy array</em>) – Total visibility.</p></li>
+<li><p><strong>vstd</strong> (<em>numpy array</em>) – Visibility variation.</p></li>
+<li><p><strong>vsum</strong> (<em>numpy array</em>) – Visibility vector resultant.</p></li>
 </ul>
 </p>
 </dd>
@@ -540,7 +973,15 @@ shapefile.</p>
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataCut.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataCut.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -587,25 +1028,58 @@ shapefile.</p>
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataGrid.acceptall">
 <code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid.acceptall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept.</p>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataGrid.dxy_change">
 <code class="sig-name descname">dxy_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid.dxy_change" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update dxy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataGrid.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataGrid.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -653,9 +1127,16 @@ resamples them so that they have the same rows and columns.</p>
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataMerge.acceptall">
 <code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.acceptall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept.</p>
-<p>This routine is called by settings() if accept is pressed. It contains
-the main merge routine.</p>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -663,18 +1144,42 @@ the main merge routine.</p>
 <code class="sig-name descname">dxy_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.dxy_change" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update dxy.</p>
 <p>This is the size of a grid cell in the x and y directions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataMerge.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataMerge.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataMerge.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -721,21 +1226,44 @@ the main merge routine.</p>
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataReproj.acceptall">
 <code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.acceptall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept.</p>
-<p>This routine is called by settings() if accept is pressed. It contains
-the main routine.</p>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataReproj.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataReproj.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataReproj.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -826,7 +1354,15 @@ the main routine.</p>
 <dl class="method">
 <dt id="pygmi.raster.dataprep.GetProf.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.GetProf.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -841,12 +1377,31 @@ the main routine.</p>
 <dt id="pygmi.raster.dataprep.GroupProj.combo_change">
 <code class="sig-name descname">combo_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.GroupProj.combo_change" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change Combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.GroupProj.set_current">
 <code class="sig-name descname">set_current</code><span class="sig-paren">(</span><em class="sig-param">wkt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.GroupProj.set_current" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set new wkt for current option.</p>
+<dd><p>Set new WKT for current option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>wkt</strong> (<em>str</em>) – Well Known Text descriptions for coordfinates (WKT) .</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -927,33 +1482,71 @@ GUI.</p>
 <dl class="method">
 <dt id="pygmi.raster.dataprep.Metadata.acceptall">
 <code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.acceptall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept.</p>
-<p>This routine is called by settings() if accept is pressed. It contains
-the main routine.</p>
+<dd><p>Accept option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.Metadata.rename_id">
 <code class="sig-name descname">rename_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.rename_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename the band name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.Metadata.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entrypoint to start this routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>tmp</strong> – True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.Metadata.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.Metadata.update_vals">
 <code class="sig-name descname">update_vals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.Metadata.update_vals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the values on the interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1000,19 +1593,44 @@ the main routine.</p>
 <dl class="method">
 <dt id="pygmi.raster.dataprep.RTP.acceptall">
 <code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.RTP.acceptall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept.</p>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.RTP.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.RTP.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings.</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.dataprep.RTP.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.RTP.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1021,6 +1639,17 @@ the main routine.</p>
 <dt id="pygmi.raster.dataprep.check_dataid">
 <code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">check_dataid</code><span class="sig-paren">(</span><em class="sig-param">out</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.check_dataid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check dataid for duplicates and renames where necessary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>out</strong> (<em>PyGMI Data</em>) – PyGMI raster data.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – PyGMI raster data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>PyGMI Data</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -1035,7 +1664,7 @@ This provides a work-around for that.</p>
 <dd class="field-odd"><p><strong>indata</strong> (<a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>Data</em></a>) – PyGMI raster dataset</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>PyGMI raster dataset</p>
+<dd class="field-even"><p><strong>indata</strong> – PyGMI raster dataset</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">Data</a></p>
@@ -1056,7 +1685,7 @@ This provides a work-around for that.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>PyGMI Dataset</p>
+<dd class="field-even"><p><strong>data</strong> – PyGMI Dataset</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">Data</a></p>
@@ -1080,10 +1709,10 @@ This provides a work-around for that.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p><strong>src</strong> – GDAL memory format data</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>src - GDAL mem format</p>
+<dd class="field-odd"><p>GDAL mem format</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1091,13 +1720,18 @@ This provides a work-around for that.</p>
 <dl class="function">
 <dt id="pygmi.raster.dataprep.epsgtowkt">
 <code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">epsgtowkt</code><span class="sig-paren">(</span><em class="sig-param">epsg</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.epsgtowkt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Routine to get a wkt from an epsg code.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.raster.dataprep.func">
-<code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">func</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.func" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function.</p>
+<dd><p>Routine to get a WKT from an epsg code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>epsg</strong> (<em>str</em><em> or </em><em>int</em>) – EPSG code.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – WKT description.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -1107,9 +1741,15 @@ This provides a work-around for that.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>- GDAL format</strong> (<em>dest</em>) – GDAL format</p></li>
-<li><p><strong>- str</strong> (<em>bandid</em>) – band identity</p></li>
+<li><p><strong>dest</strong> (<em>GDAL format</em>) – GDAL format</p></li>
+<li><p><strong>bandid</strong> (<em>str</em>) – band identity</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dat</strong> – PyGMI raster dataset.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>PyGMI Data</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1118,6 +1758,14 @@ This provides a work-around for that.</p>
 <dt id="pygmi.raster.dataprep.getepsgcodes">
 <code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">getepsgcodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.getepsgcodes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine used to get a list of EPSG codes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>pcodes</strong> – Dictionary of codes per projection in WKT format.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -1128,13 +1776,13 @@ This provides a work-around for that.</p>
 columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dat</strong> (<a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>Data</em></a>) – data object which stores datasets</p>
+<dd class="field-odd"><p><strong>dat</strong> (<em>PyGMI Data</em>) – data object which stores datasets</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>data object which stores datasets</p>
+<dd class="field-even"><p><strong>out</strong> – data object which stores datasets</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">Data</a></p>
+<dd class="field-odd"><p>PyGMI Data</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1167,7 +1815,22 @@ numits will be calculated and used.</p></li>
 <dl class="function">
 <dt id="pygmi.raster.dataprep.rtp">
 <code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">rtp</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">I_deg</em>, <em class="sig-param">D_deg</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.rtp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reduction to the Pole.</p>
+<dd><p>Reduction to th epole.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>PyGMI Data</em>) – PyGMI raster data.</p></li>
+<li><p><strong>I_deg</strong> (<em>float</em>) – Magnetic inclination.</p></li>
+<li><p><strong>D_deg</strong> (<em>float</em>) – Magnetic declination.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dat</strong> – PyGMI raster data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>PyGMI Data</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -1182,7 +1845,7 @@ value.</p>
 <dd class="field-odd"><p><strong>olddata</strong> (<a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>Data</em></a>) – PyGMI dataset</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>PyGMI dataset</p>
+<dd class="field-even"><p><strong>olddata</strong> – PyGMI dataset</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data">Data</a></p>
@@ -1193,12 +1856,12 @@ value.</p>
 </div>
 <div class="section" id="module-pygmi.raster.datatypes">
 <span id="pygmi-raster-datatypes-module"></span><h2>pygmi.raster.datatypes module<a class="headerlink" href="#module-pygmi.raster.datatypes" title="Permalink to this headline">¶</a></h2>
-<p>Class for raster data types and conversion routines</p>
+<p>Class for raster data types and conversion routines.</p>
 <dl class="class">
 <dt id="pygmi.raster.datatypes.Data">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.datatypes.</code><code class="sig-name descname">Data</code><a class="headerlink" href="#pygmi.raster.datatypes.Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>PyGMI Data Object</p>
+<p>PyGMI Data Object.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.datatypes.Data.data">
 <code class="sig-name descname">data</code><a class="headerlink" href="#pygmi.raster.datatypes.Data.data" title="Permalink to this definition">¶</a></dt>
@@ -1356,23 +2019,30 @@ value.</p>
 <dl class="method">
 <dt id="pygmi.raster.datatypes.Data.extent_from_gtr">
 <code class="sig-name descname">extent_from_gtr</code><span class="sig-paren">(</span><em class="sig-param">gtr</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.Data.extent_from_gtr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Imports extent, xdim and ydim from a gtr string. Requires data
-for rows and columns</p>
+<dd><p>Import extent, xdim and ydim from a gtr list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gtr</strong> (<em>list</em>) – gtr list.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.datatypes.Data.get_gtr">
 <code class="sig-name descname">get_gtr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.Data.get_gtr" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get gtr</p>
+<dd><p>Ger gtr.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>- PyGMI Data format</strong> (<em>dat</em>) – Data class for grid</p>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>gtr</strong> – tuple containing the gtr as (left, xdim, 0, top, 0., -ydim)</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>tuple containing the gtr as (left, xdim, 0, top, 0., -ydim)</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>extent - tuple</p>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1382,7 +2052,7 @@ for rows and columns</p>
 <dl class="function">
 <dt id="pygmi.raster.datatypes.numpy_to_pygmi">
 <code class="sig-prename descclassname">pygmi.raster.datatypes.</code><code class="sig-name descname">numpy_to_pygmi</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.numpy_to_pygmi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an MxN numpy array into a PyGMI data object</p>
+<dd><p>Convert an MxN numpy array into a PyGMI data object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>numpy array</em>) – MxN array</p>
@@ -1399,13 +2069,13 @@ for rows and columns</p>
 <dl class="function">
 <dt id="pygmi.raster.datatypes.pygmi_to_numpy">
 <code class="sig-prename descclassname">pygmi.raster.datatypes.</code><code class="sig-name descname">pygmi_to_numpy</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.pygmi_to_numpy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts a PyGMI data object into an MxN numpy array</p>
+<dd><p>Convert a PyGMI data object into an MxN numpy array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>tmp</strong> (<a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>Data</em></a>) – PyGMI raster dataset</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>array</strong> – MxN numpy array</p>
+<dd class="field-even"><p>MxN numpy array</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy array</p>
@@ -1416,12 +2086,12 @@ for rows and columns</p>
 </div>
 <div class="section" id="module-pygmi.raster.equation_editor">
 <span id="pygmi-raster-equation-editor-module"></span><h2>pygmi.raster.equation_editor module<a class="headerlink" href="#module-pygmi.raster.equation_editor" title="Permalink to this headline">¶</a></h2>
-<p>This is the function which calls the equation editor</p>
+<p>This is the function which calls the equation editor.</p>
 <dl class="class">
 <dt id="pygmi.raster.equation_editor.EquationEditor">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.equation_editor.</code><code class="sig-name descname">EquationEditor</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Equation Editor</p>
+<p>Equation Editor.</p>
 <p>This class allows the input of equations using raster datasets as
 variables. This is commonly done in remote sensing applications, where
 there is a requirement for band ratioing etc. It uses the numexpr library.</p>
@@ -1494,25 +2164,66 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 <dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.combo">
 <code class="sig-name descname">combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>update combo information</p>
+<dd><p>Update combo information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.eq_fix">
 <code class="sig-name descname">eq_fix</code><span class="sig-paren">(</span><em class="sig-param">indata</em>, <em class="sig-param">equation</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.eq_fix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Corrects names in equation to variable names</p>
+<dd><p>Corrects names in equation to variable names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indata</strong> (<em>PyGMI Data</em>) – PyGMI raster dataset.</p></li>
+<li><p><strong>equation</strong> (<em>str</em>) – Equation written as a string.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>neweq</strong> – Corrected equation.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">equation=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>equation</strong> (<em>str</em><em>, </em><em>optional</em>) – Equation submitted (for testing). The default is None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.equation_editor.EquationEditor.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.EquationEditor.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1520,13 +2231,13 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 <dl class="function">
 <dt id="pygmi.raster.equation_editor.hmode">
 <code class="sig-prename descclassname">pygmi.raster.equation_editor.</code><code class="sig-name descname">hmode</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.equation_editor.hmode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mode - this uses a histogram to generate a fast mode estimate</p>
+<dd><p>Mode - this uses a histogram to generate a fast mode estimate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>list</em>) – list of values to generate the mode from.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>mode2</strong> – mode value</p>
+<dd class="field-even"><p><strong>mode2</strong> – mode value.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>float</p>
@@ -1537,7 +2248,7 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 </div>
 <div class="section" id="module-pygmi.raster.ginterp">
 <span id="pygmi-raster-ginterp-module"></span><h2>pygmi.raster.ginterp module<a class="headerlink" href="#module-pygmi.raster.ginterp" title="Permalink to this headline">¶</a></h2>
-<p>Plot Raster Data</p>
+<p>Plot Raster Data.</p>
 <p>This is the raster data interpretation module.  This module allows for the
 display of raster data in a variety of modes, as well as the export of that
 display to GeoTiff format.</p>
@@ -1556,13 +2267,6 @@ supports GeoTiff files.</p>
 <dl class="class">
 <dt id="pygmi.raster.ginterp.ModestImage">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">ModestImage</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.ModestImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#pygmi.raster.ginterp.ModestImage2" title="pygmi.raster.ginterp.ModestImage2"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.ginterp.ModestImage2</span></code></a></p>
-<p>Modest Image</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="pygmi.raster.ginterp.ModestImage2">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">ModestImage2</code><span class="sig-paren">(</span><em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.ModestImage2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.image.AxesImage</span></code></p>
 <p>Computationally modest image class - modified for use in PyGMI.</p>
 <p>ModestImage is an extension of the Matplotlib AxesImage class
@@ -1594,16 +2298,41 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 DEALINGS IN THE SOFTWARE.</p>
 <dl class="method">
-<dt id="pygmi.raster.ginterp.ModestImage2.draw">
-<code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param">renderer</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.ModestImage2.draw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw</p>
+<dt id="pygmi.raster.ginterp.ModestImage.draw">
+<code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param">renderer</em>, <em class="sig-param">*args</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.ModestImage.draw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>renderer</strong> (<em>Matplotlib renderer.</em>) – Matplotlib renderer.</p></li>
+<li><p><strong>*args</strong> – Variable length argument list.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
-<dt id="pygmi.raster.ginterp.ModestImage2.set_data">
-<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param">A</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.ModestImage2.set_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the image array</p>
-<p>ACCEPTS: numpy/PIL Image A</p>
+<dt id="pygmi.raster.ginterp.ModestImage.set_data">
+<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param">A</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.ModestImage.set_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the image array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>A</strong> (<em>numpy/PIL Image A</em>) – numpy/PIL Image A.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1612,7 +2341,7 @@ DEALINGS IN THE SOFTWARE.</p>
 <dt id="pygmi.raster.ginterp.MyMplCanvas">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
-<p>Canvas for the actual plot</p>
+<p>Canvas for the actual plot.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.htype">
 <code class="sig-name descname">htype</code><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.htype" title="Permalink to this definition">¶</a></dt>
@@ -1893,73 +2622,179 @@ mouse is currently hovering over on image)</p>
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.init_graph">
 <code class="sig-name descname">init_graph</code><span class="sig-paren">(</span><em class="sig-param">event=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.init_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the graph</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.raster.ginterp.MyMplCanvas.lamb_horn">
-<code class="sig-name descname">lamb_horn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.lamb_horn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Lambert by horn</p>
+<dd><p>Initialize the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – Event. The default is None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.move">
 <code class="sig-name descname">move</code><span class="sig-paren">(</span><em class="sig-param">event</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.move" title="Permalink to this definition">¶</a></dt>
-<dd><p>Mouse is moving</p>
+<dd><p>Mouse is moving.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – Event.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_contour">
 <code class="sig-name descname">update_contour</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_contour" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the contour map</p>
+<dd><p>Update contours.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_graph">
 <code class="sig-name descname">update_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the plot</p>
+<dd><p>Update plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_hist_rgb">
 <code class="sig-name descname">update_hist_rgb</code><span class="sig-paren">(</span><em class="sig-param">zval</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_hist_rgb" title="Permalink to this definition">¶</a></dt>
-<dd><p>updates the rgb histograms</p>
+<dd><p>Update the rgb histograms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>zval</strong> (<em>numpy array</em>) – Data values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bnum</strong> – Bin numbers.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_hist_single">
 <code class="sig-name descname">update_hist_single</code><span class="sig-paren">(</span><em class="sig-param">zval</em>, <em class="sig-param">hno=0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_hist_single" title="Permalink to this definition">¶</a></dt>
-<dd><p>updates the color on a single histogram</p>
+<dd><p>Update the color on a single histogram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>zval</strong> (<em>numpy array</em>) – Data values.</p></li>
+<li><p><strong>hno</strong> (<em>int</em><em>, </em><em>optional</em>) – Histogram number. The default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>binnum</strong> – Number of bins.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_hist_sun">
 <code class="sig-name descname">update_hist_sun</code><span class="sig-paren">(</span><em class="sig-param">zval=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_hist_sun" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates a sunshade histogram</p>
+<dd><p>Updates a sunshade histogram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>zval</strong> (<em>numpy array</em>) – Data values.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>bnum</strong> – DESCRIPTION.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>TYPE</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_hist_text">
 <code class="sig-name descname">update_hist_text</code><span class="sig-paren">(</span><em class="sig-param">hst</em>, <em class="sig-param">zval</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_hist_text" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the value on the histogram</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hst</strong> (<em>histogram</em>) – Histogram.</p></li>
+<li><p><strong>zval</strong> (<em>float</em>) – Data value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_rgb">
 <code class="sig-name descname">update_rgb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_rgb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the RGB Ternary Map</p>
+<dd><p>Update the RGB Ternary Map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_shade_plot">
 <code class="sig-name descname">update_shade_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_shade_plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates sun shade plot</p>
+<dd><p>Update sun shade plot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MyMplCanvas.update_single_color_map">
 <code class="sig-name descname">update_single_color_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MyMplCanvas.update_single_color_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Updates the single color map</p>
+<dd><p>Updates the single color map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1994,7 +2829,15 @@ mouse is currently hovering over on image)</p>
 <dl class="method">
 <dt id="pygmi.raster.ginterp.MySunCanvas.init_graph">
 <code class="sig-name descname">init_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.MySunCanvas.init_graph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Init graph</p>
+<dd><p>Initialise graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2047,7 +2890,7 @@ modes, as well as the export of that display to GeoTiff format.</p>
 <dd><p>main canvas containing the image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pygmi.clust.html#pygmi.clust.graphs.MyMplCanvas" title="pygmi.clust.graphs.MyMplCanvas">MyMplCanvas</a>, FigureCanvas</p>
+<dd class="field-odd"><p><a class="reference internal" href="#pygmi.raster.ginterp.MyMplCanvas" title="pygmi.raster.ginterp.MyMplCanvas">pygmi.raster.ginterp.MyMplCanvas</a>, FigureCanvas</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2058,7 +2901,7 @@ modes, as well as the export of that display to GeoTiff format.</p>
 <dd><p>small canvas containing the sunshading control</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pygmi.pfmod.html#pygmi.pfmod.cubes.MySunCanvas" title="pygmi.pfmod.cubes.MySunCanvas">MySunCanvas</a>, FigureCanvas</p>
+<dd class="field-odd"><p><a class="reference internal" href="#pygmi.raster.ginterp.MySunCanvas" title="pygmi.raster.ginterp.MySunCanvas">pygmi.raster.ginterp.MySunCanvas</a>, FigureCanvas</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2066,51 +2909,116 @@ modes, as well as the export of that display to GeoTiff format.</p>
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.change_blue">
 <code class="sig-name descname">change_blue</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.change_blue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to change the blue or third display band</p>
+<dd><p>Change the blue or third display band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.change_cbar">
 <code class="sig-name descname">change_cbar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.change_cbar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the color map for the color bar</p>
+<dd><p>Change the color map for the color bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.change_dtype">
 <code class="sig-name descname">change_dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.change_dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to change display type</p>
+<dd><p>Change display type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.change_green">
 <code class="sig-name descname">change_green</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.change_green" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to change the greed or second band</p>
+<dd><p>Change the greed or second band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.change_hstype">
 <code class="sig-name descname">change_hstype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.change_hstype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the histogram stretch to apply to the sun shaded data</p>
+<dd><p>Change the histogram stretch to apply to the sun shaded data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.change_htype">
 <code class="sig-name descname">change_htype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.change_htype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the histogram stretch to apply to the normal data</p>
+<dd><p>Change the histogram stretch to apply to the normal data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.change_red">
 <code class="sig-name descname">change_red</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.change_red" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to change the red or first band</p>
+<dd><p>Change the red or first band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.data_init">
 <code class="sig-name descname">data_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.data_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>data init - entry point into routine. This entry point exists for
+<dd><p>Data initialise.</p>
+<p>Entry point into routine. This entry point exists for
 the case  where data must be initialised before entering at the
 standard ‘settings’ sub module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
@@ -2119,7 +3027,13 @@ standard ‘settings’ sub module.</p>
 <dd><p>Move event is used to track changes to the sunshading.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>- matplotlib button press event</strong> (<em>event</em>) – event returned by matplotlib when a button is pressed</p>
+<dd class="field-odd"><p><strong>event</strong> (<em>matplotlib button press event</em>) – Event returned by matplotlib when a button is pressed</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2127,20 +3041,45 @@ standard ‘settings’ sub module.</p>
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.save_img">
 <code class="sig-name descname">save_img</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.save_img" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save image as a GeoTiff</p>
+<dd><p>Save image as a GeoTiff.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is called when the used double clicks the routine from the
-main PyGMI interface</p>
+<dd><p>Settings.</p>
+<p>This is called when the used double clicks the routine from the
+main PyGMI interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.ginterp.PlotInterp.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.PlotInterp.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2148,7 +3087,7 @@ main PyGMI interface</p>
 <dl class="function">
 <dt id="pygmi.raster.ginterp.aspect2">
 <code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">aspect2</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.aspect2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Aspect of a dataset</p>
+<dd><p>Aspect of a dataset.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>numpy MxN array</em>) – input data used for the aspect calculation</p>
@@ -2171,14 +3110,15 @@ main PyGMI interface</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>phi</strong> (<em>float</em>) – azimuth</p></li>
-<li><p><strong>theta</strong> (<em>float</em>) – sun elevation (also called g in code below)</p></li>
+<li><p><strong>data</strong> (<em>numpy array</em>) – Dataset to be shaded.</p></li>
 <li><p><strong>cell</strong> (<em>float</em>) – between 1 and 100 - controls sunshade detail.</p></li>
+<li><p><strong>theta</strong> (<em>float</em>) – sun elevation (also called g in code below)</p></li>
+<li><p><strong>phi</strong> (<em>float</em>) – azimuth</p></li>
 <li><p><strong>alpha</strong> (<em>float</em>) – how much incident light is reflected (0 to 1)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>R</strong> – array containg the shaded results</p>
+<dd class="field-even"><p><strong>R</strong> – array containg the shaded results.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy array</p>
@@ -2189,8 +3129,9 @@ main PyGMI interface</p>
 <dl class="function">
 <dt id="pygmi.raster.ginterp.histcomp">
 <code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">histcomp</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">nbr_bins=256</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.histcomp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Histogram Compaction - this compacts 5% of the outliers in data,
-allowing for a cleaner, linear, representation of the data.</p>
+<dd><p>Histogram Compaction</p>
+<p>This compacts 5% of the outliers in data, allowing for a cleaner, linear
+representation of the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2210,10 +3151,10 @@ allowing for a cleaner, linear, representation of the data.</p>
 <dl class="function">
 <dt id="pygmi.raster.ginterp.histeq">
 <code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">histeq</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">nbr_bins=32768</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.histeq" title="Permalink to this definition">¶</a></dt>
-<dd><p>Histogram Equalization - equalizes the histogram to colors. This allows for
-seeing as much data as possible in the image, at the expense of knowing the
-real value of the data at a point. It bins the data equally - flattening
-the distribution.</p>
+<dd><p>Histogram Equalization.</p>
+<p>Equalizes the histogram to colors. This allows for seeing as much data as
+possible in the image, at the expense of knowing the real value of the
+data at a point. It bins the data equally - flattening the distribution.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2233,7 +3174,8 @@ the distribution.</p>
 <dl class="function">
 <dt id="pygmi.raster.ginterp.img2rgb">
 <code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">img2rgb</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">cbar=&lt;matplotlib.colors.LinearSegmentedColormap object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.img2rgb" title="Permalink to this definition">¶</a></dt>
-<dd><p>convert image to  4 channel rgba color image</p>
+<dd><p>Image to RGB.</p>
+<p>convert image to 4 channel rgba color image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2253,14 +3195,44 @@ the distribution.</p>
 <dl class="function">
 <dt id="pygmi.raster.ginterp.imshow">
 <code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">imshow</code><span class="sig-paren">(</span><em class="sig-param">axes</em>, <em class="sig-param">X</em>, <em class="sig-param">cmap=None</em>, <em class="sig-param">norm=None</em>, <em class="sig-param">aspect=None</em>, <em class="sig-param">interpolation=None</em>, <em class="sig-param">alpha=None</em>, <em class="sig-param">vmin=None</em>, <em class="sig-param">vmax=None</em>, <em class="sig-param">origin=None</em>, <em class="sig-param">extent=None</em>, <em class="sig-param">shape=None</em>, <em class="sig-param">filternorm=1</em>, <em class="sig-param">filterrad=4.0</em>, <em class="sig-param">imlim=None</em>, <em class="sig-param">resample=None</em>, <em class="sig-param">url=None</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.imshow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Similar to matplotlib’s imshow command, but produces a ModestImage</p>
+<dd><p>Similar to matplotlib’s imshow command, but produces a ModestImage.</p>
 <p>Unlike matplotlib version, must explicitly specify axes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axes</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+<li><p><strong>X</strong> (<em>numpy array</em><em> or </em><em>PIL image.</em>) – The image data.</p></li>
+<li><p><strong>cmap</strong> (<em>str</em><em> or </em><em>Colormap</em><em>, </em><em>optional</em>) – Colormap instance. The default is None.</p></li>
+<li><p><strong>norm</strong> (<em>Normalize</em><em>, </em><em>optional</em>) – Normalize instanc used to scale data. The default is None.</p></li>
+<li><p><strong>aspect</strong> (<em>{'equal'</em><em>, </em><em>'auto'}</em><em> or </em><em>float</em><em>, </em><em>optional</em>) – Controls the aspect ratio of the axes.. The default is None.</p></li>
+<li><p><strong>interpolation</strong> (<em>str</em><em>, </em><em>optional</em>) – The interpolation method used. The default is None.</p></li>
+<li><p><strong>alpha</strong> (<em>scaler</em><em>, </em><em>optional</em>) – The alpha blending value, between 0 (transparent) and 1 (opaque). The default is None.</p></li>
+<li><p><strong>vmin</strong> (<em>scalar</em><em>, </em><em>optional</em>) – Minimum data value. The default is None.</p></li>
+<li><p><strong>vmax</strong> (<em>scalar</em><em>, </em><em>optional</em>) – Maximum data value. The default is None.</p></li>
+<li><p><strong>origin</strong> (<em>{'upper'</em><em>, </em><em>'lower'}</em><em>, </em><em>optional</em>) – Origin location. The default is None.</p></li>
+<li><p><strong>extent</strong> (<em>scalars</em><em> (</em><em>left</em><em>, </em><em>right</em><em>, </em><em>bottom</em><em>, </em><em>top</em><em>)</em><em>, </em><em>optional</em>) – The bounding box in data coordinates that the image will fill. The default is None.</p></li>
+<li><p><strong>shape</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p></li>
+<li><p><strong>filternorm</strong> (<em>float</em><em>, </em><em>optional</em>) – A parameter for the antigrain image resize filter. The default is 1.</p></li>
+<li><p><strong>filterrad</strong> (<em>float &gt; 0</em><em>, </em><em>optional</em>) – The filter radius for filters that have a radius parameter. The default is 4.0.</p></li>
+<li><p><strong>imlim</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p></li>
+<li><p><strong>resample</strong> (<em>bool</em><em>, </em><em>optional</em>) – When True, use a full resampling method. The default is None.</p></li>
+<li><p><strong>url</strong> (<em>str</em><em>, </em><em>optional</em>) – URL. The default is None.</p></li>
+<li><p><strong>**kwargs</strong> – Arbitrary keyword arguments.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>im</strong> – ModestImage output.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#pygmi.raster.ginterp.ModestImage" title="pygmi.raster.ginterp.ModestImage">ModestImage</a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="pygmi.raster.ginterp.norm2">
 <code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">norm2</code><span class="sig-paren">(</span><em class="sig-param">dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.norm2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalise array vector between 0. and 1.</p>
+<dd><p>Normalise array vector between 0 and 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dat</strong> (<em>numpy array</em>) – array to be normalised</p>
@@ -2277,7 +3249,7 @@ the distribution.</p>
 <dl class="function">
 <dt id="pygmi.raster.ginterp.norm255">
 <code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">norm255</code><span class="sig-paren">(</span><em class="sig-param">dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.norm255" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalise array vector between 1 and 255</p>
+<dd><p>Normalise array vector between 1 and 255.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>dat</strong> (<em>numpy array</em>) – array to be normalised</p>
@@ -2294,7 +3266,7 @@ the distribution.</p>
 </div>
 <div class="section" id="module-pygmi.raster.graphs">
 <span id="pygmi-raster-graphs-module"></span><h2>pygmi.raster.graphs module<a class="headerlink" href="#module-pygmi.raster.graphs" title="Permalink to this headline">¶</a></h2>
-<p>Plot Raster Data</p>
+<p>Plot Raster Data.</p>
 <p>This module provides a variety of methods to plot raster data via the context
 menu. The following are supported:</p>
 <blockquote>
@@ -2309,7 +3281,7 @@ menu. The following are supported:</p>
 <dt id="pygmi.raster.graphs.GraphWindow">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.graphs.</code><code class="sig-name descname">GraphWindow</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Graph Window - The QDialog window which will contain our image</p>
+<p>Graph Window - The QDialog window which will contain our image.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.GraphWindow.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.raster.graphs.GraphWindow.parent" title="Permalink to this definition">¶</a></dt>
@@ -2324,7 +3296,15 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.GraphWindow.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band</p>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2333,7 +3313,7 @@ menu. The following are supported:</p>
 <dt id="pygmi.raster.graphs.MyMplCanvas">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.graphs.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
-<p>Canvas for the actual plot</p>
+<p>Canvas for the actual plot.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.MyMplCanvas.axes">
 <code class="sig-name descname">axes</code><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas.axes" title="Permalink to this definition">¶</a></dt>
@@ -2358,7 +3338,7 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.MyMplCanvas.update_hexbin">
 <code class="sig-name descname">update_hexbin</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">data2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas.update_hexbin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the hexbin plot</p>
+<dd><p>Update the hexbin plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2366,16 +3346,28 @@ menu. The following are supported:</p>
 <li><p><strong>data2</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.graphs.MyMplCanvas.update_hist">
 <code class="sig-name descname">update_hist</code><span class="sig-paren">(</span><em class="sig-param">data1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas.update_hist" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the hiostogram plot</p>
+<dd><p>Update the hiostogram plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data1</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2387,9 +3379,15 @@ menu. The following are supported:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data1</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used in contouring</p></li>
-<li><p><strong>dmat</strong> (<em>numpy array</em>) – dummy matrix of numbers to be plotted using pcolor</p></li>
+<li><p><strong>data1</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used in contouring.</p></li>
+<li><p><strong>dmat</strong> (<em>numpy array</em>) – dummy matrix of numbers to be plotted using pcolor.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2397,13 +3395,16 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.MyMplCanvas.update_raster">
 <code class="sig-name descname">update_raster</code><span class="sig-paren">(</span><em class="sig-param">data1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas.update_raster" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the raster plot</p>
+<dd><p>Update the raster plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data1</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used in contouring</p></li>
-<li><p><strong>data2</strong> (<em>PyGMI point PData</em>) – points to be plotted over raster image</p></li>
-</ul>
+<dd class="field-odd"><p><strong>data1</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used in contouring</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2411,10 +3412,16 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.MyMplCanvas.update_rgb">
 <code class="sig-name descname">update_rgb</code><span class="sig-paren">(</span><em class="sig-param">data1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas.update_rgb" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the RGB plot</p>
+<dd><p>Update the RGB plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data1</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2422,10 +3429,16 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.MyMplCanvas.update_wireframe">
 <code class="sig-name descname">update_wireframe</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.MyMplCanvas.update_wireframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update the surface wireframe plot</p>
+<dd><p>Update the surface wireframe plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>PyGMI raster Data</em>) – raster dataset to be used</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2506,13 +3519,29 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotCCoef.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band</p>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotCCoef.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotCCoef.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2569,13 +3598,29 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotHist.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotHist.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band</p>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotHist.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotHist.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2584,7 +3629,7 @@ menu. The following are supported:</p>
 <dt id="pygmi.raster.graphs.PlotRaster">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.graphs.</code><code class="sig-name descname">PlotRaster</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class</p>
+<p>Plot Raster Class.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotRaster.label2">
 <code class="sig-name descname">label2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster.label2" title="Permalink to this definition">¶</a></dt>
@@ -2632,13 +3677,29 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotRaster.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band</p>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotRaster.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotRaster.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2673,13 +3734,29 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotScatter.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotScatter.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band</p>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotScatter.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotScatter.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2688,7 +3765,7 @@ menu. The following are supported:</p>
 <dt id="pygmi.raster.graphs.PlotSurface">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.graphs.</code><code class="sig-name descname">PlotSurface</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.raster.graphs.GraphWindow" title="pygmi.raster.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.raster.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class</p>
+<p>Plot Raster Class.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.graphs.PlotSurface.label2">
 <code class="sig-name descname">label2</code><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface.label2" title="Permalink to this definition">¶</a></dt>
@@ -2736,13 +3813,29 @@ menu. The following are supported:</p>
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotSurface.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band</p>
+<dd><p>Combo box to choose band.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.graphs.PlotSurface.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.PlotSurface.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -2750,18 +3843,29 @@ menu. The following are supported:</p>
 <dl class="function">
 <dt id="pygmi.raster.graphs.check_bands">
 <code class="sig-prename descclassname">pygmi.raster.graphs.</code><code class="sig-name descname">check_bands</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.check_bands" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks that band sizes are the same</p>
+<dd><p>Checks that band sizes are the same.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>PyGMI Data</em>) – PyGMI raster dataset.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – True if sizes are the same, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="pygmi.raster.graphs.corr2d">
 <code class="sig-prename descclassname">pygmi.raster.graphs.</code><code class="sig-name descname">corr2d</code><span class="sig-paren">(</span><em class="sig-param">dat1</em>, <em class="sig-param">dat2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.graphs.corr2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the 2D correlation</p>
+<dd><p>Calculate the 2D correlation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dat1</strong> (<em>numpy array</em>) – dataset 1 for use in correlation calculation</p></li>
-<li><p><strong>dat2</strong> (<em>numpy array</em>) – dataset 2 for use in correlation calculation</p></li>
+<li><p><strong>dat1</strong> (<em>numpy array</em>) – dataset 1 for use in correlation calculation.</p></li>
+<li><p><strong>dat2</strong> (<em>numpy array</em>) – dataset 2 for use in correlation calculation.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2815,7 +3919,7 @@ translated into Python from the Geomag code.</p>
 <dt id="pygmi.raster.igrf.IGRF">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.igrf.</code><code class="sig-name descname">IGRF</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>IGRF field calculation</p>
+<p>IGRF field calculation.</p>
 <p>This produces two datasets. The first is an IGRF dataset for the area of
 interest, defined by some input magnetic dataset. The second is the IGRF
 corrected form of that input magnetic dataset.</p>
@@ -2890,13 +3994,23 @@ Coefficients of rate of change model.</p></li>
 <dl class="method">
 <dt id="pygmi.raster.igrf.IGRF.acceptall">
 <code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.acceptall" title="Permalink to this definition">¶</a></dt>
-<dd><p>Accept button</p>
+<dd><p>Accept option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.igrf.IGRF.dihf">
 <code class="sig-name descname">dihf</code><span class="sig-paren">(</span><em class="sig-param">gh</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.dihf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the geomagnetic d, i, h, and f from x, y, and z.</p>
+<p>This updates self.d, self.i, self.h and self.f (declination,
+inclination, horizontal intensity and total intensity).</p>
 <div class="line-block">
 <div class="line">FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,</div>
 <div class="line">CO. 80225</div>
@@ -2911,13 +4025,10 @@ Coefficients of rate of change model.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>d</strong> (<em>float</em>) – declination</p></li>
-<li><p><strong>i</strong> (<em>float</em>) – inclination</p></li>
-<li><p><strong>h</strong> (<em>float</em>) – horizontal intensity</p></li>
-<li><p><strong>f</strong> (<em>float</em>) – total intensity</p></li>
-</ul>
-</p>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2927,6 +4038,8 @@ Coefficients of rate of change model.</p></li>
 <code class="sig-name descname">extrapsh</code><span class="sig-paren">(</span><em class="sig-param">date</em>, <em class="sig-param">dte1</em>, <em class="sig-param">nmax1</em>, <em class="sig-param">nmax2</em>, <em class="sig-param">gh</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.extrapsh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extrapolates linearly a spherical harmonic model with a
 rate-of-change model.</p>
+<p>Updates self.gh (Schmidt quasi-normal internal spherical harmonic
+coefficients).</p>
 <div class="line-block">
 <div class="line">FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,</div>
 <div class="line">CO. 80225</div>
@@ -2938,17 +4051,16 @@ rate-of-change model.</p>
 <li><p><strong>date</strong> (<em>float</em>) – date of resulting model (in decimal year)</p></li>
 <li><p><strong>dte1</strong> (<em>float</em>) – date of base model</p></li>
 <li><p><strong>nmax1</strong> (<em>int</em>) – maximum degree and order of base model</p></li>
+<li><p><strong>nmax2</strong> (<em>int</em>) – maximum degree and order of rate-of-change model</p></li>
 <li><p><strong>gh</strong> (<em>numpy array</em>) – Schmidt quasi-normal internal spherical harmonic coefficients of
 base model and rate-of-change model</p></li>
-<li><p><strong>nmax2</strong> (<em>int</em>) – maximum degree and order of rate-of-change model</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>gh</strong> (<em>numpy array</em>) – Schmidt quasi-normal internal spherical harmonic coefficients</p></li>
-<li><p><strong>nmax</strong> (<em>int</em>) – maximum degree and order of resulting model</p></li>
-</ul>
-</p>
+<dd class="field-even"><p><strong>nmax</strong> – maximum degree and order of resulting model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2957,7 +4069,7 @@ base model and rate-of-change model</p></li>
 <dt id="pygmi.raster.igrf.IGRF.getshc">
 <code class="sig-name descname">getshc</code><span class="sig-paren">(</span><em class="sig-param">file</em>, <em class="sig-param">iflag</em>, <em class="sig-param">strec</em>, <em class="sig-param">nmax_of_gh</em>, <em class="sig-param">gh</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.getshc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads spherical harmonic coefficients from the specified model into an
-array.</p>
+array (Schmidt quasi-normal internal spherical harmonic coefficients).</p>
 <div class="line-block">
 <div class="line">FORTRAN: Bill Flanagan, NOAA CORPS, DESDIS, NGDC, 325 Broadway,</div>
 <div class="line">Boulder CO.  80301</div>
@@ -2971,13 +4083,14 @@ array.</p>
 statements</p></li>
 <li><p><strong>strec</strong> (<em>int</em>) – Starting record number to read from model</p></li>
 <li><p><strong>nmax_of_gh</strong> (<em>int</em>) – Maximum degree and order of model</p></li>
+<li><p><strong>gh</strong> (<em>int</em>) – Index for gh.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>gh</strong> – Schmidt quasi-normal internal spherical harmonic coefficients</p>
+<dd class="field-even"><p></p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>list</p>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2987,6 +4100,8 @@ statements</p></li>
 <code class="sig-name descname">interpsh</code><span class="sig-paren">(</span><em class="sig-param">date</em>, <em class="sig-param">dte1</em>, <em class="sig-param">nmax1</em>, <em class="sig-param">dte2</em>, <em class="sig-param">nmax2</em>, <em class="sig-param">gh</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.interpsh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interpolates linearly, in time, between two spherical harmonic
 models.</p>
+<p>Updates self.gh (Schmidt quasi-normal internal spherical harmonic
+coefficients).</p>
 <div class="line-block">
 <div class="line">FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,</div>
 <div class="line">CO. 80225</div>
@@ -2998,18 +4113,17 @@ models.</p>
 <li><p><strong>date</strong> (<em>float</em>) – date of resulting model (in decimal year)</p></li>
 <li><p><strong>dte1</strong> (<em>float</em>) – date of earlier model</p></li>
 <li><p><strong>nmax1</strong> (<em>int</em>) – maximum degree and order of earlier model</p></li>
-<li><p><strong>gh</strong> (<em>numpy array</em>) – Schmidt quasi-normal internal spherical harmonic coefficients of
-earlier model and internal model</p></li>
 <li><p><strong>dte2</strong> (<em>float</em>) – date of later model</p></li>
 <li><p><strong>nmax2</strong> (<em>int</em>) – maximum degree and order of later model</p></li>
+<li><p><strong>gh</strong> (<em>numpy array</em>) – Schmidt quasi-normal internal spherical harmonic coefficients of
+earlier model and internal model</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>gh</strong> (<em>numpy array</em>) – coefficients of resulting model</p></li>
-<li><p><strong>nmax</strong> (<em>int</em>) – maximum degree and order of resulting model</p></li>
-</ul>
-</p>
+<dd class="field-even"><p><strong>nmax</strong> – maximum degree and order of resulting model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3017,20 +4131,42 @@ earlier model and internal model</p></li>
 <dl class="method">
 <dt id="pygmi.raster.igrf.IGRF.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings Dialog. This is the main entrypoint into this routine. It also
+<dd><p>Setting Dialog.</p>
+<p>This is the main entrypoint into this routine. It also
 contains the main IGRF code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>test</strong> (<em>bool</em><em>, </em><em>optional</em>) – Flag to allow testing. The default is None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.igrf.IGRF.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.igrf.IGRF.shval3">
 <code class="sig-name descname">shval3</code><span class="sig-paren">(</span><em class="sig-param">igdgc</em>, <em class="sig-param">flat</em>, <em class="sig-param">flon</em>, <em class="sig-param">elev</em>, <em class="sig-param">nmax</em>, <em class="sig-param">gh</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.igrf.IGRF.shval3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates field components from spherical harmonic (sh) models.</p>
+<p>This routine updates self.x, self.y, self.z (Northward, Eastward and
+vertically downward components respectively NED)</p>
 <p>Based on subroutine ‘igrf’ by D. R. Barraclough and S. R. C. Malin,
 report no. 71/1, institute of geological sciences, U.K.</p>
 <div class="line-block">
@@ -3043,23 +4179,20 @@ report no. 71/1, institute of geological sciences, U.K.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>igdgc</strong> (<em>int</em>) – indicates coordinate system used set equal to 1 if geodetic, 2 if
 geocentric</p></li>
-<li><p><strong>latitude</strong> (<em>float</em>) – north latitude, in degrees</p></li>
-<li><p><strong>longitude</strong> (<em>float</em>) – east longitude, in degrees</p></li>
+<li><p><strong>flat</strong> (<em>float</em>) – north latitude, in degrees</p></li>
+<li><p><strong>flon</strong> (<em>float</em>) – east longitude, in degrees</p></li>
 <li><p><strong>elev</strong> (<em>float</em>) – WGS84 altitude above ellipsoid (igdgc=1), or radial distance from
 earth’s center (igdgc=2)</p></li>
-<li><p><strong>a2</strong><strong>,</strong><strong>b2</strong> (<em>float</em>) – squares of semi-major and semi-minor axes of the reference spheroid
-used for transforming between geodetic and geocentric coordinates
-or components</p></li>
 <li><p><strong>nmax</strong> (<em>int</em>) – maximum degree and order of coefficients</p></li>
+<li><p><strong>gh</strong> (<em>numpy array</em>) – Schmidt quasi-normal internal spherical harmonic coefficients of
+earlier model and internal model</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p><strong>x</strong> (<em>float</em>) – northward component</p></li>
-<li><p><strong>y</strong> (<em>float</em>) – eastward component</p></li>
-<li><p><strong>z</strong> (<em>float</em>) – vertically-downward component</p></li>
-</ul>
-</p>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3111,7 +4244,15 @@ or components</p></li>
 <dl class="method">
 <dt id="pygmi.raster.iodefs.ComboBoxBasic.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ComboBoxBasic.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run class.</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3195,6 +4336,12 @@ or components</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>PyGMI raster Data</em>) – dataset to export</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -3205,6 +4352,12 @@ or components</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>PyGMI raster Data</em>) – dataset to export</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3220,6 +4373,12 @@ or components</p></li>
 <li><p><strong>drv</strong> (<em>str</em>) – name of the GDAL driver to use</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -3231,6 +4390,12 @@ or components</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>PyGMI raster Data</em>) – dataset to export</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -3241,6 +4406,12 @@ or components</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>data</strong> (<em>PyGMI raster Data</em>) – dataset to export</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3256,13 +4427,27 @@ or components</p></li>
 <li><p><strong>ext</strong> (<em>str</em>) – filename extension to use</p></li>
 </ul>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>file_out</strong> – Output filename.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
 </dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.iodefs.ExportData.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ExportData.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show Info</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3341,7 +4526,15 @@ or components</p></li>
 <dl class="method">
 <dt id="pygmi.raster.iodefs.ImportData.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ImportData.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3420,7 +4613,15 @@ or components</p></li>
 <dl class="method">
 <dt id="pygmi.raster.iodefs.ImportRGBData.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.ImportRGBData.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3429,6 +4630,17 @@ or components</p></li>
 <dt id="pygmi.raster.iodefs.clusterprep">
 <code class="sig-prename descclassname">pygmi.raster.iodefs.</code><code class="sig-name descname">clusterprep</code><span class="sig-paren">(</span><em class="sig-param">dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.clusterprep" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prepare Cluster data from raster data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dat</strong> (<em>list</em>) – List of PyGMI datasets.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dat2</strong> – List of PyGMI datasets.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
@@ -3531,6 +4743,12 @@ ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED</p>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>PyGMI raster Data</p>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dat</strong> – PyGMI raster dataset.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>PyGMI Data</p>
+</dd>
 </dl>
 </dd></dl>
 
@@ -3543,10 +4761,10 @@ ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED</p>
 <dd class="field-odd"><p><strong>ifile</strong> (<em>str</em>) – filename to import</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>dat</strong> – dataset imported</p>
+<dd class="field-even"><p><strong>dat</strong> – Dataset imported</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>PyGMI raster Data</p>
+<dd class="field-odd"><p>PyGMI Data</p>
 </dd>
 </dl>
 </dd></dl>
@@ -3593,7 +4811,10 @@ libraries. It returns the data in a PyGMI data object.</p>
 libraries. It returns the data in a PyGMI data object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ifile</strong> (<em>str</em>) – filename to import</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – filename to import</p></li>
+<li><p><strong>nval</strong> (<em>float</em><em>, </em><em>optional</em>) – No data/null value. The default is None.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>dat</strong> – dataset imported</p>
@@ -3607,12 +4828,12 @@ libraries. It returns the data in a PyGMI data object.</p>
 </div>
 <div class="section" id="module-pygmi.raster.menu">
 <span id="pygmi-raster-menu-module"></span><h2>pygmi.raster.menu module<a class="headerlink" href="#module-pygmi.raster.menu" title="Permalink to this headline">¶</a></h2>
-<p>Raster Menu Routines</p>
+<p>Raster Menu Routines.</p>
 <dl class="class">
 <dt id="pygmi.raster.menu.MenuWidget">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Widget class to call the main interface</p>
+<p>Widget class to call the main interface.</p>
 <p>This widget class creates the raster menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="attribute">
@@ -3621,7 +4842,7 @@ interface. Normal as well as context menus are defined here.</p>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">MainWidget</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="pygmi.html#pygmi.main.MainWidget" title="pygmi.main.MainWidget">pygmi.main.MainWidget</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -3635,151 +4856,151 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.basic_stats">
 <code class="sig-name descname">basic_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.basic_stats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Basic Statistics</p>
+<dd><p>Display basic statistics.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.cut_data">
 <code class="sig-name descname">cut_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.cut_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export raster data</p>
+<dd><p>Cut data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.depth_susc">
 <code class="sig-name descname">depth_susc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.depth_susc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Depth and Susceptibility calculations</p>
+<dd><p>Depth and Susceptibility calculations.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.equation_editor">
 <code class="sig-name descname">equation_editor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.equation_editor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Equation Editor</p>
+<dd><p>Equation Editor.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.export_data">
 <code class="sig-name descname">export_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.export_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export raster data</p>
+<dd><p>Export raster data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.get_prof">
 <code class="sig-name descname">get_prof</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.get_prof" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export raster data</p>
+<dd><p>Get profile.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.gradients">
 <code class="sig-name descname">gradients</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.gradients" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute different gradients</p>
+<dd><p>Compute different gradients.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.igrf">
 <code class="sig-name descname">igrf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.igrf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Grid datasets</p>
+<dd><p>Compute IGRF.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.import_data">
 <code class="sig-name descname">import_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Imports data</p>
+<dd><p>Import data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.import_rgb_data">
 <code class="sig-name descname">import_rgb_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.import_rgb_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Imports data</p>
+<dd><p>Import RGB data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.merge">
 <code class="sig-name descname">merge</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.merge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merge datasets</p>
+<dd><p>Merge datasets.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.metadata">
 <code class="sig-name descname">metadata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.metadata" title="Permalink to this definition">¶</a></dt>
-<dd><p>Basic Statistics</p>
+<dd><p>Metadata.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.norm_data">
 <code class="sig-name descname">norm_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.norm_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Normalisation of data</p>
+<dd><p>Normalisation of data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.raster_interp">
 <code class="sig-name descname">raster_interp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.raster_interp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show raster data</p>
+<dd><p>Show raster data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.reproj">
 <code class="sig-name descname">reproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.reproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reproject a dataset</p>
+<dd><p>Reproject a dataset.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.rtp">
 <code class="sig-name descname">rtp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.rtp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute rtp</p>
+<dd><p>Compute RTP.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.show_anaglyph">
 <code class="sig-name descname">show_anaglyph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.show_anaglyph" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show raster data</p>
+<dd><p>Show anaglyph of raster data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.show_ccoef">
 <code class="sig-name descname">show_ccoef</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.show_ccoef" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show 2D correlation coefficients</p>
+<dd><p>Show 2D correlation coefficients.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.show_histogram">
 <code class="sig-name descname">show_histogram</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.show_histogram" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show raster data</p>
+<dd><p>Show histogram of raster data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.show_raster_data">
 <code class="sig-name descname">show_raster_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.show_raster_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show raster data</p>
+<dd><p>Show raster data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.show_scatter_plot">
 <code class="sig-name descname">show_scatter_plot</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.show_scatter_plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show raster data</p>
+<dd><p>Show scatter plot.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.show_surface">
 <code class="sig-name descname">show_surface</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.show_surface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show surface</p>
+<dd><p>Show surface.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.smoothing">
 <code class="sig-name descname">smoothing</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.smoothing" title="Permalink to this definition">¶</a></dt>
-<dd><p>Smoothing of Data</p>
+<dd><p>Smoothing of Data.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.tilt">
 <code class="sig-name descname">tilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.tilt" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute visibility</p>
+<dd><p>Compute tilt angle.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.menu.MenuWidget.visibility">
 <code class="sig-name descname">visibility</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.menu.MenuWidget.visibility" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute visibility</p>
+<dd><p>Compute visibility.</p>
 </dd></dl>
 
 </dd></dl>
@@ -3787,22 +5008,38 @@ interface. Normal as well as context menus are defined here.</p>
 </div>
 <div class="section" id="module-pygmi.raster.normalisation">
 <span id="pygmi-raster-normalisation-module"></span><h2>pygmi.raster.normalisation module<a class="headerlink" href="#module-pygmi.raster.normalisation" title="Permalink to this headline">¶</a></h2>
-<p>Normalisation function</p>
+<p>Normalisation function.</p>
 <dl class="class">
 <dt id="pygmi.raster.normalisation.Normalisation">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.normalisation.</code><code class="sig-name descname">Normalisation</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.normalisation.Normalisation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Class Normalisation</p>
+<p>Class Normalisation.</p>
 <dl class="method">
 <dt id="pygmi.raster.normalisation.Normalisation.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.normalisation.Normalisation.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.normalisation.Normalisation.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.normalisation.Normalisation.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3810,39 +5047,89 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="function">
 <dt id="pygmi.raster.normalisation.datacommon">
 <code class="sig-prename descclassname">pygmi.raster.normalisation.</code><code class="sig-name descname">datacommon</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">tmp1</em>, <em class="sig-param">tmp2</em>, <em class="sig-param">tmp3</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.normalisation.datacommon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Common stuff used in the process routine</p>
+<dd><p>Common stuff used in the process routine.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>PyGMI Data.</em>) – PyGMI raster dataset.</p></li>
+<li><p><strong>tmp1</strong> (<em>float</em>) – Parameter 1. Can be min, mean or median.</p></li>
+<li><p><strong>tmp2</strong> (<em>float</em>) – Parameter 2. Can be range, std, or mad.</p></li>
+<li><p><strong>tmp3</strong> (<em>str</em>) – Text label. Can be ‘minmax’, ‘meanstd’ or ‘medmad’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>data</strong> (<em>PyGMI Data</em>) – PyGMI raster dataset.</p></li>
+<li><p><strong>transform</strong> (<em>numpy array.</em>) – Transformation applied to data.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-pygmi.raster.show_table">
 <span id="pygmi-raster-show-table-module"></span><h2>pygmi.raster.show_table module<a class="headerlink" href="#module-pygmi.raster.show_table" title="Permalink to this headline">¶</a></h2>
-<p>This is a routine which displays a table graphically with various stats</p>
+<p>This is a routine which displays a table graphically with various stats.</p>
 <dl class="class">
 <dt id="pygmi.raster.show_table.BasicStats">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.show_table.</code><code class="sig-name descname">BasicStats</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.BasicStats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Show a summary of basic stats</p>
+<p>Show a summary of basic stats.</p>
 <dl class="method">
 <dt id="pygmi.raster.show_table.BasicStats.combo">
 <code class="sig-name descname">combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.BasicStats.combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo</p>
+<dd><p>Combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.show_table.BasicStats.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.BasicStats.run" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.show_table.BasicStats.save">
 <code class="sig-name descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.BasicStats.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save</p>
+<dd><p>Save Table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.show_table.BasicStats.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.BasicStats.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3851,29 +5138,61 @@ interface. Normal as well as context menus are defined here.</p>
 <dt id="pygmi.raster.show_table.ClusterStats">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.show_table.</code><code class="sig-name descname">ClusterStats</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.ClusterStats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Show a summary of basic stats</p>
+<p>Show a summary of basic statistics.</p>
 <dl class="method">
 <dt id="pygmi.raster.show_table.ClusterStats.combo">
 <code class="sig-name descname">combo</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.ClusterStats.combo" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo</p>
+<dd><p>Combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.show_table.ClusterStats.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.ClusterStats.run" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run</p>
+<dd><p>Run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.show_table.ClusterStats.save">
 <code class="sig-name descname">save</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.ClusterStats.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save</p>
+<dd><p>Save Table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.show_table.ClusterStats.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.ClusterStats.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3881,57 +5200,149 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="function">
 <dt id="pygmi.raster.show_table.basicstats_calc">
 <code class="sig-prename descclassname">pygmi.raster.show_table.</code><code class="sig-name descname">basicstats_calc</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.basicstats_calc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate stats</p>
+<dd><p>Calculate statistics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>PyGMI Data.</em>) – PyGMI raster dataset.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>bands</strong> (<em>list</em>) – Band list, currently only ‘Data Column’</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – Columns for the table</p></li>
+<li><p><strong>dattmp</strong> (<em>list</em>) – List of arrays containing statistics.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="pygmi.raster.show_table.savetable">
-<code class="sig-prename descclassname">pygmi.raster.show_table.</code><code class="sig-name descname">savetable</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">bands</em>, <em class="sig-param">cols</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.savetable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save tabular data</p>
+<code class="sig-prename descclassname">pygmi.raster.show_table.</code><code class="sig-name descname">savetable</code><span class="sig-paren">(</span><em class="sig-param">ofile</em>, <em class="sig-param">bands</em>, <em class="sig-param">cols</em>, <em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.show_table.savetable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save tabular data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ofile</strong> (<em>str</em>) – Output file name.</p></li>
+<li><p><strong>bands</strong> (<em>list</em>) – List of bands.</p></li>
+<li><p><strong>cols</strong> (<em>list</em>) – List of column headings.</p></li>
+<li><p><strong>data</strong> (<em>list</em>) – List of arrays containing statistics.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-pygmi.raster.smooth">
 <span id="pygmi-raster-smooth-module"></span><h2>pygmi.raster.smooth module<a class="headerlink" href="#module-pygmi.raster.smooth" title="Permalink to this headline">¶</a></h2>
-<p>Smooth Data</p>
+<p>Smooth Data.</p>
 <dl class="class">
 <dt id="pygmi.raster.smooth.Smooth">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.smooth.</code><code class="sig-name descname">Smooth</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Smooth.</p>
 <dl class="method">
 <dt id="pygmi.raster.smooth.Smooth.choosefilter">
 <code class="sig-name descname">choosefilter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.choosefilter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Section to choose the filter</p>
+<dd><p>Section to choose the filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.smooth.Smooth.mov_win_filt">
 <code class="sig-name descname">mov_win_filt</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">fmat</em>, <em class="sig-param">itype</em>, <em class="sig-param">title</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.mov_win_filt" title="Permalink to this definition">¶</a></dt>
-<dd><p>move win filt function</p>
+<dd><p>Apply moving window filter function to data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dat</strong> (<em>numpy array.</em>) – Data for a PyGMI raster dataset.</p></li>
+<li><p><strong>fmat</strong> (<em>TYPE</em>) – DESCRIPTION.</p></li>
+<li><p><strong>itype</strong> (<em>str</em>) – Filter type. Can be ‘2D Mean’ or ‘2D Median’.</p></li>
+<li><p><strong>title</strong> (<em>str</em>) – Text for reportback function.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>out</strong> – Data for a PyGMI raster dataset.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.smooth.Smooth.msgbox">
 <code class="sig-name descname">msgbox</code><span class="sig-paren">(</span><em class="sig-param">title</em>, <em class="sig-param">message</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.msgbox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Msgbox</p>
+<dd><p>Message box.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> (<em>str</em>) – Title for message box.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – Text for message box.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.smooth.Smooth.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Settings</p>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.smooth.Smooth.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.smooth.Smooth.updatetable">
 <code class="sig-name descname">updatetable</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.Smooth.updatetable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update Table</p>
+<dd><p>Update table.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -3939,23 +5350,9 @@ interface. Normal as well as context menus are defined here.</p>
 <dl class="function">
 <dt id="pygmi.raster.smooth.filters2d">
 <code class="sig-prename descclassname">pygmi.raster.smooth.</code><code class="sig-name descname">filters2d</code><span class="sig-paren">(</span><em class="sig-param">filtertype</em>, <em class="sig-param">sze</em>, <em class="sig-param">*sigma</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.smooth.filters2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Filters 2D</p>
-<blockquote>
-<div><p>These filter definitions have been translated from the octave function
+<dd><p>Filter 2D.</p>
+<p>These filter definitions have been translated from the octave function
 ‘fspecial’.</p>
-<dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>filtertype (str): Type of filter. Can be ‘average’, ‘disc’ or</dt><dd><p>‘gaussian’.</p>
-</dd>
-<dt>sze (numpy array or integer): This is a integer radius for ‘disc’ or a</dt><dd><p>vector containing rows and columns otherwize.</p>
-</dd>
-<dt>sigma (numpy array): numpy array containing std deviation. Used in</dt><dd><p>‘gaussian’</p>
-</dd>
-</dl>
-</dd>
-<dt>Return:</dt><dd><p>numpy array: Returns the filter to be used.</p>
-</dd>
-</dl>
 <p>Copyright (C) 2005 Peter Kovesi</p>
 <p>This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -3972,16 +5369,13 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 <p>FSPECIAL - Create spatial filters for image processing</p>
 <p>Usage:  f = fspecial(filtertype, optionalparams)</p>
 <p>filtertype can be</p>
-</div></blockquote>
 <div class="line-block">
 <div class="line">‘average’   - Rectangular averaging filter</div>
 <div class="line">‘disc’      - Circular averaging filter.</div>
 <div class="line">‘gaussian’  - Gaussian filter.</div>
 </div>
-<blockquote>
-<div><p>The parameters that need to be specified depend on the filtertype</p>
+<p>The parameters that need to be specified depend on the filtertype</p>
 <p>Examples of use and associated default values:</p>
-</div></blockquote>
 <div class="line-block">
 <div class="line">f = fspecial(‘average’,sze)           sze can be a 1 or 2 vector</div>
 <div class="line-block">
@@ -3990,28 +5384,40 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 <div class="line">f = fspecial(‘disk’,radius)           default radius = 5</div>
 <div class="line">f = fspecial(‘gaussian’,sze, sigma)   default sigma is 0.5</div>
 </div>
-<blockquote>
-<div><p>Where sze is specified as a single value the filter will be square.</p>
-</div></blockquote>
-<div class="line-block">
-<div class="line">Author:   Peter Kovesi &lt;<a class="reference external" href="mailto:pk&#37;&#52;&#48;csse&#46;uwa&#46;edu&#46;au">pk<span>&#64;</span>csse<span>&#46;</span>uwa<span>&#46;</span>edu<span>&#46;</span>au</a>&gt;</div>
-<div class="line">Keywords: image processing, spatial filters</div>
-<div class="line">Created:  August 2005</div>
-</div>
+<p>Where sze is specified as a single value the filter will be square.</p>
+<p>Author:   Peter Kovesi &lt;<a class="reference external" href="mailto:pk&#37;&#52;&#48;csse&#46;uwa&#46;edu&#46;au">pk<span>&#64;</span>csse<span>&#46;</span>uwa<span>&#46;</span>edu<span>&#46;</span>au</a>&gt;
+Keywords: image processing, spatial filters
+Created:  August 2005</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filtertype</strong> (<em>str</em>) – Type of filter. Can be ‘average’, ‘disc’ or ‘gaussian’.</p></li>
+<li><p><strong>sze</strong> (<em>numpy array</em><em> or </em><em>integer</em><em>)</em>) – This is a integer radius for ‘disc’ or a vector containing rows and
+columns otherwise.</p></li>
+<li><p><strong>sigma</strong> (<em>numpy array</em>) – numpy array containing std deviation. Used in ‘gaussian’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>f</strong> – Returns the filter to be used.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-pygmi.raster.tiltdepth">
 <span id="pygmi-raster-tiltdepth-module"></span><h2>pygmi.raster.tiltdepth module<a class="headerlink" href="#module-pygmi.raster.tiltdepth" title="Permalink to this headline">¶</a></h2>
-<p>Tilt Depth Routine
-Based on work by EH Stettler</p>
+<p>Tilt Depth Routine.</p>
+<p>Based on work by EH Stettler</p>
 <p class="rubric">References</p>
 <p>Salem et al., 2007, Leading Edge, Dec,p1502-5</p>
 <dl class="class">
 <dt id="pygmi.raster.tiltdepth.TiltDepth">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.tiltdepth.</code><code class="sig-name descname">TiltDepth</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>This is the primary class for the Tilt Depth.</p>
+<p>Primary class for the Tilt Depth.</p>
 <dl class="attribute">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.parent" title="Permalink to this definition">¶</a></dt>
@@ -4051,7 +5457,7 @@ Based on work by EH Stettler</p>
 <dd><p>main canvas containing the image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="pygmi.clust.html#pygmi.clust.graphs.MyMplCanvas" title="pygmi.clust.graphs.MyMplCanvas">MyMplCanvas</a>, FigureCanvas</p>
+<dd class="field-odd"><p>FigureCanvas</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4059,39 +5465,94 @@ Based on work by EH Stettler</p>
 <dl class="method">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.change_band1">
 <code class="sig-name descname">change_band1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.change_band1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Action which occurs when button is pressed. Combo box to change
-the first band.</p>
+<dd><p>Action which occurs when apply button is pressed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.change_cbar">
 <code class="sig-name descname">change_cbar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.change_cbar" title="Permalink to this definition">¶</a></dt>
-<dd><p>Change the color map for the color bar</p>
+<dd><p>Change the color map for the color bar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.save_depths">
 <code class="sig-name descname">save_depths</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.save_depths" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save Depths</p>
+<dd><p>Save depths.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is called when the used double clicks the routine from the
-main PyGMI interface</p>
+<dd><p>Entry point.</p>
+<p>This is called when the used double clicks the routine from the
+main PyGMI interface.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>test</strong> (<em>bool</em><em>, </em><em>optional</em>) – Parameter indicating testing. The default is False.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.setupui" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setup UI</p>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="pygmi.raster.tiltdepth.TiltDepth.tiltdepth">
 <code class="sig-name descname">tiltdepth</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.TiltDepth.tiltdepth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate tilt depth</p>
+<dd><p>Calculate tilt depth.</p>
+<p>Output is stored in self.outdata.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>PyGMI Data.</em>) – PyGMI raster dataset.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -4099,25 +5560,44 @@ main PyGMI interface</p>
 <dl class="attribute">
 <dt id="pygmi.raster.tiltdepth.distpc">
 <code class="sig-prename descclassname">pygmi.raster.tiltdepth.</code><code class="sig-name descname">distpc</code><a class="headerlink" href="#pygmi.raster.tiltdepth.distpc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find closest distances</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="pygmi.raster.tiltdepth.distpc2">
-<code class="sig-prename descclassname">pygmi.raster.tiltdepth.</code><code class="sig-name descname">distpc2</code><a class="headerlink" href="#pygmi.raster.tiltdepth.distpc2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find closest distances</p>
+<dd><p>Find closest distances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dx</strong> (<em>numpy array</em>) – X array.</p></li>
+<li><p><strong>dy</strong> (<em>numpy array</em>) – Y array.</p></li>
+<li><p><strong>dx0</strong> (<em>float</em>) – X point to measure distance from.</p></li>
+<li><p><strong>dy0</strong> (<em>float</em>) – Y point to measure distance from.</p></li>
+<li><p><strong>dcnt</strong> (<em>int</em>) – Starting index to measure distance from.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dcnt</strong> – Index of closest distance found in x and y arrays.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="pygmi.raster.tiltdepth.vgrad">
 <code class="sig-prename descclassname">pygmi.raster.tiltdepth.</code><code class="sig-name descname">vgrad</code><span class="sig-paren">(</span><em class="sig-param">cnt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.vgrad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets contour gradients at vertices</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.raster.tiltdepth.vgrad2">
-<code class="sig-prename descclassname">pygmi.raster.tiltdepth.</code><code class="sig-name descname">vgrad2</code><span class="sig-paren">(</span><em class="sig-param">cnt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.tiltdepth.vgrad2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets contour gradients at vertices</p>
+<dd><p>Get contour gradients at vertices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cnt</strong> (<em>axes.contour</em>) – Output from Matplotlib’s axes.contour.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>gx</strong> (<em>numpy array</em>) – X gradients.</p></li>
+<li><p><strong>gy</strong> (<em>numpy array</em>) – Y gradients.</p></li>
+<li><p><strong>cgrad</strong> (<em>numpy array</em>) – Countour gradient.</p></li>
+<li><p><strong>cntid</strong> (<em>numpy array</em>) – Contour index.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -4143,7 +5623,7 @@ main PyGMI interface</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pygmi.test.html" title="pygmi.test package"
+          <a href="pygmi.rsense.html" title="pygmi.rsense package"
              >next</a> |</li>
         <li class="right" >
           <a href="pygmi.pfmod.html" title="pygmi.pfmod package"
@@ -4158,7 +5638,7 @@ main PyGMI interface</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2019, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.0.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
     </div>
   </body>
 </html>
