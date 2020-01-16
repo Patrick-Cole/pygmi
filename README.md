@@ -76,32 +76,30 @@ Linux normally comes with python installed, but the additional libraries will st
 After installation of python, you can follow the instructions under General.
 
 ### Anaconda
-Anaconda users are advised not to use pip since it can break PyQt5. Instead, you can install anaconda3 using the regular method, and then:
+Anaconda users are advised not to use pip since it can break PyQt5. However, two packages are installed only by pip, so a Conda environment should be created. The process to install is as follows:
 
-	conda update --all
-	conda install numba
-	conda install scipy
-	conda install pyopengl
-	conda install gdal
-	conda install scikit-learn
-	conda install pandas
-	conda install matplotlib
-	conda install numexpr
+	conda create -n pygmi python=3.7
+	conda install pyqt
 	conda install numpy
+	conda install scipy
+	conda install numexpr
+	conda install gdal
 	conda install pillow
-	conda install setuptools
-    conda install segyio
-    conda install geopandas
-    conda install mtpy
-    conda install pytest
+	conda install matplotlib
+	conda install numba
+	conda install pandas
+	conda install scikit-learn
+	conda install scikit-image
+	conda install geopandas
+	conda install pyopengl
+	conda install pyyaml
 
-Alternatively if you use environments you can simply use the following command:
-
-	conda create -n pygmi2 scipy numba gdal pandas matplotlib numexpr numpy setuptools pillow pyopengl scikit-learn segyio geopandas mtpy pytest
+	pip install mtpy
+	pip install segyio
 
 Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:
 
-   python quickstart.py
+	python quickstart.py
 
 Alternatively, if you satisfy the requirements, you can run the following command from within the extracted directory:
 
