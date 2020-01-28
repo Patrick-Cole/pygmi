@@ -2,7 +2,7 @@ include *.txt
 include *.py
 include *.cfg
 include *.md
-include pygmi/raster/IGRF12.COF
+include pygmi/raster/IGRF13.COF
 include pygmi/raster/gcs.csv
 include pygmi/raster/pcs.csv
 include pygmi/bholes/logplot.xlsx

@@ -28,6 +28,7 @@ import os
 import re
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+import pandas as pd
 import pygmi.seis.datatypes as sdt
 import pygmi.menu_default as menu_default
 
@@ -179,6 +180,7 @@ class ImportSeisan():
         read_record_type = {}
         read_record_type['1'] = read_record_type_1
         read_record_type['2'] = read_record_type_2
+        read_record_type['3'] = read_record_type_3
         read_record_type['4'] = read_record_type_4
         read_record_type['5'] = read_record_type_5
         read_record_type['6'] = read_record_type_6
@@ -211,7 +213,7 @@ class ImportSeisan():
 
             ltype = i[79]
 
-            if ltype in '367':
+            if ltype in '67':
                 continue
 
             if ltype == ' ' and 'PRE' in i:
@@ -234,6 +236,11 @@ class ImportSeisan():
                 file_errors.append(errs)
                 continue
 
+            if ltype == '1'and (np.isnan(tmp.latitude) or
+                                np.isnan(tmp.longitude)):
+                errs = ['Warning: Incomplete data on line: '+str(iii+1), i]
+                file_errors.append(errs)
+
             if ltype == 'F':
                 event[ltype].update(tmp)
             elif ltype in ('4', ' '):
@@ -241,20 +248,66 @@ class ImportSeisan():
                 event[ltype].append(tmp)
             elif ltype == 'M' and event.get('M') is not None:
                 event[ltype] = merge_m(event[ltype], tmp)
+            elif ltype == '3':
+                if tmp.region != '':
+                    event[ltype] = tmp
             else:
                 event[ltype] = tmp
 
+            # IP errors
+            if ltype == '4' and tmp.quality == 'I':
+                if tmp.phase_id[0] == 'S':
+                    errs = ['Warning: IP error on line: '+str(iii+1), i]
+                    file_errors.append(errs)
+                elif (tmp.phase_id[0] == 'P' and
+                      tmp.first_motion not in ['C', 'D']):
+                    errs = ['Warning: IP error (first motion must be C or D)'
+                            ' on line: '+str(iii+1), i]
+                    file_errors.append(errs)
+
+            # EP/S phase errors
+            if ltype == '4' and tmp.quality == 'E':
+                if tmp.first_motion in ['C', 'D']:
+                    errs = [r'Warning: EP/S error (first motion must be empty)'
+                            ' on line: '+str(iii+1), i]
+                    file_errors.append(errs)
+
+            # High time residuals
+            if ltype == '4' and tmp.quality == 'E':
+                if tmp.travel_time_residual > 3:
+                    errs = [r'Warning: Travel time residual > 3 on '
+                            'line: '+str(iii+1), i]
+                    file_errors.append(errs)
+
+            if ltype == '4' and len(event['4']) > 1:
+                dat1 = event['4'][-2]
+                dat2 = event['4'][-1]
+                if dat1.station_name == dat2.station_name:
+                    if 'AML' in dat1.phase_id and dat2.phase_id[0] != ' ':
+                        errs = [r'Warning: Phases may be out of order on '
+                                'line: '+str(iii+1), i]
+                        file_errors.append(errs)
+
+        has_errors = any('Error' in s for s in file_errors)
+
         if file_errors:
-            showprocesslog('Error: Problem with file')
-            showprocesslog('Please see errors in '+filename+'.log')
+            if has_errors is False:
+                showprocesslog('Warning: Problem with file')
+                showprocesslog('Process will continue, but please '
+                               'see warnings in '+filename+'.log')
+            else:
+                showprocesslog('Error: Problem with file')
+                showprocesslog('Process stopping, please see errors '
+                               'in '+filename+'.log')
             fout = open(filename+'.log', 'w')
             for i in file_errors:
                 fout.write(i[0]+'\n')
                 fout.write(i[1]+'\n')
             fout.close()
-            return False
-
-        showprocesslog('No errors in the file')
+            if has_errors is True:
+                return False
+        else:
+            showprocesslog('No errors in the file')
 
         if event:
             dat.append(event)
@@ -346,6 +399,29 @@ def read_record_type_2(i):
     dat.intensity_bordering_area_2 = str2int(i[68:70])
     dat.quality_rank = i[71]
     dat.reporting_agency = i[72:75]
+
+    return dat
+
+
+def read_record_type_3(i):
+    """
+    Read record type 3.
+
+    Parameters
+    ----------
+    i : str
+        String to read from.
+
+    Returns
+    -------
+    tmp : sdt.seisan_4
+        Seisan 4 record.
+
+    """
+    dat = sdt.seisan_3()
+    dat.text = i
+    if 'Region:' in i:
+        dat.region = i[12:-2].strip()
 
     return dat
 
@@ -928,7 +1004,7 @@ class ExportSeisan():
         -------
         None.
 
-       """
+        """
         if '3' not in tmp:
             return
 
@@ -1348,7 +1424,9 @@ class ExportCSV():
             rece = self.write_record_type_e(i)
             rec4 = self.write_record_type_4(i)
             for j in rec4:
-                self.fobj.write(reci+rec1+rece+j+'\n')
+                jtmp = reci+rec1+rece+j+'\n'
+                jtmp = jtmp.replace('nan', '')
+                self.fobj.write(jtmp)
 
         self.fobj.close()
 
@@ -1818,6 +1896,150 @@ class ExportCSV():
         tmp = sform('{0:1s}', 'P', tmp, 80)
 
         return tmp
+
+
+class ExportSummaryCSV():
+    """Export Seisan Data."""
+
+    def __init__(self, parent):
+        self.ifile = ''
+        self.name = 'Export Summary CSV Data '
+        self.ext = ''
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+        self.lmod = None
+        self.fobj = None
+        self.showtext = self.parent.showprocesslog
+
+    def run(self):
+        """
+        Run.
+
+        Returns
+        -------
+        None.
+
+        """
+        if 'Seis' not in self.indata:
+            self.parent.showprocesslog(
+                'Error: You need to have a Seisan data first!')
+            return
+
+        data = self.indata['Seis']
+
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                            'Save File',
+                                                            '.', 'csv (*.csv)')
+        if filename == '':
+            return
+        os.chdir(os.path.dirname(filename))
+        self.ext = filename[-3:]
+
+        head = ["Year", "Month", "Day", "Hour", "Minute", "Second",
+                "Latitude", "Longitude", "Depth", "Ml", "Mw", "Md", "Mb",
+                "Ms", "RMS", "LatitudeError",
+                "LongitudeError", "DepthError", "Mo", "SourceRaduis",
+                "StressDrop", "F0", "StdDeviation", "Mercalli",
+                "Agency", "Description"]
+
+        df = pd.DataFrame(columns=head)
+
+        mtype = {}
+        mtype['L'] = 'Ml'
+        mtype['B'] = 'Mb'
+        mtype['S'] = 'Ms'
+        mtype['C'] = 'Md'
+        mtype['W'] = 'Mw'
+
+        for i, idat in enumerate(data):
+            ML = None
+            if '1' in idat:
+                dat = idat['1']
+                df.loc[i, 'Year'] = dat.year
+                df.loc[i, 'Month'] = dat.month
+                df.loc[i, 'Day'] = dat.day
+                df.loc[i, 'Hour'] = dat.hour
+                df.loc[i, 'Minute'] = dat.minutes
+                df.loc[i, 'Second'] = dat.seconds
+                df.loc[i, 'Latitude'] = dat.latitude
+                df.loc[i, 'Longitude'] = dat.longitude
+                df.loc[i, 'Depth'] = dat.depth
+
+                if dat.type_of_magnitude_1 in mtype:
+                    df.loc[i, mtype[dat.type_of_magnitude_1]] = dat.magnitude_1
+                    if dat.type_of_magnitude_1 == 'L':
+                        ML = dat.magnitude_1
+                if dat.type_of_magnitude_2 in mtype:
+                    df.loc[i, mtype[dat.type_of_magnitude_2]] = dat.magnitude_2
+                    if dat.type_of_magnitude_2 == 'L':
+                        ML = dat.magnitude_2
+                if dat.type_of_magnitude_3 in mtype:
+                    df.loc[i, mtype[dat.type_of_magnitude_3]] = dat.magnitude_3
+                    if dat.type_of_magnitude_3 == 'L':
+                        ML = dat.magnitude_3
+
+                if ML is not None:
+                    df.loc[i, 'Mercalli'] = mercalli(ML)
+                df.loc[i, 'Agency'] = dat.hypocenter_reporting_agency
+                df.loc[i, 'RMS'] = dat.rms_of_time_residuals
+
+            if 'E' in idat:
+                dat = idat['E']
+                df.loc[i, 'LatitudeError'] = dat.latitude_error
+                df.loc[i, 'LongitudeError'] = dat.longitude_error
+                df.loc[i, 'DepthError'] = dat.depth_error
+
+            if '3' in idat:
+                if idat['3'] != '':
+                    dat = idat['3']
+                    df.loc[i, 'Description'] = dat.region
+
+        df.to_csv(filename, index=False)
+
+
+def mercalli(mag):
+    """
+    Return Mercalli index.
+
+    Parameters
+    ----------
+    mag : float
+        Local magnitude.
+
+    Returns
+    -------
+    merc : str
+        Mercalli index
+
+    """
+    if mag < 2:
+        merc = 'I'
+    elif mag < 3:
+        merc = 'II'
+    elif mag < 4:
+        merc = 'III'
+    elif mag == 4:
+        merc = 'IV'
+    elif mag < 5:
+        merc = 'V'
+    elif mag < 6:
+        merc = 'VI'
+    elif mag == 6:
+        merc = 'VII'
+    elif mag < 7:
+        merc = 'VIII'
+    elif mag == 7:
+        merc = 'IX'
+    elif mag < 8:
+        merc = 'X'
+    elif mag == 8:
+        merc = 'XI'
+    else:
+        merc = 'XII'
+
+    return merc
 
 
 class FilterSeisan(QtWidgets.QDialog):

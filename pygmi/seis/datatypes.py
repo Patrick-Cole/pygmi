@@ -219,6 +219,7 @@ class seisan_3():
 
     def __init__(self):
         self.text = ''
+        self.region = ''
         self.dataid = ''
 
 

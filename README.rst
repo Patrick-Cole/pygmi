@@ -99,22 +99,37 @@ Anaconda
 Anaconda users are advised not to use pip since it can break PyQt5. However, two packages are installed only by pip, so a Conda environment should be created. The process to install is as follows:
 
    conda create -n pygmi python=3.7
+
    conda install pyqt
+
    conda install numpy
+
    conda install scipy
+
    conda install numexpr
+
    conda install gdal
+
    conda install pillow
+
    conda install matplotlib
+
    conda install numba
+
    conda install pandas
+
    conda install scikit-learn
+
    conda install scikit-image
+
    conda install geopandas
+
    conda install pyopengl
+
    conda install pyyaml
 
    pip install mtpy
+
    pip install segyio
 
 Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:

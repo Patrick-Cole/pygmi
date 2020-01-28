@@ -30,6 +30,7 @@ from pygmi.seis import del_rec
 from pygmi.seis import iodefs
 from pygmi.seis import beachball
 from pygmi.seis import graphs
+from pygmi.seis import utils
 
 
 class MenuWidget():
@@ -57,6 +58,10 @@ class MenuWidget():
         self.action_import_seisan = QtWidgets.QAction('Import Seisan Data')
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
+
+        self.action_check_desc = QtWidgets.QAction('Correct Seisan Descriptions')
+        self.menu.addAction(self.action_check_desc)
+        self.action_check_desc.triggered.connect(self.correct_desc)
 
         self.action_filter_seisan = QtWidgets.QAction('Filter Seisan Data')
         self.menu.addAction(self.action_filter_seisan)
@@ -100,6 +105,10 @@ class MenuWidget():
         context_menu['Seis'].addAction(self.action_export_csv)
         self.action_export_csv.triggered.connect(self.export_csv)
 
+        self.action_sexport_csv = QtWidgets.QAction('Export Summary to CSV')
+        context_menu['Seis'].addAction(self.action_sexport_csv)
+        self.action_sexport_csv.triggered.connect(self.sexport_csv)
+
     def export_seisan(self):
         """Export Seisan data."""
         self.parent.launch_context_item(iodefs.ExportSeisan)
@@ -107,6 +116,10 @@ class MenuWidget():
     def export_csv(self):
         """Export Seisan data to csv."""
         self.parent.launch_context_item(iodefs.ExportCSV)
+
+    def sexport_csv(self):
+        """Export Seisan data to csv."""
+        self.parent.launch_context_item(iodefs.ExportSummaryCSV)
 
     def beachball(self):
         """Create Beachballs from Fault Plane Solutions."""
@@ -122,6 +135,11 @@ class MenuWidget():
         """Import Seisan."""
         fnc = iodefs.ImportSeisan(self.parent)
         self.parent.item_insert('Io', 'Import\nSeisan\nData', fnc)
+
+    def correct_desc(self):
+        """Correct Seisan descriptions."""
+        fnc = utils.CorrectDescriptions(self.parent)
+        self.parent.item_insert('Step', 'Correct\nSeisan\nDescriptions', fnc)
 
     def filter_seisan(self):
         """Filter Seisan."""
