@@ -59,7 +59,8 @@ class MenuWidget():
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
 
-        self.action_check_desc = QtWidgets.QAction('Correct Seisan Descriptions')
+        self.action_check_desc = QtWidgets.QAction('Correct Seisan Type 3'
+                                                   ' Descriptions')
         self.menu.addAction(self.action_check_desc)
         self.action_check_desc.triggered.connect(self.correct_desc)
 
