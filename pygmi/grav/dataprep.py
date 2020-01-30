@@ -238,7 +238,9 @@ class ProcessData(QtWidgets.QDialog):
 
         dat2a = {}
         for i in dat:
-            dat2a[i] = pdat[pdat['LINE'] == float(i)]
+            tmp = pdat[pdat['LINE'] == float(i)]
+            if tmp.size > 0:
+                dat2a[i] = pdat[pdat['LINE'] == float(i)]
 
         dat2 = LData()
 

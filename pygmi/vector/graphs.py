@@ -312,6 +312,7 @@ class MyMplCanvas(FigureCanvas):
 
         ax1 = self.figure.add_subplot(111, label='Map')
         self.axes = ax1
+        ax1.ticklabel_format(useOffset=False)
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
@@ -322,6 +323,7 @@ class MyMplCanvas(FigureCanvas):
 
         zdata = np.array(zdata)
         zdata = zdata[zdata != data.nullvalue]
+        zdata = zdata[~np.isnan(zdata)]
         med = np.median(zdata)
         std = 2.5 * median_absolute_deviation(zdata, axis=None)
 
@@ -337,6 +339,17 @@ class MyMplCanvas(FigureCanvas):
             y = y[z != data.nullvalue]
             z = z[z != data.nullvalue]
 
+            nanchk = np.logical_or(~np.isnan(x), ~np.isnan(y))
+            x = x[nanchk]
+            y = y[nanchk]
+            z = z[nanchk]
+
+            if x.size < 2:
+                continue
+
+            spcing = min(x.ptp(), y.ptp())/len(data.data)
+
+
             ang = np.arctan2((y[1:]-y[:-1]), (x[1:]-x[:-1]))
             ang = np.append(ang, ang[-1])
 
@@ -346,7 +359,7 @@ class MyMplCanvas(FigureCanvas):
             elif y.ptp() > x.ptp() and (y[-1]-y[0]) < 0:
                 ang += np.pi
 
-            py = scale*(z - med)/std
+            py = spcing*scale*(z - med)/std
 
             qx = x - np.sin(ang) * py
             qy = y + np.cos(ang) * py

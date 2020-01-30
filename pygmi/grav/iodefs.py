@@ -65,12 +65,15 @@ class ImportCG5(QtWidgets.QDialog):
         self.df_cg5 = None
         self.df_gps = None
 
+        self.line = QtWidgets.QComboBox()
+        self.station = QtWidgets.QComboBox()
         self.xchan = QtWidgets.QComboBox()
         self.ychan = QtWidgets.QComboBox()
         self.zchan = QtWidgets.QComboBox()
         self.nodata = QtWidgets.QLineEdit('-99999')
         self.cg5file = QtWidgets.QLineEdit('')
         self.gpsfile = QtWidgets.QLineEdit('')
+        self.basethres = QtWidgets.QLineEdit('10000')
 
         self.setupui()
 
@@ -86,12 +89,17 @@ class ImportCG5(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        label_line = QtWidgets.QLabel('Line:')
+        label_station = QtWidgets.QLabel('Station:')
         label_xchan = QtWidgets.QLabel('Longitude:')
         label_ychan = QtWidgets.QLabel('Latitude:')
         label_zchan = QtWidgets.QLabel('Elevation:')
+        label_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
         pb_cg5 = QtWidgets.QPushButton('Load CG-5 File')
         pb_gps = QtWidgets.QPushButton('Load GPS File')
 
+        self.line.setEnabled(False)
+        self.station.setEnabled(False)
         self.xchan.setEnabled(False)
         self.ychan.setEnabled(False)
         self.zchan.setEnabled(False)
@@ -108,20 +116,29 @@ class ImportCG5(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.gpsfile, 1, 0, 1, 1)
         gridlayout_main.addWidget(pb_gps, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_xchan, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.xchan, 2, 1, 1, 1)
+        gridlayout_main.addWidget(label_line, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.line, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_ychan, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.ychan, 3, 1, 1, 1)
+        gridlayout_main.addWidget(label_station, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.station, 3, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_zchan, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.zchan, 4, 1, 1, 1)
+        gridlayout_main.addWidget(label_xchan, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.xchan, 4, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_ychan, 5, 0, 1, 1)
+        gridlayout_main.addWidget(self.ychan, 5, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_zchan, 6, 0, 1, 1)
+        gridlayout_main.addWidget(self.zchan, 6, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_bthres, 7, 0, 1, 1)
+        gridlayout_main.addWidget(self.basethres, 7, 1, 1, 1)
 
 #        gridlayout_main.addWidget(label_nodata, 2, 0, 1, 1)
 #        gridlayout_main.addWidget(self.nodata, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 8, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -144,8 +161,33 @@ class ImportCG5(QtWidgets.QDialog):
             if tmp != 1 or self.df_cg5 is None or self.df_gps is None:
                 return tmp
 
-        dfmerge = pd.merge(self.df_cg5, self.df_gps, left_on='STATION',
-                           right_on='Station', how='left')
+        # Rename columns
+        cren = {}
+        cren[self.line.currentText()] = 'line'
+        cren[self.station.currentText()] = 'station'
+        self.df_gps.rename(columns=cren)
+
+        # Get rid of text in line columns
+        self.df_gps['line'] = self.df_gps['line'].str.replace(r'\D', '')
+
+        # Convert line and station to numbers
+        self.df_gps['station'] = pd.to_numeric(self.df_gps['station'],
+                                               errors='coerce',
+                                               downcast='float')
+
+        self.df_gps['line'] = pd.to_numeric(self.df_gps['line'],
+                                            errors='coerce',
+                                            downcast='float')
+
+        # Merge data
+        dfmerge = pd.merge(self.df_cg5, self.df_gps,
+                           left_on=['LINE', 'STATION'],
+                           right_on=['line', 'station'], how='left')
+
+        filt = dfmerge['STATION'] < float(self.basethres.text())
+        filt = filt & dfmerge['longitude'].isna()
+
+        dfmerge = dfmerge[~filt]
 
         dat = {}
         lines = dfmerge.LINE.unique()
@@ -162,6 +204,7 @@ class ImportCG5(QtWidgets.QDialog):
 #        dat2.nullvalue = nodata
 
         self.outdata['Line'] = dat2
+
         return True
 
     def get_cg5(self, filename=''):
@@ -193,7 +236,7 @@ class ImportCG5(QtWidgets.QDialog):
 
         data = []
         for i in tmp:
-            if i[0] != r'/':
+            if i[0] != r'/' and 'Line' not in i and ',' not in i:
                 data.append(i)
 
         names = ['LINE', 'STATION', 'ALT', 'GRAV', 'SD', 'TILTX', 'TILTY',
@@ -238,8 +281,8 @@ class ImportCG5(QtWidgets.QDialog):
         os.chdir(os.path.dirname(filename))
 
         df2 = pd.read_csv(filename)
-
-        df2['Station'] = pd.to_numeric(df2['Station'], errors='coerce')
+#        df2.columns = map(str.lower, df2.columns)
+        df2.columns = df2.columns.str.lower()
 
         self.df_gps = df2
 
@@ -250,22 +293,34 @@ class ImportCG5(QtWidgets.QDialog):
         xind = 0
         yind = 1
         zind = 2
+        lind = 0
+        sind = 0
         for i, tmp in enumerate(ltmp):
             if 'lon' in tmp.lower():
                 xind = i
             elif 'lat' in tmp.lower():
                 yind = i
-            elif 'elev' in tmp.lower() or 'alt' in tmp.lower():
+            elif 'elev' in tmp.lower() or 'alt' in tmp.lower() or 'height' in tmp.lower():
                 zind = i
+            elif 'stat' in tmp.lower():
+                sind = i
+            elif 'line' in tmp.lower():
+                lind = i
 
+        self.line.addItems(ltmp)
+        self.station.addItems(ltmp)
         self.xchan.addItems(ltmp)
         self.ychan.addItems(ltmp)
         self.zchan.addItems(ltmp)
 
+        self.line.setCurrentIndex(lind)
+        self.station.setCurrentIndex(sind)
         self.xchan.setCurrentIndex(xind)
         self.ychan.setCurrentIndex(yind)
         self.zchan.setCurrentIndex(zind)
 
+        self.line.setEnabled(True)
+        self.station.setEnabled(True)
         self.xchan.setEnabled(True)
         self.ychan.setEnabled(True)
         self.zchan.setEnabled(True)
