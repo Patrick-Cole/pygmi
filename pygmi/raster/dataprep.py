@@ -37,6 +37,7 @@ import scipy.ndimage as ndimage
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.vector.datatypes import PData
+from pygmi.vector.datatypes import line_to_point
 
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
@@ -222,9 +223,13 @@ class DataGrid(QtWidgets.QDialog):
 
         """
         tmp = []
-        if 'Point' not in self.indata:
+        if 'Point' not in self.indata and 'Line' not in self.indata:
             self.parent.showprocesslog('No Point Data')
             return False
+
+        if 'Line' in self.indata:
+            self.indata['Point'] = line_to_point(self.indata['Line'])
+            self.dsb_null.setValue(self.indata['Line'].nullvalue)
 
         for i in self.indata['Point']:
             tmp.append(i.dataid)
@@ -240,7 +245,9 @@ class DataGrid(QtWidgets.QDialog):
         dy = y.ptp()/np.sqrt(y.size)
         dxy = max(dx, dy)
 
-        self.dsb_null.setValue(data.zdata.min())
+        if 'Line' not in self.indata:
+            self.dsb_null.setValue(data.zdata.min())
+
         self.dsb_dxy.setValue(dxy)
         self.dxy_change()
 

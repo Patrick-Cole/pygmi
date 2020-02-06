@@ -102,3 +102,41 @@ class VData():
         self.attrib = [{}]
         self.dataid = ''
         self.dtype = ''
+
+
+def line_to_point(ldata):
+    """
+    Convert LData to PData
+
+    Parameters
+    ----------
+    ldata : LData
+        Line data type.
+
+    Returns
+    -------
+    pdata : PData.
+        Point data type
+
+    """
+
+    tmp = {}
+    pdata = []
+
+    for i in ldata.data:
+        for j in ldata.data[i].dtype.names:
+            if j == ldata.xchannel or j == ldata.ychannel:
+                continue
+            if j not in tmp:
+                tmp[j] = PData()
+                tmp[j].dataid = j
+            tmp[j].xdata = np.append(tmp[j].xdata,
+                                     ldata.data[i][ldata.xchannel])
+            tmp[j].ydata = np.append(tmp[j].ydata,
+                                     ldata.data[i][ldata.ychannel])
+            tmp[j].zdata = np.append(tmp[j].zdata, ldata.data[i][j])
+
+    for i in tmp:
+        pdata.append(tmp[i])
+
+    return pdata
