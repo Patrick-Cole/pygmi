@@ -64,7 +64,7 @@ class ProcessData(QtWidgets.QDialog):
         self.dataid = QtWidgets.QComboBox()
         self.checkbox = QtWidgets.QCheckBox('Apply to all stations:')
         self.density = QtWidgets.QLineEdit('2670')
-        self.absbase = QtWidgets.QLineEdit('978032.67715')
+        self.absbase = QtWidgets.QLineEdit('978803.1459')
         self.basethres = QtWidgets.QLineEdit('10000')
 
         self.setupui()
@@ -173,66 +173,24 @@ class ProcessData(QtWidgets.QDialog):
         x = pdat['DECTIMEDATE']
         xp = driftdat['DECTIMEDATE']
         fp = driftdat['GRAV']
-        fp = fp - fp[0]
 
         dcor = np.interp(x, xp, fp)
 
         gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
 
-# Theoretical Gravity
+# Variables used
         lat = np.deg2rad(pdat[newdat.ychannel])
-
-        gT = 978032.67715*((1 + 0.001931851353 * np.sin(lat)**2) /
-                           np.sqrt(1 - 0.0066943800229*np.sin(lat)**2))
-
-
-# Atmospheric Correction
-        h = pdat[newdat.zchannel]  # This is the ellipsoidal height
-
-        gATM = 0.874-9.9*1e-5*h+3.56*1e-9*h**2
-
-# Height Correction
-
-        gHC = -(0.308769109-0.000439773*np.sin(lat)**2)*h+7.21252*1e-8*h**2
-
-
-# Spherical Bouguer
-        S = 166735  # Bullard B radius
-        R0 = 6371000  # Mean radius of the earth
-        a = 6378137
-        b = 6356752.314245
-        G = 6.67834*1e-11
+        h = pdat[newdat.zchannel]  # This is the ellipsoidal (gps) height
         dens = float(self.density.text())
 
-        alpha = S/R0
-
-        R = np.sqrt(((a**2 * np.cos(lat))**2 + (b**2 * np.sin(lat))**2) /
-                    ((a * np.cos(lat))**2 + (b * np.sin(lat))**2))
-
-        delta = R0/R
-        eta = h/R
-        d = 3*np.cos(alpha)**2-2
-        f = np.cos(alpha)
-        k = np.sin(alpha)**2
-        p = -6*np.cos(alpha)**2*np.sin(alpha/2) + 4*np.sin(alpha/2)**3
-        m = -3*np.sin(alpha)**2*np.cos(alpha)
-        n = 2*(np.sin(alpha/2)-np.sin(alpha/2)**2)  # is this abs?
-        mu = 1 + eta**2/3-eta
-
-        fdk = np.sqrt((f-delta)**2+k)
-        t1 = (d+f*delta+delta**2)*fdk
-        t2 = m*np.log(n/(f-delta+fdk))
-
-        lamda = (t1+p+t2)/3
-
-        gSB = 2*np.pi*G*dens*(mu*h - lamda*R)*1e5
+# Corrections
+        gT = theoretical_gravity(lat)
+        gATM = atmospheric_correction(h)
+        gHC = height_correction(lat, h)
+        gSB = spherical_bouguer(h, dens)
 
 # Bouguer Anomaly
         gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
-
-
-#        gba = gobs - ((gT - gATM) + gHC + gSB)  # add or subtract atm
-#       gba = gobs - gT + gATM - gHC - gSB
 
         pdat = nplrf.append_fields(pdat, 'BOUGUER', gba, usemask=False)
 
@@ -251,3 +209,139 @@ class ProcessData(QtWidgets.QDialog):
         dat2.dataid = 'Gravity'
 
         self.outdata['Line'] = dat2
+
+
+def geocentric_radius(lat):
+    """
+    Calculate the distance from the Earth's center to a point on the spheroid
+    surface at a specified geodetic latitude.
+
+    Parameters
+    ----------
+    lat : numpy array
+        Latitude in radians
+
+    Returns
+    -------
+    R : Numpy array
+        Array of radii.
+
+    """
+    a = 6378137
+    b = 6356752.314245
+
+    R = np.sqrt(((a**2 * np.cos(lat))**2 + (b**2 * np.sin(lat))**2) /
+                ((a * np.cos(lat))**2 + (b * np.sin(lat))**2))
+
+    return R
+
+
+def theoretical_gravity(lat):
+    """
+    Calculate the theoretical gravity.
+
+    Parameters
+    ----------
+    lat : numpy array
+        Latitude in radians
+
+    Returns
+    -------
+    gT : numpy array
+        Array of theoretrical gravity values.
+
+    """
+
+    gT = 978032.67715*((1 + 0.001931851353 * np.sin(lat)**2) /
+                       np.sqrt(1 - 0.0066943800229*np.sin(lat)**2))
+
+    return gT
+
+
+def atmospheric_correction(h):
+    """
+    Calculate the atmospheric correction.
+
+    Parameters
+    ----------
+    h : numpy array
+        Heights relative to elipsoid (GPS heights).
+
+    Returns
+    -------
+    gATM : numpy array.
+        Atmospheric correction
+
+    """
+
+    gATM = 0.874-9.9*1e-5*h+3.56*1e-9*h**2
+
+    return gATM
+
+
+def height_correction(lat, h):
+    """
+    Calculate height correction.
+
+    Parameters
+    ----------
+    lat : numpy array
+        Latitude in radians.
+    h : numpy array
+        Heights relative to elipsoid (GPS heights).
+
+    Returns
+    -------
+    gHC : numpy array
+        Height corrections
+
+    """
+
+    gHC = -(0.308769109-0.000439773*np.sin(lat)**2)*h+7.2125*1e-8*h**2
+
+    return gHC
+
+
+def spherical_bouguer(h, dens):
+    """
+
+
+    Parameters
+    ----------
+    h : numpy array
+        Heights relative to elipsoid (GPS heights).
+    dens : float
+        Density.
+
+    Returns
+    -------
+    gSB : numpy array
+        Spherical Bouguer correction.
+
+    """
+    S = 166700  # Bullard B radius
+    R0 = 6371000  # Mean radius of the earth
+    G = 6.67384*1e-11
+
+    alpha = S/R0
+    R = R0 + h
+
+    delta = R0/R
+    eta = h/R
+    d = 3*np.cos(alpha)**2-2
+    f = np.cos(alpha)
+    k = np.sin(alpha)**2
+    p = -6*np.cos(alpha)**2*np.sin(alpha/2) + 4*np.sin(alpha/2)**3
+    m = -3*np.sin(alpha)**2*np.cos(alpha)
+    n = 2*(np.sin(alpha/2)-np.sin(alpha/2)**2)  # is this abs?
+    mu = 1 + eta**2/3-eta
+
+    fdk = np.sqrt((f-delta)**2+k)
+    t1 = (d+f*delta+delta**2)*fdk
+    t2 = m*np.log(n/(f-delta+fdk))
+
+    lamda = (t1+p+t2)/3
+
+    gSB = 2*np.pi*G*dens*(mu*h - lamda*R)*1e5
+
+    return gSB

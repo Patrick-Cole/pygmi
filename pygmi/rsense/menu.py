@@ -66,17 +66,17 @@ class MenuWidget():
     def create_scene(self):
         """Create Scene."""
         fnc = change.CreateSceneList(self.parent)
-        self.parent.item_insert('Step', 'Create\nScene\nList', fnc)
+        self.parent.item_insert('Step', 'Create Scene List', fnc)
 
     def load_scene(self):
         """Load Scene."""
         fnc = change.LoadSceneList(self.parent)
-        self.parent.item_insert('Io', 'Import\nScene\nList', fnc)
+        self.parent.item_insert('Io', 'Import Scene List', fnc)
 
     def view_change(self):
         """View Change Detection."""
         fnc = change.SceneViewer(self.parent)
-        self.parent.item_insert('Step', 'Change\nDetection\nViewer', fnc)
+        self.parent.item_insert('Step', 'Change Detection Viewer', fnc)
 
 #    def show_log(self):
 #        """Show log data."""

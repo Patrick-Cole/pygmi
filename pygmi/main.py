@@ -767,6 +767,8 @@ class MainWidget(QtWidgets.QMainWindow):
         item = DiagramItem(item_type, self.scene.my_item_menu, class_name)
         item_color = self.scene.my_item_color
 
+        item_name = item_name.replace(' ', '\n')
+
         item.my_class_name = item_name.replace('\n', ' ')
 
         if 'Import' in item_name:

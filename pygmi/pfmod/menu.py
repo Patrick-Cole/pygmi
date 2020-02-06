@@ -90,7 +90,7 @@ class MenuWidget():
     def pfmod(self):
         """Voxel modelling of data."""
         fnc = pfmod.MainWidget(self.parent)
-        self.parent.item_insert('Step', 'Potential\nField\nModelling', fnc)
+        self.parent.item_insert('Step', 'Potential Field Modelling', fnc)
 
     def mod3d(self):
         """3D display of data."""
@@ -109,4 +109,4 @@ class MenuWidget():
     def import_prof_pic(self):
         """Import profile pictures."""
         fnc = iodefs.ImportPicture(self.parent)
-        self.parent.item_insert('Io', 'Import Profile\n Picture', fnc)
+        self.parent.item_insert('Io', 'Import Profile Picture', fnc)

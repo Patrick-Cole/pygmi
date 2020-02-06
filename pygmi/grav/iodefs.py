@@ -93,7 +93,7 @@ class ImportCG5(QtWidgets.QDialog):
         label_station = QtWidgets.QLabel('Station:')
         label_xchan = QtWidgets.QLabel('Longitude:')
         label_ychan = QtWidgets.QLabel('Latitude:')
-        label_zchan = QtWidgets.QLabel('Elevation:')
+        label_zchan = QtWidgets.QLabel('Ellipsoid (GPS) Elevation:')
         label_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
         pb_cg5 = QtWidgets.QPushButton('Load CG-5 File')
         pb_gps = QtWidgets.QPushButton('Load GPS File')

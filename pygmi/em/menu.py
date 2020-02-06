@@ -119,7 +119,7 @@ class MenuWidget():
     def occam1d(self):
         """Occam 1D inversion."""
         fnc = dataprep.Occam1D(self.parent)
-        self.parent.item_insert('Step', 'Occam 1D\nInversion', fnc)
+        self.parent.item_insert('Step', 'Occam 1D Inversion', fnc)
 
     def rotate_data(self):
         """Rotate data."""
@@ -134,7 +134,7 @@ class MenuWidget():
     def mi_data(self):
         """Mask and interpolate data."""
         fnc = dataprep.EditEDI(self.parent)
-        self.parent.item_insert('Step', 'Mask and Interpolate\nEDI Data', fnc)
+        self.parent.item_insert('Step', 'Mask and Interpolate EDI Data', fnc)
 
     def metadata(self):
         """Metadata."""

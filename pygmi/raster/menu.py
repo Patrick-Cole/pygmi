@@ -191,7 +191,7 @@ class MenuWidget():
     def equation_editor(self):
         """Equation Editor."""
         fnc = equation_editor.EquationEditor(self.parent)
-        self.parent.item_insert('Step', 'Equation\nEditor', fnc)
+        self.parent.item_insert('Step', 'Equation Editor', fnc)
 
     def export_data(self):
         """Export raster data."""
@@ -200,12 +200,12 @@ class MenuWidget():
     def cut_data(self):
         """Cut data."""
         fnc = dataprep.DataCut(self.parent)
-        self.parent.item_insert('Step', 'Cut\nData', fnc)
+        self.parent.item_insert('Step', 'Cut Data', fnc)
 
     def get_prof(self):
         """Get profile."""
         fnc = dataprep.GetProf(self.parent)
-        self.parent.item_insert('Step', 'Get\nProfile', fnc)
+        self.parent.item_insert('Step', 'Get Profile', fnc)
 
     def gradients(self):
         """Compute different gradients."""
@@ -220,18 +220,18 @@ class MenuWidget():
     def raster_interp(self):
         """Show raster data."""
         fnc = ginterp.PlotInterp(self.parent)
-        self.parent.item_insert('Step', 'Raster Data\nInterpretation', fnc)
+        self.parent.item_insert('Step', 'Raster Data Interpretation', fnc)
 
     def depth_susc(self):
         """Depth and Susceptibility calculations."""
         fnc = tiltdepth.TiltDepth(self.parent)
         self.parent.item_insert('Step',
-                                'Tilt\nDepth\nInterpretation', fnc)
+                                'Tilt Depth Interpretation', fnc)
 
     def rtp(self):
         """Compute RTP."""
         fnc = dataprep.RTP(self.parent)
-        self.parent.item_insert('Step', 'RTP\nAngle', fnc)
+        self.parent.item_insert('Step', 'RTP Angle', fnc)
 
     def show_ccoef(self):
         """Show 2D correlation coefficients."""
@@ -265,7 +265,7 @@ class MenuWidget():
     def tilt(self):
         """Compute tilt angle."""
         fnc = cooper.Tilt1(self.parent)
-        self.parent.item_insert('Step', 'Tilt\nAngle', fnc)
+        self.parent.item_insert('Step', 'Tilt Angle', fnc)
 
     def visibility(self):
         """Compute visibility."""
@@ -275,27 +275,27 @@ class MenuWidget():
     def reproj(self):
         """Reproject a dataset."""
         fnc = dataprep.DataReproj(self.parent)
-        self.parent.item_insert('Step', 'Data\nReprojection', fnc)
+        self.parent.item_insert('Step', 'Data Reprojection', fnc)
 
     def merge(self):
         """Merge datasets."""
         fnc = dataprep.DataMerge(self.parent)
-        self.parent.item_insert('Step', 'Data\nMerge', fnc)
+        self.parent.item_insert('Step', 'Data Merge', fnc)
 
     def igrf(self):
         """Compute IGRF."""
         fnc = igrf.IGRF(self.parent)
-        self.parent.item_insert('Step', 'Remove\nIGRF', fnc)
+        self.parent.item_insert('Step', 'Remove IGRF', fnc)
 
     def import_data(self):
         """Import data."""
         fnc = iodefs.ImportData(self.parent)
-        self.parent.item_insert('Io', 'Import\nData', fnc)
+        self.parent.item_insert('Io', 'Import Data', fnc)
 
     def import_rgb_data(self):
         """Import RGB data."""
         fnc = iodefs.ImportRGBData(self.parent)
-        self.parent.item_insert('Io', 'Import\nRGB\nImage', fnc)
+        self.parent.item_insert('Io', 'Import RGB Image', fnc)
 
     def bandselect(self):
         """Select bands."""

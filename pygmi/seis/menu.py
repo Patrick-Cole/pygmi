@@ -125,42 +125,42 @@ class MenuWidget():
     def beachball(self):
         """Create Beachballs from Fault Plane Solutions."""
         fnc = beachball.BeachBall(self.parent)
-        self.parent.item_insert('Step', 'Fault\nPlane\nSolutions', fnc)
+        self.parent.item_insert('Step', 'Fault Plane Solutions', fnc)
 
     def import_scans(self):
         """Import scanned records."""
         fnc = scan_imp.SIMP(self.parent)
-        self.parent.item_insert('Io', 'Import\nScanned\nBulletins', fnc)
+        self.parent.item_insert('Io', 'Import Scanned Bulletins', fnc)
 
     def import_seisan(self):
         """Import Seisan."""
         fnc = iodefs.ImportSeisan(self.parent)
-        self.parent.item_insert('Io', 'Import\nSeisan\nData', fnc)
+        self.parent.item_insert('Io', 'Import Seisan Data', fnc)
 
     def correct_desc(self):
         """Correct Seisan descriptions."""
         fnc = utils.CorrectDescriptions(self.parent)
-        self.parent.item_insert('Step', 'Correct\nSeisan\nDescriptions', fnc)
+        self.parent.item_insert('Step', 'Correct Seisan Descriptions', fnc)
 
     def filter_seisan(self):
         """Filter Seisan."""
         fnc = iodefs.FilterSeisan(self.parent)
-        self.parent.item_insert('Step', 'Filter\nSeisan\nData', fnc)
+        self.parent.item_insert('Step', 'Filter Seisan Data', fnc)
 
     def import_genfps(self):
         """Import Generic Fault Plane Solution."""
         fnc = iodefs.ImportGenericFPS(self.parent)
-        self.parent.item_insert('Io', 'Import\nGeneric\nFPS', fnc)
+        self.parent.item_insert('Io', 'Import Generic FPS', fnc)
 
     def delete_recs(self):
         """Delete Records."""
         fnc = del_rec.DeleteRecord(self.parent)
-        self.parent.item_insert('Io', 'Delete\nRecords', fnc)
+        self.parent.item_insert('Io', 'Delete Records', fnc)
 
     def quarry(self):
         """Remove quarry events."""
         fnc = del_rec.Quarry(self.parent)
-        self.parent.item_insert('Step', 'Remove\nQuarry\nEvents', fnc)
+        self.parent.item_insert('Step', 'Remove Quarry Events', fnc)
 
     def show_QC_plots(self):
         """Show QC plots."""

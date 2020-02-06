@@ -117,22 +117,22 @@ class MenuWidget():
     def cluster(self):
         """Clustering of data."""
         fnc = cluster.Cluster(self.parent)
-        self.parent.item_insert('Step', 'Cluster\nAnalysis', fnc)
+        self.parent.item_insert('Step', 'Cluster Analysis', fnc)
 
     def crisp_cluster(self):
         """Crisp Clustering of data."""
         fnc = crisp_clust.CrispClust(self.parent)
-        self.parent.item_insert("Step", "Crisp\nClustering", fnc)
+        self.parent.item_insert("Step", "Crisp Clustering", fnc)
 
     def fuzzy_cluster(self):
         """Fuzzy Clustering of data."""
         fnc = fuzzy_clust.FuzzyClust(self.parent)
-        self.parent.item_insert("Step", "Fuzzy\nClustering", fnc)
+        self.parent.item_insert("Step", "Fuzzy Clustering", fnc)
 
     def super_class(self):
         """Supervised Classification."""
         fnc = super_class.SuperClass(self.parent)
-        self.parent.item_insert("Step", "Supervised\nClassification", fnc)
+        self.parent.item_insert("Step", "Supervised Classification", fnc)
 
     def export_data(self):
         """Export raster data."""
@@ -141,7 +141,7 @@ class MenuWidget():
     def scatter_plot(self):
         """Scatter Plot Tool."""
         fnc = graphtool.ScatterPlot(self.parent)
-        self.parent.item_insert('Step', 'Scatter\nPlot\nTool', fnc)
+        self.parent.item_insert('Step', 'Scatter Plot Tool', fnc)
 
     def show_raster_data(self):
         """Show raster data."""
@@ -158,4 +158,4 @@ class MenuWidget():
     def segmentation(self):
         """Image Segmentation."""
         fnc = segmentation.ImageSeg(self.parent)
-        self.parent.item_insert('Step', 'Image\nSegmentation', fnc)
+        self.parent.item_insert('Step', 'Image Segmentation', fnc)
