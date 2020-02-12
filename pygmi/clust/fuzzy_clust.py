@@ -55,11 +55,9 @@ class FuzzyClust(QtWidgets.QDialog):
         if parent is not None:
             self.parent = parent
             self.pbar = parent.pbar
-            self.reportback = parent.showprocesslog
             self.piter = parent.pbar.iter
         else:
             self.pbar = None
-            self.reportback = print
             self.piter = iter
 
         self.combobox_alg = QtWidgets.QComboBox()
@@ -77,7 +75,7 @@ class FuzzyClust(QtWidgets.QDialog):
 
         self.setupui()
 
-        self.name = "Fuzzy Clustering"
+        self.name = 'Fuzzy Clustering'
         self.cltype = 'fuzzy c-means'
         self.min_cluster = 5
         self.max_cluster = 5
@@ -205,8 +203,8 @@ class FuzzyClust(QtWidgets.QDialog):
         """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
-            self.reportback('Error: Your input datasets have different ' +
-                            'sizes. Merge the data first')
+            print('Error: Your input datasets have different sizes. '
+                  'Merge the data first')
             return False
 
         if not test:
@@ -263,7 +261,7 @@ class FuzzyClust(QtWidgets.QDialog):
         de_norm = self.denorm
         expo = self.fexp
 
-        self.reportback('Fuzzy Clustering started')
+        print('Fuzzy Clustering started')
 
 # #############################################################################
 # Section to deal with different bands having different null values.
@@ -278,10 +276,9 @@ class FuzzyClust(QtWidgets.QDialog):
         dat_in = np.array([i.data.compressed() for i in data]).T
 
         if self.radiobutton_manual.isChecked() is True:
-            ext = \
-                "ASCII matrix (*.txt);;" + \
-                "ASCII matrix (*.asc);;" + \
-                "ASCII matrix (*.dat)"
+            ext = ('ASCII matrix (*.txt);;'
+                   'ASCII matrix (*.asc);;'
+                   'ASCII matrix (*.dat)')
             filename = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Read Cluster Centers', '.', ext)
             if filename == '':
@@ -337,10 +334,10 @@ class FuzzyClust(QtWidgets.QDialog):
         dat_out = [Data() for i in range(no_clust[0], no_clust[1] + 1)]
 
         for i in range(no_clust[0], no_clust[1] + 1):
-            self.reportback('Number of Clusters:' + str(i))
+            print('Number of Clusters:' + str(i))
             cnt = cnt + 1
             if self.radiobutton_datadriven.isChecked() is True:
-                self.reportback('Initial guess: data driven')
+                print('Initial guess: data driven')
 
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp / i
@@ -363,18 +360,18 @@ class FuzzyClust(QtWidgets.QDialog):
                     term_thresh, expo, cltype, cov_constr)
 
             elif self.radiobutton_manual.isChecked() is True:
-                self.reportback('Initial guess: manual')
+                print('Initial guess: manual')
 
                 clu, clcent, clobj_fcn, clvrc, clnce, clxbi = self.fuzzy_means(
                     dat_in, i, startmdat[i], startmfix[i],
                     max_iter, term_thresh, expo, cltype, cov_constr)
 
             elif self.radiobutton_random.isChecked() is True:
-                self.reportback('Initial guess: random')
+                print('Initial guess: random')
 
                 clobj_fcn = np.array([np.Inf])
                 for j in range(no_runs):
-                    self.reportback('Run ' + str(j+1) + ' of' + str(no_runs))
+                    print('Run ' + str(j+1) + ' of' + str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -472,8 +469,8 @@ class FuzzyClust(QtWidgets.QDialog):
             i.extent = data[0].extent
             i.data += 1
 
-        self.reportback("Fuzzy Cluster complete" + ' (' + self.cltype + ' ' +
-                        self.init_type + ')')
+        print('Fuzzy Cluster complete' + ' (' + self.cltype + ' ' +
+              self.init_type + ')')
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']
@@ -543,7 +540,7 @@ class FuzzyClust(QtWidgets.QDialog):
         xbi : numpy array
             Xie beni index.
         """
-        self.reportback(' ')
+        print(' ')
 
         if cltype == 'fuzzy c-means':
             cltype = 'fcm'
@@ -596,7 +593,7 @@ class FuzzyClust(QtWidgets.QDialog):
     # if membership matrix is provided
         elif init.shape[0] == no_clust and init.shape[1] == no_samples:
             if init[init < 0].size > 0:  # check for negative memberships
-                self.parent.showprocesslog('No negative memberships allowed!')
+                print('No negative memberships allowed!')
     # scale given memberships to a column sum of unity
             uuu = init / (np.ones([no_clust, 1]) * init.sum())
     # MF matrix after exponential modification
@@ -637,11 +634,11 @@ class FuzzyClust(QtWidgets.QDialog):
             m_f = uuu ** expo
             obj_fcn[i] = np.sum((edist ** 2) * m_f)  # objective function
             if i > 0:
-                self.reportback('Iteration: ' + str(i) + ' Threshold: ' +
-                                str(term_thresh) + ' Current: ' +
-                                '{:.2e}'.format(100 * ((obj_fcn[i - 1] -
-                                                        obj_fcn[i]) /
-                                                       obj_fcn[i - 1])), True)
+                print('Iteration: ' + str(i) + ' Threshold: ' +
+                      str(term_thresh) + ' Current: ' +
+                      '{:.2e}'.format(100 * ((obj_fcn[i - 1] -
+                                              obj_fcn[i]) /
+                                             obj_fcn[i - 1])), True)
 
     # if objective function has increased
                 if obj_fcn[i] > obj_fcn[i - 1]:

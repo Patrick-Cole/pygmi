@@ -684,8 +684,7 @@ class PlotQC(GraphWindow):
         self.datd = import_for_plots(data)
 
         if not self.datd:
-            self.parent.showprocesslog('There is no compatible '
-                                       'data in the file')
+            print('There is no compatible data in the file')
             return
 
         products = ['Hour Histogram',

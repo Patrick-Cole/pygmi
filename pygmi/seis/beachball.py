@@ -171,7 +171,7 @@ class BeachBall(QtWidgets.QDialog):
         alist = sorted(set(alist))
 
         if not alist:
-            self.parent.showprocesslog('Error: no Fault Plane Solutions')
+            print('Error: no Fault Plane Solutions')
             self.nofps = True
             return False
         self.nofps = False
@@ -415,7 +415,7 @@ class BeachBall(QtWidgets.QDialog):
 
         """
         if self.nofps:
-            self.parent.showprocesslog('Error: no Fault Plane Solutions')
+            print('Error: no Fault Plane Solutions')
             return False
 
         self.show()

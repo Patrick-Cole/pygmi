@@ -171,12 +171,12 @@ class CorrectDescriptions(QtWidgets.QDialog):
             if cmatch:
                 cmatch = cmatch[0]
             else:
-#                self.parent.showprocesslog('No match found for '+text)
+#                print('No match found for '+text)
                 nomatch.append(text)
                 continue
 
             if cmatch != text:
-#                self.parent.showprocesslog('Correcting '+text+' to '+cmatch)
+#                print('Correcting '+text+' to '+cmatch)
                 correction.append(text+' to '+cmatch)
                 i['3'].region = cmatch
 

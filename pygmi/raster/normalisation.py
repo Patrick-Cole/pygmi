@@ -45,10 +45,8 @@ class Normalisation(QtWidgets.QDialog):
         self.parent = parent
         if parent is not None:
             self.pbar = parent.pbar
-            self.reportback = self.parent.showprocesslog
         else:
             self.pbar = None
-            self.reportback = print
 
         self.radiobutton_interval = QtWidgets.QRadioButton('Interval [0 1]')
         self.radiobutton_mean = QtWidgets.QRadioButton('Mean: zero,  Standard deviation: unity')

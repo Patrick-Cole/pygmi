@@ -203,7 +203,7 @@ class Metadata(QtWidgets.QDialog):
 #            odata.utm_zone = float(self.dsb_utmzone.text())
             odata.rotation_angle = float(self.dsb_rot.text())
         except ValueError:
-            self.parent.showprocesslog('Value error - abandoning changes')
+            print('Value error - abandoning changes')
 
         indx = self.combobox_bandid.currentIndex()
         txt = self.combobox_bandid.itemText(indx)
@@ -514,7 +514,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
-            self.parent.showprocesslog('No EDI data')
+            print('No EDI data')
             return False
 
         self.combobox1.currentIndexChanged.disconnect()
@@ -684,7 +684,7 @@ class RotateEDI(QtWidgets.QDialog):
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
-            self.parent.showprocesslog('No EDI data')
+            print('No EDI data')
             return False
 
         self.combobox1.currentIndexChanged.disconnect()
@@ -1127,7 +1127,7 @@ class EditEDI(QtWidgets.QDialog):
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
-            self.parent.showprocesslog('No EDI data')
+            print('No EDI data')
             return False
 
         self.combobox1.currentIndexChanged.disconnect()
@@ -1606,7 +1606,7 @@ class Occam1D(QtWidgets.QDialog):
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
-            self.parent.showprocesslog('No EDI data')
+            print('No EDI data')
             return False
 
         self.combobox1.currentIndexChanged.disconnect()

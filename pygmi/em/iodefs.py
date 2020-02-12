@@ -167,7 +167,7 @@ class ExportEDI():
         if 'MT - EDI' in self.indata:
             data = self.indata['MT - EDI']
         else:
-            self.parent.showprocesslog('No EDI data')
+            print('No EDI data')
             self.parent.process_is_active(False)
             return False
 
@@ -184,13 +184,13 @@ class ExportEDI():
         self.ifile = str(filename)
         self.ext = filename[-3:]
 
-        self.parent.showprocesslog('Export Data Busy...')
+        print('Export Data Busy...')
 
     # Pop up save dialog box
         if self.ext == 'edi':
             self.export_edi(data)
 
-        self.parent.showprocesslog('Export EDI Finished!')
+        print('Export EDI Finished!')
         self.parent.process_is_active(False)
         return True
 

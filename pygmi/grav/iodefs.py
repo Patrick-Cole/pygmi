@@ -161,6 +161,10 @@ class ImportCG5(QtWidgets.QDialog):
             if tmp != 1 or self.df_cg5 is None or self.df_gps is None:
                 return tmp
 
+        if self.line.currentText() == self.station.currentText():
+            print('Your line column cannot be the same as your station column')
+            return False
+
         # Rename columns
         cren = {}
         cren[self.line.currentText()] = 'line'
@@ -168,7 +172,8 @@ class ImportCG5(QtWidgets.QDialog):
         self.df_gps.rename(columns=cren)
 
         # Get rid of text in line columns
-        self.df_gps['line'] = self.df_gps['line'].str.replace(r'\D', '')
+        if self.df_gps['line'].dtype == object:
+            self.df_gps['line'] = self.df_gps['line'].str.replace(r'\D', '')
 
         # Convert line and station to numbers
         self.df_gps['station'] = pd.to_numeric(self.df_gps['station'],

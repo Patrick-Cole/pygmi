@@ -167,26 +167,25 @@ class ImportData():
             True if successful, False otherwise.
 
         """
-        ext = \
-            'Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;' + \
-            'hdf (*.hdf);;' + \
-            'hdf (*.h5);;' + \
-            'ASTER GED (*.bin);;' + \
-            'ERMapper (*.ers);;' + \
-            'ENVI (*.hdr);;' + \
-            'ERDAS Imagine (*.img);;' + \
-            'PCI Geomatics Database File (*.pix);;' + \
-            'GeoTiff (*.tif);;' + \
-            'SAGA binary grid (*.sdat);;' + \
-            'Geosoft UNCOMPRESSED grid (*.grd);;' + \
-            'Geosoft (*.gxf);;' + \
-            'Surfer grid (v.6) (*.grd);;' + \
-            'GeoPak grid (*.grd);;' + \
-            'ESRI ASCII (*.asc);;' + \
-            'ASCII with .hdr header (*.asc);;' + \
-            'ASCII XYZ (*.xyz);;' + \
-            'Arcinfo Binary Grid (hdr.adf);;' + \
-            'ArcGIS BIL (*.bil)'
+        ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;'
+               'hdf (*.hdf);;'
+               'hdf (*.h5);;'
+               'ASTER GED (*.bin);;'
+               'ERMapper (*.ers);;'
+               'ENVI (*.hdr);;'
+               'ERDAS Imagine (*.img);;'
+               'PCI Geomatics Database File (*.pix);;'
+               'GeoTiff (*.tif);;'
+               'SAGA binary grid (*.sdat);;'
+               'Geosoft UNCOMPRESSED grid (*.grd);;'
+               'Geosoft (*.gxf);;'
+               'Surfer grid (v.6) (*.grd);;'
+               'GeoPak grid (*.grd);;'
+               'ESRI ASCII (*.asc);;'
+               'ASCII with .hdr header (*.asc);;'
+               'ASCII XYZ (*.xyz);;'
+               'Arcinfo Binary Grid (hdr.adf);;'
+               'ArcGIS BIL (*.bil)')
 
         filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -260,6 +259,7 @@ class ImportData():
             output_type = 'Cluster'
 
         self.outdata[output_type] = dat
+
         return True
 
 
@@ -1142,21 +1142,20 @@ class ExportData():
         elif 'Raster' in self.indata:
             data = self.indata['Raster']
         else:
-            self.parent.showprocesslog('No raster data')
+            print('No raster data')
             self.parent.process_is_active(False)
             return False
 
-        ext = \
-            'GeoTiff (*.tif);;' + \
-            'ENVI (*.hdr);;' + \
-            'ERMapper (*.ers);;' + \
-            'Geosoft (*.gxf);;' + \
-            'ERDAS Imagine (*.img);;' + \
-            'SAGA binary grid (*.sdat);;' + \
-            'Surfer grid (v.6) (*.grd);;' + \
-            'ArcInfo ASCII (*.asc);;' + \
-            'ASCII XYZ (*.xyz);;' + \
-            'ArcGIS BIL (*.bil)'
+        ext = ('GeoTiff (*.tif);;'
+               'ENVI (*.hdr);;'
+               'ERMapper (*.ers);;'
+               'Geosoft (*.gxf);;'
+               'ERDAS Imagine (*.img);;'
+               'SAGA binary grid (*.sdat);;'
+               'Surfer grid (v.6) (*.grd);;'
+               'ArcInfo ASCII (*.asc);;'
+               'ASCII XYZ (*.xyz);;'
+               'ArcGIS BIL (*.bil)')
 
         filename, filt = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
@@ -1168,7 +1167,7 @@ class ExportData():
         self.ifile = str(filename)
         self.ext = filename[-3:]
 
-        self.parent.showprocesslog('Export Data Busy...')
+        print('Export Data Busy...')
 
     # Pop up save dialog box
         if filt == 'ArcInfo ASCII (*.asc)':
@@ -1193,7 +1192,7 @@ class ExportData():
         if filt == 'ArcGIS BIL (*.bil)':
             self.export_gdal(data, 'EHdr')
 
-        self.parent.showprocesslog('Export Data Finished!')
+        print('Export Data Finished!')
         self.parent.process_is_active(False)
         return True
 
@@ -1307,7 +1306,7 @@ class ExportData():
 
         """
         if len(data) > 1:
-            self.parent.showprocesslog('Band names will be appended to the '
+            print('Band names will be appended to the '
                                        'output filenames since you have a '
                                        'multiple band image')
 
@@ -1373,7 +1372,7 @@ class ExportData():
 
         """
         if len(data) > 1:
-            self.parent.showprocesslog('Band names will be appended to the '
+            print('Band names will be appended to the '
                                        'output filenames since you have a '
                                        'multiple band image')
 
@@ -1418,7 +1417,7 @@ class ExportData():
 
         """
         if len(data) > 1:
-            self.parent.showprocesslog('Band names will be appended to the '
+            print('Band names will be appended to the '
                                        'output filenames since you have a '
                                        'multiple band image')
 
@@ -1465,7 +1464,7 @@ class ExportData():
 
         """
         if len(data) > 1:
-            self.parent.showprocesslog('Band names will be appended to the '
+            print('Band names will be appended to the '
                                        'output filenames since you have a '
                                        'multiple band image')
 

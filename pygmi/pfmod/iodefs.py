@@ -436,10 +436,6 @@ class ExportMod3D():
         self.indata = {}
         self.outdata = {}
         self.lmod = None
-        if parent is not None:
-            self.showtext = self.parent.showprocesslog
-        else:
-            self.showtext = print
 
     def run(self):
         """
@@ -451,8 +447,7 @@ class ExportMod3D():
 
         """
         if 'Model3D' not in self.indata:
-            self.parent.showprocesslog(
-                'Error: You need to have a model first!')
+            print('Error: You need to have a model first!')
             return
 
         for self.lmod in self.indata['Model3D']:
@@ -467,7 +462,7 @@ class ExportMod3D():
             self.ifile = str(filename)
             self.ext = filename[-3:]
 
-            self.showtext('Saving '+self.ifile+'...')
+            print('Saving '+self.ifile+'...')
 
         # Pop up save dialog box
             if self.ext == 'npz':
@@ -498,9 +493,9 @@ class ExportMod3D():
 # Save data
         try:
             np.savez_compressed(filename, **outdict)
-            self.showtext('Model save complete!')
+            print('Model save complete!')
         except:
-            self.showtext('ERROR! Model save failed!')
+            print('ERROR! Model save failed!')
 
     def lmod2dict(self, outdict, pre=''):
         """
@@ -577,7 +572,7 @@ class ExportMod3D():
         None.
 
         """
-        self.showtext('csv export starting...')
+        print('csv export starting...')
 
         self.lmod.update_lith_list_reverse()
         lithname = self.lmod.lith_list_reverse.copy()
@@ -617,7 +612,7 @@ class ExportMod3D():
         np.savetxt(self.ifile, stmp, fmt="%f, %f, %f, %f, %f, %i, %s",
                    header=head)
 
-        self.showtext('csv export complete!')
+        print('csv export complete!')
 
     def mod3dtokmz(self):
         """
@@ -674,10 +669,10 @@ class ExportMod3D():
 # Get Save Name
         filename = self.ifile
 
-        self.showtext('kmz export starting...')
+        print('kmz export starting...')
 
 # Move to 3d model tab to update the model stuff
-        self.showtext('updating 3d model...')
+        print('updating 3d model...')
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
         mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
@@ -690,7 +685,7 @@ class ExportMod3D():
         mvis_3d.lut = tmp
         mvis_3d.update_model(smooth)
 
-        self.showtext('creating kmz file')
+        print('creating kmz file')
         heading = str(0.)
         tilt = str(45.)  # angle from vertical
         lat = str(np.mean([latsouth, latnorth]))  # coord of object
@@ -754,8 +749,8 @@ class ExportMod3D():
             curmod = self.lmod.lith_list_reverse[lith]
 
             if len(points) > 60000:
-                self.showtext(curmod + ' has too many points (' +
-                              str(len(points))+'). Not exported')
+                print(curmod + ' has too many points (' +
+                      str(len(points))+'). Not exported')
                 points = points[:60000]
                 norm = norm[:60000]
                 faces = faces[faces.max(1) < 60000]
@@ -970,7 +965,7 @@ class ExportMod3D():
         zfile.writestr('doc.kml', dockml)
 
         zfile.close()
-        self.showtext('kmz export complete!')
+        print('kmz export complete!')
 
     def mod3dtoshp(self):
         """
@@ -1003,13 +998,13 @@ class ExportMod3D():
 
         smooth = prjkmz.checkbox_smooth.isChecked()
 
-        self.showtext('shapefile export starting...')
+        print('shapefile export starting...')
 
 # Move to 3d model tab to update the model stuff
         if smooth is True:
-            self.showtext('updating and smoothing 3d model...')
+            print('updating and smoothing 3d model...')
         else:
-            self.showtext('updating 3d model...')
+            print('updating 3d model...')
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
         mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
@@ -1022,7 +1017,7 @@ class ExportMod3D():
         mvis_3d.lut = tmp
         mvis_3d.update_model(smooth)
 
-        self.showtext('creating shapefile file')
+        print('creating shapefile file')
 
         driver = ogr.GetDriverByName('ESRI Shapefile')
 
@@ -1038,7 +1033,7 @@ class ExportMod3D():
             lithtext = mvis_3d.lmod1.lith_list_reverse[lith]
             lithsusc = self.lmod.lith_list[lithtext].susc
             lithdens = self.lmod.lith_list[lithtext].density
-            self.showtext(' '+lithtext)
+            print(' '+lithtext)
 
             faces = np.array(mvis_3d.gfaces[lith])
 
@@ -1089,7 +1084,7 @@ class ExportMod3D():
             feature = None
             datasource = None
 
-        self.showtext('shapefile export complete!')
+        print('shapefile export complete!')
 
 
 class Exportkmz(QtWidgets.QDialog):

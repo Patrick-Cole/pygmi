@@ -263,7 +263,7 @@ class ClusterStats(QtWidgets.QDialog):
                       for i in data]
 
         if 'input_type' not in data[0].metadata['Cluster']:
-            self.parent.showprocesslog('Your dataset does not qualify')
+            print('Your dataset does not qualify')
             return False
 
         self.cols = [j for j in data[0].metadata['Cluster']['input_type']]

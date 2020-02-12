@@ -143,13 +143,19 @@ class Gradients(QtWidgets.QDialog):
 
         for i in self.pbar.iter(range(len(data))):
             if self.rb_ddir.isChecked():
-                data[i].data = gradients(data[i].data, self.azi)
+                data[i].data = gradients(data[i].data, self.azi, data[i].xdim,
+                                         data[i].ydim)
             elif self.rb_dratio.isChecked():
                 data[i].data = derivative_ratio(data[i].data, self.azi,
                                                 self.order)
             else:
+                if data[i].xdim != data[i].ydim:
+                    print('X and Y dimension are different. Please resample')
+                    return False
+
                 mask = np.ma.getmaskarray(data[i].data)
-                data[i].data = np.ma.array(vertical(data[i].data))
+                dxy = data[i].xdim
+                data[i].data = np.ma.array(vertical(data[i].data, xint=dxy))
                 data[i].data.mask = mask
             data[i].units = ''
 
@@ -181,7 +187,7 @@ class Gradients(QtWidgets.QDialog):
             self.label_az.show()
 
 
-def gradients(data, azi):
+def gradients(data, azi, xint, yint):
     """
     Gradients.
 
@@ -201,7 +207,7 @@ def gradients(data, azi):
         returns directional derivative
     """
     azi = np.deg2rad(azi)
-    dx, dy = np.gradient(data)
+    dy, dx = np.gradient(data, yint, xint)
     dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
 
     return dt1
@@ -332,7 +338,7 @@ class Visibility2d(QtWidgets.QDialog):
         data2 = []
 
         for i, datai in enumerate(data):
-            self.parent.showprocesslog(datai.dataid+':')
+            print(datai.dataid+':')
 
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
                                             self.dh*data[i].data.std()/100.,
@@ -348,7 +354,7 @@ class Visibility2d(QtWidgets.QDialog):
             data2[-1].dataid += ' Visibility Vector Resultant'
 
         self.outdata['Raster'] = data2
-        self.parent.showprocesslog('Finished!')
+        print('Finished!')
 
         return True
 

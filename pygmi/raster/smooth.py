@@ -42,10 +42,8 @@ class Smooth(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
         if parent is not None:
-            self.reportback = self.parent.showprocesslog
             self.piter = self.parent.pbar.iter
         else:
-            self.reportback = print
             self.piter = iter
 
         self.label = QtWidgets.QLabel('X:')
@@ -159,7 +157,7 @@ class Smooth(QtWidgets.QDialog):
                 return False
             self.parent.process_is_active(True)
 
-        self.reportback('Smoothing ')
+        print('Smoothing ')
         data = copy.deepcopy(self.indata['Raster'])
         if self.radiobutton_2dmean.isChecked():
             for i, _ in enumerate(data):
@@ -174,7 +172,7 @@ class Smooth(QtWidgets.QDialog):
         if test is not True:
             self.parent.process_is_active(False)
         self.outdata['Raster'] = data
-        self.reportback('Finished!', True)
+        print('Finished!', True)
 
         return True
 
@@ -342,15 +340,14 @@ class Smooth(QtWidgets.QDialog):
             out = ssig.correlate(dat, fmat, 'same', method='direct')
 
         elif itype == '2D Median':
-            self.reportback('Calculating Median...')
+            print('Calculating Median...')
             out = np.ma.zeros([rowd, cold])*np.nan
             out.mask = np.ma.getmaskarray(dat)
             fmat = fmat.astype(bool)
             dummy = dummy.data
 
             for i in self.piter(range(rowd)):
-                self.reportback(title+' Progress: ' +
-                                str(round(100*i/rowd))+'%', True)
+                print(title+' Progress: ' + str(round(100*i/rowd))+'%', True)
                 for j in range(cold):
                     tmp1 = dummy[i:i+rowf, j:j+colf][fmat]
                     if np.isnan(tmp1).min() == False:

@@ -342,7 +342,7 @@ class ImportLineData(QtWidgets.QDialog):
         try:
             nodata = float(self.nodata.text())
         except ValueError:
-            self.parent.showprocesslog('Null Value error - abandoning import')
+            print('Null Value error - abandoning import')
             return False
 
         xcol = self.xchan.currentText()
@@ -485,7 +485,7 @@ class PointCut():
         if 'Point' in self.indata:
             data = copy.deepcopy(self.indata['Point'])
         else:
-            self.parent.showprocesslog('No point data')
+            print('No point data')
             return False
 
         ext = 'Shape file (*.shp)'
@@ -528,8 +528,6 @@ class ExportPoint():
         reference to the parent routine
     indata : dictionary
         dictionary of input datasets
-    showtext : text output
-        reference to the show process log text output on the main interface
     """
 
     def __init__(self, parent):
@@ -537,7 +535,6 @@ class ExportPoint():
         self.pbar = None
         self.parent = parent
         self.indata = {}
-        self.showtext = self.parent.showprocesslog
 
     def run(self):
         """
@@ -550,7 +547,7 @@ class ExportPoint():
 
         """
         if 'Point' not in self.indata:
-            self.showtext('Error: You need to have a point data first!')
+            print('Error: You need to have a point data first!')
             return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -559,7 +556,7 @@ class ExportPoint():
         if filename == '':
             return False
 
-        self.parent.showprocesslog('Export busy...')
+        print('Export busy...')
 
         os.chdir(os.path.dirname(filename))
         ofile = os.path.basename(filename)[:-4]
@@ -580,7 +577,7 @@ class ExportPoint():
         ofile2 = ofile+'_all.csv'
         dfall.to_csv(ofile2, index=False)
 
-        self.parent.showprocesslog('Export completed')
+        print('Export completed')
 
         return True
 
@@ -599,8 +596,6 @@ class ExportLine():
         reference to the parent routine
     indata : dictionary
         dictionary of input datasets
-    showtext : text output
-        reference to the show process log text output on the main interface
     """
 
     def __init__(self, parent):
@@ -608,7 +603,6 @@ class ExportLine():
         self.pbar = None
         self.parent = parent
         self.indata = {}
-        self.showtext = self.parent.showprocesslog
 
     def run(self):
         """
@@ -621,7 +615,7 @@ class ExportLine():
 
         """
         if 'Line' not in self.indata:
-            self.showtext('Error: You need to have line data first!')
+            print('Error: You need to have line data first!')
             return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -630,7 +624,7 @@ class ExportLine():
         if filename == '':
             return False
 
-        self.parent.showprocesslog('Export busy...')
+        print('Export busy...')
 
         os.chdir(os.path.dirname(filename))
         ofile = os.path.basename(filename)[:-4]
@@ -649,7 +643,7 @@ class ExportLine():
         ofile2 = ofile+'_all.csv'
         dfall.to_csv(ofile2, index=False)
 
-        self.parent.showprocesslog('Export completed')
+        print('Export completed')
 
         return True
 

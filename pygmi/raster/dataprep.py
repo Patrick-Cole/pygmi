@@ -89,7 +89,7 @@ class DataCut():
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
-            self.parent.showprocesslog('No raster data')
+            print('No raster data')
             return False
 
         ext = 'Shape file (*.shp)'
@@ -224,7 +224,7 @@ class DataGrid(QtWidgets.QDialog):
         """
         tmp = []
         if 'Point' not in self.indata and 'Line' not in self.indata:
-            self.parent.showprocesslog('No Point Data')
+            print('No Point Data')
             return False
 
         if 'Line' in self.indata:
@@ -290,7 +290,7 @@ class DataGrid(QtWidgets.QDialog):
                 y = y[filt]
                 z = z[filt]
 
-            tmp = quickgrid(x, y, z, dxy, showtext=self.parent.showprocesslog)
+            tmp = quickgrid(x, y, z, dxy)
             mask = np.ma.getmaskarray(tmp)
             gdat = tmp.data
 
@@ -455,8 +455,8 @@ class DataMerge(QtWidgets.QDialog):
         gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
 
         if cols == 0 or rows == 0:
-            self.parent.showprocesslog('Your rows or cols are zero. ' +
-                                       'Your input projection may be wrong')
+            print('Your rows or cols are zero. Your input projection may be '
+                  'wrong')
             return
 
         dat = []
@@ -555,7 +555,7 @@ class DataReproj(QtWidgets.QDialog):
 
         """
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            self.parent.showprocesslog('Could not reproject')
+            print('Could not reproject')
             return
 
 # Input stuff
@@ -608,9 +608,8 @@ class DataReproj(QtWidgets.QDialog):
             rows = round((maxy - miny)/newdim)
 
             if cols == 0 or rows == 0:
-                self.parent.showprocesslog('Your rows or cols are zero. ' +
-                                           'Your input projection may be ' +
-                                           'wrong')
+                print('Your rows or cols are zero. Your input projection may '
+                      'be wrong')
                 return
 
 # top left x, w-e pixel size, rotation, top left y, rotation, n-s pixel size
@@ -708,7 +707,7 @@ class GetProf():
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
-            self.parent.showprocesslog('No raster data')
+            print('No raster data')
             return False
 
         ext = 'Shape file (*.shp)'
@@ -734,7 +733,7 @@ class GetProf():
         lyr = shapef.GetLayer()
         line = lyr.GetNextFeature()
         if lyr.GetGeomType() is not ogr.wkbLineString:
-            self.parent.showprocesslog('You need lines in that shape file')
+            print('You need lines in that shape file')
             return False
 
         allpoints = []
@@ -1054,7 +1053,7 @@ class Metadata(QtWidgets.QDialog):
             odata.extent = (left, right, bottom, top)
 
         except ValueError:
-            self.parent.showprocesslog('Value error - abandoning changes')
+            print('Value error - abandoning changes')
 
         indx = self.combobox_bandid.currentIndex()
         txt = self.combobox_bandid.itemText(indx)
@@ -1759,7 +1758,7 @@ def trim_raster(olddata):
     return olddata
 
 
-def quickgrid(x, y, z, dxy, showtext=None, numits=4):
+def quickgrid(x, y, z, dxy, numits=4):
     """
     Do a quick grid.
 
@@ -1773,8 +1772,6 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
         array of z values - this is the column being gridded
     dxy : float
         cell size for the grid, in both the x and y direction.
-    showtext : module, optional
-        showtext provided an alternative to print
     numits : int
         number of iterations. By default its 4. If this is negative, a maximum
         numits will be calculated and used.
@@ -1784,10 +1781,8 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
     newz : numpy array
         M x N array of z values
     """
-    if showtext is None:
-        showtext = print
 
-    showtext('Creating Grid')
+    print('Creating Grid')
     x = x.flatten()
     y = y.flatten()
     z = z.flatten()
@@ -1836,9 +1831,9 @@ def quickgrid(x, y, z, dxy, showtext=None, numits=4):
             zfin[xx, yy] = newz[xx2, yy2]
             newmask[xx, yy] = np.logical_not(zdiv[xx2, yy2])
 
-        showtext('Iteration done: '+str(j+1)+' of '+str(numits))
+        print('Iteration done: '+str(j+1)+' of '+str(numits))
 
-    showtext('Finished!')
+    print('Finished!')
 
     newz = np.ma.array(zfin)
     newz.mask = newmask

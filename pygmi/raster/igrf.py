@@ -143,10 +143,8 @@ class IGRF(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         if parent is None:
-            self.reportback = print
             self.piter = iter
         else:
-            self.reportback = self.parent.showprocesslog
             self.piter = self.parent.pbar.iter
 
         MAXDEG = 13
@@ -347,12 +345,10 @@ class IGRF(QtWidgets.QDialog):
         igdgc = 1
 
         if maxyr < sdate < maxyr+1:
-            self.reportback('Warning: The date ' + str(sdate) +
-                            ' is out of range,')
-            self.reportback('but still within one year of model expiration'
-                            ' date.')
-            self.reportback('An updated model file is available before 1.1.' +
-                            str(maxyr))
+            print('Warning: The date ' + str(sdate) + ' is out of range,')
+            print('but still within one year of model expiration date.')
+            print('An updated model file is available before 1.1.' +
+                  str(maxyr))
 
         if max2[modelI] == 0:
             self.getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0)
@@ -436,14 +432,14 @@ class IGRF(QtWidgets.QDialog):
         self.outdata['Raster'][-1].data -= igrf_F
         self.outdata['Raster'][-1].dataid = bname
 
-        self.reportback('')
-        self.reportback('Mean Values in Calculation')
-        self.reportback('=============================')
-        self.reportback('Total Intensity: {0:.2f}'.format(fmean))
-        self.reportback('Inclination: {0:.2f}'.format(imean))
-        self.reportback('Declination: {0:.2f}'.format(dmean))
-        self.reportback('')
-        self.reportback('Calculation: Completed', True)
+        print('')
+        print('Mean Values in Calculation')
+        print('=============================')
+        print('Total Intensity: {0:.2f}'.format(fmean))
+        print('Inclination: {0:.2f}'.format(imean))
+        print('Declination: {0:.2f}'.format(dmean))
+        print('')
+        print('Calculation: Completed', True)
 
         return True
 

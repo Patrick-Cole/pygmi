@@ -150,11 +150,6 @@ class ImportSeisan():
             True if successful, False otherwise.
 
         """
-        if self.parent is None:
-            showprocesslog = print
-        else:
-            showprocesslog = self.parent.showprocesslog
-
         ext = \
             'Seisan Format (*.out);;' +\
             'All Files (*.*)'
@@ -173,7 +168,7 @@ class ImportSeisan():
             ltmp = pntfile.readlines()
 
         if len(ltmp[0]) < 80:
-            showprocesslog('Error: Problem with file')
+            print('Error: Problem with file')
             return False
 
         # This constructs a dictionary of functions
@@ -292,12 +287,12 @@ class ImportSeisan():
 
         if file_errors:
             if has_errors is False:
-                showprocesslog('Warning: Problem with file')
-                showprocesslog('Process will continue, but please '
+                print('Warning: Problem with file')
+                print('Process will continue, but please '
                                'see warnings in '+filename+'.log')
             else:
-                showprocesslog('Error: Problem with file')
-                showprocesslog('Process stopping, please see errors '
+                print('Error: Problem with file')
+                print('Process stopping, please see errors '
                                'in '+filename+'.log')
             fout = open(filename+'.log', 'w')
             for i in file_errors:
@@ -307,7 +302,7 @@ class ImportSeisan():
             if has_errors is True:
                 return False
         else:
-            showprocesslog('No errors in the file')
+            print('No errors in the file')
 
         if event:
             dat.append(event)
@@ -779,9 +774,8 @@ class ImportGenericFPS():
                                           'depth, strike, dip, rake, '
                                           'magnitude.')
 
-        ext = \
-            'Comma Delimeted Text (*.csv);;' +\
-            'All Files (*.*)'
+        ext = ('Comma Delimeted Text (*.csv);;'
+               'All Files (*.*)')
 
         filename, _ = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open File', '.', ext)
@@ -855,7 +849,6 @@ class ExportSeisan():
         self.outdata = {}
         self.lmod = None
         self.fobj = None
-        self.showtext = self.parent.showprocesslog
 
     def run(self):
         """
@@ -867,7 +860,7 @@ class ExportSeisan():
 
         """
         if 'Seis' not in self.indata:
-            self.parent.showprocesslog(
+            print(
                 'Error: You need to have a Seisan data first!')
             return
 
@@ -1117,8 +1110,8 @@ class ExportSeisan():
         None.
 
         """
-        tmp = ' STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO' + \
-            ' AIN AR TRES W  DIS CAZ7\n'
+        tmp = (' STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO'
+               ' AIN AR TRES W  DIS CAZ7\n')
         self.fobj.write(tmp)
 
     def write_record_type_e(self, data):
@@ -1364,7 +1357,6 @@ class ExportCSV():
         self.outdata = {}
         self.lmod = None
         self.fobj = None
-        self.showtext = self.parent.showprocesslog
 
     def run(self):
         """
@@ -1376,7 +1368,7 @@ class ExportCSV():
 
         """
         if 'Seis' not in self.indata:
-            self.parent.showprocesslog(
+            print(
                 'Error: You need to have a Seisan data first!')
             return
 
@@ -1668,8 +1660,8 @@ class ExportCSV():
             Output string.
 
         """
-        tmp = ' STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO' + \
-            ' AIN AR TRES W  DIS CAZ7\n'
+        tmp = (' STAT SP IPHASW D HRMM SECON CODA AMPLIT PERI AZIMU VELO'
+               ' AIN AR TRES W  DIS CAZ7\n')
         return tmp
 
     def write_record_type_e(self, data):
@@ -1911,7 +1903,6 @@ class ExportSummaryCSV():
         self.outdata = {}
         self.lmod = None
         self.fobj = None
-        self.showtext = self.parent.showprocesslog
 
     def run(self):
         """
@@ -1923,8 +1914,7 @@ class ExportSummaryCSV():
 
         """
         if 'Seis' not in self.indata:
-            self.parent.showprocesslog(
-                'Error: You need to have a Seisan data first!')
+            print('Error: You need to have a Seisan data first!')
             return
 
         data = self.indata['Seis']

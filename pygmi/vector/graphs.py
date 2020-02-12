@@ -241,6 +241,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='Profile')
+        ax1.ticklabel_format(useOffset=False)
 
         ax1.set_title('Profile')
         self.axes = ax1

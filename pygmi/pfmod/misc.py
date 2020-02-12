@@ -329,7 +329,7 @@ class MergeMod3D(QtWidgets.QDialog):
         if 'Model3D' not in self.indata:
             return False
         if len(self.indata['Model3D']) != 2:
-            self.parent.showprocesslog('You need two datasets connected!')
+            print('You need two datasets connected!')
             return False
 
         for i in self.indata['Model3D']:
@@ -361,7 +361,7 @@ class MergeMod3D(QtWidgets.QDialog):
 
         """
         if self.master.currentText() == self.slave.currentText():
-            self.parent.showprocesslog('Your master dataset must be different'
+            print('Your master dataset must be different'
                                        ' to the slave dataset!')
             return False
 

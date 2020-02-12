@@ -115,10 +115,10 @@ class ProcessData(QtWidgets.QDialog):
         """
         tmp = []
         if 'Line' not in self.indata:
-            self.parent.showprocesslog('No Line Data')
+            print('No Line Data')
             return False
         if self.indata['Line'].dataid != 'Gravity':
-            self.parent.showprocesslog('Not Gravity Data')
+            print('Not Gravity Data')
             return False
 
         if not test:
@@ -131,7 +131,7 @@ class ProcessData(QtWidgets.QDialog):
             float(self.absbase.text())
             float(self.basethres.text())
         except ValueError:
-            self.parent.showprocesslog('Value Error')
+            print('Value Error')
             return False
 
         if tmp == 1:

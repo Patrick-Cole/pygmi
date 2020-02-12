@@ -136,7 +136,7 @@ class ExportSEGY():
         if 'ESEIS' in self.indata:
             data = self.indata['ESEIS']
         else:
-            self.parent.showprocesslog('No SEGY data')
+            print('No SEGY data')
             self.parent.process_is_active(False)
             return False
 
@@ -153,11 +153,11 @@ class ExportSEGY():
 
         self.ifile = str(filename)
 
-        self.parent.showprocesslog('Export Data Busy...')
+        print('Export Data Busy...')
 
         self.export_segy(data)
 
-        self.parent.showprocesslog('Export SEGY Finished!')
+        print('Export SEGY Finished!')
         self.parent.process_is_active(False)
         return True
 

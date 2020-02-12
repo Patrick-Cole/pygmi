@@ -118,7 +118,6 @@ class SIMP():
         self.datarms = 0
         self.ofile = None
         self.parent = parent
-        self.showtext = self.parent.showprocesslog
         self.event = {}
 
     def settings(self):
@@ -132,7 +131,7 @@ class SIMP():
 
         """
         self.parent.clearprocesslog()
-        self.showtext('Import Bulletin to Seisan Format')
+        print('Import Bulletin to Seisan Format')
 
         ext = 'Scanned Bulletin Text File (*.txt)'
 
@@ -148,7 +147,7 @@ class SIMP():
 
         ifile = self.ifile
 
-        self.showtext('Input File: '+ifile)
+        print('Input File: '+ifile)
 
 # Read entire file
         idata = read_ifile(ifile)
@@ -203,13 +202,13 @@ class SIMP():
         ofile = ifile[:-3]+'err'
         self.ofile = open(ofile, 'w')
 
-        self.showtext('Error File: '+ofile)
+        print('Error File: '+ofile)
 
         self.ofile.write(self.parent.textbrowser_processlog.toPlainText())
         self.ofile.close()
 
         self.outdata['Seis'] = dat
-        self.showtext('\nCompleted!')
+        print('\nCompleted!')
 
         return True
 
@@ -728,7 +727,7 @@ class SIMP():
         self.datamins[-1] = int(tmp2[2:4])
         self.datasecs[-1] = float(tmp2[4:])
         if self.datasecs[-1] > 60.0:
-            self.showtext('Possible problem with time field')
+            print('Possible problem with time field')
         return tmp
 
     def get_data_resid(self, tmp, station):
@@ -966,9 +965,9 @@ class SIMP():
         if eline[0:3].isalpha():
             station = is_stat(eline)
             if station == '':
-                self.showtext('\nStation does not exist:')
-        self.showtext('\nCharacter recognition error:')
-        self.showtext('Line: "'+eline)
+                print('\nStation does not exist:')
+        print('\nCharacter recognition error:')
+        print('Line: "'+eline)
 
     def get_record_info(self, idata):
         """

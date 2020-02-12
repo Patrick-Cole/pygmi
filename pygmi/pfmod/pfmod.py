@@ -48,9 +48,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.inraster = {}
         self.outdata = {}
         self.parent = parent
-        self.showprocesslog = self.parent.showprocesslog
         self.lmod1 = LithModel()  # actual model
-        self.showprocesslog = self.showtext
 
 # General
         self.txtmsg = ''

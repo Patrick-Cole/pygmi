@@ -66,11 +66,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
         else:
             self.showtext = print
 
-        if hasattr(parent, 'showprocesslog'):
-            self.showprocesslog = parent.showprocesslog
-        else:
-            self.showprocesslog = print
-
         self.corners = []
         self.faces = {}
         self.norms = []
@@ -365,8 +360,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
         """
         if 'Model3D' not in self.indata:
-            self.showprocesslog('No 3D model. You may need to execute' +
-                                ' that module first')
+            print('No 3D model. You may need to execute that module first')
             return False
 
         self.lmod1 = self.indata['Model3D'][0]
@@ -378,8 +372,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
         if liths[0] == 0:
             liths = liths[1:]
         if liths.size == 0:
-            self.showprocesslog('No 3D model. You need to draw in at' +
-                                ' least part of a lithology first.')
+            print('No 3D model. You need to draw in at least part of a '
+                  'lithology first.')
             return False
 
         self.show()

@@ -70,7 +70,6 @@ class CreateSceneList(QtWidgets.QDialog):
         self.indata = {'tmp': True}
         self.outdata = {}
         self.ifile = ''
-        self.reportback = self.parent.showprocesslog
         self.piter = self.parent.pbar.iter
 
         self.shapefile = QtWidgets.QLineEdit('')
@@ -150,7 +149,7 @@ class CreateSceneList(QtWidgets.QDialog):
         dtime = []
         flist = []
 
-        self.reportback('Loading in information...')
+        print('Loading in information...')
         nodates = False
         for ifile in self.piter(subfiles):
             dataset = gdal.Open(str(ifile), gdal.GA_ReadOnly)
@@ -184,9 +183,9 @@ class CreateSceneList(QtWidgets.QDialog):
             flist.append(ifile)
 
         if nodates is True:
-            self.reportback('Some of your scenes do not have dates. '
+            print('Some of your scenes do not have dates. '
                             'Correct this in the output spreadsheet')
-        self.reportback('Updating spreadsheet...')
+        print('Updating spreadsheet...')
 
         df = pd.DataFrame()
         df['Datetime'] = dtime
@@ -198,7 +197,7 @@ class CreateSceneList(QtWidgets.QDialog):
 
         self.outdata['SceneList'] = df
 
-        self.reportback('Saving to disk...')
+        print('Saving to disk...')
 
         ext = ('Scene List File (*.xlsx)')
 
@@ -505,7 +504,6 @@ class SceneViewer(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.ifile = ''
-        self.reportback = self.parent.showprocesslog
         self.piter = self.parent.pbar.iter
         self.df = None
 

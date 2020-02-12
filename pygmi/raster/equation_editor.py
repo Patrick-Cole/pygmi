@@ -207,7 +207,7 @@ class EquationEditor(QtWidgets.QDialog):
         elif 'Raster' in self.indata:
             intype = 'Raster'
         else:
-            self.parent.showprocesslog('No raster data')
+            print('No raster data')
             return False
 
         indata = dataprep.merge(self.indata[intype])

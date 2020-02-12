@@ -43,7 +43,6 @@ class DeleteRecord():
         self.parent = parent
         self.indata = {'tmp': True}
         self.outdata = {}
-        self.showtext = self.parent.showprocesslog
 
         self.settings()
 
@@ -57,7 +56,7 @@ class DeleteRecord():
             True if successful, False otherwise.
 
         """
-        self.showtext('Delete Rows starting')
+        print('Delete Rows starting')
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName()
         if ifile == '':
@@ -84,8 +83,8 @@ class DeleteRecord():
         """
         ofile = ifile[:-4]+'_new.out'
 
-        self.showtext('Input Filename: '+ifile)
-        self.showtext('Output Filename: '+ofile)
+        print('Input Filename: '+ifile)
+        print('Output Filename: '+ofile)
 
         outputf = open(ofile, 'w')
         inputf = open(ifile)
@@ -97,8 +96,8 @@ class DeleteRecord():
 
         skey = str(skey).upper()
 
-        self.showtext('Delete Criteria: '+skey)
-        self.showtext('Working...')
+        print('Delete Criteria: '+skey)
+        print('Working...')
 
         skey = skey.replace(' ', '')
         skey = skey.split(',')
@@ -114,7 +113,7 @@ class DeleteRecord():
         inputf.close()
         outputf.close()
 
-        self.showtext('Completed!')
+        print('Completed!')
 
 
 class Quarry():
@@ -127,11 +126,6 @@ class Quarry():
         self.outdata = {}
         self.name = 'Quarry: '
         self.pbar = None
-
-        if parent is None:
-            self.showtext = print
-        else:
-            self.showtext = self.parent.showprocesslog
 
         self.events = []
         self.day = [10, 16]  # daytime start at 6am and ends at 7pm
@@ -147,7 +141,7 @@ class Quarry():
             True if successful, False otherwise.
 
         """
-        self.showtext('Delete quarry events starting')
+        print('Delete quarry events starting')
 
         if 'Seis' not in self.indata:
             return False
@@ -161,7 +155,7 @@ class Quarry():
                 alist.append(i)
 
         if not alist:
-            self.showtext('Error: no Type 1 records')
+            print('Error: no Type 1 records')
             return False
 
         self.events = alist
@@ -182,7 +176,7 @@ class Quarry():
             New events
 
         """
-        self.showtext('Working...')
+        print('Working...')
 
         hour = []
         lat = []
@@ -216,7 +210,7 @@ class Quarry():
         nrange = list(range(nmin, nmax+nstep, nstep))
         rperc = self.randrq(nmax, nstep, nrange, day)
 
-#        self.showtext('Calculating clusters')
+#        print('Calculating clusters')
 #
 #        # use DBscan to identify cluster centers and numbers of clusters.
 #        # eps is max distance between samples
@@ -235,7 +229,7 @@ class Quarry():
 #            clusters.append([lontmp, lattmp])
 #
 #        clusters = np.array(clusters)
-        self.showtext('Calculating Rq values')
+        print('Calculating Rq values')
 
         while stayinloop:
             lls = np.transpose([lat, lon])
@@ -243,7 +237,7 @@ class Quarry():
             cnt = lls.shape[0]
             nd = []
             rstot = []
-            self.showtext('daylight events left: '+str(hour.sum())+' of '+str(hour.size))
+            print('daylight events left: '+str(hour.sum())+' of '+str(hour.size))
 
             # instead of a grid, we are using an actual event location
             # instead of centering on every event, we should use only daytime
@@ -282,7 +276,7 @@ class Quarry():
                 stayinloop = False
             stayinloop = False
 
-        self.showtext('Completed!')
+        print('Completed!')
 
         # plt.hist(ehourall, 24)
         # plt.show()
@@ -304,7 +298,7 @@ class Quarry():
 
         """
 #        ttt = PTime()
-        self.showtext('Working...')
+        print('Working...')
 
         hour = []
         lat = []
@@ -337,13 +331,13 @@ class Quarry():
         rperc = 3.0
 #        rperc = 1.97435897
 
-        self.showtext('Calculating Rq values')
+        print('Calculating Rq values')
 
         lls = np.transpose([lat, lon])
         cnt = lls.shape[0]
         nd = []
         rstot = []
-        self.showtext('daylight events:', hour.sum(), 'of', hour.size)
+        print('daylight events:', hour.sum(), 'of', hour.size)
 
         for i in range(cnt):  # i is node number, centered on an event
             r = np.sqrt(((lls-lls[i])**2).sum(1))
@@ -384,7 +378,7 @@ class Quarry():
         newevents = np.delete(newevents, maxel)
 
 #        ttt.since_last_call('Total')
-        self.showtext('Completed!')
+        print('Completed!')
 
 #        print('New total number of events:', ehour.size)
 #
@@ -425,7 +419,7 @@ class Quarry():
                  1.3234714, 1.28444936, 1.26923077]
 #        rperc[0] = 2.5
 
-        self.showtext('Calculating random Rq values for calibration')
+        print('Calculating random Rq values for calibration')
         rperc = []
         nd = 0
         ld = day[1]-day[0]
@@ -433,7 +427,7 @@ class Quarry():
 
         nrange = [10]
         for N in nrange:
-            self.showtext(str(N)+' of '+str(nmax), True)
+            print(str(N)+' of '+str(nmax), True)
             tmp = np.random.rand(1000000, nstep)
             tmp *= 24
 
@@ -465,7 +459,7 @@ class Quarry():
             Percentiles
 
         """
-        self.showtext('Calculating random Rq values for calibration')
+        print('Calculating random Rq values for calibration')
 #        nd = 0
         elist = [50, 100, 150, 200]
 #        elist = [150]
@@ -479,7 +473,7 @@ class Quarry():
 
                 ln_over_ld = ln/ld
 
-    #            self.showtext(str(N))
+    #            print(str(N))
 
  #               print('random '+str(N)+' dat hours '+str(ld))
 

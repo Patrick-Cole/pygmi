@@ -362,10 +362,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             return False
 
         self.my_class.parent.process_is_active()
-        self.my_class.parent.showprocesslog(self.my_class_name+' busy...')
+        print(self.my_class_name+' busy...')
         iflag = self.my_class.settings()
         self.my_class.parent.process_is_active(False)
-        self.my_class.parent.showprocesslog(self.my_class_name+' finished!')
+        print(self.my_class_name+' finished!')
         return iflag
 
 
@@ -517,6 +517,9 @@ class MainWidget(QtWidgets.QMainWindow):
         self.context_menu = {}
         self.add_to_context('Basic')
 
+        sys.stdout = EmittingStream(textWritten=self.read_output)
+#        sys.stderr = EmittingStream(textWritten=self.read_output)
+
         self.menubar = QtWidgets.QMenuBar()
 
         self.statusbar = QtWidgets.QStatusBar()
@@ -595,6 +598,19 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_bring_to_front.triggered.connect(self.bring_to_front)
         self.action_send_to_back.triggered.connect(self.send_to_back)
         self.action_help.triggered.connect(self.help_docs)
+
+    def  __del__(self):
+        """
+        Restore sys.stdout
+
+        Returns
+        -------
+        None.
+
+        """
+
+        sys.stdout = sys.__stdout__
+#        sys.stderr = sys.__stderr__
 
 # Start of Functions
     def setupui(self):
@@ -889,6 +905,18 @@ class MainWidget(QtWidgets.QMainWindow):
             self.textbrowser_processlog.setStyleSheet(
                 '* { background-color: rgb(255, 255, 255); }')
 
+    def read_output(self, text):
+        """
+        Reads std out and sends it to process log.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        self.showprocesslog(text)
+
     def send_to_back(self):
         """Send the selected item to the back."""
         if not self.scene.selectedItems():
@@ -929,27 +957,15 @@ class MainWidget(QtWidgets.QMainWindow):
             flag to indicate whether the last row on the log should be
             overwritten.
         """
-        self.showtext(self.textbrowser_processlog, txt, replacelast)
-        QtWidgets.QApplication.processEvents()
 
-    def showtext(self, txtobj, txt, replacelast=False):
-        """
-        Show text on the text panel.
+        txtobj = self.textbrowser_processlog
 
-        Parameters
-        ----------
-        txt : str
-            Message to be displayed in the text panel
-        replacelast : bool, optional
-            flag to indicate whether the last row on the log should be
-            overwritten.
-        """
         txtmsg = str(txtobj.toPlainText())
         if replacelast is True:
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
             txtmsg += '\n'
-        txtmsg += txt + '\n'
+        txtmsg += txt
         txtobj.setPlainText(txtmsg)
         tmp = txtobj.verticalScrollBar()
         tmp.setValue(tmp.maximumHeight())
@@ -1011,6 +1027,50 @@ class Startup(QtWidgets.QDialog):
         """Update the text on the dialog"""
         self.pbar.setValue(self.pbar.value() + 1)
         QtWidgets.QApplication.processEvents()
+
+
+class EmittingStream(QtCore.QObject):
+    """ Class to intercept stdout for later use in a textbox """
+    textWritten = QtCore.pyqtSignal(str)
+
+    def write(self, text):
+        """
+        Write text.
+
+        Parameters
+        ----------
+        text : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.textWritten.emit(str(text))
+
+    def flush(self):
+        """
+        Flush
+
+        Returns
+        -------
+        None.
+
+        """
+
+    def fileno(self):
+        """
+        Fileno
+
+        Returns
+        -------
+        int
+            Returns -1.
+
+        """
+
+        return -1
 
 
 def main():

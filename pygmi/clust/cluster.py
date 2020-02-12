@@ -56,11 +56,9 @@ class Cluster(QtWidgets.QDialog):
         self.parent = parent
         if parent is not None:
             self.pbar = parent.pbar
-            self.reportback = self.parent.showprocesslog
             self.piter = parent.pbar.iter
         else:
             self.pbar = None
-            self.reportback = print
             self.piter = iter
 
         self.combobox_alg = QtWidgets.QComboBox()
@@ -235,8 +233,8 @@ class Cluster(QtWidgets.QDialog):
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
 
         if tst.size > 2:
-            self.reportback('Error: Your input datasets have different ' +
-                            'sizes. Merge the data first')
+            print('Error: Your input datasets have different sizes. '
+                  'Merge the data first')
             return False
 
         self.min_samples = len(self.indata['Raster'])+1
@@ -289,7 +287,7 @@ class Cluster(QtWidgets.QDialog):
 
         no_clust = range(self.min_cluster, self.max_cluster+1)
 
-        self.reportback('Cluster analysis started')
+        print('Cluster analysis started')
 
 # Section to deal with different bands having different null values.
         masktmp = data[0].data.mask
@@ -308,7 +306,7 @@ class Cluster(QtWidgets.QDialog):
         dat_out = []
         for i in self.piter(no_clust):
             if self.cltype != 'DBSCAN':
-                self.reportback('Number of Clusters:'+str(i))
+                print('Number of Clusters:'+str(i))
             elif i > no_clust[0]:
                 continue
 
@@ -324,7 +322,7 @@ class Cluster(QtWidgets.QDialog):
                                  branching_factor=self.branchfac).fit(X)
 
             if cfit.labels_.max() < i-1:
-                self.reportback('Could not find '+str(i)+' clusters. '
+                print('Could not find '+str(i)+' clusters. '
                                 'Please change settings.')
                 return False
 
@@ -366,7 +364,7 @@ class Cluster(QtWidgets.QDialog):
             i.nullvalue = data[0].nullvalue
             i.extent = data[0].extent
 
-        self.reportback('Cluster complete' + ' ('+self.cltype + ' ' + ')')
+        print('Cluster complete' + ' ('+self.cltype + ' ' + ')')
 
         for i in dat_out:
             i.data += 1

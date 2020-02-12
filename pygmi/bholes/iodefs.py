@@ -69,10 +69,9 @@ class ImportData():
             True if successful, False otherwise.
 
         """
-        ext = \
-            'Common formats (*.xls *.xlsx *.csv);;' + \
-            'Excel (*.xls *.xlsx);;' + \
-            'Comma Delimited (*.csv)'
+        ext = ('Common formats (*.xls *.xlsx *.csv);;'
+               'Excel (*.xls *.xlsx);;'
+               'Comma Delimited (*.csv)')
 
         filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open CGS Lithology File', '.', ext)

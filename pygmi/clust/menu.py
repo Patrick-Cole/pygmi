@@ -122,17 +122,17 @@ class MenuWidget():
     def crisp_cluster(self):
         """Crisp Clustering of data."""
         fnc = crisp_clust.CrispClust(self.parent)
-        self.parent.item_insert("Step", "Crisp Clustering", fnc)
+        self.parent.item_insert('Step', 'Crisp Clustering', fnc)
 
     def fuzzy_cluster(self):
         """Fuzzy Clustering of data."""
         fnc = fuzzy_clust.FuzzyClust(self.parent)
-        self.parent.item_insert("Step", "Fuzzy Clustering", fnc)
+        self.parent.item_insert('Step', 'Fuzzy Clustering', fnc)
 
     def super_class(self):
         """Supervised Classification."""
         fnc = super_class.SuperClass(self.parent)
-        self.parent.item_insert("Step", "Supervised Classification", fnc)
+        self.parent.item_insert('Step', 'Supervised Classification', fnc)
 
     def export_data(self):
         """Export raster data."""

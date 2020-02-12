@@ -791,9 +791,8 @@ class ScatterPlot(QtWidgets.QDialog):
 
         """
         if 'Raster' not in self.indata:
-            self.parent.showprocesslog('Error: You must have a multi-band ' +
-                                       'raster dataset in addition to your' +
-                                       ' cluster analysis results')
+            print('Error: You must have a multi-band raster dataset in '
+                  'addition to your cluster analysis results')
             return False
 
         self.dat_tmp = self.indata['Raster']

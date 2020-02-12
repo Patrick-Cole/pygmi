@@ -428,11 +428,6 @@ class SuperClass(QtWidgets.QDialog):
         self.m = [0, 0]
         self.df = None
 
-        if parent is None:
-            self.reportback = print
-        else:
-            self.reportback = self.parent.showprocesslog
-
         self.map = GraphMap(self)
         self.dpoly = QtWidgets.QPushButton('Delete Polygon')
         self.apoly = QtWidgets.QPushButton('Add Polygon')
@@ -796,9 +791,8 @@ class SuperClass(QtWidgets.QDialog):
 
         """
         if 'Raster' not in self.indata:
-            self.reportback('Error: You must have a multi-band ' +
-                            'raster dataset in addition to your' +
-                            ' cluster analysis results')
+            print('Error: You must have a multi-band raster dataset in '
+                  'addition to your cluster analysis results')
             return False
 
         self.map.data = self.indata['Raster']
@@ -876,7 +870,7 @@ class SuperClass(QtWidgets.QDialog):
             i.nullvalue = 0
             i.data.data[i.data.mask] = 0
 
-        self.reportback('Cluster complete')
+        print('Cluster complete')
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']
@@ -948,7 +942,7 @@ class SuperClass(QtWidgets.QDialog):
         lbls = np.unique(y)
 
         if len(lbls) < 2:
-            self.reportback('Error: You need at least two classes')
+            print('Error: You need at least two classes')
             return False
 
         # Encoding categorical data

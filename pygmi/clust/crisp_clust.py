@@ -55,11 +55,9 @@ class CrispClust(QtWidgets.QDialog):
         if parent is not None:
             self.parent = parent
             self.pbar = parent.pbar
-            self.reportback = parent.showprocesslog
             self.piter = parent.pbar.iter
         else:
             self.pbar = None
-            self.reportback = print
             self.piter = iter
 
         self.spinbox_maxclusters = QtWidgets.QSpinBox()
@@ -77,7 +75,7 @@ class CrispClust(QtWidgets.QDialog):
 
         self.setupui()
 
-        self.name = "Crisp Clustering"
+        self.name = 'Crisp Clustering'
         self.cltype = 'k-means'
         self.min_cluster = 5
         self.max_cluster = 5
@@ -196,8 +194,8 @@ class CrispClust(QtWidgets.QDialog):
         """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
-            self.reportback('Error: Your input datasets have different ' +
-                            'sizes. Merge the data first')
+            print('Error: Your input datasets have different sizes. '
+                  'Merge the data first')
             return
 
         self.update_vars()
@@ -252,7 +250,7 @@ class CrispClust(QtWidgets.QDialog):
         no_clust = np.array([self.min_cluster, self.max_cluster])
         de_norm = self.denorm
 
-        self.reportback('Crisp Clustering started')
+        print('Crisp Clustering started')
 
 # #############################################################################
 # Section to deal with different bands having different null values.
@@ -274,10 +272,9 @@ class CrispClust(QtWidgets.QDialog):
 #              for i in range(len(data))]).T
 
         if self.radiobutton_manual.isChecked() is True:
-            ext = \
-                "ASCII matrix (*.txt);;" + \
-                "ASCII matrix (*.asc);;" + \
-                "ASCII matrix (*.dat)"
+            ext = ('ASCII matrix (*.txt);;'
+                   'ASCII matrix (*.asc);;'
+                   'ASCII matrix (*.dat)')
             filename = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Read Cluster Centers', '.', ext)
             if filename == '':
@@ -333,10 +330,10 @@ class CrispClust(QtWidgets.QDialog):
         dat_out = [Data() for i in range(no_clust[0], no_clust[1]+1)]
 
         for i in range(no_clust[0], no_clust[1]+1):
-            self.reportback('Number of Clusters:'+str(i))
+            print('Number of Clusters:'+str(i))
             cnt = cnt + 1
             if self.radiobutton_datadriven.isChecked() is True:
-                self.reportback('Initial guess: data driven')
+                print('Initial guess: data driven')
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp/i
 #                idx=1
@@ -360,18 +357,18 @@ class CrispClust(QtWidgets.QDialog):
 
             elif self.radiobutton_manual.isChecked() is True:
 
-                self.reportback('Initial guess: manual')
+                print('Initial guess: manual')
 
                 clidx, clcent, clobj_fcn, clvrc = self.crisp_means(
                     dat_in, i, startmdat[i], startmfix[i], max_iter,
                     term_thresh, cltype, cov_constr)
 
             elif self.radiobutton_random.isChecked() is True:
-                self.reportback('Initial guess: random')
+                print('Initial guess: random')
 
                 clobj_fcn = np.array([np.inf])
                 for j in range(no_runs):
-                    self.reportback('Run '+str(j+1)+' of'+str(no_runs))
+                    print('Run '+str(j+1)+' of'+str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -488,7 +485,7 @@ class CrispClust(QtWidgets.QDialog):
 #            dat_out[cnt].denorm_center_stdlow = den_cent_std1
 #            dat_out[cnt].iterations = clobj_fcn.size
 
-            self.log = ("Crisp Cluster complete" + ' (' + self.cltype + ' ' +
+            self.log = ('Crisp Cluster complete' + ' (' + self.cltype + ' ' +
                         self.init_type+')')
 
         for i in dat_out:
@@ -498,8 +495,8 @@ class CrispClust(QtWidgets.QDialog):
             i.nullvalue = data[0].nullvalue
             i.extent = data[0].extent
 
-        self.reportback("Crisp Cluster complete" + ' ('+self.cltype + ' ' +
-                        self.init_type+')')
+        print('Crisp Cluster complete' + ' ('+self.cltype + ' ' +
+              self.init_type+')')
 
         for i in dat_out:
             i.data += 1
@@ -566,7 +563,7 @@ class CrispClust(QtWidgets.QDialog):
         vrc : numpy array
             Variance Ratio Criterion
         """
-        self.reportback(' ')
+        print(' ')
 
         no_samples = data.shape[0]
         if cent.size == 0:  # if no center values are provided
@@ -624,9 +621,9 @@ class CrispClust(QtWidgets.QDialog):
             else:
                 obj_fcn_dif = 100 * ((obj_fcn_prev-obj_fcn[i]) / obj_fcn[i])
 
-            self.reportback('Iteration: ' + str(i) + ' Threshold: ' +
-                            str(term_thresh) + ' Current: ' +
-                            '{:.2e}'.format(obj_fcn_dif), True)
+            print('Iteration: ' + str(i) + ' Threshold: ' +
+                  str(term_thresh) + ' Current: ' +
+                  '{:.2e}'.format(obj_fcn_dif), True)
     # if no termination threshold provided, ignore this and do all iterations
             if term_thresh > 0:
                 # if the improvement between the last two iterations was less
