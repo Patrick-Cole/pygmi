@@ -518,15 +518,23 @@ def get_raster(ifile, nval=None):
         if dat[i].data.dtype.kind == 'i':
             if nval is None:
                 nval = 999999
+                print('Adjusting null value to '+str(nval))
             nval = int(nval)
         elif dat[i].data.dtype.kind == 'u':
             if nval is None:
                 nval = 0
+                print('Adjusting null value to '+str(nval))
             nval = int(nval)
         else:
             if nval is None:
                 nval = 1e+20
             nval = float(nval)
+            if nval not in dat[i].data and np.isclose(dat[i].data.min(), nval):
+                nval = dat[i].data.min()
+                print('Adjusting null value to '+str(nval))
+            if nval not in dat[i].data and np.isclose(dat[i].data.max(), nval):
+                nval = dat[i].data.max()
+                print('Adjusting null value to '+str(nval))
 
         if ext == 'ers' and nval == -1.0e+32:
             dat[i].data[np.ma.less_equal(dat[i].data, nval)] = -1.0e+32
@@ -558,6 +566,7 @@ def get_raster(ifile, nval=None):
             dat[i].wkt = custom_wkt
 
     dataset = None
+
     return dat
 
 

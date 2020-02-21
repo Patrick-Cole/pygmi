@@ -35,6 +35,7 @@ pygmi packages.
 
 """
 
+import pdb
 import sys
 import os
 import pkgutil
@@ -517,7 +518,11 @@ class MainWidget(QtWidgets.QMainWindow):
         self.context_menu = {}
         self.add_to_context('Basic')
 
-        sys.stdout = EmittingStream(textWritten=self.read_output)
+        self.stdoutold = sys.stdout
+        self.stdoutnew = EmittingStream(textWritten=self.read_output)
+
+        sys.stdout = self.stdoutnew
+        sys.breakpointhook = self.pdb
 #        sys.stderr = EmittingStream(textWritten=self.read_output)
 
         self.menubar = QtWidgets.QMenuBar()
@@ -608,9 +613,30 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
+        sys.stdout = self.stdoutold
 
-        sys.stdout = sys.__stdout__
-#        sys.stderr = sys.__stderr__
+    def pdb(self):
+        """
+        Routine to make sure stdout is restored when using debugger.
+
+        Returns
+        -------
+        None.
+
+        """
+        sys.stdout = self.stdoutold
+
+        debugger = pdb.Pdb()
+        debugger.reset()
+
+        # your custom stuff here
+#        debugger.do_where(None) # run the "where" command
+
+        # invoke the interactive debugging prompt
+        users_frame = sys._getframe().f_back # frame where user invoked pdb()
+        debugger.interaction(users_frame, None)
+
+        sys.stdout = self.stdoutnew
 
 # Start of Functions
     def setupui(self):
@@ -1032,6 +1058,11 @@ class Startup(QtWidgets.QDialog):
 class EmittingStream(QtCore.QObject):
     """ Class to intercept stdout for later use in a textbox """
     textWritten = QtCore.pyqtSignal(str)
+#    terminal = sys.stdout
+
+    # def __init__(self, textWritten):
+    #     self.terminal = sys.stdout
+    #     self.textWritten = textWritten
 
     def write(self, text):
         """
@@ -1047,6 +1078,7 @@ class EmittingStream(QtCore.QObject):
         None.
 
         """
+ #       self.terminal.write(text)
         self.textWritten.emit(str(text))
 
     def flush(self):

@@ -169,8 +169,8 @@ class DataGrid(QtWidgets.QDialog):
         self.dsb_null.setMaximum(np.finfo(np.double).max)
         self.dsb_null.setMinimum(np.finfo(np.double).min)
         self.dsb_dxy.setMaximum(9999999999.0)
-        self.dsb_dxy.setMinimum(0.00001)
-        self.dsb_dxy.setDecimals(5)
+        self.dsb_dxy.setMinimum(0.0000001)
+        self.dsb_dxy.setDecimals(7)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -194,7 +194,7 @@ class DataGrid(QtWidgets.QDialog):
 
     def dxy_change(self):
         """
-        Update dxy.
+        When dxy is changed on the interface, this update rows and columns.
 
         Returns
         -------
@@ -206,8 +206,8 @@ class DataGrid(QtWidgets.QDialog):
         x = data.xdata
         y = data.ydata
 
-        cols = int(x.ptp()/dxy)
-        rows = int(y.ptp()/dxy)
+        cols = round(x.ptp()/dxy)
+        rows = round(y.ptp()/dxy)
 
         self.label_rows.setText('Rows: '+str(rows))
         self.label_cols.setText('Columns: '+str(cols))
@@ -244,6 +244,7 @@ class DataGrid(QtWidgets.QDialog):
         dx = x.ptp()/np.sqrt(x.size)
         dy = y.ptp()/np.sqrt(y.size)
         dxy = max(dx, dy)
+        dxy = min([x.ptp(), y.ptp(), dxy])
 
         if 'Line' not in self.indata:
             self.dsb_null.setValue(data.zdata.min())

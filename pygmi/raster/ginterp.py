@@ -240,6 +240,9 @@ class ModestImage(mi.AxesImage):
             if self.htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
 
+            if self.htype == '98% Linear, 2% Compact':
+                pseudo = histcomp(pseudo, perc=2.)
+
             if self.htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
 
@@ -260,11 +263,17 @@ class ModestImage(mi.AxesImage):
             if self.htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
 
+            if self.htype == '98% Linear, 2% Compact':
+                pseudo = histcomp(pseudo, perc=2.)
+
             if self.htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
 
             if self.hstype == '95% Linear, 5% Compact':
                 sun = histcomp(sun)
+
+            if self.htype == '98% Linear, 2% Compact':
+                sun = histcomp(pseudo, perc=2.)
 
             if self.hstype == 'Histogram Equalization':
                 sun = histeq(sun)
@@ -299,6 +308,11 @@ class ModestImage(mi.AxesImage):
                 red = histcomp(red)
                 green = histcomp(green)
                 blue = histcomp(blue)
+
+            if self.htype == '98% Linear, 2% Compact':
+                red = histcomp(red, perc=2.)
+                green = histcomp(green, perc=2.)
+                blue = histcomp(blue, perc=2.)
 
             if self.htype == 'Histogram Equalization':
                 red = histeq(red)
@@ -1202,9 +1216,13 @@ class PlotInterp(QtWidgets.QDialog):
         self.cbox_cbar.addItems(tmp)
         self.cbox_dtype.addItems(['Single Color Map', 'Contour', 'RGB Ternary',
                                   'CMY Ternary', 'Sunshade'])
-        self.cbox_htype.addItems(['Linear', '95% Linear, 5% Compact',
+        self.cbox_htype.addItems(['Linear',
+                                  '95% Linear, 5% Compact',
+                                  '98% Linear, 2% Compact',
                                   'Histogram Equalization'])
-        self.cbox_hstype.addItems(['Linear', '95% Linear, 5% Compact',
+        self.cbox_hstype.addItems(['Linear',
+                                   '95% Linear, 5% Compact',
+                                   '98% Linear, 2% Compact',
                                    'Histogram Equalization'])
 
         self.setWindowTitle('Raster Data Interpretation')
@@ -1588,6 +1606,9 @@ class PlotInterp(QtWidgets.QDialog):
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
 
+            if htype == '98% Linear, 2% Compact':
+                pseudo = histcomp(pseudo, perc=2.)
+
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
 
@@ -1606,11 +1627,17 @@ class PlotInterp(QtWidgets.QDialog):
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
 
+            if htype == '98% Linear, 2% Compact':
+                pseudo = histcomp(pseudo, perc=2.)
+
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
 
             if hstype == '95% Linear, 5% Compact':
                 sun = histcomp(sun)
+
+            if htype == '98% Linear, 2% Compact':
+                sun = histcomp(pseudo, perc=2.)
 
             if hstype == 'Histogram Equalization':
                 sun = histeq(sun)
@@ -1642,6 +1669,11 @@ class PlotInterp(QtWidgets.QDialog):
                 red = histcomp(red)
                 green = histcomp(green)
                 blue = histcomp(blue)
+
+            if htype == '98% Linear, 2% Compact':
+                red = histcomp(red, perc=2.)
+                green = histcomp(green, perc=2.)
+                blue = histcomp(blue, perc=2.)
 
             if htype == 'Histogram Equalization':
                 red = histeq(red)
@@ -1676,6 +1708,9 @@ class PlotInterp(QtWidgets.QDialog):
 
             if htype == '95% Linear, 5% Compact':
                 pseudo = histcomp(pseudo)
+
+            if htype == '98% Linear, 2% Compact':
+                pseudo = histcomp(pseudo, perc=2.)
 
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
@@ -1980,11 +2015,11 @@ def currentshader(data, cell, theta, phi, alpha):
     return R
 
 
-def histcomp(img, nbr_bins=256):
+def histcomp(img, nbr_bins=256, perc=5.):
     """
     Histogram Compaction
 
-    This compacts 5% of the outliers in data, allowing for a cleaner, linear
+    This compacts a % of the outliers in data, allowing for a cleaner, linear
     representation of the data.
 
     Parameters
@@ -2007,7 +2042,6 @@ def histcomp(img, nbr_bins=256):
     cdf = imhist.cumsum()  # cumulative distribution function
     cdf = cdf / float(cdf[-1])  # normalize
 
-    perc = 5.
     perc = perc/100.
 
     sindx = np.arange(nbr_bins)[cdf > perc][0]

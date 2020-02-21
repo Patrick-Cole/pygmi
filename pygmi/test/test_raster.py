@@ -45,7 +45,7 @@ def test_gradients():
     """test directional derivative."""
     datin = [[1, 2], [1, 2]]
     dat2 = [[-1, -1], [-1, -1]]
-    dat = cooper.gradients(datin, 90)
+    dat = cooper.gradients(datin, 0, 1, 1)
     np.testing.assert_array_equal(dat, dat2)
 
 
