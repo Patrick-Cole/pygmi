@@ -53,7 +53,7 @@ class ImportCG5(QtWidgets.QDialog):
     """
 
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.name = 'Import CG-5 Data: '
         self.pbar = None  # self.parent.pbar
@@ -165,11 +165,27 @@ class ImportCG5(QtWidgets.QDialog):
             print('Your line column cannot be the same as your station column')
             return False
 
+        tmp = [self.line.currentText(),
+               self.station.currentText(),
+               self.xchan.currentText(),
+               self.ychan.currentText(),
+               self.zchan.currentText()]
+
+        if len(set(tmp)) != len(tmp):
+            print('Unable to import, two of your GPS file columns are the '
+                  'same. Make sure you have a line column in your GPS file, '
+                  'and that you did not specify the same column twice.')
+            return False
+
         # Rename columns
         cren = {}
         cren[self.line.currentText()] = 'line'
         cren[self.station.currentText()] = 'station'
-        self.df_gps.rename(columns=cren)
+        cren[self.xchan.currentText()] = 'longitude'
+        cren[self.ychan.currentText()] = 'latitude'
+        cren[self.zchan.currentText()] = 'elevation'
+
+        self.df_gps.rename(columns=cren, inplace=True)
 
         # Get rid of text in line columns
         if self.df_gps['line'].dtype == object:
@@ -190,6 +206,7 @@ class ImportCG5(QtWidgets.QDialog):
                            right_on=['line', 'station'], how='left')
 
         filt = dfmerge['STATION'] < float(self.basethres.text())
+
         filt = filt & dfmerge['longitude'].isna()
 
         dfmerge = dfmerge[~filt]
@@ -201,9 +218,9 @@ class ImportCG5(QtWidgets.QDialog):
             dat[str(line)] = tmp.to_records(index=False)
 
         dat2 = LData()
-        dat2.xchannel = self.xchan.currentText()
-        dat2.ychannel = self.ychan.currentText()
-        dat2.zchannel = self.zchan.currentText()
+        dat2.xchannel = 'longitude'
+        dat2.ychannel = 'latitude'
+        dat2.zchannel = 'elevation'
         dat2.data = dat
         dat2.dataid = 'Gravity'
 #        dat2.nullvalue = nodata

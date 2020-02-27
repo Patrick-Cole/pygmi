@@ -366,7 +366,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         print(self.my_class_name+' busy...')
         iflag = self.my_class.settings()
         self.my_class.parent.process_is_active(False)
-        print(self.my_class_name+' finished!')
+        if iflag:
+            print(self.my_class_name+' finished!')
         return iflag
 
 

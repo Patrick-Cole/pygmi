@@ -1884,6 +1884,8 @@ class PlotInterp(QtWidgets.QDialog):
             patch = PathPatch(path, facecolor='none')
             ax.add_patch(patch)
 
+            data = data.astype(int)
+
             im = ax.imshow(data, extent=(0, 255, 0, 222), clip_path=patch,
                            clip_on=True)
             im.set_clip_path(patch)
