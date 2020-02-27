@@ -272,8 +272,8 @@ class ModestImage(mi.AxesImage):
             if self.hstype == '95% Linear, 5% Compact':
                 sun = histcomp(sun)
 
-            if self.htype == '98% Linear, 2% Compact':
-                sun = histcomp(pseudo, perc=2.)
+            if self.hstype == '98% Linear, 2% Compact':
+                sun = histcomp(sun, perc=2.)
 
             if self.hstype == 'Histogram Equalization':
                 sun = histeq(sun)
