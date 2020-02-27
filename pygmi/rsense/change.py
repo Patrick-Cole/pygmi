@@ -331,7 +331,9 @@ class MyMplCanvas(FigureCanvas):
         self.rcid = None
         self.manip = 'RGB'
 
-        FigureCanvas.__init__(self, self.fig)
+        super().__init__(fig)
+
+#        FigureCanvas.__init__(self, self.fig)
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,

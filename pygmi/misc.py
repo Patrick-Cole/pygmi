@@ -121,7 +121,8 @@ class ProgressBar(QtWidgets.QProgressBar):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QProgressBar.__init__(self, parent)
+        super().__init__(parent)
+
         self.setMinimum(0)
         self.setValue(0)
         self.otime = 0

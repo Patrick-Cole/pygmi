@@ -2084,7 +2084,7 @@ class MySlider(QtWidgets.QSlider):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QSlider.__init__(self, parent)
+        super().__init__(parent)
 
     def mousePressEvent(self, event):
         """

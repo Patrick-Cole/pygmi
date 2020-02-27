@@ -581,7 +581,8 @@ class PlotScatter(GraphWindow):
         dictionary of input datasets
     """
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent=None)
+        super().__init__(parent)
+
         self.indata = {}
         self.parent = parent
 

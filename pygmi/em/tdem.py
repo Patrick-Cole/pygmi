@@ -46,7 +46,9 @@ class MyMplCanvas2(FigureCanvas):
 
     def __init__(self, parent=None):
         fig = Figure()
-        FigureCanvas.__init__(self, fig)
+        super().__init__(fig)
+
+#        FigureCanvas.__init__(self, fig)
 
     def update_line(self, x, pdata, rdata, depths=None, res=None, title=None):
         """

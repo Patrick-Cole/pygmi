@@ -55,7 +55,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
     """Widget class to call the main interface."""
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
         self.parent = parent
         self.lmod1 = None
         self.indata = {}

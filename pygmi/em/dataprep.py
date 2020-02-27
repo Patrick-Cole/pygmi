@@ -66,7 +66,7 @@ class Metadata(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {}
         self.outdata = {}
@@ -270,7 +270,8 @@ class MyMplCanvas(FigureCanvas):
 
     def __init__(self, parent=None):
         fig = Figure()
-        FigureCanvas.__init__(self, fig)
+        super().__init__(fig)
+#        FigureCanvas.__init__(self, fig)
 
     def update_line(self, data, ival, itype):
         """
@@ -730,7 +731,9 @@ class MyMplCanvasPick(FigureCanvas):
         self.axes2 = None
         self.line2 = None
 
-        FigureCanvas.__init__(self, fig)
+        super().__init__(fig)
+
+#        FigureCanvas.__init__(self, fig)
 
         self.figure.canvas.mpl_connect('pick_event', self.onpick)
         self.figure.canvas.mpl_connect('button_press_event',
@@ -1158,7 +1161,7 @@ class MySlider(QtWidgets.QSlider):
     moving to click in a single step.
     """
     def __init__(self, parent=None):
-        QtWidgets.QSlider.__init__(self, parent)
+        super().__init__(parent)
 
     def mousePressEvent(self, event):
         """
@@ -1206,7 +1209,9 @@ class MyMplCanvas2(FigureCanvas):
 
     def __init__(self, parent=None):
         fig = Figure()
-        FigureCanvas.__init__(self, fig)
+        super().__init__(fig)
+
+#        FigureCanvas.__init__(self, fig)
 
     def update_line(self, x, pdata, rdata, depths=None, res=None, title=None):
         """

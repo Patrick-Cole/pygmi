@@ -82,7 +82,9 @@ class MyMplCanvas(FigureCanvas):
         self.ind = None
         self.background = None
 
-        FigureCanvas.__init__(self, fig)
+        super().__init__(fig)
+
+#        FigureCanvas.__init__(self, fig)
 
         self.figure.canvas.mpl_connect('pick_event', self.onpick)
         self.figure.canvas.mpl_connect('button_release_event',

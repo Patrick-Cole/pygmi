@@ -509,7 +509,7 @@ class MainWidget(QtWidgets.QMainWindow):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QMainWindow.__init__(self, parent)
+        super().__init__(parent)
 
         ipth = os.path.dirname(menu_default.__file__)+r'/images/'
 
@@ -1025,7 +1025,7 @@ class Startup(QtWidgets.QDialog):
     """Class to provide a startup display while PyGMI loads into memory."""
 
     def __init__(self, pbarmax, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
         self.setWindowFlags(QtCore.Qt.ToolTip)
 
         self.gridlayout_main = QtWidgets.QVBoxLayout(self)

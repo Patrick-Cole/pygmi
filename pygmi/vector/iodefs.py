@@ -127,7 +127,7 @@ class ImportPointData(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.name = 'Import Point/Line Data: '
         self.pbar = None  # self.parent.pbar
@@ -247,7 +247,7 @@ class ImportLineData(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.name = 'Import Line Data: '
         self.pbar = None  # self.parent.pbar

@@ -129,7 +129,7 @@ class HelpButton(QtWidgets.QPushButton):
     """
 
     def __init__(self, htmlfile=None, parent=None):
-        QtWidgets.QPushButton.__init__(self, parent)
+        super().__init__(parent)
 
         self.htmlfile = htmlfile
 
@@ -162,7 +162,7 @@ class HelpDocs(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None, helptxt=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.indata = {}

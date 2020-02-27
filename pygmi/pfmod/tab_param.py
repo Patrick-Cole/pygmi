@@ -35,7 +35,7 @@ class MergeLith(QtWidgets.QDialog):
     """Class to call up a dialog for ranged copying."""
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.lw_lithmaster = QtWidgets.QListWidget()
         self.lw_lithmerge = QtWidgets.QListWidget()
@@ -80,7 +80,7 @@ class LithNotes(QtWidgets.QDialog):
     """Class to call up a dialog for lithology descriptions."""
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.lmod1 = self.parent.lmod1
@@ -636,7 +636,7 @@ class ParamDisplay(QtWidgets.QDialog):
         for i in range(self.lw_param_defs.count()):
             itxtlist.append(str(self.lw_param_defs.item(i).text()))
 
-        for i in self.lmod1.lith_list:
+        for i in self.lmod1.lith_list.copy():
             if i not in itxtlist:
                 if i == 'Background':
                     j = self.lw_param_defs.currentRow()

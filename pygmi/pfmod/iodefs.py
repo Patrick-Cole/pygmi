@@ -1094,7 +1094,7 @@ class Exportkmz(QtWidgets.QDialog):
     """Export kmz dialog."""
 
     def __init__(self, wkt, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.checkbox_smooth = QtWidgets.QCheckBox()
         self.proj = dp.GroupProj('Confirm Model Projection')
@@ -1135,7 +1135,7 @@ class ImportPicture(QtWidgets.QDialog):
     """Import picture dialog."""
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.lmod = LithModel()
@@ -1351,7 +1351,7 @@ class MessageCombo(QtWidgets.QDialog):
     """
 
     def __init__(self, combotext, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {}
         self.outdata = {}

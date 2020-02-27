@@ -44,7 +44,9 @@ class GraphHist(FigureCanvas):
     def __init__(self, parent=None):
         self.figure = Figure()
 
-        FigureCanvas.__init__(self, self.figure)
+        super().__init__(parent)
+#        FigureCanvas.__init__(self, self.figure)
+
         self.setParent(parent)
 
         self.nullfmt = NullFormatter()

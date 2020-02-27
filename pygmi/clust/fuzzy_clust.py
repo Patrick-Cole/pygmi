@@ -48,7 +48,7 @@ class FuzzyClust(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {}
         self.outdata = {}

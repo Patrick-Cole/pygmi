@@ -60,7 +60,9 @@ class MyMplCanvas(FigureCanvas):
 
         self.ellipses = []
 
-        FigureCanvas.__init__(self, fig)
+        super().__init__(fig)
+
+#        FigureCanvas.__init__(self, fig)
 
     def update_ellipse(self, datd, dats, nodepth=False):
         """

@@ -135,7 +135,7 @@ class DataGrid(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {}
         self.outdata = {}
@@ -328,7 +328,7 @@ class DataMerge(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {}
         self.outdata = {}
@@ -499,7 +499,7 @@ class DataReproj(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {}
         self.outdata = {}
@@ -785,7 +785,7 @@ class GroupProj(QtWidgets.QWidget):
     """
 
     def __init__(self, title='Projection', parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
+        super().__init__(parent)
 
         self.wkt = ''
 
@@ -875,7 +875,7 @@ class Metadata(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {}
         self.outdata = {}
@@ -1155,7 +1155,7 @@ class RTP(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {}
         self.outdata = {}

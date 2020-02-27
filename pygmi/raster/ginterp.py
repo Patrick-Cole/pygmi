@@ -1123,6 +1123,7 @@ class PlotInterp(QtWidgets.QDialog):
     """
     def __init__(self, parent=None):
         super().__init__(parent)
+
         self.indata = {}
         self.outdata = {}
         self.parent = parent
