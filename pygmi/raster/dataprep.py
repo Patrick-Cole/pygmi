@@ -564,12 +564,14 @@ class DataReproj(QtWidgets.QDialog):
 
         orig = osr.SpatialReference()
         orig.ImportFromWkt(orig_wkt)
+        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
 # Output stuff
         targ_wkt = self.out_proj.wkt
 
         targ = osr.SpatialReference()
         targ.ImportFromWkt(targ_wkt)
+        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
 # Set transformation
         ctrans = osr.CoordinateTransformation(orig, targ)
@@ -844,6 +846,7 @@ class GroupProj(QtWidgets.QWidget):
 
         srs = osr.SpatialReference()
         srs.ImportFromWkt(self.wkt)
+        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         self.label.setText(srs.ExportToPrettyWkt())
 
@@ -1540,6 +1543,8 @@ def epsgtowkt(epsg):
 
     """
     orig = osr.SpatialReference()
+    orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
     err = orig.ImportFromEPSG(int(epsg))
     if err != 0:
         return 'Unknown'
@@ -1622,6 +1627,7 @@ def getepsgcodes():
         plines = pfile.readlines()
 
     orig = osr.SpatialReference()
+    orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
     pcodes = {}
     for i in dcodes:
@@ -1642,6 +1648,7 @@ def getepsgcodes():
     f_e = 0.
     f_n = 0.
     orig = osr.SpatialReference()
+    orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
     for datum in ['Cape', 'Hartebeesthoek94']:
         orig.ImportFromEPSG(dcodes[datum])

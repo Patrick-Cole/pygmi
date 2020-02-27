@@ -137,7 +137,7 @@ class IGRF(QtWidgets.QDialog):
     """
 
     def __init__(self, parent=None):
-        QtWidgets.QDialog.__init__(self, parent=None)
+        QtWidgets.QDialog.__init__(self, parent)
 
         self.parent = parent
         self.indata = {}
@@ -235,6 +235,8 @@ class IGRF(QtWidgets.QDialog):
         orig_wkt = self.proj.wkt
 
         orig = osr.SpatialReference()
+        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
         if orig_wkt == '':
             orig.SetWellKnownGeogCS('WGS84')
         else:
@@ -242,6 +244,7 @@ class IGRF(QtWidgets.QDialog):
 
         targ = osr.SpatialReference()
         targ.SetWellKnownGeogCS('WGS84')
+        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         self.ctrans = osr.CoordinateTransformation(orig, targ)
 

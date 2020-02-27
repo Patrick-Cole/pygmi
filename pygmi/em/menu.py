@@ -87,6 +87,10 @@ class MenuWidget():
         self.menumt.addAction(self.action_occam1d)
         self.action_occam1d.triggered.connect(self.occam1d)
 
+        self.action_tdem1d = QtWidgets.QAction('TDEM 1D Inversion')
+        self.menutd.addAction(self.action_tdem1d)
+        self.action_tdem1d.triggered.connect(self.tdem1d)
+
 # Context menus
         context_menu['MT - EDI'].addSeparator()
 
@@ -120,6 +124,11 @@ class MenuWidget():
         """Occam 1D inversion."""
         fnc = dataprep.Occam1D(self.parent)
         self.parent.item_insert('Step', 'Occam 1D Inversion', fnc)
+
+    def tdem1d(self):
+        """TDEM 1D inversion."""
+        fnc = tdem.TDEM1D(self.parent)
+        self.parent.item_insert('Step', 'TDEM 1D Inversion', fnc)
 
     def rotate_data(self):
         """Rotate data."""

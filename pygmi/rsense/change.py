@@ -884,11 +884,15 @@ def get_shape_coords(sfile, todegrees=False):
     """
     sr = osr.SpatialReference()
     sr.ImportFromEPSG(32735)  # utm 35s
+    sr.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
     vec = ogr.Open(sfile)
     layer = vec.GetLayer(0)
 
     srdd = osr.SpatialReference()
     srdd.ImportFromEPSG(4326)  # degrees
+    srdd.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
     coordtrans = osr.CoordinateTransformation(sr, srdd)
 
     points = []

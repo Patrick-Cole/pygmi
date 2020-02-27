@@ -299,6 +299,7 @@ class BeachBall(QtWidgets.QDialog):
         # create the spatial reference, WGS84
         srs = osr.SpatialReference()
         srs.ImportFromEPSG(4326)
+        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         # create the layer
         layer = data_source.CreateLayer('Fault Plane Solution', srs,

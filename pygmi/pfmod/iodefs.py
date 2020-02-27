@@ -656,9 +656,12 @@ class ExportMod3D():
         orig_wkt = prjkmz.proj.wkt
         orig = osr.SpatialReference()
         orig.ImportFromWkt(orig_wkt)
+        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         targ = osr.SpatialReference()
         targ.SetWellKnownGeogCS('WGS84')
+        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
         prj = osr.CoordinateTransformation(orig, targ)
 
         res = prj.TransformPoint(xrng[0], yrng[0])

@@ -457,9 +457,11 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         orig = osr.SpatialReference()
         orig.ImportFromEPSG(4326)  # WGS84 degrees
+        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         targ = osr.SpatialReference()
         targ.ImportFromWkt(self.parent.indata['Raster'][0].wkt)
+        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         prj = osr.CoordinateTransformation(orig, targ)
 

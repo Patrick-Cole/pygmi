@@ -489,6 +489,8 @@ def get_raster(ifile, nval=None):
                 clong = metadata.split('STMLO')[1][:2]
 
                 orig = osr.SpatialReference()
+                orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
                 if 'CAPE' in metadata:
                     orig.ImportFromEPSG(4222)
                     orig.SetTM(0., float(clong), 1., 0., 0.)
@@ -560,6 +562,7 @@ def get_raster(ifile, nval=None):
         if custom_wkt is None:
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
+            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
             srs.AutoIdentifyEPSG()
             dat[i].wkt = srs.ExportToWkt()
         else:
@@ -738,6 +741,7 @@ def get_modis(ifile):
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
             srs.AutoIdentifyEPSG()
+            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
             dat[i].wkt = srs.ExportToWkt()
 
@@ -851,6 +855,7 @@ def get_aster(ifile):
         srs = osr.SpatialReference()
         srs.ImportFromWkt(dataset.GetProjection())
         srs.AutoIdentifyEPSG()
+        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         dat[i].wkt = srs.ExportToWkt()
 
@@ -982,6 +987,7 @@ def get_aster_ged(ifile):
             srs = osr.SpatialReference()
             srs.ImportFromWkt(dataset.GetProjection())
             srs.AutoIdentifyEPSG()
+            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
             dat[i].wkt = srs.ExportToWkt()
 
