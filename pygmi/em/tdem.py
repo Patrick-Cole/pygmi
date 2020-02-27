@@ -48,8 +48,6 @@ class MyMplCanvas2(FigureCanvas):
         fig = Figure()
         super().__init__(fig)
 
-#        FigureCanvas.__init__(self, fig)
-
     def update_line(self, x, pdata, rdata, depths=None, res=None, title=None):
         """
         Update the plot from data.

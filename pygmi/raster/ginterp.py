@@ -1865,7 +1865,7 @@ class PlotInterp(QtWidgets.QDialog):
             rtmp[:255, j:j+255] = red
             red = rtmp
 
-            if 'CMY' in dtype:
+            if 'RGB' in dtype:
                 red = red.max()-red
                 green = green.max()-green
                 blue = blue.max()-blue

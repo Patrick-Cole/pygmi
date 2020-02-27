@@ -76,7 +76,6 @@ class MyMplCanvas(FigureCanvas):
         self.ind = None
         self.background = None
 
-#        FigureCanvas.__init__(self, fig)
         super().__init__(fig)
 
 
@@ -215,7 +214,7 @@ class PlotSEGY(GraphWindow):
     """Plot Raster Class."""
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
 

@@ -54,7 +54,7 @@ class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None):
         fig = Figure()
 
-        FigureCanvas.__init__(self, fig)
+        super.__init__(fig)
 
     def update_legend(self, data1):
         """
@@ -416,7 +416,7 @@ class PlotLog(GraphWindow):
     """
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
 #        self.label2.hide()
 #        self.combobox2.hide()
         self.indata = {}

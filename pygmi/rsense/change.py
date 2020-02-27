@@ -63,7 +63,7 @@ class CreateSceneList(QtWidgets.QDialog):
     """
 
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.name = 'Create Scene List: '
         self.parent = parent
@@ -333,7 +333,6 @@ class MyMplCanvas(FigureCanvas):
 
         super().__init__(fig)
 
-#        FigureCanvas.__init__(self, self.fig)
         self.setParent(parent)
 
         FigureCanvas.setSizePolicy(self,
@@ -499,7 +498,7 @@ class MyMplCanvas(FigureCanvas):
 class SceneViewer(QtWidgets.QDialog):
     """ Application Window """
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.name = 'Create Scene List: '
         self.parent = parent

@@ -52,7 +52,7 @@ class MyMplCanvas(FigureCanvas):
         self.line = None
         self.ind = None
 
-        FigureCanvas.__init__(self, fig)
+        super().__init__(fig)
 
     def update_contour(self, data1):
         """
@@ -236,7 +236,7 @@ class PlotRaster(GraphWindow):
     """
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
         self.indata = {}
@@ -285,7 +285,7 @@ class PlotMembership(GraphWindow):
     """
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
 
@@ -351,7 +351,7 @@ class PlotVRCetc(GraphWindow):
     """
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.combobox2.hide()
         self.label2.hide()
         self.parent = parent

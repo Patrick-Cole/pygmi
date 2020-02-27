@@ -58,7 +58,7 @@ class Gradients(QtWidgets.QDialog):
     """
 
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.indata = {}
@@ -264,7 +264,7 @@ class Visibility2d(QtWidgets.QDialog):
     """
 
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.indata = {}
@@ -543,7 +543,7 @@ class Tilt1(QtWidgets.QDialog):
     """
 
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.indata = {}

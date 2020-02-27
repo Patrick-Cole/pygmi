@@ -65,7 +65,7 @@ class GraphMap(FigureCanvas):
     def __init__(self, parent):
         self.figure = Figure()
 
-        FigureCanvas.__init__(self, self.figure)
+        super().__init__(self.figure)
         self.setParent(parent)
 
         self.parent = parent
@@ -154,7 +154,7 @@ class PolygonInteractor(QtCore.QObject):
     polyi_changed = QtCore.pyqtSignal(list)
 
     def __init__(self, axtmp, pntxy):
-        QtCore.QObject.__init__(self)
+        super().__init__()
         self.ax = axtmp
         self.poly = mPolygon([(1, 1)], animated=True)
         self.ax.add_patch(self.poly)
@@ -419,7 +419,7 @@ class SuperClass(QtWidgets.QDialog):
         dictionary of output datasets
     """
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.outdata = {}
         self.parent = parent

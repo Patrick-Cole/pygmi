@@ -62,8 +62,6 @@ class MyMplCanvas(FigureCanvas):
 
         super().__init__(fig)
 
-#        FigureCanvas.__init__(self, fig)
-
     def update_ellipse(self, datd, dats, nodepth=False):
         """
         Update error ellipse plot.
@@ -604,7 +602,7 @@ class PlotQC(GraphWindow):
     """
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
         self.indata = {}

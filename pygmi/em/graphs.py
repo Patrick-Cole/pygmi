@@ -84,8 +84,6 @@ class MyMplCanvas(FigureCanvas):
 
         super().__init__(fig)
 
-#        FigureCanvas.__init__(self, fig)
-
         self.figure.canvas.mpl_connect('pick_event', self.onpick)
         self.figure.canvas.mpl_connect('button_release_event',
                                        self.button_release_callback)
@@ -261,7 +259,7 @@ class PlotPoints(GraphWindow):
     """Plot points class."""
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
 

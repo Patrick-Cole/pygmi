@@ -106,7 +106,6 @@ class MyMplCanvas(FigureCanvas):
         self.background = None
 
         super().__init__(fig)
-#        FigureCanvas.__init__(self, fig)
 
         self.figure.canvas.mpl_connect('pick_event', self.onpick)
         self.figure.canvas.mpl_connect('button_release_event',
@@ -498,7 +497,7 @@ class PlotPoints(GraphWindow):
     """Plot Points Class."""
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
         self.spinbox.hide()
@@ -544,7 +543,7 @@ class PlotPoints2(GraphWindow):
     """Plot Points2 Class."""
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
         self.spinbox.hide()
@@ -587,7 +586,7 @@ class PlotLines(GraphWindow):
     """Plot Lines Class."""
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
         self.spinbox.hide()
@@ -668,7 +667,7 @@ class PlotLines2(GraphWindow):
     """Plot Lines2 Class."""
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
         self.combobox2.hide()
@@ -734,7 +733,7 @@ class PlotRose(GraphWindow):
     """Plot Rose Class."""
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
         self.combobox2.hide()
@@ -780,7 +779,7 @@ class PlotVector(GraphWindow):
     """Plot Vector Class."""
 
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.indata = {}
         self.parent = parent
         self.combobox1.hide()

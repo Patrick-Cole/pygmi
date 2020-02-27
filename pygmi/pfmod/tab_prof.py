@@ -53,7 +53,7 @@ class ProfileDisplay(QtWidgets.QWidget):
     """Widget class to call the main interface."""
 
     def __init__(self, parent):
-        QtWidgets.QWidget.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.lmod1 = parent.lmod1
@@ -1497,7 +1497,7 @@ class MyMplCanvas(FigureCanvas):
     """Matplotlib Canvas"""
     def __init__(self, parent):
         fig = Figure()
-        FigureCanvas.__init__(self, fig)
+        super.__init__(fig)
 
         self.lmod1 = parent.lmod1
         self.cbar = cm.jet
@@ -2131,7 +2131,7 @@ class LithBound(QtWidgets.QDialog):
     """ Class to call up a dialog for lithological boundary."""
 
     def __init__(self, lmod):
-        QtWidgets.QDialog.__init__(self, None)
+        super().__init__(None)
 
         self.lmod1 = lmod
         self.buttonbox = QtWidgets.QDialogButtonBox(self)
@@ -2220,7 +2220,7 @@ class PlotScale(QtWidgets.QDialog):
     """ Class to call up a dialog for plot axis scale."""
 
     def __init__(self, parent, lmod):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.lmod1 = lmod
         self.buttonbox = QtWidgets.QDialogButtonBox(self)
@@ -2279,7 +2279,7 @@ class RangedCopy(QtWidgets.QDialog):
     """Class to call up a dialog for ranged copying."""
 
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.lmod1 = self.parent.lmod1
@@ -2407,7 +2407,7 @@ class MyToolbar(NavigationToolbar2QT):
                   )
 
     def __init__(self, parent):
-        NavigationToolbar2QT.__init__(self, parent.mmc, parent)
+        super().__init__(parent.mmc, parent)
         self.parent = parent
 
     def axis_scale(self):
@@ -2502,7 +2502,7 @@ class ImportPicture(QtWidgets.QDialog):
     """Import Picture dialog."""
 
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.parent = parent
         self.lmod = self.parent.lmod1

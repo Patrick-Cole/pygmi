@@ -62,7 +62,6 @@ class MyMplCanvas(FigureCanvas):
         self.z = None
         self.cnum = 10
 
-#        FigureCanvas.__init__(self, fig)
         FigureCanvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding,
                                    QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)

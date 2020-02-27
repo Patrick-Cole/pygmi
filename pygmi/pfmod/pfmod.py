@@ -42,7 +42,7 @@ class MainWidget(QtWidgets.QMainWindow):
     """MainWidget - Widget class to call the main interface."""
 
     def __init__(self, parent):
-        QtWidgets.QMainWindow.__init__(self, parent)
+        super().__init__(parent)
 
         self.indata = {'tmp': True}
         self.inraster = {}

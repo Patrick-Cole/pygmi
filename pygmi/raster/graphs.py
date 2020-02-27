@@ -356,7 +356,7 @@ class PlotCCoef(GraphWindow):
         dictionary of input datasets
     """
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.label1.hide()
         self.combobox1.hide()
         self.label2.hide()
@@ -470,7 +470,7 @@ class PlotRaster(GraphWindow):
         dictionary of input datasets
     """
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
         self.indata = {}
@@ -531,7 +531,7 @@ class PlotSurface(GraphWindow):
         dictionary of input datasets
     """
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
         self.indata = {}
@@ -649,7 +649,7 @@ class PlotHist(GraphWindow):
         dictionary of input datasets
     """
     def __init__(self, parent):
-        GraphWindow.__init__(self, parent)
+        super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
         self.indata = {}

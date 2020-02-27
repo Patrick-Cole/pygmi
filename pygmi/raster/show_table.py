@@ -32,7 +32,7 @@ import scipy.stats.mstats as st
 class BasicStats(QtWidgets.QDialog):
     """Show a summary of basic stats."""
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.combobox = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
@@ -186,7 +186,7 @@ def basicstats_calc(data):
 class ClusterStats(QtWidgets.QDialog):
     """Show a summary of basic statistics."""
     def __init__(self, parent):
-        QtWidgets.QDialog.__init__(self, parent)
+        super().__init__(parent)
 
         self.combobox = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
