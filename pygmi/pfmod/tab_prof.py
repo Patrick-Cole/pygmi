@@ -1497,7 +1497,7 @@ class MyMplCanvas(FigureCanvas):
     """Matplotlib Canvas"""
     def __init__(self, parent):
         fig = Figure()
-        super.__init__(fig)
+        super().__init__(fig)
 
         self.lmod1 = parent.lmod1
         self.cbar = cm.jet

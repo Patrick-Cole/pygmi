@@ -54,7 +54,7 @@ class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None):
         fig = Figure()
 
-        super.__init__(fig)
+        super().__init__(fig)
 
     def update_legend(self, data1):
         """

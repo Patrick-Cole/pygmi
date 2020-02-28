@@ -64,7 +64,9 @@ class ProcessData(QtWidgets.QDialog):
         self.dataid = QtWidgets.QComboBox()
         self.checkbox = QtWidgets.QCheckBox('Apply to all stations:')
         self.density = QtWidgets.QLineEdit('2670')
-        self.absbase = QtWidgets.QLineEdit('978803.1459')
+        self.knownstat = QtWidgets.QLineEdit('88888.')
+        self.knownbase = QtWidgets.QLineEdit('978000.0')
+        self.absbase = QtWidgets.QLineEdit('978032.67715')
         self.basethres = QtWidgets.QLineEdit('10000')
 
         self.setupui()
@@ -84,6 +86,9 @@ class ProcessData(QtWidgets.QDialog):
         label_density = QtWidgets.QLabel('Background Density (kg/m3):')
         label_absbase = QtWidgets.QLabel('Base Station Absolute Gravity (mGal):')
         label_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
+        label_kstat = QtWidgets.QLabel('Known Base Station Number:')
+        label_kbase = QtWidgets.QLabel('Known Base Station Absolute Gravity (mGal):')
+        pb_calcbase = QtWidgets.QPushButton('Calculate local base value')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -91,17 +96,25 @@ class ProcessData(QtWidgets.QDialog):
 
         self.setWindowTitle('Gravity Data Processing')
 
-        gridlayout_main.addWidget(label_density, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.density, 0, 1, 1, 1)
-        gridlayout_main.addWidget(label_absbase, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.absbase, 1, 1, 1, 1)
-        gridlayout_main.addWidget(label_bthres, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.basethres, 2, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gridlayout_main.addWidget(label_kstat, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.knownstat, 0, 1, 1, 1)
+        gridlayout_main.addWidget(label_kbase, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.knownbase, 1, 1, 1, 1)
+
+        gridlayout_main.addWidget(pb_calcbase, 2, 0, 1, 2)
+
+        gridlayout_main.addWidget(label_density, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.density, 3, 1, 1, 1)
+        gridlayout_main.addWidget(label_absbase, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.absbase, 4, 1, 1, 1)
+        gridlayout_main.addWidget(label_bthres, 5, 0, 1, 1)
+        gridlayout_main.addWidget(self.basethres, 5, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
+        pb_calcbase.pressed.connect(self.calcbase)
 
     def settings(self, test=False):
         """
@@ -130,6 +143,8 @@ class ProcessData(QtWidgets.QDialog):
             float(self.density.text())
             float(self.absbase.text())
             float(self.basethres.text())
+            float(self.knownbase.text())
+            float(self.knownstat.text())
         except ValueError:
             print('Value Error')
             return False
@@ -156,6 +171,7 @@ class ProcessData(QtWidgets.QDialog):
         dat = self.indata['Line'].data
 
         basethres = float(self.basethres.text())
+        kstat = float(self.knownstat.text())
 
 # Convert multiple lines to single dataset.
         pdat = None
@@ -165,9 +181,16 @@ class ProcessData(QtWidgets.QDialog):
                 continue
             pdat = np.append(pdat, dat[i])
 
-# Drift Correction, to abs base value
-        driftdat = pdat[pdat['STATION'] > basethres]
+# Make sure there are no local base stations before the known base
+        if kstat in pdat['STATION']:
+            tmp = (pdat['STATION'] == kstat)
+            itmp = np.nonzero(tmp)[0][0]
+            pdat = pdat[itmp:]
 
+# Drift Correction, to abs base value
+        tmp = pdat[pdat['STATION'] > basethres]
+
+        driftdat = tmp[tmp['STATION'] != kstat]
         pdat = pdat[pdat['STATION'] < basethres]
 
         x = pdat['DECTIMEDATE']
@@ -175,6 +198,11 @@ class ProcessData(QtWidgets.QDialog):
         fp = driftdat['GRAV']
 
         dcor = np.interp(x, xp, fp)
+
+        drifttime = (x[-1]-x[0])*24*60
+        driftrate = (dcor[-1]-dcor[0])/drifttime  # per day
+        print('QC - survey time (mins)', drifttime)
+        print('QC - survey drift (mGal/min):', driftrate)
 
         gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
 
@@ -192,6 +220,12 @@ class ProcessData(QtWidgets.QDialog):
 # Bouguer Anomaly
         gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
 
+#        pdat = nplrf.append_fields(pdat, 'DRIFT', dcor, usemask=False)
+        pdat = nplrf.append_fields(pdat, 'gobs(drift)', gobs, usemask=False)
+        pdat = nplrf.append_fields(pdat, 'gT', gT, usemask=False)
+        pdat = nplrf.append_fields(pdat, 'gATM', gATM, usemask=False)
+        pdat = nplrf.append_fields(pdat, 'gHC', gHC, usemask=False)
+        pdat = nplrf.append_fields(pdat, 'gSB', gSB, usemask=False)
         pdat = nplrf.append_fields(pdat, 'BOUGUER', gba, usemask=False)
 
         dat2a = {}
@@ -209,6 +243,60 @@ class ProcessData(QtWidgets.QDialog):
         dat2.dataid = 'Gravity'
 
         self.outdata['Line'] = dat2
+
+    def calcbase(self):
+        """
+        Calculate local base station value.
+
+        Ties in the local base station to a known absolute base station.
+
+        Returns
+        -------
+        None.
+
+
+        """
+        dat = self.indata['Line'].data
+        basethres = float(self.basethres.text())
+        kstat = float(self.knownstat.text())
+
+# Convert multiple lines to single dataset.
+        pdat = None
+        for i in dat:
+            if pdat is None:
+                pdat = dat[i]
+                continue
+            pdat = np.append(pdat, dat[i])
+
+        if kstat not in pdat['STATION']:
+            txt = ('Invalid base station number.')
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          txt, QtWidgets.QMessageBox.Ok)
+            return
+
+# Drift Correction, to abs base value
+        tmp = pdat[pdat['STATION'] > basethres]
+        kbasevals = tmp[tmp['STATION'] == kstat]
+        abasevals = tmp[tmp['STATION'] != kstat]
+
+        x = abasevals['DECTIMEDATE']
+        grv = abasevals['GRAV']
+        xp = kbasevals['DECTIMEDATE']
+        fp = kbasevals['GRAV']
+
+        filt = np.logical_and(x >= xp.min(), x <= xp.max())
+        grv = grv[filt]
+        x = x[filt]
+
+        if x.size == 0:
+            txt = ('Your known base values need to be before and after at '
+                   'least one local base station value.')
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          txt, QtWidgets.QMessageBox.Ok)
+            return
+
+        absbase = grv-np.interp(x, xp, fp) + float(self.knownbase.text())
+        self.absbase.setText(str(absbase[0]))
 
 
 def geocentric_radius(lat):

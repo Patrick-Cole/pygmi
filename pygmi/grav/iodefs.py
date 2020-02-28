@@ -205,12 +205,14 @@ class ImportCG5(QtWidgets.QDialog):
                            left_on=['LINE', 'STATION'],
                            right_on=['line', 'station'], how='left')
 
+        # eliminate ordinary stations (not base stations) without coordinates
         filt = dfmerge['STATION'] < float(self.basethres.text())
 
         filt = filt & dfmerge['longitude'].isna()
 
         dfmerge = dfmerge[~filt]
 
+        # Construct dat.
         dat = {}
         lines = dfmerge.LINE.unique()
         for line in lines:
