@@ -224,7 +224,7 @@ class Metadata(QtWidgets.QDialog):
 
         Returns
         -------
-        tmp : bool.
+        bool.
             True if successful, False otherwise.
 
         """
@@ -254,11 +254,13 @@ class Metadata(QtWidgets.QDialog):
         self.update_vals()
 
         tmp = self.exec_()
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
 
-        return tmp
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        return True
 
 
 class MyMplCanvas(FigureCanvas):
@@ -530,11 +532,12 @@ class StaticShiftEDI(QtWidgets.QDialog):
 
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
 
 class RotateEDI(QtWidgets.QDialog):
@@ -703,11 +706,12 @@ class RotateEDI(QtWidgets.QDialog):
 
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
 
 class MyMplCanvasPick(FigureCanvas):
@@ -1143,11 +1147,12 @@ class EditEDI(QtWidgets.QDialog):
 
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
 
 class MySlider(QtWidgets.QSlider):
@@ -1633,11 +1638,12 @@ class Occam1D(QtWidgets.QDialog):
 
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
 
 def tonumber(test, alttext=None):

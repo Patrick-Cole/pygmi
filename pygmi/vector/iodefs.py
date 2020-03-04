@@ -310,6 +310,8 @@ class ImportLineData(QtWidgets.QDialog):
 
         """
         ext = ('Geosoft XYZ (*.xyz);;'
+               'Comma Delimited (*.csv);;'
+               'Tab Delimited (*.txt);;'
                'All Files (*.*)')
 
         filename, filt = QtWidgets.QFileDialog.getOpenFileName(
@@ -322,7 +324,14 @@ class ImportLineData(QtWidgets.QDialog):
 
         if filt == 'Geosoft XYZ (*.xyz)':
             dat = self.get_GXYZ()
+        elif filt == 'Comma Delimited (*.csv)':
+            dat = self.get_delimited(',')
+        elif filt == 'Tab Delimited (*.txt)':
+            dat = self.get_delimited('\t')
         else:
+            return False
+
+        if not dat:
             return False
 
         i = list(dat.keys())[0]
@@ -397,7 +406,7 @@ class ImportLineData(QtWidgets.QDialog):
 
         return dat
 
-    def get_delimited(self):
+    def get_delimited(self, delimiter=','):
         """
         Get a delimited line file.
 
@@ -407,33 +416,34 @@ class ImportLineData(QtWidgets.QDialog):
             List of PData type.
 
         """
-        datatmp = pd.read_csv(self.ifile, sep=None, engine='python')
-        ltmp = datatmp.columns.values
-
-        self.xchan.addItems(ltmp)
-        self.ychan.addItems(ltmp)
-
-        self.xchan.setCurrentIndex(0)
-        self.ychan.setCurrentIndex(1)
-
-        tmp = self.exec_()
-
-        if tmp != 1:
-            return tmp
-
-        xcol = self.xchan.currentText()
-        ycol = self.ychan.currentText()
-
-        ltmp = ltmp[ltmp != xcol]
-        ltmp = ltmp[ltmp != ycol]
 
         dat = []
-        for i in ltmp:
-            dat.append(PData())
-            dat[-1].xdata = datatmp[xcol].values
-            dat[-1].ydata = datatmp[ycol].values
-            dat[-1].zdata = datatmp[i].values
-            dat[-1].dataid = i
+        with open(self.ifile) as fno:
+            head = fno.readline()
+            tmp = fno.read()
+
+        head = head.split(delimiter)
+        head = [i.lower() for i in head]
+        tmp = tmp.lower()
+
+        if 'line' not in head:
+            text = 'You do not have a column named "line"'
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
+                                          QtWidgets.QMessageBox.Ok)
+            return dat
+
+        dtype = {}
+        dtype['names'] = head
+        dtype['formats'] = ['f4']*len(head)
+
+        dat = {}
+        tmp = tmp.split('\n')
+        tmp2 = np.genfromtxt(tmp, names=head, delimiter=delimiter, dtype=None,
+                             encoding=None)
+        lines = np.unique(tmp2['line'])
+
+        for i in lines:
+            dat[str(i)] = tmp2[tmp2['line'] == i]
 
         return dat
 

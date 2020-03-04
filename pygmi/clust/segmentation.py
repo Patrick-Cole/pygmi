@@ -142,7 +142,7 @@ class ImageSeg(QtWidgets.QDialog):
             tmp = self.exec_()
 
             if tmp != 1:
-                return tmp
+                return False
 
         scale = float(self.scale.text())
         wcolor = float(self.wcolor.text())

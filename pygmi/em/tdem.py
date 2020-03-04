@@ -26,8 +26,6 @@
 
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             '..//..')))
 import copy
 import glob
 from PyQt5 import QtWidgets, QtCore
@@ -35,8 +33,15 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
-import mtpy.modeling.occam1d as occam1d
+from pymatsolver import Pardiso as Solver
+from SimPEG import (Mesh, Maps, Utils, DataMisfit, Regularization,
+                    Optimization, Inversion, InvProblem, Directives)
+import SimPEG.EM as EM
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                             '..//..')))
 import pygmi.menu_default as menu_default
+from pygmi.vector.datatypes import LData
 
 
 class MyMplCanvas2(FigureCanvas):
@@ -48,7 +53,7 @@ class MyMplCanvas2(FigureCanvas):
         fig = Figure()
         super().__init__(fig)
 
-    def update_line(self, x, pdata, rdata, depths=None, res=None, title=None):
+    def update_line(self, sigma, z, times_off, zobs, zpred):
         """
         Update the plot from data.
 
@@ -73,52 +78,56 @@ class MyMplCanvas2(FigureCanvas):
 
         """
         self.figure.clear()
-        gs = self.figure.add_gridspec(3, 3)
+#        gs = self.figure.add_gridspec(3, 3)
 
-        ax1 = self.figure.add_subplot(gs[:2, :2], label='Profile')
-        self.figure.suptitle(title)
-        ax1.grid(True, 'both')
+        ax1 = self.figure.add_subplot(121, label='Profile')
+#        self.figure.suptitle(title)
+#        ax1.grid(True, 'both')
 
-        res1 = rdata[0]
-        res2 = rdata[1]
-        pha1 = pdata[0]
-        pha2 = pdata[1]
-        label1 = r'Measured'
-        label2 = r'Modelled'
+        ax1.semilogx(sigma, z, 'b', lw=2)
+        ax1.set_ylim(-50, 0)
+        ax1.grid(True)
+        ax1.set_ylabel("Depth (m)")
+        ax1.set_xlabel("Conductivity (S/m)")
+#        ax1.legend(loc=3)
+        ax1.set_title("Recovered Model")
 
-        ax1.plot(x, res1, 'b.', label=label1)
-        ax1.plot(x, res2, 'r.', label=label2)
 
-        ax1.set_xscale('log')
-        ax1.set_yscale('log')
-        ax1.legend(loc='upper left')
-        ax1.set_xlabel('Period (s)')
-        ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
+#        ax1.plot(x, res1, 'b.', label=label1)
+#        ax1.plot(x, res2, 'r.', label=label2)
+#
+#        ax1.set_xscale('log')
+#        ax1.set_yscale('log')
+#        ax1.legend(loc='upper left')
+#        ax1.set_xlabel('Period (s)')
+#        ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
 
-        ax2 = self.figure.add_subplot(gs[2:, :2], sharex=ax1)
+        ax2 = self.figure.add_subplot(122)
         ax2.grid(True, 'both')
 
-        ax2.plot(x, pha1, 'b.')
-        ax2.plot(x, pha2, 'r.')
 
-        ax2.set_ylim(-180., 180.)
+        ax2.loglog(times_off, zobs, 'b-', label="Observed")
+        ax2.loglog(times_off, zpred, 'bo', ms=4,
+                   markeredgecolor='k', markeredgewidth=0.5, label="Predicted")
 
-        ax2.set_xscale('log')
-        ax2.set_yscale('linear')
-        ax2.set_xlabel('Period (s)')
-        ax2.set_ylabel(r'Phase (Degrees)')
+        ax2.set_xlim(times_off.min()*1.2, times_off.max()*1.1)
 
-        ax3 = self.figure.add_subplot(gs[:, 2])
-        ax3.grid(True, 'both')
-        ax3.yaxis.tick_right()
-        ax3.yaxis.set_label_position("right")
-        ax3.set_xlabel(r'Res. ($\Omega.m$)')
-        ax3.set_ylabel(r'Depth (km)')
+        ax2.set_xlabel(r"Time ($\mu s$)")
+        ax2.set_ylabel("dBz / dt (V/A-m$^4$)")
+        ax2.set_title("High-moment")
+        ax2.grid(True)
+        ax2.legend(loc=3)
 
-        if depths is not None:
-            ax3.plot(res, np.array(depths)/1000)
+#
+#        ax2.set_ylim(-180., 180.)
+#
+#        ax2.set_xscale('log')
+#        ax2.set_yscale('linear')
+#        ax2.set_xlabel('Period (s)')
+#        ax2.set_ylabel(r'Phase (Degrees)')
 
-        gs.tight_layout(self.figure)
+#        gs.tight_layout(self.figure)
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -147,49 +156,48 @@ class TDEM1D(QtWidgets.QDialog):
         self.mmc = MyMplCanvas2(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
-        self.combomode = QtWidgets.QComboBox()
-        self.combomode.addItems(['TE', 'TM', 'DET'])
-        self.combomode.setCurrentIndex(0)
-        self.errres = QtWidgets.QLineEdit('data')
-        self.errres.setSizePolicy(sizepolicy)
-        self.errphase = QtWidgets.QLineEdit('data')
-        self.errphase.setSizePolicy(sizepolicy)
-        self.errfloorres = QtWidgets.QLineEdit('4.')
-        self.errfloorres.setSizePolicy(sizepolicy)
-        self.errfloorphase = QtWidgets.QLineEdit('2.')
-        self.errfloorphase.setSizePolicy(sizepolicy)
+        self.comboline = QtWidgets.QComboBox()
+        self.combofid = QtWidgets.QComboBox()
+        self.combobalt = QtWidgets.QComboBox()
+        self.txarea = QtWidgets.QLineEdit('313.98')
+        self.txarea.setSizePolicy(sizepolicy)
+        self.txofftime = QtWidgets.QLineEdit('0.0100286')
+        self.txofftime.setSizePolicy(sizepolicy)
+        self.txpeaktime = QtWidgets.QLineEdit('0.01')
+        self.txpeaktime.setSizePolicy(sizepolicy)
+        self.datachan = QtWidgets.QLineEdit('Z_Ch')
+#        self.errfloorphase.setSizePolicy(sizepolicy)
+#
+#        self.targetdepth = QtWidgets.QLineEdit('40000.')
+#        self.targetdepth.setSizePolicy(sizepolicy)
+#        self.nlayers = QtWidgets.QLineEdit('100')
+#        self.nlayers.setSizePolicy(sizepolicy)
+#        self.bottomlayer = QtWidgets.QLineEdit('100000.')
+#        self.bottomlayer.setSizePolicy(sizepolicy)
+#        self.airlayer = QtWidgets.QLineEdit('10000.')
+#        self.airlayer.setSizePolicy(sizepolicy)
+#        self.z1layer = QtWidgets.QLineEdit('10.')
+#        self.z1layer.setSizePolicy(sizepolicy)
+#        self.maxiter = QtWidgets.QLineEdit('200')
+#        self.maxiter.setSizePolicy(sizepolicy)
+#        self.targetrms = QtWidgets.QLineEdit('1.')
+#        self.targetrms.setSizePolicy(sizepolicy)
 
-        self.targetdepth = QtWidgets.QLineEdit('40000.')
-        self.targetdepth.setSizePolicy(sizepolicy)
-        self.nlayers = QtWidgets.QLineEdit('100')
-        self.nlayers.setSizePolicy(sizepolicy)
-        self.bottomlayer = QtWidgets.QLineEdit('100000.')
-        self.bottomlayer.setSizePolicy(sizepolicy)
-        self.airlayer = QtWidgets.QLineEdit('10000.')
-        self.airlayer.setSizePolicy(sizepolicy)
-        self.z1layer = QtWidgets.QLineEdit('10.')
-        self.z1layer.setSizePolicy(sizepolicy)
-        self.maxiter = QtWidgets.QLineEdit('200')
-        self.maxiter.setSizePolicy(sizepolicy)
-        self.targetrms = QtWidgets.QLineEdit('1.')
-        self.targetrms.setSizePolicy(sizepolicy)
-
-        label1 = QtWidgets.QLabel('Station Name:')
+        label1 = QtWidgets.QLabel('Line Number:')
         label1.setSizePolicy(sizepolicy)
-        label3 = QtWidgets.QLabel('Mode:')
-        label4 = QtWidgets.QLabel('Resistivity Errorbar (Data or %):')
-        label5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
-        label6 = QtWidgets.QLabel('Resistivity Error Floor (%):')
-        label7 = QtWidgets.QLabel('Phase Error Floor (degrees):')
-        label8 = QtWidgets.QLabel('Height of air layer:')
-        label9 = QtWidgets.QLabel('Bottom of model:')
-        label10 = QtWidgets.QLabel('Depth of target to investigate:')
-        label11 = QtWidgets.QLabel('Depth of first layer:')
-        label12 = QtWidgets.QLabel('Number of layers:')
-        label13 = QtWidgets.QLabel('Maximum Iterations:')
-        label14 = QtWidgets.QLabel('Target RMS:')
+        label2 = QtWidgets.QLabel(r'Fid/Station Name:')
+        label3 = QtWidgets.QLabel('Bird Height:')
+        label4 = QtWidgets.QLabel('Tx Area:')
+        label5 = QtWidgets.QLabel('Tx Off time:')
+        label6 = QtWidgets.QLabel('Tx Peak Time:')
+        label7 = QtWidgets.QLabel('Data channel prefix:')
+#        label8 = QtWidgets.QLabel('Height of air layer:')
+#        label9 = QtWidgets.QLabel('Bottom of model:')
+#        label10 = QtWidgets.QLabel('Depth of target to investigate:')
+#        label11 = QtWidgets.QLabel('Depth of first layer:')
+#        label12 = QtWidgets.QLabel('Number of layers:')
+#        label13 = QtWidgets.QLabel('Maximum Iterations:')
+#        label14 = QtWidgets.QLabel('Target RMS:')
 
         self.lbl_profnum = QtWidgets.QLabel('Solution: 0')
 
@@ -201,34 +209,35 @@ class TDEM1D(QtWidgets.QDialog):
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         gbl.addWidget(label1, 0, 0)
-        gbl.addWidget(self.combobox1, 0, 1)
+        gbl.addWidget(self.comboline, 0, 1)
+        gbl.addWidget(label2, 1, 0)
+        gbl.addWidget(self.combofid, 1, 1)
         gbl.addWidget(label3, 2, 0)
-        gbl.addWidget(self.combomode, 2, 1)
+        gbl.addWidget(self.combobalt, 2, 1)
         gbl.addWidget(label4, 3, 0)
-        gbl.addWidget(self.errres, 3, 1)
-        gbl.addWidget(label5, 4, 0)
-        gbl.addWidget(self.errphase, 4, 1)
-        gbl.addWidget(label6, 5, 0)
-        gbl.addWidget(self.errfloorres, 5, 1)
+        gbl.addWidget(self.txarea, 3, 1)
+        gbl.addWidget(label5, 5, 0)
+        gbl.addWidget(self.txofftime, 5, 1)
+        gbl.addWidget(label6, 4, 0)
+        gbl.addWidget(self.txpeaktime, 4, 1)
         gbl.addWidget(label7, 6, 0)
-        gbl.addWidget(self.errfloorphase, 6, 1)
-        gbl.addWidget(label8, 7, 0)
-        gbl.addWidget(self.airlayer, 7, 1)
-        gbl.addWidget(label9, 8, 0)
-        gbl.addWidget(self.bottomlayer, 8, 1)
-        gbl.addWidget(label10, 9, 0)
-        gbl.addWidget(self.targetdepth, 9, 1)
-        gbl.addWidget(label11, 10, 0)
-        gbl.addWidget(self.z1layer, 10, 1)
-        gbl.addWidget(label12, 11, 0)
-        gbl.addWidget(self.nlayers, 11, 1)
-        gbl.addWidget(label13, 12, 0)
-        gbl.addWidget(self.maxiter, 12, 1)
-        gbl.addWidget(label14, 13, 0)
-        gbl.addWidget(self.targetrms, 13, 1)
+        gbl.addWidget(self.datachan, 6, 1)
+#        gbl.addWidget(label8, 7, 0)
+#        gbl.addWidget(self.airlayer, 7, 1)
+#        gbl.addWidget(label9, 8, 0)
+#        gbl.addWidget(self.bottomlayer, 8, 1)
+#        gbl.addWidget(label10, 9, 0)
+#        gbl.addWidget(self.targetdepth, 9, 1)
+#        gbl.addWidget(label11, 10, 0)
+#        gbl.addWidget(self.z1layer, 10, 1)
+#        gbl.addWidget(label12, 11, 0)
+#        gbl.addWidget(self.nlayers, 11, 1)
+#        gbl.addWidget(label13, 12, 0)
+#        gbl.addWidget(self.maxiter, 12, 1)
+#        gbl.addWidget(label14, 13, 0)
+#        gbl.addWidget(self.targetrms, 13, 1)
 
         gbl.addWidget(pb_apply, 14, 0, 1, 2)
-        gbl.addWidget(buttonbox, 15, 0, 1, 2)
 
         hbl2.addWidget(helpdocs)
         hbl2.addWidget(self.lbl_profnum)
@@ -241,107 +250,183 @@ class TDEM1D(QtWidgets.QDialog):
         hbl.addLayout(vbl)
 
         pb_apply.clicked.connect(self.apply)
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-
-    def acceptall(self):
-        """
-        Accept option.
-
-        Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.outdata['MT - EDI'] = self.data
+        self.comboline.currentIndexChanged.connect(self.change_line)
 
     def apply(self):
         """
-        Apply.
+        Invert the data.
 
         Returns
         -------
         None.
 
         """
-        parm = {}
 
-        parm['tdepth'] = tonumber(self.targetdepth.text())
-        parm['nlayers'] = tonumber(self.nlayers.text())
-        parm['blayer'] = tonumber(self.bottomlayer.text())
-        parm['alayer'] = tonumber(self.airlayer.text())
-        parm['z1layer'] = tonumber(self.z1layer.text())
-        parm['miter'] = tonumber(self.maxiter.text())
-        parm['trms'] = tonumber(self.targetrms.text())
-        parm['rerr'] = tonumber(self.errres.text(), 'data')
-        parm['perr'] = tonumber(self.errphase.text(), 'data')
-        parm['perrflr'] = tonumber(self.errfloorphase.text())
-        parm['rerrflr'] = tonumber(self.errfloorres.text())
+        dprefix = (self.datachan.text()).lower()
+        line = self.comboline.currentText()
+        fid = float(self.combofid.currentText())
+        balt = self.combobalt.currentText()
+        txarea = float(self.txarea.text())
+        offTime = float(self.txofftime.text())
+        peakTime = float(self.txpeaktime.text())
 
-        if -999 in parm.values():
+        line = '2012.0'
+        fid = 964.
+        txarea = 314.
+        offTime = 0.01004
+
+        times = np.array([4.7000e-05, 5.9800e-05, 7.2600e-05, 8.8600e-05,
+                          1.1180e-04, 1.4540e-04, 1.8520e-04, 2.3440e-04,
+                          2.9520e-04, 3.7060e-04, 4.6440e-04, 5.8140e-04,
+                          7.2780e-04, 9.1120e-04, 1.1170e-03, 1.4292e-03,
+                          1.7912e-03, 2.2460e-03, 2.8174e-03, 3.5356e-03,
+                          4.4388e-03, 5.5750e-03, 7.0000e-03, 8.8000e-03])
+#        times = times + peakTime
+        times = times + offTime
+        a = 3.
+
+        skytem = self.data.data[line][self.data.data[line]['fid'] == fid]
+        channels = skytem.dtype.names
+        datachans = []
+        dchannum = []
+        emdata = np.array([])
+        for i in channels:
+            if i.startswith(dprefix):
+                datachans.append(i)
+                dchannum.append(int(''.join(filter(str.isdigit, i))))
+                emdata = np.append(emdata, skytem[i])
+
+        if not datachans:
+            text = 'Could not find data channels, your prefix may be wrong'
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
+                                          QtWidgets.QMessageBox.Ok)
             return
 
-        mode = self.combomode.currentText()
-        i = self.combobox1.currentText()
-        edi_file = self.data[i].fn
+        # ------------------ Mesh ------------------ #
+        # Step1: Set 2D cylindrical mesh
+        cs, ncx, _, npad = 1., 10., 10., 20
+        hx = [(cs, ncx), (cs, npad, 1.3)]
+        npad = 12
+        temp = np.logspace(np.log10(1.), np.log10(12.), 19)
+        temp_pad = temp[-1] * 1.3 ** np.arange(npad)
+        hz = np.r_[temp_pad[::-1], temp[::-1], temp, temp_pad]
+        mesh = Mesh.CylMesh([hx, 1, hz], '00C')
+        active = mesh.vectorCCz < 0.
 
-        save_path = edi_file[:-4]+'-'+mode
+        # Step2: Set a SurjectVertical1D mapping
+        # Note: this sets our inversion model as 1D log conductivity
+        # below subsurface
 
-        if os.path.exists(save_path):
-            r = glob.glob(save_path+r'\*')
-            for i in r:
-                os.remove(i)
-        else:
-            os.makedirs(save_path)
+        active = mesh.vectorCCz < 0.
+        actMap = Maps.InjectActiveCells(mesh, active, np.log(1e-8),
+                                        nC=mesh.nCz)
+        mapping = Maps.ExpMap(mesh) * Maps.SurjectVertical1D(mesh) * actMap
+        sig_half = 1e-1
+        sig_air = 1e-8
+        sigma = np.ones(mesh.nCz)*sig_air
+        sigma[active] = sig_half
 
-        d1 = occam1d.Data()
-        d1.write_data_file(edi_file=edi_file,
-                           mode=mode,
-                           save_path=save_path,
-                           res_err=parm['rerr'],
-                           phase_err=parm['perr'],
-                           res_errorfloor=parm['rerrflr'],
-                           phase_errorfloor=parm['perrflr'],
-                           remove_outofquadrant=True
-                           )
+        # Initial and reference model
+        m0 = np.log(sigma[active])
 
-        m1 = occam1d.Model(target_depth=parm['tdepth'],
-                           n_layers=parm['nlayers'],
-                           bottom_layer=parm['blayer'],
-                           z1_layer=parm['z1layer'],
-                           air_layer_height=parm['alayer']
-                           )
-        m1.write_model_file(save_path=d1.save_path)
+        # ------------------ SkyTEM Forward Simulation ------------------ #
+        # Step4: Invert SkyTEM data
 
-        s1 = occam1d.Startup(data_fn=d1.data_fn,
-                             model_fn=m1.model_fn,
-                             max_iter=parm['miter'],
-                             target_rms=parm['trms'])
+        # Bird height from the surface
+#        b_height_skytem = skytem["src_elevation"][()]
+#        src_height = b_height_skytem[rxind_skytem]
 
-        s1.write_startup_file()
+        src_height = skytem[balt][0]
+        srcLoc = np.array([0., 0., src_height])
 
-        self.mmc.figure.clear()
-        self.mmc.figure.set_facecolor('r')
-        self.mmc.figure.suptitle('Busy, please wait...', fontsize=14, y=0.5)
-#        ax = self.mmc.figure.gca()
-#        ax.text(0.5, 0.5, 'Busy, please wait...')
-        self.mmc.figure.canvas.draw()
-        QtWidgets.QApplication.processEvents()
+        # Radius of the source loop
+        area = txarea
+        radius = np.sqrt(area/np.pi)
+        rxLoc = np.array([[radius, 0., src_height]])
 
-        occam_path = os.path.dirname(__file__)[:-2]+r'\bin\occam1d.exe'
+        # Parameters for current waveform
+        # Note: we are Using theoretical VTEM waveform,
+        # but effectively fits SkyTEM waveform
 
-        occam1d.Run(s1.startup_fn, occam_path, mode='TE')
+        dbdt_z = EM.TDEM.Rx.Point_dbdt(locs=rxLoc, times=times[:-3],
+                                       orientation='z')  # vertical db_dt
+        rxList = [dbdt_z]  # list of receivers
+        wform = EM.TDEM.Src.VTEMWaveform(offTime=offTime, peakTime=peakTime,
+                                         a=a)
+        srcList = [EM.TDEM.Src.CircularLoop(rxList, loc=srcLoc, radius=radius,
+                                            orientation='z', waveform=wform)]
 
-        self.mmc.figure.set_facecolor('w')
+        # solve the problem at these times
+        timeSteps = [(peakTime/5, 5),            # On time section
+                     ((offTime-peakTime)/5, 5),  # Off time section
+                     (1e-5, 5),
+                     (5e-5, 5),
+                     (1e-4, 10),
+                     (5e-4, 15)]
+        prob = EM.TDEM.Problem3D_e(mesh, timeSteps=timeSteps, sigmaMap=mapping,
+                                   Solver=Solver)
+        survey = EM.TDEM.Survey(srcList)
+        prob.pair(survey)
 
-        allfiles = glob.glob(save_path+r'\*.resp')
-        self.hs_profnum.setMaximum(len(allfiles))
-        self.hs_profnum.setMinimum(1)
+        src = srcList[0]
+        wave = []
+        for time in prob.times:
+            wave.append(src.waveform.eval(time))
+        wave = np.hstack(wave)
 
-        self.change_band()
+        # Observed data
+        dobs_sky = emdata[:-3] * area
+
+        # ------------------ SkyTEM Inversion ------------------ #
+        # Uncertainty
+        std = 0.12
+        floor = 7.5e-12
+        uncert = abs(dobs_sky) * std + floor
+
+        # Data Misfit
+        survey.dobs = -dobs_sky
+        dmisfit = DataMisfit.l2_DataMisfit(survey)
+        uncert = std*abs(dobs_sky) + floor
+        dmisfit.W = Utils.sdiag(1./uncert)
+
+        # Regularization
+        regMesh = Mesh.TensorMesh([mesh.hz[mapping.maps[-1].indActive]])
+        reg = Regularization.Simple(regMesh, mapping=Maps.IdentityMap(regMesh))
+
+        # Optimization
+        opt = Optimization.InexactGaussNewton(maxIter=5)
+
+        # statement of the inverse problem
+        invProb = InvProblem.BaseInvProblem(dmisfit, reg, opt)
+
+        # Directives and Inversion Parameters
+        target = Directives.TargetMisfit()
+        # betaest = Directives.BetaEstimate_ByEig(beta0_ratio=1e0)
+        invProb.beta = 20.
+        inv = Inversion.BaseInversion(invProb, directiveList=[target])
+        reg.alpha_s = 1e-1
+        reg.alpha_x = 1.
+        opt.LSshorten = 0.5
+        opt.remember('xc')
+    #    reg.mref = mopt_re  # Use RESOLVE model as a reference model
+
+        # run the inversion
+        mopt_sky = inv.run(m0)
+        dpred_sky = invProb.dpred
+
+
+
+        sigma = np.repeat(np.exp(mopt_sky), 2, axis=0)
+        z = np.repeat(mesh.vectorCCz[active][1:], 2, axis=0)
+        z = np.r_[mesh.vectorCCz[active][0], z, mesh.vectorCCz[active][-1]]
+
+        times_off = ((times - offTime)*1e6)[3:]
+        zobs = dobs_sky/area
+        zpred = -dpred_sky/area
+
+        self.mmc.update_line(sigma, z, times_off, zobs, zpred)
+
+#        self.outdata['Line'] = self.data
 
     def reset_data(self):
         """
@@ -352,69 +437,33 @@ class TDEM1D(QtWidgets.QDialog):
         None.
 
         """
-        i = self.combobox1.currentText()
-        self.data[i] = copy.deepcopy(self.indata['MT - EDI'][i])
-        self.change_band()
 
-    def change_band(self):
+    def change_line(self):
         """
-        Combo to change band.
+        Combo to change line.
 
         Returns
         -------
         None.
 
         """
-        i = self.combobox1.currentText()
-        mode = self.combomode.currentText()
-        n = self.hs_profnum.value()
 
-        edi_file = self.data[i].fn
-        save_path = edi_file[:-4]+'-'+mode
+        self.combofid.clear()
 
-        if not os.path.exists(save_path):
-            return
-        if os.path.exists(save_path):
-            r = glob.glob(save_path+r'\*.resp')
-            if len(r) == 0:
-                return
+        line = self.comboline.currentText()
+        self.combofid.addItems(self.data.data[line]['fid'].astype(str))
 
-        iterfn = os.path.join(save_path, mode+'_'+f'{n:03}'+'.iter')
-        respfn = os.path.join(save_path, mode+'_'+f'{n:03}'+'.resp')
-        model_fn = os.path.join(save_path, 'Model1D')
-        data_fn = os.path.join(save_path, 'Occam1d_DataFile_'+mode+'.dat')
+    def update_plot(self):
+        """
+        Update the plot
 
-        oc1m = occam1d.Model(model_fn=model_fn)
-        oc1m.read_iter_file(iterfn)
+        Returns
+        -------
+        None.
 
-        oc1d = occam1d.Data(data_fn=data_fn)
-        oc1d.read_resp_file(respfn)
+        """
 
-        rough = float(oc1m.itdict['Roughness Value'])
-        rms = float(oc1m.itdict['Misfit Value'])
-        rough = f'{rough:.1f}'
-        rms = f'{rms:.1f}'
-
-        title = 'RMS: '+rms+'    Roughness: '+rough
-
-        depths = []
-        res = []
-
-        for i, val in enumerate(oc1m.model_res[:, 1]):
-            if i == 0:
-                continue
-            if i > 1:
-                depths.append(-oc1m.model_depth[i-1])
-                res.append(val)
-
-            depths.append(-oc1m.model_depth[i])
-            res.append(val)
-
-        x = 1/oc1d.freq
-        rdata = [oc1d.data['resxy'][0], oc1d.data['resxy'][2]]
-        pdata = [oc1d.data['phasexy'][0], oc1d.data['phasexy'][2]]
-
-        self.mmc.update_line(x, pdata, rdata, depths, res, title)
+#        self.mmc.update_line(x, pdata, rdata, depths, res, title)
 
     def settings(self):
         """
@@ -426,41 +475,42 @@ class TDEM1D(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        if 'MT - EDI' in self.indata:
-            self.data = copy.deepcopy(self.indata['MT - EDI'])
+        if 'Line' in self.indata:
+            self.data = copy.deepcopy(self.indata['Line'])
         else:
-            print('No EDI data')
+            print('No line data')
             return False
 
-        self.combobox1.currentIndexChanged.disconnect()
-        self.combobox1.clear()
+        self.comboline.currentIndexChanged.disconnect()
+        self.comboline.clear()
+        self.combofid.clear()
+        self.combobalt.clear()
 
-        for i in self.data:
-            self.combobox1.addItem(i)
+        cnames = list(self.data.data.values())[0].dtype.names
+        self.combobalt.addItems(cnames)
+        for i, tmp in enumerate(cnames):
+            tmp = tmp.lower()
+            if 'elev' in tmp or 'alt' in tmp or 'height' in tmp or 'radar' in tmp:
+                self.combobalt.setCurrentIndex(i)
+                break
 
-        self.combobox1.setCurrentIndex(0)
-        self.combobox1.currentIndexChanged.connect(self.change_band)
+        for i in self.data.data:
+            self.comboline.addItem(i)
 
-        i = self.combobox1.currentText()
-        mode = self.combomode.currentText()
-        edi_file = self.data[i].fn
-        save_path = edi_file[:-4]+'-'+mode
+        self.comboline.setCurrentIndex(0)
+        line = self.comboline.currentText()
+        self.combofid.addItems(self.data.data[line]['fid'].astype(str))
 
-        if os.path.exists(save_path):
-            allfiles = glob.glob(save_path+r'\*.resp')
-            if len(allfiles) > 0:
-                self.hs_profnum.setMaximum(len(allfiles))
-                self.hs_profnum.setMinimum(1)
-
-        self.change_band()
+        self.comboline.currentIndexChanged.connect(self.change_line)
 
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+#        self.acceptall()
+
+        return True
 
 
 def tonumber(test, alttext=None):
@@ -492,15 +542,11 @@ def tonumber(test, alttext=None):
     return int(test)
 
 
-def test():
+def testrun():
     """ Test routine """
-    import sys
-    import pandas as pd
-    from pygmi.vector.datatypes import PData
-
-    from pygmi.vector import iodefs
     app = QtWidgets.QApplication(sys.argv)
 
+    # Load in line data
     filename = r'C:\Work\Programming\EM\bookpurnong\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
 
     xcol = 'E'
@@ -513,6 +559,7 @@ def test():
         tmp = fno.read()
 
     head = head.split()
+    head = [i.lower() for i in head]
     tmp = tmp.lower()
 
     dtype = {}
@@ -521,18 +568,11 @@ def test():
 
     dat = {}
     tmp = tmp.split('\n')
-    aaa = tmp[0].split('\t')
-    breakpoint()
-    tmp2 = np.genfromtxt(tmp, names=head)
-    breakpoint()
+    tmp2 = np.genfromtxt(tmp, names=head, delimiter='\t')
+    lines = np.unique(tmp2['line'])
 
-    for i in range(0, len(tmp), 2):
-        tmp2 = tmp[i+1]
-        tmp2 = tmp2.split('\n')
-        line = tmp[i]+tmp2.pop(0)
-        tmp2 = np.genfromtxt(tmp2, names=head)
-        dat[line] = tmp2
-
+    for i in lines:
+        dat[str(i)] = tmp2[tmp2['line'] == i]
 
     dat2 = LData()
     dat2.xchannel = xcol
@@ -540,16 +580,12 @@ def test():
     dat2.data = dat
     dat2.nullvalue = nodata
 
-
-
+    # Run TEM1D routine
 
     tmp = TDEM1D(None)
-    tmp.indata['Point'] = dat
+    tmp.indata['Line'] = dat2
     tmp.settings()
 
 
-
-
-
 if __name__ == "__main__":
-    test()
+    testrun()

@@ -159,7 +159,7 @@ class ImportCG5(QtWidgets.QDialog):
             tmp = self.exec_()
 
             if tmp != 1 or self.df_cg5 is None or self.df_gps is None:
-                return tmp
+                return False
 
         if self.line.currentText() == self.station.currentText():
             print('Your line column cannot be the same as your station column')

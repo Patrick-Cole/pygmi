@@ -25,10 +25,6 @@
 """EM Menu Routines."""
 
 from PyQt5 import QtWidgets
-from pygmi.em import iodefs
-from pygmi.em import dataprep
-from pygmi.em import graphs
-from pygmi.em import birrp
 from pygmi.em import tdem
 
 
@@ -48,107 +44,18 @@ class MenuWidget():
     def __init__(self, parent):
 
         self.parent = parent
-        self.parent.add_to_context('MT - EDI')
-        context_menu = self.parent.context_menu
+#        self.parent.add_to_context('MT - EDI')
+#        context_menu = self.parent.context_menu
 
 # Normal menus
         self.menu = QtWidgets.QMenu('EM')
         parent.menubar.addAction(self.menu.menuAction())
-        self.menumt = self.menu.addMenu('MT')
-        self.menutd = self.menu.addMenu('TDEM')
-
-        self.action_birrp = QtWidgets.QAction('BIRRP - Beta')
-        self.menumt.addAction(self.action_birrp)
-        self.action_birrp.triggered.connect(self.birrp)
-
-        self.menumt.addSeparator()
-
-        self.action_import_data = QtWidgets.QAction('Import EDI Data')
-        self.menumt.addAction(self.action_import_data)
-        self.action_import_data.triggered.connect(self.import_data)
-
-        self.menumt.addSeparator()
-
-        self.action_rotate_data = QtWidgets.QAction('Rotate EDI Data')
-        self.menumt.addAction(self.action_rotate_data)
-        self.action_rotate_data.triggered.connect(self.rotate_data)
-
-        self.action_sshift_data = QtWidgets.QAction('Remove Static Shift')
-        self.menumt.addAction(self.action_sshift_data)
-        self.action_sshift_data.triggered.connect(self.sshift_data)
-
-        self.action_mi_data = QtWidgets.QAction('Mask and Interpolate')
-        self.menumt.addAction(self.action_mi_data)
-        self.action_mi_data.triggered.connect(self.mi_data)
-
-        self.menumt.addSeparator()
-
-        self.action_occam1d = QtWidgets.QAction('Occam 1D Inversion')
-        self.menumt.addAction(self.action_occam1d)
-        self.action_occam1d.triggered.connect(self.occam1d)
 
         self.action_tdem1d = QtWidgets.QAction('TDEM 1D Inversion')
-        self.menutd.addAction(self.action_tdem1d)
+        self.menu.addAction(self.action_tdem1d)
         self.action_tdem1d.triggered.connect(self.tdem1d)
-
-# Context menus
-        context_menu['MT - EDI'].addSeparator()
-
-        self.action_metadata = QtWidgets.QAction('Display/Edit Metadata')
-        context_menu['MT - EDI'].addAction(self.action_metadata)
-        self.action_metadata.triggered.connect(self.metadata)
-
-        self.action_show_graphs = QtWidgets.QAction('Show Graphs')
-        context_menu['MT - EDI'].addAction(self.action_show_graphs)
-        self.action_show_graphs.triggered.connect(self.show_graphs)
-
-        self.action_export_data = QtWidgets.QAction('Export EDI')
-        context_menu['MT - EDI'].addAction(self.action_export_data)
-        self.action_export_data.triggered.connect(self.export_data)
-
-    def birrp(self):
-        """BIRRP."""
-        fnc = birrp.BIRRP(self.parent)
-        self.parent.item_insert('Step', 'BIRRP', fnc)
-
-    def import_data(self):
-        """Import data."""
-        fnc = iodefs.ImportEDI(self.parent)
-        self.parent.item_insert('Io', 'Import EDI Data', fnc)
-
-    def export_data(self):
-        """Export data."""
-        self.parent.launch_context_item(iodefs.ExportEDI)
-
-    def occam1d(self):
-        """Occam 1D inversion."""
-        fnc = dataprep.Occam1D(self.parent)
-        self.parent.item_insert('Step', 'Occam 1D Inversion', fnc)
 
     def tdem1d(self):
         """TDEM 1D inversion."""
         fnc = tdem.TDEM1D(self.parent)
         self.parent.item_insert('Step', 'TDEM 1D Inversion', fnc)
-
-    def rotate_data(self):
-        """Rotate data."""
-        fnc = dataprep.RotateEDI(self.parent)
-        self.parent.item_insert('Step', 'Rotate EDI Data', fnc)
-
-    def sshift_data(self):
-        """Calculate Static Shift."""
-        fnc = dataprep.StaticShiftEDI(self.parent)
-        self.parent.item_insert('Step', 'Static Shift EDI Data', fnc)
-
-    def mi_data(self):
-        """Mask and interpolate data."""
-        fnc = dataprep.EditEDI(self.parent)
-        self.parent.item_insert('Step', 'Mask and Interpolate EDI Data', fnc)
-
-    def metadata(self):
-        """Metadata."""
-        self.parent.launch_context_item(dataprep.Metadata)
-
-    def show_graphs(self):
-        """Show graphs."""
-        self.parent.launch_context_item(graphs.PlotPoints)

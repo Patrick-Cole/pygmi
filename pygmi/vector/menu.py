@@ -111,7 +111,7 @@ class MenuWidget():
 
         self.action_show_line_data2 = QtWidgets.QAction('Show Line Data Map')
         context_menu['Line'].addAction(self.action_show_line_data2)
-        self.action_show_line_data2.triggered.connect(self.show_line_data2)
+        self.action_show_line_data2.triggered.connect(self.show_line_map)
 
         context_menu['Vector'].addSeparator()
 
@@ -173,9 +173,9 @@ class MenuWidget():
         """Show line data."""
         self.parent.launch_context_item(graphs.PlotLines)
 
-    def show_line_data2(self):
-        """Show line data."""
-        self.parent.launch_context_item(graphs.PlotLines2)
+    def show_line_map(self):
+        """Show line map."""
+        self.parent.launch_context_item(graphs.PlotLineMap)
 
     def show_vector_data(self):
         """Show vector data."""

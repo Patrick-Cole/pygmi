@@ -331,6 +331,27 @@ class MyMplCanvas(FigureCanvas):
         if std == 0:
             std = 1
 
+        # Get average spacing between 2 points over the entire survey.
+        spcing = []
+        for line in data.data:
+            data1 = data.data[line]
+            x = data1[data.xchannel]
+            y = data1[data.ychannel]
+            z = data1[ival]
+            x = x[z != data.nullvalue]
+            y = y[z != data.nullvalue]
+
+            nanchk = np.logical_or(~np.isnan(x), ~np.isnan(y))
+            x = x[nanchk]
+            y = y[nanchk]
+
+            if x.size < 2:
+                continue
+
+            spcing = np.append(spcing, np.sqrt(np.diff(x)**2+np.diff(y)**2))
+
+        spcing = spcing.mean()
+
         for line in data.data:
             data1 = data.data[line]
             x = data1[data.xchannel]
@@ -348,9 +369,6 @@ class MyMplCanvas(FigureCanvas):
             if x.size < 2:
                 continue
 
-            spcing = min(x.ptp(), y.ptp())/len(data.data)
-
-
             ang = np.arctan2((y[1:]-y[:-1]), (x[1:]-x[:-1]))
             ang = np.append(ang, ang[-1])
 
@@ -360,7 +378,7 @@ class MyMplCanvas(FigureCanvas):
             elif y.ptp() > x.ptp() and (y[-1]-y[0]) < 0:
                 ang += np.pi
 
-            py = spcing*scale*(z - med)/std
+            py = spcing*scale*(z - med)/std/100.
 
             qx = x - np.sin(ang) * py
             qy = y + np.cos(ang) * py
@@ -663,7 +681,7 @@ class PlotLines(GraphWindow):
         self.combobox2.currentIndexChanged.connect(self.change_band)
 
 
-class PlotLines2(GraphWindow):
+class PlotLineMap(GraphWindow):
     """Plot Lines2 Class."""
 
     def __init__(self, parent):

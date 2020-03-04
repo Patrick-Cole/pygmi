@@ -254,11 +254,12 @@ class DataGrid(QtWidgets.QDialog):
 
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
     def acceptall(self):
         """
@@ -421,11 +422,12 @@ class DataMerge(QtWidgets.QDialog):
         self.dsb_dxy.setValue(dxy)
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
     def acceptall(self):
         """
@@ -657,11 +659,13 @@ class DataReproj(QtWidgets.QDialog):
         self.out_proj.set_current(self.indata['Raster'][0].wkt)
 
         tmp = self.exec_()
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
 
-        return tmp
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        return True
 
 
 class GetProf():
@@ -1131,11 +1135,13 @@ class Metadata(QtWidgets.QDialog):
         self.update_vals()
 
         tmp = self.exec_()
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
 
-        return tmp
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        return True
 
 
 class RTP(QtWidgets.QDialog):
@@ -1230,11 +1236,12 @@ class RTP(QtWidgets.QDialog):
         self.dsb_dec.setValue(-16.75)
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
     def acceptall(self):
         """

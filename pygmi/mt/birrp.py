@@ -739,6 +739,6 @@ class BIRRP(QtWidgets.QDialog):
             tmp = self.exec_()
 
             if tmp != 1:
-                return tmp
+                return False
 
         return True

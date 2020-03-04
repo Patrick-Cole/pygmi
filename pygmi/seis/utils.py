@@ -133,11 +133,12 @@ class CorrectDescriptions(QtWidgets.QDialog):
 
         tmp = self.exec_()
 
-        if tmp == 1:
-            self.acceptall()
-            tmp = True
+        if tmp != 1:
+            return False
 
-        return tmp
+        self.acceptall()
+
+        return True
 
     def acceptall(self):
         """
