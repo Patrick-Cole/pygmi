@@ -2,6 +2,29 @@
 Changelog
 =========
 
+v3.0.2, 5 March 2020
+--------------------
+* Improved line map scaling.
+* Separated MT and EM routines.
+* Made exit returns from routines more consistant.
+* Added ability to tie in local gravity base station to a known base station.
+* Fixed column labelling of gps data in gravity module.
+* Fixed output of ternary colorbar.
+* fixed bug when using 2% clip on sunshading
+* Fixed bug due to gdal axis api change in 3.0
+* Added 2% data clip to interpretation.
+* Changed way PyGMI uses processlog on the main window. It now redirected from stdout.
+* Fixed a scaling bug with derivative calculations. The calculations now correctly take into account cell spacing.
+* Update pygmi.grav.iodefs.importpointdata.html
+* Now able to grid line data.
+* Corrected some errors in gravity processing.
+* Fixed some problems with gravity processing and visualisation.
+* Added seismology description corrections.
+* Added new seismology tools.
+* Fix colorbar export for ginterp.
+* Added docstrings to many routines.
+* Worked on model merge bug.
+
 v3.0.1, 6 December 2019
 -----------------------
 * Added custom profiles to the modelling interface

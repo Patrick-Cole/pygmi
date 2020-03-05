@@ -272,8 +272,6 @@ class TDEM1D(QtWidgets.QDialog):
 
         line = '2012.0'
         fid = 964.
-        txarea = 314.
-        offTime = 0.01004
 
         times = np.array([4.7000e-05, 5.9800e-05, 7.2600e-05, 8.8600e-05,
                           1.1180e-04, 1.4540e-04, 1.8520e-04, 2.3440e-04,
@@ -281,8 +279,8 @@ class TDEM1D(QtWidgets.QDialog):
                           7.2780e-04, 9.1120e-04, 1.1170e-03, 1.4292e-03,
                           1.7912e-03, 2.2460e-03, 2.8174e-03, 3.5356e-03,
                           4.4388e-03, 5.5750e-03, 7.0000e-03, 8.8000e-03])
-#        times = times + peakTime
-        times = times + offTime
+        times = times + peakTime
+#        times = times + offTime
         a = 3.
 
         skytem = self.data.data[line][self.data.data[line]['fid'] == fid]
@@ -348,7 +346,7 @@ class TDEM1D(QtWidgets.QDialog):
         # Note: we are Using theoretical VTEM waveform,
         # but effectively fits SkyTEM waveform
 
-        dbdt_z = EM.TDEM.Rx.Point_dbdt(locs=rxLoc, times=times[:-3],
+        dbdt_z = EM.TDEM.Rx.Point_dbdt(locs=rxLoc, times=times,
                                        orientation='z')  # vertical db_dt
         rxList = [dbdt_z]  # list of receivers
         wform = EM.TDEM.Src.VTEMWaveform(offTime=offTime, peakTime=peakTime,
@@ -357,12 +355,17 @@ class TDEM1D(QtWidgets.QDialog):
                                             orientation='z', waveform=wform)]
 
         # solve the problem at these times
-        timeSteps = [(peakTime/5, 5),            # On time section
-                     ((offTime-peakTime)/5, 5),  # Off time section
-                     (1e-5, 5),
-                     (5e-5, 5),
-                     (1e-4, 10),
-                     (5e-4, 15)]
+#        timeSteps = [(peakTime/5, 5),            # On time section
+#                     ((offTime-peakTime)/5, 5),  # Off time section
+#                     (1e-5, 5),
+#                     (5e-5, 5),
+#                     (1e-4, 10),
+#                     (5e-4, 15)]
+
+        dtimes = np.diff(times).tolist()
+        timeSteps = ([peakTime/5]*5 + [(offTime-peakTime)/5]*5 +
+                     dtimes + [dtimes[-1]])
+
         prob = EM.TDEM.Problem3D_e(mesh, timeSteps=timeSteps, sigmaMap=mapping,
                                    Solver=Solver)
         survey = EM.TDEM.Survey(srcList)
@@ -375,7 +378,7 @@ class TDEM1D(QtWidgets.QDialog):
         wave = np.hstack(wave)
 
         # Observed data
-        dobs_sky = emdata[:-3] * area
+        dobs_sky = emdata * area
 
         # ------------------ SkyTEM Inversion ------------------ #
         # Uncertainty
@@ -414,13 +417,11 @@ class TDEM1D(QtWidgets.QDialog):
         mopt_sky = inv.run(m0)
         dpred_sky = invProb.dpred
 
-
-
         sigma = np.repeat(np.exp(mopt_sky), 2, axis=0)
         z = np.repeat(mesh.vectorCCz[active][1:], 2, axis=0)
         z = np.r_[mesh.vectorCCz[active][0], z, mesh.vectorCCz[active][-1]]
 
-        times_off = ((times - offTime)*1e6)[3:]
+        times_off = ((times - offTime)*1e6)
         zobs = dobs_sky/area
         zpred = -dpred_sky/area
 
