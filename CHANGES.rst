@@ -4,6 +4,7 @@ Changelog
 
 v3.0.2, 5 March 2020
 --------------------
+* SimPEG 1D TDEM inversion (pre release alpha)
 * Improved line map scaling.
 * Separated MT and EM routines.
 * Made exit returns from routines more consistant.

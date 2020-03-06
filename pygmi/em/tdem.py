@@ -27,7 +27,6 @@
 import sys
 import os
 import copy
-import glob
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvas
@@ -78,55 +77,26 @@ class MyMplCanvas2(FigureCanvas):
 
         """
         self.figure.clear()
-#        gs = self.figure.add_gridspec(3, 3)
 
         ax1 = self.figure.add_subplot(121, label='Profile')
-#        self.figure.suptitle(title)
-#        ax1.grid(True, 'both')
-
         ax1.semilogx(sigma, z, 'b', lw=2)
-        ax1.set_ylim(-50, 0)
         ax1.grid(True)
         ax1.set_ylabel("Depth (m)")
         ax1.set_xlabel("Conductivity (S/m)")
-#        ax1.legend(loc=3)
         ax1.set_title("Recovered Model")
-
-
-#        ax1.plot(x, res1, 'b.', label=label1)
-#        ax1.plot(x, res2, 'r.', label=label2)
-#
-#        ax1.set_xscale('log')
-#        ax1.set_yscale('log')
-#        ax1.legend(loc='upper left')
-#        ax1.set_xlabel('Period (s)')
-#        ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
 
         ax2 = self.figure.add_subplot(122)
         ax2.grid(True, 'both')
-
-
         ax2.loglog(times_off, zobs, 'b-', label="Observed")
         ax2.loglog(times_off, zpred, 'bo', ms=4,
                    markeredgecolor='k', markeredgewidth=0.5, label="Predicted")
-
         ax2.set_xlim(times_off.min()*1.2, times_off.max()*1.1)
-
         ax2.set_xlabel(r"Time ($\mu s$)")
         ax2.set_ylabel("dBz / dt (V/A-m$^4$)")
         ax2.set_title("High-moment")
         ax2.grid(True)
         ax2.legend(loc=3)
 
-#
-#        ax2.set_ylim(-180., 180.)
-#
-#        ax2.set_xscale('log')
-#        ax2.set_yscale('linear')
-#        ax2.set_xlabel('Period (s)')
-#        ax2.set_ylabel(r'Phase (Degrees)')
-
-#        gs.tight_layout(self.figure)
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
@@ -141,16 +111,16 @@ class TDEM1D(QtWidgets.QDialog):
         self.data = None
         self.parent = parent
         self.cursoln = 0
+        self.times = None
 
         self.setWindowTitle('TDEM 1D Inversion')
-        helpdocs = menu_default.HelpButton('pygmi.em.occam1d')
+        helpdocs = menu_default.HelpButton('pygmi.em.tdem1d')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Fixed)
 
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
-        hbl2 = QtWidgets.QHBoxLayout()
         gbl = QtWidgets.QGridLayout()
         gbl.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
         self.mmc = MyMplCanvas2(self)
@@ -166,6 +136,10 @@ class TDEM1D(QtWidgets.QDialog):
         self.txpeaktime = QtWidgets.QLineEdit('0.01')
         self.txpeaktime.setSizePolicy(sizepolicy)
         self.datachan = QtWidgets.QLineEdit('Z_Ch')
+        self.wfile = QtWidgets.QLineEdit('')
+        pb_wfile = QtWidgets.QPushButton('Load Window Times')
+
+
 #        self.errfloorphase.setSizePolicy(sizepolicy)
 #
 #        self.targetdepth = QtWidgets.QLineEdit('40000.')
@@ -222,8 +196,8 @@ class TDEM1D(QtWidgets.QDialog):
         gbl.addWidget(self.txpeaktime, 4, 1)
         gbl.addWidget(label7, 6, 0)
         gbl.addWidget(self.datachan, 6, 1)
-#        gbl.addWidget(label8, 7, 0)
-#        gbl.addWidget(self.airlayer, 7, 1)
+        gbl.addWidget(pb_wfile, 7, 0)
+        gbl.addWidget(self.wfile, 7, 1)
 #        gbl.addWidget(label9, 8, 0)
 #        gbl.addWidget(self.bottomlayer, 8, 1)
 #        gbl.addWidget(label10, 9, 0)
@@ -234,22 +208,19 @@ class TDEM1D(QtWidgets.QDialog):
 #        gbl.addWidget(self.nlayers, 11, 1)
 #        gbl.addWidget(label13, 12, 0)
 #        gbl.addWidget(self.maxiter, 12, 1)
-#        gbl.addWidget(label14, 13, 0)
-#        gbl.addWidget(self.targetrms, 13, 1)
 
-        gbl.addWidget(pb_apply, 14, 0, 1, 2)
-
-        hbl2.addWidget(helpdocs)
-        hbl2.addWidget(self.lbl_profnum)
+        gbl.addWidget(helpdocs, 14, 0)
+        gbl.addWidget(pb_apply, 14, 1)
 
         vbl.addWidget(self.mmc)
-        vbl.addLayout(hbl2)
         vbl.addWidget(mpl_toolbar)
 
         hbl.addLayout(gbl)
         hbl.addLayout(vbl)
 
         pb_apply.clicked.connect(self.apply)
+        pb_wfile.pressed.connect(self.get_wfile)
+
         self.comboline.currentIndexChanged.connect(self.change_line)
 
     def apply(self):
@@ -261,26 +232,24 @@ class TDEM1D(QtWidgets.QDialog):
         None.
 
         """
+        if self.times is None:
+            text = 'You need to load window times first.'
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
+                                          QtWidgets.QMessageBox.Ok)
+            return
 
         dprefix = (self.datachan.text()).lower()
         line = self.comboline.currentText()
         fid = float(self.combofid.currentText())
         balt = self.combobalt.currentText()
         txarea = float(self.txarea.text())
-        offTime = float(self.txofftime.text())
-        peakTime = float(self.txpeaktime.text())
+        offtime = float(self.txofftime.text())
+        peaktime = float(self.txpeaktime.text())
 
-        line = '2012.0'
-        fid = 964.
-
-        times = np.array([4.7000e-05, 5.9800e-05, 7.2600e-05, 8.8600e-05,
-                          1.1180e-04, 1.4540e-04, 1.8520e-04, 2.3440e-04,
-                          2.9520e-04, 3.7060e-04, 4.6440e-04, 5.8140e-04,
-                          7.2780e-04, 9.1120e-04, 1.1170e-03, 1.4292e-03,
-                          1.7912e-03, 2.2460e-03, 2.8174e-03, 3.5356e-03,
-                          4.4388e-03, 5.5750e-03, 7.0000e-03, 8.8000e-03])
-        times = times + peakTime
-#        times = times + offTime
+#        line = '2012.0'
+#        fid = 964.
+        times = self.times
+        times = times + peaktime
         a = 3.
 
         skytem = self.data.data[line][self.data.data[line]['fid'] == fid]
@@ -302,23 +271,29 @@ class TDEM1D(QtWidgets.QDialog):
 
         # ------------------ Mesh ------------------ #
         # Step1: Set 2D cylindrical mesh
-        cs, ncx, _, npad = 1., 10., 10., 20
+        # hx and hz are not depths. They are lists of dx and dz.
+        cs, ncx, ncz, npad = 1., 10., 10., 20
         hx = [(cs, ncx), (cs, npad, 1.3)]
-        npad = 12
-        temp = np.logspace(np.log10(1.), np.log10(12.), 19)
-        temp_pad = temp[-1] * 1.3 ** np.arange(npad)
-        hz = np.r_[temp_pad[::-1], temp[::-1], temp, temp_pad]
+#        npad = 12
+#        temp = np.logspace(np.log10(1.), np.log10(12.), 19)
+#        temp_pad = temp[-1] * 1.3 ** np.arange(npad)
+#        hz = np.r_[temp_pad[::-1], temp[::-1], temp, temp_pad]
+#        mesh = Mesh.CylMesh([hx, 1, hz], '00C')
+#        active = mesh.vectorCCz < 0.
+
+        npad = 20
+        hz = [(cs, npad, -1.3), (cs, ncz*2), (cs, npad, 1.3)]
         mesh = Mesh.CylMesh([hx, 1, hz], '00C')
-        active = mesh.vectorCCz < 0.
+#        breakpoint()
 
         # Step2: Set a SurjectVertical1D mapping
         # Note: this sets our inversion model as 1D log conductivity
         # below subsurface
 
         active = mesh.vectorCCz < 0.
-        actMap = Maps.InjectActiveCells(mesh, active, np.log(1e-8),
+        actmap = Maps.InjectActiveCells(mesh, active, np.log(1e-8),
                                         nC=mesh.nCz)
-        mapping = Maps.ExpMap(mesh) * Maps.SurjectVertical1D(mesh) * actMap
+        mapping = Maps.ExpMap(mesh) * Maps.SurjectVertical1D(mesh) * actmap
         sig_half = 1e-1
         sig_air = 1e-8
         sigma = np.ones(mesh.nCz)*sig_air
@@ -335,43 +310,43 @@ class TDEM1D(QtWidgets.QDialog):
 #        src_height = b_height_skytem[rxind_skytem]
 
         src_height = skytem[balt][0]
-        srcLoc = np.array([0., 0., src_height])
+        srcloc = np.array([0., 0., src_height])
 
         # Radius of the source loop
         area = txarea
         radius = np.sqrt(area/np.pi)
-        rxLoc = np.array([[radius, 0., src_height]])
+        rxloc = np.array([[radius, 0., src_height]])
 
         # Parameters for current waveform
         # Note: we are Using theoretical VTEM waveform,
         # but effectively fits SkyTEM waveform
 
-        dbdt_z = EM.TDEM.Rx.Point_dbdt(locs=rxLoc, times=times,
+        dbdt_z = EM.TDEM.Rx.Point_dbdt(locs=rxloc, times=times,
                                        orientation='z')  # vertical db_dt
-        rxList = [dbdt_z]  # list of receivers
-        wform = EM.TDEM.Src.VTEMWaveform(offTime=offTime, peakTime=peakTime,
+        rxlist = [dbdt_z]  # list of receivers
+        wform = EM.TDEM.Src.VTEMWaveform(offTime=offtime, peakTime=peaktime,
                                          a=a)
-        srcList = [EM.TDEM.Src.CircularLoop(rxList, loc=srcLoc, radius=radius,
+        srclist = [EM.TDEM.Src.CircularLoop(rxlist, loc=srcloc, radius=radius,
                                             orientation='z', waveform=wform)]
 
         # solve the problem at these times
-#        timeSteps = [(peakTime/5, 5),            # On time section
-#                     ((offTime-peakTime)/5, 5),  # Off time section
+#        timeSteps = [(peaktime/5, 5),            # On time section
+#                     ((offtime-peaktime)/5, 5),  # Off time section
 #                     (1e-5, 5),
 #                     (5e-5, 5),
 #                     (1e-4, 10),
 #                     (5e-4, 15)]
 
         dtimes = np.diff(times).tolist()
-        timeSteps = ([peakTime/5]*5 + [(offTime-peakTime)/5]*5 +
+        timesteps = ([peaktime/5]*5 + [(offtime-peaktime)/5]*5 +
                      dtimes + [dtimes[-1]])
 
-        prob = EM.TDEM.Problem3D_e(mesh, timeSteps=timeSteps, sigmaMap=mapping,
+        prob = EM.TDEM.Problem3D_e(mesh, timeSteps=timesteps, sigmaMap=mapping,
                                    Solver=Solver)
-        survey = EM.TDEM.Survey(srcList)
+        survey = EM.TDEM.Survey(srclist)
         prob.pair(survey)
 
-        src = srcList[0]
+        src = srclist[0]
         wave = []
         for time in prob.times:
             wave.append(src.waveform.eval(time))
@@ -393,20 +368,20 @@ class TDEM1D(QtWidgets.QDialog):
         dmisfit.W = Utils.sdiag(1./uncert)
 
         # Regularization
-        regMesh = Mesh.TensorMesh([mesh.hz[mapping.maps[-1].indActive]])
-        reg = Regularization.Simple(regMesh, mapping=Maps.IdentityMap(regMesh))
+        regmesh = Mesh.TensorMesh([mesh.hz[mapping.maps[-1].indActive]])
+        reg = Regularization.Simple(regmesh, mapping=Maps.IdentityMap(regmesh))
 
         # Optimization
         opt = Optimization.InexactGaussNewton(maxIter=5)
 
         # statement of the inverse problem
-        invProb = InvProblem.BaseInvProblem(dmisfit, reg, opt)
+        invprob = InvProblem.BaseInvProblem(dmisfit, reg, opt)
 
         # Directives and Inversion Parameters
         target = Directives.TargetMisfit()
         # betaest = Directives.BetaEstimate_ByEig(beta0_ratio=1e0)
-        invProb.beta = 20.
-        inv = Inversion.BaseInversion(invProb, directiveList=[target])
+        invprob.beta = 20.
+        inv = Inversion.BaseInversion(invprob, directiveList=[target])
         reg.alpha_s = 1e-1
         reg.alpha_x = 1.
         opt.LSshorten = 0.5
@@ -415,13 +390,13 @@ class TDEM1D(QtWidgets.QDialog):
 
         # run the inversion
         mopt_sky = inv.run(m0)
-        dpred_sky = invProb.dpred
+        dpred_sky = invprob.dpred
 
         sigma = np.repeat(np.exp(mopt_sky), 2, axis=0)
         z = np.repeat(mesh.vectorCCz[active][1:], 2, axis=0)
         z = np.r_[mesh.vectorCCz[active][0], z, mesh.vectorCCz[active][-1]]
 
-        times_off = ((times - offTime)*1e6)
+        times_off = ((times - offtime)*1e6)
         zobs = dobs_sky/area
         zpred = -dpred_sky/area
 
@@ -429,15 +404,32 @@ class TDEM1D(QtWidgets.QDialog):
 
 #        self.outdata['Line'] = self.data
 
-    def reset_data(self):
+    def get_wfile(self, filename=''):
         """
-        Reset data.
+        Get window time filename.
+
+        Parameters
+        ----------
+        filename : str, optional
+            filename (txt). The default is ''.
 
         Returns
         -------
         None.
 
         """
+        ext = ('Text file (*.txt)')
+
+        if filename == '':
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if filename == '':
+                return
+
+        os.chdir(os.path.dirname(filename))
+        self.times = np.loadtxt(filename)
+
+        self.wfile.setText(filename)
 
     def change_line(self):
         """
@@ -585,6 +577,13 @@ def testrun():
 
     tmp = TDEM1D(None)
     tmp.indata['Line'] = dat2
+    times = np.array([4.7000e-05, 5.9800e-05, 7.2600e-05, 8.8600e-05,
+                      1.1180e-04, 1.4540e-04, 1.8520e-04, 2.3440e-04,
+                      2.9520e-04, 3.7060e-04, 4.6440e-04, 5.8140e-04,
+                      7.2780e-04, 9.1120e-04, 1.1170e-03, 1.4292e-03,
+                      1.7912e-03, 2.2460e-03, 2.8174e-03, 3.5356e-03,
+                      4.4388e-03, 5.5750e-03, 7.0000e-03, 8.8000e-03])
+    tmp.times = times
     tmp.settings()
 
 

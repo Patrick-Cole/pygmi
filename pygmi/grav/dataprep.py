@@ -64,7 +64,7 @@ class ProcessData(QtWidgets.QDialog):
         self.dataid = QtWidgets.QComboBox()
         self.checkbox = QtWidgets.QCheckBox('Apply to all stations:')
         self.density = QtWidgets.QLineEdit('2670')
-        self.knownstat = QtWidgets.QLineEdit('88888.')
+        self.knownstat = QtWidgets.QLineEdit('None')
         self.knownbase = QtWidgets.QLineEdit('978000.0')
         self.absbase = QtWidgets.QLineEdit('978032.67715')
         self.basethres = QtWidgets.QLineEdit('10000')
@@ -144,10 +144,16 @@ class ProcessData(QtWidgets.QDialog):
             float(self.absbase.text())
             float(self.basethres.text())
             float(self.knownbase.text())
-            float(self.knownstat.text())
         except ValueError:
             print('Value Error')
             return False
+
+        if self.knownstat.text() != 'None':
+            try:
+                float(self.knownstat.text())
+            except ValueError:
+                print('Value Error')
+                return False
 
         if tmp != 1:
             return False
@@ -167,12 +173,17 @@ class ProcessData(QtWidgets.QDialog):
         None.
 
         """
+
         newdat = self.indata['Line']
 
         dat = self.indata['Line'].data
 
         basethres = float(self.basethres.text())
-        kstat = float(self.knownstat.text())
+        kstat = self.knownstat.text()
+        if kstat == 'None':
+            kstat = -1.0
+        else:
+            kstat = float(kstat)
 
 # Convert multiple lines to single dataset.
         pdat = None

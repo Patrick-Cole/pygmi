@@ -1,39 +1,48 @@
 # PyGMI Readme
 
-PyGMI stands for *Python Geoscience Modelling and Interpretation*. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets. It includes:
+PyGMI stands for *Python Geoscience Modelling and Interpretation*. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets. 
+
+PyGMI is developed at the [Council for Geoscience](http://www.geoscience.org.za) (Geological Survey of South Africa).
+
+It includes:
 * Magnetic and Gravity 3D forward modelling
 * Cluster Analysis
 * Routines for cutting, reprojecting and doing simple modifications to data
 * Convenient display of data using pseudo-color, ternary and sunshaded representation
 
-It is released under the Gnu General Public License version 3.0
+It is released under the Gnu General Public License version [3.0](http://www.gnu.org/copyleft/gpl.html)
 
-For license information see the file LICENSE.txt
+The PyGMI [Wiki](http://patrick-cole.github.io/pygmi/index.html) pages, include installation and full usage!
+
+You may need to install the [Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads)
 
 ## Requirements
-PyGMI will run on both Windows and Linux. It should be noted that the main development is now being done in Python 3.7 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is now being done in Python 3.8 on Windows.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.7.4
-* GDAL 3.0.2
-* llvmlite 0.29.0
-* matplotlib 3.1.1
-* numba 0.45.1
-* numexpr 2.7.0
-* numpy 1.16.5
-* pillow 6.2.1
-* pandas 0.25.1
-* pyopengl 3.1.3b2
-* pyqt5 5.13.1
-* scipy 1.3.1
-* scikit_learn 0.21.3
+* python 3.8.1
+* GDAL 3.0.4
+* llvmlite 0.31.0
+* matplotlib 3.2.0rc2
+* numba 0.47.0
+* numexpr 2.7.1
+* numpy 1.18.0
+* pillow 7.0.0
+* pandas 0.25.3
+* pyopengl 3.1.5
+* pyqt5 5.12.3
+* scipy 1.4.1
+* scikit_learn 0.21.1
 * scikit_image 0.16.2
 * setuptools 41.0.1
-* segyio 1.8.8
-* geopandas 0.6.1
+* segyio 1.9.0
+* geopandas 0.6.2
 * pytest 5.1.2
 * mtpy 1.1.3
+* pytest 5.3.2
+* SimPEG 0.13.1
+* pymatsolver 0.1.2
 
 ## Installation
 ### General (Not Anaconda)

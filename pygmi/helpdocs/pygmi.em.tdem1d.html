@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>TDEM 1D Inversion</h1>
+		<p>TDEM inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Line data is imported using the Import Line Data tool in the Vector menu.  The current TDEM tool is developed for EM data which has a VTEM waveform (i.e. VTEM and SkyTEM sensors).</p>
+		<h2>Options</h2>
+		<ul>
+			<li>Line Number</li>
+			<li>Fid/Station Name</li>
+			<li>Bird Height - Height of the sensor.</li>
+			<li>Tx Area - Transmitter area</li>
+			<li>Tx Peak Time - Time when the input VTEM waveform is at its maximum.</li>
+			<li>Tx Off Time -  Time when the waveform is completely off.</li>
+			<li>Data Channel Prefix - Prefix in ASCII data file, indicating a data channel.</li>
+			<li>Invert Station - used to invert the current station</li>
+		</ul>
+		<h2>References</h2>
+		<p>Cockett, Rowan, Seogi Kang, Lindsey J. Heagy, Adam Pidlisecky, and Douglas W. Oldenburg. "SimPEG: An Open Source Framework for Simulation and Gradient Based Parameter Estimation in Geophysical Applications" Computers & Geosciences, September 2015. doi:10.1016/j.cageo.2015.09.015.</p>
+		<p>Lindsey J. Heagy, Rowan Cockett, Seogi Kang, Gudni K. Rosenkjaer, Douglas W. Oldenburg. "A framework for simulation and inversion in electromagnetics" Computers & Geosciences, September 2017. doi:10.1016/j.cageo.2017.06.018</p>
+	</body>
+</html>
