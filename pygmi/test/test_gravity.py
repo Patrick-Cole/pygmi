@@ -57,7 +57,7 @@ def test_process_data():
 
     datout = PD.outdata['Line']
 
-    boug = datout.data['0.0']['BOUGUER']
+    boug = datout['Gravity']['BOUGUER']
 
     datout2 = np.array([-716.52712078, -716.51673835, -716.30407754,
                         -716.31414489, -716.17791685, -716.23806028,

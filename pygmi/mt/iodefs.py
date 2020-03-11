@@ -89,11 +89,12 @@ class ImportLEMI417Data():
 
         gdf['pygmiX'] = np.nan
         gdf['pygmiY'] = np.nan
+        gdf['line'] = 'None'
 
-        if 'Point' not in self.outdata:
-            self.outdata['Point'] = {}
+        if 'Line' not in self.outdata:
+            self.outdata['Line'] = {}
 
-        self.outdata['Point'][self.ifile] = gdf
+        self.outdata['Line'][self.ifile] = gdf
 
         return True
 

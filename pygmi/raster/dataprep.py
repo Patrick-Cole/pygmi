@@ -169,7 +169,7 @@ class DataGrid(QtWidgets.QDialog):
         self.dsb_null.setMinimum(np.finfo(np.double).min)
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.0000001)
-        self.dsb_dxy.setDecimals(7)
+        self.dsb_dxy.setDecimals(11)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -201,8 +201,9 @@ class DataGrid(QtWidgets.QDialog):
 
         """
         dxy = self.dsb_dxy.value()
-        data = self.indata['Point']
-        data = list(data.values())[0]
+        key = list(self.indata['Line'].keys())[0]
+        data = self.indata['Line'][key]
+        data = data.dropna()
 
         x = data.pygmiX.values
         y = data.pygmiY.values
@@ -226,17 +227,15 @@ class DataGrid(QtWidgets.QDialog):
 
         """
         tmp = []
-        if 'Point' not in self.indata and 'Line' not in self.indata:
+        if 'Line' not in self.indata:
             print('No Point Data')
             return False
 
-        if 'Line' in self.indata:
-            self.indata['Point'] = self.indata['Line']
-
         self.dataid.clear()
 
-        data = self.indata['Point']
-        data = list(data.values())[0]
+        key = list(self.indata['Line'].keys())[0]
+        data = self.indata['Line'][key]
+        data = data.dropna()
 
         filt = ((data.columns != 'geometry') &
                 (data.columns != 'line') &
@@ -282,9 +281,8 @@ class DataGrid(QtWidgets.QDialog):
         """
         dxy = self.dsb_dxy.value()
         nullvalue = self.dsb_null.value()
-        data = self.indata['Point']
-        data = list(data.values())[0]
-
+        key = list(self.indata['Line'].keys())[0]
+        data = self.indata['Line'][key]
         data = data.dropna()
         newdat = []
 
@@ -309,7 +307,7 @@ class DataGrid(QtWidgets.QDialog):
         newdat.append(dat)
 
         self.outdata['Raster'] = newdat
-        self.outdata['Point'] = self.indata['Point']
+        self.outdata['Line'] = self.indata['Line']
 
 
 class DataMerge(QtWidgets.QDialog):
@@ -782,8 +780,9 @@ class GetProf():
             gdf[idata.dataid] = tmpprof
 
         shapef = None
+        gdf['line'] = 'None'
 
-        self.outdata['Point'] = {'profile': gdf}
+        self.outdata['Line'] = {'profile': gdf}
 
         return True
 

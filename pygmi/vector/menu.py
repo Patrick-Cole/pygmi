@@ -46,7 +46,6 @@ class MenuWidget():
     def __init__(self, parent):
 
         self.parent = parent
-        self.parent.add_to_context('Point')
         self.parent.add_to_context('Line')
         self.parent.add_to_context('Vector')
         context_menu = self.parent.context_menu
@@ -58,11 +57,7 @@ class MenuWidget():
         self.menufile.addAction(self.action_import_shape_data)
         self.action_import_shape_data.triggered.connect(self.import_shape_data)
 
-        self.action_import_point_data = QtWidgets.QAction('Import Point Data')
-        self.menufile.addAction(self.action_import_point_data)
-        self.action_import_point_data.triggered.connect(self.import_point_data)
-
-        self.action_import_line_data = QtWidgets.QAction('Import Line Data')
+        self.action_import_line_data = QtWidgets.QAction('Import Point or Line Data')
         self.menufile.addAction(self.action_import_line_data)
         self.action_import_line_data.triggered.connect(self.import_line_data)
 
@@ -72,6 +67,10 @@ class MenuWidget():
         self.menufile.addAction(self.action_cut_data)
         self.action_cut_data.triggered.connect(self.cut_data)
 
+        self.action_reproject = QtWidgets.QAction('Reproject Line Data')
+        self.menufile.addAction(self.action_reproject)
+        self.action_reproject.triggered.connect(self.reproject)
+
         self.menufile.addSeparator()
 
         self.action_grid = QtWidgets.QAction('Grid Point Data (Linear)')
@@ -80,20 +79,6 @@ class MenuWidget():
 
 
 # Context menus
-        context_menu['Point'].addSeparator()
-
-        self.action_export_point = QtWidgets.QAction('Export Point Data')
-        context_menu['Point'].addAction(self.action_export_point)
-        self.action_export_point.triggered.connect(self.export_point)
-
-        self.action_show_point_data = QtWidgets.QAction('Show Point Data Profile')
-        context_menu['Point'].addAction(self.action_show_point_data)
-        self.action_show_point_data.triggered.connect(self.show_point_data)
-
-        self.action_show_point_data2 = QtWidgets.QAction('Show Point Data Map')
-        context_menu['Point'].addAction(self.action_show_point_data2)
-        self.action_show_point_data2.triggered.connect(self.show_point_data2)
-
         context_menu['Line'].addSeparator()
 
         self.action_export_line = QtWidgets.QAction('Export Line Data')
@@ -107,6 +92,10 @@ class MenuWidget():
         self.action_show_line_data2 = QtWidgets.QAction('Show Line Data Map')
         context_menu['Line'].addAction(self.action_show_line_data2)
         self.action_show_line_data2.triggered.connect(self.show_line_map)
+
+        self.action_show_point_data2 = QtWidgets.QAction('Show Point Data Map')
+        context_menu['Line'].addAction(self.action_show_point_data2)
+        self.action_show_point_data2.triggered.connect(self.show_point_map)
 
         context_menu['Vector'].addSeparator()
 
@@ -124,22 +113,18 @@ class MenuWidget():
         self.parent.item_insert('Step', 'Grid Point Data', fnc)
 
     def cut_data(self):
-        """Export point data."""
+        """Cut point data."""
         fnc = iodefs.PointCut(self.parent)
         self.parent.item_insert('Step', 'Cut Points', fnc)
 
-    def export_point(self):
-        """Export point data."""
-        self.parent.launch_context_item(iodefs.ExportPoint)
+    def reproject(self):
+        """Reproject point data."""
+        fnc = iodefs.DataReproj(self.parent)
+        self.parent.item_insert('Step', 'Reproject Line Data', fnc)
 
     def export_line(self):
-        """Export point data."""
+        """Export line data."""
         self.parent.launch_context_item(iodefs.ExportLine)
-
-    def import_point_data(self):
-        """Import point data."""
-        fnc = iodefs.ImportPointData(self.parent)
-        self.parent.item_insert('Io', 'Import Point Data', fnc)
 
     def import_line_data(self):
         """Import line data."""
@@ -151,13 +136,9 @@ class MenuWidget():
         fnc = iodefs.ImportShapeData(self.parent)
         self.parent.item_insert('Io', 'Import Shapefile Data', fnc)
 
-    def show_point_data(self):
+    def show_point_map(self):
         """Show point data."""
         self.parent.launch_context_item(graphs.PlotPoints)
-
-    def show_point_data2(self):
-        """Show point data."""
-        self.parent.launch_context_item(graphs.PlotPoints2)
 
     def show_line_data(self):
         """Show line data."""

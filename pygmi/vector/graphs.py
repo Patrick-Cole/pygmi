@@ -190,39 +190,6 @@ class MyMplCanvas(FigureCanvas):
 
         return True
 
-    def update_line(self, data, ival):
-        """
-        Update the plot from point data.
-
-        Parameters
-        ----------
-        data1 : PData object
-            Point data
-        ival : dictionary key
-            dictionary key Point Data
-
-        Returns
-        -------
-        None.
-
-
-        """
-        data1 = data[ival]
-
-        self.figure.clear()
-
-        ax1 = self.figure.add_subplot(111, label='Profile')
-
-#        ax1.set_title(data1.dataid)
-        self.axes = ax1
-
-        self.figure.canvas.draw()
-        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
-
-        self.line, = ax1.plot(data1, '.-', picker=5)
-        self.figure.tight_layout()
-        self.figure.canvas.draw()
-
     def update_lines(self, r, data):
         """
         Update the plot from point data.
@@ -525,55 +492,6 @@ class MyMplCanvas(FigureCanvas):
 
 
 class PlotPoints(GraphWindow):
-    """Plot Points Class."""
-
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.indata = {}
-        self.parent = parent
-        self.spinbox.hide()
-        self.label3.hide()
-        self.combobox2.hide()
-        self.label2.hide()
-
-    def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
-        data = self.indata['Point']
-        data = list(data.values())[0]
-        i = self.combobox1.currentText()
-        self.mmc.update_line(data, i)
-
-    def run(self):
-        """
-        Run.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.show()
-        data = self.indata['Point']
-
-        data = list(data.values())[0]
-        cols = list(data.columns[data.columns != 'geometry'])
-        self.combobox1.addItems(cols)
-        self.combobox2.addItems(cols)
-
-        self.label1.setText('Editable Profile:')
-        self.label2.setText('Normalised Stacked Profile:')
-        self.combobox1.setCurrentIndex(0)
-        self.combobox2.setCurrentIndex(1)
-
-
-class PlotPoints2(GraphWindow):
     """Plot Points2 Class."""
 
     def __init__(self, parent):
@@ -596,8 +514,9 @@ class PlotPoints2(GraphWindow):
         None.
 
         """
-        data = self.indata['Point']
-        data = list(data.values())[0]
+        key = list(self.indata['Line'].keys())[0]
+        data = self.indata['Line'][key]
+        data = data.dropna()
         i = self.combobox1.currentText()
 
         self.mmc.update_map(data.pygmiX, data.pygmiY, data[i])
@@ -611,9 +530,15 @@ class PlotPoints2(GraphWindow):
         None.
 
         """
-        data = self.indata['Point']
+        data = self.indata['Line']
         data = list(data.values())[0]
-        cols = list(data.columns[data.columns != 'geometry'])
+
+        filt = ((data.columns != 'geometry') &
+                (data.columns != 'line') &
+                (data.columns != 'pygmiX') &
+                (data.columns != 'pygmiY'))
+
+        cols = list(data.columns[filt])
 
         if data.pygmiX.isna().min() == True:
             print('You do not have coordinates in that point dataset.')
@@ -658,8 +583,8 @@ class PlotLines(GraphWindow):
         None.
 
         """
-        data = self.indata['Line']
-        data = list(data.values())[0]
+        key = list(self.indata['Line'].keys())[0]
+        data = self.indata['Line'][key]
         data = data.dropna()
 
         line = self.combobox1.currentText()
@@ -735,8 +660,9 @@ class PlotLineMap(GraphWindow):
         None.
 
         """
-        data = self.indata['Line']
-        data = list(data.values())[0]
+        key = list(self.indata['Line'].keys())[0]
+        data = self.indata['Line'][key]
+        data = data.dropna()
 
         scale = self.spinbox.value()
         i = self.combobox1.currentText()

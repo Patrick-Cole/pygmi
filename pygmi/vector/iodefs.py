@@ -31,125 +31,11 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import ogr
 import matplotlib.path as mplPath
+from osgeo import gdal, osr, ogr
 import pandas as pd
 import geopandas as gpd
 import pygmi.menu_default as menu_default
-
-
-class ImportPointData(QtWidgets.QDialog):
-    """
-    Import Point Data.
-
-    This class imports ASCII point data.
-
-    Attributes
-    ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.name = 'Import Point/Line Data: '
-        self.pbar = None  # self.parent.pbar
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-        self.ifile = ''
-
-        self.xchan = QtWidgets.QComboBox()
-        self.ychan = QtWidgets.QComboBox()
-
-        self.setupui()
-
-    def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
-        gridlayout_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.iodefs.importpointdata')
-        label_xchan = QtWidgets.QLabel('X Channel:')
-        label_ychan = QtWidgets.QLabel('Y Channel:')
-
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-
-        self.setWindowTitle(r'Import Point Data')
-
-        gridlayout_main.addWidget(label_xchan, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
-
-        gridlayout_main.addWidget(label_ychan, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.ychan, 1, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-
-    def settings(self):
-        """
-        Entry point into item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        ext = ('Common Formats (*.csv *.dat *.txt);;'
-               'All Files (*.*)')
-
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
-        if filename == '':
-            return False
-
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(os.path.basename(filename))
-
-        gdf = pd.read_csv(filename, sep=None, engine='python',
-                          skipinitialspace=True, index_col=False)
-        ltmp = gdf.columns.values
-
-        self.xchan.addItems(ltmp)
-        self.ychan.addItems(ltmp)
-
-        self.xchan.setCurrentIndex(0)
-        self.ychan.setCurrentIndex(1)
-
-        tmp = self.exec_()
-
-        if tmp != 1:
-            return tmp
-
-        xcol = self.xchan.currentText()
-        ycol = self.ychan.currentText()
-
-        gdf['pygmiX'] = gdf[xcol]
-        gdf['pygmiY'] = gdf[ycol]
-
-        if 'Point' not in self.outdata:
-            self.outdata['Point'] = {}
-
-        self.outdata['Point'][self.ifile] = gdf
-        return True
+from pygmi.raster.dataprep import GroupProj
 
 
 class ImportLineData(QtWidgets.QDialog):
@@ -236,6 +122,7 @@ class ImportLineData(QtWidgets.QDialog):
 
         """
         ext = ('Geosoft XYZ (*.xyz);;'
+               'ASCII XYZ (*.xyz);;'
                'Comma Delimited (*.csv);;'
                'Tab Delimited (*.txt);;'
                'All Files (*.*)')
@@ -250,6 +137,8 @@ class ImportLineData(QtWidgets.QDialog):
 
         if filt == 'Geosoft XYZ (*.xyz)':
             gdf = self.get_GXYZ()
+        elif filt == 'ASCII XYZ (*.xyz)':
+            gdf = self.get_delimited(' ')
         elif filt == 'Comma Delimited (*.csv)':
             gdf = self.get_delimited(',')
         elif filt == 'Tab Delimited (*.txt)':
@@ -307,7 +196,9 @@ class ImportLineData(QtWidgets.QDialog):
         with open(self.ifile) as fno:
             head = fno.readline()
             tmp = fno.read()
-
+        if r'/' not in head:
+            print('Not Geosoft XYZ format')
+            return None
         head = head.split()
         head.pop(0)
         tmp = tmp.lower()
@@ -340,7 +231,7 @@ class ImportLineData(QtWidgets.QDialog):
 
         Returns
         -------
-        df1 : DataFrame
+        gdf : DataFrame
             Pandas dataframe.
 
         """
@@ -353,12 +244,6 @@ class ImportLineData(QtWidgets.QDialog):
         head = [i.lower() for i in head]
         tmp = tmp.lower()
 
-        if 'line' not in head:
-            text = 'You do not have a column named "line"'
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
-                                          QtWidgets.QMessageBox.Ok)
-            return None
-
         dtype = {}
         dtype['names'] = head
         dtype['formats'] = ['f4']*len(head)
@@ -366,9 +251,12 @@ class ImportLineData(QtWidgets.QDialog):
         tmp = tmp.split('\n')
         tmp2 = np.genfromtxt(tmp, names=head, delimiter=delimiter, dtype=None,
                              encoding=None)
-        df1 = pd.DataFrame(tmp2)
+        gdf = pd.DataFrame(tmp2)
 
-        return df1
+        if 'line' not in head:
+            gdf['line'] = 'None'
+
+        return gdf
 
 
 class PointCut():
@@ -415,8 +303,8 @@ class PointCut():
             True if successful, False otherwise.
 
         """
-        if 'Point' in self.indata:
-            data = copy.deepcopy(self.indata['Point'])
+        if 'Line' in self.indata:
+            data = copy.deepcopy(self.indata['Line'])
             data = list(data.values())[0]
         else:
             print('No point data')
@@ -443,65 +331,7 @@ class PointCut():
             return False
 
         self.pbar.to_max()
-        self.outdata['Point'] = data
-
-        return True
-
-
-class ExportPoint():
-    """
-    Export Point Data.
-
-    Attributes
-    ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    """
-
-    def __init__(self, parent):
-        self.name = 'Export Point: '
-        self.pbar = None
-        self.parent = parent
-        self.indata = {}
-
-    def run(self):
-        """
-        Run routine.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if 'Point' not in self.indata:
-            print('Error: You need to have a point data first!')
-            return False
-
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'csv (*.csv)')
-
-        if filename == '':
-            return False
-
-        print('Export busy...')
-
-        os.chdir(os.path.dirname(filename))
-
-        data = self.indata['Point']
-        data = list(data.values())[0]
-
-        dfall = data.drop(['pygmiX', 'pygmiY'], axis=1)
-
-        dfall.to_csv(filename, index=False)
-
-        print('Export completed')
+        self.outdata['Line'] = data
 
         return True
 
@@ -616,6 +446,143 @@ class ImportShapeData():
         dat = {gdf.geom_type.iloc[0]: gdf}
 
         self.outdata['Vector'] = dat
+
+        return True
+
+class DataReproj(QtWidgets.QDialog):
+    """
+    Reprojections.
+
+    This class reprojects datasets using the GDAL routines.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.pbar = self.parent.pbar
+
+        self.groupboxb = QtWidgets.QGroupBox()
+        self.combobox_inp_epsg = QtWidgets.QComboBox()
+        self.inp_epsg_info = QtWidgets.QLabel()
+        self.groupbox2b = QtWidgets.QGroupBox()
+        self.combobox_out_epsg = QtWidgets.QComboBox()
+        self.out_epsg_info = QtWidgets.QLabel()
+        self.in_proj = GroupProj('Input Projection')
+        self.out_proj = GroupProj('Output Projection')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Dataset Reprojection')
+
+        gridlayout_main.addWidget(self.in_proj, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.out_proj, 0, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 1, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 1, 1, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
+            print('Could not reproject')
+            return
+
+        key = list(self.indata['Line'].keys())[0]
+        data = self.indata['Line'][key]
+
+# Input stuff
+        orig_wkt = self.in_proj.wkt
+
+        orig = osr.SpatialReference()
+        orig.ImportFromWkt(orig_wkt)
+        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+# Output stuff
+        targ_wkt = self.out_proj.wkt
+
+        targ = osr.SpatialReference()
+        targ.ImportFromWkt(targ_wkt)
+        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+# Set transformation
+        ctrans = osr.CoordinateTransformation(orig, targ)
+
+        dd = np.transpose([data.pygmiX, data.pygmiY])
+        xy = ctrans.TransformPoints(dd)
+        xy = np.array(xy)
+        data.assign(Xnew=xy[:, 0])
+        data.assign(Ynew=xy[:, 1])
+        data.pygmiX = xy[:, 0]
+        data.pygmiY = xy[:, 1]
+
+        self.outdata['Line'] = {key: data}
+
+    def settings(self):
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if 'Line' not in self.indata:
+            print('No line data.')
+            return False
+
+#        iwkt = self.in_proj.epsg_proj['WGS 84 / Geodetic Geographic'].wkt
+        indx = self.in_proj.combobox.findText('WGS 84 / Geodetic Geographic')
+        self.in_proj.combobox.setCurrentIndex(indx)
+
+        indx = self.in_proj.combobox.findText('WGS 84 / UTM zone 35S')
+        self.out_proj.combobox.setCurrentIndex(indx)
+
+        tmp = self.exec_()
+
+        if tmp != 1:
+            return False
+
+        self.acceptall()
 
         return True
 
