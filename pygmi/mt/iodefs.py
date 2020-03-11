@@ -27,6 +27,75 @@
 import os
 from PyQt5 import QtWidgets
 import mtpy.core.mt
+import numpy as np
+import pandas as pd
+
+
+class ImportLEMI417Data():
+    """
+    Import LEMI-417 ASCII MT Data.
+
+    This is a class used to import LEMI-417 MT Data in ASCII format.
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
+    """
+
+    def __init__(self, parent=None):
+        self.name = 'Import LEMI-417 Data: '
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+        self.ifile = ''
+
+    def settings(self):
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        ext = 'LEMI-417 Text DataAll Files (*.t*)'
+
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+        if filename == '':
+            return False
+        os.chdir(os.path.dirname(filename))
+        self.ifile = str(os.path.basename(filename))
+
+        dataid = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second',
+                  'Bx (nT)', 'By (nT)', 'Bz (nT)', 'TE (degrees C)',
+                  'TF (degrees C)', 'E1 ('+chr(956)+'V/m)',
+                  'E2 ('+chr(956)+'V/m)', 'E3 ('+chr(956)+'V/m)',
+                  'E4 ('+chr(956)+'V/m)']
+
+        gdf = pd.read_csv(filename, sep=None, engine='python', names=dataid,
+                          skipinitialspace=True, index_col=False)
+
+        gdf['pygmiX'] = np.nan
+        gdf['pygmiY'] = np.nan
+
+        if 'Point' not in self.outdata:
+            self.outdata['Point'] = {}
+
+        self.outdata['Point'][self.ifile] = gdf
+
+        return True
 
 
 class ImportEDI():

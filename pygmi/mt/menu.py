@@ -64,6 +64,11 @@ class MenuWidget():
         self.menumt.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
+        self.action_import_lemi417_data = QtWidgets.QAction('Import LEMI-417 Data to Point Data')
+        self.menumt.addAction(self.action_import_lemi417_data)
+        self.action_import_lemi417_data.triggered.connect(
+            self.import_lemi417_data)
+
         self.menumt.addSeparator()
 
         self.action_rotate_data = QtWidgets.QAction('Rotate EDI Data')
@@ -104,14 +109,19 @@ class MenuWidget():
         fnc = birrp.BIRRP(self.parent)
         self.parent.item_insert('Step', 'BIRRP', fnc)
 
+    def export_data(self):
+        """Export data."""
+        self.parent.launch_context_item(iodefs.ExportEDI)
+
     def import_data(self):
         """Import data."""
         fnc = iodefs.ImportEDI(self.parent)
         self.parent.item_insert('Io', 'Import EDI Data', fnc)
 
-    def export_data(self):
-        """Export data."""
-        self.parent.launch_context_item(iodefs.ExportEDI)
+    def import_lemi417_data(self):
+        """Import LEMI-417 MT data."""
+        fnc = iodefs.ImportLEMI417Data(self.parent)
+        self.parent.item_insert('Io', 'Import LEMI-417 Data', fnc)
 
     def occam1d(self):
         """Occam 1D inversion."""

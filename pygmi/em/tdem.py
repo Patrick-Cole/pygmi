@@ -252,16 +252,24 @@ class TDEM1D(QtWidgets.QDialog):
         times = times + peaktime
         a = 3.
 
-        skytem = self.data.data[line][self.data.data[line]['fid'] == fid]
-        channels = skytem.dtype.names
-        datachans = []
-        dchannum = []
-        emdata = np.array([])
-        for i in channels:
-            if i.startswith(dprefix):
-                datachans.append(i)
-                dchannum.append(int(''.join(filter(str.isdigit, i))))
-                emdata = np.append(emdata, skytem[i])
+        skytem = self.data[self.data.line.astype(str) == line]
+        skytem = skytem[skytem.fid == fid]
+#        skytem = self.data.data[line][self.data.data[line]['fid'] == fid]
+
+#        channels = skytem.columns.values
+
+        emdata = skytem.loc[:, skytem.columns.str.startswith(dprefix)]
+        datachans = list(emdata.columns.values)
+        emdata = emdata.values.flatten()
+#        channels = skytem.dtype.names
+#        datachans = []
+#        dchannum = []
+#        emdata = np.array([])
+#        for i in channels:
+#            if i.startswith(dprefix):
+#                datachans.append(i)
+#                dchannum.append(int(''.join(filter(str.isdigit, i))))
+#                emdata = np.append(emdata, skytem[i])
 
         if not datachans:
             text = 'Could not find data channels, your prefix may be wrong'
@@ -470,6 +478,7 @@ class TDEM1D(QtWidgets.QDialog):
         """
         if 'Line' in self.indata:
             self.data = copy.deepcopy(self.indata['Line'])
+            self.data = list(self.data.values())[0]
         else:
             print('No line data')
             return False
@@ -479,7 +488,14 @@ class TDEM1D(QtWidgets.QDialog):
         self.combofid.clear()
         self.combobalt.clear()
 
-        cnames = list(self.data.data.values())[0].dtype.names
+        filt = ((self.data.columns != 'geometry') &
+                (self.data.columns != 'line') &
+                (self.data.columns != 'pygmiX') &
+                (self.data.columns != 'pygmiY'))
+
+        cnames = list(self.data.columns[filt])
+
+#        cnames = list(self.data.data.values())[0].dtype.names
         self.combobalt.addItems(cnames)
         for i, tmp in enumerate(cnames):
             tmp = tmp.lower()
@@ -487,12 +503,20 @@ class TDEM1D(QtWidgets.QDialog):
                 self.combobalt.setCurrentIndex(i)
                 break
 
-        for i in self.data.data:
-            self.comboline.addItem(i)
+        lines = list(self.data.line.unique().astype(str))
+        self.comboline.addItems(lines)
+
+#        for i in self.data.data:
+#            self.comboline.addItem(i)
+#        fid = self.data.fid.values.astype(str)
 
         self.comboline.setCurrentIndex(0)
         line = self.comboline.currentText()
-        self.combofid.addItems(self.data.data[line]['fid'].astype(str))
+
+        fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
+        self.combofid.addItems(fid)
+
+#        self.combofid.addItems(self.data.data[line]['fid'].astype(str))
 
         self.comboline.currentIndexChanged.connect(self.change_line)
 

@@ -212,22 +212,11 @@ class ImportCG5(QtWidgets.QDialog):
 
         dfmerge = dfmerge[~filt]
 
-        # Construct dat.
-        dat = {}
-        lines = dfmerge.LINE.unique()
-        for line in lines:
-            tmp = dfmerge.loc[dfmerge['LINE'] == line]
-            dat[str(line)] = tmp.to_records(index=False)
+        dfmerge['pygmiX'] = dfmerge['longitude']
+        dfmerge['pygmiY'] = dfmerge['latitude']
 
-        dat2 = LData()
-        dat2.xchannel = 'longitude'
-        dat2.ychannel = 'latitude'
-        dat2.zchannel = 'elevation'
-        dat2.data = dat
-        dat2.dataid = 'Gravity'
-#        dat2.nullvalue = nodata
-
-        self.outdata['Line'] = dat2
+        dfmerge['line'] = dfmerge['line'].astype(str)
+        self.outdata['Line'] = {'Gravity': dfmerge}
 
         return True
 

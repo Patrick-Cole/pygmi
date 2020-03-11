@@ -66,11 +66,6 @@ class MenuWidget():
         self.menufile.addAction(self.action_import_line_data)
         self.action_import_line_data.triggered.connect(self.import_line_data)
 
-        self.action_import_lemi417_data = QtWidgets.QAction('Import LEMI-417 Data')
-        self.menufile.addAction(self.action_import_lemi417_data)
-        self.action_import_lemi417_data.triggered.connect(
-            self.import_lemi417_data)
-
         self.menufile.addSeparator()
 
         self.action_cut_data = QtWidgets.QAction('Cut Points using Polygon')
@@ -155,11 +150,6 @@ class MenuWidget():
         """Import shape data."""
         fnc = iodefs.ImportShapeData(self.parent)
         self.parent.item_insert('Io', 'Import Shapefile Data', fnc)
-
-    def import_lemi417_data(self):
-        """Import LEMI-417 MT data."""
-        fnc = iodefs.ImportLEMI417Data(self.parent)
-        self.parent.item_insert('Io', 'Import LEMI-417 Data', fnc)
 
     def show_point_data(self):
         """Show point data."""

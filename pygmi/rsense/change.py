@@ -184,7 +184,7 @@ class CreateSceneList(QtWidgets.QDialog):
 
         if nodates is True:
             print('Some of your scenes do not have dates. '
-                            'Correct this in the output spreadsheet')
+                  'Correct this in the output spreadsheet')
         print('Updating spreadsheet...')
 
         df = pd.DataFrame()
@@ -317,21 +317,14 @@ class MyMplCanvas(FigureCanvas):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
 
         self.ax1 = self.fig.add_subplot(111)
-        self.axbg = None
-
         self.im1 = None
-        self.idata = None
-        self.ihist = None
-        self.vdata = None
-        self.dates = None
-        self.i = 0
         self.bands = bands
-        self.afile = None
         self.parent = parent
         self.rcid = None
         self.manip = 'RGB'
+        self.cbar = None
 
-        super().__init__(fig)
+        super().__init__(self.fig)
 
         self.setParent(parent)
 
@@ -380,11 +373,8 @@ class MyMplCanvas(FigureCanvas):
 
         extent = dat[self.bands[0]].extent
 
-        self.idata = dtmp
-        self.dates = dates
-
-        self.im1 = self.ax1.imshow(self.idata, extent=extent)
-        self.plt = self.ax1.plot(self.points[:, 0], self.points[:, 1])
+        self.im1 = self.ax1.imshow(dtmp, extent=extent)
+        self.ax1.plot(self.points[:, 0], self.points[:, 1])
         self.cbar = None
 
         self.fig.suptitle(dates)

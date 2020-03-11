@@ -32,12 +32,11 @@ from collections import Counter
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import gdal, osr, ogr
+import pandas as pd
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
-from pygmi.vector.datatypes import PData
-from pygmi.vector.datatypes import line_to_point
 
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
@@ -202,9 +201,13 @@ class DataGrid(QtWidgets.QDialog):
 
         """
         dxy = self.dsb_dxy.value()
-        data = self.indata['Point'][0]
-        x = data.xdata
-        y = data.ydata
+        data = self.indata['Point']
+        data = list(data.values())[0]
+
+        x = data.pygmiX.values
+        y = data.pygmiY.values
+#        x = data.xdata
+#        y = data.ydata
 
         cols = round(x.ptp()/dxy)
         rows = round(y.ptp()/dxy)
@@ -228,26 +231,31 @@ class DataGrid(QtWidgets.QDialog):
             return False
 
         if 'Line' in self.indata:
-            self.indata['Point'] = line_to_point(self.indata['Line'])
-            self.dsb_null.setValue(self.indata['Line'].nullvalue)
-
-        for i in self.indata['Point']:
-            tmp.append(i.dataid)
+            self.indata['Point'] = self.indata['Line']
 
         self.dataid.clear()
-        self.dataid.addItems(tmp)
 
-        data = self.indata['Point'][0]
-        x = data.xdata
-        y = data.ydata
+        data = self.indata['Point']
+        data = list(data.values())[0]
+
+        filt = ((data.columns != 'geometry') &
+                (data.columns != 'line') &
+                (data.columns != 'pygmiX') &
+                (data.columns != 'pygmiY'))
+
+        cols = list(data.columns[filt])
+        self.dataid.addItems(cols)
+
+        x = data.pygmiX.values
+        y = data.pygmiY.values
 
         dx = x.ptp()/np.sqrt(x.size)
         dy = y.ptp()/np.sqrt(y.size)
         dxy = max(dx, dy)
         dxy = min([x.ptp(), y.ptp(), dxy])
 
-        if 'Line' not in self.indata:
-            self.dsb_null.setValue(data.zdata.min())
+#        if 'Line' not in self.indata:
+#            self.dsb_null.setValue(data.zdata.min())
 
         self.dsb_dxy.setValue(dxy)
         self.dxy_change()
@@ -274,38 +282,31 @@ class DataGrid(QtWidgets.QDialog):
         """
         dxy = self.dsb_dxy.value()
         nullvalue = self.dsb_null.value()
-        data = self.indata['Point'][0]
+        data = self.indata['Point']
+        data = list(data.values())[0]
 
+        data = data.dropna()
         newdat = []
-        for data in self.pbar.iter(self.indata['Point']):
-            if data.dataid != self.dataid.currentText():
-                continue
 
-            filt = (data.zdata != nullvalue)
-            x = data.xdata[filt]
-            y = data.ydata[filt]
-            z = data.zdata[filt]
+        filt = (data[self.dataid.currentText()] != nullvalue)
+        x = data.pygmiX.values[filt]
+        y = data.pygmiY.values[filt]
+        z = data[self.dataid.currentText()].values[filt]
 
-            for i in [x, y, z]:
-                filt = np.logical_not(np.isnan(i))
-                x = x[filt]
-                y = y[filt]
-                z = z[filt]
+        tmp = quickgrid(x, y, z, dxy)
+        mask = np.ma.getmaskarray(tmp)
+        gdat = tmp.data
 
-            tmp = quickgrid(x, y, z, dxy)
-            mask = np.ma.getmaskarray(tmp)
-            gdat = tmp.data
-
-    # Create dataset
-            dat = Data()
-            dat.data = np.ma.masked_invalid(gdat[::-1])
-            dat.data.mask = mask[::-1]
-            dat.nullvalue = nullvalue
-            dat.dataid = data.dataid
-            dat.xdim = dxy
-            dat.ydim = dxy
-            dat.extent = [x.min(), x.max(), y.min(), y.max()]
-            newdat.append(dat)
+# Create dataset
+        dat = Data()
+        dat.data = np.ma.masked_invalid(gdat[::-1])
+        dat.data.mask = mask[::-1]
+        dat.nullvalue = nullvalue
+        dat.dataid = self.dataid.currentText()
+        dat.xdim = dxy
+        dat.ydim = dxy
+        dat.extent = [x.min(), x.max(), y.min(), y.max()]
+        newdat.append(dat)
 
         self.outdata['Raster'] = newdat
         self.outdata['Point'] = self.indata['Point']
@@ -743,7 +744,9 @@ class GetProf():
             print('You need lines in that shape file')
             return False
 
-        allpoints = []
+        data = merge(data)
+        gdf = None
+
         for idata in self.pbar.iter(data):
             tmp = line.GetGeometryRef()
             points = tmp.GetPoints()
@@ -769,14 +772,18 @@ class GetProf():
             tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
             xxx = xxx*idata.xdim+tlx
             yyy = yyy*idata.ydim+bly
-            allpoints.append(PData())
-            allpoints[-1].xdata = xxx
-            allpoints[-1].ydata = yyy
-            allpoints[-1].zdata = tmpprof
-            allpoints[-1].dataid = idata.dataid
+
+            if gdf is None:
+                gdf = pd.DataFrame(xxx, columns=['X'])
+                gdf['Y'] = yyy
+                gdf['pygmiX'] = gdf['X']
+                gdf['pygmiY'] = gdf['Y']
+
+            gdf[idata.dataid] = tmpprof
 
         shapef = None
-        self.outdata['Point'] = allpoints
+
+        self.outdata['Point'] = {'profile': gdf}
 
         return True
 

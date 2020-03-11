@@ -315,6 +315,9 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         """
         self.setBrush(QtGui.QColor(255, 0, 0, 127))
 
+        sys.stdout = self.parent.stdoutnew
+        sys.breakpointhook = self.parent.pdb
+
         temp = self.settings()
         self.parent.scene.selected_item_info()
 
@@ -880,6 +883,9 @@ class MainWidget(QtWidgets.QMainWindow):
         newitem : custom class
             newitem is the class to be called by the context menu item
         """
+        sys.stdout = self.stdoutnew
+        sys.breakpointhook = self.pdb
+
         outdata = self.get_outdata()
 
         for odata in outdata:
@@ -898,6 +904,9 @@ class MainWidget(QtWidgets.QMainWindow):
         newitem : custom class
             newitem is the class to be called by the context menu item
         """
+        sys.stdout = self.stdoutnew
+        sys.breakpointhook = self.pdb
+
         indata = self.get_indata()
 
         for idata in indata:

@@ -34,6 +34,7 @@ from matplotlib.cm import jet
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from pandas.api.types import is_numeric_dtype
 
 
 class GraphWindow(QtWidgets.QDialog):
@@ -212,13 +213,13 @@ class MyMplCanvas(FigureCanvas):
 
         ax1 = self.figure.add_subplot(111, label='Profile')
 
-        ax1.set_title(data1.dataid)
+#        ax1.set_title(data1.dataid)
         self.axes = ax1
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
-        self.line, = ax1.plot(data1.zdata, '.-', picker=5)
+        self.line, = ax1.plot(data1, '.-', picker=5)
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
@@ -256,7 +257,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_map(self, data, ival):
+    def update_map(self, xdata, ydata, zdata):
         """
         Update the map from point data.
 
@@ -272,19 +273,23 @@ class MyMplCanvas(FigureCanvas):
         None.
 
         """
-        data1 = data[ival]
-
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='Map')
-        ax1.set_title(data1.dataid)
+#        ax1.set_title(data1.dataid)
         self.axes = ax1
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
-        scat = ax1.scatter(data1.xdata, data1.ydata, c=data1.zdata, cmap=jet)
+        if is_numeric_dtype(zdata):
+            scat = ax1.scatter(xdata, ydata, c=zdata, cmap=jet)
+        else:
+            return
+#            scat = ax1.scatter(xdata, ydata)
+
         self.figure.colorbar(scat, ax=ax1)
+#        data.plot(ival, cmap=jet, ax=ax1)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -317,14 +322,9 @@ class MyMplCanvas(FigureCanvas):
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
+        data = data.dropna()
 
-        zdata = []
-        for line in data.data:
-            zdata += data.data[line][ival].tolist()
-
-        zdata = np.array(zdata)
-        zdata = zdata[zdata != data.nullvalue]
-        zdata = zdata[~np.isnan(zdata)]
+        zdata = data[ival]
         med = np.median(zdata)
         std = 2.5 * median_absolute_deviation(zdata, axis=None)
 
@@ -332,18 +332,16 @@ class MyMplCanvas(FigureCanvas):
             std = 1
 
         # Get average spacing between 2 points over the entire survey.
-        spcing = []
-        for line in data.data:
-            data1 = data.data[line]
-            x = data1[data.xchannel]
-            y = data1[data.ychannel]
-            z = data1[ival]
-            x = x[z != data.nullvalue]
-            y = y[z != data.nullvalue]
+        spcing = np.array([])
 
-            nanchk = np.logical_or(~np.isnan(x), ~np.isnan(y))
-            x = x[nanchk]
-            y = y[nanchk]
+        datagrp = data.groupby('line')
+        datagrp = list(datagrp)
+
+        for line in datagrp:
+            data1 = line[1]
+            x = data1.pygmiX.values
+            y = data1.pygmiY.values
+            z = data1[ival]
 
             if x.size < 2:
                 continue
@@ -352,19 +350,12 @@ class MyMplCanvas(FigureCanvas):
 
         spcing = spcing.mean()
 
-        for line in data.data:
-            data1 = data.data[line]
-            x = data1[data.xchannel]
-            y = data1[data.ychannel]
-            z = data1[ival]
-            x = x[z != data.nullvalue]
-            y = y[z != data.nullvalue]
-            z = z[z != data.nullvalue]
+        for line in datagrp:
+            data1 = line[1]
 
-            nanchk = np.logical_or(~np.isnan(x), ~np.isnan(y))
-            x = x[nanchk]
-            y = y[nanchk]
-            z = z[nanchk]
+            x = data1.pygmiX.values
+            y = data1.pygmiY.values
+            z = data1[ival]
 
             if x.size < 2:
                 continue
@@ -398,9 +389,8 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data : VData
-            Vector data. It can either be 'Line' or 'Poly' and typically is
-            imported from a shapefile.
+        data : dictionary
+            Geopandas data in a dictionary.
 
         Returns
         -------
@@ -411,16 +401,32 @@ class MyMplCanvas(FigureCanvas):
 
         self.axes = self.figure.add_subplot(111, label='map')
 
-        if data.dtype == 'Line' or data.dtype == 'Poly':
-            lcol = mc.LineCollection(data.crds)
+        if 'LineString' in data:
+            tmp = []
+            for i in data['LineString'].geometry:
+                if i.type == 'MultiLineString':
+                    for j in i:
+                        tmp.append(np.array(j.coords[:]))
+                else:
+                    tmp.append(np.array(i.coords[:]))
+
+            lcol = mc.LineCollection(tmp)
+            self.axes.add_collection(lcol)
+            self.axes.autoscale()
+            self.axes.axis('equal')
+        elif 'Polygon' in data:
+            tmp = []
+            for i in data['Polygon'].geometry:
+                tmp.append(np.array(i.exterior.coords[:])[:, :2].tolist())
+
+            lcol = mc.LineCollection(tmp)
             self.axes.add_collection(lcol)
             self.axes.autoscale()
             self.axes.axis('equal')
 
-        elif data.dtype == 'Point':
-            tmp = np.array(data.crds)
-            tmp.shape = (tmp.shape[0], tmp.shape[-1])
-            self.axes.plot(tmp[:, 0], tmp[:, 1], 'go')
+        elif 'Point' in data:
+            self.axes.plot(data['Point'].geometry.x,
+                           data['Point'].geometry.y, 'go')
 
         self.figure.canvas.draw()
 
@@ -430,8 +436,8 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data : VData
-            Vector data. It should be 'Line'
+        data : dictionary
+            Geopandas data in a dictionary. It should be 'LineString'
         rtype : int
             Rose diagram type. Can be either 0 or 1.
         nbins : int, optional
@@ -457,9 +463,16 @@ class MyMplCanvas(FigureCanvas):
         fangle = []
         fcnt = []
         flen = []
-        allcrds = data.crds
 
-        for pnts in data.crds:
+        allcrds = []
+        for i in data['LineString'].geometry:
+            if i.type == 'MultiLineString':
+                for j in i:
+                    allcrds.append(np.array(j.coords[:]))
+            else:
+                allcrds.append(np.array(i.coords[:]))
+
+        for pnts in allcrds:
             pnts = np.transpose(pnts)
             xtmp = pnts[0, 1:]-pnts[0, :-1]
             ytmp = pnts[1, 1:]-pnts[1, :-1]
@@ -533,7 +546,8 @@ class PlotPoints(GraphWindow):
 
         """
         data = self.indata['Point']
-        i = self.combobox1.currentIndex()
+        data = list(data.values())[0]
+        i = self.combobox1.currentText()
         self.mmc.update_line(data, i)
 
     def run(self):
@@ -547,9 +561,11 @@ class PlotPoints(GraphWindow):
         """
         self.show()
         data = self.indata['Point']
-        for i in data:
-            self.combobox1.addItem(i.dataid)
-            self.combobox2.addItem(i.dataid)
+
+        data = list(data.values())[0]
+        cols = list(data.columns[data.columns != 'geometry'])
+        self.combobox1.addItems(cols)
+        self.combobox2.addItems(cols)
 
         self.label1.setText('Editable Profile:')
         self.label2.setText('Normalised Stacked Profile:')
@@ -568,6 +584,8 @@ class PlotPoints2(GraphWindow):
         self.label3.hide()
         self.combobox2.hide()
         self.label2.hide()
+        self.xdata = None
+        self.ydata = None
 
     def change_band(self):
         """
@@ -579,8 +597,10 @@ class PlotPoints2(GraphWindow):
 
         """
         data = self.indata['Point']
-        i = self.combobox1.currentIndex()
-        self.mmc.update_map(data, i)
+        data = list(data.values())[0]
+        i = self.combobox1.currentText()
+
+        self.mmc.update_map(data.pygmiX, data.pygmiY, data[i])
 
     def run(self):
         """
@@ -591,10 +611,17 @@ class PlotPoints2(GraphWindow):
         None.
 
         """
-        self.show()
         data = self.indata['Point']
-        for i in data:
-            self.combobox1.addItem(i.dataid)
+        data = list(data.values())[0]
+        cols = list(data.columns[data.columns != 'geometry'])
+
+        if data.pygmiX.isna().min() == True:
+            print('You do not have coordinates in that point dataset.')
+            return
+
+        self.show()
+
+        self.combobox1.addItems(cols)
 
         self.label1.setText('Map')
         self.combobox1.setCurrentIndex(0)
@@ -631,13 +658,18 @@ class PlotLines(GraphWindow):
         None.
 
         """
-        data = self.indata['Line'].data
-        i = self.combobox1.currentText()
-        i2 = self.combobox2.currentText()
+        data = self.indata['Line']
+        data = list(data.values())[0]
+        data = data.dropna()
 
-        data2 = data[i][i2]
-        x = data[i][self.xcol]
-        y = data[i][self.ycol]
+        line = self.combobox1.currentText()
+        col = self.combobox2.currentText()
+
+        data2 = data[data.line == line]
+        x = data2.pygmiX.values
+        y = data2.pygmiY.values
+
+        data2 = data2[col].values
 
         r = np.sqrt((x[1:]-x[:-1])**2+(y[1:]-y[:-1])**2)
         r = np.cumsum(r)
@@ -658,16 +690,18 @@ class PlotLines(GraphWindow):
         self.combobox2.currentIndexChanged.disconnect()
 
         self.show()
-        data = self.indata['Line'].data
-        self.xcol = self.indata['Line'].xchannel
-        self.ycol = self.indata['Line'].ychannel
 
-        for i in data:
-            self.combobox1.addItem(i)
-            i2 = i
+        data = self.indata['Line']
+        data = list(data.values())[0]
+        filt = ((data.columns != 'geometry') &
+                (data.columns != 'line') &
+                (data.columns != 'pygmiX') &
+                (data.columns != 'pygmiY'))
+        cols = list(data.columns[filt])
+        lines = data.line[data.line != 'nan'].unique()
 
-        for i in data[i2].dtype.names:
-            self.combobox2.addItem(i)
+        self.combobox1.addItems(lines)
+        self.combobox2.addItems(cols)
 
         self.label1.setText('Line:')
         self.label2.setText('Column:')
@@ -702,6 +736,8 @@ class PlotLineMap(GraphWindow):
 
         """
         data = self.indata['Line']
+        data = list(data.values())[0]
+
         scale = self.spinbox.value()
         i = self.combobox1.currentText()
         self.mmc.update_lmap(data, i, scale, self.checkbox.isChecked())
@@ -720,16 +756,15 @@ class PlotLineMap(GraphWindow):
         self.checkbox.stateChanged.disconnect()
 
         self.show()
-        data = self.indata['Line'].data
 
-        i2 = list(data.keys())[0]
-
-        for i in data[i2].dtype.names:
-            if i == self.indata['Line'].xchannel:
-                continue
-            if i == self.indata['Line'].ychannel:
-                continue
-            self.combobox1.addItem(i)
+        data = self.indata['Line']
+        data = list(data.values())[0]
+        filt = ((data.columns != 'geometry') &
+                (data.columns != 'line') &
+                (data.columns != 'pygmiX') &
+                (data.columns != 'pygmiY'))
+        cols = list(data.columns[filt])
+        self.combobox1.addItems(cols)
 
         self.checkbox.setText('Show Line Labels:')
         self.label1.setText('Column:')
@@ -774,7 +809,7 @@ class PlotRose(GraphWindow):
             return
         data = self.indata['Vector']
         i = self.combobox1.currentIndex()
-        if data.dtype == 'Line':
+        if 'LineString' in data:
             self.mmc.update_rose(data, i, self.spinbox.value())
 
     def run(self):

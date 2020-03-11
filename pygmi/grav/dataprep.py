@@ -130,7 +130,7 @@ class ProcessData(QtWidgets.QDialog):
         if 'Line' not in self.indata:
             print('No Line Data')
             return False
-        if self.indata['Line'].dataid != 'Gravity':
+        if 'Gravity' not in self.indata['Line']:
             print('Not Gravity Data')
             return False
 
@@ -173,10 +173,7 @@ class ProcessData(QtWidgets.QDialog):
         None.
 
         """
-
-        newdat = self.indata['Line']
-
-        dat = self.indata['Line'].data
+        pdat = self.indata['Line']['Gravity']
 
         basethres = float(self.basethres.text())
         kstat = self.knownstat.text()
@@ -184,14 +181,6 @@ class ProcessData(QtWidgets.QDialog):
             kstat = -1.0
         else:
             kstat = float(kstat)
-
-# Convert multiple lines to single dataset.
-        pdat = None
-        for i in dat:
-            if pdat is None:
-                pdat = dat[i]
-                continue
-            pdat = np.append(pdat, dat[i])
 
 # Make sure there are no local base stations before the known base
         if kstat in pdat['STATION']:
@@ -205,9 +194,9 @@ class ProcessData(QtWidgets.QDialog):
         driftdat = tmp[tmp['STATION'] != kstat]
         pdat = pdat[pdat['STATION'] < basethres]
 
-        x = pdat['DECTIMEDATE']
-        xp = driftdat['DECTIMEDATE']
-        fp = driftdat['GRAV']
+        x = pdat['DECTIMEDATE'].values
+        xp = driftdat['DECTIMEDATE'].values
+        fp = driftdat['GRAV'].values
 
         dcor = np.interp(x, xp, fp)
 
@@ -219,8 +208,8 @@ class ProcessData(QtWidgets.QDialog):
         gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
 
 # Variables used
-        lat = np.deg2rad(pdat[newdat.ychannel])
-        h = pdat[newdat.zchannel]  # This is the ellipsoidal (gps) height
+        lat = np.deg2rad(pdat.latitude)
+        h = pdat['elevation']  # This is the ellipsoidal (gps) height
         dens = float(self.density.text())
 
 # Corrections
@@ -232,29 +221,14 @@ class ProcessData(QtWidgets.QDialog):
 # Bouguer Anomaly
         gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
 
-#        pdat = nplrf.append_fields(pdat, 'DRIFT', dcor, usemask=False)
-        pdat = nplrf.append_fields(pdat, 'gobs(drift)', gobs, usemask=False)
-        pdat = nplrf.append_fields(pdat, 'gT', gT, usemask=False)
-        pdat = nplrf.append_fields(pdat, 'gATM', gATM, usemask=False)
-        pdat = nplrf.append_fields(pdat, 'gHC', gHC, usemask=False)
-        pdat = nplrf.append_fields(pdat, 'gSB', gSB, usemask=False)
-        pdat = nplrf.append_fields(pdat, 'BOUGUER', gba, usemask=False)
+        pdat = pdat.assign(gobs_drift=gobs)
+        pdat = pdat.assign(gT=gT)
+        pdat = pdat.assign(gATM=gATM)
+        pdat = pdat.assign(gHC=gHC)
+        pdat = pdat.assign(gSB=gSB)
+        pdat = pdat.assign(BOUGUER=gba)
 
-        dat2a = {}
-        for i in dat:
-            tmp = pdat[pdat['LINE'] == float(i)]
-            if tmp.size > 0:
-                dat2a[i] = pdat[pdat['LINE'] == float(i)]
-
-        dat2 = LData()
-
-        dat2.xchannel = newdat.xchannel
-        dat2.ychannel = newdat.ychannel
-        dat2.zchannel = newdat.zchannel
-        dat2.data = dat2a
-        dat2.dataid = 'Gravity'
-
-        self.outdata['Line'] = dat2
+        self.outdata['Line'] = {'Gravity': pdat}
 
     def calcbase(self):
         """
@@ -268,19 +242,18 @@ class ProcessData(QtWidgets.QDialog):
 
 
         """
-        dat = self.indata['Line'].data
+        pdat = self.indata['Line']['Gravity']
+
         basethres = float(self.basethres.text())
+
+        if self.knownstat.text() == 'None':
+            txt = ('Invalid base station number.')
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          txt, QtWidgets.QMessageBox.Ok)
+            return
+
         kstat = float(self.knownstat.text())
-
-# Convert multiple lines to single dataset.
-        pdat = None
-        for i in dat:
-            if pdat is None:
-                pdat = dat[i]
-                continue
-            pdat = np.append(pdat, dat[i])
-
-        if kstat not in pdat['STATION']:
+        if kstat not in pdat['STATION'].values:
             txt = ('Invalid base station number.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           txt, QtWidgets.QMessageBox.Ok)
@@ -308,7 +281,7 @@ class ProcessData(QtWidgets.QDialog):
             return
 
         absbase = grv-np.interp(x, xp, fp) + float(self.knownbase.text())
-        self.absbase.setText(str(absbase[0]))
+        self.absbase.setText(str(absbase.iloc[0]))
 
 
 def geocentric_radius(lat):
