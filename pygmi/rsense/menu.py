@@ -77,7 +77,3 @@ class MenuWidget():
         """View Change Detection."""
         fnc = change.SceneViewer(self.parent)
         self.parent.item_insert('Step', 'Change Detection Viewer', fnc)
-
-#    def show_log(self):
-#        """Show log data."""
-#        self.parent.launch_context_item(graphs.PlotLog)

@@ -119,7 +119,7 @@ class MenuWidget():
         self.parent.launch_context_item(iodefs.ExportCSV)
 
     def sexport_csv(self):
-        """Export Seisan data to csv."""
+        """Export Summary data to csv."""
         self.parent.launch_context_item(iodefs.ExportSummaryCSV)
 
     def beachball(self):

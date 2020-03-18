@@ -445,6 +445,13 @@ def corr2d(dat1, dat2):
 
     out = None
     if dat1.shape == dat2.shape:
+        # These line are to avoid warnings due to powers of large fill values
+        mask = np.logical_or(dat1.mask, dat1.mask)
+        dat1.mask = mask
+        dat2.mask = mask
+        dat1 = dat1.compressed()
+        dat2 = dat2.compressed()
+
         mdat1 = dat1 - dat1.mean()
         mdat2 = dat2 - dat2.mean()
         numerator = (mdat1 * mdat2).sum()

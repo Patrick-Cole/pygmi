@@ -29,7 +29,7 @@ from __future__ import print_function
 import os
 import copy
 from collections import Counter
-from PyQt5 import QtWidgets, QtCore
+from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 from osgeo import gdal, osr, ogr
 import pandas as pd
@@ -141,8 +141,11 @@ class DataGrid(QtWidgets.QDialog):
         self.parent = parent
         self.pbar = parent.pbar
 
-        self.dsb_dxy = QtWidgets.QDoubleSpinBox()
-        self.dsb_null = QtWidgets.QDoubleSpinBox()
+#        self.dsb_dxy = QtWidgets.QDoubleSpinBox()
+#        self.dsb_null = QtWidgets.QDoubleSpinBox()
+        self.dsb_dxy = QtWidgets.QLineEdit('1.0')
+        self.dsb_null = QtWidgets.QLineEdit('0.0')
+
         self.dataid = QtWidgets.QComboBox()
         self.label_rows = QtWidgets.QLabel('Rows: 0')
         self.label_cols = QtWidgets.QLabel('Columns: 0')
@@ -165,11 +168,20 @@ class DataGrid(QtWidgets.QDialog):
         label_dxy = QtWidgets.QLabel('Cell Size:')
         label_null = QtWidgets.QLabel('Null Value:')
 
-        self.dsb_null.setMaximum(np.finfo(np.double).max)
-        self.dsb_null.setMinimum(np.finfo(np.double).min)
-        self.dsb_dxy.setMaximum(9999999999.0)
-        self.dsb_dxy.setMinimum(0.0000001)
-        self.dsb_dxy.setDecimals(11)
+#        self.dsb_null.setMaximum(np.finfo(np.double).max)
+#        self.dsb_null.setMinimum(np.finfo(np.double).min)
+
+        val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
+#        val.setNotation(QtGui.QDoubleValidator.StandardNotation)
+        val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
+        val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
+
+        self.dsb_dxy.setValidator(val)
+        self.dsb_null.setValidator(val)
+
+#        self.dsb_dxy.setMaximum(9999999999.0)
+#        self.dsb_dxy.setMinimum(0.0000001)
+#        self.dsb_dxy.setDecimals(11)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -189,7 +201,8 @@ class DataGrid(QtWidgets.QDialog):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.dsb_dxy.valueChanged.connect(self.dxy_change)
+#        self.dsb_dxy.valueChanged.connect(self.dxy_change)
+        self.dsb_dxy.textChanged.connect(self.dxy_change)
 
     def dxy_change(self):
         """
@@ -200,7 +213,11 @@ class DataGrid(QtWidgets.QDialog):
         None.
 
         """
-        dxy = self.dsb_dxy.value()
+        txt = str(self.dsb_dxy.text())
+        if txt.replace('.', '', 1).isdigit():
+            dxy = float(self.dsb_dxy.text())
+        else:
+            return
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
         data = data.dropna()
@@ -253,10 +270,8 @@ class DataGrid(QtWidgets.QDialog):
         dxy = max(dx, dy)
         dxy = min([x.ptp(), y.ptp(), dxy])
 
-#        if 'Line' not in self.indata:
-#            self.dsb_null.setValue(data.zdata.min())
-
-        self.dsb_dxy.setValue(dxy)
+        dxy = f'{dxy:.8f}'
+        self.dsb_dxy.setText(dxy)
         self.dxy_change()
 
         tmp = self.exec_()
@@ -279,8 +294,8 @@ class DataGrid(QtWidgets.QDialog):
         None.
 
         """
-        dxy = self.dsb_dxy.value()
-        nullvalue = self.dsb_null.value()
+        dxy = float(self.dsb_dxy.text())
+        nullvalue = float(self.dsb_null.text())
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
         data = data.dropna()

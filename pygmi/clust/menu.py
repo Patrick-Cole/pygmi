@@ -148,7 +148,7 @@ class MenuWidget():
         self.parent.launch_context_item(graphs.PlotRaster)
 
     def show_membership_data(self):
-        """Show raster data."""
+        """Show membership data."""
         self.parent.launch_context_item(graphs.PlotMembership)
 
     def show_vrc_etc(self):

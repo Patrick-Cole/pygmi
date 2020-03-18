@@ -30,6 +30,7 @@ import os
 import sys
 import copy
 import glob
+import platform
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvas
@@ -980,7 +981,6 @@ class MyMplCanvasPick(FigureCanvas):
         y0, y1 = self.axes2.get_ylim()
         self.line2, = self.axes2.plot([x0, x0], [y0, y1])
 
-
         self.figure.canvas.draw()
 
 
@@ -1505,6 +1505,20 @@ class Occam1D(QtWidgets.QDialog):
 
         s1.write_startup_file()
 
+        occam_path = os.path.dirname(__file__)[:-2]+r'\bin\occam1d'
+        if platform.system() == 'Windows':
+            occam_path += '.exe'
+
+        if not os.path.exists(occam_path):
+            text = ('No Occam1D executable found. Please place it in the bin '
+                    'directory. You may need to obtain the source code from '
+                    'https://marineemlab.ucsd.edu/Projects/Occam/1DCSEM/ '
+                    'and compile it. It should be called occam1d for '
+                    'non-windows platforms and occam1d.exe for windows.')
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', text,
+                                          QtWidgets.QMessageBox.Ok)
+            return
+
         self.mmc.figure.clear()
         self.mmc.figure.set_facecolor('r')
         self.mmc.figure.suptitle('Busy, please wait...', fontsize=14, y=0.5)
@@ -1513,9 +1527,7 @@ class Occam1D(QtWidgets.QDialog):
         self.mmc.figure.canvas.draw()
         QtWidgets.QApplication.processEvents()
 
-        occam_path = os.path.dirname(__file__)[:-2]+r'\bin\occam1d.exe'
-
-        occam1d.Run(s1.startup_fn, occam_path, mode='TE')
+        occam1d.Run(s1.startup_fn, occam_path, mode=mode)
 
         self.mmc.figure.set_facecolor('w')
 

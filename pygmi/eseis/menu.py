@@ -77,5 +77,5 @@ class MenuWidget():
         self.parent.launch_context_item(iodefs.ExportSEGY)
 
     def show_graphs(self):
-        """Show point data."""
+        """Show graphs."""
         self.parent.launch_context_item(graphs.PlotSEGY)

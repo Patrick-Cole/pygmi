@@ -1637,7 +1637,7 @@ class PlotInterp(QtWidgets.QDialog):
             if hstype == '95% Linear, 5% Compact':
                 sun = histcomp(sun)
 
-            if htype == '98% Linear, 2% Compact':
+            if hstype == '98% Linear, 2% Compact':
                 sun = histcomp(pseudo, perc=2.)
 
             if hstype == 'Histogram Equalization':

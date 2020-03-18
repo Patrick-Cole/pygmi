@@ -201,9 +201,20 @@ class ImportCG5(QtWidgets.QDialog):
                                             downcast='float')
 
         # Merge data
+#        self.df_cg5.sort_values(by=['LINE', 'STATION'], inplace=True)
+#        self.df_gps.sort_values(by=['line', 'station'], inplace=True)
+
         dfmerge = pd.merge(self.df_cg5, self.df_gps,
                            left_on=['LINE', 'STATION'],
                            right_on=['line', 'station'], how='left')
+
+#        dfmerge = pd.merge_asof(self.df_cg5, self.df_gps,
+#                                left_on=['STATION'],
+#                                right_on=['station'],
+#                                left_by=['LINE'],
+#                                right_by=['line'],
+#                                direction='forward',
+#                                tolerance=0.9)
 
         # eliminate ordinary stations (not base stations) without coordinates
         filt = dfmerge['STATION'] < float(self.basethres.text())

@@ -1547,15 +1547,18 @@ class MyMplCanvas(FigureCanvas):
         self.laxes.yaxis.set_label_text('Northings (m)')
 
         self.lims2 = self.laxes.imshow(self.lmdata, cmap=self.cbar,
-                                       aspect='equal')
+                                       aspect='equal', interpolation='none')
 
         self.colbar = fig.colorbar(self.lims2)
 
-        self.lims = self.laxes.imshow(self.cbar(self.lmdata), aspect='equal')
+        self.lims = self.laxes.imshow(self.cbar(self.lmdata), aspect='equal',
+                                      interpolation='none')
         self.lprf = self.laxes.plot([0, 1], [0, 1])
 
-        self.ims2 = self.axes.imshow(self.cbar(self.mdata), aspect='auto')
-        self.ims = self.axes.imshow(self.cbar(self.mdata), aspect='auto')
+        self.ims2 = self.axes.imshow(self.cbar(self.mdata), aspect='auto',
+                                     interpolation='none')
+        self.ims = self.axes.imshow(self.cbar(self.mdata), aspect='auto',
+                                    interpolation='none')
 
         self.ims.format_cursor_data = lambda x: ''
         self.ims2.format_cursor_data = lambda x: ''

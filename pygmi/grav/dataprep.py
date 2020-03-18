@@ -174,6 +174,7 @@ class ProcessData(QtWidgets.QDialog):
 
         """
         pdat = self.indata['Line']['Gravity']
+        pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
 
         basethres = float(self.basethres.text())
         kstat = self.knownstat.text()
@@ -205,6 +206,16 @@ class ProcessData(QtWidgets.QDialog):
         print('QC - survey time (mins)', drifttime)
         print('QC - survey drift (mGal/min):', driftrate)
 
+        ix = np.trunc(x)
+        for iday in np.unique(ix):
+            filt = (ix == iday)
+            x2 = x[filt]
+            dcor2 = dcor[filt]
+            drifttime2 = (x2[-1]-x2[0])*24*60
+            driftrate2 = (dcor2[-1]-dcor2[0])/drifttime2  # per day
+            print('QC - day', iday, 'time (mins)', drifttime2)
+            print('QC - day', iday, 'drift (mGal/min):', driftrate2)
+
         gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
 
 # Variables used
@@ -227,6 +238,8 @@ class ProcessData(QtWidgets.QDialog):
         pdat = pdat.assign(gHC=gHC)
         pdat = pdat.assign(gSB=gSB)
         pdat = pdat.assign(BOUGUER=gba)
+
+        pdat.sort_values(by=['LINE', 'STATION'], inplace=True)
 
         self.outdata['Line'] = {'Gravity': pdat}
 
