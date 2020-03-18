@@ -231,10 +231,14 @@ class EquationEditor(QtWidgets.QDialog):
 
         if equation == '':
             return False
-        usedbands = []
-        for i in localdict_list:
-            if i in equation:
-                usedbands.append(i)
+
+        if 'iall' in equation:
+            usedbands = localdict_list
+        else:
+            usedbands = []
+            for i in localdict_list:
+                if i in equation:
+                    usedbands.append(i)
 
         mask = None
         for i in usedbands:
@@ -263,7 +267,7 @@ class EquationEditor(QtWidgets.QDialog):
                 'value instead of a minimum of one band.',
                 QtWidgets.QMessageBox.Ok)
             return False
-        if len(findat.shape) == 2:
+        if findat.ndim == 2:
             findat.shape = (1, findat.shape[0], findat.shape[1])
 
         for i, findati in enumerate(findat):
@@ -283,7 +287,6 @@ class EquationEditor(QtWidgets.QDialog):
             outdata[0].dataid = equation
 
         self.outdata[intype] = outdata
-#        breakpoint()
 
         return True
 
