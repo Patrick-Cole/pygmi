@@ -209,7 +209,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='Profile')
-        ax1.ticklabel_format(useOffset=False)
+        ax1.ticklabel_format(useOffset=False, style='plain')
 
         ax1.set_title('Profile')
         self.axes = ax1
@@ -243,8 +243,12 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='Map')
+        ax1.ticklabel_format(style='plain')
+
 #        ax1.set_title(data1.dataid)
         self.axes = ax1
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
@@ -284,8 +288,11 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111, label='Map')
+
         self.axes = ax1
-        ax1.ticklabel_format(useOffset=False)
+        self.axes.ticklabel_format(useOffset=False, style='plain')
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
@@ -367,6 +374,9 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
 
         self.axes = self.figure.add_subplot(111, label='map')
+        self.axes.ticklabel_format(style='plain')
+        self.axes.tick_params(axis='x', rotation=90)
+        self.axes.tick_params(axis='y', rotation=0)
 
         if 'LineString' in data:
             tmp = []
@@ -426,6 +436,9 @@ class MyMplCanvas(FigureCanvas):
 
         ax2 = self.figure.add_subplot(122, label='Map')
         ax2.set_aspect('equal')
+        ax2.ticklabel_format(useOffset=False, style='plain')
+        ax2.tick_params(axis='x', rotation=90)
+        ax2.tick_params(axis='y', rotation=0)
 
         fangle = []
         fcnt = []
