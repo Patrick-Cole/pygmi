@@ -231,7 +231,7 @@ class MenuWidget():
     def rtp(self):
         """Compute RTP."""
         fnc = dataprep.RTP(self.parent)
-        self.parent.item_insert('Step', 'RTP Angle', fnc)
+        self.parent.item_insert('Step', 'RTP', fnc)
 
     def show_ccoef(self):
         """Show 2D correlation coefficients."""

@@ -44,7 +44,7 @@ class GraphHist(FigureCanvas):
     def __init__(self, parent=None):
         self.figure = Figure()
 
-        super().__init__(parent)
+        super().__init__(self.figure)
 
         self.setParent(parent)
 
@@ -491,7 +491,8 @@ class PolygonInteractor(QtCore.QObject):
 
         if self._ind is None:
             xys = self.poly.get_transform().transform(self.poly.xy)
-            ptmp = self.poly.get_transform().transform([event.xdata, event.ydata])
+            ptmp = self.poly.get_transform().transform([event.xdata,
+                                                        event.ydata])
 #            ptmp = event.x, event.y  # display coords
 
             if len(xys) == 1:
@@ -869,7 +870,7 @@ class ScatterPlot(QtWidgets.QDialog):
 
         polymask = np.array(polymask)
         polymask.shape = mask.shape
-        polymask = np.logical_or(polymask, mask)
+        polymask = np.logical_or(~polymask, mask)
 
         dattmp = self.map.csp.get_array()
         dattmp.mask = polymask

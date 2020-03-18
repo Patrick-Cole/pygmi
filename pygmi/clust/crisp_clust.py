@@ -794,5 +794,4 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
 # oriented and shaped ellipsoid
             ddd.append(np.sum((np.dot(dcent, mbig)*dcent), 1).T)
         bigd = np.sqrt(ddd)
-#    end
-    return bigd
+    return bigd.real
