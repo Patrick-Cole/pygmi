@@ -449,6 +449,7 @@ class ImportShapeData():
 
         return True
 
+
 class DataReproj(QtWidgets.QDialog):
     """
     Reprojections.
@@ -549,8 +550,8 @@ class DataReproj(QtWidgets.QDialog):
         dd = np.transpose([data.pygmiX, data.pygmiY])
         xy = ctrans.TransformPoints(dd)
         xy = np.array(xy)
-        data.assign(Xnew=xy[:, 0])
-        data.assign(Ynew=xy[:, 1])
+        data = data.assign(Xnew=xy[:, 0])
+        data = data.assign(Ynew=xy[:, 1])
         data.pygmiX = xy[:, 0]
         data.pygmiY = xy[:, 1]
 

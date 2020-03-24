@@ -26,11 +26,12 @@
 
 from __future__ import print_function
 
+import sys
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-import numpy.lib.recfunctions as nplrf
+import matplotlib.pyplot as plt
 import pygmi.menu_default as menu_default
-from pygmi.vector.datatypes import LData
+import pygmi.grav.iodefs as iodefs
 
 
 class ProcessData(QtWidgets.QDialog):
@@ -174,7 +175,7 @@ class ProcessData(QtWidgets.QDialog):
 
         """
         pdat = self.indata['Line']['Gravity']
-        pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
+#        pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
 
         basethres = float(self.basethres.text())
         kstat = self.knownstat.text()
@@ -190,33 +191,63 @@ class ProcessData(QtWidgets.QDialog):
             pdat = pdat[itmp:]
 
 # Drift Correction, to abs base value
-        tmp = pdat[pdat['STATION'] > basethres]
+        tmp = pdat[pdat['STATION'] >= basethres]
 
         driftdat = tmp[tmp['STATION'] != kstat]
         pdat = pdat[pdat['STATION'] < basethres]
 
-        x = pdat['DECTIMEDATE'].values
-        xp = driftdat['DECTIMEDATE'].values
+#        x = pdat['DECTIMEDATE'].values
+#        xp1 = driftdat['DECTIMEDATE'].values
+        xp1 = driftdat['TIME'].apply(time_convert)
+
         fp = driftdat['GRAV'].values
+
+        x = pdat.index.values
+        xp = driftdat.index.values
 
         dcor = np.interp(x, xp, fp)
 
-        drifttime = (x[-1]-x[0])*24*60
-        driftrate = (dcor[-1]-dcor[0])/drifttime  # per day
-        print('QC - survey time (mins)', drifttime)
-        print('QC - survey drift (mGal/min):', driftrate)
+        print('Quality Control')
+        print('---------------')
+        tmp = driftdat['DECTIMEDATE'].values.astype(int)
+        tmp2 = []
+        ix = []
+        tcnt = 0
+        for i, val in enumerate(tmp[:-1]):
+            tmp2.append(tcnt)
+            if tmp[i+1] != val:
+                ix += tmp2
+                tmp2 = []
+                tcnt += 1
+        tmp2.append(tcnt)
+        ix += tmp2
 
-        ix = np.trunc(x)
         for iday in np.unique(ix):
             filt = (ix == iday)
-            x2 = x[filt]
-            dcor2 = dcor[filt]
-            drifttime2 = (x2[-1]-x2[0])*24*60
-            driftrate2 = (dcor2[-1]-dcor2[0])/drifttime2  # per day
-            print('QC - day', iday, 'time (mins)', drifttime2)
-            print('QC - day', iday, 'drift (mGal/min):', driftrate2)
+            x2 = xp1[filt].values/60.
+            dcor2 = fp[filt]
+            drifttime = (x2[-1]-x2[0])
+            driftrate = (dcor2[-1]-dcor2[0])/drifttime
+            print(f'Day {iday+1} drift: {driftrate:.3e} mGal/min over '
+                  f'{drifttime:.3f} minutes.')
+
+        xp2 = xp1/86400 + ix+1
+        plt.figure('QC: Gravimeter Drift')
+        plt.xlabel('Decimal Days')
+        plt.ylabel('GRAV')
+        plt.grid(True)
+        plt.plot(xp2, fp, '.-')
+        plt.xticks(range(1, ix[-1]+2, 1))
+        plt.tight_layout()
+
+        try:
+            plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
+        except:
+            pass
+        plt.show()
 
         gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
+###################################################################
 
 # Variables used
         lat = np.deg2rad(pdat.latitude)
@@ -232,6 +263,7 @@ class ProcessData(QtWidgets.QDialog):
 # Bouguer Anomaly
         gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
 
+        pdat = pdat.assign(dcor=dcor)
         pdat = pdat.assign(gobs_drift=gobs)
         pdat = pdat.assign(gT=gT)
         pdat = pdat.assign(gATM=gATM)
@@ -431,3 +463,54 @@ def spherical_bouguer(h, dens):
     gSB = 2*np.pi*G*dens*(mu*h - lamda*R)*1e5
 
     return gSB
+
+
+def time_convert(x):
+    """ converts hh:mm:ss to seconds """
+    h, m, s = map(int, x.decode().split(':'))
+    return (h*60+m)*60+s
+
+
+def test():
+    """ Test routine """
+    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    grvfile = r'C:\WorkData\Gravity\skeifontein 2018.txt'
+    gpsfile = r'C:\WorkData\Gravity\skei_dgps.csv'
+
+    grvfile = r'C:\WorkData\Gravity\Laxeygarvity until2511.txt'
+    gpsfile = r'C:\WorkData\Gravity\laxey.dgps.csv'
+
+# Import Data
+    IO = iodefs.ImportCG5(None)
+    IO.get_cg5(grvfile)
+    IO.get_gps(gpsfile)
+    IO.settings(True)
+
+# Process Data
+    PD = ProcessData()
+    PD.indata = IO.outdata
+    PD.knownstat.setText('88888.0')
+    PD.knownbase.setText('978864.74')
+    PD.calcbase()
+
+    PD.settings(True)
+
+    datout = PD.outdata['Line']
+
+    gdf = datout['Gravity']
+
+    gdf = gdf[(gdf.STATION >4470) & (gdf.STATION<4472)]
+#    gdf = gdf[(gdf.STATION >2213) & (gdf.STATION<2900)]
+
+    plt.plot(gdf.longitude, gdf.latitude, '.')
+    plt.show()
+
+
+#    breakpoint()
+
+
+if __name__ == "__main__":
+    test()
+
+    print('Finished!')

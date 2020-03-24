@@ -338,17 +338,18 @@ class ParamDisplay(QtWidgets.QDialog):
         label_12 = QtWidgets.QLabel('Remanent Declination')
         label_13 = QtWidgets.QLabel('Density (g/cm3)')
 
-        self.dsb_susc.setDecimals(4)
+        self.dsb_susc.setDecimals(7)
         self.dsb_susc.setMaximum(999999999.0)
         self.dsb_susc.setSingleStep(0.01)
         self.dsb_susc.setProperty('value', 0.01)
         self.dsb_rmi.setEnabled(True)
-        self.dsb_rmi.setDecimals(3)
+        self.dsb_rmi.setDecimals(5)
         self.dsb_rmi.setMaximum(999999999.0)
         self.dsb_qratio.setEnabled(True)
         self.dsb_qratio.setMaximum(999999999.0)
+        self.dsb_qratio.setDecimals(5)
         self.dsb_magnetization.setEnabled(True)
-        self.dsb_magnetization.setDecimals(3)
+        self.dsb_magnetization.setDecimals(5)
         self.dsb_magnetization.setMaximum(999999999.0)
         self.dsb_minc.setEnabled(True)
         self.dsb_minc.setMinimum(-90.0)
@@ -358,7 +359,7 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_mdec.setMinimum(-360.0)
         self.dsb_mdec.setMaximum(360.0)
         self.dsb_mdec.setProperty('value', -17.0)
-        self.dsb_density.setDecimals(3)
+        self.dsb_density.setDecimals(5)
         self.dsb_density.setSingleStep(0.01)
         self.dsb_density.setProperty('value', 2.75)
 
@@ -535,7 +536,10 @@ class ParamDisplay(QtWidgets.QDialog):
         hintn = self.dsb_hint.value()
 
         mstrength = rmi/(400*np.pi)
-        qratio = rmi/(susc*hintn)
+        if (susc*hintn) == 0:
+            qratio = 0.0
+        else:
+            qratio = rmi/(susc*hintn)
 
         self.disconnect_spin()
         self.dsb_magnetization.setValue(mstrength)
@@ -556,10 +560,11 @@ class ParamDisplay(QtWidgets.QDialog):
         hintn = self.dsb_hint.value()
 
         rmi = 400*np.pi*mstrength
-        if susc != 0.0:
-            qratio = rmi/(susc*hintn)
-        else:
+
+        if (susc*hintn) == 0:
             qratio = 0.0
+        else:
+            qratio = rmi/(susc*hintn)
 
         self.disconnect_spin()
         self.dsb_rmi.setValue(rmi)

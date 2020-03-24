@@ -229,6 +229,15 @@ class ImportCG5(QtWidgets.QDialog):
         dfmerge['line'] = dfmerge['line'].astype(str)
         self.outdata['Line'] = {'Gravity': dfmerge}
 
+        dtest = dfmerge.duplicated(['LINE', 'STATION'])
+        dlist = dfmerge[['LINE', 'STATION']].loc[dtest]
+        dlist = dlist[~dlist.duplicated()]
+        dlist = dlist[dlist.STATION < 10000]
+
+        if dlist.size > 0:
+            print('Warning, the following are duplicated:' )
+            print(dlist.to_string(index=False))
+
         return True
 
     def get_cg5(self, filename=''):
