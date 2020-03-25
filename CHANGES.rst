@@ -3,7 +3,20 @@ Changelog
 =========
 v3.1.0, 24 March 2020
 ---------------------
-
+*Updates to gravity routines to report duplicated stations.
+*Fix bug where reprojected coordinates were not properly written to exported file for vector datasets.
+*Fixed incorrect label on RTP.
+*Fixed entry into scatter plot tool, and tool now correctly only displays selected parts of the histogram.
+*Disabled windows context help.
+*Maps will now have plain coordinates rather than scientific notation.
+*Fixed a bug with equation editor causing iall variable to not work properly.
+*Added occam1d warning for no executable.
+*Fixed a bug causing clipping in saved sunshaded images.
+*Fixed interpolation on model (caused by API change) Fixed a bug in drift correction for gravity.
+*Added reprojection of line data.
+*Unified Line and point data - they are now the same thing.
+*Adopted pandas and geopandas as point, line and shapefile format
+*Misc updates
 
 v3.0.2, 5 March 2020
 --------------------
@@ -319,3 +332,19 @@ v2.2, 12 August 2014
 v2.1, 17 July 2014
 ------------------
 * Initial Release
+v3.1.0, 25 March 2020
+---------------------
+*Updates to gravity routines to report duplicated stations.
+*Fix bug where reprojected coordinates were not properly written to exported file for vector datasets.
+*Fixed incorrect label on RTP.
+*Fixed entry into scatter plot tool, and tool now correctly only displays selected parts of the histogram.
+*Disabled windows context help.
+*Maps will now have plain coordinates rather than scientific notation.
+*Fixed a bug with equation editor causing iall variable to not work properly.
+*Added occam1d warning for no executable.
+*Fixed a bug causing clipping in saved sunshaded images.
+*Fixed interpolation on model (caused by API change) Fixed a bug in drift correction for gravity.
+*Added reprojection of line data.
+*Unified Line and point data - they are now the same thing.
+*Adopted pandas and geopandas as point, line and shapefile format
+*Misc updates
