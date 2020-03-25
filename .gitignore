@@ -18,6 +18,7 @@ pygmi.egg-info/
 *.exe
 grvmagc_*.html
 .spyderproject
+gittolog.sh
 log.txt
 Thumbs.db
 pygmi/test/2D_INV_Lines.csv
