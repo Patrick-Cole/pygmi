@@ -9,6 +9,7 @@ It includes:
 * Cluster Analysis
 * Routines for cutting, reprojecting and doing simple modifications to data
 * Convenient display of data using pseudo-color, ternary and sunshaded representation
+* New features such as MT processing and 1D inversion, gravity processing, seismological  for SEISAN data.
 
 It is released under the Gnu General Public License version [3.0](http://www.gnu.org/copyleft/gpl.html)
 
@@ -22,27 +23,27 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 PyGMI is developed and has been tested with the following libraries in order to function:
 
 * python 3.8.1
-* GDAL 3.0.4
+* fiona 1.8.13
+* gdal 3.0.4
+* geopandas 0.6.2
 * llvmlite 0.31.0
 * matplotlib 3.2.0rc2
+* mtpy 1.1.3
 * numba 0.47.0
 * numexpr 2.7.1
-* numpy 1.18.0
-* pillow 7.0.0
+* numpy 1.18.0+mkl
 * pandas 0.25.3
-* pyopengl 3.1.5
-* pyqt5 5.12.3
-* scipy 1.4.1
-* scikit_learn 0.21.1
-* scikit_image 0.16.2
-* setuptools 41.0.1
-* segyio 1.9.0
-* geopandas 0.6.2
-* pytest 5.1.2
-* mtpy 1.1.3
-* pytest 5.3.2
-* SimPEG 0.13.1
+* pillow 7.0.0
 * pymatsolver 0.1.2
+* pyopengl 3.1.5
+* PyQt5 5.12.3
+* pytest 5.3.2
+* scikit-image 0.16.2
+* scikit-learn 0.22.1
+* scipy 1.4.1
+* segyio 1.9.0
+* shapely 1.6.4.post2
+* SimPEG 0.13.1
 
 ## Installation
 ### General (Not Anaconda)
