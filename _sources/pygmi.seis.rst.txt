@@ -60,6 +60,14 @@ pygmi.seis.scan\_imp module
    :undoc-members:
    :show-inheritance:
 
+pygmi.seis.utils module
+-----------------------
+
+.. automodule:: pygmi.seis.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 Module contents
 ---------------

@@ -1,0 +1,54 @@
+pygmi.mt package
+================
+
+Submodules
+----------
+
+pygmi.mt.birrp module
+---------------------
+
+.. automodule:: pygmi.mt.birrp
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.mt.dataprep module
+------------------------
+
+.. automodule:: pygmi.mt.dataprep
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.mt.graphs module
+----------------------
+
+.. automodule:: pygmi.mt.graphs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.mt.iodefs module
+----------------------
+
+.. automodule:: pygmi.mt.iodefs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.mt.menu module
+--------------------
+
+.. automodule:: pygmi.mt.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: pygmi.mt
+   :members:
+   :undoc-members:
+   :show-inheritance:

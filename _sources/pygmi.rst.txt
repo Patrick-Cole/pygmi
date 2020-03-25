@@ -11,6 +11,7 @@ Subpackages
    pygmi.em
    pygmi.eseis
    pygmi.grav
+   pygmi.mt
    pygmi.pfmod
    pygmi.raster
    pygmi.rsense

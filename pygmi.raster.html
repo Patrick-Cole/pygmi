@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>pygmi.raster package &#8212; PyGMI 3.0.1 documentation</title>
+    <title>pygmi.raster package &#8212; PyGMI 3.1.0 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -774,7 +774,7 @@
 
 <dl class="function">
 <dt id="pygmi.raster.cooper.gradients">
-<code class="sig-prename descclassname">pygmi.raster.cooper.</code><code class="sig-name descname">gradients</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">azi</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.gradients" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.raster.cooper.</code><code class="sig-name descname">gradients</code><span class="sig-paren">(</span><em class="sig-param">data</em>, <em class="sig-param">azi</em>, <em class="sig-param">xint</em>, <em class="sig-param">yint</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.cooper.gradients" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gradients.</p>
 <p>Compute directional derivative of image data. Based on code by
 Gordon Cooper.</p>
@@ -1043,7 +1043,7 @@ shapefile.</p>
 <dl class="method">
 <dt id="pygmi.raster.dataprep.DataGrid.dxy_change">
 <code class="sig-name descname">dxy_change</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.DataGrid.dxy_change" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update dxy.</p>
+<dd><p>When dxy is changed on the interface, this update rows and columns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
@@ -1789,7 +1789,7 @@ columns.</p>
 
 <dl class="function">
 <dt id="pygmi.raster.dataprep.quickgrid">
-<code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">quickgrid</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em>, <em class="sig-param">dxy</em>, <em class="sig-param">showtext=None</em>, <em class="sig-param">numits=4</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.quickgrid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">quickgrid</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em>, <em class="sig-param">dxy</em>, <em class="sig-param">numits=4</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.quickgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do a quick grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1798,7 +1798,6 @@ columns.</p>
 <li><p><strong>y</strong> (<em>numpy array</em>) – array of y coordinates</p></li>
 <li><p><strong>z</strong> (<em>numpy array</em>) – array of z values - this is the column being gridded</p></li>
 <li><p><strong>dxy</strong> (<em>float</em>) – cell size for the grid, in both the x and y direction.</p></li>
-<li><p><strong>showtext</strong> (<em>module</em><em>, </em><em>optional</em>) – showtext provided an alternative to print</p></li>
 <li><p><strong>numits</strong> (<em>int</em>) – number of iterations. By default its 4. If this is negative, a maximum
 numits will be calculated and used.</p></li>
 </ul>
@@ -3128,9 +3127,9 @@ main PyGMI interface.</p>
 
 <dl class="function">
 <dt id="pygmi.raster.ginterp.histcomp">
-<code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">histcomp</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">nbr_bins=256</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.histcomp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">histcomp</code><span class="sig-paren">(</span><em class="sig-param">img</em>, <em class="sig-param">nbr_bins=256</em>, <em class="sig-param">perc=5.0</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.histcomp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Histogram Compaction</p>
-<p>This compacts 5% of the outliers in data, allowing for a cleaner, linear
+<p>This compacts a % of the outliers in data, allowing for a cleaner, linear
 representation of the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -5637,7 +5636,7 @@ main PyGMI interface.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Council for Geoscience.
+        &#169; Copyright 2020, Council for Geoscience.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
     </div>
   </body>

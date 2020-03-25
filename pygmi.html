@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>pygmi package &#8212; PyGMI 3.0.1 documentation</title>
+    <title>pygmi package &#8212; PyGMI 3.1.0 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -130,10 +130,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pygmi.em.html">pygmi.em package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.em.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.em.html#module-pygmi.em.birrp">pygmi.em.birrp module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.em.html#module-pygmi.em.dataprep">pygmi.em.dataprep module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.em.html#module-pygmi.em.graphs">pygmi.em.graphs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.em.html#module-pygmi.em.iodefs">pygmi.em.iodefs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.em.html#module-pygmi.em.menu">pygmi.em.menu module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.em.html#module-pygmi.em.tdem">pygmi.em.tdem module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.em.html#module-pygmi.em">Module contents</a></li>
@@ -153,6 +149,16 @@
 <li class="toctree-l2"><a class="reference internal" href="pygmi.grav.html#module-pygmi.grav.iodefs">pygmi.grav.iodefs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.grav.html#module-pygmi.grav.menu">pygmi.grav.menu module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.grav.html#module-pygmi.grav">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pygmi.mt.html">pygmi.mt package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.mt.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.mt.html#module-pygmi.mt.birrp">pygmi.mt.birrp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.mt.html#module-pygmi.mt.dataprep">pygmi.mt.dataprep module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.mt.html#module-pygmi.mt.graphs">pygmi.mt.graphs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.mt.html#module-pygmi.mt.iodefs">pygmi.mt.iodefs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.mt.html#module-pygmi.mt.menu">pygmi.mt.menu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.mt.html#module-pygmi.mt">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pygmi.pfmod.html">pygmi.pfmod package</a><ul>
@@ -205,6 +211,7 @@
 <li class="toctree-l2"><a class="reference internal" href="pygmi.seis.html#module-pygmi.seis.iodefs">pygmi.seis.iodefs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.seis.html#module-pygmi.seis.menu">pygmi.seis.menu module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.seis.html#module-pygmi.seis.scan_imp">pygmi.seis.scan_imp module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.seis.html#module-pygmi.seis.utils">pygmi.seis.utils module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.seis.html#module-pygmi.seis">Module contents</a></li>
 </ul>
 </li>
@@ -517,6 +524,63 @@ method.</p>
 </dd></dl>
 
 <dl class="class">
+<dt id="pygmi.main.EmittingStream">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.main.</code><code class="sig-name descname">EmittingStream</code><a class="headerlink" href="#pygmi.main.EmittingStream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
+<p>Class to intercept stdout for later use in a textbox</p>
+<dl class="method">
+<dt id="pygmi.main.EmittingStream.fileno">
+<code class="sig-name descname">fileno</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.fileno" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fileno</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Returns -1.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.main.EmittingStream.flush">
+<code class="sig-name descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Flush</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pygmi.main.EmittingStream.textWritten">
+<code class="sig-name descname">textWritten</code><a class="headerlink" href="#pygmi.main.EmittingStream.textWritten" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="pygmi.main.EmittingStream.write">
+<code class="sig-name descname">write</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.write" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="pygmi.main.MainWidget">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.main.</code><code class="sig-name descname">MainWidget</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
@@ -660,6 +724,20 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.main.MainWidget.pdb">
+<code class="sig-name descname">pdb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.pdb" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to make sure stdout is restored when using debugger.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.main.MainWidget.pointer">
 <code class="sig-name descname">pointer</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.pointer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select pointer.</p>
@@ -672,6 +750,20 @@ the main PyGMI menu.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>isactive</strong> (<em>bool</em><em>, </em><em>optional</em>) – boolean variable indicating if a process is active.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmi.main.MainWidget.read_output">
+<code class="sig-name descname">read_output</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.read_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads std out and sends it to process log.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -715,21 +807,6 @@ the main PyGMI menu.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>txt</strong> (<em>str</em>) – Message to be displayed in the process log</p></li>
-<li><p><strong>replacelast</strong> (<em>bool</em><em>, </em><em>optional</em>) – flag to indicate whether the last row on the log should be
-overwritten.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="pygmi.main.MainWidget.showtext">
-<code class="sig-name descname">showtext</code><span class="sig-paren">(</span><em class="sig-param">txtobj</em>, <em class="sig-param">txt</em>, <em class="sig-param">replacelast=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.showtext" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show text on the text panel.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>txt</strong> (<em>str</em>) – Message to be displayed in the text panel</p></li>
 <li><p><strong>replacelast</strong> (<em>bool</em><em>, </em><em>optional</em>) – flag to indicate whether the last row on the log should be
 overwritten.</p></li>
 </ul>
@@ -1013,7 +1090,7 @@ datasets. It includes:</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Council for Geoscience.
+        &#169; Copyright 2020, Council for Geoscience.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
     </div>
   </body>

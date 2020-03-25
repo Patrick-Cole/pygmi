@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta charset="utf-8" />
-    <title>pygmi.grav package &#8212; PyGMI 3.0.1 documentation</title>
+    <title>pygmi.grav package &#8212; PyGMI 3.1.0 documentation</title>
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,7 +15,7 @@
     <link rel="shortcut icon" href="_static/favicon.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pygmi.pfmod package" href="pygmi.pfmod.html" />
+    <link rel="next" title="pygmi.mt package" href="pygmi.mt.html" />
     <link rel="prev" title="pygmi.eseis package" href="pygmi.eseis.html" /> 
   </head><body>
 
@@ -40,7 +40,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pygmi.pfmod.html" title="pygmi.pfmod package"
+          <a href="pygmi.mt.html" title="pygmi.mt package"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="pygmi.eseis.html" title="pygmi.eseis package"
@@ -72,8 +72,8 @@
   <p class="topless"><a href="pygmi.eseis.html"
                         title="previous chapter">pygmi.eseis package</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="pygmi.pfmod.html"
-                        title="next chapter">pygmi.pfmod package</a></p>
+  <p class="topless"><a href="pygmi.mt.html"
+                        title="next chapter">pygmi.mt package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -162,6 +162,21 @@
 </dd></dl>
 
 <dl class="method">
+<dt id="pygmi.grav.dataprep.ProcessData.calcbase">
+<code class="sig-name descname">calcbase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.calcbase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate local base station value.</p>
+<p>Ties in the local base station to a known absolute base station.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="pygmi.grav.dataprep.ProcessData.settings">
 <code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">test=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
@@ -189,6 +204,109 @@
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.grav.dataprep.atmospheric_correction">
+<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">atmospheric_correction</code><span class="sig-paren">(</span><em class="sig-param">h</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.atmospheric_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the atmospheric correction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to elipsoid (GPS heights).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>gATM</strong> – Atmospheric correction</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.grav.dataprep.geocentric_radius">
+<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">geocentric_radius</code><span class="sig-paren">(</span><em class="sig-param">lat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.geocentric_radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the distance from the Earth’s center to a point on the spheroid
+surface at a specified geodetic latitude.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lat</strong> (<em>numpy array</em>) – Latitude in radians</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>R</strong> – Array of radii.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.grav.dataprep.height_correction">
+<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">height_correction</code><span class="sig-paren">(</span><em class="sig-param">lat</em>, <em class="sig-param">h</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.height_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate height correction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lat</strong> (<em>numpy array</em>) – Latitude in radians.</p></li>
+<li><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to elipsoid (GPS heights).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>gHC</strong> – Height corrections</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.grav.dataprep.spherical_bouguer">
+<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">spherical_bouguer</code><span class="sig-paren">(</span><em class="sig-param">h</em>, <em class="sig-param">dens</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.spherical_bouguer" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to elipsoid (GPS heights).</p></li>
+<li><p><strong>dens</strong> (<em>float</em>) – Density.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>gSB</strong> – Spherical Bouguer correction.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.grav.dataprep.test">
+<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test routine</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.grav.dataprep.theoretical_gravity">
+<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">theoretical_gravity</code><span class="sig-paren">(</span><em class="sig-param">lat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.theoretical_gravity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the theoretical gravity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>lat</strong> (<em>numpy array</em>) – Latitude in radians</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>gT</strong> – Array of theoretrical gravity values.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="pygmi.grav.dataprep.time_convert">
+<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">time_convert</code><span class="sig-paren">(</span><em class="sig-param">x</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.time_convert" title="Permalink to this definition">¶</a></dt>
+<dd><p>converts hh:mm:ss to seconds</p>
 </dd></dl>
 
 </div>
@@ -379,7 +497,7 @@ interface. Normal as well as context menus are defined here.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="pygmi.pfmod.html" title="pygmi.pfmod package"
+          <a href="pygmi.mt.html" title="pygmi.mt package"
              >next</a> |</li>
         <li class="right" >
           <a href="pygmi.eseis.html" title="pygmi.eseis package"
@@ -393,7 +511,7 @@ interface. Normal as well as context menus are defined here.</p>
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; Copyright 2019, Council for Geoscience.
+        &#169; Copyright 2020, Council for Geoscience.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
     </div>
   </body>

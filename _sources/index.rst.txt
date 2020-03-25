@@ -7,11 +7,11 @@ Notices
 =======
 Welcome to the PyGMI website! It contains more information, including API documentation for the project.
 
-December 6, 2019: `PyGMI 3.0.1 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
+March 25, 2020: `PyGMI 3.1.0 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
 
-This is the next release of PyGMI. It contains various bug fixes and introduces new menus for processing of geophysical data. This includes the amazing `mtpy <https://github.com/MTgeophysics/mtpy>`_ library for MT processing, as well as `segyio <https://pypi.org/project/segyio/>`_ for reading SEG-Y data to view. This is the start of (hopefully) something big in terms of expanding the geoscience capabilities of PyGMI.
+This is the next release of PyGMI. It contains various bug fixes and introduces new menus for processing of geophysical data. This includes the amazing `mtpy <https://github.com/MTgeophysics/mtpy>`_ library for MT processing, as well as `segyio <https://pypi.org/project/segyio/>`_ for reading SEG-Y data to view. This is the continuation of (hopefully) something big in terms of expanding the geoscience capabilities of PyGMI.
 
-PyGMI is being developed using python 3.7 and Qt5.
+PyGMI is being developed using python 3.8 and Qt5.
 
 If there are requests or concerns, please contact me.
 
@@ -28,13 +28,15 @@ It includes:
 * Cluster Analysis
 * Routines for cutting, reprojecting and doing simple modifications to data
 * Convenient display of data using pseudo-color, ternary and sunshaded representation.
-* It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
+* New features such as MT processing and 1D inversion, gravity processing, seismological  for SEISAN data.
+
+It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
 
 View the PyGMI project on `GitHub <https://github.com/Patrick-Cole/pygmi>`_!
 
 The latest release version (including windows installers) can be found `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
-You may need to install the `Microsoft Visual C++ 2015 Redistributable <https://www.visualstudio.com/downloads/download-visual-studio-vs#d-visual-c>`_.
+You may need to install the `Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 <https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads>`_.
 
 If you have any comments or queries, you can contact the author either through `GitHub <https://github.com/Patrick-Cole/pygmi>`_ or via email at pcole@geoscience.org.za
 
