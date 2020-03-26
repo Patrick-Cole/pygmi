@@ -73,8 +73,8 @@ In either case, running pygmi can be now done at the command prompt as follows:
 If you are in python, you can run PyGMI by using the following commands:
 
    import pygmi
-   pygmi.main()
 
+   pygmi.main()
 
 If you prefer not to install pygmi as a library, or if there is a problem with running it in that matter, you can simply execute the following command to run it manually:
 
@@ -95,17 +95,17 @@ Examples of binaries you may need to get are:
 
 They can be obtained from the `website <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_ by Christoph Gohlke.
 
-You may also need to install the `Microsoft Visual C++ 2015 Redistributable <https://www.visualstudio.com/downloads/download-visual-studio-vs#d-visual-c>`_.
-
 Linux
 -----
-Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through `Anaconda Python <http://continuum.io/downloads>`_.
+Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through `Anaconda Python <https://www.anaconda.com/`_.
 
 Anaconda
 --------
 Anaconda users are advised not to use pip since it can break PyQt5. However, two packages are installed only by pip, so a Conda environment should be created. The process to install is as follows:
 
    conda create -n pygmi python=3.7
+
+   conda activate pygmi
 
    conda install pyqt
 
