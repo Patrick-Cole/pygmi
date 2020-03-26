@@ -19,6 +19,9 @@ pygmi.egg-info/
 grvmagc_*.html
 .spyderproject
 gittolog.sh
+builddocs.py
+pygmi_pypi.py
+findlibs.py
 log.txt
 Thumbs.db
 pygmi/test/2D_INV_Lines.csv
