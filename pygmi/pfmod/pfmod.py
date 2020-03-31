@@ -193,12 +193,6 @@ class MainWidget(QtWidgets.QMainWindow):
 
         self.outdata['Raster'] = datatmp
 
-        if 'ProfPic' in self.indata:
-            icnt = 0
-            for i in self.indata['ProfPic']:
-                icnt += 1
-                self.lmod1.profpics['Profile: '+str(icnt)] = i
-
         self.show()
 
         return True

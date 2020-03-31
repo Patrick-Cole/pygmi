@@ -356,6 +356,11 @@ class ImportMod3D():
         for i in lmod.griddata:
             lmod.griddata[i].data = np.ma.array(lmod.griddata[i].data)
 
+        lmod.profpics = indict[pre+'profpics'].item()
+
+        for i in lmod.profpics:
+            lmod.profpics[i].data = np.ma.array(lmod.profpics[i].data)
+
         # This gets rid of a legacy variable name
         for i in lmod.griddata:
             if not hasattr(lmod.griddata[i], 'dataid'):
@@ -531,6 +536,7 @@ class ExportMod3D():
         outdict[pre+'zrange'] = self.lmod.zrange
         outdict[pre+'mlut'] = self.lmod.mlut
         outdict[pre+'griddata'] = self.lmod.griddata
+        outdict[pre+'profpics'] = self.lmod.profpics
         outdict[pre+'custprofx'] = self.lmod.custprofx
         outdict[pre+'custprofy'] = self.lmod.custprofy
 
@@ -1132,215 +1138,6 @@ class Exportkmz(QtWidgets.QDialog):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-
-
-class ImportPicture(QtWidgets.QDialog):
-    """Import picture dialog."""
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.parent = parent
-        self.lmod = LithModel()
-
-        self.ifile = ''
-        self.name = 'Import Picture: '
-        self.ext = ''
-        self.pbar = None
-        self.indata = {}
-        self.outdata = {}
-        self.grid = None
-
-        self.dsb_picimp_west = QtWidgets.QDoubleSpinBox()
-        self.dsb_picimp_east = QtWidgets.QDoubleSpinBox()
-        self.dsb_picimp_depth = QtWidgets.QDoubleSpinBox()
-        self.rb_picimp_westeast = QtWidgets.QRadioButton('Profile is from West'
-                                                         ' to East')
-        self.rb_picimp_southnorth = QtWidgets.QRadioButton('Profile is from '
-                                                           'South to North')
-        self.dsb_picimp_maxalt = QtWidgets.QDoubleSpinBox()
-
-        self.setupui()
-
-        self.min_coord = None
-        self.max_coord = None
-        self.max_alt = None
-        self.min_alt = None
-        self.is_eastwest = None
-
-        self.lmod2var()
-
-    def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
-        groupbox = QtWidgets.QGroupBox('Profile Coordinates')
-        gridlayout_2 = QtWidgets.QGridLayout(self)
-        gridlayout_3 = QtWidgets.QGridLayout(groupbox)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.importpicture')
-
-        label = QtWidgets.QLabel('West/South Coordinate')
-        label_2 = QtWidgets.QLabel('East/North Coordinate')
-        label_3 = QtWidgets.QLabel('Depth')
-        label_4 = QtWidgets.QLabel('Maximum Altitude')
-        label_5 = QtWidgets.QLabel('Press Cancel if you wish to connect '
-                                   'profile information from a 3D model')
-
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-
-        self.dsb_picimp_west.setDecimals(6)
-        self.dsb_picimp_west.setMinimum(-999999999.0)
-        self.dsb_picimp_west.setMaximum(999999999.0)
-        self.dsb_picimp_west.setProperty('value', 0.0)
-        self.dsb_picimp_east.setDecimals(6)
-        self.dsb_picimp_east.setMinimum(-999999999.0)
-        self.dsb_picimp_east.setMaximum(999999999.0)
-        self.dsb_picimp_east.setProperty('value', 1000.0)
-        self.dsb_picimp_depth.setDecimals(6)
-        self.dsb_picimp_depth.setMinimum(0.0)
-        self.dsb_picimp_depth.setMaximum(999999999.0)
-        self.dsb_picimp_depth.setProperty('value', 1000.0)
-        self.rb_picimp_westeast.setChecked(True)
-        self.dsb_picimp_maxalt.setDecimals(6)
-        self.dsb_picimp_maxalt.setMinimum(-999999999.0)
-        self.dsb_picimp_maxalt.setMaximum(999999999.0)
-        self.dsb_picimp_maxalt.setProperty('value', 1000.0)
-
-        self.setWindowTitle('Profile Picture Importer')
-
-        gridlayout_2.addWidget(groupbox, 0, 0, 1, 2)
-        gridlayout_2.addWidget(label_5, 1, 0, 1, 2)
-        gridlayout_2.addWidget(helpdocs, 2, 0, 1, 1)
-        gridlayout_2.addWidget(buttonbox, 2, 1, 1, 1)
-
-        gridlayout_3.addWidget(self.rb_picimp_westeast, 0, 0, 1, 1)
-        gridlayout_3.addWidget(self.rb_picimp_southnorth, 1, 0, 1, 1)
-        gridlayout_3.addWidget(label, 2, 0, 1, 1)
-        gridlayout_3.addWidget(self.dsb_picimp_west, 2, 1, 1, 1)
-        gridlayout_3.addWidget(label_2, 4, 0, 1, 1)
-        gridlayout_3.addWidget(self.dsb_picimp_east, 4, 1, 1, 1)
-        gridlayout_3.addWidget(label_4, 5, 0, 1, 1)
-        gridlayout_3.addWidget(self.dsb_picimp_maxalt, 5, 1, 1, 1)
-        gridlayout_3.addWidget(label_3, 6, 0, 1, 1)
-        gridlayout_3.addWidget(self.dsb_picimp_depth, 6, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-        self.rb_picimp_westeast.clicked.connect(self.lmod2var)
-        self.rb_picimp_southnorth.clicked.connect(self.lmod2var)
-
-    def lmod2var(self):
-        """
-        LithModel to variables.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.is_eastwest = self.rb_picimp_westeast.isChecked()
-        self.min_alt, self.max_alt = self.lmod.zrange
-
-        if self.is_eastwest:
-            self.min_coord, self.max_coord = self.lmod.xrange
-        else:
-            self.min_coord, self.max_coord = self.lmod.yrange
-
-        self.update_win()
-
-    def update_var(self):
-        """
-        Update variables.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.min_coord = self.dsb_picimp_west.value()
-        self.max_coord = self.dsb_picimp_east.value()
-        self.max_alt = self.dsb_picimp_maxalt.value()
-        self.min_alt = self.max_alt - self.dsb_picimp_depth.value()
-        self.is_eastwest = self.rb_picimp_westeast.isChecked()
-
-        if self.is_eastwest:
-            self.grid.dataid = r'West to East'
-        else:
-            self.grid.dataid = r'South to North'
-
-        self.grid.dataid = 'Image'
-        self.grid.nullvalue = 0
-
-        rows, cols = self.grid.data.shape
-
-        self.grid.xdim = (self.max_coord-self.min_coord)/cols
-        self.grid.ydim = (self.max_alt-self.min_alt)/rows
-        self.grid.extent = [self.min_coord, self.max_coord, self.min_alt,
-                            self.max_alt]
-
-    def update_win(self):
-        """
-        Update window values.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.dsb_picimp_west.setValue(self.min_coord)
-        self.dsb_picimp_east.setValue(self.max_coord)
-        self.dsb_picimp_maxalt.setValue(self.max_alt)
-        self.dsb_picimp_depth.setValue(self.max_alt-self.min_alt)
-
-    def settings(self):
-        """
-        Load GeoTiff
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if 'Model3D' in self.indata:
-            self.lmod = self.indata['Model3D'][0]
-            self.lmod2var()
-
-        temp = self.exec_()
-        if temp == 0:
-            return False
-
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', '*.jpg *.tif *.bmp')
-
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-
-        self.ifile = filename
-
-        data = mpimg.imread(filename)
-
-        self.grid = Data()
-        self.grid.data = data
-
-        if (self.dsb_picimp_west.value() >=
-                self.dsb_picimp_east.value()):
-            return False
-        if self.dsb_picimp_depth.value() == 0.0:
-            return False
-
-        self.update_var()
-        self.outdata['ProfPic'] = [self.grid]
-
-        return True
 
 
 class MessageCombo(QtWidgets.QDialog):

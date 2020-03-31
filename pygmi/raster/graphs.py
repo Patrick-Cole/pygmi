@@ -143,28 +143,6 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_rgb(self, data1):
-        """
-        Update the RGB plot.
-
-        Parameters
-        ----------
-        data1 : PyGMI raster Data
-            raster dataset to be used
-
-        Returns
-        -------
-        None.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        self.axes.imshow(data1.data)
-
-        self.figure.tight_layout()
-        self.figure.canvas.draw()
-
     def update_hexbin(self, data1, data2):
         """
         Update the hexbin plot.
@@ -497,9 +475,6 @@ class PlotRaster(GraphWindow):
         if 'Raster' in self.indata:
             data = self.indata['Raster']
             self.mmc.update_raster(data[i])
-        elif 'ProfPic' in self.indata:
-            data = self.indata['ProfPic']
-            self.mmc.update_rgb(data[i])
 
     def run(self):
         """
@@ -515,8 +490,6 @@ class PlotRaster(GraphWindow):
             data = self.indata['Raster']
         elif 'Cluster' in self.indata:
             data = self.indata['Cluster']
-        elif 'ProfPic' in self.indata:
-            data = self.indata['ProfPic']
 
         for i in data:
             self.combobox1.addItem(i.dataid)

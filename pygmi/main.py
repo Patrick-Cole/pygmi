@@ -289,7 +289,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.scene().clearSelection()
         self.setSelected(True)
 
-        exclude = ['ProfPic', 'GenFPS', 'SceneList']
+        exclude = ['GenFPS', 'SceneList']
 
         tmp = self.context_menu['Basic'].actions()
         if 'Raster' in self.my_class.indata:
@@ -299,8 +299,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         for i in tmplist:
             if i not in exclude:
                 tmp += self.context_menu[i].actions()
-            if i == 'ProfPic' and 'Raster' not in tmplist:
-                tmp += self.context_menu['Raster'].actions()
         local_menu = QtWidgets.QMenu()
         local_menu.addActions(tmp)
         local_menu.exec_(event.screenPos())

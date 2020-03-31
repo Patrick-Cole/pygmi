@@ -68,10 +68,6 @@ class MenuWidget():
         self.menu.addAction(self.action_merge_mod3d)
         self.action_merge_mod3d.triggered.connect(self.merge_mod3d)
 
-#        self.action_prof_pic = QtWidgets.QAction('Import Profile Picture')
-#        self.menu.addAction(self.action_prof_pic)
-#        self.action_prof_pic.triggered.connect(self.import_prof_pic)
-
 # Context Menu
         context_menu['Model3D'].addSeparator()
 
@@ -105,8 +101,3 @@ class MenuWidget():
         """Merge models."""
         fnc = misc.MergeMod3D(self.parent)
         self.parent.item_insert('Step', 'Merge 3D Models', fnc)
-
-    def import_prof_pic(self):
-        """Import profile pictures."""
-        fnc = iodefs.ImportPicture(self.parent)
-        self.parent.item_insert('Io', 'Import Profile Picture', fnc)
