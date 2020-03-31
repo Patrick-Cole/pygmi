@@ -356,10 +356,11 @@ class ImportMod3D():
         for i in lmod.griddata:
             lmod.griddata[i].data = np.ma.array(lmod.griddata[i].data)
 
-        lmod.profpics = indict[pre+'profpics'].item()
+        if pre+'profpics' in indict:
+            lmod.profpics = indict[pre+'profpics'].item()
 
-        for i in lmod.profpics:
-            lmod.profpics[i].data = np.ma.array(lmod.profpics[i].data)
+            for i in lmod.profpics:
+                lmod.profpics[i].data = np.ma.array(lmod.profpics[i].data)
 
         # This gets rid of a legacy variable name
         for i in lmod.griddata:

@@ -66,6 +66,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
         else:
             self.showtext = print
 
+        self.setWindowTitle('3D Model Display')
+
         self.corners = []
         self.faces = {}
         self.norms = []
@@ -249,9 +251,17 @@ class Mod3dDisplay(QtWidgets.QDialog):
         None.
 
         """
+
+        for i in range(self.lw_3dmod_defs.count()):
+            item = self.lw_3dmod_defs.item(i)
+            if item.isSelected():
+                item.setText('\u2713' + item.text()[1:])
+            else:
+                item.setText(' ' + item.text()[1:])
+
         i = self.lw_3dmod_defs.selectedItems()
 
-        itxt = [j.text() for j in i]
+        itxt = [j.text()[2:] for j in i]
         lith = [self.lmod1.lith_list[j] for j in itxt]
         lith3d = [j.lith_index for j in lith]
 
@@ -383,7 +393,12 @@ class Mod3dDisplay(QtWidgets.QDialog):
                 self.lw_3dmod_defs.takeItem(i)
 
         for i in range(self.lw_3dmod_defs.count()):
-            self.lw_3dmod_defs.item(i).setSelected(True)
+            item = self.lw_3dmod_defs.item(i)
+#            item.setFlags(item.flags() |QtCore.Qt.ItemIsUserCheckable)
+            item.setSelected(True)
+            item.setText('\u2713 ' + item.text())
+#            item.setCheckState(QtCore.Qt.Checked)
+
         self.update_plot()
         return True
 
@@ -406,7 +421,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
 #     update colors
         i = self.lw_3dmod_defs.findItems('*', QtCore.Qt.MatchWildcard)
-        itxt = [j.text() for j in i]
+        itxt = [j.text()[2:] for j in i]
         itmp = []
         for i in itxt:
             itmp.append(self.lmod1.lith_list[i].lith_index)

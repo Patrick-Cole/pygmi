@@ -59,6 +59,11 @@ def update_lith_lw(lmod, lwidget):
         tcol = lmod.mlut[tindex]
         tmp.setBackground(QtGui.QColor(tcol[0], tcol[1], tcol[2], 255))
 
+        L = (tcol[0]*299 + tcol[1]*587 + tcol[2]*114)/1000.
+        if L > 128.:
+            tmp.setForeground(QtGui.QColor('black'))
+        else:
+            tmp.setForeground(QtGui.QColor('white'))
 
 class ProgressBar():
     """Wrapper for a progress bar. It consists of two progress bars."""
