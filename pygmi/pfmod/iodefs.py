@@ -365,7 +365,10 @@ class ImportMod3D():
                     lmod.griddata[i].dataid = lmod.griddata[i].bandid
                 del lmod.griddata[i].bandid
             if not hasattr(lmod.griddata[i], 'extent'):
-                rows, cols = lmod.griddata[i].data.shape
+                if lmod.griddata[i].data.ndim == 2:
+                    rows, cols = lmod.griddata[i].data.shape
+                elif lmod.griddata[i].data.ndim == 3:
+                    rows, cols, _ = lmod.griddata[i].data.shape
 
                 xmin = lmod.griddata[i].tlx
                 ymax = lmod.griddata[i].tly
