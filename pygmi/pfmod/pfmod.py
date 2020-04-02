@@ -145,12 +145,14 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
-        self.showtext('Saving Model, please do not close the interface...')
+        self.showtext('Saving model, please do not close the interface...')
         tmp = iodefs.ExportMod3D(self)
         tmp.indata = self.outdata
         tmp.run()
 
         del tmp
+        self.showtext('Model save complete!')
+
 
     def help_docs(self):
         """

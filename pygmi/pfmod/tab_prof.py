@@ -1674,14 +1674,13 @@ class MyMplCanvas(FigureCanvas):
                 self.newline = False
                 self.set_mdata(xdata, ydata, mdata)
             else:
-                x_1 = min([self.xold, xdata])
-                x_2 = max([self.xold, xdata])
-                y_1 = min([self.yold, ydata])
-                y_2 = max([self.yold, ydata])
 
-                steps = int(max(x_2-x_1, y_2-y_1))+1
-                xxx = np.linspace(x_1, x_2, steps)
-                yyy = np.linspace(y_1, y_2, steps)
+                rrr = np.sqrt((self.xold-xdata)**2+(self.yold-ydata)**2)
+                steps = int(rrr)+1
+#                steps = int(max(abs(self.xold-xdata),
+#                                abs(self.yold-ydata)))+1
+                xxx = np.linspace(self.xold, xdata, steps)
+                yyy = np.linspace(self.yold, ydata, steps)
 
                 for i, _ in enumerate(xxx):
                     self.set_mdata(xxx[i], yyy[i], mdata)
