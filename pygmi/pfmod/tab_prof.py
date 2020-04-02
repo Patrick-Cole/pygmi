@@ -1654,10 +1654,12 @@ class MyMplCanvas(FigureCanvas):
             height /= mdata.shape[0]
             width *= xptp/vlim.width
             height *= yptp/vlim.height
-            width *= (2*self.mywidth-1)
-            height *= (2*self.mywidth-1)
+            width *= self.mywidth
+            height *= self.mywidth
 
-            width = np.ceil(width)  # *10
+            if curaxes == self.axes:
+                width *= 10
+            width = np.ceil(width)
             height = np.ceil(height)
 
             cbit = QtGui.QBitmap(width, height)
@@ -1665,30 +1667,24 @@ class MyMplCanvas(FigureCanvas):
             self.setCursor(QtGui.QCursor(cbit))
 
         if self.press is True:
-            xdata = int((event.xdata - xmin)/dx)+1
-            ydata = int((event.ydata - ymin)/dy)+1
+            xdata = (event.xdata - xmin)/dx
+            ydata = (event.ydata - ymin)/dy
 
             if self.newline is True:
                 self.newline = False
                 self.set_mdata(xdata, ydata, mdata)
-            elif xdata != self.xold:
-                mmm = float(ydata-self.yold)/(xdata-self.xold)
-                ccc = ydata - mmm * xdata
+            else:
                 x_1 = min([self.xold, xdata])
                 x_2 = max([self.xold, xdata])
-                for i in range(x_1+1, x_2+1):
-                    jold = int(mmm*(i-1)+ccc)
-                    jnew = int(mmm*i+ccc)
-                    if jold > jnew:
-                        jold, jnew = jnew, jold
-                    for j in range(jold, jnew+1):
-                        self.set_mdata(i, j, mdata)
-
-            elif ydata != self.yold:
                 y_1 = min([self.yold, ydata])
                 y_2 = max([self.yold, ydata])
-                for j in range(y_1, y_2+1):
-                    self.set_mdata(xdata, j, mdata)
+
+                steps = int(max(x_2-x_1, y_2-y_1))+1
+                xxx = np.linspace(x_1, x_2, steps)
+                yyy = np.linspace(y_1, y_2, steps)
+
+                for i, _ in enumerate(xxx):
+                    self.set_mdata(xxx[i], yyy[i], mdata)
 
             self.xold = xdata
             self.yold = ydata
@@ -1722,7 +1718,8 @@ class MyMplCanvas(FigureCanvas):
 
     def set_mdata(self, xdata, ydata, mdata):
         """
-        Routine to 'draw' the line on mdata.
+        Routine to 'draw' the line on mdata. xdata and ydata are the cursor
+        centre coordinates.
 
         Parameters
         ----------
@@ -1738,11 +1735,22 @@ class MyMplCanvas(FigureCanvas):
         None.
 
         """
-        width = self.mywidth-1  # 'pen' width
-        xstart = max(0, xdata-width-1)
-        xend = min(mdata.shape[1], xdata+width)
-        ystart = max(0, ydata-width-1)
-        yend = min(mdata.shape[0], ydata+width)
+        if xdata < 0:
+            xdata = 0
+        if ydata < 0:
+            ydata = 0
+
+        hwidth = self.mywidth/2
+        xstart = max(0, xdata-hwidth)
+        xend = min(mdata.shape[1], xdata+hwidth)
+        ystart = max(0, ydata-hwidth)
+        yend = min(mdata.shape[0], ydata+hwidth)
+
+        xstart = int(round(xstart))
+        xend = int(round(xend))
+        ystart = int(round(ystart))
+        yend = int(round(yend))
+
         if xstart < xend and ystart < yend:
             mtmp = mdata[ystart:yend, xstart:xend]
             mtmp[np.logical_and(mtmp != -1, mtmp < 900)] = self.curmodel
