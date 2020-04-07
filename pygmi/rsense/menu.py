@@ -26,6 +26,7 @@
 
 from PyQt5 import QtWidgets
 from pygmi.rsense import change
+from pygmi.rsense import iodefs
 
 
 class MenuWidget():
@@ -50,6 +51,10 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Remote Sensing')
         parent.menubar.addAction(self.menu.menuAction())
         self.menu2 = self.menu.addMenu('Change Detection')
+
+        self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P to shapefile')
+        self.menu.addAction(self.action_import_sentinel5p)
+        self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
 
         self.action_create_list = QtWidgets.QAction('Create Scene List')
         self.menu2.addAction(self.action_create_list)
@@ -77,3 +82,8 @@ class MenuWidget():
         """View Change Detection."""
         fnc = change.SceneViewer(self.parent)
         self.parent.item_insert('Step', 'Change Detection Viewer', fnc)
+
+    def import_sentinel5p(self):
+        """Import sentinel 5P data."""
+        fnc = iodefs.ImportSentinel5P(self.parent)
+        self.parent.item_insert('Io', 'Import Sentinel-5P', fnc)

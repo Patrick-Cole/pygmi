@@ -10,6 +10,7 @@ build/
 data/
 dist/
 docs/
+olddocs/
 pygmi.egg-info/
 
 *.py[co]

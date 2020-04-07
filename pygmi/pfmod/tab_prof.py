@@ -298,8 +298,13 @@ class ProfileDisplay(QtWidgets.QWidget):
         """
         curline = self.sb_cprofnum.value()
 
-        cnt = len(self.lmod1.profpics)
-        if cnt == 0:
+        cnt = len(self.lmod1.custprofx)
+        if 'rotate' in self.lmod1.custprofx:
+            cnt -= 1
+        if 'adhoc' in self.lmod1.custprofx:
+            cnt -= 1
+
+        if cnt <= 0:
             return
 
         j = -1
@@ -307,10 +312,11 @@ class ProfileDisplay(QtWidgets.QWidget):
             if i == curline:
                 continue
             j += 1
-            self.lmod1.profpics[j] = self.lmod1.profpics[i]
+            if i in self.lmod1.profpics:
+                self.lmod1.profpics[j] = self.lmod1.profpics[i]
+                del self.lmod1.profpics[i]
             self.lmod1.custprofx[j] = self.lmod1.custprofx[i]
             self.lmod1.custprofy[j] = self.lmod1.custprofy[i]
-        del self.lmod1.profpics[cnt-1]
         del self.lmod1.custprofx[cnt-1]
         del self.lmod1.custprofy[cnt-1]
 
@@ -429,6 +435,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.custom_prof_limits(curline)
 
         gtmp = self.get_model()
+
+        if gtmp is False:
+            self.showtext('Your custom profile is not in the area')
+            return
 
         self.mmc.init_grid(gtmp, gtmpl, self.hs_sideview.value())
         self.mmc.update_line()
@@ -896,6 +906,12 @@ class ProfileDisplay(QtWidgets.QWidget):
         y1, y2 = self.lmod1.custprofy['adhoc']
         px1, px2 = self.lmod1.custprofx['rotate']
 
+        if not(self.lmod1.xrange[0] <= x1 <= x2 <= self.lmod1.xrange[1]):
+            return False
+
+        if not(self.lmod1.yrange[0] <= y1 <= y2 <= self.lmod1.yrange[1]):
+            return False
+
         # convert units to cells
         bly = self.lmod1.yrange[0]
         tlx = self.lmod1.xrange[0]
@@ -939,8 +955,11 @@ class ProfileDisplay(QtWidgets.QWidget):
         gtmp = []
         for i in range(self.lmod1.numz):
             tmp = np.zeros(int(self.extent_side[1]/self.pdxy))-1
-            tmp[self.ipdx1:self.ipdx2] = self.lmod1.lith_index[self.xxx,
+            try:
+                tmp[self.ipdx1:self.ipdx2] = self.lmod1.lith_index[self.xxx,
                                                                self.yyy, i]
+            except:
+                breakpoint()
 
             gtmp.append(tmp)
 
