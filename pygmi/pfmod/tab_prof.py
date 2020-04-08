@@ -312,6 +312,8 @@ class ProfileDisplay(QtWidgets.QWidget):
             if i == curline:
                 continue
             j += 1
+            if i == j:
+                continue
             if i in self.lmod1.profpics:
                 self.lmod1.profpics[j] = self.lmod1.profpics[i]
                 del self.lmod1.profpics[i]
