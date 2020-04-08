@@ -2765,6 +2765,11 @@ class ImportPicture(QtWidgets.QDialog):
 
         imptext = self.importfile.text()
         if imptext != '':
+            x1a = self.dsb_x1.value()
+            x2a = self.dsb_x2.value()
+            y1a = self.dsb_y1.value()
+            y2a = self.dsb_y2.value()
+
             dat = get_raster(imptext)
 
             if dat is None:
@@ -2779,18 +2784,21 @@ class ImportPicture(QtWidgets.QDialog):
             dat.data = dat2
             dat.isrgb = True
 
-            r1 = 0
-            r2 = np.sqrt((x2-x1)**2+(y2-y1)**2)
-            if x1 != x2:
-                f = interpolate.interp1d([x1, x2], [r1, r2],
-                                         fill_value='extrapolate')
-                ra = f(self.dsb_x1.value())
-                rb = f(self.dsb_x2.value())
-            else:
-                f = interpolate.interp1d([y1, y2], [r1, r2],
-                                         fill_value='extrapolate')
-                ra = f(self.dsb_y1.value())
-                rb = f(self.dsb_y2.value())
+            ra = np.sqrt((x1a-x1)**2+(y1a-y1)**2)
+            rb = np.sqrt((x2a-x1)**2+(y2a-y1)**2)
+
+            # r1 = 0
+            # r2 = np.sqrt((x2-x1)**2+(y2-y1)**2)
+            # if x1 != x2:
+            #     f = interpolate.interp1d([x1, x2], [r1, r2],
+            #                              fill_value='extrapolate')
+            #     ra = f(self.dsb_x1.value())
+            #     rb = f(self.dsb_x2.value())
+            # else:
+            #     f = interpolate.interp1d([y1, y2], [r1, r2],
+            #                              fill_value='extrapolate')
+            #     ra = f(self.dsb_y1.value())
+            #     rb = f(self.dsb_y2.value())
 
             dat.extent = (ra, rb, zmin, zmax)
             self.lmod.profpics[curline] = dat
