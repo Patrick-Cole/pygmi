@@ -2747,11 +2747,11 @@ class ImportPicture(QtWidgets.QDialog):
             x1a = f(y1a)
             x2a = f(y2a)
 
-            if y1 != y1a:
+            if self.lmod.xrange[0] <= x1a <= self.lmod.xrange[1]:
                 x1 = x1a
                 y1 = y1a
 
-            if y2 != y2a:
+            if self.lmod.xrange[0] <= x2a <= self.lmod.xrange[1]:
                 x2 = x2a
                 y2 = y2a
 
@@ -2765,6 +2765,11 @@ class ImportPicture(QtWidgets.QDialog):
 
         imptext = self.importfile.text()
         if imptext != '':
+            x1 = self.dsb_x1.value()
+            x2 = self.dsb_x2.value()
+            y1 = self.dsb_y1.value()
+            y2 = self.dsb_y2.value()
+
             dat = get_raster(imptext)
 
             if dat is None:
