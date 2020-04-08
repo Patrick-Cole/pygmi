@@ -2765,11 +2765,6 @@ class ImportPicture(QtWidgets.QDialog):
 
         imptext = self.importfile.text()
         if imptext != '':
-            x1 = self.dsb_x1.value()
-            x2 = self.dsb_x2.value()
-            y1 = self.dsb_y1.value()
-            y2 = self.dsb_y2.value()
-
             dat = get_raster(imptext)
 
             if dat is None:
