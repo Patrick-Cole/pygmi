@@ -921,9 +921,12 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 #        showtext('No changes to model!')
 #        return None
 
-    if False not in tmp:
-        showtext('No changes to model!')
-        return None
+    try:
+        if False not in tmp:
+            showtext('No changes to model!')
+            return None
+    except:
+        breakpoint()
 
 # get height corrections
     tmp = np.copy(lmod.lith_index)

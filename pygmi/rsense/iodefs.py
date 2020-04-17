@@ -34,6 +34,8 @@ import matplotlib.path as mplPath
 from osgeo import gdal, osr, ogr
 import pandas as pd
 import geopandas as gpd
+from geopandas import GeoDataFrame
+from shapely.geometry import Point
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import GroupProj
 
@@ -68,9 +70,11 @@ class ImportSentinel5P(QtWidgets.QDialog):
         self.outdata = {}
         self.ifile = ''
 
-        self.xchan = QtWidgets.QComboBox()
-        self.ychan = QtWidgets.QComboBox()
-        self.nodata = QtWidgets.QLineEdit('99999')
+        self.subdata = QtWidgets.QComboBox()
+        self.lonmin = QtWidgets.QLineEdit('16')
+        self.lonmax = QtWidgets.QLineEdit('34')
+        self.latmin = QtWidgets.QLineEdit('-35')
+        self.latmax = QtWidgets.QLineEdit('-21')
 
         self.setupui()
 
@@ -86,27 +90,35 @@ class ImportSentinel5P(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.vector.iodefs.importpointdata')
-        label_xchan = QtWidgets.QLabel('X Channel:')
-        label_ychan = QtWidgets.QLabel('Y Channel:')
-        label_nodata = QtWidgets.QLabel('Null Value:')
+        label_subdata = QtWidgets.QLabel('Product:')
+        label_lonmin = QtWidgets.QLabel('Minimum Longitude:')
+        label_lonmax = QtWidgets.QLabel('Maximum Longitude:')
+        label_latmin = QtWidgets.QLabel('Minimum Latitude:')
+        label_latmax = QtWidgets.QLabel('Maximum Latitude:')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle(r'Import Point/Line Data')
+        self.setWindowTitle(r'Import Sentinel-5P Data')
 
-        gridlayout_main.addWidget(label_xchan, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.xchan, 0, 1, 1, 1)
+        gridlayout_main.addWidget(label_subdata, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.subdata, 0, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_ychan, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.ychan, 1, 1, 1, 1)
+        gridlayout_main.addWidget(label_lonmin, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.lonmin, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(label_nodata, 2, 0, 1, 1)
-        gridlayout_main.addWidget(self.nodata, 2, 1, 1, 1)
+        gridlayout_main.addWidget(label_lonmax, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.lonmax, 2, 1, 1, 1)
 
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+        gridlayout_main.addWidget(label_latmin, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.latmin, 3, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_latmax, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.latmax, 4, 1, 1, 1)
+
+        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -131,17 +143,20 @@ class ImportSentinel5P(QtWidgets.QDialog):
         os.chdir(os.path.dirname(filename))
         self.ifile = str(os.path.basename(filename))
 
-        gdf = self.get_5P_meta()
+        meta = self.get_5P_meta()
 
-        if gdf is None:
+        if meta is None:
             return False
 
-        ltmp = gdf.columns.values
-        self.xchan.addItems(ltmp)
-        self.ychan.addItems(ltmp)
+        tmp = []
+        for i in meta:
+            if i in ['latitude', 'longitude']:
+                continue
+            tmp.append(i)
 
-        self.xchan.setCurrentIndex(0)
-        self.ychan.setCurrentIndex(1)
+        self.subdata.clear()
+        self.subdata.addItems(tmp)
+        self.subdata.setCurrentIndex(0)
 
         tmp = self.exec_()
 
@@ -149,23 +164,21 @@ class ImportSentinel5P(QtWidgets.QDialog):
             return tmp
 
         try:
-            nodata = float(self.nodata.text())
+            minx = float(self.lonmin.text())
+            miny = float(self.latmin.text())
+            maxx = float(self.lonmax.text())
+            maxy = float(self.latmax.text())
         except ValueError:
-            print('Null Value error - abandoning import')
+            print('Value error - abandoning import')
             return False
 
-        xcol = self.xchan.currentText()
-        ycol = self.ychan.currentText()
+        gdf = self.get_5P_data(meta)
 
-        gdf['pygmiX'] = gdf[xcol]
-        gdf['pygmiY'] = gdf[ycol]
-        gdf['line'] = gdf['line'].astype(str)
+        if gdf is None:
+            return False
 
-        if 'Vector' not in self.outdata:
-            self.outdata['Vector'] = {}
-
-        gdf = gdf.replace(nodata, np.nan)
-        self.outdata['Vector'][self.ifile] = gdf
+        dat = {gdf.geom_type.iloc[0]: gdf}
+        self.outdata['Vector'] = dat
 
         return True
 
@@ -175,13 +188,125 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
         Returns
         -------
-        dat : DataFrame
-            Pandas dataframe.
+        meta : Dictionary
+            Dictionary containing metadata.
 
         """
-        df2 = None
 
-        return df2
+        dataset = gdal.Open(self.ifile, gdal.GA_ReadOnly)
+        if dataset is None:
+            print('Problem! Unable to import')
+            print(os.path.basename(self.ifile))
+            return None
+
+        subdata = dataset.GetSubDatasets()
+        meta = {}
+        for i in subdata:
+            tmp = i[1].split()
+            if 'SUPPORT_DATA' in i[0]:
+                continue
+            if 'METADATA' in i[0]:
+                continue
+            if 'time_utc' in i[0]:
+                continue
+            if 'delta_time' in i[0]:
+                continue
+            if 'qa_value' in i[0]:
+                continue
+            if 'precision' in i[0]:
+                continue
+
+            tmp = tmp[1].replace('//PRODUCT/', '')
+            tmp = tmp.replace('/PRODUCT/', '')
+            tmp = tmp.replace('/', '')
+
+            meta[tmp] = i
+
+        dataset = None
+
+        return meta
+
+    def get_5P_data(self, meta):
+        """
+        Get data.
+
+        Parameters
+        ----------
+        meta : Dictionary
+            Dictionary containing metadata.
+
+        Returns
+        -------
+        gdf : DataFrame
+            geopandas dataframe.
+
+        """
+
+        dataset = gdal.Open(meta['latitude'][0], gdal.GA_ReadOnly)
+        rtmp = dataset.GetRasterBand(1)
+        lats = rtmp.ReadAsArray()
+        dataset = None
+
+        dataset = gdal.Open(meta['longitude'][0], gdal.GA_ReadOnly)
+        rtmp = dataset.GetRasterBand(1)
+        lons = rtmp.ReadAsArray()
+        dataset = None
+
+        del meta['latitude']
+        del meta['longitude']
+
+        if lats is None:
+            print('No Latitudes in dataset')
+            return None
+
+        lats = lats.flatten()
+        lons = lons.flatten()
+        pnts = np.transpose([lons, lats])
+
+        lonmin = float(self.lonmin.text())
+        latmin = float(self.latmin.text())
+        lonmax = float(self.lonmax.text())
+        latmax = float(self.latmax.text())
+
+        mask = (lats > latmin) & (lats < latmax) & (lons < lonmax) & (lons > lonmin)
+
+        idfile = self.subdata.currentText()
+
+        dfile = meta[idfile][0]
+        dataset = gdal.Open(dfile, gdal.GA_ReadOnly)
+        rtmp = dataset.GetRasterBand(1)
+        dat = rtmp.ReadAsArray()
+
+        dataset = None
+        dat1 = dat.flatten()
+
+        if mask.shape != dat1.shape:
+            return None
+
+        dat1 = dat1[mask]
+        pnts1 = pnts[mask]
+
+        pnts1 = pnts1[dat1 != 9.96921e+36]
+        dat1 = dat1[dat1 != 9.96921e+36]
+
+        if dat1.size == 0:
+            print(idfile, 'is empty.')
+            return None
+
+        df = pd.DataFrame({'lon': pnts1[:, 0], 'lat': pnts1[:, 1]})
+        df['data'] = dat1
+
+        gdf = GeoDataFrame(df.drop(['lon', 'lat'], axis=1),
+                           geometry=[Point(xy) for xy in zip(df.lon, df.lat)])
+
+        # tmp = os.path.join(idir, os.path.basename(ifile).split('T')[0])
+        # tmp = tmp + '_' + idfile + '.shp'
+        # tmp = tmp.replace('//PRODUCT/', '')
+        # tmp = tmp.replace('/PRODUCT/', '')
+        # tmp = tmp.replace('/', '')
+
+#        gdf.to_file(tmp)
+        return gdf
 
 
 class ImportShapeData():

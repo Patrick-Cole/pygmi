@@ -50,11 +50,14 @@ class MenuWidget():
 # Normal menus
         self.menu = QtWidgets.QMenu('Remote Sensing')
         parent.menubar.addAction(self.menu.menuAction())
-        self.menu2 = self.menu.addMenu('Change Detection')
 
         self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P to shapefile')
         self.menu.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
+
+        self.menu.addSeparator()
+
+        self.menu2 = self.menu.addMenu('Change Detection')
 
         self.action_create_list = QtWidgets.QAction('Create Scene List')
         self.menu2.addAction(self.action_create_list)

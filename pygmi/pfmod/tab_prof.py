@@ -957,11 +957,8 @@ class ProfileDisplay(QtWidgets.QWidget):
         gtmp = []
         for i in range(self.lmod1.numz):
             tmp = np.zeros(int(self.extent_side[1]/self.pdxy))-1
-            try:
-                tmp[self.ipdx1:self.ipdx2] = self.lmod1.lith_index[self.xxx,
+            tmp[self.ipdx1:self.ipdx2] = self.lmod1.lith_index[self.xxx,
                                                                self.yyy, i]
-            except:
-                breakpoint()
 
             gtmp.append(tmp)
 
@@ -1442,8 +1439,6 @@ class ProfileDisplay(QtWidgets.QWidget):
                     extent = [tmpprof2.min(), tmpprof2.max()]
 
         if slide is True:
-#            xlim = self.mmc.axes.get_xlim()
-#            extent = [xlim[0], xlim[1]] + extent
             self.mmc.slide_plot(tmprng, tmpprof, tmprng2, tmpprof2)
             self.mmc.figure.canvas.draw()
         else:
@@ -1516,6 +1511,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
 class MyMplCanvas(FigureCanvas):
     """Matplotlib Canvas"""
+
     def __init__(self, parent):
         fig = Figure()
         super().__init__(fig)
@@ -1723,8 +1719,6 @@ class MyMplCanvas(FigureCanvas):
                     yyy2 = yyy[rpix]
                     self.lmod1.lith_index[xxx2, yyy2, i] = self.curmodel
 
-#                self.lmod1.lith_index[xxx, yyy, ::-1] = mdata[:, ipdx1:ipdx2].T
-#                self.mdata = mdata
                 self.lmdata = self.lmod1.lith_index[:, :, curlayer].T
                 self.mdata[:, ipdx1:ipdx2] = self.lmod1.lith_index[xxx, yyy, ::-1].T
             else:
@@ -2788,19 +2782,6 @@ class ImportPicture(QtWidgets.QDialog):
 
             ra = np.sqrt((x1a-x1)**2+(y1a-y1)**2)
             rb = np.sqrt((x2a-x1)**2+(y2a-y1)**2)
-
-            # r1 = 0
-            # r2 = np.sqrt((x2-x1)**2+(y2-y1)**2)
-            # if x1 != x2:
-            #     f = interpolate.interp1d([x1, x2], [r1, r2],
-            #                              fill_value='extrapolate')
-            #     ra = f(self.dsb_x1.value())
-            #     rb = f(self.dsb_x2.value())
-            # else:
-            #     f = interpolate.interp1d([y1, y2], [r1, r2],
-            #                              fill_value='extrapolate')
-            #     ra = f(self.dsb_y1.value())
-            #     rb = f(self.dsb_y2.value())
 
             dat.extent = (ra, rb, zmin, zmax)
             self.lmod.profpics[curline] = dat

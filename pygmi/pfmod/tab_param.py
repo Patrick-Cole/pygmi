@@ -299,7 +299,7 @@ class ParamDisplay(QtWidgets.QDialog):
         gb_lith_prop = QtWidgets.QGroupBox('Lithological Properties')
         gl_lith_prop = QtWidgets.QGridLayout(gb_lith_prop)
 
-        pb_applylith = QtWidgets.QPushButton('Apply')
+        pb_applylith = QtWidgets.QPushButton('Apply Changes')
 
         self.dsb_gregional.setMinimum(-10000.0)
         self.dsb_gregional.setMaximum(10000.0)
@@ -483,8 +483,8 @@ class ParamDisplay(QtWidgets.QDialog):
         lith = self.get_lith()
         lith.density = self.dsb_density.value()
         if lith == self.lmod1.lith_list['Background']:
-            for lith in list(self.lmod1.lith_list.values()):
-                lith.bdensity = self.dsb_density.value()
+            for lith2 in list(self.lmod1.lith_list.values()):
+                lith2.bdensity = self.dsb_density.value()
 
         lith.susc = self.dsb_susc.value()
         lith.mstrength = self.dsb_magnetization.value()
@@ -519,7 +519,7 @@ class ParamDisplay(QtWidgets.QDialog):
             lith.modified = True
         self.showtext('Geophysical properties applied.')
 
-        self.apply_lith()
+#        self.apply_lith()
         self.accept()
 
     def change_rmi(self):
@@ -662,8 +662,10 @@ class ParamDisplay(QtWidgets.QDialog):
         """
         i = self.lw_param_defs.currentRow()
         if i == -1:
-            i = 0
-        itxt = str(self.lw_param_defs.item(i).text())
+            itxt = 'Background'
+        else:
+            itxt = str(self.lw_param_defs.item(i).text())
+
         lith = self.lmod1.lith_list[itxt]
         return lith
 

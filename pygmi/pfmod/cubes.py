@@ -1463,9 +1463,9 @@ def MarchingCubes(x, y, z, c, iso):
     iden = np.nonzero(cedge.flatten(order='F'))[0]
 
     if iden.size == 0:          # all voxels are above or below iso
-        warnings.warn('No such lithology, or all voxels are above or below iso')
-        F = []
-        V = []
+        print('Warning: No such lithology, or all voxels are above or below iso')
+        F = np.array([])
+        V = np.array([])
         return F, V
 
     # calculate the list of intersection points
