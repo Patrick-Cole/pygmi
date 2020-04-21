@@ -1123,8 +1123,7 @@ def main():
     height = int(height*0.75)
 
     wid = MainWidget()
-#    wid.resize(width, height)
-    wid.resize(1280, 768)
+    wid.resize(width, height)
 
     wid.setWindowState(wid.windowState() & ~QtCore.Qt.WindowMinimized |
                        QtCore.Qt.WindowActive)
