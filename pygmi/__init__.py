@@ -15,4 +15,3 @@ It is released under the Gnu General Public License version 3.0
 from pygmi.main import main
 
 __version__ = '3.1.0'
-

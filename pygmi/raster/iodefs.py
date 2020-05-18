@@ -1195,116 +1195,23 @@ class ExportData():
             self.export_surfer(data)
 #            self.export_gdal(data, 'GSBG')
         if filt == 'ERDAS Imagine (*.img)':
-            self.export_gdal(data, 'HFA')
+            export_gdal(self.ifile, data, 'HFA')
         if filt == 'ERMapper (*.ers)':
-            self.export_gdal(data, 'ERS')
+            export_gdal(self.ifile, data, 'ERS')
         if filt == 'SAGA binary grid (*.sdat)':
-            self.export_gdal(data, 'SAGA')
+            export_gdal(self.ifile, data, 'SAGA')
         if filt == 'GeoTiff (*.tif)':
-            self.export_gdal(data, 'GTiff')
+            export_gdal(self.ifile, data, 'GTiff')
         if filt == 'ENVI (*.hdr)':
-            self.export_gdal(data, 'ENVI')
+            export_gdal(self.ifile, data, 'ENVI')
         if filt == 'ArcGIS BIL (*.bil)':
-            self.export_gdal(data, 'EHdr')
+            export_gdal(self.ifile, data, 'EHdr')
 
         print('Export Data Finished!')
         self.parent.process_is_active(False)
         return True
 
-    def export_gdal(self, dat, drv):
-        """
-        Export to GDAL format
 
-        Parameters
-        ----------
-        dat : PyGMI raster Data
-            dataset to export
-        drv : str
-            name of the GDAL driver to use
-
-        Returns
-        -------
-        None.
-
-        """
-
-        data = merge(dat)
-
-        driver = gdal.GetDriverByName(drv)
-        dtype = data[0].data.dtype
-
-        if dtype == np.uint8:
-            fmt = gdal.GDT_Byte
-        elif dtype == np.int32:
-            fmt = gdal.GDT_Int32
-        elif dtype == np.float64:
-            fmt = gdal.GDT_Float64
-        else:
-            fmt = gdal.GDT_Float32
-
-        tmp = self.ifile.rpartition('.')
-
-        if drv == 'GTiff':
-            tmpfile = tmp[0] + '.tif'
-        elif drv == 'EHdr':
-            fmt = gdal.GDT_Float32
-            dtype = np.float32
-            tmpfile = tmp[0] + '.bil'
-        elif drv == 'GSBG':
-            tmpfile = tmp[0]+'.grd'
-            fmt = gdal.GDT_Float32
-            dtype = np.float32
-        elif drv == 'SAGA':
-            tmpfile = tmp[0]+'.sdat'
-        elif drv == 'HFA':
-            tmpfile = tmp[0]+'.img'
-        else:  # ENVI and ER Mapper
-            tmpfile = tmp[0]
-
-        drows, dcols = data[0].data.shape
-        if drv == 'GTiff' and dtype == np.uint8:
-            out = driver.Create(tmpfile, int(dcols), int(drows),
-                                len(data), fmt, options=['COMPRESS=NONE',
-                                                         'TFW=YES'])
-        elif drv == 'ERS' and 'Cape / TM' in data[0].wkt:
-            tmp = data[0].wkt.split('TM')[1][:2]
-            out = driver.Create(tmpfile, int(dcols), int(drows),
-                                len(data), fmt,
-                                options=['PROJ=STMLO'+tmp, 'DATUM=CAPE',
-                                         'UNITS=METERS'])
-        elif drv == 'ERS' and 'Hartebeesthoek94 / TM' in data[0].wkt:
-            tmp = data[0].wkt.split('TM')[1][:2]
-            out = driver.Create(tmpfile, int(dcols), int(drows),
-                                len(data), fmt,
-                                options=['PROJ=STMLO'+tmp, 'DATUM=WGS84',
-                                         'UNITS=METERS'])
-        else:
-            out = driver.Create(tmpfile, int(dcols), int(drows),
-                                len(data), fmt)
-        out.SetGeoTransform(data[0].get_gtr())
-
-        out.SetProjection(data[0].wkt)
-
-        for i, datai in enumerate(data):
-            rtmp = out.GetRasterBand(i+1)
-            rtmp.SetDescription(datai.dataid)
-
-            dtmp = np.ma.array(datai.data).astype(dtype)
-
-            dtmp.set_fill_value(datai.nullvalue)
-            dtmp = dtmp.filled()
-
-            if dtype == np.uint8:
-                datai.nullvalue = int(datai.nullvalue)
-
-            rtmp.SetNoDataValue(datai.nullvalue)
-            rtmp.WriteArray(dtmp)
-            rtmp.GetStatistics(False, True)
-
-        out = None  # Close File
-        if drv == 'ENVI':
-            with open(tmpfile+'.hdr', 'a') as myfile:
-                myfile.write('data ignore value = ' + str(data[0].nullvalue))
 
     def export_gxf(self, data):
         """
@@ -1321,9 +1228,8 @@ class ExportData():
 
         """
         if len(data) > 1:
-            print('Band names will be appended to the '
-                                       'output filenames since you have a '
-                                       'multiple band image')
+            print('Band names will be appended to the output filenames since '
+                  'you have a multiple band image')
 
         file_out = self.ifile.rpartition('.')[0]+'.gxf'
         for k in data:
@@ -1387,9 +1293,8 @@ class ExportData():
 
         """
         if len(data) > 1:
-            print('Band names will be appended to the '
-                                       'output filenames since you have a '
-                                       'multiple band image')
+            print('Band names will be appended to the output filenames since '
+                  'you have a multiple band image')
 
         file_out = self.ifile.rpartition('.')[0] + '.grd'
         for k in data:
@@ -1432,9 +1337,8 @@ class ExportData():
 
         """
         if len(data) > 1:
-            print('Band names will be appended to the '
-                                       'output filenames since you have a '
-                                       'multiple band image')
+            print('Band names will be appended to the output filenames since '
+                  'you have a multiple band image')
 
         file_out = self.ifile.rpartition('.')[0]+'.asc'
         for k in data:
@@ -1479,9 +1383,8 @@ class ExportData():
 
         """
         if len(data) > 1:
-            print('Band names will be appended to the '
-                                       'output filenames since you have a '
-                                       'multiple band image')
+            print('Band names will be appended to the output filenames since '
+                  'you have a multiple band image')
 
         file_out = self.ifile.rpartition('.')[0]+'.xyz'
         for k in data:
@@ -1729,3 +1632,102 @@ def get_geosoft(hfile):
     dat[i].extent = [xmin, xmax, ymin, ymax]
 
     return dat
+
+
+def export_gdal(ifile, dat, drv):
+     """
+     Export to GDAL format
+
+     Parameters
+     ----------
+     dat : PyGMI raster Data
+         dataset to export
+     drv : str
+         name of the GDAL driver to use
+
+     Returns
+     -------
+     None.
+
+     """
+
+     data = merge(dat)
+
+     driver = gdal.GetDriverByName(drv)
+     dtype = data[0].data.dtype
+
+     if dtype == np.uint8:
+         fmt = gdal.GDT_Byte
+     elif dtype == np.int32:
+         fmt = gdal.GDT_Int32
+     elif dtype == np.float64:
+         fmt = gdal.GDT_Float64
+     else:
+         fmt = gdal.GDT_Float32
+
+     tmp = ifile.rpartition('.')
+
+     if drv == 'GTiff':
+         tmpfile = tmp[0] + '.tif'
+     elif drv == 'EHdr':
+         fmt = gdal.GDT_Float32
+         dtype = np.float32
+         tmpfile = tmp[0] + '.bil'
+     elif drv == 'GSBG':
+         tmpfile = tmp[0]+'.grd'
+         fmt = gdal.GDT_Float32
+         dtype = np.float32
+     elif drv == 'SAGA':
+         tmpfile = tmp[0]+'.sdat'
+     elif drv == 'HFA':
+         tmpfile = tmp[0]+'.img'
+     else:  # ENVI and ER Mapper
+         tmpfile = tmp[0]
+
+     drows, dcols = data[0].data.shape
+     if drv == 'GTiff':
+         out = driver.Create(tmpfile, int(dcols), int(drows),
+                             len(data), fmt, options=['COMPRESS=NONE',
+                                                      'TFW=YES',
+                                                      'PROFILE=GeoTIFF',
+                                                      'ESRI_XML_PAM=True'])
+     elif drv == 'ERS' and 'Cape / TM' in data[0].wkt:
+         tmp = data[0].wkt.split('TM')[1][:2]
+         out = driver.Create(tmpfile, int(dcols), int(drows),
+                             len(data), fmt,
+                             options=['PROJ=STMLO'+tmp, 'DATUM=CAPE',
+                                      'UNITS=METERS'])
+     elif drv == 'ERS' and 'Hartebeesthoek94 / TM' in data[0].wkt:
+         tmp = data[0].wkt.split('TM')[1][:2]
+         out = driver.Create(tmpfile, int(dcols), int(drows),
+                             len(data), fmt,
+                             options=['PROJ=STMLO'+tmp, 'DATUM=WGS84',
+                                      'UNITS=METERS'])
+     else:
+         out = driver.Create(tmpfile, int(dcols), int(drows),
+                             len(data), fmt)
+     out.SetGeoTransform(data[0].get_gtr())
+
+     out.SetProjection(data[0].wkt)
+
+     for i, datai in enumerate(data):
+         rtmp = out.GetRasterBand(i+1)
+         rtmp.SetDescription(datai.dataid)
+         rtmp.SetMetadataItem('BandName', datai.dataid)
+
+         dtmp = np.ma.array(datai.data).astype(dtype)
+
+         dtmp.set_fill_value(datai.nullvalue)
+         dtmp = dtmp.filled()
+
+         if dtype == np.uint8:
+             datai.nullvalue = int(datai.nullvalue)
+
+         rtmp.SetNoDataValue(datai.nullvalue)
+         rtmp.WriteArray(dtmp)
+         rtmp.GetStatistics(False, True)
+
+     out = None  # Close File
+     if drv == 'ENVI':
+         with open(tmpfile+'.hdr', 'a') as myfile:
+             myfile.write('data ignore value = ' + str(data[0].nullvalue))

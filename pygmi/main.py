@@ -289,7 +289,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.scene().clearSelection()
         self.setSelected(True)
 
-        exclude = ['GenFPS', 'SceneList']
+        exclude = ['GenFPS', 'SceneList', 'RasterFileList']
 
         tmp = self.context_menu['Basic'].actions()
         if 'Raster' in self.my_class.indata:
@@ -417,6 +417,9 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         if not tmp:
             return
 
+        if hasattr(tmp[0], 'my_class') == False:
+            return
+
         text = ''
 
         if hasattr(tmp[0].my_class, 'indata'):
@@ -433,6 +436,9 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
             for i in odata:
                 text += '\nOutput ' + i + ' dataset:\n'
+                if i == 'RasterFileList':
+                    for j in odata[i]:
+                        text += os.path.basename(j) + '\n'
                 if i in ('Raster', 'Cluster'):
                     for j in odata[i]:
                         text += '  '+j.dataid + '\n'

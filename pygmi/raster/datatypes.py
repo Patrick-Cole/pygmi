@@ -80,28 +80,14 @@ class Data():
     ----------
     data : numpy masked array
         array to contain raster data
-    tlx : float
-        Top Left X coordinate of raster grid
-    tly : float
-        Top Left Y coordinate of raster grid
     xdim : float
         x-dimension of grid cell
     ydim : float
         y-dimension of grid cell
-    nrofbands : int
-        number of raster bands
     dataid : str
         band name or id
-    rows : int
-        number of rows for each raster grid/band
-    cols : int
-        number of columns for each raster grid/band
     nullvalue : float
         grid null or nodata value
-    norm : dictionary
-        normalized data
-    gtr : tuple
-        projection information
     wkt : str
         projection information
     units : str

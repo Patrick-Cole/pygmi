@@ -27,6 +27,7 @@
 from PyQt5 import QtWidgets
 from pygmi.rsense import change
 from pygmi.rsense import iodefs
+from pygmi.rsense import ratios
 
 
 class MenuWidget():
@@ -51,15 +52,47 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Remote Sensing')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P to shapefile')
-        self.menu.addAction(self.action_import_sentinel5p)
+        self.menu3 = self.menu.addMenu('Import Data')
+
+        # self.action_import_ged = QtWidgets.QAction('Import ASTER Global '
+        #                                            'Emissivity Data')
+        # self.menu3.addAction(self.action_import_ged)
+        # self.action_import_ged.triggered.connect(self.import_ged)
+
+        self.action_import_aster = QtWidgets.QAction('Import ASTER HDF')
+        self.menu3.addAction(self.action_import_aster)
+        self.action_import_aster.triggered.connect(self.import_aster)
+
+        self.action_import_landsat = QtWidgets.QAction('Import Landsat 4 to 8')
+        self.menu3.addAction(self.action_import_landsat)
+        self.action_import_landsat.triggered.connect(self.import_landsat)
+
+        self.action_import_sentinel2 = QtWidgets.QAction('Import Sentinel-2')
+        self.menu3.addAction(self.action_import_sentinel2)
+        self.action_import_sentinel2.triggered.connect(self.import_sentinel2)
+
+        self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P '
+                                                          'to shapefile')
+        self.menu3.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
+
+        self.menu3.addSeparator()
+
+        self.action_batch_list = QtWidgets.QAction('Create Batch List')
+        self.menu3.addAction(self.action_batch_list)
+        self.action_batch_list.triggered.connect(self.batch_list)
+
+        self.menu.addSeparator()
+
+        self.action_calc_ratios = QtWidgets.QAction('Calculate Band Ratios')
+        self.menu.addAction(self.action_calc_ratios)
+        self.action_calc_ratios.triggered.connect(self.calc_ratios)
 
         self.menu.addSeparator()
 
         self.menu2 = self.menu.addMenu('Change Detection')
 
-        self.action_create_list = QtWidgets.QAction('Create Scene List')
+        self.action_create_list = QtWidgets.QAction('Create Scene List (Change Detection)')
         self.menu2.addAction(self.action_create_list)
         self.action_create_list.triggered.connect(self.create_scene)
 
@@ -86,7 +119,43 @@ class MenuWidget():
         fnc = change.SceneViewer(self.parent)
         self.parent.item_insert('Step', 'Change Detection Viewer', fnc)
 
+    def calc_ratios(self):
+        """View Change Detection."""
+        fnc = ratios.SatRatios(self.parent)
+        self.parent.item_insert('Step', 'Calculate Band Ratios', fnc)
+
     def import_sentinel5p(self):
-        """Import sentinel 5P data."""
+        """Import Sentinel 5P data."""
         fnc = iodefs.ImportSentinel5P(self.parent)
         self.parent.item_insert('Io', 'Import Sentinel-5P', fnc)
+
+    def import_sentinel2(self):
+        """Import Sentinel 2 data."""
+        fnc = iodefs.ImportData(self.parent, 'Sentinel-2 (*.xml);;')
+        self.parent.item_insert('Io', 'Import Sentinel-2', fnc)
+
+    def import_aster(self):
+        """Import ASTER HDF data."""
+        fnc = iodefs.ImportData(self.parent, 'hdf (AST*.hdf);;')
+        self.parent.item_insert('Io', 'Import ASTER', fnc)
+
+    def import_hdf(self):
+        """Import HDF data."""
+        fnc = iodefs.ImportData(self.parent, 'hdf (*.hdf *.h5);;')
+        self.parent.item_insert('Io', 'Import HDF', fnc)
+
+    def import_landsat(self):
+        """Import Landsat data."""
+        fnc = iodefs.ImportData(self.parent, 'Landsat (L*.tar.gz);;')
+        self.parent.item_insert('Io', 'Import Landsat', fnc)
+
+    def import_ged(self):
+        """Import GED data."""
+        fnc = iodefs.ImportData(self.parent, 'ASTER GED (*.bin);;')
+        self.parent.item_insert('Io', 'Import ASTER Global Emissivity Data',
+                                fnc)
+
+    def batch_list(self):
+        """Import batch list."""
+        fnc = iodefs.ImportBatch(self.parent)
+        self.parent.item_insert('Io', 'Import Batch List', fnc)

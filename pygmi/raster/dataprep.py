@@ -1720,6 +1720,7 @@ def merge(dat):
         dat = check_dataid(dat)
         return dat
 
+    print('Merging data...')
     mrg = DataMerge()
     mrg.indata['Raster'] = dat
     data = dat[0]

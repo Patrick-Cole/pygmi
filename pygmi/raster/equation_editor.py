@@ -110,12 +110,14 @@ class EquationEditor(QtWidgets.QDialog):
                'band is assigned to each variable.</p>'
                '<h2>Examples</h2>'
                '<p>Sum:</p>'
-               '<p>    i1 + 1000</p>'
+               '<pre>    i1 + 1000</pre>'
+               '<p>Mosaic two bands into one:</p>'
+               '<pre>    mosaic(i0, i1)</pre>'
                '<p>Threshold between values 1 and 98, substituting -999 as a '
                'value:</p>'
-               '<p>    where((i1 &gt; 1) &amp; (i1 &lt; 98) , i1, -999)</p>'
+               '<pre>    where((i1 &gt; 1) &amp; (i1 &lt; 98) , i1, -999)</pre>'
                '<p>Replacing the value 0 with a nodata or null value:</p>'
-               '<p>    where(iall!=0, iall, nodata)</p>'
+               '<pre>    where(iall!=0, iall, nodata)</pre>'
                '<h2>Commands</h2>'
                '<ul>'
                ' <li> Logical operators: &amp;, |, ~</li>'
@@ -178,6 +180,64 @@ class EquationEditor(QtWidgets.QDialog):
         neweq = neweq.replace('nodata', str(indata[0].nullvalue))
 
         return neweq
+
+    def mosaic(self, eq, localdict):
+        """
+        Mosaics data into a single band dataset.
+
+        Parameters
+        ----------
+        eq : str
+            Equation with mosaic command.
+        localdict : dictionary
+            Dictionary of data.
+
+        Returns
+        -------
+        findat : numpy array
+            Mosaiced array.
+
+        """
+        idx = eq.index('mosaic(')+7
+        eq2 = eq[idx:]
+        idx = eq2.index(')')
+        eq2 = eq2[:idx]
+        eq2 = eq2.replace(' ', '')
+        eq3 = eq2.split(',')
+
+        localdict_list = list(localdict.keys())
+
+        # Check for problems
+        if 'iall' in eq:
+            return None
+
+        if len(eq3) < 2:
+            return None
+
+        eq4 = []
+        mask = []
+        for i in eq3:
+            usedbands = []
+            for j in localdict_list:
+                if j in i:
+                    usedbands.append(j)
+            mask1 = None
+            for j in usedbands:
+                if mask1 is None:
+                    mask1 = localdict[j].mask
+                else:
+                    mask1 = np.logical_or(mask1, localdict[j].mask)
+
+            mask.append(mask1)
+            try:
+                eq4.append(ne.evaluate(i, localdict))
+            except Exception:
+                return None
+            eq4[-1] = np.ma.array(eq4[-1], mask=mask[-1])
+
+        master = np.ma.mean(eq4, 0)
+
+        return master
 
     def settings(self, equation=None):
         """
@@ -249,14 +309,27 @@ class EquationEditor(QtWidgets.QDialog):
 
         neweq = self.eq_fix(indata, equation)
 
-        try:
-            findat = ne.evaluate(neweq, localdict)
-        except Exception:
-            QtWidgets.QMessageBox.warning(
-                self.parent, 'Error',
-                ' Nothing processed! Your equation most likely had an error.',
-                QtWidgets.QMessageBox.Ok)
-            return False
+        if 'mosaic' in neweq:
+            findat = self.mosaic(neweq, localdict)
+            if findat is None:
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error',
+                    'Nothing processed! '
+                    'Your equation most likely had an error.',
+                    QtWidgets.QMessageBox.Ok)
+                return False
+            mask = findat.mask
+
+        else:
+            try:
+                findat = ne.evaluate(neweq, localdict)
+            except Exception:
+                QtWidgets.QMessageBox.warning(
+                    self.parent, 'Error',
+                    'Nothing processed! '
+                    'Your equation most likely had an error.',
+                    QtWidgets.QMessageBox.Ok)
+                return False
 
         outdata = []
 

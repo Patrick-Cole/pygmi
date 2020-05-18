@@ -838,7 +838,6 @@ class SceneViewer(QtWidgets.QDialog):
                     nval = 1e+20
                 nval = float(nval)
 
-            dat.nrofbands = 1  # dataset.RasterCount
             dat.nullvalue = nval
             dat.xdim = xdim
             dat.ydim = ydim
