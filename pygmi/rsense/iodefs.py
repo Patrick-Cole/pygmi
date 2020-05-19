@@ -28,6 +28,7 @@ import os
 import copy
 import glob
 import tarfile
+import zipfile
 import datetime
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
@@ -181,13 +182,12 @@ class ImportData():
 
         if self.extscene is None:
             return
-            # ext = ('hdf (*.hdf *.h5);;'
-            #        'ASTER GED (*.bin);;')
         else:
             ext = self.extscene
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+        filename, filt = QtWidgets.QFileDialog.getOpenFileName(self.parent,
+                                                               'Open File',
+                                                               '.', ext)
         if filename == '':
             return False
         os.chdir(os.path.dirname(filename))
@@ -264,9 +264,18 @@ class ImportBatch():
             return False
         os.chdir(directory)
 
-        hdfdat = glob.glob('*.hdf')
-        tifdat = glob.glob('*.tif')
-        if not hdfdat and not tifdat:
+        zipdat = glob.glob(directory+'//AST*.zip')
+        hdfdat = glob.glob(directory+'//AST*.hdf')
+#        tifdat = glob.glob(directory+'//AST*.tif')
+        targzdat = glob.glob(directory+'//L*.tar.gz')
+        mtldat = glob.glob(directory+'//L*MTL.txt')
+
+        sendat = []
+        sendir = [f.path for f in os.scandir(directory) if f.is_dir() and 'SAFE' in f.path]
+        for i in sendir:
+            sendat.extend(glob.glob(i+'//MTD*.xml'))
+
+        if not hdfdat and not zipdat and not targzdat and not mtldat:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'No valid files in the directory.',
                                           QtWidgets.QMessageBox.Ok)
@@ -277,8 +286,15 @@ class ImportBatch():
             if 'met' not in i:
                 dat.append(i)
 
-        if not dat:
-            dat = tifdat
+        dat.extend(mtldat)
+        dat.extend(targzdat)
+        dat.extend(zipdat)
+        dat.extend(sendat)
+
+        # for i in tifdat:
+        #     if i[:i.rindex('_')]+'_MTL.txt' in mtldat:
+        #         continue
+        #     dat.append(i)
 
         output_type = 'RasterFileList'
         self.outdata[output_type] = dat
@@ -410,10 +426,10 @@ class ImportSentinel5P(QtWidgets.QDialog):
             return tmp
 
         try:
-            minx = float(self.lonmin.text())
-            miny = float(self.latmin.text())
-            maxx = float(self.lonmax.text())
-            maxy = float(self.latmax.text())
+            _ = float(self.lonmin.text())
+            _ = float(self.latmin.text())
+            _ = float(self.lonmax.text())
+            _ = float(self.latmax.text())
         except ValueError:
             print('Value error - abandoning import')
             return False
@@ -679,21 +695,16 @@ def get_data(ifile):
 
     print('Importing', bfile)
 
-    if 'AST_07' in bfile:
-        dat = get_aster(ifile, '07')
-    elif 'AST_L1T' in bfile:
-        dat = get_aster(ifile, 'L1T')
-        dat = calculate_toa(dat)
-    elif 'AST_05' in bfile:
-        dat = get_aster(ifile, '05')
+    if 'AST_' in bfile and 'hdf' in bfile.lower():
+        dat = get_aster_hdf(ifile)
+    elif 'AST_' in bfile and 'zip' in bfile.lower():
+        dat = get_aster_zip(ifile)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']:
         dat = get_landsat(ifile)
-    elif '.xml' in bfile:
+    elif '.xml' in bfile and '.SAFE' in ifile:
         dat = get_sentinel2(ifile)
     else:
         dat = None
-
-    dataset = None
 
     return dat
 
@@ -809,8 +820,7 @@ def get_modis(ifile):
             dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
                                 (dat[i].data == nval))
             if dat[i].data.mask.size == 1:
-                dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                    np.ma.getmaskarray(dat[i].data))
+                dat[i].mask = np.ma.getmaskarray(dat[i].data)
 
             dat[i].dataid = bandid2+' '+bandid
             dat[i].nullvalue = nval
@@ -835,9 +845,10 @@ def get_modis(ifile):
     dataset = None
     return dat
 
+
 def get_landsat(ifilet):
     """
-    Gets Landsat Data
+    Gets Landsat Data.
 
     Parameters
     ----------
@@ -849,116 +860,116 @@ def get_landsat(ifilet):
     out : Data
         PyGMI raster dataset
     """
-    dat = []
 
-    print('Extracting tar...')
+    idir = os.path.dirname(ifilet)
 
-    ifile = ifilet[:-7]+'_MTL.txt'
-    idir = os.path.dirname(ifile)
+    if 'tar.gz' in ifilet:
+        with tarfile.open(ifilet) as tar:
+            tarnames = tar.getnames()
+            ifile = next((i for i in tarnames if '_MTL.txt' in i), None)
+            if ifile is None:
+                print('Could not find MTL.txt file in tar archive')
+                return None
+            print('Extracting tar...')
+            tar.extractall(idir)
+            ifile = os.path.join(idir, ifile)
+    elif '_MTL.txt' in ifilet:
+        ifile = ifilet
+    else:
+        print('Input needs to be tar.gz or _MTL.txt')
+        return None
 
-    tar = tarfile.open(ifilet)
-    tarnames = tar.getnames()
-    tar.extractall(idir)
-    tar.close()
+    files = glob.glob(ifile[:-7]+'*[0-9].tif')
+#    files.extend(glob.glob(ifile[:-7]+'*[0-9][0-9].tif'))
 
     print('Importing Landsat data...')
 
-    mtlfile = open(ifile)
-    mtldat = mtlfile.read()
-    mtlfile.close()
+    # mtlfile = open(ifile)
+    # mtldat = mtlfile.read()
+    # mtlfile.close()
 
-    mtldat = mtldat.splitlines()
+    # mtldat = mtldat.splitlines()
 
-    mtldat2 = []
-    for i in mtldat:
-        i = i.strip().split(' = ')
-        mtldat2.append(i)
+    # mtldat2 = []
+    # for i in mtldat:
+    #     i = i.strip().split(' = ')
+    #     mtldat2.append(i)
 
-    mtldat2.pop(0)
-    mtldat = {}
-    grpname = ''
-    for i in mtldat2:
-        if i[0] == 'END_GROUP' or i[0] == 'END' or len(i) < 2:
-            continue
+    # mtldat2.pop(0)
+    # mtldat = {}
+    # grpname = ''
+    # for i in mtldat2:
+    #     if i[0] == 'END_GROUP' or i[0] == 'END' or len(i) < 2:
+    #         continue
 
-        if i[0] == 'GROUP':
-            grpname = i[1]
-            mtldat[grpname] = {}
+    #     if i[0] == 'GROUP':
+    #         grpname = i[1]
+    #         mtldat[grpname] = {}
+    #     else:
+    #         if i[1][0] == '"':
+    #             i[1] = i[1][1:-1]
+    #         mtldat[grpname][i[0]] = i[1]
+
+    # spacecraft = mtldat['PRODUCT_METADATA']['SPACECRAFT_ID']
+    # sensor = mtldat['PRODUCT_METADATA']['SENSOR_ID']
+    # bands = {}
+    # bands['LANDSAT_8'] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+    #                       '11']
+    # bands['LANDSAT_7'] = ['1', '2', '3', '4', '5', '6_VCID_1', '6_VCID_2', '7',
+    #                       '8']
+    # bands['LANDSAT_5'] = ['1', '2', '3', '4', '5', '6', '7']
+    # bands['LANDSAT_4'] = ['1', '2', '3', '4', '5', '6', '7']
+    # if sensor == 'MSS':
+    #     bands['LANDSAT_5'] = ['1', '2', '3', '4']
+    #     bands['LANDSAT_4'] = ['1', '2', '3', '4']
+
+    nval = 0
+    dat = []
+    for ifile2 in files:
+    # for fext in bands[spacecraft]:
+        if 'B6_VCID' in ifile2:
+            fext = ifile2[-12:-4]
+        elif ifile2[-6].isdigit():
+            fext = ifile2[-6:-4]
         else:
-            if i[1][0] == '"':
-                i[1] = i[1][1:-1]
-            mtldat[grpname][i[0]] = i[1]
+            fext = ifile2[-5]
 
-    spacecraft = mtldat['PRODUCT_METADATA']['SPACECRAFT_ID']
-    sensor = mtldat['PRODUCT_METADATA']['SENSOR_ID']
-    bands = {}
-    bands['LANDSAT_8'] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-                          '11']
-    bands['LANDSAT_7'] = ['1', '2', '3', '4', '5', '6_VCID_1', '6_VCID_2', '7',
-                          '8']
-    bands['LANDSAT_5'] = ['1', '2', '3', '4', '5', '6', '7']
-    bands['LANDSAT_4'] = ['1', '2', '3', '4', '5', '6', '7']
-    if sensor == 'MSS':
-        bands['LANDSAT_5'] = ['1', '2', '3', '4']
-        bands['LANDSAT_4'] = ['1', '2', '3', '4']
+        print('Importing Band', fext)
 
-    for fext in bands[spacecraft]:
-        ifile2 = os.path.join(idir, mtldat['PRODUCT_METADATA']['FILE_NAME_BAND_'+fext])
+#        ifile2 = os.path.join(idir, mtldat['PRODUCT_METADATA']['FILE_NAME_BAND_'+fext])
 
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
 
         if dataset is None:
             print('Problem with band '+fext)
+            breakpoint()
             continue
 
-        gtr = dataset.GetGeoTransform()
-
         rtmp = dataset.GetRasterBand(1)
-        nval = rtmp.GetNoDataValue()
 
         dat.append(Data())
         dat[-1].data = rtmp.ReadAsArray()
-        if dat[-1].data.dtype.kind == 'i':
-            if nval is None:
-                nval = 999999
-            nval = int(nval)
-        elif dat[-1].data.dtype.kind == 'u':
-            if nval is None:
-                nval = 0
-            nval = int(nval)
-        else:
-            if nval is None:
-                nval = 1e+20
-            nval = float(nval)
-
         dat[-1].data = np.ma.masked_invalid(dat[-1].data)
         dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
         if dat[-1].data.mask.size == 1:
             dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
                                  dat[-1].data.mask)
 
-        dat[-1].data.unshare_mask()
-        dat[-1].nrofbands = dataset.RasterCount
-        dat[-1].extent_from_gtr(gtr)
+        dat[-1].extent_from_gtr(dataset.GetGeoTransform())
         dat[-1].dataid = 'Band' + fext
         dat[-1].nullvalue = nval
+        dat[-1].wkt = dataset.GetProjectionRef()
 
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(dataset.GetProjection())
-        srs.AutoIdentifyEPSG()
-        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        dat[-1].wkt = srs.ExportToWkt()
-
-        dat[-1].metadata = mtldat
+#        dat[-1].metadata = mtldat
         dataset = None
 
     if dat == []:
         dat = None
 
-#    print('Cleaning Extracted tar files...')
-    for tfile in tarnames:
-        os.remove(os.path.join(os.path.dirname(ifile), tfile))
+    if 'tar.gz' in ifilet:
+        print('Cleaning Extracted tar files...')
+        for tfile in tarnames:
+            os.remove(os.path.join(os.path.dirname(ifile), tfile))
 
     return dat
 
@@ -977,72 +988,38 @@ def get_sentinel2(ifile):
     dat : PyGMI raster Data
         dataset imported
     """
-    dat = []
     ifile = ifile[:]
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-    meta = dataset.GetMetadata()
 
     subdata = dataset.GetSubDatasets()
     subdata = [i for i in subdata if 'True color' not in i[1]]
 
-    # subdata = [i for i in subdata if 'SurfaceReflectance' in i[0]]
-
-    # scalefactor = 0.001
-    # elif ptype == '05':
-    #     subdata = [i for i in subdata if 'SurfaceEmissivity' in i[0]]
-    #     scalefactor = 0.001
-    # elif ptype == '08':
-    #     scalefactor = 0.1
-    # elif ptype == 'L1T':
-    #     subdata = [i for i in subdata if 'ImageData' in i[0]]
-    #     scalefactor = 1
-    # else:
-    #     return
-
+    nval = 0
+    dat = []
     for ifile, bandid in subdata:
         dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-        gtr = dataset.GetGeoTransform()
-        wkt = dataset.GetProjectionRef()
+
+        if dataset is None:
+            print('Problem with', ifile)
+            continue
 
         for i in range(dataset.RasterCount):
             rtmp = dataset.GetRasterBand(i+1)
-            nval = rtmp.GetNoDataValue()
             bname = rtmp.GetDescription()
             print('Importing', bname)
 
             dat.append(Data())
             dat[-1].data = rtmp.ReadAsArray()
-
-            if dat[-1].data.dtype.kind == 'i':
-                if nval is None:
-                    nval = 999999
-                nval = int(nval)
-            elif dat[-1].data.dtype.kind == 'u':
-                if nval is None:
-                    nval = 0
-                nval = int(nval)
-            else:
-                if nval is None:
-                    nval = 1e+20
-                nval = float(nval)
-
             dat[-1].data = np.ma.masked_invalid(dat[-1].data)
             dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
             if dat[-1].data.mask.size == 1:
-                dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
-                                     dat[-1].data.mask)
+                dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
             dat[-1].dataid = bname
             dat[-1].nullvalue = nval
-            dat[-1].extent_from_gtr(gtr)
-
-            # srs = osr.SpatialReference()
-            # srs.ImportFromWkt(tmpds.GetProjection())
-            # srs.AutoIdentifyEPSG()
-            # srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-            dat[-1].wkt = wkt
+            dat[-1].extent_from_gtr(dataset.GetGeoTransform())
+            dat[-1].wkt = dataset.GetProjectionRef()
 
     if dat == []:
         dat = None
@@ -1050,7 +1027,7 @@ def get_sentinel2(ifile):
     return dat
 
 
-def get_aster(ifile, ptype):
+def get_aster_zip(ifile):
     """
     Gets ASTER Data.
 
@@ -1064,8 +1041,105 @@ def get_aster(ifile, ptype):
     dat : PyGMI raster Data
         dataset imported
     """
+
+    SF09 = {'Band1': 0.6760,
+            'Band2': 0.7080,
+            'Band3N': 0.8620,
+            'Band4': 0.21740,
+            'Band5': 0.06960,
+            'Band6': 0.06250,
+            'Band7': 0.05970,
+            'Band8': 0.04178,
+            'Band9': 0.03180,
+            'Band10': 0.006882,
+            'Band11': 0.006780,
+            'Band12': 0.006590,
+            'Band13': 0.005693,
+            'Band14': 0.005225}
+
+    if 'AST_07' in ifile:
+        scalefactor = 0.001
+    elif 'AST_05' in ifile:
+        scalefactor = 0.001
+    elif 'AST_08' in ifile:
+        scalefactor = 0.1
+    # elif 'AST_09' in ifile:
+    #     scalefactor = None
+    else:
+        return None
+
+
+    print('Extracting zip...')
+
+    idir = os.path.dirname(ifile)
+    zfile = zipfile.ZipFile(ifile)
+
+    zipnames = zfile.namelist()
+    zfile.extractall(idir)
+    zfile.close()
+
     dat = []
+    nval = 0
+    for zfile in zipnames:
+        if zfile.lower()[-4:] != '.tif':
+            continue
+
+        dataset = gdal.Open(os.path.join(idir, zfile), gdal.GA_ReadOnly)
+
+        if dataset is None:
+            print('Problem with', zfile)
+            continue
+
+        dataset = gdal.AutoCreateWarpedVRT(dataset)
+        rtmp = dataset.GetRasterBand(1)
+
+        dat.append(Data())
+        dat[-1].data = rtmp.ReadAsArray()
+        dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
+        dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+        if dat[-1].data.mask.size == 1:
+            dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+
+        dat[-1].extent_from_gtr(dataset.GetGeoTransform())
+        dat[-1].dataid = zfile[zfile.index('Band'):zfile.index('.tif')]
+        dat[-1].nullvalue = nval
+        dat[-1].wkt = dataset.GetProjectionRef()
+
+        dataset = None
+
+    print('Cleaning Extracted zip files...')
+    for zfile in zipnames:
+        os.remove(os.path.join(idir, zfile))
+
+    return dat
+
+
+def get_aster_hdf(ifile):
+    """
+    Gets ASTER Data.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
     ifile = ifile[:]
+
+    if 'AST_07' in ifile:
+        ptype = '07'
+    elif 'AST_L1T' in ifile:
+        ptype = 'L1T'
+    elif 'AST_05' in ifile:
+        ptype = '05'
+    elif 'AST_08' in ifile:
+        ptype = '08'
+    else:
+        return None
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
@@ -1108,6 +1182,8 @@ def get_aster(ifile, ptype):
     else:
         return
 
+    dat = []
+    nval = 0
     for ifile, bandid in subdata:
         if 'QA' in ifile:
             continue
@@ -1120,35 +1196,18 @@ def get_aster(ifile, ptype):
         dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
         tmpds = gdal.AutoCreateWarpedVRT(dataset)
-        rtmp2 = tmpds.ReadAsArray()
-        gtr = tmpds.GetGeoTransform()
-        nval = 0
 
         dat.append(Data())
-        dat[-1].data = rtmp2
-
-        if dat[-1].data.dtype.kind == 'i':
-            if nval is None:
-                nval = 999999
-            nval = int(nval)
-        elif dat[-1].data.dtype.kind == 'u':
-            if nval is None:
-                nval = 0
-            nval = int(nval)
-        else:
-            if nval is None:
-                nval = 1e+20
-            nval = float(nval)
-
+        dat[-1].data = tmpds.ReadAsArray()
         dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
         dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
         if dat[-1].data.mask.size == 1:
-            dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
-                                 dat[-1].data.mask)
+            dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
         dat[-1].dataid = bandid2
         dat[-1].nullvalue = nval
-        dat[-1].extent_from_gtr(gtr)
+        dat[-1].extent_from_gtr(tmpds.GetGeoTransform())
+        dat[-1].wkt = tmpds.GetProjectionRef()
         dat[-1].metadata['SolarElev'] = solarelev
         dat[-1].metadata['JulianDay'] = jdate
         dat[-1].metadata['CalendarDate'] = cdate
@@ -1157,19 +1216,13 @@ def get_aster(ifile, ptype):
         if ptype == 'L1T':
             dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
 
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(tmpds.GetProjection())
-        srs.AutoIdentifyEPSG()
-        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        dat[-1].wkt = srs.ExportToWkt()
-
     if dat == []:
         dat = None
 
+    if ptype == 'L1T':
+        dat = calculate_toa(dat)
+
     return dat
-
-
 
 
 def get_aster_ged(ifile):
@@ -1193,29 +1246,8 @@ def get_aster_ged(ifile):
 
     subdata = dataset.GetSubDatasets()
 
-    latentry = [i for i in subdata if 'Latitude' in i[1]]
-    subdata.pop(subdata.index(latentry[0]))
-    dataset = None
-    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lats = rtmp.ReadAsArray()
-    latsdim = (lats.max()-lats.min())/(lats.shape[0]-1)
-
-    lonentry = [i for i in subdata if 'Longitude' in i[1]]
-    subdata.pop(subdata.index(lonentry[0]))
-
-    dataset = None
-    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lons = rtmp.ReadAsArray()
-    lonsdim = (lons.max()-lons.min())/(lons.shape[0]-1)
-
-    tlx = lons.min()-abs(lonsdim/2)
-    tly = lats.max()+abs(latsdim/2)
-
     i = -1
     for ifile2, bandid2 in subdata:
-        dataset = None
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
         bandid = bandid2
         units = ''
@@ -1252,8 +1284,7 @@ def get_aster_ged(ifile):
             dat[i].data.mask = (np.ma.getmaskarray(dat[i].data)
                                 | (dat[i].data == nval))
             if dat[i].data.mask.size == 1:
-                dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                    np.ma.getmaskarray(dat[i].data))
+                dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
             dat[i].data = dat[i].data * 1.0
             if 'Emissivity/Mean' in bandid2:
@@ -1279,26 +1310,12 @@ def get_aster_ged(ifile):
 
             dat[i].dataid = bandid
             dat[i].nullvalue = nval
-            dat[i].xdim = abs(lonsdim)
-            dat[i].ydim = abs(latsdim)
+            dat[i].extent_from_gtr(dataset.GetGeoTransform())
             dat[i].units = units
+            dat[i].wkt = dataset.GetProjectionRef()
 
-            rows, cols = dat[i].data.shape
-            xmin = tlx
-            ymax = tly
-            ymin = ymax - rows*dat[i].ydim
-            xmax = xmin + cols*dat[i].xdim
+        dataset = None
 
-            dat[i].extent = [xmin, xmax, ymin, ymax]
-
-            srs = osr.SpatialReference()
-            srs.ImportFromWkt(dataset.GetProjection())
-            srs.AutoIdentifyEPSG()
-            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-            dat[i].wkt = srs.ExportToWkt()
-
-    dataset = None
     return dat
 
 
@@ -1408,9 +1425,14 @@ def get_aster_ged_bin(ifile):
 
 def testfn():
     """Main testing routine."""
-    ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20170813T080011_N0205_R035_T35JKG_20170813T082818.SAFE\MTD_MSIL2A.xml'
+    # ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20170813T080011_N0205_R035_T35JKG_20170813T082818.SAFE\MTD_MSIL2A.xml'
+    # dat = get_sentinel2(ifile)
 
-    dat = get_sentinel2(ifile)
+    # ifile = r'C:\Work\Workdata\ASTER\AST_07XT_00309042002082052_20200518021739_29313.zip'
+    # dat = get_aster_zip(ifile)
+
+    ifile = r'C:\Work\Workdata\ASTER\LC081740432017101901T1-SC20180409064853.tar.gz'
+    dat = get_landsat(ifile)
 
     breakpoint()
 

@@ -26,6 +26,7 @@
 
 import copy
 import os
+import glob
 import sys
 import re
 import numexpr as ne
@@ -154,6 +155,10 @@ class SatRatios(QtWidgets.QDialog):
 
         if sensor == 'ASTER':
             flist = get_aster_list(flist)
+        elif 'Landsat' in sensor:
+            flist = get_landsat_list(flist, sensor)
+        elif 'Sentinel-2' in sensor:
+            flist = get_sentinel_list(flist)
         else:
             return
 
@@ -163,7 +168,6 @@ class SatRatios(QtWidgets.QDialog):
 
         for ifile in flist:
             if isinstance(ifile, str):
-                # load dataset
                 dat = iodefs.get_data(ifile)
                 ofile = ifile
             elif isinstance(ifile, list):
@@ -171,16 +175,28 @@ class SatRatios(QtWidgets.QDialog):
                 for jfile in ifile:
                     dat += iodefs.get_data(jfile)
                 ofile = jfile
-                dat = merge(dat)
             else:
                 dat = ifile
                 ofile = 'PyGMI'
 
+            if dat is None:
+                continue
+
+            dat = merge(dat)
+
             datd = {}
             for i in dat:
                 txt = i.dataid.split()[0]
+                if 'Band' not in txt and 'B' in txt and ',' in txt:
+                    txt = txt.replace('B', 'Band')
+                    txt = txt.replace(',', '')
+
                 if txt == 'Band3N':
                     txt = 'Band3'
+
+                if txt == 'Band8A':
+                    txt = 'Band8'
+
                 datd[txt] = i.data
 
             datfin = []
@@ -192,6 +208,7 @@ class SatRatios(QtWidgets.QDialog):
                     ratio = ne.evaluate(formula, datd)
                 except Exception:
                     print('Error! Possibly bands missing.')
+                    breakpoint()
                     continue
                 ratio = np.ma.masked_invalid(ratio)
                 ratio.set_fill_value(dat[0].nullvalue)
@@ -201,7 +218,8 @@ class SatRatios(QtWidgets.QDialog):
                 rband.dataid = i
                 datfin.append(rband)
             ofile = ofile.split('.')[0] + '_ratio.tif'
-            export_gdal(ofile, datfin, 'GTiff')
+            if datfin:
+                export_gdal(ofile, datfin, 'GTiff')
 
         self.outdata['Raster'] = datfin
 
@@ -328,7 +346,7 @@ def get_aster_list(flist):
 
     names = {}
     for i in flist:
-        if i[:3] != 'AST':
+        if os.path.basename(i)[:3] != 'AST':
             continue
 
         adate = os.path.basename(i).split('_')[2]
@@ -343,10 +361,73 @@ def get_aster_list(flist):
             names[adate] = [i for i in names[adate] if '_07_' not in i]
 
     flist = []
-    for adata in names:
+    for adate in names:
         flist.append(names[adate])
 
     return flist
+
+
+def get_landsat_list(flist, sensor):
+    """
+    Get Landsat files from a file list.
+
+    Parameters
+    ----------
+    flist : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    if not isinstance(flist[0], str):
+        return None
+
+    if sensor == 'Landsat 8 (OLI)':
+        fid = ['LC08']
+    elif sensor == 'Landsat 7 (ETM+)':
+        fid = ['LE07']
+    elif sensor == 'Landsat 4 and 5 (TM)':
+        fid = ['LT04', 'LT05']
+    else:
+        return None
+
+    flist2 = []
+    for i in flist:
+        if os.path.basename(i)[:4] not in fid:
+            continue
+        if '.tif' in i:
+            continue
+        flist2.append(i)
+
+    return flist2
+
+
+def get_sentinel_list(flist):
+    """
+    Get Sentinel-2 files from a file list.
+
+    Parameters
+    ----------
+    flist : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    if not isinstance(flist[0], str):
+        return None
+
+    flist2 = []
+    for i in flist:
+        if '.SAFE' not in i:
+            continue
+        flist2.append(i)
+
+    return flist2
 
 
 def testfn():

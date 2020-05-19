@@ -59,7 +59,7 @@ class MenuWidget():
         # self.menu3.addAction(self.action_import_ged)
         # self.action_import_ged.triggered.connect(self.import_ged)
 
-        self.action_import_aster = QtWidgets.QAction('Import ASTER HDF')
+        self.action_import_aster = QtWidgets.QAction('Import ASTER')
         self.menu3.addAction(self.action_import_aster)
         self.action_import_aster.triggered.connect(self.import_aster)
 
@@ -136,7 +136,7 @@ class MenuWidget():
 
     def import_aster(self):
         """Import ASTER HDF data."""
-        fnc = iodefs.ImportData(self.parent, 'hdf (AST*.hdf);;')
+        fnc = iodefs.ImportData(self.parent, 'ASTER (AST*.hdf AST*.zip);;')
         self.parent.item_insert('Io', 'Import ASTER', fnc)
 
     def import_hdf(self):
@@ -146,7 +146,8 @@ class MenuWidget():
 
     def import_landsat(self):
         """Import Landsat data."""
-        fnc = iodefs.ImportData(self.parent, 'Landsat (L*.tar.gz);;')
+        fnc = iodefs.ImportData(self.parent,
+                                'Landsat (L*.tar.gz L*_MTL.txt);;')
         self.parent.item_insert('Io', 'Import Landsat', fnc)
 
     def import_ged(self):
