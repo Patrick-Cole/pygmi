@@ -208,7 +208,6 @@ class SatRatios(QtWidgets.QDialog):
                     ratio = ne.evaluate(formula, datd)
                 except Exception:
                     print('Error! Possibly bands missing.')
-                    breakpoint()
                     continue
                 ratio = np.ma.masked_invalid(ratio)
                 ratio.set_fill_value(dat[0].nullvalue)

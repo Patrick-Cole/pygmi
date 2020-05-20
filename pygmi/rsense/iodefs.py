@@ -275,7 +275,7 @@ class ImportBatch():
         for i in sendir:
             sendat.extend(glob.glob(i+'//MTD*.xml'))
 
-        if not hdfdat and not zipdat and not targzdat and not mtldat:
+        if not hdfdat and not zipdat and not targzdat and not mtldat and not sendat:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'No valid files in the directory.',
                                           QtWidgets.QMessageBox.Ok)
