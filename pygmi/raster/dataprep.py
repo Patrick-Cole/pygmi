@@ -35,6 +35,7 @@ from osgeo import gdal, osr, ogr
 import pandas as pd
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
+from scipy.signal import tukey
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 
@@ -1215,6 +1216,9 @@ class RTP(QtWidgets.QDialog):
         self.dsb_inc.setMinimum(-90.0)
         self.dsb_dec.setMaximum(360.0)
         self.dsb_dec.setMinimum(-360.0)
+        self.dsb_inc.setValue(-62.5)
+        self.dsb_dec.setValue(-16.75)
+
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -1253,8 +1257,6 @@ class RTP(QtWidgets.QDialog):
 
         self.dataid.addItems(tmp)
 
-        self.dsb_inc.setValue(-62.5)
-        self.dsb_dec.setValue(-16.75)
         tmp = self.exec_()
 
         if tmp != 1:
@@ -1311,14 +1313,30 @@ def rtp(data, I_deg, D_deg):
     ndat = data.data - datamedian
     ndat.data[ndat.mask] = 0
 
+    nr, nc = data.data.shape
+
+    # nmax = np.max([nr, nc])
+    # nextpow2 = np.ceil(np.log2(np.abs(nmax)))
+    # npts = int(2**nextpow2)
+    # cdiff = int(np.floor((npts-nc)/2))
+    # rdiff = int(np.floor((npts-nr)/2))
+    # cdiff2 = npts-cdiff-nc
+    # rdiff2 = npts-rdiff-nr
+    # ndat = np.pad(ndat, [[rdiff, rdiff2], [cdiff, cdiff2]], 'linear_ramp')
+
+    cdiff = nc//2
+    rdiff = nr//2
+
+    ndat = np.pad(ndat, [[rdiff, rdiff], [cdiff, cdiff]], 'edge')
+
+    ndat *= tukey(nc*2)
+    ndat *= tukey(nr*2)[:, np.newaxis]
+
     fftmod = np.fft.fft2(ndat)
 
     ny, nx = fftmod.shape
-    nyqx = 1/(2*data.xdim)
-    nyqy = 1/(2*data.ydim)
-
-    kx = np.linspace(-nyqx, nyqx, nx)
-    ky = np.linspace(-nyqy, nyqy, ny)
+    kx = np.fft.fftfreq(nx, data.xdim)
+    ky = np.fft.fftfreq(ny, data.ydim)
 
     KX, KY = np.meshgrid(kx, ky)
 
@@ -1326,10 +1344,14 @@ def rtp(data, I_deg, D_deg):
     D = np.deg2rad(D_deg)
     alpha = np.arctan2(KY, KX)
 
-    filt = 1/(np.sin(I)+1j*np.cos(I)*np.cos(D-alpha))**2
+#    filt = 1/(np.sin(I)+1j*np.cos(I)*np.cos(D-alpha))**2
+    filt = 1/(np.sin(I)+1j*np.cos(I)*np.sin(D+alpha))**2
 
     zrtp = np.fft.ifft2(fftmod*filt)
+
+    zrtp = (zrtp[rdiff:-rdiff, cdiff:-cdiff])
     zrtp = zrtp.real + datamedian
+
     zrtp[data.data.mask] = data.data.fill_value
 
 # Create dataset
@@ -1875,3 +1897,53 @@ def quickgrid(x, y, z, dxy, numits=4):
     newz = np.ma.array(zfin)
     newz.mask = newmask
     return newz
+
+
+def testfn():
+    """Main testing routine."""
+    from pygmi.raster import iodefs
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
+
+    # test taper
+    data = np.ones((100, 100))
+
+    nr, nc = data.shape
+
+    # nmax = np.max([nr, nc])
+    # nextpow2 = np.ceil(np.log2(np.abs(nmax)))
+    # npts = int(2**nextpow2)
+    # cdiff = int(np.floor((npts-nc)/2))
+    # rdiff = int(np.floor((npts-nr)/2))
+    # cdiff2 = npts-cdiff-nc
+    # rdiff2 = npts-rdiff-nr
+    # ndat = np.pad(data, [[rdiff, rdiff2], [cdiff, cdiff2]], 'linear_ramp')
+
+    cdiff = nc//2
+    rdiff = nr//2
+    ndat = np.pad(data, [[rdiff, rdiff], [cdiff, cdiff]], 'edge')
+    ndat *= tukey(nc*2)
+    ndat *= tukey(nr*2)[:, np.newaxis]
+
+    plt.imshow(ndat)
+    plt.show()
+
+    # test rtp
+
+    ifile = r'C:\Work\Workdata\rtptest.tif'
+
+    dat = iodefs.get_raster(ifile)
+
+    plt.imshow(dat[0].data, cmap=cm.jet, vmin=-17, vmax=30)
+    plt.colorbar()
+    plt.show()
+
+    dat2 = rtp(dat[0], 57.5, 5)
+
+    plt.imshow(dat2.data, cmap=cm.jet, vmin=-17, vmax=30)
+    plt.colorbar()
+    plt.show()
+
+
+if __name__ == "__main__":
+    testfn()

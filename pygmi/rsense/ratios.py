@@ -146,6 +146,7 @@ class SatRatios(QtWidgets.QDialog):
         None.
 
         """
+        datfin = []
         sensor = self.combo_sensor.currentText()
 
         if 'RasterFileList' in self.indata:
@@ -209,6 +210,8 @@ class SatRatios(QtWidgets.QDialog):
                 except Exception:
                     print('Error! Possibly bands missing.')
                     continue
+
+                ratio = ratio.astype(np.float32)
                 ratio = np.ma.masked_invalid(ratio)
                 ratio.set_fill_value(dat[0].nullvalue)
                 ratio = np.ma.fix_invalid(ratio)
