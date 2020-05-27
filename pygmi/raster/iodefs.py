@@ -179,7 +179,7 @@ class ImportData():
                'SAGA binary grid (*.sdat);;'
                'Geosoft UNCOMPRESSED grid (*.grd);;'
                'Geosoft (*.gxf);;'
-               'Surfer grid (v.6) (*.grd);;'
+               'Surfer grid (*.grd);;'
                'GeoPak grid (*.grd);;'
                'ESRI ASCII (*.asc);;'
                'ASCII with .hdr header (*.asc);;'

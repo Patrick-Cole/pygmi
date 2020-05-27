@@ -1907,9 +1907,6 @@ def testfn():
     from matplotlib import cm
     import matplotlib
 
-
-
-
     # test taper
     data = np.ones((100, 120))
 
