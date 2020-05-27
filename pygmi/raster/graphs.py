@@ -41,8 +41,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import matplotlib.colors as mcolors
-from matplotlib.ticker import MaxNLocator
-from mpl_toolkits.mplot3d import axes3d
 
 
 class MyMplCanvas(FigureCanvas):
@@ -55,6 +53,7 @@ class MyMplCanvas(FigureCanvas):
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent=None):
         fig = Figure()
         self.axes = fig.add_subplot(111)
@@ -274,6 +273,7 @@ class GraphWindow(QtWidgets.QDialog):
     parent : parent
         reference to the parent routine
     """
+
     def __init__(self, parent):
         super().__init__(parent)
         self.parent = parent
@@ -334,6 +334,7 @@ class PlotCCoef(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
     def __init__(self, parent):
         super().__init__(parent)
         self.label1.hide()
@@ -455,6 +456,7 @@ class PlotRaster(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
     def __init__(self, parent):
         super().__init__(parent)
         self.label2.hide()
@@ -511,6 +513,7 @@ class PlotSurface(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
     def __init__(self, parent):
         super().__init__(parent)
         self.label2.hide()
@@ -561,6 +564,7 @@ class PlotScatter(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -589,7 +593,6 @@ class PlotScatter(GraphWindow):
                                           'to fix this.',
                                           QtWidgets.QMessageBox.Ok)
             return
-
 
         self.mmc.update_hexbin(x, y)
 
@@ -629,6 +632,7 @@ class PlotHist(GraphWindow):
     indata : dictionary
         dictionary of input datasets
     """
+
     def __init__(self, parent):
         super().__init__(parent)
         self.label2.hide()

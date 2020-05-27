@@ -1329,8 +1329,9 @@ def rtp(data, I_deg, D_deg):
 
     ndat = np.pad(ndat, [[rdiff, rdiff], [cdiff, cdiff]], 'edge')
 
-    ndat *= tukey(nc*2)
-    ndat *= tukey(nr*2)[:, np.newaxis]
+    nr, nc = ndat.shape
+    ndat *= tukey(nc)
+    ndat *= tukey(nr)[:, np.newaxis]
 
     fftmod = np.fft.fft2(ndat)
 
@@ -1904,9 +1905,13 @@ def testfn():
     from pygmi.raster import iodefs
     import matplotlib.pyplot as plt
     from matplotlib import cm
+    import matplotlib
+
+
+
 
     # test taper
-    data = np.ones((100, 100))
+    data = np.ones((100, 120))
 
     nr, nc = data.shape
 
@@ -1930,17 +1935,17 @@ def testfn():
 
     # test rtp
 
-    ifile = r'C:\Work\Workdata\rtptest.tif'
+    ifile = r'C:\Work\Workdata\RTP\TMI to test RTP.grd'
 
     dat = iodefs.get_raster(ifile)
-
-    plt.imshow(dat[0].data, cmap=cm.jet, vmin=-17, vmax=30)
+#    plt.figure(dpi=800)
+    plt.imshow(dat[0].data, cmap=cm.jet)
     plt.colorbar()
     plt.show()
 
     dat2 = rtp(dat[0], 57.5, 5)
 
-    plt.imshow(dat2.data, cmap=cm.jet, vmin=-17, vmax=30)
+    plt.imshow(dat2.data, cmap=cm.jet)
     plt.colorbar()
     plt.show()
 

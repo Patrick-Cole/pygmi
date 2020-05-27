@@ -46,7 +46,9 @@ import numpy as np
 import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
+import matplotlib
 
+matplotlib.rcParams['figure.dpi'] = 150
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
 
