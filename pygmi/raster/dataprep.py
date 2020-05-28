@@ -1340,6 +1340,7 @@ def rtp(data, I_deg, D_deg):
     ky = np.fft.fftfreq(ny, data.ydim)
 
     KX, KY = np.meshgrid(kx, ky)
+    KY = -KY
 
     I = np.deg2rad(I_deg)
     D = np.deg2rad(D_deg)
@@ -1906,45 +1907,47 @@ def testfn():
     import matplotlib.pyplot as plt
     from matplotlib import cm
     import matplotlib
+    from pygmi.pfmod.grvmag3d import quick_model, calc_field
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
 
-    # test taper
-    data = np.ones((100, 120))
+# quick model
+    finc = -57
+    fdec = 50
 
-    nr, nc = data.shape
+    lmod = quick_model(numx=300, numy=300, numz=30, finc=finc, fdec=fdec)
+    lmod.lith_index[100:200, 100:200, 0:10] = 1
+#    lmod.lith_index[:, :, 10] = 1
+    lmod.mht = 100
+    calc_field(lmod, magcalc=True)
 
-    # nmax = np.max([nr, nc])
-    # nextpow2 = np.ceil(np.log2(np.abs(nmax)))
-    # npts = int(2**nextpow2)
-    # cdiff = int(np.floor((npts-nc)/2))
-    # rdiff = int(np.floor((npts-nr)/2))
-    # cdiff2 = npts-cdiff-nc
-    # rdiff2 = npts-rdiff-nr
-    # ndat = np.pad(data, [[rdiff, rdiff2], [cdiff, cdiff2]], 'linear_ramp')
+# Calculate the field
 
-    cdiff = nc//2
-    rdiff = nr//2
-    ndat = np.pad(data, [[rdiff, rdiff], [cdiff, cdiff]], 'edge')
-    ndat *= tukey(nc*2)
-    ndat *= tukey(nr*2)[:, np.newaxis]
+    magval = lmod.griddata['Calculated Magnetics'].data
+    plt.imshow(magval, cmap=cm.jet)
+    plt.show()
 
-    plt.imshow(ndat)
+
+    dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
+    plt.imshow(dat2.data, cmap=cm.jet)
     plt.show()
 
     # test rtp
 
-    ifile = r'C:\Work\Workdata\RTP\TMI to test RTP.grd'
+#     ifile = r'C:\Work\Workdata\RTP\TMI to test RTP.grd'
+#     ifile = r'C:\Work\Workdata\rtptest.tif'
 
-    dat = iodefs.get_raster(ifile)
-#    plt.figure(dpi=800)
-    plt.imshow(dat[0].data, cmap=cm.jet)
-    plt.colorbar()
-    plt.show()
+#     dat = iodefs.get_raster(ifile)
+# #    plt.figure(dpi=800)
+#     plt.imshow(dat[0].data, cmap=cm.jet)
+#     plt.colorbar()
+#     plt.show()
 
-    dat2 = rtp(dat[0], 57.5, 5)
+#     dat2 = rtp(dat[0], 57.5, 5)
 
-    plt.imshow(dat2.data, cmap=cm.jet)
-    plt.colorbar()
-    plt.show()
+#     plt.imshow(dat2.data, cmap=cm.jet)
+#     plt.colorbar()
+#     plt.show()
 
 
 if __name__ == "__main__":
