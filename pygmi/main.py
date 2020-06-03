@@ -35,6 +35,8 @@ pygmi packages.
 
 """
 
+import copy
+import json
 import pdb
 import sys
 import os
@@ -43,10 +45,10 @@ import math
 import importlib
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
+import matplotlib
 import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
-import matplotlib
 
 matplotlib.rcParams['figure.dpi'] = 150
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
@@ -357,9 +359,9 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             Returns a boolean reflecting success of the my_class.settings()
             method.
         """
-        if self.is_import is True:
-            pass
-        elif self.my_class.indata == {} and self.is_import is False:
+
+        self.update_indata()
+        if self.my_class.indata == {} and self.is_import is False:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need to connect data first!',
                                           QtWidgets.QMessageBox.Ok)
@@ -428,8 +430,15 @@ class DiagramScene(QtWidgets.QGraphicsScene):
             idata = tmp[0].my_class.indata
 
             for i in idata:
-                text += '\nInput ' + i + ' dataset:\n'
+                text += '\nInput ' + i + ' dataset: '
                 if i in 'Raster':
+                    if hasattr(idata[i][0], 'filename'):
+                        file = idata[i][0].filename
+                    else:
+                        file = i
+                    if '.SAFE' in file:
+                        file = file.split('.SAFE')[0]+'.SAFE'
+                    text += os.path.basename(file) + '\n'
                     for j in idata[i]:
                         text += '  '+j.dataid + '\n'
 
@@ -437,17 +446,27 @@ class DiagramScene(QtWidgets.QGraphicsScene):
             odata = tmp[0].my_class.outdata
 
             for i in odata:
-                text += '\nOutput ' + i + ' dataset:\n'
+                text += '\nOutput ' + i + ' dataset: '
                 if i == 'RasterFileList':
+                    text += i + '\n'
                     for j in odata[i]:
                         text += os.path.basename(j) + '\n'
                 if i in ('Raster', 'Cluster'):
+                    if hasattr(odata[i][0], 'filename'):
+                        file = odata[i][0].filename
+                    else:
+                        file = i
+                    if '.SAFE' in file:
+                        file = file.split('.SAFE')[0]+'.SAFE'
+                    text += os.path.basename(file) + '\n'
                     for j in odata[i]:
                         text += '  '+j.dataid + '\n'
                 if i == 'Model3D':
+                    text += i + '\n'
                     for j in odata[i][0].lith_list:
                         text += '  '+j + '\n'
                 if i == 'MT - EDI':
+                    text += i + '\n'
                     for j in odata[i]:
                         text += '  '+j + '\n'
 
@@ -613,7 +632,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_send_to_back.triggered.connect(self.send_to_back)
         self.action_help.triggered.connect(self.help_docs)
 
-    def  __del__(self):
+    def __del__(self):
         """
         Restore sys.stdout
 
@@ -642,7 +661,7 @@ class MainWidget(QtWidgets.QMainWindow):
 #        debugger.do_where(None) # run the "where" command
 
         # invoke the interactive debugging prompt
-        users_frame = sys._getframe().f_back # frame where user invoked pdb()
+        users_frame = sys._getframe().f_back  # frame where user invoked pdb()
         debugger.interaction(users_frame, None)
 
         sys.stdout = self.stdoutnew
@@ -793,7 +812,7 @@ class MainWidget(QtWidgets.QMainWindow):
         """Help Routine."""
         menu_default.HelpDocs(self, 'pygmi.main')
 
-    def item_insert(self, item_type, item_name, class_name):
+    def item_insert(self, item_type, item_name, class_name, runimport=True):
         """
         Item insert.
 
@@ -824,6 +843,8 @@ class MainWidget(QtWidgets.QMainWindow):
 
         if 'Import' in item_name:
             item.is_import = True
+
+        if 'Import' in item_name and runimport is True:
             iflag = item.settings()
             if iflag is False:
                 return None
@@ -957,6 +978,106 @@ class MainWidget(QtWidgets.QMainWindow):
         """
 
         self.showprocesslog(text)
+
+    def load(self):
+        """
+        Loads project state from JSON file.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        ifile = r'C:\Work\Workdata\jason.json'
+
+        with open(ifile, 'r') as fromdisk:
+            ilist = json.load(fromdisk)
+
+        ditems = {}
+        for key in ilist:
+            if '.Arrow' in key:
+                continue
+
+            item = ilist[key]
+            my_class = item['my_class']
+            my_class = my_class.split()[0][1:]
+            my_class = my_class.rsplit('.', 1)
+
+            class_name = getattr(sys.modules[my_class[0]], my_class[1])
+            class_name = class_name(self)
+            item_name = item['my_class_name']
+            item_type = item['diagram_type']
+
+            citem = self.item_insert(item_type, item_name, class_name,
+                                     runimport=False)
+
+            citem.setX(item['x'])
+            citem.setY(item['y'])
+
+            ditems[key] = citem
+
+            if hasattr(class_name, 'loadproj'):
+                chk = class_name.loadproj(item['itemdata'])
+                if chk is True:
+                    citem.setBrush(QtGui.QColor(0, 255, 0, 127))
+
+        for key in ilist:
+            if '.Arrow' not in key:
+                continue
+
+            start_item = ditems[ilist[key]['my_start_item']]
+            end_item = ditems[ilist[key]['my_end_item']]
+
+            arrow = Arrow(start_item, end_item)
+            start_item.add_arrow(arrow)
+            end_item.add_arrow(arrow)
+            arrow.setZValue(-1000.0)
+            self.scene.addItem(arrow)
+            end_item.update_indata()
+
+    def save(self):
+        """
+        Saves project state to a JSON file.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        ilist = {}
+        for item in self.scene.items():
+            if isinstance(item, DiagramItem):
+                ilist[str(item)] = {'my_class': str(item.my_class),
+                                    'my_class_name': item.my_class_name,
+                                    'diagram_type': item.diagram_type,
+                                    'x': item.x(),
+                                    'y': item.y(),
+                                    }
+
+                if hasattr(item.my_class, 'saveproj'):
+                    ilist[str(item)]['itemdata'] = item.my_class.saveproj()
+
+            if isinstance(item, Arrow):
+                ilist[str(item)] = {'my_start_item': str(item.my_start_item),
+                                    'my_end_item': str(item.my_end_item)
+                                    }
+
+        ofile = r'C:\Work\Workdata\jason.json'
+
+        with open(ofile, 'w') as todisk:
+            json.dump(ilist, todisk, indent=4)
+
+    def run(self):
+        """
+        Run entire script.
+
+        Returns
+        -------
+        None.
+
+        """
 
     def send_to_back(self):
         """Send the selected item to the back."""

@@ -55,9 +55,16 @@ class FileMenu():
         self.menufile = QtWidgets.QMenu('File')
         parent.menubar.addAction(self.menufile.menuAction())
 
+        self.action_save = QtWidgets.QAction('Save Project')
+        self.menufile.addAction(self.action_save)
+        self.action_save.triggered.connect(parent.save)
+
+        self.action_load = QtWidgets.QAction('Load Project')
+        self.menufile.addAction(self.action_load)
+        self.action_load.triggered.connect(parent.load)
+
         self.action_exit = QtWidgets.QAction('Exit')
         self.menufile.addAction(self.action_exit)
-
         self.action_exit.triggered.connect(parent.close)
 
 

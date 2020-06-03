@@ -93,6 +93,6 @@ setup(name='pygmi',
                               'helpdocs/*.png', 'images/*.png',
                               'images/*.emf', 'images/*.ico']},
 
-      entry_points={'gui_scripts': ['pygmi = pygmi:main']},
+      entry_points={'gui_scripts': ['pygmi = pygmi:main']},  # test this, might need to be pygmi.main:main
 
       zip_safe=False)

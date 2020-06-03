@@ -80,6 +80,8 @@ class Data():
     ----------
     data : numpy masked array
         array to contain raster data
+    extent : tuple
+        Extent of data as (left, right, bottom, top)
     xdim : float
         x-dimension of grid cell
     ydim : float
@@ -92,11 +94,17 @@ class Data():
         projection information
     units : str
         description of units to be used with color bars
+    isrgb : bool
+        Flag to signify an RGB image.
+    metadata : dictionary
+        Miscellaneous metadata for file.
+    filename : str
+        Filename of file.
     """
 
     def __init__(self):
         self.data = np.ma.array([])
-        self.extent = (0, 1, -1, 0)  # left, right, bottom, top
+        self.extent = (0, 1, -1, 0)
         self.xdim = 1.0
         self.ydim = 1.0
         self.dataid = ''
@@ -105,6 +113,7 @@ class Data():
         self.units = ''
         self.isrgb = False
         self.metadata = {'Cluster': {}}
+        self.filename = ''
 
     def get_gtr(self):
         """

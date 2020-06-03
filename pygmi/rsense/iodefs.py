@@ -959,6 +959,7 @@ def get_landsat(ifilet):
         dat[-1].dataid = 'Band' + fext
         dat[-1].nullvalue = nval
         dat[-1].wkt = dataset.GetProjectionRef()
+        dat[-1].filename = ifile
 
 #        dat[-1].metadata = mtldat
         dataset = None
@@ -997,8 +998,8 @@ def get_sentinel2(ifile):
 
     nval = 0
     dat = []
-    for ifile, bandid in subdata:
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    for bfile, bandid in subdata:
+        dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
 
         if dataset is None:
             print('Problem with', ifile)
@@ -1020,6 +1021,7 @@ def get_sentinel2(ifile):
             dat[-1].nullvalue = nval
             dat[-1].extent_from_gtr(dataset.GetGeoTransform())
             dat[-1].wkt = dataset.GetProjectionRef()
+            dat[-1].filename = ifile
 
     if dat == []:
         dat = None
@@ -1104,6 +1106,7 @@ def get_aster_zip(ifile):
         dat[-1].dataid = zfile[zfile.index('Band'):zfile.index('.tif')]
         dat[-1].nullvalue = nval
         dat[-1].wkt = dataset.GetProjectionRef()
+        dat[-1].filename = ifile
 
         dataset = None
 
@@ -1184,16 +1187,16 @@ def get_aster_hdf(ifile):
 
     dat = []
     nval = 0
-    for ifile, bandid in subdata:
-        if 'QA' in ifile:
+    for bfile, bandid in subdata:
+        if 'QA' in bfile:
             continue
-        if ptype == 'L1T' and 'ImageData3B' in ifile:
+        if ptype == 'L1T' and 'ImageData3B' in bfile:
             continue
 
         bandid2 = bandid[bandid.lower().index(' band'):
                          bandid.lower().index('(')].strip()
 
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+        dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
 
         tmpds = gdal.AutoCreateWarpedVRT(dataset)
 
@@ -1212,6 +1215,7 @@ def get_aster_hdf(ifile):
         dat[-1].metadata['JulianDay'] = jdate
         dat[-1].metadata['CalendarDate'] = cdate
         dat[-1].metadata['ShortName'] = meta['SHORTNAME']
+        dat[-1].filename = ifile
 
         if ptype == 'L1T':
             dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]

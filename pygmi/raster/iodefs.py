@@ -34,7 +34,6 @@ import numpy as np
 from osgeo import gdal, osr
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import merge
-from pygmi.raster.dataprep import quickgrid
 
 
 class ComboBoxBasic(QtWidgets.QDialog):
@@ -148,16 +147,18 @@ class ImportData():
     ext : str
         filename extension
     """
+
     def __init__(self, parent=None):
         self.ifile = ''
         self.name = 'Import Data: '
-        self.ext = ''
+#        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        self.filt = ''
 
-    def settings(self):
+    def settings(self, filename='', filt=''):
         """
         Entry point into item.
 
@@ -167,49 +168,42 @@ class ImportData():
             True if successful, False otherwise.
 
         """
-        ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;'
-               'hdf (*.hdf);;'
-               'hdf (*.h5);;'
-               'ASTER GED (*.bin);;'
-               'ERMapper (*.ers);;'
-               'ENVI (*.hdr);;'
-               'ERDAS Imagine (*.img);;'
-               'PCI Geomatics Database File (*.pix);;'
-               'GeoTiff (*.tif);;'
-               'SAGA binary grid (*.sdat);;'
-               'Geosoft UNCOMPRESSED grid (*.grd);;'
-               'Geosoft (*.gxf);;'
-               'Surfer grid (*.grd);;'
-               'GeoPak grid (*.grd);;'
-               'ESRI ASCII (*.asc);;'
-               'ASCII with .hdr header (*.asc);;'
-               'ASCII XYZ (*.xyz);;'
-               'Arcinfo Binary Grid (hdr.adf);;'
-               'ArcGIS BIL (*.bil)')
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
         if filename == '':
-            return False
+            ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;'
+                   'ERMapper (*.ers);;'
+                   'ENVI (*.hdr);;'
+                   'ERDAS Imagine (*.img);;'
+                   'PCI Geomatics Database File (*.pix);;'
+                   'GeoTiff (*.tif);;'
+                   'SAGA binary grid (*.sdat);;'
+                   'Geosoft UNCOMPRESSED grid (*.grd);;'
+                   'Geosoft (*.gxf);;'
+                   'Surfer grid (*.grd);;'
+                   'GeoPak grid (*.grd);;'
+                   'ESRI ASCII (*.asc);;'
+                   'ASCII with .hdr header (*.asc);;'
+                   'ASCII XYZ (*.xyz);;'
+                   'Arcinfo Binary Grid (hdr.adf);;'
+                   'ArcGIS BIL (*.bil)')
+
+            filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if filename == '':
+                return False
+
         os.chdir(os.path.dirname(filename))
         self.ifile = str(filename)
-        self.ext = filename[-3:]
-        self.ext = self.ext.lower()
+        self.filt = str(filt)
 
         if filt == 'GeoPak grid (*.grd)':
             dat = get_geopak(self.ifile)
         elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
             dat = get_geosoft(self.ifile)
-        elif filt == 'hdf (*.hdf)':
-            dat = get_hdf(self.ifile)
-        elif filt == 'hdf (*.h5)':
-            dat = get_hdf(self.ifile)
         elif filt == 'ASCII with .hdr header (*.asc)':
             dat = get_ascii(self.ifile)
         elif filt == 'ESRI ASCII (*.asc)':
             dat = get_ascii(self.ifile)
-        elif filt == 'ASTER GED (*.bin)':
-            dat = get_aster_ged_bin(self.ifile)
         elif filt == 'ASCII XYZ (*.xyz)':
             nval = 0.0
             nval, ok = QtWidgets.QInputDialog.getDouble(self.parent,
@@ -262,6 +256,121 @@ class ImportData():
 
         return True
 
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        ifile = projdata['ifile']
+        filt = projdata['filt']
+
+        chk = self.settings(ifile, filt)
+
+        return chk
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['ifile'] = self.ifile
+        projdata['filt'] = self.filt
+
+        return projdata
+
+
+class ImportRGBData():
+    """
+    Import RGB Image - Interfaces with GDAL routines
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
+    ext : str
+        filename extension
+    """
+
+    def __init__(self, parent=None):
+        self.ifile = ''
+        self.name = 'Import Data: '
+        self.ext = ''
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+
+    def settings(self, filename=''):
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        ext = 'GeoTiff (*.tif)'
+
+        if filename == '':
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if filename == '':
+                return False
+        os.chdir(os.path.dirname(filename))
+        self.ifile = str(filename)
+
+        dat = get_raster(self.ifile)
+
+        if dat is None:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'Could not import the image.',
+                                          QtWidgets.QMessageBox.Ok)
+            return False
+
+        output_type = 'Raster'
+
+        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                dat[2].data.T])
+        dat = [dat[0]]
+        dat[0].data = dat2
+        dat[0].isrgb = True
+
+        if dat[0].data.dtype == np.uint16:
+            iidat = np.iinfo(dat[0].data.dtype)
+            dat[0].data = dat[0].data.astype(float)
+            dat[0].data = (dat[0].data-iidat.min)/(iidat.max-iidat.min)
+
+        self.outdata[output_type] = dat
+
+        return True
+
 
 def clusterprep(dat):
     """
@@ -291,81 +400,6 @@ def clusterprep(dat):
             dat2.append(i)
 
     return dat2
-
-
-class ImportRGBData():
-    """
-    Import RGB Image - Interfaces with GDAL routines
-
-    Attributes
-    ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
-    parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
-    ifile : str
-        input file name. Used in main.py
-    ext : str
-        filename extension
-    """
-    def __init__(self, parent=None):
-        self.ifile = ''
-        self.name = 'Import Data: '
-        self.ext = ''
-        self.pbar = None
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-
-    def settings(self):
-        """
-        Entry point into item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        ext = 'GeoTiff (*.tif)'
-
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
-        self.ext = self.ext.lower()
-
-        dat = get_raster(self.ifile)
-
-        if dat is None:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                          'Could not import the image.',
-                                          QtWidgets.QMessageBox.Ok)
-            return False
-
-        output_type = 'Raster'
-
-        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
-                                dat[2].data.T])
-        dat = [dat[0]]
-        dat[0].data = dat2
-        dat[0].isrgb = True
-
-        if dat[0].data.dtype == np.uint16:
-            iidat = np.iinfo(dat[0].data.dtype)
-            dat[0].data = dat[0].data.astype(float)
-            dat[0].data = (dat[0].data-iidat.min)/(iidat.max-iidat.min)
-
-        self.outdata[output_type] = dat
-
-        return True
 
 
 def get_ascii(ifile):
@@ -440,6 +474,7 @@ def get_ascii(ifile):
     dat[i].nullvalue = nval
     dat[i].xdim = xdim
     dat[i].ydim = ydim
+    dat[i].filename = ifile
 
     rows, cols = dat[i].data.shape
     xmin = ulxmap
@@ -474,6 +509,7 @@ def get_raster(ifile, nval=None):
     ifile = ifile[:]
     ext = ifile[-3:]
     custom_wkt = None
+    filename = ifile
 
     # Envi Case
     if ext == 'hdr':
@@ -568,15 +604,134 @@ def get_raster(ifile, nval=None):
         else:
             dat[i].wkt = custom_wkt
 
+        dat[i].filename = filename
+
     dataset = None
 
     return dat
 
 
-def get_hdf(ifile):
+def get_geopak(hfile):
     """
-    This function loads a raster dataset off the disk using the GDAL
-    libraries. It returns the data in a PyGMI data object.
+    GeoPak Import
+
+    Parameters
+    ----------
+    hfile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+
+    Returns
+    -------
+    dat : PyGMI Data
+        PyGMI raster dataset.
+
+    """
+
+    with open(hfile, 'rb') as fin:
+        fall = fin.read()
+
+    off = 0
+    fnew = []
+    while off < len(fall):
+        off += 1
+        breclen = np.frombuffer(fall, dtype=np.uint8, count=1, offset=off)[0]
+
+        if breclen == 130:
+            break
+
+        reclen = breclen
+
+        if breclen == 129:
+            reclen = 128
+
+        off += 1
+
+        fnew.append(fall[off:off+reclen])
+        off += reclen
+
+    fnew = b''.join(fnew)
+    header = np.frombuffer(fnew, dtype=np.float32, count=32, offset=0)
+
+#     Lines in grid      1
+#     Points per line    2
+#     Grid factor        3
+#     Grid base value    4
+#     Grid X origin      5
+#     Grid Y origin      6
+#     Grid rotation      7
+#     Grid dummy value   8
+#     Map scale          9
+#     Cell size (X)     10
+#     Cell size (Y)     11
+#     Inches/unit       12
+#     Grid X offset     13
+#     Grid Y offset     14
+#     Grid hdr version  15
+#
+#     Lines in grid     17
+#     Points per line   18
+#     Grid factor       21
+#     Grid base value   22
+#     Z maximum         23
+#     Z minimum         24
+#
+#     Grid dummy value  26
+
+    nrows = int(header[0])
+    ncols = int(header[1])
+    gfactor = header[2]
+    gbase = header[3]
+    x0 = header[4]
+    y0 = header[5]
+#    rotation = header[6]
+    nval = header[7]
+#    mapscale = header[8]
+    dx = header[9]
+    dy = header[10]
+#    inches_per_unit = header[11]
+#    xoffset = header[12]
+#    yoffset = header[13]
+#    hver = header[14]
+#    zmax = header[22]
+#    zmin = header[23]
+
+    data = np.frombuffer(fnew, dtype=np.int16, count=(nrows*ncols), offset=128)
+
+    data = np.ma.masked_equal(data, nval)
+    data = data/gfactor+gbase
+    data.shape = (nrows, ncols)
+    data = data[::-1]
+
+    dat = []
+    dat.append(Data())
+    i = 0
+
+    dat[i].data = data
+    dat[i].dataid = hfile[:-4]
+
+    dat[i].nullvalue = nval
+    dat[i].xdim = dx
+    dat[i].ydim = dy
+
+    xmin = x0
+    ymax = y0 + dy*nrows
+    ymin = y0
+    xmax = xmin + ncols*dx
+
+    dat[i].extent = [xmin, xmax, ymin, ymax]
+    dat[i].filename = hfile
+
+    return dat
+
+
+def get_geosoft(hfile):
+    """
+    Get geosoft file.
 
     Parameters
     ----------
@@ -585,516 +740,79 @@ def get_hdf(ifile):
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
+    dat : PyGMI Data
+        Dataset imported
     """
-    ifile = ifile[:]
+    f = open(hfile, mode='rb')
 
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
+    sf = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
+    ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol
+    nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow
+    kx = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1
 
-    if dataset is None:
+    dx = np.fromfile(f, dtype=np.float64, count=1)[0]  # dx
+    dy = np.fromfile(f, dtype=np.float64, count=1)[0]  # dy
+    x0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # xllcor
+    y0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # yllcor
+    rot = np.fromfile(f, dtype=np.float64, count=1)[0]  # rot
+    zbase = np.fromfile(f, dtype=np.float64, count=1)[0]  # zbase
+    zmult = np.fromfile(f, dtype=np.float64, count=1)[0]  # zmult
+
+    label = np.fromfile(f, dtype='a48', count=1)[0]
+    mapno = np.fromfile(f, dtype='a16', count=1)[0]
+
+    proj = np.fromfile(f, dtype=np.int32, count=1)[0]
+    unitx = np.fromfile(f, dtype=np.int32, count=1)[0]
+    unity = np.fromfile(f, dtype=np.int32, count=1)[0]
+    unitz = np.fromfile(f, dtype=np.int32, count=1)[0]
+    nvpts = np.fromfile(f, dtype=np.int32, count=1)[0]
+    izmin = np.fromfile(f, dtype=np.int32, count=1)[0]
+    izmax = np.fromfile(f, dtype=np.int32, count=1)[0]
+    izmed = np.fromfile(f, dtype=np.int32, count=1)[0]
+    izmea = np.fromfile(f, dtype=np.int32, count=1)[0]
+
+    zvar = np.fromfile(f, dtype=np.float64, count=1)[0]
+
+    prcs = np.fromfile(f, dtype=np.int32, count=1)[0]
+
+    temspc = np.fromfile(f, dtype='a324', count=1)[0]
+
+    if es == 2:
+        nval = -32767
+        data = np.fromfile(f, dtype=np.int16, count=nrows*ncols)
+
+    elif es == 4:
+        data = np.fromfile(f, dtype=np.float32, count=nrows*ncols)
+        nval = -1.0E+32
+    else:
         return None
 
-    metadata = dataset.GetMetadata()
+    data = np.ma.masked_equal(data, nval)
 
-    if 'Moderate Resolution Imaging Spectroradiometer' in metadata.values():
-        dat = get_modis(ifile)
-    elif 'ASTER' in metadata.values():
-        dat = get_aster(ifile)
-    elif 'ASTER_GDEM_ASTGDEM_Description' in metadata:
-        dat = get_aster_ged(ifile)
-    else:
-        dat = None
+    data = data/zmult + zbase
+    data.shape = (nrows, ncols)
+    data = data[::-1]
 
-    dataset = None
-
-    return dat
-
-
-def get_modis(ifile):
-    """
-    Gets MODIS data
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-
-    Returns
-    -------
-    dat : PyGMI raster Data
-        dataset imported
-    """
-    dat = []
-    ifile = ifile[:]
-
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-    subdata = dataset.GetSubDatasets()
-
-    latentry = [i for i in subdata if 'Latitude' in i[1]]
-    subdata.pop(subdata.index(latentry[0]))
-    dataset = None
-
-    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lats = rtmp.ReadAsArray()
-    latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
-
-    lonentry = [i for i in subdata if 'Longitude' in i[1]]
-    subdata.pop(subdata.index(lonentry[0]))
-
-    dataset = None
-    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lons = rtmp.ReadAsArray()
-    lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
-
-    lonsdim = latsdim
-    tlx = lons.min()-abs(lonsdim/2)
-    tly = lats.max()+abs(latsdim/2)
-    cols = int((lons.max()-lons.min())/lonsdim)+1
-    rows = int((lats.max()-lats.min())/latsdim)+1
-
-    newx2, newy2 = np.mgrid[0:rows, 0:cols]
-    newx2 = newx2*lonsdim + tlx
-    newy2 = tlx - newy2*latsdim
-
-    tmp = []
-    for i in subdata:
-        if 'HDF4_EOS:EOS_SWATH' in i[0]:
-            tmp.append(i)
-    subdata = tmp
-
-    i = -1
-    for ifile2, bandid2 in subdata:
-        dataset = None
-        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
-
-        rtmp2 = dataset.ReadAsArray()
-
-        if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
-            rtmp2 = np.transpose(rtmp2, (2, 0, 1))
-
-        nbands = 1
-        if rtmp2.ndim == 3:
-            nbands = rtmp2.shape[0]
-
-        for i2 in range(nbands):
-            rtmp = dataset.GetRasterBand(i2+1)
-            bandid = rtmp.GetDescription()
-            nval = rtmp.GetNoDataValue()
-            i += 1
-
-            dat.append(Data())
-            if rtmp2.ndim == 3:
-                dat[i].data = rtmp2[i2]
-            else:
-                dat[i].data = rtmp2
-
-            newx = lons[dat[i].data != nval]
-            newy = lats[dat[i].data != nval]
-            newz = dat[i].data[dat[i].data != nval]
-
-            if newx.size == 0:
-                dat[i].data = np.zeros((rows, cols)) + nval
-            else:
-                tmp = quickgrid(newx, newy, newz, latsdim)
-                mask = np.ma.getmaskarray(tmp)
-                gdat = tmp.data
-                dat[i].data = np.ma.masked_invalid(gdat[::-1])
-                dat[i].data.mask = mask[::-1]
-
-            if dat[i].data.dtype.kind == 'i':
-                if nval is None:
-                    nval = 999999
-                nval = int(nval)
-            elif dat[i].data.dtype.kind == 'u':
-                if nval is None:
-                    nval = 0
-                nval = int(nval)
-            else:
-                if nval is None:
-                    nval = 1e+20
-                nval = float(nval)
-
-            dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
-                                (dat[i].data == nval))
-            if dat[i].data.mask.size == 1:
-                dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                    np.ma.getmaskarray(dat[i].data))
-
-            dat[i].dataid = bandid2+' '+bandid
-            dat[i].nullvalue = nval
-            dat[i].xdim = abs(lonsdim)
-            dat[i].ydim = abs(latsdim)
-
-            rows, cols = dat[i].data.shape
-            xmin = tlx
-            ymax = tly
-            ymin = ymax - rows*dat[i].ydim
-            xmax = xmin + cols*dat[i].xdim
-
-            dat[i].extent = [xmin, xmax, ymin, ymax]
-
-            srs = osr.SpatialReference()
-            srs.ImportFromWkt(dataset.GetProjection())
-            srs.AutoIdentifyEPSG()
-            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-            dat[i].wkt = srs.ExportToWkt()
-
-    dataset = None
-    return dat
-
-
-def get_aster(ifile):
-    """
-    Gets ASTER Data
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-
-    Returns
-    -------
-    dat : PyGMI raster Data
-        dataset imported
-    """
+    f.close()
 
     dat = []
-    ifile = ifile[:]
-
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-    subdata = dataset.GetSubDatasets()
-
-    latentry = [i for i in subdata if 'Latitude' in i[1]]
-    subdata.pop(subdata.index(latentry[0]))
-
-    dataset = None
-    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lats = rtmp.ReadAsArray()
-    latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
-
-    lonentry = [i for i in subdata if 'Longitude' in i[1]]
-    subdata.pop(subdata.index(lonentry[0]))
-
-    dataset = None
-    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lons = rtmp.ReadAsArray()
-    lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
-
-    lonsdim = latsdim
-    tlx = lons.min()-abs(lonsdim/2)
-    tly = lats.max()+abs(latsdim/2)
-    cols = int((lons.max()-lons.min())/lonsdim)+1
-    rows = int((lats.max()-lats.min())/latsdim)+1
-
-    newx2, newy2 = np.mgrid[0:rows, 0:cols]
-    newx2 = newx2*lonsdim + tlx
-    newy2 = tlx - newy2*latsdim
-
-    subdata = [i for i in subdata if 'ImageData' in i[0]]
-
-    i = -1
-    for ifile2, bandid2 in subdata:
-        dataset = None
-        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
-
-        rtmp2 = dataset.ReadAsArray()
-
-        tmpds = gdal.AutoCreateWarpedVRT(dataset)
-        rtmp2 = tmpds.ReadAsArray()
-        gtr = tmpds.GetGeoTransform()
-        tlx, lonsdim, _, tly, _, latsdim = gtr
-
-        nval = 0
-
-        i += 1
-
-        dat.append(Data())
-        dat[i].data = rtmp2
-
-        if dat[i].data.dtype.kind == 'i':
-            if nval is None:
-                nval = 999999
-            nval = int(nval)
-        elif dat[i].data.dtype.kind == 'u':
-            if nval is None:
-                nval = 0
-            nval = int(nval)
-        else:
-            if nval is None:
-                nval = 1e+20
-            nval = float(nval)
-
-        dat[i].data = np.ma.masked_invalid(dat[i].data)
-        dat[i].data.mask = dat[i].data.mask | (dat[i].data == nval)
-        if dat[i].data.mask.size == 1:
-            dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                dat[i].data.mask)
-
-        dat[i].dataid = bandid2
-        dat[i].nullvalue = nval
-        dat[i].xdim = abs(lonsdim)
-        dat[i].ydim = abs(latsdim)
-
-        rows, cols = dat[i].data.shape
-        xmin = tlx
-        ymax = tly
-        ymin = ymax - rows*dat[i].ydim
-        xmax = xmin + cols*dat[i].xdim
-
-        dat[i].extent = [xmin, xmax, ymin, ymax]
-
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(dataset.GetProjection())
-        srs.AutoIdentifyEPSG()
-        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        dat[i].wkt = srs.ExportToWkt()
-
-    if dat == []:
-        dat = None
-    dataset = None
-    return dat
-
-
-def get_aster_ged(ifile):
-    """
-    Gets ASTER GED data
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-
-    Returns
-    -------
-    dat : PyGMI raster Data
-        dataset imported
-    """
-    dat = []
-    ifile = ifile[:]
-
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-    subdata = dataset.GetSubDatasets()
-
-    latentry = [i for i in subdata if 'Latitude' in i[1]]
-    subdata.pop(subdata.index(latentry[0]))
-    dataset = None
-    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lats = rtmp.ReadAsArray()
-    latsdim = (lats.max()-lats.min())/(lats.shape[0]-1)
-
-    lonentry = [i for i in subdata if 'Longitude' in i[1]]
-    subdata.pop(subdata.index(lonentry[0]))
-
-    dataset = None
-    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lons = rtmp.ReadAsArray()
-    lonsdim = (lons.max()-lons.min())/(lons.shape[0]-1)
-
-    tlx = lons.min()-abs(lonsdim/2)
-    tly = lats.max()+abs(latsdim/2)
-
-    i = -1
-    for ifile2, bandid2 in subdata:
-        dataset = None
-        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
-        bandid = bandid2
-        units = ''
-
-        if 'ASTER_GDEM' in bandid2:
-            bandid = 'ASTER GDEM'
-            units = 'meters'
-        if 'Land_Water_Map' in bandid2:
-            bandid = 'Land_water_map'
-        if 'Observations' in bandid2:
-            bandid = 'Observations'
-            units = 'number per pixel'
-
-        rtmp2 = dataset.ReadAsArray()
-
-        if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
-            rtmp2 = np.transpose(rtmp2, (2, 0, 1))
-
-        nbands = 1
-        if rtmp2.ndim == 3:
-            nbands = rtmp2.shape[0]
-
-        for i2 in range(nbands):
-            nval = -9999
-            i += 1
-
-            dat.append(Data())
-            if rtmp2.ndim == 3:
-                dat[i].data = rtmp2[i2]
-            else:
-                dat[i].data = rtmp2
-
-            dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data)
-                                | (dat[i].data == nval))
-            if dat[i].data.mask.size == 1:
-                dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape) +
-                                    np.ma.getmaskarray(dat[i].data))
-
-            dat[i].data = dat[i].data * 1.0
-            if 'Emissivity/Mean' in bandid2:
-                bandid = 'Emissivity_mean_band_'+str(10+i2)
-                dat[i].data = dat[i].data * 0.001
-            if 'Emissivity/SDev' in bandid2:
-                bandid = 'Emissivity_std_dev_band_'+str(10+i2)
-                dat[i].data = dat[i].data * 0.0001
-            if 'NDVI/Mean' in bandid2:
-                bandid = 'NDVI_mean'
-                dat[i].data = dat[i].data * 0.01
-            if 'NDVI/SDev' in bandid2:
-                bandid = 'NDVI_std_dev'
-                dat[i].data = dat[i].data * 0.01
-            if 'Temperature/Mean' in bandid2:
-                bandid = 'Temperature_mean'
-                units = 'Kelvin'
-                dat[i].data = dat[i].data * 0.01
-            if 'Temperature/SDev' in bandid2:
-                bandid = 'Temperature_std_dev'
-                units = 'Kelvin'
-                dat[i].data = dat[i].data * 0.01
-
-            dat[i].dataid = bandid
-            dat[i].nullvalue = nval
-            dat[i].xdim = abs(lonsdim)
-            dat[i].ydim = abs(latsdim)
-            dat[i].units = units
-
-            rows, cols = dat[i].data.shape
-            xmin = tlx
-            ymax = tly
-            ymin = ymax - rows*dat[i].ydim
-            xmax = xmin + cols*dat[i].xdim
-
-            dat[i].extent = [xmin, xmax, ymin, ymax]
-
-            srs = osr.SpatialReference()
-            srs.ImportFromWkt(dataset.GetProjection())
-            srs.AutoIdentifyEPSG()
-            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-            dat[i].wkt = srs.ExportToWkt()
-
-    dataset = None
-    return dat
-
-
-def get_aster_ged_bin(ifile):
-    """
-    Get ASTER GED binary format
-
-    Emissivity_Mean_Description: Mean Emissivity for each pixel on grid-box
-    using all ASTER data from 2000-2010
-    Emissivity_SDev_Description: Emissivity Standard Deviation for each pixel
-    on grid-box using all ASTER data from 2000-2010
-    Temperature_Mean_Description: Mean Temperature (K) for each pixel on
-    grid-box using all ASTER data from 2000-2010
-    Temperature_SDev_Description: Temperature Standard Deviation for each pixel
-    on grid-box using all ASTER data from 2000-2010
-    NDVI_Mean_Description: Mean NDVI for each pixel on grid-box using all ASTER
-    data from 2000-2010
-    NDVI_SDev_Description: NDVI Standard Deviation for each pixel on grid-box
-    using all ASTER data from 2000-2010
-    Land_Water_Map_LWmap_Description: Land Water Map using ASTER visible bands
-    Observations_NumObs_Description: Number of values used in computing mean
-    and standard deviation for each pixel.
-    Geolocation_Latitude_Description: Latitude
-    Geolocation_Longitude_Description: Longitude
-    ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-
-    Returns
-    -------
-    dat : PyGMI raster Data
-        dataset imported
-    """
-
-    dat = []
-    nval = -9999
-    bandid = {}
-
-    bandid[0] = 'Emissivity_mean_band_10'
-    bandid[1] = 'Emissivity_mean_band_11'
-    bandid[2] = 'Emissivity_mean_band_12'
-    bandid[3] = 'Emissivity_mean_band_13'
-    bandid[4] = 'Emissivity_mean_band_14'
-    bandid[5] = 'Emissivity_std_dev_band_10'
-    bandid[6] = 'Emissivity_std_dev_band_11'
-    bandid[7] = 'Emissivity_std_dev_band_12'
-    bandid[8] = 'Emissivity_std_dev_band_13'
-    bandid[9] = 'Emissivity_std_dev_band_14'
-    bandid[10] = 'Temperature_mean'
-    bandid[11] = 'Temperature_std_dev'
-    bandid[12] = 'NDVI_mean'
-    bandid[13] = 'NDVI_std_dev'
-    bandid[14] = 'Land_water_map'
-    bandid[15] = 'Observations'
-    bandid[16] = 'Latitude'
-    bandid[17] = 'Longitude'
-    bandid[18] = 'ASTER GDEM'
-
-    scale = [0.001, 0.001, 0.001, 0.001, 0.001,
-             0.0001, 0.0001, 0.0001, 0.0001, 0.0001,
-             0.01, 0.01, 0.01, 0.01,
-             1, 1, 0.001, 0.001, 1]
-
-    units = ['', '', '', '', '', '', '', '', '', '', 'Kelvin', 'Kelvin',
-             '', '', '', 'Number per pixel', 'degrees', 'degrees', 'meters']
-
-    data = np.fromfile(ifile, dtype=np.int32)
-    rows_cols = int((data.size/19)**0.5)
-    data.shape = (19, rows_cols, rows_cols)
-
-    lats = data[16]*scale[16]
-    lons = data[17]*scale[17]
-
-    latsdim = (lats.max()-lats.min())/(lats.shape[0]-1)
-    lonsdim = (lons.max()-lons.min())/(lons.shape[0]-1)
-
-    tlx = lons.min()-abs(lonsdim/2)
-    tly = lats.max()+abs(latsdim/2)
-
-    for i in range(19):
-        dat.append(Data())
-
-        dat[i].data = data[i]*scale[i]
-
-        dat[i].dataid = bandid[i]
-        dat[i].nullvalue = nval*scale[i]
-        dat[i].xdim = lonsdim
-        dat[i].ydim = latsdim
-        dat[i].units = units[i]
-
-        rows, cols = dat[i].data.shape
-        xmin = tlx
-        ymax = tly
-        ymin = ymax - rows*dat[i].ydim
-        xmax = xmin + cols*dat[i].xdim
-
-        dat[i].extent = [xmin, xmax, ymin, ymax]
-
-    dat.pop(17)
-    dat.pop(16)
+    dat.append(Data())
+    i = 0
+
+    dat[i].data = data
+    dat[i].dataid = hfile[:-4]
+    dat[i].nullvalue = nval
+    dat[i].xdim = dx
+    dat[i].ydim = dy
+
+    xmin = x0
+    ymax = y0 + dy*nrows
+    ymin = y0
+    xmax = xmin + ncols*dx
+
+    dat[i].extent = [xmin, xmax, ymin, ymax]
+    dat[i].filename = hfile
 
     return dat
 
@@ -1118,6 +836,7 @@ class ExportData():
     ext : str
         filename extension
     """
+
     def __init__(self, parent):
         self.ifile = ''
         self.name = 'Export Data: '
@@ -1180,7 +899,6 @@ class ExportData():
         os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
-        self.ext = filename[-3:]
 
         print('Export Data Busy...')
 
@@ -1210,8 +928,6 @@ class ExportData():
         print('Export Data Finished!')
         self.parent.process_is_active(False)
         return True
-
-
 
     def export_gxf(self, data):
         """
@@ -1430,304 +1146,100 @@ class ExportData():
         return file_out
 
 
-def get_geopak(hfile):
-    """
-    GeoPak Import
-
-    Parameters
-    ----------
-    hfile : str
-        filename to import
-
-    Returns
-    -------
-    dat : PyGMI raster Data
-        dataset imported
-
-    Returns
-    -------
-    dat : PyGMI Data
-        PyGMI raster dataset.
-
-    """
-
-    with open(hfile, 'rb') as fin:
-        fall = fin.read()
-
-    off = 0
-    fnew = []
-    while off < len(fall):
-        off += 1
-        breclen = np.frombuffer(fall, dtype=np.uint8, count=1, offset=off)[0]
-
-        if breclen == 130:
-            break
-
-        reclen = breclen
-
-        if breclen == 129:
-            reclen = 128
-
-        off += 1
-
-        fnew.append(fall[off:off+reclen])
-        off += reclen
-
-    fnew = b''.join(fnew)
-    header = np.frombuffer(fnew, dtype=np.float32, count=32, offset=0)
-
-#     Lines in grid      1
-#     Points per line    2
-#     Grid factor        3
-#     Grid base value    4
-#     Grid X origin      5
-#     Grid Y origin      6
-#     Grid rotation      7
-#     Grid dummy value   8
-#     Map scale          9
-#     Cell size (X)     10
-#     Cell size (Y)     11
-#     Inches/unit       12
-#     Grid X offset     13
-#     Grid Y offset     14
-#     Grid hdr version  15
-#
-#     Lines in grid     17
-#     Points per line   18
-#     Grid factor       21
-#     Grid base value   22
-#     Z maximum         23
-#     Z minimum         24
-#
-#     Grid dummy value  26
-
-    nrows = int(header[0])
-    ncols = int(header[1])
-    gfactor = header[2]
-    gbase = header[3]
-    x0 = header[4]
-    y0 = header[5]
-#    rotation = header[6]
-    nval = header[7]
-#    mapscale = header[8]
-    dx = header[9]
-    dy = header[10]
-#    inches_per_unit = header[11]
-#    xoffset = header[12]
-#    yoffset = header[13]
-#    hver = header[14]
-#    zmax = header[22]
-#    zmin = header[23]
-
-    data = np.frombuffer(fnew, dtype=np.int16, count=(nrows*ncols), offset=128)
-
-    data = np.ma.masked_equal(data, nval)
-    data = data/gfactor+gbase
-    data.shape = (nrows, ncols)
-    data = data[::-1]
-
-    dat = []
-    dat.append(Data())
-    i = 0
-
-    dat[i].data = data
-    dat[i].dataid = hfile[:-4]
-
-    dat[i].nullvalue = nval
-    dat[i].xdim = dx
-    dat[i].ydim = dy
-
-    xmin = x0
-    ymax = y0 + dy*nrows
-    ymin = y0
-    xmax = xmin + ncols*dx
-
-    dat[i].extent = [xmin, xmax, ymin, ymax]
-
-    return dat
-
-
-def get_geosoft(hfile):
-    """
-    Get geosoft file
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-
-    Returns
-    -------
-    dat : PyGMI Data
-        Dataset imported
-    """
-    f = open(hfile, mode='rb')
-
-    es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
-    sf = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
-    ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol
-    nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow
-    kx = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1
-
-    dx = np.fromfile(f, dtype=np.float64, count=1)[0]  # dx
-    dy = np.fromfile(f, dtype=np.float64, count=1)[0]  # dy
-    x0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # xllcor
-    y0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # yllcor
-    rot = np.fromfile(f, dtype=np.float64, count=1)[0]  # rot
-    zbase = np.fromfile(f, dtype=np.float64, count=1)[0]  # zbase
-    zmult = np.fromfile(f, dtype=np.float64, count=1)[0]  # zmult
-
-    label = np.fromfile(f, dtype='a48', count=1)[0]
-    mapno = np.fromfile(f, dtype='a16', count=1)[0]
-
-    proj = np.fromfile(f, dtype=np.int32, count=1)[0]
-    unitx = np.fromfile(f, dtype=np.int32, count=1)[0]
-    unity = np.fromfile(f, dtype=np.int32, count=1)[0]
-    unitz = np.fromfile(f, dtype=np.int32, count=1)[0]
-    nvpts = np.fromfile(f, dtype=np.int32, count=1)[0]
-    izmin = np.fromfile(f, dtype=np.int32, count=1)[0]
-    izmax = np.fromfile(f, dtype=np.int32, count=1)[0]
-    izmed = np.fromfile(f, dtype=np.int32, count=1)[0]
-    izmea = np.fromfile(f, dtype=np.int32, count=1)[0]
-
-    zvar = np.fromfile(f, dtype=np.float64, count=1)[0]
-
-    prcs = np.fromfile(f, dtype=np.int32, count=1)[0]
-
-    temspc = np.fromfile(f, dtype='a324', count=1)[0]
-
-    if es == 2:
-        nval = -32767
-        data = np.fromfile(f, dtype=np.int16, count=nrows*ncols)
-
-    elif es == 4:
-        data = np.fromfile(f, dtype=np.float32, count=nrows*ncols)
-        nval = -1.0E+32
-    else:
-        return None
-
-    data = np.ma.masked_equal(data, nval)
-
-    data = data/zmult + zbase
-    data.shape = (nrows, ncols)
-    data = data[::-1]
-
-    f.close()
-
-    dat = []
-    dat.append(Data())
-    i = 0
-
-    dat[i].data = data
-    dat[i].dataid = hfile[:-4]
-    dat[i].nullvalue = nval
-    dat[i].xdim = dx
-    dat[i].ydim = dy
-
-    xmin = x0
-    ymax = y0 + dy*nrows
-    ymin = y0
-    xmax = xmin + ncols*dx
-
-    dat[i].extent = [xmin, xmax, ymin, ymax]
-
-    return dat
-
-
 def export_gdal(ifile, dat, drv):
-     """
-     Export to GDAL format
+    """
+    Export to GDAL format
 
-     Parameters
-     ----------
-     dat : PyGMI raster Data
-         dataset to export
-     drv : str
-         name of the GDAL driver to use
+    Parameters
+    ----------
+    dat : PyGMI raster Data
+        dataset to export
+    drv : str
+        name of the GDAL driver to use
 
-     Returns
-     -------
-     None.
+    Returns
+    -------
+    None.
 
-     """
+    """
 
-     data = merge(dat)
+    data = merge(dat)
 
-     driver = gdal.GetDriverByName(drv)
-     dtype = data[0].data.dtype
+    driver = gdal.GetDriverByName(drv)
+    dtype = data[0].data.dtype
 
-     if dtype == np.uint8:
-         fmt = gdal.GDT_Byte
-     elif dtype == np.int32:
-         fmt = gdal.GDT_Int32
-     elif dtype == np.float64:
-         fmt = gdal.GDT_Float64
-     else:
-         fmt = gdal.GDT_Float32
+    if dtype == np.uint8:
+        fmt = gdal.GDT_Byte
+    elif dtype == np.int32:
+        fmt = gdal.GDT_Int32
+    elif dtype == np.float64:
+        fmt = gdal.GDT_Float64
+    else:
+        fmt = gdal.GDT_Float32
 
-     tmp = ifile.rpartition('.')
+    tmp = ifile.rpartition('.')
 
-     if drv == 'GTiff':
-         tmpfile = tmp[0] + '.tif'
-     elif drv == 'EHdr':
-         fmt = gdal.GDT_Float32
-         dtype = np.float32
-         tmpfile = tmp[0] + '.bil'
-     elif drv == 'GSBG':
-         tmpfile = tmp[0]+'.grd'
-         fmt = gdal.GDT_Float32
-         dtype = np.float32
-     elif drv == 'SAGA':
-         tmpfile = tmp[0]+'.sdat'
-     elif drv == 'HFA':
-         tmpfile = tmp[0]+'.img'
-     else:  # ENVI and ER Mapper
-         tmpfile = tmp[0]
+    if drv == 'GTiff':
+        tmpfile = tmp[0] + '.tif'
+    elif drv == 'EHdr':
+        fmt = gdal.GDT_Float32
+        dtype = np.float32
+        tmpfile = tmp[0] + '.bil'
+    elif drv == 'GSBG':
+        tmpfile = tmp[0]+'.grd'
+        fmt = gdal.GDT_Float32
+        dtype = np.float32
+    elif drv == 'SAGA':
+        tmpfile = tmp[0]+'.sdat'
+    elif drv == 'HFA':
+        tmpfile = tmp[0]+'.img'
+    else:  # ENVI and ER Mapper
+        tmpfile = tmp[0]
 
-     drows, dcols = data[0].data.shape
-     if drv == 'GTiff':
-         out = driver.Create(tmpfile, int(dcols), int(drows),
-                             len(data), fmt, options=['COMPRESS=NONE',
-                                                      'TFW=YES',
-                                                      'PROFILE=GeoTIFF',
-                                                      'ESRI_XML_PAM=True'])
-     elif drv == 'ERS' and 'Cape / TM' in data[0].wkt:
-         tmp = data[0].wkt.split('TM')[1][:2]
-         out = driver.Create(tmpfile, int(dcols), int(drows),
-                             len(data), fmt,
-                             options=['PROJ=STMLO'+tmp, 'DATUM=CAPE',
-                                      'UNITS=METERS'])
-     elif drv == 'ERS' and 'Hartebeesthoek94 / TM' in data[0].wkt:
-         tmp = data[0].wkt.split('TM')[1][:2]
-         out = driver.Create(tmpfile, int(dcols), int(drows),
-                             len(data), fmt,
-                             options=['PROJ=STMLO'+tmp, 'DATUM=WGS84',
-                                      'UNITS=METERS'])
-     else:
-         out = driver.Create(tmpfile, int(dcols), int(drows),
-                             len(data), fmt)
-     out.SetGeoTransform(data[0].get_gtr())
+    drows, dcols = data[0].data.shape
+    if drv == 'GTiff':
+        out = driver.Create(tmpfile, int(dcols), int(drows),
+                            len(data), fmt, options=['COMPRESS=NONE',
+                                                     'TFW=YES',
+                                                     'PROFILE=GeoTIFF',
+                                                     'ESRI_XML_PAM=True'])
+    elif drv == 'ERS' and 'Cape / TM' in data[0].wkt:
+        tmp = data[0].wkt.split('TM')[1][:2]
+        out = driver.Create(tmpfile, int(dcols), int(drows),
+                            len(data), fmt,
+                            options=['PROJ=STMLO'+tmp, 'DATUM=CAPE',
+                                     'UNITS=METERS'])
+    elif drv == 'ERS' and 'Hartebeesthoek94 / TM' in data[0].wkt:
+        tmp = data[0].wkt.split('TM')[1][:2]
+        out = driver.Create(tmpfile, int(dcols), int(drows),
+                            len(data), fmt,
+                            options=['PROJ=STMLO'+tmp, 'DATUM=WGS84',
+                                     'UNITS=METERS'])
+    else:
+        out = driver.Create(tmpfile, int(dcols), int(drows),
+                            len(data), fmt)
+    out.SetGeoTransform(data[0].get_gtr())
 
-     out.SetProjection(data[0].wkt)
+    out.SetProjection(data[0].wkt)
 
-     for i, datai in enumerate(data):
-         rtmp = out.GetRasterBand(i+1)
-         rtmp.SetDescription(datai.dataid)
-         rtmp.SetMetadataItem('BandName', datai.dataid)
+    for i, datai in enumerate(data):
+        rtmp = out.GetRasterBand(i+1)
+        rtmp.SetDescription(datai.dataid)
+        rtmp.SetMetadataItem('BandName', datai.dataid)
 
-         dtmp = np.ma.array(datai.data).astype(dtype)
+        dtmp = np.ma.array(datai.data).astype(dtype)
 
-         dtmp.set_fill_value(datai.nullvalue)
-         dtmp = dtmp.filled()
+        dtmp.set_fill_value(datai.nullvalue)
+        dtmp = dtmp.filled()
 
-         if dtype == np.uint8:
-             datai.nullvalue = int(datai.nullvalue)
+        if dtype == np.uint8:
+            datai.nullvalue = int(datai.nullvalue)
 
-         rtmp.SetNoDataValue(datai.nullvalue)
-         rtmp.WriteArray(dtmp)
-         rtmp.GetStatistics(False, True)
+        rtmp.SetNoDataValue(datai.nullvalue)
+        rtmp.WriteArray(dtmp)
+        rtmp.GetStatistics(False, True)
 
-     out = None  # Close File
-     if drv == 'ENVI':
-         with open(tmpfile+'.hdr', 'a') as myfile:
-             myfile.write('data ignore value = ' + str(data[0].nullvalue))
+    out = None  # Close File
+    if drv == 'ENVI':
+        with open(tmpfile+'.hdr', 'a') as myfile:
+            myfile.write('data ignore value = ' + str(data[0].nullvalue))
