@@ -1940,7 +1940,7 @@ class PlotInterp(QtWidgets.QDialog):
                                           'Save to GeoTiff is complete!',
                                           QtWidgets.QMessageBox.Ok)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Settings.
 
@@ -1954,6 +1954,9 @@ class PlotInterp(QtWidgets.QDialog):
 
         """
 
+        if nodialog:
+            return True
+
         if 'Raster' not in self.indata:
             return False
         if self.indata['Raster'][0].isrgb:
@@ -1966,6 +1969,42 @@ class PlotInterp(QtWidgets.QDialog):
         self.mmc.init_graph()
         self.msc.init_graph()
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
+
 
 
 def aspect2(data):

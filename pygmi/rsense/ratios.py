@@ -108,7 +108,7 @@ class SatRatios(QtWidgets.QDialog):
         self.lw_ratios.clicked.connect(self.set_selected_ratios)
         self.combo_sensor.currentIndexChanged.connect(self.setratios)
 
-    def settings(self, test=False):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -123,7 +123,7 @@ class SatRatios(QtWidgets.QDialog):
             print('No Satellite Data')
             return False
 
-        if not test:
+        if not nodialog:
             tmp = self.exec_()
         else:
             tmp = 1
@@ -134,6 +134,41 @@ class SatRatios(QtWidgets.QDialog):
         self.acceptall()
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
     def acceptall(self):
         """
@@ -447,25 +482,20 @@ def get_sentinel_list(flist):
 
 def testfn():
     """Main testing routine."""
-    # ifile = r'C:\Work\Workdata\ASTER\AST_05_00305282005083844_20180604061610_15573.hdf'
-    # ofile = r'C:\Work\Workdata\ASTER\hope.tif'
-    # dat = iodefs.get_data(ifile)
-    # export_gdal(ofile, dat, 'GTiff')
-
-    ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20190830T074611_N0208_R135_T35JPM_20190830T100724.SAFE\MTD_MSIL2A.xml'
-    dat = iodefs.get_data(ifile)
+#    ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20190830T074611_N0208_R135_T35JPM_20190830T100724.SAFE\MTD_MSIL2A.xml'
+#    dat = iodefs.get_data(ifile)
 
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    idir = r'C:\Work\Workdata\ASTER'
+    idir = r'C:\Work\Workdata\Sentinel-2'
 
 
     SR = SatRatios()
-    SR.indata['Raster'] = dat  #single file only
+#    SR.indata['Raster'] = dat  #single file only
 
-#    IO = iodefs.ImportBatch(directory=idir)
-#    SR.indata = IO.outdata
+    IO = iodefs.ImportBatch(directory=idir)
+    SR.indata = IO.outdata
 
     SR.settings()
 

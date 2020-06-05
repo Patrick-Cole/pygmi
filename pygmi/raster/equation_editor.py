@@ -61,7 +61,7 @@ class EquationEditor(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.equation = ''
+        self.equation = None
         self.bands = {}
 
         self.combobox = QtWidgets.QComboBox()
@@ -71,10 +71,6 @@ class EquationEditor(QtWidgets.QDialog):
         self.label = QtWidgets.QLabel(': iall')
 
         self.setupui()
-
-#    def textchanged(self):
-#        """ Text Changed """
-#        self.equation = self.textbrowser.toPlainText()
 
     def setupui(self):
         """
@@ -115,13 +111,15 @@ class EquationEditor(QtWidgets.QDialog):
                '<pre>    mosaic(i0, i1)</pre>'
                '<p>Threshold between values 1 and 98, substituting -999 as a '
                'value:</p>'
-               '<pre>    where((i1 &gt; 1) &amp; (i1 &lt; 98) , i1, -999)</pre>'
+               '<pre>    where((i1 &gt; 1) &amp; (i1 &lt; 98) , i1, -999)'
+               '</pre>'
                '<p>Replacing the value 0 with a nodata or null value:</p>'
                '<pre>    where(iall!=0, iall, nodata)</pre>'
                '<h2>Commands</h2>'
                '<ul>'
                ' <li> Logical operators: &amp;, |, ~</li>'
-               ' <li> Comparison operators: &lt;, &lt;=, ==, !=, &gt;=, &gt;</li>'
+               ' <li> Comparison operators: &lt;, &lt;=, ==, !=, &gt;=, &gt;'
+               '</li>'
                ' <li> Arithmetic operators: +, -, *, /, **, %, <<, >></li>'
                ' <li> where(bool, number1, number2) : number1 if the bool '
                'condition is true, number2 otherwise.</li>'
@@ -157,7 +155,7 @@ class EquationEditor(QtWidgets.QDialog):
         if txt != '':
             self.label.setText(': '+self.bands[txt])
 
-    def eq_fix(self, indata, equation):
+    def eq_fix(self, indata):
         """
         Corrects names in equation to variable names.
 
@@ -165,8 +163,6 @@ class EquationEditor(QtWidgets.QDialog):
         ----------
         indata : PyGMI Data
             PyGMI raster dataset.
-        equation : str
-            Equation written as a string.
 
         Returns
         -------
@@ -174,7 +170,7 @@ class EquationEditor(QtWidgets.QDialog):
             Corrected equation.
 
         """
-        neweq = str(equation)
+        neweq = str(self.equation)
         neweq = neweq.replace('ln', 'log')
         neweq = neweq.replace('^', '**')
         neweq = neweq.replace('nodata', str(indata[0].nullvalue))
@@ -239,7 +235,7 @@ class EquationEditor(QtWidgets.QDialog):
 
         return master
 
-    def settings(self, equation=None):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -254,6 +250,7 @@ class EquationEditor(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+
         localdict = {}
         bandsall = []
         self.bands = {}
@@ -281,23 +278,23 @@ class EquationEditor(QtWidgets.QDialog):
         localdict_list = list(localdict.keys())
         localdict['iall'] = np.ma.array(bandsall)
 
-        if equation is None:
+        if not nodialog:
             temp = self.exec_()
 
             if temp == 0:
                 return False
 
-            equation = self.textbrowser.toPlainText()
+            self.equation = self.textbrowser.toPlainText()
 
-        if equation == '':
+        if self.equation == '':
             return False
 
-        if 'iall' in equation:
+        if 'iall' in self.equation:
             usedbands = localdict_list
         else:
             usedbands = []
             for i in localdict_list:
-                if i in equation:
+                if i in self.equation:
                     usedbands.append(i)
 
         mask = None
@@ -307,7 +304,7 @@ class EquationEditor(QtWidgets.QDialog):
             else:
                 mask = np.logical_or(mask, localdict[i].mask)
 
-        neweq = self.eq_fix(indata, equation)
+        neweq = self.eq_fix(indata)
 
         if 'mosaic' in neweq:
             findat = self.mosaic(neweq, localdict)
@@ -357,11 +354,48 @@ class EquationEditor(QtWidgets.QDialog):
             outdatai.data = np.ma.fix_invalid(outdatai.data)
 
         if len(outdata) == 1:
-            outdata[0].dataid = equation
+            outdata[0].dataid = self.equation
 
         self.outdata[intype] = outdata
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        self.equation = projdata['equation']
+        self.textbrowser.setText(self.equation)
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['equation'] = self.equation
+
+        return projdata
 
 
 def hmode(data):

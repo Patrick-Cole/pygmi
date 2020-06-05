@@ -320,7 +320,7 @@ class MergeMod3D(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -352,6 +352,41 @@ class MergeMod3D(QtWidgets.QDialog):
             tmp = self.acceptall()
 
         return tmp
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
     def acceptall(self):
         """

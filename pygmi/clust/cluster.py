@@ -220,7 +220,7 @@ class Cluster(QtWidgets.QDialog):
             self.label_bthres.show()
             self.doublespinbox_bthres.show()
 
-    def settings(self, test=False):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -240,7 +240,7 @@ class Cluster(QtWidgets.QDialog):
         self.min_samples = len(self.indata['Raster'])+1
         self.spinbox_minsamples.setProperty('value', self.min_samples)
 
-        if not test:
+        if not nodialog:
             temp = self.exec_()
             if temp == 0:
                 return False
@@ -249,10 +249,46 @@ class Cluster(QtWidgets.QDialog):
 
         self.run()
 
-        if not test:
+        if not nodialog:
             self.parent.process_is_active(False)
             self.pbar.to_max()
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
+
 
     def update_vars(self):
         """

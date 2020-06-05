@@ -76,7 +76,7 @@ class DataCut():
         self.indata = {}
         self.outdata = {}
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -92,16 +92,13 @@ class DataCut():
             print('No raster data')
             return False
 
-        ext = 'Shape file (*.shp)'
+        if not nodialog:
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open Shape File', '.', 'Shape file (*.shp)')
+            if self.ifile == '':
+                return False
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open Shape File', '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
+        os.chdir(os.path.dirname(self.ifile))
         data = cut_raster(data, self.ifile)
 
         if data is None:
@@ -116,6 +113,41 @@ class DataCut():
         self.outdata['Raster'] = data
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
 
 class DataGrid(QtWidgets.QDialog):
@@ -142,8 +174,6 @@ class DataGrid(QtWidgets.QDialog):
         self.parent = parent
         self.pbar = parent.pbar
 
-#        self.dsb_dxy = QtWidgets.QDoubleSpinBox()
-#        self.dsb_null = QtWidgets.QDoubleSpinBox()
         self.dsb_dxy = QtWidgets.QLineEdit('1.0')
         self.dsb_null = QtWidgets.QLineEdit('0.0')
 
@@ -169,20 +199,13 @@ class DataGrid(QtWidgets.QDialog):
         label_dxy = QtWidgets.QLabel('Cell Size:')
         label_null = QtWidgets.QLabel('Null Value:')
 
-#        self.dsb_null.setMaximum(np.finfo(np.double).max)
-#        self.dsb_null.setMinimum(np.finfo(np.double).min)
-
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
-#        val.setNotation(QtGui.QDoubleValidator.StandardNotation)
         val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
         val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
 
         self.dsb_dxy.setValidator(val)
         self.dsb_null.setValidator(val)
 
-#        self.dsb_dxy.setMaximum(9999999999.0)
-#        self.dsb_dxy.setMinimum(0.0000001)
-#        self.dsb_dxy.setDecimals(11)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -202,7 +225,6 @@ class DataGrid(QtWidgets.QDialog):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-#        self.dsb_dxy.valueChanged.connect(self.dxy_change)
         self.dsb_dxy.textChanged.connect(self.dxy_change)
 
     def dxy_change(self):
@@ -225,8 +247,6 @@ class DataGrid(QtWidgets.QDialog):
 
         x = data.pygmiX.values
         y = data.pygmiY.values
-#        x = data.xdata
-#        y = data.ydata
 
         cols = round(x.ptp()/dxy)
         rows = round(y.ptp()/dxy)
@@ -234,7 +254,7 @@ class DataGrid(QtWidgets.QDialog):
         self.label_rows.setText('Rows: '+str(rows))
         self.label_cols.setText('Columns: '+str(cols))
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -249,40 +269,76 @@ class DataGrid(QtWidgets.QDialog):
             print('No Point Data')
             return False
 
-        self.dataid.clear()
+        if not nodialog:
+            self.dataid.clear()
 
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
-        data = data.dropna()
+            key = list(self.indata['Line'].keys())[0]
+            data = self.indata['Line'][key]
+            data = data.dropna()
 
-        filt = ((data.columns != 'geometry') &
-                (data.columns != 'line') &
-                (data.columns != 'pygmiX') &
-                (data.columns != 'pygmiY'))
+            filt = ((data.columns != 'geometry') &
+                    (data.columns != 'line') &
+                    (data.columns != 'pygmiX') &
+                    (data.columns != 'pygmiY'))
 
-        cols = list(data.columns[filt])
-        self.dataid.addItems(cols)
+            cols = list(data.columns[filt])
+            self.dataid.addItems(cols)
 
-        x = data.pygmiX.values
-        y = data.pygmiY.values
+            x = data.pygmiX.values
+            y = data.pygmiY.values
 
-        dx = x.ptp()/np.sqrt(x.size)
-        dy = y.ptp()/np.sqrt(y.size)
-        dxy = max(dx, dy)
-        dxy = min([x.ptp(), y.ptp(), dxy])
+            dx = x.ptp()/np.sqrt(x.size)
+            dy = y.ptp()/np.sqrt(y.size)
+            dxy = max(dx, dy)
+            dxy = min([x.ptp(), y.ptp(), dxy])
 
-        dxy = f'{dxy:.8f}'
-        self.dsb_dxy.setText(dxy)
-        self.dxy_change()
+            dxy = f'{dxy:.8f}'
+            self.dsb_dxy.setText(dxy)
+            self.dxy_change()
 
-        tmp = self.exec_()
+            tmp = self.exec_()
 
-        if tmp != 1:
-            return False
+            if tmp != 1:
+                return False
 
         self.acceptall()
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
     def acceptall(self):
         """
@@ -373,6 +429,7 @@ class DataMerge(QtWidgets.QDialog):
         self.dsb_dxy.setMaximum(9999999999.0)
         self.dsb_dxy.setMinimum(0.00001)
         self.dsb_dxy.setDecimals(5)
+        self.dsb_dxy.setValue(40.)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -419,7 +476,7 @@ class DataMerge(QtWidgets.QDialog):
         self.label_rows.setText('Rows: '+str(rows))
         self.label_cols.setText('Columns: '+str(cols))
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -429,20 +486,57 @@ class DataMerge(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        data = self.indata['Raster'][0]
-        dxy0 = min(data.xdim, data.ydim)
-        for data in self.indata['Raster']:
-            dxy = min(dxy0, data.xdim, data.ydim)
 
-        self.dsb_dxy.setValue(dxy)
-        tmp = self.exec_()
+        if not nodialog:
+            data = self.indata['Raster'][0]
+            dxy0 = min(data.xdim, data.ydim)
+            for data in self.indata['Raster']:
+                dxy = min(dxy0, data.xdim, data.ydim)
 
-        if tmp != 1:
-            return False
+            self.dsb_dxy.setValue(dxy)
+
+            tmp = self.exec_()
+            if tmp != 1:
+                return False
 
         self.acceptall()
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
     def acceptall(self):
         """
@@ -660,7 +754,7 @@ class DataReproj(QtWidgets.QDialog):
 
         self.outdata['Raster'] = dat
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -673,14 +767,49 @@ class DataReproj(QtWidgets.QDialog):
         self.in_proj.set_current(self.indata['Raster'][0].wkt)
         self.out_proj.set_current(self.indata['Raster'][0].wkt)
 
-        tmp = self.exec_()
-
-        if tmp != 1:
-            return False
+        if not nodialog:
+            tmp = self.exec_()
+            if tmp != 1:
+                return False
 
         self.acceptall()
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
 
 class GetProf():
@@ -716,7 +845,7 @@ class GetProf():
         self.indata = {}
         self.outdata = {}
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -734,14 +863,13 @@ class GetProf():
 
         ext = 'Shape file (*.shp)'
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open Shape File', '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
+        if not nodialog:
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open Shape File', '.', ext)
+            if self.ifile == '':
+                return False
 
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
+        os.chdir(os.path.dirname(self.ifile))
 
         shapef = ogr.Open(self.ifile)
         if shapef is None:
@@ -801,6 +929,41 @@ class GetProf():
         self.outdata['Line'] = {'profile': gdf}
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
 
 class GroupProj(QtWidgets.QWidget):
@@ -1238,7 +1401,7 @@ class RTP(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -1255,16 +1418,63 @@ class RTP(QtWidgets.QDialog):
         for i in self.indata['Raster']:
             tmp.append(i.dataid)
 
+        self.dataid.clear()
         self.dataid.addItems(tmp)
 
-        tmp = self.exec_()
+        if len(self.indata['Raster']) > 1:
+            nodialog = False
+            print('Please confirm raster band')
 
-        if tmp != 1:
-            return False
+        if not nodialog:
+            tmp = self.exec_()
+
+            if tmp != 1:
+                return False
 
         self.acceptall()
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        self.dataid.setCurrentText(projdata['band'])
+        projdata['inc'] = self.dsb_inc.value()
+        projdata['dec'] = self.dsb_dec.value()
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['band'] = self.dataid.currentText()
+        projdata['inc'] = self.dsb_inc.value()
+        projdata['dec'] = self.dsb_dec.value()
+
+        return projdata
 
     def acceptall(self):
         """

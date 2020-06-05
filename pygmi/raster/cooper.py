@@ -122,7 +122,7 @@ class Gradients(QtWidgets.QDialog):
         self.rb_dratio.clicked.connect(self.radiochange)
         self.rb_vgrad.clicked.connect(self.radiochange)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -132,9 +132,11 @@ class Gradients(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        temp = self.exec_()
-        if temp == 0:
-            return False
+
+        if not nodialog:
+            temp = self.exec_()
+            if temp == 0:
+                return False
 
         self.azi = self.sb_azi.value()
         self.order = self.sb_order.value()
@@ -162,6 +164,66 @@ class Gradients(QtWidgets.QDialog):
         self.outdata['Raster'] = data
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        self.azi = projdata['azim']
+        self.order = projdata['order']
+
+        self.sb_azi.setValue(projdata['azim'])
+        self.sb_order.setValue(projdata['order'])
+
+        if projdata['type'] == 'dratio':
+            self.rb_dratio.setChecked(True)
+        if projdata['type'] == 'ddir':
+            self.rb_dratio.setChecked(True)
+        if projdata['type'] == 'vgrad':
+            self.rb_dratio.setChecked(True)
+
+        self.radiochange()
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        self.azi = self.sb_azi.value()
+        self.order = self.sb_order.value()
+        projdata['azim'] = self.azi
+        projdata['order'] = self.order
+
+        if self.rb_dratio.isChecked():
+            projdata['type'] = 'dratio'
+        elif self.rb_ddir.isChecked():
+            projdata['type'] = 'ddir'
+        else:
+            projdata['type'] = 'vgrad'
+
+        return projdata
 
     def radiochange(self):
         """
@@ -317,7 +379,7 @@ class Visibility2d(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -327,9 +389,10 @@ class Visibility2d(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        temp = self.exec_()
-        if temp == 0:
-            return False
+        if not nodialog:
+            temp = self.exec_()
+            if temp == 0:
+                return False
 
         self.wsize = self.sb_wsize.value()
         self.dh = self.sb_dh.value()
@@ -357,6 +420,45 @@ class Visibility2d(QtWidgets.QDialog):
         print('Finished!')
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        self.sb_wsize.setValue(projdata['wsize'])
+        self.sb_dh.setValue(projdata['vheight'])
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['wsize'] = self.sb_wsize.value()
+        projdata['vheight'] = self.sb_dh.value()
+
+        return projdata
 
 
 def visibility2d(data, wsize, dh, piter=iter):
@@ -597,7 +699,7 @@ class Tilt1(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -607,9 +709,10 @@ class Tilt1(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        temp = self.exec_()
-        if temp == 0:
-            return False
+        if not nodialog:
+            temp = self.exec_()
+            if temp == 0:
+                return False
 
         self.smooth = self.sb_s.value()
         self.azi = self.sb_azi.value()
@@ -640,6 +743,44 @@ class Tilt1(QtWidgets.QDialog):
 
         self.outdata['Raster'] = data2
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        self.sb_s.setValue(projdata['smooth'])
+        self.sb_azi.setValue(projdata['azi'])
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['smooth'] = self.sb_s.value()
+        projdata['azi'] = self.sb_azi.value()
+
+        return projdata
 
 
 def tilt1(data, azi, s):

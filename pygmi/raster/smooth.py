@@ -141,7 +141,7 @@ class Smooth(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self, test=False):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -151,7 +151,7 @@ class Smooth(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        if test is not True:
+        if not nodialog:
             temp = self.exec_()
             if temp == 0:
                 return False
@@ -169,12 +169,83 @@ class Smooth(QtWidgets.QDialog):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
                                                  '2D Median', data[i].dataid)
 
-        if test is not True:
+        if not nodialog:
             self.parent.process_is_active(False)
         self.outdata['Raster'] = data
         print('Finished!', True)
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        if projdata['ftype'] == '2D Mean':
+            self.radiobutton_2dmean.setChecked(True)
+        else:
+            self.radiobutton_2dmedian.setChecked(True)
+
+        if projdata['fshape'] == 'box':
+            self.radiobutton_box.setChecked(True)
+            self.spinbox_x.setValue(projdata['fsize'][0])
+            self.spinbox_y.setValue(projdata['fsize'][1])
+        if projdata['fshape'] == 'disc':
+            self.radiobutton_disk.setChecked(True)
+            self.spinbox_radius.setValue(projdata['frad'])
+        if projdata['fshape'] == 'gaussian':
+            self.radiobutton_gaussian.setChecked(True)
+            self.spinbox_stddev.setValue(projdata['fsigma'])
+
+        self.choosefilter()
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        box_x = self.spinbox_x.value()
+        box_y = self.spinbox_y.value()
+        rad = self.spinbox_radius.value()
+        sigma = self.spinbox_stddev.value()
+
+        if self.radiobutton_2dmean.isChecked():
+            projdata['ftype'] = '2D Mean'
+        elif self.radiobutton_2dmedian.isChecked():
+            projdata['ftype'] = '2D Median'
+
+        if self.radiobutton_box.isChecked():
+            projdata['fshape'] = 'box'
+            projdata['fsize'] = (box_x, box_y)
+        elif self.radiobutton_disk.isChecked():
+            projdata['fshape'] = 'disc'
+            projdata['frad'] = rad
+        elif self.radiobutton_gaussian.isChecked():
+            projdata['fshape'] = 'gaussian'
+            projdata['fsigma'] = sigma
+
+        return projdata
 
     def choosefilter(self):
         """

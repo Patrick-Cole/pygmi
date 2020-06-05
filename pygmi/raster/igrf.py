@@ -248,7 +248,7 @@ class IGRF(QtWidgets.QDialog):
 
         self.ctrans = osr.CoordinateTransformation(orig, targ)
 
-    def settings(self, test=None):
+    def settings(self, nodialog=False):
         """
         Setting Dialog.
 
@@ -280,7 +280,7 @@ class IGRF(QtWidgets.QDialog):
         if len(data) > 1:
             self.combobox_dtm.setCurrentIndex(1)
 
-        if test is None:
+        if not nodialog:
             tmp = self.exec_()
 
             if tmp == 0:
@@ -445,6 +445,42 @@ class IGRF(QtWidgets.QDialog):
         print('Calculation: Completed', True)
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
+
 
     def getshc(self, file, iflag, strec, nmax_of_gh, gh):
         """

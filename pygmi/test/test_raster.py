@@ -98,10 +98,11 @@ def test_rtp():
     """test rtp."""
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
-    dat2 = [[0.8763800720931049, 2.123619927906895],
-            [0.8763800720931049, 2.123619927906895]]
+    dat2 = [[0.7212671143002998, 1.9651600796627182],
+            [1.060458126573062, 1.8041542185243205]]
 
     dat = dataprep.rtp(datin, 60, 30)
+
     np.testing.assert_array_equal(dat.data, dat2)
 
 
@@ -151,7 +152,8 @@ def test_equation():
 
     tmp = equation_editor.EquationEditor()
     tmp.indata = {'Raster': [datin, datin]}
-    tmp.settings('i0+i1')
+    tmp.equation = 'i0+i1'
+    tmp.settings(True)
 
     np.testing.assert_array_equal(tmp.outdata['Raster'][0].data, datout)
 
@@ -367,10 +369,7 @@ def test_io_gdal(smalldata, ext, drv):
     """Tests IO for gdal files."""
     ofile = tempfile.gettempdir() + '\\iotest'+ext
 
-    tmp = iodefs.ExportData(None)
-    tmp.ifile = ofile
-    tmp.export_gdal([smalldata], drv)
-
+    iodefs.export_gdal(ofile, [smalldata], drv)
     dat2 = iodefs.get_raster(ofile)
 
     # Cleanup files
@@ -561,11 +560,14 @@ def test_tilt():
     datout = np.array([[3.93612464, -1.99438548, 1., 0.32962923],
                        [3.49438548, -2.49438548, 1., 0.34958333],
                        [2.99438548, -2.99438548, 1., 0.34958333],
+                       [2.49438548, -3.49438548, 1., 0.34958333],
+                       [1.99438548, -3.93612464, 1., 0.32962923],
+                       [1.48759916, -2.48888969, 2., 0.36542720],
                        [1.98888969, -1.98888969, 2., 0.36451351],
-                       [2.48888969, -1.48759916, 2., 0.3654272]])
+                       [2.48888969, -1.48759916, 2., 0.36542720]])
 
     np.testing.assert_array_almost_equal(datout2, datout)
 
 
 if __name__ == "__main__":
-    test_tilt()
+    test_rtp()

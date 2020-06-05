@@ -158,7 +158,7 @@ class ImportData():
         self.outdata = {}
         self.filt = ''
 
-    def settings(self, filename='', filt=''):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -169,7 +169,7 @@ class ImportData():
 
         """
 
-        if filename == '':
+        if not nodialog:
             ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;'
                    'ERMapper (*.ers);;'
                    'ENVI (*.hdr);;'
@@ -187,24 +187,22 @@ class ImportData():
                    'Arcinfo Binary Grid (hdr.adf);;'
                    'ArcGIS BIL (*.bil)')
 
-            filename, filt = QtWidgets.QFileDialog.getOpenFileName(
+            self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
-            if filename == '':
+            if self.ifile == '':
                 return False
 
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(filename)
-        self.filt = str(filt)
+            os.chdir(os.path.dirname(self.ifile))
 
-        if filt == 'GeoPak grid (*.grd)':
+        if self.filt == 'GeoPak grid (*.grd)':
             dat = get_geopak(self.ifile)
-        elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
+        elif self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
             dat = get_geosoft(self.ifile)
-        elif filt == 'ASCII with .hdr header (*.asc)':
+        elif self.filt == 'ASCII with .hdr header (*.asc)':
             dat = get_ascii(self.ifile)
-        elif filt == 'ESRI ASCII (*.asc)':
+        elif self.filt == 'ESRI ASCII (*.asc)':
             dat = get_ascii(self.ifile)
-        elif filt == 'ASCII XYZ (*.xyz)':
+        elif self.filt == 'ASCII XYZ (*.xyz)':
             nval = 0.0
             nval, ok = QtWidgets.QInputDialog.getDouble(self.parent,
                                                         'Null Value',
@@ -217,14 +215,14 @@ class ImportData():
             dat = get_raster(self.ifile)
 
         if dat is None:
-            if filt == 'Surfer grid (v.6) (*.grd)':
+            if self.filt == 'Surfer grid (v.6) (*.grd)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the surfer 6 '
                                               'grid. Please make sure it not '
                                               'another format, such as '
                                               'geosoft.',
                                               QtWidgets.QMessageBox.Ok)
-            elif filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
+            elif self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the grid. '
                                               'Please make sure it is a '
@@ -234,7 +232,7 @@ class ImportData():
                                               'this format using the Geosoft '
                                               'Viewer.',
                                               QtWidgets.QMessageBox.Ok)
-            elif filt == 'hdf (*.hdf)':
+            elif self.filt == 'hdf (*.hdf)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the data.'
                                               'Currently only ASTER and MODIS'
@@ -271,10 +269,10 @@ class ImportData():
             A check to see if settings was successfully run.
 
         """
-        ifile = projdata['ifile']
-        filt = projdata['filt']
+        self.ifile = projdata['ifile']
+        self.filt = projdata['filt']
 
-        chk = self.settings(ifile, filt)
+        chk = self.settings(True)
 
         return chk
 
@@ -326,7 +324,7 @@ class ImportRGBData():
         self.indata = {}
         self.outdata = {}
 
-    def settings(self, filename=''):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -338,13 +336,13 @@ class ImportRGBData():
         """
         ext = 'GeoTiff (*.tif)'
 
-        if filename == '':
-            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+        if not nodialog:
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
-            if filename == '':
+            if self.ifile == '':
                 return False
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(filename)
+
+        os.chdir(os.path.dirname(self.ifile))
 
         dat = get_raster(self.ifile)
 
@@ -371,6 +369,43 @@ class ImportRGBData():
 
         return True
 
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        self.ifile = projdata['ifile']
+
+        chk = self.settings(True)
+
+        return chk
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['ifile'] = self.ifile
+
+        return projdata
 
 def clusterprep(dat):
     """

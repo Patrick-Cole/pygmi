@@ -37,6 +37,7 @@ warnings.simplefilter('always', RuntimeWarning)
 
 class Normalisation(QtWidgets.QDialog):
     """Class Normalisation."""
+
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -96,7 +97,7 @@ class Normalisation(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
-    def settings(self, test=False):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -106,7 +107,7 @@ class Normalisation(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        if not test:
+        if not nodialog:
             temp = self.exec_()
             if temp == 0:
                 return False
@@ -144,6 +145,56 @@ class Normalisation(QtWidgets.QDialog):
         if self.pbar is not None:
             self.pbar.to_max()
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        if projdata['type'] == 'interval':
+            self.radiobutton_interval.setChecked(True)
+        elif projdata['type'] == 'mean':
+            self.radiobutton_mean.setChecked(True)
+        elif projdata['type'] == 'median':
+            self.radiobutton_median.setChecked(True)
+        elif projdata['type'] == '8bit':
+            self.radiobutton_8bit.setChecked(True)
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        if self.radiobutton_interval.isChecked():
+            projdata['type'] = 'interval'
+        elif self.radiobutton_mean.isChecked():
+            projdata['type'] = 'mean'
+        elif self.radiobutton_median.isChecked():
+            projdata['type'] = 'median'
+        elif self.radiobutton_8bit.isChecked():
+            projdata['type'] = '8bit'
+
+        return projdata
 
 
 def datacommon(data, tmp1, tmp2, tmp3):

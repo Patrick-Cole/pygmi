@@ -115,7 +115,7 @@ class CreateSceneList(QtWidgets.QDialog):
         pb_shape.pressed.connect(self.get_shape)
         pb_scene.pressed.connect(self.get_scene)
 
-    def settings(self, test=False):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -126,7 +126,7 @@ class CreateSceneList(QtWidgets.QDialog):
 
         """
 
-        if not test:
+        if not nodialog:
             tmp = self.exec_()
 
             if tmp != 1:
@@ -210,6 +210,41 @@ class CreateSceneList(QtWidgets.QDialog):
 
         return True
 
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
+
     def get_shape(self, filename=''):
         """
         Get shape filename.
@@ -287,7 +322,7 @@ class LoadSceneList():
         self.indata = {}
         self.outdata = {}
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -308,6 +343,41 @@ class LoadSceneList():
 
         self.outdata['SceneList'] = df
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
 
 class MyMplCanvas(FigureCanvas):
@@ -553,7 +623,7 @@ class SceneViewer(QtWidgets.QDialog):
         self.button3.clicked.connect(self.nextscene)
         self.manip.currentIndexChanged.connect(self.manip_change)
 
-    def settings(self, test=False):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -580,11 +650,47 @@ class SceneViewer(QtWidgets.QDialog):
 
         self.canvas.compute_initial_figure(dat, dates, points)
 
-        if not test:
+        if not nodialog:
             tmp = self.exec_()
 
             if tmp != 1:
                 return tmp
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
+
 
     def manip_change(self, event):
         """

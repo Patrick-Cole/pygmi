@@ -292,7 +292,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         """
         self.scene().clearSelection()
         self.setSelected(True)
-
         exclude = ['GenFPS', 'SceneList', 'RasterFileList']
 
         tmp = self.context_menu['Basic'].actions()
@@ -349,17 +348,22 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             arrow.my_end_item.remove_arrow(arrow)
             self.scene().removeItem(arrow)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Routine Settings.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
         iflag : bool
             Returns a boolean reflecting success of the my_class.settings()
             method.
-        """
 
+        """
         self.update_indata()
         if self.my_class.indata == {} and self.is_import is False:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
@@ -369,7 +373,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 
         self.my_class.parent.process_is_active()
         print(self.my_class_name+' busy...')
-        iflag = self.my_class.settings()
+        iflag = self.my_class.settings(nodialog)
         self.my_class.parent.process_is_active(False)
         if iflag:
             print(self.my_class_name+' finished!')
@@ -421,7 +425,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         if not tmp:
             return
 
-        if hasattr(tmp[0], 'my_class') == False:
+        if not hasattr(tmp[0], 'my_class'):
             return
 
         text = ''
@@ -566,6 +570,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.textbrowser_processlog = QtWidgets.QTextBrowser()
         self.pbar = misc.ProgressBar()
 
+        self.action_run = QtWidgets.QAction(self)
         self.action_help = QtWidgets.QAction(self)
         self.action_delete = QtWidgets.QAction(self)
         self.action_bring_to_front = QtWidgets.QAction(self)
@@ -579,6 +584,9 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_linepointer.setCheckable(True)
         self.action_pointer.setChecked(True)
 
+        play = self.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay)
+
+        self.action_run.setIcon(play)
         self.action_delete.setIcon(QtGui.QIcon(ipth+'delete.png'))
         self.action_bring_to_front.setIcon(
             QtGui.QIcon(ipth+'bringtofront.png'))
@@ -625,6 +633,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.view.setScene(self.scene)
 
 # Menus
+        self.action_run.triggered.connect(self.run)
         self.action_pointer.triggered.connect(self.pointer)
         self.action_linepointer.triggered.connect(self.linepointer)
         self.action_delete.triggered.connect(self.delete_item)
@@ -715,6 +724,8 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbar.addAction(self.action_pointer)
         self.toolbar.addAction(self.action_linepointer)
         self.toolbar.addSeparator()
+        self.toolbar.addAction(self.action_run)
+        self.toolbar.addSeparator()
         self.toolbar.addAction(self.action_help)
 
         self.setWindowTitle(
@@ -777,6 +788,26 @@ class MainWidget(QtWidgets.QMainWindow):
                 item.update_indata()
                 if item.my_class.indata == {} and item.is_import is False:
                     item.setBrush(self.scene.my_item_color)
+
+    def keyPressEvent(self, event):
+        """
+        Intercept keypress for custom key presses.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if event.key() == QtCore.Qt.Key_Delete:
+            self.delete_item()
+
+        event.accept()
 
     def get_indata(self):
         """
@@ -989,7 +1020,15 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
 
-        ifile = r'C:\Work\Workdata\jason.json'
+        self.process_is_active()
+        print('Project load busy...')
+
+        ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self, 'Open Project', '.', 'PyGMI project (*.json);;')
+        if ifile == '':
+            return False
+
+#        ifile = r'C:\Work\Workdata\jason.json'
 
         with open(ifile, 'r') as fromdisk:
             ilist = json.load(fromdisk)
@@ -1000,7 +1039,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 continue
 
             item = ilist[key]
-            my_class = item['my_class']
+            my_class = key
             my_class = my_class.split()[0][1:]
             my_class = my_class.rsplit('.', 1)
 
@@ -1017,6 +1056,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
             ditems[key] = citem
 
+            citem.setBrush(QtGui.QColor(0, 255, 255, 254))
             if hasattr(class_name, 'loadproj'):
                 chk = class_name.loadproj(item['itemdata'])
                 if chk is True:
@@ -1036,6 +1076,8 @@ class MainWidget(QtWidgets.QMainWindow):
             self.scene.addItem(arrow)
             end_item.update_indata()
 
+        self.process_is_active(False)
+
     def save(self):
         """
         Saves project state to a JSON file.
@@ -1046,25 +1088,28 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
 
+        ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self, 'Save Project', '.', 'PyGMI project (*.json);;')
+        if ofile == '':
+            return False
+
         ilist = {}
         for item in self.scene.items():
             if isinstance(item, DiagramItem):
-                ilist[str(item)] = {'my_class': str(item.my_class),
-                                    'my_class_name': item.my_class_name,
-                                    'diagram_type': item.diagram_type,
-                                    'x': item.x(),
-                                    'y': item.y(),
-                                    }
+                cname = str(item.my_class)
+                ilist[cname] = {'my_class_name': item.my_class_name,
+                                'diagram_type': item.diagram_type,
+                                'x': item.x(),
+                                'y': item.y()}
 
                 if hasattr(item.my_class, 'saveproj'):
-                    ilist[str(item)]['itemdata'] = item.my_class.saveproj()
+                    ilist[cname]['itemdata'] = item.my_class.saveproj()
 
             if isinstance(item, Arrow):
-                ilist[str(item)] = {'my_start_item': str(item.my_start_item),
-                                    'my_end_item': str(item.my_end_item)
-                                    }
-
-        ofile = r'C:\Work\Workdata\jason.json'
+                sname = str(item.my_start_item.my_class)
+                ename = str(item.my_end_item.my_class)
+                ilist[str(item)] = {'my_start_item': sname,
+                                    'my_end_item': ename}
 
         with open(ofile, 'w') as todisk:
             json.dump(ilist, todisk, indent=4)
@@ -1078,6 +1123,75 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
+
+        # get all arrows
+        alist = {}
+        for item in self.scene.items():
+            if isinstance(item, Arrow):
+                alist[str(item)] = item
+
+        if not alist:
+            print('No connections. Aborting run.')
+            return
+
+        # Collect only items recieving data
+        ilist = []
+        slist = []
+        for item in self.scene.items():
+            if isinstance(item, DiagramItem):
+                getsdata = False
+                for i in item.arrows:
+                    if i.my_end_item == item:
+                        getsdata = True
+                if getsdata is True:
+                    ilist.append(item)
+                elif not item.is_import:
+                    slist.append(item)
+
+        # Get rid of arrows from an item sending data without an import.
+        for item in slist:
+            for i in item.arrows:
+                if str(i) in alist:
+                    del alist[str(i)]
+
+        # Delete data in modules.
+        for i in ilist:
+            if not i.is_import:
+                i.my_class.indata = {}
+                i.my_class.outdata = {}
+#                i.setBrush(self.scene.my_item_color)
+
+        # Update data
+        while ilist:
+            for item in ilist:
+                for i in item.arrows:
+                    sdata = i.my_start_item.my_class.outdata
+                    if i.my_end_item == item and sdata and str(i) in alist:
+                        item.update_indata()
+                        del alist[str(i)]
+            ilist2 = []
+            for item in ilist:
+                skip = False
+                for i in item.arrows:
+                    if i.my_end_item == item and str(i) in alist:
+                        skip = True
+                if not skip:
+                    if item.brush().color() == item.scene().my_item_color:
+                        temp = item.settings(False)
+                    else:
+                        temp = item.settings(True)
+
+                    item.parent.scene.selected_item_info()
+
+                    if temp is True:
+                        item.setBrush(QtGui.QColor(0, 255, 0, 127))
+                    else:
+                        item.setBrush(item.scene().my_item_color)
+                    QtWidgets.QApplication.processEvents()
+
+                else:
+                    ilist2.append(item)
+            ilist = ilist2
 
     def send_to_back(self):
         """Send the selected item to the back."""

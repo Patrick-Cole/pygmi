@@ -503,7 +503,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
         i2 = self.combobox2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -539,6 +539,41 @@ class StaticShiftEDI(QtWidgets.QDialog):
         self.acceptall()
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
 
 class RotateEDI(QtWidgets.QDialog):
@@ -674,7 +709,7 @@ class RotateEDI(QtWidgets.QDialog):
         i2 = self.combobox2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -713,6 +748,42 @@ class RotateEDI(QtWidgets.QDialog):
         self.acceptall()
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
+
 
 
 class MyMplCanvasPick(FigureCanvas):
@@ -1118,7 +1189,7 @@ class EditEDI(QtWidgets.QDialog):
         i2 = self.combobox2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -1154,6 +1225,40 @@ class EditEDI(QtWidgets.QDialog):
 
         return True
 
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
 
 class MySlider(QtWidgets.QSlider):
     """
@@ -1610,7 +1715,7 @@ class Occam1D(QtWidgets.QDialog):
 
         self.mmc.update_line(x, pdata, rdata, depths, res, title)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -1656,6 +1761,42 @@ class Occam1D(QtWidgets.QDialog):
         self.acceptall()
 
         return True
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
+
 
 
 def tonumber(test, alttext=None):

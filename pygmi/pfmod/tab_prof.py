@@ -2681,7 +2681,7 @@ class ImportPicture(QtWidgets.QDialog):
         self.dsb_zmin.setValue(zmin)
         self.dsb_zmax.setValue(zmax)
 
-    def settings(self):
+    def settings(self, nodialog=False):
         """
         Settings.
 
@@ -2787,6 +2787,42 @@ class ImportPicture(QtWidgets.QDialog):
             self.lmod.profpics[curline] = dat
 
         return curline
+
+    def loadproj(self, projdata):
+        """
+        Loads project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+#        projdata['ftype'] = '2D Mean'
+
+        return projdata
+
 
 
 def gridmatch2(cgrv, rgrv):
