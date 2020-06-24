@@ -142,6 +142,7 @@ class IGRF(QtWidgets.QDialog):
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        self.wkt = None
         if parent is None:
             self.piter = iter
         else:
@@ -266,9 +267,10 @@ class IGRF(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-# Variable declaration
-# Control variables
-        self.proj.set_current(self.indata['Raster'][0].wkt)
+        if self.wkt is None:
+            self.wkt = self.indata['Raster'][0].wkt
+
+        self.proj.set_current(self.wkt)
 
         data = dp.merge(self.indata['Raster'])
         self.combobox_dtm.clear()
@@ -279,6 +281,10 @@ class IGRF(QtWidgets.QDialog):
 
         if len(data) > 1:
             self.combobox_dtm.setCurrentIndex(1)
+            nodialog = False
+            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
+                                          'Please confirm raster bands.',
+                                          QtWidgets.QMessageBox.Ok)
 
         if not nodialog:
             tmp = self.exec_()
@@ -462,6 +468,21 @@ class IGRF(QtWidgets.QDialog):
 
         """
 
+        self.wkt = projdata['wkt']
+        self.dsb_alt.setValue(projdata['alt'])
+        date = self.dateedit.date().fromString(projdata['date'])
+        self.dateedit.setDate(date)
+
+        # dtmitems = [self.combobox_dtm.itemText(i)
+        #             for i in range(self.combobox_dtm.count())]
+        # magitems = [self.combobox_mag.itemText(i)
+        #             for i in range(self.combobox_mag.count())]
+
+        # if projdata['dtm'] in dtmitems:
+        #     self.combobox_dtm.setCurrentText(projdata['dtm'])
+        # if projdata['mag'] in magitems:
+        #     self.combobox_mag.setCurrentText(projdata['mag'])
+
         return False
 
     def saveproj(self):
@@ -477,10 +498,13 @@ class IGRF(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['wkt'] = self.proj.wkt
+        projdata['alt'] = self.dsb_alt.value()
+        projdata['date'] = self.dateedit.date().toString()
+        # projdata['dtm'] = self.combobox_dtm.currentText()
+        # projdata['mag'] = self.combobox_mag.currentText()
 
         return projdata
-
 
     def getshc(self, file, iflag, strec, nmax_of_gh, gh):
         """

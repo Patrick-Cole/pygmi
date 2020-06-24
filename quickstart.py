@@ -33,3 +33,10 @@ from pygmi.main import main
 
 if __name__ == "__main__":
     main()
+
+
+"""
+Datacut and GetProf to have external shape file import or dialog listing
+input files.
+Raster data interp and tilt interp - do these need save to proj?
+"""

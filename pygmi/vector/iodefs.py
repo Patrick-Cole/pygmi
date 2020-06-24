@@ -25,17 +25,12 @@
 """Import Data."""
 
 import os
-import copy
 import re
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import ogr
-import matplotlib.path as mplPath
-from osgeo import gdal, osr, ogr
 import pandas as pd
 import geopandas as gpd
 import pygmi.menu_default as menu_default
-from pygmi.raster.dataprep import GroupProj
 
 
 class ImportLineData(QtWidgets.QDialog):
@@ -67,6 +62,7 @@ class ImportLineData(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.ifile = ''
+        self.filt = ''
 
         self.xchan = QtWidgets.QComboBox()
         self.ychan = QtWidgets.QComboBox()
@@ -85,7 +81,8 @@ class ImportLineData(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.vector.iodefs.importpointdata')
+        helpdocs = menu_default.HelpButton('pygmi.vector.iodefs.'
+                                           'importpointdata')
         label_xchan = QtWidgets.QLabel('X Channel:')
         label_ychan = QtWidgets.QLabel('Y Channel:')
         label_nodata = QtWidgets.QLabel('Null Value:')
@@ -121,27 +118,26 @@ class ImportLineData(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        ext = ('Geosoft XYZ (*.xyz);;'
-               'ASCII XYZ (*.xyz);;'
-               'Comma Delimited (*.csv);;'
-               'Tab Delimited (*.txt);;'
-               'All Files (*.*)')
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
-        if filename == '':
-            return False
+        if not nodialog:
+            ext = ('Geosoft XYZ (*.xyz);;'
+                   'ASCII XYZ (*.xyz);;'
+                   'Comma Delimited (*.csv);;'
+                   'Tab Delimited (*.txt);;'
+                   'All Files (*.*)')
 
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(os.path.basename(filename))
+            self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if self.ifile == '':
+                return False
 
-        if filt == 'Geosoft XYZ (*.xyz)':
+        if self.filt == 'Geosoft XYZ (*.xyz)':
             gdf = self.get_GXYZ()
-        elif filt == 'ASCII XYZ (*.xyz)':
+        elif self.filt == 'ASCII XYZ (*.xyz)':
             gdf = self.get_delimited(' ')
-        elif filt == 'Comma Delimited (*.csv)':
+        elif self.filt == 'Comma Delimited (*.csv)':
             gdf = self.get_delimited(',')
-        elif filt == 'Tab Delimited (*.txt)':
+        elif self.filt == 'Tab Delimited (*.txt)':
             gdf = self.get_delimited('\t')
         else:
             return False
@@ -198,7 +194,11 @@ class ImportLineData(QtWidgets.QDialog):
 
         """
 
-        return False
+        self.ifile = projdata['ifile']
+
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -213,7 +213,7 @@ class ImportLineData(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
 
         return projdata
 
@@ -292,118 +292,6 @@ class ImportLineData(QtWidgets.QDialog):
             gdf['line'] = 'None'
 
         return gdf
-
-
-class PointCut():
-    """
-    Cut Data using shapefiles.
-
-    This class cuts point datasets using a boundary defined by a polygon
-    shapefile.
-
-    Attributes
-    ----------
-    ifile : str
-        input file name.
-    name : str
-        item name
-    ext : str
-        file name extension.
-    pbar : progressbar
-        reference to a progress bar.
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
-
-    def __init__(self, parent):
-        self.ifile = ''
-        self.name = 'Cut Data:'
-        self.ext = ''
-        self.pbar = parent.pbar
-        self.parent = parent
-        self.indata = {}
-        self.outdata = {}
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if 'Line' in self.indata:
-            data = copy.deepcopy(self.indata['Line'])
-            data = list(data.values())[0]
-        else:
-            print('No point data')
-            return False
-
-        ext = 'Shape file (*.shp)'
-
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open Shape File', '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
-        data = cut_point(data, self.ifile)
-
-        if data is None:
-            err = ('There was a problem importing the shapefile. Please make '
-                   'sure you have at all the individual files which make up '
-                   'the shapefile.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                          QtWidgets.QMessageBox.Ok)
-            return False
-
-        self.pbar.to_max()
-        self.outdata['Line'] = data
-
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Loads project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-
-        return False
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
-
-        return projdata
 
 
 class ExportLine():
@@ -499,19 +387,18 @@ class ImportShapeData():
             True if successful, False otherwise.
 
         """
-        ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
-                                                            'Open File',
-                                                            '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(filename)
+        if not nodialog:
+            ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
 
-        ifile = str(filename)
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
+                                                                  'Open File',
+                                                                  '.', ext)
+            if self.ifile == '':
+                return False
+        os.chdir(os.path.dirname(self.ifile))
 
-        gdf = gpd.read_file(ifile)
+        gdf = gpd.read_file(self.ifile)
 
         dat = {gdf.geom_type.iloc[0]: gdf}
 
@@ -535,7 +422,11 @@ class ImportShapeData():
 
         """
 
-        return False
+        self.ifile = projdata['ifile']
+
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -550,236 +441,6 @@ class ImportShapeData():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
 
         return projdata
-
-
-class DataReproj(QtWidgets.QDialog):
-    """
-    Reprojections.
-
-    This class reprojects datasets using the GDAL routines.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-        self.pbar = self.parent.pbar
-
-        self.groupboxb = QtWidgets.QGroupBox()
-        self.combobox_inp_epsg = QtWidgets.QComboBox()
-        self.inp_epsg_info = QtWidgets.QLabel()
-        self.groupbox2b = QtWidgets.QGroupBox()
-        self.combobox_out_epsg = QtWidgets.QComboBox()
-        self.out_epsg_info = QtWidgets.QLabel()
-        self.in_proj = GroupProj('Input Projection')
-        self.out_proj = GroupProj('Output Projection')
-
-        self.setupui()
-
-    def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
-        gridlayout_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datareproj')
-
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-
-        self.setWindowTitle('Dataset Reprojection')
-
-        gridlayout_main.addWidget(self.in_proj, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.out_proj, 0, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 1, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 1, 1, 1, 1)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-
-    def acceptall(self):
-        """
-        Accept option.
-
-        Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
-
-        """
-        if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            print('Could not reproject')
-            return
-
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
-
-# Input stuff
-        orig_wkt = self.in_proj.wkt
-
-        orig = osr.SpatialReference()
-        orig.ImportFromWkt(orig_wkt)
-        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-# Output stuff
-        targ_wkt = self.out_proj.wkt
-
-        targ = osr.SpatialReference()
-        targ.ImportFromWkt(targ_wkt)
-        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-# Set transformation
-        ctrans = osr.CoordinateTransformation(orig, targ)
-
-        dd = np.transpose([data.pygmiX, data.pygmiY])
-        xy = ctrans.TransformPoints(dd)
-        xy = np.array(xy)
-        data = data.assign(Xnew=xy[:, 0])
-        data = data.assign(Ynew=xy[:, 1])
-        data.pygmiX = xy[:, 0]
-        data.pygmiY = xy[:, 1]
-
-        self.outdata['Line'] = {key: data}
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if 'Line' not in self.indata:
-            print('No line data.')
-            return False
-
-#        iwkt = self.in_proj.epsg_proj['WGS 84 / Geodetic Geographic'].wkt
-        indx = self.in_proj.combobox.findText('WGS 84 / Geodetic Geographic')
-        self.in_proj.combobox.setCurrentIndex(indx)
-
-        indx = self.in_proj.combobox.findText('WGS 84 / UTM zone 35S')
-        self.out_proj.combobox.setCurrentIndex(indx)
-
-        tmp = self.exec_()
-
-        if tmp != 1:
-            return False
-
-        self.acceptall()
-
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Loads project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-
-        return False
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
-
-        return projdata
-
-
-def cut_point(data, ifile):
-    """
-    Cuts a point dataset.
-
-    Cut a point dataset using a shapefile.
-
-    Parameters
-    ----------
-    data : Data
-        PyGMI Dataset
-    ifile : str
-        shapefile used to cut data
-
-    Returns
-    -------
-    Data
-        PyGMI Dataset
-    """
-    shapef = ogr.Open(ifile)
-    if shapef is None:
-        return None
-    lyr = shapef.GetLayer()
-    poly = lyr.GetNextFeature()
-    if lyr.GetGeomType() is not ogr.wkbPolygon or poly is None:
-        shapef = None
-        return None
-
-    points = []
-    geom = poly.GetGeometryRef()
-
-    ifin = 0
-    imax = 0
-    if geom.GetGeometryName() == 'MULTIPOLYGON':
-        for i in range(geom.GetGeometryCount()):
-            geom.GetGeometryRef(i)
-            itmp = geom.GetGeometryRef(i)
-            itmp = itmp.GetGeometryRef(0).GetPointCount()
-            if itmp > imax:
-                imax = itmp
-                ifin = i
-        geom = geom.GetGeometryRef(ifin)
-
-    pts = geom.GetGeometryRef(0)
-    for pnt in range(pts.GetPointCount()):
-        points.append((pts.GetX(pnt), pts.GetY(pnt)))
-
-    bbpath = mplPath.Path(points)
-
-    chk = bbpath.contains_points(np.transpose([data.pygmiX.values,
-                                               data.pygmiY.values]))
-
-    data = data[chk]
-
-    shapef = None
-    return data

@@ -27,7 +27,7 @@
 from PyQt5 import QtWidgets
 from pygmi.vector import iodefs
 from pygmi.vector import graphs
-from pygmi.raster import dataprep
+from pygmi.vector import dataprep
 
 
 class MenuWidget():
@@ -53,11 +53,13 @@ class MenuWidget():
         self.menufile = QtWidgets.QMenu('Vector')
         parent.menubar.addAction(self.menufile.menuAction())
 
-        self.action_import_shape_data = QtWidgets.QAction('Import Shapefile Data')
+        self.action_import_shape_data = QtWidgets.QAction('Import Shapefile'
+                                                          ' Data')
         self.menufile.addAction(self.action_import_shape_data)
         self.action_import_shape_data.triggered.connect(self.import_shape_data)
 
-        self.action_import_line_data = QtWidgets.QAction('Import Point or Line Data')
+        self.action_import_line_data = QtWidgets.QAction('Import Point or Line'
+                                                         ' Data')
         self.menufile.addAction(self.action_import_line_data)
         self.action_import_line_data.triggered.connect(self.import_line_data)
 
@@ -85,7 +87,8 @@ class MenuWidget():
         context_menu['Line'].addAction(self.action_export_line)
         self.action_export_line.triggered.connect(self.export_line)
 
-        self.action_show_line_data = QtWidgets.QAction('Show Line Data Profile')
+        self.action_show_line_data = QtWidgets.QAction('Show Line Data'
+                                                       ' Profile')
         context_menu['Line'].addAction(self.action_show_line_data)
         self.action_show_line_data.triggered.connect(self.show_line_data)
 
@@ -114,12 +117,12 @@ class MenuWidget():
 
     def cut_data(self):
         """Cut point data."""
-        fnc = iodefs.PointCut(self.parent)
+        fnc = dataprep.PointCut(self.parent)
         self.parent.item_insert('Step', 'Cut Points', fnc)
 
     def reproject(self):
         """Reproject point data."""
-        fnc = iodefs.DataReproj(self.parent)
+        fnc = dataprep.DataReproj(self.parent)
         self.parent.item_insert('Step', 'Reproject Line Data', fnc)
 
     def export_line(self):

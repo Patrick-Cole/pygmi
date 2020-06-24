@@ -352,6 +352,12 @@ class ImportRGBData():
                                           QtWidgets.QMessageBox.Ok)
             return False
 
+        if len(dat) < 3:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'Not RGB Image, less than 3 bands.',
+                                          QtWidgets.QMessageBox.Ok)
+            return False
+
         output_type = 'Raster'
 
         dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,

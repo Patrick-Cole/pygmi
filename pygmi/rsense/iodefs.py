@@ -39,7 +39,7 @@ from geopandas import GeoDataFrame
 from shapely.geometry import Point
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
-from pygmi.raster.dataprep import quickgrid
+from pygmi.vector.dataprep import quickgrid
 
 EDIST = {1: 0.98331, 2: 0.9833, 3: 0.9833, 4: 0.9833,
          5: 0.9833, 6: 0.98332, 7: 0.98333, 8: 0.98335,

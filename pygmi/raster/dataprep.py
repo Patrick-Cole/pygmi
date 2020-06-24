@@ -29,7 +29,7 @@ from __future__ import print_function
 import os
 import copy
 from collections import Counter
-from PyQt5 import QtWidgets, QtCore, QtGui
+from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import gdal, osr, ogr
 import pandas as pd
@@ -92,6 +92,7 @@ class DataCut():
             print('No raster data')
             return False
 
+        nodialog = False
         if not nodialog:
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open Shape File', '.', 'Shape file (*.shp)')
@@ -130,196 +131,7 @@ class DataCut():
 
         """
 
-        return False
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
-
-        return projdata
-
-
-class DataGrid(QtWidgets.QDialog):
-    """
-    Grid Point Data.
-
-    This class grids point data using a nearest neighbourhood technique.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-        self.pbar = parent.pbar
-
-        self.dsb_dxy = QtWidgets.QLineEdit('1.0')
-        self.dsb_null = QtWidgets.QLineEdit('0.0')
-
-        self.dataid = QtWidgets.QComboBox()
-        self.label_rows = QtWidgets.QLabel('Rows: 0')
-        self.label_cols = QtWidgets.QLabel('Columns: 0')
-
-        self.setupui()
-
-    def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
-        gridlayout_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
-        label_band = QtWidgets.QLabel('Column to Grid:')
-        label_dxy = QtWidgets.QLabel('Cell Size:')
-        label_null = QtWidgets.QLabel('Null Value:')
-
-        val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
-        val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
-        val.setLocale(QtCore.QLocale(QtCore.QLocale.C))
-
-        self.dsb_dxy.setValidator(val)
-        self.dsb_null.setValidator(val)
-
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-
-        self.setWindowTitle('Dataset Gridding')
-
-        gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
-        gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
-        gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
-        gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.dataid, 3, 1, 1, 1)
-        gridlayout_main.addWidget(label_null, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_null, 4, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-        self.dsb_dxy.textChanged.connect(self.dxy_change)
-
-    def dxy_change(self):
-        """
-        When dxy is changed on the interface, this update rows and columns.
-
-        Returns
-        -------
-        None.
-
-        """
-        txt = str(self.dsb_dxy.text())
-        if txt.replace('.', '', 1).isdigit():
-            dxy = float(self.dsb_dxy.text())
-        else:
-            return
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
-        data = data.dropna()
-
-        x = data.pygmiX.values
-        y = data.pygmiY.values
-
-        cols = round(x.ptp()/dxy)
-        rows = round(y.ptp()/dxy)
-
-        self.label_rows.setText('Rows: '+str(rows))
-        self.label_cols.setText('Columns: '+str(cols))
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        tmp = []
-        if 'Line' not in self.indata:
-            print('No Point Data')
-            return False
-
-        if not nodialog:
-            self.dataid.clear()
-
-            key = list(self.indata['Line'].keys())[0]
-            data = self.indata['Line'][key]
-            data = data.dropna()
-
-            filt = ((data.columns != 'geometry') &
-                    (data.columns != 'line') &
-                    (data.columns != 'pygmiX') &
-                    (data.columns != 'pygmiY'))
-
-            cols = list(data.columns[filt])
-            self.dataid.addItems(cols)
-
-            x = data.pygmiX.values
-            y = data.pygmiY.values
-
-            dx = x.ptp()/np.sqrt(x.size)
-            dy = y.ptp()/np.sqrt(y.size)
-            dxy = max(dx, dy)
-            dxy = min([x.ptp(), y.ptp(), dxy])
-
-            dxy = f'{dxy:.8f}'
-            self.dsb_dxy.setText(dxy)
-            self.dxy_change()
-
-            tmp = self.exec_()
-
-            if tmp != 1:
-                return False
-
-        self.acceptall()
-
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Loads project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
+        self.ifile = projdata['shapefile']
 
         return False
 
@@ -336,50 +148,12 @@ class DataGrid(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['shapefile'] = self.ifile
 
         return projdata
 
-    def acceptall(self):
-        """
-        Accept option.
 
-        Updates self.outdata, which is used as input to other modules.
 
-        Returns
-        -------
-        None.
-
-        """
-        dxy = float(self.dsb_dxy.text())
-        nullvalue = float(self.dsb_null.text())
-        key = list(self.indata['Line'].keys())[0]
-        data = self.indata['Line'][key]
-        data = data.dropna()
-        newdat = []
-
-        filt = (data[self.dataid.currentText()] != nullvalue)
-        x = data.pygmiX.values[filt]
-        y = data.pygmiY.values[filt]
-        z = data[self.dataid.currentText()].values[filt]
-
-        tmp = quickgrid(x, y, z, dxy)
-        mask = np.ma.getmaskarray(tmp)
-        gdat = tmp.data
-
-# Create dataset
-        dat = Data()
-        dat.data = np.ma.masked_invalid(gdat[::-1])
-        dat.data.mask = mask[::-1]
-        dat.nullvalue = nullvalue
-        dat.dataid = self.dataid.currentText()
-        dat.xdim = dxy
-        dat.ydim = dxy
-        dat.extent = [x.min(), x.max(), y.min(), y.max()]
-        newdat.append(dat)
-
-        self.outdata['Raster'] = newdat
-        self.outdata['Line'] = self.indata['Line']
 
 
 class DataMerge(QtWidgets.QDialog):
@@ -405,6 +179,7 @@ class DataMerge(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.dxy = None
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.label_rows = QtWidgets.QLabel('Rows: 0')
@@ -489,11 +264,13 @@ class DataMerge(QtWidgets.QDialog):
 
         if not nodialog:
             data = self.indata['Raster'][0]
-            dxy0 = min(data.xdim, data.ydim)
-            for data in self.indata['Raster']:
-                dxy = min(dxy0, data.xdim, data.ydim)
 
-            self.dsb_dxy.setValue(dxy)
+            if self.dxy is None:
+                dxy0 = min(data.xdim, data.ydim)
+                for data in self.indata['Raster']:
+                    self.dxy = min(dxy0, data.xdim, data.ydim)
+
+            self.dsb_dxy.setValue(self.dxy)
 
             tmp = self.exec_()
             if tmp != 1:
@@ -519,6 +296,8 @@ class DataMerge(QtWidgets.QDialog):
 
         """
 
+        self.dxy = projdata['dxy']
+
         return False
 
     def saveproj(self):
@@ -534,7 +313,7 @@ class DataMerge(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['dxy'] = self.dsb_dxy.value()
 
         return projdata
 
@@ -550,6 +329,7 @@ class DataMerge(QtWidgets.QDialog):
 
         """
         dxy = self.dsb_dxy.value()
+        self.dxy = dxy
         data = self.indata['Raster'][0]
         orig_wkt = data.wkt
 
@@ -616,6 +396,8 @@ class DataReproj(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
         self.pbar = self.parent.pbar
+        self.orig_wkt = None
+        self.targ_wkt = None
 
         self.groupboxb = QtWidgets.QGroupBox()
         self.combobox_inp_epsg = QtWidgets.QComboBox()
@@ -764,8 +546,14 @@ class DataReproj(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        self.in_proj.set_current(self.indata['Raster'][0].wkt)
-        self.out_proj.set_current(self.indata['Raster'][0].wkt)
+
+        if self.orig_wkt is None:
+            self.orig_wkt = self.indata['Raster'][0].wkt
+        if self.targ_wkt is None:
+            self.targ_wkt = self.indata['Raster'][0].wkt
+
+        self.in_proj.set_current(self.orig_wkt)
+        self.out_proj.set_current(self.targ_wkt)
 
         if not nodialog:
             tmp = self.exec_()
@@ -792,6 +580,9 @@ class DataReproj(QtWidgets.QDialog):
 
         """
 
+        self.orig_wkt = projdata['orig_wkt']
+        self.targ_wkt = projdata['targ_wkt']
+
         return False
 
     def saveproj(self):
@@ -807,7 +598,8 @@ class DataReproj(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['orig_wkt'] = self.in_proj.wkt
+        projdata['targ_wkt'] = self.out_proj.wkt
 
         return projdata
 
@@ -863,6 +655,7 @@ class GetProf():
 
         ext = 'Shape file (*.shp)'
 
+        nodialog = False
         if not nodialog:
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open Shape File', '.', ext)
@@ -945,6 +738,7 @@ class GetProf():
             A check to see if settings was successfully run.
 
         """
+        self.ifile = projdata['shapefile']
 
         return False
 
@@ -961,7 +755,7 @@ class GetProf():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['shapefile'] = self.ifile
 
         return projdata
 
@@ -1423,7 +1217,9 @@ class RTP(QtWidgets.QDialog):
 
         if len(self.indata['Raster']) > 1:
             nodialog = False
-            print('Please confirm raster band')
+            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
+                                          'Please confirm raster band.',
+                                          QtWidgets.QMessageBox.Ok)
 
         if not nodialog:
             tmp = self.exec_()
@@ -2029,95 +1825,12 @@ def trim_raster(olddata):
     return olddata
 
 
-def quickgrid(x, y, z, dxy, numits=4):
-    """
-    Do a quick grid.
-
-    Parameters
-    ----------
-    x : numpy array
-        array of x coordinates
-    y : numpy array
-        array of y coordinates
-    z : numpy array
-        array of z values - this is the column being gridded
-    dxy : float
-        cell size for the grid, in both the x and y direction.
-    numits : int
-        number of iterations. By default its 4. If this is negative, a maximum
-        numits will be calculated and used.
-
-    Returns
-    -------
-    newz : numpy array
-        M x N array of z values
-    """
-
-    print('Creating Grid')
-    x = x.flatten()
-    y = y.flatten()
-    z = z.flatten()
-
-    xmin = x.min()
-    xmax = x.max()
-    ymin = y.min()
-    ymax = y.max()
-    newmask = np.array([1])
-    j = -1
-    rows = int((ymax-ymin)/dxy)+1
-    cols = int((xmax-xmin)/dxy)+1
-
-    if numits < 1:
-        numits = int(max(np.log2(cols), np.log2(rows)))
-
-    while np.max(newmask) > 0 and j < (numits-1):
-        j += 1
-        jj = 2**j
-        dxy2 = dxy*jj
-        rows = int((ymax-ymin)/dxy2)+1
-        cols = int((xmax-xmin)/dxy2)+1
-
-        newz = np.zeros([rows, cols])
-        zdiv = np.zeros([rows, cols])
-
-        xindex = ((x-xmin)/dxy2).astype(int)
-        yindex = ((y-ymin)/dxy2).astype(int)
-
-        for i in range(z.size):
-            newz[yindex[i], xindex[i]] += z[i]
-            zdiv[yindex[i], xindex[i]] += 1
-
-        filt = zdiv > 0
-        newz[filt] = newz[filt]/zdiv[filt]
-
-        if j == 0:
-            newmask = np.ones([rows, cols])
-            for i in range(z.size):
-                newmask[yindex[i], xindex[i]] = 0
-            zfin = newz
-        else:
-            xx, yy = newmask.nonzero()
-            xx2 = xx//jj
-            yy2 = yy//jj
-            zfin[xx, yy] = newz[xx2, yy2]
-            newmask[xx, yy] = np.logical_not(zdiv[xx2, yy2])
-
-        print('Iteration done: '+str(j+1)+' of '+str(numits))
-
-    print('Finished!')
-
-    newz = np.ma.array(zfin)
-    newz.mask = newmask
-    return newz
-
-
 def testfn():
     """Main testing routine."""
-    from pygmi.raster import iodefs
     import matplotlib.pyplot as plt
     from matplotlib import cm
-    import matplotlib
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
+    from pygmi.raster import iodefs
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
@@ -2136,7 +1849,6 @@ def testfn():
     magval = lmod.griddata['Calculated Magnetics'].data
     plt.imshow(magval, cmap=cm.jet)
     plt.show()
-
 
     dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
     plt.imshow(dat2.data, cmap=cm.jet)
