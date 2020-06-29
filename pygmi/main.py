@@ -364,7 +364,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             method.
 
         """
-        self.update_indata()
+#        self.update_indata()
         if self.my_class.indata == {} and self.is_import is False:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need to connect data first!',
@@ -1176,6 +1176,7 @@ class MainWidget(QtWidgets.QMainWindow):
                     if i.my_end_item == item and str(i) in alist:
                         skip = True
                 if not skip:
+                    item.update_indata()
                     if item.brush().color() == item.scene().my_item_color:
                         temp = item.settings(False)
                     else:

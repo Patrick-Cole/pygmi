@@ -116,7 +116,6 @@ class ComboBoxBasic(QtWidgets.QDialog):
             data['Raster'] = dtmp
 
         my_class.indata = data
-
         if hasattr(my_class, 'data_reset'):
             my_class.data_reset()
 
@@ -124,7 +123,6 @@ class ComboBoxBasic(QtWidgets.QDialog):
             my_class.data_init()
 
         self.parent.scene.selected_item_info()
-
         return True
 
 
