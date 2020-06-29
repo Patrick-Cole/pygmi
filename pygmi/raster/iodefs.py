@@ -958,7 +958,12 @@ class ExportData():
         if filt == 'ERMapper (*.ers)':
             export_gdal(self.ifile, data, 'ERS')
         if filt == 'SAGA binary grid (*.sdat)':
-            export_gdal(self.ifile, data, 'SAGA')
+            if len(data) > 1:
+                for i, dat in enumerate(data):
+                    file_out = self.get_filename(dat, 'sdat')
+                    export_gdal(file_out, [dat], 'SAGA')
+            else:
+                export_gdal(self.ifile, data, 'SAGA')
         if filt == 'GeoTiff (*.tif)':
             export_gdal(self.ifile, data, 'GTiff')
         if filt == 'ENVI (*.hdr)':
@@ -1232,6 +1237,7 @@ def export_gdal(ifile, dat, drv):
         dtype = np.float32
     elif drv == 'SAGA':
         tmpfile = tmp[0]+'.sdat'
+        data[0].nullvalue = -99999.0
     elif drv == 'HFA':
         tmpfile = tmp[0]+'.img'
     else:  # ENVI and ER Mapper
@@ -1259,6 +1265,7 @@ def export_gdal(ifile, dat, drv):
     else:
         out = driver.Create(tmpfile, int(dcols), int(drows),
                             len(data), fmt)
+
     out.SetGeoTransform(data[0].get_gtr())
 
     out.SetProjection(data[0].wkt)
@@ -1269,7 +1276,6 @@ def export_gdal(ifile, dat, drv):
         rtmp.SetMetadataItem('BandName', datai.dataid)
 
         dtmp = np.ma.array(datai.data).astype(dtype)
-
         dtmp.set_fill_value(datai.nullvalue)
         dtmp = dtmp.filled()
 
