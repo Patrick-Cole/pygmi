@@ -80,7 +80,8 @@ class PointCut():
         """
         if 'Line' in self.indata:
             data = copy.deepcopy(self.indata['Line'])
-            data = list(data.values())[0]
+            key = list(data.keys())[0]
+            data = data[key]
         else:
             print('No point data')
             return False
@@ -105,7 +106,7 @@ class PointCut():
             return False
 
         self.pbar.to_max()
-        self.outdata['Line'] = data
+        self.outdata['Line'] = {key: data}
 
         return True
 
