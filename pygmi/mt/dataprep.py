@@ -198,8 +198,10 @@ class Metadata(QtWidgets.QDialog):
         try:
             odata.lat = float(self.dsb_lat.text())
             odata.lon = float(self.dsb_lon.text())
-            odata.east = float(self.dsb_utmx.text())
-            odata.north = float(self.dsb_utmy.text())
+            if self.dsb_utmx.text() != 'None':
+                odata.east = float(self.dsb_utmx.text())
+            if self.dsb_utmy.text() != 'None':
+                odata.north = float(self.dsb_utmy.text())
             odata.elev = float(self.dsb_elev.text())
 #            odata.utm_zone = float(self.dsb_utmzone.text())
             odata.rotation_angle = float(self.dsb_rot.text())
@@ -214,8 +216,14 @@ class Metadata(QtWidgets.QDialog):
         self.dsb_lat.setText(str(idata.lat))
         self.dsb_lon.setText(str(idata.lon))
         self.dsb_elev.setText(str(idata.elev))
-        self.dsb_utmx.setText(str(idata.east))
-        self.dsb_utmy.setText(str(idata.north))
+        if np.isinf(idata.east):
+            self.dsb_utmx.setText('None')
+        else:
+            self.dsb_utmx.setText(str(idata.east))
+        if np.isinf(idata.north):
+            self.dsb_utmy.setText('None')
+        else:
+            self.dsb_utmy.setText(str(idata.north))
         self.dsb_utmzone.setText(str(idata.utm_zone))
         self.dsb_rot.setText(str(idata.rotation_angle))
 
@@ -247,8 +255,14 @@ class Metadata(QtWidgets.QDialog):
         self.dsb_lat.setText(str(idata.lat))
         self.dsb_lon.setText(str(idata.lon))
         self.dsb_elev.setText(str(idata.elev))
-        self.dsb_utmx.setText(str(idata.east))
-        self.dsb_utmy.setText(str(idata.north))
+        if np.isinf(idata.east):
+            self.dsb_utmx.setText('None')
+        else:
+            self.dsb_utmx.setText(str(idata.east))
+        if np.isinf(idata.north):
+            self.dsb_utmy.setText('None')
+        else:
+            self.dsb_utmy.setText(str(idata.north))
         self.dsb_utmzone.setText(str(idata.utm_zone))
         self.dsb_rot.setText(str(idata.rotation_angle))
 

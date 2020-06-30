@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        dataprep.py (part of PyGMI)
+# Name:        tiltdepth.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -47,6 +47,7 @@ import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
 from pygmi.raster.datatypes import Data
+from pygmi.vector.dataprep import quickgrid
 
 
 class TiltDepth(QtWidgets.QDialog):
@@ -429,7 +430,7 @@ class TiltDepth(QtWidgets.QDialog):
 
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
 
-        tmp = dataprep.quickgrid(gx0, gy0, dist, data.xdim)
+        tmp = quickgrid(gx0, gy0, dist, data.xdim)
 
         mask = np.ma.getmaskarray(tmp)
         gdat = tmp.data

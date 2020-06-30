@@ -131,17 +131,17 @@ def test_trimraster():
     np.testing.assert_array_equal(dat[0].data, dat2)
 
 
-def test_quickgrid():
-    """test quick grid."""
-    dat2 = [[1, 1],
-            [2, 1.3333333333333333]]
+# def test_quickgrid():
+#     """test quick grid."""
+#     dat2 = [[1, 1],
+#             [2, 1.3333333333333333]]
 
-    x = np.array([1, 2, 1])
-    y = np.array([1, 1, 2])
-    z = np.array([1, 1, 2])
+#     x = np.array([1, 2, 1])
+#     y = np.array([1, 1, 2])
+#     z = np.array([1, 1, 2])
 
-    dat = dataprep.quickgrid(x, y, z, 1)
-    np.testing.assert_array_equal(dat, dat2)
+#     dat = dataprep.quickgrid(x, y, z, 1)
+#     np.testing.assert_array_equal(dat, dat2)
 
 
 def test_equation():

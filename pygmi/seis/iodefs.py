@@ -150,10 +150,11 @@ class ImportSeisan():
             True if successful, False otherwise.
 
         """
+
         ext = \
             'Seisan Format (*.out);;' +\
             'All Files (*.*)'
-        if filename is None:
+        if filename is None or filename is False:
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
         if filename == '':

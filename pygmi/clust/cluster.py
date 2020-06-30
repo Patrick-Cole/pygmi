@@ -347,8 +347,10 @@ class Cluster(QtWidgets.QDialog):
                 continue
 
             if self.cltype == 'k-means':
-                cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
-                                           max_iter=self.max_iter).fit(X)
+                cfit = skc.KMeans(n_clusters=i, tol=self.tol,
+                                  max_iter=self.max_iter).fit(X)
+                # cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
+                #                            max_iter=self.max_iter).fit(X)
             elif self.cltype == 'DBSCAN':
                 cfit = skc.DBSCAN(eps=self.eps,
                                   min_samples=self.min_samples).fit(X)
@@ -357,9 +359,10 @@ class Cluster(QtWidgets.QDialog):
                 cfit = skc.Birch(n_clusters=i, threshold=self.bthres,
                                  branching_factor=self.branchfac).fit(X)
 
-            if cfit.labels_.max() < i-1:
+            if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
                 print('Could not find '+str(i)+' clusters. '
-                                'Please change settings.')
+                      'Please change settings.')
+                breakpoint()
                 return False
 
             dat_out.append(Data())
@@ -382,7 +385,7 @@ class Cluster(QtWidgets.QDialog):
 
             m = []
             s = []
-            for i2 in range(i):
+            for i2 in range(cfit.labels_.max()+1):
                 m.append(Xorig[cfit.labels_ == i2].mean(0))
                 s.append(Xorig[cfit.labels_ == i2].std(0))
 
