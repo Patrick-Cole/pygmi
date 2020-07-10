@@ -229,6 +229,16 @@ class CrispClust(QtWidgets.QDialog):
 
         """
 
+        self.combobox_alg.setCurrentText(projdata['cltype'])
+        self.spinbox_minclusters.setProperty('value', projdata['min_cluster'])
+        self.spinbox_maxclusters.setProperty('value', projdata['max_cluster'])
+        self.spinbox_maxiterations.setProperty('value', projdata['max_iter'])
+        self.doublespinbox_maxerror.setProperty('value',
+                                                projdata['term_thresh'])
+        self.spinbox_repeatedruns.setProperty('value', projdata['runs'])
+        self.doublespinbox_constraincluster.setProperty('value',
+                                                        projdata['constrain'])
+
         return False
 
     def saveproj(self):
@@ -242,12 +252,18 @@ class CrispClust(QtWidgets.QDialog):
             Project data to be saved to JSON project file.
 
         """
+        self.update_vars()
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['cltype'] = self.cltype
+        projdata['min_cluster'] = self.min_cluster
+        projdata['max_cluster'] = self.max_cluster
+        projdata['max_iter'] = self.max_iter
+        projdata['term_thresh'] = self.term_thresh
+        projdata['runs'] = self.runs
+        projdata['constrain'] = self.constrain
 
         return projdata
-
 
     def update_vars(self):
         """

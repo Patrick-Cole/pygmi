@@ -176,6 +176,10 @@ class ImageSeg(QtWidgets.QDialog):
 
         """
 
+        self.scale.setText(projdata['scale'])
+        self.scale.setText(projdata['wcolor'])
+        self.scale.setText(projdata['wcompact'])
+
         return False
 
     def saveproj(self):
@@ -191,7 +195,9 @@ class ImageSeg(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['scale'] = self.scale.text()
+        projdata['wcolor'] = self.wcolor.text()
+        projdata['wcompact'] = self.wcompact.text()
 
         return projdata
 

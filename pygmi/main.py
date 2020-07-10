@@ -377,6 +377,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.my_class.parent.process_is_active(False)
         if iflag:
             print(self.my_class_name+' finished!')
+        else:
+            print(self.my_class_name+' cancelled.')
         return iflag
 
 
