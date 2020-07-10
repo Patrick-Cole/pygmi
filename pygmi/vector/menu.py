@@ -102,6 +102,10 @@ class MenuWidget():
 
         context_menu['Vector'].addSeparator()
 
+        self.action_export_shape = QtWidgets.QAction('Export Shape Data')
+        context_menu['Vector'].addAction(self.action_export_shape)
+        self.action_export_shape.triggered.connect(self.export_shape)
+
         self.action_show_vector_data = QtWidgets.QAction('Show Vector Data')
         context_menu['Vector'].addAction(self.action_show_vector_data)
         self.action_show_vector_data.triggered.connect(self.show_vector_data)
@@ -128,6 +132,10 @@ class MenuWidget():
     def export_line(self):
         """Export line data."""
         self.parent.launch_context_item(iodefs.ExportLine)
+
+    def export_shape(self):
+        """Export line data."""
+        self.parent.launch_context_item(iodefs.ExportShapeData)
 
     def import_line_data(self):
         """Import line data."""

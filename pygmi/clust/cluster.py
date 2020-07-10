@@ -270,6 +270,16 @@ class Cluster(QtWidgets.QDialog):
 
         """
 
+        self.combobox_alg.setCurrentText(projdata['cltype'])
+        self.spinbox_minclusters.setProperty('value', projdata['min_cluster'])
+        self.spinbox_maxclusters.setProperty('value', projdata['max_cluster'])
+        self.spinbox_maxiterations.setProperty('value', projdata['max_iter'])
+        self.doublespinbox_maxerror.setProperty('value', projdata['tol'])
+        self.doublespinbox_eps.setProperty('value', projdata['eps'])
+        self.spinbox_minsamples.setProperty('value', projdata['min_samples'])
+        self.doublespinbox_bthres.setProperty('value', projdata['bthres'])
+        self.spinbox_branchfac.setProperty('value', projdata['branchfac'])
+
         return False
 
     def saveproj(self):
@@ -283,9 +293,19 @@ class Cluster(QtWidgets.QDialog):
             Project data to be saved to JSON project file.
 
         """
+
+        self.update_vars()
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['cltype'] = self.cltype
+        projdata['min_cluster'] = self.min_cluster
+        projdata['max_cluster'] = self.max_cluster
+        projdata['max_iter'] = self.max_iter
+        projdata['tol'] = self.tol
+        projdata['eps'] = self.eps
+        projdata['min_samples'] = self.min_samples
+        projdata['bthres'] = self.bthres
+        projdata['branchfac'] = self.branchfac
 
         return projdata
 

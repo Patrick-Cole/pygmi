@@ -71,8 +71,8 @@ class MenuWidget():
         self.menu3.addAction(self.action_import_sentinel2)
         self.action_import_sentinel2.triggered.connect(self.import_sentinel2)
 
-        self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P '
-                                                          'to shapefile')
+        self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P')
+
         self.menu3.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
 

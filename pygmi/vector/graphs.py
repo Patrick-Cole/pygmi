@@ -357,7 +357,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_vector(self, data):
+    def update_vector(self, data, col):
         """
         Update the plot from vactor data.
 
@@ -402,8 +402,11 @@ class MyMplCanvas(FigureCanvas):
             self.axes.axis('equal')
 
         elif 'Point' in data:
-            self.axes.plot(data['Point'].geometry.x,
-                           data['Point'].geometry.y, 'go')
+            self.axes.scatter(data['Point'].geometry.x,
+                              data['Point'].geometry.y,
+                              c = data['Point'][col])
+            # self.axes.plot(data['Point'].geometry.x,
+            #                data['Point'].geometry.y, 'go')
 
         self.figure.canvas.draw()
 
@@ -750,6 +753,9 @@ class PlotRose(GraphWindow):
         i = self.combobox1.currentIndex()
         if 'LineString' in data:
             self.mmc.update_rose(data, i, self.spinbox.value())
+        else:
+            print('No line type data.')
+            return
 
     def run(self):
         """
@@ -774,12 +780,30 @@ class PlotVector(GraphWindow):
         super().__init__(parent)
         self.indata = {}
         self.parent = parent
-        self.combobox1.hide()
         self.label1.hide()
         self.combobox2.hide()
         self.label2.hide()
         self.spinbox.hide()
         self.label3.hide()
+
+    def change_band(self):
+        """
+        Combo box to choose band.
+
+        Returns
+        -------
+        None.
+
+        """
+#        key = list(self.indata['Vector'].keys())[0]
+        data = self.indata['Vector']
+#        data = data.dropna()
+        i = self.combobox1.currentText()
+
+#        self.mmc.update_map(data.pygmiX, data.pygmiY, data[i])
+
+        self.mmc.update_vector(data, i)
+
 
     def run(self):
         """
@@ -790,9 +814,28 @@ class PlotVector(GraphWindow):
         None.
 
         """
-        self.show()
+
         data = self.indata['Vector']
-        self.mmc.update_vector(data)
+        key = list(data.keys())[0]
+        data = data[key]
+        data = data.select_dtypes(include='number')
+
+        filt = ((data.columns != 'geometry') &
+                (data.columns != 'line') &
+                (data.columns != 'pygmiX') &
+                (data.columns != 'pygmiY'))
+
+        cols = list(data.columns[filt])
+        if len(cols) > 0:
+            self.combobox1.addItems(cols)
+            self.combobox1.setCurrentIndex(0)
+        else:
+            self.combobox1.hide()
+
+        self.show()
+
+        self.change_band()
+
 
 
 def histogram(x, y=None, xmin=None, xmax=None, bins=10):

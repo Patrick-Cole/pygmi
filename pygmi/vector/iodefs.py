@@ -351,6 +351,64 @@ class ExportLine():
         return True
 
 
+class ExportShapeData():
+    """
+    Export Line Data.
+
+    Attributes
+    ----------
+    name : str
+        item name
+    pbar : progressbar
+        reference to a progress bar.
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    """
+
+    def __init__(self, parent):
+        self.name = 'Export Shapefile: '
+        self.pbar = None
+        self.parent = parent
+        self.indata = {}
+
+    def run(self):
+        """
+        Run routine.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if 'Vector' not in self.indata:
+            print('Error: You need to have vector data first!')
+            return False
+
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', 'shp (*.shp)')
+
+        if filename == '':
+            return False
+
+        print('Export busy...')
+
+        os.chdir(os.path.dirname(filename))
+        data = self.indata['Vector']
+        data = list(data.values())[0]
+
+        data.to_file(filename)
+#        dfall = data.drop(['pygmiX', 'pygmiY'], axis=1)
+
+#        dfall.to_csv(filename, index=False)
+
+        print('Export completed')
+
+        return True
+
+
 class ImportShapeData():
     """
     Import Shapefile Data.
