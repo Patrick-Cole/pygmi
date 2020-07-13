@@ -1431,7 +1431,7 @@ def cluster_to_raster(indata):
 
     for i in indata['Cluster']:
         indata['Raster'].append(i)
-        indata['Raster'][-1].data += 1
+        indata['Raster'][-1].data = indata['Raster'][-1].data + 1
 
     return indata
 
