@@ -167,7 +167,9 @@ class ImportData():
 
         """
 
+        piter = None
         if not nodialog:
+            piter = self.parent.pbar.iter
             ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;'
                    'ERMapper (*.ers);;'
                    'ENVI (*.hdr);;'
@@ -208,9 +210,9 @@ class ImportData():
                                                         nval)
             if not ok:
                 nval = 0.0
-            dat = get_raster(self.ifile, nval)
+            dat = get_raster(self.ifile, nval, piter=piter)
         else:
-            dat = get_raster(self.ifile)
+            dat = get_raster(self.ifile, piter=piter)
 
         if dat is None:
             if self.filt == 'Surfer grid (v.6) (*.grd)':
@@ -526,7 +528,7 @@ def get_ascii(ifile):
     return dat
 
 
-def get_raster(ifile, nval=None):
+def get_raster(ifile, nval=None, piter=None):
     """
     This function loads a raster dataset off the disk using the GDAL
     libraries. It returns the data in a PyGMI data object.
@@ -543,6 +545,10 @@ def get_raster(ifile, nval=None):
     dat : PyGMI raster Data
         dataset imported
     """
+
+    if piter is None:
+        piter = iter
+
     dat = []
     bname = ifile.split('/')[-1].rpartition('.')[0]+': '
     ifile = ifile[:]
@@ -584,7 +590,7 @@ def get_raster(ifile, nval=None):
 
     gtr = dataset.GetGeoTransform()
 
-    for i in range(dataset.RasterCount):
+    for i in piter(range(dataset.RasterCount)):
         rtmp = dataset.GetRasterBand(i+1)
         bandid = rtmp.GetDescription()
         if nval is None:

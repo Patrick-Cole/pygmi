@@ -35,7 +35,6 @@ pygmi packages.
 
 """
 
-import copy
 import json
 import pdb
 import sys
@@ -50,7 +49,11 @@ import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
 
-matplotlib.rcParams['figure.dpi'] = 150
+matplotlib.rcParams['figure.dpi'] = 300
+matplotlib.rcParams['font.size'] = 6.0
+matplotlib.rcParams['axes.formatter.limits'] = [-12, 12]
+
+
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
 

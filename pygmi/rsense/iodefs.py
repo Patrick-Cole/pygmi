@@ -180,6 +180,8 @@ class ImportData():
 
         """
 
+        piter = self.parent.pbar.iter
+
         if self.extscene is None:
             return
         else:
@@ -195,7 +197,7 @@ class ImportData():
         self.ext = filename[-3:]
         self.ext = self.ext.lower()
 
-        dat = get_data(self.ifile)
+        dat = get_data(self.ifile, piter)
 
         if dat is None:
             if filt == 'hdf (*.hdf *.h5)':
@@ -816,7 +818,7 @@ def calculate_toa(dat):
     return out
 
 
-def get_data(ifile):
+def get_data(ifile, piter=None):
     """
     This function loads a raster dataset off the disk using the GDAL
     libraries. It returns the data in a PyGMI data object.
@@ -837,13 +839,13 @@ def get_data(ifile):
     print('Importing', bfile)
 
     if 'AST_' in bfile and 'hdf' in bfile.lower():
-        dat = get_aster_hdf(ifile)
+        dat = get_aster_hdf(ifile, piter)
     elif 'AST_' in bfile and 'zip' in bfile.lower():
-        dat = get_aster_zip(ifile)
+        dat = get_aster_zip(ifile, piter)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']:
-        dat = get_landsat(ifile)
+        dat = get_landsat(ifile, piter)
     elif '.xml' in bfile and '.SAFE' in ifile:
-        dat = get_sentinel2(ifile)
+        dat = get_sentinel2(ifile, piter)
     else:
         dat = None
 
@@ -987,7 +989,7 @@ def get_modis(ifile):
     return dat
 
 
-def get_landsat(ifilet):
+def get_landsat(ifilet, piter=None):
     """
     Gets Landsat Data.
 
@@ -1001,6 +1003,9 @@ def get_landsat(ifilet):
     out : Data
         PyGMI raster dataset
     """
+
+    if piter is None:
+        piter = iter
 
     idir = os.path.dirname(ifilet)
 
@@ -1066,7 +1071,7 @@ def get_landsat(ifilet):
 
     nval = 0
     dat = []
-    for ifile2 in files:
+    for ifile2 in piter(files):
     # for fext in bands[spacecraft]:
         if 'B6_VCID' in ifile2:
             fext = ifile2[-12:-4]
@@ -1116,7 +1121,7 @@ def get_landsat(ifilet):
     return dat
 
 
-def get_sentinel2(ifile):
+def get_sentinel2(ifile, piter=None):
     """
     Gets Sentinel-2 Data.
 
@@ -1130,6 +1135,10 @@ def get_sentinel2(ifile):
     dat : PyGMI raster Data
         dataset imported
     """
+
+    if piter is None:
+        piter = iter
+
     ifile = ifile[:]
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
@@ -1146,7 +1155,7 @@ def get_sentinel2(ifile):
             print('Problem with', ifile)
             continue
 
-        for i in range(dataset.RasterCount):
+        for i in piter(range(dataset.RasterCount)):
             rtmp = dataset.GetRasterBand(i+1)
             bname = rtmp.GetDescription()
             print('Importing', bname)
@@ -1163,6 +1172,7 @@ def get_sentinel2(ifile):
             dat[-1].extent_from_gtr(dataset.GetGeoTransform())
             dat[-1].wkt = dataset.GetProjectionRef()
             dat[-1].filename = ifile
+            dat[-1].units = 'Reflectance x 10000'
 
     if dat == []:
         dat = None
@@ -1170,7 +1180,7 @@ def get_sentinel2(ifile):
     return dat
 
 
-def get_aster_zip(ifile):
+def get_aster_zip(ifile, piter=None):
     """
     Gets ASTER Data.
 
@@ -1184,6 +1194,9 @@ def get_aster_zip(ifile):
     dat : PyGMI raster Data
         dataset imported
     """
+
+    if piter is None:
+        piter = iter
 
     SF09 = {'Band1': 0.6760,
             'Band2': 0.7080,
@@ -1202,10 +1215,13 @@ def get_aster_zip(ifile):
 
     if 'AST_07' in ifile:
         scalefactor = 0.001
+        units = 'Surface Reflectance'
     elif 'AST_05' in ifile:
         scalefactor = 0.001
+        units = 'Surface Emissivity'
     elif 'AST_08' in ifile:
         scalefactor = 0.1
+        units = 'Surface Kinetic Temperature'
     # elif 'AST_09' in ifile:
     #     scalefactor = None
     else:
@@ -1223,7 +1239,7 @@ def get_aster_zip(ifile):
 
     dat = []
     nval = 0
-    for zfile in zipnames:
+    for zfile in piter(zipnames):
         if zfile.lower()[-4:] != '.tif':
             continue
 
@@ -1248,6 +1264,7 @@ def get_aster_zip(ifile):
         dat[-1].nullvalue = nval
         dat[-1].wkt = dataset.GetProjectionRef()
         dat[-1].filename = ifile
+        dat[-1].units = units
 
         dataset = None
 
@@ -1258,7 +1275,7 @@ def get_aster_zip(ifile):
     return dat
 
 
-def get_aster_hdf(ifile):
+def get_aster_hdf(ifile, piter=None):
     """
     Gets ASTER Data.
 
@@ -1284,6 +1301,9 @@ def get_aster_hdf(ifile):
         ptype = '08'
     else:
         return None
+
+    if piter is None:
+        piter = iter
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
@@ -1315,20 +1335,24 @@ def get_aster_hdf(ifile):
     if ptype == '07':
         subdata = [i for i in subdata if 'SurfaceReflectance' in i[0]]
         scalefactor = 0.001
+        units = 'Surface Reflectance'
     elif ptype == '05':
         subdata = [i for i in subdata if 'SurfaceEmissivity' in i[0]]
         scalefactor = 0.001
+        units = 'Surface Emissivity'
     elif ptype == '08':
         scalefactor = 0.1
+        units = 'Surface Kinetic Temperature'
     elif ptype == 'L1T':
         subdata = [i for i in subdata if 'ImageData' in i[0]]
         scalefactor = 1
+        units = ''
     else:
         return
 
     dat = []
     nval = 0
-    for bfile, bandid in subdata:
+    for bfile, bandid in piter(subdata):
         if 'QA' in bfile:
             continue
         if ptype == 'L1T' and 'ImageData3B' in bfile:
@@ -1357,6 +1381,7 @@ def get_aster_hdf(ifile):
         dat[-1].metadata['CalendarDate'] = cdate
         dat[-1].metadata['ShortName'] = meta['SHORTNAME']
         dat[-1].filename = ifile
+        dat[-1].units = units
 
         if ptype == 'L1T':
             dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]

@@ -41,6 +41,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import matplotlib.colors as mcolors
+from pygmi.raster.modest_image import imshow
 
 
 class MyMplCanvas(FigureCanvas):
@@ -119,20 +120,27 @@ class MyMplCanvas(FigureCanvas):
 
         extent = data1.extent
 
-        carray = data1.data.compressed()
-        ichk = np.array_equal(carray, carray.astype(int))
+        # carray = data1.data.compressed()
+        # ichk = np.array_equal(carray, carray.astype(int))
 
-        rdata = self.axes.imshow(data1.data, extent=extent, cmap=cm.jet,
-                                 interpolation='nearest')
+        # rdata = self.axes.imshow(data1.data, extent=extent, cmap=cm.jet,
+        #                          interpolation='nearest')
 
-        if ichk and not data1.isrgb:
-            vals = np.unique(data1.data)
-            vals = vals.compressed()
-            bnds = (vals - 0.5).tolist() + [vals.max() + .5]
-            cbar = self.axes.figure.colorbar(rdata, boundaries=bnds,)
-#                                             values=vals, ticks=vals)
-            cbar.set_label(data1.units)
-        elif not data1.isrgb:
+        rdata = imshow(self.axes, data1.data, extent=extent, cmap=cm.jet,
+                       interpolation='nearest')
+
+        # if ichk and not data1.isrgb:
+        #     vals = np.unique(data1.data)
+        #     vals = vals.compressed()
+        #     bnds = (vals - 0.5).tolist() + [vals.max() + .5]
+        #     cbar = self.axes.figure.colorbar(rdata, boundaries=bnds,)
+        #                                      # values=vals, ticks=vals)
+        #     cbar.set_label(data1.units)
+        # elif not data1.isrgb:
+        #     cbar = self.figure.colorbar(rdata)
+        #     cbar.set_label(data1.units)
+
+        if not data1.isrgb:
             cbar = self.figure.colorbar(rdata)
             cbar.set_label(data1.units)
 
@@ -495,7 +503,7 @@ class PlotRaster(GraphWindow):
 
         for i in data:
             self.combobox1.addItem(i.dataid)
-        self.change_band()
+#        self.change_band()
 
 
 class PlotSurface(GraphWindow):
