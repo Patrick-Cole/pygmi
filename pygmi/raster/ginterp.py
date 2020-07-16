@@ -1081,6 +1081,7 @@ class MySunCanvas(FigureCanvas):
     axes: matplotlib axes instance
         axes on which the sun is drawn
     """
+
     def __init__(self, parent):
         fig = Figure()
         super().__init__(fig)
@@ -1135,6 +1136,7 @@ class PlotInterp(QtWidgets.QDialog):
     self.msc : pygmi.raster.ginterp.MySunCanvas, FigureCanvas
         small canvas containing the sunshading control
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -1782,7 +1784,7 @@ class PlotInterp(QtWidgets.QDialog):
 
             mask = img[:, :, 3]
 
-        export = iodefs.ExportData(self.parent)
+        # export = iodefs.ExportData(self.parent)
 
         os.chdir(os.path.dirname(filename))
 
@@ -1810,32 +1812,7 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[2].nullvalue = 0
         newimg[3].nullvalue = 0
 
-#        imgshape0 = img.shape[0]
-#        imgshape1 = img.shape[1]
-#
-#        newimg[0].xdim = (newimg[0].xdim*newimg[0].cols)/imgshape1
-#        newimg[1].xdim = (newimg[1].xdim*newimg[1].cols)/imgshape1
-#        newimg[2].xdim = (newimg[2].xdim*newimg[2].cols)/imgshape1
-#        newimg[3].xdim = (newimg[3].xdim*newimg[3].cols)/imgshape1
-#
-#        newimg[0].ydim = (newimg[0].ydim*newimg[0].rows)/imgshape0
-#        newimg[1].ydim = (newimg[1].ydim*newimg[1].rows)/imgshape0
-#        newimg[2].ydim = (newimg[2].ydim*newimg[2].rows)/imgshape0
-#        newimg[3].ydim = (newimg[3].ydim*newimg[3].rows)/imgshape0
-#
-#        newimg[0].cols = imgshape1
-#        newimg[1].cols = imgshape1
-#        newimg[2].cols = imgshape1
-#        newimg[3].cols = imgshape1
-#
-#        newimg[0].rows = imgshape0
-#        newimg[1].rows = imgshape0
-#        newimg[2].rows = imgshape0
-#        newimg[3].rows = imgshape0
-
-        export.ifile = str(filename)
-        export.ext = filename[-3:]
-        export.export_gdal(newimg, 'GTiff')
+        iodefs.export_gdal(str(filename), newimg, 'GTiff')
 
 # Section for colorbars
         if 'Ternary' not in dtype:
