@@ -1283,8 +1283,11 @@ def export_gdal(ifile, dat, drv):
         dtmp.set_fill_value(datai.nullvalue)
         dtmp = dtmp.filled()
 
+        # This makes sure the nullvalue is of types GDAL accepts
         if dtype == np.uint8:
             datai.nullvalue = int(datai.nullvalue)
+        elif dtype == np.float32 or dtype == np.float64:
+            datai.nullvalue = float(datai.nullvalue)
 
         rtmp.SetNoDataValue(datai.nullvalue)
         rtmp.WriteArray(dtmp)

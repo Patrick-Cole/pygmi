@@ -886,7 +886,7 @@ def nextpow2(n):
     return m_i
 
 
-def vertical(data, npts=None, xint=1):
+def vertical(data, npts=None, xint=1, order=1):
     """
     Vertical derivative.
 
@@ -932,7 +932,7 @@ def vertical(data, npts=None, xint=1):
         for j in range(npts):
             freqy = (j+1-cy)*wn
             freq = np.sqrt(freqx*freqx+freqy*freqy)
-            fz[i, j] = f[i, j]*freq
+            fz[i, j] = f[i, j]*freq**order
     fz = np.fft.fftshift(fz)
     fzinv = np.fft.ifft2(fz)
     dz = np.real(fzinv[rdiff:nr+rdiff, cdiff:nc+cdiff])
