@@ -97,7 +97,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def setupui(self):
         """
-        Setup for the GUI.
+        GUI setup.
 
         Returns
         -------
@@ -200,7 +200,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -213,13 +213,11 @@ class MainWidget(QtWidgets.QMainWindow):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -232,7 +230,6 @@ class MainWidget(QtWidgets.QMainWindow):
 #        projdata['ftype'] = '2D Mean'
 
         return projdata
-
 
     def data_reset(self):
         """

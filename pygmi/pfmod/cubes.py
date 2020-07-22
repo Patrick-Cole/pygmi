@@ -24,8 +24,6 @@
 # -----------------------------------------------------------------------------
 """This is code for the 3d model creation."""
 
-from __future__ import print_function
-
 import ctypes
 import os
 import sys

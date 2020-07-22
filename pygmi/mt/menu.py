@@ -64,7 +64,9 @@ class MenuWidget():
         self.menumt.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
-        self.action_import_lemi417_data = QtWidgets.QAction('Import LEMI-417 Data to Point Data')
+        self.action_import_lemi417_data = QtWidgets.QAction('Import LEMI-417 '
+                                                            'Data to Point '
+                                                            'Data')
         self.menumt.addAction(self.action_import_lemi417_data)
         self.action_import_lemi417_data.triggered.connect(
             self.import_lemi417_data)

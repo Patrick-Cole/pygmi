@@ -92,7 +92,8 @@ class MenuWidget():
 
         self.menu2 = self.menu.addMenu('Change Detection')
 
-        self.action_create_list = QtWidgets.QAction('Create Scene List (Change Detection)')
+        self.action_create_list = QtWidgets.QAction('Create Scene List '
+                                                    '(Change Detection)')
         self.menu2.addAction(self.action_create_list)
         self.action_create_list.triggered.connect(self.create_scene)
 

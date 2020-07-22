@@ -150,7 +150,6 @@ class ImportSeisan():
             True if successful, False otherwise.
 
         """
-
         ext = \
             'Seisan Format (*.out);;' +\
             'All Files (*.*)'
@@ -232,8 +231,8 @@ class ImportSeisan():
                 file_errors.append(errs)
                 continue
 
-            if ltype == '1'and (np.isnan(tmp.latitude) or
-                                np.isnan(tmp.longitude)):
+            if ltype == '1' and (np.isnan(tmp.latitude) or
+                                 np.isnan(tmp.longitude)):
                 errs = ['Warning: Incomplete data on line: '+str(iii+1), i]
                 file_errors.append(errs)
 
@@ -290,11 +289,11 @@ class ImportSeisan():
             if has_errors is False:
                 print('Warning: Problem with file')
                 print('Process will continue, but please '
-                               'see warnings in '+filename+'.log')
+                      'see warnings in '+filename+'.log')
             else:
                 print('Error: Problem with file')
                 print('Process stopping, please see errors '
-                               'in '+filename+'.log')
+                      'in '+filename+'.log')
             fout = open(filename+'.log', 'w')
             for i in file_errors:
                 fout.write(i[0]+'\n')
@@ -313,7 +312,7 @@ class ImportSeisan():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -326,13 +325,11 @@ class ImportSeisan():
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -873,7 +870,7 @@ class ImportGenericFPS():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -886,13 +883,11 @@ class ImportGenericFPS():
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -2411,7 +2406,7 @@ class FilterSeisan(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -2424,13 +2419,11 @@ class FilterSeisan(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

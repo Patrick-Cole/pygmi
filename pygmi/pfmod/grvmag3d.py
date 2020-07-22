@@ -36,8 +36,6 @@ Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 1st edn. Cambridge University Press, Cambridge, UK, 441 pp. 200-201
 """
 
-from __future__ import print_function
-
 import copy
 import tempfile
 from math import sqrt

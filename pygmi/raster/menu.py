@@ -101,6 +101,10 @@ class MenuWidget():
         self.menu.addAction(self.action_rtp)
         self.action_rtp.triggered.connect(self.rtp)
 
+        self.action_cont = QtWidgets.QAction('Continuation')
+        self.menu.addAction(self.action_cont)
+        self.action_cont.triggered.connect(self.cont)
+
         self.action_igrf = QtWidgets.QAction('Calculate IGRF Corrected Data')
         self.menu.addAction(self.action_igrf)
         self.action_igrf.triggered.connect(self.igrf)
@@ -127,7 +131,8 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
-        self.action_raster_data_interp = QtWidgets.QAction('Raster Data Interpretation')
+        self.action_raster_data_interp = QtWidgets.QAction('Raster Data '
+                                                           'Interpretation')
         self.menu.addAction(self.action_raster_data_interp)
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
 
@@ -172,7 +177,8 @@ class MenuWidget():
         context_menu['Raster'].addAction(self.action_show_histogram)
         self.action_show_histogram.triggered.connect(self.show_histogram)
 
-        self.action_show_2d_corr_coef = QtWidgets.QAction('Show 2D Correlation Coefficients')
+        self.action_show_2d_corr_coef = QtWidgets.QAction('Show 2D Correlation'
+                                                          ' Coefficients')
         context_menu['Raster'].addAction(self.action_show_2d_corr_coef)
         self.action_show_2d_corr_coef.triggered.connect(self.show_ccoef)
 
@@ -232,6 +238,11 @@ class MenuWidget():
         """Compute RTP."""
         fnc = dataprep.RTP(self.parent)
         self.parent.item_insert('Step', 'RTP', fnc)
+
+    def cont(self):
+        """Compute Continuation."""
+        fnc = dataprep.Continuation(self.parent)
+        self.parent.item_insert('Step', 'Continuation', fnc)
 
     def show_ccoef(self):
         """Show 2D correlation coefficients."""

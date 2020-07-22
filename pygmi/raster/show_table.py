@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""This is a routine which displays a table graphically with various stats."""
+"""Routine which displays a table graphically with various stats."""
 
 from PyQt5 import QtWidgets
 import numpy as np
@@ -31,6 +31,7 @@ import scipy.stats.mstats as st
 
 class BasicStats(QtWidgets.QDialog):
     """Show a summary of basic stats."""
+
     def __init__(self, parent):
         super().__init__(parent)
 
@@ -185,6 +186,7 @@ def basicstats_calc(data):
 
 class ClusterStats(QtWidgets.QDialog):
     """Show a summary of basic statistics."""
+
     def __init__(self, parent):
         super().__init__(parent)
 

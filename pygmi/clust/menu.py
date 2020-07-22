@@ -77,7 +77,8 @@ class MenuWidget():
         self.menuclustering.addAction(self.action_segmentation)
         self.action_segmentation.triggered.connect(self.segmentation)
 
-        self.action_super_class = QtWidgets.QAction("Supervised Classification")
+        self.action_super_class = QtWidgets.QAction("Supervised "
+                                                    "Classification")
         self.menuclustering.addAction(self.action_super_class)
         self.action_super_class.triggered.connect(self.super_class)
 
@@ -90,7 +91,8 @@ class MenuWidget():
 # Context menus
         context_menu['Cluster'].addSeparator()
 
-        self.action_cluster_statistics = QtWidgets.QAction('Cluster Statistics')
+        self.action_cluster_statistics = QtWidgets.QAction('Cluster '
+                                                           'Statistics')
         context_menu['Cluster'].addAction(self.action_cluster_statistics)
         self.action_cluster_statistics.triggered.connect(self.cluster_stats)
 
@@ -98,11 +100,15 @@ class MenuWidget():
         context_menu['Cluster'].addAction(self.action_show_class_data)
         self.action_show_class_data.triggered.connect(self.show_raster_data)
 
-        self.action_show_membership_data = QtWidgets.QAction("Show Membership Data (Fuzzy Only)")
+        self.action_show_membership_data = QtWidgets.QAction("Show Membership "
+                                                             "Data (Fuzzy "
+                                                             "Only)")
         context_menu['Cluster'].addAction(self.action_show_membership_data)
         self.action_show_membership_data.triggered.connect(self.show_membership_data)
 
-        self.action_show_objvrcncexbigraphs = QtWidgets.QAction("Show OBJ, VRC, NCE, XBI Graphs")
+        self.action_show_objvrcncexbigraphs = QtWidgets.QAction("Show OBJ, "
+                                                                "VRC, NCE, "
+                                                                "XBI Graphs")
         context_menu['Cluster'].addAction(self.action_show_objvrcncexbigraphs)
         self.action_show_objvrcncexbigraphs.triggered.connect(self.show_vrc_etc)
 

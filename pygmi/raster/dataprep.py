@@ -24,8 +24,7 @@
 # -----------------------------------------------------------------------------
 """A set of Raster Data Preparation routines."""
 
-from __future__ import print_function
-
+import math
 import os
 import copy
 from collections import Counter
@@ -36,6 +35,7 @@ import pandas as pd
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
 from scipy.signal import tukey
+import scipy.interpolate as si
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 
@@ -117,7 +117,7 @@ class DataCut():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -130,7 +130,6 @@ class DataCut():
             A check to see if settings was successfully run.
 
         """
-
         self.ifile = projdata['shapefile']
 
         return False
@@ -138,7 +137,6 @@ class DataCut():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -151,9 +149,6 @@ class DataCut():
         projdata['shapefile'] = self.ifile
 
         return projdata
-
-
-
 
 
 class DataMerge(QtWidgets.QDialog):
@@ -261,7 +256,6 @@ class DataMerge(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             data = self.indata['Raster'][0]
 
@@ -282,7 +276,7 @@ class DataMerge(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -295,7 +289,6 @@ class DataMerge(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.dxy = projdata['dxy']
 
         return False
@@ -303,7 +296,6 @@ class DataMerge(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -546,7 +538,6 @@ class DataReproj(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if self.orig_wkt is None:
             self.orig_wkt = self.indata['Raster'][0].wkt
         if self.targ_wkt is None:
@@ -566,7 +557,7 @@ class DataReproj(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -579,7 +570,6 @@ class DataReproj(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.orig_wkt = projdata['orig_wkt']
         self.targ_wkt = projdata['targ_wkt']
 
@@ -588,7 +578,6 @@ class DataReproj(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -725,7 +714,7 @@ class GetProf():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -745,7 +734,6 @@ class GetProf():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -1127,8 +1115,6 @@ class RTP(QtWidgets.QDialog):
     """
     Perform Reduction to the Pole on Magnetic data.
 
-    This class grids point data using a nearest neighbourhood technique.
-
     Attributes
     ----------
     parent : parent
@@ -1215,12 +1201,6 @@ class RTP(QtWidgets.QDialog):
         self.dataid.clear()
         self.dataid.addItems(tmp)
 
-        if len(self.indata['Raster']) > 1:
-            nodialog = False
-            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                          'Please confirm raster band.',
-                                          QtWidgets.QMessageBox.Ok)
-
         if not nodialog:
             tmp = self.exec_()
 
@@ -1233,7 +1213,7 @@ class RTP(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -1246,17 +1226,15 @@ class RTP(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.dataid.setCurrentText(projdata['band'])
-        projdata['inc'] = self.dsb_inc.value()
-        projdata['dec'] = self.dsb_dec.value()
+        self.dsb_inc.setValue(projdata['inc'])
+        self.dsb_dec.setValue(projdata['dec'])
 
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -1296,6 +1274,372 @@ class RTP(QtWidgets.QDialog):
         self.outdata['Raster'] = newdat
 
 
+class Continuation(QtWidgets.QDialog):
+    """
+    Perform upward and downward contiuation on potential field data.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.pbar = self.parent.pbar
+
+        self.dataid = QtWidgets.QComboBox()
+        self.continuation = QtWidgets.QComboBox()
+        self.dsb_height = QtWidgets.QDoubleSpinBox()
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.cont')
+        label_band = QtWidgets.QLabel('Band to perform continuation:')
+        label_cont = QtWidgets.QLabel('Continuation type:')
+        label_height = QtWidgets.QLabel('Continuation distance:')
+
+        self.dsb_height.setMaximum(1000000.0)
+        self.dsb_height.setMinimum(0.0)
+        self.dsb_height.setValue(0.0)
+        self.continuation.clear()
+        self.continuation.addItems(['Upward', 'Downward'])
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Continuation')
+
+        gridlayout_main.addWidget(label_band, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.dataid, 0, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_cont, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.continuation, 1, 1, 1, 1)
+        gridlayout_main.addWidget(label_height, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_height, 2, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        tmp = []
+        if 'Raster' not in self.indata:
+            return False
+
+        for i in self.indata['Raster']:
+            tmp.append(i.dataid)
+
+        self.dataid.clear()
+        self.dataid.addItems(tmp)
+
+        if not nodialog:
+            tmp = self.exec_()
+
+            if tmp != 1:
+                return False
+
+        self.acceptall()
+
+        return True
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        self.dataid.setCurrentText(projdata['band'])
+        self.continuation.setCurrenText(projdata['ctype'])
+        self.dsb_height.setValue(projdata['height'])
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['band'] = self.dataid.currentText()
+        projdata['ctype'] = self.continuation.currentText()
+        projdata['height'] = self.dsb_height.value()
+
+        return projdata
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        h = self.dsb_height.value()
+        ctype = self.continuation.currentText()
+
+        # Get data
+        for i in self.indata['Raster']:
+            if i.dataid == self.dataid.currentText():
+                data = i
+                break
+
+        if ctype == 'Downward':
+            dat = taylorcont(data, h)
+        else:
+            dat = fftcont(data, h)
+
+        self.outdata['Raster'] = [dat]
+
+
+def fftprep(data):
+    """
+    FFT preparation.
+
+    Parameters
+    ----------
+    data : TYPE
+        DESCRIPTION.
+    dxy : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    datamedian = np.ma.median(data.data)
+    ndat = data.data - datamedian
+
+    nr, nc = data.data.shape
+    cdiff = nc//2
+    rdiff = nr//2
+
+    # Section to pad data
+
+    nr, nc = data.data.shape
+
+    z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))-999
+    x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
+    z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(-999)
+
+    z1[0] = 0
+    z1[-1] = 0
+    z1[:, 0] = 0
+    z1[:, -1] = 0
+
+    x = x1.flatten()
+    y = y1.flatten()
+    z = z1.flatten()
+
+    x = x[z != -999]
+    y = y[z != -999]
+    z = z[z != -999]
+
+    points = np.transpose([x, y])
+
+    zfin = si.griddata(points, z, (x1, y1), method='linear')
+
+    nr, nc = zfin.shape
+    zfin *= tukey(nc)
+    zfin *= tukey(nr)[:, np.newaxis]
+
+    return zfin, rdiff, cdiff, datamedian
+
+
+def fft_getkxy(fftmod, xdim, ydim):
+    """
+    Get KX and KY.
+
+    Parameters
+    ----------
+    fftmod : TYPE
+        DESCRIPTION.
+    dxy : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    ny, nx = fftmod.shape
+    kx = np.fft.fftfreq(nx, xdim)*2*np.pi
+    ky = np.fft.fftfreq(ny, ydim)*2*np.pi
+
+    KX, KY = np.meshgrid(kx, ky)
+    KY = -KY
+    return KX, KY
+
+
+def verticalp(data, order=1):
+    """
+    Vertical derivative.
+
+    Parameters
+    ----------
+    data : numpy array
+        Input data.
+    npts : int, optional
+        Number of points. The default is None.
+    xint : float, optional
+        X interval. The default is 1.
+
+    Returns
+    -------
+    dz : numpy array
+        Output data
+
+    """
+    xdim = data.xdim
+    ydim = data.ydim
+
+    ndat, rdiff, cdiff, _ = fftprep(data)
+    fftmod = np.fft.fft2(ndat)
+
+    KX, KY = fft_getkxy(fftmod, xdim, ydim)
+
+    k = np.sqrt(KX**2+KY**2)
+    filt = k**order
+
+    zout = np.real(np.fft.ifft2(fftmod*filt))
+    zout = zout[rdiff:-rdiff, cdiff:-cdiff]
+
+    return zout
+
+
+def fftcont(data, h):
+    """
+    Continuation.
+
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI raster data.
+    h : float
+        Height.
+
+    Returns
+    -------
+    dat : PyGMI Data
+        PyGMI raster data.
+
+    """
+    xdim = data.xdim
+    ydim = data.ydim
+
+    ndat, rdiff, cdiff, datamedian = fftprep(data)
+    fftmod = np.fft.fft2(ndat)
+
+    ny, nx = fftmod.shape
+
+    KX, KY = fft_getkxy(fftmod, xdim, ydim)
+    k = np.sqrt(KX**2+KY**2)
+
+    filt = np.exp(-np.abs(k)*h)
+
+    zout = np.real(np.fft.ifft2(fftmod*filt))
+    zout = zout[rdiff:-rdiff, cdiff:-cdiff]
+
+    zout = zout + datamedian
+
+    zout[data.data.mask] = data.data.fill_value
+
+    dat = Data()
+    dat.data = np.ma.masked_invalid(zout)
+    dat.data.mask = np.ma.getmaskarray(data.data)
+    dat.nullvalue = data.data.fill_value
+    dat.dataid = 'Upward_'+str(h)+'_'+data.dataid
+    dat.extent = data.extent
+    dat.xdim = data.xdim
+    dat.ydim = data.ydim
+
+    return dat
+
+
+def taylorcont(data, h):
+    """
+    Continuation.
+
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI raster data.
+    h : float
+        Height.
+
+    Returns
+    -------
+    dat : PyGMI Data
+        PyGMI raster data.
+
+    """
+    dz = verticalp(data, order=1)
+    dz2 = verticalp(data, order=2)
+    dz3 = verticalp(data, order=3)
+    zout = (data.data + h*dz + h**2*dz2/math.factorial(2) +
+            h**3*dz3/math.factorial(3))
+
+    dat = Data()
+    dat.data = np.ma.masked_invalid(zout)
+    dat.data.mask = np.ma.getmaskarray(data.data)
+    dat.nullvalue = data.data.fill_value
+    dat.dataid = 'Downward_'+str(h)+'_'+data.dataid
+    dat.extent = data.extent
+    dat.xdim = data.xdim
+    dat.ydim = data.ydim
+
+    return dat
+
+
 def rtp(data, I_deg, D_deg):
     """
     Reduction to th epole.
@@ -1315,56 +1659,29 @@ def rtp(data, I_deg, D_deg):
         PyGMI raster data.
 
     """
-    datamedian = np.ma.median(data.data)
-    ndat = data.data - datamedian
-    ndat.data[ndat.mask] = 0
+    xdim = data.xdim
+    ydim = data.ydim
 
-    nr, nc = data.data.shape
-
-    # nmax = np.max([nr, nc])
-    # nextpow2 = np.ceil(np.log2(np.abs(nmax)))
-    # npts = int(2**nextpow2)
-    # cdiff = int(np.floor((npts-nc)/2))
-    # rdiff = int(np.floor((npts-nr)/2))
-    # cdiff2 = npts-cdiff-nc
-    # rdiff2 = npts-rdiff-nr
-    # ndat = np.pad(ndat, [[rdiff, rdiff2], [cdiff, cdiff2]], 'linear_ramp')
-
-    cdiff = nc//2
-    rdiff = nr//2
-
-    ndat = np.pad(ndat, [[rdiff, rdiff], [cdiff, cdiff]], 'edge')
-
-    nr, nc = ndat.shape
-    ndat *= tukey(nc)
-    ndat *= tukey(nr)[:, np.newaxis]
-
+    ndat, rdiff, cdiff, datamedian = fftprep(data)
     fftmod = np.fft.fft2(ndat)
 
     ny, nx = fftmod.shape
-    kx = np.fft.fftfreq(nx, data.xdim)
-    ky = np.fft.fftfreq(ny, data.ydim)
-
-    KX, KY = np.meshgrid(kx, ky)
-    KY = -KY
+    KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
     I = np.deg2rad(I_deg)
     D = np.deg2rad(D_deg)
     alpha = np.arctan2(KY, KX)
 
-#    filt = 1/(np.sin(I)+1j*np.cos(I)*np.cos(D-alpha))**2
     filt = 1/(np.sin(I)+1j*np.cos(I)*np.sin(D+alpha))**2
 
-    zrtp = np.fft.ifft2(fftmod*filt)
+    zout = np.real(np.fft.ifft2(fftmod*filt))
+    zout = zout[rdiff:-rdiff, cdiff:-cdiff]
+    zout = zout + datamedian
 
-    zrtp = (zrtp[rdiff:-rdiff, cdiff:-cdiff])
-    zrtp = zrtp.real + datamedian
+    zout[data.data.mask] = data.data.fill_value
 
-    zrtp[data.data.mask] = data.data.fill_value
-
-# Create dataset
     dat = Data()
-    dat.data = np.ma.masked_invalid(zrtp)
+    dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nullvalue = data.data.fill_value
     dat.dataid = 'RTP_'+data.dataid
@@ -1825,12 +2142,11 @@ def trim_raster(olddata):
     return olddata
 
 
-def testfn():
-    """Main testing routine."""
+def testrtp():
+    """Main RTP testing routine."""
     import matplotlib.pyplot as plt
     from matplotlib import cm
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
-    from pygmi.raster import iodefs
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
@@ -1854,23 +2170,69 @@ def testfn():
     plt.imshow(dat2.data, cmap=cm.jet)
     plt.show()
 
-    # test rtp
 
-#     ifile = r'C:\Work\Workdata\RTP\TMI to test RTP.grd'
-#     ifile = r'C:\Work\Workdata\rtptest.tif'
+def testdown():
+    """Main continuation testing routine."""
+    import matplotlib.pyplot as plt
+    from pygmi.pfmod.grvmag3d import quick_model, calc_field
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
 
-#     dat = iodefs.get_raster(ifile)
-# #    plt.figure(dpi=800)
-#     plt.imshow(dat[0].data, cmap=cm.jet)
-#     plt.colorbar()
-#     plt.show()
+    h = 4
+    dxy = 1
+    magcalc = True
 
-#     dat2 = rtp(dat[0], 57.5, 5)
+# quick model
+    lmod = quick_model(numx=100, numy=100, numz=10, dxy=dxy, d_z=1)
+    lmod.lith_index[45:55, :, 1] = 1
+    lmod.lith_index[45:50, :, 0] = 1
+    lmod.ght = 10
+    lmod.mht = 10
+    calc_field(lmod, magcalc=magcalc)
+    if magcalc:
+        z = lmod.griddata['Calculated Magnetics']
+        z.data = z.data + 5
+    else:
+        z = lmod.griddata['Calculated Gravity']
 
-#     plt.imshow(dat2.data, cmap=cm.jet)
-#     plt.colorbar()
-#     plt.show()
+# Calculate the field
+    lmod = quick_model(numx=100, numy=100, numz=10, dxy=dxy, d_z=1)
+    lmod.lith_index[45:55, :, 1] = 1
+    lmod.lith_index[45:50, :, 0] = 1
+    lmod.ght = 10 - h
+    lmod.mht = 10 - h
+    calc_field(lmod, magcalc=magcalc)
+    if magcalc:
+        downz0 = lmod.griddata['Calculated Magnetics']
+        downz0.data = downz0.data + 5
+    else:
+        downz0 = lmod.griddata['Calculated Gravity']
+
+    downz0, z = z, downz0
+    # h = -h
+
+    dz = verticalp(z, order=1)
+    dz2 = verticalp(z, order=2)
+    dz3 = verticalp(z, order=3)
+
+# normal downward
+    zdownn = fftcont(z, h)
+
+# downward, taylor
+    h = -h
+    zdown = (z.data + h*dz + h**2*dz2/math.factorial(2) +
+             h**3*dz3/math.factorial(3))
+
+# Plotting
+    # plt.plot(dz3[50])
+    # plt.show()
+
+#    plt.plot(z[50], 'r-.')
+    plt.plot(downz0.data[50], 'r.')
+    plt.plot(zdown[50], 'b')
+    plt.plot(zdownn[50], 'k')
+    plt.show()
 
 
 if __name__ == "__main__":
-    testfn()
+    testdown()

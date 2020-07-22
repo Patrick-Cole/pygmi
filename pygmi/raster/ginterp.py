@@ -1983,7 +1983,6 @@ class PlotInterp(QtWidgets.QDialog):
         return projdata
 
 
-
 def aspect2(data):
     """
     Aspect of a dataset.

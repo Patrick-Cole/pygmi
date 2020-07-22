@@ -250,7 +250,6 @@ class EquationEditor(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         localdict = {}
         bandsall = []
         self.bands = {}
@@ -362,7 +361,7 @@ class EquationEditor(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -383,7 +382,6 @@ class EquationEditor(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

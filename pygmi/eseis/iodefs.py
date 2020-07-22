@@ -93,7 +93,7 @@ class ImportSEGY():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -106,13 +106,11 @@ class ImportSEGY():
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -125,7 +123,6 @@ class ImportSEGY():
 #        projdata['ftype'] = '2D Mean'
 
         return projdata
-
 
 
 class ExportSEGY():

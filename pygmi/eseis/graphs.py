@@ -78,7 +78,6 @@ class MyMplCanvas(FigureCanvas):
 
         super().__init__(fig)
 
-
         self.figure.canvas.mpl_connect('pick_event', self.onpick)
         self.figure.canvas.mpl_connect('button_release_event',
                                        self.button_release_callback)

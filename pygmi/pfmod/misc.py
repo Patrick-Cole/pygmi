@@ -65,6 +65,7 @@ def update_lith_lw(lmod, lwidget):
         else:
             tmp.setForeground(QtGui.QColor('white'))
 
+
 class ProgressBar():
     """Wrapper for a progress bar. It consists of two progress bars."""
 
@@ -355,7 +356,7 @@ class MergeMod3D(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -368,13 +369,11 @@ class MergeMod3D(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -402,7 +401,7 @@ class MergeMod3D(QtWidgets.QDialog):
         """
         if self.master.currentText() == self.slave.currentText():
             print('Your master dataset must be different'
-                                       ' to the slave dataset!')
+                  ' to the slave dataset!')
             return False
 
         for data in self.indata['Model3D']:
@@ -486,10 +485,7 @@ class MergeMod3D(QtWidgets.QDialog):
             if lith not in datmaster.lith_list:
                 datmaster.lith_list[lith] = datslave.lith_list[lith]
                 lithnum = datmaster.lith_list[lith].lith_index
-                try:
-                    datmaster.mlut[lithnum] = datslave.mlut[lithnum]
-                except:
-                    breakpoint()
+                datmaster.mlut[lithnum] = datslave.mlut[lithnum]
 
         self.outdata['Model3D'] = [datmaster]
         return True
@@ -497,7 +493,7 @@ class MergeMod3D(QtWidgets.QDialog):
 
 def gmerge(master, slave, xrange=None, yrange=None):
     """
-    This routine is used to merge two grids.
+    Routine used to merge two grids.
 
     Parameters
     ----------

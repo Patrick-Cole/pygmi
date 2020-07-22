@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Time Domain EM. Currently just testing stuff"""
+"""Time Domain EM. Currently just testing stuff."""
 
 import sys
 import os
@@ -44,9 +44,7 @@ from pygmi.vector.datatypes import LData
 
 
 class MyMplCanvas2(FigureCanvas):
-    """
-    MPL Canvas class.
-    """
+    """MPL Canvas class."""
 
     def __init__(self, parent=None):
         fig = Figure()
@@ -448,7 +446,6 @@ class TDEM1D(QtWidgets.QDialog):
         None.
 
         """
-
         self.combofid.clear()
 
         line = self.comboline.currentText()
@@ -456,14 +453,13 @@ class TDEM1D(QtWidgets.QDialog):
 
     def update_plot(self):
         """
-        Update the plot
+        Update the plot.
 
         Returns
         -------
         None.
 
         """
-
 #        self.mmc.update_line(x, pdata, rdata, depths, res, title)
 
     def settings(self, nodialog=False):
@@ -531,7 +527,7 @@ class TDEM1D(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -551,7 +547,6 @@ class TDEM1D(QtWidgets.QDialog):
         """
         Save project data from class.
 
-
         Returns
         -------
         projdata : dictionary
@@ -567,7 +562,7 @@ class TDEM1D(QtWidgets.QDialog):
 
 def tonumber(test, alttext=None):
     """
-    Checks if something is a number or matches alttext
+    Check if something is a number or matches alttext.
 
     Parameters
     ----------
@@ -595,7 +590,7 @@ def tonumber(test, alttext=None):
 
 
 def testrun():
-    """ Test routine """
+    """Test routine."""
     app = QtWidgets.QApplication(sys.argv)
 
     # Load in line data

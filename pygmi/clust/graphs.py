@@ -136,7 +136,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes.plot_wireframe(y, x, z)
         self.axes.set_title('log(Objective Function)')
         self.axes.set_ylabel("Number of Classes")
-        self.axes.set_xlabel("Iteration")
+        self.axes.set_xlabel('Iteration')
         self.axes.yaxis.set_major_locator(MaxNLocator(integer=True))
         self.axes.xaxis.set_major_locator(MaxNLocator(integer=True))
 
@@ -165,8 +165,8 @@ class MyMplCanvas(FigureCanvas):
                                  extent=data1.extent, cmap=cm.jet)
         self.figure.colorbar(rdata)
 #        self.axes.set_title('Data')
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
+        self.axes.set_xlabel('Eastings')
+        self.axes.set_ylabel('Northings')
         self.figure.canvas.draw()
 
 

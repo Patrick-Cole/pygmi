@@ -26,7 +26,6 @@
 
 import copy
 import os
-import glob
 import sys
 import re
 import numexpr as ne
@@ -137,7 +136,7 @@ class SatRatios(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -150,13 +149,11 @@ class SatRatios(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -380,7 +377,6 @@ def get_aster_list(flist):
     None.
 
     """
-
     if isinstance(flist[0], list):
         if 'AST_' in flist[0][0].filename:
             return flist
@@ -489,7 +485,6 @@ def testfn():
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     idir = r'C:\Work\Workdata\Sentinel-2'
-
 
     SR = SatRatios()
 #    SR.indata['Raster'] = dat  #single file only

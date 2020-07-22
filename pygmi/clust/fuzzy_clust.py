@@ -118,34 +118,34 @@ class FuzzyClust(QtWidgets.QDialog):
         label_8 = QtWidgets.QLabel()
 
         self.spinbox_maxclusters.setMinimum(1)
-        self.spinbox_maxclusters.setProperty("value", 5)
+        self.spinbox_maxclusters.setProperty('value', 5)
         self.spinbox_maxiterations.setMinimum(1)
         self.spinbox_maxiterations.setMaximum(1000)
-        self.spinbox_maxiterations.setProperty("value", 100)
+        self.spinbox_maxiterations.setProperty('value', 100)
         self.spinbox_repeatedruns.setMinimum(1)
         self.spinbox_minclusters.setMinimum(1)
-        self.spinbox_minclusters.setProperty("value", 5)
+        self.spinbox_minclusters.setProperty('value', 5)
         self.doublespinbox_maxerror.setDecimals(5)
-        self.doublespinbox_maxerror.setProperty("value", 1e-05)
-        self.doublespinbox_fuzzynessexp.setProperty("value", 1.5)
+        self.doublespinbox_maxerror.setProperty('value', 1e-05)
+        self.doublespinbox_fuzzynessexp.setProperty('value', 1.5)
         self.radiobutton_random.setChecked(True)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle("Fuzzy Clustering")
-        groupbox.setTitle("Initial Guess")
+        self.setWindowTitle('Fuzzy Clustering')
+        groupbox.setTitle('Initial Guess')
         groupbox.hide()
-        label.setText("Cluster Algorithm:")
-        label_2.setText("Minimum Clusters:")
-        label_3.setText("Maximum Clusters")
-        label_4.setText("Maximum Iterations:")
-        label_5.setText("Terminate if relative change per iteration is less than:")
-        label_6.setText("Repeated Runs:")
-        self.label_7.setText("Constrain Cluster Shape (0: unconstrained, 1: spherical)")
-        label_8.setText("Fuzzyness Exponent")
-        self.radiobutton_random.setText("Random")
-        self.radiobutton_manual.setText("Manual")
-        self.radiobutton_datadriven.setText("Data Driven")
+        label.setText('Cluster Algorithm:')
+        label_2.setText('Minimum Clusters:')
+        label_3.setText('Maximum Clusters')
+        label_4.setText('Maximum Iterations:')
+        label_5.setText('Terminate if relative change per iteration is less than:')
+        label_6.setText('Repeated Runs:')
+        self.label_7.setText('Constrain Cluster Shape (0: unconstrained, 1: spherical)')
+        label_8.setText('Fuzzyness Exponent')
+        self.radiobutton_random.setText('Random')
+        self.radiobutton_manual.setText('Manual')
+        self.radiobutton_datadriven.setText('Data Driven')
 
         gridlayout.addWidget(label, 0, 2, 1, 1)
         gridlayout.addWidget(label_2, 1, 2, 1, 1)
@@ -274,7 +274,6 @@ class FuzzyClust(QtWidgets.QDialog):
         projdata['fexp'] = self.fexp
 
         return projdata
-
 
     def update_vars(self):
         """

@@ -22,14 +22,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Module for miscellaneous utilities relating to earthquake seismology.
-"""
+"""Module for miscellaneous utilities relating to earthquake seismology."""
 
 import difflib
 import os
 from PyQt5 import QtWidgets, QtCore
-import pygmi.menu_default as menu_default
+# import pygmi.menu_default as menu_default
 
 
 class CorrectDescriptions(QtWidgets.QDialog):
@@ -142,7 +140,7 @@ class CorrectDescriptions(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -155,13 +153,11 @@ class CorrectDescriptions(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -186,7 +182,6 @@ class CorrectDescriptions(QtWidgets.QDialog):
         None.
 
         """
-
         filename = self.textfile.text()
         with open(filename) as fno:
             tmp = fno.read()
@@ -207,21 +202,21 @@ class CorrectDescriptions(QtWidgets.QDialog):
             if cmatch:
                 cmatch = cmatch[0]
             else:
-#                print('No match found for '+text)
+                # print('No match found for '+text)
                 nomatch.append(text)
                 continue
 
             if cmatch != text:
-#                print('Correcting '+text+' to '+cmatch)
+                # print('Correcting '+text+' to '+cmatch)
                 correction.append(text+' to '+cmatch)
                 i['3'].region = cmatch
 
         self.outdata['Seis'] = data
 
 
-def main():
+def test():
     """
-    Main
+    Test routine.
 
     Returns
     -------
@@ -271,8 +266,6 @@ def main():
     print('len nomatch', len(nomatch))
     print('len correction', len(correction))
 
-    breakpoint()
-
 
 if __name__ == "__main__":
-    main()
+    test()

@@ -62,7 +62,7 @@ class MyMplCanvas(FigureCanvas):
 
     def update_pcolor(self, data1, dmat):
         """
-        Update the correlation coefficient plot
+        Update the correlation coefficient plot.
 
         Parameters
         ----------
@@ -205,7 +205,6 @@ class MyMplCanvas(FigureCanvas):
         None.
 
         """
-
         rows, cols = data.data.shape
 
         dtlx = data.extent[0]
@@ -325,7 +324,7 @@ class GraphWindow(QtWidgets.QDialog):
 
 class PlotCCoef(GraphWindow):
     """
-    Plot 2D Correlation Coeffiecients
+    Plot 2D Correlation Coeffiecients.
 
     Attributes
     ----------
@@ -391,7 +390,7 @@ class PlotCCoef(GraphWindow):
 
 def check_bands(data):
     """
-    Checks that band sizes are the same.
+    Check that band sizes are the same.
 
     Parameters
     ----------
@@ -430,7 +429,6 @@ def corr2d(dat1, dat2):
     out : numpy array
         array of correlation coefficients
     """
-
     out = None
     if dat1.shape == dat2.shape:
         # These line are to avoid warnings due to powers of large fill values
@@ -627,7 +625,7 @@ class PlotScatter(GraphWindow):
 
 class PlotHist(GraphWindow):
     """
-    Plot Hist Class
+    Plot Hist Class.
 
     Attributes
     ----------

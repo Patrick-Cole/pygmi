@@ -33,7 +33,7 @@ import pygmi.pfmod.misc as misc
 
 class MenuWidget():
     """
-    Widget class to call the main interface
+    Widget class to call the main interface.
 
     This widget class creates the modelling menus to be found on the main
     interface. Normal as well as context menus are defined here.

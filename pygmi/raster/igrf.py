@@ -281,10 +281,10 @@ class IGRF(QtWidgets.QDialog):
 
         if len(data) > 1:
             self.combobox_dtm.setCurrentIndex(1)
-            nodialog = False
-            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-                                          'Please confirm raster bands.',
-                                          QtWidgets.QMessageBox.Ok)
+            # nodialog = False
+            # QtWidgets.QMessageBox.warning(self.parent, 'Warning',
+            #                               'Please confirm raster bands.',
+            #                               QtWidgets.QMessageBox.Ok)
 
         if not nodialog:
             tmp = self.exec_()

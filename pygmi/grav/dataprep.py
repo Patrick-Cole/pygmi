@@ -24,8 +24,6 @@
 # -----------------------------------------------------------------------------
 """A set of Data Preparation routines."""
 
-from __future__ import print_function
-
 import sys
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
@@ -85,10 +83,12 @@ class ProcessData(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.grav.dataprep.processdata')
         label_density = QtWidgets.QLabel('Background Density (kg/m3):')
-        label_absbase = QtWidgets.QLabel('Base Station Absolute Gravity (mGal):')
+        label_absbase = QtWidgets.QLabel('Base Station Absolute Gravity '
+                                         '(mGal):')
         label_bthres = QtWidgets.QLabel('Minimum Base Station Number:')
         label_kstat = QtWidgets.QLabel('Known Base Station Number:')
-        label_kbase = QtWidgets.QLabel('Known Base Station Absolute Gravity (mGal):')
+        label_kbase = QtWidgets.QLabel('Known Base Station Absolute Gravity '
+                                       '(mGal):')
         pb_calcbase = QtWidgets.QPushButton('Calculate local base value')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -159,13 +159,13 @@ class ProcessData(QtWidgets.QDialog):
         if tmp != 1:
             return False
 
-        self.acceptall()
+        self.acceptall(nodialog)
 
         return True
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -178,13 +178,11 @@ class ProcessData(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -198,8 +196,7 @@ class ProcessData(QtWidgets.QDialog):
 
         return projdata
 
-
-    def acceptall(self):
+    def acceptall(self, nodialog):
         """
         Accept option.
 
@@ -268,19 +265,21 @@ class ProcessData(QtWidgets.QDialog):
                   f'{drifttime:.3f} minutes.')
 
         xp2 = xp1/86400 + ix+1
-        plt.figure('QC: Gravimeter Drift')
-        plt.xlabel('Decimal Days')
-        plt.ylabel('GRAV')
-        plt.grid(True)
-        plt.plot(xp2, fp, '.-')
-        plt.xticks(range(1, ix[-1]+2, 1))
-        plt.tight_layout()
 
-        try:
-            plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
-        except:
-            pass
-        plt.show()
+        if not nodialog:
+            plt.figure('QC: Gravimeter Drift')
+            plt.xlabel('Decimal Days')
+            plt.ylabel('GRAV')
+            plt.grid(True)
+            plt.plot(xp2, fp, '.-')
+            plt.xticks(range(1, ix[-1]+2, 1))
+            plt.tight_layout()
+
+            try:
+                plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
+            except:
+                pass
+            plt.show()
 
         gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
 ###################################################################
@@ -367,6 +366,8 @@ class ProcessData(QtWidgets.QDialog):
 
 def geocentric_radius(lat):
     """
+    Geocentric radius calculation.
+
     Calculate the distance from the Earth's center to a point on the spheroid
     surface at a specified geodetic latitude.
 
@@ -405,7 +406,6 @@ def theoretical_gravity(lat):
         Array of theoretrical gravity values.
 
     """
-
     gT = 978032.67715*((1 + 0.001931851353 * np.sin(lat)**2) /
                        np.sqrt(1 - 0.0066943800229*np.sin(lat)**2))
 
@@ -427,7 +427,6 @@ def atmospheric_correction(h):
         Atmospheric correction
 
     """
-
     gATM = 0.874-9.9*1e-5*h+3.56*1e-9*h**2
 
     return gATM
@@ -450,7 +449,6 @@ def height_correction(lat, h):
         Height corrections
 
     """
-
     gHC = -(0.308769109-0.000439773*np.sin(lat)**2)*h+7.2125*1e-8*h**2
 
     return gHC
@@ -458,7 +456,7 @@ def height_correction(lat, h):
 
 def spherical_bouguer(h, dens):
     """
-
+    Calculate spherical bouguer.
 
     Parameters
     ----------
@@ -502,13 +500,26 @@ def spherical_bouguer(h, dens):
 
 
 def time_convert(x):
-    """ converts hh:mm:ss to seconds """
+    """
+    Convert hh:mm:ss to seconds.
+
+    Parameters
+    ----------
+    x : str
+        Time in hh:mm:ss.
+
+    Returns
+    -------
+    float
+        Time in seconds.
+
+    """
     h, m, s = map(int, x.decode().split(':'))
     return (h*60+m)*60+s
 
 
 def test():
-    """ Test routine """
+    """Test routine."""
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     grvfile = r'C:\WorkData\Gravity\skeifontein 2018.txt'
@@ -541,9 +552,6 @@ def test():
 
     plt.plot(gdf.longitude, gdf.latitude, '.')
     plt.show()
-
-
-#    breakpoint()
 
 
 if __name__ == "__main__":

@@ -132,7 +132,6 @@ class Gradients(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             temp = self.exec_()
             if temp == 0:
@@ -167,7 +166,7 @@ class Gradients(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -180,7 +179,6 @@ class Gradients(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.azi = projdata['azim']
         self.order = projdata['order']
 
@@ -201,7 +199,6 @@ class Gradients(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -423,7 +420,7 @@ class Visibility2d(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -436,7 +433,6 @@ class Visibility2d(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.sb_wsize.setValue(projdata['wsize'])
         self.sb_dh.setValue(projdata['vheight'])
 
@@ -445,7 +441,6 @@ class Visibility2d(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -746,7 +741,7 @@ class Tilt1(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -767,7 +762,6 @@ class Tilt1(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

@@ -64,8 +64,8 @@ Note, it will still be necessary for the end-user to compile the code.
 import os
 import functools
 from PyQt5 import QtWidgets, QtCore, QtGui
-#import pygmi.menu_default as menu_default
-#import mtpy.processing.birrp as MTbp
+# import pygmi.menu_default as menu_default
+# import mtpy.processing.birrp as MTbp
 
 
 class BIRRP(QtWidgets.QDialog):
@@ -167,8 +167,9 @@ class BIRRP(QtWidgets.QDialog):
 
         """
         buttonbox = QtWidgets.QDialogButtonBox()
-#        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
-        pb_importbirrp = QtWidgets.QPushButton('Import BIRRP configuration file')
+        # helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        pb_importbirrp = QtWidgets.QPushButton('Import BIRRP '
+                                               'configuration file')
         pb_runbirrp = QtWidgets.QPushButton('Save BIRRP configuration file')  #' and run BIRRP')
 
         self.ilev.setDisabled(True)
@@ -221,8 +222,8 @@ class BIRRP(QtWidgets.QDialog):
         self.lay.addRow("OFIL: output filename root", self.ofil)
         self.lay.addRow("NLEV: output level", self.nlev)
         self.lay.addRow("NPCS: numer of data pieces", self.npcs)
-        self.lay.addRow("NAR: length of ar filter (0 for none, <0 for filename)",
-                        self.nar)
+        self.lay.addRow("NAR: length of ar filter (0 for none, <0 for "
+                        "filename)", self.nar)
         self.lay.addRow("IMODE: file mode", self.imode)
         self.lay.addRow("JMODE: input mode", self.jmode)
         self.lay.addRow("NREAD: number of data values to be read", self.nread)
@@ -234,13 +235,15 @@ class BIRRP(QtWidgets.QDialog):
                         self.thetar)
 
         for i in ['ex', 'ey']:
-            self.lay2.addRow("NFIL: number filter parameters (<0 for filename) of "+i, self.nfil[i])
+            self.lay2.addRow("NFIL: number filter parameters "
+                             "(<0 for filename) of "+i, self.nfil[i])
             self.lay2.addRow(self.pb_filnam[i], self.filnam[i])
             self.lay2.addRow("NSKIP: leading values to skip in "+i,
                              self.nskip[i])
 
         for i in ['hx', 'hy', 'rx', 'ry']:
-            self.lay3.addRow("NFIL: number filter parameters (<0 for filename) of "+i, self.nfil[i])
+            self.lay3.addRow("NFIL: number filter parameters "
+                             "(<0 for filename) of "+i, self.nfil[i])
             self.lay3.addRow(self.pb_filnam[i], self.filnam[i])
             self.lay3.addRow("NSKIP: leading values to skip in "+i,
                              self.nskip[i])
@@ -416,7 +419,7 @@ class BIRRP(QtWidgets.QDialog):
 
     def runbirrp(self):
         """
-        Saves and runs a birrp config file.
+        Save and runs a birrp config file.
 
         Returns
         -------
@@ -656,7 +659,8 @@ class BIRRP(QtWidgets.QDialog):
 
 # Now do C2threshe1
         if txt == '3 = EX, EY, BZ' and txt2 == '0 = separate from E':
-            self.showrow(row+2, "C2THRESHE1: coherence threshold for vertical magnetic field",
+            self.showrow(row+2, "C2THRESHE1: coherence threshold for "
+                         "vertical magnetic field",
                          self.c2threshe1, self.lay)
         else:
             self.removerow(self.c2threshe1, self.lay)
@@ -665,7 +669,8 @@ class BIRRP(QtWidgets.QDialog):
         if txt == '3 = EX, EY, BZ':
             row, _ = self.lay2.getWidgetPosition(self.nskip['ey'])
 
-            self.showrow(row+1, "NFIL: number filter parameters (<0 for filename) of hz",
+            self.showrow(row+1, "NFIL: number filter parameters "
+                         "(<0 for filename) of hz",
                          self.nfil['hz'], self.lay2)
             self.showrow(row+2, self.pb_filnam['hz'], self.filnam['hz'],
                          self.lay2)

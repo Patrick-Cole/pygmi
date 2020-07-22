@@ -29,7 +29,7 @@ import skimage
 import matplotlib.pyplot as plt
 from numba import jit
 from PyQt5 import QtWidgets, QtCore, QtGui
-import pygmi.menu_default as menu_default
+# import pygmi.menu_default as menu_default
 
 
 class ImageSeg(QtWidgets.QDialog):
@@ -162,7 +162,7 @@ class ImageSeg(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -175,7 +175,6 @@ class ImageSeg(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.scale.setText(projdata['scale'])
         self.scale.setText(projdata['wcolor'])
         self.scale.setText(projdata['wcompact'])
@@ -185,7 +184,6 @@ class ImageSeg(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -200,7 +198,6 @@ class ImageSeg(QtWidgets.QDialog):
         projdata['wcompact'] = self.wcompact.text()
 
         return projdata
-
 
     def segment1(self, data, scale=500, wcolor=0.5, wcompact=0.5,
                  doshape=True):

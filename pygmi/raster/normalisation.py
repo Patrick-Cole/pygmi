@@ -50,9 +50,14 @@ class Normalisation(QtWidgets.QDialog):
             self.pbar = None
 
         self.radiobutton_interval = QtWidgets.QRadioButton('Interval [0 1]')
-        self.radiobutton_mean = QtWidgets.QRadioButton('Mean: zero,  Standard deviation: unity')
-        self.radiobutton_median = QtWidgets.QRadioButton('Median: zero,  Median absolute deviation: unity')
-        self.radiobutton_8bit = QtWidgets.QRadioButton('8-bit histogram equalisation [0 255]')
+        self.radiobutton_mean = QtWidgets.QRadioButton('Mean: zero,  '
+                                                       'Standard deviation: '
+                                                       'unity')
+        self.radiobutton_median = QtWidgets.QRadioButton('Median: zero,  '
+                                                         'Median absolute '
+                                                         'deviation: unity')
+        self.radiobutton_8bit = QtWidgets.QRadioButton('8-bit histogram '
+                                                       'equalisation [0 255]')
 
         self.setupui()
 
@@ -148,7 +153,7 @@ class Normalisation(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -175,7 +180,6 @@ class Normalisation(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

@@ -310,7 +310,8 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.cbox_cbar = QtWidgets.QComboBox()
         self.doshade = QtWidgets.QCheckBox('Sunshade:')
         self.doimage = QtWidgets.QRadioButton('Full Image:')
-        self.docontour = QtWidgets.QRadioButton('Contour (Slider sets number):')
+        self.docontour = QtWidgets.QRadioButton('Contour '
+                                                '(Slider sets number):')
         self.slider_scale = QtWidgets.QSlider()
         self.slider_angle = QtWidgets.QSlider()
         self.slider_cnt = QtWidgets.QSlider()

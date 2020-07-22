@@ -288,7 +288,7 @@ class TiltDepth(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -301,13 +301,11 @@ class TiltDepth(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -320,7 +318,6 @@ class TiltDepth(QtWidgets.QDialog):
 #        projdata['ftype'] = '2D Mean'
 
         return projdata
-
 
     def tiltdepth(self, data):
         """
