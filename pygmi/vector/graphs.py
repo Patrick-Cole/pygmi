@@ -29,6 +29,7 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from scipy.stats import median_absolute_deviation
 import matplotlib.collections as mc
+import matplotlib as mpl
 from matplotlib.cm import Set1
 from matplotlib.cm import jet
 from matplotlib.backends.backend_qt5agg import FigureCanvas
@@ -221,6 +222,11 @@ class MyMplCanvas(FigureCanvas):
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
         self.line, = ax1.plot(r, data, '.-', picker=5)
+
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
@@ -261,6 +267,10 @@ class MyMplCanvas(FigureCanvas):
 
         self.figure.colorbar(scat, ax=ax1)
 #        data.plot(ival, cmap=jet, ax=ax1)
+
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -354,6 +364,11 @@ class MyMplCanvas(FigureCanvas):
             ax1.plot(x, y, 'c')
             ax1.plot(qx, qy, 'k')
 
+
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
@@ -407,6 +422,11 @@ class MyMplCanvas(FigureCanvas):
                               c = data['Point'][col])
             # self.axes.plot(data['Point'].geometry.x,
             #                data['Point'].geometry.y, 'go')
+
+
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
 
         self.figure.canvas.draw()
 
@@ -504,6 +524,10 @@ class MyMplCanvas(FigureCanvas):
             ax2.add_collection(lcol)
             ax2.autoscale(enable=True, tight=True)
 
+
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
         self.figure.canvas.draw()
 
 

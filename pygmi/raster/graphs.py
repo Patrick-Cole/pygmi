@@ -36,6 +36,7 @@ menu. The following are supported:
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
+import matplotlib as mpl
 import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
@@ -114,11 +115,8 @@ class MyMplCanvas(FigureCanvas):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-        self.axes.tick_params(axis='x', rotation=90)
-        self.axes.tick_params(axis='y', rotation=0)
-        self.axes.ticklabel_format(style='plain')
 
-        extent = data1.extent
+        # extent = data1.extent
 
         # carray = data1.data.compressed()
         # ichk = np.array_equal(carray, carray.astype(int))
@@ -126,7 +124,7 @@ class MyMplCanvas(FigureCanvas):
         # rdata = self.axes.imshow(data1.data, extent=extent, cmap=cm.jet,
         #                          interpolation='nearest')
 
-        rdata = imshow(self.axes, data1.data, extent=extent, cmap=cm.jet,
+        rdata = imshow(self.axes, data1.data, extent=data1.extent, cmap=cm.jet,
                        interpolation='nearest')
 
         # if ichk and not data1.isrgb:
@@ -146,6 +144,10 @@ class MyMplCanvas(FigureCanvas):
 
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
+
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -188,6 +190,11 @@ class MyMplCanvas(FigureCanvas):
         cbar = self.figure.colorbar(hbin)
         cbar.set_label('log10(N)')
 
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+
+
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
@@ -229,18 +236,22 @@ class MyMplCanvas(FigureCanvas):
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
-        ax1 = self.axes
 
-        surf = ax1.plot_surface(x, y, z, cmap=cmap, linewidth=0.1, norm=norml,
-                                vmin=z.min(), vmax=z.max(), shade=False,
-                                antialiased=False)
+        surf = self.axes.plot_surface(x, y, z, cmap=cmap, linewidth=0.1,
+                                      norm=norml, vmin=z.min(), vmax=z.max(),
+                                      shade=False, antialiased=False)
 
         self.figure.colorbar(surf)
 
-        ax1.set_title('')
-        ax1.set_xlabel('X')
-        ax1.set_ylabel('Y')
-        ax1.set_zlabel('Z')
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+        self.axes.zaxis.set_major_formatter(frm)
+
+        self.axes.set_title('')
+        self.axes.set_xlabel('X')
+        self.axes.set_ylabel('Y')
+        self.axes.set_zlabel('Z')
 
         self.figure.canvas.draw()
 
@@ -266,6 +277,10 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_title(data1.dataid, fontsize=12)
         self.axes.set_xlabel('Data Value', fontsize=8)
         self.axes.set_ylabel('Counts', fontsize=8)
+
+        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()

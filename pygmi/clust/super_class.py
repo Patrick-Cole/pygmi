@@ -418,6 +418,7 @@ class SuperClass(QtWidgets.QDialog):
     outdata : dictionary
         dictionary of output datasets
     """
+
     def __init__(self, parent):
         super().__init__(parent)
         self.indata = {}
@@ -779,6 +780,7 @@ class SuperClass(QtWidgets.QDialog):
             return False
 
         self.df.to_file(filename)
+        return True
 
     def settings(self, nodialog=False):
         """
@@ -816,13 +818,12 @@ class SuperClass(QtWidgets.QDialog):
 
         classifier, lbls, datall, _, _ = self.init_classifier()
 
-        rows, cols, bands = datall.shape
+        mask = self.map.data[0].data.mask
+        yout = np.zeros_like(datall[:, :, 0], dtype=int)
+        datall = datall[~mask]
 
-        datall.shape = (rows*cols, bands)
-        yout = classifier.predict(datall)
-        yout.shape = (rows, cols)
-
-        datall.shape = (rows, cols, bands)
+        yout1 = classifier.predict(datall)
+        yout[~mask] = yout1
 
         data = copy.copy(self.indata['Raster'])
         dat_out = [Data()]
@@ -850,8 +851,8 @@ class SuperClass(QtWidgets.QDialog):
         m = []
         s = []
         for i2 in lbls:
-            m.append(datall[yout == i2].mean(0))
-            s.append(datall[yout == i2].std(0))
+            m.append(datall[yout1 == i2].mean(0))
+            s.append(datall[yout1 == i2].std(0))
 
         dat_out[-1].metadata['Cluster']['center'] = np.array(m)
         dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
@@ -892,13 +893,18 @@ class SuperClass(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
+        self.combo_class.setCurrentText(projdata['combo_class'])
+        self.KNalgorithm.setCurrentText(projdata['KNalgorithm'])
+        self.DTcriterion.setCurrentText(projdata['DTcriterion'])
+        self.RFcriterion.setCurrentText(projdata['RFcriterion'])
+        self.SVCkernel.setCurrentText(projdata['SVCkernel'])
+#        self.df.read_json(projdata['classes'])
 
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -908,10 +914,14 @@ class SuperClass(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['combo_class'] = self.combo_class.currentText()
+        projdata['KNalgorithm'] = self.KNalgorithm.currentText()
+        projdata['DTcriterion'] = self.DTcriterion.currentText()
+        projdata['RFcriterion'] = self.RFcriterion.currentText()
+        projdata['SVCkernel'] = self.SVCkernel.currentText()
+#        projdata['classes'] = self.df.to_json()
 
         return projdata
-
 
     def init_classifier(self):
         """
@@ -1071,7 +1081,7 @@ def test():
     from pygmi.raster import iodefs
     app = QtWidgets.QApplication(sys.argv)
 
-    data = iodefs.get_raster(r'C:\WorkData\Change\cutdata.tif')
+    data = iodefs.get_raster(r'C:\work\WorkData\testdata.hdr')
 
     tmp = SuperClass(None)
     tmp.indata['Raster'] = data
