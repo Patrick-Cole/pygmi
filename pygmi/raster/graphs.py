@@ -44,6 +44,9 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 from pygmi.raster.modest_image import imshow
 
+frm = mpl.ticker.FuncFormatter(lambda x, p:
+                               format(x, ',.5f').rstrip('0').rstrip('.'))
+
 
 class MyMplCanvas(FigureCanvas):
     """
@@ -145,7 +148,6 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
 
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
@@ -190,7 +192,6 @@ class MyMplCanvas(FigureCanvas):
         cbar = self.figure.colorbar(hbin)
         cbar.set_label('log10(N)')
 
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
@@ -243,7 +244,6 @@ class MyMplCanvas(FigureCanvas):
 
         self.figure.colorbar(surf)
 
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
         self.axes.zaxis.set_major_formatter(frm)
@@ -278,7 +278,6 @@ class MyMplCanvas(FigureCanvas):
         self.axes.set_xlabel('Data Value', fontsize=8)
         self.axes.set_ylabel('Counts', fontsize=8)
 
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 

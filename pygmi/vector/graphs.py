@@ -37,6 +37,9 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from pandas.api.types import is_numeric_dtype
 
+frm = mpl.ticker.FuncFormatter(lambda x, p:
+                               format(x, ',.5f').rstrip('0').rstrip('.'))
+
 
 class GraphWindow(QtWidgets.QDialog):
     """Graph Window - Main QT Dialog class for graphs."""
@@ -223,7 +226,6 @@ class MyMplCanvas(FigureCanvas):
 
         self.line, = ax1.plot(r, data, '.-', picker=5)
 
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
@@ -268,7 +270,6 @@ class MyMplCanvas(FigureCanvas):
         self.figure.colorbar(scat, ax=ax1)
 #        data.plot(ival, cmap=jet, ax=ax1)
 
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
@@ -364,8 +365,6 @@ class MyMplCanvas(FigureCanvas):
             ax1.plot(x, y, 'c')
             ax1.plot(qx, qy, 'k')
 
-
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
@@ -423,8 +422,6 @@ class MyMplCanvas(FigureCanvas):
             # self.axes.plot(data['Point'].geometry.x,
             #                data['Point'].geometry.y, 'go')
 
-
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
@@ -524,8 +521,6 @@ class MyMplCanvas(FigureCanvas):
             ax2.add_collection(lcol)
             ax2.autoscale(enable=True, tight=True)
 
-
-        frm = mpl.ticker.StrMethodFormatter('{x:,.0f}')
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
         self.figure.canvas.draw()
