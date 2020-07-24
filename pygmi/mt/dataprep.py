@@ -568,6 +568,10 @@ class StaticShiftEDI(QtWidgets.QDialog):
 
         """
 
+        self.shiftx.setValue(projdata['shiftx'])
+        self.shifty.setValue(projdata['shifty'])
+        self.checkbox.setChecked(projdata['checkbox'])
+
         return False
 
     def saveproj(self):
@@ -583,7 +587,9 @@ class StaticShiftEDI(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['shiftx'] = self.shiftx.value()
+        projdata['shifty'] = self.shifty.value()
+        projdata['checkbox'] = self.checkbox.isChecked()
 
         return projdata
 
@@ -777,6 +783,9 @@ class RotateEDI(QtWidgets.QDialog):
 
         """
 
+        self.spinbox.setValue(projdata['rotz'])
+        self.checkbox.setChecked(projdata['checkbox'])
+
         return False
 
     def saveproj(self):
@@ -792,10 +801,10 @@ class RotateEDI(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['rotz'] = self.spinbox.value()
+        projdata['checkbox'] = self.checkbox.isChecked()
 
         return projdata
-
 
 
 class MyMplCanvasPick(FigureCanvas):
@@ -1789,6 +1798,18 @@ class Occam1D(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
+        self.targetdepth.setText(projdata['tdepth'])
+        self.nlayers.setText(projdata['nlayers'])
+        self.bottomlayer.setText(projdata['blayer'])
+        self.airlayer.setText(projdata['alayer'])
+        self.z1layer.setText(projdata['z1layer'])
+        self.maxiter.setText(projdata['miter'])
+        self.targetrms.setText(projdata['trms'])
+        self.errres.setText(projdata['rerr'])
+        self.errphase.setText(projdata['perr'])
+        self.errfloorphase.setText(projdata['perrflr'])
+        self.errfloorres.setText(projdata['rerrflr'])
+        self.combomode.setCurrentText(projdata['mode'])
 
         return False
 
@@ -1805,10 +1826,20 @@ class Occam1D(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['tdepth'] = self.targetdepth.text()
+        projdata['nlayers'] = self.nlayers.text()
+        projdata['blayer'] = self.bottomlayer.text()
+        projdata['alayer'] = self.airlayer.text()
+        projdata['z1layer'] = self.z1layer.text()
+        projdata['miter'] = self.maxiter.text()
+        projdata['trms'] = self.targetrms.text()
+        projdata['rerr'] = self.errres.text()
+        projdata['perr'] = self.errphase.text()
+        projdata['perrflr'] = self.errfloorphase.text()
+        projdata['rerrflr'] = self.errfloorres.text()
+        projdata['mode'] = self.combomode.currentText()
 
         return projdata
-
 
 
 def tonumber(test, alttext=None):
@@ -1840,7 +1871,7 @@ def tonumber(test, alttext=None):
     return int(test)
 
 
-def main():
+def test():
     """ main test """
     datadir = r'C:\Work\Programming\pygmi\data\MT\\'
     edi_file = datadir+r"synth02.edi"
@@ -1856,4 +1887,4 @@ def main():
     test.settings()
 
 if __name__ == "__main__":
-    main()
+    test()

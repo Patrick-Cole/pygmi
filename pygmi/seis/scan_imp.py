@@ -75,8 +75,6 @@ class SIMP():
     def __init__(self, parent=None):
         # PyGMI variables
         self.ifile = ''
-        self.name = 'Import Data: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -143,8 +141,6 @@ class SIMP():
         os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
-        self.ext = filename[-3:]
-
         ifile = self.ifile
 
         print('Input File: '+ifile)

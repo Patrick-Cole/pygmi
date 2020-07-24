@@ -62,7 +62,6 @@ class PointCut():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Cut Data:'
         self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
@@ -325,11 +324,13 @@ class DataGrid(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
-        self.dataid.setCurrentText(projdata['band'])
+        self.dsb_dxy.textChanged.disconnect()
+        self.dataid_text = projdata['band']
         self.dsb_dxy.setText(projdata['dxy'])
         self.dsb_null.setText(projdata['nullvalue'])
-        self.dxy_change()
+
+        self.dsb_dxy.textChanged.connect(self.dxy_change)
+#        self.dxy_change()
 
         return False
 
@@ -348,7 +349,7 @@ class DataGrid(QtWidgets.QDialog):
 
         projdata['dxy'] = self.dsb_dxy.text()
         projdata['nullvalue'] = self.dsb_null.text()
-        projdata['band'] = self.dataid.currentText()
+        projdata['band'] = self.dataid_text
 
         return projdata
 

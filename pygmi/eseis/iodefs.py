@@ -51,8 +51,6 @@ class ImportSEGY():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Data: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -147,8 +145,6 @@ class ExportSEGY():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Export Data: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}

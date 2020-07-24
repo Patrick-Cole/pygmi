@@ -75,7 +75,6 @@ class FuzzyClust(QtWidgets.QDialog):
 
         self.setupui()
 
-        self.name = 'Fuzzy Clustering'
         self.cltype = 'fuzzy c-means'
         self.min_cluster = 5
         self.max_cluster = 5

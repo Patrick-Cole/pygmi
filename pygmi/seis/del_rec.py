@@ -159,7 +159,6 @@ class Quarry():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.name = 'Quarry: '
         self.pbar = None
 
         self.events = []

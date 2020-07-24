@@ -2533,8 +2533,6 @@ class ImportPicture(QtWidgets.QDialog):
         self.lmod = self.parent.lmod1
 
         self.ifile = ''
-        self.name = 'Add New Custom Profile: '
-        self.ext = ''
         self.pbar = None
         self.indata = {}
         self.outdata = {}

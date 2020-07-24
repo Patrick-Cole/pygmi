@@ -75,7 +75,6 @@ class CrispClust(QtWidgets.QDialog):
 
         self.setupui()
 
-        self.name = 'Crisp Clustering'
         self.cltype = 'k-means'
         self.min_cluster = 5
         self.max_cluster = 5

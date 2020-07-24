@@ -52,6 +52,7 @@ import pygmi.misc as misc
 matplotlib.rcParams['figure.dpi'] = 120
 # matplotlib.rcParams['font.size'] = 6.0
 matplotlib.rcParams['axes.formatter.limits'] = [-12, 12]
+matplotlib.rcParams['axes.formatter.useoffset'] = False
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
@@ -276,7 +277,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             odata = i.my_start_item.my_class.outdata
             for j in odata:
                 if j in data:
-                    data[j] = data[j] + odata[j]
+                    if isinstance(data[j], dict):
+                        data[j].update(odata[j])
+                    else:
+                        data[j] = data[j] + odata[j]
                 else:
                     data[j] = odata[j]
 

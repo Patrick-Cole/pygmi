@@ -127,8 +127,6 @@ class BeachBall(QtWidgets.QDialog):
         super().__init__(parent)
 
         self.ifile = ''
-        self.name = 'Beachball: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -274,7 +272,6 @@ class BeachBall(QtWidgets.QDialog):
         os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
-        self.ext = filename[-3:]
 
         indata = self.mmc.data
 

@@ -69,8 +69,6 @@ class DataCut():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Cut Data:'
-        self.ext = ''
         self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
@@ -619,8 +617,6 @@ class GetProf():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Get Profile: '
-        self.ext = ''
         self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}

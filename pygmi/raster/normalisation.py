@@ -61,7 +61,6 @@ class Normalisation(QtWidgets.QDialog):
 
         self.setupui()
 
-        self.name = 'Normalisation'
         self.normtype = 'minmax'  # mimax/meanstd/medmad/histeq
 
     def setupui(self):

@@ -32,8 +32,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr, ogr
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
-from pygmi.pfmod.datatypes import Data, LithModel
+from pygmi.pfmod.datatypes import LithModel
 import pygmi.pfmod.grvmag3d as grvmag3d
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.menu_default as menu_default
@@ -52,8 +51,7 @@ class ImportMod3D():
         self.lmod = LithModel()
 
         self.ifile = ''
-        self.name = 'Import 3D Model: '
-        self.ext = ''
+        self.filt = ''
         self.indata = {}
         self.outdata = {}
 
@@ -70,34 +68,35 @@ class ImportMod3D():
             True if successful, False otherwise.
 
         """
-        ext = ('npz (*.npz);;'
-               'Leapfrog Block Model (*.csv);;'
-               'x,y,z,label (*.csv);;'
-               'x,y,z,label (*.txt)')
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
+        if not nodialog:
+            ext = ('npz (*.npz);;'
+                   'Leapfrog Block Model (*.csv);;'
+                   'x,y,z,label (*.csv);;'
+                   'x,y,z,label (*.txt)')
 
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(filename)
-        self.parent.modelfilename = filename.rpartition('.')[0]
+            self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+
+            if self.ifile == '':
+                return False
+        os.chdir(os.path.dirname(self.ifile))
+        self.parent.modelfilename = self.ifile.rpartition('.')[0]
 
 # Reset Variables
         self.lmod.griddata.clear()
         self.lmod.lith_list.clear()
 
-        if filt == 'Leapfrog Block Model (*.csv)':
-            self.import_leapfrog_csv(filename)
-        elif filt in ('x,y,z,label (*.csv)', 'x,y,z,label (*.txt)'):
-            self.import_ascii_xyz_model(filename)
+        if self.filt == 'Leapfrog Block Model (*.csv)':
+            self.import_leapfrog_csv(self.ifile)
+        elif self.filt in ('x,y,z,label (*.csv)', 'x,y,z,label (*.txt)'):
+            self.import_ascii_xyz_model(self.ifile)
         else:
-            indict = np.load(filename, allow_pickle=True)
+            indict = np.load(self.ifile, allow_pickle=True)
             self.dict2lmod(indict)
 
         self.outdata['Model3D'] = [self.lmod]
-        self.lmod.name = os.path.basename(filename)
+        self.lmod.name = os.path.basename(self.ifile)
 
         for i in self.lmod.griddata:
             if self.lmod.griddata[i].dataid == '':
@@ -125,8 +124,12 @@ class ImportMod3D():
             A check to see if settings was successfully run.
 
         """
+        self.ifile = projdata['ifile']
+        self.filt = projdata['filt']
 
-        return False
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -141,10 +144,10 @@ class ImportMod3D():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
+        projdata['filt'] = self.filt
 
         return projdata
-
 
     def import_leapfrog_csv(self, filename):
         """
@@ -474,8 +477,6 @@ class ExportMod3D():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Export 3D Model: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -505,18 +506,18 @@ class ExportMod3D():
 
             os.chdir(os.path.dirname(filename))
             self.ifile = str(filename)
-            self.ext = filename[-3:]
+            ext = filename[-3:]
 
             print('Saving '+self.ifile+'...')
 
         # Pop up save dialog box
-            if self.ext == 'npz':
+            if ext == 'npz':
                 self.savemodel()
-            if self.ext == 'kmz':
+            if ext == 'kmz':
                 self.mod3dtokmz()
-            if self.ext == 'shp':
+            if ext == 'shp':
                 self.mod3dtoshp()
-            if self.ext == 'csv':
+            if ext == 'csv':
                 self.mod3dtocsv()
 
     def savemodel(self):

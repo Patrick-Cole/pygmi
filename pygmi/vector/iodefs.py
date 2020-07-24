@@ -56,7 +56,6 @@ class ImportLineData(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.name = 'Import Line Data: '
         self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {}
@@ -152,10 +151,12 @@ class ImportLineData(QtWidgets.QDialog):
         self.xchan.setCurrentIndex(0)
         self.ychan.setCurrentIndex(1)
 
-        tmp = self.exec_()
 
-        if tmp != 1:
-            return tmp
+        if not nodialog:
+            tmp = self.exec_()
+
+            if tmp != 1:
+                return tmp
 
         try:
             nodata = float(self.nodata.text())
@@ -195,6 +196,10 @@ class ImportLineData(QtWidgets.QDialog):
         """
 
         self.ifile = projdata['ifile']
+        self.filt = projdata['filt']
+        self.xchan.setCurrentText(projdata['xchan'])
+        self.ychan.setCurrentText(projdata['ychan'])
+        self.nodata.setText(projdata['nodata'])
 
         chk = self.settings(True)
 
@@ -214,6 +219,10 @@ class ImportLineData(QtWidgets.QDialog):
         projdata = {}
 
         projdata['ifile'] = self.ifile
+        projdata['filt'] = self.filt
+        projdata['xchan'] = self.xchan.currentText()
+        projdata['ychan'] = self.ychan.currentText()
+        projdata['nodata'] = self.nodata.text()
 
         return projdata
 
@@ -311,7 +320,6 @@ class ExportLine():
     """
 
     def __init__(self, parent):
-        self.name = 'Export Point: '
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -368,7 +376,6 @@ class ExportShapeData():
     """
 
     def __init__(self, parent):
-        self.name = 'Export Shapefile: '
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -428,7 +435,6 @@ class ImportShapeData():
     """
 
     def __init__(self, parent=None):
-        self.name = 'Import Shapefile Data: '
         self.pbar = None
         self.parent = parent
         self.indata = {}

@@ -56,12 +56,9 @@ class ProcessData(QtWidgets.QDialog):
         self.parent = parent
 #        self.pbar = parent.pbar
 
-        self.basethres = 10000
-
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.dsb_null = QtWidgets.QDoubleSpinBox()
         self.dataid = QtWidgets.QComboBox()
-        self.checkbox = QtWidgets.QCheckBox('Apply to all stations:')
         self.density = QtWidgets.QLineEdit('2670')
         self.knownstat = QtWidgets.QLineEdit('None')
         self.knownbase = QtWidgets.QLineEdit('978000.0')
@@ -178,6 +175,16 @@ class ProcessData(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
+
+        self.dsb_dxy.setValue(projdata['dxy'])
+        self.dsb_null.setValue(projdata['null'])
+        self.dataid.setCurrentText(projdata['dataid'])
+        self.density.setText(projdata['density'])
+        self.knownstat.setText(projdata['knownstat'])
+        self.knownbase.setText(projdata['knownbase'])
+        self.absbase.setText(projdata['absbase'])
+        self.basethres.setText(projdata['basethres'])
+
         return False
 
     def saveproj(self):
@@ -192,7 +199,14 @@ class ProcessData(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['dxy'] = self.dsb_dxy.value()
+        projdata['null'] = self.dsb_null.value()
+        projdata['dataid'] = self.dataid.currentText()
+        projdata['density'] = self.density.text()
+        projdata['knownstat'] = self.knownstat.text()
+        projdata['knownbase'] = self.knownbase.text()
+        projdata['absbase'] = self.absbase.text()
+        projdata['basethres'] = self.basethres.text()
 
         return projdata
 

@@ -82,7 +82,6 @@ class Cluster(QtWidgets.QDialog):
         self.label_bthres = QtWidgets.QLabel('Threshold:')
         self.label_branchfac = QtWidgets.QLabel('Branching Factor:')
 
-        self.name = 'Clustering'
         self.cltype = 'k-means'
         self.min_cluster = 5
         self.max_cluster = 5

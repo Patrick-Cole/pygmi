@@ -91,7 +91,6 @@ class BIRRP(QtWidgets.QDialog):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.name = 'BIRRP'
         self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {'tmp': True}

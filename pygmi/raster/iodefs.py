@@ -148,8 +148,6 @@ class ImportData():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Data: '
-#        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -192,7 +190,7 @@ class ImportData():
             if self.ifile == '':
                 return False
 
-            os.chdir(os.path.dirname(self.ifile))
+        os.chdir(os.path.dirname(self.ifile))
 
         if self.filt == 'GeoPak grid (*.grd)':
             dat = get_geopak(self.ifile)
@@ -317,8 +315,6 @@ class ImportRGBData():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Data: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -884,8 +880,6 @@ class ExportData():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Export Data: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -1010,7 +1004,7 @@ class ExportData():
             krows, kcols = k.data.shape
 
             fno.write('#TITLE\n')
-            fno.write(self.name)
+            fno.write('Export Data')
             fno.write('\n#POINTS\n')
             fno.write(str(kcols))
             fno.write('\n#ROWS\n')

@@ -161,8 +161,7 @@ class ImportData():
 
     def __init__(self, parent=None, extscene=None):
         self.ifile = ''
-        self.name = 'Import Data: '
-        self.ext = ''
+        self.filt = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -184,23 +183,17 @@ class ImportData():
 
         if self.extscene is None:
             return
-        else:
-            ext = self.extscene
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(self.parent,
-                                                               'Open File',
-                                                               '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
-        self.ext = self.ext.lower()
-
+        if not nodialog:
+            self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', self.extscene)
+            if self.ifile == '':
+                return False
+        os.chdir(os.path.dirname(self.ifile))
         dat = get_data(self.ifile, piter)
 
         if dat is None:
-            if filt == 'hdf (*.hdf *.h5)':
+            if self.filt == 'hdf (*.hdf *.h5)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the data.'
                                               'Currently only ASTER'
@@ -232,8 +225,13 @@ class ImportData():
             A check to see if settings was successfully run.
 
         """
+        self.ifile = projdata['ifile']
+        self.filt = projdata['filt']
+        self.extscene = projdata['extscene']
 
-        return False
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -248,7 +246,9 @@ class ImportData():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
+        projdata['filt'] = self.filt
+        projdata['extscene'] = self.extscene
 
         return projdata
 
@@ -273,19 +273,15 @@ class ImportBatch():
         filename extension
     """
 
-    def __init__(self, parent=None, directory=None):
+    def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Data: '
-        self.ext = ''
+        self.idir = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
 
-        if directory is not None:
-            self.settings(directory)
-
-    def settings(self, directory=None):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -295,25 +291,27 @@ class ImportBatch():
             True if successful, False otherwise.
 
         """
-        if directory is None or directory is False:
-            directory = QtWidgets.QFileDialog.getExistingDirectory(
+        if not nodialog or self.idir == '':
+            self.idir = QtWidgets.QFileDialog.getExistingDirectory(
                 self.parent, 'Select Directory')
-        if directory == '':
-            return False
-        os.chdir(directory)
+            if self.idir == '':
+                return False
+        os.chdir(self.idir)
 
-        zipdat = glob.glob(directory+'//AST*.zip')
-        hdfdat = glob.glob(directory+'//AST*.hdf')
+        zipdat = glob.glob(self.idir+'//AST*.zip')
+        hdfdat = glob.glob(self.idir+'//AST*.hdf')
 #        tifdat = glob.glob(directory+'//AST*.tif')
-        targzdat = glob.glob(directory+'//L*.tar.gz')
-        mtldat = glob.glob(directory+'//L*MTL.txt')
+        targzdat = glob.glob(self.idir+'//L*.tar.gz')
+        mtldat = glob.glob(self.idir+'//L*MTL.txt')
 
         sendat = []
-        sendir = [f.path for f in os.scandir(directory) if f.is_dir() and 'SAFE' in f.path]
+        sendir = [f.path for f in os.scandir(self.idir) if f.is_dir() and
+                  'SAFE' in f.path]
         for i in sendir:
             sendat.extend(glob.glob(i+'//MTD*.xml'))
 
-        if not hdfdat and not zipdat and not targzdat and not mtldat and not sendat:
+        if (not hdfdat and not zipdat and not targzdat and not mtldat and not
+                sendat):
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'No valid files in the directory.',
                                           QtWidgets.QMessageBox.Ok)
@@ -354,8 +352,11 @@ class ImportBatch():
             A check to see if settings was successfully run.
 
         """
+        self.idir = projdata['idir']
 
-        return False
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -370,7 +371,7 @@ class ImportBatch():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['idir'] = self.idir
 
         return projdata
 
@@ -398,12 +399,12 @@ class ImportSentinel5P(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.name = 'Import Sentinel-5P Data: '
         self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
         self.ifile = ''
+        self.filt = ''
 
         self.subdata = QtWidgets.QComboBox()
         self.lonmin = QtWidgets.QLineEdit('16')
@@ -468,15 +469,16 @@ class ImportSentinel5P(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        ext = ('Sentinel-5P (*.nc)')
 
-        filename, filt = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
-        if filename == '':
-            return False
+        if not nodialog:
+            ext = ('Sentinel-5P (*.nc)')
 
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(os.path.basename(filename))
+            self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if self.ifile == '':
+                return False
+
+        os.chdir(os.path.dirname(self.ifile))
 
         meta = self.get_5P_meta()
 
@@ -532,8 +534,12 @@ class ImportSentinel5P(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
+        self.ifile = projdata['ifile']
+        self.filt = projdata['filt']
 
-        return False
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -548,7 +554,8 @@ class ImportSentinel5P(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
+        projdata['filt'] = self.filt
 
         return projdata
 
@@ -638,7 +645,8 @@ class ImportSentinel5P(QtWidgets.QDialog):
         lonmax = float(self.lonmax.text())
         latmax = float(self.latmax.text())
 
-        mask = (lats > latmin) & (lats < latmax) & (lons < lonmax) & (lons > lonmin)
+        mask = ((lats > latmin) & (lats < latmax) & (lons < lonmax) &
+                (lons > lonmin))
 
         idfile = self.subdata.currentText()
 
@@ -698,7 +706,6 @@ class ImportShapeData():
     """
 
     def __init__(self, parent=None):
-        self.name = 'Import Shapefile Data: '
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -715,20 +722,17 @@ class ImportShapeData():
             True if successful, False otherwise.
 
         """
-        ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
+        if not nodialog:
+            ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
-                                                            'Open File',
-                                                            '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(filename)
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
+                                                                  'Open File',
+                                                                  '.', ext)
+            if self.ifile == '':
+                return False
+        os.chdir(os.path.dirname(self.ifile))
 
-        ifile = str(filename)
-
-        gdf = gpd.read_file(ifile)
-
+        gdf = gpd.read_file(self.ifile)
         dat = {gdf.geom_type.iloc[0]: gdf}
 
         self.outdata['Vector'] = dat
@@ -750,8 +754,10 @@ class ImportShapeData():
             A check to see if settings was successfully run.
 
         """
+        self.ifile = projdata['ifile']
+        chk = self.settings(True)
 
-        return False
+        return chk
 
     def saveproj(self):
         """
@@ -765,8 +771,7 @@ class ImportShapeData():
 
         """
         projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
 
         return projdata
 
@@ -1026,53 +1031,12 @@ def get_landsat(ifilet, piter=None):
         return None
 
     files = glob.glob(ifile[:-7]+'*[0-9].tif')
-#    files.extend(glob.glob(ifile[:-7]+'*[0-9][0-9].tif'))
 
     print('Importing Landsat data...')
-
-    # mtlfile = open(ifile)
-    # mtldat = mtlfile.read()
-    # mtlfile.close()
-
-    # mtldat = mtldat.splitlines()
-
-    # mtldat2 = []
-    # for i in mtldat:
-    #     i = i.strip().split(' = ')
-    #     mtldat2.append(i)
-
-    # mtldat2.pop(0)
-    # mtldat = {}
-    # grpname = ''
-    # for i in mtldat2:
-    #     if i[0] == 'END_GROUP' or i[0] == 'END' or len(i) < 2:
-    #         continue
-
-    #     if i[0] == 'GROUP':
-    #         grpname = i[1]
-    #         mtldat[grpname] = {}
-    #     else:
-    #         if i[1][0] == '"':
-    #             i[1] = i[1][1:-1]
-    #         mtldat[grpname][i[0]] = i[1]
-
-    # spacecraft = mtldat['PRODUCT_METADATA']['SPACECRAFT_ID']
-    # sensor = mtldat['PRODUCT_METADATA']['SENSOR_ID']
-    # bands = {}
-    # bands['LANDSAT_8'] = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-    #                       '11']
-    # bands['LANDSAT_7'] = ['1', '2', '3', '4', '5', '6_VCID_1', '6_VCID_2', '7',
-    #                       '8']
-    # bands['LANDSAT_5'] = ['1', '2', '3', '4', '5', '6', '7']
-    # bands['LANDSAT_4'] = ['1', '2', '3', '4', '5', '6', '7']
-    # if sensor == 'MSS':
-    #     bands['LANDSAT_5'] = ['1', '2', '3', '4']
-    #     bands['LANDSAT_4'] = ['1', '2', '3', '4']
 
     nval = 0
     dat = []
     for ifile2 in piter(files):
-    # for fext in bands[spacecraft]:
         if 'B6_VCID' in ifile2:
             fext = ifile2[-12:-4]
         elif ifile2[-6].isdigit():
@@ -1081,8 +1045,6 @@ def get_landsat(ifilet, piter=None):
             fext = ifile2[-5]
 
         print('Importing Band', fext)
-
-#        ifile2 = os.path.join(idir, mtldat['PRODUCT_METADATA']['FILE_NAME_BAND_'+fext])
 
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
 
@@ -1107,7 +1069,6 @@ def get_landsat(ifilet, piter=None):
         dat[-1].wkt = dataset.GetProjectionRef()
         dat[-1].filename = ifile
 
-#        dat[-1].metadata = mtldat
         dataset = None
 
     if dat == []:
@@ -1148,7 +1109,7 @@ def get_sentinel2(ifile, piter=None):
 
     nval = 0
     dat = []
-    for bfile, bandid in subdata:
+    for bfile, _ in subdata:
         dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
 
         if dataset is None:
@@ -1198,21 +1159,6 @@ def get_aster_zip(ifile, piter=None):
     if piter is None:
         piter = iter
 
-    SF09 = {'Band1': 0.6760,
-            'Band2': 0.7080,
-            'Band3N': 0.8620,
-            'Band4': 0.21740,
-            'Band5': 0.06960,
-            'Band6': 0.06250,
-            'Band7': 0.05970,
-            'Band8': 0.04178,
-            'Band9': 0.03180,
-            'Band10': 0.006882,
-            'Band11': 0.006780,
-            'Band12': 0.006590,
-            'Band13': 0.005693,
-            'Band14': 0.005225}
-
     if 'AST_07' in ifile:
         scalefactor = 0.001
         units = 'Surface Reflectance'
@@ -1226,7 +1172,6 @@ def get_aster_zip(ifile, piter=None):
     #     scalefactor = None
     else:
         return None
-
 
     print('Extracting zip...')
 

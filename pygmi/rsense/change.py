@@ -33,7 +33,6 @@ from osgeo import gdal, osr, ogr
 from shapely.geometry.polygon import Polygon
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
-import matplotlib.animation as manimation
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as \
     FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
@@ -44,9 +43,9 @@ from pygmi.raster.datatypes import Data
 
 class CreateSceneList(QtWidgets.QDialog):
     """
-    Import Line Data.
+    Create Scene List.
 
-    This class imports ASCII point data.
+    This class creates a list of scenes for use in change detection.
 
     Attributes
     ----------
@@ -65,12 +64,14 @@ class CreateSceneList(QtWidgets.QDialog):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.name = 'Create Scene List: '
         self.parent = parent
         self.indata = {'tmp': True}
         self.outdata = {}
         self.ifile = ''
-        self.piter = self.parent.pbar.iter
+        if parent is not None:
+            self.piter = self.parent.pbar.iter
+        else:
+            self.piter = iter
 
         self.shapefile = QtWidgets.QLineEdit('')
         self.scenefile = QtWidgets.QLineEdit('')
@@ -148,8 +149,6 @@ class CreateSceneList(QtWidgets.QDialog):
         subfiles = list(subfiles)
         dtime = []
         flist = []
-
-        print('Loading in information...')
         nodates = False
         for ifile in self.piter(subfiles):
             dataset = gdal.Open(str(ifile), gdal.GA_ReadOnly)
@@ -162,8 +161,8 @@ class CreateSceneList(QtWidgets.QDialog):
 
             coords = [[dxlim[0], dylim[0]],
                       [dxlim[0], dylim[1]],
-                      [dxlim[1], dylim[0]],
                       [dxlim[1], dylim[1]],
+                      [dxlim[1], dylim[0]],
                       [dxlim[0], dylim[0]]]
 
             coords2 = Polygon(coords)
@@ -212,7 +211,7 @@ class CreateSceneList(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -225,13 +224,17 @@ class CreateSceneList(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
+        self.shapefile.setText(projdata['shapefile'])
+        self.scenefile.setText(projdata['scenefile'])
+        self.isrecursive.setChecked(projdata['recursive'])
 
-        return False
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -241,7 +244,9 @@ class CreateSceneList(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['shapefile'] = self.shapefile.text()
+        projdata['scenefile'] = self.scenefile.text()
+        projdata['recursive'] = self.isrecursive.isChecked()
 
         return projdata
 
@@ -295,7 +300,7 @@ class CreateSceneList(QtWidgets.QDialog):
 
 class LoadSceneList():
     """
-    Load scene list
+    Load scene list.
 
     Attributes
     ----------
@@ -315,8 +320,6 @@ class LoadSceneList():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Scene List Data: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -332,21 +335,22 @@ class LoadSceneList():
             True if successful, False otherwise.
 
         """
-        ext = 'Scene List File (*.xlsx)'
+        if not nodialog:
+            ext = 'Scene List File (*.xlsx)'
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open Scene List Spreadsheet', '.', ext)
-        if filename == '':
-            return False
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open Scene List Spreadsheet', '.', ext)
+            if self.ifile == '':
+                return False
 
-        df = pd.read_excel(filename)
+        df = pd.read_excel(self.ifile)
 
         self.outdata['SceneList'] = df
         return True
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -359,13 +363,15 @@ class LoadSceneList():
             A check to see if settings was successfully run.
 
         """
+        self.ifile = projdata['ifile']
 
-        return False
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -375,13 +381,14 @@ class LoadSceneList():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
 
         return projdata
 
 
 class MyMplCanvas(FigureCanvas):
     """Simple canvas with a sine plot."""
+
     def __init__(self, parent=None, width=10, height=8, dpi=100,
                  bands=(0, 1, 2)):
         self.fig = Figure(figsize=(width, height), dpi=dpi)
@@ -539,7 +546,7 @@ class MyMplCanvas(FigureCanvas):
 
     def redraw(self, event):
         """
-        Redraw event
+        Redraw event.
 
         Parameters
         ----------
@@ -556,11 +563,11 @@ class MyMplCanvas(FigureCanvas):
 
 
 class SceneViewer(QtWidgets.QDialog):
-    """ Application Window """
+    """Application Window."""
+
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.name = 'Create Scene List: '
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -658,7 +665,7 @@ class SceneViewer(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -678,7 +685,6 @@ class SceneViewer(QtWidgets.QDialog):
         """
         Save project data from class.
 
-
         Returns
         -------
         projdata : dictionary
@@ -690,7 +696,6 @@ class SceneViewer(QtWidgets.QDialog):
 #        projdata['ftype'] = '2D Mean'
 
         return projdata
-
 
     def manip_change(self, event):
         """
@@ -870,7 +875,7 @@ class SceneViewer(QtWidgets.QDialog):
         """
 
         datall = {}
-        ifile = ifile[:]
+        ifile = str(ifile)
 
         dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
@@ -1018,3 +1023,26 @@ def get_shape_coords(sfile, todegrees=False):
         ddpoints = np.array(points)
 
     return ddpoints
+
+
+def testfn():
+    """Main testing routine."""
+    import sys
+    import matplotlib.pyplot as plt
+#    sfile = r'C:\Work\Workdata\change\PlanetaryPolygon.shp'
+    sfile = r'C:\Work\Workdata\change\fl35.shp'
+    pdir = r'C:\Work\Workdata\change\Planet'
+
+    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    CSL = CreateSceneList(None)
+    CSL.isrecursive.setChecked(True)
+    CSL.shapefile.setText(sfile)
+    CSL.scenefile.setText(pdir)
+    CSL.settings(True)
+
+    plt.show()
+    breakpoint()
+
+if __name__ == "__main__":
+    testfn()

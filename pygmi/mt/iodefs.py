@@ -52,7 +52,6 @@ class ImportLEMI417Data():
     """
 
     def __init__(self, parent=None):
-        self.name = 'Import LEMI-417 Data: '
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -69,14 +68,15 @@ class ImportLEMI417Data():
             True if successful, False otherwise.
 
         """
-        ext = 'LEMI-417 Text DataAll Files (*.t*)'
+        if not nodialog:
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-        self.ifile = str(os.path.basename(filename))
+            ext = 'LEMI-417 Text DataAll Files (*.t*)'
+
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if self.ifile == '':
+                return False
+        os.chdir(os.path.dirname(self.ifile))
 
         dataid = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second',
                   'Bx (nT)', 'By (nT)', 'Bz (nT)', 'TE (degrees C)',
@@ -84,7 +84,7 @@ class ImportLEMI417Data():
                   'E2 ('+chr(956)+'V/m)', 'E3 ('+chr(956)+'V/m)',
                   'E4 ('+chr(956)+'V/m)']
 
-        gdf = pd.read_csv(filename, sep=None, engine='python', names=dataid,
+        gdf = pd.read_csv(self.ifile, sep=None, engine='python', names=dataid,
                           skipinitialspace=True, index_col=False)
 
         gdf['pygmiX'] = np.nan
@@ -113,8 +113,11 @@ class ImportLEMI417Data():
             A check to see if settings was successfully run.
 
         """
+        self.ifile = projdata['ifile']
 
-        return False
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -129,7 +132,7 @@ class ImportLEMI417Data():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
 
         return projdata
 
@@ -156,8 +159,7 @@ class ImportEDI():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Data: '
-        self.ext = ''
+        self.ifilelist = []
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -173,19 +175,19 @@ class ImportEDI():
             True if successful, False otherwise.
 
         """
-        ext = 'EDI (*.edi)'
+        if not nodialog:
+            ext = 'EDI (*.edi)'
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileNames(
-            self.parent, 'Open EDI Files (single or multiple)', '.', ext)
-        if not filename:
-            return False
+            self.ifilelist, _ = QtWidgets.QFileDialog.getOpenFileNames(
+                self.parent, 'Open EDI Files (single or multiple)', '.', ext)
+            if not self.ifilelist:
+                return False
 
-        os.chdir(os.path.dirname(filename[0]))
-        self.ifile = filename
+        os.chdir(os.path.dirname(self.ifilelist[0]))
 
-        dat = get_EDI(filename)
+        dat = get_EDI(self.ifilelist)
 
-        self.ifile = os.path.dirname(filename[0]) + r'\EDI List'
+        self.ifile = os.path.dirname(self.ifilelist[0]) + r'\EDI List'
 
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -213,8 +215,11 @@ class ImportEDI():
             A check to see if settings was successfully run.
 
         """
+        self.ifilelist = projdata['ifilelist']
 
-        return False
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -229,10 +234,9 @@ class ImportEDI():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifilelist'] = self.ifilelist
 
         return projdata
-
 
 
 def get_EDI(ifiles):
@@ -251,7 +255,6 @@ def get_EDI(ifiles):
     """
 
     dat = {}
-
 
     for edi_file in ifiles:
         mt_obj = mtpy.core.mt.MT(edi_file)
@@ -286,8 +289,6 @@ class ExportEDI():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Export Data: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -323,12 +324,12 @@ class ExportEDI():
         os.chdir(os.path.dirname(filename))
 
         self.ifile = str(filename)
-        self.ext = filename[-3:]
+        ext = filename[-3:]
 
         print('Export Data Busy...')
 
     # Pop up save dialog box
-        if self.ext == 'edi':
+        if ext == 'edi':
             self.export_edi(data)
 
         print('Export EDI Finished!')
@@ -355,9 +356,7 @@ class ExportEDI():
             dat[i].write_mt_file(save_dir=savepath,
                                  fn_basename=basename+'_'+i,
                                  file_type='edi',
-#                                 new_Z_obj=new_Z_obj,
-#                                 new_Tipper_obj=new_Tipper_obj,
+                                 # new_Z_obj=new_Z_obj,
+                                 # new_Tipper_obj=new_Tipper_obj,
                                  longitude_format='LONG',
                                  latlon_format='dd')
-
-

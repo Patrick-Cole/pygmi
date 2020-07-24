@@ -51,8 +51,6 @@ class ImportData():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Data: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -79,8 +77,6 @@ class ImportData():
             return False
         os.chdir(os.path.dirname(filename))
         self.ifile = str(filename)
-        self.ext = filename[-3:]
-        self.ext = self.ext.lower()
 
         filename, filt = QtWidgets.QFileDialog.getOpenFileName(
             self.parent, 'Open CGS Header File', '.', ext)
@@ -88,8 +84,6 @@ class ImportData():
             return False
 
         self.hfile = str(filename)
-        self.ext = filename[-3:]
-        self.ext = self.ext.lower()
 
         dat = get_CGS(self.ifile, self.hfile)
 

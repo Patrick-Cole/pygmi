@@ -55,7 +55,6 @@ class ImportCG5(QtWidgets.QDialog):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.name = 'Import CG-5 Data: '
         self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {}
@@ -256,7 +255,21 @@ class ImportCG5(QtWidgets.QDialog):
 
         """
 
-        return False
+        self.get_cg5(projdata['cg5file'])
+        self.get_gps(projdata['gpsfile'])
+
+        self.line.setCurrentText(projdata['line'])
+        self.station.setCurrentText(projdata['station'])
+        self.xchan.setCurrentText(projdata['xchan'])
+        self.ychan.setCurrentText(projdata['ychan'])
+        self.zchan.setCurrentText(projdata['zchan'])
+
+        self.nodata.setText(projdata['nodata'])
+        self.basethres.setText(projdata['basethres'])
+
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
@@ -270,6 +283,18 @@ class ImportCG5(QtWidgets.QDialog):
 
         """
         projdata = {}
+
+        projdata['line'] = self.line.currentText()
+        projdata['station'] = self.station.currentText()
+        projdata['xchan'] = self.xchan.currentText()
+        projdata['ychan'] = self.ychan.currentText()
+        projdata['zchan'] = self.zchan.currentText()
+
+        projdata['nodata'] = self.nodata.text()
+        projdata['cg5file'] = self.cg5file.text()
+        projdata['gpsfile'] = self.gpsfile.text()
+        projdata['basethres'] = self.basethres.text()
+
 
 #        projdata['ftype'] = '2D Mean'
 

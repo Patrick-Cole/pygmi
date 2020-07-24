@@ -57,7 +57,6 @@ class SatRatios(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-#        self.pbar = parent.pbar
 
         self.combo_sensor = QtWidgets.QComboBox()
         self.lw_ratios = QtWidgets.QListWidget()
@@ -149,6 +148,15 @@ class SatRatios(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
+
+        self.combo_sensor.setCurrentText(projdata['sensor'])
+        self.setratios()
+
+        for i in self.lw_ratios.selectedItems():
+            if i.text()[2:] not in projdata['ratios']:
+                i.setSelected(False)
+        self.set_selected_ratios()
+
         return False
 
     def saveproj(self):
@@ -162,8 +170,13 @@ class SatRatios(QtWidgets.QDialog):
 
         """
         projdata = {}
+        projdata['sensor'] = self.combo_sensor.currentText()
 
-#        projdata['ftype'] = '2D Mean'
+        rlist = []
+        for i in self.lw_ratios.selectedItems():
+            rlist.append(i.text()[2:])
+
+        projdata['ratios'] = rlist
 
         return projdata
 
@@ -209,7 +222,7 @@ class SatRatios(QtWidgets.QDialog):
                 dat = []
                 for jfile in ifile:
                     dat += iodefs.get_data(jfile)
-                ofile = jfile
+                ofile = ifile[-1]
             else:
                 dat = ifile
                 ofile = dat[0].filename
@@ -239,11 +252,21 @@ class SatRatios(QtWidgets.QDialog):
                 print('Calculating', i)
                 formula = i.split(' ')[0]
                 formula = re.sub(r'(\d+)', r'Band\1', formula)
-                try:
-                    ratio = ne.evaluate(formula, datd)
-                except Exception:
-                    print('Error! Possibly bands missing.')
+                blist = formula
+                for j in ['/', '*', '+', '-', '(', ')']:
+                    blist = blist.replace(j, ' ')
+                blist = blist.split()
+                blist = list(set(blist))
+
+                abort = []
+                for j in blist:
+                    if j not in datd:
+                        abort.append(j)
+                if abort:
+                    print('Error:', ', '.join(abort), 'missing.')
                     continue
+
+                ratio = ne.evaluate(formula, datd)
 
                 ratio = ratio.astype(np.float32)
                 ratio = np.ma.masked_invalid(ratio)
@@ -478,19 +501,20 @@ def get_sentinel_list(flist):
 
 def testfn():
     """Main testing routine."""
-#    ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20190830T074611_N0208_R135_T35JPM_20190830T100724.SAFE\MTD_MSIL2A.xml'
-#    dat = iodefs.get_data(ifile)
-
+    ifile = r'C:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
+    dat = iodefs.get_data(ifile)
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     idir = r'C:\Work\Workdata\Sentinel-2'
 
     SR = SatRatios()
-#    SR.indata['Raster'] = dat  #single file only
+    SR.indata['Raster'] = dat  #single file only
 
-    IO = iodefs.ImportBatch(directory=idir)
-    SR.indata = IO.outdata
+    # IO = iodefs.ImportBatch()
+    # IO.idir = idir
+    # IO.settings(True)
+    # SR.indata = IO.outdata
 
     SR.settings()
 

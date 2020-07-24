@@ -133,14 +133,12 @@ class ImportSeisan():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Seisan Data'
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
 
-    def settings(self, filename=None):
+    def settings(self, nodialog=False):
         """
         Entry point into item.
 
@@ -150,21 +148,18 @@ class ImportSeisan():
             True if successful, False otherwise.
 
         """
-        ext = \
-            'Seisan Format (*.out);;' +\
-            'All Files (*.*)'
-        if filename is None or filename is False:
-            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+        if not nodialog:
+            ext = \
+                'Seisan Format (*.out);;' +\
+                'All Files (*.*)'
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
-        if filename == '':
-            return False
+            if self.ifile == '':
+                return False
 
-        os.chdir(os.path.dirname(filename))
+        os.chdir(os.path.dirname(self.ifile))
 
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
-
-        with open(filename) as pntfile:
+        with open(self.ifile) as pntfile:
             ltmp = pntfile.readlines()
 
         if len(ltmp[0]) < 80:
@@ -289,12 +284,12 @@ class ImportSeisan():
             if has_errors is False:
                 print('Warning: Problem with file')
                 print('Process will continue, but please '
-                      'see warnings in '+filename+'.log')
+                      'see warnings in '+self.ifile+'.log')
             else:
                 print('Error: Problem with file')
                 print('Process stopping, please see errors '
-                      'in '+filename+'.log')
-            fout = open(filename+'.log', 'w')
+                      'in '+self.ifile+'.log')
+            fout = open(self.ifile+'.log', 'w')
             for i in file_errors:
                 fout.write(i[0]+'\n')
                 fout.write(i[1]+'\n')
@@ -312,7 +307,7 @@ class ImportSeisan():
 
     def loadproj(self, projdata):
         """
-        Load project data into class.
+        Loads project data into class.
 
         Parameters
         ----------
@@ -325,11 +320,16 @@ class ImportSeisan():
             A check to see if settings was successfully run.
 
         """
-        return False
+        self.ifile = projdata['ifile']
+
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
         Save project data from class.
+
 
         Returns
         -------
@@ -339,7 +339,7 @@ class ImportSeisan():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
 
         return projdata
 
@@ -784,8 +784,6 @@ class ImportGenericFPS():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.name = 'Import Generic FPS: '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -801,27 +799,26 @@ class ImportGenericFPS():
             True if successful, False otherwise.
 
         """
-        QtWidgets.QMessageBox.information(self.parent, 'File Format',
-                                          'The file should have the following '
-                                          'columns: longitude, latitude, '
-                                          'depth, strike, dip, rake, '
-                                          'magnitude.')
+        if not nodialog:
+            QtWidgets.QMessageBox.information(self.parent, 'File Format',
+                                              'The file should have the '
+                                              'following columns: '
+                                              'longitude, latitude, '
+                                              'depth, strike, dip, rake, '
+                                              'magnitude.')
 
-        ext = ('Comma Delimeted Text (*.csv);;'
-               'All Files (*.*)')
+            ext = ('Comma Delimited Text (*.csv);;'
+                   'All Files (*.*)')
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open File', '.', ext)
-        if filename == '':
-            return False
-        os.chdir(os.path.dirname(filename))
-
-        self.ifile = str(filename)
-        self.ext = filename[-3:]
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+            if self.ifile == '':
+                return False
+        os.chdir(os.path.dirname(self.ifile))
 
         dlim = ','
 
-        with open(filename) as pntfile:
+        with open(self.ifile) as pntfile:
             ltmp = pntfile.readline()
 
         isheader = any(c.isalpha() for c in ltmp)
@@ -834,7 +831,7 @@ class ImportGenericFPS():
             ltmp = [str(c) for c in range(len(ltmp))]
 
         try:
-            datatmp = np.loadtxt(filename, delimiter=dlim, skiprows=srows)
+            datatmp = np.loadtxt(self.ifile, delimiter=dlim, skiprows=srows)
         except ValueError:
             QtWidgets.QMessageBox.critical(self.parent, 'Import Error',
                                            'There was a problem loading the '
@@ -870,7 +867,7 @@ class ImportGenericFPS():
 
     def loadproj(self, projdata):
         """
-        Load project data into class.
+        Loads project data into class.
 
         Parameters
         ----------
@@ -883,11 +880,16 @@ class ImportGenericFPS():
             A check to see if settings was successfully run.
 
         """
-        return False
+        self.ifile = projdata['ifile']
+
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
         Save project data from class.
+
 
         Returns
         -------
@@ -897,7 +899,7 @@ class ImportGenericFPS():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
 
         return projdata
 
@@ -907,8 +909,6 @@ class ExportSeisan():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Export Seisan Data '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -940,7 +940,6 @@ class ExportSeisan():
             return
 
         os.chdir(os.path.dirname(filename))
-        self.ext = filename[-3:]
 
         self.fobj = open(filename, 'w')
 
@@ -1415,8 +1414,6 @@ class ExportCSV():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Export CSV Data '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -1446,7 +1443,6 @@ class ExportCSV():
         if filename == '':
             return
         os.chdir(os.path.dirname(filename))
-        self.ext = filename[-3:]
 
         self.fobj = open(filename, 'w')
 
@@ -1961,8 +1957,6 @@ class ExportSummaryCSV():
 
     def __init__(self, parent):
         self.ifile = ''
-        self.name = 'Export Summary CSV Data '
-        self.ext = ''
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -1991,7 +1985,6 @@ class ExportSummaryCSV():
         if filename == '':
             return
         os.chdir(os.path.dirname(filename))
-        self.ext = filename[-3:]
 
         head = ["Year", "Month", "Day", "Hour", "Minute", "Second",
                 "Latitude", "Longitude", "Depth", "Ml", "Mw", "Md", "Mb",
@@ -2149,7 +2142,7 @@ class FilterSeisan(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
-#        label_dind = QtWidgets.QLabel('Distance Indicator:')
+        # label_dind = QtWidgets.QLabel('Distance Indicator:')
         label_rectype = QtWidgets.QLabel('Record Type:')
         label_recdesc = QtWidgets.QLabel('Description:')
         label_from = QtWidgets.QLabel('From')
@@ -2395,10 +2388,11 @@ class FilterSeisan(QtWidgets.QDialog):
         self.rectype.setCurrentText('1')
         self.rectype_init('1')
 
-        tmp = self.exec_()
+        if not nodialog:
+            tmp = self.exec_()
 
-        if tmp != 1:
-            return False
+            if tmp != 1:
+                return False
 
         self.acceptall()
 
@@ -2419,6 +2413,17 @@ class FilterSeisan(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
+        self.dsb_from.setValue(projdata['from'])
+        self.dsb_to.setValue(projdata['to'])
+        self.rectype.setCurrentText(projdata['rectype'])
+        self.recdesc.setCurrentText(projdata['recdesc'])
+        self.dind_L.setChecked(projdata['L'])
+        self.dind_R.setChecked(projdata['R'])
+        self.dind_D.setChecked(projdata['D'])
+        self.rinc.setChecked(projdata['rinc'])
+        self.rexc.setChecked(projdata['rexc'])
+        self.dind_click(None)
+
         return False
 
     def saveproj(self):
@@ -2433,7 +2438,15 @@ class FilterSeisan(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['from'] = self.dsb_from.value()
+        projdata['to'] = self.dsb_to.value()
+        projdata['rectype'] = self.rectype.currentText()
+        projdata['recdesc'] = self.recdesc.currentText()
+        projdata['L'] = self.dind_L.isChecked()
+        projdata['R'] = self.dind_R.isChecked()
+        projdata['D'] = self.dind_D.isChecked()
+        projdata['rinc'] = self.rinc.isChecked()
+        projdata['rexc'] = self.rexc.isChecked()
 
         return projdata
 
