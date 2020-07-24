@@ -37,7 +37,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as \
     FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
     NavigationToolbar
-import pygmi.menu_default as menu_default
+# import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 
 
@@ -90,7 +90,7 @@ class CreateSceneList(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        # helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
         pb_shape = QtWidgets.QPushButton('Load Shapefile')
         pb_scene = QtWidgets.QPushButton('Set Scene Directory')
 

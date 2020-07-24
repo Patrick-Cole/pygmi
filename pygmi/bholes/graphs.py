@@ -82,7 +82,7 @@ class MyMplCanvas(FigureCanvas):
         dpp = 14  # depth per page
         wpp = dpp*pagewidth/pageheight
 
-    ###########################################################################
+    # #########################################################################
     # Load in logplot init
         xl = pd.ExcelFile(logfile)
         usgs = xl.parse('USGS')
@@ -204,18 +204,18 @@ class MyMplCanvas(FigureCanvas):
         ax = fig.gca()
         fig.subplots_adjust(top=0.995)
         fig.subplots_adjust(bottom=0.005)
-#        fig.subplots_adjust(left=0.005)
-#        fig.subplots_adjust(right=0.25)
+        # fig.subplots_adjust(left=0.005)
+        # fig.subplots_adjust(right=0.25)
         fig.subplots_adjust(left=0.01)
         fig.subplots_adjust(right=0.3)
 
         idir = __file__.rpartition('\\')[0]
         logfile = idir+'\\logplot.xlsx'
 
-#        pagewidth = 8
+        # pagewidth = 8
         pageheight = 8
         dpp = 25  # depth per page
-#        wpp = dpp*pagewidth/pageheight
+        # wpp = dpp*pagewidth/pageheight
         fontsize = 10
         dpi = (fontsize/72)*(dpp/pageheight)
 
@@ -233,7 +233,7 @@ class MyMplCanvas(FigureCanvas):
         cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply('{0:0>3}'.format)
         stratcol = cgslookup.set_index('LITHO_NAME').to_dict()['COLOR_CODE']
         col = colours.set_index('code').to_dict()['colour']
-#        clith = cgs.set_index('lithology').to_dict()['lithology description']
+        # clith = cgs.set_index('lithology').to_dict()['lithology description']
         cgs = cgs.set_index('lithology').to_dict()['code']
         col['none'] = 'ffffff'
         col['nan'] = 'ffffff'
@@ -258,7 +258,7 @@ class MyMplCanvas(FigureCanvas):
         lithd = np.array(df['Lithology description'].replace(np.nan, ''))
         lith = np.array(df['Lithology'])
         strat = np.array(df['Stratigraphy'].replace(np.nan, 'none'))
-#        rank = np.array(df['Rank'].replace(np.nan, 'none'))
+        # rank = np.array(df['Rank'].replace(np.nan, 'none'))
 
         hcompanyno = hdf['Companyno'].iloc[0]
         indx = np.nonzero(companyno == hcompanyno)[0]
@@ -281,11 +281,11 @@ class MyMplCanvas(FigureCanvas):
                 if depthfrom[indx][i] != depthfrom[indx][i+1]:
                     yfin = lithdpos[i] - dpi*(1+lithd[i].count('\n'))*1.4
     # Start creating plots
-#            pdf = PdfPages(odir+chkname(hrow['Companyno']+'.pdf'))
-#        fig.set_figheight(pageheight*numpages)
-#        fig.set_figwidth(pagewidth)
+        #     pdf = PdfPages(odir+chkname(hrow['Companyno']+'.pdf'))
+        # fig.set_figheight(pageheight*numpages)
+        # fig.set_figwidth(pagewidth)
 
-#        ax.set_xlim((0, wpp))
+        # ax.set_xlim((0, wpp))
         ax.set_ylim((-dpp*numpages, 0.))
         ax.set_aspect('equal')
         ax.get_xaxis().set_visible(False)

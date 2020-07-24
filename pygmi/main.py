@@ -370,7 +370,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             method.
 
         """
-#        self.update_indata()
+        # self.update_indata()
         if self.my_class.indata == {} and self.is_import is False:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need to connect data first!',
@@ -426,7 +426,7 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
         self.selected_item_info()
 
-# now display the information about the selected data
+    # now display the information about the selected data
     def selected_item_info(self):
         """Display info about selected item."""
         tmp = self.selectedItems()
@@ -564,7 +564,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         sys.stdout = self.stdoutnew
         sys.breakpointhook = self.pdb
-#        sys.stderr = EmittingStream(textWritten=self.read_output)
+        # sys.stderr = EmittingStream(textWritten=self.read_output)
 
         self.menubar = QtWidgets.QMenuBar()
 
@@ -675,7 +675,7 @@ class MainWidget(QtWidgets.QMainWindow):
         debugger.reset()
 
         # your custom stuff here
-#        debugger.do_where(None) # run the "where" command
+        # debugger.do_where(None) # run the "where" command
 
         # invoke the interactive debugging prompt
         users_frame = sys._getframe().f_back  # frame where user invoked pdb()
@@ -1036,7 +1036,7 @@ class MainWidget(QtWidgets.QMainWindow):
         if ifile == '':
             return False
 
-#        ifile = r'C:\Work\Workdata\jason.json'
+        # ifile = r'C:\Work\Workdata\jason.json'
 
         with open(ifile, 'r') as fromdisk:
             ilist = json.load(fromdisk)
@@ -1167,7 +1167,7 @@ class MainWidget(QtWidgets.QMainWindow):
             if not i.is_import:
                 i.my_class.indata = {}
                 i.my_class.outdata = {}
-#                i.setBrush(self.scene.my_item_color)
+                # i.setBrush(self.scene.my_item_color)
 
         # Update data
         while ilist:
@@ -1317,7 +1317,7 @@ class Startup(QtWidgets.QDialog):
 class EmittingStream(QtCore.QObject):
     """ Class to intercept stdout for later use in a textbox """
     textWritten = QtCore.pyqtSignal(str)
-#    terminal = sys.stdout
+    # terminal = sys.stdout
 
     # def __init__(self, textWritten):
     #     self.terminal = sys.stdout
@@ -1337,7 +1337,7 @@ class EmittingStream(QtCore.QObject):
         None.
 
         """
- #       self.terminal.write(text)
+        # self.terminal.write(text)
         self.textWritten.emit(str(text))
 
     def flush(self):

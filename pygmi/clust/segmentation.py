@@ -29,7 +29,7 @@ import skimage
 import matplotlib.pyplot as plt
 from numba import jit
 from PyQt5 import QtWidgets, QtCore, QtGui
-# import pygmi.menu_default as menu_default
+import pygmi.menu_default as menu_default
 
 
 class ImageSeg(QtWidgets.QDialog):
@@ -77,7 +77,7 @@ class ImageSeg(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-#        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        helpdocs = menu_default.HelpButton('pygmi.clust.segmentation')
 
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
         lbl_wcolor = QtWidgets.QLabel('Colour weight')
@@ -108,10 +108,10 @@ class ImageSeg(QtWidgets.QDialog):
 
         gridlayout_main.addWidget(lbl_scale, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.scale, 2, 1, 1, 1)
-#
-#        gridlayout_main.addWidget(self.isrecursive, 2, 0, 1, 2)
 
-#        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+        # gridlayout_main.addWidget(self.isrecursive, 2, 0, 1, 2)
+
+        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
