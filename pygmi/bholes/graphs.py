@@ -332,7 +332,7 @@ class MyMplCanvas(FigureCanvas):
             ax.hlines(dto, 0, 4)  # Bottom of log
 
         self.figure.canvas.draw()
-#        self.figure.tight_layout()
+        # self.figure.tight_layout()
 
 
 class GraphWindow(QtWidgets.QDialog):
@@ -358,8 +358,8 @@ class GraphWindow(QtWidgets.QDialog):
         self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
         self.mmc2 = MyMplCanvas(self)
-#        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
-#        self.mmc.setFixedHeight(3000)
+        # mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
+        # self.mmc.setFixedHeight(3000)
         self.label_topleft = QtWidgets.QLabel()
         self.label_topright = QtWidgets.QLabel()
         self.label_bottomleft = QtWidgets.QLabel()
@@ -386,13 +386,13 @@ class GraphWindow(QtWidgets.QDialog):
         vbl.addWidget(self.scroll)
         vbl.addLayout(hbl2)
         vbl.addWidget(self.mmc2)
-#        vbl.addWidget(mpl_toolbar)
+        # vbl.addWidget(mpl_toolbar)
         vbl.addLayout(self.hbl)
 
         self.setFocus()
 
         self.combobox1.currentIndexChanged.connect(self.change_band)
-#        self.combobox2.currentIndexChanged.connect(self.change_band)
+        # self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -417,8 +417,8 @@ class PlotLog(GraphWindow):
 
     def __init__(self, parent):
         super().__init__(parent)
-#        self.label2.hide()
-#        self.combobox2.hide()
+        # self.label2.hide()
+        # self.combobox2.hide()
         self.indata = {}
         self.parent = parent
 
@@ -508,14 +508,14 @@ def gethatch(svgfile):
                 continue
 
             dpath.append(tag.get('d'))
-#            style.append(tag.get('style'))
+            # style.append(tag.get('style'))
             stmp = {}
             for i in tag.get('style').split(';'):
                 tmp = i.split(':')
                 stmp[tmp[0]] = tmp[1]
             style.append(stmp)
 
-#    translate = np.array(translate)
+    # translate = np.array(translate)
     pverts = {}
     pcodes = {}
 
@@ -566,9 +566,9 @@ def gethatch(svgfile):
                 verts += (pvals+trans).tolist()
                 codes += [Path.CURVE4]*len(pvals)
 
-#            if pkey.upper() == 'Z':
-#                verts += [trans]
-#                codes += [Path.LINETO]
+            # if pkey.upper() == 'Z':
+            #     verts += [trans]
+            #     codes += [Path.LINETO]
 
             rtmp = pvals[-1]
 

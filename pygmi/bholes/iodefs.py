@@ -130,7 +130,7 @@ class ImportData():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        # projdata['ftype'] = '2D Mean'
 
         return projdata
 

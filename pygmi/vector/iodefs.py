@@ -463,6 +463,7 @@ class ImportShapeData():
         os.chdir(os.path.dirname(self.ifile))
 
         gdf = gpd.read_file(self.ifile)
+        gdf = gdf[gdf.geometry != None]
 
         dat = {gdf.geom_type.iloc[0]: gdf}
 
