@@ -521,8 +521,6 @@ class MyMplCanvas(FigureCanvas):
             ax2.add_collection(lcol)
             ax2.autoscale(enable=True, tight=True)
 
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
         self.figure.canvas.draw()
 
 
