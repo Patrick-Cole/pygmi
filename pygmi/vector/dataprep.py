@@ -392,10 +392,15 @@ class DataGrid(QtWidgets.QDialog):
         # dat.extent = [x.min(), x.max(), y.min(), y.max()]
 
         rows, cols = dat.data.shape
+        # left = x.min()
+        # top = y.max()
+        # right = left + dxy*cols
+        # bottom = top - dxy*rows
+
         left = x.min()
-        top = y.max()
+        bottom = y.min()
+        top = bottom + dxy*rows
         right = left + dxy*cols
-        bottom = top - dxy*rows
 
         dat.extent = (left, right, bottom, top)
 
