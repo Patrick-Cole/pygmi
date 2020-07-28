@@ -479,6 +479,9 @@ class MextDisplay(QtWidgets.QDialog):
         None.
 
         """
+
+        self.combo_dataset.currentIndexChanged.disconnect()
+
         gkeys = list(self.parent.inraster.keys())
         if 'Calculated Gravity' in gkeys:
             gkeys.remove('Calculated Gravity')
@@ -530,6 +533,9 @@ class MextDisplay(QtWidgets.QDialog):
             if 'Other' in lkeys:
                 tmp = self.lmod1.griddata['Other'].dataid
                 self.combo_other.setCurrentIndex(gkeys.index(tmp))
+
+        self.combo_dataset.currentIndexChanged.connect(self.get_area)
+
 
     def update_vals(self):
         """

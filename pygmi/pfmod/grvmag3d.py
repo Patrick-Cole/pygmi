@@ -38,21 +38,22 @@ Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 
 import copy
 import tempfile
-from math import sqrt
+# from math import sqrt
 from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
-from scipy.linalg import norm
+# from scipy.linalg import norm
 from osgeo import gdal
 from numba import jit, prange
 from matplotlib import cm
 import matplotlib
-matplotlib.use('Qt5Agg')
 import matplotlib.pyplot as plt
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import PTime
+
+matplotlib.use('Qt5Agg')
 
 
 class GravMag():
@@ -75,7 +76,7 @@ class GravMag():
         else:
             self.pbars = None
         self.oldlithindex = None
-        self.mfname = self.parent.modelfilename
+#        self.mfname = self.parent.modelfilename
         self.tmpfiles = {}
 
         self.actionregionaltest = QtWidgets.QAction('Regional\nTest')
@@ -1057,7 +1058,8 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
 
     if parent is not None:
-        tmp = [i for i in set(lmod.griddata.values())]
+        # tmp = [i for i in set(lmod.griddata.values())]
+        tmp = list(set(lmod.griddata.values()))
         parent.outdata['Raster'] = tmp
     showtext('Calculation Finished')
     if pbars is not None:

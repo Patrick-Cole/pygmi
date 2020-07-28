@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """Profile Display Tab Routines."""
 
+import copy
 import os
 import random
 from PyQt5 import QtWidgets, QtCore, QtGui
@@ -1403,12 +1404,14 @@ class ProfileDisplay(QtWidgets.QWidget):
         tmprng2 = None
         tmpprof2 = None
         if 'Magnetic Dataset' in self.lmod1.griddata and self.viewmagnetics:
-            data2 = self.lmod1.griddata['Magnetic Dataset']
+            data2 = copy.deepcopy(self.lmod1.griddata['Magnetic Dataset'])
         elif ('Gravity Dataset' in self.lmod1.griddata and
               not self.viewmagnetics):
-            data2 = self.lmod1.griddata['Gravity Dataset']
+            data2 = copy.deepcopy(self.lmod1.griddata['Gravity Dataset'])
 
         if data2 is not None:
+            data2.data = np.pad(data2.data, 1, 'edge')
+
             xratio = data.xdim/data2.xdim
             yratio = data.ydim/data2.ydim
 
@@ -1417,13 +1420,12 @@ class ProfileDisplay(QtWidgets.QWidget):
             dbly = data.extent[-2]
             d2bly = data2.extent[-2]
 
-            rxxx2 = (dtlx-d2tlx)/data2.xdim+self.rxxx*xratio
-            ryyy2 = (dbly-d2bly)/data2.ydim+self.ryyy*yratio
+            rxxx2 = (dtlx-d2tlx)/data2.xdim+self.rxxx*xratio+1
+            ryyy2 = (dbly-d2bly)/data2.ydim+self.ryyy*yratio+1
 
             tmprng2 = np.linspace(px1, px2, len(rxxx2))
             tmpprof2 = ndimage.map_coordinates(data2.data[::-1],
-                                               [ryyy2-0.5,
-                                                rxxx2-0.5],
+                                               [ryyy2-0.5, rxxx2-0.5],
                                                order=1, cval=np.nan)
 
             tmprng2 = tmprng2[np.logical_not(np.isnan(tmpprof2))]
@@ -1720,7 +1722,8 @@ class MyMplCanvas(FigureCanvas):
                     self.lmod1.lith_index[xxx2, yyy2, i] = self.curmodel
 
                 self.lmdata = self.lmod1.lith_index[:, :, curlayer].T
-                self.mdata[:, ipdx1:ipdx2] = self.lmod1.lith_index[xxx, yyy, ::-1].T
+                self.mdata[:, ipdx1:ipdx2] = self.lmod1.lith_index[xxx, yyy,
+                                                                   ::-1].T
             else:
                 self.lmod1.lith_index[:, :, curlayer] = mdata.T
                 self.lmdata = mdata
@@ -1912,7 +1915,7 @@ class MyMplCanvas(FigureCanvas):
         self.ylims = (bottom, top)
         self.laxes.set_xlim(self.xlims)
         self.laxes.set_ylim(self.ylims)
-#
+
         self.lims.set_visible(True)
 
         self.figure.tight_layout()
@@ -2822,7 +2825,6 @@ class ImportPicture(QtWidgets.QDialog):
         return projdata
 
 
-
 def gridmatch2(cgrv, rgrv):
     """
     Grid match.
@@ -2895,3 +2897,17 @@ def rotate2d(pts, cntr, ang=np.pi/4):
     trans = np.array([[np.cos(ang), np.sin(ang)], [-np.sin(ang), np.cos(ang)]])
     pts2 = np.dot(pts-cntr, trans) + cntr
     return pts2
+
+
+def testfn():
+    """Main testing routine."""
+    aaa = np.arange(12.).reshape((4, 3))
+    print(aaa)
+
+    bbb = ndimage.map_coordinates(aaa, [[.5, 2], [.5, 1]], order=1)
+
+    print(bbb)
+
+
+if __name__ == "__main__":
+    testfn()

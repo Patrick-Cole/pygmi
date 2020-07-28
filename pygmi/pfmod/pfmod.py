@@ -41,7 +41,7 @@ import pygmi.misc as pmisc
 class MainWidget(QtWidgets.QMainWindow):
     """MainWidget - Widget class to call the main interface."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.indata = {'tmp': True}
@@ -52,9 +52,9 @@ class MainWidget(QtWidgets.QMainWindow):
 
 # General
         self.txtmsg = ''
-        self.modelfilename = r'./tmp'
+        # self.modelfilename = r'./tmp'
 
-#        self.toolbar = QtWidgets.QToolBar()
+        # self.toolbar = QtWidgets.QToolBar()
         self.toolbardock = QtWidgets.QToolBar()
         self.statusbar = QtWidgets.QStatusBar()
 
@@ -134,7 +134,8 @@ class MainWidget(QtWidgets.QMainWindow):
         helpdocs.clicked.connect(self.help_docs)
         self.actionsave.triggered.connect(self.savemodel)
 
-        self.resize(self.parent.width(), self.parent.height())
+        if self.parent is not None:
+            self.resize(self.parent.width(), self.parent.height())
 
     def savemodel(self):
         """
@@ -270,3 +271,27 @@ class MainWidget(QtWidgets.QMainWindow):
         tmp = self.textbrowser.verticalScrollBar()
         tmp.setValue(tmp.maximumHeight())
         self.repaint()
+
+
+def testfn():
+    """Main testing routine."""
+    import sys
+    from pygmi.pfmod.iodefs import ImportMod3D
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    ifile = r'C:\Work\Workdata\Mpumi\model.npz'
+
+    IO = ImportMod3D()
+
+    IO.ifile = ifile
+    IO.settings(True)
+
+    PF = MainWidget()
+    PF.indata = IO.outdata
+    PF.settings()
+
+    app.exec_()
+
+
+if __name__ == "__main__":
+    testfn()

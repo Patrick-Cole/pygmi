@@ -46,7 +46,7 @@ sys.modules['datatypes'] = datatypes
 class ImportMod3D():
     """Import Data."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.parent = parent
         self.lmod = LithModel()
 
@@ -81,7 +81,7 @@ class ImportMod3D():
             if self.ifile == '':
                 return False
         os.chdir(os.path.dirname(self.ifile))
-        self.parent.modelfilename = self.ifile.rpartition('.')[0]
+        # self.parent.modelfilename = self.ifile.rpartition('.')[0]
 
 # Reset Variables
         self.lmod.griddata.clear()

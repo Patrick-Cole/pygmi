@@ -169,7 +169,8 @@ class DataGrid(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = parent.pbar
+        if parent is not None:
+            self.pbar = parent.pbar
         self.dxy = None
         self.dataid_text = None
 
@@ -388,7 +389,16 @@ class DataGrid(QtWidgets.QDialog):
         dat.dataid = self.dataid.currentText()
         dat.xdim = dxy
         dat.ydim = dxy
-        dat.extent = [x.min(), x.max(), y.min(), y.max()]
+        # dat.extent = [x.min(), x.max(), y.min(), y.max()]
+
+        rows, cols = dat.data.shape
+        left = x.min()
+        top = y.max()
+        right = left + dxy*cols
+        bottom = top - dxy*rows
+
+        dat.extent = (left, right, bottom, top)
+
         newdat.append(dat)
 
         self.outdata['Raster'] = newdat
@@ -725,3 +735,41 @@ def quickgrid(x, y, z, dxy, numits=4):
     newz = np.ma.array(zfin)
     newz.mask = newmask
     return newz
+
+
+def testfn():
+    """Main testing routine."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.vector.iodefs import ImportLineData
+    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    ifile = r'C:\Work\Workdata\Mpumi\MSc_L3870_cutmag_coords.csv'
+
+    IO = ImportLineData()
+
+    IO.ifile = ifile
+    IO.filt = 'Comma Delimited (*.csv)'
+    IO.settings(True)
+
+    line = list(IO.outdata['Line'].values())
+    plt.plot(line[0].magmicrolevel)
+    plt.show()
+
+    GR = DataGrid()
+
+    GR.indata = IO.outdata
+    GR.dataid_text = 'magmicrolevel'
+    GR.settings(True)
+
+
+
+    grd = GR.outdata['Raster'][0]
+
+    plt.plot(grd.data.data.T[0])
+    plt.show()
+
+    breakpoint()
+
+if __name__ == "__main__":
+    testfn()
