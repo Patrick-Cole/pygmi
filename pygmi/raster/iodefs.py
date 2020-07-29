@@ -878,7 +878,7 @@ class ExportData():
         filename extension
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.ifile = ''
         self.pbar = None
         self.parent = parent

@@ -54,7 +54,7 @@ rcParams['savefig.dpi'] = 600.
 class ProfileDisplay(QtWidgets.QWidget):
     """Widget class to call the main interface."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.parent = parent
@@ -1516,7 +1516,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 class MyMplCanvas(FigureCanvas):
     """Matplotlib Canvas"""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         fig = Figure()
         super().__init__(fig)
 
@@ -2315,7 +2315,7 @@ class PlotScale(QtWidgets.QDialog):
 class RangedCopy(QtWidgets.QDialog):
     """Class to call up a dialog for ranged copying."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.parent = parent
@@ -2443,7 +2443,7 @@ class MyToolbar(NavigationToolbar2QT):
                    'Borehole Logs', 'Borehole Logs', 'b_logs'),
                   )
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent.mmc, parent)
         self.parent = parent
 
@@ -2538,7 +2538,7 @@ class GaugeWidget(QtWidgets.QDial):
 class ImportPicture(QtWidgets.QDialog):
     """Import Picture dialog."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.parent = parent

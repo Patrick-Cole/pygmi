@@ -65,7 +65,7 @@ class GravMag():
     related code is here as well, such as the inversion routines.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
 
         self.parent = parent
         self.lmod2 = LithModel()

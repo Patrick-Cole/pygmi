@@ -34,7 +34,7 @@ import pygmi.misc as pmisc
 class MextDisplay(QtWidgets.QDialog):
     """MextDisplay - Widget class to call the main interface."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
         self.lmod1 = parent.lmod1  # actual model

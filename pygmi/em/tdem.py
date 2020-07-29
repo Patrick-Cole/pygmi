@@ -103,7 +103,7 @@ class MyMplCanvas2(FigureCanvas):
 class TDEM1D(QtWidgets.QDialog):
     """Occam 1D inversion."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.outdata = {}

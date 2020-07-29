@@ -57,7 +57,7 @@ class Gradients(QtWidgets.QDialog):
         Order of DR filter - see paper. Try 1 first.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.parent = parent
@@ -322,7 +322,7 @@ class Visibility2d(QtWidgets.QDialog):
         height of observer above surface
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.parent = parent
@@ -639,7 +639,7 @@ class Tilt1(QtWidgets.QDialog):
         size of smoothing matrix to use - must be odd input 0 for no smoothing
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.parent = parent

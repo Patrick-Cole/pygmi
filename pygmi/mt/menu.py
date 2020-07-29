@@ -44,7 +44,7 @@ class MenuWidget():
         Reference to MainWidget class found in main.py
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
 
         self.parent = parent
         self.parent.add_to_context('MT - EDI')

@@ -237,7 +237,7 @@ class PlotRaster(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
@@ -286,7 +286,7 @@ class PlotMembership(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.parent = parent
@@ -352,7 +352,7 @@ class PlotVRCetc(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.combobox2.hide()
         self.label2.hide()

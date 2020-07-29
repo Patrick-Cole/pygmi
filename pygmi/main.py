@@ -391,7 +391,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
 class DiagramScene(QtWidgets.QGraphicsScene):
     """Diagram Scene."""
 
-    def __init__(self, item_menu, parent):
+    def __init__(self, item_menu, parent=None):
         super().__init__(parent)
 
         self.my_item_menu = item_menu

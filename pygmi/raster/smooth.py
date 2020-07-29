@@ -35,7 +35,7 @@ import pygmi.menu_default as menu_default
 class Smooth(QtWidgets.QDialog):
     """Smooth."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.indata = {}

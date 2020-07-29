@@ -264,7 +264,7 @@ class GraphMap(FigureCanvas):
         reference to the parent routine
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.figure = Figure()
 
         super().__init__(self.figure)
@@ -610,7 +610,7 @@ class ScatterPlot(QtWidgets.QDialog):
         dictionary of output datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.outdata = {}

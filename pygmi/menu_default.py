@@ -46,7 +46,7 @@ class FileMenu():
         Reference to MainWidget class found in main.py
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
 
         self.parent = parent
 
@@ -78,7 +78,7 @@ class HelpMenu():
         reference to the parent routine
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
 
         self.parent = parent
         self.webpage = r'http://patrick-cole.github.io/pygmi/'

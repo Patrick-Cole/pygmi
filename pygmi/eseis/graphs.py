@@ -35,7 +35,7 @@ import segyio
 class GraphWindow(QtWidgets.QDialog):
     """Graph Window - Main QT Dialog class for graphs."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
 
@@ -66,7 +66,7 @@ class MyMplCanvas(FigureCanvas):
     """
     MPL Canvas class.
 
-    This routine will also allow the pciking and movement of nodes of data.
+    This routine will also allow the picking and movement of nodes of data.
     """
 
     def __init__(self, parent=None):
@@ -212,7 +212,7 @@ class MyMplCanvas(FigureCanvas):
 class PlotSEGY(GraphWindow):
     """Plot Raster Class."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.parent = parent

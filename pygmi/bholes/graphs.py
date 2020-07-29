@@ -415,7 +415,7 @@ class PlotLog(GraphWindow):
         reference to the parent routine
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         # self.label2.hide()
         # self.combobox2.hide()

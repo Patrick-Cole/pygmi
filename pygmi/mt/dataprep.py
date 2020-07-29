@@ -280,7 +280,7 @@ class MyMplCanvas(FigureCanvas):
     """
     MPL Canvas class.
 
-    This routine will also allow the pciking and movement of nodes of data.
+    This routine will also allow the picking and movement of nodes of data.
     """
 
     def __init__(self, parent=None):
@@ -377,7 +377,7 @@ class MyMplCanvas(FigureCanvas):
 class StaticShiftEDI(QtWidgets.QDialog):
     """Static shift EDI data."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.outdata = {}
@@ -597,7 +597,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
 class RotateEDI(QtWidgets.QDialog):
     """Roitate EDI data."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.outdata = {}
@@ -811,7 +811,7 @@ class MyMplCanvasPick(FigureCanvas):
     """
     MPL Canvas class.
 
-    This routine will also allow the pciking and movement of nodes of data.
+    This routine will also allow the picking and movement of nodes of data.
     """
 
     def __init__(self, parent=None):
@@ -1079,7 +1079,7 @@ class MyMplCanvasPick(FigureCanvas):
 class EditEDI(QtWidgets.QDialog):
     """Edit EDI Class."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.outdata = {}
@@ -1416,7 +1416,7 @@ class MyMplCanvas2(FigureCanvas):
 class Occam1D(QtWidgets.QDialog):
     """Occam 1D inversion."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.outdata = {}

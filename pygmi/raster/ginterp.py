@@ -543,7 +543,7 @@ class MyMplCanvas(FigureCanvas):
         k value for cmyk mode
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         fig = Figure()
         super().__init__(fig)
 
@@ -1082,7 +1082,7 @@ class MySunCanvas(FigureCanvas):
         axes on which the sun is drawn
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         fig = Figure()
         super().__init__(fig)
 

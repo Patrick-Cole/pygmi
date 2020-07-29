@@ -475,7 +475,7 @@ class ImportMod3D():
 class ExportMod3D():
     """Export Data."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.ifile = ''
         self.pbar = None
         self.parent = parent

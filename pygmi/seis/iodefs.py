@@ -907,7 +907,7 @@ class ImportGenericFPS():
 class ExportSeisan():
     """Export Seisan Data."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.ifile = ''
         self.pbar = None
         self.parent = parent
@@ -1412,7 +1412,7 @@ class ExportSeisan():
 class ExportCSV():
     """Export Seisan Data."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.ifile = ''
         self.pbar = None
         self.parent = parent
@@ -1955,7 +1955,7 @@ class ExportCSV():
 class ExportSummaryCSV():
     """Export Seisan Data."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.ifile = ''
         self.pbar = None
         self.parent = parent

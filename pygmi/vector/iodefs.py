@@ -319,7 +319,7 @@ class ExportLine():
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.pbar = None
         self.parent = parent
         self.indata = {}
@@ -375,7 +375,7 @@ class ExportShapeData():
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.pbar = None
         self.parent = parent
         self.indata = {}

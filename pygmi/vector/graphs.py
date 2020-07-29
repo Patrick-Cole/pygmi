@@ -40,7 +40,7 @@ from pygmi.misc import frm
 class GraphWindow(QtWidgets.QDialog):
     """Graph Window - Main QT Dialog class for graphs."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
 
@@ -96,7 +96,7 @@ class MyMplCanvas(FigureCanvas):
     """
     MPL Canvas class.
 
-    This routine will also allow the pciking and movement of nodes of data.
+    This routine will also allow the picking and movement of nodes of data.
     """
 
     def __init__(self, parent=None):
@@ -523,7 +523,7 @@ class MyMplCanvas(FigureCanvas):
 class PlotPoints(GraphWindow):
     """Plot Points2 Class."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.parent = parent
@@ -584,7 +584,7 @@ class PlotPoints(GraphWindow):
 class PlotLines(GraphWindow):
     """Plot Lines Class."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.parent = parent
@@ -672,7 +672,7 @@ class PlotLines(GraphWindow):
 class PlotLineMap(GraphWindow):
     """Plot Lines2 Class."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.parent = parent
@@ -740,7 +740,7 @@ class PlotLineMap(GraphWindow):
 class PlotRose(GraphWindow):
     """Plot Rose Class."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.parent = parent
@@ -789,7 +789,7 @@ class PlotRose(GraphWindow):
 class PlotVector(GraphWindow):
     """Plot Vector Class."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.indata = {}
         self.parent = parent

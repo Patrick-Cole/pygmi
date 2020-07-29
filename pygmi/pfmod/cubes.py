@@ -1275,7 +1275,7 @@ class MySunCanvas(FigureCanvas):
         axes on which the sun is drawn
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         fig = Figure()
         super().__init__(fig)
 

@@ -38,7 +38,7 @@ warnings.simplefilter('always', RuntimeWarning)
 class Normalisation(QtWidgets.QDialog):
     """Class Normalisation."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.indata = {}

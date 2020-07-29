@@ -60,7 +60,7 @@ class PointCut():
         dictionary of output datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         self.ifile = ''
         self.pbar = parent.pbar
         self.parent = parent

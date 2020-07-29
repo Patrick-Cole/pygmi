@@ -601,7 +601,7 @@ class PlotQC(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()

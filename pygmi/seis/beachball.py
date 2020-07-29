@@ -45,7 +45,7 @@ import scipy.spatial.distance as sdist
 class MyMplCanvas(FigureCanvas):
     """Canvas for the actual plot."""
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         fig = Figure()
         super().__init__(fig)
 

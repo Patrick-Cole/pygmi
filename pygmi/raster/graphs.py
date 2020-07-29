@@ -272,7 +272,7 @@ class GraphWindow(QtWidgets.QDialog):
         reference to the parent routine
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.parent = parent
 
@@ -333,7 +333,7 @@ class PlotCCoef(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.label1.hide()
         self.combobox1.hide()
@@ -454,7 +454,7 @@ class PlotRaster(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
@@ -511,7 +511,7 @@ class PlotSurface(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
@@ -562,7 +562,7 @@ class PlotScatter(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.indata = {}
@@ -630,7 +630,7 @@ class PlotHist(GraphWindow):
         dictionary of input datasets
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
         self.label2.hide()
         self.combobox2.hide()
