@@ -37,8 +37,8 @@ from math import pi
 import numpy as np
 
 from PyQt5 import QtWidgets
+from matplotlib import cm
 from matplotlib.figure import Figure
-import matplotlib.cm as cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from numba import jit
@@ -48,6 +48,7 @@ import pygmi.menu_default as menu_default
 import pygmi.misc as misc
 from pygmi.raster.datatypes import Data
 from pygmi.vector.dataprep import quickgrid
+from pygmi.misc import frm
 
 
 class TiltDepth(QtWidgets.QDialog):
@@ -221,7 +222,10 @@ class TiltDepth(QtWidgets.QDialog):
             self.axes.plot(self.x0[i], self.y0[i], 'sy')
             self.axes.plot(self.x2[i], self.y2[i], 'oy')
 
-        self.figure.colorbar(ims)
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+
+        self.figure.colorbar(ims, format=frm)
 
         self.figure.canvas.draw()
 

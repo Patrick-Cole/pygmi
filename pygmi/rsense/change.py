@@ -39,6 +39,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
     NavigationToolbar
 # import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
+from pygmi.misc import frm
 
 
 class CreateSceneList(QtWidgets.QDialog):
@@ -476,7 +477,7 @@ class MyMplCanvas(FigureCanvas):
 #        breakpoint()
         if self.manip == 'NDWI':
             if self.cbar is None:
-                self.cbar = self.figure.colorbar(self.im1)
+                self.cbar = self.figure.colorbar(self.im1, format=frm)
             green = np.ma.masked_equal(dat[2].data, 0)
             nir = np.ma.masked_equal(dat[4].data, 0)
             green = green.astype(float)
@@ -486,7 +487,7 @@ class MyMplCanvas(FigureCanvas):
             self.im1.set_cmap(plt.cm.PiYG_r)
         elif self.manip == 'NDVI':
             if self.cbar is None:
-                self.cbar = self.figure.colorbar(self.im1)
+                self.cbar = self.figure.colorbar(self.im1, format=frm)
             red = np.ma.masked_equal(dat[3].data, 0)
             nir = np.ma.masked_equal(dat[4].data, 0)
             red = red.astype(float)
@@ -525,6 +526,8 @@ class MyMplCanvas(FigureCanvas):
         self.im1.set_data(dtmp)
         self.im1.set_extent(extent)
         self.fig.suptitle(dates)
+        self.ax1.xaxis.set_major_formatter(frm)
+        self.ax1.yaxis.set_major_formatter(frm)
 
         self.fig.canvas.draw()
 

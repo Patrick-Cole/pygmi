@@ -46,6 +46,7 @@ import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.raster.iodefs import get_raster
+from pygmi.misc import frm
 
 rcParams['savefig.dpi'] = 600.
 
@@ -1411,6 +1412,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         if data2 is not None:
             data2.data = np.pad(data2.data, 1, 'edge')
+            data2.data = np.ma.masked_equal(data2.data, data2.nullvalue)
 
             xratio = data.xdim/data2.xdim
             yratio = data.ydim/data2.ydim
@@ -1568,7 +1570,7 @@ class MyMplCanvas(FigureCanvas):
         self.lims2 = self.laxes.imshow(self.lmdata, cmap=self.cbar,
                                        aspect='equal', interpolation='none')
 
-        self.colbar = fig.colorbar(self.lims2)
+        self.colbar = fig.colorbar(self.lims2, format=frm)
 
         self.lims = self.laxes.imshow(self.cbar(self.lmdata), aspect='equal',
                                       interpolation='none')
@@ -1847,6 +1849,8 @@ class MyMplCanvas(FigureCanvas):
         self.ims2.set_visible(False)
         self.axes.set_xlim(extent[0], extent[1])
         self.axes.set_ylim(extent[2], extent[3])
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
 
         if dat2 is not None:
             self.ims.set_alpha(self.opac)
@@ -1915,6 +1919,9 @@ class MyMplCanvas(FigureCanvas):
         self.ylims = (bottom, top)
         self.laxes.set_xlim(self.xlims)
         self.laxes.set_ylim(self.ylims)
+        self.laxes.xaxis.set_major_formatter(frm)
+        self.laxes.yaxis.set_major_formatter(frm)
+
 
         self.lims.set_visible(True)
 
@@ -2060,6 +2067,8 @@ class MyMplCanvas(FigureCanvas):
         self.paxes.yaxis.set_label_text(self.punit)
         self.paxes.set_ylim(dmin, dmax)
         self.paxes.set_xlim(extent[0], extent[1])
+        self.paxes.xaxis.set_major_formatter(frm)
+        self.paxes.yaxis.set_major_formatter(frm)
 
         self.paxes.set_autoscalex_on(False)
         if xdat2 is not None:

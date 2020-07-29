@@ -280,6 +280,7 @@ def testfn():
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     ifile = r'C:\Work\Workdata\Mpumi\model.npz'
+#    ifile = r'C:\Work\Workdata\modelling\Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz'
 
     IO = ImportMod3D()
 

@@ -27,11 +27,11 @@
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from matplotlib import cm
-from mpl_toolkits.mplot3d import axes3d  # this is used, ignore warning
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
+from pygmi.misc import frm
 
 
 class MyMplCanvas(FigureCanvas):
@@ -81,6 +81,8 @@ class MyMplCanvas(FigureCanvas):
 
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
         self.figure.canvas.draw()
 
     def update_scatter(self, x, y):

@@ -29,16 +29,12 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from scipy.stats import median_absolute_deviation
 import matplotlib.collections as mc
-import matplotlib as mpl
-from matplotlib.cm import Set1
-from matplotlib.cm import jet
+from matplotlib.cm import Set1, jet
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from pandas.api.types import is_numeric_dtype
-
-frm = mpl.ticker.FuncFormatter(lambda x, p:
-                               format(x, ',.5f').rstrip('0').rstrip('.'))
+from pygmi.misc import frm
 
 
 class GraphWindow(QtWidgets.QDialog):
@@ -267,7 +263,7 @@ class MyMplCanvas(FigureCanvas):
             return
 #            scat = ax1.scatter(xdata, ydata)
 
-        self.figure.colorbar(scat, ax=ax1)
+        self.figure.colorbar(scat, ax=ax1, format=frm)
 #        data.plot(ival, cmap=jet, ax=ax1)
 
         self.axes.xaxis.set_major_formatter(frm)
@@ -418,7 +414,7 @@ class MyMplCanvas(FigureCanvas):
         elif 'Point' in data:
             self.axes.scatter(data['Point'].geometry.x,
                               data['Point'].geometry.y,
-                              c = data['Point'][col])
+                              c=data['Point'][col])
             # self.axes.plot(data['Point'].geometry.x,
             #                data['Point'].geometry.y, 'go')
 
@@ -821,7 +817,6 @@ class PlotVector(GraphWindow):
 
         self.mmc.update_vector(data, i)
 
-
     def run(self):
         """
         Run.
@@ -852,7 +847,6 @@ class PlotVector(GraphWindow):
         self.show()
 
         self.change_band()
-
 
 
 def histogram(x, y=None, xmin=None, xmax=None, bins=10):

@@ -36,16 +36,13 @@ menu. The following are supported:
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-import matplotlib as mpl
-import matplotlib.cm as cm
+from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 from pygmi.raster.modest_image import imshow
-
-frm = mpl.ticker.FuncFormatter(lambda x, p:
-                               format(x, ',.5f').rstrip('0').rstrip('.'))
+from pygmi.misc import frm
 
 
 class MyMplCanvas(FigureCanvas):
@@ -119,30 +116,11 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        # extent = data1.extent
-
-        # carray = data1.data.compressed()
-        # ichk = np.array_equal(carray, carray.astype(int))
-
-        # rdata = self.axes.imshow(data1.data, extent=extent, cmap=cm.jet,
-        #                          interpolation='nearest')
-
         rdata = imshow(self.axes, data1.data, extent=data1.extent, cmap=cm.jet,
                        interpolation='nearest')
 
-        # if ichk and not data1.isrgb:
-        #     vals = np.unique(data1.data)
-        #     vals = vals.compressed()
-        #     bnds = (vals - 0.5).tolist() + [vals.max() + .5]
-        #     cbar = self.axes.figure.colorbar(rdata, boundaries=bnds,)
-        #                                      # values=vals, ticks=vals)
-        #     cbar.set_label(data1.units)
-        # elif not data1.isrgb:
-        #     cbar = self.figure.colorbar(rdata)
-        #     cbar.set_label(data1.units)
-
         if not data1.isrgb:
-            cbar = self.figure.colorbar(rdata)
+            cbar = self.figure.colorbar(rdata, format=frm)
             cbar.set_label(data1.units)
 
         self.axes.set_xlabel('Eastings')
@@ -189,12 +167,11 @@ class MyMplCanvas(FigureCanvas):
         hbin = self.axes.hexbin(x, y, bins='log')
         self.axes.axis([xmin, xmax, ymin, ymax])
         self.axes.set_title('Hexbin Plot')
-        cbar = self.figure.colorbar(hbin)
+        cbar = self.figure.colorbar(hbin, format=frm)
         cbar.set_label('log10(N)')
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
-
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -242,7 +219,7 @@ class MyMplCanvas(FigureCanvas):
                                       norm=norml, vmin=z.min(), vmax=z.max(),
                                       shade=False, antialiased=False)
 
-        self.figure.colorbar(surf)
+        self.figure.colorbar(surf, format=frm)
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)

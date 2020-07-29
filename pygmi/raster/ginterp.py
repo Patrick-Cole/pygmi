@@ -443,7 +443,7 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
 
     Returns
     -------
-    im : ModestImage
+    im : pygmi.raster.ginterp.ModestImage
         ModestImage output.
 
     """

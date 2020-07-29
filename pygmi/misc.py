@@ -30,6 +30,8 @@ in a program. It also outputs a message at the point when called.
 """
 
 import time
+import numpy as np
+from matplotlib import ticker
 from PyQt5 import QtWidgets
 
 
@@ -166,3 +168,32 @@ class ProgressBar(QtWidgets.QProgressBar):
         self.setMinimum(0)
         self.setValue(1)
         QtWidgets.QApplication.processEvents()
+
+
+def tick_formatter(x, pos):
+    """
+    Format thousands separator in ticks for plots.
+
+    Parameters
+    ----------
+    x : float/int
+        Number to be formatted.
+    pos : int
+        Position of tick.
+
+    Returns
+    -------
+    newx : TYPE
+        DESCRIPTION.
+
+    """
+
+    if np.ma.is_masked(x):
+        return '--'
+
+    newx = f'{x:,.5f}'.rstrip('0').rstrip('.')
+
+    return newx
+
+
+frm = ticker.FuncFormatter(tick_formatter)

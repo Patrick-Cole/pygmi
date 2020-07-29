@@ -33,9 +33,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from pymatsolver import Pardiso as Solver
-from SimPEG import (Mesh, Maps, Utils, DataMisfit, Regularization,
-                    Optimization, Inversion, InvProblem, Directives)
-import SimPEG.EM as EM
+import discretize
+from SimPEG import (maps, utils, data_misfit, regularization,
+                    optimization, inversion, inverse_problem, directives)
+import SimPEG.electromagnetics as EM
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                              '..//..')))
@@ -284,12 +285,12 @@ class TDEM1D(QtWidgets.QDialog):
 #        temp = np.logspace(np.log10(1.), np.log10(12.), 19)
 #        temp_pad = temp[-1] * 1.3 ** np.arange(npad)
 #        hz = np.r_[temp_pad[::-1], temp[::-1], temp, temp_pad]
-#        mesh = Mesh.CylMesh([hx, 1, hz], '00C')
+#        mesh = discretize.CylMesh([hx, 1, hz], '00C')
 #        active = mesh.vectorCCz < 0.
 
         npad = 20
         hz = [(cs, npad, -1.3), (cs, ncz*2), (cs, npad, 1.3)]
-        mesh = Mesh.CylMesh([hx, 1, hz], '00C')
+        mesh = discretize.CylMesh([hx, 1, hz], '00C')
 #        breakpoint()
 
         # Step2: Set a SurjectVertical1D mapping
@@ -297,9 +298,9 @@ class TDEM1D(QtWidgets.QDialog):
         # below subsurface
 
         active = mesh.vectorCCz < 0.
-        actmap = Maps.InjectActiveCells(mesh, active, np.log(1e-8),
+        actmap = maps.InjectActiveCells(mesh, active, np.log(1e-8),
                                         nC=mesh.nCz)
-        mapping = Maps.ExpMap(mesh) * Maps.SurjectVertical1D(mesh) * actmap
+        mapping = maps.ExpMap(mesh) * maps.SurjectVertical1D(mesh) * actmap
         sig_half = 1e-1
         sig_air = 1e-8
         sigma = np.ones(mesh.nCz)*sig_air
@@ -369,25 +370,25 @@ class TDEM1D(QtWidgets.QDialog):
 
         # Data Misfit
         survey.dobs = -dobs_sky
-        dmisfit = DataMisfit.l2_DataMisfit(survey)
+        dmisfit = data_misfit.l2_DataMisfit(survey)
         uncert = std*abs(dobs_sky) + floor
-        dmisfit.W = Utils.sdiag(1./uncert)
+        dmisfit.W = utils.sdiag(1./uncert)
 
         # Regularization
-        regmesh = Mesh.TensorMesh([mesh.hz[mapping.maps[-1].indActive]])
-        reg = Regularization.Simple(regmesh, mapping=Maps.IdentityMap(regmesh))
+        regmesh = discretize.TensorMesh([mesh.hz[mapping.maps[-1].indActive]])
+        reg = regularization.Simple(regmesh, mapping=maps.IdentityMap(regmesh))
 
         # Optimization
-        opt = Optimization.InexactGaussNewton(maxIter=5)
+        opt = optimization.InexactGaussNewton(maxIter=5)
 
         # statement of the inverse problem
-        invprob = InvProblem.BaseInvProblem(dmisfit, reg, opt)
+        invprob = inverse_problem.BaseInvProblem(dmisfit, reg, opt)
 
         # Directives and Inversion Parameters
-        target = Directives.TargetMisfit()
+        target = directives.TargetMisfit()
         # betaest = Directives.BetaEstimate_ByEig(beta0_ratio=1e0)
         invprob.beta = 20.
-        inv = Inversion.BaseInversion(invprob, directiveList=[target])
+        inv = inversion.BaseInversion(invprob, directiveList=[target])
         reg.alpha_s = 1e-1
         reg.alpha_x = 1.
         opt.LSshorten = 0.5

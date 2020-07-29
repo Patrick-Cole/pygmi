@@ -44,15 +44,15 @@ import math
 import importlib
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
-import matplotlib
+from matplotlib import rcParams
 import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
 
-matplotlib.rcParams['figure.dpi'] = 120
-# matplotlib.rcParams['font.size'] = 6.0
-matplotlib.rcParams['axes.formatter.limits'] = [-12, 12]
-matplotlib.rcParams['axes.formatter.useoffset'] = False
+# rcParams['figure.dpi'] = 120
+# rcParams['font.size'] = 6.0
+rcParams['axes.formatter.limits'] = [-12, 12]
+rcParams['axes.formatter.useoffset'] = False
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 

@@ -46,14 +46,15 @@ import numpy as np
 from osgeo import gdal
 from numba import jit, prange
 from matplotlib import cm
-import matplotlib
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import PTime
+from pygmi.misc import frm
 
-matplotlib.use('Qt5Agg')
+mpl.use('Qt5Agg')
 
 
 class GravMag():
@@ -314,7 +315,7 @@ class GravMag():
 #            cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
             plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
 #            plt.clabel(cns, inline=1, fontsize=10)
-        cbar = plt.colorbar(ims, orientation='horizontal')
+        cbar = plt.colorbar(ims, orientation='horizontal', format=frm)
         cbar.set_label('nT')
 
         axes = plt.subplot(122)
@@ -330,7 +331,7 @@ class GravMag():
             plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
 #            cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
 #            plt.clabel(cns, inline=1, fontsize=10)
-        cbar = plt.colorbar(ims, orientation='horizontal')
+        cbar = plt.colorbar(ims, orientation='horizontal', format=frm)
         cbar.set_label('mGal')
         plt.tight_layout()
 
