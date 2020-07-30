@@ -385,7 +385,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
         self.parent = parent
 
         self.setWindowTitle('Remove Static Shift')
-        helpdocs = menu_default.HelpButton('pygmi.em.static')
+        helpdocs = menu_default.HelpButton('pygmi.mt.static')
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -632,7 +632,7 @@ class RotateEDI(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        helpdocs = menu_default.HelpButton('pygmi.em.rotate')
+        helpdocs = menu_default.HelpButton('pygmi.mt.rotate')
 
         hbl.addWidget(label1)
         hbl.addWidget(self.combobox1)
@@ -1087,7 +1087,7 @@ class EditEDI(QtWidgets.QDialog):
         self.parent = parent
 
         self.setWindowTitle('Edit EDI data')
-        helpdocs = menu_default.HelpButton('pygmi.em.edit')
+        helpdocs = menu_default.HelpButton('pygmi.mt.edit')
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
@@ -1425,7 +1425,7 @@ class Occam1D(QtWidgets.QDialog):
         self.cursoln = 0
 
         self.setWindowTitle('Occam 1D Inversion')
-        helpdocs = menu_default.HelpButton('pygmi.em.occam1d')
+        helpdocs = menu_default.HelpButton('pygmi.mt.occam1d')
 
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
                                            QtWidgets.QSizePolicy.Fixed)
