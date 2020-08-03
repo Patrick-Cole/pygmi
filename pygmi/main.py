@@ -592,9 +592,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_linepointer.setCheckable(True)
         self.action_pointer.setChecked(True)
 
-        play = self.style().standardIcon(QtWidgets.QStyle.SP_MediaPlay)
-
-        self.action_run.setIcon(play)
+        self.action_run.setIcon(QtGui.QIcon(ipth+'play.png'))
         self.action_delete.setIcon(QtGui.QIcon(ipth+'delete.png'))
         self.action_bring_to_front.setIcon(
             QtGui.QIcon(ipth+'bringtofront.png'))

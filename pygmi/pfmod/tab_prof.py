@@ -613,16 +613,13 @@ class ProfileDisplay(QtWidgets.QWidget):
                 if 'Calculated Gravity' in i:
                     data1.data = data1.data + self.lmod1.gregional
 
-                xratio = data.xdim/data1.xdim
-                yratio = data.ydim/data1.ydim
-
                 dtlx = data.extent[0]
                 d2tlx = data1.extent[0]
                 dtly = data.extent[-1]
                 d2tly = data1.extent[-1]
 
-                rxxx2 = (dtlx-d2tlx)/data1.xdim+self.rxxx*xratio
-                ryyy2 = (d2tly-dtly)/data1.ydim+self.ryyy*yratio
+                rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data1.xdim
+                ryyy2 = (d2tly-dtly+self.ryyy*data.ydim)/data1.ydim
 
                 tmp = data1.data.filled(np.nan)
                 data2[i] = ndimage.map_coordinates(tmp[::-1],
@@ -1414,16 +1411,13 @@ class ProfileDisplay(QtWidgets.QWidget):
             data2.data = np.pad(data2.data, 1, 'edge')
             data2.data = np.ma.masked_equal(data2.data, data2.nullvalue)
 
-            xratio = data.xdim/data2.xdim
-            yratio = data.ydim/data2.ydim
-
             dtlx = data.extent[0]
             d2tlx = data2.extent[0]
             dbly = data.extent[-2]
             d2bly = data2.extent[-2]
 
-            rxxx2 = (dtlx-d2tlx)/data2.xdim+self.rxxx*xratio+1
-            ryyy2 = (dbly-d2bly)/data2.ydim+self.ryyy*yratio+1
+            rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data2.xdim+1
+            ryyy2 = (dbly-d2bly+self.ryyy*data.ydim)/data2.ydim+1
 
             tmprng2 = np.linspace(px1, px2, len(rxxx2))
             tmpprof2 = ndimage.map_coordinates(data2.data[::-1],

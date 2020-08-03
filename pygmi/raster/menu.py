@@ -34,8 +34,6 @@ from pygmi.raster import graphs
 from pygmi.raster import show_table
 from pygmi.raster import dataprep
 from pygmi.raster import iodefs
-from pygmi.raster import igrf
-from pygmi.raster import tiltdepth
 from pygmi.raster import anaglyph
 
 
@@ -93,21 +91,9 @@ class MenuWidget():
         self.menu.addAction(self.action_visibility)
         self.action_visibility.triggered.connect(self.visibility)
 
-        self.action_tilt = QtWidgets.QAction('Tilt Angle')
-        self.menu.addAction(self.action_tilt)
-        self.action_tilt.triggered.connect(self.tilt)
-
-        self.action_rtp = QtWidgets.QAction('Reduction to the Pole')
-        self.menu.addAction(self.action_rtp)
-        self.action_rtp.triggered.connect(self.rtp)
-
         self.action_cont = QtWidgets.QAction('Continuation')
         self.menu.addAction(self.action_cont)
         self.action_cont.triggered.connect(self.cont)
-
-        self.action_igrf = QtWidgets.QAction('Calculate IGRF Corrected Data')
-        self.menu.addAction(self.action_igrf)
-        self.action_igrf.triggered.connect(self.igrf)
 
         self.menu.addSeparator()
 
@@ -135,10 +121,6 @@ class MenuWidget():
                                                            'Interpretation')
         self.menu.addAction(self.action_raster_data_interp)
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
-
-        self.action_depth_susc = QtWidgets.QAction('Tilt Depth Interpretation')
-        self.menu.addAction(self.action_depth_susc)
-        self.action_depth_susc.triggered.connect(self.depth_susc)
 
 # Context menus
         context_menu['inRaster'].addSeparator()
@@ -228,17 +210,6 @@ class MenuWidget():
         fnc = ginterp.PlotInterp(self.parent)
         self.parent.item_insert('Step', 'Raster Data Interpretation', fnc)
 
-    def depth_susc(self):
-        """Depth and Susceptibility calculations."""
-        fnc = tiltdepth.TiltDepth(self.parent)
-        self.parent.item_insert('Step',
-                                'Tilt Depth Interpretation', fnc)
-
-    def rtp(self):
-        """Compute RTP."""
-        fnc = dataprep.RTP(self.parent)
-        self.parent.item_insert('Step', 'RTP', fnc)
-
     def cont(self):
         """Compute Continuation."""
         fnc = dataprep.Continuation(self.parent)
@@ -273,11 +244,6 @@ class MenuWidget():
         fnc = smooth.Smooth(self.parent)
         self.parent.item_insert('Step', 'Smoothing', fnc)
 
-    def tilt(self):
-        """Compute tilt angle."""
-        fnc = cooper.Tilt1(self.parent)
-        self.parent.item_insert('Step', 'Tilt Angle', fnc)
-
     def visibility(self):
         """Compute visibility."""
         fnc = cooper.Visibility2d(self.parent)
@@ -292,11 +258,6 @@ class MenuWidget():
         """Merge datasets."""
         fnc = dataprep.DataMerge(self.parent)
         self.parent.item_insert('Step', 'Data Merge', fnc)
-
-    def igrf(self):
-        """Compute IGRF."""
-        fnc = igrf.IGRF(self.parent)
-        self.parent.item_insert('Step', 'Remove IGRF', fnc)
 
     def import_data(self):
         """Import data."""

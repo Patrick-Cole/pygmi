@@ -28,6 +28,7 @@ Default set of menus for the main interface.
 It also includes the about box.
 """
 
+from datetime import date
 import os
 import webbrowser
 from PyQt5 import QtWidgets, QtCore, QtGui
@@ -83,8 +84,6 @@ class HelpMenu():
         self.parent = parent
         self.webpage = r'http://patrick-cole.github.io/pygmi/'
 
-# Help Menu
-
         self.menuhelp = QtWidgets.QMenu('Help')
         parent.menubar.addAction(self.menuhelp.menuAction())
 
@@ -99,27 +98,27 @@ class HelpMenu():
 
     def about(self):
         """About box for PyGMI."""
-        msg = '''\
-Name:         PyGMI - Python Geoscience Modelling and Interpretation
-Version:       '''+self.parent.__version__+'''
-Author:       Patrick Cole
-E-Mail:        pcole@geoscience.org.za
 
-Copyright:    \xa9 2013-2020 Council for Geoscience
-Licence:      GPL-3.0
+        year = str(date.today().year)
 
-PyGMI is free software: you can redistribute it and/or modify it under
-the terms of the GNU General Public License as published by the Free
-Software Foundation, either version 3 of the License, or (at your option)
-any later version.
-
-PyGMI is distributed in the hope that it will be useful, but
-WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program. If not, see http://www.gnu.org/licenses/'''
+        msg = ('Name:\t\tPyGMI - Python Geoscience Modelling\n\t\tand '
+               'Interpretation\n'
+               'Version:\t\t'+self.parent.__version__+'\n'
+               'Author:\t\tPatrick Cole\n'
+               'E-Mail:\t\tpcole@geoscience.org.za\n'
+               'Copyright:\t\xa9 2013-'+year+' Council for Geoscience\n'
+               'Licence:\t\tGPL-3.0\n\n'
+               'PyGMI is free software: you can redistribute it and/or '
+               'modify it under the terms of the GNU General Public License '
+               'as published by the Free Software Foundation, either version '
+               '3 of the License, or (at your option) any later version.\n\n'
+               'PyGMI is distributed in the hope that it will be useful, '
+               'but WITHOUT ANY WARRANTY; without even the implied warranty '
+               'of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. '
+               'See the GNU General Public License for more details.\n\n'
+               'You should have received a copy of the GNU General Public '
+               'License along with this program. If not, see\n'
+               'http://www.gnu.org/licenses/')
 
         QtWidgets.QMessageBox.about(self.parent, 'PyGMI', msg)
 
