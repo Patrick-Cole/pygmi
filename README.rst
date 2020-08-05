@@ -7,11 +7,14 @@ PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>
 
 It includes:
 
-* Magnetic and Gravity 3D forward modelling
-* Cluster Analysis
-* Routines for cutting, reprojecting and doing simple modifications to data
+* Magnetic and Gravity 3D forward modelling.
+* Cluster Analysis, including use of scikit-learn libraries.
+* Routines for cutting, reprojecting and doing simple modifications to data.
 * Convenient display of data using pseudo-color, ternary and sunshaded representation.
-* New features such as MT processing and 1D inversion, gravity processing, seismological  for SEISAN data.
+* MT processing and 1D inversion using MTpy.
+* Gravity processing.
+* Seismological functions for SEISAN data.
+* Remote sensing ratios and improved imports.
 
 It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
 
@@ -29,28 +32,28 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.8.1
+* python 3.8.3
 * fiona 1.8.13
-* gdal 3.0.4
-* geopandas 0.6.2
-* llvmlite 0.31.0
-* matplotlib 3.2.0rc2
+* gdal 3.1.2
+* geopandas 0.7.0
+* IPython 7.14.0
+* llvmlite 0.33.0
+* matplotlib 3.2.2
 * mtpy 1.1.3
-* numba 0.47.0
+* numba 0.50.1
 * numexpr 2.7.1
-* numpy 1.18.0+mkl
-* pandas 0.25.3
-* pillow 7.0.0
+* numpy 1.19.0+mkl
+* pandas 1.0.5
+* pillow 7.2.0
 * pymatsolver 0.1.2
 * pyopengl 3.1.5
 * PyQt5 5.12.3
-* pytest 5.3.2
-* scikit-image 0.16.2
-* scikit-learn 0.22.1
-* scipy 1.4.1
-* segyio 1.9.0
-* shapely 1.6.4.post2
-* SimPEG 0.13.1
+* pytest 5.4.2
+* scikit-image 0.17.2
+* scikit-learn 0.23.1
+* scipy 1.5.1
+* segyio 1.9.1
+* shapely 1.7.0
 
 Installation
 ------------

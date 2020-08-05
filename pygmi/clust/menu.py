@@ -52,7 +52,7 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-        self.parent.add_to_context('Cluster')
+        self.parent.add_to_context('Classification')
         context_menu = self.parent.context_menu
 
 # Normal menus

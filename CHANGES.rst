@@ -1,6 +1,67 @@
 =========
 Changelog
 =========
+
+v3.2.1, 05 August 2020
+----------------------
+*Added 99% linear stretch to geophysical interp.
+*Created a magnetic menu for modules which are magnetic only.
+*Updated more graphs to have thousands separator.
+*Updated modelling to allow for data grids with only one column.
+*Fixed extents issue with gridding data.
+*Fixes an issue if there is missing geometry in a shapefile.
+*Fixed some issues with axis labels on graphs
+*Fixed a bug causing incorrect stats for supervised classification if null values were in the dataset.
+*Added comma as thousands separator for raster and vector graphs
+*Added upward and downward continuation.
+*Added general orders to vertical derivative functions
+*Fixed a bug exporting null values for 32 bit float datasets.
+*Fixed a recent bug preventing saving of data from geophysical interpretation tool
+*Added units for some remote sensing imports (sentinel-2 and aster)
+*Added modest_image support for display raster option
+*Fixed a bug causing a crash in interpretation tool when receiving results from cluster analysis
+*Added crisp and fuzzy cluster analysis settings
+*Added image segmentation settings
+*Added export for shapefiles
+*Added saved proj settings for cluster analysis
+*Added color to point shapefile display
+*Fixed a bug displaying incorrect utm values in EDI metadata
+*Fixed the message displayed from DBSCAN cluster analysis
+*Fixed a bug causing cut vector files to not be plotted.
+*Fixed bug in band select
+*Fixed a bug exporting saga data, when dataset had multiple bands
+*Reorganised code.
+*Updates to project save.
+*Added project save and load.
+*Will save workflow but only certain modules have settings saved at this stage.
+*Delete key now deletes arrows or items
+*Tests updated to reflect recent fixes.
+*File imports will display filename in information
+*Band ratio labels replace divide sign with div, for ESRI compatibility
+*Bugfixes in ratio import with a single file.
+*Data class will store the filename of the dataset imported.
+*Changed description on surfer grids.
+*Fixed a bug which occurs for some padding of RTP datasets
+*Fixed a bug in RTP calculation
+*Alpha version of ratios
+*Fixed a bug where PyGMI would crash when double clicking on an arrow.
+*Added a mosaic function to the equation editor, for a simple mosaic of two datasets.
+*Moved importing of remote sensing data to remote sensing menu.
+*Started work on a ratio function (remote sensing), with batch capabilities
+*Undo custom window size
+*Added import for sentinel 5P data
+*Fixed bug which reset last lithology whenever background layer has changes applied.
+*Changes will no longer be applied automatically
+*Bugfix, profile add
+*Custom profile now correctly deletes, and reports if it is outside the model area
+*Fixed a bug with drawing lines.
+*Added save complete when saving model in modelling interface.
+*Fixed the odd sizing of the cursor, and related drawing of lithologies.
+*Improved listboxes for modelling and 3D display
+*Fixed an issue where a custom profile image was not being saved with a 3D model
+*Fixed a bug when reimporting a model with rgb image inside it.
+*Updated readme files
+
 v3.1.0, 24 March 2020
 ---------------------
 *Updates to gravity routines to report duplicated stations.
