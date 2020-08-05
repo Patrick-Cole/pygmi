@@ -129,7 +129,7 @@ class SIMP():
 
         """
         self.parent.clearprocesslog()
-        print('Import Bulletin to Seisan Format')
+        print('Import Bulletin to SEISAN Format')
 
         ext = 'Scanned Bulletin Text File (*.txt)'
 

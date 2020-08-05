@@ -150,7 +150,7 @@ class ImportSeisan():
         """
         if not nodialog:
             ext = \
-                'Seisan Format (*.out);;' +\
+                'SEISAN Format (*.out);;' +\
                 'All Files (*.*)'
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
@@ -927,7 +927,7 @@ class ExportSeisan():
         """
         if 'Seis' not in self.indata:
             print(
-                'Error: You need to have a Seisan data first!')
+                'Error: You need to have a SEISAN data first!')
             return
 
         data = self.indata['Seis']
@@ -1432,7 +1432,7 @@ class ExportCSV():
         """
         if 'Seis' not in self.indata:
             print(
-                'Error: You need to have a Seisan data first!')
+                'Error: You need to have a SEISAN data first!')
             return
 
         data = self.indata['Seis']
@@ -1974,7 +1974,7 @@ class ExportSummaryCSV():
 
         """
         if 'Seis' not in self.indata:
-            print('Error: You need to have a Seisan data first!')
+            print('Error: You need to have a SEISAN data first!')
             return
 
         data = self.indata['Seis']

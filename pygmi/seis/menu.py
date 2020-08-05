@@ -55,16 +55,16 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Seismology')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_seisan = QtWidgets.QAction('Import Seisan Data')
+        self.action_import_seisan = QtWidgets.QAction('Import SEISAN Data')
         self.menu.addAction(self.action_import_seisan)
         self.action_import_seisan.triggered.connect(self.import_seisan)
 
-        self.action_check_desc = QtWidgets.QAction('Correct Seisan Type 3'
+        self.action_check_desc = QtWidgets.QAction('Correct SEISAN Type 3'
                                                    ' Descriptions')
         self.menu.addAction(self.action_check_desc)
         self.action_check_desc.triggered.connect(self.correct_desc)
 
-        self.action_filter_seisan = QtWidgets.QAction('Filter Seisan Data')
+        self.action_filter_seisan = QtWidgets.QAction('Filter SEISAN Data')
         self.menu.addAction(self.action_filter_seisan)
         self.action_filter_seisan.triggered.connect(self.filter_seisan)
 
@@ -98,7 +98,7 @@ class MenuWidget():
         context_menu['Seis'].addAction(self.action_show_QC_plots)
         self.action_show_QC_plots.triggered.connect(self.show_QC_plots)
 
-        self.action_export_seisan = QtWidgets.QAction('Export Seisan Data')
+        self.action_export_seisan = QtWidgets.QAction('Export SEISAN Data')
         context_menu['Seis'].addAction(self.action_export_seisan)
         self.action_export_seisan.triggered.connect(self.export_seisan)
 
@@ -135,17 +135,17 @@ class MenuWidget():
     def import_seisan(self):
         """Import Seisan."""
         fnc = iodefs.ImportSeisan(self.parent)
-        self.parent.item_insert('Io', 'Import Seisan Data', fnc)
+        self.parent.item_insert('Io', 'Import SEISAN Data', fnc)
 
     def correct_desc(self):
         """Correct Seisan descriptions."""
         fnc = utils.CorrectDescriptions(self.parent)
-        self.parent.item_insert('Step', 'Correct Seisan Descriptions', fnc)
+        self.parent.item_insert('Step', 'Correct SEISAN Descriptions', fnc)
 
     def filter_seisan(self):
         """Filter Seisan."""
         fnc = iodefs.FilterSeisan(self.parent)
-        self.parent.item_insert('Step', 'Filter Seisan Data', fnc)
+        self.parent.item_insert('Step', 'Filter SEISAN Data', fnc)
 
     def import_genfps(self):
         """Import Generic Fault Plane Solution."""

@@ -425,7 +425,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.vector.iodefs.importpointdata')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.iodefs.importsentinel5p')
         label_subdata = QtWidgets.QLabel('Product:')
         label_lonmin = QtWidgets.QLabel('Minimum Longitude:')
         label_lonmax = QtWidgets.QLabel('Maximum Longitude:')

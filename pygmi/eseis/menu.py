@@ -52,7 +52,7 @@ class MenuWidget():
         self.menu = QtWidgets.QMenu('Exploration Seismics')
         parent.menubar.addAction(self.menu.menuAction())
 
-        self.action_import_data = QtWidgets.QAction('Import SEGY Data')
+        self.action_import_data = QtWidgets.QAction('Import SEG-Y Data')
         self.menu.addAction(self.action_import_data)
         self.action_import_data.triggered.connect(self.import_data)
 
@@ -63,14 +63,14 @@ class MenuWidget():
         context_menu['ESEIS'].addAction(self.action_show_graphs)
         self.action_show_graphs.triggered.connect(self.show_graphs)
 
-        self.action_export_data = QtWidgets.QAction('Export SEGY')
+        self.action_export_data = QtWidgets.QAction('Export SEG-Y')
         context_menu['ESEIS'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 
     def import_data(self):
         """Import data."""
         fnc = iodefs.ImportSEGY(self.parent)
-        self.parent.item_insert('Io', 'Import SEGY Data', fnc)
+        self.parent.item_insert('Io', 'Import SEG-Y Data', fnc)
 
     def export_data(self):
         """Export data."""

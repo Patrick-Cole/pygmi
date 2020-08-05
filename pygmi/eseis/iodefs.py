@@ -66,17 +66,18 @@ class ImportSEGY():
             True if successful, False otherwise.
 
         """
-        ext = 'SEGY (*.sgy)'
 
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self.parent, 'Open SEGY File', '.', ext)
-        if not filename:
-            return False
+        if not nodialog:
+            ext = 'SEG-Y (*.sgy)'
 
-        os.chdir(os.path.dirname(filename))
-        self.ifile = filename
+            self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open SEG-Y File', '.', ext)
+            if not self.ifile:
+                return False
 
-        dat = segyio.open(filename, ignore_geometry=True)
+        os.chdir(os.path.dirname(self.ifile))
+
+        dat = segyio.open(self.ifile, ignore_geometry=True)
 
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -91,7 +92,7 @@ class ImportSEGY():
 
     def loadproj(self, projdata):
         """
-        Load project data into class.
+        Loads project data into class.
 
         Parameters
         ----------
@@ -104,11 +105,16 @@ class ImportSEGY():
             A check to see if settings was successfully run.
 
         """
-        return False
+        self.ifile = projdata['ifile']
+
+        chk = self.settings(True)
+
+        return chk
 
     def saveproj(self):
         """
         Save project data from class.
+
 
         Returns
         -------
@@ -118,7 +124,7 @@ class ImportSEGY():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
+        projdata['ifile'] = self.ifile
 
         return projdata
 
@@ -165,11 +171,11 @@ class ExportSEGY():
         if 'ESEIS' in self.indata:
             data = self.indata['ESEIS']
         else:
-            print('No SEGY data')
+            print('No SEG-Y data')
             self.parent.process_is_active(False)
             return False
 
-        ext = 'SEGY (*.sgy)'
+        ext = 'SEG-Y (*.sgy)'
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
@@ -186,11 +192,11 @@ class ExportSEGY():
 
         self.export_segy(data)
 
-        print('Export SEGY Finished!')
+        print('Export SEG-Y Finished!')
         self.parent.process_is_active(False)
         return True
 
-    def export_segy(self, dat):
+    def export_segy(self, src):
         """
         Export to SEGY format.
 
@@ -204,8 +210,6 @@ class ExportSEGY():
         None.
 
         """
-        src = self.indata['ESEIS']
-
         spec = segyio.tools.metadata(src)
         with segyio.create(self.ifile, spec) as dst:
             dst.text[0] = src.text[0]

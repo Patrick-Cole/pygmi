@@ -1086,7 +1086,7 @@ class EditEDI(QtWidgets.QDialog):
         self.data = None
         self.parent = parent
 
-        self.setWindowTitle('Edit EDI data')
+        self.setWindowTitle('Mask and Interpolate')
         helpdocs = menu_default.HelpButton('pygmi.mt.edit')
 
         vbl = QtWidgets.QVBoxLayout(self)

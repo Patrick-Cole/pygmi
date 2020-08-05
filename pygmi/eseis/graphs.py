@@ -167,7 +167,7 @@ class MyMplCanvas(FigureCanvas):
         Parameters
         ----------
         data : segyio object
-            SEGY data
+            SEG-Y data
 
         Returns
         -------
@@ -176,9 +176,9 @@ class MyMplCanvas(FigureCanvas):
         """
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(111, label='SEGY')
+        ax1 = self.figure.add_subplot(111, label='SEG-Y')
 
-        ax1.set_title('SEGY')
+        ax1.set_title('SEG-Y')
         self.axes = ax1
 
         samplecnt = data.header[0][segyio.TraceField.TRACE_SAMPLE_COUNT]

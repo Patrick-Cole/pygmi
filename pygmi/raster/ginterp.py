@@ -246,6 +246,9 @@ class ModestImage(mi.AxesImage):
             if self.htype == '98% Linear, 2% Compact':
                 pseudo = histcomp(pseudo, perc=2.)
 
+            if self.htype == '99% Linear, 1% Compact':
+                pseudo = histcomp(pseudo, perc=1.)
+
             if self.htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
 
@@ -269,6 +272,9 @@ class ModestImage(mi.AxesImage):
             if self.htype == '98% Linear, 2% Compact':
                 pseudo = histcomp(pseudo, perc=2.)
 
+            if self.htype == '99% Linear, 1% Compact':
+                pseudo = histcomp(pseudo, perc=1.)
+
             if self.htype == '90% Linear, 10% Compact':
                 pseudo = histcomp(pseudo, perc=10.)
 
@@ -280,6 +286,9 @@ class ModestImage(mi.AxesImage):
 
             if self.hstype == '98% Linear, 2% Compact':
                 sun = histcomp(sun, perc=2.)
+
+            if self.hstype == '99% Linear, 1% Compact':
+                sun = histcomp(sun, perc=1.)
 
             if self.hstype == '90% Linear, 10% Compact':
                 sun = histcomp(sun, perc=10.)
@@ -322,6 +331,11 @@ class ModestImage(mi.AxesImage):
                 red = histcomp(red, perc=2.)
                 green = histcomp(green, perc=2.)
                 blue = histcomp(blue, perc=2.)
+
+            if self.htype == '99% Linear, 1% Compact':
+                red = histcomp(red, perc=1.)
+                green = histcomp(green, perc=1.)
+                blue = histcomp(blue, perc=1.)
 
             if self.htype == '90% Linear, 10% Compact':
                 red = histcomp(red, perc=10.)
@@ -1237,11 +1251,13 @@ class PlotInterp(QtWidgets.QDialog):
                                   '90% Linear, 10% Compact',
                                   '95% Linear, 5% Compact',
                                   '98% Linear, 2% Compact',
+                                  '99% Linear, 1% Compact',
                                   'Histogram Equalization'])
         self.cbox_hstype.addItems(['Linear',
                                    '90% Linear, 10% Compact',
                                    '95% Linear, 5% Compact',
                                    '98% Linear, 2% Compact',
+                                   '99% Linear, 1% Compact',
                                    'Histogram Equalization'])
 
         self.setWindowTitle('Raster Data Interpretation')
@@ -1628,6 +1644,9 @@ class PlotInterp(QtWidgets.QDialog):
             if htype == '98% Linear, 2% Compact':
                 pseudo = histcomp(pseudo, perc=2.)
 
+            if htype == '99% Linear, 1% Compact':
+                pseudo = histcomp(pseudo, perc=1.)
+
             if htype == '90% Linear, 10% Compact':
                 pseudo = histcomp(pseudo, perc=10.)
 
@@ -1655,6 +1674,9 @@ class PlotInterp(QtWidgets.QDialog):
             if htype == '98% Linear, 2% Compact':
                 pseudo = histcomp(pseudo, perc=2.)
 
+            if htype == '99% Linear, 1% Compact':
+                pseudo = histcomp(pseudo, perc=1.)
+
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
 
@@ -1666,6 +1688,9 @@ class PlotInterp(QtWidgets.QDialog):
 
             if hstype == '98% Linear, 2% Compact':
                 sun = histcomp(pseudo, perc=2.)
+
+            if hstype == '99% Linear, 1% Compact':
+                sun = histcomp(pseudo, perc=1.)
 
             if hstype == 'Histogram Equalization':
                 sun = histeq(sun)
@@ -1702,6 +1727,11 @@ class PlotInterp(QtWidgets.QDialog):
                 red = histcomp(red, perc=2.)
                 green = histcomp(green, perc=2.)
                 blue = histcomp(blue, perc=2.)
+
+            if htype == '99% Linear, 1% Compact':
+                red = histcomp(red, perc=1.)
+                green = histcomp(green, perc=1.)
+                blue = histcomp(blue, perc=1.)
 
             if htype == '90% Linear, 10% Compact':
                 red = histcomp(red, perc=10.)
@@ -1744,6 +1774,9 @@ class PlotInterp(QtWidgets.QDialog):
 
             if htype == '98% Linear, 2% Compact':
                 pseudo = histcomp(pseudo, perc=2.)
+
+            if htype == '99% Linear, 1% Compact':
+                pseudo = histcomp(pseudo, perc=1.)
 
             if htype == '90% Linear, 10% Compact':
                 pseudo = histcomp(pseudo, perc=10.)

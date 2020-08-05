@@ -74,7 +74,7 @@ class SatRatios(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.grav.dataprep.processdata')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
         label_sensor = QtWidgets.QLabel('Sensor:')
         label_ratios = QtWidgets.QLabel('Ratios:')
 
