@@ -1,108 +1,86 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>Potential Field Modelling: Description of Modules &#8212; PyGMI 3.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <title>Potential Field Modelling: Description of Modules &#8212; PyGMI 3.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="pfmod.ref.html" />
-    <link rel="prev" title="Potential Field Modelling: Context Menu" href="pfmod.cm.html" /> 
+    <link rel="prev" title="Potential Field Modelling: Context Menu" href="pfmod.cm.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
   </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
 
-<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
 <a href="index.html">
-<img src="_static/logo.png" border="0" alt="py4sci"/>
+<img src="_static/logo.png" class="image1"/>
 </a>
+
 <a href="http://www.geoscience.org.za">
-<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
 </a>
 
 </div>
 
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="pfmod.ref.html" title="References"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="pfmod.cm.html" title="Potential Field Modelling: Context Menu"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li class="nav-item nav-item-1"><a href="wiki.html" >PyGMI Wiki</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pfmod.html" accesskey="U">Potential Field Modelling</a> &#187;</li> 
-      </ul>
-    </div>
-
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Potential Field Modelling: Description of Modules</a><ul>
-<li><a class="reference internal" href="#import-3d-model">Import 3D Model</a></li>
-<li><a class="reference internal" href="#import-profile-picture">Import Profile Picture</a></li>
-<li><a class="reference internal" href="#model-creation-and-editing">Model Creation and Editing</a><ul>
-<li><a class="reference internal" href="#model-extent-parameters">Model Extent Parameters</a></li>
-<li><a class="reference internal" href="#geophysical-parameters">Geophysical Parameters</a></li>
-<li><a class="reference internal" href="#data-display">Data Display</a></li>
-<li><a class="reference internal" href="#layer-editor">Layer Editor</a></li>
-<li><a class="reference internal" href="#profile-editor">Profile Editor</a></li>
-<li><a class="reference internal" href="#custom-profile-viewer">Custom Profile Viewer</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="pfmod.cm.html"
-                        title="previous chapter">Potential Field Modelling: Context Menu</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pfmod.ref.html"
-                        title="next chapter">References</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/pfmod.dm.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pfmod.cm.html" title="Previous document">Potential Field Modelling: Context Menu</a>
+        </li>
+        <li>
+          <a href="pfmod.ref.html" title="Next document">References</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
           <div class="body" role="main">
             
   <div class="section" id="potential-field-modelling-description-of-modules">
@@ -113,15 +91,20 @@
 format. Each .npz file will contain the voxel model, along with raster datasets
 associated with that model.</p>
 </div>
-<div class="section" id="import-profile-picture">
-<h2>Import Profile Picture<a class="headerlink" href="#import-profile-picture" title="Permalink to this headline">¶</a></h2>
-<p>This imports a picture to be associated with either an east-west or north-south
-profile in the model. Typically this could be seismic data, or a cross section
-from another technique. It accepts a tiff as input. The cordinates for the
-picture are specified here.</p>
-<p>If a .npz file is connected to this module (imported through the import 3D
-model tool) then appropriate default values for the picture are filled in.</p>
-<a class="reference internal image-reference" href="_images/pfimpprofpic.png"><img alt="_images/pfimpprofpic.png" src="_images/pfimpprofpic.png" style="width: 100%;" /></a>
+<div class="section" id="merge-3d-models">
+<h2>Merge 3D Models<a class="headerlink" href="#merge-3d-models" title="Permalink to this headline">¶</a></h2>
+<p>The merge 3D models tool allows for the merging of two 3D models into one single model.</p>
+<p>It makes the following important assumptions:</p>
+<p>There are only TWO input models.
+* If two lithologies have the same name, they are the same and settings from the Master are to be used.
+* If a lithology is in the Slave model, and not in the Master, it is copied into the Master.
+* If the Master and Slave dataset do not align, the slave is modified to fit the Master</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Master Dataset - This is the dataset which will be added to. Its values are not changed.</p></li>
+<li><p>Slave Dataset - This dataset is incorporated into the Master.</p></li>
+</ul>
+<img alt="_images/pfmodmerge.png" src="_images/pfmodmerge.png" />
 </div>
 <div class="section" id="model-creation-and-editing">
 <h2>Model Creation and Editing<a class="headerlink" href="#model-creation-and-editing" title="Permalink to this headline">¶</a></h2>
@@ -130,124 +113,286 @@ here is a voxel model which can be displayed in 3D using the right-click
 context menu on a green module. The module comprises a series of Tabs, which
 are described below. The actual calculation of the magnetic and gravity field
 data is based on the work by Blakely (1996).</p>
-<div class="section" id="model-extent-parameters">
-<h3>Model Extent Parameters<a class="headerlink" href="#model-extent-parameters" title="Permalink to this headline">¶</a></h3>
-<p>This tab sets up the extents of the model. The Dataset Information section
-associates connected raster datasets with the either DTM, magnetic data,
-gravity data or gravity regional data. If you are modelling actual data, this
-module will insist on DTM data. If nothing else, dtm data can be obtained from
-the SRTM archives.</p>
-<p>The Model Extent Properties section sets up the model extents - by default from
-an associated DTM. Of importance are the X, Y and Z cell sizes. This determines
-the number of rows, columns and layers in the model. As a rule of thumb, models
-bigger than 100x100x100 may be slow, although this will depend on the hardware
-available.</p>
-<p>Any changes here must be accepted using the ‘Accept Proposed Changes’ button.</p>
-<a class="reference internal image-reference" href="_images/pfmodparam.png"><img alt="_images/pfmodparam.png" src="_images/pfmodparam.png" style="width: 100%;" /></a>
+<div class="section" id="model-extents-parameters">
+<h3>Model Extents Parameters<a class="headerlink" href="#model-extents-parameters" title="Permalink to this headline">¶</a></h3>
+<p>This dialog sets up the extents of the model. The Current Models section displays the imported models. The current model is the model being edited. The regional model is a model used to apply a regional correction to field calculations.</p>
+<p>The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, dtm data can be obtained from the SRTM archives.</p>
+<p>The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.</p>
+<div class="section" id="current-model">
+<h4>Current Model<a class="headerlink" href="#current-model" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Current Model - This only applies if you are importing a 3D model. It is the current model which you are working on.</p></li>
+</ul>
+</div>
+<div class="section" id="dataset-information">
+<h4>Dataset Information<a class="headerlink" href="#dataset-information" title="Permalink to this headline">¶</a></h4>
+<p>This is used to define the data connected to the modelling module. The data is either connected manually or will be embedded withing a 3D model file.</p>
+<ul class="simple">
+<li><p>DTM Dataset - This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study. If you are modelling actual data, this is compulsory. If nothing is available, download the SRTM data from NASA. It is not necessary if you are merely doing a theoretical model of, say, a dyke.</p></li>
+<li><p>Magnetic Dataset - This is the magnetic data to be modelled.</p></li>
+<li><p>Gravity Dataset - This is the gravity data to be modelled.</p></li>
+<li><p>Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data.</p></li>
+<li><p>Other - This option can be used to add an additional layer for comparison purposes - for example a geotiff of the geological map.</p></li>
+</ul>
+</div>
+<div class="section" id="model-extent-properties">
+<h4>Model Extent Properties<a class="headerlink" href="#model-extent-properties" title="Permalink to this headline">¶</a></h4>
+<p>The model extents control the area size and depth of your model, as well as its resolution. Typically one of your datasets are used to fill in most of the fields automatically. Because the DTM is compulsory to the modelling, this is normally the default choice.</p>
+<ul class="simple">
+<li><p>Get Study Area from following Dataset - Usually the DTM dataset is chosen, but it can be any of your datasets.</p></li>
+<li><p>Upper Top Left X Coordinate - This is the north-west corner X coordinate of your model in meters.</p></li>
+<li><p>Upper Top Left Y Coordinate - This is the north-west corner Y coordinate of your model in meters.</p></li>
+<li><p>Upper Top Left Z Coordinate - This is the north-west corner Z coordinate of your model in meters above sea level.</p></li>
+<li><p>Total X Extent - the distance from east to west in the model.</p></li>
+<li><p>Total Y Extent - the distance from north to south in the model.</p></li>
+<li><p>Total Z Extent - the depth range of the model.</p></li>
+<li><p>X and Y Cell Size - the width of each model cube in the x and y direction.</p></li>
+<li><p>Z Cell Size - the height of each model cube in z direction.</p></li>
+<li><p>Number of Columns (X Direction) - This is calculated automatically from extents and cell sizes.</p></li>
+<li><p>Number of Rows (Y Direction) - This is calculated automatically from extents and cell sizes.</p></li>
+<li><p>Number of Layers (Z Direction) - This is calculated automatically from extents and cell sizes.</p></li>
+</ul>
+</div>
+<div class="section" id="tips">
+<h4>Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Start with a low resolution model to get a general model in place first. 20x20x20 should be fine, since any bigger will get slow to model.</p></li>
+<li><p>Once your low resolution model is complete, you can increase the model’s resolution to a better resolution. Please note that bigger than 100x100x100 will cause calculations to become very slow (unless you have lots of memory).</p></li>
+</ul>
+<img alt="_images/pfmodmext.png" src="_images/pfmodmext.png" />
+</div>
+</div>
+<div class="section" id="editor">
+<h3>Editor<a class="headerlink" href="#editor" title="Permalink to this headline">¶</a></h3>
+<p>The layer view allows for the voxel model to be edited from above. Simply select a lithology and draw the model in, as you would in a paint program. Changing the layer allows for the drawing in of lithologies at deeper depths. Please note that on the first few layers there may be sections which are air (due to the DTM), and are thus not editable.</p>
+<p>The profile view allows for the voxel model to be edited from the side. Simply select a lithology and draw the model in, as you would in a paint program. Changing the profile allows for the drawing in of lithologies at different locations.</p>
+<p>The display of magnetic data or gravity data is changed upon calculation of either data type.</p>
+<div class="section" id="options">
+<h4>Options<a class="headerlink" href="#options" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Profile Type - allows for standard profiles, or custom profiles with beginning and endpoint defined by the user.</p></li>
+<li><p>Profile Orientation- allows for the selection of the profile direction.</p></li>
+<li><p>Profile - allows for the selection of the profile being modelled. A slider provides convenient setting of this parameter.</p></li>
+<li><p>Layer - allows for the display and/or selection of the profile being modelled. The Altitude associated with the layer is also displayed.</p></li>
+<li><p>Lithology List - Use this to select which lithology that you are currently drawing. To erase, simply select the Background lithology and draw with that.</p></li>
+<li><p>Line Thickness - This allows you to change the pen thickness, which you are drawing with.</p></li>
+<li><p>Ranged Copy - The ranged copy function allows for the copying of a lithology on the current layer over a range of layers. You can choose which layers to copy to, and which lithologies can be overwritten.</p></li>
+<li><p>Add Lithological Boundary - Adds a grid to be used as a horizontal lithological boundary. It can be used if you have, say, a grid of the crust or the bedrock to add to your model.</p></li>
+<li><p>Export All Profiles - Export an X,Y,Z file of the profile data.</p></li>
+<li><p>Dataset Drop Box - Allows for a dataset to be faded in and out of the layer with the aid of a slider. This can help when you need to know where the boundaries of geological units are.</p></li>
+<li><p>Field Display Limits - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.</p></li>
+<li><p>View Magnetic Profile - used to select the magnetic data for the profile.</p></li>
+<li><p>View Gravity Profile - used to select the gravity data for the profile.</p></li>
+<li><p>Import borehole logs - used to import borehole logs (imported from the borehole menu, and connected to the modelling module)</p></li>
+</ul>
+</div>
+<div class="section" id="calculations">
+<h4>Calculations<a class="headerlink" href="#calculations" title="Permalink to this headline">¶</a></h4>
+<p>Calculations can be done by choosing one of two options from the menu bar at the top of the program:</p>
+<ul class="simple">
+<li><p>Regional Test - This is used to display a graph showing the regional decay of your model. It is a fast way to see if either your model extents are large enough, or how the calculated field would fall off near the end of your model.</p></li>
+<li><p>Calculate Gravity (All) - This calculates the gravity at the gravity height specified in the Geophysical Parameters Tab.</p></li>
+<li><p>Calculate Magnetics (All)- This is used if you want Magnetic data. The height chosen is the magnetic height.</p></li>
+<li><p>Calculate Gravity (Changes Only)- This calculates only the changes to the gravity since the last calculation.</p></li>
+<li><p>Calculate Magnetics (Changes Only)- This calculates only the changes to the magnetic data since the last calculation.</p></li>
+<li><p>Save Model - Convenience option to save the model from within the interface.</p></li>
+</ul>
+</div>
+<div class="section" id="id1">
+<h4>Tips<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>The ranged copy function can be very useful in getting a starting model going. Draw in your basic lithology boundary and copy it over a range of applicable depths.</p>
+<img alt="_images/pfmodedit.png" src="_images/pfmodedit.png" />
+</div>
+</div>
+<div class="section" id="ranged-copy">
+<h3>Ranged Copy<a class="headerlink" href="#ranged-copy" title="Permalink to this headline">¶</a></h3>
+<p>The ranged copy tool allows for the copying of a lithology from one layer or profile, across a range of other layers or profiles.</p>
+<p>The tool allows for the user selecting which other lithologies to overwrite.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Master Profile - The profile from which to copy a lithology.</p></li>
+<li><p>Range Start - The first profile which the master profile will copy to.</p></li>
+<li><p>Range End - The last profile which the master profile will copy to.</p></li>
+<li><p>Lithologies to Copy - The user can select which lithologies to copy. This can be more than one.</p></li>
+<li><p>Lithologies to Overwrite - The user can select which lithologies to overwrite. This can be more than one. Under most circumstances, you will probably just select Background.</p></li>
+</ul>
+<img alt="_images/pfmodrange.png" src="_images/pfmodrange.png" />
 </div>
 <div class="section" id="geophysical-parameters">
 <h3>Geophysical Parameters<a class="headerlink" href="#geophysical-parameters" title="Permalink to this headline">¶</a></h3>
-<p>This tab allows for the gravity and magnetic properties associated with the
-model. This includes:</p>
+<p>This dialog allows for setting all the geophysical parameters for your model. Some are general - such as survey parameters associated with the data, while others are specific to each lithology being modelled.</p>
+<div class="section" id="general-properties">
+<h4>General Properties<a class="headerlink" href="#general-properties" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p>Gravity Regional Field</p></li>
-<li><p>Gravity Height of Observation</p></li>
-<li><p>Magnetic Height of Observation</p></li>
-<li><p>Magnetic Field Intensity</p></li>
-<li><p>Magnetic Inclination</p></li>
-<li><p>Magnetic Declination</p></li>
+<li><p>Gravity Regional - Gravity data needs to have a regional subtracted so that the theroetical and measured anomalies coincide. PyGMI allows you to enter this correction here.</p></li>
+<li><p>Height of observation - Gravity - This is the gravity sensor height.</p></li>
+<li><p>Height of observation - Magnetic - This is the gravity sensor height.</p></li>
+<li><p>Magnetic Field Intensity - This is the intensity of the magnetic field at the time of the survey. You can get this from NOAA.</p></li>
+<li><p>Magnetic Inclination - This is the inclination of the magnetic field at the time of the survey. You can get this from NOAA.</p></li>
+<li><p>Magnetic Declination - This is the declination of the magnetic field at the time of the survey. You can get this from NOAA.</p></li>
 </ul>
-<p>The lithological properties section defines appropriate properties on a
-lithology basis. These include:</p>
+</div>
+<div class="section" id="lithological-properties">
+<h4>Lithological Properties<a class="headerlink" href="#lithological-properties" title="Permalink to this headline">¶</a></h4>
+<p>PyGMI sets up geophysical properties on a lithology basis, and not on a body by body basis.</p>
+<p>Lithological Definitions List:</p>
 <ul class="simple">
-<li><p>Density</p></li>
-<li><p>Susceptibilty</p></li>
-<li><p>Remanent Magnetisation Intensity</p></li>
-<li><p>Q Ratio</p></li>
-<li><p>Remanent Inclination</p></li>
-<li><p>Remanent Declination</p></li>
+<li><p>Add New Lithological Definition - allows for adding a new definition. The user will also be able to select the color of the definition.</p></li>
+<li><p>Rename Current Definition - allows for renaming a selected definition.</p></li>
+<li><p>Remove Current Definition - allows for deleting a selected definition.</p></li>
+<li><p>Merge Definitions - allows for the merging of two definitions.</p></li>
 </ul>
-<p>Additional lithologies can be added, removed or renamed here.</p>
-<a class="reference internal image-reference" href="_images/pfmodparam2.png"><img alt="_images/pfmodparam2.png" src="_images/pfmodparam2.png" style="width: 100%;" /></a>
+<p>Lithological Properties - Background:</p>
+<p>By selecting a lithology from the lithology list, its associated properties are shown here. The background lithology denotes properties associated with background (unmodelled) geology. This should be left alone under normal circumstances</p>
+<ul class="simple">
+<li><p>Density - density of your lithology (g/cm3). It applies to gravity modelling.</p></li>
+<li><p>Magnetic susceptibility (SI) - susceptibility of your lithology. It applies to magnetic modelling.</p></li>
+<li><p>Remanent Magnetization Intensity (nT) - Applies to lithologies with remanence.</p></li>
+<li><p>Remanent Magnetization (A/m) - Applies to lithologies with remanence.</p></li>
+<li><p>Q Ratio - Applies to lithologies with remanence.</p></li>
+<li><p>Remanent Inclination - Applies to lithologies with remanence.</p></li>
+<li><p>Remanent Declination - Applies to lithologies with remanence.</p></li>
+<li><p>Apply Changes - apply changes to the current lithology</p></li>
+</ul>
+<img alt="_images/pfmodparam.png" src="_images/pfmodparam.png" />
 </div>
-<div class="section" id="data-display">
-<h3>Data Display<a class="headerlink" href="#data-display" title="Permalink to this headline">¶</a></h3>
-<p>The data display tab shows the input data, calculated output data, as well as
-the location of the currently modelled profile over that data.</p>
-<p>The slider below the image allows for the fading of one dataset into another.
-This is useful, for example, when comparing calculated gravity data to the
-measured gravity data.</p>
-<a class="reference internal image-reference" href="_images/pfmoddisp.png"><img alt="_images/pfmoddisp.png" src="_images/pfmoddisp.png" style="width: 100%;" /></a>
 </div>
-<div class="section" id="layer-editor">
-<h3>Layer Editor<a class="headerlink" href="#layer-editor" title="Permalink to this headline">¶</a></h3>
-<p>The layer editor allows for the voxel model to be edited from above. Simply
-select a lithology and draw the model in, as you would in a paint program.
-Changing the layer allows for the drawing in of lithologies at deeper depths.
-Please note that on the first few layers there may be sections which are air
-(due to the DTM), and are thus not editable.</p>
-<p>The ranged copy function allows for the copying of a lithology on the current
-layer over a range of layers.</p>
-<a class="reference internal image-reference" href="_images/pfmodledit.png"><img alt="_images/pfmodledit.png" src="_images/pfmodledit.png" style="width: 100%;" /></a>
+<div class="section" id="lithology-notes">
+<h3>Lithology Notes<a class="headerlink" href="#lithology-notes" title="Permalink to this headline">¶</a></h3>
+<p>Each lithology can have a lithology code and lithology notes assigned to it.</p>
+<img alt="_images/pfmodlithnotes.png" src="_images/pfmodlithnotes.png" />
 </div>
-<div class="section" id="profile-editor">
-<h3>Profile Editor<a class="headerlink" href="#profile-editor" title="Permalink to this headline">¶</a></h3>
-<p>The profile editor allows for the voxel model to be edited from the side. The
-orientation of east-west or north-south can be changed on the data display tab.</p>
-<p>Simply select a lithology and draw the model in, as you would in a paint
-program. Changing the profile allows for the drawing in of lithologies at
-different sections on the model. The location of this profile can also be seen
-on the data display tab.</p>
-<p>The calculate button on the main menu bar calculates the forward model. Because
-of the nature of the algorithm, the slowest calculation will be the first
-calculation.</p>
-<p>The ranged copy function allows for the copying of a lithology on the current
-profile over a range of profiles.</p>
-<a class="reference internal image-reference" href="_images/pfmodpedit.png"><img alt="_images/pfmodpedit.png" src="_images/pfmodpedit.png" style="width: 100%;" /></a>
-</div>
-<div class="section" id="custom-profile-viewer">
-<h3>Custom Profile Viewer<a class="headerlink" href="#custom-profile-viewer" title="Permalink to this headline">¶</a></h3>
-<p>The custom profile viewer allows for the display and editing of custom profiles
-which are not either east-west or north-south. It works in the same manner as
-the profile editor.</p>
-<p>To add the coordinates for the custom profile, click the <strong>Add Custom Profile</strong>
-button.</p>
+<div class="section" id="regional-test">
+<h3>Regional Test<a class="headerlink" href="#regional-test" title="Permalink to this headline">¶</a></h3>
+<p>In magnetic and gravity modelling, the calculated field will decay past the edged of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpedicular to the profile by a constant amount. This is not teh case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.</p>
+<img alt="_images/pfmodregtest.png" src="_images/pfmodregtest.png" />
 </div>
 </div>
 </div>
 
 
           </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pfmod.cm.html" title="Previous document">Potential Field Modelling: Context Menu</a>
+        </li>
+        <li>
+          <a href="pfmod.ref.html" title="Next document">References</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Quick Start to use PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="pfmod.html">Potential Field Modelling</a><ul>
+      <li>Previous: <a href="pfmod.cm.html" title="previous chapter">Potential Field Modelling: Context Menu</a></li>
+      <li>Next: <a href="pfmod.ref.html" title="next chapter">References</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="pfmod.ref.html" title="References"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="pfmod.cm.html" title="Potential Field Modelling: Context Menu"
-             >previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+    <div class="footer">
+      &copy;2020, Council for Geoscience.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/pfmod.dm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
 
-          <li class="nav-item nav-item-1"><a href="wiki.html" >PyGMI Wiki</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pfmod.html" >Potential Field Modelling</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2020, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
-    </div>
+    
+
+    
   </body>
 </html>

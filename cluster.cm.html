@@ -1,86 +1,211 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>Multivariate Statistical Techniques: Context Menu &#8212; PyGMI 3.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <title>Classification: Context Menu &#8212; PyGMI 3.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Multivariate Statistical Techniques: Description of Modules" href="cluster.dm.html" />
-    <link rel="prev" title="Multivariate statistical techniques" href="cluster.html" /> 
-  </head><body>
+    <link rel="next" title="Classification: Description of Modules" href="cluster.dm.html" />
+    <link rel="prev" title="Classification" href="cluster.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
 <a href="index.html">
-<img src="_static/logo.png" border="0" alt="py4sci"/>
+<img src="_static/logo.png" class="image1"/>
 </a>
+
 <a href="http://www.geoscience.org.za">
-<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
 </a>
 
 </div>
 
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="cluster.dm.html" title="Multivariate Statistical Techniques: Description of Modules"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="cluster.html" title="Multivariate statistical techniques"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li class="nav-item nav-item-1"><a href="wiki.html" >PyGMI Wiki</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="cluster.html" accesskey="U">Multivariate statistical techniques</a> &#187;</li> 
-      </ul>
-    </div>
+  
 
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="cluster.html" title="Previous document">Classification</a>
+        </li>
+        <li>
+          <a href="cluster.dm.html" title="Next document">Classification: Description of Modules</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="classification-context-menu">
+<h1>Classification: Context Menu<a class="headerlink" href="#classification-context-menu" title="Permalink to this headline">¶</a></h1>
+<p>The classification context menus are available for modules which have output clustering data. Output data is only available on green modules. To access the context menu, simply right-click a green module.</p>
+<div class="section" id="cluster-statistics">
+<h2>Cluster Statistics<a class="headerlink" href="#cluster-statistics" title="Permalink to this headline">¶</a></h2>
+<p>Cluster statistics show the central value of each cluster with respect to each band of data, as well as the associated standard deviation.</p>
+<img alt="_images/cluststat.png" src="_images/cluststat.png" />
+</div>
+<div class="section" id="show-class-data">
+<h2>Show Class Data<a class="headerlink" href="#show-class-data" title="Permalink to this headline">¶</a></h2>
+<p>This provides a quick graphical representation of the output of the cluster analysis</p>
+<img alt="_images/clustshowclass.png" src="_images/clustshowclass.png" />
+</div>
+<div class="section" id="show-membership-data-fuzzy-only">
+<h2>Show Membership Data (Fuzzy Only)<a class="headerlink" href="#show-membership-data-fuzzy-only" title="Permalink to this headline">¶</a></h2>
+<p>This relates to fuzzy cluster analysis. It shows in graphical form, the membership of each cluster.</p>
+<img alt="_images/clustshowmemb.png" src="_images/clustshowmemb.png" />
+</div>
+<div class="section" id="show-obj-vrc-nce-xbi-graphs">
+<h2>Show OBJ, VRC, NCE, XBI Graphs<a class="headerlink" href="#show-obj-vrc-nce-xbi-graphs" title="Permalink to this headline">¶</a></h2>
+<p>This information relates to comparisons between cluster analysis runs over different numbers of classes. If, for example, a crisp cluster run has a minimum of 5 and maximum of 7 classes, then 3 solutions are produced; one with 5, one with 6 and one with 7 classes. This context menu displays information in graphical form which can assist in determining the optimal number of classes present in the data.</p>
+<p>The following graphs are produced:</p>
+<ul class="simple">
+<li><p>Objective Function (OBJ) as a 3D graph</p></li>
+<li><p>Variance Ratio Criterion (VRC) as a 2D graph</p></li>
+<li><p>Normalized Class Entropy (NCE) as a 2D graph</p></li>
+<li><p>Xie-Beni Index (XBI) as a 2D graph</p></li>
+</ul>
+<img alt="_images/clustshowgraphs.png" src="_images/clustshowgraphs.png" />
+</div>
+<div class="section" id="export-data">
+<h2>Export Data<a class="headerlink" href="#export-data" title="Permalink to this headline">¶</a></h2>
+<p>This exports the output cluster data in a variety of different formats for use in other software.</p>
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="cluster.html" title="Previous document">Classification</a>
+        </li>
+        <li>
+          <a href="cluster.dm.html" title="Next document">Classification: Description of Modules</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Multivariate Statistical Techniques: Context Menu</a><ul>
-<li><a class="reference internal" href="#cluster-statistics">Cluster Statistics</a></li>
-<li><a class="reference internal" href="#show-class-data">Show Class Data</a></li>
-<li><a class="reference internal" href="#show-membership-data-fuzzy-only">Show Membership Data (Fuzzy Only)</a></li>
-<li><a class="reference internal" href="#show-obj-vrc-nce-xbi-graphs">Show OBJ, VRC, NCE, XBI Graphs</a></li>
-<li><a class="reference internal" href="#export-data">Export Data</a></li>
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Quick Start to use PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="cluster.html"
-                        title="previous chapter">Multivariate statistical techniques</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="cluster.dm.html"
-                        title="next chapter">Multivariate Statistical Techniques: Description of Modules</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/cluster.cm.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="cluster.html">Classification</a><ul>
+      <li>Previous: <a href="cluster.html" title="previous chapter">Classification</a></li>
+      <li>Next: <a href="cluster.dm.html" title="next chapter">Classification: Description of Modules</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -90,83 +215,33 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="multivariate-statistical-techniques-context-menu">
-<h1>Multivariate Statistical Techniques: Context Menu<a class="headerlink" href="#multivariate-statistical-techniques-context-menu" title="Permalink to this headline">¶</a></h1>
-<p>The clustering context menus are available for modules which have output clustering data. Output data is only available on green modules. To access the context menu, simply right-click a green module.</p>
-<div class="section" id="cluster-statistics">
-<h2>Cluster Statistics<a class="headerlink" href="#cluster-statistics" title="Permalink to this headline">¶</a></h2>
-<p>Cluster statistics show the central value of each cluster with respect to each band of data, as well as the associated standard deviation.</p>
-<a class="reference internal image-reference" href="_images/cluststat.png"><img alt="_images/cluststat.png" src="_images/cluststat.png" style="width: 100%;" /></a>
-</div>
-<div class="section" id="show-class-data">
-<h2>Show Class Data<a class="headerlink" href="#show-class-data" title="Permalink to this headline">¶</a></h2>
-<p>This provides a quick graphical representation of the output of the cluster analysis</p>
-<a class="reference internal image-reference" href="_images/clustshowclass.png"><img alt="_images/clustshowclass.png" src="_images/clustshowclass.png" style="width: 100%;" /></a>
-</div>
-<div class="section" id="show-membership-data-fuzzy-only">
-<h2>Show Membership Data (Fuzzy Only)<a class="headerlink" href="#show-membership-data-fuzzy-only" title="Permalink to this headline">¶</a></h2>
-<p>This relates to fuzzy cluster analysis. It shows in graphical form, the membership of each cluster.</p>
-<a class="reference internal image-reference" href="_images/clustshowmemb.png"><img alt="_images/clustshowmemb.png" src="_images/clustshowmemb.png" style="width: 100%;" /></a>
-</div>
-<div class="section" id="show-obj-vrc-nce-xbi-graphs">
-<h2>Show OBJ, VRC, NCE, XBI Graphs<a class="headerlink" href="#show-obj-vrc-nce-xbi-graphs" title="Permalink to this headline">¶</a></h2>
-<p>This information relates to comparisons between cluster analysis runs over different numbers of classes. If, for example, a crisp cluster run has a minimu of 5 and maximum of 7 classes, then 3 solutions are produced; one with 5, one with 6 and one with 7 classes. This context menu displays information in graphical form which can assist in determining the optimal number of classes present in the data.</p>
-<p>The following graphs are produced:</p>
-<ul class="simple">
-<li><p>Objective Function (OBJ) as a 3D graph</p></li>
-<li><p>Variance Ratio Criterion (VRC) as a 2D graph</p></li>
-<li><p>Normalized Class Entropy (NCE) as a 2D graph</p></li>
-<li><p>Xie-Beni Index (XBI) as a 2D graph</p></li>
-</ul>
-<a class="reference internal image-reference" href="_images/clustshowgraphs.png"><img alt="_images/clustshowgraphs.png" src="_images/clustshowgraphs.png" style="width: 100%;" /></a>
-</div>
-<div class="section" id="export-data">
-<h2>Export Data<a class="headerlink" href="#export-data" title="Permalink to this headline">¶</a></h2>
-<p>This exports the output cluster data ins a variety of different formats for use in other software.</p>
-</div>
-</div>
+<script>$('#searchbox').show(0);</script>
 
 
-          </div>
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="cluster.dm.html" title="Multivariate Statistical Techniques: Description of Modules"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="cluster.html" title="Multivariate statistical techniques"
-             >previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+    <div class="footer">
+      &copy;2020, Council for Geoscience.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/cluster.cm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
 
-          <li class="nav-item nav-item-1"><a href="wiki.html" >PyGMI Wiki</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="cluster.html" >Multivariate statistical techniques</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2020, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
-    </div>
+    
+
+    
   </body>
 </html>

@@ -1,13 +1,11 @@
-Multivariate statistical techniques
-===================================
+Classification
+==============
 
 Introduction
 ------------
-Cluster analysis is a useful multivariate statistical analysis technique which
-can perform a first pass automatic interpretation of multi-band raster data.
+Cluster analysis and segmentation are useful machine learning or multivariate statistical analysis techniques which can perform an automatic interpretation of multi-band raster data.
 
-A multiple band raster dataset, imported through the raster menu is input. If
-more than one dataset is imported, they must first be merged.
+A multiple band raster dataset, imported through the raster menu is input. If more than one dataset is imported, they must first be merged.
 
 
 Subpackages

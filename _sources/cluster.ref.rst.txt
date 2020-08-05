@@ -1,3 +1,7 @@
 References
 ----------
  Paasche, H., Eberle, D.G. 2009. Rapid integration of large airborne geophysical data suites using a fuzzy partitioning cluster algorithm: a tool for geological mapping and mineral exploration targeting. Exploration Geophysics, 40, 277-287.
+ 
+ Baatz, M, Schäpe, A., 2000. Multiresolution segmentation: An optimization approach for high quality multi-scale image segmentation. Proceedings of Angewandte Geographische Informationsverarbeitung XII, 12-23
+ 
+ Scikit-learn. 2019. scikit-learn: machine learning in Python — scikit-learn 0.21.2 documentation. [ONLINE] Available at https://scikit-learn.org/stable/index.html. [Accessed 12 June 2019]. Scikit-learn: Machine Learning in Python, Pedregosa et al., JMLR 12, pp. 2825-2830, 2011.

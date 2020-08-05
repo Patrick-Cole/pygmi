@@ -1,107 +1,91 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>pygmi.test package &#8212; PyGMI 3.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <title>pygmi.test package &#8212; PyGMI 3.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.vector package" href="pygmi.vector.html" />
-    <link rel="prev" title="pygmi.seis package" href="pygmi.seis.html" /> 
+    <link rel="prev" title="pygmi.seis package" href="pygmi.seis.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
   </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
 
-<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
 <a href="index.html">
-<img src="_static/logo.png" border="0" alt="py4sci"/>
+<img src="_static/logo.png" class="image1"/>
 </a>
+
 <a href="http://www.geoscience.org.za">
-<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
 </a>
 
 </div>
 
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="pygmi.vector.html" title="pygmi.vector package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="pygmi.seis.html" title="pygmi.seis package"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pygmi.html" accesskey="U">pygmi package</a> &#187;</li> 
-      </ul>
-    </div>
-
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">pygmi.test package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-pygmi.test.test_cluster">pygmi.test.test_cluster module</a></li>
-<li><a class="reference internal" href="#module-pygmi.test.test_gravity">pygmi.test.test_gravity module</a></li>
-<li><a class="reference internal" href="#module-pygmi.test.test_pfmod">pygmi.test.test_pfmod module</a></li>
-<li><a class="reference internal" href="#module-pygmi.test.test_raster">pygmi.test.test_raster module</a></li>
-<li><a class="reference internal" href="#module-pygmi.test">Module contents</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="pygmi.seis.html"
-                        title="previous chapter">pygmi.seis package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pygmi.vector.html"
-                        title="next chapter">pygmi.vector package</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/pygmi.test.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pygmi.seis.html" title="Previous document">pygmi.seis package</a>
+        </li>
+        <li>
+          <a href="pygmi.vector.html" title="Next document">pygmi.vector package</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
           <div class="body" role="main">
             
-  <div class="section" id="pygmi-test-package">
-<h1>pygmi.test package<a class="headerlink" href="#pygmi-test-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pygmi.test">
+<span id="pygmi-test-package"></span><h1>pygmi.test package<a class="headerlink" href="#module-pygmi.test" title="Permalink to this headline">¶</a></h1>
+<p>Tests for PyGMI.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -109,19 +93,19 @@
 <span id="pygmi-test-test-cluster-module"></span><h2>pygmi.test.test_cluster module<a class="headerlink" href="#module-pygmi.test.test_cluster" title="Permalink to this headline">¶</a></h2>
 <p>These are tests. Run pytest on this file from within this directory to do
 the tests.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_cluster.test_cluster">
 <code class="sig-prename descclassname">pygmi.test.test_cluster.</code><code class="sig-name descname">test_cluster</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_cluster.test_cluster" title="Permalink to this definition">¶</a></dt>
 <dd><p>test cluster.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_cluster.test_crisp">
 <code class="sig-prename descclassname">pygmi.test.test_cluster.</code><code class="sig-name descname">test_crisp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_cluster.test_crisp" title="Permalink to this definition">¶</a></dt>
 <dd><p>test crisp cluster.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_cluster.test_fuzzy">
 <code class="sig-prename descclassname">pygmi.test.test_cluster.</code><code class="sig-name descname">test_fuzzy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_cluster.test_fuzzy" title="Permalink to this definition">¶</a></dt>
 <dd><p>test fuzzy cluster.</p>
@@ -132,10 +116,45 @@ the tests.</p>
 <span id="pygmi-test-test-gravity-module"></span><h2>pygmi.test.test_gravity module<a class="headerlink" href="#module-pygmi.test.test_gravity" title="Permalink to this headline">¶</a></h2>
 <p>These are tests. Run pytest on this file from within this directory to do
 the tests .</p>
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_gravity.test_process_data">
 <code class="sig-prename descclassname">pygmi.test.test_gravity.</code><code class="sig-name descname">test_process_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_gravity.test_process_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>test process gravity data.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.test.test_mag">
+<span id="pygmi-test-test-mag-module"></span><h2>pygmi.test.test_mag module<a class="headerlink" href="#module-pygmi.test.test_mag" title="Permalink to this headline">¶</a></h2>
+<p>These are tests. Run pytest on this file from within this directory to do
+the tests.</p>
+<dl class="py function">
+<dt id="pygmi.test.test_mag.smalldata">
+<code class="sig-prename descclassname">pygmi.test.test_mag.</code><code class="sig-name descname">smalldata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_mag.smalldata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Small test dataset.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.test.test_mag.test_IGRF">
+<code class="sig-prename descclassname">pygmi.test.test_mag.</code><code class="sig-name descname">test_IGRF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">smalldata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_mag.test_IGRF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests IGRF Calculation.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.test.test_mag.test_rtp">
+<code class="sig-prename descclassname">pygmi.test.test_mag.</code><code class="sig-name descname">test_rtp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_mag.test_rtp" title="Permalink to this definition">¶</a></dt>
+<dd><p>test rtp.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.test.test_mag.test_tilt">
+<code class="sig-prename descclassname">pygmi.test.test_mag.</code><code class="sig-name descname">test_tilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_mag.test_tilt" title="Permalink to this definition">¶</a></dt>
+<dd><p>test tilt depth.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.test.test_mag.test_tilt1">
+<code class="sig-prename descclassname">pygmi.test.test_mag.</code><code class="sig-name descname">test_tilt1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_mag.test_tilt1" title="Permalink to this definition">¶</a></dt>
+<dd><p>test tilt angle.</p>
 </dd></dl>
 
 </div>
@@ -143,7 +162,7 @@ the tests .</p>
 <span id="pygmi-test-test-pfmod-module"></span><h2>pygmi.test.test_pfmod module<a class="headerlink" href="#module-pygmi.test.test_pfmod" title="Permalink to this headline">¶</a></h2>
 <p>These are pfmod tests. Run this file from within this directory to do the
 tests.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_pfmod.main">
 <code class="sig-prename descclassname">pygmi.test.test_pfmod.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_pfmod.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main test function</p>
@@ -161,7 +180,7 @@ lines on the graphs will coincide.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_pfmod.test">
 <code class="sig-prename descclassname">pygmi.test.test_pfmod.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_pfmod.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Test function using pytest.</p>
@@ -172,201 +191,258 @@ lines on the graphs will coincide.</p>
 <span id="pygmi-test-test-raster-module"></span><h2>pygmi.test.test_raster module<a class="headerlink" href="#module-pygmi.test.test_raster" title="Permalink to this headline">¶</a></h2>
 <p>These are tests. Run pytest on this file from within this directory to do
 the tests.</p>
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.smalldata">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">smalldata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.smalldata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Small test dataset.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="pygmi.test.test_raster.test_IGRF">
-<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_IGRF</code><span class="sig-paren">(</span><em class="sig-param">smalldata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_IGRF" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests IGRF Calculation.</p>
-</dd></dl>
-
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_aspect">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_aspect</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_aspect" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests aspect.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_check_dataid">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_check_dataid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_check_dataid" title="Permalink to this definition">¶</a></dt>
 <dd><p>test check dataid.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_corr2d">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_corr2d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_corr2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests corr2d.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_dratio">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_dratio</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_dratio" title="Permalink to this definition">¶</a></dt>
 <dd><p>test derivative ratio.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_equation">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_equation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_equation" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests equation editor.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_gradients">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_gradients</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_gradients" title="Permalink to this definition">¶</a></dt>
 <dd><p>test directional derivative.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_histcomp">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_histcomp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_histcomp" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests histogram compaction.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_histeq">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_histeq</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_histeq" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests histogram equalisation.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_hmode">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_hmode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_hmode" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests hmode.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_img2rgb">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_img2rgb</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_img2rgb" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests img to rgb.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_io_ascii">
-<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_io_ascii</code><span class="sig-paren">(</span><em class="sig-param">smalldata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_io_ascii" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_io_ascii</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">smalldata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_io_ascii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests IO for ascii files.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_io_gdal">
-<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_io_gdal</code><span class="sig-paren">(</span><em class="sig-param">smalldata</em>, <em class="sig-param">ext</em>, <em class="sig-param">drv</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_io_gdal" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_io_gdal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">smalldata</span></em>, <em class="sig-param"><span class="n">ext</span></em>, <em class="sig-param"><span class="n">drv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_io_gdal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests IO for gdal files.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_io_xyz">
-<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_io_xyz</code><span class="sig-paren">(</span><em class="sig-param">smalldata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_io_xyz" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_io_xyz</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">smalldata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_io_xyz" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests IO for xyz files.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_norm">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests norm2.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_norm255">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_norm255</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_norm255" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests norm255.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_normalisation">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_normalisation</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_normalisation" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests for normalisation.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="pygmi.test.test_raster.test_quickgrid">
-<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_quickgrid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_quickgrid" title="Permalink to this definition">¶</a></dt>
-<dd><p>test quick grid.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.test.test_raster.test_rtp">
-<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_rtp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_rtp" title="Permalink to this definition">¶</a></dt>
-<dd><p>test rtp.</p>
-</dd></dl>
-
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_shader">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_shader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_shader" title="Permalink to this definition">¶</a></dt>
 <dd><p>tests shader.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_smooth">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_smooth</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_smooth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests for smoothing.</p>
 </dd></dl>
 
-<dl class="function">
-<dt id="pygmi.test.test_raster.test_tilt">
-<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_tilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_tilt" title="Permalink to this definition">¶</a></dt>
-<dd><p>test tilt depth.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="pygmi.test.test_raster.test_tilt1">
-<code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_tilt1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_tilt1" title="Permalink to this definition">¶</a></dt>
-<dd><p>test tilt angle.</p>
-</dd></dl>
-
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_trimraster">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_trimraster</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_trimraster" title="Permalink to this definition">¶</a></dt>
 <dd><p>test trim raster.</p>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.test.test_raster.test_viz">
 <code class="sig-prename descclassname">pygmi.test.test_raster.</code><code class="sig-name descname">test_viz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.test.test_raster.test_viz" title="Permalink to this definition">¶</a></dt>
 <dd><p>test vizibility.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pygmi.test">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.test" title="Permalink to this headline">¶</a></h2>
-<p>Tests for PyGMI.</p>
-</div>
 </div>
 
 
           </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pygmi.seis.html" title="Previous document">pygmi.seis package</a>
+        </li>
+        <li>
+          <a href="pygmi.vector.html" title="Next document">pygmi.vector package</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Quick Start to use PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">PyGMI API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="api.html">PyGMI API</a><ul>
+  <li><a href="pygmi.html">pygmi package</a><ul>
+      <li>Previous: <a href="pygmi.seis.html" title="previous chapter">pygmi.seis package</a></li>
+      <li>Next: <a href="pygmi.vector.html" title="next chapter">pygmi.vector package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="pygmi.vector.html" title="pygmi.vector package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="pygmi.seis.html" title="pygmi.seis package"
-             >previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+    <div class="footer">
+      &copy;2020, Council for Geoscience.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/pygmi.test.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
 
-          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pygmi.html" >pygmi package</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2020, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
-    </div>
+    
+
+    
   </body>
 </html>

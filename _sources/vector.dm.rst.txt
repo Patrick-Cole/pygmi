@@ -1,17 +1,49 @@
 Vector Analysis: Description of Modules
----------------------------------------
+=======================================
 
 Import Shapefile Data
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 This module imports shapfile data. Shapefile data is defined as vector data in
 PyGMI.
 
-Import Point/Line Data
-^^^^^^^^^^^^^^^^^^^^^^
-This module imports point or line data stored in ASCII files (such as
-comma-delimited files). If your data contains coordinates, then please ensure
-that these cordinates are in teh first two columns.
+Import Point or Line Data
+-------------------------
+This module imports point data from a text file, for example a csv file. The user must choose the x and y columns.
 
-Import LEMI-417 Data
-^^^^^^^^^^^^^^^^^^^^
-This module imports ASCII LEMI-417 data.
+Options:
+
+* X Channel - This is the column which contains x-coordinates.
+* Y Channel - This is the column which contains y-coordinates.
+* Null value - This is the null value in the data.
+
+.. image:: _images/vectorimport.png
+
+Cut Points using Polygon
+------------------------
+This tool provides a quick way to cut out data, using a shape file as the boundary for the cut. You will need to prepare the shape file in another package first.
+
+
+Reproject Line Data
+-------------------
+This is a versatile routine allowing for the reprojecting of a dataset between two projections. All projections are obtained from EPSG codes.
+
+The options are the same for both input and output projections. The choice of projection is obtained through a drop box. The first part of the entry on the drop box shows the datum, and the last part shows the projection.
+
+Should you wish to project to or from degrees, the entry will be Datum / Geodetic Geographic, where Datum is your local datum of choice.
+
+.. image:: _images/vectorproj.png
+
+Grid Point Data (Linear)
+------------------------
+This is a simple, fast, gridding routine for an x,y,z dataset. The routine itself finds the average of the neighbouring area and assigns that to the grid cell. It is perfect for quickly looking at your data, bearing in mind that it is probably not the perfect routine for representing all data.
+
+The input is a point or line dataset, imported from the vector menu. Note that the x and y columns must be the first two columns in your dataset.
+
+Options:
+
+* Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).
+* Column to grid - This allows you to select the z column to grid.
+* Null Value.
+
+.. image:: _images/vectorgrid.png
+

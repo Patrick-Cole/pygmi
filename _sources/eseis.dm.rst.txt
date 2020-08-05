@@ -1,0 +1,8 @@
+Exploration Sesimics: Description of Modules
+============================================
+
+This section is out of date and will be updated in the future
+
+Import SEG-Y Data
+-----------------
+SEG-Y data can be imported into Pygmi using this module.

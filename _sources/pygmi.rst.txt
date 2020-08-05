@@ -1,16 +1,23 @@
 pygmi package
 =============
 
+.. automodule:: pygmi
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Subpackages
 -----------
 
 .. toctree::
+   :maxdepth: 4
 
    pygmi.bholes
    pygmi.clust
    pygmi.em
    pygmi.eseis
    pygmi.grav
+   pygmi.mag
    pygmi.mt
    pygmi.pfmod
    pygmi.raster
@@ -46,11 +53,3 @@ pygmi.misc module
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: pygmi
-   :members:
-   :undoc-members:
-   :show-inheritance:

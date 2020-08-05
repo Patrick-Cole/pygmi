@@ -1,0 +1,15 @@
+Gravity
+=======
+
+Introduction
+------------
+The gravity menu gives options for the import and processing of gravity data.
+
+Subpackages
+-----------
+
+.. toctree::
+
+    gravity.dm
+    gravity.ref
+

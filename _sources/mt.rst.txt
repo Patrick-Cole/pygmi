@@ -1,0 +1,16 @@
+Magnetotellurics
+================
+
+Introduction
+------------
+The magnetotelluric section adds some processing capability, based on the MTpy library.
+
+Subpackages
+-----------
+
+.. toctree::
+
+    mt.cm
+    mt.dm
+    mt.ref
+

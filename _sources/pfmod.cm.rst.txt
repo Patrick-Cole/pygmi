@@ -11,22 +11,26 @@ The 3D model display menu provides a viewer for 3D voxel data. The model can be
 rotated using the left and right click buttons on your mouse. The
 **mouse wheel** provides zooming of the model.
 
-By default the model is semi-transparent. By selecting a lithology from the
-lithology menu, that lithology becomes opaque. The background opacity can also
-be varied. The viewer provides a means to save an image of the model to a .jpg
-or .png file format.
+By default all lithologies are selected. The viewer provides a means to save an image of the model to a .jpg or .png file format.
 
-.. image:: _images/pf3dmoddisp.png
-   :width: 100%
+* Vertical slider - used to adjust the zscale of the model.
+* Light Position - this is the position of a light, controlling shadow effects on the model.
+* Smooth model - applied smoothing to the model, showing a more aesthetically pleasing version
+* Orthographic projection
+* Display axis
+* Save to image file
+* Refresh model - this is used to update the viewer while actively modelling. 
+
+.. image:: _images/pfmod3d.png
 
 Export 3D Model
 ---------------
 This provides a means to export the model in one of 3 formats:
 
 * npz - this is the format adopted for 3D models in PyGMI.
-* kmz - this is google earths 3D format
+* kmz - this is google earths 3D format.
 * xyz - this is an ASCII format, supplied to export the model in a generic
   fashion.
+* shapefile - this exports each lithology to a separate shapefile.
 
 .. image:: _images/pfmodgearth.jpg
-   :width: 100%

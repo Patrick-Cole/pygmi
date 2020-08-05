@@ -1,0 +1,15 @@
+Magnetics
+=========
+
+Introduction
+------------
+The Magnetic Menu is a collection of routines performed on magnetic data. 
+
+Subpackages
+-----------
+
+.. toctree::
+
+    mag.dm
+    mag.ref
+

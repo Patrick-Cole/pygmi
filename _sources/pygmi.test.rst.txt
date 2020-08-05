@@ -1,6 +1,11 @@
 pygmi.test package
 ==================
 
+.. automodule:: pygmi.test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -16,6 +21,14 @@ pygmi.test.test\_gravity module
 -------------------------------
 
 .. automodule:: pygmi.test.test_gravity
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.test.test\_mag module
+---------------------------
+
+.. automodule:: pygmi.test.test_mag
    :members:
    :undoc-members:
    :show-inheritance:
@@ -36,11 +49,3 @@ pygmi.test.test\_raster module
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: pygmi.test
-   :members:
-   :undoc-members:
-   :show-inheritance:

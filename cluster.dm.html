@@ -1,84 +1,263 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>Multivariate Statistical Techniques: Description of Modules &#8212; PyGMI 3.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <title>Classification: Description of Modules &#8212; PyGMI 3.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="cluster.ref.html" />
-    <link rel="prev" title="Multivariate Statistical Techniques: Context Menu" href="cluster.cm.html" /> 
-  </head><body>
+    <link rel="prev" title="Classification: Context Menu" href="cluster.cm.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
-<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
 <a href="index.html">
-<img src="_static/logo.png" border="0" alt="py4sci"/>
+<img src="_static/logo.png" class="image1"/>
 </a>
+
 <a href="http://www.geoscience.org.za">
-<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
 </a>
 
 </div>
 
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="cluster.ref.html" title="References"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="cluster.cm.html" title="Multivariate Statistical Techniques: Context Menu"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li class="nav-item nav-item-1"><a href="wiki.html" >PyGMI Wiki</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="cluster.html" accesskey="U">Multivariate statistical techniques</a> &#187;</li> 
-      </ul>
-    </div>
+  
 
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="cluster.cm.html" title="Previous document">Classification: Context Menu</a>
+        </li>
+        <li>
+          <a href="cluster.ref.html" title="Next document">References</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="classification-description-of-modules">
+<h1>Classification: Description of Modules<a class="headerlink" href="#classification-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="cluster-analysis">
+<h2>Cluster Analysis<a class="headerlink" href="#cluster-analysis" title="Permalink to this headline">¶</a></h2>
+<p>The tool uses clustering methodologies implemented by the sckit-learn team (scikit-learn.org). This clustering is unsupervised, meaning that a multiple band dataset is supplied, and regions of the dataset is automatically grouped into classes.</p>
+<img alt="_images/clustanalysis.png" src="_images/clustanalysis.png" />
+<div class="section" id="algorithm-options">
+<h3>Algorithm Options<a class="headerlink" href="#algorithm-options" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Cluster Algorithm - This can be k-means, DBSCAN or Birch.</p></li>
+<li><p>Minimum Clusters and Maximum Clusters (k-means, Birch) - This refers to the generation of a range of solutions. For example, if minimum clusters is 5, and maximum clusters is 7, then 3 interpretations are produced - one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
+<li><p>Maximum iterations (k-means) - Maximum number of iterations to use when generating a solution.</p></li>
+<li><p>Tolerance (k-means) - Refers to the relative tolerance with regards to inertia to declare convergence and stop iterating. When the relative decrease in the objective function between iterations is less than the given tolerance value, this results in the stopping of the iterations.</p></li>
+<li><p>eps (DBSCAN) - The maximum distance between two samples for them to be considered as in the same neighborhood.</p></li>
+<li><p>Minimum samples (DBSCAN) - The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.</p></li>
+<li><p>Threshold(Birch) - The radius of the subcluster obtained by merging a new sample and the closest subcluster should be lesser than the threshold. Otherwise a new subcluster is started. Setting this value to be very low promotes splitting and vice-versa.</p></li>
+<li><p>Branching factor (Birch) - Maximum number of Charactersitic Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching_factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the 2 split nodes.</p></li>
+</ul>
+</div>
+<div class="section" id="scaling">
+<h3>Scaling<a class="headerlink" href="#scaling" title="Permalink to this headline">¶</a></h3>
+<p>This refers to the scaling of data as a preprocessing step. It can be one of the following:</p>
+<ul class="simple">
+<li><p>No Scaling</p></li>
+<li><p>Standard Scaling - standardize features by removing the mean and scaling to unit variance.</p></li>
+<li><p>Robust Scaling - scale features using statistics that are robust to outliers</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="crisp-clustering">
+<h2>Crisp Clustering<a class="headerlink" href="#crisp-clustering" title="Permalink to this headline">¶</a></h2>
+<p>The following crisp clustering (Paasche 2009) options are supported:</p>
+<ul class="simple">
+<li><p>Cluster Algorithm - This can be k-means, advanced k-means or w-means.</p></li>
+<li><p>Minimum Clusters and Maximum Clusters - This refers to the generation of a range of solutions. For example, if minimum clusters is 5, and maximum clusters is 7, then 3 interpretations are produced - one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
+<li><p>Maximum iterations - Maximum number of iterations to use when generating a solution.</p></li>
+<li><p>Terminate if relative change is less than a threshold.</p></li>
+<li><p>Repeated runs.</p></li>
+<li><p>Constrain cluster shape (w-means only) - 0 is unconstrained, 1 is spherical.</p></li>
+</ul>
+<img alt="_images/clustcrisp.png" src="_images/clustcrisp.png" />
+</div>
+<div class="section" id="fuzzy-clustering">
+<h2>Fuzzy Clustering<a class="headerlink" href="#fuzzy-clustering" title="Permalink to this headline">¶</a></h2>
+<p>The following fuzzy clustering (Paasche 2009) options are supported:</p>
+<ul class="simple">
+<li><p>Cluster Algorithm - This can be fuzzy c-means, advanced fuzzy c-means, Gustafson-Kessel</p></li>
+<li><p>Minimum Clusters and Maximum Clusters - This refers to the generation of a range of solutions.</p></li>
+<li><p>Maximum iterations - Maximum number of iterations to use when generating a solution.</p></li>
+<li><p>Terminate if relative change is less than a threshold.</p></li>
+<li><p>Repeated runs.</p></li>
+<li><p>Fuzzyness exponent - typically between 1 and 2.</p></li>
+</ul>
+<img alt="_images/clustfuzzy.png" src="_images/clustfuzzy.png" />
+</div>
+<div class="section" id="scatter-plot-tool">
+<h2>Scatter Plot Tool<a class="headerlink" href="#scatter-plot-tool" title="Permalink to this headline">¶</a></h2>
+<p>The scatter plot tool is used for scatter plot analysis. By supplying the results of a cluster analysis, in addition to the raster data input into the cluster analysis, it is also possible to see where the clusters are located within the scatter plots.</p>
+<p>The scatter plot tool shows both a scatter plot and a view of the raster data. A polygon can be drawn on either view, and the corresponding pixels will be displayed in the other view.</p>
+<img alt="_images/clustscatter.png" src="_images/clustscatter.png" />
+</div>
+<div class="section" id="image-segmentation">
+<h2>Image Segmentation<a class="headerlink" href="#image-segmentation" title="Permalink to this headline">¶</a></h2>
+<p>This tool performs image segmentation, following the technique by Baatz and Schäpe (2000).</p>
+<p>It has the following parameters:</p>
+<ul class="simple">
+<li><p>Compactness weight.</p></li>
+<li><p>Colour weight.</p></li>
+<li><p>Maximum allowable cost function.</p></li>
+</ul>
+<img alt="_images/clustseg.png" src="_images/clustseg.png" />
+</div>
+<div class="section" id="supervised-classification">
+<h2>Supervised Classification<a class="headerlink" href="#supervised-classification" title="Permalink to this headline">¶</a></h2>
+<p>This module allows for the user to define classes by adding polygons onto the map portion of the interface. The user clicks the ‘Add Polygon’ button to add a row to the table and interactively add a polygon to the map. This can be labelled appropriately. Classes can be stored in shapefiles, and can be reloaded again in future sessions. Because the shapefile format is used, the classes are compatible with standard GIS software.</p>
+<p>The classification metrics can be calculated and displayed in a dialog (Figure 33). The current metrics include the confusion matrix, as well as accuracy and kappa scores.</p>
+<p>The user is also able to choose an appropriate supervised classification algorithm. These are:</p>
+<ul class="simple">
+<li><p>K Neighbors Classification</p></li>
+<li><p>Decision Tree Classification</p></li>
+<li><p>Random Forests Classification</p></li>
+<li><p>Support Vector Classification</p></li>
+</ul>
+<p>Under each of these, an appropriate algorithm (K neighbors), criterion (Decision Tree and Random Forests) or kernel (Support Vector) can be selected.</p>
+<img alt="_images/clustsuper.png" src="_images/clustsuper.png" />
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="cluster.cm.html" title="Previous document">Classification: Context Menu</a>
+        </li>
+        <li>
+          <a href="cluster.ref.html" title="Next document">References</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Multivariate Statistical Techniques: Description of Modules</a><ul>
-<li><a class="reference internal" href="#crisp-clustering">Crisp Clustering</a></li>
-<li><a class="reference internal" href="#fuzzy-clustering">Fuzzy Clustering</a></li>
-<li><a class="reference internal" href="#scatter-plot-tool">Scatter Plot Tool</a></li>
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Quick Start to use PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="cluster.cm.html"
-                        title="previous chapter">Multivariate Statistical Techniques: Context Menu</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="cluster.ref.html"
-                        title="next chapter">References</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/cluster.dm.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="cluster.html">Classification</a><ul>
+      <li>Previous: <a href="cluster.cm.html" title="previous chapter">Classification: Context Menu</a></li>
+      <li>Next: <a href="cluster.ref.html" title="next chapter">References</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
 <div id="searchbox" style="display: none" role="search">
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
@@ -88,74 +267,33 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="multivariate-statistical-techniques-description-of-modules">
-<h1>Multivariate Statistical Techniques: Description of Modules<a class="headerlink" href="#multivariate-statistical-techniques-description-of-modules" title="Permalink to this headline">¶</a></h1>
-<p>This section is out of date and will be updated in the future</p>
-<div class="section" id="crisp-clustering">
-<h2>Crisp Clustering<a class="headerlink" href="#crisp-clustering" title="Permalink to this headline">¶</a></h2>
-<p>The following crisp clustering (Paasche 2009) techniques are supported:</p>
-<ul class="simple">
-<li><p>k-means</p></li>
-<li><p>advanced k-means</p></li>
-<li><p>w-means</p></li>
-</ul>
-</div>
-<div class="section" id="fuzzy-clustering">
-<h2>Fuzzy Clustering<a class="headerlink" href="#fuzzy-clustering" title="Permalink to this headline">¶</a></h2>
-<p>The following fuzzy clustering (Paasche 2009) techniques are supported:
-* fuzzy c-means
-* advanced fuzzy c-means
-* Gustafson-Kessel</p>
-</div>
-<div class="section" id="scatter-plot-tool">
-<h2>Scatter Plot Tool<a class="headerlink" href="#scatter-plot-tool" title="Permalink to this headline">¶</a></h2>
-<p>The scatter plot tool is used for scatter plot analysis. By supplying the results of a cluster analysis, in addition to the raster data input into the cluster analysis, it is also possible to see where the clusters are located within the scatter plots.</p>
-<p>The scatter plot tool shows both a scatter plot and a view of the raster data. A polygon can be drawn on either view, and the corresponding pixels will be displayed in the other view.</p>
-<a class="reference internal image-reference" href="_images/clustscatter.png"><img alt="_images/clustscatter.png" src="_images/clustscatter.png" style="width: 100%;" /></a>
-</div>
-</div>
+<script>$('#searchbox').show(0);</script>
 
 
-          </div>
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="cluster.ref.html" title="References"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="cluster.cm.html" title="Multivariate Statistical Techniques: Context Menu"
-             >previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+    <div class="footer">
+      &copy;2020, Council for Geoscience.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/cluster.dm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
 
-          <li class="nav-item nav-item-1"><a href="wiki.html" >PyGMI Wiki</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="cluster.html" >Multivariate statistical techniques</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2020, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
-    </div>
+    
+
+    
   </body>
 </html>

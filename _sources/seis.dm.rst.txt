@@ -1,28 +1,37 @@
-Seismology Analysis: Description of Modules
--------------------------------------------
+Seismology: Description of Modules
+==================================
 
-Import Seisan Data
-^^^^^^^^^^^^^^^^^^
+Import SEISAN Data
+------------------
 Imports SEISAN data stored in the NORDIC format.
 
+Correct SEISAN Type 3 Descriptions
+----------------------------------
+The SEISAN type 3 line is a flexible line which is currently in use by the CGS to store bulletin region information. Through the course of the history of assembling an earthquake catalog, spelling mistakes can occur. The purpose of the tool is to compare the type 3 lines with an existing list of descriptions, and correct where necessary.
+ 
+The user must only provide to location of a text file containing a list of descriptions to be used. 
+
+Filter SEISAN data
+------------------
+Here, the SEISAN catalogue can be filtered to select relevant portions for later examination. The user can specify the following:
+
+* Distance indicator - this can be any combination of local, regional or distant events.
+* Record type - choose the record type to use for the filter
+* Description - choose which column in the record type to filter on.
+* Include or Exclude - specify type of filtering operation
+* From and To - range to filter.
+
+.. image:: _images/seisfilter.png
+
 Import Generic FPS
-^^^^^^^^^^^^^^^^^^
+------------------
 Imports generic fault plane solutions stored in an ASCII file. This is stored
 in a csv file. The format is as follows::
 
    Longitude, Latitude, Strike, Dip, Rake, Magnitude
 
-Import Scanned Bulletins
-^^^^^^^^^^^^^^^^^^^^^^^^
-Imoprts ASCII seismic bulletins which have been obtained from Optical Character
-Recognition software. The bulletins are from the Council for Geoscience, and
-this forms part of an initiative converting paper records to digital records.
-
-The module will convert the ASCII file to NORDIC format. Errors in conversion
-are also displayed.
-
 Fault Plane Solutions
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 This module allows for the display of fault plane solutions as beachball plots.
 The beachball plots can be exported to shapefiles. Note that two shapefiles are
 exported - one for the actual beachballs and one for a boundary of the
@@ -31,11 +40,16 @@ beachballs.
 The core code is translated from bb.m written by Andy Michael and Oliver Boyd
 at http://www.ceri.memphis.edu/people/olboyd/Software/Software.html
 
-Delete Records
-^^^^^^^^^^^^^^
-This is a simple script used to delete records.
+Option are:
+
+* FPS Algorithm - can be FOCMEC or FPFIT
+* Width scale factor - option to scale the "beachballs"
+* Geographic units or Projected units.
+
+.. image:: _images/seisfps.png
+
 
 Remove Quarry Events
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 This script allows for the removal of quarry events from seismology data. It is
 based on the paper by Wiemer and Baer (2000)

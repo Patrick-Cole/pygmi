@@ -1,5 +1,5 @@
-PyGMI API Documentation
-=======================
+PyGMI API
+=========
 
 This section will focus on developer information as well as how to use the program. This is a work in progress, so if you have any questions not on the wiki, feel free to contact me.
 

@@ -1,6 +1,11 @@
 pygmi.eseis package
 ===================
 
+.. automodule:: pygmi.eseis
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -28,11 +33,3 @@ pygmi.eseis.menu module
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: pygmi.eseis
-   :members:
-   :undoc-members:
-   :show-inheritance:

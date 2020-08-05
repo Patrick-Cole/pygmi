@@ -1,0 +1,6 @@
+Videos
+======
+
+These videos are intended to give users an introduction to PyGMI concepts, but are not meant to replace the wiki pages.
+
+Introduction :download:`mp4 <_downloads/introduction.mp4>`

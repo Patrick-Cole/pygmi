@@ -1,0 +1,265 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Magnetics: Description of Modules &#8212; PyGMI 3.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="mag.ref.html" />
+    <link rel="prev" title="Magnetics" href="mag.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="mag.html" title="Previous document">Magnetics</a>
+        </li>
+        <li>
+          <a href="mag.ref.html" title="Next document">References</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="magnetics-description-of-modules">
+<h1>Magnetics: Description of Modules<a class="headerlink" href="#magnetics-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="tilt-angle-calculation">
+<h2>Tilt Angle Calculation<a class="headerlink" href="#tilt-angle-calculation" title="Permalink to this headline">¶</a></h2>
+<p>This calculates the tilt angle of the data (Cooper and Cowan 2006). It allows for smoothing as well. It outputs the Standard tilt angle, Hyperbolic tilt angle, 2nd order tilt angle, Tilt Based Directional Derivative and the Total Derivative.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Smoothing Matrix - an odd matrix used to smooth the data</p></li>
+<li><p>Azimuth - This is the direction of the tilt angle, in degrees from east. It is used in the tilt based directional derivative.</p></li>
+</ul>
+</div>
+<div class="section" id="reduction-to-the-pole">
+<h2>Reduction to the Pole<a class="headerlink" href="#reduction-to-the-pole" title="Permalink to this headline">¶</a></h2>
+<p>This is a reduction to the pole routine for Magnetic data. The input is a raster dataset.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Band to Reduce to the Pole - This should be magnetic data.</p></li>
+<li><p>Inclination - Magnetic inclination at the date of the survey.</p></li>
+<li><p>Declination - Magnetic declination at the date of the survey.</p></li>
+</ul>
+</div>
+<div class="section" id="calculate-igrf-corrected-data">
+<h2>Calculate IGRF Corrected Data<a class="headerlink" href="#calculate-igrf-corrected-data" title="Permalink to this headline">¶</a></h2>
+<p>This calculates IGRF corrected version of the magnetic data. It requires, as input, a magnetic dataset for an area as well as a digital elevation model. Since the IGRF correction relates to latitude and longitude, the projection of the input dataset is required. The IGRF corrected is a translated version of the correction supplied at: <a class="reference external" href="http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html">http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html</a></p>
+<div class="section" id="input-projection">
+<h3>Input Projection<a class="headerlink" href="#input-projection" title="Permalink to this headline">¶</a></h3>
+<p>The choice of projection is obtained through a drop box. The first part of the entry on the drop box shows the datum, and the last part shows the projection.</p>
+<p>Should you wish choose degrees, the entry will be Datum / Geodetic Geographic, where Datum is your local datum of choice.</p>
+</div>
+<div class="section" id="igrf-options">
+<h3>IGRF Options<a class="headerlink" href="#igrf-options" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Sensor Clearance above ground - This is the height, in meters, of the sensor measuring the magentic field, above the ground.</p></li>
+<li><p>Date - This is the survey date. The IGRF field changes depending on when the magnetic data was collected, so the survey date must be taken into account.</p></li>
+<li><p>Digital Elevation Model - raster grid of the terrain in height above sea level.</p></li>
+<li><p>Magnetic Data - raster grid of the magnetic data to be corrected.</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="tilt-depth-interpretation">
+<h2>Tilt Depth Interpretation<a class="headerlink" href="#tilt-depth-interpretation" title="Permalink to this headline">¶</a></h2>
+<p>The tilt depth interpretation (Salem et al 2007) is a technique for calculating depths to vertical sided bodies from the magnetic tilt angle. As such it required magnetic data as input.</p>
+<p>This works on the principle that the distance between the -45 degree and 45 degree tilt angle is twice the distance to the body. This zone of interest is highlighted on the map.</p>
+<p>What is important to note is that this technique works best with data which has been reduced to the pole. For this reason, RTP has been built into the module.</p>
+<p>The results can be output to a text file, with columns x, y, id and depth. In this case, id refers to a contour id where the tilt angle is equal to zero.</p>
+<p>Options:
+* Band to perform tilt depth - this should be magnetic data
+* Color Bar - colors used to display the tilt angle data.
+* Inclination of Magnetic Field - inclination of the field at the location and date of survey.
+* Declination of Magnetic Field - declination of the field at the location and date of survey.
+* Recalculate Tilt Depth - used to recalculate after changing inclination or declination.</p>
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="mag.html" title="Previous document">Magnetics</a>
+        </li>
+        <li>
+          <a href="mag.ref.html" title="Next document">References</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Quick Start to use PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="mag.html">Magnetics</a><ul>
+      <li>Previous: <a href="mag.html" title="previous chapter">Magnetics</a></li>
+      <li>Next: <a href="mag.ref.html" title="next chapter">References</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Council for Geoscience.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/mag.dm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

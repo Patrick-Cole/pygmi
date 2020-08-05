@@ -1,0 +1,16 @@
+Remote Sensing
+==============
+
+Introduction
+------------
+The remote sensing menu gives a variety of tools to make working with remote sensing data more convenient. Imports of remote sensing data are also located here.
+
+
+Subpackages
+-----------
+
+.. toctree::
+
+    rsense.dm
+    rsense.ref
+

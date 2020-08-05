@@ -1,6 +1,11 @@
 pygmi.pfmod package
 ===================
 
+.. automodule:: pygmi.pfmod
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -84,11 +89,3 @@ pygmi.pfmod.tab\_prof module
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: pygmi.pfmod
-   :members:
-   :undoc-members:
-   :show-inheritance:

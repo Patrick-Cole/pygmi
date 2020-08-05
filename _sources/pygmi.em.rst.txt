@@ -1,6 +1,11 @@
 pygmi.em package
 ================
 
+.. automodule:: pygmi.em
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -20,11 +25,3 @@ pygmi.em.tdem module
    :undoc-members:
    :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: pygmi.em
-   :members:
-   :undoc-members:
-   :show-inheritance:

@@ -15,10 +15,10 @@ The menus in PyGMI group tasks into categories. By clicking on a menu item, you
 will see that the item appears as a flow chart element on the main interface.
 
 .. image:: _images/main.png
-   :width: 100%
 
 * By clicking on the line connector icon on the menubar, it is possible to
   connect two tasks on the flow chart.
+* Clicking on the Play icon on the menubar runs all tasks in sequence.
 * **Double clicking** on a task activates the task.
 * **Right clicking** on the task allows for the display of any data and results
   associated with that task.
@@ -39,7 +39,7 @@ this window.
 
 1. In the Raster menu click on 'Smoothing'
 2. Click on the Line Pointer tool on the menubar
-3. Draw a line between the import symbol and the smoothing symbol. I line with
+3. Draw a line between the import symbol and the smoothing symbol. A line with
    an arrowhead should appear
 4. Double-click on the smoothing symbol.
 5. A dialog will pop up. You can leave the defaults for now and press 'OK'

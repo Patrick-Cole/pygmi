@@ -3,13 +3,20 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+.. toctree::
+    :hidden:
+    :maxdepth: 2
+
+    wiki
+    api
+
 Notices
 =======
 Welcome to the PyGMI website! It contains more information, including API documentation for the project.
 
-March 25, 2020: `PyGMI 3.1.0 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
+August 5, 2020: `PyGMI 3.2.1 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
 
-This is the next release of PyGMI. It contains various bug fixes and introduces new menus for processing of geophysical data. This includes the amazing `mtpy <https://github.com/MTgeophysics/mtpy>`_ library for MT processing, as well as `segyio <https://pypi.org/project/segyio/>`_ for reading SEG-Y data to view. This is the continuation of (hopefully) something big in terms of expanding the geoscience capabilities of PyGMI.
+This is the next release of PyGMI. It contains various bug fixes, and some additional functions, including remote sensing capabilities, continuation, and reorganisation of magnetic function into a magnetic menu. Remote sensing imports now occur at the remote sensing menu.
 
 PyGMI is being developed using python 3.8 and Qt5.
 
@@ -24,11 +31,14 @@ PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>
 
 It includes:
 
-* Magnetic and Gravity 3D forward modelling
-* Cluster Analysis
-* Routines for cutting, reprojecting and doing simple modifications to data
+* Magnetic and Gravity 3D forward modelling.
+* Cluster Analysis, including use of scikit-learn libraries.
+* Routines for cutting, reprojecting and doing simple modifications to data.
 * Convenient display of data using pseudo-color, ternary and sunshaded representation.
-* New features such as MT processing and 1D inversion, gravity processing, seismological  for SEISAN data.
+* MT processing and 1D inversion using MTpy.
+* Gravity processing.
+* Seismological functions for SEISAN data.
+* Remote sensing ratios and improved imports.
 
 It is released under the `Gnu General Public License version 3.0 <http://www.gnu.org/copyleft/gpl.html>`_
 
@@ -39,49 +49,5 @@ The latest release version (including windows installers) can be found `here <ht
 You may need to install the `Microsoft Visual C++ Redistributable for Visual Studio 2015, 2017 and 2019 <https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads>`_.
 
 If you have any comments or queries, you can contact the author either through `GitHub <https://github.com/Patrick-Cole/pygmi>`_ or via email at pcole@geoscience.org.za
-
-Videos
-------
-Note that these videos were for version 2 of PyGMI, but will still be instructive for version 3.
-
-Introduction :download:`mp4 <_downloads/introduction.mp4>`
-
-Raster Context Menus :download:`mp4 <_downloads/Raster 1.mp4>`
-
-Raster Equation Editor :download:`mp4 <_downloads/Raster 2.mp4>`
-
-Raster Smoothing :download:`mp4 <_downloads/Raster 3.mp4>`
-
-Raster Normalisation :download:`mp4 <_downloads/Raster 4.mp4>`
-
-Raster Gradients, Visibility and Tilt :download:`mp4 <_downloads/Raster 5.mp4>`
-
-Raster Reduction to the Pole and IGRF :download:`mp4 <_downloads/Raster 6.mp4>`
-
-Raster Data Interpretation :download:`mp4 <_downloads/Raster 7.mp4>`
-
-Raster Merge, Resampling and Reprojection :download:`mp4 <_downloads/Raster 8.mp4>`
-
-3D Modelling :download:`mp4 <_downloads/Modelling 1.mp4>`
-
-Vectors, Rose Diagrams and Gridding :download:`mp4 <_downloads/Vector 1.mp4>`
-
-
-Contents
---------
-
-.. toctree::
-   :maxdepth: 2
-
-   wiki
-   api
-
-
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 

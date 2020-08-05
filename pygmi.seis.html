@@ -1,111 +1,91 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>pygmi.seis package &#8212; PyGMI 3.1.0 documentation</title>
-    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <title>pygmi.seis package &#8212; PyGMI 3.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="_static/language_data.js"></script>
-    <link rel="shortcut icon" href="_static/favicon.ico"/>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.test package" href="pygmi.test.html" />
-    <link rel="prev" title="pygmi.rsense package" href="pygmi.rsense.html" /> 
+    <link rel="prev" title="pygmi.rsense package" href="pygmi.rsense.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
   </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
 
-<div style="background-color: white; text-align: center; padding: 10px 10px 15px 15px">
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
 <a href="index.html">
-<img src="_static/logo.png" border="0" alt="py4sci"/>
+<img src="_static/logo.png" class="image1"/>
 </a>
+
 <a href="http://www.geoscience.org.za">
-<img src="_static/cgslogo.png" border="0" alt="py4sci"/>
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
 </a>
 
 </div>
 
 
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="pygmi.test.html" title="pygmi.test package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="pygmi.rsense.html" title="pygmi.rsense package"
-             accesskey="P">previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
 
-          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pygmi.html" accesskey="U">pygmi package</a> &#187;</li> 
-      </ul>
-    </div>
-
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">pygmi.seis package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis.beachball">pygmi.seis.beachball module</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis.datatypes">pygmi.seis.datatypes module</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis.del_rec">pygmi.seis.del_rec module</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis.graphs">pygmi.seis.graphs module</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis.iodefs">pygmi.seis.iodefs module</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis.menu">pygmi.seis.menu module</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis.scan_imp">pygmi.seis.scan_imp module</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis.utils">pygmi.seis.utils module</a></li>
-<li><a class="reference internal" href="#module-pygmi.seis">Module contents</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="pygmi.rsense.html"
-                        title="previous chapter">pygmi.rsense package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="pygmi.test.html"
-                        title="next chapter">pygmi.test package</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/pygmi.seis.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3 id="searchlabel">Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
-      <input type="submit" value="Go" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
+  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pygmi.rsense.html" title="Previous document">pygmi.rsense package</a>
+        </li>
+        <li>
+          <a href="pygmi.test.html" title="Next document">pygmi.test package</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
           <div class="body" role="main">
             
-  <div class="section" id="pygmi-seis-package">
-<h1>pygmi.seis package<a class="headerlink" href="#pygmi-seis-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pygmi.seis">
+<span id="pygmi-seis-package"></span><h1>pygmi.seis package<a class="headerlink" href="#module-pygmi.seis" title="Permalink to this headline">¶</a></h1>
+<p>Seismology Routines.</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -114,12 +94,12 @@
 <p>Plot fault plane solutions.</p>
 <p>The code below is translated from bb.m written by Andy Michael and Oliver Boyd
 at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd/Software/Software.html">http://www.ceri.memphis.edu/people/olboyd/Software/Software.html</a></p>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.beachball.BeachBall">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">BeachBall</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">BeachBall</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Create shapefiles with beachballs.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.beachball.BeachBall.change_alg">
 <code class="sig-name descname">change_alg</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.change_alg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change algorithm.</p>
@@ -133,7 +113,7 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.beachball.BeachBall.data_init">
 <code class="sig-name descname">data_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.data_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialise Data - entry point into routine.</p>
@@ -147,7 +127,24 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.beachball.BeachBall.loadproj">
+<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.beachball.BeachBall.save_shp">
 <code class="sig-name descname">save_shp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.save_shp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save Beachballs.</p>
@@ -161,9 +158,23 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.beachball.BeachBall.saveproj">
+<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.beachball.BeachBall.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -175,7 +186,7 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.beachball.BeachBall.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.BeachBall.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
@@ -191,12 +202,12 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.beachball.MyMplCanvas">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the actual plot.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.beachball.MyMplCanvas.init_graph">
 <code class="sig-name descname">init_graph</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.MyMplCanvas.init_graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize the graph.</p>
@@ -212,9 +223,9 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.beachball.TDL">
-<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">TDL</code><span class="sig-paren">(</span><em class="sig-param">AN</em>, <em class="sig-param">BN</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.TDL" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">TDL</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">AN</span></em>, <em class="sig-param"><span class="n">BN</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.TDL" title="Permalink to this definition">¶</a></dt>
 <dd><p>TDL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -234,9 +245,9 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.beachball.auxplane">
-<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">auxplane</code><span class="sig-paren">(</span><em class="sig-param">s1</em>, <em class="sig-param">d1</em>, <em class="sig-param">r1</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.auxplane" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">auxplane</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s1</span></em>, <em class="sig-param"><span class="n">d1</span></em>, <em class="sig-param"><span class="n">r1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.auxplane" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get Strike and dip of second plane.</p>
 <p>Adapted from Andy Michael bothplanes.c</p>
 <dl class="field-list simple">
@@ -258,9 +269,9 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.beachball.beachball">
-<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">beachball</code><span class="sig-paren">(</span><em class="sig-param">fm</em>, <em class="sig-param">centerx</em>, <em class="sig-param">centery</em>, <em class="sig-param">diam</em>, <em class="sig-param">isgeog</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.beachball" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">beachball</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fm</span></em>, <em class="sig-param"><span class="n">centerx</span></em>, <em class="sig-param"><span class="n">centery</span></em>, <em class="sig-param"><span class="n">diam</span></em>, <em class="sig-param"><span class="n">isgeog</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.beachball" title="Permalink to this definition">¶</a></dt>
 <dd><p>Beachball.</p>
 <p>Source code provided here are adopted from MatLab script
 <cite>bb.m</cite> written by Andy Michael and Oliver Boyd.</p>
@@ -299,9 +310,9 @@ it down-dip (normal), and 180 moves it opposite to strike
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.beachball.mij2sdr">
-<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">mij2sdr</code><span class="sig-paren">(</span><em class="sig-param">mxx</em>, <em class="sig-param">myy</em>, <em class="sig-param">mzz</em>, <em class="sig-param">mxy</em>, <em class="sig-param">mxz</em>, <em class="sig-param">myz</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.mij2sdr" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">mij2sdr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mxx</span></em>, <em class="sig-param"><span class="n">myy</span></em>, <em class="sig-param"><span class="n">mzz</span></em>, <em class="sig-param"><span class="n">mxy</span></em>, <em class="sig-param"><span class="n">mxz</span></em>, <em class="sig-param"><span class="n">myz</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.mij2sdr" title="Permalink to this definition">¶</a></dt>
 <dd><p>Adapted from code, mij2d.f, created by Chen Ji.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -325,9 +336,9 @@ it down-dip (normal), and 180 moves it opposite to strike
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.beachball.pol2cart">
-<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">pol2cart</code><span class="sig-paren">(</span><em class="sig-param">phi</em>, <em class="sig-param">rho</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.pol2cart" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">pol2cart</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">phi</span></em>, <em class="sig-param"><span class="n">rho</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.pol2cart" title="Permalink to this definition">¶</a></dt>
 <dd><p>Polar to cartesian coordinates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -346,9 +357,9 @@ it down-dip (normal), and 180 moves it opposite to strike
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.beachball.strikedip">
-<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">strikedip</code><span class="sig-paren">(</span><em class="sig-param">n</em>, <em class="sig-param">e</em>, <em class="sig-param">u</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.strikedip" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">strikedip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">e</span></em>, <em class="sig-param"><span class="n">u</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.strikedip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find strike and dip of plane given normal vector.</p>
 <p>Adapted from Andy Michaels stridip.c</p>
 <dl class="field-list simple">
@@ -374,7 +385,7 @@ it down-dip (normal), and 180 moves it opposite to strike
 <span id="pygmi-seis-datatypes-module"></span><h2>pygmi.seis.datatypes module<a class="headerlink" href="#module-pygmi.seis.datatypes" title="Permalink to this headline">¶</a></h2>
 <p>Class for seismic data types.</p>
 <p>Docstring information is from SEISAN documentation.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_1">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_1</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -429,7 +440,7 @@ on this line will then be associated with the main header line and there
 is then room for 6 magnitudes.</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_2">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_2</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -497,7 +508,7 @@ is then room for 6 magnitudes.</p>
 80    a1      Type of this line (“2”)</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_3">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_3</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -508,7 +519,7 @@ is then room for 6 magnitudes.</p>
 80      A1      Type of this line (“3”)</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_4">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_4</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_4" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -562,7 +573,7 @@ into column 9. This format is recognized by HYP and MULPLT.</p>
 <p>Type 4 cards should be followed by a Blank Card (Type 0)</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_5">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_5</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -575,7 +586,7 @@ programs.</p>
 80 A1   Type of this line (“5”)</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_6">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_6</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_6" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -586,7 +597,7 @@ programs.</p>
 80      A1     Type of this line (“6”)</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_7">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_7</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_7" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -610,7 +621,7 @@ DIS : Epicentral distance in km
 CAZ : Azimuth from event to station</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_E">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_E</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_E" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -639,7 +650,7 @@ var(3,1)=var(1,3)
 var(3,2)=var(2,3)</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_F">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_F</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_F" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -661,7 +672,7 @@ var(3,2)=var(2,3)</p>
 80:80   A1     F</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_H">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_H</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_H" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -682,7 +693,7 @@ var(3,2)=var(2,3)</p>
 80      H</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_I">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_I</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_I" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -714,7 +725,7 @@ var(3,2)=var(2,3)</p>
 76      Indicate if ID is locked. Blank means not locked, L means locked.</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_M">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_M</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_M" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -763,7 +774,7 @@ Columns Format Description
 80:80   A1     M</p>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.datatypes.seisan_P">
 <em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.datatypes.</code><code class="sig-name descname">seisan_P</code><a class="headerlink" href="#pygmi.seis.datatypes.seisan_P" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -778,14 +789,14 @@ Columns Format Description
 <div class="section" id="module-pygmi.seis.del_rec">
 <span id="pygmi-seis-del-rec-module"></span><h2>pygmi.seis.del_rec module<a class="headerlink" href="#module-pygmi.seis.del_rec" title="Permalink to this headline">¶</a></h2>
 <p>This program deletes seisan records.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.del_rec.DeleteRecord">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.del_rec.</code><code class="sig-name descname">DeleteRecord</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.del_rec.</code><code class="sig-name descname">DeleteRecord</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Main form which does the GUI and the program.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.del_rec.DeleteRecord.delrec">
-<code class="sig-name descname">delrec</code><span class="sig-paren">(</span><em class="sig-param">ifile</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.delrec" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delrec</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.delrec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete record.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -800,9 +811,40 @@ Columns Format Description
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.del_rec.DeleteRecord.loadproj">
+<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.seis.del_rec.DeleteRecord.saveproj">
+<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.del_rec.DeleteRecord.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.DeleteRecord.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -816,12 +858,12 @@ Columns Format Description
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.del_rec.Quarry">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.del_rec.</code><code class="sig-name descname">Quarry</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.del_rec.</code><code class="sig-name descname">Quarry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Main form which does the GUI and the program.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.del_rec.Quarry.calcrq2">
 <code class="sig-name descname">calcrq2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.calcrq2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the Rq value.</p>
@@ -835,7 +877,7 @@ Columns Format Description
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.del_rec.Quarry.calcrq2b">
 <code class="sig-name descname">calcrq2b</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.calcrq2b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the Rq value.</p>
@@ -849,9 +891,26 @@ Columns Format Description
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.del_rec.Quarry.loadproj">
+<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.del_rec.Quarry.randrq">
-<code class="sig-name descname">randrq</code><span class="sig-paren">(</span><em class="sig-param">nmax</em>, <em class="sig-param">nstep</em>, <em class="sig-param">nrange</em>, <em class="sig-param">day</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.randrq" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">randrq</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nmax</span></em>, <em class="sig-param"><span class="n">nstep</span></em>, <em class="sig-param"><span class="n">nrange</span></em>, <em class="sig-param"><span class="n">day</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.randrq" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate random Rq values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -871,9 +930,9 @@ Columns Format Description
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.del_rec.Quarry.randrqb">
-<code class="sig-name descname">randrqb</code><span class="sig-paren">(</span><em class="sig-param">N1</em>, <em class="sig-param">day</em>, <em class="sig-param">num</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.randrqb" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">randrqb</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">N1</span></em>, <em class="sig-param"><span class="n">day</span></em>, <em class="sig-param"><span class="n">num</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.randrqb" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate random Rq values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -892,9 +951,23 @@ Columns Format Description
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.del_rec.Quarry.saveproj">
+<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.del_rec.Quarry.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.Quarry.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -908,9 +981,9 @@ Columns Format Description
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.del_rec.import_for_plots">
-<code class="sig-prename descclassname">pygmi.seis.del_rec.</code><code class="sig-name descname">import_for_plots</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">dind='R'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.import_for_plots" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.del_rec.</code><code class="sig-name descname">import_for_plots</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em>, <em class="sig-param"><span class="n">dind</span><span class="o">=</span><span class="default_value">'R'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.import_for_plots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import data to plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -928,7 +1001,7 @@ Columns Format Description
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.del_rec.main">
 <code class="sig-prename descclassname">pygmi.seis.del_rec.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.del_rec.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine for testing.</p>
@@ -940,12 +1013,12 @@ Columns Format Description
 <p>Plot Seismology Data.</p>
 <p>This module provides a variety of methods to plot raster data via the context
 menu.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.graphs.GraphWindow">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">GraphWindow</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">GraphWindow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Graph Window - The QDialog window which will contain our image.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.graphs.GraphWindow.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.seis.graphs.GraphWindow.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
@@ -956,7 +1029,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.GraphWindow.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
@@ -970,7 +1043,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.GraphWindow.save_shp">
 <code class="sig-name descname">save_shp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.GraphWindow.save_shp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save shapefile.</p>
@@ -986,12 +1059,12 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.graphs.MyMplCanvas">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the actual plot.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.graphs.MyMplCanvas.axes">
 <code class="sig-name descname">axes</code><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.axes" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
@@ -1001,7 +1074,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.graphs.MyMplCanvas.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
@@ -1012,9 +1085,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.MyMplCanvas.update_bvalue">
-<code class="sig-name descname">update_bvalue</code><span class="sig-paren">(</span><em class="sig-param">data1a</em>, <em class="sig-param">bins='doane'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_bvalue" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_bvalue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1a</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">'doane'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_bvalue" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the b value plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1032,9 +1105,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.MyMplCanvas.update_ellipse">
-<code class="sig-name descname">update_ellipse</code><span class="sig-paren">(</span><em class="sig-param">datd</em>, <em class="sig-param">dats</em>, <em class="sig-param">nodepth=False</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_ellipse" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_ellipse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">datd</span></em>, <em class="sig-param"><span class="n">dats</span></em>, <em class="sig-param"><span class="n">nodepth</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_ellipse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update error ellipse plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1053,9 +1126,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.MyMplCanvas.update_hexbin">
-<code class="sig-name descname">update_hexbin</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">data2</em>, <em class="sig-param">xlbl='Time'</em>, <em class="sig-param">ylbl='ML'</em>, <em class="sig-param">xbin=None</em>, <em class="sig-param">xrng=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_hexbin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_hexbin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1</span></em>, <em class="sig-param"><span class="n">data2</span></em>, <em class="sig-param"><span class="n">xlbl</span><span class="o">=</span><span class="default_value">'Time'</span></em>, <em class="sig-param"><span class="n">ylbl</span><span class="o">=</span><span class="default_value">'ML'</span></em>, <em class="sig-param"><span class="n">xbin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xrng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_hexbin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the hexbin plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1077,9 +1150,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.MyMplCanvas.update_hist">
-<code class="sig-name descname">update_hist</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">xlbl='Data Value'</em>, <em class="sig-param">ylbl='Number of Observations'</em>, <em class="sig-param">bins='doane'</em>, <em class="sig-param">rng=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_hist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_hist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1</span></em>, <em class="sig-param"><span class="n">xlbl</span><span class="o">=</span><span class="default_value">'Data Value'</span></em>, <em class="sig-param"><span class="n">ylbl</span><span class="o">=</span><span class="default_value">'Number of Observations'</span></em>, <em class="sig-param"><span class="n">bins</span><span class="o">=</span><span class="default_value">'doane'</span></em>, <em class="sig-param"><span class="n">rng</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_hist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the histogram plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1100,9 +1173,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.MyMplCanvas.update_pres">
-<code class="sig-name descname">update_pres</code><span class="sig-paren">(</span><em class="sig-param">data1</em>, <em class="sig-param">phase='P'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_pres" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_pres</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1</span></em>, <em class="sig-param"><span class="n">phase</span><span class="o">=</span><span class="default_value">'P'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_pres" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1120,9 +1193,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.MyMplCanvas.update_residual">
-<code class="sig-name descname">update_residual</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">res='ML'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_residual" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_residual</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dat</span></em>, <em class="sig-param"><span class="n">res</span><span class="o">=</span><span class="default_value">'ML'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_residual" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the residualplot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1140,9 +1213,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.MyMplCanvas.update_wadati">
-<code class="sig-name descname">update_wadati</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">min_wad=5</em>, <em class="sig-param">min_vps=1.53</em>, <em class="sig-param">max_vps=1.93</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_wadati" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">update_wadati</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dat</span></em>, <em class="sig-param"><span class="n">min_wad</span><span class="o">=</span><span class="default_value">5</span></em>, <em class="sig-param"><span class="n">min_vps</span><span class="o">=</span><span class="default_value">1.53</span></em>, <em class="sig-param"><span class="n">max_vps</span><span class="o">=</span><span class="default_value">1.93</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.MyMplCanvas.update_wadati" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the wadati plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1164,12 +1237,12 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.graphs.PlotQC">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">PlotQC</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">PlotQC</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.seis.graphs.GraphWindow" title="pygmi.seis.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.seis.graphs.GraphWindow</span></code></a></p>
 <p>Plot Hist Class.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.graphs.PlotQC.label2">
 <code class="sig-name descname">label2</code><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.label2" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to GraphWindow’s label2</p>
@@ -1180,7 +1253,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.graphs.PlotQC.combobox2">
 <code class="sig-name descname">combobox2</code><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.combobox2" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to GraphWindow’s combobox2</p>
@@ -1191,7 +1264,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.graphs.PlotQC.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
@@ -1202,7 +1275,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.graphs.PlotQC.indata">
 <code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
@@ -1213,7 +1286,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.PlotQC.change_band">
 <code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
@@ -1227,7 +1300,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.PlotQC.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
@@ -1241,7 +1314,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.graphs.PlotQC.save_shp">
 <code class="sig-name descname">save_shp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.PlotQC.save_shp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save shapefile.</p>
@@ -1257,9 +1330,9 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.graphs.eigsorted">
-<code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">eigsorted</code><span class="sig-paren">(</span><em class="sig-param">cov</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.eigsorted" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">eigsorted</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cov</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.eigsorted" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate and sort eigen values.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1275,9 +1348,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.graphs.import_for_plots">
-<code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">import_for_plots</code><span class="sig-paren">(</span><em class="sig-param">dat</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.import_for_plots" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.graphs.</code><code class="sig-name descname">import_for_plots</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.graphs.import_for_plots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import data to plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1296,12 +1369,12 @@ menu.</p>
 <div class="section" id="module-pygmi.seis.iodefs">
 <span id="pygmi-seis-iodefs-module"></span><h2>pygmi.seis.iodefs module<a class="headerlink" href="#module-pygmi.seis.iodefs" title="Permalink to this headline">¶</a></h2>
 <p>Import Data.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.iodefs.ExportCSV">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ExportCSV</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ExportCSV</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Export Seisan Data.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
@@ -1315,9 +1388,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_1">
-<code class="sig-name descname">write_record_type_1</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1332,9 +1405,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_2">
-<code class="sig-name descname">write_record_type_2</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1349,9 +1422,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_3">
-<code class="sig-name descname">write_record_type_3</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 3.</p>
 <p>This changes depending on the preceding line.</p>
 <dl class="field-list simple">
@@ -1367,9 +1440,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_4">
-<code class="sig-name descname">write_record_type_4</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_4" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_4</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_4" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 4.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1384,9 +1457,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_5">
-<code class="sig-name descname">write_record_type_5</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 5.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1401,9 +1474,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_6">
-<code class="sig-name descname">write_record_type_6</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_6" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_6</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_6" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 6.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1418,7 +1491,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_7">
 <code class="sig-name descname">write_record_type_7</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_7" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 7.</p>
@@ -1435,9 +1508,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_e">
-<code class="sig-name descname">write_record_type_e</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_e" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_e</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type E.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1452,9 +1525,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_f">
-<code class="sig-name descname">write_record_type_f</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_f" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type F.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1469,9 +1542,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_h">
-<code class="sig-name descname">write_record_type_h</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_h" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_h</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type H.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1486,9 +1559,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_i">
-<code class="sig-name descname">write_record_type_i</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_i" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_i</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type I.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1503,9 +1576,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_m">
-<code class="sig-name descname">write_record_type_m</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_m" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_m</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_m" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type M.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1520,9 +1593,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportCSV.write_record_type_p">
-<code class="sig-name descname">write_record_type_p</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_p" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_p</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportCSV.write_record_type_p" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type P.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1539,12 +1612,12 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.iodefs.ExportSeisan">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ExportSeisan</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ExportSeisan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Export Seisan Data.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
@@ -1558,9 +1631,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_1">
-<code class="sig-name descname">write_record_type_1</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1575,9 +1648,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_2">
-<code class="sig-name descname">write_record_type_2</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1592,9 +1665,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_3">
-<code class="sig-name descname">write_record_type_3</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 3.</p>
 <p>This changes depending on the preceding line.</p>
 <dl class="field-list simple">
@@ -1610,9 +1683,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_4">
-<code class="sig-name descname">write_record_type_4</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_4" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_4</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_4" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 4.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1627,9 +1700,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_5">
-<code class="sig-name descname">write_record_type_5</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 5.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1644,9 +1717,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_6">
-<code class="sig-name descname">write_record_type_6</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_6" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_6</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_6" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 6.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1661,7 +1734,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_7">
 <code class="sig-name descname">write_record_type_7</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_7" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 7.</p>
@@ -1675,9 +1748,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_e">
-<code class="sig-name descname">write_record_type_e</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_e" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_e</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type E.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1692,9 +1765,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_f">
-<code class="sig-name descname">write_record_type_f</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_f" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type F.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1709,9 +1782,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_h">
-<code class="sig-name descname">write_record_type_h</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_h" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_h</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type H.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1726,9 +1799,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_i">
-<code class="sig-name descname">write_record_type_i</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_i" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_i</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type I.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1743,9 +1816,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_m">
-<code class="sig-name descname">write_record_type_m</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_m" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_m</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_m" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type M.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1760,9 +1833,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSeisan.write_record_type_p">
-<code class="sig-name descname">write_record_type_p</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_p" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">write_record_type_p</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSeisan.write_record_type_p" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type P.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1779,12 +1852,12 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.iodefs.ExportSummaryCSV">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ExportSummaryCSV</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSummaryCSV" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ExportSummaryCSV</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSummaryCSV" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Export Seisan Data.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ExportSummaryCSV.run">
 <code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ExportSummaryCSV.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
@@ -1800,13 +1873,13 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.iodefs.FilterSeisan">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">FilterSeisan</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">FilterSeisan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Filter Data.</p>
 <p>This filters data using thresholds.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.iodefs.FilterSeisan.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
@@ -1817,7 +1890,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.iodefs.FilterSeisan.indata">
 <code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
@@ -1828,7 +1901,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.iodefs.FilterSeisan.outdata">
 <code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
@@ -1839,7 +1912,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.FilterSeisan.acceptall">
 <code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
@@ -1854,9 +1927,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.FilterSeisan.dind_click">
-<code class="sig-name descname">dind_click</code><span class="sig-paren">(</span><em class="sig-param">state</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.dind_click" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dind_click</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.dind_click" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check checkboxes.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1871,7 +1944,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.FilterSeisan.get_limits">
 <code class="sig-name descname">get_limits</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.get_limits" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get limits for seisan data.</p>
@@ -1885,9 +1958,26 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.iodefs.FilterSeisan.loadproj">
+<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.FilterSeisan.recdesc_init">
-<code class="sig-name descname">recdesc_init</code><span class="sig-paren">(</span><em class="sig-param">txt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.recdesc_init" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">recdesc_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">txt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.recdesc_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change Description.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1902,9 +1992,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.FilterSeisan.rectype_init">
-<code class="sig-name descname">rectype_init</code><span class="sig-paren">(</span><em class="sig-param">txt</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.rectype_init" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">rectype_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">txt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.rectype_init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change combo.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1919,9 +2009,23 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.iodefs.FilterSeisan.saveproj">
+<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.FilterSeisan.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1933,7 +2037,7 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.FilterSeisan.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.FilterSeisan.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
@@ -1949,15 +2053,46 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.iodefs.ImportGenericFPS">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ImportGenericFPS</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ImportGenericFPS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Import Generic Fault Plane Solution Data.</p>
 <p>This is stored in a csv file.</p>
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.iodefs.ImportGenericFPS.loadproj">
+<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.seis.iodefs.ImportGenericFPS.saveproj">
+<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ImportGenericFPS.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportGenericFPS.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1971,14 +2106,45 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.iodefs.ImportSeisan">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ImportSeisan</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">ImportSeisan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Import Seisan Data.</p>
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.iodefs.ImportSeisan.loadproj">
+<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.seis.iodefs.ImportSeisan.saveproj">
+<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.iodefs.ImportSeisan.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param">filename=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.ImportSeisan.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1992,9 +2158,9 @@ menu.</p>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.mercalli">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">mercalli</code><span class="sig-paren">(</span><em class="sig-param">mag</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.mercalli" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">mercalli</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mag</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.mercalli" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return Mercalli index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2009,9 +2175,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.merge_m">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">merge_m</code><span class="sig-paren">(</span><em class="sig-param">rec1</em>, <em class="sig-param">rec2</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.merge_m" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">merge_m</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rec1</span></em>, <em class="sig-param"><span class="n">rec2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.merge_m" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge M records.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2029,9 +2195,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_1">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_1</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_1" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2046,9 +2212,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_2">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_2</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type 2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2063,9 +2229,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_3">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_3</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_3" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_3" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type 3.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2080,9 +2246,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_4">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_4</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_4" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_4</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_4" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type 4.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2097,9 +2263,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_5">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_5</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type 5.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2114,9 +2280,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_6">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_6</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_6" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_6</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_6" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type 6.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2131,9 +2297,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_e">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_e</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_e" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_e</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type E.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2148,9 +2314,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_f">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_f</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_f" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_f</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_f" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type F.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2165,9 +2331,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_h">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_h</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_h" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_h</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_h" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type H.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2182,9 +2348,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_i">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_i</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_i" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_i</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type I.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2199,9 +2365,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_m">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_m</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_m" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_m</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_m" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type M.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2216,9 +2382,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.read_record_type_p">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_p</code><span class="sig-paren">(</span><em class="sig-param">i</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_p" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">read_record_type_p</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.read_record_type_p" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read record type P.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2233,9 +2399,9 @@ menu.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.sform">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">sform</code><span class="sig-paren">(</span><em class="sig-param">strform</em>, <em class="sig-param">val</em>, <em class="sig-param">tmp</em>, <em class="sig-param">col1</em>, <em class="sig-param">col2=None</em>, <em class="sig-param">nval=-999</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.sform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">sform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">strform</span></em>, <em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">tmp</span></em>, <em class="sig-param"><span class="n">col1</span></em>, <em class="sig-param"><span class="n">col2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">nval</span><span class="o">=</span><span class="default_value">- 999</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.sform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format strings.</p>
 <p>Formats strings according with a mod for values containing the value -999
 or None. In that case it will output spaces instead. In the case of strings
@@ -2260,9 +2426,9 @@ also  puts the new strings in the correct columns</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.str2float">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">str2float</code><span class="sig-paren">(</span><em class="sig-param">inp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.str2float" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">str2float</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.str2float" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a set number of columns to float, or returns None.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2277,9 +2443,9 @@ also  puts the new strings in the correct columns</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.iodefs.str2int">
-<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">str2int</code><span class="sig-paren">(</span><em class="sig-param">inp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.str2int" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.iodefs.</code><code class="sig-name descname">str2int</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.iodefs.str2int" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a set number of columns to integer, or returns None.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2298,14 +2464,14 @@ also  puts the new strings in the correct columns</p>
 <div class="section" id="module-pygmi.seis.menu">
 <span id="pygmi-seis-menu-module"></span><h2>pygmi.seis.menu module<a class="headerlink" href="#module-pygmi.seis.menu" title="Permalink to this headline">¶</a></h2>
 <p>Seis Menu Routines.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.menu.MenuWidget">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param">parent</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <p>This widget class creates the seismology menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.menu.MenuWidget.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
@@ -2316,73 +2482,73 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.beachball">
 <code class="sig-name descname">beachball</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.beachball" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create Beachballs from Fault Plane Solutions.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.correct_desc">
 <code class="sig-name descname">correct_desc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.correct_desc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correct Seisan descriptions.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.delete_recs">
 <code class="sig-name descname">delete_recs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.delete_recs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete Records.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.export_csv">
 <code class="sig-name descname">export_csv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.export_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export Seisan data to csv.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.export_seisan">
 <code class="sig-name descname">export_seisan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.export_seisan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export Seisan data.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.filter_seisan">
 <code class="sig-name descname">filter_seisan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.filter_seisan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Filter Seisan.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.import_genfps">
 <code class="sig-name descname">import_genfps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.import_genfps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import Generic Fault Plane Solution.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.import_scans">
 <code class="sig-name descname">import_scans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.import_scans" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import scanned records.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.import_seisan">
 <code class="sig-name descname">import_seisan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.import_seisan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import Seisan.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.quarry">
 <code class="sig-name descname">quarry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.quarry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove quarry events.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.sexport_csv">
 <code class="sig-name descname">sexport_csv</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.sexport_csv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export Summary data to csv.</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.menu.MenuWidget.show_QC_plots">
 <code class="sig-name descname">show_QC_plots</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.menu.MenuWidget.show_QC_plots" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show QC plots.</p>
@@ -2394,12 +2560,12 @@ interface. Normal as well as context menus are defined here.</p>
 <div class="section" id="module-pygmi.seis.scan_imp">
 <span id="pygmi-seis-scan-imp-module"></span><h2>pygmi.seis.scan_imp module<a class="headerlink" href="#module-pygmi.seis.scan_imp" title="Permalink to this headline">¶</a></h2>
 <p>Convert scanned bulletins to seisan format.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.scan_imp.SIMP">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">SIMP</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">SIMP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>GUI and the program.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.calc_rms">
 <code class="sig-name descname">calc_rms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.calc_rms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the RMS.</p>
@@ -2413,9 +2579,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.extract_date">
-<code class="sig-name descname">extract_date</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.extract_date" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">extract_date</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.extract_date" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract the date from the string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2430,9 +2596,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_amplitude">
-<code class="sig-name descname">get_data_amplitude</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_amplitude" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_amplitude</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_amplitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the amplitude.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2447,9 +2613,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_azim">
-<code class="sig-name descname">get_data_azim</code><span class="sig-paren">(</span><em class="sig-param">tmp</em>, <em class="sig-param">station</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_azim" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_azim</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em>, <em class="sig-param"><span class="n">station</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_azim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the azimuth.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2467,9 +2633,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_d">
-<code class="sig-name descname">get_data_d</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the D value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2484,9 +2650,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_dist">
-<code class="sig-name descname">get_data_dist</code><span class="sig-paren">(</span><em class="sig-param">tmp</em>, <em class="sig-param">station</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_dist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em>, <em class="sig-param"><span class="n">station</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_dist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the distance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2504,9 +2670,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_period">
-<code class="sig-name descname">get_data_period</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_period" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_period</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_period" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the period.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2521,9 +2687,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_phase">
-<code class="sig-name descname">get_data_phase</code><span class="sig-paren">(</span><em class="sig-param">tmp</em>, <em class="sig-param">station</em>, <em class="sig-param">default</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_phase" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_phase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em>, <em class="sig-param"><span class="n">station</span></em>, <em class="sig-param"><span class="n">default</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_phase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the phase.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2542,9 +2708,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_record_a">
-<code class="sig-name descname">get_data_record_a</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_record_a" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_record_a</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_record_a" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get record type A.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2559,9 +2725,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_record_b">
-<code class="sig-name descname">get_data_record_b</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_record_b" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_record_b</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_record_b" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get record type B.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2576,9 +2742,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_record_c">
-<code class="sig-name descname">get_data_record_c</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_record_c" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_record_c</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_record_c" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get record type C.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2593,9 +2759,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_data_resid">
-<code class="sig-name descname">get_data_resid</code><span class="sig-paren">(</span><em class="sig-param">tmp</em>, <em class="sig-param">station</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_resid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_data_resid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em>, <em class="sig-param"><span class="n">station</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_data_resid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the data residual.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2613,9 +2779,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_record_info">
-<code class="sig-name descname">get_record_info</code><span class="sig-paren">(</span><em class="sig-param">idata</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_record_info" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_record_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">idata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_record_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the information on when records start and finish etc.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2631,7 +2797,7 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_record_type_1">
 <code class="sig-name descname">get_record_type_1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_record_type_1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write record type 1.</p>
@@ -2645,7 +2811,7 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_record_type_4">
 <code class="sig-name descname">get_record_type_4</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_record_type_4" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get record type 4.</p>
@@ -2659,7 +2825,7 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_record_type_e">
 <code class="sig-name descname">get_record_type_e</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_record_type_e" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get record type E.</p>
@@ -2673,7 +2839,7 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_record_type_i">
 <code class="sig-name descname">get_record_type_i</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_record_type_i" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get record type I.</p>
@@ -2687,9 +2853,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_station">
-<code class="sig-name descname">get_station</code><span class="sig-paren">(</span><em class="sig-param">tmp</em>, <em class="sig-param">station</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_station" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_station</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em>, <em class="sig-param"><span class="n">station</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_station" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the station.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2707,9 +2873,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.get_time_section">
-<code class="sig-name descname">get_time_section</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_time_section" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_time_section</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.get_time_section" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2724,9 +2890,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.inerror">
-<code class="sig-name descname">inerror</code><span class="sig-paren">(</span><em class="sig-param">eline</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.inerror" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">inerror</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">eline</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.inerror" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write an error to the error file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2741,7 +2907,7 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.init_data_var_row">
 <code class="sig-name descname">init_data_var_row</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.init_data_var_row" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize a data variable row.</p>
@@ -2755,9 +2921,26 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.scan_imp.SIMP.loadproj">
+<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.look_for_depth">
-<code class="sig-name descname">look_for_depth</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_depth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">look_for_depth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_depth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look for depth.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2772,9 +2955,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.look_for_latitude">
-<code class="sig-name descname">look_for_latitude</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_latitude" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">look_for_latitude</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_latitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look for latitude and longitude.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2789,9 +2972,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.look_for_magnitude">
-<code class="sig-name descname">look_for_magnitude</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_magnitude" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">look_for_magnitude</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_magnitude" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look for the magnitude in the string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2806,9 +2989,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.look_for_origin">
-<code class="sig-name descname">look_for_origin</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_origin" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">look_for_origin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_origin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look for origin.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2823,9 +3006,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.look_for_region">
-<code class="sig-name descname">look_for_region</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_region" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">look_for_region</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.look_for_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Look for region.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2840,7 +3023,7 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.reset_data_vars">
 <code class="sig-name descname">reset_data_vars</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.reset_data_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset the various data variables.</p>
@@ -2854,9 +3037,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.reset_vars">
-<code class="sig-name descname">reset_vars</code><span class="sig-paren">(</span><em class="sig-param">mon</em>, <em class="sig-param">mondec</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.reset_vars" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reset_vars</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mon</span></em>, <em class="sig-param"><span class="n">mondec</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.reset_vars" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use to reset the header variables to their defaults.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2874,9 +3057,23 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.scan_imp.SIMP.saveproj">
+<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.scan_imp.SIMP.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.SIMP.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -2890,9 +3087,9 @@ interface. Normal as well as context menus are defined here.</p>
 
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.scan_imp.clean_string">
-<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">clean_string</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.clean_string" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">clean_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.clean_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean string of illegal characters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2907,9 +3104,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.scan_imp.is_stat">
-<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">is_stat</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.is_stat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">is_stat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.is_stat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if the string is a station.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2924,9 +3121,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.scan_imp.isfloat">
-<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">isfloat</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.isfloat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">isfloat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.isfloat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if a number is a float. Can take decimal point.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2941,9 +3138,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.scan_imp.ncor">
-<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">ncor</code><span class="sig-paren">(</span><em class="sig-param">tmp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.ncor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">ncor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.ncor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Correct number problems.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2958,9 +3155,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.scan_imp.read_ifile">
-<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">read_ifile</code><span class="sig-paren">(</span><em class="sig-param">ifile</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.read_ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">read_ifile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.read_ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine to read and clean some of the input file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2975,9 +3172,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.scan_imp.str2float">
-<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">str2float</code><span class="sig-paren">(</span><em class="sig-param">inp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.str2float" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">str2float</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.str2float" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a set number of columns to float, or returns None.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2992,9 +3189,9 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
-<dl class="function">
+<dl class="py function">
 <dt id="pygmi.seis.scan_imp.str2int">
-<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">str2int</code><span class="sig-paren">(</span><em class="sig-param">inp</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.str2int" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.scan_imp.</code><code class="sig-name descname">str2int</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.scan_imp.str2int" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert a set number of columns to integer, or returns None.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3013,14 +3210,14 @@ interface. Normal as well as context menus are defined here.</p>
 <div class="section" id="module-pygmi.seis.utils">
 <span id="pygmi-seis-utils-module"></span><h2>pygmi.seis.utils module<a class="headerlink" href="#module-pygmi.seis.utils" title="Permalink to this headline">¶</a></h2>
 <p>Module for miscellaneous utilities relating to earthquake seismology.</p>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmi.seis.utils.CorrectDescriptions">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.utils.</code><code class="sig-name descname">CorrectDescriptions</code><span class="sig-paren">(</span><em class="sig-param">parent=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.seis.utils.</code><code class="sig-name descname">CorrectDescriptions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Correct seisan descriptions.</p>
 <p>This compares the descriptions found in seisan type 3 lines to a custom
 list.</p>
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.utils.CorrectDescriptions.parent">
 <code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
@@ -3031,7 +3228,7 @@ list.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.utils.CorrectDescriptions.indata">
 <code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
@@ -3042,7 +3239,7 @@ list.</p>
 </dl>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py attribute">
 <dt id="pygmi.seis.utils.CorrectDescriptions.outdata">
 <code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
@@ -3053,7 +3250,7 @@ list.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.utils.CorrectDescriptions.acceptall">
 <code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
@@ -3068,9 +3265,9 @@ list.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.utils.CorrectDescriptions.get_textfile">
-<code class="sig-name descname">get_textfile</code><span class="sig-paren">(</span><em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.get_textfile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">get_textfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.get_textfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get description list filename.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -3085,9 +3282,40 @@ list.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
+<dt id="pygmi.seis.utils.CorrectDescriptions.loadproj">
+<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.seis.utils.CorrectDescriptions.saveproj">
+<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.seis.utils.CorrectDescriptions.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -3099,7 +3327,7 @@ list.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmi.seis.utils.CorrectDescriptions.setupui">
 <code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.CorrectDescriptions.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
@@ -3115,10 +3343,10 @@ list.</p>
 
 </dd></dl>
 
-<dl class="function">
-<dt id="pygmi.seis.utils.main">
-<code class="sig-prename descclassname">pygmi.seis.utils.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main</p>
+<dl class="py function">
+<dt id="pygmi.seis.utils.test">
+<code class="sig-prename descclassname">pygmi.seis.utils.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.utils.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test routine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
@@ -3130,44 +3358,131 @@ list.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pygmi.seis">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.seis" title="Permalink to this headline">¶</a></h2>
-<p>Seismology Routines.</p>
-</div>
 </div>
 
 
           </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="pygmi.rsense.html" title="Previous document">pygmi.rsense package</a>
+        </li>
+        <li>
+          <a href="pygmi.test.html" title="Next document">pygmi.test package</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Quick Start to use PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="api.html">PyGMI API</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="api.html">PyGMI API</a><ul>
+  <li><a href="pygmi.html">pygmi package</a><ul>
+      <li>Previous: <a href="pygmi.rsense.html" title="previous chapter">pygmi.rsense package</a></li>
+      <li>Next: <a href="pygmi.test.html" title="next chapter">pygmi.test package</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="pygmi.test.html" title="pygmi.test package"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="pygmi.rsense.html" title="pygmi.rsense package"
-             >previous</a> |</li>
-        <li><a href="index.html">home</a>|&nbsp;</li>
-        <li><a href="search.html">search</a>|&nbsp;</li>
-        <li><a href="https://github.com/Patrick-Cole/pygmi/releases">downloads</a>|&nbsp;</li>
+    <div class="footer">
+      &copy;2020, Council for Geoscience.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/pygmi.seis.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
 
-          <li class="nav-item nav-item-1"><a href="api.html" >PyGMI API Documentation</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="pygmi.html" >pygmi package</a> &#187;</li> 
-      </ul>
-    </div>
-    <div class="footer" role="contentinfo">
-        &#169; Copyright 2020, Council for Geoscience.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.0.
-    </div>
+    
+
+    
   </body>
 </html>

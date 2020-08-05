@@ -1,0 +1,9 @@
+Boreholes: Description of Modules
+=================================
+
+Import Borehole Data
+--------------------
+Borehole data in the Council for Geoscience format can be imported here. It consists of two excel files:
+
+* Header file with columns: Seqno, Farmname, Farmno, Regdist, Companyno, Boreholeid, Depth from, Depth to, Drill date, Inclination, Azimuth, Map, Latitude, Longitude, Elevation, Lox, Loy, Locunc, Declat, Declon, Commodity, Commodity2, Commodity3, Commodity4, Company
+* Lithology file with columns: Seqno, Farmname, Farmno, Regdist, Companyno, Boreholeid, Map, Depth from, Depth to, Lithology status, Lithology, Stratigraphy, Rank, Lithology description

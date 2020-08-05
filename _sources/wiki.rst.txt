@@ -19,10 +19,18 @@ Contents:
 
    install
    qstart
+   file
    raster
    vector
+   bholes
    cluster
+   eseis
+   mag
+   gravity
+   mt
    pfmod
+   rsense
    seis
+   videos
 
 

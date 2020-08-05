@@ -7,18 +7,23 @@ This model imported model created in PyGMI. The models use the Numpy .npz
 format. Each .npz file will contain the voxel model, along with raster datasets
 associated with that model.
 
-Import Profile Picture
-----------------------
-This imports a picture to be associated with either an east-west or north-south
-profile in the model. Typically this could be seismic data, or a cross section
-from another technique. It accepts a tiff as input. The cordinates for the
-picture are specified here.
+Merge 3D Models
+---------------
+The merge 3D models tool allows for the merging of two 3D models into one single model.
 
-If a .npz file is connected to this module (imported through the import 3D
-model tool) then appropriate default values for the picture are filled in.
+It makes the following important assumptions:
 
-.. image:: _images/pfimpprofpic.png
-   :width: 100%
+There are only TWO input models.
+* If two lithologies have the same name, they are the same and settings from the Master are to be used.
+* If a lithology is in the Slave model, and not in the Master, it is copied into the Master.
+* If the Master and Slave dataset do not align, the slave is modified to fit the Master
+
+Options:
+
+* Master Dataset - This is the dataset which will be added to. Its values are not changed.
+* Slave Dataset - This dataset is incorporated into the Master.
+
+.. image:: _images/pfmodmerge.png
 
 Model Creation and Editing
 --------------------------
@@ -28,103 +33,158 @@ context menu on a green module. The module comprises a series of Tabs, which
 are described below. The actual calculation of the magnetic and gravity field
 data is based on the work by Blakely (1996).
 
-Model Extent Parameters
-^^^^^^^^^^^^^^^^^^^^^^^
-This tab sets up the extents of the model. The Dataset Information section
-associates connected raster datasets with the either DTM, magnetic data,
-gravity data or gravity regional data. If you are modelling actual data, this
-module will insist on DTM data. If nothing else, dtm data can be obtained from
-the SRTM archives.
+Model Extents Parameters
+^^^^^^^^^^^^^^^^^^^^^^^^
+This dialog sets up the extents of the model. The Current Models section displays the imported models. The current model is the model being edited. The regional model is a model used to apply a regional correction to field calculations.
 
-The Model Extent Properties section sets up the model extents - by default from
-an associated DTM. Of importance are the X, Y and Z cell sizes. This determines
-the number of rows, columns and layers in the model. As a rule of thumb, models
-bigger than 100x100x100 may be slow, although this will depend on the hardware
-available.
+The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, dtm data can be obtained from the SRTM archives.
 
-Any changes here must be accepted using the 'Accept Proposed Changes' button.
+The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.
 
-.. image:: _images/pfmodparam.png
-   :width: 100%
+Current Model
+~~~~~~~~~~~~~
+* Current Model - This only applies if you are importing a 3D model. It is the current model which you are working on.
+
+Dataset Information
+~~~~~~~~~~~~~~~~~~~
+This is used to define the data connected to the modelling module. The data is either connected manually or will be embedded withing a 3D model file.
+
+* DTM Dataset - This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study. If you are modelling actual data, this is compulsory. If nothing is available, download the SRTM data from NASA. It is not necessary if you are merely doing a theoretical model of, say, a dyke.
+* Magnetic Dataset - This is the magnetic data to be modelled.
+* Gravity Dataset - This is the gravity data to be modelled.
+* Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data.
+* Other - This option can be used to add an additional layer for comparison purposes - for example a geotiff of the geological map.
+
+Model Extent Properties
+~~~~~~~~~~~~~~~~~~~~~~~
+The model extents control the area size and depth of your model, as well as its resolution. Typically one of your datasets are used to fill in most of the fields automatically. Because the DTM is compulsory to the modelling, this is normally the default choice.
+
+* Get Study Area from following Dataset - Usually the DTM dataset is chosen, but it can be any of your datasets.
+* Upper Top Left X Coordinate - This is the north-west corner X coordinate of your model in meters.
+* Upper Top Left Y Coordinate - This is the north-west corner Y coordinate of your model in meters.
+* Upper Top Left Z Coordinate - This is the north-west corner Z coordinate of your model in meters above sea level.
+* Total X Extent - the distance from east to west in the model.
+* Total Y Extent - the distance from north to south in the model.
+* Total Z Extent - the depth range of the model.
+* X and Y Cell Size - the width of each model cube in the x and y direction.
+* Z Cell Size - the height of each model cube in z direction.
+* Number of Columns (X Direction) - This is calculated automatically from extents and cell sizes.
+* Number of Rows (Y Direction) - This is calculated automatically from extents and cell sizes.
+* Number of Layers (Z Direction) - This is calculated automatically from extents and cell sizes.
+
+Tips
+~~~~
+* Start with a low resolution model to get a general model in place first. 20x20x20 should be fine, since any bigger will get slow to model.
+* Once your low resolution model is complete, you can increase the model's resolution to a better resolution. Please note that bigger than 100x100x100 will cause calculations to become very slow (unless you have lots of memory).
+
+.. image:: _images/pfmodmext.png
+
+Editor
+^^^^^^
+The layer view allows for the voxel model to be edited from above. Simply select a lithology and draw the model in, as you would in a paint program. Changing the layer allows for the drawing in of lithologies at deeper depths. Please note that on the first few layers there may be sections which are air (due to the DTM), and are thus not editable.
+
+The profile view allows for the voxel model to be edited from the side. Simply select a lithology and draw the model in, as you would in a paint program. Changing the profile allows for the drawing in of lithologies at different locations.
+
+The display of magnetic data or gravity data is changed upon calculation of either data type.
+
+Options
+~~~~~~~
+* Profile Type - allows for standard profiles, or custom profiles with beginning and endpoint defined by the user.
+* Profile Orientation- allows for the selection of the profile direction.
+* Profile - allows for the selection of the profile being modelled. A slider provides convenient setting of this parameter.
+* Layer - allows for the display and/or selection of the profile being modelled. The Altitude associated with the layer is also displayed.
+* Lithology List - Use this to select which lithology that you are currently drawing. To erase, simply select the Background lithology and draw with that.
+* Line Thickness - This allows you to change the pen thickness, which you are drawing with.
+* Ranged Copy - The ranged copy function allows for the copying of a lithology on the current layer over a range of layers. You can choose which layers to copy to, and which lithologies can be overwritten.
+* Add Lithological Boundary - Adds a grid to be used as a horizontal lithological boundary. It can be used if you have, say, a grid of the crust or the bedrock to add to your model.
+* Export All Profiles - Export an X,Y,Z file of the profile data.
+* Dataset Drop Box - Allows for a dataset to be faded in and out of the layer with the aid of a slider. This can help when you need to know where the boundaries of geological units are.
+* Field Display Limits - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.
+* View Magnetic Profile - used to select the magnetic data for the profile. 
+* View Gravity Profile - used to select the gravity data for the profile.
+* Import borehole logs - used to import borehole logs (imported from the borehole menu, and connected to the modelling module)
+
+Calculations
+~~~~~~~~~~~~
+Calculations can be done by choosing one of two options from the menu bar at the top of the program:
+
+* Regional Test - This is used to display a graph showing the regional decay of your model. It is a fast way to see if either your model extents are large enough, or how the calculated field would fall off near the end of your model.
+* Calculate Gravity (All) - This calculates the gravity at the gravity height specified in the Geophysical Parameters Tab.
+* Calculate Magnetics (All)- This is used if you want Magnetic data. The height chosen is the magnetic height.
+* Calculate Gravity (Changes Only)- This calculates only the changes to the gravity since the last calculation.
+* Calculate Magnetics (Changes Only)- This calculates only the changes to the magnetic data since the last calculation.
+* Save Model - Convenience option to save the model from within the interface.
+
+Tips
+~~~~
+The ranged copy function can be very useful in getting a starting model going. Draw in your basic lithology boundary and copy it over a range of applicable depths.
+
+.. image:: _images/pfmodedit.png
+
+Ranged Copy
+^^^^^^^^^^^
+The ranged copy tool allows for the copying of a lithology from one layer or profile, across a range of other layers or profiles.
+
+The tool allows for the user selecting which other lithologies to overwrite.
+
+Options:
+
+* Master Profile - The profile from which to copy a lithology.
+* Range Start - The first profile which the master profile will copy to.
+* Range End - The last profile which the master profile will copy to.
+* Lithologies to Copy - The user can select which lithologies to copy. This can be more than one.
+* Lithologies to Overwrite - The user can select which lithologies to overwrite. This can be more than one. Under most circumstances, you will probably just select Background.
+
+.. image:: _images/pfmodrange.png
 
 Geophysical Parameters
 ^^^^^^^^^^^^^^^^^^^^^^
-This tab allows for the gravity and magnetic properties associated with the
-model. This includes:
+This dialog allows for setting all the geophysical parameters for your model. Some are general - such as survey parameters associated with the data, while others are specific to each lithology being modelled.
 
-* Gravity Regional Field
-* Gravity Height of Observation
-* Magnetic Height of Observation
-* Magnetic Field Intensity
-* Magnetic Inclination
-* Magnetic Declination
+General Properties
+~~~~~~~~~~~~~~~~~~
+* Gravity Regional - Gravity data needs to have a regional subtracted so that the theroetical and measured anomalies coincide. PyGMI allows you to enter this correction here.
+* Height of observation - Gravity - This is the gravity sensor height.
+* Height of observation - Magnetic - This is the gravity sensor height.
+* Magnetic Field Intensity - This is the intensity of the magnetic field at the time of the survey. You can get this from NOAA.
+* Magnetic Inclination - This is the inclination of the magnetic field at the time of the survey. You can get this from NOAA.
+* Magnetic Declination - This is the declination of the magnetic field at the time of the survey. You can get this from NOAA.
 
-The lithological properties section defines appropriate properties on a
-lithology basis. These include:
+Lithological Properties
+~~~~~~~~~~~~~~~~~~~~~~~
+PyGMI sets up geophysical properties on a lithology basis, and not on a body by body basis.
 
-* Density
-* Susceptibilty
-* Remanent Magnetisation Intensity
-* Q Ratio
-* Remanent Inclination
-* Remanent Declination
+Lithological Definitions List:
 
-Additional lithologies can be added, removed or renamed here.
+* Add New Lithological Definition - allows for adding a new definition. The user will also be able to select the color of the definition.
+* Rename Current Definition - allows for renaming a selected definition.
+* Remove Current Definition - allows for deleting a selected definition.
+* Merge Definitions - allows for the merging of two definitions.
 
-.. image:: _images/pfmodparam2.png
-   :width: 100%
+Lithological Properties - Background:
 
-Data Display
-^^^^^^^^^^^^
-The data display tab shows the input data, calculated output data, as well as
-the location of the currently modelled profile over that data.
+By selecting a lithology from the lithology list, its associated properties are shown here. The background lithology denotes properties associated with background (unmodelled) geology. This should be left alone under normal circumstances
 
-The slider below the image allows for the fading of one dataset into another.
-This is useful, for example, when comparing calculated gravity data to the
-measured gravity data.
+* Density - density of your lithology (g/cm3). It applies to gravity modelling.
+* Magnetic susceptibility (SI) - susceptibility of your lithology. It applies to magnetic modelling.
+* Remanent Magnetization Intensity (nT) - Applies to lithologies with remanence.
+* Remanent Magnetization (A/m) - Applies to lithologies with remanence.
+* Q Ratio - Applies to lithologies with remanence.
+* Remanent Inclination - Applies to lithologies with remanence.
+* Remanent Declination - Applies to lithologies with remanence.
+* Apply Changes - apply changes to the current lithology
 
-.. image:: _images/pfmoddisp.png
-   :width: 100%
+.. image:: _images/pfmodparam.png
 
-Layer Editor
-^^^^^^^^^^^^
-The layer editor allows for the voxel model to be edited from above. Simply
-select a lithology and draw the model in, as you would in a paint program.
-Changing the layer allows for the drawing in of lithologies at deeper depths.
-Please note that on the first few layers there may be sections which are air
-(due to the DTM), and are thus not editable.
+Lithology Notes
+^^^^^^^^^^^^^^^
+Each lithology can have a lithology code and lithology notes assigned to it.
 
-The ranged copy function allows for the copying of a lithology on the current
-layer over a range of layers.
+.. image:: _images/pfmodlithnotes.png
 
-.. image:: _images/pfmodledit.png
-   :width: 100%
 
-Profile Editor
-^^^^^^^^^^^^^^
-The profile editor allows for the voxel model to be edited from the side. The
-orientation of east-west or north-south can be changed on the data display tab.
+Regional Test
+^^^^^^^^^^^^^
+In magnetic and gravity modelling, the calculated field will decay past the edged of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpedicular to the profile by a constant amount. This is not teh case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.
 
-Simply select a lithology and draw the model in, as you would in a paint
-program. Changing the profile allows for the drawing in of lithologies at
-different sections on the model. The location of this profile can also be seen
-on the data display tab.
-
-The calculate button on the main menu bar calculates the forward model. Because
-of the nature of the algorithm, the slowest calculation will be the first
-calculation.
-
-The ranged copy function allows for the copying of a lithology on the current
-profile over a range of profiles.
-
-.. image:: _images/pfmodpedit.png
-   :width: 100%
-
-Custom Profile Viewer
-^^^^^^^^^^^^^^^^^^^^^
-The custom profile viewer allows for the display and editing of custom profiles
-which are not either east-west or north-south. It works in the same manner as
-the profile editor.
-
-To add the coordinates for the custom profile, click the **Add Custom Profile**
-button.
+.. image:: _images/pfmodregtest.png

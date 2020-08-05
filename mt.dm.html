@@ -1,0 +1,288 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Magnetotellurics: Description of Modules &#8212; PyGMI 3.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="mt.ref.html" />
+    <link rel="prev" title="Magnetotellurics: Context Menu" href="mt.cm.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+<style>
+.parent {
+  zindex: 1;
+}
+.image1 {
+  float: left;
+  zindex: 2;
+  padding: 15px;
+}
+.image2 {
+  float: right;
+  zindex: 3;
+  padding: 15px;
+}
+
+</style>
+<div style="position: relative;
+            left: 0;
+            top: 0;">
+
+<a href="index.html">
+<img src="_static/logo.png" class="image1"/>
+</a>
+
+<a href="http://www.geoscience.org.za">
+<img src="_static/cgslogo.png" class="image2"/>
+</a>
+
+<a href="index.html">
+<img src="_static/swirlcgs.png" class="parent" width="100%" height="100px"/>
+</a>
+
+</div>
+
+
+
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+              <div class="related top">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="mt.cm.html" title="Previous document">Magnetotellurics: Context Menu</a>
+        </li>
+        <li>
+          <a href="mt.ref.html" title="Next document">References</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="magnetotellurics-description-of-modules">
+<h1>Magnetotellurics: Description of Modules<a class="headerlink" href="#magnetotellurics-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<p>MT processing makes use of the MTpy library.</p>
+<div class="section" id="import-edi-data">
+<h2>Import EDI Data<a class="headerlink" href="#import-edi-data" title="Permalink to this headline">¶</a></h2>
+<p>Used to import EDI data into PyGMI. Note that more than one file can be selected at a time.</p>
+</div>
+<div class="section" id="import-lemi-417-data-tro-point-data">
+<h2>Import LEMI-417 data tro point data<a class="headerlink" href="#import-lemi-417-data-tro-point-data" title="Permalink to this headline">¶</a></h2>
+<p>Used to import LEMI-417 data into PyGMI point/line data format.</p>
+</div>
+<div class="section" id="rotate-edi-data">
+<h2>Rotate EDI Data<a class="headerlink" href="#rotate-edi-data" title="Permalink to this headline">¶</a></h2>
+<p>This module allows for the display and rotation of EDI data. Apparent resistivity and phase versus period are both displayed as graphs.</p>
+<p>Options are as follows:</p>
+<ul class="simple">
+<li><p>Apply to all stations - Check this setting to apply the selected rotation to all stations.</p></li>
+<li><p>Station Name - Used to select a station, which is then displayed in the graph.</p></li>
+<li><p>Graph Type - can be either ‘xy, yx’ or ‘xx, yy’</p></li>
+<li><p>Rotate Z - Rotation angle, where 0 degrees is North.</p></li>
+<li><p>Reset Data - restores data for pre-rotation status.</p></li>
+<li><p>Apply Rotation - rotate the data using the value in the ‘Rotate Z’ option.</p></li>
+</ul>
+<img alt="_images/mtrot.png" src="_images/mtrot.png" />
+</div>
+<div class="section" id="remove-static-shift">
+<h2>Remove Static Shift<a class="headerlink" href="#remove-static-shift" title="Permalink to this headline">¶</a></h2>
+<p>This module allows for the static shift correction to EDI data. Apparent resistivity and phase versus period are both displayed as graphs.</p>
+<p>Options are as follows:</p>
+<ul class="simple">
+<li><p>Apply to all stations - Check this setting to apply the selected rotation to all stations.</p></li>
+<li><p>Station Name - Used to select a station, which is then displayed in the graph.</p></li>
+<li><p>Graph Type - can be either ‘xy, yx’ or ‘xx, yy’</p></li>
+<li><p>Shift X - correction to X.</p></li>
+<li><p>Shift Y - correction to Y.</p></li>
+<li><p>Reset Data - restores data for pre-shifted status.</p></li>
+<li><p>Remove Static Shift - applies the correction.</p></li>
+</ul>
+<img alt="_images/mtstatic.png" src="_images/mtstatic.png" />
+</div>
+<div class="section" id="mask-and-interpolate">
+<h2>Mask and Interpolate<a class="headerlink" href="#mask-and-interpolate" title="Permalink to this headline">¶</a></h2>
+<p>This module allows for the display and editing of EDI data. A data range to be edited is selected on the graphs using the mouse. Selected data is masked out, and then interpolated versions replace the masked section. Apparent resistivity and phase versus period are both displayed as graphs.</p>
+<p>Options are as follows:</p>
+<ul class="simple">
+<li><p>Station Name - Used to select a station, which is then displayed in the graph.</p></li>
+<li><p>Graph Type - can be either ‘xy, yx’ or ‘xx, yy’</p></li>
+<li><p>Reset Data - restores data for pre-edited status.</p></li>
+<li><p>Mask and Interpolate - maskes the selected data and interpolates across the masked area.</p></li>
+</ul>
+<img alt="_images/mtmask.png" src="_images/mtmask.png" />
+</div>
+<div class="section" id="occam-1d-inversion">
+<h2>Occam 1D Inversion<a class="headerlink" href="#occam-1d-inversion" title="Permalink to this headline">¶</a></h2>
+<p>MT processing makes use of Occam 1D inversion code. This module applies Occcam 1D inversion to EDI data. Multiple solutions are generated, and a slider is used to view each solution in order to select the appropriate solution. Apparent resistivity and phase versus period are both displayed as graphs. A third graph showing depth versus layer resistivity is also shown.</p>
+<p>OCCAM1DCSEM requires three input files: IterationFile, ModelFile, and DataFile (all of which are generated by MTpy automatically). A directory labelled by the mode (see options below) is created as a subdirectory to the input EDI file directory and contains these files. This new directory contains the Occam 1D iteration (.iter) and output response (.resp) files. Full descriptions can be found in here.</p>
+<p>Options are as follows:</p>
+<ul class="simple">
+<li><p>Station Name - Used to select a station, which is then displayed in the graph.</p></li>
+<li><p>Mode - can be TE, TM or DET</p></li>
+<li><p>Resistivity Errorbar - either specified as ‘data’ or in units of %</p></li>
+<li><p>Phase Errorbar - either specified as ‘data’ or in units of %</p></li>
+<li><p>Resistivity Error Floor - in units of %</p></li>
+<li><p>Phase Error Floor - in degrees</p></li>
+<li><p>Height of air layer - in units of metres</p></li>
+<li><p>Bottom of model - in units of metres</p></li>
+<li><p>Depth of target to investigate - in units of metres</p></li>
+<li><p>Depth of first layer - in units of metres</p></li>
+<li><p>Number of layers - refers to model layers</p></li>
+<li><p>Maximum iterations - maximum number of iterations Occam uses to compute</p></li>
+<li><p>Target RMS - target RMS misfit.</p></li>
+<li><p>Invert Station - used to get Occam 1D to invert the current station</p></li>
+</ul>
+<img alt="_images/mtoccam.png" src="_images/mtoccam.png" />
+</div>
+</div>
+
+
+          </div>
+              <div class="related bottom">
+                &nbsp;
+  <nav id="rellinks">
+    <ul>
+        <li>
+          &larr;
+          <a href="mt.cm.html" title="Previous document">Magnetotellurics: Context Menu</a>
+        </li>
+        <li>
+          <a href="mt.ref.html" title="Next document">References</a>
+          &rarr;
+        </li>
+    </ul>
+  </nav>
+              </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">PyGMI</a></h1>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=Patrick-Cole&repo=pygmi&type=watch&count=False&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="qstart.html">Quick Start to use PyGMI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seis.html">Seismology</a></li>
+<li class="toctree-l2"><a class="reference internal" href="videos.html">Videos</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">PyGMI API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.html">pygmi package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html">quickstart module</a></li>
+</ul>
+</li>
+</ul>
+
+
+<hr />
+<ul>
+    
+    <li class="toctree-l1"><a href="https://github.com/Patrick-Cole/pygmi/releases">Download PyGMI</a></li>
+    
+    <li class="toctree-l1"><a href="http://www.geoscience.org.za">Council for Geoscience</a></li>
+    
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+  <li><a href="wiki.html">PyGMI Wiki</a><ul>
+  <li><a href="mt.html">Magnetotellurics</a><ul>
+      <li>Previous: <a href="mt.cm.html" title="previous chapter">Magnetotellurics: Context Menu</a></li>
+      <li>Next: <a href="mt.ref.html" title="next chapter">References</a></li>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Council for Geoscience.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/mt.dm.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
