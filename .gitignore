@@ -6,6 +6,7 @@ build/
 pygmi/
 docs/
 .doctrees/
+.pylint.d/
 
 *.py[co]
 *.cmd
@@ -14,3 +15,7 @@ grvmagc_*.html
 .spyproject
 log.txt
 gittolog.sh
+builddocs.py
+findlibs.py
+pygmi_pypi.py
+
