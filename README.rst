@@ -100,7 +100,7 @@ They can be obtained from the `website <http://www.lfd.uci.edu/~gohlke/pythonlib
 
 Linux
 -----
-Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through `Anaconda Python <https://www.anaconda.com/`_.
+Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through `Anaconda Python <https://www.anaconda.com/>`_.
 
 Anaconda
 --------

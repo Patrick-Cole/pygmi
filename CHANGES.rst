@@ -2,7 +2,7 @@
 Changelog
 =========
 
-v3.2.1, 05 August 2020
+v3.2.1.1, 05 August 2020
 ----------------------
 *Added 99% linear stretch to geophysical interp.
 *Created a magnetic menu for modules which are magnetic only.
