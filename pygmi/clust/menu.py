@@ -52,11 +52,11 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-        self.parent.add_to_context('Classification')
+        self.parent.add_to_context('Cluster')
         context_menu = self.parent.context_menu
 
 # Normal menus
-        self.menuclustering = QtWidgets.QMenu('Clustering')
+        self.menuclustering = QtWidgets.QMenu('Classification')
         parent.menubar.addAction(self.menuclustering.menuAction())
 
         self.action_clustering = QtWidgets.QAction('Cluster Analysis')
