@@ -30,6 +30,7 @@ tests.
 import sys
 import os
 import numpy as np
+# import matplotlib as mpl
 import matplotlib.pyplot as plt
 import PIL
 
@@ -38,6 +39,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
 from pygmi.pfmod.grvmag3d import quick_model
 from pygmi.pfmod.grvmag3d import calc_field
 
+# from IPython import get_ipython
+# get_ipython().run_line_magic('matplotlib', 'inline')
 
 def main():
     """

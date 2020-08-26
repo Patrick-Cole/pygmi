@@ -377,7 +377,7 @@ class Cluster(QtWidgets.QDialog):
             if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
                 print('Could not find '+str(i)+' clusters. '
                       'Please change settings.')
-                breakpoint()
+
                 return False
 
             dat_out.append(Data())

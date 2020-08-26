@@ -356,8 +356,12 @@ class ImportRGBData():
 
         output_type = 'Raster'
 
-        dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
-                                dat[2].data.T])
+        if len(dat) == 4:
+            dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                    dat[2].data.T, dat[3].data.T])
+        else:
+            dat2 = np.ma.transpose([dat[0].data.T, dat[1].data.T,
+                                    dat[2].data.T])
         dat = [dat[0]]
         dat[0].data = dat2
         dat[0].isrgb = True
@@ -1207,7 +1211,14 @@ def export_gdal(ifile, dat, drv):
 
     """
 
-    data = merge(dat)
+    if isinstance(dat, dict):
+        dat2 = []
+        for i in dat:
+            dat2.append(dat[i])
+    else:
+        dat2 = dat
+
+    data = merge(dat2)
 
     driver = gdal.GetDriverByName(drv)
     dtype = data[0].data.dtype

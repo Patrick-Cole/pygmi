@@ -173,6 +173,7 @@ class DataMerge(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
         self.dxy = None
+        self.piter = parent.pbar.iter
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.label_rows = QtWidgets.QLabel('Rows: 0')
@@ -320,45 +321,48 @@ class DataMerge(QtWidgets.QDialog):
         """
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
-        data = self.indata['Raster'][0]
-        orig_wkt = data.wkt
+        # data = self.indata['Raster'][0]
 
-        xmin0, xmax0, ymin0, ymax0 = data.extent
+        dat = merge(self.indata['Raster'], self.piter, dxy)
 
-        for data in self.indata['Raster']:
-            xmin, xmax, ymin, ymax = data.extent
-            xmin = min(xmin, xmin0)
-            xmax = max(xmax, xmax0)
-            ymin = min(ymin, ymin0)
-            ymax = max(ymax, ymax0)
+        # orig_wkt = data.wkt
 
-        cols = int((xmax - xmin)/dxy)
-        rows = int((ymax - ymin)/dxy)
-        gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
+        # xmin0, xmax0, ymin0, ymax0 = data.extent
 
-        if cols == 0 or rows == 0:
-            print('Your rows or cols are zero. Your input projection may be '
-                  'wrong')
-            return
+        # for data in self.indata['Raster']:
+        #     xmin, xmax, ymin, ymax = data.extent
+        #     xmin = min(xmin, xmin0)
+        #     xmax = max(xmax, xmax0)
+        #     ymin = min(ymin, ymin0)
+        #     ymax = max(ymax, ymax0)
 
-        dat = []
-        for data in self.indata['Raster']:
-            doffset = 0.0
-            if data.data.min() <= 0:
-                doffset = data.data.min()-1.
-                data.data = data.data - doffset
-            gtr0 = data.get_gtr()
+        # cols = int((xmax - xmin)/dxy)
+        # rows = int((ymax - ymin)/dxy)
+        # gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
 
-            drows, dcols = data.data.shape
-            src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
-            dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
+        # if cols == 0 or rows == 0:
+        #     print('Your rows or cols are zero. Your input projection may be '
+        #           'wrong')
+        #     return
 
-            gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt,
-                                gdal.GRA_Bilinear)
+        # dat = []
+        # for data in self.indata['Raster']:
+        #     doffset = 0.0
+        #     if data.data.min() <= 0:
+        #         doffset = data.data.min()-1.
+        #         data.data = data.data - doffset
+        #     gtr0 = data.get_gtr()
 
-            dat.append(gdal_to_dat(dest, data.dataid))
-            dat[-1].data = dat[-1].data + doffset
-            data.data = data.data + doffset
+        #     drows, dcols = data.data.shape
+        #     src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
+        #     dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
+
+        #     gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt,
+        #                         gdal.GRA_Bilinear)
+
+        #     dat.append(gdal_to_dat(dest, data.dataid))
+        #     dat[-1].data = dat[-1].data + doffset
+        #     data.data = data.data + doffset
 
         self.outdata['Raster'] = dat
 
@@ -2032,7 +2036,58 @@ def getepsgcodes():
     return pcodes
 
 
-def merge(dat):
+# def merge(dat, piter=None):
+#     """
+#     Merge datasets found in a single PyGMI data object.
+
+#     The aim is to ensure that all datasets have the same number of rows and
+#     columns.
+
+#     Parameters
+#     ----------
+#     dat : PyGMI Data
+#         data object which stores datasets
+
+#     Returns
+#     -------
+#     out : PyGMI Data
+#         data object which stores datasets
+#     """
+#     if piter is None:
+#         piter = iter
+
+#     if dat[0].isrgb:
+#         return dat
+
+#     needsmerge = False
+#     rows, cols = dat[0].data.shape
+#     for i in dat:
+#         irows, icols = i.data.shape
+#         if irows != rows or icols != cols:
+#             needsmerge = True
+
+#     if needsmerge is False:
+#         dat = check_dataid(dat)
+#         return dat
+
+#     print('Merging data...')
+#     mrg = DataMerge()
+#     mrg.indata['Raster'] = dat
+#     data = dat[0]
+#     dxy0 = min(data.xdim, data.ydim)
+#     for data in dat:
+#         dxy = min(dxy0, data.xdim, data.ydim)
+
+#     mrg.dsb_dxy.setValue(dxy)
+#     mrg.acceptall()
+#     out = mrg.outdata['Raster']
+
+#     out = check_dataid(out)
+
+#     return out
+
+
+def merge(dat, piter=None, dxy=None):
     """
     Merge datasets found in a single PyGMI data object.
 
@@ -2049,6 +2104,10 @@ def merge(dat):
     out : PyGMI Data
         data object which stores datasets
     """
+
+    if piter is None:
+        piter = iter
+
     if dat[0].isrgb:
         return dat
 
@@ -2064,18 +2123,52 @@ def merge(dat):
         return dat
 
     print('Merging data...')
-    mrg = DataMerge()
-    mrg.indata['Raster'] = dat
+
     data = dat[0]
     dxy0 = min(data.xdim, data.ydim)
+    if dxy is None:
+        for data in dat:
+            dxy = min(dxy0, data.xdim, data.ydim)
+
+    orig_wkt = data.wkt
+    xmin0, xmax0, ymin0, ymax0 = data.extent
+
     for data in dat:
-        dxy = min(dxy0, data.xdim, data.ydim)
+        xmin, xmax, ymin, ymax = data.extent
+        xmin = min(xmin, xmin0)
+        xmax = max(xmax, xmax0)
+        ymin = min(ymin, ymin0)
+        ymax = max(ymax, ymax0)
 
-    mrg.dsb_dxy.setValue(dxy)
-    mrg.acceptall()
-    out = mrg.outdata['Raster']
+    cols = int((xmax - xmin)/dxy)
+    rows = int((ymax - ymin)/dxy)
+    gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
 
-    out = check_dataid(out)
+    if cols == 0 or rows == 0:
+        print('Your rows or cols are zero. Your input projection may be '
+              'wrong')
+        return None
+
+    dat2 = []
+    for data in piter(dat):
+        doffset = 0.0
+        if data.data.min() <= 0:
+            doffset = data.data.min()-1.
+            data.data = data.data - doffset
+        gtr0 = data.get_gtr()
+
+        drows, dcols = data.data.shape
+        src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
+        dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
+
+        gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt,
+                            gdal.GRA_Bilinear)
+
+        dat2.append(gdal_to_dat(dest, data.dataid))
+        dat2[-1].data = dat2[-1].data + doffset
+        data.data = data.data + doffset
+
+    out = check_dataid(dat2)
 
     return out
 

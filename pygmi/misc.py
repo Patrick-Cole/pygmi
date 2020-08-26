@@ -29,6 +29,7 @@ ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called.
 """
 
+import types
 import time
 import numpy as np
 from matplotlib import ticker
@@ -129,11 +130,14 @@ class ProgressBar(QtWidgets.QProgressBar):
         self.setValue(0)
         self.otime = 0
         self.setStyleSheet(PBAR_STYLE)
+        self.total = 100
 
     def iter(self, iterable):
         """Iterate Routine."""
-        total = len(iterable)
-        self.setMaximum(total)
+        if not isinstance(iterable, types.GeneratorType):
+            self.total = len(iterable)
+
+        self.setMaximum(self.total)
         self.setMinimum(0)
         self.setValue(0)
 
@@ -149,7 +153,7 @@ class ProgressBar(QtWidgets.QProgressBar):
             time2 = time.perf_counter()
             if time2-time1 > 1:
                 self.setValue(i)
-                tleft = (total-i)*(time2-self.otime)/i
+                tleft = (self.total-i)*(time2-self.otime)/i
                 if tleft > 60:
                     tleft = int(tleft // 60)
                     self.setFormat('%p% '+str(tleft)+'min left')
@@ -160,14 +164,104 @@ class ProgressBar(QtWidgets.QProgressBar):
                 time1 = time2
 
         self.setFormat('%p%')
-        self.setValue(total)
+        self.setValue(self.total)
 
     def to_max(self):
         """Set the progress to maximum."""
-        self.setMaximum(1)
+        self.setMaximum(self.total)
         self.setMinimum(0)
-        self.setValue(1)
+        self.setValue(self.total)
         QtWidgets.QApplication.processEvents()
+
+
+class ProgressBarText():
+    """
+    Progress bar.
+
+    Progress Bar routine which expands the QProgressBar class slightly so that
+    there is a time function as well as a convenient of calling it via an
+    iterable.
+
+    Attributes
+    ----------
+    otime : integer
+        This is the original time recorded when the progress bar starts.
+    """
+
+    def __init__(self):
+        self.otime = 0
+        self.total = 100
+        self.decimals = 1
+        self.length = 50
+        self.fill = '█'
+        self.prefix = 'Progress:'
+
+    def iter(self, iterable):
+        """Iterate Routine."""
+
+        if not isinstance(iterable, types.GeneratorType):
+            self.total = len(iterable)
+
+        self.otime = time.perf_counter()
+        time1 = self.otime
+        time2 = self.otime
+
+        i = 0
+        oldval = 0
+        gottototal = False
+        # print('\n')
+        for obj in iterable:
+            yield obj
+            i += 1
+
+            time2 = time.perf_counter()
+            if time2-time1 > 1 and int(i*100/self.total) > oldval:
+                oldval = int(i*100/self.total)
+
+                tleft = (self.total-i)*(time2-self.otime)/i
+                if tleft > 60:
+                    timestr = f'{tleft // 60:.0f} min left    '
+                else:
+                    timestr = f'{tleft:.0f} s left'
+
+                self.printprogressbar(i, suffix=timestr)
+                time1 = time2
+                if i == self.total:
+                    gottototal = True
+
+        if not gottototal:
+            self.printprogressbar(self.total)
+
+    def printprogressbar(self, iteration, suffix=''):
+        """
+        Call in a loop to create terminal progress bar. Code by Alexander
+        Veysov. (https://gist.github.com/snakers4)
+
+        Parameters:
+        -----------
+        iteration : int
+            current iteration
+        total : int
+            total iterations
+        prefix : str
+            prefix string
+        suffix : str
+            suffix string
+        decimals : int
+            pos num of decimals in percent complete
+        length : int
+            character length of bar
+        fill : str
+            bar fill character
+        """
+        perc = 100*(iteration/float(self.total))
+        percent = f'{perc:.{self.decimals}f}'
+        filledlength = int(self.length*iteration//self.total)
+        pbar = self.fill*filledlength + '-'*(self.length - filledlength)
+        print(f'\r{self.prefix} |{pbar}| {percent}% {suffix}', end='\r')
+        # Print New Line on Complete
+        if iteration == self.total:
+            print()
 
 
 def tick_formatter(x, pos):

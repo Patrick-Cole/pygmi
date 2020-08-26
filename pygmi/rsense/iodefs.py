@@ -1111,7 +1111,7 @@ def get_sentinel2(ifile, piter=None):
     dat = []
     for bfile, _ in subdata:
         dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
-
+        print('Importing', os.path.basename(bfile))
         if dataset is None:
             print('Problem with', ifile)
             continue
@@ -1119,7 +1119,7 @@ def get_sentinel2(ifile, piter=None):
         for i in piter(range(dataset.RasterCount)):
             rtmp = dataset.GetRasterBand(i+1)
             bname = rtmp.GetDescription()
-            print('Importing', bname)
+            # print('Importing', bname)
 
             dat.append(Data())
             dat[-1].data = rtmp.ReadAsArray()

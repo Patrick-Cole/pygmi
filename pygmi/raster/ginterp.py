@@ -2099,7 +2099,7 @@ def currentshader(data, cell, theta, phi, alpha):
     return R
 
 
-def histcomp(img, nbr_bins=256, perc=5.):
+def histcomp(img, nbr_bins=None, perc=5.):
     """
     Histogram Compaction
 
@@ -2118,6 +2118,11 @@ def histcomp(img, nbr_bins=256, perc=5.):
     img2 : numpy array
         compacted array
     """
+
+    if nbr_bins is None:
+        nbr_bins = max(img.shape)
+        nbr_bins = max(nbr_bins, 256)
+
 # get image histogram
     imask = np.ma.getmaskarray(img)
     tmp = img.compressed()
@@ -2136,13 +2141,13 @@ def histcomp(img, nbr_bins=256, perc=5.):
     svalue = bins[sindx]
     evalue = bins[eindx]
 
-    scnt = perc*(nbr_bins-1)
-    if scnt > sindx:
-        scnt = sindx
+    # scnt = perc*(nbr_bins-1)
+    # if scnt > sindx:
+    #     scnt = sindx
 
-    ecnt = perc*(nbr_bins-1)
-    if ecnt > ((nbr_bins-1)-eindx):
-        ecnt = (nbr_bins-1)-eindx
+    # ecnt = perc*(nbr_bins-1)
+    # if ecnt > ((nbr_bins-1)-eindx):
+    #     ecnt = (nbr_bins-1)-eindx
 
     img2 = np.empty_like(img, dtype=np.float32)
     np.copyto(img2, img)
