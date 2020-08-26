@@ -1463,30 +1463,68 @@ def fftprep(data):
     cdiff = nc//2
     rdiff = nr//2
 
-    # Section to pad data
+    # # Section to pad data
 
-    nr, nc = data.data.shape
+    # nr, nc = data.data.shape
 
-    z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))-999
+    # z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))-999
+    # x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
+    # z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(-999)
+
+    # z1[0] = 0
+    # z1[-1] = 0
+    # z1[:, 0] = 0
+    # z1[:, -1] = 0
+
+    # x = x1.flatten()
+    # y = y1.flatten()
+    # z = z1.flatten()
+
+    # x = x[z != -999]
+    # y = y[z != -999]
+    # z = z[z != -999]
+
+    # points = np.transpose([x, y])
+
+    # zfin = si.griddata(points, z, (x1, y1), method='nearest')
+
+    z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))+np.nan
     x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
-    z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(-999)
+    z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
 
-    z1[0] = 0
-    z1[-1] = 0
-    z1[:, 0] = 0
-    z1[:, -1] = 0
+    for j in range(2):
+        z1[0] = 0
+        z1[-1] = 0
+        z1[:, 0] = 0
+        z1[:, -1] = 0
 
-    x = x1.flatten()
-    y = y1.flatten()
-    z = z1.flatten()
+        vert = np.zeros_like(z1)
+        hori = np.zeros_like(z1)
 
-    x = x[z != -999]
-    y = y[z != -999]
-    z = z[z != -999]
+        for i in range(z1.shape[0]):
+            mask = ~np.isnan(z1[i])
+            y = y1[i][mask]
+            z = z1[i][mask]
+            hori[i] = np.interp(y1[i], y, z)
 
-    points = np.transpose([x, y])
+        for i in range(z1.shape[1]):
+            mask = ~np.isnan(z1[:, i])
+            x = x1[:, i][mask]
+            z = z1[:, i][mask]
 
-    zfin = si.griddata(points, z, (x1, y1), method='nearest')
+            vert[:, i] = np.interp(x1[:, i], x, z)
+
+        hori[hori == 0] = np.nan
+        vert[vert == 0] = np.nan
+
+        hv = hori.copy()
+        hv[np.isnan(hori)] = vert[np.isnan(hori)]
+        hv[~np.isnan(hv)] = np.nanmean([hori[~np.isnan(hv)],
+                                        vert[~np.isnan(hv)]], 0)
+
+        z1[np.isnan(z1)] = hv[np.isnan(z1)]
+
+    zfin = z1
 
     nr, nc = zfin.shape
     zfin *= tukey(nc)
@@ -1576,7 +1614,11 @@ def fftcont(data, h):
     xdim = data.xdim
     ydim = data.ydim
 
+    print('Preparing for FFT...')
     ndat, rdiff, cdiff, datamedian = fftprep(data)
+
+    print('Continuing data...')
+
     fftmod = np.fft.fft2(ndat)
 
     ny, nx = fftmod.shape
@@ -2321,6 +2363,72 @@ def testdown():
     # plt.plot(zdown.data[50], 'b')
     plt.plot(zdownn.data[50], 'k')
     plt.show()
+
+
+def testgrid():
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.misc import PTime
+    from pygmi.vector.dataprep import quickgrid
+    import matplotlib.pyplot as plt
+
+    ttt = PTime()
+
+    ifile = r'C:\Work\Workdata\upward\EB_MTEF_Mag_IGRFrem.ers'
+    dat = get_raster(ifile)[0]
+
+    # z = dat.data
+    nr, nc = dat.data.shape
+
+    datamedian = np.ma.median(dat.data)
+    ndat = dat.data - datamedian
+
+    cdiff = nc//2
+    rdiff = nr//2
+
+    # Section to pad data
+
+    z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))+np.nan
+    x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
+    z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(np.nan)
+
+    ttt.since_last_call('Preparation')
+
+    for j in range(2):
+        z1[0] = 0
+        z1[-1] = 0
+        z1[:, 0] = 0
+        z1[:, -1] = 0
+
+        vert = np.zeros_like(z1)
+        hori = np.zeros_like(z1)
+
+        for i in range(z1.shape[0]):
+            mask = ~np.isnan(z1[i])
+            y = y1[i][mask]
+            z = z1[i][mask]
+            hori[i] = np.interp(y1[i], y, z)
+
+        for i in range(z1.shape[1]):
+            mask = ~np.isnan(z1[:, i])
+            x = x1[:, i][mask]
+            z = z1[:, i][mask]
+
+            vert[:, i] = np.interp(x1[:, i], x, z)
+
+        hori[hori == 0] = np.nan
+        vert[vert == 0] = np.nan
+
+        hv = hori.copy()
+        hv[np.isnan(hori)] = vert[np.isnan(hori)]
+        hv[~np.isnan(hv)] = np.nanmean([hori[~np.isnan(hv)],
+                                        vert[~np.isnan(hv)]], 0)
+
+        z1[np.isnan(z1)] = hv[np.isnan(z1)]
+
+    plt.imshow(z1)
+    plt.show()
+
+    ttt.since_last_call('Griddata, nearest')
 
 
 if __name__ == "__main__":
