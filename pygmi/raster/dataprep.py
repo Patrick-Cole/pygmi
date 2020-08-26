@@ -1486,7 +1486,7 @@ def fftprep(data):
 
     points = np.transpose([x, y])
 
-    zfin = si.griddata(points, z, (x1, y1), method='linear')
+    zfin = si.griddata(points, z, (x1, y1), method='nearest')
 
     nr, nc = zfin.shape
     zfin *= tukey(nc)
@@ -2318,8 +2318,8 @@ def testdown():
 
 #    plt.plot(z[50], 'r-.')
     plt.plot(downz0.data[50], 'r.')
-    plt.plot(zdown[50], 'b')
-    plt.plot(zdownn[50], 'k')
+    # plt.plot(zdown.data[50], 'b')
+    plt.plot(zdownn.data[50], 'k')
     plt.show()
 
 
