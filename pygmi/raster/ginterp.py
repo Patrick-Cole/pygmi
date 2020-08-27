@@ -2129,6 +2129,8 @@ def histcomp(img, nbr_bins=None, perc=5.):
     imhist, bins = np.histogram(tmp, nbr_bins)
 
     cdf = imhist.cumsum()  # cumulative distribution function
+    if cdf[-1] == 0:
+        return img
     cdf = cdf / float(cdf[-1])  # normalize
 
     perc = perc/100.

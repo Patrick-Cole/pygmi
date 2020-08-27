@@ -35,7 +35,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.figure import Figure
 from matplotlib import cm
-from matplotlib import rcParams
 from osgeo import gdal
 from osgeo import osr
 import pandas as pd
@@ -47,8 +46,6 @@ from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import frm
-
-rcParams['savefig.dpi'] = 600.
 
 
 class ProfileDisplay(QtWidgets.QWidget):

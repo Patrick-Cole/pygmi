@@ -26,6 +26,7 @@
 
 import datetime
 from pathlib import Path
+import xml.etree.ElementTree as ElementTree
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
@@ -33,6 +34,7 @@ from osgeo import gdal, osr, ogr
 from shapely.geometry.polygon import Polygon
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
+import matplotlib.animation as manimation
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as \
     FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
@@ -40,6 +42,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
 # import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
+from pygmi.raster.ginterp import histcomp, norm255
 
 
 class CreateSceneList(QtWidgets.QDialog):
@@ -77,6 +80,7 @@ class CreateSceneList(QtWidgets.QDialog):
         self.shapefile = QtWidgets.QLineEdit('')
         self.scenefile = QtWidgets.QLineEdit('')
         self.isrecursive = QtWidgets.QCheckBox('Recursive file search')
+        self.useall = QtWidgets.QCheckBox('Use all scenes')
 
         self.setupui()
 
@@ -92,8 +96,8 @@ class CreateSceneList(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         # helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
-        pb_shape = QtWidgets.QPushButton('Load Shapefile')
-        pb_scene = QtWidgets.QPushButton('Set Scene Directory')
+        pb_shape = QtWidgets.QPushButton('Load shapefile or kml file')
+        pb_scene = QtWidgets.QPushButton('Set scene directory')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -107,7 +111,8 @@ class CreateSceneList(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.scenefile, 1, 0, 1, 1)
         gridlayout_main.addWidget(pb_scene, 1, 1, 1, 1)
 
-        gridlayout_main.addWidget(self.isrecursive, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.useall, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.isrecursive, 3, 0, 1, 2)
 
 #        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
@@ -140,7 +145,12 @@ class CreateSceneList(QtWidgets.QDialog):
         if idir == '' or sfile == '':
             return
 
-        ddpoints = get_shape_coords(sfile)
+        if not self.useall.isChecked():
+            if sfile[-3:] == 'shp':
+                ddpoints = get_shape_coords(sfile)
+            else:
+                ddpoints = get_kml_coords(sfile)
+            ddpoints2 = Polygon(ddpoints)
 
         if self.isrecursive.isChecked():
             subfiles = Path(idir).rglob('*.tif')
@@ -154,23 +164,23 @@ class CreateSceneList(QtWidgets.QDialog):
         for ifile in self.piter(subfiles):
             dataset = gdal.Open(str(ifile), gdal.GA_ReadOnly)
             metadata = dataset.GetMetadata()
-            gtr = dataset.GetGeoTransform()
-            cols = dataset.RasterXSize
-            rows = dataset.RasterYSize
-            dxlim = (gtr[0], gtr[0]+gtr[1]*cols)
-            dylim = (gtr[3]+gtr[5]*rows, gtr[3])
 
-            coords = [[dxlim[0], dylim[0]],
-                      [dxlim[0], dylim[1]],
-                      [dxlim[1], dylim[1]],
-                      [dxlim[1], dylim[0]],
-                      [dxlim[0], dylim[0]]]
+            if not self.useall.isChecked():
+                gtr = dataset.GetGeoTransform()
+                cols = dataset.RasterXSize
+                rows = dataset.RasterYSize
+                dxlim = (gtr[0], gtr[0]+gtr[1]*cols)
+                dylim = (gtr[3]+gtr[5]*rows, gtr[3])
 
-            coords2 = Polygon(coords)
-            ddpoints2 = Polygon(ddpoints)
+                coords = [[dxlim[0], dylim[0]],
+                          [dxlim[0], dylim[1]],
+                          [dxlim[1], dylim[1]],
+                          [dxlim[1], dylim[0]],
+                          [dxlim[0], dylim[0]]]
 
-            if not coords2.contains(ddpoints2):
-                continue
+                coords2 = Polygon(coords)
+                if not coords2.contains(ddpoints2):
+                    continue
 
             if 'TIFFTAG_DATETIME' not in metadata:
                 dt = datetime.datetime(1900, 1, 1)
@@ -185,6 +195,13 @@ class CreateSceneList(QtWidgets.QDialog):
         if nodates is True:
             print('Some of your scenes do not have dates. '
                   'Correct this in the output spreadsheet')
+
+        if not flist:
+            print('No scenes could be found. Please make sure that your '
+                  'shapefile or kml file is in the area of your scenes and in '
+                  'the same projection.')
+            return False
+
         print('Updating spreadsheet...')
 
         df = pd.DataFrame()
@@ -265,7 +282,7 @@ class CreateSceneList(QtWidgets.QDialog):
         None.
 
         """
-        ext = ('Shapefile (*.shp)')
+        ext = ('shapefile or kml file (*.shp *.kml)')
 
         if filename == '':
             filename, _ = QtWidgets.QFileDialog.getOpenFileName(
@@ -321,7 +338,6 @@ class LoadSceneList():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -401,6 +417,8 @@ class MyMplCanvas(FigureCanvas):
         self.rcid = None
         self.manip = 'RGB'
         self.cbar = None
+        self.capture_active = False
+        self.writer = None
 
         super().__init__(self.fig)
 
@@ -412,6 +430,23 @@ class MyMplCanvas(FigureCanvas):
         FigureCanvas.updateGeometry(self)
 
         self.fig.canvas.mpl_connect('button_release_event', self.onClick)
+
+    def capture(self):
+        """ capture """
+        self.capture_active = not self.capture_active
+
+        if self.capture_active:
+            ext = ('GIF (*.gif)')
+            wfile, _ = QtWidgets.QFileDialog.getSaveFileName(
+                self.parent, 'Save File', '.', ext)
+            if wfile == '':
+                self.capture_active = not self.capture_active
+                return
+
+            self.writer = manimation.PillowWriter(fps=4)
+            self.writer.setup(self.fig, wfile)  # , 100)
+        else:
+            self.writer.finish()
 
     def compute_initial_figure(self, dat, dates, points):
         """
@@ -431,7 +466,6 @@ class MyMplCanvas(FigureCanvas):
         None.
 
         """
-        self.points = points
         extent = []
 
         rtmp1 = dat[self.bands[2]].data
@@ -452,7 +486,7 @@ class MyMplCanvas(FigureCanvas):
         extent = dat[self.bands[0]].extent
 
         self.im1 = self.ax1.imshow(dtmp, extent=extent)
-        self.ax1.plot(self.points[:, 0], self.points[:, 1])
+        self.ax1.plot(points[:, 0], points[:, 1])
         self.cbar = None
 
         self.fig.suptitle(dates)
@@ -500,26 +534,44 @@ class MyMplCanvas(FigureCanvas):
                 self.cbar.remove()
                 self.cbar = None
 
-            rtmp1 = dat[self.bands[2]].data
-            rtmp2 = dat[self.bands[1]].data
-            rtmp3 = dat[self.bands[0]].data
+            # rtmp1 = dat[self.bands[2]].data
+            # rtmp2 = dat[self.bands[1]].data
+            # rtmp3 = dat[self.bands[0]].data
 
-            rtmp1 = (rtmp1-rtmp1.min())
-            rtmp2 = (rtmp2-rtmp2.min())
-            rtmp3 = (rtmp3-rtmp3.min())
+            mask = (dat[self.bands[2]].data == 0.)
+            red = np.ma.array(dat[self.bands[2]].data, mask=mask)
+            green = np.ma.array(dat[self.bands[1]].data, mask=mask)
+            blue = np.ma.array(dat[self.bands[0]].data, mask=mask)
 
-            if rtmp1.ptp() != 0.:
-                rtmp1 = rtmp1/rtmp1.ptp()
-            if rtmp2.ptp() != 0.:
-                rtmp2 = rtmp2/rtmp2.ptp()
-            if rtmp3.ptp() != 0.:
-                rtmp3 = rtmp3/rtmp3.ptp()
+            red = histcomp(red, nbr_bins=10000, perc=2.)
+            green = histcomp(green, nbr_bins=10000, perc=2.)
+            blue = histcomp(blue, nbr_bins=10000, perc=2.)
 
-            alpha = np.logical_not(rtmp1 == 0.)
+            red = norm255(red)
+            green = norm255(green)
+            blue = norm255(blue)
 
-            dtmp = np.array([rtmp1, rtmp2, rtmp3, alpha])
+            red[mask] = 0
+            green[mask] = 0
+            blue[mask] = 0
+
+            # rtmp1 = (rtmp1-rtmp1.min())
+            # rtmp2 = (rtmp2-rtmp2.min())
+            # rtmp3 = (rtmp3-rtmp3.min())
+
+            # if rtmp1.ptp() != 0.:
+            #     rtmp1 = rtmp1/rtmp1.ptp()
+            # if rtmp2.ptp() != 0.:
+            #     rtmp2 = rtmp2/rtmp2.ptp()
+            # if rtmp3.ptp() != 0.:
+            #     rtmp3 = rtmp3/rtmp3.ptp()
+
+            alpha = ~mask  # np.logical_not(red == 0.)
+            alpha = alpha*255
+
+            dtmp = np.array([red, green, blue, alpha])
             dtmp = np.moveaxis(dtmp, 0, 2)
-            dtmp = dtmp*255
+            # dtmp = dtmp*255
             dtmp = dtmp.astype(np.uint8)
             self.im1.set_clim(0, 255)
 
@@ -575,14 +627,16 @@ class SceneViewer(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.ifile = ''
-        self.piter = self.parent.pbar.iter
+
         self.df = None
+        if parent is None:
+            self.piter = iter
+        else:
+            self.piter = self.parent.pbar.iter
 
-        self.shapefile = QtWidgets.QLineEdit('')
-        self.scenefile = QtWidgets.QLineEdit('')
-        self.isrecursive = QtWidgets.QCheckBox('Recursive file search')
+        self.pbar = QtWidgets.QProgressBar()
 
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        # self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("View Change Data")
 
         self.file_menu = QtWidgets.QMenu('&File', self)
@@ -600,12 +654,13 @@ class SceneViewer(QtWidgets.QDialog):
 
         mpl_toolbar = NavigationToolbar(self.canvas, self)
         self.slider = QtWidgets.QScrollBar(QtCore.Qt.Horizontal)
+        self.button1 = QtWidgets.QPushButton('Start Capture')
         self.button2 = QtWidgets.QPushButton('Update Scene List File')
         self.button3 = QtWidgets.QPushButton('Next Scene')
-        self.pbar = QtWidgets.QProgressBar()
         self.cb_use = QtWidgets.QCheckBox('Use Scene')
         self.cb_display = QtWidgets.QCheckBox('Only Display Scenes Flagged '
                                               'for Use')
+        self.cb_display.setChecked(True)
         self.manip = QtWidgets.QComboBox()
 
         actions = ['RGB', 'NDVI', 'NDWI']
@@ -615,6 +670,7 @@ class SceneViewer(QtWidgets.QDialog):
         hlayout2.addWidget(self.manip)
         hlayout.addWidget(self.button3)
         hlayout.addWidget(self.button2)
+        hlayout.addWidget(self.button1)
         vlayout.addWidget(self.canvas)
         vlayout.addWidget(mpl_toolbar)
         vlayout.addWidget(self.slider)
@@ -631,6 +687,7 @@ class SceneViewer(QtWidgets.QDialog):
         self.cb_use.stateChanged.connect(self.flaguse)
         self.button2.clicked.connect(self.updateanim)
         self.button3.clicked.connect(self.nextscene)
+        self.button1.clicked.connect(self.capture)
         self.manip.currentIndexChanged.connect(self.manip_change)
 
     def settings(self, nodialog=False):
@@ -654,7 +711,7 @@ class SceneViewer(QtWidgets.QDialog):
         dat = self.get_tiff(self.df.Filename[self.curimage], firstrun=True)
         points = get_shape_coords(sfile, False)
         self.slider.setMaximum(len(self.df)-1)
-        self.cb_use.setChecked(self.df.Use[self.curimage])
+        self.cb_use.setChecked(bool(self.df.Use[self.curimage]))
 
         self.canvas.bands = list(dat.keys())
 
@@ -816,9 +873,24 @@ class SceneViewer(QtWidgets.QDialog):
 
         dates = self.df.Datetime[indx]
         dat = self.get_tiff(self.df.Filename[self.curimage])
-        self.cb_use.setChecked(self.df.Use[self.curimage])
+        self.cb_use.setChecked(bool(self.df.Use[self.curimage]))
 
         self.canvas.update_plot(dat, dates)
+
+    def capture(self):
+        """ Capture """
+
+        self.slider.valueChanged.disconnect()
+
+        self.canvas.capture()
+        for indx in self.df.index:
+            self.slider.setValue(indx)
+            self.newdata(indx, capture=True)
+            self.canvas.writer.grab_frame()
+
+        self.canvas.capture()
+        self.slider.valueChanged.connect(self.newdata)
+        self.slider.setValue(self.curimage)
 
     def fileQuit(self):
         """
@@ -1028,10 +1100,43 @@ def get_shape_coords(sfile, todegrees=False):
     return ddpoints
 
 
+def get_kml_coords(kml):
+    """
+    Extract points from kml.
+
+    Parameters
+    ----------
+    kml : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    coordinates : TYPE
+        DESCRIPTION.
+
+    """
+    ns = "{http://www.opengis.net/kml/2.2}"
+    tree = ElementTree.parse(kml)
+
+    coordinates = []
+    for placemark in tree.findall(".//" + ns + "Placemark"):
+        polygon = placemark.findall(".//" + ns + "Polygon")
+
+        for i in polygon:
+            coordstext = i.findtext('.//'+ns+'coordinates')
+            coordstext = coordstext.strip()
+
+            for point_text in coordstext.split():
+                floats = point_text.split(",")
+                coordinates.append([float(floats[0]), float(floats[1])])
+
+    coordinates = np.array(coordinates)
+    return coordinates
+
+
 def testfn():
     """Main testing routine."""
     import sys
-    import matplotlib.pyplot as plt
 #    sfile = r'C:\Work\Workdata\change\PlanetaryPolygon.shp'
     sfile = r'C:\Work\Workdata\change\fl35.shp'
     pdir = r'C:\Work\Workdata\change\Planet'
@@ -1047,5 +1152,53 @@ def testfn():
     plt.show()
     breakpoint()
 
+
+def testanim():
+    """Test for animation."""
+    # import sys
+    from matplotlib import rcParams
+    # rcParams['axes.formatter.limits'] = [-12, 12]
+    # rcParams['axes.formatter.useoffset'] = False
+    wfile = r'C:\Work\Workdata\change\tmp.gif'
+
+    rcParams['figure.dpi'] = 300
+    # rcParams['savefig.dpi'] = 300
+    # breakpoint()
+
+    # APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    fig = plt.figure()
+
+    writer = manimation.PillowWriter(fps=4)
+    writer.setup(fig, wfile) #, 100)
+
+    tmp = np.random.rand(100, 100)
+    im = plt.imshow(tmp)
+    for i in range(20):
+        red = np.random.rand(100, 100)
+        # green = np.random.rand(100, 100)
+        # blue = np.random.rand(100, 100)
+        # alpha = np.logical_not(red == 0.)
+        # dtmp = np.array([red, green, blue, alpha])
+        # dtmp = np.moveaxis(dtmp, 0, 2)
+        # dtmp = dtmp*255
+        # dtmp = dtmp.astype(np.uint8)
+        # im.set_clim(0, 255)
+
+        im.set_data(red)
+        fig.suptitle(str(i))
+        writer.grab_frame()
+    plt.show()
+    writer.finish()
+
+    # CSL = LoadSceneList(None)
+    # CSL.ifile = r'C:\Work\Workdata\change\Planet\paddock.xlsx'
+    # CSL.settings(True)
+
+
+    # SV = SceneViewer()
+    # SV.indata = CSL.outdata
+    # SV.settings()
+
+
 if __name__ == "__main__":
-    testfn()
+    testanim()
