@@ -72,9 +72,12 @@ class MenuWidget():
         self.action_import_sentinel2.triggered.connect(self.import_sentinel2)
 
         self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P')
-
         self.menu3.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
+
+        self.action_import_modis16 = QtWidgets.QAction('Import MODIS 16')
+        self.menu3.addAction(self.action_import_modis16)
+        self.action_import_modis16.triggered.connect(self.import_modis16)
 
         self.menu3.addSeparator()
 
@@ -134,6 +137,11 @@ class MenuWidget():
         """Import Sentinel 2 data."""
         fnc = iodefs.ImportData(self.parent, 'Sentinel-2 (*.xml);;')
         self.parent.item_insert('Io', 'Import Sentinel-2', fnc)
+
+    def import_modis16(self):
+        """Import MODIS 16 data."""
+        fnc = iodefs.ImportData(self.parent, 'MODIS 16 (*.hdf);;')
+        self.parent.item_insert('Io', 'Import MODIS 16', fnc)
 
     def import_aster(self):
         """Import ASTER HDF data."""

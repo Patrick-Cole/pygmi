@@ -1657,7 +1657,7 @@ class MyMplCanvas(FigureCanvas):
             xmin = self.lmod1.xrange[0]
             ymin = self.lmod1.yrange[0]
 
-        if self.figure.canvas.toolbar._active is None:
+        if self.figure.canvas.toolbar.mode == '':
             vlim = curaxes.viewLim
             tmp0 = curaxes.transData.transform((vlim.x0, vlim.y0))
             tmp1 = curaxes.transData.transform((vlim.x1, vlim.y1))
@@ -2422,7 +2422,7 @@ class RangedCopy(QtWidgets.QDialog):
 class MyToolbar(NavigationToolbar2QT):
     """Custom Matplotlib toolbar."""
 
-    toolitems = NavigationToolbar2QT.toolitems
+    toolitems = copy.copy(NavigationToolbar2QT.toolitems)
     toolitems += ((None, None, None, None),
                   ('Field\nDisplay\nLimits',
                    'Axis Scale', 'Axis Scale', 'axis_scale'),
@@ -2436,7 +2436,7 @@ class MyToolbar(NavigationToolbar2QT):
 
     def __init__(self, parent=None):
         super().__init__(parent.mmc, parent)
-        self.parent = parent
+        self.pparent = parent
 
     def axis_scale(self):
         """
@@ -2447,7 +2447,7 @@ class MyToolbar(NavigationToolbar2QT):
         None.
 
         """
-        self.parent.plot_scale()
+        self.pparent.plot_scale()
 
     def b_logs(self):
         """
@@ -2458,7 +2458,7 @@ class MyToolbar(NavigationToolbar2QT):
         None.
 
         """
-        self.parent.borehole_import()
+        self.pparent.borehole_import()
 
     def mag_profile(self):
         """
@@ -2469,8 +2469,8 @@ class MyToolbar(NavigationToolbar2QT):
         None.
 
         """
-        self.parent.viewmagnetics = True
-        self.parent.update_plot()
+        self.pparent.viewmagnetics = True
+        self.pparent.update_plot()
 
     def grv_profile(self):
         """
@@ -2481,8 +2481,8 @@ class MyToolbar(NavigationToolbar2QT):
         None.
 
         """
-        self.parent.viewmagnetics = False
-        self.parent.update_plot()
+        self.pparent.viewmagnetics = False
+        self.pparent.update_plot()
 
 
 class GaugeWidget(QtWidgets.QDial):

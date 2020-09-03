@@ -80,6 +80,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
+from matplotlib.pyplot import colormaps
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
@@ -1240,8 +1241,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                    QtWidgets.QSizePolicy.Fixed)
 #        tmp = sorted(cm.datad.keys())
-        tmp = sorted(m for m in cm.cmap_d.keys() if not
-                     m.startswith(('spectral', 'Vega', 'jet')))
+        tmp = sorted(m for m in colormaps() if not
+                      m.startswith(('spectral', 'Vega', 'jet')))
 
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)

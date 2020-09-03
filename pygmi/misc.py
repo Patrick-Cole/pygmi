@@ -50,6 +50,39 @@ QProgressBar::chunk {
 """
 
 
+class QLabelVStack:
+    """QLabelVStack."""
+
+    def __init__(self, parent=None):
+        self.layout = QtWidgets.QGridLayout(parent)
+        self.layout.setSizeConstraint(QtWidgets.QLayout.SetFixedSize)
+        self.indx = 0
+
+    def addWidget(self, widget1, widget2):
+        """
+        Adds a two widgets on a row, widget1 can also be text.
+
+        Parameters
+        ----------
+        widget1 : str or QWidget
+            First Widget or Label on the row.
+        widget2 : QWidget
+            Last Widget.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if isinstance(widget1, str):
+            widget1 = QtWidgets.QLabel(widget1)
+
+        self.layout.addWidget(widget1, self.indx, 0)
+        self.layout.addWidget(widget2, self.indx, 1)
+        self.indx += 1
+
+
 class PTime():
     """
     PTime class.
@@ -156,10 +189,10 @@ class ProgressBar(QtWidgets.QProgressBar):
                 tleft = (self.total-i)*(time2-self.otime)/i
                 if tleft > 60:
                     tleft = int(tleft // 60)
-                    self.setFormat('%p% '+str(tleft)+'min left')
+                    self.setFormat('%p% '+str(tleft)+'min left ')
                 else:
                     tleft = int(tleft)
-                    self.setFormat('%p% '+str(tleft)+'s left')
+                    self.setFormat('%p% '+str(tleft)+'s left   ')
                 QtWidgets.QApplication.processEvents()
                 time1 = time2
 

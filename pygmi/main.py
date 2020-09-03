@@ -610,23 +610,24 @@ class MainWidget(QtWidgets.QMainWindow):
                 onerror=lambda x: None):
             menus.append(modname)
 
-        menus.pop(menus.index('pygmi.em.menu'))
+        # menus.pop(menus.index('pygmi.em.menu'))
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
         menus = [raster_menu, vector_menu]+menus
         menus = [i for i in menus if 'menu' in i[-5:]]
 
-        # menus = [# 'pygmi.raster.menu',
-        #          # 'pygmi.vector.menu',
-        #          # 'pygmi.bholes.menu',
-        #          # 'pygmi.clust.menu',
-        #          # 'pygmi.eseis.menu',
-        #          # 'pygmi.grav.menu',
-        #          # 'pygmi.mag.menu',
-        #          # 'pygmi.mt.menu',
+        # menus = ['pygmi.raster.menu',
+        #          'pygmi.em.menu',
+        #          'pygmi.vector.menu',
+        #          'pygmi.bholes.menu',
+        #          'pygmi.clust.menu',
+        #          'pygmi.eseis.menu',
+        #          'pygmi.grav.menu',
+        #          'pygmi.mag.menu',
+        #          'pygmi.mt.menu',
         #          'pygmi.pfmod.menu',
         #          'pygmi.rsense.menu',
-        #          # 'pygmi.seis.menu',
+        #          'pygmi.seis.menu',
         #          ]
 
         start = Startup(len(menus)+1)
