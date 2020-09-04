@@ -851,154 +851,154 @@ def get_data(ifile, piter=None):
         dat = get_landsat(ifile, piter)
     elif '.xml' in bfile and '.SAFE' in ifile:
         dat = get_sentinel2(ifile, piter)
-    elif 'MOD16' in bfile and 'hdf' in bfile.lower():
-        dat = get_modis16(ifile, piter)
+    elif 'MOD' in bfile and 'hdf' in bfile.lower() and '.006.' in bfile:
+        dat = get_modisv6(ifile, piter)
     else:
         dat = None
 
     return dat
 
 
-# def get_modis(ifile):
-#     """
-#     Gets MODIS data
-
-#     Parameters
-#     ----------
-#     ifile : str
-#         filename to import
-
-#     Returns
-#     -------
-#     dat : PyGMI raster Data
-#         dataset imported
-#     """
-#     dat = []
-#     ifile = ifile[:]
-
-#     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-#     subdata = dataset.GetSubDatasets()
-
-#     latentry = [i for i in subdata if 'Latitude' in i[1]]
-#     subdata.pop(subdata.index(latentry[0]))
-#     dataset = None
-
-#     dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
-#     rtmp = dataset.GetRasterBand(1)
-#     lats = rtmp.ReadAsArray()
-#     latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
-
-#     lonentry = [i for i in subdata if 'Longitude' in i[1]]
-#     subdata.pop(subdata.index(lonentry[0]))
-
-#     dataset = None
-#     dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
-#     rtmp = dataset.GetRasterBand(1)
-#     lons = rtmp.ReadAsArray()
-#     lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
-
-#     lonsdim = latsdim
-#     tlx = lons.min()-abs(lonsdim/2)
-#     tly = lats.max()+abs(latsdim/2)
-#     cols = int((lons.max()-lons.min())/lonsdim)+1
-#     rows = int((lats.max()-lats.min())/latsdim)+1
-
-#     newx2, newy2 = np.mgrid[0:rows, 0:cols]
-#     newx2 = newx2*lonsdim + tlx
-#     newy2 = tlx - newy2*latsdim
-
-#     tmp = []
-#     for i in subdata:
-#         if 'HDF4_EOS:EOS_SWATH' in i[0]:
-#             tmp.append(i)
-#     subdata = tmp
-
-#     i = -1
-#     for ifile2, bandid2 in subdata:
-#         dataset = None
-#         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
-
-#         rtmp2 = dataset.ReadAsArray()
-
-#         if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
-#             rtmp2 = np.transpose(rtmp2, (2, 0, 1))
-
-#         nbands = 1
-#         if rtmp2.ndim == 3:
-#             nbands = rtmp2.shape[0]
-
-#         for i2 in range(nbands):
-#             rtmp = dataset.GetRasterBand(i2+1)
-#             bandid = rtmp.GetDescription()
-#             nval = rtmp.GetNoDataValue()
-#             i += 1
-
-#             dat.append(Data())
-#             if rtmp2.ndim == 3:
-#                 dat[i].data = rtmp2[i2]
-#             else:
-#                 dat[i].data = rtmp2
-
-#             newx = lons[dat[i].data != nval]
-#             newy = lats[dat[i].data != nval]
-#             newz = dat[i].data[dat[i].data != nval]
-
-#             if newx.size == 0:
-#                 dat[i].data = np.zeros((rows, cols)) + nval
-#             else:
-#                 tmp = quickgrid(newx, newy, newz, latsdim)
-#                 mask = np.ma.getmaskarray(tmp)
-#                 gdat = tmp.data
-#                 dat[i].data = np.ma.masked_invalid(gdat[::-1])
-#                 dat[i].data.mask = mask[::-1]
-
-#             if dat[i].data.dtype.kind == 'i':
-#                 if nval is None:
-#                     nval = 999999
-#                 nval = int(nval)
-#             elif dat[i].data.dtype.kind == 'u':
-#                 if nval is None:
-#                     nval = 0
-#                 nval = int(nval)
-#             else:
-#                 if nval is None:
-#                     nval = 1e+20
-#                 nval = float(nval)
-
-#             dat[i].data = np.ma.masked_invalid(dat[i].data)
-#             dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
-#                                 (dat[i].data == nval))
-#             if dat[i].data.mask.size == 1:
-#                 dat[i].mask = np.ma.getmaskarray(dat[i].data)
-
-#             dat[i].dataid = bandid2+' '+bandid
-#             dat[i].nullvalue = nval
-#             dat[i].xdim = abs(lonsdim)
-#             dat[i].ydim = abs(latsdim)
-
-#             rows, cols = dat[i].data.shape
-#             xmin = tlx
-#             ymax = tly
-#             ymin = ymax - rows*dat[i].ydim
-#             xmax = xmin + cols*dat[i].xdim
-
-#             dat[i].extent = [xmin, xmax, ymin, ymax]
-
-#             srs = osr.SpatialReference()
-#             srs.ImportFromWkt(dataset.GetProjection())
-#             srs.AutoIdentifyEPSG()
-#             srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-#             dat[i].wkt = srs.ExportToWkt()
-
-#     dataset = None
-#     return dat
-
-
-def get_modis16(ifile, piter=None):
+def get_modis(ifile):
     """
     Gets MODIS data
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+    dat = []
+    ifile = ifile[:]
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    subdata = dataset.GetSubDatasets()
+
+    latentry = [i for i in subdata if 'Latitude' in i[1]]
+    subdata.pop(subdata.index(latentry[0]))
+    dataset = None
+
+    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lats = rtmp.ReadAsArray()
+    latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
+
+    lonentry = [i for i in subdata if 'Longitude' in i[1]]
+    subdata.pop(subdata.index(lonentry[0]))
+
+    dataset = None
+    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
+    rtmp = dataset.GetRasterBand(1)
+    lons = rtmp.ReadAsArray()
+    lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
+
+    lonsdim = latsdim
+    tlx = lons.min()-abs(lonsdim/2)
+    tly = lats.max()+abs(latsdim/2)
+    cols = int((lons.max()-lons.min())/lonsdim)+1
+    rows = int((lats.max()-lats.min())/latsdim)+1
+
+    newx2, newy2 = np.mgrid[0:rows, 0:cols]
+    newx2 = newx2*lonsdim + tlx
+    newy2 = tlx - newy2*latsdim
+
+    tmp = []
+    for i in subdata:
+        if 'HDF4_EOS:EOS_SWATH' in i[0]:
+            tmp.append(i)
+    subdata = tmp
+
+    i = -1
+    for ifile2, bandid2 in subdata:
+        dataset = None
+        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
+
+        rtmp2 = dataset.ReadAsArray()
+
+        if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
+            rtmp2 = np.transpose(rtmp2, (2, 0, 1))
+
+        nbands = 1
+        if rtmp2.ndim == 3:
+            nbands = rtmp2.shape[0]
+
+        for i2 in range(nbands):
+            rtmp = dataset.GetRasterBand(i2+1)
+            bandid = rtmp.GetDescription()
+            nval = rtmp.GetNoDataValue()
+            i += 1
+
+            dat.append(Data())
+            if rtmp2.ndim == 3:
+                dat[i].data = rtmp2[i2]
+            else:
+                dat[i].data = rtmp2
+
+            newx = lons[dat[i].data != nval]
+            newy = lats[dat[i].data != nval]
+            newz = dat[i].data[dat[i].data != nval]
+
+            if newx.size == 0:
+                dat[i].data = np.zeros((rows, cols)) + nval
+            else:
+                tmp = quickgrid(newx, newy, newz, latsdim)
+                mask = np.ma.getmaskarray(tmp)
+                gdat = tmp.data
+                dat[i].data = np.ma.masked_invalid(gdat[::-1])
+                dat[i].data.mask = mask[::-1]
+
+            if dat[i].data.dtype.kind == 'i':
+                if nval is None:
+                    nval = 999999
+                nval = int(nval)
+            elif dat[i].data.dtype.kind == 'u':
+                if nval is None:
+                    nval = 0
+                nval = int(nval)
+            else:
+                if nval is None:
+                    nval = 1e+20
+                nval = float(nval)
+
+            dat[i].data = np.ma.masked_invalid(dat[i].data)
+            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
+                                (dat[i].data == nval))
+            if dat[i].data.mask.size == 1:
+                dat[i].mask = np.ma.getmaskarray(dat[i].data)
+
+            dat[i].dataid = bandid2+' '+bandid
+            dat[i].nullvalue = nval
+            dat[i].xdim = abs(lonsdim)
+            dat[i].ydim = abs(latsdim)
+
+            rows, cols = dat[i].data.shape
+            xmin = tlx
+            ymax = tly
+            ymin = ymax - rows*dat[i].ydim
+            xmax = xmin + cols*dat[i].xdim
+
+            dat[i].extent = [xmin, xmax, ymin, ymax]
+
+            srs = osr.SpatialReference()
+            srs.ImportFromWkt(dataset.GetProjection())
+            srs.AutoIdentifyEPSG()
+            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+            dat[i].wkt = srs.ExportToWkt()
+
+    dataset = None
+    return dat
+
+
+def get_modisv6(ifile, piter=None):
+    """
+    Gets MODIS v006 data.
 
     Parameters
     ----------
@@ -1017,6 +1017,7 @@ def get_modis16(ifile, piter=None):
         piter = iter
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    # dmeta = dataset.GetMetadata()
 
     subdata = dataset.GetSubDatasets()
 
@@ -1025,9 +1026,29 @@ def get_modis16(ifile, piter=None):
     for ifile2, bandid2 in subdata:
         dataset = None
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
+        meta = dataset.GetMetadata()
+        nval = int(meta['_FillValue'])
+        bandid = bandid2.split('] ')[1].split(' (')[0]
+
+        if 'scale_factor' in meta:
+            scale = float(meta['scale_factor'])
+        else:
+            scale = 1
+
+        if 'add_offset' in meta:
+            offset = float(meta['add_offset'])
+        else:
+            offset = 0
 
         rtmp2 = dataset.ReadAsArray()
-        rtmp2[rtmp2 > 32000] = nval
+        rtmp2 = rtmp2.astype(float)
+        mask = (rtmp2 == nval)
+        if nval == 32767:
+            mask = (rtmp2 > 32700)
+        rtmp2 = rtmp2*scale+offset
+
+        if mask is not None:
+            rtmp2[mask] = nval
 
         dat.append(Data())
         dat[-1].data = rtmp2
@@ -1038,10 +1059,12 @@ def get_modis16(ifile, piter=None):
                                  dat[-1].data.mask)
 
         dat[-1].extent_from_gtr(dataset.GetGeoTransform())
-        dat[-1].dataid = bandid2
+        dat[-1].dataid = bandid
         dat[-1].nullvalue = nval
         dat[-1].wkt = dataset.GetProjectionRef()
         dat[-1].filename = ifile
+        if 'units' in meta and meta['units'] != 'none':
+            dat[-1].units = '$'+meta['units']+'$'
 
         dataset = None
 
@@ -1604,8 +1627,11 @@ def testfn():
     # dat = get_landsat(ifile)
 
 
-    ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD16A2.A2013073.h20v11.006.2017101224330.hdf'
-    dat = get_modis16(ifile)
+    # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD16A2.A2013073.h20v11.006.2017101224330.hdf'
+    ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
+    dat = get_modisv6(ifile)
+
+
 
     breakpoint()
 
