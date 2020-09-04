@@ -1017,15 +1017,28 @@ def get_modisv6(ifile, piter=None):
         piter = iter
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-    # dmeta = dataset.GetMetadata()
+    dmeta = dataset.GetMetadata()
 
     subdata = dataset.GetSubDatasets()
+    dataset = None
 
     dat = []
     nval = 0
     for ifile2, bandid2 in subdata:
-        dataset = None
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
+
+        wkt = dataset.GetProjectionRef()
+        if 'Sinusoidal' in wkt:
+            wkt = wkt.replace('PROJCS["unnamed"', 'PROJCS["Sinusoidal"')
+            wkt = wkt.replace('GEOGCS["Unknown datum based upon the custom '
+                              'spheroid"',
+                              'GEOGCS["GCS_Unknown"')
+            wkt = wkt.replace('DATUM["Not specified '
+                              '(based on custom spheroid)"',
+                              'DATUM["D_Unknown"')
+            wkt = wkt.replace('SPHEROID["Custom spheroid"',
+                              'SPHEROID["S_Unknown"')
+
         meta = dataset.GetMetadata()
         nval = int(meta['_FillValue'])
         bandid = bandid2.split('] ')[1].split(' (')[0]
@@ -1061,7 +1074,7 @@ def get_modisv6(ifile, piter=None):
         dat[-1].extent_from_gtr(dataset.GetGeoTransform())
         dat[-1].dataid = bandid
         dat[-1].nullvalue = nval
-        dat[-1].wkt = dataset.GetProjectionRef()
+        dat[-1].wkt = wkt
         dat[-1].filename = ifile
         if 'units' in meta and meta['units'] != 'none':
             dat[-1].units = '$'+meta['units']+'$'
@@ -1617,6 +1630,7 @@ def get_aster_ged_bin(ifile):
 
 def testfn():
     """Main testing routine."""
+    from pprint import pprint
     # ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20170813T080011_N0205_R035_T35JKG_20170813T082818.SAFE\MTD_MSIL2A.xml'
     # dat = get_sentinel2(ifile)
 
