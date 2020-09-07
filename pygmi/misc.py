@@ -209,16 +209,7 @@ class ProgressBar(QtWidgets.QProgressBar):
 
 class ProgressBarText():
     """
-    Progress bar.
-
-    Progress Bar routine which expands the QProgressBar class slightly so that
-    there is a time function as well as a convenient of calling it via an
-    iterable.
-
-    Attributes
-    ----------
-    otime : integer
-        This is the original time recorded when the progress bar starts.
+    Text Progress bar.
     """
 
     def __init__(self):
@@ -267,25 +258,21 @@ class ProgressBarText():
 
     def printprogressbar(self, iteration, suffix=''):
         """
-        Call in a loop to create terminal progress bar. Code by Alexander
-        Veysov. (https://gist.github.com/snakers4)
+        Call in a loop to create terminal progress bar.
 
-        Parameters:
-        -----------
+        Code by Alexander Veysov. (https://gist.github.com/snakers4).
+
+        Parameters
+        ----------
         iteration : int
             current iteration
-        total : int
-            total iterations
-        prefix : str
-            prefix string
-        suffix : str
-            suffix string
-        decimals : int
-            pos num of decimals in percent complete
-        length : int
-            character length of bar
-        fill : str
-            bar fill character
+        suffix : str, optional
+            Suffix string. The default is ''.
+
+        Returns
+        -------
+        None.
+
         """
         perc = 100*(iteration/float(self.total))
         percent = f'{perc:.{self.decimals}f}'
