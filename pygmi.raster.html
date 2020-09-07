@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pygmi.raster package &#8212; PyGMI 3.2.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -1927,7 +1928,7 @@ This provides a work-around for that.</p>
 
 <dl class="py function">
 <dt id="pygmi.raster.dataprep.merge">
-<code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.merge" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dat</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dxy</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.merge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge datasets found in a single PyGMI data object.</p>
 <p>The aim is to ensure that all datasets have the same number of rows and
 columns.</p>
@@ -1990,6 +1991,11 @@ columns.</p>
 <code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">testdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.testdown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main continuation testing routine.</p>
 </dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.raster.dataprep.testgrid">
+<code class="sig-prename descclassname">pygmi.raster.dataprep.</code><code class="sig-name descname">testgrid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.dataprep.testgrid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="pygmi.raster.dataprep.testrtp">
@@ -3359,7 +3365,7 @@ main PyGMI interface.</p>
 
 <dl class="py function">
 <dt id="pygmi.raster.ginterp.histcomp">
-<code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">histcomp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img</span></em>, <em class="sig-param"><span class="n">nbr_bins</span><span class="o">=</span><span class="default_value">256</span></em>, <em class="sig-param"><span class="n">perc</span><span class="o">=</span><span class="default_value">5.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.histcomp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.raster.ginterp.</code><code class="sig-name descname">histcomp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">img</span></em>, <em class="sig-param"><span class="n">nbr_bins</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">perc</span><span class="o">=</span><span class="default_value">5.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.ginterp.histcomp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Histogram Compaction</p>
 <p>This compacts a % of the outliers in data, allowing for a cleaner, linear
 representation of the data.</p>
@@ -4878,15 +4884,16 @@ I’m not aware of. Don’t expect those to work either.</p>
 <dl class="py method">
 <dt id="pygmi.raster.modest_image.ModestImage.draw">
 <code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">renderer</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.ModestImage.draw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the Artist using the given renderer.</p>
-<p>This method will be overridden in the Artist subclasses. Typically,
-it is implemented to not have any effect if the Artist is not visible
-(<cite>.Artist.get_visible</cite> is <em>False</em>).</p>
+<dd><p>Draw the Artist (and its children) using the given renderer.</p>
+<p>This has no effect if the artist is not visible (<cite>.Artist.get_visible</cite>
+returns False).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass.) – </p>
 </dd>
 </dl>
+<p class="rubric">Notes</p>
+<p>This method is overridden in the Artist subclasses.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -5539,7 +5546,7 @@ columns otherwise.</p></li>
       &copy;2020, Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

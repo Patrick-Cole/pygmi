@@ -40,4 +40,3 @@ pygmi.mag.tiltdepth module
    :members:
    :undoc-members:
    :show-inheritance:
-

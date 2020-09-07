@@ -48,4 +48,3 @@ pygmi.test.test\_raster module
    :members:
    :undoc-members:
    :show-inheritance:
-

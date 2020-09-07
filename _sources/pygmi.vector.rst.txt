@@ -48,4 +48,3 @@ pygmi.vector.menu module
    :members:
    :undoc-members:
    :show-inheritance:
-

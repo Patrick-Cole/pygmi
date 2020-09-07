@@ -40,4 +40,3 @@ pygmi.rsense.ratios module
    :members:
    :undoc-members:
    :show-inheritance:
-

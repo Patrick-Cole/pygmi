@@ -112,4 +112,3 @@ pygmi.raster.smooth module
    :members:
    :undoc-members:
    :show-inheritance:
-

@@ -32,4 +32,3 @@ pygmi.eseis.menu module
    :members:
    :undoc-members:
    :show-inheritance:
-

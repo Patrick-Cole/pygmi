@@ -32,4 +32,3 @@ pygmi.bholes.menu module
    :members:
    :undoc-members:
    :show-inheritance:
-

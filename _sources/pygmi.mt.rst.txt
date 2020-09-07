@@ -48,4 +48,3 @@ pygmi.mt.menu module
    :members:
    :undoc-members:
    :show-inheritance:
-

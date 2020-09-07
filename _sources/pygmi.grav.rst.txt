@@ -32,4 +32,3 @@ pygmi.grav.menu module
    :members:
    :undoc-members:
    :show-inheritance:
-

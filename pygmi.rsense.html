@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pygmi.rsense package &#8212; PyGMI 3.2.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -372,6 +373,11 @@
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Simple canvas with a sine plot.</p>
 <dl class="py method">
+<dt id="pygmi.rsense.change.MyMplCanvas.capture">
+<code class="sig-name descname">capture</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.MyMplCanvas.capture" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.rsense.change.MyMplCanvas.compute_initial_figure">
 <code class="sig-name descname">compute_initial_figure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dat</span></em>, <em class="sig-param"><span class="n">dates</span></em>, <em class="sig-param"><span class="n">points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.MyMplCanvas.compute_initial_figure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute initial figure.</p>
@@ -465,6 +471,12 @@
 <dd class="field-even"><p>None.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.rsense.change.SceneViewer.capture">
+<code class="sig-name descname">capture</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.SceneViewer.capture" title="Permalink to this definition">¶</a></dt>
+<dd><p>Capture</p>
 </dd></dl>
 
 <dl class="py method">
@@ -671,6 +683,23 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="pygmi.rsense.change.get_kml_coords">
+<code class="sig-prename descclassname">pygmi.rsense.change.</code><code class="sig-name descname">get_kml_coords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kml</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.get_kml_coords" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract points from kml.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kml</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>coordinates</strong> – DESCRIPTION.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>TYPE</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="pygmi.rsense.change.get_shape_coords">
 <code class="sig-prename descclassname">pygmi.rsense.change.</code><code class="sig-name descname">get_shape_coords</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sfile</span></em>, <em class="sig-param"><span class="n">todegrees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.get_shape_coords" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets coords from a shapefile.</p>
@@ -688,6 +717,12 @@
 <dd class="field-odd"><p>numpy array</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.rsense.change.testanim">
+<code class="sig-prename descclassname">pygmi.rsense.change.</code><code class="sig-name descname">testanim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.change.testanim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test for animation.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1352,6 +1387,23 @@ libraries. It returns the data in a PyGMI data object.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="pygmi.rsense.iodefs.get_modisv6">
+<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_modisv6</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_modisv6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets MODIS v006 data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ifile</strong> (<em>str</em>) – filename to import</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dat</strong> – dataset imported</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>PyGMI raster Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="pygmi.rsense.iodefs.get_sentinel2">
 <code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_sentinel2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_sentinel2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets Sentinel-2 Data.</p>
@@ -1436,6 +1488,12 @@ interface. Normal as well as context menus are defined here.</p>
 <dt id="pygmi.rsense.menu.MenuWidget.import_landsat">
 <code class="sig-name descname">import_landsat</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.menu.MenuWidget.import_landsat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import Landsat data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.rsense.menu.MenuWidget.import_modis">
+<code class="sig-name descname">import_modis</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.menu.MenuWidget.import_modis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Import MODIS data.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -1783,7 +1841,7 @@ interface. Normal as well as context menus are defined here.</p>
       &copy;2020, Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

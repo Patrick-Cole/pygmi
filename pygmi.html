@@ -4,6 +4,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pygmi package &#8212; PyGMI 3.2.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -1100,6 +1101,67 @@ iterable.</p>
 
 </dd></dl>
 
+<dl class="py class">
+<dt id="pygmi.misc.ProgressBarText">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.misc.</code><code class="sig-name descname">ProgressBarText</code><a class="headerlink" href="#pygmi.misc.ProgressBarText" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Text Progress bar.</p>
+<dl class="py method">
+<dt id="pygmi.misc.ProgressBarText.iter">
+<code class="sig-name descname">iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBarText.iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate Routine.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.misc.ProgressBarText.printprogressbar">
+<code class="sig-name descname">printprogressbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iteration</span></em>, <em class="sig-param"><span class="n">suffix</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBarText.printprogressbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call in a loop to create terminal progress bar.</p>
+<p>Code by Alexander Veysov. (<a class="reference external" href="https://gist.github.com/snakers4">https://gist.github.com/snakers4</a>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>iteration</strong> (<em>int</em>) – current iteration</p></li>
+<li><p><strong>suffix</strong> (<em>str</em><em>, </em><em>optional</em>) – Suffix string. The default is ‘’.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pygmi.misc.QLabelVStack">
+<em class="property">class </em><code class="sig-prename descclassname">pygmi.misc.</code><code class="sig-name descname">QLabelVStack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.QLabelVStack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>QLabelVStack.</p>
+<dl class="py method">
+<dt id="pygmi.misc.QLabelVStack.addWidget">
+<code class="sig-name descname">addWidget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget1</span></em>, <em class="sig-param"><span class="n">widget2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.QLabelVStack.addWidget" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds a two widgets on a row, widget1 can also be text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>widget1</strong> (<em>str</em><em> or </em><em>QWidget</em>) – First Widget or Label on the row.</p></li>
+<li><p><strong>widget2</strong> (<em>QWidget</em>) – Last Widget.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt id="pygmi.misc.tick_formatter">
 <code class="sig-prename descclassname">pygmi.misc.</code><code class="sig-name descname">tick_formatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">pos</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.tick_formatter" title="Permalink to this definition">¶</a></dt>
@@ -1234,7 +1296,7 @@ iterable.</p>
       &copy;2020, Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

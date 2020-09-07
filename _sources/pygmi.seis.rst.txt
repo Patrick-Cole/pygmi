@@ -72,4 +72,3 @@ pygmi.seis.utils module
    :members:
    :undoc-members:
    :show-inheritance:
-
