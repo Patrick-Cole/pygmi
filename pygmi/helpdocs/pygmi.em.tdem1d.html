@@ -2,17 +2,35 @@
 <html>
 	<body>
 		<h1>TDEM 1D Inversion</h1>
-		<p>TDEM inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Line data is imported using the Import Line Data tool in the Vector menu.  The current TDEM tool is developed for EM data which has a VTEM waveform (i.e. VTEM and SkyTEM sensors).</p>
+		<p>TDEM inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Line data is imported using the Import Line Data tool in the Vector menu.</p>
 		<h2>Options</h2>
 		<ul>
 			<li>Line Number</li>
 			<li>Fid/Station Name</li>
-			<li>Bird Height - Height of the sensor.</li>
-			<li>Tx Area - Transmitter area</li>
-			<li>Tx Peak Time - Time when the input VTEM waveform is at its maximum.</li>
-			<li>Tx Off Time -  Time when the waveform is completely off.</li>
-			<li>Data Channel Prefix - Prefix in ASCII data file, indicating a data channel.</li>
-			<li>Invert Station - used to invert the current station</li>
+			<li>Bird Height – height of sensor.</li>
+			<li>Data channel prefix – prefix in ASCII data file, indicating a data channel.</li>
+			<li>Waveform Type – an option to select the waveform for a list of standard types.  This can be VTEM Waveform, Ramp Off Waveform, Trapezoid Waveform, Quarter Sine Ramp On Waveform, Triangular Waveform and HalfSineWaveform.</li>
+			<li>Tx Peak time – time when the input VTEM waveform is at its maximum.</li>
+			<li>Tx Ramp Off start time</li>
+			<li>Tx Off Time – time when the waveform is completely off.</li>
+			<li>Source Type – can be Circular Loop or  Mag Dipole.</li>
+			<li>Tx Orientation – transmitter orientation, can be x, y or z.</li>
+			<li>Tx Area  – transmitter area (only for circular loop souce)</li>
+			<li>Number of turns in loop (only for circular loop souce)</li>
+			<li>Current in loop (only for circular loop souce)</li>
+			<li>Permeability of the background</li>
+			<li>Rx Orientation – receiver orientation, can be x, y or z.</li>
+			<li>Mesh cell size</li>
+			<li>Mesh number cells in x direction</li>
+			<li>Mesh number cells in z direction</li>
+			<li>Mesh number of cells to pad</li>
+			<li>Pad cell multiplier</li>
+			<li>Conductivity Air</li>
+			<li>Conductivity Halfspace</li>
+			<li>Data Relative Error (%)</li>
+			<li>Data Noise Floor</li>
+			<li>Optimization - maximum iterations</li>
+			<li>Load window times – text file with the window times.</li>
 		</ul>
 		<h2>References</h2>
 		<p>Cockett, Rowan, Seogi Kang, Lindsey J. Heagy, Adam Pidlisecky, and Douglas W. Oldenburg. "SimPEG: An Open Source Framework for Simulation and Gradient Based Parameter Estimation in Geophysical Applications" Computers & Geosciences, September 2015. doi:10.1016/j.cageo.2015.09.015.</p>
