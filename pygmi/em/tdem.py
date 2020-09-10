@@ -34,13 +34,54 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
 from pymatsolver import Pardiso
 import discretize
-from SimPEG import (maps, utils, data_misfit, regularization,
+from SimPEG import (maps, data_misfit, regularization,
                     optimization, inversion, inverse_problem, directives)
 from SimPEG.electromagnetics import time_domain
 import SimPEG.data as Sdata
 import pygmi.menu_default as menu_default
 from pygmi.misc import QLabelVStack
 
+from contextlib import contextmanager
+import ctypes
+import io
+import tempfile
+
+# libc = ctypes.CDLL(None)
+# c_stdout = ctypes.c_void_p.in_dll(libc, 'stdout')
+
+
+# @contextmanager
+# def stdout_redirector(stream):
+#     # The original fd stdout points to. Usually 1 on POSIX systems.
+#     original_stdout_fd = sys.stdout.fileno()
+
+#     def _redirect_stdout(to_fd):
+#         """Redirect stdout to the given file descriptor."""
+#         # Flush the C-level buffer stdout
+#         libc.fflush(c_stdout)
+#         # Flush and close sys.stdout - also closes the file descriptor (fd)
+#         sys.stdout.close()
+#         # Make original_stdout_fd point to the same file as to_fd
+#         os.dup2(to_fd, original_stdout_fd)
+#         # Create a new sys.stdout that points to the redirected fd
+#         sys.stdout = io.TextIOWrapper(os.fdopen(original_stdout_fd, 'wb'))
+
+#     # Save a copy of the original stdout fd in saved_stdout_fd
+#     saved_stdout_fd = os.dup(original_stdout_fd)
+#     try:
+#         # Create a temporary file and redirect stdout to it
+#         tfile = tempfile.TemporaryFile(mode='w+b')
+#         _redirect_stdout(tfile.fileno())
+#         # Yield to caller, then redirect stdout back to the saved fd
+#         yield
+#         _redirect_stdout(saved_stdout_fd)
+#         # Copy contents of temporary file to the given stream
+#         tfile.flush()
+#         tfile.seek(0, io.SEEK_SET)
+#         stream.write(tfile.read())
+#     finally:
+#         tfile.close()
+#         os.close(saved_stdout_fd)
 
 class MyMplCanvas2(FigureCanvas):
     """MPL Canvas class."""
@@ -430,6 +471,7 @@ class TDEM1D(QtWidgets.QDialog):
 
         # run the inversion
         try:
+            # with stdout_redirector(None):
             mopt_sky = inv.run(m0)
         except Exception as e:
             QtWidgets.QMessageBox.warning(self.parent, 'Error', str(e),
@@ -729,6 +771,7 @@ def tonumber(test, alttext=None):
 
 def testrun():
     """Test routine."""
+
     from pygmi.vector.iodefs import ImportLineData
 
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
@@ -754,8 +797,10 @@ def testrun():
 
     tmp.indata = IO.outdata
 
+    # os.environ['KMP_WARNINGS'] ='0'
     tmp.settings()
 
+    breakpoint()
 
 if __name__ == "__main__":
     testrun()

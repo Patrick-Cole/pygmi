@@ -194,8 +194,16 @@ class MyMplCanvas(FigureCanvas):
 
         ax1.invert_yaxis()
 
+        tmax = -1
+        for trace in data.trace:
+            tmp = np.max(np.abs([trace.max(), trace.min()]))
+            if tmax < tmp:
+                tmax = tmp
+        tracemult = 1/tmax
+
         for trace in data.trace:
             x = tracemult*trace+offset
+            # breakpoint()
             ax1.plot(x[start:finish], y[start:finish], 'k-')
 
             ax1.fill_betweenx(y, offset, x, where=(x > offset), color='k')
