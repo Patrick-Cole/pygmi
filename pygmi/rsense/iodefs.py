@@ -1217,13 +1217,15 @@ def get_sentinel2(ifile, piter=None):
             dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
             if dat[-1].data.mask.size == 1:
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+            dat[-1].data = dat[-1].data.astype(np.float32)
+            dat[-1].data = dat[-1].data / 10000.
 
             dat[-1].dataid = bname
             dat[-1].nullvalue = nval
             dat[-1].extent_from_gtr(dataset.GetGeoTransform())
             dat[-1].wkt = dataset.GetProjectionRef()
             dat[-1].filename = ifile
-            dat[-1].units = 'Reflectance x 10000'
+            dat[-1].units = 'Reflectance'
 
     if dat == []:
         dat = None
