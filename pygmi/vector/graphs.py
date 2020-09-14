@@ -533,6 +533,10 @@ class PlotPoints(GraphWindow):
         self.label2.hide()
         self.xdata = None
         self.ydata = None
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def change_band(self):
         """
@@ -570,7 +574,7 @@ class PlotPoints(GraphWindow):
         cols = list(data.columns[filt])
 
         if data.pygmiX.isna().min() == True:
-            print('You do not have coordinates in that point dataset.')
+            self.showprocesslog('You do not have coordinates in that point dataset.')
             return
 
         self.show()
@@ -750,6 +754,10 @@ class PlotRose(GraphWindow):
         self.spinbox.setMinimum(2)
         self.spinbox.setMaximum(360)
         self.setWindowTitle('Rose Diagram')
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def change_band(self):
         """
@@ -767,7 +775,7 @@ class PlotRose(GraphWindow):
         if 'LineString' in data:
             self.mmc.update_rose(data, i, self.spinbox.value())
         else:
-            print('No line type data.')
+            self.showprocesslog('No line type data.')
             return
 
     def run(self):

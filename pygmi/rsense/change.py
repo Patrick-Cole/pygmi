@@ -67,6 +67,10 @@ class CreateSceneList(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.parent = parent
         self.indata = {'tmp': True}
@@ -193,16 +197,16 @@ class CreateSceneList(QtWidgets.QDialog):
             flist.append(ifile)
 
         if nodates is True:
-            print('Some of your scenes do not have dates. '
+            self.showprocesslog('Some of your scenes do not have dates. '
                   'Correct this in the output spreadsheet')
 
         if not flist:
-            print('No scenes could be found. Please make sure that your '
+            self.showprocesslog('No scenes could be found. Please make sure that your '
                   'shapefile or kml file is in the area of your scenes and in '
                   'the same projection.')
             return False
 
-        print('Updating spreadsheet...')
+        self.showprocesslog('Updating spreadsheet...')
 
         df = pd.DataFrame()
         df['Datetime'] = dtime
@@ -214,7 +218,7 @@ class CreateSceneList(QtWidgets.QDialog):
 
         self.outdata['SceneList'] = df
 
-        print('Saving to disk...')
+        self.showprocesslog('Saving to disk...')
 
         ext = ('Scene List File (*.xlsx)')
 
@@ -622,6 +626,10 @@ class SceneViewer(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.parent = parent
         self.indata = {}
@@ -1009,7 +1017,7 @@ class SceneViewer(QtWidgets.QDialog):
             dat.data = rtmp.ReadAsArray(xoff, yoff, xsize, ysize, xbuf, ybuf)
 
             if dat.data is None:
-                print('Error: Dataset could not be read properly')
+                self.showprocesslog('Error: Dataset could not be read properly')
 
             if dat.data.dtype.kind == 'i':
                 if nval is None:

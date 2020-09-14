@@ -79,6 +79,10 @@ class SIMP():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
 # Initialize Variables
         self.datanum = -1
@@ -129,7 +133,7 @@ class SIMP():
 
         """
         self.parent.clearprocesslog()
-        print('Import Bulletin to SEISAN Format')
+        self.showprocesslog('Import Bulletin to SEISAN Format')
 
         ext = 'Scanned Bulletin Text File (*.txt)'
 
@@ -143,7 +147,7 @@ class SIMP():
         self.ifile = str(filename)
         ifile = self.ifile
 
-        print('Input File: '+ifile)
+        self.showprocesslog('Input File: '+ifile)
 
 # Read entire file
         idata = read_ifile(ifile)
@@ -198,13 +202,13 @@ class SIMP():
         ofile = ifile[:-3]+'err'
         self.ofile = open(ofile, 'w')
 
-        print('Error File: '+ofile)
+        self.showprocesslog('Error File: '+ofile)
 
         self.ofile.write(self.parent.textbrowser_processlog.toPlainText())
         self.ofile.close()
 
         self.outdata['Seis'] = dat
-        print('\nCompleted!')
+        self.showprocesslog('\nCompleted!')
 
         return True
 
@@ -758,7 +762,7 @@ class SIMP():
         self.datamins[-1] = int(tmp2[2:4])
         self.datasecs[-1] = float(tmp2[4:])
         if self.datasecs[-1] > 60.0:
-            print('Possible problem with time field')
+            self.showprocesslog('Possible problem with time field')
         return tmp
 
     def get_data_resid(self, tmp, station):
@@ -996,9 +1000,9 @@ class SIMP():
         if eline[0:3].isalpha():
             station = is_stat(eline)
             if station == '':
-                print('\nStation does not exist:')
-        print('\nCharacter recognition error:')
-        print('Line: "'+eline)
+                self.showprocesslog('\nStation does not exist:')
+        self.showprocesslog('\nCharacter recognition error:')
+        self.showprocesslog('Line: "'+eline)
 
     def get_record_info(self, idata):
         """

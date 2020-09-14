@@ -73,6 +73,10 @@ class DataCut():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """
@@ -87,7 +91,7 @@ class DataCut():
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
-            print('No raster data')
+            self.showprocesslog('No raster data')
             return False
 
         nodialog = False
@@ -168,6 +172,10 @@ class DataMerge(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -341,7 +349,7 @@ class DataMerge(QtWidgets.QDialog):
         # gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
 
         # if cols == 0 or rows == 0:
-        #     print('Your rows or cols are zero. Your input projection may be '
+        #     self.showprocesslog('Your rows or cols are zero. Your input projection may be '
         #           'wrong')
         #     return
 
@@ -385,6 +393,10 @@ class DataReproj(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -443,7 +455,7 @@ class DataReproj(QtWidgets.QDialog):
 
         """
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            print('Could not reproject')
+            self.showprocesslog('Could not reproject')
             return
 
 # Input stuff
@@ -498,7 +510,7 @@ class DataReproj(QtWidgets.QDialog):
             rows = round((maxy - miny)/newdim)
 
             if cols == 0 or rows == 0:
-                print('Your rows or cols are zero. Your input projection may '
+                self.showprocesslog('Your rows or cols are zero. Your input projection may '
                       'be wrong')
                 return
 
@@ -625,6 +637,10 @@ class GetProf():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """
@@ -639,7 +655,7 @@ class GetProf():
         if 'Raster' in self.indata:
             data = copy.deepcopy(self.indata['Raster'])
         else:
-            print('No raster data')
+            self.showprocesslog('No raster data')
             return False
 
         ext = 'Shape file (*.shp)'
@@ -665,7 +681,7 @@ class GetProf():
         lyr = shapef.GetLayer()
         line = lyr.GetNextFeature()
         if lyr.GetGeomType() is not ogr.wkbLineString:
-            print('You need lines in that shape file')
+            self.showprocesslog('You need lines in that shape file')
             return False
 
         data = merge(data)
@@ -847,6 +863,10 @@ class Metadata(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -1028,7 +1048,7 @@ class Metadata(QtWidgets.QDialog):
             odata.extent = (left, right, bottom, top)
 
         except ValueError:
-            print('Value error - abandoning changes')
+            self.showprocesslog('Value error - abandoning changes')
 
         indx = self.combobox_bandid.currentIndex()
         txt = self.combobox_bandid.itemText(indx)
@@ -1614,10 +1634,10 @@ def fftcont(data, h):
     xdim = data.xdim
     ydim = data.ydim
 
-    print('Preparing for FFT...')
+    # self.showprocesslog('Preparing for FFT...')
     ndat, rdiff, cdiff, datamedian = fftprep(data)
 
-    print('Continuing data...')
+    # self.showprocesslog('Continuing data...')
 
     fftmod = np.fft.fft2(ndat)
 
@@ -2112,7 +2132,7 @@ def getepsgcodes():
 #         dat = check_dataid(dat)
 #         return dat
 
-#     print('Merging data...')
+#     self.showprocesslog('Merging data...')
 #     mrg = DataMerge()
 #     mrg.indata['Raster'] = dat
 #     data = dat[0]
@@ -2164,7 +2184,7 @@ def merge(dat, piter=None, dxy=None):
         dat = check_dataid(dat)
         return dat
 
-    print('Merging data...')
+    # self.showprocesslog('Merging data...')
 
     data = dat[0]
     dxy0 = min(data.xdim, data.ydim)
@@ -2187,8 +2207,7 @@ def merge(dat, piter=None, dxy=None):
     gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
 
     if cols == 0 or rows == 0:
-        print('Your rows or cols are zero. Your input projection may be '
-              'wrong')
+        print('Your rows or cols are zero. Your input projection may be wrong')
         return None
 
     dat2 = []

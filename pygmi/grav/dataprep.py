@@ -50,6 +50,10 @@ class ProcessData(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -126,10 +130,10 @@ class ProcessData(QtWidgets.QDialog):
         """
         tmp = []
         if 'Line' not in self.indata:
-            print('No Line Data')
+            self.showprocesslog('No Line Data')
             return False
         if 'Gravity' not in self.indata['Line']:
-            print('Not Gravity Data')
+            self.showprocesslog('Not Gravity Data')
             return False
 
         if not nodialog:
@@ -143,14 +147,14 @@ class ProcessData(QtWidgets.QDialog):
             float(self.basethres.text())
             float(self.knownbase.text())
         except ValueError:
-            print('Value Error')
+            self.showprocesslog('Value Error')
             return False
 
         if self.knownstat.text() != 'None':
             try:
                 float(self.knownstat.text())
             except ValueError:
-                print('Value Error')
+                self.showprocesslog('Value Error')
                 return False
 
         if tmp != 1:
@@ -254,8 +258,8 @@ class ProcessData(QtWidgets.QDialog):
 
         dcor = np.interp(x, xp, fp)
 
-        print('Quality Control')
-        print('---------------')
+        self.showprocesslog('Quality Control')
+        self.showprocesslog('---------------')
         tmp = driftdat['DECTIMEDATE'].values.astype(int)
         tmp2 = []
         ix = []
@@ -275,7 +279,7 @@ class ProcessData(QtWidgets.QDialog):
             dcor2 = fp[filt]
             drifttime = (x2[-1]-x2[0])
             driftrate = (dcor2[-1]-dcor2[0])/drifttime
-            print(f'Day {iday+1} drift: {driftrate:.3e} mGal/min over '
+            self.showprocesslog(f'Day {iday+1} drift: {driftrate:.3e} mGal/min over '
                   f'{drifttime:.3f} minutes.')
 
         xp2 = xp1/86400 + ix+1

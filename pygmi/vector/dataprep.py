@@ -66,6 +66,10 @@ class PointCut():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """
@@ -82,7 +86,7 @@ class PointCut():
             key = list(data.keys())[0]
             data = data[key]
         else:
-            print('No point data')
+            self.showprocesslog('No point data')
             return False
 
         nodialog = False
@@ -165,6 +169,10 @@ class DataGrid(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -267,7 +275,7 @@ class DataGrid(QtWidgets.QDialog):
         """
         tmp = []
         if 'Line' not in self.indata:
-            print('No Point Data')
+            self.showprocesslog('No Point Data')
             return False
 
         self.dataid.clear()
@@ -377,7 +385,7 @@ class DataGrid(QtWidgets.QDialog):
         y = data.pygmiY.values[filt]
         z = data[self.dataid.currentText()].values[filt]
 
-        tmp = quickgrid(x, y, z, dxy)
+        tmp = quickgrid(x, y, z, dxy, self.showprocesslog)
         mask = np.ma.getmaskarray(tmp)
         gdat = tmp.data
 
@@ -428,6 +436,10 @@ class DataReproj(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -486,7 +498,7 @@ class DataReproj(QtWidgets.QDialog):
 
         """
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            print('Could not reproject')
+            self.showprocesslog('Could not reproject')
             return
 
         key = list(self.indata['Line'].keys())[0]
@@ -530,7 +542,7 @@ class DataReproj(QtWidgets.QDialog):
 
         """
         if 'Line' not in self.indata:
-            print('No line data.')
+            self.showprocesslog('No line data.')
             return False
 
         if self.orig_wkt is None:
@@ -660,7 +672,7 @@ def cut_point(data, ifile):
     return data
 
 
-def quickgrid(x, y, z, dxy, numits=4):
+def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
     """
     Do a quick grid.
 
@@ -684,7 +696,7 @@ def quickgrid(x, y, z, dxy, numits=4):
         M x N array of z values
     """
 
-    print('Creating Grid')
+    showprocesslog('Creating Grid')
     x = x.flatten()
     y = y.flatten()
     z = z.flatten()
@@ -733,9 +745,9 @@ def quickgrid(x, y, z, dxy, numits=4):
             zfin[xx, yy] = newz[xx2, yy2]
             newmask[xx, yy] = np.logical_not(zdiv[xx2, yy2])
 
-        print('Iteration done: '+str(j+1)+' of '+str(numits))
+        showprocesslog('Iteration done: '+str(j+1)+' of '+str(numits))
 
-    print('Finished!')
+    showprocesslog('Finished!')
 
     newz = np.ma.array(zfin)
     newz.mask = newmask

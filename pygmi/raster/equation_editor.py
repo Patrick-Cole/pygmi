@@ -57,6 +57,10 @@ class EquationEditor(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -263,7 +267,7 @@ class EquationEditor(QtWidgets.QDialog):
         elif 'Raster' in self.indata:
             intype = 'Raster'
         else:
-            print('No raster data')
+            self.showprocesslog('No raster data')
             return False
 
         indata = dataprep.merge(self.indata[intype])

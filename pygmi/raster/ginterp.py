@@ -1154,6 +1154,10 @@ class PlotInterp(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -1971,7 +1975,7 @@ class PlotInterp(QtWidgets.QDialog):
         if 'Raster' not in self.indata:
             return False
         if self.indata['Raster'][0].isrgb:
-            print('RGB images cannot be used in this module.')
+            self.showprocesslog('RGB images cannot be used in this module.')
             return False
 
         self.show()

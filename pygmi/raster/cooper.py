@@ -58,6 +58,10 @@ class Gradients(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.parent = parent
         self.indata = {}
@@ -150,7 +154,7 @@ class Gradients(QtWidgets.QDialog):
                                                 self.order)
             else:
                 if data[i].xdim != data[i].ydim:
-                    print('X and Y dimension are different. Please resample')
+                    self.showprocesslog('X and Y dimension are different. Please resample')
                     return False
 
                 mask = np.ma.getmaskarray(data[i].data)
@@ -323,6 +327,10 @@ class Visibility2d(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.parent = parent
         self.indata = {}
@@ -397,7 +405,7 @@ class Visibility2d(QtWidgets.QDialog):
         data2 = []
 
         for i, datai in enumerate(data):
-            print(datai.dataid+':')
+            self.showprocesslog(datai.dataid+':')
 
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
                                             self.dh*data[i].data.std()/100.,
@@ -413,7 +421,7 @@ class Visibility2d(QtWidgets.QDialog):
             data2[-1].dataid += ' Visibility Vector Resultant'
 
         self.outdata['Raster'] = data2
-        print('Finished!')
+        self.showprocesslog('Finished!')
 
         return True
 

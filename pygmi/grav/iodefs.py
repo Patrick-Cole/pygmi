@@ -54,6 +54,10 @@ class ImportCG5(QtWidgets.QDialog):
 
     def __init__(self, parent):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.pbar = None  # self.parent.pbar
         self.parent = parent
@@ -161,7 +165,7 @@ class ImportCG5(QtWidgets.QDialog):
                 return False
 
         if self.line.currentText() == self.station.currentText():
-            print('Your line column cannot be the same as your station column')
+            self.showprocesslog('Your line column cannot be the same as your station column')
             return False
 
         tmp = [self.line.currentText(),
@@ -171,7 +175,7 @@ class ImportCG5(QtWidgets.QDialog):
                self.zchan.currentText()]
 
         if len(set(tmp)) != len(tmp):
-            print('Unable to import, two of your GPS file columns are the '
+            self.showprocesslog('Unable to import, two of your GPS file columns are the '
                   'same. Make sure you have a line column in your GPS file, '
                   'and that you did not specify the same column twice.')
             return False
@@ -234,8 +238,8 @@ class ImportCG5(QtWidgets.QDialog):
         dlist = dlist[dlist.STATION < 10000]
 
         if dlist.size > 0:
-            print('Warning, the following are duplicated:' )
-            print(dlist.to_string(index=False))
+            self.showprocesslog('Warning, the following are duplicated:' )
+            self.showprocesslog(dlist.to_string(index=False))
 
         return True
 

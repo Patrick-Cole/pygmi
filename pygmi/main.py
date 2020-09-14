@@ -36,7 +36,6 @@ pygmi packages.
 """
 
 import json
-import pdb
 import sys
 import os
 import pkgutil
@@ -195,8 +194,8 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         Class name being referenced
     """
 
-    def __init__(self, diagram_type, context_menu, my_class, parent=None):
-        super().__init__(parent)
+    def __init__(self, diagram_type, context_menu, my_class, parent):
+        super().__init__()
 
         self.arrows = []
         self.parent = my_class.parent
@@ -207,6 +206,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.is_import = False
         self.text_item = None
         self.my_class_name = ''
+        self.showprocesslog = parent.showprocesslog
 
         if hasattr(self.my_class, 'arrows'):
             self.my_class.arrows = self.arrows
@@ -322,9 +322,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         """
         self.setBrush(QtGui.QColor(255, 0, 0, 127))
 
-        sys.stdout = self.parent.stdoutnew
-        sys.breakpointhook = self.parent.pdb
-
         temp = self.settings()
         self.parent.scene.selected_item_info()
 
@@ -378,13 +375,13 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             return False
 
         self.my_class.parent.process_is_active()
-        print(self.my_class_name+' busy...')
+        self.showprocesslog(self.my_class_name+' busy...')
         iflag = self.my_class.settings(nodialog)
         self.my_class.parent.process_is_active(False)
         if iflag:
-            print(self.my_class_name+' finished!')
+            self.showprocesslog(self.my_class_name+' finished!')
         else:
-            print(self.my_class_name+' cancelled.')
+            self.showprocesslog(self.my_class_name+' cancelled.')
         return iflag
 
 
@@ -559,12 +556,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.context_menu = {}
         self.add_to_context('Basic')
 
-        self.stdoutold = sys.stdout
-        self.stdoutnew = EmittingStream(textWritten=self.read_output)
-
-        sys.stdout = self.stdoutnew
-        sys.breakpointhook = self.pdb
-        # sys.stderr = EmittingStream(textWritten=self.read_output)
+        self.stdio_redirect = EmittingStream(self.showprocesslog)
 
         self.menubar = QtWidgets.QMenuBar()
 
@@ -660,40 +652,6 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_bring_to_front.triggered.connect(self.bring_to_front)
         self.action_send_to_back.triggered.connect(self.send_to_back)
         self.action_help.triggered.connect(self.help_docs)
-
-    def __del__(self):
-        """
-        Restore sys.stdout
-
-        Returns
-        -------
-        None.
-
-        """
-        sys.stdout = self.stdoutold
-
-    def pdb(self):
-        """
-        Routine to make sure stdout is restored when using debugger.
-
-        Returns
-        -------
-        None.
-
-        """
-        sys.stdout = self.stdoutold
-
-        debugger = pdb.Pdb()
-        debugger.reset()
-
-        # your custom stuff here
-        # debugger.do_where(None) # run the "where" command
-
-        # invoke the interactive debugging prompt
-        users_frame = sys._getframe().f_back  # frame where user invoked pdb()
-        debugger.interaction(users_frame, None)
-
-        sys.stdout = self.stdoutnew
 
 # Start of Functions
     def setupui(self):
@@ -885,7 +843,7 @@ class MainWidget(QtWidgets.QMainWindow):
         item : DiagramItem
             Return a DiagramItem object
         """
-        item = DiagramItem(item_type, self.scene.my_item_menu, class_name)
+        item = DiagramItem(item_type, self.scene.my_item_menu, class_name, self)
         item_color = self.scene.my_item_color
 
         item_name = item_name.replace(' ', '\n')
@@ -960,9 +918,6 @@ class MainWidget(QtWidgets.QMainWindow):
         newitem : custom class
             newitem is the class to be called by the context menu item
         """
-        sys.stdout = self.stdoutnew
-        sys.breakpointhook = self.pdb
-
         outdata = self.get_outdata()
 
         for odata in outdata:
@@ -981,9 +936,6 @@ class MainWidget(QtWidgets.QMainWindow):
         newitem : custom class
             newitem is the class to be called by the context menu item
         """
-        sys.stdout = self.stdoutnew
-        sys.breakpointhook = self.pdb
-
         indata = self.get_indata()
 
         for idata in indata:
@@ -1018,18 +970,6 @@ class MainWidget(QtWidgets.QMainWindow):
             self.textbrowser_processlog.setStyleSheet(
                 '* { background-color: rgb(255, 255, 255); }')
 
-    def read_output(self, text):
-        """
-        Reads std out and sends it to process log.
-
-        Returns
-        -------
-        None.
-
-        """
-
-        self.showprocesslog(text)
-
     def load(self):
         """
         Loads project state from JSON file.
@@ -1041,7 +981,7 @@ class MainWidget(QtWidgets.QMainWindow):
         """
 
         self.process_is_active()
-        print('Project load busy...')
+        self.showprocesslog('Project load busy...')
 
         ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
             self, 'Open Project', '.', 'PyGMI project (*.json);;')
@@ -1151,7 +1091,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 alist[str(item)] = item
 
         if not alist:
-            print('No connections. Aborting run.')
+            self.showprocesslog('No connections. Aborting run.')
             return
 
         # Collect only items recieving data
@@ -1257,7 +1197,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         txtobj = self.textbrowser_processlog
 
-        txtmsg = str(txtobj.toPlainText())
+        txtmsg = str(txtobj.toPlainText()+'\n')
         if replacelast is True:
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
             txtmsg = txtmsg[:txtmsg.rfind('\n')]
@@ -1328,12 +1268,9 @@ class Startup(QtWidgets.QDialog):
 
 class EmittingStream(QtCore.QObject):
     """ Class to intercept stdout for later use in a textbox """
-    textWritten = QtCore.pyqtSignal(str)
-    # terminal = sys.stdout
 
-    # def __init__(self, textWritten):
-    #     self.terminal = sys.stdout
-    #     self.textWritten = textWritten
+    def __init__(self, textWritten):
+        self.textWritten = textWritten
 
     def write(self, text):
         """
@@ -1349,8 +1286,7 @@ class EmittingStream(QtCore.QObject):
         None.
 
         """
-        # self.terminal.write(text)
-        self.textWritten.emit(str(text))
+        self.textWritten(str(text))
 
     def flush(self):
         """

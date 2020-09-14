@@ -78,6 +78,10 @@ class TiltDepth(QtWidgets.QDialog):
         self.Z = None
         self.depths = None
         self.cbar = cm.jet
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.x0 = None
         self.x1 = None
@@ -431,7 +435,7 @@ class TiltDepth(QtWidgets.QDialog):
 
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
 
-        tmp = quickgrid(gx0, gy0, dist, data.xdim)
+        tmp = quickgrid(gx0, gy0, dist, data.xdim, self.showprocesslog)
 
         mask = np.ma.getmaskarray(tmp)
         gdat = tmp.data

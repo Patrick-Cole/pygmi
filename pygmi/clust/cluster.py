@@ -51,6 +51,11 @@ class Cluster(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
+
         self.indata = {}
         self.outdata = {}
         self.parent = parent
@@ -232,7 +237,7 @@ class Cluster(QtWidgets.QDialog):
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
 
         if tst.size > 2:
-            print('Error: Your input datasets have different sizes. '
+            self.showprocesslog('Error: Your input datasets have different sizes. '
                   'Merge the data first')
             return False
 
@@ -338,7 +343,7 @@ class Cluster(QtWidgets.QDialog):
 
         no_clust = range(self.min_cluster, self.max_cluster+1)
 
-        print('Cluster analysis started')
+        self.showprocesslog('Cluster analysis started')
 
 # Section to deal with different bands having different null values.
         masktmp = data[0].data.mask
@@ -357,7 +362,7 @@ class Cluster(QtWidgets.QDialog):
         dat_out = []
         for i in self.piter(no_clust):
             if self.cltype != 'DBSCAN':
-                print('Number of Clusters:'+str(i))
+                self.showprocesslog('Number of Clusters:'+str(i))
             elif i > no_clust[0]:
                 continue
 
@@ -375,7 +380,7 @@ class Cluster(QtWidgets.QDialog):
                                  branching_factor=self.branchfac).fit(X)
 
             if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
-                print('Could not find '+str(i)+' clusters. '
+                self.showprocesslog('Could not find '+str(i)+' clusters. '
                       'Please change settings.')
 
                 return False
@@ -418,7 +423,7 @@ class Cluster(QtWidgets.QDialog):
             i.nullvalue = data[0].nullvalue
             i.extent = data[0].extent
 
-        print('Cluster complete' + ' ('+self.cltype + ' ' + ')')
+        self.showprocesslog('Cluster complete' + ' ('+self.cltype + ' ' + ')')
 
         for i in dat_out:
             i.data += 1

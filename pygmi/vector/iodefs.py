@@ -55,6 +55,10 @@ class ImportLineData(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.pbar = None  # self.parent.pbar
         self.parent = parent
@@ -151,7 +155,6 @@ class ImportLineData(QtWidgets.QDialog):
         self.xchan.setCurrentIndex(0)
         self.ychan.setCurrentIndex(1)
 
-
         if not nodialog:
             tmp = self.exec_()
 
@@ -161,7 +164,7 @@ class ImportLineData(QtWidgets.QDialog):
         try:
             nodata = float(self.nodata.text())
         except ValueError:
-            print('Null Value error - abandoning import')
+            self.showprocesslog('Null Value error - abandoning import')
             return False
 
         xcol = self.xchan.currentText()
@@ -241,7 +244,7 @@ class ImportLineData(QtWidgets.QDialog):
             head = fno.readline()
             tmp = fno.read()
         if r'/' not in head:
-            print('Not Geosoft XYZ format')
+            self.showprocesslog('Not Geosoft XYZ format')
             return None
         head = head.split()
         head.pop(0)
@@ -323,6 +326,10 @@ class ExportLine():
         self.pbar = None
         self.parent = parent
         self.indata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -335,7 +342,7 @@ class ExportLine():
 
         """
         if 'Line' not in self.indata:
-            print('Error: You need to have line data first!')
+            self.showprocesslog('Error: You need to have line data first!')
             return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -344,7 +351,7 @@ class ExportLine():
         if filename == '':
             return False
 
-        print('Export busy...')
+        self.showprocesslog('Export busy...')
 
         os.chdir(os.path.dirname(filename))
         data = self.indata['Line']
@@ -354,7 +361,7 @@ class ExportLine():
 
         dfall.to_csv(filename, index=False)
 
-        print('Export completed')
+        self.showprocesslog('Export completed')
 
         return True
 
@@ -379,6 +386,10 @@ class ExportShapeData():
         self.pbar = None
         self.parent = parent
         self.indata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -391,7 +402,7 @@ class ExportShapeData():
 
         """
         if 'Vector' not in self.indata:
-            print('Error: You need to have vector data first!')
+            self.showprocesslog('Error: You need to have vector data first!')
             return False
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -400,7 +411,7 @@ class ExportShapeData():
         if filename == '':
             return False
 
-        print('Export busy...')
+        self.showprocesslog('Export busy...')
 
         os.chdir(os.path.dirname(filename))
         data = self.indata['Vector']
@@ -411,7 +422,7 @@ class ExportShapeData():
 
 #        dfall.to_csv(filename, index=False)
 
-        print('Export completed')
+        self.showprocesslog('Export completed')
 
         return True
 
@@ -440,6 +451,10 @@ class ImportShapeData():
         self.indata = {}
         self.outdata = {}
         self.ifile = ''
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """

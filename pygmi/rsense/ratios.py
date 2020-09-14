@@ -53,6 +53,10 @@ class SatRatios(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -118,7 +122,7 @@ class SatRatios(QtWidgets.QDialog):
         """
         tmp = []
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            print('No Satellite Data')
+            self.showprocesslog('No Satellite Data')
             return False
 
         if not nodialog:
@@ -207,7 +211,7 @@ class SatRatios(QtWidgets.QDialog):
             flist = get_sentinel_list(flist)
 
         if not flist:
-            print('Could not find', sensor, 'data')
+            self.showprocesslog('Could not find', sensor, 'data')
             return False
 
         rlist = []
@@ -249,7 +253,7 @@ class SatRatios(QtWidgets.QDialog):
 
             datfin = []
             for i in rlist:
-                print('Calculating', i)
+                self.showprocesslog('Calculating', i)
                 formula = i.split(' ')[0]
                 formula = re.sub(r'(\d+)', r'Band\1', formula)
                 blist = formula
@@ -263,7 +267,7 @@ class SatRatios(QtWidgets.QDialog):
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    print('Error:', ', '.join(abort), 'missing.')
+                    self.showprocesslog('Error:', ', '.join(abort), 'missing.')
                     continue
 
                 ratio = ne.evaluate(formula, datd)

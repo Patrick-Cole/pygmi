@@ -137,6 +137,10 @@ class ImportSeisan():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """
@@ -163,7 +167,7 @@ class ImportSeisan():
             ltmp = pntfile.readlines()
 
         if len(ltmp[0]) < 80:
-            print('Error: Problem with file')
+            self.showprocesslog('Error: Problem with file')
             return False
 
         # This constructs a dictionary of functions
@@ -282,12 +286,12 @@ class ImportSeisan():
 
         if file_errors:
             if has_errors is False:
-                print('Warning: Problem with file')
-                print('Process will continue, but please '
+                self.showprocesslog('Warning: Problem with file')
+                self.showprocesslog('Process will continue, but please '
                       'see warnings in '+self.ifile+'.log')
             else:
-                print('Error: Problem with file')
-                print('Process stopping, please see errors '
+                self.showprocesslog('Error: Problem with file')
+                self.showprocesslog('Process stopping, please see errors '
                       'in '+self.ifile+'.log')
             fout = open(self.ifile+'.log', 'w')
             for i in file_errors:
@@ -297,7 +301,7 @@ class ImportSeisan():
             if has_errors is True:
                 return False
         else:
-            print('No errors in the file')
+            self.showprocesslog('No errors in the file')
 
         if event:
             dat.append(event)
@@ -915,6 +919,10 @@ class ExportSeisan():
         self.outdata = {}
         self.lmod = None
         self.fobj = None
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -926,7 +934,7 @@ class ExportSeisan():
 
         """
         if 'Seis' not in self.indata:
-            print(
+            self.showprocesslog(
                 'Error: You need to have a SEISAN data first!')
             return
 
@@ -1420,6 +1428,10 @@ class ExportCSV():
         self.outdata = {}
         self.lmod = None
         self.fobj = None
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -1431,7 +1443,7 @@ class ExportCSV():
 
         """
         if 'Seis' not in self.indata:
-            print(
+            self.showprocesslog(
                 'Error: You need to have a SEISAN data first!')
             return
 
@@ -1963,6 +1975,10 @@ class ExportSummaryCSV():
         self.outdata = {}
         self.lmod = None
         self.fobj = None
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -1974,7 +1990,7 @@ class ExportSummaryCSV():
 
         """
         if 'Seis' not in self.indata:
-            print('Error: You need to have a SEISAN data first!')
+            self.showprocesslog('Error: You need to have a SEISAN data first!')
             return
 
         data = self.indata['Seis']

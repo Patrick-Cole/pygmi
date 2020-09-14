@@ -528,7 +528,7 @@ def get_ascii(ifile):
     return dat
 
 
-def get_raster(ifile, nval=None, piter=None):
+def get_raster(ifile, nval=None, piter=None, showprocesslog=print):
     """
     This function loads a raster dataset off the disk using the GDAL
     libraries. It returns the data in a PyGMI data object.
@@ -601,12 +601,12 @@ def get_raster(ifile, nval=None, piter=None):
         if dat[i].data.dtype.kind == 'i':
             if nval is None:
                 nval = 999999
-                print('Adjusting null value to '+str(nval))
+                showprocesslog('Adjusting null value to '+str(nval))
             nval = int(nval)
         elif dat[i].data.dtype.kind == 'u':
             if nval is None:
                 nval = 0
-                print('Adjusting null value to '+str(nval))
+                showprocesslog('Adjusting null value to '+str(nval))
             nval = int(nval)
         else:
             if nval is None:
@@ -614,10 +614,10 @@ def get_raster(ifile, nval=None, piter=None):
             nval = float(nval)
             if nval not in dat[i].data and np.isclose(dat[i].data.min(), nval):
                 nval = dat[i].data.min()
-                print('Adjusting null value to '+str(nval))
+                showprocesslog('Adjusting null value to '+str(nval))
             if nval not in dat[i].data and np.isclose(dat[i].data.max(), nval):
                 nval = dat[i].data.max()
-                print('Adjusting null value to '+str(nval))
+                showprocesslog('Adjusting null value to '+str(nval))
 
         if ext == 'ers' and nval == -1.0e+32:
             dat[i].data[np.ma.less_equal(dat[i].data, nval)] = -1.0e+32
@@ -888,6 +888,10 @@ class ExportData():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -919,7 +923,7 @@ class ExportData():
         elif 'Raster' in self.indata:
             data = self.indata['Raster']
         else:
-            print('No raster data')
+            self.showprocesslog('No raster data')
             self.parent.process_is_active(False)
             return False
 
@@ -943,7 +947,7 @@ class ExportData():
 
         self.ifile = str(filename)
 
-        print('Export Data Busy...')
+        self.showprocesslog('Export Data Busy...')
 
     # Pop up save dialog box
         if filt == 'ArcInfo ASCII (*.asc)':
@@ -973,7 +977,7 @@ class ExportData():
         if filt == 'ArcGIS BIL (*.bil)':
             export_gdal(self.ifile, data, 'EHdr')
 
-        print('Export Data Finished!')
+        self.showprocesslog('Export Data Finished!')
         self.parent.process_is_active(False)
         return True
 
@@ -992,7 +996,7 @@ class ExportData():
 
         """
         if len(data) > 1:
-            print('Band names will be appended to the output filenames since '
+            self.showprocesslog('Band names will be appended to the output filenames since '
                   'you have a multiple band image')
 
         file_out = self.ifile.rpartition('.')[0]+'.gxf'
@@ -1057,7 +1061,7 @@ class ExportData():
 
         """
         if len(data) > 1:
-            print('Band names will be appended to the output filenames since '
+            self.showprocesslog('Band names will be appended to the output filenames since '
                   'you have a multiple band image')
 
         file_out = self.ifile.rpartition('.')[0] + '.grd'
@@ -1101,7 +1105,7 @@ class ExportData():
 
         """
         if len(data) > 1:
-            print('Band names will be appended to the output filenames since '
+            self.showprocesslog('Band names will be appended to the output filenames since '
                   'you have a multiple band image')
 
         file_out = self.ifile.rpartition('.')[0]+'.asc'
@@ -1147,7 +1151,7 @@ class ExportData():
 
         """
         if len(data) > 1:
-            print('Band names will be appended to the output filenames since '
+            self.showprocesslog('Band names will be appended to the output filenames since '
                   'you have a multiple band image')
 
         file_out = self.ifile.rpartition('.')[0]+'.xyz'

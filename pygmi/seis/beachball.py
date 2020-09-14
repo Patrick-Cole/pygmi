@@ -48,6 +48,10 @@ class MyMplCanvas(FigureCanvas):
     def __init__(self, parent=None):
         fig = Figure()
         super().__init__(fig)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         # figure stuff
         self.htype = 'Linear'
@@ -125,6 +129,10 @@ class BeachBall(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.ifile = ''
         self.pbar = None
@@ -169,7 +177,7 @@ class BeachBall(QtWidgets.QDialog):
         alist = sorted(set(alist))
 
         if not alist:
-            print('Error: no Fault Plane Solutions')
+            self.showprocesslog('Error: no Fault Plane Solutions')
             self.nofps = True
             return False
         self.nofps = False
@@ -325,7 +333,8 @@ class BeachBall(QtWidgets.QDialog):
             depth = idat[2]
             pwidth = self.mmc.pwidth*idat[-1]
             xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
-                                             self.mmc.isgeog)
+                                             self.mmc.isgeog,
+                                             self.showprocesslog)
 
             pvert1 = np.transpose([yyy, xxx])
             pvert0 = np.transpose([xxx2, yyy2])
@@ -413,7 +422,7 @@ class BeachBall(QtWidgets.QDialog):
 
         """
         if self.nofps:
-            print('Error: no Fault Plane Solutions')
+            self.showprocesslog('Error: no Fault Plane Solutions')
             return False
 
         self.show()
@@ -456,7 +465,7 @@ class BeachBall(QtWidgets.QDialog):
         return projdata
 
 
-def beachball(fm, centerx, centery, diam, isgeog):
+def beachball(fm, centerx, centery, diam, isgeog, showprocesslog=print):
     """
     Beachball.
 
@@ -578,7 +587,7 @@ def beachball(fm, centerx, centery, diam, isgeog):
     l2 = np.sqrt(d**2/(np.sin(phi)**2 + np.cos(phi)**2 * d**2/m**2))
 
     if D == 0:
-        print('Enter a diameter for the beachballs!')
+        showprocesslog('Enter a diameter for the beachballs!')
         return None
 
     inc = 1

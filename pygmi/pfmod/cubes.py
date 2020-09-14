@@ -27,7 +27,6 @@
 import ctypes
 import os
 import sys
-import warnings
 import numpy as np
 
 # The next two lines are fixes for types in PyOpenGL. They are not used, so
@@ -44,9 +43,9 @@ from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
 from numba import jit
 from PIL import Image
-import pygmi.pfmod.misc as misc
 from matplotlib.backends.backend_qt5agg import FigureCanvas
 from matplotlib.figure import Figure
+import pygmi.pfmod.misc as misc
 
 
 class Mod3dDisplay(QtWidgets.QDialog):
@@ -54,6 +53,11 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
+
         self.parent = parent
         self.lmod1 = None
         self.indata = {}
@@ -301,7 +305,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
             y = -np.sin(phi)
             z = np.sin(theta)
 
-#            print(x, y, z)
+#            self.showprocesslog(x, y, z)
 
             self.glwidget.setlightdir(x, y, z)
             self.glwidget.init_object()
@@ -368,7 +372,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
         """
         if 'Model3D' not in self.indata:
-            print('No 3D model. You may need to execute that module first')
+            self.showprocesslog('No 3D model. You may need to execute that '
+                                'module first')
             return False
 
         self.lmod1 = self.indata['Model3D'][0]
@@ -380,8 +385,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
         if liths[0] == 0:
             liths = liths[1:]
         if liths.size == 0:
-            print('No 3D model. You need to draw in at least part of a '
-                  'lithology first.')
+            self.showprocesslog('No 3D model. You need to draw in at least '
+                                'part of a lithology first.')
             return False
 
         self.show()
@@ -602,12 +607,13 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
                 c[1:-1, 1:-1, 1:-1] = cc
 
-                faces, vtx = MarchingCubes(xx, yy, zz, c, .1)
+                faces, vtx = MarchingCubes(xx, yy, zz, c, .1,
+                                           self.showprocesslog)
 
                 if vtx.size == 0:
                     self.lmod1.update_lith_list_reverse()
 #                    lithtext = self.lmod1.lith_list_reverse[lno]
-#                    print(lithtext)
+#                    self.showprocesslog(lithtext)
 
                     self.faces[lno] = []
                     self.corners[lno] = []
@@ -1368,7 +1374,7 @@ def normalize_v3(arr):
     return arr
 
 
-def MarchingCubes(x, y, z, c, iso):
+def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
     """
     # function [F,V,col] = MarchingCubes(x,y,z,c,iso,colors)
 
@@ -1461,7 +1467,7 @@ def MarchingCubes(x, y, z, c, iso):
     iden = np.nonzero(cedge.flatten(order='F'))[0]
 
     if iden.size == 0:          # all voxels are above or below iso
-        print('Warning: No such lithology, or all voxels are above or below iso')
+        showprocesslog('Warning: No such lithology, or all voxels are above or below iso')
         F = np.array([])
         V = np.array([])
         return F, V

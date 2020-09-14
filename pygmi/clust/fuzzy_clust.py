@@ -49,6 +49,10 @@ class FuzzyClust(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -202,7 +206,7 @@ class FuzzyClust(QtWidgets.QDialog):
         """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
-            print('Error: Your input datasets have different sizes. '
+            self.showprocesslog('Error: Your input datasets have different sizes. '
                   'Merge the data first')
             return False
 
@@ -313,7 +317,7 @@ class FuzzyClust(QtWidgets.QDialog):
         de_norm = self.denorm
         expo = self.fexp
 
-        print('Fuzzy Clustering started')
+        self.showprocesslog('Fuzzy Clustering started')
 
 # #############################################################################
 # Section to deal with different bands having different null values.
@@ -386,10 +390,10 @@ class FuzzyClust(QtWidgets.QDialog):
         dat_out = [Data() for i in range(no_clust[0], no_clust[1] + 1)]
 
         for i in range(no_clust[0], no_clust[1] + 1):
-            print('Number of Clusters:' + str(i))
+            self.showprocesslog('Number of Clusters:' + str(i))
             cnt = cnt + 1
             if self.radiobutton_datadriven.isChecked() is True:
-                print('Initial guess: data driven')
+                self.showprocesslog('Initial guess: data driven')
 
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp / i
@@ -412,18 +416,18 @@ class FuzzyClust(QtWidgets.QDialog):
                     term_thresh, expo, cltype, cov_constr)
 
             elif self.radiobutton_manual.isChecked() is True:
-                print('Initial guess: manual')
+                self.showprocesslog('Initial guess: manual')
 
                 clu, clcent, clobj_fcn, clvrc, clnce, clxbi = self.fuzzy_means(
                     dat_in, i, startmdat[i], startmfix[i],
                     max_iter, term_thresh, expo, cltype, cov_constr)
 
             elif self.radiobutton_random.isChecked() is True:
-                print('Initial guess: random')
+                self.showprocesslog('Initial guess: random')
 
                 clobj_fcn = np.array([np.Inf])
                 for j in range(no_runs):
-                    print('Run ' + str(j+1) + ' of' + str(no_runs))
+                    self.showprocesslog('Run ' + str(j+1) + ' of' + str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -521,7 +525,7 @@ class FuzzyClust(QtWidgets.QDialog):
             i.extent = data[0].extent
             i.data += 1
 
-        print('Fuzzy Cluster complete' + ' (' + self.cltype + ' ' +
+        self.showprocesslog('Fuzzy Cluster complete' + ' (' + self.cltype + ' ' +
               self.init_type + ')')
 
         self.outdata['Cluster'] = dat_out
@@ -592,7 +596,7 @@ class FuzzyClust(QtWidgets.QDialog):
         xbi : numpy array
             Xie beni index.
         """
-        print(' ')
+        self.showprocesslog(' ')
 
         if cltype == 'fuzzy c-means':
             cltype = 'fcm'
@@ -645,7 +649,7 @@ class FuzzyClust(QtWidgets.QDialog):
     # if membership matrix is provided
         elif init.shape[0] == no_clust and init.shape[1] == no_samples:
             if init[init < 0].size > 0:  # check for negative memberships
-                print('No negative memberships allowed!')
+                self.showprocesslog('No negative memberships allowed!')
     # scale given memberships to a column sum of unity
             uuu = init / (np.ones([no_clust, 1]) * init.sum())
     # MF matrix after exponential modification
@@ -686,7 +690,7 @@ class FuzzyClust(QtWidgets.QDialog):
             m_f = uuu ** expo
             obj_fcn[i] = np.sum((edist ** 2) * m_f)  # objective function
             if i > 0:
-                print('Iteration: ' + str(i) + ' Threshold: ' +
+                self.showprocesslog('Iteration: ' + str(i) + ' Threshold: ' +
                       str(term_thresh) + ' Current: ' +
                       '{:.2e}'.format(100 * ((obj_fcn[i - 1] -
                                               obj_fcn[i]) /

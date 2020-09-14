@@ -286,6 +286,10 @@ class MergeMod3D(QtWidgets.QDialog):
 
         self.master = QtWidgets.QComboBox()
         self.slave = QtWidgets.QComboBox()
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.setupui()
 
@@ -335,7 +339,7 @@ class MergeMod3D(QtWidgets.QDialog):
         if 'Model3D' not in self.indata:
             return False
         if len(self.indata['Model3D']) != 2:
-            print('You need two datasets connected!')
+            self.showprocesslog('You need two datasets connected!')
             return False
 
         for i in self.indata['Model3D']:
@@ -400,7 +404,7 @@ class MergeMod3D(QtWidgets.QDialog):
 
         """
         if self.master.currentText() == self.slave.currentText():
-            print('Your master dataset must be different'
+            self.showprocesslog('Your master dataset must be different'
                   ' to the slave dataset!')
             return False
 

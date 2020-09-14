@@ -189,6 +189,10 @@ class ClusterStats(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.combobox = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
@@ -265,7 +269,7 @@ class ClusterStats(QtWidgets.QDialog):
                       for i in data]
 
         if 'input_type' not in data[0].metadata['Cluster']:
-            print('Your dataset does not qualify')
+            self.showprocesslog('Your dataset does not qualify')
             return False
 
         self.cols = [j for j in data[0].metadata['Cluster']['input_type']]

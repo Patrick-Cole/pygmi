@@ -138,6 +138,10 @@ class IGRF(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.parent = parent
         self.indata = {}
@@ -354,9 +358,9 @@ class IGRF(QtWidgets.QDialog):
         igdgc = 1
 
         if maxyr < sdate < maxyr+1:
-            print('Warning: The date ' + str(sdate) + ' is out of range,')
-            print('but still within one year of model expiration date.')
-            print('An updated model file is available before 1.1.' +
+            self.showprocesslog('Warning: The date ' + str(sdate) + ' is out of range,')
+            self.showprocesslog('but still within one year of model expiration date.')
+            self.showprocesslog('An updated model file is available before 1.1.' +
                   str(maxyr))
 
         if max2[modelI] == 0:
@@ -441,14 +445,14 @@ class IGRF(QtWidgets.QDialog):
         self.outdata['Raster'][-1].data -= igrf_F
         self.outdata['Raster'][-1].dataid = bname
 
-        print('')
-        print('Mean Values in Calculation')
-        print('=============================')
-        print('Total Intensity: {0:.2f}'.format(fmean))
-        print('Inclination: {0:.2f}'.format(imean))
-        print('Declination: {0:.2f}'.format(dmean))
-        print('')
-        print('Calculation: Completed', True)
+        self.showprocesslog('')
+        self.showprocesslog('Mean Values in Calculation')
+        self.showprocesslog('=============================')
+        self.showprocesslog('Total Intensity: {0:.2f}'.format(fmean))
+        self.showprocesslog('Inclination: {0:.2f}'.format(imean))
+        self.showprocesslog('Declination: {0:.2f}'.format(dmean))
+        self.showprocesslog('')
+        self.showprocesslog('Calculation: Completed', True)
 
         return True
 

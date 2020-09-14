@@ -421,6 +421,11 @@ class SuperClass(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
+
         self.indata = {}
         self.outdata = {}
         self.parent = parent
@@ -666,7 +671,7 @@ class SuperClass(QtWidgets.QDialog):
         None.
 
         """
-        print(row, column)
+        self.showprocesslog(row, column)
 
     def on_apoly(self):
         """
@@ -793,7 +798,7 @@ class SuperClass(QtWidgets.QDialog):
 
         """
         if 'Raster' not in self.indata:
-            print('Error: You must have a multi-band raster dataset in '
+            self.showprocesslog('Error: You must have a multi-band raster dataset in '
                   'addition to your cluster analysis results')
             return False
 
@@ -871,7 +876,7 @@ class SuperClass(QtWidgets.QDialog):
             i.nullvalue = 0
             i.data.data[i.data.mask] = 0
 
-        print('Cluster complete')
+        self.showprocesslog('Cluster complete')
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']
@@ -988,7 +993,7 @@ class SuperClass(QtWidgets.QDialog):
         lbls = np.unique(y)
 
         if len(lbls) < 2:
-            print('Error: You need at least two classes')
+            self.showprocesslog('Error: You need at least two classes')
             return False
 
         # Encoding categorical data

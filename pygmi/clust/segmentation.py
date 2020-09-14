@@ -52,6 +52,10 @@ class ImageSeg(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.parent = parent
         self.indata = {}
@@ -224,7 +228,7 @@ class ImageSeg(QtWidgets.QDialog):
         """
         rows, cols, bands = data.shape
 
-        print('Initialising...')
+        self.showprocesslog('Initialising...')
 
         olist = {}
         slist = {}
@@ -247,12 +251,12 @@ class ImageSeg(QtWidgets.QDialog):
                     nlist[(k, i*cols+j)] = 1
                 omap[i, j] = i*cols+j
 
-        print('merging...')
+        self.showprocesslog('merging...')
 
         omap = self.segment2(omap, olist, slist, mlist, nlist, bands,
                              doshape, wcompact, wcolor, scale)
 
-        print('renumbering...')
+        self.showprocesslog('renumbering...')
         tmp = np.unique(omap)
 
         for i, val in enumerate(tmp):
@@ -317,7 +321,7 @@ class ImageSeg(QtWidgets.QDialog):
             self.pbar.setMaximum(clen)
             self.pbar.setMinimum(0)
             self.pbar.setValue(0)
-            print('Iteration number: '+str(cnt))
+            self.showprocesslog('Iteration number: '+str(cnt))
             oldperc = 0
 
             olist3 = olist.copy()

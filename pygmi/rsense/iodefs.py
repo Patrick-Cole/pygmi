@@ -167,6 +167,10 @@ class ImportData():
         self.indata = {}
         self.outdata = {}
         self.extscene = extscene
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """
@@ -190,7 +194,7 @@ class ImportData():
             if self.ifile == '':
                 return False
         os.chdir(os.path.dirname(self.ifile))
-        dat = get_data(self.ifile, piter)
+        dat = get_data(self.ifile, piter, self.showprocesslog)
 
         if dat is None:
             if self.filt == 'hdf (*.hdf *.h5)':
@@ -398,6 +402,10 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.pbar = None  # self.parent.pbar
         self.parent = parent
@@ -506,7 +514,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
             _ = float(self.lonmax.text())
             _ = float(self.latmax.text())
         except ValueError:
-            print('Value error - abandoning import')
+            self.showprocesslog('Value error - abandoning import')
             return False
 
         gdf = self.get_5P_data(meta)
@@ -572,8 +580,8 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
         dataset = gdal.Open(self.ifile, gdal.GA_ReadOnly)
         if dataset is None:
-            print('Problem! Unable to import')
-            print(os.path.basename(self.ifile))
+            self.showprocesslog('Problem! Unable to import')
+            self.showprocesslog(os.path.basename(self.ifile))
             return None
 
         subdata = dataset.GetSubDatasets()
@@ -633,7 +641,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
         del meta['longitude']
 
         if lats is None:
-            print('No Latitudes in dataset')
+            self.showprocesslog('No Latitudes in dataset')
             return None
 
         lats = lats.flatten()
@@ -668,7 +676,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
         dat1 = dat1[dat1 != 9.96921e+36]
 
         if dat1.size == 0:
-            print(idfile, 'is empty.')
+            self.showprocesslog(idfile, 'is empty.')
             return None
 
         df = pd.DataFrame({'lon': pnts1[:, 0], 'lat': pnts1[:, 1]})
@@ -776,7 +784,7 @@ class ImportShapeData():
         return projdata
 
 
-def calculate_toa(dat):
+def calculate_toa(dat, showprocesslog=print):
     """
     Top of atmosphere correction. Includes VNIR, SWIR and TIR bands.
 
@@ -791,7 +799,7 @@ def calculate_toa(dat):
         PyGMI raster dataset
     """
 
-    print('Calculating top of atmosphere...')
+    showprocesslog('Calculating top of atmosphere...')
 
     datanew = {}
     for datai in dat:
@@ -823,7 +831,7 @@ def calculate_toa(dat):
     return out
 
 
-def get_data(ifile, piter=None):
+def get_data(ifile, piter=None, showprocesslog=print):
     """
     This function loads a raster dataset off the disk using the GDAL
     libraries. It returns the data in a PyGMI data object.
@@ -841,16 +849,16 @@ def get_data(ifile, piter=None):
     ifile = ifile[:]
     bfile = os.path.basename(ifile)
 
-    print('Importing', bfile)
+    showprocesslog('Importing', bfile)
 
     if 'AST_' in bfile and 'hdf' in bfile.lower():
         dat = get_aster_hdf(ifile, piter)
     elif 'AST_' in bfile and 'zip' in bfile.lower():
-        dat = get_aster_zip(ifile, piter)
+        dat = get_aster_zip(ifile, piter, showprocesslog)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']:
-        dat = get_landsat(ifile, piter)
+        dat = get_landsat(ifile, piter, showprocesslog)
     elif '.xml' in bfile and '.SAFE' in ifile:
-        dat = get_sentinel2(ifile, piter)
+        dat = get_sentinel2(ifile, piter, showprocesslog)
     elif 'MOD' in bfile and 'hdf' in bfile.lower() and '.006.' in bfile:
         dat = get_modisv6(ifile, piter)
     else:
@@ -859,7 +867,7 @@ def get_data(ifile, piter=None):
     return dat
 
 
-def get_modis(ifile):
+def get_modis(ifile, showprocesslog=print):
     """
     Gets MODIS data
 
@@ -947,7 +955,7 @@ def get_modis(ifile):
             if newx.size == 0:
                 dat[i].data = np.zeros((rows, cols)) + nval
             else:
-                tmp = quickgrid(newx, newy, newz, latsdim)
+                tmp = quickgrid(newx, newy, newz, latsdim, showprocesslog)
                 mask = np.ma.getmaskarray(tmp)
                 gdat = tmp.data
                 dat[i].data = np.ma.masked_invalid(gdat[::-1])
@@ -1084,7 +1092,7 @@ def get_modisv6(ifile, piter=None):
     return dat
 
 
-def get_landsat(ifilet, piter=None):
+def get_landsat(ifilet, piter=None, showprocesslog=print):
     """
     Gets Landsat Data.
 
@@ -1109,20 +1117,20 @@ def get_landsat(ifilet, piter=None):
             tarnames = tar.getnames()
             ifile = next((i for i in tarnames if '_MTL.txt' in i), None)
             if ifile is None:
-                print('Could not find MTL.txt file in tar archive')
+                showprocesslog('Could not find MTL.txt file in tar archive')
                 return None
-            print('Extracting tar...')
+            showprocesslog('Extracting tar...')
             tar.extractall(idir)
             ifile = os.path.join(idir, ifile)
     elif '_MTL.txt' in ifilet:
         ifile = ifilet
     else:
-        print('Input needs to be tar.gz or _MTL.txt')
+        showprocesslog('Input needs to be tar.gz or _MTL.txt')
         return None
 
     files = glob.glob(ifile[:-7]+'*[0-9].tif')
 
-    print('Importing Landsat data...')
+    showprocesslog('Importing Landsat data...')
 
     nval = 0
     dat = []
@@ -1134,12 +1142,12 @@ def get_landsat(ifilet, piter=None):
         else:
             fext = ifile2[-5]
 
-        print('Importing Band', fext)
+        showprocesslog('Importing Band', fext)
 
         dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
 
         if dataset is None:
-            print('Problem with band '+fext)
+            showprocesslog('Problem with band '+fext)
             breakpoint()
             continue
 
@@ -1165,14 +1173,14 @@ def get_landsat(ifilet, piter=None):
         dat = None
 
     if 'tar.gz' in ifilet:
-        print('Cleaning Extracted tar files...')
+        showprocesslog('Cleaning Extracted tar files...')
         for tfile in tarnames:
             os.remove(os.path.join(os.path.dirname(ifile), tfile))
 
     return dat
 
 
-def get_sentinel2(ifile, piter=None):
+def get_sentinel2(ifile, piter=None, showprocesslog=print):
     """
     Gets Sentinel-2 Data.
 
@@ -1201,15 +1209,15 @@ def get_sentinel2(ifile, piter=None):
     dat = []
     for bfile, _ in subdata:
         dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
-        print('Importing', os.path.basename(bfile))
+        showprocesslog('Importing', os.path.basename(bfile))
         if dataset is None:
-            print('Problem with', ifile)
+            showprocesslog('Problem with', ifile)
             continue
 
         for i in piter(range(dataset.RasterCount)):
             rtmp = dataset.GetRasterBand(i+1)
             bname = rtmp.GetDescription()
-            # print('Importing', bname)
+            # self.showprocesslog('Importing', bname)
 
             dat.append(Data())
             dat[-1].data = rtmp.ReadAsArray()
@@ -1233,7 +1241,7 @@ def get_sentinel2(ifile, piter=None):
     return dat
 
 
-def get_aster_zip(ifile, piter=None):
+def get_aster_zip(ifile, piter=None, showprocesslog=print):
     """
     Gets ASTER Data.
 
@@ -1265,7 +1273,7 @@ def get_aster_zip(ifile, piter=None):
     else:
         return None
 
-    print('Extracting zip...')
+    showprocesslog('Extracting zip...')
 
     idir = os.path.dirname(ifile)
     zfile = zipfile.ZipFile(ifile)
@@ -1283,7 +1291,7 @@ def get_aster_zip(ifile, piter=None):
         dataset = gdal.Open(os.path.join(idir, zfile), gdal.GA_ReadOnly)
 
         if dataset is None:
-            print('Problem with', zfile)
+            showprocesslog('Problem with', zfile)
             continue
 
         dataset = gdal.AutoCreateWarpedVRT(dataset)
@@ -1305,7 +1313,7 @@ def get_aster_zip(ifile, piter=None):
 
         dataset = None
 
-    print('Cleaning Extracted zip files...')
+    showprocesslog('Cleaning Extracted zip files...')
     for zfile in zipnames:
         os.remove(os.path.join(idir, zfile))
 

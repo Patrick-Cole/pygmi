@@ -49,6 +49,10 @@ class CorrectDescriptions(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.indata = {}
         self.outdata = {}
@@ -202,12 +206,12 @@ class CorrectDescriptions(QtWidgets.QDialog):
             if cmatch:
                 cmatch = cmatch[0]
             else:
-                # print('No match found for '+text)
+                # self.showprocesslog('No match found for '+text)
                 nomatch.append(text)
                 continue
 
             if cmatch != text:
-                # print('Correcting '+text+' to '+cmatch)
+                # self.showprocesslog('Correcting '+text+' to '+cmatch)
                 correction.append(text+' to '+cmatch)
                 i['3'].region = cmatch
 

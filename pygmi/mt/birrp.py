@@ -90,6 +90,10 @@ class BIRRP(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
         self.pbar = None  # self.parent.pbar
         self.parent = parent
@@ -303,7 +307,7 @@ class BIRRP(QtWidgets.QDialog):
 
         ilev = data.pop(0)
         if int(ilev) != 0:
-            print('not supported')
+            self.showprocesslog('not supported')
             return
         nout = int(data.pop(0))
         ninp = int(data.pop(0))
@@ -319,7 +323,7 @@ class BIRRP(QtWidgets.QDialog):
         if nout == 3:
             nz = int(data.pop(0))
         elif nout == 1:
-            print('not supported')
+            self.showprocesslog('not supported')
             return
         c2threshe1 = ''
         if int(nout) == 3 and int(nz) == 0:
@@ -331,13 +335,13 @@ class BIRRP(QtWidgets.QDialog):
         imode = int(data.pop(0))
         jmode = int(data.pop(0))
         if imode != 0:
-            print('not supported')
+            self.showprocesslog('not supported')
             return
         nread = ''
         if jmode == 0:
             nread = data.pop(0)
         else:
-            print('not supported')
+            self.showprocesslog('not supported')
             return
 
         nfil = {}

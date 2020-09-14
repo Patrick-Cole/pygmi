@@ -608,6 +608,10 @@ class PlotQC(GraphWindow):
         self.indata = {}
         self.parent = parent
         self.datd = None
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def change_band(self):
         """
@@ -684,7 +688,7 @@ class PlotQC(GraphWindow):
         self.datd = import_for_plots(data)
 
         if not self.datd:
-            print('There is no compatible data in the file')
+            self.showprocesslog('There is no compatible data in the file')
             return
 
         products = ['Hour Histogram',

@@ -358,6 +358,10 @@ class PlotVRCetc(GraphWindow):
         self.label2.hide()
         self.parent = parent
         self.indata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def change_band(self):
         """
@@ -432,7 +436,7 @@ class PlotVRCetc(GraphWindow):
             items += ['Xie-Beni Index']
 
         if len(items) == 0:
-            print('Your dataset does not qualify')
+            self.showprocesslog('Your dataset does not qualify')
             return
 
         self.combobox1.addItems(items)

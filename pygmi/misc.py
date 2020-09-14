@@ -233,7 +233,6 @@ class ProgressBarText():
         i = 0
         oldval = 0
         gottototal = False
-        # print('\n')
         for obj in iterable:
             yield obj
             i += 1

@@ -155,6 +155,10 @@ class ExportSEGY():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def run(self):
         """
@@ -171,7 +175,7 @@ class ExportSEGY():
         if 'ESEIS' in self.indata:
             data = self.indata['ESEIS']
         else:
-            print('No SEG-Y data')
+            self.showprocesslog('No SEG-Y data')
             self.parent.process_is_active(False)
             return False
 
@@ -188,11 +192,11 @@ class ExportSEGY():
 
         self.ifile = str(filename)
 
-        print('Export Data Busy...')
+        self.showprocesslog('Export Data Busy...')
 
         self.export_segy(data)
 
-        print('Export SEG-Y Finished!')
+        self.showprocesslog('Export SEG-Y Finished!')
         self.parent.process_is_active(False)
         return True
 
