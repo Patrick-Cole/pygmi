@@ -37,11 +37,11 @@ import pandas as pd
 from PyQt5 import QtWidgets, QtCore
 from matplotlib.path import Path
 import matplotlib.patches as mpatches
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     Canvas for the actual plot.
 
@@ -53,7 +53,6 @@ class MyMplCanvas(FigureCanvas):
 
     def __init__(self, parent=None):
         fig = Figure()
-
         super().__init__(fig)
 
     def update_legend(self, data1):

@@ -269,7 +269,8 @@ class MextDisplay(QtWidgets.QDialog):
 
         # This line is to avoid duplicates since study area and dtm are often
         # the same dataset
-        tmp = [i for i in set(self.lmod1.griddata.values())]
+        # tmp = [i for i in set(self.lmod1.griddata.values())]
+        tmp = list(set(self.lmod1.griddata.values()))
         self.parent.outdata['Raster'] = tmp
         self.showtext('Changes applied.')
 
@@ -535,7 +536,6 @@ class MextDisplay(QtWidgets.QDialog):
                 self.combo_other.setCurrentIndex(gkeys.index(tmp))
 
         self.combo_dataset.currentIndexChanged.connect(self.get_area)
-
 
     def update_vals(self):
         """

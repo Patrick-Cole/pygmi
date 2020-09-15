@@ -422,7 +422,8 @@ class Smooth(QtWidgets.QDialog):
             dummy = dummy.data
 
             for i in self.piter(range(rowd)):
-#                self.showprocesslog(title+' Progress: ' + str(round(100*i/rowd))+'%', True)
+                # self.showprocesslog(title+' Progress: ' +
+                #                     str(round(100*i/rowd))+'%', True)
                 for j in range(cold):
                     tmp1 = dummy[i:i+rowf, j:j+colf][fmat]
                     if np.isnan(tmp1).min() == False:

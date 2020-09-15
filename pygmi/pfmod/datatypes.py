@@ -149,7 +149,6 @@ class LithModel():
         else:
             piter = iter
 
-
         xvals = np.arange(self.xrange[0], self.xrange[1], self.dxy)
         yvals = np.arange(self.yrange[0], self.yrange[1], self.dxy)
         zvals = np.arange(self.zrange[0], self.zrange[1], self.d_z)
@@ -211,7 +210,6 @@ class LithModel():
             piter = pbar.iter
         else:
             piter = iter
-
 
         self.lith_index = np.zeros([self.numx, self.numy, self.numz],
                                    dtype=int)
@@ -295,7 +293,8 @@ class LithModel():
         Parameters
         ----------
         modified : bool, optional
-            Flag for whether the lithology has been modified. The default is True.
+            Flag for whether the lithology has been modified. The default is
+            True.
 
         Returns
         -------

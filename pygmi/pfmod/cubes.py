@@ -43,7 +43,7 @@ from scipy.ndimage.interpolation import zoom
 import scipy.ndimage.filters as sf
 from numba import jit
 from PIL import Image
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 import pygmi.pfmod.misc as misc
 
@@ -1269,7 +1269,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         return angle
 
 
-class MySunCanvas(FigureCanvas):
+class MySunCanvas(FigureCanvasQTAgg):
     """
     Canvas for the sunshading tool.
 
@@ -1467,7 +1467,8 @@ def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
     iden = np.nonzero(cedge.flatten(order='F'))[0]
 
     if iden.size == 0:          # all voxels are above or below iso
-        showprocesslog('Warning: No such lithology, or all voxels are above or below iso')
+        showprocesslog('Warning: No such lithology, or all voxels are above '
+                       'or below iso')
         F = np.array([])
         V = np.array([])
         return F, V

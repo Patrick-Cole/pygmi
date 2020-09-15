@@ -31,9 +31,9 @@ import glob
 import platform
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Rectangle
 import mtpy.modeling.occam1d as occam1d
 from mtpy.core.mt import MT
@@ -280,11 +280,9 @@ class Metadata(QtWidgets.QDialog):
         return True
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     MPL Canvas class.
-
-    This routine will also allow the picking and movement of nodes of data.
     """
 
     def __init__(self, parent=None):
@@ -821,7 +819,7 @@ class RotateEDI(QtWidgets.QDialog):
         return projdata
 
 
-class MyMplCanvasPick(FigureCanvas):
+class MyMplCanvasPick(FigureCanvasQTAgg):
     """
     MPL Canvas class.
 
@@ -921,9 +919,11 @@ class MyMplCanvasPick(FigureCanvas):
             self.line2.set_data(xxx, yyy)
         elif event.button == 1:
             xxx, yyy = self.line.get_data()
-            rect = Rectangle((xxx[0], yyy[0]), event.xdata-xxx[0], yyy[1]-yyy[0])
+            rect = Rectangle((xxx[0], yyy[0]), event.xdata-xxx[0],
+                             yyy[1]-yyy[0])
             xxx, yyy = self.line2.get_data()
-            rect2 = Rectangle((xxx[0], yyy[0]), event.xdata-xxx[0], yyy[1]-yyy[0])
+            rect2 = Rectangle((xxx[0], yyy[0]), event.xdata-xxx[0],
+                              yyy[1]-yyy[0])
             self.maskrange = np.sort([xxx[0], event.xdata])
 
         self.figure.canvas.restore_region(self.background)
@@ -1300,6 +1300,7 @@ class EditEDI(QtWidgets.QDialog):
 
         return projdata
 
+
 class MySlider(QtWidgets.QSlider):
     """
     My Slider
@@ -1307,6 +1308,7 @@ class MySlider(QtWidgets.QSlider):
     Custom class which allows clicking on a horizontal slider bar with slider
     moving to click in a single step.
     """
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
@@ -1349,7 +1351,7 @@ class MySlider(QtWidgets.QSlider):
                                                                self.width()))
 
 
-class MyMplCanvas2(FigureCanvas):
+class MyMplCanvas2(FigureCanvasQTAgg):
     """
     MPL Canvas class.
     """
@@ -1574,7 +1576,8 @@ class Occam1D(QtWidgets.QDialog):
         None.
 
         """
-        self.lbl_profnum.setText('Solution: '+str(self.hs_profnum.sliderPosition()))
+        self.lbl_profnum.setText('Solution: ' +
+                                 str(self.hs_profnum.sliderPosition()))
         self.change_band()
 
     def acceptall(self):
@@ -1895,7 +1898,7 @@ def tonumber(test, alttext=None):
     return int(test)
 
 
-def test():
+def testfn():
     """ main test """
     datadir = r'C:\Work\Programming\pygmi\data\MT\\'
     edi_file = datadir+r"synth02.edi"
@@ -1910,5 +1913,6 @@ def test():
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()
 
+
 if __name__ == "__main__":
-    test()
+    testfn()

@@ -272,7 +272,7 @@ class ClusterStats(QtWidgets.QDialog):
             self.showprocesslog('Your dataset does not qualify')
             return False
 
-        self.cols = [j for j in data[0].metadata['Cluster']['input_type']]
+        self.cols = list(data[0].metadata['Cluster']['input_type'])
         self.data = []
 
         for i in data:
@@ -298,6 +298,7 @@ class ClusterStats(QtWidgets.QDialog):
         self.tablewidget.setVerticalHeaderLabels(rows)
 
         self.combo()
+        return True
 
     def save(self):
         """

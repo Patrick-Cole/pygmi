@@ -288,11 +288,11 @@ class ImportSeisan():
             if has_errors is False:
                 self.showprocesslog('Warning: Problem with file')
                 self.showprocesslog('Process will continue, but please '
-                      'see warnings in '+self.ifile+'.log')
+                                    'see warnings in '+self.ifile+'.log')
             else:
                 self.showprocesslog('Error: Problem with file')
                 self.showprocesslog('Process stopping, please see errors '
-                      'in '+self.ifile+'.log')
+                                    'in '+self.ifile+'.log')
             fout = open(self.ifile+'.log', 'w')
             for i in file_errors:
                 fout.write(i[0]+'\n')

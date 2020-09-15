@@ -35,10 +35,10 @@ from matplotlib.patches import Polygon
 from matplotlib.lines import Line2D
 from matplotlib.path import Path
 from matplotlib.ticker import NullFormatter
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 
-class GraphHist(FigureCanvas):
+class GraphHist(FigureCanvasQTAgg):
     """Graph Hist."""
 
     def __init__(self, parent=None):
@@ -155,7 +155,8 @@ class GraphHist(FigureCanvas):
         self.axscatter.get_yaxis().set_visible(False)
 
         self.csp = self.axscatter.imshow(xymahist.T, interpolation='nearest',
-                                         cmap=cm.jet, aspect='auto')
+                                         cmap=cm.get_cmap('jet'),
+                                         aspect='auto')
 
         self.csp.set_clim(xymahist.min(), xymahist.max())
         self.csp.changed()
@@ -254,7 +255,7 @@ class GraphHist(FigureCanvas):
         self.polyi.draw_callback()
 
 
-class GraphMap(FigureCanvas):
+class GraphMap(FigureCanvasQTAgg):
     """
     Graph Map.
 
@@ -295,7 +296,7 @@ class GraphMap(FigureCanvas):
         self.subplot.get_xaxis().set_visible(False)
         self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, cmap=cm.jet)
+        self.csp = self.subplot.imshow(dat.data, cmap=cm.get_cmap('jet'))
         self.subplot.figure.colorbar(self.csp)
 
         self.figure.canvas.draw()
@@ -797,8 +798,9 @@ class ScatterPlot(QtWidgets.QDialog):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('Error: You must have a multi-band raster dataset in '
-                  'addition to your cluster analysis results')
+            self.showprocesslog('Error: You must have a multi-band raster '
+                                'dataset in addition to your cluster analysis'
+                                ' results')
             return False
 
         self.dat_tmp = self.indata['Raster']
@@ -886,7 +888,6 @@ class ScatterPlot(QtWidgets.QDialog):
 #        projdata['ftype'] = '2D Mean'
 
         return projdata
-
 
     def update_map(self, polymask):
         """

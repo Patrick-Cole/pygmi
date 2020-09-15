@@ -27,14 +27,14 @@
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from matplotlib import cm
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
 from pygmi.misc import frm
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     Canvas for the actual plot.
 
@@ -72,7 +72,8 @@ class MyMplCanvas(FigureCanvas):
         self.axes = self.figure.add_subplot(111)
 
         cdat = data1.data
-        csp = self.axes.imshow(cdat, cmap=cm.jet, extent=data1.extent)
+        csp = self.axes.imshow(cdat, cmap=cm.get_cmap('jet'),
+                               extent=data1.extent)
         vals = np.unique(cdat)
         vals = vals.compressed()
         bnds = (vals - 0.5).tolist() + [vals.max() + .5]
@@ -164,7 +165,7 @@ class MyMplCanvas(FigureCanvas):
         self.axes = self.figure.add_subplot(111)
 
         rdata = self.axes.imshow(data1.metadata['Cluster']['memdat'][mem],
-                                 extent=data1.extent, cmap=cm.jet)
+                                 extent=data1.extent, cmap=cm.get_cmap('jet'))
         self.figure.colorbar(rdata)
 #        self.axes.set_title('Data')
         self.axes.set_xlabel('Eastings')

@@ -117,7 +117,7 @@ class Normalisation(QtWidgets.QDialog):
                 return False
 
         data = copy.deepcopy(self.indata['Raster'])
-        transform = np.zeros((2, 2))
+        # transform = np.zeros((2, 2))
         if self.radiobutton_interval.isChecked():
             for i in data:
                 tmp1 = i.data.min()

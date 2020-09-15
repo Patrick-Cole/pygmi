@@ -31,8 +31,8 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import scipy.ndimage as ndimage
 from scipy import interpolate
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.figure import Figure
 from matplotlib import cm
 from osgeo import gdal
@@ -1504,7 +1504,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.combo_overview.currentIndexChanged.connect(self.pic_overview)
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib Canvas"""
 
     def __init__(self, parent=None):
@@ -1512,7 +1512,7 @@ class MyMplCanvas(FigureCanvas):
         super().__init__(fig)
 
         self.lmod1 = parent.lmod1
-        self.cbar = cm.jet
+        self.cbar = cm.get_cmap('jet')
         self.curmodel = 0
         self.mywidth = 1
         self.xold = None
@@ -1912,7 +1912,6 @@ class MyMplCanvas(FigureCanvas):
         self.laxes.set_ylim(self.ylims)
         self.laxes.xaxis.set_major_formatter(frm)
         self.laxes.yaxis.set_major_formatter(frm)
-
 
         self.lims.set_visible(True)
 
@@ -2532,6 +2531,10 @@ class ImportPicture(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
         self.parent = parent
         self.lmod = self.parent.lmod1
 
@@ -2767,7 +2770,7 @@ class ImportPicture(QtWidgets.QDialog):
             y1a = self.dsb_y1.value()
             y2a = self.dsb_y2.value()
 
-            dat = get_raster(imptext)
+            dat = get_raster(imptext, showprocesslog=self.showprocesslog)
 
             if dat is None:
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',

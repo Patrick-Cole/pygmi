@@ -587,8 +587,6 @@ class GeoData():
         self.y12 = np.array([numy/2-dxy/2, numy/2+dxy/2])
         self.z12 = np.arange(-numz, numz+d_z, d_z)
 
-
-
     def gboxmain(self, xobs, yobs, zobs, hcor):
         """
         Gbox routine by Blakely.
@@ -1213,7 +1211,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
         clrtmp = np.array([0])
     else:
         clrtmp = np.arange(len(inputliths))/(len(inputliths)-1)
-    clrtmp = cm.jet(clrtmp)[:, :-1]
+    clrtmp = cm.get_cmap('jet')(clrtmp)[:, :-1]
     clrtmp *= 255
     clrtmp = clrtmp.astype(int)
 
@@ -1552,7 +1550,7 @@ def test():
 
     magval = lmod.griddata['Calculated Magnetics'].data
 
-#    plt.imshow(magval, cmap=cm.jet)
+#    plt.imshow(magval, cmap=cm.get_cmap('jet'))
 #    plt.show()
 
 

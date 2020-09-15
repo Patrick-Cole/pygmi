@@ -37,15 +37,15 @@ menu. The following are supported:
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from matplotlib import cm
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 from pygmi.raster.modest_image import imshow
 from pygmi.misc import frm
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     Canvas for the actual plot.
 
@@ -116,7 +116,8 @@ class MyMplCanvas(FigureCanvas):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        rdata = imshow(self.axes, data1.data, extent=data1.extent, cmap=cm.jet,
+        rdata = imshow(self.axes, data1.data, extent=data1.extent,
+                       cmap=cm.get_cmap('jet'),
                        interpolation='nearest')
 
         if not data1.isrgb:
@@ -205,7 +206,7 @@ class MyMplCanvas(FigureCanvas):
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)
 
-        cmap = cm.jet
+        cmap = cm.get_cmap('jet')
 
         norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
 

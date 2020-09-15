@@ -665,11 +665,11 @@ def testfn():
 # Calculate the field
 
     magval = lmod.griddata['Calculated Magnetics'].data
-    plt.imshow(magval, cmap=cm.jet)
+    plt.imshow(magval, cmap=cm.get_cmap('jet'))
     plt.show()
 
     dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
-    plt.imshow(dat2.data, cmap=cm.jet)
+    plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
     plt.show()
 
 

@@ -220,12 +220,13 @@ class SatRatios(QtWidgets.QDialog):
 
         for ifile in flist:
             if isinstance(ifile, str):
-                dat = iodefs.get_data(ifile)
+                dat = iodefs.get_data(ifile, showprocesslog=self.showprocesslog)
                 ofile = ifile
             elif isinstance(ifile, list) and 'RasterFileList' in self.indata:
                 dat = []
                 for jfile in ifile:
-                    dat += iodefs.get_data(jfile)
+                    dat += iodefs.get_data(jfile,
+                                           showprocesslog=self.showprocesslog)
                 ofile = ifile[-1]
             else:
                 dat = ifile
@@ -285,6 +286,7 @@ class SatRatios(QtWidgets.QDialog):
                 export_gdal(ofile, datfin, 'GTiff')
 
         self.outdata['Raster'] = datfin
+        return True
 
     def setratios(self):
         """
@@ -407,8 +409,7 @@ def get_aster_list(flist):
     if isinstance(flist[0], list):
         if 'AST_' in flist[0][0].filename:
             return flist
-        else:
-            return []
+        return []
 
     names = {}
     for i in flist:
@@ -451,8 +452,7 @@ def get_landsat_list(flist, sensor):
         bfile = os.path.basename(flist[0][0].filename)
         if bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']:
             return flist
-        else:
-            return []
+        return []
 
     if sensor == 'Landsat 8 (OLI)':
         fid = ['LC08']
@@ -491,8 +491,7 @@ def get_sentinel_list(flist):
     if isinstance(flist[0], list):
         if '.SAFE' in flist[0][0].filename:
             return flist
-        else:
-            return []
+        return []
 
     flist2 = []
     for i in flist:

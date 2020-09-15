@@ -1145,7 +1145,7 @@ def clean_string(tmp):
 # remove page numbers
     for j, tmp2j in enumerate(tmp2):
         tmp3 = tmp2j.replace(' ', '')
-        if tmp3[0] == '-' and tmp3[-1] == '-'and len(tmp3) <= 5:
+        if tmp3[0] == '-' and tmp3[-1] == '-' and len(tmp3) <= 5:
             tmp2[j] = ''
 
 # remove some records

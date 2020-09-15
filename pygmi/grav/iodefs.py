@@ -28,7 +28,6 @@ import os
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
-from pygmi.vector.datatypes import LData
 import pygmi.menu_default as menu_default
 
 
@@ -165,7 +164,8 @@ class ImportCG5(QtWidgets.QDialog):
                 return False
 
         if self.line.currentText() == self.station.currentText():
-            self.showprocesslog('Your line column cannot be the same as your station column')
+            self.showprocesslog('Your line column cannot be the same as your '
+                                'station column')
             return False
 
         tmp = [self.line.currentText(),
@@ -175,9 +175,10 @@ class ImportCG5(QtWidgets.QDialog):
                self.zchan.currentText()]
 
         if len(set(tmp)) != len(tmp):
-            self.showprocesslog('Unable to import, two of your GPS file columns are the '
-                  'same. Make sure you have a line column in your GPS file, '
-                  'and that you did not specify the same column twice.')
+            self.showprocesslog('Unable to import, two of your GPS file '
+                                'columns are the same. Make sure you have a '
+                                'line column in your GPS file, and that you '
+                                'did not specify the same column twice.')
             return False
 
         # Rename columns
@@ -238,7 +239,7 @@ class ImportCG5(QtWidgets.QDialog):
         dlist = dlist[dlist.STATION < 10000]
 
         if dlist.size > 0:
-            self.showprocesslog('Warning, the following are duplicated:' )
+            self.showprocesslog('Warning, the following are duplicated:')
             self.showprocesslog(dlist.to_string(index=False))
 
         return True

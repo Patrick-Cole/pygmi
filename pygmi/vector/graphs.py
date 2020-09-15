@@ -29,10 +29,10 @@ import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from scipy.stats import median_absolute_deviation
 import matplotlib.collections as mc
-from matplotlib.cm import Set1, jet
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib import cm
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from pandas.api.types import is_numeric_dtype
 from pygmi.misc import frm
 
@@ -92,7 +92,7 @@ class GraphWindow(QtWidgets.QDialog):
         """
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     MPL Canvas class.
 
@@ -105,14 +105,9 @@ class MyMplCanvas(FigureCanvas):
         self.line = None
         self.ind = None
         self.background = None
+        self.pickevents = False
 
         super().__init__(fig)
-
-        self.figure.canvas.mpl_connect('pick_event', self.onpick)
-        self.figure.canvas.mpl_connect('button_release_event',
-                                       self.button_release_callback)
-        self.figure.canvas.mpl_connect('motion_notify_event',
-                                       self.motion_notify_callback)
 
     def button_release_callback(self, event):
         """
@@ -190,6 +185,24 @@ class MyMplCanvas(FigureCanvas):
 
         return True
 
+    def resizeline(self, event):
+        """
+        Resize event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        r, data = self.line.get_data()
+        self.update_lines(r, data)
+
     def update_lines(self, r, data):
         """
         Update the plot from point data.
@@ -206,26 +219,35 @@ class MyMplCanvas(FigureCanvas):
         None.
 
         """
+        if self.pickevents is False:
+            self.figure.canvas.mpl_connect('pick_event', self.onpick)
+            self.figure.canvas.mpl_connect('button_release_event',
+                                           self.button_release_callback)
+            self.figure.canvas.mpl_connect('motion_notify_event',
+                                           self.motion_notify_callback)
+            self.figure.canvas.mpl_connect('resize_event', self.resizeline)
+            self.pickevents = True
+
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(111, label='Profile')
-        ax1.ticklabel_format(useOffset=False, style='plain')
+        self.axes = self.figure.add_subplot(111, label='Profile')
+        # self.axes.ticklabel_format(useOffset=False, style='plain')
 
-        ax1.set_title('Profile')
-        self.axes = ax1
-
-        ax1.set_xlabel('Distance')
-        ax1.set_ylabel('Value')
-
-        self.figure.canvas.draw()
-        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
-
-        self.line, = ax1.plot(r, data, '.-', picker=5)
+        self.axes.set_title('Profile')
+        self.axes.set_xlabel('Distance')
+        self.axes.set_ylabel('Value')
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        self.figure.tight_layout()
+        # self.figure.tight_layout()
+        self.figure.canvas.draw()
+        self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
+
+        self.line, = self.axes.plot(r, data, '.-')
+        self.line.set_picker(True)
+        self.line.set_pickradius(5)
+
         self.figure.canvas.draw()
 
     def update_map(self, xdata, ydata, zdata):
@@ -234,7 +256,7 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data : PData object
+        data : Pandas dataframe object
             Point data
         ival : dictionary key
             dictionary key Point Data
@@ -258,7 +280,7 @@ class MyMplCanvas(FigureCanvas):
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
 
         if is_numeric_dtype(zdata):
-            scat = ax1.scatter(xdata, ydata, c=zdata, cmap=jet)
+            scat = ax1.scatter(xdata, ydata, c=zdata, cmap=cm.get_cmap('jet'))
         else:
             return
 #            scat = ax1.scatter(xdata, ydata)
@@ -278,7 +300,7 @@ class MyMplCanvas(FigureCanvas):
 
         Parameters
         ----------
-        data : LData object
+        data : Pandas dataframe
             Line data
         ival : dictionary key
             dictionary key representing the line data channel to be plotted.
@@ -293,7 +315,6 @@ class MyMplCanvas(FigureCanvas):
 
         """
         self.figure.clear()
-
         ax1 = self.figure.add_subplot(111, label='Map')
 
         self.axes = ax1
@@ -485,6 +506,7 @@ class MyMplCanvas(FigureCanvas):
         fcnt = np.array(fcnt)
         flen = np.array(flen)
         bwidth = np.pi/nbins
+        Set1 = cm.get_cmap('Set1')
         bcols = Set1(np.arange(nbins+1)/nbins)
         np.random.shuffle(bcols)
 
@@ -574,7 +596,8 @@ class PlotPoints(GraphWindow):
         cols = list(data.columns[filt])
 
         if data.pygmiX.isna().min() == True:
-            self.showprocesslog('You do not have coordinates in that point dataset.')
+            self.showprocesslog('You do not have coordinates in that point '
+                                'dataset.')
             return
 
         self.show()

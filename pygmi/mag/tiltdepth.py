@@ -39,8 +39,8 @@ import numpy as np
 from PyQt5 import QtWidgets
 from matplotlib import cm
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from numba import jit
 import pygmi.raster.cooper as cooper
 import pygmi.raster.dataprep as dataprep
@@ -77,7 +77,7 @@ class TiltDepth(QtWidgets.QDialog):
         self.Y = None
         self.Z = None
         self.depths = None
-        self.cbar = cm.jet
+        self.cbar = cm.get_cmap('jet')
         if parent is None:
             self.showprocesslog = print
         else:
@@ -91,7 +91,7 @@ class TiltDepth(QtWidgets.QDialog):
         self.y2 = None
 
         self.figure = Figure()
-        self.mmc = FigureCanvas(self.figure)
+        self.mmc = FigureCanvasQTAgg(self.figure)
         self.axes = self.figure.add_subplot(111)
 
         self.cbox_band1 = QtWidgets.QComboBox()
@@ -435,7 +435,8 @@ class TiltDepth(QtWidgets.QDialog):
 
         self.depths = np.transpose([gx0, gy0, cntid0.astype(int), dist])
 
-        tmp = quickgrid(gx0, gy0, dist, data.xdim, self.showprocesslog)
+        tmp = quickgrid(gx0, gy0, dist, data.xdim,
+                        showprocesslog=self.showprocesslog)
 
         mask = np.ma.getmaskarray(tmp)
         gdat = tmp.data

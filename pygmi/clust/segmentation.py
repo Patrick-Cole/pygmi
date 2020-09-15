@@ -299,7 +299,6 @@ class ImageSeg(QtWidgets.QDialog):
             DESCRIPTION.
 
         """
-        """Segment 2."""
         wband = np.ones(bands)/bands
 
         cnt = 0
@@ -500,7 +499,6 @@ def get_l(data):
     return ltmp
 
 
-
 def test():
     """Main testing routine."""
     data1 = skimage.data.coffee()  # 400x600 50.6 secs
@@ -510,12 +508,12 @@ def test():
     doshape = True
     scale = 1000
 
-    omap = segment1(data1, scale=scale, wcolor=wcolor,
-                    wcompact=wcompact, doshape=doshape)
+    # omap = segment1(data1, scale=scale, wcolor=wcolor,
+    #                 wcompact=wcompact, doshape=doshape)
 
-    plt.figure(figsize=(8, 8))
-    plt.imshow(omap)
-    plt.show()
+    # plt.figure(figsize=(8, 8))
+    # plt.imshow(omap)
+    # plt.show()
 
 #    xall = []
 #    yall = []

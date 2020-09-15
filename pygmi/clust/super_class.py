@@ -35,8 +35,8 @@ from matplotlib import cm
 from matplotlib.artist import Artist
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import geopandas as gpd
 from shapely.geometry import Polygon
 from PIL import Image, ImageDraw
@@ -52,7 +52,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
 from pygmi.raster.datatypes import Data
 
 
-class GraphMap(FigureCanvas):
+class GraphMap(FigureCanvasQTAgg):
     """
     Graph Map.
 
@@ -93,7 +93,7 @@ class GraphMap(FigureCanvas):
         self.subplot.get_xaxis().set_visible(False)
         self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, cmap=cm.jet)
+        self.csp = self.subplot.imshow(dat.data, cmap=cm.get_cmap('jet'))
 
         self.figure.canvas.draw()
 
@@ -768,6 +768,8 @@ class SuperClass(QtWidgets.QDialog):
         coords = list(self.df.loc[0, 'geometry'].exterior.coords)
         self.map.polyi.new_poly(coords)
 
+        return True
+
     def save_shape(self):
         """
         Save shapefile.
@@ -798,8 +800,9 @@ class SuperClass(QtWidgets.QDialog):
 
         """
         if 'Raster' not in self.indata:
-            self.showprocesslog('Error: You must have a multi-band raster dataset in '
-                  'addition to your cluster analysis results')
+            self.showprocesslog('Error: You must have a multi-band raster '
+                                'dataset in addition to your cluster '
+                                'analysis results')
             return False
 
         self.map.data = self.indata['Raster']
@@ -850,8 +853,8 @@ class SuperClass(QtWidgets.QDialog):
         dat_out[-1].metadata['Cluster']['no_clusters'] = i
         dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
         dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
-#        if cfit.labels_.max() > 0:
-#            dat_out[-1].metadata['Cluster']['vrc'] = skm.calinski_harabasz_score(X, cfit.labels_)
+        # if cfit.labels_.max() > 0:
+        #     dat_out[-1].metadata['Cluster']['vrc'] = skm.calinski_harabasz_score(X, cfit.labels_)
 
         m = []
         s = []
@@ -862,8 +865,8 @@ class SuperClass(QtWidgets.QDialog):
         dat_out[-1].metadata['Cluster']['center'] = np.array(m)
         dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
 
-#        self.log = ('Cluster complete' + ' (' + self.cltype+')')
-#
+        # self.log = ('Cluster complete' + ' (' + self.cltype+')')
+
         dat_out[-1].xdim = data[0].xdim
         dat_out[-1].ydim = data[0].ydim
         dat_out[-1].dataid = 'Clusters: '+str(dat_out[-1].metadata['Cluster']['no_clusters'])
@@ -997,10 +1000,9 @@ class SuperClass(QtWidgets.QDialog):
             return False
 
         # Encoding categorical data
-#        labelencoder = LabelEncoder()
-#        y = labelencoder.fit_transform(y)
+        # labelencoder = LabelEncoder()
+        # y = labelencoder.fit_transform(y)
         X_train, X_test, y_train, y_test = train_test_split(x, y, stratify=y)
-
 
         classifier.fit(X_train, y_train)
 

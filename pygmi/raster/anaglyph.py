@@ -28,14 +28,13 @@ from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 import numpy as np
 import matplotlib.cm as cm
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib import collections as mc
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     Canvas for the actual plot.
 
@@ -62,9 +61,9 @@ class MyMplCanvas(FigureCanvas):
         self.z = None
         self.cnum = 10
 
-        FigureCanvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding,
-                                   QtWidgets.QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+        FigureCanvasQTAgg.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding,
+                                        QtWidgets.QSizePolicy.Expanding)
+        FigureCanvasQTAgg.updateGeometry(self)
 
     def update_contours(self, data1, scale=7, rotang=10):
         """
@@ -155,7 +154,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.draw()
 
     def update_raster(self, data1, scale=7, rotang=10, atype='dubois',
-                      cmap=cm.jet, shade=False):
+                      cmap=cm.get_cmap('jet'), shade=False):
         """
         Update the raster plot.
 
@@ -195,7 +194,8 @@ class MyMplCanvas(FigureCanvas):
 
         self.update_colors(shade, cmap, atype)
 
-    def update_colors(self, doshade=False, cmap=cm.jet, atype='dubois'):
+    def update_colors(self, doshade=False, cmap=cm.get_cmap('jet'),
+                      atype='dubois'):
         """
         Update colors.
 
@@ -304,7 +304,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
 
 # Define Widgets
         self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
         self.combobox1 = QtWidgets.QComboBox()
         self.combobox2 = QtWidgets.QComboBox()
         self.cbox_cbar = QtWidgets.QComboBox()
@@ -509,7 +509,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
 
 
 def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
-             cmap=cm.terrain):
+             cmap=cm.get_cmap('terrain')):
     """
     Perform Sunshading on data.
 
@@ -526,7 +526,7 @@ def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
     cell : float, optional
         between 1 and 100 - controls sunshade detail. The default is 100.
     cmap : matplotlib.colors.LinearSegmentedColormap, optional
-        Matplotlib colormap. The default is cm.terrain.
+        Matplotlib colormap.
 
 
     Returns

@@ -405,7 +405,7 @@ class MergeMod3D(QtWidgets.QDialog):
         """
         if self.master.currentText() == self.slave.currentText():
             self.showprocesslog('Your master dataset must be different'
-                  ' to the slave dataset!')
+                                ' to the slave dataset!')
             return False
 
         for data in self.indata['Model3D']:

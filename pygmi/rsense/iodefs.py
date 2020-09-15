@@ -186,7 +186,7 @@ class ImportData():
         piter = self.parent.pbar.iter
 
         if self.extscene is None:
-            return
+            return False
 
         if not nodialog:
             self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
@@ -955,7 +955,8 @@ def get_modis(ifile, showprocesslog=print):
             if newx.size == 0:
                 dat[i].data = np.zeros((rows, cols)) + nval
             else:
-                tmp = quickgrid(newx, newy, newz, latsdim, showprocesslog)
+                tmp = quickgrid(newx, newy, newz, latsdim,
+                                showprocesslog=showprocesslog)
                 mask = np.ma.getmaskarray(tmp)
                 gdat = tmp.data
                 dat[i].data = np.ma.masked_invalid(gdat[::-1])
@@ -1025,7 +1026,7 @@ def get_modisv6(ifile, piter=None):
         piter = iter
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-    dmeta = dataset.GetMetadata()
+    # dmeta = dataset.GetMetadata()
 
     subdata = dataset.GetSubDatasets()
     dataset = None
@@ -1393,7 +1394,7 @@ def get_aster_hdf(ifile, piter=None):
         scalefactor = 1
         units = ''
     else:
-        return
+        return None
 
     dat = []
     nval = 0
@@ -1640,7 +1641,7 @@ def get_aster_ged_bin(ifile):
 
 def testfn():
     """Main testing routine."""
-    from pprint import pprint
+    # from pprint import pprint
     # ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20170813T080011_N0205_R035_T35JKG_20170813T082818.SAFE\MTD_MSIL2A.xml'
     # dat = get_sentinel2(ifile)
 
@@ -1650,20 +1651,14 @@ def testfn():
     # ifile = r'C:\Work\Workdata\ASTER\LC081740432017101901T1-SC20180409064853.tar.gz'
     # dat = get_landsat(ifile)
 
-
     # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD16A2.A2013073.h20v11.006.2017101224330.hdf'
     ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
     dat = get_modisv6(ifile)
-
-
-
-    breakpoint()
 
     # ifile = r'C:\Work\Workdata\ASTER\AST_05_00305282005083844_20180604061610_15573.hdf'
     # ofile = r'C:\Work\Workdata\ASTER\hope.tif'
     # dat = iodefs.get_data(ifile)
     # export_gdal(ofile, dat, 'GTiff')
-
 
 
 if __name__ == "__main__":

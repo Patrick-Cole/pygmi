@@ -142,9 +142,11 @@ class FuzzyClust(QtWidgets.QDialog):
         label_2.setText('Minimum Clusters:')
         label_3.setText('Maximum Clusters')
         label_4.setText('Maximum Iterations:')
-        label_5.setText('Terminate if relative change per iteration is less than:')
+        label_5.setText('Terminate if relative change per iteration is less '
+                        'than:')
         label_6.setText('Repeated Runs:')
-        self.label_7.setText('Constrain Cluster Shape (0: unconstrained, 1: spherical)')
+        self.label_7.setText('Constrain Cluster Shape (0: unconstrained, '
+                             '1: spherical)')
         label_8.setText('Fuzzyness Exponent')
         self.radiobutton_random.setText('Random')
         self.radiobutton_manual.setText('Manual')
@@ -206,8 +208,8 @@ class FuzzyClust(QtWidgets.QDialog):
         """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
-            self.showprocesslog('Error: Your input datasets have different sizes. '
-                  'Merge the data first')
+            self.showprocesslog('Error: Your input datasets have different '
+                                'sizes. Merge the data first')
             return False
 
         if not nodialog:
@@ -427,7 +429,8 @@ class FuzzyClust(QtWidgets.QDialog):
 
                 clobj_fcn = np.array([np.Inf])
                 for j in range(no_runs):
-                    self.showprocesslog('Run ' + str(j+1) + ' of' + str(no_runs))
+                    self.showprocesslog('Run ' + str(j+1) + ' of' +
+                                        str(no_runs))
 
                     xmins = np.minimum(dat_in, 1)
                     xmaxs = np.maximum(dat_in, 1)
@@ -525,8 +528,8 @@ class FuzzyClust(QtWidgets.QDialog):
             i.extent = data[0].extent
             i.data += 1
 
-        self.showprocesslog('Fuzzy Cluster complete' + ' (' + self.cltype + ' ' +
-              self.init_type + ')')
+        self.showprocesslog('Fuzzy Cluster complete' + ' (' + self.cltype +
+                            ' ' + self.init_type + ')')
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']
@@ -574,8 +577,8 @@ class FuzzyClust(QtWidgets.QDialog):
             COV_CONSTR applies only to the GK algorithm. constrains the cluster
             shape towards spherical clusters to avoid needle-like clusters.
             COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
-            COV_CONSTR = 0 results in no constraining of the covarince matrices of
-            the clusters.
+            COV_CONSTR = 0 results in no constraining of the covarince matrices
+            of the clusters.
 
         Returns
         -------
@@ -691,10 +694,11 @@ class FuzzyClust(QtWidgets.QDialog):
             obj_fcn[i] = np.sum((edist ** 2) * m_f)  # objective function
             if i > 0:
                 self.showprocesslog('Iteration: ' + str(i) + ' Threshold: ' +
-                      str(term_thresh) + ' Current: ' +
-                      '{:.2e}'.format(100 * ((obj_fcn[i - 1] -
-                                              obj_fcn[i]) /
-                                             obj_fcn[i - 1])), True)
+                                    str(term_thresh) + ' Current: ' +
+                                    '{:.2e}'.format(100*((obj_fcn[i - 1] -
+                                                          obj_fcn[i]) /
+                                                         obj_fcn[i - 1])),
+                                    True)
 
     # if objective function has increased
                 if obj_fcn[i] > obj_fcn[i - 1]:
@@ -802,7 +806,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
         ddd = np.sqrt(np.array(dtmp))
 # GK
-    elif cltype == 'GK' or cltype == 'gk':
+    elif cltype in ['GK', 'gk']:
         m_f = uuu ** expo
         dtmp = []
         for j in range(no_cent):
@@ -826,10 +830,10 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
         # GK Code
             mmm = np.linalg.det(aaa)**(1.0/no_datasets)*np.linalg.pinv(aaa)
             dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
-#            d[j,:] = np.sum((dcent*M*dcent),2).T
+            # d[j,:] = np.sum((dcent*M*dcent),2).T
         ddd = np.sqrt(np.array(dtmp))
 # GG
-    elif cltype == 'GG' or cltype == 'gg':
+    elif cltype in ['GG', 'gg']:
         m_f = uuu ** expo
         dtmp = []
         for j in range(no_cent):
@@ -856,17 +860,16 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             t_1 = np.linalg.det(aaa)**0.5/ppp
             t_4 = np.linalg.pinv(aaa)
             t_5 = np.dot(dcent, t_4) * dcent * 0.5
-#                t_6[t_6 > maxnumexp] = maxnumexp
+            # t_6[t_6 > maxnumexp] = maxnumexp
             t_7 = np.exp(t_5)
             t_9 = t_1 * t_7
             t_10 = np.sum(t_9, 1).T
             dtmp.append(t_10)
-#                dtmp.append(np.sum((np.linalg.det(aaa)) ** 0.5 / ppp *
-#                            np.exp(np.dot(dcent, np.linalg.pinv(aaa)) *
-#                                   dcent * 0.5), 1).T)
+            # dtmp.append(np.sum((np.linalg.det(aaa)) ** 0.5 / ppp *
+            #             np.exp(np.dot(dcent, np.linalg.pinv(aaa)) *
+            #                   dcent * 0.5), 1).T)
         ddd = np.sqrt(np.array(dtmp))
-    ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster
-#                                center
+    ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster center
     if (ddd == np.inf).max() == True:
         ddd[ddd == np.inf] = np.random.normal() * 1e-10  # solve break
 

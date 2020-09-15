@@ -25,9 +25,9 @@
 """Plot Data using Matplotlib."""
 
 from PyQt5 import QtWidgets, QtCore
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 
 
 class GraphWindow(QtWidgets.QDialog):
@@ -68,7 +68,7 @@ class GraphWindow(QtWidgets.QDialog):
         """Combo box to choose band."""
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     MPL Canvas class.
 

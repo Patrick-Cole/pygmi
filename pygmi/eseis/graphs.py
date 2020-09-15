@@ -26,9 +26,9 @@
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import segyio
 
 
@@ -62,7 +62,7 @@ class GraphWindow(QtWidgets.QDialog):
         """
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     MPL Canvas class.
 
@@ -77,88 +77,6 @@ class MyMplCanvas(FigureCanvas):
         self.background = None
 
         super().__init__(fig)
-
-        self.figure.canvas.mpl_connect('pick_event', self.onpick)
-        self.figure.canvas.mpl_connect('button_release_event',
-                                       self.button_release_callback)
-        self.figure.canvas.mpl_connect('motion_notify_event',
-                                       self.motion_notify_callback)
-
-    def button_release_callback(self, event):
-        """
-        Mouse button release callback.
-
-        Parameters
-        ----------
-        event : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        self.ind = None
-
-    def motion_notify_callback(self, event):
-        """
-        Move mouse callback.
-
-        Parameters
-        ----------
-        event : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        if self.ind is None:
-            return
-
-        dtmp = self.line.get_data()
-        dtmp[1][self.ind] = event.ydata
-        self.line.set_data(dtmp[0], dtmp[1])
-
-        self.figure.canvas.restore_region(self.background)
-        self.axes.draw_artist(self.line)
-        self.figure.canvas.update()
-
-    def onpick(self, event):
-        """
-        Picker event.
-
-        Parameters
-        ----------
-        event : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if event.mouseevent.inaxes is None:
-            return False
-        if event.mouseevent.button != 1:
-            return False
-        if event.artist != self.line:
-            return True
-
-        self.ind = event.ind
-        self.ind = self.ind[len(self.ind) // 2]  # get center-ish value
-
-        return True
 
     def update_segy(self, data):
         """

@@ -136,4 +136,4 @@ def test_tilt():
 
 
 if __name__ == "__main__":
-    test_rtp()
+    test_tilt()

@@ -29,9 +29,9 @@ import os
 import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from pymatsolver import Pardiso
 import discretize
 from SimPEG import (maps, data_misfit, regularization,
@@ -41,10 +41,9 @@ import SimPEG.data as Sdata
 import pygmi.menu_default as menu_default
 from pygmi.misc import QLabelVStack
 from contextlib import redirect_stdout
-import io
 
 
-class MyMplCanvas2(FigureCanvas):
+class MyMplCanvas2(FigureCanvasQTAgg):
     """MPL Canvas class."""
 
     def __init__(self, parent=None):
@@ -597,17 +596,6 @@ class TDEM1D(QtWidgets.QDialog):
         fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
         self.combofid.addItems(fid)
 
-    # def update_plot(self):
-    #     """
-    #     Update the plot.
-
-    #     Returns
-    #     -------
-    #     None.
-
-    #     """
-    #     self.mmc.update_line(x, pdata, rdata, depths, res, title)
-
     def settings(self, nodialog=False):
         """
         Entry point into item.
@@ -641,7 +629,7 @@ class TDEM1D(QtWidgets.QDialog):
         self.combobalt.addItems(cnames)
         for i, tmp in enumerate(cnames):
             tmp = tmp.lower()
-            if 'elev' in tmp or 'alt' in tmp or 'height' in tmp or 'radar' in tmp:
+            if ('elev' in tmp or 'alt' in tmp or 'height' in tmp or 'radar' in tmp):
                 self.combobalt.setCurrentIndex(i)
                 break
 
@@ -768,11 +756,6 @@ def testrun():
 
     breakpoint()
 
+
 if __name__ == "__main__":
     testrun()
-
-"""
-add regularisation options
-check inversion parameters for other options.
-
-"""

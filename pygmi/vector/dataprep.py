@@ -385,7 +385,7 @@ class DataGrid(QtWidgets.QDialog):
         y = data.pygmiY.values[filt]
         z = data[self.dataid.currentText()].values[filt]
 
-        tmp = quickgrid(x, y, z, dxy, self.showprocesslog)
+        tmp = quickgrid(x, y, z, dxy, showprocesslog=self.showprocesslog)
         mask = np.ma.getmaskarray(tmp)
         gdat = tmp.data
 
@@ -779,14 +779,13 @@ def testfn():
     GR.dataid_text = 'magmicrolevel'
     GR.settings(True)
 
-
-
     grd = GR.outdata['Raster'][0]
 
     plt.plot(grd.data.data.T[0])
     plt.show()
 
     breakpoint()
+
 
 if __name__ == "__main__":
     testfn()

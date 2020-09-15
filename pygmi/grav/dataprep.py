@@ -279,8 +279,8 @@ class ProcessData(QtWidgets.QDialog):
             dcor2 = fp[filt]
             drifttime = (x2[-1]-x2[0])
             driftrate = (dcor2[-1]-dcor2[0])/drifttime
-            self.showprocesslog(f'Day {iday+1} drift: {driftrate:.3e} mGal/min over '
-                  f'{drifttime:.3f} minutes.')
+            self.showprocesslog(f'Day {iday+1} drift: {driftrate:.3e} '
+                                f'mGal/min over {drifttime:.3f} minutes.')
 
         xp2 = xp1/86400 + ix+1
 
@@ -293,10 +293,7 @@ class ProcessData(QtWidgets.QDialog):
             plt.xticks(range(1, ix[-1]+2, 1))
             plt.tight_layout()
 
-            try:
-                plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
-            except:
-                pass
+            plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
             plt.show()
 
         gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
@@ -540,11 +537,11 @@ def test():
     """Test routine."""
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    grvfile = r'C:\WorkData\Gravity\skeifontein 2018.txt'
-    gpsfile = r'C:\WorkData\Gravity\skei_dgps.csv'
+    grvfile = r'C:\Work\Workdata\gravity\skeifontein 2018.txt'
+    gpsfile = r'C:\Work\Workdata\gravity\skei_dgps.csv'
 
-    grvfile = r'C:\WorkData\Gravity\Laxeygarvity until2511.txt'
-    gpsfile = r'C:\WorkData\Gravity\laxey.dgps.csv'
+    grvfile = r'C:\Work\Workdata\gravity\Laxeygarvity until2511.txt'
+    gpsfile = r'C:\Work\Workdata\gravity\laxey.dgps.csv'
 
 # Import Data
     IO = iodefs.ImportCG5(None)
@@ -559,7 +556,7 @@ def test():
     PD.knownbase.setText('978864.74')
     PD.calcbase()
 
-    PD.settings(True)
+    PD.settings(False)
 
     datout = PD.outdata['Line']
 

@@ -153,6 +153,10 @@ class ImportData():
         self.indata = {}
         self.outdata = {}
         self.filt = ''
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """
@@ -208,9 +212,11 @@ class ImportData():
                                                         nval)
             if not ok:
                 nval = 0.0
-            dat = get_raster(self.ifile, nval, piter=piter)
+            dat = get_raster(self.ifile, nval, piter=piter,
+                             showprocesslog=self.showprocesslog)
         else:
-            dat = get_raster(self.ifile, piter=piter)
+            dat = get_raster(self.ifile, piter=piter,
+                             showprocesslog=self.showprocesslog)
 
         if dat is None:
             if self.filt == 'Surfer grid (v.6) (*.grd)':
@@ -319,6 +325,10 @@ class ImportRGBData():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
 
     def settings(self, nodialog=False):
         """
@@ -340,7 +350,7 @@ class ImportRGBData():
 
         os.chdir(os.path.dirname(self.ifile))
 
-        dat = get_raster(self.ifile)
+        dat = get_raster(self.ifile, showprocesslog=self.showprocesslog)
 
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -412,6 +422,7 @@ class ImportRGBData():
         projdata['ifile'] = self.ifile
 
         return projdata
+
 
 def clusterprep(dat):
     """
@@ -996,8 +1007,9 @@ class ExportData():
 
         """
         if len(data) > 1:
-            self.showprocesslog('Band names will be appended to the output filenames since '
-                  'you have a multiple band image')
+            self.showprocesslog('Band names will be appended to the output '
+                                'filenames since you have a multiple band '
+                                'image')
 
         file_out = self.ifile.rpartition('.')[0]+'.gxf'
         for k in data:
@@ -1061,8 +1073,9 @@ class ExportData():
 
         """
         if len(data) > 1:
-            self.showprocesslog('Band names will be appended to the output filenames since '
-                  'you have a multiple band image')
+            self.showprocesslog('Band names will be appended to the output '
+                                'filenames since you have a multiple band '
+                                'image')
 
         file_out = self.ifile.rpartition('.')[0] + '.grd'
         for k in data:
@@ -1105,8 +1118,9 @@ class ExportData():
 
         """
         if len(data) > 1:
-            self.showprocesslog('Band names will be appended to the output filenames since '
-                  'you have a multiple band image')
+            self.showprocesslog('Band names will be appended to the output '
+                                'filenames since you have a multiple band '
+                                'image')
 
         file_out = self.ifile.rpartition('.')[0]+'.asc'
         for k in data:
@@ -1151,8 +1165,9 @@ class ExportData():
 
         """
         if len(data) > 1:
-            self.showprocesslog('Band names will be appended to the output filenames since '
-                  'you have a multiple band image')
+            self.showprocesslog('Band names will be appended to the output '
+                                'filenames since you have a multiple band '
+                                'image')
 
         file_out = self.ifile.rpartition('.')[0]+'.xyz'
         for k in data:

@@ -35,14 +35,13 @@ from osgeo import ogr, osr
 from PyQt5 import QtWidgets, QtCore
 from scipy.spatial.distance import cdist
 from scipy.stats import linregress
-from matplotlib.backends.backend_qt5agg import FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Ellipse
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     Canvas for the actual plot.
 
@@ -240,7 +239,8 @@ class MyMplCanvas(FigureCanvas):
         ylbl : str, optional
             Y-axis label. The default is 'ML'.
         bins : int or str, optional
-            Number of bins or binning strategy. See matplotlib.pyplot.hist. The default is 'doane'.
+            Number of bins or binning strategy. See matplotlib.pyplot.hist.
+            The default is 'doane'.
         rng : tuple or None, optional
             Bin range. The default is None.
 
@@ -279,7 +279,8 @@ class MyMplCanvas(FigureCanvas):
         data1a : numpy array
             Data array.
         bins : int or str, optional
-            Number of bins or binning strategy. See matplotlib.pyplot.hist. The default is 'doane'.
+            Number of bins or binning strategy. See matplotlib.pyplot.hist.
+            The default is 'doane'.
 
         Returns
         -------
@@ -540,7 +541,7 @@ class GraphWindow(QtWidgets.QDialog):
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
         self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar(self.mmc, self.parent)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.btn_saveshp = QtWidgets.QPushButton('Save Shapefile')
 
@@ -808,7 +809,7 @@ def import_for_plots(dat):
             continue
 
         for rectype in event:
-            if rectype in('1', 'E'):
+            if rectype in ('1', 'E'):
                 tmp = vars(event[rectype])
                 for j in tmp:
                     newkey = rectype+'_'+j

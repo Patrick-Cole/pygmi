@@ -843,7 +843,8 @@ class MainWidget(QtWidgets.QMainWindow):
         item : DiagramItem
             Return a DiagramItem object
         """
-        item = DiagramItem(item_type, self.scene.my_item_menu, class_name, self)
+        item = DiagramItem(item_type, self.scene.my_item_menu, class_name,
+                           self)
         item_color = self.scene.my_item_color
 
         item_name = item_name.replace(' ', '\n')
@@ -1037,6 +1038,7 @@ class MainWidget(QtWidgets.QMainWindow):
             end_item.update_indata()
 
         self.process_is_active(False)
+        return True
 
     def save(self):
         """
@@ -1073,6 +1075,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         with open(ofile, 'w') as todisk:
             json.dump(ilist, todisk, indent=4)
+        return True
 
     def run(self):
         """

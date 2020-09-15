@@ -76,8 +76,8 @@ import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
 from matplotlib import rcParams
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
@@ -135,7 +135,7 @@ class ModestImage(mi.AxesImage):
         super().__init__(*args, **kwargs)
 
         self.smallres = None
-        self.cbar = cm.jet
+        self.cbar = cm.get_cmap('jet')
         self.htype = 'Linear'
         self.hstype = 'Linear'
         self.dtype = 'Single Color Map'
@@ -432,7 +432,8 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     interpolation : str, optional
         The interpolation method used. The default is None.
     alpha : scaler, optional
-        The alpha blending value, between 0 (transparent) and 1 (opaque). The default is None.
+        The alpha blending value, between 0 (transparent) and 1 (opaque).
+        The default is None.
     vmin : scalar, optional
         Minimum data value. The default is None.
     vmax : scalar, optional
@@ -440,13 +441,15 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     origin : {'upper', 'lower'}, optional
         Origin location. The default is None.
     extent : scalars (left, right, bottom, top), optional
-        The bounding box in data coordinates that the image will fill. The default is None.
+        The bounding box in data coordinates that the image will fill.
+        The default is None.
     shape : TYPE, optional
         DESCRIPTION. The default is None.
     filternorm : float, optional
         A parameter for the antigrain image resize filter. The default is 1.
     filterrad : float > 0, optional
-        The filter radius for filters that have a radius parameter. The default is 4.0.
+        The filter radius for filters that have a radius parameter.
+        The default is 4.0.
     imlim : TYPE, optional
         DESCRIPTION. The default is None.
     resample : bool, optional
@@ -498,7 +501,7 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     return im
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """
     Canvas for the actual plot.
 
@@ -565,7 +568,7 @@ class MyMplCanvas(FigureCanvas):
         # figure stuff
         self.htype = 'Linear'
         self.hstype = 'Linear'
-        self.cbar = cm.jet
+        self.cbar = cm.get_cmap('jet')
         self.data = []
         self.sdata = []
         self.gmode = None
@@ -601,10 +604,10 @@ class MyMplCanvas(FigureCanvas):
 
         self.setParent(parent)
 
-        FigureCanvas.setSizePolicy(self,
-                                   QtWidgets.QSizePolicy.Expanding,
-                                   QtWidgets.QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+        FigureCanvasQTAgg.setSizePolicy(self,
+                                        QtWidgets.QSizePolicy.Expanding,
+                                        QtWidgets.QSizePolicy.Expanding)
+        FigureCanvasQTAgg.updateGeometry(self)
 
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
         self.cid = self.figure.canvas.mpl_connect('resize_event',
@@ -869,7 +872,7 @@ class MyMplCanvas(FigureCanvas):
         if hno == 0:
             bincol = self.cbar(binave)
         else:
-            bincol = cm.gray(binave)
+            bincol = cm.get_cmap('gray')(binave)
 
         for j, _ in enumerate(patches):
             patches[j].set_color(bincol[j])
@@ -1085,7 +1088,7 @@ class MyMplCanvas(FigureCanvas):
         self.figure.canvas.flush_events()
 
 
-class MySunCanvas(FigureCanvas):
+class MySunCanvas(FigureCanvasQTAgg):
     """
     Canvas for the sunshading tool.
 
@@ -1246,7 +1249,7 @@ class PlotInterp(QtWidgets.QDialog):
                                    QtWidgets.QSizePolicy.Fixed)
 #        tmp = sorted(cm.datad.keys())
         tmp = sorted(m for m in colormaps() if not
-                      m.startswith(('spectral', 'Vega', 'jet')))
+                     m.startswith(('spectral', 'Vega', 'jet')))
 
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
@@ -1860,7 +1863,7 @@ class PlotInterp(QtWidgets.QDialog):
 
 # Horizontal Bar
             fig = Figure()
-            canvas = FigureCanvas(fig)
+            canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(blen)
             fig.set_figheight(bwid+0.75)
             fig.set_tight_layout(True)
@@ -1875,7 +1878,7 @@ class PlotInterp(QtWidgets.QDialog):
 
 # Vertical Bar
             fig = Figure()
-            canvas = FigureCanvas(fig)
+            canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(bwid+1)
             fig.set_figheight(blen)
             fig.set_tight_layout(True)
@@ -1889,7 +1892,7 @@ class PlotInterp(QtWidgets.QDialog):
             canvas.print_figure(fname, dpi=300)
         else:
             fig = Figure()
-            canvas = FigureCanvas(fig)
+            canvas = FigureCanvasQTAgg(fig)
             fig.set_tight_layout(True)
 
             redlabel = rtext
@@ -1954,6 +1957,8 @@ class PlotInterp(QtWidgets.QDialog):
         QtWidgets.QMessageBox.information(self, 'Information',
                                           'Save to GeoTiff is complete!',
                                           QtWidgets.QMessageBox.Ok)
+
+        return True
 
     def settings(self, nodialog=False):
         """
@@ -2206,7 +2211,7 @@ def histeq(img, nbr_bins=32768):
     return im2
 
 
-def img2rgb(img, cbar=cm.jet):
+def img2rgb(img, cbar=cm.get_cmap('jet')):
     """
     Image to RGB.
 

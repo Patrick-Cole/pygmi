@@ -200,16 +200,16 @@ class CrispClust(QtWidgets.QDialog):
         """
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
-            self.showprocesslog('Error: Your input datasets have different sizes. '
-                  'Merge the data first')
-            return
+            self.showprocesslog('Error: Your input datasets have different '
+                                'sizes. Merge the data first')
+            return False
 
         self.update_vars()
 
         if not nodialog:
             temp = self.exec_()
             if temp == 0:
-                return
+                return False
 
             self.parent.process_is_active()
         self.run()
@@ -554,7 +554,7 @@ class CrispClust(QtWidgets.QDialog):
             i.extent = data[0].extent
 
         self.showprocesslog('Crisp Cluster complete' + ' ('+self.cltype + ' ' +
-              self.init_type+')')
+                            self.init_type+')')
 
         for i in dat_out:
             i.data += 1
@@ -680,8 +680,8 @@ class CrispClust(QtWidgets.QDialog):
                 obj_fcn_dif = 100 * ((obj_fcn_prev-obj_fcn[i]) / obj_fcn[i])
 
             self.showprocesslog('Iteration: ' + str(i) + ' Threshold: ' +
-                  str(term_thresh) + ' Current: ' +
-                  '{:.2e}'.format(obj_fcn_dif), True)
+                                str(term_thresh) + ' Current: ' +
+                                '{:.2e}'.format(obj_fcn_dif), True)
     # if no termination threshold provided, ignore this and do all iterations
             if term_thresh > 0:
                 # if the improvement between the last two iterations was less

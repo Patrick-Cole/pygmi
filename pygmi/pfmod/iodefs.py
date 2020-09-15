@@ -104,7 +104,7 @@ class ImportMod3D():
             if hasattr(self.lmod.griddata[i], 'isrgb') is False:
                 self.lmod.griddata[i].isrgb = False
 
-        tmp = [i for i in set(self.lmod.griddata.values())]
+        tmp = list(set(self.lmod.griddata.values()))
         self.outdata['Raster'] = tmp
 
         return True
@@ -804,7 +804,7 @@ class ExportMod3D():
 
             if len(points) > 60000:
                 self.showprocesslog(curmod + ' has too many points (' +
-                      str(len(points))+'). Not exported')
+                                    str(len(points))+'). Not exported')
                 points = points[:60000]
                 norm = norm[:60000]
                 faces = faces[faces.max(1) < 60000]

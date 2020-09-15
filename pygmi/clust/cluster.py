@@ -28,7 +28,7 @@ import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import sklearn.cluster as skc
-import sklearn.metrics as skm
+from sklearn.metrics import calinski_harabasz_score
 import sklearn.preprocessing as skp
 from pygmi.raster.datatypes import Data
 import pygmi.menu_default as menu_default
@@ -237,8 +237,8 @@ class Cluster(QtWidgets.QDialog):
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
 
         if tst.size > 2:
-            self.showprocesslog('Error: Your input datasets have different sizes. '
-                  'Merge the data first')
+            self.showprocesslog('Error: Your input datasets have different '
+                                'sizes. Merge the data first')
             return False
 
         self.min_samples = len(self.indata['Raster'])+1
@@ -381,7 +381,7 @@ class Cluster(QtWidgets.QDialog):
 
             if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
                 self.showprocesslog('Could not find '+str(i)+' clusters. '
-                      'Please change settings.')
+                                    'Please change settings.')
 
                 return False
 
@@ -401,7 +401,7 @@ class Cluster(QtWidgets.QDialog):
             dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
             dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
             if cfit.labels_.max() > 0:
-                dat_out[-1].metadata['Cluster']['vrc'] = skm.calinski_harabasz_score(X, cfit.labels_)
+                dat_out[-1].metadata['Cluster']['vrc'] = calinski_harabasz_score(X, cfit.labels_)
 
             m = []
             s = []

@@ -35,7 +35,6 @@ import pandas as pd
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
 from scipy.signal import tukey
-import scipy.interpolate as si
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 
@@ -329,49 +328,8 @@ class DataMerge(QtWidgets.QDialog):
         """
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
-        # data = self.indata['Raster'][0]
 
         dat = merge(self.indata['Raster'], self.piter, dxy)
-
-        # orig_wkt = data.wkt
-
-        # xmin0, xmax0, ymin0, ymax0 = data.extent
-
-        # for data in self.indata['Raster']:
-        #     xmin, xmax, ymin, ymax = data.extent
-        #     xmin = min(xmin, xmin0)
-        #     xmax = max(xmax, xmax0)
-        #     ymin = min(ymin, ymin0)
-        #     ymax = max(ymax, ymax0)
-
-        # cols = int((xmax - xmin)/dxy)
-        # rows = int((ymax - ymin)/dxy)
-        # gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
-
-        # if cols == 0 or rows == 0:
-        #     self.showprocesslog('Your rows or cols are zero. Your input projection may be '
-        #           'wrong')
-        #     return
-
-        # dat = []
-        # for data in self.indata['Raster']:
-        #     doffset = 0.0
-        #     if data.data.min() <= 0:
-        #         doffset = data.data.min()-1.
-        #         data.data = data.data - doffset
-        #     gtr0 = data.get_gtr()
-
-        #     drows, dcols = data.data.shape
-        #     src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
-        #     dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
-
-        #     gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt,
-        #                         gdal.GRA_Bilinear)
-
-        #     dat.append(gdal_to_dat(dest, data.dataid))
-        #     dat[-1].data = dat[-1].data + doffset
-        #     data.data = data.data + doffset
-
         self.outdata['Raster'] = dat
 
 
@@ -510,8 +468,8 @@ class DataReproj(QtWidgets.QDialog):
             rows = round((maxy - miny)/newdim)
 
             if cols == 0 or rows == 0:
-                self.showprocesslog('Your rows or cols are zero. Your input projection may '
-                      'be wrong')
+                self.showprocesslog('Your rows or cols are zero. '
+                                    'Your input projection may be wrong')
                 return
 
 # top left x, w-e pixel size, rotation, top left y, rotation, n-s pixel size
@@ -2313,11 +2271,11 @@ def testrtp():
 # Calculate the field
 
     magval = lmod.griddata['Calculated Magnetics'].data
-    plt.imshow(magval, cmap=cm.jet)
+    plt.imshow(magval, cmap=cm.get_cmap('jet'))
     plt.show()
 
     dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
-    plt.imshow(dat2.data, cmap=cm.jet)
+    plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
     plt.show()
 
 
@@ -2385,9 +2343,16 @@ def testdown():
 
 
 def testgrid():
+    """
+    Test.
+
+    Returns
+    -------
+    None.
+
+    """
     from pygmi.raster.iodefs import get_raster
     from pygmi.misc import PTime
-    from pygmi.vector.dataprep import quickgrid
     import matplotlib.pyplot as plt
 
     ttt = PTime()

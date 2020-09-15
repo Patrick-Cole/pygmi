@@ -64,7 +64,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.actionsave = QtWidgets.QAction('Save Model')
 
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
-        tmp = [i for i in set(self.lmod1.griddata.values())]
+        tmp = list(set(self.lmod1.griddata.values()))
         self.outdata['Raster'] = tmp
 
         self.mext = tab_mext.MextDisplay(self)
@@ -175,7 +175,7 @@ class MainWidget(QtWidgets.QMainWindow):
             True if successful, False otherwise.
 
         """
-        datatmp = [i for i in set(self.lmod1.griddata.values())]
+        datatmp = list(set(self.lmod1.griddata.values()))
 
         if 'Raster' not in self.indata:
             self.indata['Raster'] = datatmp
@@ -280,7 +280,6 @@ def testfn():
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     ifile = r'C:\Work\Workdata\people\Mpumi\model2.npz'
-#    ifile = r'C:\Work\Workdata\modelling\Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz'
 
     IO = ImportMod3D()
 

@@ -35,10 +35,8 @@ from shapely.geometry.polygon import Polygon
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import matplotlib.animation as manimation
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as \
-    FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as \
-    NavigationToolbar
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 # import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
@@ -147,7 +145,7 @@ class CreateSceneList(QtWidgets.QDialog):
         sfile = self.shapefile.text()
 
         if idir == '' or sfile == '':
-            return
+            return False
 
         if not self.useall.isChecked():
             if sfile[-3:] == 'shp':
@@ -198,12 +196,13 @@ class CreateSceneList(QtWidgets.QDialog):
 
         if nodates is True:
             self.showprocesslog('Some of your scenes do not have dates. '
-                  'Correct this in the output spreadsheet')
+                                'Correct this in the output spreadsheet')
 
         if not flist:
-            self.showprocesslog('No scenes could be found. Please make sure that your '
-                  'shapefile or kml file is in the area of your scenes and in '
-                  'the same projection.')
+            self.showprocesslog('No scenes could be found. Please make sure '
+                                'that your shapefile or kml file is in the '
+                                'area of your scenes and in the same '
+                                'projection.')
             return False
 
         self.showprocesslog('Updating spreadsheet...')
@@ -225,7 +224,7 @@ class CreateSceneList(QtWidgets.QDialog):
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self.parent, 'Save File', '.', ext)
         if filename == '':
-            return
+            return False
 
         df.to_excel(filename, index=False)
 
@@ -407,7 +406,7 @@ class LoadSceneList():
         return projdata
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """Simple canvas with a sine plot."""
 
     def __init__(self, parent=None, width=10, height=8, dpi=100,
@@ -428,10 +427,10 @@ class MyMplCanvas(FigureCanvas):
 
         self.setParent(parent)
 
-        FigureCanvas.setSizePolicy(self,
-                                   QtWidgets.QSizePolicy.Expanding,
-                                   QtWidgets.QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+        FigureCanvasQTAgg.setSizePolicy(self,
+                                        QtWidgets.QSizePolicy.Expanding,
+                                        QtWidgets.QSizePolicy.Expanding)
+        FigureCanvasQTAgg.updateGeometry(self)
 
         self.fig.canvas.mpl_connect('button_release_event', self.onClick)
 
@@ -522,7 +521,7 @@ class MyMplCanvas(FigureCanvas):
             nir = nir.astype(float)
             dtmp = (green-nir)/(green+nir)
             self.im1.set_clim(-1, 1)
-            self.im1.set_cmap(plt.cm.PiYG_r)
+            self.im1.set_cmap(plt.cm.get_cmap('PiYG_r'))
         elif self.manip == 'NDVI':
             if self.cbar is None:
                 self.cbar = self.figure.colorbar(self.im1, format=frm)
@@ -532,7 +531,7 @@ class MyMplCanvas(FigureCanvas):
             nir = nir.astype(float)
             dtmp = (nir-red)/(nir+red)
             self.im1.set_clim(-1, 1)
-            self.im1.set_cmap(plt.cm.PiYG)
+            self.im1.set_cmap(plt.cm.get_cmap('PiYG'))
         else:
             if self.cbar is not None:
                 self.cbar.remove()
@@ -660,7 +659,7 @@ class SceneViewer(QtWidgets.QDialog):
 
         self.canvas = MyMplCanvas(self, width=5, height=4, dpi=100)
 
-        mpl_toolbar = NavigationToolbar(self.canvas, self)
+        mpl_toolbar = NavigationToolbar2QT(self.canvas, self)
         self.slider = QtWidgets.QScrollBar(QtCore.Qt.Horizontal)
         self.button1 = QtWidgets.QPushButton('Start Capture')
         self.button2 = QtWidgets.QPushButton('Update Scene List File')
@@ -730,6 +729,7 @@ class SceneViewer(QtWidgets.QDialog):
 
             if tmp != 1:
                 return tmp
+        return True
 
     def loadproj(self, projdata):
         """
@@ -1017,7 +1017,8 @@ class SceneViewer(QtWidgets.QDialog):
             dat.data = rtmp.ReadAsArray(xoff, yoff, xsize, ysize, xbuf, ybuf)
 
             if dat.data is None:
-                self.showprocesslog('Error: Dataset could not be read properly')
+                self.showprocesslog('Error: Dataset could not be read '
+                                    'properly')
 
             if dat.data.dtype.kind == 'i':
                 if nval is None:
@@ -1177,7 +1178,7 @@ def testanim():
     fig = plt.figure()
 
     writer = manimation.PillowWriter(fps=4)
-    writer.setup(fig, wfile) #, 100)
+    writer.setup(fig, wfile)  # , 100)
 
     tmp = np.random.rand(100, 100)
     im = plt.imshow(tmp)
@@ -1201,7 +1202,6 @@ def testanim():
     # CSL = LoadSceneList(None)
     # CSL.ifile = r'C:\Work\Workdata\change\Planet\paddock.xlsx'
     # CSL.settings(True)
-
 
     # SV = SceneViewer()
     # SV.indata = CSL.outdata

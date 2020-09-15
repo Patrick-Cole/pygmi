@@ -319,7 +319,8 @@ class Quarry():
             cnt = lls.shape[0]
             nd = []
             rstot = []
-            self.showprocesslog('daylight events left: '+str(hour.sum())+' of '+str(hour.size))
+            self.showprocesslog('daylight events left: ' + str(hour.sum()) +
+                                ' of ' + str(hour.size))
 
             # instead of a grid, we are using an actual event location
             # instead of centering on every event, we should use only daytime
@@ -434,7 +435,8 @@ class Quarry():
             nd.append(hrs)
 
         if len(nd) == 0:
-            self.showprocesslog('Not enough events within .2 degrees. Aborting.')
+            self.showprocesslog('Not enough events within 0.2 degrees. '
+                                'Aborting.')
             return None
         nd = np.sum(nd, 1)
         nn = (N-nd).astype(float)
@@ -574,7 +576,6 @@ class Quarry():
 
                 nd = tmp.sum(1)
                 nn = (N-nd).astype(float)
-
 
                 # nd = nd[nn!=0]
                 # nn = nn[nn!=0]

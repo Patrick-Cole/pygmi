@@ -358,10 +358,12 @@ class IGRF(QtWidgets.QDialog):
         igdgc = 1
 
         if maxyr < sdate < maxyr+1:
-            self.showprocesslog('Warning: The date ' + str(sdate) + ' is out of range,')
-            self.showprocesslog('but still within one year of model expiration date.')
-            self.showprocesslog('An updated model file is available before 1.1.' +
-                  str(maxyr))
+            self.showprocesslog('Warning: The date ' + str(sdate) +
+                                ' is out of range,')
+            self.showprocesslog('but still within one year of model '
+                                'expiration date.')
+            self.showprocesslog('An updated model file is available '
+                                'before 1.1.' + str(maxyr))
 
         if max2[modelI] == 0:
             self.getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0)

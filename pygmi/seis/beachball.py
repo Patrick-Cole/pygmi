@@ -35,14 +35,14 @@ import numexpr as ne
 from PyQt5 import QtWidgets
 import matplotlib.cm as cm
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvas
-from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
+from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib import patches
 from osgeo import ogr, osr
 import scipy.spatial.distance as sdist
 
 
-class MyMplCanvas(FigureCanvas):
+class MyMplCanvas(FigureCanvasQTAgg):
     """Canvas for the actual plot."""
 
     def __init__(self, parent=None):
@@ -55,7 +55,7 @@ class MyMplCanvas(FigureCanvas):
 
         # figure stuff
         self.htype = 'Linear'
-        self.cbar = cm.jet
+        self.cbar = cm.get_cmap('jet')
         self.data = []
         self.gmode = None
         self.argb = [None, None, None]
@@ -77,10 +77,10 @@ class MyMplCanvas(FigureCanvas):
 
         self.setParent(parent)
 
-        FigureCanvas.setSizePolicy(self,
-                                   QtWidgets.QSizePolicy.Expanding,
-                                   QtWidgets.QSizePolicy.Expanding)
-        FigureCanvas.updateGeometry(self)
+        FigureCanvasQTAgg.setSizePolicy(self,
+                                        QtWidgets.QSizePolicy.Expanding,
+                                        QtWidgets.QSizePolicy.Expanding)
+        FigureCanvasQTAgg.updateGeometry(self)
 
     def init_graph(self):
         """

@@ -154,7 +154,8 @@ class Gradients(QtWidgets.QDialog):
                                                 self.order)
             else:
                 if data[i].xdim != data[i].ydim:
-                    self.showprocesslog('X and Y dimension are different. Please resample')
+                    self.showprocesslog('X and Y dimension are different. '
+                                        'Please resample')
                     return False
 
                 mask = np.ma.getmaskarray(data[i].data)

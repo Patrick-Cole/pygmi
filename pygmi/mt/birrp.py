@@ -150,8 +150,11 @@ class BIRRP(QtWidgets.QDialog):
             self.wstim[i] = QtWidgets.QLineEdit('YYYY-MM-DD HH:MM:SS')
             self.wetim[i] = QtWidgets.QLineEdit('YYYY-MM-DD HH:MM:SS')
 
-            self.pb_arfilnam[i] = QtWidgets.QPushButton('ARFILNAM: '+i+' AR filter filename')
-            self.pb_cpar[i] = QtWidgets.QPushButton('CPAR: '+i+' filter parameters filename')
+            self.pb_arfilnam[i] = QtWidgets.QPushButton('ARFILNAM: ' + i +
+                                                        ' AR filter filename')
+            self.pb_cpar[i] = QtWidgets.QPushButton('CPAR: ' + i +
+                                                    ' filter parameters '
+                                                    'filename')
             self.pb_filnam[i] = QtWidgets.QPushButton('FILNAM: '+i+' filename')
 
         self.thetae = QtWidgets.QLineEdit('0,90,0')
@@ -171,8 +174,8 @@ class BIRRP(QtWidgets.QDialog):
         """
         buttonbox = QtWidgets.QDialogButtonBox()
         # helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
-        pb_importbirrp = QtWidgets.QPushButton('Import BIRRP '
-                                               'configuration file')
+        pb_importbirrp = QtWidgets.QPushButton('Import BIRRP configuration '
+                                               'file')
         pb_runbirrp = QtWidgets.QPushButton('Save BIRRP configuration file')  #' and run BIRRP')
 
         self.ilev.setDisabled(True)
