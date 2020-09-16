@@ -32,6 +32,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib import collections as mc
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from matplotlib.pyplot import colormaps
+from pygmi.misc import frm
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -145,10 +147,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
 
-        tmp = self.axes.get_yticks()
-        self.axes.set_yticklabels(tmp, rotation='horizontal')
-        tmp = self.axes.get_xticks()
-        self.axes.set_xticklabels(tmp, rotation='vertical')
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
+        self.axes.tick_params(axis='y', labelrotation=0)
+        self.axes.tick_params(axis='x', labelrotation=90)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -264,10 +266,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
 
-        tmp = self.axes.get_yticks()
-        self.axes.set_yticklabels(tmp, rotation='horizontal')
-        tmp = self.axes.get_xticks()
-        self.axes.set_xticklabels(tmp, rotation='vertical')
+        self.axes.tick_params(axis='y', labelrotation=0)
+        self.axes.tick_params(axis='x', labelrotation=90)
+        self.axes.xaxis.set_major_formatter(frm)
+        self.axes.yaxis.set_major_formatter(frm)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -336,8 +338,10 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.combobox2.addItem('Gray (Red-Green)')
         self.combobox2.addItem('Optimized (Red-Green)')
 
-        maps = sorted(m for m in cm.cmap_d.keys() if not
+        maps = sorted(m for m in colormaps() if not
                       m.startswith(('spectral', 'Vega', 'jet')))
+        # maps = sorted(m for m in cm.cmap_d.keys() if not
+        #               m.startswith(('spectral', 'Vega', 'jet')))
 
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(maps)

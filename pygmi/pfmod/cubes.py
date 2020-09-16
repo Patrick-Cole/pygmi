@@ -1290,7 +1290,7 @@ class MySunCanvas(FigureCanvasQTAgg):
         fig.set_facecolor('None')
 
         self.setParent(parent)
-        self.setMaximumSize(120, 120)
+        self.setMaximumSize(200, 200)
         self.setMinimumSize(120, 120)
 
         self.init_graph()
@@ -1305,8 +1305,8 @@ class MySunCanvas(FigureCanvasQTAgg):
 
         """
         self.axes.clear()
-        self.axes.set_xticklabels(self.axes.get_xticklabels(), fontsize=8)
-        self.axes.set_yticklabels(self.axes.get_yticklabels(), visible=False)
+        self.axes.xaxis.set_tick_params(labelsize=8)
+        self.axes.tick_params(labelleft=False, labelright=False)
 
         self.axes.set_autoscaley_on(False)
         self.axes.set_rmax(np.pi/2.)
@@ -1449,7 +1449,7 @@ def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
                            [n1, n2, n3+1],
                            [n1+1, n2, n3+1],
                            [n1+1, n2+1, n3+1],
-                           [n1, n2+1, n3+1]])
+                           [n1, n2+1, n3+1]], dtype=object)
 
     # loop through vertices of all cubes
 
