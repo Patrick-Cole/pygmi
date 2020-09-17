@@ -191,6 +191,30 @@ class ImportCG5(QtWidgets.QDialog):
 
         self.df_gps.rename(columns=cren, inplace=True)
 
+        if self.df_gps.latitude.dtype == 'O':
+            filt = self.df_gps.latitude.str.contains('S')
+            self.df_gps.latitude.loc[filt] = '-'+self.df_gps.latitude[filt]
+            self.df_gps.latitude.replace('S', '', inplace=True, regex=True)
+            self.df_gps.latitude.replace('N', '', inplace=True, regex=True)
+            try:
+                self.df_gps.latitude = pd.to_numeric(self.df_gps.latitude)
+            except ValueError:
+                self.showprocesslog('You have characters in your latitude'
+                                    ' string which could not be converted.')
+                return False
+
+        if self.df_gps.longitude.dtype == 'O':
+            filt = self.df_gps.longitude.str.contains('W')
+            self.df_gps.longitude.loc[filt] = '-'+self.df_gps.longitude[filt]
+            self.df_gps.longitude.replace('W', '', inplace=True, regex=True)
+            self.df_gps.longitude.replace('E', '', inplace=True, regex=True)
+            try:
+                self.df_gps.longitude = pd.to_numeric(self.df_gps.longitude)
+            except ValueError:
+                self.showprocesslog('You have characters in your longitude'
+                                    ' string which could not be converted.')
+                return False
+
         # Get rid of text in line columns
         if self.df_gps['line'].dtype == object:
             self.df_gps['line'] = self.df_gps['line'].str.replace(r'\D', '')
