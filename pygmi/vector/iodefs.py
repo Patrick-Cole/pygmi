@@ -149,11 +149,30 @@ class ImportLineData(QtWidgets.QDialog):
             return False
 
         ltmp = gdf.columns.values
+
+        xind = 0
+        yind = 1
+
+        # Check for flexible matches
+        for i, tmp in enumerate(ltmp):
+            tmpl = tmp.lower()
+            if 'lon' in tmpl or 'x' in tmpl or 'east' in tmpl:
+                xind = i
+            if 'lat' in tmpl or 'y' in tmpl or 'north' in tmpl:
+                yind = i
+        # Check for exact matches. These take priority
+        for i, tmp in enumerate(ltmp):
+            tmpl = tmp.lower()
+            if tmpl in ['x', 'e']:
+                xind = i
+            if tmpl in ['y', 'n']:
+                yind = i
+
         self.xchan.addItems(ltmp)
         self.ychan.addItems(ltmp)
 
-        self.xchan.setCurrentIndex(0)
-        self.ychan.setCurrentIndex(1)
+        self.xchan.setCurrentIndex(xind)
+        self.ychan.setCurrentIndex(yind)
 
         if not nodialog:
             tmp = self.exec_()
