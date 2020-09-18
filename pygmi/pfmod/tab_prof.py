@@ -909,10 +909,13 @@ class ProfileDisplay(QtWidgets.QWidget):
         y1, y2 = self.lmod1.custprofy['adhoc']
         px1, px2 = self.lmod1.custprofx['rotate']
 
-        if not(self.lmod1.xrange[0] <= x1 <= x2 <= self.lmod1.xrange[1]):
+        if not(self.lmod1.xrange[0] <= x1 <= self.lmod1.xrange[1]):
             return False
-
-        if not(self.lmod1.yrange[0] <= y1 <= y2 <= self.lmod1.yrange[1]):
+        if not(self.lmod1.xrange[0] <= x2 <= self.lmod1.xrange[1]):
+            return False
+        if not(self.lmod1.yrange[0] <= y1 <= self.lmod1.yrange[1]):
+            return False
+        if not(self.lmod1.yrange[0] <= y2 <= self.lmod1.yrange[1]):
             return False
 
         # convert units to cells
