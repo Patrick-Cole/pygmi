@@ -54,6 +54,11 @@ class ProfileDisplay(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
+        if parent is None:
+            self.showprocesslog = print
+        else:
+            self.showprocesslog = parent.showprocesslog
+
         self.parent = parent
         self.lmod1 = parent.lmod1
         self.showtext = parent.showtext
