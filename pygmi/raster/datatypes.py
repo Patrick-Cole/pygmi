@@ -146,8 +146,12 @@ class Data():
         """
         rows, cols = self.data.shape
 
-        self.xdim = gtr[1]
-        self.ydim = -gtr[5]
+        if gtr == (0.0, 1.0, 0.0, 0.0, 0.0, 1.0):
+            self.xdim = 1.0
+            self.ydim = 1.0
+        else:
+            self.xdim = gtr[1]
+            self.ydim = -gtr[5]
 
         left = gtr[0]
         top = gtr[3]

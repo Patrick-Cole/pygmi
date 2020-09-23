@@ -387,6 +387,13 @@ class ImportMod3D():
         else:
             lmod.custprofy = {0: (lmod.yrange[0], lmod.yrange[0])}
 
+        for i in lmod.custprofx:
+            if len(lmod.custprofx[i]) == 2:
+                lmod.custprofx[i] += lmod.custprofx[i]
+        for i in lmod.custprofy:
+            if len(lmod.custprofy[i]) == 2:
+                lmod.custprofy[i] += lmod.custprofy[i]
+
         lmod.mlut = indict[pre+'mlut'].item()
         lmod.init_calc_grids()
 

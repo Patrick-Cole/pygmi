@@ -174,7 +174,7 @@ class ImportData():
             piter = self.parent.pbar.iter
             ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;'
                    'ERMapper (*.ers);;'
-                   'ENVI (*.hdr);;'
+                   'ENVI (*.hdr *.dat *.img *.raw);;'
                    'ERDAS Imagine (*.img);;'
                    'PCI Geomatics Database File (*.pix);;'
                    'GeoTiff (*.tif);;'

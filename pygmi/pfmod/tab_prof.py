@@ -78,6 +78,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.yyy = None
         self.rxxx = None
         self.ryyy = None
+        self.cproflim = None
 
         self.mmc = MyMplCanvas(self)
         self.mpl_toolbar = MyToolbar(self)
@@ -355,6 +356,7 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.hs_profnum.setHidden(False)
             self.hs_sideview.setEnabled(False)
             self.prof_dir()
+            self.cproflim = None
 #            self.sprofnum()
         else:
             self.gb_dir.setHidden(True)
@@ -393,11 +395,24 @@ class ProfileDisplay(QtWidgets.QWidget):
         if curprof is None or curprof not in self.lmod1.custprofx:
             return
 
-        x1, x2 = self.lmod1.custprofx[curprof]
-        y1, y2 = self.lmod1.custprofy[curprof]
+        x1, x2, x1a, x2a = self.lmod1.custprofx[curprof]
+        y1, y2, y1a, y2a = self.lmod1.custprofy[curprof]
         px1 = 0
         px2 = np.sqrt((x2-x1)**2+(y2-y1)**2)
 
+        px1a = np.sqrt((x1a-x1)**2+(y1a-y1)**2)
+        tmp2 = np.sqrt((x1a-x2)**2+(y1a-y2)**2)
+
+        if tmp2 > px2:
+            px1a = -px1a
+
+        px2a = np.sqrt((x2a-x1)**2+(y2a-y1)**2)
+        tmp2 = np.sqrt((x1a-x2)**2+(y1a-y2)**2)
+
+        if tmp2 > px2:
+            px2a = -px2a
+
+        self.cproflim = [[x1a, x2a], [y1a, y2a], [px1a, px2a]]
         self.lmod1.custprofx['rotate'] = [px1, px2]
         self.lmod1.custprofx['adhoc'] = [x1, x2]
         self.lmod1.custprofy['adhoc'] = [y1, y2]
@@ -1574,6 +1589,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.lims = self.laxes.imshow(self.cbar(self.lmdata), aspect='equal',
                                       interpolation='none')
         self.lprf = self.laxes.plot([0, 1], [0, 1])
+        self.lprfc = self.laxes.plot([0, 0], 'b+')
 
         self.ims2 = self.axes.imshow(self.cbar(self.mdata), aspect='auto',
                                      interpolation='none')
@@ -1586,6 +1602,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.lims2.format_cursor_data = lambda x: ''
 
         self.prf = self.axes.plot([0, 0])
+        self.prfc = self.axes.plot([0, 0], 'b+')
 
     def button_press(self, event):
         """
@@ -2014,6 +2031,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.prf[0].set_data([xrng, yrng])
         self.axes.draw_artist(self.prf[0])
 
+        cproflim = self.myparent.cproflim
+        if cproflim is not None:
+            xpnt = cproflim[2]
+            self.prfc[0].set_data([xpnt, yrng])
+
+        self.axes.draw_artist(self.prfc[0])
+
+
     def update_line_top(self):
         """
         Update the top line position.
@@ -2028,6 +2053,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.lprf[0].set_data([xrng, yrng])
         self.laxes.draw_artist(self.lprf[0])
+
+        cproflim = self.myparent.cproflim
+        if cproflim is not None:
+            xpnt = cproflim[0]
+            ypnt = cproflim[1]
+            self.lprfc[0].set_data([xpnt, ypnt])
+
+        self.laxes.draw_artist(self.lprfc[0])
 
 # This section is just for the profile line plot
 
@@ -2767,16 +2800,21 @@ class ImportPicture(QtWidgets.QDialog):
         while curline in self.lmod.custprofx:
             curline += 1
 
-        self.lmod.custprofx[curline] = [x1, x2]
-        self.lmod.custprofy[curline] = [y1, y2]
+        x1a = self.dsb_x1.value()
+        x2a = self.dsb_x2.value()
+        y1a = self.dsb_y1.value()
+        y2a = self.dsb_y2.value()
+
+        self.lmod.custprofx[curline] = [x1, x2, x1a, x2a]
+        self.lmod.custprofy[curline] = [y1, y2, y1a, y2a]
         self.lmod.profpics[curline] = None
 
         imptext = self.importfile.text()
         if imptext != '':
-            x1a = self.dsb_x1.value()
-            x2a = self.dsb_x2.value()
-            y1a = self.dsb_y1.value()
-            y2a = self.dsb_y2.value()
+            # x1a = self.dsb_x1.value()
+            # x2a = self.dsb_x2.value()
+            # y1a = self.dsb_y1.value()
+            # y2a = self.dsb_y2.value()
 
             dat = get_raster(imptext, showprocesslog=self.showprocesslog)
 
