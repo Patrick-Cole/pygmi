@@ -41,7 +41,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.colors as mcolors
-from pygmi.raster.modest_image import imshow
+from pygmi.raster.ginterp import imshow
 from pygmi.misc import frm
 
 
@@ -116,9 +116,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                       cmap=cm.get_cmap('jet'),
-                       interpolation='nearest')
+        rdata = self.axes.imshow(data1.data, extent=data1.extent,
+                                 cmap=cm.get_cmap('jet'),
+                                 interpolation='nearest')
+
+        # rdata = imshow(self.axes, data1.data, extent=data1.extent,
+        #                cmap=cm.get_cmap('jet'),
+        #                interpolation='nearest')
 
         if not data1.isrgb:
             cbar = self.figure.colorbar(rdata, format=frm)

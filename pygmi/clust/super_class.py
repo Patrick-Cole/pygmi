@@ -46,10 +46,8 @@ import sklearn.metrics as skm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             '..//..')))
 from pygmi.raster.datatypes import Data
+from pygmi.misc import frm
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -90,10 +88,18 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.figure.clf()
         self.subplot = self.figure.add_subplot(111)
-        self.subplot.get_xaxis().set_visible(False)
-        self.subplot.get_yaxis().set_visible(False)
+        # self.subplot.get_xaxis().set_visible(False)
+        # self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, cmap=cm.get_cmap('jet'))
+        self.csp = self.subplot.imshow(dat.data, extent=dat.extent,
+                                       cmap=cm.get_cmap('jet'))
+        axes = self.figure.gca()
+
+        axes.set_xlabel('Eastings')
+        axes.set_ylabel('Northings')
+
+        axes.xaxis.set_major_formatter(frm)
+        axes.yaxis.set_major_formatter(frm)
 
         self.figure.canvas.draw()
 
@@ -327,9 +333,15 @@ class PolygonInteractor(QtCore.QObject):
                     imin = i
             i = imin
 
-            self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
-                                    [(event.xdata, event.ydata)] +
-                                    list(self.poly.xy[i + 1:]))
+            if np.array_equal(self.poly.xy, np.ones((2, 2))):
+                self.poly.set_xy([[event.xdata, event.ydata]])
+            else:
+                self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
+                                        [(event.xdata, event.ydata)] +
+                                        list(self.poly.xy[i + 1:]))
+            # self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
+            #                         [(event.xdata, event.ydata)] +
+            #                         list(self.poly.xy[i + 1:]))
             self.line.set_data(list(zip(*self.poly.xy)))
 
             self.canvas.restore_region(self.background)
@@ -967,15 +979,26 @@ class SuperClass(QtWidgets.QDialog):
         rows, cols = self.map.data[0].data.shape
         masks = {}
         for _, row in self.df.iterrows():
-            pixels = list(row['geometry'].exterior.coords)
+            # pixels = list(row['geometry'].exterior.coords)
+
+            pixels = np.array(row['geometry'].exterior.coords)
+            pixels[:, 0] = pixels[:, 0]-self.map.data[0].extent[0]
+            pixels[:, 0] /= self.map.data[0].xdim
+            pixels[:, 1] = self.map.data[0].extent[3]-pixels[:, 1]
+            pixels[:, 1] /= self.map.data[0].ydim
+
+            pixels = tuple(map(tuple, pixels))
+
             cname = row['class']
             if cname not in masks:
                 masks[cname] = np.zeros((rows, cols), dtype=bool)
 
             rasterPoly = Image.new("L", (cols, rows), 1)
             rasterize = ImageDraw.Draw(rasterPoly)
-            rasterize.polygon(pixels)
+            rasterize.polygon(pixels, 0)
             mask = np.array(rasterPoly, dtype=bool)
+            # plt.imshow(mask)
+            # plt.show()
 
             masks[cname] = np.logical_or(~mask, masks[cname])
 
@@ -997,7 +1020,7 @@ class SuperClass(QtWidgets.QDialog):
 
         if len(lbls) < 2:
             self.showprocesslog('Error: You need at least two classes')
-            return False
+            # return False
 
         # Encoding categorical data
         # labelencoder = LabelEncoder()
