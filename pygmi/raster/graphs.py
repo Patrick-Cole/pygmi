@@ -117,13 +117,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        # rdata = self.axes.imshow(data1.data, extent=data1.extent,
-        #                          cmap=cm.get_cmap('jet'),
-        #                          interpolation='nearest')
+        rdata = self.axes.imshow(data1.data, extent=data1.extent,
+                                 cmap=cm.get_cmap('jet'),
+                                 interpolation='nearest')
 
-        rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                       cmap=cm.get_cmap('jet'),
-                       interpolation='nearest')
+        # rdata = imshow(self.axes, data1.data, extent=data1.extent,
+        #                cmap=cm.get_cmap('jet'),
+        #                interpolation='nearest')
 
         if not data1.isrgb:
             cbar = self.figure.colorbar(rdata, format=frm)
