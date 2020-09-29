@@ -488,6 +488,10 @@ class PolygonInteractor(QtCore.QObject):
             return
         if event.button != 1:
             return
+
+        if self.ax.get_navigate_mode() is not None:
+            return
+
         self._ind = self.get_ind_under_point(event)
 
         if self._ind is None:
@@ -522,9 +526,16 @@ class PolygonInteractor(QtCore.QObject):
                     imin = i
             i = imin
 
-            self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
-                                    [(event.xdata, event.ydata)] +
-                                    list(self.poly.xy[i + 1:]))
+            if np.array_equal(self.poly.xy, np.ones((2, 2))):
+                self.poly.set_xy([[event.xdata, event.ydata]])
+            else:
+                self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
+                                        [(event.xdata, event.ydata)] +
+                                        list(self.poly.xy[i + 1:]))
+
+            # self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
+            #                         [(event.xdata, event.ydata)] +
+            #                         list(self.poly.xy[i + 1:]))
             self.line.set_data(list(zip(*self.poly.xy)))
 
             self.canvas.restore_region(self.background)

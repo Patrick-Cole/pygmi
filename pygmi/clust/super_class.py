@@ -300,6 +300,9 @@ class PolygonInteractor(QtCore.QObject):
         if self.isactive is False:
             return
 
+        if self.ax.get_navigate_mode() is not None:
+            return
+
         self._ind = self.get_ind_under_point(event)
 
         if self._ind is None:
