@@ -561,7 +561,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print):
         piter = iter
 
     dat = []
-    bname = ifile.split('/')[-1].rpartition('.')[0]+': '
+    bname = ifile.split('/')[-1].rpartition('.')[0]
     ifile = ifile[:]
     ext = ifile[-3:]
     custom_wkt = None
@@ -643,8 +643,9 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print):
                                 + np.ma.getmaskarray(dat[i].data))
 
         dat[i].extent_from_gtr(gtr)
+
         if bandid == '':
-            bandid = bname+str(i+1)
+            bandid = 'Band '+str(i+1)+' '+bname
         dat[i].dataid = bandid
         if bandid[-1] == ')':
             dat[i].units = bandid[bandid.rfind('(')+1:-1]
