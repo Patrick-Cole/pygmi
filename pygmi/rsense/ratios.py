@@ -61,6 +61,7 @@ class SatRatios(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.pbar = parent.pbar
 
         self.combo_sensor = QtWidgets.QComboBox()
         self.lw_ratios = QtWidgets.QListWidget()
@@ -211,7 +212,7 @@ class SatRatios(QtWidgets.QDialog):
             flist = get_sentinel_list(flist)
 
         if not flist:
-            self.showprocesslog('Could not find', sensor, 'data')
+            self.showprocesslog('Could not find '+sensor+' data')
             return False
 
         rlist = []
@@ -239,7 +240,11 @@ class SatRatios(QtWidgets.QDialog):
 
             datd = {}
             for i in dat:
-                txt = i.dataid.split()[0]
+                tmp = i.dataid.split()
+                txt = tmp[0]
+                if txt == 'Band':
+                    txt = tmp[0]+tmp[1]
+
                 if 'Band' not in txt and 'B' in txt and ',' in txt:
                     txt = txt.replace('B', 'Band')
                     txt = txt.replace(',', '')
@@ -253,8 +258,8 @@ class SatRatios(QtWidgets.QDialog):
                 datd[txt] = i.data
 
             datfin = []
-            for i in rlist:
-                self.showprocesslog('Calculating', i)
+            for i in self.pbar.iter(rlist):
+                self.showprocesslog('Calculating '+i)
                 formula = i.split(' ')[0]
                 formula = re.sub(r'(\d+)', r'Band\1', formula)
                 blist = formula
@@ -268,7 +273,7 @@ class SatRatios(QtWidgets.QDialog):
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    self.showprocesslog('Error:', ', '.join(abort), 'missing.')
+                    self.showprocesslog('Error:'+', '.join(abort)+'missing.')
                     continue
 
                 ratio = ne.evaluate(formula, datd)
@@ -282,7 +287,9 @@ class SatRatios(QtWidgets.QDialog):
                 rband.dataid = i.replace(r'/', 'div')
                 datfin.append(rband)
             ofile = ofile.split('.')[0] + '_ratio.tif'
+            self.pbar.setValue(0)
             if datfin:
+                self.showprocesslog('Exporting to '+ofile)
                 export_gdal(ofile, datfin, 'GTiff')
 
         self.outdata['Raster'] = datfin

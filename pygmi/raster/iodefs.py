@@ -1213,7 +1213,7 @@ class ExportData():
         return file_out
 
 
-def export_gdal(ifile, dat, drv):
+def export_gdal(ifile, dat, drv, envimeta=''):
     """
     Export to GDAL format
 
@@ -1244,6 +1244,8 @@ def export_gdal(ifile, dat, drv):
 
     if dtype == np.uint8:
         fmt = gdal.GDT_Byte
+    elif dtype == np.uint16:
+        fmt = gdal.GDT_UInt16
     elif dtype == np.int32:
         fmt = gdal.GDT_Int32
     elif dtype == np.float64:
@@ -1268,8 +1270,12 @@ def export_gdal(ifile, dat, drv):
         data[0].nullvalue = -99999.0
     elif drv == 'HFA':
         tmpfile = tmp[0]+'.img'
-    else:  # ENVI and ER Mapper
+    elif drv == 'ENVI':
+        tmpfile = tmp[0]+'.dat'
+    elif drv == 'ERS':  # ER Mapper
         tmpfile = tmp[0]
+    else:
+        tmpfile = ifile
 
     drows, dcols = data[0].data.shape
     if drv == 'GTiff':
@@ -1319,5 +1325,6 @@ def export_gdal(ifile, dat, drv):
 
     out = None  # Close File
     if drv == 'ENVI':
-        with open(tmpfile+'.hdr', 'a') as myfile:
-            myfile.write('data ignore value = ' + str(data[0].nullvalue))
+        with open(tmpfile[:-4]+'.hdr', 'a') as myfile:
+            myfile.write('data ignore value = ' + str(data[0].nullvalue)+'\n')
+            myfile.write(envimeta)
