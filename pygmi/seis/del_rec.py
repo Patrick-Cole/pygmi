@@ -420,7 +420,7 @@ class Quarry():
         cnt = lls.shape[0]
         nd = []
         rstot = []
-        self.showprocesslog('daylight events:', hour.sum(), 'of', hour.size)
+        self.showprocesslog('daylight events:'+str(hour.sum())+' of '+str(hour.size))
 
         for i in range(cnt):  # i is node number, centered on an event
             r = np.sqrt(((lls-lls[i])**2).sum(1))
@@ -467,7 +467,7 @@ class Quarry():
         # ttt.since_last_call('Total')
         self.showprocesslog('Completed!')
 
-        # self.showprocesslog('New total number of events:', ehour.size)
+        # self.showprocesslog('New total number of events: '+str(ehour.size))
 
         # plt.xlabel('Hours')
         # plt.ylabel('Event Counts')

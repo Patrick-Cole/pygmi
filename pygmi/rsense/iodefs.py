@@ -1210,15 +1210,15 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print):
     dat = []
     for bfile, _ in subdata:
         dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
-        showprocesslog('Importing', os.path.basename(bfile))
+        showprocesslog('Importing '+os.path.basename(bfile))
         if dataset is None:
-            showprocesslog('Problem with', ifile)
+            showprocesslog('Problem with '+ifile)
             continue
 
         for i in piter(range(dataset.RasterCount)):
             rtmp = dataset.GetRasterBand(i+1)
             bname = rtmp.GetDescription()
-            # self.showprocesslog('Importing', bname)
+            # self.showprocesslog('Importing '+bname)
 
             dat.append(Data())
             dat[-1].data = rtmp.ReadAsArray()
@@ -1292,7 +1292,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print):
         dataset = gdal.Open(os.path.join(idir, zfile), gdal.GA_ReadOnly)
 
         if dataset is None:
-            showprocesslog('Problem with', zfile)
+            showprocesslog('Problem with '+zfile)
             continue
 
         dataset = gdal.AutoCreateWarpedVRT(dataset)
