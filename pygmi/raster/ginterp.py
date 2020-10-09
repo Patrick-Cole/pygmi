@@ -1596,6 +1596,10 @@ class PlotInterp(QtWidgets.QDialog):
 
         dtype = str(self.cbox_dtype.currentText())
 
+        rtext = 'Red'
+        gtext = 'Green'
+        btext = 'Blue'
+
         if 'Ternary' not in dtype:
             text, okay = QtWidgets.QInputDialog.getText(
                 self, 'Colorbar', 'Enter colorbar unit label:',
@@ -1852,6 +1856,11 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[1].nullvalue = 0
         newimg[2].nullvalue = 0
         newimg[3].nullvalue = 0
+
+        newimg[0].dataid = rtext
+        newimg[1].dataid = gtext
+        newimg[2].dataid = btext
+        newimg[3].dataid = 'Alpha'
 
         iodefs.export_gdal(str(filename), newimg, 'GTiff')
 
