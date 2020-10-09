@@ -201,19 +201,17 @@ class SatRatios(QtWidgets.QDialog):
 
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
+            if sensor == 'ASTER':
+                flist = get_aster_list(flist)
+            elif 'Landsat' in sensor:
+                flist = get_landsat_list(flist, sensor)
+            elif 'Sentinel-2' in sensor:
+                flist = get_sentinel_list(flist)
+            if not flist:
+                self.showprocesslog('Could not find '+sensor+' data')
+                return False
         else:
             flist = [self.indata['Raster']]
-
-        if sensor == 'ASTER':
-            flist = get_aster_list(flist)
-        elif 'Landsat' in sensor:
-            flist = get_landsat_list(flist, sensor)
-        elif 'Sentinel-2' in sensor:
-            flist = get_sentinel_list(flist)
-
-        if not flist:
-            self.showprocesslog('Could not find '+sensor+' data')
-            return False
 
         rlist = []
         for i in self.lw_ratios.selectedItems():
@@ -290,7 +288,7 @@ class SatRatios(QtWidgets.QDialog):
             self.pbar.setValue(0)
             if datfin:
                 self.showprocesslog('Exporting to '+ofile)
-                export_gdal(ofile, datfin, 'GTiff')
+                export_gdal(ofile, datfin, 'GTiff', piter=self.pbar.iter)
 
         self.outdata['Raster'] = datfin
         return True

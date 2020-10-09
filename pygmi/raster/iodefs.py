@@ -1214,7 +1214,7 @@ class ExportData():
         return file_out
 
 
-def export_gdal(ifile, dat, drv, envimeta=''):
+def export_gdal(ifile, dat, drv, envimeta='', piter=None):
     """
     Export to GDAL format
 
@@ -1230,6 +1230,9 @@ def export_gdal(ifile, dat, drv, envimeta=''):
     None.
 
     """
+
+    if piter is None:
+        piter = iter
 
     if isinstance(dat, dict):
         dat2 = []
@@ -1305,7 +1308,9 @@ def export_gdal(ifile, dat, drv, envimeta=''):
 
     out.SetProjection(data[0].wkt)
 
-    for i, datai in enumerate(data):
+    numbands = len(data)
+    for i in piter(range(numbands)):
+        datai = data[i]
         rtmp = out.GetRasterBand(i+1)
         rtmp.SetDescription(datai.dataid)
         rtmp.SetMetadataItem('BandName', datai.dataid)
