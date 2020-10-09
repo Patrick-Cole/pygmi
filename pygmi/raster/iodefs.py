@@ -970,24 +970,24 @@ class ExportData():
             self.export_gxf(data)
         if filt == 'Surfer grid (v.6) (*.grd)':
             self.export_surfer(data)
-#            self.export_gdal(data, 'GSBG')
+#            self.export_gdal(data, 'GSBG', piter=self.pbar.iter)
         if filt == 'ERDAS Imagine (*.img)':
-            export_gdal(self.ifile, data, 'HFA')
+            export_gdal(self.ifile, data, 'HFA', piter=self.pbar.iter)
         if filt == 'ERMapper (*.ers)':
-            export_gdal(self.ifile, data, 'ERS')
+            export_gdal(self.ifile, data, 'ERS', piter=self.pbar.iter)
         if filt == 'SAGA binary grid (*.sdat)':
             if len(data) > 1:
                 for i, dat in enumerate(data):
                     file_out = self.get_filename(dat, 'sdat')
-                    export_gdal(file_out, [dat], 'SAGA')
+                    export_gdal(file_out, [dat], 'SAGA', piter=self.pbar.iter)
             else:
-                export_gdal(self.ifile, data, 'SAGA')
+                export_gdal(self.ifile, data, 'SAGA', piter=self.pbar.iter)
         if filt == 'GeoTiff (*.tif)':
-            export_gdal(self.ifile, data, 'GTiff')
+            export_gdal(self.ifile, data, 'GTiff', piter=self.pbar.iter)
         if filt == 'ENVI (*.hdr)':
-            export_gdal(self.ifile, data, 'ENVI')
+            export_gdal(self.ifile, data, 'ENVI', piter=self.pbar.iter)
         if filt == 'ArcGIS BIL (*.bil)':
-            export_gdal(self.ifile, data, 'EHdr')
+            export_gdal(self.ifile, data, 'EHdr', piter=self.pbar.iter)
 
         self.showprocesslog('Export Data Finished!')
         self.parent.process_is_active(False)
