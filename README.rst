@@ -104,9 +104,11 @@ Linux normally comes with python installed, but the additional libraries will st
 
 Anaconda
 --------
-Anaconda users are advised not to use pip since it can break PyQt5. However, two packages are installed only by pip, so a Conda environment should be created. The process to install is as follows:
+Anaconda users are advised not to use pip since it can break PyQt5. However, two packages are installed only by pip, so a Conda environment should be created. Note that I installed all packages from the 'defaults' conda channel, except where the command specifies otherwise.
 
-   conda create -n pygmi python=3.7
+The process to install is as follows:
+
+   conda create -n pygmi python=3.8
 
    conda activate pygmi
 
@@ -136,11 +138,12 @@ Anaconda users are advised not to use pip since it can break PyQt5. However, two
 
    conda install pyopengl
 
-   conda install pyyaml
+   conda install -c conda-forge segyio
+
+   conda install -c conda-forge simpeg
 
    pip install mtpy
 
-   pip install segyio
 
 Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:
 

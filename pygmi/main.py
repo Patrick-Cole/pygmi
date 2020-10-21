@@ -1318,7 +1318,8 @@ class EmittingStream(QtCore.QObject):
 def main():
     """Entry point for the PyGMI software"""
     app = QtWidgets.QApplication(sys.argv)
-    app.setAttribute(QtCore.Qt.AA_DisableWindowContextHelpButton)
+    if os.name == 'nt':
+        app.setAttribute(QtCore.Qt.AA_DisableWindowContextHelpButton)
 
     screen_resolution = app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()
