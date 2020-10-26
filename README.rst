@@ -37,9 +37,11 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * gdal 3.1.2
 * geopandas 0.7.0
 * IPython 7.14.0
+* importlib_metadata 2.0.0
 * llvmlite 0.33.0
 * matplotlib 3.2.2
 * mtpy 1.1.3
+* pyyaml 5.3.1
 * numba 0.50.1
 * numexpr 2.7.1
 * numpy 1.19.0+mkl

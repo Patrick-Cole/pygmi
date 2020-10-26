@@ -391,7 +391,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             A1 = {}
             T1 = {}
             for rec in event['4']:
-                if rec.phase_id == 'IAML':
+                if (rec.quality+rec.phase_id).strip() in ['IAML', 'AML',
+                                                          'ES', 'E']:
                     if rec.amplitude is None or rec.epicentral_distance is None:
                         continue
                     ML = (np.log10(rec.amplitude) +
@@ -400,9 +401,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     A1[rec.station_name] = ML
                 if rec.travel_time_residual is not None:
                     T1[rec.station_name] = rec.travel_time_residual
-
             if A1:
-                A1mean = np.mean((list(A1.values())))
+                if np.nonzero(~np.isnan(list(A1.values())))[0].size == 0:
+                    A1mean = 0
+                else:
+                    A1mean = np.nanmean(list(A1.values()))
             for i in A1:
                 if i not in A:
                     A[i] = []
@@ -413,10 +416,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     T[i] = []
                 T[i].append(T1[i])
 
-        sname_list = list(A.keys())
-
         dmean = {}
         dstd = {}
+
+        sname_list = list(A.keys())
 
         if res != 'ML':
             A = T
