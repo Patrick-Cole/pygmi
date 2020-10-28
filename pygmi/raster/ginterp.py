@@ -1071,7 +1071,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.btn_saveimg.clicked.connect(self.save_img)
         self.gbox_sun.clicked.connect(self.change_dtype)
         btn_apply.clicked.connect(self.change_lclip)
-        self.lineclip.editingFinished.connect(self.change_lclip)
+        self.lineclip.returnPressed.connect(self.change_lclip)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
