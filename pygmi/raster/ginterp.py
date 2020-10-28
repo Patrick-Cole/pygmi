@@ -63,6 +63,7 @@ supports GeoTiff files.
 """
 
 import os
+import sys
 import copy
 from math import cos, sin, tan
 import numpy as np
@@ -81,15 +82,16 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
+import matplotlib.cbook as cbook
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 
 
 class ModestImage(mi.AxesImage):
-    """
-    Computationally modest image class - modified for use in PyGMI.
 
+    """
+    Computationally modest image class.
     ModestImage is an extension of the Matplotlib AxesImage class
     better suited for the interactive display of larger images. Before
     drawing, ModestImage resamples the data array based on the screen
@@ -97,314 +99,77 @@ class ModestImage(mi.AxesImage):
     appearance of the image, but can substantially cut down on
     computation since calculations of unresolved or clipped pixels
     are skipped.
-
     The interface of ModestImage is the same as AxesImage. However, it
     does not currently support setting the 'extent' property. There
     may also be weird coordinate warping operations for images that
     I'm not aware of. Don't expect those to work either.
-
-    ModestImage
-    Copyright (c) 2013 Chris Beaumont
-
-    Permission is hereby granted, free of charge, to any person obtaining a
-    copy of this software and associated documentation files (the "Software"),
-    to deal in the Software without restriction, including without limitation
-    the rights to use, copy, modify, merge, publish, distribute, sublicense,
-    and/or sell copies of the Software, and to permit persons to whom the
-    Software is furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in
-    all copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-    FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-    DEALINGS IN THE SOFTWARE.
     """
 
     def __init__(self, *args, **kwargs):
         if 'extent' in kwargs and kwargs['extent'] is not None:
-            raise NotImplementedError('ModestImage does not support extents')
+            raise NotImplementedError("ModestImage does not support extents")
 
         self._full_res = None
         self._sx, self._sy = None, None
-        self._bounds = (None, None, None, None)
-        super().__init__(*args, **kwargs)
-
-        self.smallres = None
-        self.cbar = cm.get_cmap('jet')
-        self.htype = 'Linear'
-        self.hstype = 'Linear'
-        self.dtype = 'Single Color Map'
-        self.cell = 100.
-        self.phi = -np.pi/4.
-        self.theta = np.pi/4.
-        self.alpha = .0
-        self.kval = 0.01
+        self._bounds = None
         self._rgbacache = None
         self._oldxslice = None
         self._oldyslice = None
 
+        super(ModestImage, self).__init__(*args, **kwargs)
+
     def set_data(self, A):
         """
-        Set the image array.
-
-        Parameters
-        ----------
-        A : numpy/PIL Image A
-            numpy/PIL Image A.
-
-        Returns
-        -------
-        None.
-
+        Set the image array
+        ACCEPTS: numpy/PIL Image A
         """
         self._full_res = A
-        self._A = A
-        self.smallres = A
+        self._A = A.copy()
+
+        if self._A.dtype != np.uint8 and not np.can_cast(self._A.dtype,
+                                                         np.float):
+            raise TypeError("Image data can not convert to float")
+
+        if (self._A.ndim not in (2, 3) or
+                (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4))):
+            raise TypeError("Invalid dimensions for image data")
 
         self._imcache = None
         self._rgbacache = None
         self._oldxslice = None
         self._oldyslice = None
         self._sx, self._sy = None, None
-        if self.axes.dataLim.x0 != np.inf:
-            self._scale_to_res()
+
+    def get_array(self):
+        """Override to return the full-resolution array"""
+        return self._full_res
 
     def _scale_to_res(self):
-        """
-        Scale to resolution.
+        """ Change self._A and _extent to render an image whose
+        resolution is matched to the eventual rendering."""
 
-        Change self._A and _extent to render an image whose
-        resolution is matched to the eventual rendering.
-
-        Returns
-        -------
-        None.
-
-        """
         ax = self.axes
-
-        fx0, fy0, fx1, fy1 = ax.dataLim.extents
-        try:
-            tmp = self._full_res.shape
-            rows = tmp[0]
-            cols = tmp[1]
-        except AttributeError:
-            tmp = self._full_res[0].shape
-            rows = tmp[0]
-            cols = tmp[1]
-
-        ddx = (fx1-fx0)/cols
-        ddy = (fy1-fy0)/rows
-
-        ext = ax.transAxes.transform([1, 1]) - ax.transAxes.transform([0, 0])
-        xlim, ylim = ax.get_xlim(), ax.get_ylim()
-        dx, dy = xlim[1] - xlim[0], ylim[1] - ylim[0]
-
-        y0 = max(0, (ylim[0]-fy0)/ddy)
-        y1 = min(rows, (ylim[1]-fy0)/ddy)
-        x0 = max(0, (xlim[0]-fx0)/ddx)
-        x1 = min(cols, (xlim[1] - fx0)/ddx)
-
-        if y1 == y0:
-            y1 = y0+1
-
-        if x1 == x0:
-            x1 = x0+1
-
-        y0, y1, x0, x1 = [int(i) for i in [y0, y1, x0, x1]]
-
-        # This divisor is to slightly increase the resolution of sunshaded
-        # images to get optimal detail.
-        divtmp = 1.0
-        if self.dtype == 'Sunshade':
-            divtmp = 1.5
-
-        sy = max(int(np.ceil(dy/(ddy*ext[1]))/divtmp), 1)
-        sx = max(int(np.ceil(dx/(ddx*ext[0]))/divtmp), 1)
+        shp = self._full_res.shape
+        x0, x1, sx, y0, y1, sy = extract_matched_slices(ax, shp)
+        # have we already calculated what we need?
 
         if self._sx is None:
             pass
-        elif (sx >= self._sx and sy >= self._sy and
+        elif (self._bounds is not None and
+              sx >= self._sx and sy >= self._sy and
               x0 >= self._bounds[0] and x1 <= self._bounds[1] and
               y0 >= self._bounds[2] and y1 <= self._bounds[3]):
             return
+        self._A = self._full_res[y0:y1:sy, x0:x1:sx]
+        self._A = cbook.safe_masked_invalid(self._A)
 
-        if self.dtype == 'Single Color Map':
-            pseudo = self._full_res[(rows-y1):(rows-y0):sy, x0:x1:sx]
-            mask = np.ma.getmaskarray(pseudo)
-
-            if self.htype == '90% Linear, 10% Compact':
-                pseudo = histcomp(pseudo, perc=10.)
-
-            if self.htype == '95% Linear, 5% Compact':
-                pseudo = histcomp(pseudo)
-
-            if self.htype == '98% Linear, 2% Compact':
-                pseudo = histcomp(pseudo, perc=2.)
-
-            if self.htype == '99% Linear, 1% Compact':
-                pseudo = histcomp(pseudo, perc=1.)
-
-            if self.htype == 'Histogram Equalization':
-                pseudo = histeq(pseudo)
-
-            self.smallres = pseudo.copy()
-
-            pnorm = norm2(pseudo)
-
-            colormap = self.cbar(pnorm)
-            colormap[:, :, 3] = np.logical_not(mask)
-
-            self._A = colormap
-
-        elif self.dtype == 'Sunshade':
-            pseudo = self._full_res[0][(rows-y1):(rows-y0):sy, x0:x1:sx]
-            sun = self._full_res[1][(rows-y1):(rows-y0):sy, x0:x1:sx]
-            mask = np.logical_or(pseudo.mask, sun.mask)
-
-            if self.htype == '95% Linear, 5% Compact':
-                pseudo = histcomp(pseudo)
-
-            if self.htype == '98% Linear, 2% Compact':
-                pseudo = histcomp(pseudo, perc=2.)
-
-            if self.htype == '99% Linear, 1% Compact':
-                pseudo = histcomp(pseudo, perc=1.)
-
-            if self.htype == '90% Linear, 10% Compact':
-                pseudo = histcomp(pseudo, perc=10.)
-
-            if self.htype == 'Histogram Equalization':
-                pseudo = histeq(pseudo)
-
-            if self.hstype == '95% Linear, 5% Compact':
-                sun = histcomp(sun)
-
-            if self.hstype == '98% Linear, 2% Compact':
-                sun = histcomp(sun, perc=2.)
-
-            if self.hstype == '99% Linear, 1% Compact':
-                sun = histcomp(sun, perc=1.)
-
-            if self.hstype == '90% Linear, 10% Compact':
-                sun = histcomp(sun, perc=10.)
-
-            if self.hstype == 'Histogram Equalization':
-                sun = histeq(sun)
-
-            self.smallres = np.ma.ones((sun.shape[0], sun.shape[1], 2))
-            self.smallres[:, :, 0] = pseudo
-            self.smallres[:, :, 1] = sun
-
-            sunshader = currentshader(sun.data, self.cell, self.theta,
-                                      self.phi, self.alpha)
-
-            snorm = norm2(sunshader)
-            pnorm = norm2(pseudo)
-
-            colormap = self.cbar(pnorm)
-
-            colormap[:, :, 0] *= snorm  # red
-            colormap[:, :, 1] *= snorm  # green
-            colormap[:, :, 2] *= snorm  # blue
-            colormap[:, :, 3] = np.logical_not(mask)
-
-            self._A = colormap
-
-        elif 'Ternary' in self.dtype:
-            red = self._full_res[0][(rows-y1):(rows-y0):sy, x0:x1:sx]
-            green = self._full_res[1][(rows-y1):(rows-y0):sy, x0:x1:sx]
-            blue = self._full_res[2][(rows-y1):(rows-y0):sy, x0:x1:sx]
-            mask = np.logical_or(red.mask, green.mask)
-            mask = np.logical_or(mask, blue.mask)
-
-            if self.htype == '95% Linear, 5% Compact':
-                red = histcomp(red)
-                green = histcomp(green)
-                blue = histcomp(blue)
-
-            if self.htype == '98% Linear, 2% Compact':
-                red = histcomp(red, perc=2.)
-                green = histcomp(green, perc=2.)
-                blue = histcomp(blue, perc=2.)
-
-            if self.htype == '99% Linear, 1% Compact':
-                red = histcomp(red, perc=1.)
-                green = histcomp(green, perc=1.)
-                blue = histcomp(blue, perc=1.)
-
-            if self.htype == '90% Linear, 10% Compact':
-                red = histcomp(red, perc=10.)
-                green = histcomp(green, perc=10.)
-                blue = histcomp(blue, perc=10.)
-
-            if self.htype == 'Histogram Equalization':
-                red = histeq(red)
-                green = histeq(green)
-                blue = histeq(blue)
-
-            self.smallres = np.ma.ones((red.shape[0], red.shape[1], 3))
-            self.smallres[:, :, 0] = red
-            self.smallres[:, :, 1] = green
-            self.smallres[:, :, 2] = blue
-
-            colormap = np.ma.ones((red.shape[0], red.shape[1], 4))
-            colormap[:, :, 0] = norm2(red)
-            colormap[:, :, 1] = norm2(green)
-            colormap[:, :, 2] = norm2(blue)
-            colormap[:, :, 3] = np.logical_not(mask)
-
-            if 'CMY' in self.dtype:
-                colormap[:, :, 0] = (1-colormap[:, :, 0])*(1-self.kval)
-                colormap[:, :, 1] = (1-colormap[:, :, 1])*(1-self.kval)
-                colormap[:, :, 2] = (1-colormap[:, :, 2])*(1-self.kval)
-
-            self._A = colormap
-
-        y0 = ylim[0]
-        y1 = ylim[1]
-        x0 = xlim[0]
-        x1 = xlim[1]
-
-        self.set_extent([x0, x1, y0, y1])
         self._sx = sx
         self._sy = sy
         self._bounds = (x0, x1, y0, y1)
         self.changed()
 
     def draw(self, renderer, *args, **kwargs):
-        """
-        Draw.
-
-        Parameters
-        ----------
-        renderer : Matplotlib renderer.
-            Matplotlib renderer.
-        *args
-            Variable length argument list.
-        **kwargs
-            Arbitrary keyword arguments.
-
-        Returns
-        -------
-        None.
-
-        """
-        # This loop forces the histograms to remain static
-        for argb in self.figure.axes[1:]:
-            if np.inf in argb.dataLim.extents:
-                continue
-            if np.nan in argb.dataLim.extents:
-                continue
-            argb.set_xlim(argb.dataLim.x0, argb.dataLim.x1)
-            argb.set_ylim(argb.dataLim.y0, argb.dataLim.y1*1.2)
-
-        # The next command runs the original draw for this class.
+        self._scale_to_res()
         super().draw(renderer, *args, **kwargs)
 
 
@@ -412,70 +177,20 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
            interpolation=None, alpha=None, vmin=None, vmax=None,
            origin=None, extent=None, shape=None, filternorm=1,
            filterrad=4.0, imlim=None, resample=None, url=None, **kwargs):
-    """
-    Similar to matplotlib's imshow command, but produces a ModestImage.
-
+    """Similar to matplotlib's imshow command, but produces a ModestImage
     Unlike matplotlib version, must explicitly specify axes
-
-    Parameters
-    ----------
-    axes : TYPE
-        DESCRIPTION.
-    X : numpy array or PIL image.
-        The image data.
-    cmap : str or Colormap, optional
-        Colormap instance. The default is None.
-    norm : Normalize, optional
-        Normalize instanc used to scale data. The default is None.
-    aspect : {'equal', 'auto'} or float, optional
-        Controls the aspect ratio of the axes.. The default is None.
-    interpolation : str, optional
-        The interpolation method used. The default is None.
-    alpha : scaler, optional
-        The alpha blending value, between 0 (transparent) and 1 (opaque).
-        The default is None.
-    vmin : scalar, optional
-        Minimum data value. The default is None.
-    vmax : scalar, optional
-        Maximum data value. The default is None.
-    origin : {'upper', 'lower'}, optional
-        Origin location. The default is None.
-    extent : scalars (left, right, bottom, top), optional
-        The bounding box in data coordinates that the image will fill.
-        The default is None.
-    shape : TYPE, optional
-        DESCRIPTION. The default is None.
-    filternorm : float, optional
-        A parameter for the antigrain image resize filter. The default is 1.
-    filterrad : float > 0, optional
-        The filter radius for filters that have a radius parameter.
-        The default is 4.0.
-    imlim : TYPE, optional
-        DESCRIPTION. The default is None.
-    resample : bool, optional
-        When True, use a full resampling method. The default is None.
-    url : str, optional
-        URL. The default is None.
-    **kwargs
-        Arbitrary keyword arguments.
-
-    Returns
-    -------
-    im : pygmi.raster.ginterp.ModestImage
-        ModestImage output.
-
     """
 
-#    if not axes._hold:
-#        axes.cla()
+    # if not axes._hold:
+    #     axes.cla()
     if norm is not None:
-        assert isinstance(norm, mcolors.Normalize)
+        assert(isinstance(norm, mcolors.Normalize))
     if aspect is None:
         aspect = rcParams['image.aspect']
     axes.set_aspect(aspect)
     im = ModestImage(axes, cmap, norm, interpolation, origin, extent,
-                     filternorm=filternorm, filterrad=filterrad,
-                     resample=resample, **kwargs)
+                     filternorm=filternorm,
+                     filterrad=filterrad, resample=resample, **kwargs)
 
     im.set_data(X)
     im.set_alpha(alpha)
@@ -485,10 +200,13 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
         # image does not already have clipping set, clip to axes patch
         im.set_clip_path(axes.patch)
 
+    # if norm is None and shape is None:
+    #    im.set_clim(vmin, vmax)
     if vmin is not None or vmax is not None:
         im.set_clim(vmin, vmax)
-    else:
+    elif norm is None:
         im.autoscale_None()
+
     im.set_url(url)
 
     # update ax.dataLim, and, if autoscaling, set viewLim
@@ -499,6 +217,57 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     im._remove_method = lambda h: axes.images.remove(h)
 
     return im
+
+
+def extract_matched_slices(ax, shape):
+    """Determine the slice parameters to use, matched to the screen.
+    :param ax: Axes object to query. It's extent and pixel size
+               determine the slice parameters
+    :param shape: Tuple of the full image shape to slice into. Upper
+               boundaries for slices will be cropped to fit within
+               this shape.
+    :rtype: tuple of x0, x1, sx, y0, y1, sy
+    Indexing the full resolution array as array[y0:y1:sy, x0:x1:sx] returns
+    a view well-matched to the axes' resolution and extent
+
+    Will not subsample when zooming or panning.
+    """
+    fx0, fy0, fx1, fy1 = ax.dataLim.extents
+
+    rows = shape[0]
+    cols = shape[1]
+
+    if ax.get_navigate_mode() is not None:
+        return 0, cols, 1, 0, rows, 1
+
+    ddx = (fx1-fx0)/cols
+    ddy = (fy1-fy0)/rows
+
+    ext = ax.transAxes.transform([1, 1]) - ax.transAxes.transform([0, 0])
+    xlim, ylim = ax.get_xlim(), ax.get_ylim()
+    dx, dy = xlim[1] - xlim[0], ylim[1] - ylim[0]
+
+    y0 = max(0, (ylim[0]-fy0)/ddy)
+    y1 = min(rows, (ylim[1]-fy0)/ddy)
+    x0 = max(0, (xlim[0]-fx0)/ddx)
+    x1 = min(cols, (xlim[1] - fx0)/ddx)
+
+    if y1 == y0:
+        y1 = y0+1
+
+    if x1 == x0:
+        x1 = x0+1
+
+    y0, y1, x0, x1 = [int(i) for i in [y0, y1, x0, x1]]
+
+    sy = max(int(np.ceil(dy/(ddy*ext[1]))), 1)
+    sx = max(int(np.ceil(dx/(ddx*ext[0]))), 1)
+
+    y0 = rows - y0
+    y1 = rows - y1
+    y0, y1 = y1, y0
+
+    return x0, x1, sx, y0, y1, sy
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -574,7 +343,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.gmode = None
         self.argb = [None, None, None]
         self.hhist = [None, None, None]
-        self.hband = [None, None, None]
+        self.hband = [None, None, None, None]
         self.htxt = [None, None, None]
         self.image = None
         self.cnt = None
@@ -583,6 +352,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.bbox_hist_red = None
         self.bbox_hist_green = None
         self.bbox_hist_blue = None
+        self.shade = False
+        self.ccbar = None
+        self.clipperc = 0.0
 
         gspc = gridspec.GridSpec(3, 4)
         self.axes = fig.add_subplot(gspc[0:, 1:])
@@ -720,24 +492,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
                 self.figure.canvas.update()
 
-            if self.gmode == 'Sunshade':
-                for i in self.sdata:
-                    itlx = i.extent[0]
-                    itly = i.extent[-1]
-                    for j in [1]:
-                        if i.dataid == self.hband[j]:
-                            col = int((event.xdata - itlx)/i.xdim)
-                            row = int((itly - event.ydata)/i.ydim)
-                            zval[j] = i.data[row, col]
-                bnum = self.update_hist_sun(zval)
-                self.figure.canvas.restore_region(self.bbox_hist_red)
-                self.figure.canvas.restore_region(self.bbox_hist_green)
-                for j in range(2):
-                    self.argb[j].draw_artist(self.htxt[j])
-                    self.argb[j].draw_artist(self.hhist[j][2][bnum[j]])
-
-                self.figure.canvas.update()
-
     def update_contour(self):
         """
         Update contours.
@@ -747,17 +501,19 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        self.image.dtype = 'Single Color Map'
-
         x1, x2, y1, y2 = self.data[0].extent
         self.image.set_visible(False)
 
         for i in self.data:
             if i.dataid == self.hband[0]:
-                dat = i.data
+                dat = i.data.copy()
+
+        if self.htype == 'Histogram Equalization':
+            dat = histeq(dat)
+        elif self.clipperc > 0.:
+            dat = histcomp(dat, perc=self.clipperc)
 
         self.image.set_data(dat)
-        dat = norm2(self.image.smallres)
 
         xdim = (x2-x1)/dat.data.shape[1]/2
         ydim = (y2-y1)/dat.data.shape[0]/2
@@ -765,10 +521,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         yi = np.linspace(y2-ydim, y1+ydim, dat.data.shape[0])
 
         self.cnt = self.axes.contour(xi, yi, dat, extent=(x1, x2, y1, y2),
-                                     linewidths=1, colors='k')
+                                     linewidths=1, colors='k',
+                                     linestyles='solid')
         self.cntf = self.axes.contourf(xi, yi, dat, extent=(x1, x2, y1, y2),
                                        cmap=self.cbar)
 
+        self.ccbar = self.figure.colorbar(self.cntf, ax=self.axes)
         self.figure.canvas.draw()
 
     def update_graph(self):
@@ -780,17 +538,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+        if self.ccbar is not None:
+            self.ccbar.remove()
+            self.ccbar = None
+
         if not self.data or self.gmode is None:
             return
-
-        self.image.cbar = self.cbar
-        self.image.htype = self.htype
-        self.image.hstype = self.hstype
-        self.image.alpha = self.alpha
-        self.image.cell = self.cell
-        self.image.theta = self.theta
-        self.image.phi = self.phi
-        self.image.kval = self.kval
 
         for i in range(3):
             self.argb[i].clear()
@@ -943,18 +696,48 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        self.image.dtype = self.gmode
         dat = [None, None, None]
         for i in self.data:
             for j in range(3):
                 if i.dataid == self.hband[j]:
                     dat[j] = i.data
 
-        self.image.set_data(dat)
-        hdata = self.image.smallres
+        red = dat[0]
+        green = dat[1]
+        blue = dat[2]
+        mask = np.logical_or(red.mask, green.mask)
+        mask = np.logical_or(mask, blue.mask)
 
-        for i in range(3):
-            self.hhist[i] = self.argb[i].hist(hdata[:, :, i].compressed(), 50,
+        if self.htype == 'Histogram Equalization':
+            red = histeq(red)
+            green = histeq(green)
+            blue = histeq(blue)
+        elif self.clipperc > 0.:
+            red = histcomp(red, perc=self.clipperc)
+            green = histcomp(green, perc=self.clipperc)
+            blue = histcomp(blue, perc=self.clipperc)
+
+        colormap = np.ma.ones((red.shape[0], red.shape[1], 4))
+        colormap[:, :, 0] = norm2(red)
+        colormap[:, :, 1] = norm2(green)
+        colormap[:, :, 2] = norm2(blue)
+
+        if 'CMY' in self.gmode:
+            colormap[:, :, 0] = (1-colormap[:, :, 0])*(1-self.kval)
+            colormap[:, :, 1] = (1-colormap[:, :, 1])*(1-self.kval)
+            colormap[:, :, 2] = (1-colormap[:, :, 2])*(1-self.kval)
+
+        snorm = self.update_shade_plot()
+
+        colormap[:, :, 0] *= snorm  # red
+        colormap[:, :, 1] *= snorm  # green
+        colormap[:, :, 2] *= snorm  # blue
+        colormap[:, :, 3] = np.logical_not(mask)
+
+        self.image.set_data(colormap)
+
+        for i, hdata in enumerate([red, green, blue]):
+            self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
                                               ec='none')
             self.htxt[i] = self.argb[i].text(0., 0., '', ha='right', va='top')
 
@@ -999,15 +782,34 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        self.image.dtype = 'Single Color Map'
         for i in self.data:
             if i.dataid == self.hband[0]:
-                dat = i.data
+                pseudo = i.data.copy()
 
-        self.image.set_data(dat)
-        dat = self.image.smallres
+        mask = np.ma.getmaskarray(pseudo)
 
-        self.hhist[0] = self.argb[0].hist(dat.compressed(), 50, ec='none')
+        if self.htype == 'Histogram Equalization':
+            pseudo = histeq(pseudo)
+        elif self.clipperc > 0.:
+            pseudo = histcomp(pseudo, perc=self.clipperc)
+
+        pnorm = norm2(pseudo)
+
+        colormap = self.cbar(pnorm)
+
+        snorm = self.update_shade_plot()
+
+        colormap[:, :, 0] *= snorm  # red
+        colormap[:, :, 1] *= snorm  # green
+        colormap[:, :, 2] *= snorm  # blue
+        colormap[:, :, 3] = np.logical_not(mask)
+
+        # colormap = self.cbar(pnorm)
+        # colormap[:, :, 3] = np.logical_not(mask)
+
+        self.image.set_data(colormap)
+
+        self.hhist[0] = self.argb[0].hist(pseudo.compressed(), 50, ec='none')
         self.htxt[0] = self.argb[0].text(0.0, 0.0, '', ha='right', va='top')
         self.argb[0].set_xlim(self.hhist[0][1].min(), self.hhist[0][1].max())
         self.argb[0].set_ylim(0, self.hhist[0][0].max()*1.2)
@@ -1038,54 +840,20 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        self.image.dtype = 'Sunshade'
-        data = [None, None]
 
-        for i in self.data:
-            if i.dataid == self.hband[0]:
-                data[0] = i.data
+        if self.shade is not True:
+            return 1
 
         for i in self.sdata:
-            if i.dataid == self.hband[1]:
-                data[1] = i.data
+            if i.dataid == self.hband[3]:
+                sun = i.data
 
-        self.image.set_data(data)
+        sunshader = currentshader(sun.data, self.cell, self.theta,
+                                  self.phi, self.alpha)
 
-        hdata = self.image.smallres
+        snorm = norm2(sunshader)
 
-        for i in range(2):
-            self.hhist[i] = self.argb[i].hist(hdata[:, :, i].compressed(), 50,
-                                              ec='none')
-            self.htxt[i] = self.argb[i].text(0., 0., '', ha='right', va='top')
-            self.argb[i].set_xlim(self.hhist[i][1].min(),
-                                  self.hhist[i][1].max())
-            self.argb[i].set_ylim(0, self.hhist[i][0].max()*1.2)
-
-        zval = [data[0].data.min(), data[1].data.min()]
-        self.update_hist_sun(zval)
-
-        self.figure.canvas.restore_region(self.background)
-        self.figure.canvas.restore_region(self.bbox_hist_red)
-        self.figure.canvas.restore_region(self.bbox_hist_green)
-
-        self.axes.draw_artist(self.image)
-
-        for j in range(2):
-            for i in self.hhist[j][2]:
-                self.argb[j].draw_artist(i)
-
-        self.figure.canvas.update()
-
-        self.bbox_hist_red = self.figure.canvas.copy_from_bbox(
-            self.argb[0].bbox)
-        self.bbox_hist_green = self.figure.canvas.copy_from_bbox(
-            self.argb[1].bbox)
-
-        for j in range(2):
-            self.argb[j].draw_artist(self.htxt[j])
-
-        self.figure.canvas.update()
-        self.figure.canvas.flush_events()
+        return snorm
 
 
 class MySunCanvas(FigureCanvasQTAgg):
@@ -1174,17 +942,21 @@ class PlotInterp(QtWidgets.QDialog):
         self.cbox_band1 = QtWidgets.QComboBox()
         self.cbox_band2 = QtWidgets.QComboBox()
         self.cbox_band3 = QtWidgets.QComboBox()
+        self.cbox_bands = QtWidgets.QComboBox()
         self.cbox_htype = QtWidgets.QComboBox()
-        self.cbox_hstype = QtWidgets.QComboBox()
+        self.lineclip = QtWidgets.QLineEdit()
+        # self.cbox_hstype = QtWidgets.QComboBox()
         self.cbox_cbar = QtWidgets.QComboBox(self)
         self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # cmyK
         self.sslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # sunshade
         self.aslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
-        self.slabel = QtWidgets.QLabel('Sunshade Stretch:')
+        # self.slabel = QtWidgets.QLabel('Sunshade Stretch:')
+        self.label4 = QtWidgets.QLabel('Sunshade Data:')
         self.labels = QtWidgets.QLabel('Sunshade Detail')
         self.labela = QtWidgets.QLabel('Light Reflectance')
         self.labelc = QtWidgets.QLabel('Color Bar:')
         self.labelk = QtWidgets.QLabel('K value:')
+        self.chkbox_sun = QtWidgets.QCheckBox('Apply Sun Shading:')
 
         self.setupui()
 
@@ -1196,8 +968,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.mmc.argb[1].set_visible(False)
         self.mmc.argb[2].set_visible(False)
 
-        self.slabel.hide()
-        self.cbox_hstype.hide()
+        # self.slabel.hide()
+        # self.cbox_hstype.hide()
         self.cbox_band1.show()
         self.cbox_band2.hide()
         self.cbox_band3.hide()
@@ -1208,6 +980,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.labela.hide()
         self.labels.hide()
         self.labelk.hide()
+        self.label4.hide()
+        self.cbox_bands.hide()
 
     def setupui(self):
         """
@@ -1241,6 +1015,11 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider.setMaximum(100)
         self.kslider.setValue(1)
 
+        # self.lineclip.setInputMask('00.0')
+        self.lineclip.setPlaceholderText('Clip Percentage (0 Default)')
+        self.btn_saveimg.setAutoDefault(False)
+        helpdocs.setAutoDefault(False)
+
         self.sslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
                                    QtWidgets.QSizePolicy.Fixed)
         self.aslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
@@ -1254,41 +1033,37 @@ class PlotInterp(QtWidgets.QDialog):
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(tmp)
         self.cbox_dtype.addItems(['Single Color Map', 'Contour', 'RGB Ternary',
-                                  'CMY Ternary', 'Sunshade'])
+                                  'CMY Ternary'])
         self.cbox_htype.addItems(['Linear',
-                                  '90% Linear, 10% Compact',
-                                  '95% Linear, 5% Compact',
-                                  '98% Linear, 2% Compact',
-                                  '99% Linear, 1% Compact',
                                   'Histogram Equalization'])
-        self.cbox_hstype.addItems(['Linear',
-                                   '90% Linear, 10% Compact',
-                                   '95% Linear, 5% Compact',
-                                   '98% Linear, 2% Compact',
-                                   '99% Linear, 1% Compact',
-                                   'Histogram Equalization'])
 
         self.setWindowTitle('Raster Data Interpretation')
 
         vbl_raster.addWidget(label1)
         vbl_raster.addWidget(self.cbox_dtype)
+        vbl_raster.addWidget(self.labelk)
+        vbl_raster.addWidget(self.kslider)
+
         vbl_raster.addWidget(label2)
         vbl_raster.addWidget(self.cbox_band1)
         vbl_raster.addWidget(self.cbox_band2)
         vbl_raster.addWidget(self.cbox_band3)
         vbl_raster.addWidget(label3)
         vbl_raster.addWidget(self.cbox_htype)
-        vbl_raster.addWidget(self.slabel)
-        vbl_raster.addWidget(self.cbox_hstype)
+        vbl_raster.addWidget(self.lineclip)
         vbl_raster.addWidget(self.labelc)
         vbl_raster.addWidget(self.cbox_cbar)
+
+        vbl_raster.addWidget(self.chkbox_sun)
+        vbl_raster.addWidget(self.label4)
+        vbl_raster.addWidget(self.cbox_bands)
+        # vbl_raster.addWidget(self.slabel)
+        # vbl_raster.addWidget(self.cbox_hstype)
         vbl_raster.addWidget(self.msc)
         vbl_raster.addWidget(self.labels)
         vbl_raster.addWidget(self.sslider)
         vbl_raster.addWidget(self.labela)
         vbl_raster.addWidget(self.aslider)
-        vbl_raster.addWidget(self.labelk)
-        vbl_raster.addWidget(self.kslider)
         vbl_raster.addItem(spacer)
         vbl_raster.addWidget(self.btn_saveimg)
         vbl_raster.addWidget(helpdocs)
@@ -1301,15 +1076,46 @@ class PlotInterp(QtWidgets.QDialog):
         self.cbox_cbar.currentIndexChanged.connect(self.change_cbar)
         self.cbox_dtype.currentIndexChanged.connect(self.change_dtype)
         self.cbox_htype.currentIndexChanged.connect(self.change_htype)
-        self.cbox_hstype.currentIndexChanged.connect(self.change_hstype)
+        # self.cbox_hstype.currentIndexChanged.connect(self.change_hstype)
 
         self.sslider.sliderReleased.connect(self.change_dtype)
         self.aslider.sliderReleased.connect(self.change_dtype)
         self.kslider.sliderReleased.connect(self.change_dtype)
         self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
         self.btn_saveimg.clicked.connect(self.save_img)
+        self.chkbox_sun.clicked.connect(self.change_dtype)
 
-        self.resize(self.parent.width(), self.parent.height())
+        self.lineclip.editingFinished.connect(self.change_lclip)
+
+        if self.parent is not None:
+            self.resize(self.parent.width(), self.parent.height())
+
+    def change_lclip(self):
+        """
+        Change the linear clip percentage.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = self.lineclip.text()
+
+        try:
+            clip = float(txt)
+        except ValueError:
+            if txt == '':
+                clip = 0.0
+            else:
+                clip = self.mmc.clipperc
+            self.lineclip.setText(str(clip))
+
+        if clip < 0.0 or clip >= 100.0:
+            clip = self.mmc.clipperc
+            self.lineclip.setText(str(clip))
+        self.mmc.clipperc = clip
+
+        self.change_dtype()
 
     def change_blue(self):
         """
@@ -1346,15 +1152,16 @@ class PlotInterp(QtWidgets.QDialog):
         None.
 
         """
+        self.mmc.figure.canvas.mpl_disconnect(self.mmc.cid)
+
         txt = str(self.cbox_dtype.currentText())
         self.mmc.gmode = txt
         self.cbox_band1.show()
 
         if txt == 'Single Color Map':
-            self.slabel.hide()
+            # self.slabel.hide()
             self.labelc.show()
             self.labelk.hide()
-            self.cbox_hstype.hide()
             self.cbox_band2.hide()
             self.cbox_band3.hide()
             self.cbox_cbar.show()
@@ -1364,16 +1171,12 @@ class PlotInterp(QtWidgets.QDialog):
             self.sslider.hide()
             self.aslider.hide()
             self.kslider.hide()
-            self.msc.hide()
-            self.labela.hide()
-            self.labels.hide()
-            self.mmc.init_graph()
 
         if txt == 'Contour':
             self.labelk.hide()
-            self.slabel.hide()
+            # self.slabel.hide()
             self.labelc.show()
-            self.cbox_hstype.hide()
+            # self.cbox_hstype.hide()
             self.cbox_band2.hide()
             self.cbox_band3.hide()
             self.cbox_cbar.show()
@@ -1383,16 +1186,13 @@ class PlotInterp(QtWidgets.QDialog):
             self.sslider.hide()
             self.aslider.hide()
             self.kslider.hide()
-            self.msc.hide()
-            self.labela.hide()
-            self.labels.hide()
-            self.mmc.init_graph()
+            self.chkbox_sun.setChecked(False)
 
         if 'Ternary' in txt:
             self.labelk.hide()
-            self.slabel.hide()
+            # self.slabel.hide()
             self.labelc.hide()
-            self.cbox_hstype.hide()
+            # self.cbox_hstype.hide()
             self.cbox_band2.show()
             self.cbox_band3.show()
             self.cbox_cbar.hide()
@@ -1406,37 +1206,38 @@ class PlotInterp(QtWidgets.QDialog):
                 self.kslider.show()
                 self.labelk.show()
                 self.mmc.kval = float(self.kslider.value())/100.
+
+        if self.chkbox_sun.isChecked():
+            self.msc.show()
+            self.label4.show()
+            self.cbox_bands.show()
+            self.sslider.show()
+            self.aslider.show()
+            self.labela.show()
+            self.labels.show()
+            # self.slabel.show()
+            # self.cbox_hstype.show()
+            self.mmc.cell = self.sslider.value()
+            self.mmc.alpha = float(self.aslider.value())/100.
+            self.mmc.shade = True
+            self.msc.init_graph()
+        else:
             self.msc.hide()
             self.labela.hide()
             self.labels.hide()
-            self.mmc.init_graph()
+            # self.slabel.hide()
+            # self.cbox_hstype.hide()
+            self.label4.hide()
+            self.cbox_bands.hide()
+            self.mmc.shade = False
 
-        if txt == 'Sunshade':
-            self.labelc.show()
-            self.labelk.hide()
-            self.msc.show()
-            self.sslider.show()
-            self.aslider.show()
-            self.kslider.hide()
-            self.labela.show()
-            self.labels.show()
-            self.slabel.show()
-            self.cbox_hstype.show()
-            self.cbox_band2.show()
-            self.cbox_band3.hide()
-            self.cbox_cbar.show()
-            self.mmc.argb[0].set_visible(True)
-            self.mmc.argb[1].set_visible(True)
-            self.mmc.argb[2].set_visible(False)
-            self.mmc.cell = self.sslider.value()
-            self.mmc.alpha = float(self.aslider.value())/100.
-#            QtWidgets.QApplication.processEvents()
-            self.msc.init_graph()
-            self.mmc.init_graph()
+        self.mmc.cid = self.mmc.figure.canvas.mpl_connect('resize_event',
+                                                          self.mmc.init_graph)
+        self.mmc.init_graph()
 
     def change_green(self):
         """
-        Change the greed or second band.
+        Change the green or second band.
 
         Returns
         -------
@@ -1447,18 +1248,18 @@ class PlotInterp(QtWidgets.QDialog):
         self.mmc.hband[1] = txt
         self.mmc.init_graph()
 
-    def change_hstype(self):
-        """
-        Change the histogram stretch to apply to the sun shaded data.
+    # def change_hstype(self):
+    #     """
+    #     Change the histogram stretch to apply to the sun shaded data.
 
-        Returns
-        -------
-        None.
+    #     Returns
+    #     -------
+    #     None.
 
-        """
-        txt = str(self.cbox_hstype.currentText())
-        self.mmc.hstype = txt
-        self.mmc.init_graph()
+    #     """
+    #     txt = str(self.cbox_hstype.currentText())
+    #     self.mmc.hstype = txt
+    #     self.mmc.init_graph()
 
     def change_htype(self):
         """
@@ -1484,6 +1285,19 @@ class PlotInterp(QtWidgets.QDialog):
         """
         txt = str(self.cbox_band1.currentText())
         self.mmc.hband[0] = txt
+        self.mmc.init_graph()
+
+    def change_sun(self):
+        """
+        Change the sunshade band.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = str(self.cbox_bands.currentText())
+        self.mmc.hband[3] = txt
         self.mmc.init_graph()
 
     def data_init(self):
@@ -1519,6 +1333,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.mmc.hband[0] = data[0].dataid
         self.mmc.hband[1] = data[0].dataid
         self.mmc.hband[2] = data[0].dataid
+        self.mmc.hband[3] = data[0].dataid
 
         blist = []
         for i in data:
@@ -1528,19 +1343,23 @@ class PlotInterp(QtWidgets.QDialog):
             self.cbox_band1.currentIndexChanged.disconnect()
             self.cbox_band2.currentIndexChanged.disconnect()
             self.cbox_band3.currentIndexChanged.disconnect()
+            self.cbox_bands.currentIndexChanged.disconnect()
         except TypeError:
             pass
 
         self.cbox_band1.clear()
         self.cbox_band2.clear()
         self.cbox_band3.clear()
+        self.cbox_bands.clear()
         self.cbox_band1.addItems(blist)
         self.cbox_band2.addItems(blist)
         self.cbox_band3.addItems(blist)
+        self.cbox_bands.addItems(blist)
 
         self.cbox_band1.currentIndexChanged.connect(self.change_red)
         self.cbox_band2.currentIndexChanged.connect(self.change_green)
         self.cbox_band3.currentIndexChanged.connect(self.change_blue)
+        self.cbox_bands.currentIndexChanged.connect(self.change_sun)
 
     def move(self, event):
         """
@@ -1577,6 +1396,8 @@ class PlotInterp(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+
+        snorm = self.mmc.update_shade_plot()
 
         ext = 'GeoTiff (*.tif)'
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -1635,35 +1456,20 @@ class PlotInterp(QtWidgets.QDialog):
 
         img = self.mmc.image.get_array()
         htype = str(self.cbox_htype.currentText())
-        hstype = str(self.cbox_hstype.currentText())
-        cell = self.mmc.cell
-        alpha = self.mmc.alpha
-        phi = self.mmc.phi
-        theta = self.mmc.theta
+        clipperc = self.mmc.clipperc
 
         if dtype == 'Single Color Map':
-            pseudo = self.mmc.image._full_res.copy()
-            psmall = self.mmc.image.smallres
-            pmask = pseudo.mask.copy()
 
-            pseudo[pseudo < psmall.min()] = psmall.min()
-            pseudo[pseudo > psmall.max()] = psmall.max()
-            pseudo.mask = pmask
+            for i in self.mmc.data:
+                if i.dataid == self.mmc.hband[0]:
+                    dat = i.data
 
-            if htype == '95% Linear, 5% Compact':
-                pseudo = histcomp(pseudo)
-
-            if htype == '98% Linear, 2% Compact':
-                pseudo = histcomp(pseudo, perc=2.)
-
-            if htype == '99% Linear, 1% Compact':
-                pseudo = histcomp(pseudo, perc=1.)
-
-            if htype == '90% Linear, 10% Compact':
-                pseudo = histcomp(pseudo, perc=10.)
+            pseudo = dat
 
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
+            elif clipperc > 0.:
+                pseudo = histcomp(pseudo, perc=clipperc)
 
             cmin = pseudo.min()
             cmax = pseudo.max()
@@ -1673,87 +1479,35 @@ class PlotInterp(QtWidgets.QDialog):
 
             pseudo = None
 
-        elif dtype == 'Sunshade':
-            pseudo = self.mmc.image._full_res[0]
-            sun = self.mmc.image._full_res[1]
-
-            if htype == '90% Linear, 10% Compact':
-                pseudo = histcomp(pseudo, perc=10.)
-
-            if htype == '95% Linear, 5% Compact':
-                pseudo = histcomp(pseudo)
-
-            if htype == '98% Linear, 2% Compact':
-                pseudo = histcomp(pseudo, perc=2.)
-
-            if htype == '99% Linear, 1% Compact':
-                pseudo = histcomp(pseudo, perc=1.)
-
-            if htype == 'Histogram Equalization':
-                pseudo = histeq(pseudo)
-
-            if hstype == '90% Linear, 10% Compact':
-                sun = histcomp(sun, perc=10.)
-
-            if hstype == '95% Linear, 5% Compact':
-                sun = histcomp(sun)
-
-            if hstype == '98% Linear, 2% Compact':
-                sun = histcomp(pseudo, perc=2.)
-
-            if hstype == '99% Linear, 1% Compact':
-                sun = histcomp(pseudo, perc=1.)
-
-            if hstype == 'Histogram Equalization':
-                sun = histeq(sun)
-
-            cmin = pseudo.min()
-            cmax = pseudo.max()
-
-            sunshader = currentshader(sun.data, cell, theta, phi, alpha)
-            snorm = norm2(sunshader)
-
-            img = img2rgb(pseudo, self.mmc.cbar)
-            pseudo = None
-            sunshader = None
-
             img[:, :, 0] = img[:, :, 0]*snorm  # red
             img[:, :, 1] = img[:, :, 1]*snorm  # green
             img[:, :, 2] = img[:, :, 2]*snorm  # blue
             img = img.astype(np.uint8)
 
         elif 'Ternary' in dtype:
-            red = self.mmc.image._full_res[0]
-            green = self.mmc.image._full_res[1]
-            blue = self.mmc.image._full_res[2]
+
+            dat = [None, None, None]
+            for i in self.mmc.data:
+                for j in range(3):
+                    if i.dataid == self.mmc.hband[j]:
+                        dat[j] = i.data
+
+            red = dat[0]
+            green = dat[1]
+            blue = dat[2]
+
             mask = np.logical_or(red.mask, green.mask)
             mask = np.logical_or(mask, blue.mask)
             mask = np.logical_not(mask)
-
-            if htype == '95% Linear, 5% Compact':
-                red = histcomp(red)
-                green = histcomp(green)
-                blue = histcomp(blue)
-
-            if htype == '98% Linear, 2% Compact':
-                red = histcomp(red, perc=2.)
-                green = histcomp(green, perc=2.)
-                blue = histcomp(blue, perc=2.)
-
-            if htype == '99% Linear, 1% Compact':
-                red = histcomp(red, perc=1.)
-                green = histcomp(green, perc=1.)
-                blue = histcomp(blue, perc=1.)
-
-            if htype == '90% Linear, 10% Compact':
-                red = histcomp(red, perc=10.)
-                green = histcomp(green, perc=10.)
-                blue = histcomp(blue, perc=10.)
 
             if htype == 'Histogram Equalization':
                 red = histeq(red)
                 green = histeq(green)
                 blue = histeq(blue)
+            elif clipperc > 0.:
+                red = histcomp(red, perc=clipperc)
+                green = histcomp(green, perc=clipperc)
+                blue = histcomp(blue, perc=clipperc)
 
             cmin = red.min()
             cmax = red.max()
@@ -1772,40 +1526,32 @@ class PlotInterp(QtWidgets.QDialog):
 
             img = colormap
 
+            img[:, :, 0] = img[:, :, 0]*snorm  # red
+            img[:, :, 1] = img[:, :, 1]*snorm  # green
+            img[:, :, 2] = img[:, :, 2]*snorm  # blue
+            img = img.astype(np.uint8)
+
         elif dtype == 'Contour':
             pseudo = self.mmc.image._full_res.copy()
-            psmall = self.mmc.image.smallres
-            pmask = np.ma.getmaskarray(pseudo)
-
-            pseudo[pseudo < psmall.min()] = psmall.min()
-            pseudo[pseudo > psmall.max()] = psmall.max()
-            pseudo.mask = pmask
-
-            if htype == '95% Linear, 5% Compact':
-                pseudo = histcomp(pseudo)
-
-            if htype == '98% Linear, 2% Compact':
-                pseudo = histcomp(pseudo, perc=2.)
-
-            if htype == '99% Linear, 1% Compact':
-                pseudo = histcomp(pseudo, perc=1.)
-
-            if htype == '90% Linear, 10% Compact':
-                pseudo = histcomp(pseudo, perc=10.)
-
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
+            elif clipperc > 0.:
+                pseudo = histcomp(pseudo, perc=clipperc)
 
             cmin = pseudo.min()
             cmax = pseudo.max()
+
+            if self.mmc.ccbar is not None:
+                self.mmc.ccbar.remove()
+                self.mmc.ccbar = None
 
             self.mmc.figure.set_frameon(False)
             self.mmc.axes.set_axis_off()
             tmpsize = self.mmc.figure.get_size_inches()
             self.mmc.figure.set_size_inches(tmpsize*3)
             self.mmc.figure.canvas.draw()
-            img = np.fromstring(self.mmc.figure.canvas.tostring_argb(),
-                                dtype=np.uint8, sep='')
+            img = np.frombuffer(self.mmc.figure.canvas.tostring_argb(),
+                                dtype=np.uint8)
             w, h = self.mmc.figure.canvas.get_width_height()
 
             self.mmc.figure.set_size_inches(tmpsize)
@@ -1961,7 +1707,7 @@ class PlotInterp(QtWidgets.QDialog):
 
             ax.axis('off')
             fname = filename[:-4]+'_tern.png'
-            canvas.print_figure(fname, dpi=300)
+            canvas.print_figure(fname, dpi=300, bbox_inches='tight')
 
         QtWidgets.QMessageBox.information(self, 'Information',
                                           'Save to GeoTiff is complete!',
@@ -1992,11 +1738,17 @@ class PlotInterp(QtWidgets.QDialog):
             self.showprocesslog('RGB images cannot be used in this module.')
             return False
 
-        self.show()
-        QtWidgets.QApplication.processEvents()
+        # self.show()
+        # QtWidgets.QApplication.processEvents()
 
         self.mmc.init_graph()
         self.msc.init_graph()
+
+        tmp = self.exec_()
+
+        if tmp == 0:
+            return False
+
         return True
 
     def loadproj(self, projdata):
@@ -2291,3 +2043,22 @@ def norm255(dat):
     out = out.round()
     out = out.astype(np.uint8)
     return out
+
+
+def test():
+    """Test."""
+    sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                 '..//..')))
+    app = QtWidgets.QApplication(sys.argv)
+
+    data = iodefs.get_raster(r'C:\work\WorkData\testdata.hdr')
+
+    tmp = PlotInterp(None)
+    tmp.indata['Raster'] = data
+    tmp.data_init()
+    tmp.settings()
+
+
+if __name__ == "__main__":
+
+    test()

@@ -642,7 +642,13 @@ class PlotQC(GraphWindow):
             self.mmc.update_hist(self.datd['1_year'], 'Year', bins=bins,
                                  rng=(bmin, bmax))
         elif i == 'Number of Stations':
-            self.mmc.update_hist(self.datd['1_number_of_stations_used'], i)
+            bins = np.unique(self.datd['1_number_of_stations_used']).size
+            bmin = np.nanmin(self.datd['1_number_of_stations_used'])+0.5
+            bmax = np.nanmax(self.datd['1_number_of_stations_used'])+1.5
+            self.mmc.update_hist(self.datd['1_number_of_stations_used'],
+                                 i, bins=bins, rng=(bmin, bmax))
+
+            # self.mmc.update_hist(self.datd['1_number_of_stations_used'], i)
         elif i == 'RMS of time residuals':
             rts = np.array(self.datd['1_rms_of_time_residuals'])
             self.mmc.update_hist(rts, i)
