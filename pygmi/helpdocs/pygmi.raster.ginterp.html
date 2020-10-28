@@ -3,21 +3,29 @@
 	<body>
 		<h1>Raster Data Interpretation</h1>
 		<p>This allows for the display of data in a variety of ways common to most image processing packages. The resultant dataset can then be exported as a geotiff for vector interpretation in a GIS package. Each display type is discussed below.</p>
-		<h2>Single Color Map</h2>
-		<p> This displays a single band of data by mapping its values to a color map or color table.
+		<h2>Display Type</h2>
+		<p> This gives options for different types of maps. They are as follows:
 		<ul>
-			<li>Data bands - the band to be displayed is chosen here.</li>
-			<li>Histogram Stretch - The choice of how to map the data is chosen here. The options are 'Linear' (data is unchanged), '95% linear, 5% compact' (compacts 5% of the outliers of the data)and 'Histogram Equalisation' (gives all colors the same amount of data samples, so that maximum change is seen in the map)</li>
-			<li>Color Bar - Here you can choose the color bar to map the colors with.</li>
+			<li>Single Color Map - displays a single band of data by mapping its values to a color map or color table.</li>
+			<li>Contour - This has the same options as the single color map, but displays the data using contours instead.</li>
+			<li>RGB Ternary - displays three bands, one red, one green and one blue. Because of this, no color map can be chosen, and now three bands must be chosen.</li>
+			<li>CMYK Ternary - displays three bands, one cyan, one magenta and one yellow. As before, no color map can be chosen, and now three bands must be chosen.</li>
 		</ul>
-		<h2>Contour</h2>
-		<p>This has the same options as the single color map, but displays the data using contours instead.</p>
-		<h2>RGB Ternary</h2>
-		<p>This option displays three bands, one red, one green and one blue. Because of this, no color map can be chosen, and now three bands must be chosen. Histogram stretch is the same as for previous sections.</p>
-		<h2>CMY Ternary</h2>
-		<p>This option displays three bands, one cyan, one magenta and one yellow. As before, no color map can be chosen, and now three bands must be chosen. Histogram stretch is the same as for previous sections.</p>
+		<h2>Data Bands</h2>
+		<p>The bands to  be displayed are chosen here.</p>
+		<h2>Histogram Stretch</h2>
+		<p>The choice of how to map the data is chosen here. The options are:
+		<ul>
+			<li>Linear with Percent Clip - compacts a % of the outliers of the data, as chosen by the user.</li>
+			<li>Histogram Equalisation - gives all colors the same amount of data samples, so that maximum change is seen in the map)</li>
+		</ul>
+		<p>The user must press to apply button once the setting is changed.</p>
+
+		<h2>Color Bar</h2>
+		<p>Here you can choose the color bar to map the colors with.</p>
+
 		<h2>Sunshade</h2>
-		<p>This option applies a sunshade algorithm to the data. Two bands are chosen, the first is the color and the second is the sunshade band. A Histogram stretch for each band can be chosen. A color bar can be chosen for the color band.</p>
+		<p>This option applies a sunshade algorithm to the data, with the color overlay being chosen in the Display Type step. Options are:</p>
 		<ul>
 			<li>Sun Angle - This is chosen by clicking on a small circular map. A blue dot denotes the sun's azimuth and elevation.</li>
 			<li>Sunshade Detail - controls how much sunshade detail is present. Decrease this to increase the detail.</li>
