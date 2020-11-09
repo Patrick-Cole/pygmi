@@ -328,7 +328,6 @@ class DataMerge(QtWidgets.QDialog):
         """
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
-
         dat = merge(self.indata['Raster'], self.piter, dxy)
         self.outdata['Raster'] = dat
 
@@ -2133,9 +2132,12 @@ def merge(dat, piter=None, dxy=None):
 
     needsmerge = False
     rows, cols = dat[0].data.shape
+
     for i in dat:
         irows, icols = i.data.shape
         if irows != rows or icols != cols:
+            needsmerge = True
+        if dxy is not None and (i.xdim != dxy or i.ydim != dxy):
             needsmerge = True
 
     if needsmerge is False:
@@ -2171,6 +2173,8 @@ def merge(dat, piter=None, dxy=None):
     dat2 = []
     for data in piter(dat):
         doffset = 0.0
+        data.data.set_fill_value(data.nullvalue)
+        data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
         if data.data.min() <= 0:
             doffset = data.data.min()-1.
             data.data = data.data - doffset

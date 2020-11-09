@@ -73,197 +73,16 @@ from scipy import ndimage
 from matplotlib.figure import Figure
 import matplotlib.gridspec as gridspec
 import matplotlib.cm as cm
-import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
-from matplotlib import rcParams
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
-import matplotlib.cbook as cbook
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
-
-
-class ModestImage(mi.AxesImage):
-
-    """
-    Computationally modest image class.
-    ModestImage is an extension of the Matplotlib AxesImage class
-    better suited for the interactive display of larger images. Before
-    drawing, ModestImage resamples the data array based on the screen
-    resolution and view window. This has very little affect on the
-    appearance of the image, but can substantially cut down on
-    computation since calculations of unresolved or clipped pixels
-    are skipped.
-    The interface of ModestImage is the same as AxesImage. However, it
-    does not currently support setting the 'extent' property. There
-    may also be weird coordinate warping operations for images that
-    I'm not aware of. Don't expect those to work either.
-    """
-
-    def __init__(self, *args, **kwargs):
-        if 'extent' in kwargs and kwargs['extent'] is not None:
-            raise NotImplementedError("ModestImage does not support extents")
-
-        self._full_res = None
-        self._sx, self._sy = None, None
-        self._bounds = None
-        self._rgbacache = None
-        self._oldxslice = None
-        self._oldyslice = None
-
-        super(ModestImage, self).__init__(*args, **kwargs)
-
-    def set_data(self, A):
-        """
-        Set the image array
-        ACCEPTS: numpy/PIL Image A
-        """
-        self._full_res = A
-        self._A = A.copy()
-
-        if self._A.dtype != np.uint8 and not np.can_cast(self._A.dtype,
-                                                         np.float):
-            raise TypeError("Image data can not convert to float")
-
-        if (self._A.ndim not in (2, 3) or
-                (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4))):
-            raise TypeError("Invalid dimensions for image data")
-
-        self._imcache = None
-        self._rgbacache = None
-        self._oldxslice = None
-        self._oldyslice = None
-        self._sx, self._sy = None, None
-
-    def get_array(self):
-        """Override to return the full-resolution array"""
-        return self._full_res
-
-    def _scale_to_res(self):
-        """ Change self._A and _extent to render an image whose
-        resolution is matched to the eventual rendering."""
-
-        ax = self.axes
-        shp = self._full_res.shape
-        x0, x1, sx, y0, y1, sy = extract_matched_slices(ax, shp)
-        # have we already calculated what we need?
-
-        if self._sx is None:
-            pass
-        elif (self._bounds is not None and
-              sx >= self._sx and sy >= self._sy and
-              x0 >= self._bounds[0] and x1 <= self._bounds[1] and
-              y0 >= self._bounds[2] and y1 <= self._bounds[3]):
-            return
-        self._A = self._full_res[y0:y1:sy, x0:x1:sx]
-        self._A = cbook.safe_masked_invalid(self._A)
-
-        self._sx = sx
-        self._sy = sy
-        self._bounds = (x0, x1, y0, y1)
-        self.changed()
-
-    def draw(self, renderer, *args, **kwargs):
-        self._scale_to_res()
-        super().draw(renderer, *args, **kwargs)
-
-
-def imshow(axes, X, cmap=None, norm=None, aspect=None,
-           interpolation=None, alpha=None, vmin=None, vmax=None,
-           origin=None, extent=None, shape=None, filternorm=1,
-           filterrad=4.0, imlim=None, resample=None, url=None, **kwargs):
-    """Similar to matplotlib's imshow command, but produces a ModestImage
-    Unlike matplotlib version, must explicitly specify axes
-    """
-
-    if norm is not None:
-        assert isinstance(norm, mcolors.Normalize)
-    if aspect is None:
-        aspect = rcParams['image.aspect']
-    axes.set_aspect(aspect)
-    im = ModestImage(axes, cmap, norm, interpolation, origin, extent,
-                     filternorm=filternorm,
-                     filterrad=filterrad, resample=resample, **kwargs)
-
-    im.set_data(X)
-    im.set_alpha(alpha)
-    axes._set_artist_props(im)
-
-    if im.get_clip_path() is None:
-        # image does not already have clipping set, clip to axes patch
-        im.set_clip_path(axes.patch)
-
-    if vmin is not None or vmax is not None:
-        im.set_clim(vmin, vmax)
-    elif norm is None:
-        im.autoscale_None()
-
-    im.set_url(url)
-
-    # update ax.dataLim, and, if autoscaling, set viewLim
-    # to tightly fit the image, regardless of dataLim.
-    im.set_extent(im.get_extent())
-
-    axes.images.append(im)
-    im._remove_method = lambda h: axes.images.remove(h)
-
-    return im
-
-
-def extract_matched_slices(ax, shape):
-    """Determine the slice parameters to use, matched to the screen.
-    :param ax: Axes object to query. It's extent and pixel size
-               determine the slice parameters
-    :param shape: Tuple of the full image shape to slice into. Upper
-               boundaries for slices will be cropped to fit within
-               this shape.
-    :rtype: tuple of x0, x1, sx, y0, y1, sy
-    Indexing the full resolution array as array[y0:y1:sy, x0:x1:sx] returns
-    a view well-matched to the axes' resolution and extent
-
-    Will not subsample when zooming or panning.
-    """
-    fx0, fy0, fx1, fy1 = ax.dataLim.extents
-
-    rows = shape[0]
-    cols = shape[1]
-
-    if ax.get_navigate_mode() is not None:
-        return 0, cols, 1, 0, rows, 1
-
-    ddx = (fx1-fx0)/cols
-    ddy = (fy1-fy0)/rows
-
-    ext = ax.transAxes.transform([1, 1]) - ax.transAxes.transform([0, 0])
-    xlim, ylim = ax.get_xlim(), ax.get_ylim()
-    dx, dy = xlim[1] - xlim[0], ylim[1] - ylim[0]
-
-    y0 = max(0, (ylim[0]-fy0)/ddy)
-    y1 = min(rows, (ylim[1]-fy0)/ddy)
-    x0 = max(0, (xlim[0]-fx0)/ddx)
-    x1 = min(cols, (xlim[1] - fx0)/ddx)
-
-    if y1 == y0:
-        y1 = y0+1
-
-    if x1 == x0:
-        x1 = x0+1
-
-    y0, y1, x0, x1 = [int(i) for i in [y0, y1, x0, x1]]
-
-    sy = max(int(np.ceil(dy/(ddy*ext[1]))), 1)
-    sx = max(int(np.ceil(dx/(ddx*ext[0]))), 1)
-
-    y0 = rows - y0
-    y1 = rows - y1
-    y0, y1 = y1, y0
-
-    return x0, x1, sx, y0, y1, sy
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -351,6 +170,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.shade = False
         self.ccbar = None
         self.clipperc = 0.0
+        self.flagresize = False
 
         gspc = gridspec.GridSpec(3, 4)
         self.axes = fig.add_subplot(gspc[0:, 1:])
@@ -378,10 +198,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         FigureCanvasQTAgg.updateGeometry(self)
 
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
+        # self.cid = self.figure.canvas.mpl_connect('resize_event',
+        #                                           self.init_graph)
         self.cid = self.figure.canvas.mpl_connect('resize_event',
-                                                  self.init_graph)
+                                                  self.revent)
 
-# sun shading stuff
+    # sun shading stuff
         self.pinit = None
         self.qinit = None
         self.phi = -np.pi/4.
@@ -389,8 +211,24 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.cell = 100.
         self.alpha = .0
 
-# cmyk stuff
+    # cmyk stuff
         self.kval = 0.01
+
+    def revent(self, event):
+        """
+        Resize event.
+
+        Parameters
+        ----------
+        event : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.flagresize = True
 
     def init_graph(self, event=None):
         """
@@ -419,18 +257,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_aspect('equal')
 
         self.figure.canvas.draw()
-        QtWidgets.QApplication.processEvents()
+        # QtWidgets.QApplication.processEvents()
 
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
-        self.bbox_hist_red = self.figure.canvas.copy_from_bbox(
-            self.argb[0].bbox)
-        self.bbox_hist_green = self.figure.canvas.copy_from_bbox(
-            self.argb[1].bbox)
-        self.bbox_hist_blue = self.figure.canvas.copy_from_bbox(
-            self.argb[2].bbox)
 
-        self.image = imshow(self.axes, self.data[0].data, origin='upper',
-                            extent=(x_1, x_2, y_1, y_2))
+        self.image = self.axes.imshow(self.data[0].data, origin='upper',
+                                      extent=(x_1, x_2, y_1, y_2))
 
         # This line prevents imshow from generating color values on the
         # toolbar
@@ -438,7 +270,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.update_graph()
 
         self.cid = self.figure.canvas.mpl_connect('resize_event',
-                                                  self.init_graph)
+                                                  self.revent)
 
     def move(self, event):
         """
@@ -458,8 +290,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             return
 
         if event.inaxes == self.axes:
+            if self.flagresize is True:
+                self.flagresize = False
+                self.init_graph()
             zval = [-999, -999, -999]
-
             for i in self.data:
                 itlx = i.extent[0]
                 itly = i.extent[-1]
@@ -626,7 +460,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         for j, _ in enumerate(patches):
             patches[j].set_color(bincol[j])
 
-# This section draws the black line.
+        # This section draws the black line.
         if np.ma.is_masked(zval) is True:
             return 0
         binnum = (bins < zval).sum()-1
@@ -720,11 +554,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.update_hist_rgb([-999, -999, -999])
 
-        self.figure.canvas.restore_region(self.background)
-        self.figure.canvas.restore_region(self.bbox_hist_red)
-        self.figure.canvas.restore_region(self.bbox_hist_green)
-        self.figure.canvas.restore_region(self.bbox_hist_blue)
-
         self.axes.draw_artist(self.image)
 
         for j in range(3):
@@ -783,10 +612,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.argb[0].set_ylim(0, self.hhist[0][0].max()*1.2)
 
         self.update_hist_single(0.0)
-
-        self.figure.canvas.restore_region(self.background)
-        self.figure.canvas.restore_region(self.bbox_hist_red)
-
         self.axes.draw_artist(self.image)
 
         for i in self.hhist[0][2]:
@@ -977,6 +802,15 @@ class PlotInterp(QtWidgets.QDialog):
         v3 = QtWidgets.QVBoxLayout()
         gbox3.setLayout(v3)
 
+        gbox1.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                            QtWidgets.QSizePolicy.Preferred)
+        gbox2.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                            QtWidgets.QSizePolicy.Preferred)
+        gbox3.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                            QtWidgets.QSizePolicy.Preferred)
+        self.gbox_sun.setSizePolicy(QtWidgets.QSizePolicy.Fixed,
+                                    QtWidgets.QSizePolicy.Preferred)
+
         v4 = QtWidgets.QVBoxLayout()
         self.gbox_sun.setLayout(v4)
         self.gbox_sun.setCheckable(True)
@@ -1005,13 +839,6 @@ class PlotInterp(QtWidgets.QDialog):
         self.btn_saveimg.setAutoDefault(False)
         helpdocs.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
-
-        self.sslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                   QtWidgets.QSizePolicy.Fixed)
-        self.aslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                   QtWidgets.QSizePolicy.Fixed)
-        self.kslider.setSizePolicy(QtWidgets.QSizePolicy.Preferred,
-                                   QtWidgets.QSizePolicy.Fixed)
 
         tmp = sorted(m for m in colormaps())
 
@@ -1200,7 +1027,7 @@ class PlotInterp(QtWidgets.QDialog):
             self.mmc.cell = self.sslider.value()
             self.mmc.alpha = float(self.aslider.value())/100.
             self.mmc.shade = True
-            self.cbox_bands.setCurrentText(self.cbox_band1.currentText())
+            # self.cbox_bands.setCurrentText(self.cbox_band1.currentText())
             self.msc.init_graph()
         else:
             self.msc.hide()
@@ -1211,7 +1038,7 @@ class PlotInterp(QtWidgets.QDialog):
             self.mmc.shade = False
 
         self.mmc.cid = self.mmc.figure.canvas.mpl_connect('resize_event',
-                                                          self.mmc.init_graph)
+                                                          self.mmc.revent)
         self.mmc.init_graph()
 
     def change_sunsliders(self):
@@ -1706,7 +1533,6 @@ class PlotInterp(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if nodialog:
             return True
 
@@ -2014,6 +1840,10 @@ def norm255(dat):
 
 def test():
     """Test."""
+    import matplotlib
+
+    matplotlib.interactive(False)
+
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  '..//..')))
     app = QtWidgets.QApplication(sys.argv)

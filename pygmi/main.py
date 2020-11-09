@@ -44,6 +44,7 @@ import importlib
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 from matplotlib import rcParams
+from matplotlib import interactive
 import pygmi
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
@@ -52,6 +53,7 @@ import pygmi.misc as misc
 # rcParams['font.size'] = 6.0
 rcParams['axes.formatter.limits'] = [-12, 12]
 rcParams['axes.formatter.useoffset'] = False
+interactive(False)
 
 QtCore.QLocale.setDefault(QtCore.QLocale.c())
 
