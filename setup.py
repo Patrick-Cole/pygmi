@@ -66,7 +66,8 @@ setup(name='pygmi',
 
       packages=(find_packages(exclude=['docs'])),
 
-      install_requires=['fiona',
+      install_requires=['discretize',
+                        'fiona',
                         'gdal',
                         'geopandas',
                         'llvmlite',

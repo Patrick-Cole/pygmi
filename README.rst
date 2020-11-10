@@ -32,30 +32,29 @@ PyGMI will run on both Windows and Linux. It should be noted that the main devel
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.8.3
-* fiona 1.8.13
-* gdal 3.1.2
-* geopandas 0.7.0
-* IPython 7.14.0
-* importlib_metadata 2.0.0
-* llvmlite 0.33.0
-* matplotlib 3.2.2
+* python 3.8.5
+* discretize 0.5.1
+* fiona 1.8.17
+* gdal 3.1.4
+* geopandas 0.8.1
+* llvmlite 0.34.0
+* matplotlib 3.3.2
 * mtpy 1.1.3
-* pyyaml 5.3.1
-* numba 0.50.1
-* numexpr 2.7.1
-* numpy 1.19.0+mkl
-* pandas 1.0.5
-* pillow 7.2.0
+* numba 0.51.2
+* numexpr 2.7.2
+* numpy 1.19.2+mkl
+* pandas 1.1.3
+* pillow 8.0.1
 * pymatsolver 0.1.2
 * pyopengl 3.1.5
 * PyQt5 5.12.3
-* pytest 5.4.2
+* pytest 6.0.1
 * scikit-image 0.17.2
-* scikit-learn 0.23.1
-* scipy 1.5.1
-* segyio 1.9.1
-* shapely 1.7.0
+* scikit-learn 0.23.2
+* scipy 1.5.3
+* segyio 1.9.3
+* shapely 1.7.1
+* SimPEG 0.14.2
 
 Installation
 ------------

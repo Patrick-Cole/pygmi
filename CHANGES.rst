@@ -2,6 +2,46 @@
 Changelog
 =========
 
+v3.2.2.3, 10 November 2020
+--------------------------
+*Geophysical interpretation resizes window smoother.
+*Merge/resize tool will fill null values after resize.
+*Improved geophysics interpretation tool.
+*Fixed a bug where in some cases residual plots did not display data
+*Fixed a bug preventing PyGMI from running in Linux.
+*Updated install instructions for Anaconda
+*Export gdal routines now uses the progress bar
+*Fixed a bug preventing sentinel-2 data imported from ENVI files from having ratios calculated.
+*Geotiff output now has correct band names, especially for ternary images.
+*Fixed some bugs with showprocesslog calls
+*Updated ratios to accept data labelled Band 1, Band 2 etc using raster import.
+*For supervised classification, zoom tool and panning will no longer create polygon points
+*Fixed a bug in supervised classification where first point of new poly was on top left corner of grid.
+*Fixed a bug where only the edge of a polygon was used in class definitions
+*Reverted graph tool to plotting maps with matplotlib library instead of modestimage, because of bugs in zooming.
+*Custom profile will now show beginning and end of user coords as a +
+*Bugfix causing profiles with directions greater than 90 degrees to not work.
+*Added automatic detection of some x and y columns.
+*Made a change to gravity import allowing for e,w,s,n, in gps coords
+*Fixed some matplotlib issues due to API changes.
+*Changed method to call cm in Matplotlib
+*Changed library calls for matplotlib to be more compatible with pylint
+*Stopped using picker due to future matplotlib depreciation.
+*Fixed resize for picked features on line profile
+*Stopped redirecting stdout globally in favor of a more elegant approach
+*Fixed a scaling bug when viewing SEG-Y data.
+*Sentinel-2 import now divides DN by 10000
+*Comment update
+*Update to modis v6 import
+*TDEM additions
+*MODIS16 import
+*Change detection viewer now saves gif animations.
+*Changed FFT preparation padding to use a mach faster routine taking into account null values.
+*Added more bins for linear stretch in interpretation module.
+*Changed band labels for sentinel 2 import.
+*Added text toolbar class.
+*Added alpha channel support to RGB import.
+
 v3.2.1.1, 05 August 2020
 ----------------------
 *Added 99% linear stretch to geophysical interp.

@@ -171,7 +171,8 @@ class ImportData():
 
         piter = None
         if not nodialog:
-            piter = self.parent.pbar.iter
+            if self.parent is not None:
+                piter = self.parent.pbar.iter
             ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;'
                    'ERMapper (*.ers);;'
                    'ENVI (*.hdr *.dat *.img *.raw);;'
