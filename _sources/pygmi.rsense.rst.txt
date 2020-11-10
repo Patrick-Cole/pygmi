@@ -1,11 +1,6 @@
 pygmi.rsense package
 ====================
 
-.. automodule:: pygmi.rsense
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -37,6 +32,14 @@ pygmi.rsense.ratios module
 --------------------------
 
 .. automodule:: pygmi.rsense.ratios
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.rsense
    :members:
    :undoc-members:
    :show-inheritance:

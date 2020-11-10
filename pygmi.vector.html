@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.vector package &#8212; PyGMI 3.2.1 documentation</title>
+    <title>pygmi.vector package &#8212; PyGMI 3.2.2.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -84,9 +84,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.vector">
-<span id="pygmi-vector-package"></span><h1>pygmi.vector package<a class="headerlink" href="#module-pygmi.vector" title="Permalink to this headline">¶</a></h1>
-<p>Vector data routines.</p>
+  <div class="section" id="pygmi-vector-package">
+<h1>pygmi.vector package<a class="headerlink" href="#pygmi-vector-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -491,7 +490,7 @@ shapefile.</p>
 
 <dl class="py function">
 <dt id="pygmi.vector.dataprep.quickgrid">
-<code class="sig-prename descclassname">pygmi.vector.dataprep.</code><code class="sig-name descname">quickgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">z</span></em>, <em class="sig-param"><span class="n">dxy</span></em>, <em class="sig-param"><span class="n">numits</span><span class="o">=</span><span class="default_value">4</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.quickgrid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.vector.dataprep.</code><code class="sig-name descname">quickgrid</code><span class="sig-paren">(</span><em class="sig-param">x</em>, <em class="sig-param">y</em>, <em class="sig-param">z</em>, <em class="sig-param">dxy</em>, <em class="sig-param">numits=4</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.quickgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Do a quick grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -517,202 +516,6 @@ numits will be calculated and used.</p></li>
 <dt id="pygmi.vector.dataprep.testfn">
 <code class="sig-prename descclassname">pygmi.vector.dataprep.</code><code class="sig-name descname">testfn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.dataprep.testfn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Main testing routine.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-pygmi.vector.datatypes">
-<span id="pygmi-vector-datatypes-module"></span><h2>pygmi.vector.datatypes module<a class="headerlink" href="#module-pygmi.vector.datatypes" title="Permalink to this headline">¶</a></h2>
-<p>Module for vector data types.</p>
-<dl class="py class">
-<dt id="pygmi.vector.datatypes.LData">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.datatypes.</code><code class="sig-name descname">LData</code><a class="headerlink" href="#pygmi.vector.datatypes.LData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for line data.</p>
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.LData.xchannel">
-<code class="sig-name descname">xchannel</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.xchannel" title="Permalink to this definition">¶</a></dt>
-<dd><p>channel for x coordinates</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>string</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.LData.ychannel">
-<code class="sig-name descname">ychannel</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.ychannel" title="Permalink to this definition">¶</a></dt>
-<dd><p>channel for y coordinates</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>string</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.LData.zchannel">
-<code class="sig-name descname">zchannel</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.zchannel" title="Permalink to this definition">¶</a></dt>
-<dd><p>channel for z coordinates</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>string</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.LData.data">
-<code class="sig-name descname">data</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.data" title="Permalink to this definition">¶</a></dt>
-<dd><p>dictionary of groups/lines, each having a structured array of data</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>dictionary</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.LData.dataid">
-<code class="sig-name descname">dataid</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.dataid" title="Permalink to this definition">¶</a></dt>
-<dd><p>data description</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.LData.nullvalue">
-<code class="sig-name descname">nullvalue</code><a class="headerlink" href="#pygmi.vector.datatypes.LData.nullvalue" title="Permalink to this definition">¶</a></dt>
-<dd><p>Nullvalue used in data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="pygmi.vector.datatypes.PData">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.datatypes.</code><code class="sig-name descname">PData</code><a class="headerlink" href="#pygmi.vector.datatypes.PData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for point data.</p>
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.PData.xdata">
-<code class="sig-name descname">xdata</code><a class="headerlink" href="#pygmi.vector.datatypes.PData.xdata" title="Permalink to this definition">¶</a></dt>
-<dd><p>array of x coordinates</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>numpy array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.PData.ydata">
-<code class="sig-name descname">ydata</code><a class="headerlink" href="#pygmi.vector.datatypes.PData.ydata" title="Permalink to this definition">¶</a></dt>
-<dd><p>array of y coordinates</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>numpy array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.PData.zdata">
-<code class="sig-name descname">zdata</code><a class="headerlink" href="#pygmi.vector.datatypes.PData.zdata" title="Permalink to this definition">¶</a></dt>
-<dd><p>array of z coordinates</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>numpy array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.PData.dataid">
-<code class="sig-name descname">dataid</code><a class="headerlink" href="#pygmi.vector.datatypes.PData.dataid" title="Permalink to this definition">¶</a></dt>
-<dd><p>data description</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt id="pygmi.vector.datatypes.VData">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.vector.datatypes.</code><code class="sig-name descname">VData</code><a class="headerlink" href="#pygmi.vector.datatypes.VData" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Class for Vector data. Typically used for storage of shape files.</p>
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.VData.crds">
-<code class="sig-name descname">crds</code><a class="headerlink" href="#pygmi.vector.datatypes.VData.crds" title="Permalink to this definition">¶</a></dt>
-<dd><p>List of coordinates</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.VData.attrib">
-<code class="sig-name descname">attrib</code><a class="headerlink" href="#pygmi.vector.datatypes.VData.attrib" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of dictionaries, where each dictionary is the column in a table</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>list</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.VData.dataid">
-<code class="sig-name descname">dataid</code><a class="headerlink" href="#pygmi.vector.datatypes.VData.dataid" title="Permalink to this definition">¶</a></dt>
-<dd><p>data description</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.vector.datatypes.VData.dtype">
-<code class="sig-name descname">dtype</code><a class="headerlink" href="#pygmi.vector.datatypes.VData.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>type of data - Line, Point, Poly</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt id="pygmi.vector.datatypes.line_to_point">
-<code class="sig-prename descclassname">pygmi.vector.datatypes.</code><code class="sig-name descname">line_to_point</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ldata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.datatypes.line_to_point" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert LData to PData</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ldata</strong> (<a class="reference internal" href="#pygmi.vector.datatypes.LData" title="pygmi.vector.datatypes.LData"><em>LData</em></a>) – Line data type.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>pdata</strong> – Point data type</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>PData.</p>
-</dd>
-</dl>
 </dd></dl>
 
 </div>
@@ -798,6 +601,23 @@ numits will be calculated and used.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="pygmi.vector.graphs.MyMplCanvas.resizeline">
+<code class="sig-name descname">resizeline</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.resizeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.vector.graphs.MyMplCanvas.update_lines">
 <code class="sig-name descname">update_lines</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">r</span></em>, <em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.vector.graphs.MyMplCanvas.update_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from point data.</p>
@@ -824,7 +644,7 @@ numits will be calculated and used.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>LData object</em>) – Line data</p></li>
+<li><p><strong>data</strong> (<em>Pandas dataframe</em>) – Line data</p></li>
 <li><p><strong>ival</strong> (<em>dictionary key</em>) – dictionary key representing the line data channel to be plotted.</p></li>
 <li><p><strong>scale</strong> (<em>float</em>) – scale of exxageration for the profile data on the map.</p></li>
 <li><p><strong>uselabels</strong> (<em>bool</em>) – boolean choice whether to use labels or not.</p></li>
@@ -846,7 +666,7 @@ numits will be calculated and used.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data</strong> (<em>PData object</em>) – Point data</p></li>
+<li><p><strong>data</strong> (<em>Pandas dataframe object</em>) – Point data</p></li>
 <li><p><strong>ival</strong> (<em>dictionary key</em>) – dictionary key Point Data</p></li>
 </ul>
 </dd>
@@ -1627,6 +1447,10 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-pygmi.vector">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.vector" title="Permalink to this headline">¶</a></h2>
+<p>Vector data routines.</p>
+</div>
 </div>
 
 
@@ -1677,6 +1501,7 @@ interface. Normal as well as context menus are defined here.</p>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electomagnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
@@ -1739,7 +1564,7 @@ interface. Normal as well as context menus are defined here.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Council for Geoscience.
+      &copy;2020 Council for Geoscience.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>

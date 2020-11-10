@@ -1,11 +1,6 @@
 pygmi.clust package
 ===================
 
-.. automodule:: pygmi.clust
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -85,6 +80,14 @@ pygmi.clust.xie\_beni module
 ----------------------------
 
 .. automodule:: pygmi.clust.xie_beni
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.clust
    :members:
    :undoc-members:
    :show-inheritance:

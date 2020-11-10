@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.seis package &#8212; PyGMI 3.2.1 documentation</title>
+    <title>pygmi.seis package &#8212; PyGMI 3.2.2.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -84,9 +84,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.seis">
-<span id="pygmi-seis-package"></span><h1>pygmi.seis package<a class="headerlink" href="#module-pygmi.seis" title="Permalink to this headline">¶</a></h1>
-<p>Seismology Routines.</p>
+  <div class="section" id="pygmi-seis-package">
+<h1>pygmi.seis package<a class="headerlink" href="#pygmi-seis-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -272,7 +271,7 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 
 <dl class="py function">
 <dt id="pygmi.seis.beachball.beachball">
-<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">beachball</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fm</span></em>, <em class="sig-param"><span class="n">centerx</span></em>, <em class="sig-param"><span class="n">centery</span></em>, <em class="sig-param"><span class="n">diam</span></em>, <em class="sig-param"><span class="n">isgeog</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.beachball" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.seis.beachball.</code><code class="sig-name descname">beachball</code><span class="sig-paren">(</span><em class="sig-param">fm</em>, <em class="sig-param">centerx</em>, <em class="sig-param">centery</em>, <em class="sig-param">diam</em>, <em class="sig-param">isgeog</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.seis.beachball.beachball" title="Permalink to this definition">¶</a></dt>
 <dd><p>Beachball.</p>
 <p>Source code provided here are adopted from MatLab script
 <cite>bb.m</cite> written by Andy Michael and Oliver Boyd.</p>
@@ -1094,7 +1093,8 @@ menu.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data1a</strong> (<em>numpy array</em>) – Data array.</p></li>
-<li><p><strong>bins</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Number of bins or binning strategy. See matplotlib.pyplot.hist. The default is ‘doane’.</p></li>
+<li><p><strong>bins</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Number of bins or binning strategy. See matplotlib.pyplot.hist.
+The default is ‘doane’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1161,7 +1161,8 @@ menu.</p>
 <li><p><strong>data1</strong> (<em>numpy array.</em>) – raster dataset to be used</p></li>
 <li><p><strong>xlbl</strong> (<em>str</em><em>, </em><em>optional</em>) – X-axis label. The default is ‘Time’.</p></li>
 <li><p><strong>ylbl</strong> (<em>str</em><em>, </em><em>optional</em>) – Y-axis label. The default is ‘ML’.</p></li>
-<li><p><strong>bins</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Number of bins or binning strategy. See matplotlib.pyplot.hist. The default is ‘doane’.</p></li>
+<li><p><strong>bins</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Number of bins or binning strategy. See matplotlib.pyplot.hist.
+The default is ‘doane’.</p></li>
 <li><p><strong>rng</strong> (<em>tuple</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – Bin range. The default is None.</p></li>
 </ul>
 </dd>
@@ -3359,6 +3360,10 @@ list.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-pygmi.seis">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.seis" title="Permalink to this headline">¶</a></h2>
+<p>Seismology Routines.</p>
+</div>
 </div>
 
 
@@ -3409,6 +3414,7 @@ list.</p>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electomagnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
@@ -3471,7 +3477,7 @@ list.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Council for Geoscience.
+      &copy;2020 Council for Geoscience.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>

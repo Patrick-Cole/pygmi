@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Installation &#8212; PyGMI 3.2.2.1 documentation</title>
+    <title>Electromagnetics: Description of Modules &#8212; PyGMI 3.2.2.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -15,8 +15,8 @@
     <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Quick Start to use PyGMI" href="qstart.html" />
-    <link rel="prev" title="PyGMI Wiki" href="wiki.html" />
+    <link rel="next" title="References" href="em.ref.html" />
+    <link rel="prev" title="Electomagnetics" href="em.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -71,10 +71,10 @@
     <ul>
         <li>
           &larr;
-          <a href="wiki.html" title="Previous document">PyGMI Wiki</a>
+          <a href="em.html" title="Previous document">Electomagnetics</a>
         </li>
         <li>
-          <a href="qstart.html" title="Next document">Quick Start to use PyGMI</a>
+          <a href="em.ref.html" title="Next document">References</a>
           &rarr;
         </li>
     </ul>
@@ -84,9 +84,43 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<p>Instructions on how to install PyGMI can be found on <a class="reference external" href="https://github.com/Patrick-Cole/pygmi">Github</a>.</p>
+  <div class="section" id="electromagnetics-description-of-modules">
+<h1>Electromagnetics: Description of Modules<a class="headerlink" href="#electromagnetics-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<p>EM processing makes use of the SimPEG library.</p>
+<div class="section" id="tdem-1d-inversion">
+<h2>TDEM 1D Inversion<a class="headerlink" href="#tdem-1d-inversion" title="Permalink to this headline">¶</a></h2>
+<p>TDEM inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Line data is imported using the Import Line Data tool in the Vector menu.</p>
+<p>Options are as follows:</p>
+<ul class="simple">
+<li><p>Line Number</p></li>
+<li><p>Fid/Station Name</p></li>
+<li><p>Bird Height – height of sensor.</p></li>
+<li><p>Data channel prefix – prefix in ASCII data file, indicating a data channel.</p></li>
+<li><p>Waveform Type – an option to select the waveform for a list of standard types.  This can be VTEM Waveform, Ramp Off Waveform, Trapezoid Waveform, Quarter Sine Ramp On Waveform, Triangular Waveform and HalfSineWaveform.</p></li>
+<li><p>Tx Peak time – time when the input VTEM waveform is at its maximum.</p></li>
+<li><p>Tx Ramp Off start time</p></li>
+<li><p>Tx Off Time – time when the waveform is completely off.</p></li>
+<li><p>Source Type – can be Circular Loop or  Mag Dipole.</p></li>
+<li><p>Tx Orientation – transmitter orientation, can be x, y or z.</p></li>
+<li><p>Tx Area  – transmitter area (only for circular loop souce)</p></li>
+<li><p>Number of turns in loop (only for circular loop souce)</p></li>
+<li><p>Current in loop (only for circular loop souce)</p></li>
+<li><p>Permeability of the background</p></li>
+<li><p>Rx Orientation – receiver orientation, can be x, y or z.</p></li>
+<li><p>Mesh cell size</p></li>
+<li><p>Mesh number cells in x direction</p></li>
+<li><p>Mesh number cells in z direction</p></li>
+<li><p>Mesh number of cells to pad</p></li>
+<li><p>Pad cell multiplier</p></li>
+<li><p>Conductivity Air</p></li>
+<li><p>Conductivity Halfspace</p></li>
+<li><p>Data Relative Error (%)</p></li>
+<li><p>Data Noise Floor</p></li>
+<li><p>Optimization - maximum iterations</p></li>
+<li><p>Load window times – text file with the window times.</p></li>
+</ul>
+<img alt="_images/eminv.png" src="_images/eminv.png" />
+</div>
 </div>
 
 
@@ -97,10 +131,10 @@
     <ul>
         <li>
           &larr;
-          <a href="wiki.html" title="Previous document">PyGMI Wiki</a>
+          <a href="em.html" title="Previous document">Electomagnetics</a>
         </li>
         <li>
-          <a href="qstart.html" title="Next document">Quick Start to use PyGMI</a>
+          <a href="em.ref.html" title="Next document">References</a>
           &rarr;
         </li>
     </ul>
@@ -130,14 +164,14 @@
 <h3>Navigation</h3>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="wiki.html">PyGMI Wiki</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="qstart.html">Quick Start to use PyGMI</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file.html">File Menu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="raster.html">Raster Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="em.html">Electomagnetics</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="em.html">Electomagnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
@@ -169,8 +203,10 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="wiki.html">PyGMI Wiki</a><ul>
-      <li>Previous: <a href="wiki.html" title="previous chapter">PyGMI Wiki</a></li>
-      <li>Next: <a href="qstart.html" title="next chapter">Quick Start to use PyGMI</a></li>
+  <li><a href="em.html">Electomagnetics</a><ul>
+      <li>Previous: <a href="em.html" title="previous chapter">Electomagnetics</a></li>
+      <li>Next: <a href="em.ref.html" title="next chapter">References</a></li>
+  </ul></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -205,7 +241,7 @@
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
-      <a href="_sources/install.rst.txt"
+      <a href="_sources/em.dm.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

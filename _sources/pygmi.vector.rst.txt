@@ -1,11 +1,6 @@
 pygmi.vector package
 ====================
 
-.. automodule:: pygmi.vector
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -13,14 +8,6 @@ pygmi.vector.dataprep module
 ----------------------------
 
 .. automodule:: pygmi.vector.dataprep
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-pygmi.vector.datatypes module
------------------------------
-
-.. automodule:: pygmi.vector.datatypes
    :members:
    :undoc-members:
    :show-inheritance:
@@ -45,6 +32,14 @@ pygmi.vector.menu module
 ------------------------
 
 .. automodule:: pygmi.vector.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.vector
    :members:
    :undoc-members:
    :show-inheritance:

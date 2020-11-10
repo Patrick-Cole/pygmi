@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.rsense package &#8212; PyGMI 3.2.1 documentation</title>
+    <title>pygmi.rsense package &#8212; PyGMI 3.2.2.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -84,9 +84,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.rsense">
-<span id="pygmi-rsense-package"></span><h1>pygmi.rsense package<a class="headerlink" href="#module-pygmi.rsense" title="Permalink to this headline">¶</a></h1>
-<p>Remote Sensing Routines</p>
+  <div class="section" id="pygmi-rsense-package">
+<h1>pygmi.rsense package<a class="headerlink" href="#pygmi-rsense-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -1233,7 +1232,7 @@
 
 <dl class="py function">
 <dt id="pygmi.rsense.iodefs.calculate_toa">
-<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">calculate_toa</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.calculate_toa" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">calculate_toa</code><span class="sig-paren">(</span><em class="sig-param">dat</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.calculate_toa" title="Permalink to this definition">¶</a></dt>
 <dd><p>Top of atmosphere correction. Includes VNIR, SWIR and TIR bands.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1319,7 +1318,7 @@ ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED</p>
 
 <dl class="py function">
 <dt id="pygmi.rsense.iodefs.get_aster_zip">
-<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_aster_zip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_aster_zip" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_aster_zip</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">piter=None</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_aster_zip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets ASTER Data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1336,7 +1335,7 @@ ASTER_GDEM_ASTGDEM_Description: ASTER GDEM resampled to NAALSED</p>
 
 <dl class="py function">
 <dt id="pygmi.rsense.iodefs.get_data">
-<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_data</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">piter=None</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function loads a raster dataset off the disk using the GDAL
 libraries. It returns the data in a PyGMI data object.</p>
 <dl class="field-list simple">
@@ -1354,7 +1353,7 @@ libraries. It returns the data in a PyGMI data object.</p>
 
 <dl class="py function">
 <dt id="pygmi.rsense.iodefs.get_landsat">
-<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_landsat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifilet</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_landsat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_landsat</code><span class="sig-paren">(</span><em class="sig-param">ifilet</em>, <em class="sig-param">piter=None</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_landsat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets Landsat Data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1371,7 +1370,7 @@ libraries. It returns the data in a PyGMI data object.</p>
 
 <dl class="py function">
 <dt id="pygmi.rsense.iodefs.get_modis">
-<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_modis</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_modis" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_modis</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_modis" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets MODIS data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1405,7 +1404,7 @@ libraries. It returns the data in a PyGMI data object.</p>
 
 <dl class="py function">
 <dt id="pygmi.rsense.iodefs.get_sentinel2">
-<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_sentinel2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_sentinel2" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.rsense.iodefs.</code><code class="sig-name descname">get_sentinel2</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">piter=None</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.rsense.iodefs.get_sentinel2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets Sentinel-2 Data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1726,6 +1725,10 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-pygmi.rsense">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.rsense" title="Permalink to this headline">¶</a></h2>
+<p>Remote Sensing Routines</p>
+</div>
 </div>
 
 
@@ -1776,6 +1779,7 @@ interface. Normal as well as context menus are defined here.</p>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electomagnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
@@ -1838,7 +1842,7 @@ interface. Normal as well as context menus are defined here.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020, Council for Geoscience.
+      &copy;2020 Council for Geoscience.
       
       |
       Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>

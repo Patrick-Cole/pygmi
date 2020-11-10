@@ -1,0 +1,38 @@
+Electromagnetics: Description of Modules
+========================================
+EM processing makes use of the SimPEG library.
+
+TDEM 1D Inversion
+-----------------
+TDEM inversion makes use of the SimPEG library (see references below). The inversion is 1D, so it requires as input a single measurement. Line data is imported using the Import Line Data tool in the Vector menu.
+
+Options are as follows:
+
+* Line Number
+* Fid/Station Name
+* Bird Height – height of sensor.
+* Data channel prefix – prefix in ASCII data file, indicating a data channel.
+* Waveform Type – an option to select the waveform for a list of standard types.  This can be VTEM Waveform, Ramp Off Waveform, Trapezoid Waveform, Quarter Sine Ramp On Waveform, Triangular Waveform and HalfSineWaveform.
+* Tx Peak time – time when the input VTEM waveform is at its maximum.
+* Tx Ramp Off start time
+* Tx Off Time – time when the waveform is completely off.
+* Source Type – can be Circular Loop or  Mag Dipole.
+* Tx Orientation – transmitter orientation, can be x, y or z.
+* Tx Area  – transmitter area (only for circular loop souce)
+* Number of turns in loop (only for circular loop souce)
+* Current in loop (only for circular loop souce)
+* Permeability of the background
+* Rx Orientation – receiver orientation, can be x, y or z.
+* Mesh cell size
+* Mesh number cells in x direction
+* Mesh number cells in z direction
+* Mesh number of cells to pad
+* Pad cell multiplier
+* Conductivity Air
+* Conductivity Halfspace
+* Data Relative Error (%)
+* Data Noise Floor
+* Optimization - maximum iterations
+* Load window times – text file with the window times.
+
+.. image:: _images/eminv.png

@@ -1,0 +1,15 @@
+Electomagnetics
+===============
+
+Introduction
+------------
+The electomagnetic section adds some inversion capability, based on the SimPEG library.
+
+Subpackages
+-----------
+
+.. toctree::
+
+    em.dm
+    em.ref
+
