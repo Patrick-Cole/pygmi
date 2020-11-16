@@ -540,7 +540,8 @@ def get_ascii(ifile):
     return dat
 
 
-def get_raster(ifile, nval=None, piter=None, showprocesslog=print):
+def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
+               iraster=None):
     """
     This function loads a raster dataset off the disk using the GDAL
     libraries. It returns the data in a PyGMI data object.
@@ -551,6 +552,13 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print):
         filename to import
     nval : float, optional
         No data/null value. The default is None.
+    piter : iterable from misc.ProgressBar or misc.ProgressBarText
+        progress bar iterable
+    showprocesslog : print or other text output
+        Allows for printing either using print or to teh Qt interface.
+    iraster : None or tuple
+        Incremental raster import, to import a section of a file. The tuple is
+        (xoff, yoff, xsize, ysize)
 
     Returns
     -------
@@ -609,7 +617,12 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print):
             nval = rtmp.GetNoDataValue()
 
         dat.append(Data())
-        dat[i].data = rtmp.ReadAsArray()
+        if iraster is None:
+            dat[i].data = rtmp.ReadAsArray()
+        else:
+            xoff, yoff, xsize, ysize = iraster
+            dat[i].data = rtmp.ReadAsArray(xoff, yoff, xsize, ysize)
+
         if dat[i].data.dtype.kind == 'i':
             if nval is None:
                 nval = 999999
