@@ -69,7 +69,7 @@ class MenuWidget():
         self.menufile.addAction(self.action_cut_data)
         self.action_cut_data.triggered.connect(self.cut_data)
 
-        self.action_reproject = QtWidgets.QAction('Reproject Line Data')
+        self.action_reproject = QtWidgets.QAction('Reproject Vector Data')
         self.menufile.addAction(self.action_reproject)
         self.action_reproject.triggered.connect(self.reproject)
 
@@ -127,7 +127,7 @@ class MenuWidget():
     def reproject(self):
         """Reproject point data."""
         fnc = dataprep.DataReproj(self.parent)
-        self.parent.item_insert('Step', 'Reproject Line Data', fnc)
+        self.parent.item_insert('Step', 'Reproject Vector Data', fnc)
 
     def export_line(self):
         """Export line data."""

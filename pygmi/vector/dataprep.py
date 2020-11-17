@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        iodefs.py (part of PyGMI)
+# Name:        dataprep.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Data Preperation for Vector Data."""
 
 import os
 import copy
@@ -541,9 +541,13 @@ class DataReproj(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        if 'Line' not in self.indata:
-            self.showprocesslog('No line data.')
+        if 'Line' not in self.indata and 'Vector' not in self.indata:
+            self.showprocesslog('No vector data.')
             return False
+
+        if 'Vector' in self.indata:
+            firstkey = next(iter(self.indata['Vector'].keys()))
+            self.orig_wkt = self.indata['Vector'][firstkey].crs.to_wkt()
 
         if self.orig_wkt is None:
             indx = self.in_proj.combobox.findText(r'WGS 84 / '
@@ -572,7 +576,14 @@ class DataReproj(QtWidgets.QDialog):
             if tmp != 1:
                 return False
 
-        self.acceptall()
+        if 'Vector' in self.indata:
+            self.outdata['Vector'] = {}
+            for i in self.indata['Vector']:
+                ivec = self.indata['Vector'][i]
+                ivec.set_crs(self.in_proj.wkt)
+                self.outdata['Vector'][i] = ivec.to_crs(self.out_proj.wkt)
+        else:
+            self.acceptall()
 
         return True
 
