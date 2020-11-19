@@ -243,9 +243,10 @@ class ProgressBarText():
 
                 tleft = (self.total-i)*(time2-self.otime)/i
                 if tleft > 60:
-                    timestr = f'{tleft // 60:.0f} min left    '
+                    timestr = f' {tleft // 60:.0f} min left '
                 else:
-                    timestr = f'{tleft:.0f} s left'
+                    timestr = f' {tleft:.1f} sec left '
+                timestr += f' {time2-self.otime:.1f} sec total      '
 
                 self.printprogressbar(i, suffix=timestr)
                 time1 = time2
