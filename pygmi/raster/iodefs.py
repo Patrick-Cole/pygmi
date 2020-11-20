@@ -1233,16 +1233,22 @@ class ExportData():
         return file_out
 
 
-def export_gdal(ifile, dat, drv, envimeta='', piter=None):
+def export_gdal(ofile, dat, drv, envimeta='', piter=None):
     """
-    Export to GDAL format
+    Export to GDAL format.
 
     Parameters
     ----------
+    ofile : str
+        Output file name.
     dat : PyGMI raster Data
         dataset to export
     drv : str
         name of the GDAL driver to use
+    envimeta : str, optional
+        ENVI metadata. The default is ''.
+    piter : ProgressBar.iter/ProgressBarText.iter, optional
+        Progressbar iterable from misc. The default is None.
 
     Returns
     -------
@@ -1276,7 +1282,7 @@ def export_gdal(ifile, dat, drv, envimeta='', piter=None):
     else:
         fmt = gdal.GDT_Float32
 
-    tmp = ifile.rpartition('.')
+    tmp = ofile.rpartition('.')
 
     if drv == 'GTiff':
         tmpfile = tmp[0] + '.tif'
@@ -1298,12 +1304,13 @@ def export_gdal(ifile, dat, drv, envimeta='', piter=None):
     elif drv == 'ERS':  # ER Mapper
         tmpfile = tmp[0]
     else:
-        tmpfile = ifile
+        tmpfile = ofile
 
     drows, dcols = data[0].data.shape
     if drv == 'GTiff':
         out = driver.Create(tmpfile, int(dcols), int(drows),
                             len(data), fmt, options=['COMPRESS=NONE',
+                                                     'INTERLEAVE=BAND',
                                                      'TFW=YES',
                                                      'PROFILE=GeoTIFF',
                                                      'ESRI_XML_PAM=True'])

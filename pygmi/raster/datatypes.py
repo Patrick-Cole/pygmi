@@ -28,14 +28,22 @@ import warnings
 import numpy as np
 
 
-def numpy_to_pygmi(data):
+def numpy_to_pygmi(data, pdata=None, dataid=None):
     """
-    Convert an MxN numpy array into a PyGMI data object.
+    Convert an MxN numpy array into a PyGMI data object. For convenience, if
+    pdata is defined, parameters from another dataset will be used (such as
+    xdim, ydim etc).
 
     Parameters
     ----------
     data : numpy array
         MxN array
+
+    pdata : Data
+        PyGMI raster dataset
+
+    dataid: str or None
+        name for the band of data.
 
     Returns
     -------
@@ -45,12 +53,31 @@ def numpy_to_pygmi(data):
     if data.ndim != 2:
         warnings.warn('Error: you need 2 dimensions')
         return None
+
+    if pdata.data.shape != data.shape:
+        warnings.warn('Error: you need your data and pygmi data '
+                      'shape to be the same')
+        return None
+
     tmp = Data()
     if np.ma.isMaskedArray(data):
         tmp.data = data
     else:
-        tmp.data.data = data
-    tmp.ydim, tmp.xdim = data.shape
+        tmp.data = np.ma.array(data)
+
+    if isinstance(pdata, Data):
+        tmp.extent = pdata.extent
+        tmp.xdim = pdata.xdim
+        tmp.ydim = pdata.ydim
+        tmp.dataid = pdata.dataid
+        tmp.nullvalue = pdata.nullvalue
+        tmp.wkt = pdata.wkt
+        tmp.units = pdata.units
+        tmp.isrgb = pdata.isrgb
+        tmp.metadata = pdata.metadata
+
+    if dataid is not None:
+        tmp.dataid = dataid
 
     return tmp
 
