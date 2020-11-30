@@ -77,7 +77,7 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
         tmp.metadata = pdata.metadata
 
     if dataid is not None:
-        tmp.dataid = dataid
+        tmp.dataid = str(dataid)
 
     return tmp
 

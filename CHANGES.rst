@@ -2,6 +2,13 @@
 Changelog
 =========
 
+v3.2.2.4, 20 November 2020
+--------------------------
+*Fixed library installer problem in windows installer.
+*Added features to numpy_to_pygmi for convenience.
+*Added shapefile functionality to vector reprojection.
+*Update get raster to read sections of files.
+
 v3.2.2.3, 10 November 2020
 --------------------------
 *Geophysical interpretation resizes window smoother.

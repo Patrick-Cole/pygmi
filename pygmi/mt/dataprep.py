@@ -1477,6 +1477,7 @@ class Occam1D(QtWidgets.QDialog):
         self.errfloorres.setSizePolicy(sizepolicy)
         self.errfloorphase = QtWidgets.QLineEdit('2.')
         self.errfloorphase.setSizePolicy(sizepolicy)
+        self.remove_out_quad = QtWidgets.QCheckBox(r'Remove Resistivity/Phase values out of 1st/3rd Quadrant')
 
         self.targetdepth = QtWidgets.QLineEdit('40000.')
         self.targetdepth.setSizePolicy(sizepolicy)
@@ -1492,6 +1493,7 @@ class Occam1D(QtWidgets.QDialog):
         self.maxiter.setSizePolicy(sizepolicy)
         self.targetrms = QtWidgets.QLineEdit('1.')
         self.targetrms.setSizePolicy(sizepolicy)
+        self.remove_out_quad.setChecked(True)
 
         self.hs_profnum = MySlider()
         self.hs_profnum.setOrientation(QtCore.Qt.Horizontal)
@@ -1503,6 +1505,7 @@ class Occam1D(QtWidgets.QDialog):
         label5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
         label6 = QtWidgets.QLabel('Resistivity Error Floor (%):')
         label7 = QtWidgets.QLabel('Phase Error Floor (degrees):')
+        label7a = QtWidgets.QLabel(r'Remove Resistivity/Phase values out of 1st/3rd Quadrant (True/False):')
         label8 = QtWidgets.QLabel('Height of air layer:')
         label9 = QtWidgets.QLabel('Bottom of model:')
         label10 = QtWidgets.QLabel('Depth of target to investigate:')
@@ -1546,9 +1549,10 @@ class Occam1D(QtWidgets.QDialog):
         gbl.addWidget(self.maxiter, 12, 1)
         gbl.addWidget(label14, 13, 0)
         gbl.addWidget(self.targetrms, 13, 1)
+        gbl.addWidget(self.remove_out_quad, 14, 0, 1, 2)
 
-        gbl.addWidget(pb_apply, 14, 0, 1, 2)
-        gbl.addWidget(buttonbox, 15, 0, 1, 2)
+        gbl.addWidget(pb_apply, 15, 0, 1, 2)
+        gbl.addWidget(buttonbox, 16, 0, 1, 2)
 
         hbl2.addWidget(helpdocs)
         hbl2.addWidget(self.lbl_profnum)
@@ -1615,6 +1619,7 @@ class Occam1D(QtWidgets.QDialog):
         parm['perr'] = tonumber(self.errphase.text(), 'data')
         parm['perrflr'] = tonumber(self.errfloorphase.text())
         parm['rerrflr'] = tonumber(self.errfloorres.text())
+        parm['routq'] = self.remove_out_quad.isChecked()
 
         if -999 in parm.values():
             return
@@ -1640,7 +1645,7 @@ class Occam1D(QtWidgets.QDialog):
                            phase_err=parm['perr'],
                            res_errorfloor=parm['rerrflr'],
                            phase_errorfloor=parm['perrflr'],
-                           remove_outofquadrant=True
+                           remove_outofquadrant=parm['routq']
                            )
 
         m1 = occam1d.Model(target_depth=parm['tdepth'],
@@ -1837,6 +1842,7 @@ class Occam1D(QtWidgets.QDialog):
         self.errfloorphase.setText(projdata['perrflr'])
         self.errfloorres.setText(projdata['rerrflr'])
         self.combomode.setCurrentText(projdata['mode'])
+        self.remove_out_quad.setChecked(projdata['routq'])
 
         return False
 
@@ -1865,6 +1871,7 @@ class Occam1D(QtWidgets.QDialog):
         projdata['perrflr'] = self.errfloorphase.text()
         projdata['rerrflr'] = self.errfloorres.text()
         projdata['mode'] = self.combomode.currentText()
+        projdata['routq'] = self.remove_out_quad.isChecked()
 
         return projdata
 
@@ -1898,13 +1905,33 @@ def tonumber(test, alttext=None):
     return int(test)
 
 
-def testfn():
+def testfn_occam():
     """ main test """
-    datadir = r'C:\Work\Programming\pygmi\data\MT\\'
+    datadir = r'C:\Work\workdata\MT\\'
     edi_file = datadir+r"synth02.edi"
 
     # Create an MT object
     mt_obj = MT(edi_file)
+
+    print('loading complete')
+
+    app = QtWidgets.QApplication(sys.argv)
+    test = Occam1D(None)
+    test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
+    test.settings()
+
+
+def testfn():
+    """ main test """
+    from mtpy.utils.shapefiles_creator import ShapeFilesCreator
+
+    datadir = r'C:\Work\workdata\MT\\'
+    allfiles = glob.glob(datadir+'\\*.edi')
+
+    for edi_file in allfiles:
+    # Create an MT object
+        mt_obj = MT(edi_file)
+        breakpoint()
 
     print('loading complete')
 

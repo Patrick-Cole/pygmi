@@ -188,9 +188,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.clear()
 
-        ax1 = self.figure.add_subplot(211, label='Profile')
+        ax1 = self.figure.add_subplot(411, label='Profile')
 
-        ax1.set_title(ival)
+        # ax1.set_title(ival)
         self.axes = ax1
         x = 1/data1.Z.freq
 
@@ -230,10 +230,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax1.set_xscale('log')
         ax1.set_yscale('log')
         ax1.legend(loc='upper left')
-        ax1.set_xlabel('Period (s)')
         ax1.set_ylabel(r'App. Res. ($\Omega.m$)')
+        ax1.tick_params(labelbottom=False)
+        ax1.grid(True)
 
-        ax2 = self.figure.add_subplot(212, sharex=ax1)
+        ax2 = self.figure.add_subplot(412, sharex=ax1)
 
         ax2.errorbar(x, pha1, yerr=pha1_err, label=label3,
                      ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
@@ -245,8 +246,35 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax2.set_xscale('log')
         ax2.set_yscale('linear')
         ax2.legend(loc='upper left')
-        ax2.set_xlabel('Period (s)')
         ax2.set_ylabel(r'Phase (Degrees)')
+        ax2.tick_params(labelbottom=False)
+        ax2.grid(True)
+
+        ax3 = self.figure.add_subplot(413, sharex=ax1)
+
+        ax3.plot(x, data1.Tipper.mag_real, 'b.', label='real')
+        ax3.plot(x, data1.Tipper.mag_imag, 'r.', label='imaginary')
+
+        # ax3.set_ylim(-180., 180.)
+
+        ax3.set_xscale('log')
+        ax3.set_yscale('linear')
+        ax3.legend(loc='upper left')
+        ax3.set_ylabel(r'Tipper Magnitude')
+        ax3.tick_params(labelbottom=False)
+        ax3.grid(True)
+
+        ax4 = self.figure.add_subplot(414, sharex=ax1)
+        ax4.plot(x, data1.Tipper.angle_real, 'b.', label='real')
+        ax4.plot(x, data1.Tipper.angle_imag, 'r.', label='imaginary')
+        # ax4.set_ylim(-180., 180.)
+
+        ax4.set_xscale('log')
+        ax4.set_yscale('linear')
+        ax4.legend(loc='upper left')
+        ax4.set_xlabel('Period (s)')
+        ax4.set_ylabel(r'Tipper Angle (Degrees)')
+        ax4.grid(True)
 
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
@@ -297,3 +325,106 @@ class PlotPoints(GraphWindow):
         self.label2.setText('Graph Type:')
         self.combobox1.setCurrentIndex(0)
         self.combobox2.setCurrentIndex(0)
+
+
+def testfn():
+    """ main test """
+    import numpy as np
+    import glob
+    import matplotlib.pyplot as plt
+    from mtpy.core.mt import MT
+    from mtpy.imaging.plotresponse import PlotResponse
+
+    datadir = r'C:\Work\workdata\MT\\'
+    allfiles = glob.glob(datadir+'\\*.edi')
+
+    edi_file = allfiles[2]
+    print(edi_file)
+    data1 = MT(edi_file)
+    PlotResponse(fn=edi_file, plot_tipper='yr')
+    plt.show()
+
+    arrow_direction = 0  # this is 0 for toward a conductor, and 1 for away
+
+    txr = data1.Tipper.mag_real*np.sin(data1.Tipper.angle_real*np.pi/180 +
+                                       np.pi*arrow_direction)
+    tyr = data1.Tipper.mag_real*np.cos(data1.Tipper.angle_real*np.pi/180 +
+                                       np.pi*arrow_direction)
+
+    txi = data1.Tipper.mag_imag*np.sin(data1.Tipper.angle_imag*np.pi/180 +
+                                       np.pi*arrow_direction)
+    tyi = data1.Tipper.mag_imag*np.cos(data1.Tipper.angle_imag*np.pi/180 +
+                                       np.pi*arrow_direction)
+
+    num = len(txr)
+
+    x = 1/data1.Z.freq
+    x10 = np.log10(x)
+
+    ax1 = plt.gca()
+    for i in range(num):
+        # tx0 = np.log10(x[i])
+        # tx1 = txr[i]*np.log10(x[i])
+
+        plt.arrow(x10[i], 0, txr[i], tyr[i])
+        # print(tx0[i], 0, tx1[i], tyr[i])
+
+    plt.tight_layout()
+    plt.grid(True)
+    plt.show()
+
+    ax1 = plt.gca()
+    ax1.set_xscale('log', base=10)
+    ax1.set_yscale('linear')
+
+    for i in range(num):
+        plt.plot(x[i], tyr[i])
+
+    ax, bx = ax1.get_xlim()
+
+    ax1.set_ylim((-0.02, 0.02))
+
+    ay, by = ax1.get_ylim()
+
+    ty = (tyr-ay)/(by-ay)
+    ty0 = -ay/(by-ay)
+
+    for i in range(num):
+        tx0 = (np.log(x[i])-np.log(ax))/(np.log(bx)-np.log(ax))
+        # tx1 = txr[i]*tx0
+        # tx1 = (txr[i]*np.log(x[i])-np.log(ax))/(np.log(bx)-np.log(ax))
+
+        plt.arrow(tx0, ty0, 2*txr[i], 2*tyr[i], transform=ax1.transAxes)
+
+    plt.tight_layout()
+    plt.grid(True)
+    plt.show()
+
+    ax1 = plt.gca()
+    ax1.set_xscale('log', base=10)
+    ax1.set_yscale('linear')
+
+    plt.plot(x, data1.Tipper.mag_real, 'b.-', label='real')
+    plt.plot(x, data1.Tipper.mag_imag, 'r.-', label='imaginary')
+
+    plt.tight_layout()
+    plt.grid(True)
+    plt.show()
+
+    ax1 = plt.gca()
+    ax1.set_xscale('log', base=10)
+    ax1.set_yscale('linear')
+
+    plt.plot(x, data1.Tipper.angle_real, 'b.-', label='real')
+    plt.plot(x, data1.Tipper.angle_imag, 'r.-', label='imaginary')
+
+    plt.tight_layout()
+    plt.grid(True)
+    plt.show()
+
+
+    breakpoint()
+
+
+if __name__ == "__main__":
+    testfn()
