@@ -424,8 +424,8 @@ class ExportShapeData():
             self.showprocesslog('Error: You need to have vector data first!')
             return False
 
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'shp (*.shp)')
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, 'Save File', '.', 'shp (*.shp);;GeoJSON (*.geojson)')
 
         if filename == '':
             return False
@@ -436,7 +436,10 @@ class ExportShapeData():
         data = self.indata['Vector']
         data = list(data.values())[0]
 
-        data.to_file(filename)
+        if filt == 'GeoJSON (*.geojson)':
+            data.to_file(filename, driver='GeoJSON')
+        else:
+            data.to_file(filename)
 #        dfall = data.drop(['pygmiX', 'pygmiY'], axis=1)
 
 #        dfall.to_csv(filename, index=False)

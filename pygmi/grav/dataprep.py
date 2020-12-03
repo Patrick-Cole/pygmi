@@ -273,6 +273,9 @@ class ProcessData(QtWidgets.QDialog):
         tmp2.append(tcnt)
         ix += tmp2
 
+        drate = []
+        dtime = []
+        dday = []
         for iday in np.unique(ix):
             filt = (ix == iday)
             x2 = xp1[filt].values/60.
@@ -281,16 +284,28 @@ class ProcessData(QtWidgets.QDialog):
             driftrate = (dcor2[-1]-dcor2[0])/drifttime
             self.showprocesslog(f'Day {iday+1} drift: {driftrate:.3e} '
                                 f'mGal/min over {drifttime:.3f} minutes.')
+            dday.append(iday+1+x2[-1]/1440)
+            drate.append(driftrate)
+            dtime.append(drifttime)
 
         xp2 = xp1/86400 + ix+1
 
         if not nodialog:
             plt.figure('QC: Gravimeter Drift')
+            plt.subplot(2, 1, 1)
             plt.xlabel('Decimal Days')
-            plt.ylabel('GRAV')
+            plt.ylabel('mGal')
             plt.grid(True)
             plt.plot(xp2, fp, '.-')
             plt.xticks(range(1, ix[-1]+2, 1))
+            ax = plt.gca()
+
+            plt.subplot(2, 1, 2, sharex=ax)
+            plt.xlabel('Decimal Days')
+            plt.ylabel('mGal/min')
+            plt.grid(True)
+            plt.plot(dday, drate, '.-')
+            # plt.xticks(range(1, ix[-1]+2, 1))
             plt.tight_layout()
 
             plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
@@ -540,8 +555,8 @@ def test():
     grvfile = r'C:\Work\Workdata\gravity\skeifontein 2018.txt'
     gpsfile = r'C:\Work\Workdata\gravity\skei_dgps.csv'
 
-    grvfile = r'C:\Work\Workdata\gravity\Laxeygarvity until2511.txt'
-    gpsfile = r'C:\Work\Workdata\gravity\laxey.dgps.csv'
+    # grvfile = r'C:\Work\Workdata\gravity\Laxeygarvity until2511.txt'
+    # gpsfile = r'C:\Work\Workdata\gravity\laxey.dgps.csv'
 
 # Import Data
     IO = iodefs.ImportCG5(None)
