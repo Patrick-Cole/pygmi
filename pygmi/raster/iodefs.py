@@ -604,9 +604,22 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                     custom_wkt = orig.ExportToWkt()
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    istruct = dataset.GetMetadata('IMAGE_STRUCTURE')
+    if 'INTERLEAVE' in istruct:
+        if istruct['INTERLEAVE'] == 'LINE':
+            dataset = None
+            dat = get_bil(ifile, nval, piter, showprocesslog)
+            return dat
 
     if dataset is None:
         return None
+
+    if custom_wkt is None:
+        srs = osr.SpatialReference()
+        srs.ImportFromWkt(dataset.GetProjection())
+        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        srs.AutoIdentifyEPSG()
+        custom_wkt = srs.ExportToWkt()
 
     gtr = dataset.GetGeoTransform()
 
@@ -665,20 +678,157 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             dat[i].units = bandid[bandid.rfind('(')+1:-1]
 
         dat[i].nullvalue = nval
-
-        if custom_wkt is None:
-            srs = osr.SpatialReference()
-            srs.ImportFromWkt(dataset.GetProjection())
-            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-            srs.AutoIdentifyEPSG()
-            dat[i].wkt = srs.ExportToWkt()
-        else:
-            dat[i].wkt = custom_wkt
-
+        dat[i].wkt = custom_wkt
         dat[i].filename = filename
 
     dataset = None
 
+    return dat
+
+
+def get_bil(ifile, nval, piter, showprocesslog):
+    """
+    Get BIL format file.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    nval : float
+        No data/null value. The default is None.
+    piter : iterable from misc.ProgressBar or misc.ProgressBarText
+        progress bar iterable
+    showprocesslog : print or other text output
+        Allows for printing either using print or to teh Qt interface.
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+
+    """
+    dat = []
+    bname = ifile.split('/')[-1].rpartition('.')[0]
+    ifile = ifile[:]
+    ext = ifile[-3:]
+    custom_wkt = None
+    filename = ifile
+
+    if ext == 'hdr':
+        ifile = ifile[:-4]
+        tmp = glob.glob(ifile+'.dat')
+        if tmp:
+            ifile = tmp[0]
+
+    if ext == 'ers':
+        with open(ifile) as f:
+            metadata = f.read()
+            if 'STMLO' in metadata:
+                clong = metadata.split('STMLO')[1][:2]
+
+                orig = osr.SpatialReference()
+                orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+                if 'CAPE' in metadata:
+                    orig.ImportFromEPSG(4222)
+                    orig.SetTM(0., float(clong), 1., 0., 0.)
+                    orig.SetProjCS(r'Cape / TM'+clong)
+                    custom_wkt = orig.ExportToWkt()
+                elif 'WGS84' in metadata:
+                    orig.ImportFromEPSG(4148)
+                    orig.SetTM(0., float(clong), 1., 0., 0.)
+                    orig.SetProjCS(r'Hartebeesthoek94 / TM'+clong)
+                    custom_wkt = orig.ExportToWkt()
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    if custom_wkt is None:
+        srs = osr.SpatialReference()
+        srs.ImportFromWkt(dataset.GetProjection())
+        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        srs.AutoIdentifyEPSG()
+        custom_wkt = srs.ExportToWkt()
+
+    bands = dataset.RasterCount
+    cols = dataset.RasterXSize
+    rows = dataset.RasterYSize
+    # envimeta = dataset.GetMetadata('ENVI')
+    gtr = dataset.GetGeoTransform()
+
+    band = dataset.GetRasterBand(1)
+    cols = band.XSize
+    rows = band.YSize
+    dtype = band.DataType
+
+    dt2np = {}
+    dt2np[0] = None
+    dt2np[1] = np.uint8
+    dt2np[2] = np.uint16
+    dt2np[3] = np.int16
+    dt2np[4] = np.uint32
+    dt2np[5] = np.int32
+    dt2np[6] = np.float32
+    dt2np[7] = np.float64
+
+    if dt2np[dtype] is None:
+        return False
+
+    count = bands*cols*rows
+
+    offset = 0
+    icount = count//10
+    datin = []
+    dsize = dt2np[dtype]().itemsize
+    for i in piter(range(0, 10)):
+        tmp = np.fromfile(ifile, dtype=dt2np[dtype], sep='', count=icount,
+                          offset=offset)
+        offset += icount*dsize
+        datin.append(tmp)
+
+    extra = int(count-offset/dsize)
+    if extra > 0:
+        tmp = np.fromfile(ifile, dtype=dt2np[dtype], sep='', count=extra,
+                          offset=offset)
+        datin.append(tmp)
+
+    datin = np.concatenate(datin)
+
+    datin.shape = (rows, bands, cols)
+
+    datin = np.swapaxes(datin, 0, 1)
+
+    if nval is None:
+        nval = 0
+
+    dat = []
+    for i in piter(range(bands)):
+        rtmp = dataset.GetRasterBand(i+1)
+        bandid = rtmp.GetDescription()
+        if nval is None:
+            nval = rtmp.GetNoDataValue()
+        dat.append(Data())
+
+        dat[-1].data = datin[i]
+
+        if ext == 'ers' and nval == -1.0e+32:
+            dat[i].data[dat[-1].data <= nval] = -1.0e+32
+
+        dat[i].data = np.ma.array(dat[i].data)
+        dat[i].data.mask = (dat[i].data == nval)
+
+        # dat[i].data = np.ma.masked_invalid(dat[i].data)
+
+        dat[i].extent_from_gtr(gtr)
+
+        if bandid == '':
+            bandid = 'Band '+str(i+1)+' '+bname
+        dat[i].dataid = bandid
+        if bandid[-1] == ')':
+            dat[i].units = bandid[bandid.rfind('(')+1:-1]
+
+        dat[i].nullvalue = nval
+        dat[i].wkt = custom_wkt
+        dat[i].filename = filename
     return dat
 
 
@@ -1360,3 +1510,30 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=None):
         with open(tmpfile[:-4]+'.hdr', 'a') as myfile:
             myfile.write('data ignore value = ' + str(data[0].nullvalue)+'\n')
             myfile.write(envimeta)
+
+
+def filespeedtest():
+    """Test."""
+    from pygmi.misc import ProgressBarText
+
+    print('Starting')
+    pbar = ProgressBarText()
+    ifile = r'E:\WorkData\HyperspectralScanner\Raw Data\LWIR(OWL)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
+    ifile = r'E:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
+    ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
+    ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
+
+
+    # xoff = 0
+    # yoff = 0
+    # xsize = None
+    # ysize = 1000
+    # iraster = (xoff, yoff, xsize, ysize)
+    iraster = None
+
+    dataset = get_raster(ifile, piter=pbar.iter, iraster=iraster)
+
+
+if __name__ == "__main__":
+    # test()
+    filespeedtest()
