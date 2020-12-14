@@ -605,7 +605,9 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
     istruct = dataset.GetMetadata('IMAGE_STRUCTURE')
-    if 'INTERLEAVE' in istruct:
+    driver = dataset.GetDriver().GetDescription()
+
+    if 'INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr']:
         if istruct['INTERLEAVE'] == 'LINE':
             dataset = None
             dat = get_bil(ifile, nval, piter, showprocesslog)
@@ -1521,7 +1523,7 @@ def filespeedtest():
     ifile = r'E:\WorkData\HyperspectralScanner\Raw Data\LWIR(OWL)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
     ifile = r'E:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
     ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
-    ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
+    # ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
 
 
     # xoff = 0
