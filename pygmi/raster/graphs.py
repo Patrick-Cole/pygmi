@@ -43,7 +43,7 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 # from pygmi.raster.ginterp import imshow
 from pygmi.misc import frm
-from pygmi.raster.modest_image import imshow
+# from pygmi.raster.modest_image import imshow
 
 
 class MyMplCanvas(FigureCanvasQTAgg):

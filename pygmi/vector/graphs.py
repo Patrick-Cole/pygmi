@@ -444,7 +444,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_rose(self, data, rtype, nbins=8):
+    def update_rose(self, data, rtype, nbins=8, equal=False):
         """
         Update the rose diagram plot using vector data.
 
@@ -476,6 +476,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax2.ticklabel_format(useOffset=False, style='plain')
         ax2.tick_params(axis='x', rotation=90)
         ax2.tick_params(axis='y', rotation=0)
+        ax2.xaxis.set_major_formatter(frm)
+        ax2.yaxis.set_major_formatter(frm)
 
         fangle = []
         fcnt = []
@@ -515,6 +517,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             radii, theta = np.histogram(fangle, bins=np.arange(0, np.pi+bwidth,
                                                                bwidth))
+
+            if equal is True:
+                radii = .01*radii.max()*np.sqrt(100*radii/radii.max())
+
             xtheta = theta[:-1]  # +(theta[1]-theta[0])/2
             bcols2 = bcols[(xtheta/bwidth).astype(int)]
             ax1.bar(xtheta, radii, width=bwidth, color=bcols2)
@@ -529,6 +535,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             # Draw rose diagram base on one angle per linear segment, normed
             radii, theta = histogram(fcnt, y=flen, xmin=0., xmax=np.pi,
                                      bins=nbins)
+            if equal is True:
+                radii = .01*radii.max()*np.sqrt(100*radii/radii.max())
+
             xtheta = theta[:-1]
             bcols2 = bcols[(xtheta/bwidth).astype(int)]
             ax1.bar(xtheta, radii, width=bwidth, color=bcols2)
@@ -539,6 +548,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             ax2.add_collection(lcol)
             ax2.autoscale(enable=True, tight=True)
 
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
 
@@ -776,6 +786,8 @@ class PlotRose(GraphWindow):
         self.spinbox.setValue(8)
         self.spinbox.setMinimum(2)
         self.spinbox.setMaximum(360)
+        self.checkbox.show()
+
         self.setWindowTitle('Rose Diagram')
         if parent is None:
             self.showprocesslog = print
@@ -795,8 +807,9 @@ class PlotRose(GraphWindow):
             return
         data = self.indata['Vector']
         i = self.combobox1.currentIndex()
+        equal = self.checkbox.isChecked()
         if 'LineString' in data:
-            self.mmc.update_rose(data, i, self.spinbox.value())
+            self.mmc.update_rose(data, i, self.spinbox.value(), equal)
         else:
             self.showprocesslog('No line type data.')
             return
@@ -813,6 +826,7 @@ class PlotRose(GraphWindow):
         self.show()
         self.combobox1.addItem('Average Angle per Feature')
         self.combobox1.addItem('Angle per segment in Feature')
+        self.checkbox.setText('Equal Area Rose Diagram')
         self.label1.setText('Rose Diagram Type:')
         self.combobox1.setCurrentIndex(0)
 

@@ -36,7 +36,7 @@ class ProcessData(QtWidgets.QDialog):
     """
     Process Gravity Data.
 
-    This class grids point data using a nearest neighbourhood technique.
+    This class processes gravity data.
 
     Attributes
     ----------
