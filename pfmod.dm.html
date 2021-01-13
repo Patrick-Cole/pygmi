@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Potential Field Modelling: Description of Modules &#8212; PyGMI 3 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -225,7 +225,7 @@ data is based on the work by Blakely (1996).</p>
 <div class="section" id="general-properties">
 <h4>General Properties<a class="headerlink" href="#general-properties" title="Permalink to this headline">¶</a></h4>
 <ul class="simple">
-<li><p>Gravity Regional - Gravity data needs to have a regional subtracted so that the theroetical and measured anomalies coincide. PyGMI allows you to enter this correction here.</p></li>
+<li><p>Gravity Regional - Gravity data needs to have a regional subtracted so that the theoretical and measured anomalies coincide. PyGMI allows you to enter this correction here.</p></li>
 <li><p>Height of observation - Gravity - This is the gravity sensor height.</p></li>
 <li><p>Height of observation - Magnetic - This is the gravity sensor height.</p></li>
 <li><p>Magnetic Field Intensity - This is the intensity of the magnetic field at the time of the survey. You can get this from NOAA.</p></li>
@@ -265,7 +265,7 @@ data is based on the work by Blakely (1996).</p>
 </div>
 <div class="section" id="regional-test">
 <h3>Regional Test<a class="headerlink" href="#regional-test" title="Permalink to this headline">¶</a></h3>
-<p>In magnetic and gravity modelling, the calculated field will decay past the edged of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpedicular to the profile by a constant amount. This is not teh case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.</p>
+<p>In magnetic and gravity modelling, the calculated field will decay past the edge of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpedicular to the profile by a constant amount. This is not the case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.</p>
 <img alt="_images/pfmodregtest.png" src="_images/pfmodregtest.png" />
 </div>
 </div>
@@ -319,7 +319,7 @@ data is based on the work by Blakely (1996).</p>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="em.html">Electomagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
@@ -385,7 +385,7 @@ data is based on the work by Blakely (1996).</p>
       &copy;2020 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

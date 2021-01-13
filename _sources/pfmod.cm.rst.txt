@@ -19,7 +19,7 @@ By default all lithologies are selected. The viewer provides a means to save an 
 * Orthographic projection
 * Display axis
 * Save to image file
-* Refresh model - this is used to update the viewer while actively modelling. 
+* Refresh model - this is used to update the viewer while actively modelling.
 
 .. image:: _images/pfmod3d.png
 
@@ -28,7 +28,7 @@ Export 3D Model
 This provides a means to export the model in one of 3 formats:
 
 * npz - this is the format adopted for 3D models in PyGMI.
-* kmz - this is google earths 3D format.
+* kmz - this is Google Earth's 3D format.
 * xyz - this is an ASCII format, supplied to export the model in a generic
   fashion.
 * shapefile - this exports each lithology to a separate shapefile.

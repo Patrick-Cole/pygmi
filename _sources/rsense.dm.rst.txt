@@ -53,7 +53,7 @@ This allows the user to create a list of scenes for comparison. Currently geotif
 * Set Scene Directory - The directory which contains all the scenes for comparison.
 * Recursive file search - searches sub directories for additional scenes.
 
-The module automatically requests an excel filename for outputting the scene list. This also enables teh user to make manual changes to the list.
+The module automatically requests an excel filename for outputting the scene list. This also enables the user to make manual changes to the list.
 
 .. image:: _images/rsensecreatescenelist.png
 

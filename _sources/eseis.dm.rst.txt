@@ -1,4 +1,4 @@
-Exploration Sesimics: Description of Modules
+Exploration Seismics: Description of Modules
 ============================================
 
 This section is out of date and will be updated in the future

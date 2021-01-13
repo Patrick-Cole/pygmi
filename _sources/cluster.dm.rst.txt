@@ -3,7 +3,7 @@ Classification: Description of Modules
 
 Cluster Analysis
 ----------------
-The tool uses clustering methodologies implemented by the sckit-learn team (scikit-learn.org). This clustering is unsupervised, meaning that a multiple band dataset is supplied, and regions of the dataset is automatically grouped into classes.
+The tool uses clustering methodologies implemented by the scikit-learn team (scikit-learn.org). This clustering is unsupervised, meaning that a multiple band dataset is supplied, and regions of the dataset is automatically grouped into classes.
 
 .. image:: _images/clustanalysis.png
 
@@ -35,7 +35,7 @@ The following crisp clustering (Paasche 2009) options are supported:
 * Maximum iterations - Maximum number of iterations to use when generating a solution.
 * Terminate if relative change is less than a threshold.
 * Repeated runs.
-* Constrain cluster shape (w-means only) - 0 is unconstrained, 1 is spherical. 
+* Constrain cluster shape (w-means only) - 0 is unconstrained, 1 is spherical.
 
 .. image:: _images/clustcrisp.png
 
@@ -44,7 +44,7 @@ Fuzzy Clustering
 The following fuzzy clustering (Paasche 2009) options are supported:
 
 * Cluster Algorithm - This can be fuzzy c-means, advanced fuzzy c-means, Gustafson-Kessel
-* Minimum Clusters and Maximum Clusters - This refers to the generation of a range of solutions. 
+* Minimum Clusters and Maximum Clusters - This refers to the generation of a range of solutions.
 * Maximum iterations - Maximum number of iterations to use when generating a solution.
 * Terminate if relative change is less than a threshold.
 * Repeated runs.
@@ -85,7 +85,7 @@ The user is also able to choose an appropriate supervised classification algorit
 * Random Forests Classification
 * Support Vector Classification
 
-Under each of these, an appropriate algorithm (K neighbors), criterion (Decision Tree and Random Forests) or kernel (Support Vector) can be selected. 
+Under each of these, an appropriate algorithm (K neighbors), criterion (Decision Tree and Random Forests) or kernel (Support Vector) can be selected.
 
 .. image:: _images/clustsuper.png
 

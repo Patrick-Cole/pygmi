@@ -100,7 +100,7 @@ Options
 * Export All Profiles - Export an X,Y,Z file of the profile data.
 * Dataset Drop Box - Allows for a dataset to be faded in and out of the layer with the aid of a slider. This can help when you need to know where the boundaries of geological units are.
 * Field Display Limits - This changes the scale of the Y-Axis. This can be important after performing a calculation, to see the full effect of the calculation.
-* View Magnetic Profile - used to select the magnetic data for the profile. 
+* View Magnetic Profile - used to select the magnetic data for the profile.
 * View Gravity Profile - used to select the gravity data for the profile.
 * Import borehole logs - used to import borehole logs (imported from the borehole menu, and connected to the modelling module)
 
@@ -143,7 +143,7 @@ This dialog allows for setting all the geophysical parameters for your model. So
 
 General Properties
 ~~~~~~~~~~~~~~~~~~
-* Gravity Regional - Gravity data needs to have a regional subtracted so that the theroetical and measured anomalies coincide. PyGMI allows you to enter this correction here.
+* Gravity Regional - Gravity data needs to have a regional subtracted so that the theoretical and measured anomalies coincide. PyGMI allows you to enter this correction here.
 * Height of observation - Gravity - This is the gravity sensor height.
 * Height of observation - Magnetic - This is the gravity sensor height.
 * Magnetic Field Intensity - This is the intensity of the magnetic field at the time of the survey. You can get this from NOAA.
@@ -185,6 +185,6 @@ Each lithology can have a lithology code and lithology notes assigned to it.
 
 Regional Test
 ^^^^^^^^^^^^^
-In magnetic and gravity modelling, the calculated field will decay past the edged of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpedicular to the profile by a constant amount. This is not teh case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.
+In magnetic and gravity modelling, the calculated field will decay past the edge of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpedicular to the profile by a constant amount. This is not the case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.
 
 .. image:: _images/pfmodregtest.png

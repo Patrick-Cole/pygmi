@@ -1,9 +1,9 @@
-Electomagnetics
-===============
+Electromagnetics
+================
 
 Introduction
 ------------
-The electomagnetic section adds some inversion capability, based on the SimPEG library.
+The electromagnetic section adds some inversion capability, based on the SimPEG library.
 
 Subpackages
 -----------

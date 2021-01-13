@@ -67,13 +67,13 @@ Normalisation and scaling are the process of scaling your data to some predeterm
 
 Options:
 
-* Interval - This simply stretches the data values between 0 an 1.
+* Interval - This simply stretches the data values between 0 and 1.
 * Mean - This sets the mean of the dataset to 0, and the standard deviation of the dataset to +/- 1
 * Median - This sets the median of the dataset to 0, and the median absolute deviation of the dataset to +/- 1
 * 8-bit histogram equalisation - this seeks to distribute the data equally across 255 values.
- 
+
 .. image:: _images/rasternorm.png
- 
+
 Gradient Calculation
 --------------------
 The gradient calculation calculates the devrivative of the data in the azimuth specified. It allows for the calcutaion of a conventional horizontal derivative, a derivative ratio (ratio of x and y derivatives) and a vertical derivative. Based on (Cooper and Cowan 2007).

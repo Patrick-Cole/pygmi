@@ -1,6 +1,11 @@
 pygmi.mt package
 ================
 
+.. automodule:: pygmi.mt
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -40,14 +45,6 @@ pygmi.mt.menu module
 --------------------
 
 .. automodule:: pygmi.mt.menu
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pygmi.mt
    :members:
    :undoc-members:
    :show-inheritance:

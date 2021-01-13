@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>pygmi.raster package &#8212; PyGMI 3 documentation</title>
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
@@ -84,8 +84,9 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="pygmi-raster-package">
-<h1>pygmi.raster package<a class="headerlink" href="#pygmi-raster-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-pygmi.raster">
+<span id="pygmi-raster-package"></span><h1>pygmi.raster package<a class="headerlink" href="#module-pygmi.raster" title="Permalink to this headline">¶</a></h1>
+<p>Raster Routines</p>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -2217,11 +2218,17 @@ value.</p>
 
 <dl class="py function">
 <dt id="pygmi.raster.datatypes.numpy_to_pygmi">
-<code class="sig-prename descclassname">pygmi.raster.datatypes.</code><code class="sig-name descname">numpy_to_pygmi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.numpy_to_pygmi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert an MxN numpy array into a PyGMI data object.</p>
+<code class="sig-prename descclassname">pygmi.raster.datatypes.</code><code class="sig-name descname">numpy_to_pygmi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">pdata</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dataid</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.datatypes.numpy_to_pygmi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an MxN numpy array into a PyGMI data object. For convenience, if
+pdata is defined, parameters from another dataset will be used (such as
+xdim, ydim etc).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<em>numpy array</em>) – MxN array</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>numpy array</em>) – MxN array</p></li>
+<li><p><strong>pdata</strong> (<a class="reference internal" href="#pygmi.raster.datatypes.Data" title="pygmi.raster.datatypes.Data"><em>Data</em></a>) – PyGMI raster dataset</p></li>
+<li><p><strong>dataid</strong> (<em>str</em><em> or </em><em>None</em>) – name for the band of data.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>tmp</strong> – PyGMI raster dataset</p>
@@ -2387,7 +2394,7 @@ there is a requirement for band ratioing etc. It uses the numexpr library.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>findat</strong> – Mosaiced array.</p>
+<dd class="field-even"><p><strong>findat</strong> – Output array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy array</p>
@@ -2601,7 +2608,7 @@ mouse is currently hovering over on image)</p>
 <dd><p>imshow instance - this is the primary way of displaying an image.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>Modestimage imshow</p>
+<dd class="field-odd"><p>imshow</p>
 </dd>
 </dl>
 </dd></dl>
@@ -4517,13 +4524,16 @@ menu. The following are supported:</p>
 
 <dl class="py function">
 <dt id="pygmi.raster.iodefs.export_gdal">
-<code class="sig-prename descclassname">pygmi.raster.iodefs.</code><code class="sig-name descname">export_gdal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em>, <em class="sig-param"><span class="n">dat</span></em>, <em class="sig-param"><span class="n">drv</span></em>, <em class="sig-param"><span class="n">envimeta</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.export_gdal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export to GDAL format</p>
+<code class="sig-prename descclassname">pygmi.raster.iodefs.</code><code class="sig-name descname">export_gdal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ofile</span></em>, <em class="sig-param"><span class="n">dat</span></em>, <em class="sig-param"><span class="n">drv</span></em>, <em class="sig-param"><span class="n">envimeta</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">piter</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.export_gdal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export to GDAL format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>ofile</strong> (<em>str</em>) – Output file name.</p></li>
 <li><p><strong>dat</strong> (<em>PyGMI raster Data</em>) – dataset to export</p></li>
 <li><p><strong>drv</strong> (<em>str</em>) – name of the GDAL driver to use</p></li>
+<li><p><strong>envimeta</strong> (<em>str</em><em>, </em><em>optional</em>) – ENVI metadata. The default is ‘’.</p></li>
+<li><p><strong>piter</strong> (<em>ProgressBar.iter/ProgressBarText.iter</em><em>, </em><em>optional</em>) – Progressbar iterable from misc. The default is None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4536,12 +4546,40 @@ menu. The following are supported:</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="pygmi.raster.iodefs.filespeedtest">
+<code class="sig-prename descclassname">pygmi.raster.iodefs.</code><code class="sig-name descname">filespeedtest</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.filespeedtest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="pygmi.raster.iodefs.get_ascii">
 <code class="sig-prename descclassname">pygmi.raster.iodefs.</code><code class="sig-name descname">get_ascii</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.get_ascii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import ascii raster dataset</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>ifile</strong> (<em>str</em>) – filename to import</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>dat</strong> – dataset imported</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>PyGMI raster Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.raster.iodefs.get_bil">
+<code class="sig-prename descclassname">pygmi.raster.iodefs.</code><code class="sig-name descname">get_bil</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifile</span></em>, <em class="sig-param"><span class="n">nval</span></em>, <em class="sig-param"><span class="n">piter</span></em>, <em class="sig-param"><span class="n">showprocesslog</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.get_bil" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get BIL format file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ifile</strong> (<em>str</em>) – filename to import</p></li>
+<li><p><strong>nval</strong> (<em>float</em>) – No data/null value. The default is None.</p></li>
+<li><p><strong>piter</strong> (<em>iterable from misc.ProgressBar</em><em> or </em><a class="reference internal" href="pygmi.html#pygmi.misc.ProgressBarText" title="pygmi.misc.ProgressBarText"><em>misc.ProgressBarText</em></a>) – progress bar iterable</p></li>
+<li><p><strong>showprocesslog</strong> (<em>print</em><em> or </em><em>other text output</em>) – Allows for printing either using print or to the Qt interface.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>dat</strong> – dataset imported</p>
@@ -4594,7 +4632,7 @@ menu. The following are supported:</p>
 
 <dl class="py function">
 <dt id="pygmi.raster.iodefs.get_raster">
-<code class="sig-prename descclassname">pygmi.raster.iodefs.</code><code class="sig-name descname">get_raster</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">nval=None</em>, <em class="sig-param">piter=None</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.get_raster" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pygmi.raster.iodefs.</code><code class="sig-name descname">get_raster</code><span class="sig-paren">(</span><em class="sig-param">ifile</em>, <em class="sig-param">nval=None</em>, <em class="sig-param">piter=None</em>, <em class="sig-param">showprocesslog=&lt;built-in function print&gt;</em>, <em class="sig-param">iraster=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.iodefs.get_raster" title="Permalink to this definition">¶</a></dt>
 <dd><p>This function loads a raster dataset off the disk using the GDAL
 libraries. It returns the data in a PyGMI data object.</p>
 <dl class="field-list simple">
@@ -4602,6 +4640,10 @@ libraries. It returns the data in a PyGMI data object.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ifile</strong> (<em>str</em>) – filename to import</p></li>
 <li><p><strong>nval</strong> (<em>float</em><em>, </em><em>optional</em>) – No data/null value. The default is None.</p></li>
+<li><p><strong>piter</strong> (<em>iterable from misc.ProgressBar</em><em> or </em><a class="reference internal" href="pygmi.html#pygmi.misc.ProgressBarText" title="pygmi.misc.ProgressBarText"><em>misc.ProgressBarText</em></a>) – progress bar iterable</p></li>
+<li><p><strong>showprocesslog</strong> (<em>print</em><em> or </em><em>other text output</em>) – Allows for printing either using print or to the Qt interface.</p></li>
+<li><p><strong>iraster</strong> (<em>None</em><em> or </em><em>tuple</em>) – Incremental raster import, to import a section of a file. The tuple is
+(xoff, yoff, xsize, ysize)</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -4774,113 +4816,6 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 </dd></dl>
-
-</div>
-<div class="section" id="module-pygmi.raster.modest_image">
-<span id="pygmi-raster-modest-image-module"></span><h2>pygmi.raster.modest_image module<a class="headerlink" href="#module-pygmi.raster.modest_image" title="Permalink to this headline">¶</a></h2>
-<p>Modification of Chris Beaumont’s mpl-modest-image package to allow the use of
-set_extent.</p>
-<dl class="py class">
-<dt id="pygmi.raster.modest_image.ModestImage">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.raster.modest_image.</code><code class="sig-name descname">ModestImage</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.ModestImage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.image.AxesImage</span></code></p>
-<p>Computationally modest image class.</p>
-<p>ModestImage is an extension of the Matplotlib AxesImage class
-better suited for the interactive display of larger images. Before
-drawing, ModestImage resamples the data array based on the screen
-resolution and view window. This has very little affect on the
-appearance of the image, but can substantially cut down on
-computation since calculations of unresolved or clipped pixels
-are skipped.</p>
-<p>The interface of ModestImage is the same as AxesImage. However, it
-does not currently support setting the ‘extent’ property. There
-may also be weird coordinate warping operations for images that
-I’m not aware of. Don’t expect those to work either.</p>
-<dl class="py method">
-<dt id="pygmi.raster.modest_image.ModestImage.draw">
-<code class="sig-name descname">draw</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">renderer</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.ModestImage.draw" title="Permalink to this definition">¶</a></dt>
-<dd><p>Draw the Artist (and its children) using the given renderer.</p>
-<p>This has no effect if the artist is not visible (<cite>.Artist.get_visible</cite>
-returns False).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>renderer</strong> (<cite>.RendererBase</cite> subclass.) – </p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>This method is overridden in the Artist subclasses.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="pygmi.raster.modest_image.ModestImage.get_array">
-<code class="sig-name descname">get_array</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.ModestImage.get_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Override to return the full-resolution array</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="pygmi.raster.modest_image.ModestImage.invalidate_cache">
-<code class="sig-name descname">invalidate_cache</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.ModestImage.invalidate_cache" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="pygmi.raster.modest_image.ModestImage.set_data">
-<code class="sig-name descname">set_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">A</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.ModestImage.set_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the image array</p>
-<p>ACCEPTS: numpy/PIL Image A</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="pygmi.raster.modest_image.ModestImage.set_extent">
-<code class="sig-name descname">set_extent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">extent</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.ModestImage.set_extent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the image extent.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>extent</strong> (<em>4-tuple of float</em>) – The position and size of the image as tuple
-<code class="docutils literal notranslate"><span class="pre">(left,</span> <span class="pre">right,</span> <span class="pre">bottom,</span> <span class="pre">top)</span></code> in data coordinates.</p>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<p>This updates <code class="docutils literal notranslate"><span class="pre">ax.dataLim</span></code>, and, if autoscaling, sets <code class="docutils literal notranslate"><span class="pre">ax.viewLim</span></code>
-to tightly fit the image, regardless of <code class="docutils literal notranslate"><span class="pre">dataLim</span></code>.  Autoscaling
-state is not changed, so following this with <code class="docutils literal notranslate"><span class="pre">ax.autoscale_view()</span></code>
-will redo the autoscaling in accord with <code class="docutils literal notranslate"><span class="pre">dataLim</span></code>.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt id="pygmi.raster.modest_image.extract_matched_slices">
-<code class="sig-prename descclassname">pygmi.raster.modest_image.</code><code class="sig-name descname">extract_matched_slices</code><span class="sig-paren">(</span><em class="sig-param">axes=None</em>, <em class="sig-param">shape=None</em>, <em class="sig-param">extent=None</em>, <em class="sig-param">transform=&lt;matplotlib.transforms.IdentityTransform object&gt;</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.extract_matched_slices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the slice parameters to use, matched to the screen.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ax</strong> – Axes object to query. It’s extent and pixel size
-determine the slice parameters</p></li>
-<li><p><strong>shape</strong> – Tuple of the full image shape to slice into. Upper
-boundaries for slices will be cropped to fit within
-this shape.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>tulpe of x0, x1, sx, y0, y1, sy</p>
-</dd>
-</dl>
-<p>Indexing the full resolution array as array[y0:y1:sy, x0:x1:sx] returns
-a view well-matched to the axes’ resolution and extent</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pygmi.raster.modest_image.imshow">
-<code class="sig-prename descclassname">pygmi.raster.modest_image.</code><code class="sig-name descname">imshow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axes</span></em>, <em class="sig-param"><span class="n">X</span></em>, <em class="sig-param"><span class="n">cmap</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">norm</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">aspect</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">interpolation</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">vmax</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">origin</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">extent</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">filternorm</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">filterrad</span><span class="o">=</span><span class="default_value">4.0</span></em>, <em class="sig-param"><span class="n">imlim</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">resample</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">url</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.imshow" title="Permalink to this definition">¶</a></dt>
-<dd><p>Similar to matplotlib’s imshow command, but produces a ModestImage</p>
-<p>Unlike matplotlib version, must explicitly specify axes</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pygmi.raster.modest_image.main">
-<code class="sig-prename descclassname">pygmi.raster.modest_image.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.raster.modest_image.main" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 </div>
 <div class="section" id="module-pygmi.raster.normalisation">
@@ -5346,10 +5281,6 @@ columns otherwise.</p></li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-pygmi.raster">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.raster" title="Permalink to this headline">¶</a></h2>
-<p>Raster Routines</p>
-</div>
 </div>
 
 
@@ -5400,7 +5331,7 @@ columns otherwise.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="em.html">Electomagnetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
@@ -5466,7 +5397,7 @@ columns otherwise.</p></li>
       &copy;2020 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

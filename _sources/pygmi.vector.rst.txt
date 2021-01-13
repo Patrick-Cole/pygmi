@@ -1,6 +1,11 @@
 pygmi.vector package
 ====================
 
+.. automodule:: pygmi.vector
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -32,14 +37,6 @@ pygmi.vector.menu module
 ------------------------
 
 .. automodule:: pygmi.vector.menu
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pygmi.vector
    :members:
    :undoc-members:
    :show-inheritance:

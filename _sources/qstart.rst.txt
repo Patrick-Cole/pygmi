@@ -45,7 +45,7 @@ this window.
 5. A dialog will pop up. You can leave the defaults for now and press 'OK'
 
 The process log will now turn red indicating that an activity is happening.
-Once it is complete it will turn right again.
+Once it is complete it will turn white again.
 
 1. Right click on the smoothing  symbol and select 'Show Raster Data' to see
    the smoothing results.

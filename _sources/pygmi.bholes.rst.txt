@@ -1,6 +1,11 @@
 pygmi.bholes package
 ====================
 
+.. automodule:: pygmi.bholes
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -24,14 +29,6 @@ pygmi.bholes.menu module
 ------------------------
 
 .. automodule:: pygmi.bholes.menu
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pygmi.bholes
    :members:
    :undoc-members:
    :show-inheritance:

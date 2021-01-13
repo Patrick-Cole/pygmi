@@ -1,6 +1,11 @@
 pygmi.mag package
 =================
 
+.. automodule:: pygmi.mag
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Submodules
 ----------
 
@@ -32,14 +37,6 @@ pygmi.mag.tiltdepth module
 --------------------------
 
 .. automodule:: pygmi.mag.tiltdepth
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-Module contents
----------------
-
-.. automodule:: pygmi.mag
    :members:
    :undoc-members:
    :show-inheritance:

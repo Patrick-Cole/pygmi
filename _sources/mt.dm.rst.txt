@@ -6,7 +6,7 @@ Import EDI Data
 ---------------
 Used to import EDI data into PyGMI. Note that more than one file can be selected at a time.
 
-Import LEMI-417 data tro point data
+Import LEMI-417 data to point data
 -----------------------------------
 Used to import LEMI-417 data into PyGMI point/line data format.
 

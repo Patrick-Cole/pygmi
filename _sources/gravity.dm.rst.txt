@@ -28,7 +28,7 @@ Options:
 
 * Known Base Station Number - This is the station number for a base station with known absolute gravity value.
 * Known Base Station Absolute Gravity - This is the known absolute gravity in mGal for the station above.
-* Calculate local base value - use this option to tie in the local base station to a nearby base station with known absolute gravity. Note that the local station number must be different to the known station number. There must also be at least one local base station between successive known base station values.
+* Calculate local base value - use this option to tie in the local base station to a nearby base station with known absolute gravity. Note that the local station number must be different from the known station number. There must also be at least one local base station between successive known base station values.
 * Background Density - This is the background density in kg/m3.
 * Base Station Absolute Gravity - This is the absolute gravity value of the base station used to correct for drift in the survey. It can be calculated by PyGMI or manually entered.
 * Minimum Base Station Number - All station numbers greater than this will be considered base stations.
