@@ -61,7 +61,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         pdata : numpy array
             Phase data.
         rdata : numpy array
-            Apperent resistivity data.
+            Apparent resistivity data.
         depths : numpy array, optional
             Model depths. The default is None.
         res : numpy array, optional

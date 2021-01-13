@@ -610,7 +610,8 @@ class MainWidget(QtWidgets.QMainWindow):
         menus = [raster_menu, vector_menu]+menus
         menus = [i for i in menus if 'menu' in i[-5:]]
 
-        # menus = ['pygmi.raster.menu',
+        # menus = [
+        #          'pygmi.raster.menu',
         #          'pygmi.em.menu',
         #          'pygmi.vector.menu',
         #          'pygmi.bholes.menu',

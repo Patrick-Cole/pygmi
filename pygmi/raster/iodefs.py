@@ -555,7 +555,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     piter : iterable from misc.ProgressBar or misc.ProgressBarText
         progress bar iterable
     showprocesslog : print or other text output
-        Allows for printing either using print or to teh Qt interface.
+        Allows for printing either using print or to the Qt interface.
     iraster : None or tuple
         Incremental raster import, to import a section of a file. The tuple is
         (xoff, yoff, xsize, ysize)
@@ -701,7 +701,7 @@ def get_bil(ifile, nval, piter, showprocesslog):
     piter : iterable from misc.ProgressBar or misc.ProgressBarText
         progress bar iterable
     showprocesslog : print or other text output
-        Allows for printing either using print or to teh Qt interface.
+        Allows for printing either using print or to the Qt interface.
 
     Returns
     -------

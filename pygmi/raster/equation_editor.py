@@ -195,7 +195,7 @@ class EquationEditor(QtWidgets.QDialog):
         Returns
         -------
         findat : numpy array
-            Mosaiced array.
+            Output array.
 
         """
         idx = eq.index('mosaic(')+7
