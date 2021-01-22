@@ -37,6 +37,7 @@ from matplotlib.patches import Polygon as mPolygon
 from matplotlib.lines import Line2D
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+import pandas as pd
 import geopandas as gpd
 from shapely.geometry import Polygon
 from PIL import Image, ImageDraw
@@ -552,6 +553,7 @@ class SuperClass(QtWidgets.QDialog):
         calcmetrics.clicked.connect(self.calc_metrics)
 #        self.tablewidget.cellChanged.connect(self.ontablechange)
         self.tablewidget.currentItemChanged.connect(self.onrowchange)
+        self.tablewidget.cellChanged.connect(self.oncellchange)
         self.combo_class.currentIndexChanged.connect(self.class_change)
 
         buttonbox.accepted.connect(self.accept)
@@ -598,7 +600,7 @@ class SuperClass(QtWidgets.QDialog):
         if self.df is None:
             return
 
-        classifier, _, _, X_test, y_test = self.init_classifier()
+        classifier, lbls, _, X_test, y_test, tlbls = self.init_classifier()
 
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
@@ -607,13 +609,12 @@ class SuperClass(QtWidgets.QDialog):
         accuracy = skm.accuracy_score(y_test, y_pred)
         kappa = skm.cohen_kappa_score(y_pred, y_test)
 
-        message = 'Confusion Matrix:\n'
-        message += str(cmat)+'\n'
-        message += 'Accuracy: '+str(accuracy)+'\n'
-        message += 'Kappa:\t  '+str(kappa)+'\n'
+        message = '<p>Confusion Matrix:</p>'
+        message += pd.DataFrame(cmat, columns=tlbls, index=tlbls).to_html()
+        message += '<p>Accuracy: '+str(accuracy)+'</p>'
+        message += '<p>Kappa:\t  '+str(kappa)+'</p>'
 
-        QtWidgets.QMessageBox.information(self.parent, 'Metrics',
-                                          message)
+        QtWidgets.QMessageBox.information(self.parent, 'Metrics', message)
 
     def updatepoly(self, xycoords=None):
         """
@@ -643,6 +644,27 @@ class SuperClass(QtWidgets.QDialog):
         else:
             self.df.loc[row, 'geometry'] = Polygon(xycoords)
 
+    def oncellchange(self, row, col):
+        """
+        Routine qactivated whenever a cell is changed.
+
+        Parameters
+        ----------
+        row : int
+            Current row.
+        col : int
+            Current column.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.tablewidget.currentItem() is None or col != 0:
+            return
+
+        self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
+
     def onrowchange(self, current, previous):
         """
         Routine activated whenever a row is changed.
@@ -668,6 +690,9 @@ class SuperClass(QtWidgets.QDialog):
         if self.df.loc[row, 'geometry'] == Polygon([]):
             return
         coords = list(self.df.loc[row, 'geometry'].exterior.coords)
+
+        self.update_class_polys()
+
         self.map.polyi.new_poly(coords)
 
     def ontablechange(self, row, column):
@@ -710,6 +735,7 @@ class SuperClass(QtWidgets.QDialog):
         item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
         self.tablewidget.setItem(row, 1, item)
 
+        self.update_class_polys()
         self.map.polyi.new_poly([[1, 1]])
 
         self.df.loc[row] = None
@@ -733,6 +759,8 @@ class SuperClass(QtWidgets.QDialog):
         self.tablewidget.removeRow(self.tablewidget.currentRow())
         self.df = self.df.drop(row)
         self.df = self.df.reset_index(drop=True)
+
+        self.update_class_polys()
         if self.tablewidget.rowCount() == 0:
             self.map.polyi.new_poly()
             self.map.polyi.isactive = False
@@ -775,7 +803,7 @@ class SuperClass(QtWidgets.QDialog):
         self.tablewidget.setRowCount(0)
         for index, _ in self.df.iterrows():
             self.tablewidget.insertRow(index)
-            item = QtWidgets.QTableWidgetItem('Class '+str(index+1))
+            item = QtWidgets.QTableWidgetItem(self.df['class'].iloc[index])
             self.tablewidget.setItem(index, 0, item)
 
         self.map.polyi.isactive = True
@@ -839,7 +867,7 @@ class SuperClass(QtWidgets.QDialog):
         if tmp == 0:
             return False
 
-        classifier, lbls, datall, _, _ = self.init_classifier()
+        classifier, lbls, datall, _, _, _ = self.init_classifier()
 
         mask = self.map.data[0].data.mask
         yout = np.zeros_like(datall[:, :, 0], dtype=int)
@@ -999,8 +1027,6 @@ class SuperClass(QtWidgets.QDialog):
             rasterize = ImageDraw.Draw(rasterPoly)
             rasterize.polygon(pixels, 0)
             mask = np.array(rasterPoly, dtype=bool)
-            # plt.imshow(mask)
-            # plt.show()
 
             masks[cname] = np.logical_or(~mask, masks[cname])
 
@@ -1012,9 +1038,11 @@ class SuperClass(QtWidgets.QDialog):
 
         y = []
         x = []
+        tlbls = []
         for i, lbl in enumerate(masks):
             y += [i]*masks[lbl].sum()
             x.append(datall[masks[lbl]])
+            tlbls.append(lbl)
 
         y = np.array(y)
         x = np.vstack(x)
@@ -1031,7 +1059,7 @@ class SuperClass(QtWidgets.QDialog):
 
         classifier.fit(X_train, y_train)
 
-        return classifier, lbls, datall, X_test, y_test
+        return classifier, lbls, datall, X_test, y_test, tlbls
 
     def update_map(self, polymask):
         """
@@ -1060,6 +1088,23 @@ class SuperClass(QtWidgets.QDialog):
         dattmp = self.map.csp.get_array()
         dattmp.mask = polymask
         self.map.csp.changed()
+        self.map.figure.canvas.draw()
+
+    def update_class_polys(self):
+        """Update class poly summaries."""
+
+        axes = self.map.figure.gca()
+
+        [p.remove() for p in reversed(axes.patches)]
+
+        for index, row in self.df.iterrows():
+            if row['geometry'] is None:
+                return
+            crds = np.array(row['geometry'].exterior.coords)
+
+            poly = mPolygon(crds, ec='k', fill=False)
+            axes.add_patch(poly)
+
         self.map.figure.canvas.draw()
 
 
