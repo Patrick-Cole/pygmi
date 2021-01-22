@@ -28,6 +28,8 @@ from PyQt5 import QtWidgets
 from pygmi.rsense import change
 from pygmi.rsense import iodefs
 from pygmi.rsense import ratios
+from pygmi.rsense import hypercore
+from pygmi.rsense import hyperspec
 
 
 class MenuWidget():
@@ -93,10 +95,25 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
+        self.menu4 = self.menu.addMenu('Hyperspectral Imaging')
+
+        self.action_process_bore = QtWidgets.QAction('Process Borehole Data')
+        self.menu4.addAction(self.action_process_bore)
+        self.action_process_bore.triggered.connect(self.proc_bore)
+
+        self.action_anal_spec = QtWidgets.QAction('Analyse Spectra')
+        self.menu4.addAction(self.action_anal_spec)
+        self.action_anal_spec.triggered.connect(self.anal_spec)
+
+        self.action_proc_features = QtWidgets.QAction('Process Features')
+        self.menu4.addAction(self.action_proc_features)
+        self.action_proc_features.triggered.connect(self.proc_features)
+
+        self.menu.addSeparator()
+
         self.menu2 = self.menu.addMenu('Change Detection')
 
-        self.action_create_list = QtWidgets.QAction('Create Scene List '
-                                                    '(Change Detection)')
+        self.action_create_list = QtWidgets.QAction('Create Scene List ')
         self.menu2.addAction(self.action_create_list)
         self.action_create_list.triggered.connect(self.create_scene)
 
@@ -124,9 +141,24 @@ class MenuWidget():
         self.parent.item_insert('Step', 'Change Detection Viewer', fnc)
 
     def calc_ratios(self):
-        """View Change Detection."""
+        """Calculate Ratios."""
         fnc = ratios.SatRatios(self.parent)
         self.parent.item_insert('Step', 'Calculate Band Ratios', fnc)
+
+    def proc_bore(self):
+        """Process Borehole Data."""
+        fnc = hypercore.BorePrep(self.parent)
+        self.parent.item_insert('Step', 'Process Borehole Data', fnc)
+
+    def anal_spec(self):
+        """Analyse Spectra."""
+        fnc = hyperspec.AnalSpec(self.parent)
+        self.parent.item_insert('Step', 'Analyse Spectra', fnc)
+
+    def proc_features(self):
+        """Process Features."""
+        fnc = hyperspec.ProcFeatures(self.parent)
+        self.parent.item_insert('Step', 'Process Features', fnc)
 
     def import_sentinel5p(self):
         """Import Sentinel 5P data."""

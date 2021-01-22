@@ -771,7 +771,7 @@ class SuperClass(QtWidgets.QDialog):
         if 'class' not in df or 'geometry' not in df:
             return False
 
-        self.df = df
+        self.df = df.dropna()
         self.tablewidget.setRowCount(0)
         for index, _ in self.df.iterrows():
             self.tablewidget.insertRow(index)
@@ -983,7 +983,6 @@ class SuperClass(QtWidgets.QDialog):
         masks = {}
         for _, row in self.df.iterrows():
             # pixels = list(row['geometry'].exterior.coords)
-
             pixels = np.array(row['geometry'].exterior.coords)
             pixels[:, 0] = pixels[:, 0]-self.map.data[0].extent[0]
             pixels[:, 0] /= self.map.data[0].xdim
@@ -1114,7 +1113,8 @@ def test():
     from pygmi.raster import iodefs
     app = QtWidgets.QApplication(sys.argv)
 
-    data = iodefs.get_raster(r'C:\work\WorkData\testdata.hdr')
+    data = iodefs.get_raster(r'D:\Workdata\BV1_17_fx_extracted_image_1.hdr')
+    os.chdir(r'D:\Workdata')
 
     tmp = SuperClass(None)
     tmp.indata['Raster'] = data
