@@ -124,43 +124,41 @@ class MenuWidget():
 
     def beachball(self):
         """Create Beachballs from Fault Plane Solutions."""
-        fnc = beachball.BeachBall(self.parent)
-        self.parent.item_insert('Step', 'Fault Plane Solutions', fnc)
+        self.parent.item_insert('Step', 'Fault Plane Solutions',
+                                beachball.BeachBall)
 
     def import_scans(self):
         """Import scanned records."""
-        fnc = scan_imp.SIMP(self.parent)
-        self.parent.item_insert('Io', 'Import Scanned Bulletins', fnc)
+        self.parent.item_insert('Io', 'Import Scanned Bulletins',
+                                scan_imp.SIMP)
 
     def import_seisan(self):
         """Import Seisan."""
-        fnc = iodefs.ImportSeisan(self.parent)
-        self.parent.item_insert('Io', 'Import SEISAN Data', fnc)
+        self.parent.item_insert('Io', 'Import SEISAN Data',
+                                iodefs.ImportSeisan)
 
     def correct_desc(self):
         """Correct Seisan descriptions."""
-        fnc = utils.CorrectDescriptions(self.parent)
-        self.parent.item_insert('Step', 'Correct SEISAN Descriptions', fnc)
+        self.parent.item_insert('Step', 'Correct SEISAN Descriptions',
+                                utils.CorrectDescriptions)
 
     def filter_seisan(self):
         """Filter Seisan."""
-        fnc = iodefs.FilterSeisan(self.parent)
-        self.parent.item_insert('Step', 'Filter SEISAN Data', fnc)
+        self.parent.item_insert('Step', 'Filter SEISAN Data',
+                                iodefs.FilterSeisan)
 
     def import_genfps(self):
         """Import Generic Fault Plane Solution."""
-        fnc = iodefs.ImportGenericFPS(self.parent)
-        self.parent.item_insert('Io', 'Import Generic FPS', fnc)
+        self.parent.item_insert('Io', 'Import Generic FPS',
+                                iodefs.ImportGenericFPS)
 
     def delete_recs(self):
         """Delete Records."""
-        fnc = del_rec.DeleteRecord(self.parent)
-        self.parent.item_insert('Io', 'Delete Records', fnc)
+        self.parent.item_insert('Io', 'Delete Records', del_rec.DeleteRecord)
 
     def quarry(self):
         """Remove quarry events."""
-        fnc = del_rec.Quarry(self.parent)
-        self.parent.item_insert('Step', 'Remove Quarry Events', fnc)
+        self.parent.item_insert('Step', 'Remove Quarry Events', del_rec.Quarry)
 
     def show_QC_plots(self):
         """Show QC plots."""

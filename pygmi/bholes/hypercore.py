@@ -49,6 +49,7 @@ created as a shapefile
 import copy
 import os
 import sys
+import glob
 
 import numpy as np
 import scipy.interpolate as si
@@ -62,7 +63,8 @@ import geopandas as gpd
 
 from pygmi.misc import frm
 import pygmi.menu_default as menu_default
-from pygmi.raster.iodefs import get_raster
+from pygmi.raster.iodefs import get_raster, export_gdal
+from pygmi.misc import ProgressBarText
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -399,7 +401,7 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.blit(self.ax.bbox)
 
 
-class BorePrep(QtWidgets.QDialog):
+class CorePrep(QtWidgets.QDialog):
     """
     Main Supervised Classification Tool Routine.
 
@@ -697,6 +699,420 @@ class BorePrep(QtWidgets.QDialog):
         self.map.figure.canvas.draw()
 
 
+class CoreInt(QtWidgets.QDialog):
+    """
+    Core Interpretation.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+            pbar = ProgressBarText()
+            self.piter = pbar.iter
+
+        else:
+            self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.product = {}
+        self.ratio = {}
+
+        # self.combo_sensor = QtWidgets.QComboBox()
+        self.lw_ratios = QtWidgets.QListWidget()
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        # label_sensor = QtWidgets.QLabel('Sensor:')
+        label_ratios = QtWidgets.QLabel('Ratios:')
+
+        # self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
+
+        # self.combo_sensor.addItems(['ASTER',
+        #                             'Landsat 8 (OLI)',
+        #                             'Landsat 7 (ETM+)',
+        #                             'Landsat 4 and 5 (TM)',
+        #                             'Sentinel-2'])
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Process Hyperspectral Features')
+
+        # gridlayout_main.addWidget(label_sensor, 0, 0, 1, 1)
+        # gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
+        gridlayout_main.addWidget(label_ratios, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.lw_ratios, 1, 1, 1, 1)
+
+        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        tmp = []
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Data')
+            return False
+
+        if not nodialog:
+            tmp = self.exec_()
+        else:
+            tmp = 1
+
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        return True
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        # self.combo_sensor.setCurrentText(projdata['sensor'])
+        # self.setratios()
+
+        # for i in self.lw_ratios.selectedItems():
+        #     if i.text()[2:] not in projdata['ratios']:
+        #         i.setSelected(False)
+        # self.set_selected_ratios()
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+        # projdata['sensor'] = self.combo_sensor.currentText()
+
+        # rlist = []
+        # for i in self.lw_ratios.selectedItems():
+        #     rlist.append(i.text()[2:])
+
+        # projdata['ratios'] = rlist
+
+        return projdata
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        datfin = []
+
+
+
+
+        self.outdata['Raster'] = datfin
+        return True
+
+
+class ImageCor(QtWidgets.QDialog):
+    """
+    Calculate Satellite Ratios.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+            self.pbar = ProgressBarText()
+
+        else:
+            self.showprocesslog = parent.showprocesslog
+            self.pbar = parent.pbar
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.product = {}
+        self.ratio = {}
+
+        self.idir = QtWidgets.QLineEdit('')
+        self.odir = QtWidgets.QLineEdit('')
+        self.dccor = QtWidgets.QCheckBox('DC Correction')
+        self.smilecor = QtWidgets.QCheckBox('Geometric Smile Correction (FENIX only)')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        pb_idir = QtWidgets.QPushButton('Input Raw Directory')
+        pb_odir = QtWidgets.QPushButton('Output Processed Directory')
+        self.dccor.setChecked(True)
+        self.smilecor.setChecked(True)
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Process Hyperspectral Features')
+
+        gridlayout_main.addWidget(pb_idir, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.idir, 0, 1, 1, 1)
+        gridlayout_main.addWidget(pb_odir, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.odir, 1, 1, 1, 1)
+        gridlayout_main.addWidget(self.dccor, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.smilecor, 3, 0, 1, 2)
+
+        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        pb_idir.pressed.connect(self.get_idir)
+        pb_odir.pressed.connect(self.get_odir)
+
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        tmp = []
+        # if 'Raster' not in self.indata:
+        #     self.showprocesslog('No Satellite Data')
+        #     return False
+
+        if not nodialog:
+            tmp = self.exec_()
+        else:
+            tmp = 1
+
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        return True
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        # self.combo_sensor.setCurrentText(projdata['sensor'])
+        # self.setratios()
+
+        # for i in self.lw_ratios.selectedItems():
+        #     if i.text()[2:] not in projdata['ratios']:
+        #         i.setSelected(False)
+        # self.set_selected_ratios()
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+        # projdata['sensor'] = self.combo_sensor.currentText()
+
+        # rlist = []
+        # for i in self.lw_ratios.selectedItems():
+        #     rlist.append(i.text()[2:])
+
+        # projdata['ratios'] = rlist
+
+        return projdata
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        idir = self.idir.text()
+        ifiles = glob.glob(os.path.join(idir, '**/*.raw'), recursive=True)
+        ifiles = [i for i in ifiles if 'ref_' not in i.lower()]
+
+        for ifile in ifiles:
+            idir2 = os.path.dirname(ifile)
+            hfile = os.path.basename(ifile)
+            if 'OWL' in idir2:
+                odir = os.path.join(self.odir.text(), r'OWL')
+            elif 'RGB' in idir2:
+                odir = os.path.join(self.odir.text(), r'RGB')
+            elif 'FENIX' in idir2:
+                odir = os.path.join(self.odir.text(), r'FENIX')
+            else:
+                continue
+
+            self.showprocesslog('Processing '+hfile+'...')
+
+            datah = get_raster(ifile, piter=self.pbar.iter)
+
+            if self.dccor.isChecked():
+                datah = dc_correct(idir2, hfile, datah, piter=self.pbar.iter,
+                                   showprocesslog=self.showprocesslog)
+            if self.smilecor.isChecked() and 'FENIX' in idir2:
+                datah = smile(datah, piter=self.pbar.iter)
+
+            meta = 'reflectance scale factor = 10000\n'
+            meta += 'wavelength = {\n'
+            for i in datah:
+                meta += i.dataid + ',\n'
+            meta = meta[:-2]+'}\n'
+
+            ofile = os.path.join(odir, hfile[:-4]+'.hdr')
+            export_gdal(ofile, datah, 'ENVI', envimeta=meta)
+
+        return True
+
+    def get_idir(self, dirname=''):
+        """
+        Get input directory.
+
+        Parameters
+        ----------
+        filename : str, optional
+            Directory name submitted for testing. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
+        if dirname == '':
+            dirname = QtWidgets.QFileDialog.getExistingDirectory(
+                    self.parent, 'Open File')
+            if dirname == '':
+                return
+
+        os.chdir(dirname)
+
+        self.idir.setText(dirname)
+
+    def get_odir(self, dirname=''):
+        """
+        Get output directory.
+
+        Parameters
+        ----------
+        filename : str, optional
+            Directory name submitted for testing. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if dirname == '':
+            dirname = QtWidgets.QFileDialog.getExistingDirectory(
+                self.parent, 'Open File')
+            if dirname == '':
+                return
+
+        os.chdir(dirname)
+        self.odir.setText(dirname)
 
 
 def data_to_dict(dat):
@@ -763,25 +1179,28 @@ def dist_point_to_segment(p, s0, s1):
     return np.linalg.norm(p - pb)
 
 
-def dc_correct(idir, hfile, odir, pbar=None):
+def dc_correct(idir, hfile, datah, piter=None, showprocesslog=None):
     """main."""
+
+    if piter is None:
+        piter = iter
+
+    if showprocesslog is None:
+        showprocesslog = print
 
     # ofile = os.path.join(odir, hfile[:-4]+'.hdr')
     dfile = 'darkref_'+hfile
     wfile = 'whiteref_'+hfile
 
-    hfile = os.path.join(idir, hfile)
     dfile = os.path.join(idir, dfile)
     wfile = os.path.join(idir, wfile)
 
-    datah = get_raster(hfile, piter=pbar.iter)
-    datad = get_raster(dfile, piter=pbar.iter)
-    dataw = get_raster(wfile, piter=pbar.iter)
+    datad = get_raster(dfile, piter=piter)
+    dataw = get_raster(wfile, piter=piter)
 
-    if datah is None or datad is None or dataw is None:
-        print('Error! Could not import')
-        print(hfile)
-        return
+    if datad is None or dataw is None:
+        showprocesslog('Error! Could not import white or dark file')
+        return datah
 
     dath = data_to_dict(datah)
     datd = data_to_dict(datad)
@@ -789,7 +1208,7 @@ def dc_correct(idir, hfile, odir, pbar=None):
 
     dath2 = {}
     i = 0
-    for key in pbar.iter(dath):
+    for key in piter(dath):
 
         if 'OWL' in hfile and float(key) > 12300:
             continue
@@ -806,9 +1225,7 @@ def dc_correct(idir, hfile, odir, pbar=None):
 
         dath2[key] = tmp
 
-    for i in pbar.iter(dath2):
-        if 'FENIX' in idir:
-            dath2[i] = smile(dath2[i])
+    for i in piter(dath2):
         dath2[i] *= 10000
         dath2[i][dath2[i] < 1] = 1
         dath2[i][dath2[i] > 11000] = 11000
@@ -817,17 +1234,21 @@ def dc_correct(idir, hfile, odir, pbar=None):
 
     datfin = dict_to_data(dath2, datah)
 
-    meta = 'reflectance scale factor = 10000\n'
-    meta += 'wavelength = {\n'
-    for i in datfin:
-        meta += i.dataid + ',\n'
-    meta = meta[:-2]+'}\n'
+    # meta = 'reflectance scale factor = 10000\n'
+    # meta += 'wavelength = {\n'
+    # for i in datfin:
+    #     meta += i.dataid + ',\n'
+    # meta = meta[:-2]+'}\n'
 
     # iodefs.export_gdal(ofile, datfin, 'ENVI', envimeta=meta)
+    return datfin
 
 
-def smile(dat2):
+def smile(datah, piter=None):
     """:)"""
+    if piter is None:
+        piter = iter
+    dath = data_to_dict(datah)
 
     x = np.array([20, 50, 100, 150, 200, 250, 300, 350])
     y = np.array([3, 7, 12, 14, 15, 14, 11, 5])
@@ -840,26 +1261,35 @@ def smile(dat2):
     ynew2 = ynew.astype(int)
     maxy = ynew2.max()
 
-    datcor = np.zeros_like(dat2)
-    for i, _ in enumerate(datcor[:-maxy]):
-        datcor[i] = dat2[i+ynew2, xnew]
+    for i in piter(dath):
 
-    return datcor
+        datcor = np.zeros_like(dath[i])
+        for j, _ in enumerate(datcor[:-maxy]):
+            datcor[j] = dath[i][j+ynew2, xnew]
+        dath[i] = datcor
+
+    datfin = dict_to_data(dath, datah)
+
+    return datfin
 
 
 def testfn():
     """Main testing routine."""
-    from pygmi.misc import ProgressBarText
-    pbar = ProgressBarText()
+    # pbar = ProgressBarText()
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'C:\Work\Workdata\HyperspectralScanner\CCUS\Processed\RGB\UC850_D1_44_843m20_858m40_2020-08-07_10-10-21.hdr'
+    # ifile = r'D:\Workdata\HyperspectralScanner\Raw Data\LWIR(OWL)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
+    # ifile = r'D:\Workdata\HyperspectralScanner\Raw Data\VNIR-SWIR (FENIX)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
 
-    data = get_raster(ifile, piter=pbar.iter)
+    # data = get_raster(ifile, piter=pbar.iter)
 
-    tmp = BorePrep(None)
-    tmp.indata['Raster'] = data
+
+    tmp = ImageCor()
+    # tmp.indata['Raster'] = data
+    tmp.get_idir(r'D:\Workdata\HyperspectralScanner\Raw Data')
+    tmp.get_odir(r'D:\Workdata\HyperspectralScanner\PTest')
+
     tmp.settings()
 
 

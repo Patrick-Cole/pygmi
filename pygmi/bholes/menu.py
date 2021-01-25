@@ -27,6 +27,7 @@
 from PyQt5 import QtWidgets
 from pygmi.bholes import iodefs
 from pygmi.bholes import graphs
+from pygmi.bholes import hypercore
 
 
 class MenuWidget():
@@ -58,6 +59,23 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
+        self.action_imagecor = QtWidgets.QAction('Raw Core Imagery '
+                                                 'Corrections')
+        self.menu.addAction(self.action_imagecor)
+        self.action_imagecor.triggered.connect(self.imagecor)
+
+        self.action_coreprep = QtWidgets.QAction('Core Imagery Metadata '
+                                                     'and Masking')
+        self.menu.addAction(self.action_coreprep)
+        self.action_coreprep.triggered.connect(self.coreprep)
+
+        self.action_coreint = QtWidgets.QAction('Core Hyperspectral '
+                                                'Interpretation')
+        self.menu.addAction(self.action_coreint)
+        self.action_coreint.triggered.connect(self.coreint)
+
+        self.menu.addSeparator()
+
 # Context menus
         context_menu['Borehole'].addSeparator()
 
@@ -67,8 +85,25 @@ class MenuWidget():
 
     def import_data(self):
         """Import data."""
-        fnc = iodefs.ImportData(self.parent)
-        self.parent.item_insert('Io', 'Import Data', fnc)
+        self.parent.item_insert('Io', 'Import Data', iodefs.ImportData)
+
+    def coreprep(self):
+        """Core Imagery Metadata and Masking."""
+        self.parent.item_insert('Step',
+                                'Core Imagery Metadata and Masking',
+                                hypercore.CorePrep)
+
+    def coreint(self):
+        """Interpret Borehole Data."""
+        self.parent.item_insert('Step',
+                                'Core Hyperspectral Interpretation',
+                                hypercore.CoreInt)
+
+    def imagecor(self):
+        """Raw cor imagery corrections."""
+        self.parent.item_insert('Io',
+                                'Raw Core Imagery Corrections',
+                                hypercore.ImageCor)
 
     def show_log(self):
         """Show log data."""

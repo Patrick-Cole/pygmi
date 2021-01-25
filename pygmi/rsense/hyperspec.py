@@ -27,9 +27,9 @@ Hyperspectral Interpretation Routines.
 
 1) Spectral Feature Examination
 2) Spectral Interpretation and Processing
+3) Borehole display and interpretation
 
-
-Spectral feature examination is a GUI which allows for teh comparison of
+Spectral feature examination is a GUI which allows for the comparison of
 spectra from the dataset with library spectra.
 
 Must be able to:
@@ -37,9 +37,24 @@ Must be able to:
 1) Zoom into features
 2) Select features and apply settings such as threshold if necessary
 3) Combine multiple features into final filtered result.
-4) Output successful feature combinations into formulae for processing.
-5) Save spectra into a library for feature examination now or later.
+4) Save spectra into a library for feature examination now or later.
+5) Features can be depths, widths, or ratios
+6) Output successful feature combinations into formulae for processing.
 
+Note: feature or ratio x unit is wavelength and not band number.
+
+Spectral Interpretation and processing allows for processing of a scene.
+1) Must have a list of features or filters and thresholds
+2) Must have a 'quick name' dropdown for premade combinations.
+3) Must be able to save a combination
+4) Must be able to import combinations
+
+There should be a library file for features or filters
+There should be a combo file for combinations.
+
+Borehole display and interpretation shows a list of trays and can display core
+as one borehole. It can also allow for manual interpretation as well as
+comparison between existing logs and the core images.
 
 """
 

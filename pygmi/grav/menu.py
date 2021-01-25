@@ -62,10 +62,9 @@ class MenuWidget():
 
     def import_data(self):
         """Import data."""
-        fnc = iodefs.ImportCG5(self.parent)
-        self.parent.item_insert('Io', 'Import CG-5 Data', fnc)
+        self.parent.item_insert('Io', 'Import CG-5 Data', iodefs.ImportCG5)
 
     def process_data(self):
         """Process data."""
-        fnc = dataprep.ProcessData(self.parent)
-        self.parent.item_insert('Step', 'Process Gravity Data', fnc)
+        self.parent.item_insert('Step', 'Process Gravity Data',
+                                dataprep.ProcessData)

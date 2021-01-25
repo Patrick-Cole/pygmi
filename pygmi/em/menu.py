@@ -57,5 +57,4 @@ class MenuWidget():
 
     def tdem1d(self):
         """TDEM 1D inversion."""
-        fnc = tdem.TDEM1D(self.parent)
-        self.parent.item_insert('Step', 'TDEM 1D Inversion', fnc)
+        self.parent.item_insert('Step', 'TDEM 1D Inversion', tdem.TDEM1D)

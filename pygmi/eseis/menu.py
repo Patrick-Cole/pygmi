@@ -69,8 +69,7 @@ class MenuWidget():
 
     def import_data(self):
         """Import data."""
-        fnc = iodefs.ImportSEGY(self.parent)
-        self.parent.item_insert('Io', 'Import SEG-Y Data', fnc)
+        self.parent.item_insert('Io', 'Import SEG-Y Data', iodefs.ImportSEGY)
 
     def export_data(self):
         """Export data."""

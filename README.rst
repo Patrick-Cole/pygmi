@@ -55,6 +55,7 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * segyio 1.9.3
 * shapely 1.7.1
 * SimPEG 0.14.2
+* openpyxl 3.0.6
 
 Installation
 ------------

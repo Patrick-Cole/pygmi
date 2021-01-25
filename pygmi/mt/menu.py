@@ -108,8 +108,7 @@ class MenuWidget():
 
     def birrp(self):
         """BIRRP."""
-        fnc = birrp.BIRRP(self.parent)
-        self.parent.item_insert('Step', 'BIRRP', fnc)
+        self.parent.item_insert('Step', 'BIRRP', birrp.BIRRP)
 
     def export_data(self):
         """Export data."""
@@ -117,33 +116,30 @@ class MenuWidget():
 
     def import_data(self):
         """Import data."""
-        fnc = iodefs.ImportEDI(self.parent)
-        self.parent.item_insert('Io', 'Import EDI Data', fnc)
+        self.parent.item_insert('Io', 'Import EDI Data', iodefs.ImportEDI)
 
     def import_lemi417_data(self):
         """Import LEMI-417 MT data."""
-        fnc = iodefs.ImportLEMI417Data(self.parent)
-        self.parent.item_insert('Io', 'Import LEMI-417 Data', fnc)
+        self.parent.item_insert('Io', 'Import LEMI-417 Data',
+                                iodefs.ImportLEMI417Data)
 
     def occam1d(self):
         """Occam 1D inversion."""
-        fnc = dataprep.Occam1D(self.parent)
-        self.parent.item_insert('Step', 'Occam 1D Inversion', fnc)
+        self.parent.item_insert('Step', 'Occam 1D Inversion', dataprep.Occam1D)
 
     def rotate_data(self):
         """Rotate data."""
-        fnc = dataprep.RotateEDI(self.parent)
-        self.parent.item_insert('Step', 'Rotate EDI Data', fnc)
+        self.parent.item_insert('Step', 'Rotate EDI Data', dataprep.RotateEDI)
 
     def sshift_data(self):
         """Calculate Static Shift."""
-        fnc = dataprep.StaticShiftEDI(self.parent)
-        self.parent.item_insert('Step', 'Static Shift EDI Data', fnc)
+        self.parent.item_insert('Step', 'Static Shift EDI Data',
+                                dataprep.StaticShiftEDI)
 
     def mi_data(self):
         """Mask and interpolate data."""
-        fnc = dataprep.EditEDI(self.parent)
-        self.parent.item_insert('Step', 'Mask and Interpolate EDI Data', fnc)
+        self.parent.item_insert('Step', 'Mask and Interpolate EDI Data',
+                                dataprep.EditEDI)
 
     def metadata(self):
         """Metadata."""

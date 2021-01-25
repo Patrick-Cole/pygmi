@@ -178,8 +178,8 @@ class MenuWidget():
 
     def equation_editor(self):
         """Equation Editor."""
-        fnc = equation_editor.EquationEditor(self.parent)
-        self.parent.item_insert('Step', 'Equation Editor', fnc)
+        self.parent.item_insert('Step', 'Equation Editor',
+                                equation_editor.EquationEditor)
 
     def export_data(self):
         """Export raster data."""
@@ -187,33 +187,29 @@ class MenuWidget():
 
     def cut_data(self):
         """Cut data."""
-        fnc = dataprep.DataCut(self.parent)
-        self.parent.item_insert('Step', 'Cut Data', fnc)
+        self.parent.item_insert('Step', 'Cut Data', dataprep.DataCut)
 
     def get_prof(self):
         """Get profile."""
-        fnc = dataprep.GetProf(self.parent)
-        self.parent.item_insert('Step', 'Get Profile', fnc)
+        self.parent.item_insert('Step', 'Get Profile', dataprep.GetProf)
 
     def gradients(self):
         """Compute different gradients."""
-        fnc = cooper.Gradients(self.parent)
-        self.parent.item_insert('Step', 'Gradients', fnc)
+        self.parent.item_insert('Step', 'Gradients', cooper.Gradients)
 
     def norm_data(self):
         """Normalisation of data."""
-        fnc = normalisation.Normalisation(self.parent)
-        self.parent.item_insert('Step', 'Normalisation', fnc)
+        self.parent.item_insert('Step', 'Normalisation',
+                                normalisation.Normalisation)
 
     def raster_interp(self):
         """Show raster data."""
-        fnc = ginterp.PlotInterp(self.parent)
-        self.parent.item_insert('Step', 'Raster Data Interpretation', fnc)
+        self.parent.item_insert('Step', 'Raster Data Interpretation',
+                                ginterp.PlotInterp)
 
     def cont(self):
         """Compute Continuation."""
-        fnc = dataprep.Continuation(self.parent)
-        self.parent.item_insert('Step', 'Continuation', fnc)
+        self.parent.item_insert('Step', 'Continuation', dataprep.Continuation)
 
     def show_ccoef(self):
         """Show 2D correlation coefficients."""
@@ -241,33 +237,28 @@ class MenuWidget():
 
     def smoothing(self):
         """Smoothing of Data."""
-        fnc = smooth.Smooth(self.parent)
-        self.parent.item_insert('Step', 'Smoothing', fnc)
+        self.parent.item_insert('Step', 'Smoothing', smooth.Smooth)
 
     def visibility(self):
         """Compute visibility."""
-        fnc = cooper.Visibility2d(self.parent)
-        self.parent.item_insert('Step', 'Visibility', fnc)
+        self.parent.item_insert('Step', 'Visibility', cooper.Visibility2d)
 
     def reproj(self):
         """Reproject a dataset."""
-        fnc = dataprep.DataReproj(self.parent)
-        self.parent.item_insert('Step', 'Data Reprojection', fnc)
+        self.parent.item_insert('Step', 'Data Reprojection',
+                                dataprep.DataReproj)
 
     def merge(self):
         """Merge datasets."""
-        fnc = dataprep.DataMerge(self.parent)
-        self.parent.item_insert('Step', 'Data Merge', fnc)
+        self.parent.item_insert('Step', 'Data Merge', dataprep.DataMerge)
 
     def import_data(self):
         """Import data."""
-        fnc = iodefs.ImportData(self.parent)
-        self.parent.item_insert('Io', 'Import Data', fnc)
+        self.parent.item_insert('Io', 'Import Data', iodefs.ImportData)
 
     def import_rgb_data(self):
         """Import RGB data."""
-        fnc = iodefs.ImportRGBData(self.parent)
-        self.parent.item_insert('Io', 'Import RGB Image', fnc)
+        self.parent.item_insert('Io', 'Import RGB Image', iodefs.ImportRGBData)
 
     def bandselect(self):
         """Select bands."""

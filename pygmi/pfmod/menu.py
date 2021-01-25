@@ -85,8 +85,8 @@ class MenuWidget():
 
     def pfmod(self):
         """Voxel modelling of data."""
-        fnc = pfmod.MainWidget(self.parent)
-        self.parent.item_insert('Step', 'Potential Field Modelling', fnc)
+        self.parent.item_insert('Step', 'Potential Field Modelling',
+                                pfmod.MainWidget)
 
     def mod3d(self):
         """3D display of data."""
@@ -94,10 +94,8 @@ class MenuWidget():
 
     def import_mod3d(self):
         """Import data."""
-        fnc = iodefs.ImportMod3D(self.parent)
-        self.parent.item_insert('Io', 'Import 3D Model', fnc)
+        self.parent.item_insert('Io', 'Import 3D Model', iodefs.ImportMod3D)
 
     def merge_mod3d(self):
         """Merge models."""
-        fnc = misc.MergeMod3D(self.parent)
-        self.parent.item_insert('Step', 'Merge 3D Models', fnc)
+        self.parent.item_insert('Step', 'Merge 3D Models', misc.MergeMod3D)

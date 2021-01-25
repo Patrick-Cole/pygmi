@@ -73,21 +73,17 @@ class MenuWidget():
 
     def depth_susc(self):
         """Depth and Susceptibility calculations."""
-        fnc = tiltdepth.TiltDepth(self.parent)
-        self.parent.item_insert('Step',
-                                'Tilt Depth Interpretation', fnc)
+        self.parent.item_insert('Step', 'Tilt Depth Interpretation',
+                                tiltdepth.TiltDepth)
 
     def rtp(self):
         """Compute RTP."""
-        fnc = dataprep.RTP(self.parent)
-        self.parent.item_insert('Step', 'RTP', fnc)
+        self.parent.item_insert('Step', 'RTP', dataprep.RTP)
 
     def tilt(self):
         """Compute tilt angle."""
-        fnc = dataprep.Tilt1(self.parent)
-        self.parent.item_insert('Step', 'Tilt Angle', fnc)
+        self.parent.item_insert('Step', 'Tilt Angle', dataprep.Tilt1)
 
     def igrf(self):
         """Compute IGRF."""
-        fnc = igrf.IGRF(self.parent)
-        self.parent.item_insert('Step', 'Remove IGRF', fnc)
+        self.parent.item_insert('Step', 'Remove IGRF', igrf.IGRF)

@@ -824,7 +824,8 @@ class MainWidget(QtWidgets.QMainWindow):
         """Help Routine."""
         menu_default.HelpDocs(self, 'pygmi.main')
 
-    def item_insert(self, item_type, item_name, class_name, runimport=True):
+    def item_insert(self, item_type, item_name, class_name, runimport=True,
+                    params=None):
         """
         Item insert.
 
@@ -846,8 +847,13 @@ class MainWidget(QtWidgets.QMainWindow):
         item : DiagramItem
             Return a DiagramItem object
         """
-        item = DiagramItem(item_type, self.scene.my_item_menu, class_name,
-                           self)
+        if params is None:
+            class_name_active = class_name(self)
+        else:
+            class_name_active = class_name(self, params)
+
+        item = DiagramItem(item_type, self.scene.my_item_menu,
+                           class_name_active, self)
         item_color = self.scene.my_item_color
 
         item_name = item_name.replace(' ', '\n')

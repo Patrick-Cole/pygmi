@@ -28,7 +28,6 @@ from PyQt5 import QtWidgets
 from pygmi.rsense import change
 from pygmi.rsense import iodefs
 from pygmi.rsense import ratios
-from pygmi.rsense import hypercore
 from pygmi.rsense import hyperspec
 
 
@@ -97,10 +96,6 @@ class MenuWidget():
 
         self.menu4 = self.menu.addMenu('Hyperspectral Imaging')
 
-        self.action_process_bore = QtWidgets.QAction('Process Borehole Data')
-        self.menu4.addAction(self.action_process_bore)
-        self.action_process_bore.triggered.connect(self.proc_bore)
-
         self.action_anal_spec = QtWidgets.QAction('Analyse Spectra')
         self.menu4.addAction(self.action_anal_spec)
         self.action_anal_spec.triggered.connect(self.anal_spec)
@@ -127,77 +122,69 @@ class MenuWidget():
 
     def create_scene(self):
         """Create Scene."""
-        fnc = change.CreateSceneList(self.parent)
-        self.parent.item_insert('Step', 'Create Scene List', fnc)
+        self.parent.item_insert('Step', 'Create Scene List',
+                                change.CreateSceneList)
 
     def load_scene(self):
         """Load Scene."""
-        fnc = change.LoadSceneList(self.parent)
-        self.parent.item_insert('Io', 'Import Scene List', fnc)
+        self.parent.item_insert('Io', 'Import Scene List',
+                                change.LoadSceneList)
 
     def view_change(self):
         """View Change Detection."""
-        fnc = change.SceneViewer(self.parent)
-        self.parent.item_insert('Step', 'Change Detection Viewer', fnc)
+        self.parent.item_insert('Step', 'Change Detection Viewer',
+                                change.SceneViewer)
 
     def calc_ratios(self):
         """Calculate Ratios."""
-        fnc = ratios.SatRatios(self.parent)
-        self.parent.item_insert('Step', 'Calculate Band Ratios', fnc)
-
-    def proc_bore(self):
-        """Process Borehole Data."""
-        fnc = hypercore.BorePrep(self.parent)
-        self.parent.item_insert('Step', 'Process Borehole Data', fnc)
+        self.parent.item_insert('Step', 'Calculate Band Ratios',
+                                ratios.SatRatios)
 
     def anal_spec(self):
         """Analyse Spectra."""
-        fnc = hyperspec.AnalSpec(self.parent)
-        self.parent.item_insert('Step', 'Analyse Spectra', fnc)
+        self.parent.item_insert('Step', 'Analyse Spectra', hyperspec.AnalSpec)
 
     def proc_features(self):
         """Process Features."""
-        fnc = hyperspec.ProcFeatures(self.parent)
-        self.parent.item_insert('Step', 'Process Features', fnc)
+        self.parent.item_insert('Step', 'Process Features',
+                                hyperspec.ProcFeatures)
 
     def import_sentinel5p(self):
         """Import Sentinel 5P data."""
-        fnc = iodefs.ImportSentinel5P(self.parent)
-        self.parent.item_insert('Io', 'Import Sentinel-5P', fnc)
+        self.parent.item_insert('Io', 'Import Sentinel-5P',
+                                iodefs.ImportSentinel5P)
 
     def import_sentinel2(self):
         """Import Sentinel 2 data."""
-        fnc = iodefs.ImportData(self.parent, 'Sentinel-2 (*.xml);;')
-        self.parent.item_insert('Io', 'Import Sentinel-2', fnc)
+        self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
+                                params='Sentinel-2 (*.xml);;')
 
     def import_modis(self):
         """Import MODIS data."""
-        fnc = iodefs.ImportData(self.parent, 'MODIS (*.hdf);;')
-        self.parent.item_insert('Io', 'Import MODIS v6', fnc)
+        self.parent.item_insert('Io', 'Import MODIS v6', iodefs.ImportData,
+                                params='MODIS (*.hdf);;')
 
     def import_aster(self):
         """Import ASTER HDF data."""
-        fnc = iodefs.ImportData(self.parent, 'ASTER (AST*.hdf AST*.zip);;')
-        self.parent.item_insert('Io', 'Import ASTER', fnc)
+        self.parent.item_insert('Io', 'Import ASTER', iodefs.ImportData,
+                                params='ASTER (AST*.hdf AST*.zip);;')
 
     def import_hdf(self):
         """Import HDF data."""
-        fnc = iodefs.ImportData(self.parent, 'hdf (*.hdf *.h5);;')
-        self.parent.item_insert('Io', 'Import HDF', fnc)
+        self.parent.item_insert('Io', 'Import HDF', iodefs.ImportData,
+                                params='hdf (*.hdf *.h5);;')
 
     def import_landsat(self):
         """Import Landsat data."""
-        fnc = iodefs.ImportData(self.parent,
-                                'Landsat (L*.tar.gz L*_MTL.txt);;')
-        self.parent.item_insert('Io', 'Import Landsat', fnc)
+        self.parent.item_insert('Io', 'Import Landsat', iodefs.ImportData,
+                                params='Landsat (L*.tar.gz L*_MTL.txt);;')
 
     def import_ged(self):
         """Import GED data."""
-        fnc = iodefs.ImportData(self.parent, 'ASTER GED (*.bin);;')
         self.parent.item_insert('Io', 'Import ASTER Global Emissivity Data',
-                                fnc)
+                                iodefs.ImportData,
+                                params='ASTER GED (*.bin);;')
 
     def batch_list(self):
         """Import batch list."""
-        fnc = iodefs.ImportBatch(self.parent)
-        self.parent.item_insert('Io', 'Import Batch List', fnc)
+        self.parent.item_insert('Io', 'Import Batch List', iodefs.ImportBatch)

@@ -88,10 +88,11 @@ setup(name='pygmi',
                         'segyio',
                         'shapely',
                         'SimPEG',
+                        'openpyxl',
                         'setuptools'],
 
-      package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
-                              'helpdocs/*.png', 'images/*.png',
+      package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html', 'bholes/images/*.svg',
+                              'helpdocs/*.png', 'images/*.png', 'bholes/*.xlsx'
                               'images/*.emf', 'images/*.ico']},
 
       entry_points={'gui_scripts': ['pygmi = pygmi:main']},  # test this, might need to be pygmi.main:main

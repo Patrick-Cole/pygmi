@@ -1361,8 +1361,6 @@ class PlotInterp(QtWidgets.QDialog):
 
             mask = img[:, :, 3]
 
-        # export = iodefs.ExportData(self.parent)
-
         os.chdir(os.path.dirname(filename))
 
         newimg = [copy.deepcopy(self.mmc.data[0]),

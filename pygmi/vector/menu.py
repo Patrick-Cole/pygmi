@@ -116,18 +116,16 @@ class MenuWidget():
 
     def grid(self):
         """Grid datasets."""
-        fnc = dataprep.DataGrid(self.parent)
-        self.parent.item_insert('Step', 'Grid Point Data', fnc)
+        self.parent.item_insert('Step', 'Grid Point Data', dataprep.DataGrid)
 
     def cut_data(self):
         """Cut point data."""
-        fnc = dataprep.PointCut(self.parent)
-        self.parent.item_insert('Step', 'Cut Points', fnc)
+        self.parent.item_insert('Step', 'Cut Points', dataprep.PointCut)
 
     def reproject(self):
         """Reproject point data."""
-        fnc = dataprep.DataReproj(self.parent)
-        self.parent.item_insert('Step', 'Reproject Vector Data', fnc)
+        self.parent.item_insert('Step', 'Reproject Vector Data',
+                                dataprep.DataReproj)
 
     def export_line(self):
         """Export line data."""
@@ -139,13 +137,13 @@ class MenuWidget():
 
     def import_line_data(self):
         """Import line data."""
-        fnc = iodefs.ImportLineData(self.parent)
-        self.parent.item_insert('Io', 'Import Line Data', fnc)
+        self.parent.item_insert('Io', 'Import Line Data',
+                                iodefs.ImportLineData)
 
     def import_shape_data(self):
         """Import shape data."""
-        fnc = iodefs.ImportShapeData(self.parent)
-        self.parent.item_insert('Io', 'Import Shapefile Data', fnc)
+        self.parent.item_insert('Io', 'Import Shapefile Data',
+                                iodefs.ImportShapeData)
 
     def show_point_map(self):
         """Show point data."""

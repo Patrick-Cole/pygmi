@@ -107,7 +107,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if np.isnan(cgs[i]):
                 hatch[i] = [[], []]
                 continue
-            svgfile = idir + '\\' + str(int(cgs[i]))+'.svg'
+            svgfile = idir + '\\images\\' + str(int(cgs[i]))+'.svg'
             pverts, pcodes = gethatch(svgfile)
             hatch[i] = [pverts, pcodes]
 
@@ -244,7 +244,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if np.isnan(cgs[i]):
                 hatch[i] = [[], []]
                 continue
-            svgfile = idir + '\\' + str(int(cgs[i]))+'.svg'
+            svgfile = idir + '\\images\\' + str(int(cgs[i]))+'.svg'
             pverts, pcodes = gethatch(svgfile)
             hatch[i] = [pverts, pcodes]
 
