@@ -58,6 +58,7 @@ from matplotlib import cm
 from matplotlib.patches import Polygon as mPolygon
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+from numba import jit
 from PyQt5 import QtWidgets, QtCore
 import geopandas as gpd
 
@@ -1045,15 +1046,25 @@ class ImageCor(QtWidgets.QDialog):
             else:
                 continue
 
+            if not os.path.exists(odir):
+                os.makedirs(odir)
+
             self.showprocesslog('Processing '+hfile+'...')
 
             datah = get_raster(ifile, piter=self.pbar.iter)
+
+            if datah is None:
+                self.showprocesslog('Could not open file.')
+                continue
 
             if self.dccor.isChecked():
                 datah = dc_correct(idir2, hfile, datah, piter=self.pbar.iter,
                                    showprocesslog=self.showprocesslog)
             if self.smilecor.isChecked() and 'FENIX' in idir2:
                 datah = smile(datah, piter=self.pbar.iter)
+
+            if datah[0] is None:
+                breakpoint()
 
             meta = 'reflectance scale factor = 10000\n'
             meta += 'wavelength = {\n'
@@ -1179,14 +1190,8 @@ def dist_point_to_segment(p, s0, s1):
     return np.linalg.norm(p - pb)
 
 
-def dc_correct(idir, hfile, datah, piter=None, showprocesslog=None):
+def dc_correct(idir, hfile, datah, piter=iter, showprocesslog=print):
     """main."""
-
-    if piter is None:
-        piter = iter
-
-    if showprocesslog is None:
-        showprocesslog = print
 
     # ofile = os.path.join(odir, hfile[:-4]+'.hdr')
     dfile = 'darkref_'+hfile
@@ -1244,10 +1249,8 @@ def dc_correct(idir, hfile, datah, piter=None, showprocesslog=None):
     return datfin
 
 
-def smile(datah, piter=None):
+def smile(datah, piter=iter):
     """:)"""
-    if piter is None:
-        piter = iter
     dath = data_to_dict(datah)
 
     x = np.array([20, 50, 100, 150, 200, 250, 300, 350])
@@ -1273,24 +1276,113 @@ def smile(datah, piter=None):
     return datfin
 
 
+@jit(nopython=True)
+def hampel_filter(input_series, window_size, n_sigmas=3):
+    """From https://towardsdatascience.com/outlier-detection-with-hampel-
+       filter-85ddf523c73d."""
+    n = len(input_series)
+    new_series = input_series.copy()
+    k = 1.4826  # scale factor for Gaussian distribution
+    indices = []
+
+    for i in range((window_size), (n - window_size)):
+        x0 = np.nanmedian(input_series[(i - window_size):(i + window_size)])
+        S0 = k * np.nanmedian(np.abs(input_series[(i - window_size):
+                                                  (i + window_size)] - x0))
+        if np.abs(input_series[i] - x0) > n_sigmas * S0:
+            new_series[i] = x0
+            indices.append(i)
+
+    return new_series, indices
+
+
 def testfn():
     """Main testing routine."""
-    # pbar = ProgressBarText()
+    # app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    # tmp = ImageCor()
+    # tmp.get_idir(r'D:\Workdata\HyperspectralScanner\Raw Data')
+    # tmp.get_odir(r'D:\Workdata\HyperspectralScanner\PTest')
+    # tmp.settings()
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     # ifile = r'D:\Workdata\HyperspectralScanner\Raw Data\LWIR(OWL)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
     # ifile = r'D:\Workdata\HyperspectralScanner\Raw Data\VNIR-SWIR (FENIX)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
 
     # data = get_raster(ifile, piter=pbar.iter)
 
+    import matplotlib.pyplot as plt
+    from pygmi.raster.datatypes import pygmi_to_numpy
+    pbar = ProgressBarText()
 
-    tmp = ImageCor()
-    # tmp.indata['Raster'] = data
-    tmp.get_idir(r'D:\Workdata\HyperspectralScanner\Raw Data')
-    tmp.get_odir(r'D:\Workdata\HyperspectralScanner\PTest')
+    ifile = r'C:\Work\Workdata\HyperspectralScanner\PTest\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
+    data = get_raster(ifile, piter=pbar.iter)
 
-    tmp.settings()
+    pdat = []
+    for i in data:
+        if float(i.dataid) < 479.54:
+            continue
+        if float(i.dataid) > 2482.69:
+            continue
+        pdat.append(i.data)
+
+    pdat = np.array(pdat)
+    pdat = np.moveaxis(pdat, 0, -1)
+
+    ifile = r'C:\Work\Workdata\HyperspectralScanner\Processed Data\FENIX L201 Data Preparation v0810\BV1_17_extracted_image.img'
+    data = get_raster(ifile, piter=pbar.iter)
+
+    tdat = []
+    for i in data:
+        tdat.append(i.data)
+
+    tdat = np.array(tdat)
+    tdat = np.moveaxis(tdat, 0, -1)
+
+    xcrd = 130
+    ycrd = 500
+
+
+    plt.figure(dpi = 200)
+    pdat = pdat[7:961, 72:337]
+    plt.imshow(pdat[:, :, 60])
+    plt.plot(xcrd, ycrd, 'k.')
+    plt.show()
+
+    plt.imshow(tdat[:, :, 60])
+    plt.plot(xcrd, ycrd, 'k.')
+    plt.show()
+
+    plt.plot(tdat[ycrd, xcrd], label='Terra')
+    plt.legend()
+    plt.show()
+
+    plt.plot(pdat[ycrd, xcrd], label='Raw')
+    plt.legend()
+    plt.show()
+
+
+    from scipy.signal import savgol_filter
+    from statsmodels.nonparametric.smoothers_lowess import lowess
+
+    res = savgol_filter(pdat[ycrd, xcrd], 11, 3)
+    # res, outliers = hampel_filter(pdat[ycrd, xcrd], 10, 2)
+    plt.plot(res, label='SavGol')
+    plt.legend()
+    plt.show()
+
+
+    xxx = np.arange(tdat[ycrd, xcrd].size)
+
+    res = lowess(pdat[ycrd, xcrd], xxx, is_sorted=True, frac=0.015, it=0)
+    res = res[:, 1]
+
+    plt.plot(res, label='Lowess')
+    plt.legend()
+    plt.show()
+
+
+    breakpoint()
+
 
 
 if __name__ == "__main__":

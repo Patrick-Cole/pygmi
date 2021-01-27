@@ -2055,58 +2055,7 @@ def getepsgcodes():
     return pcodes
 
 
-# def merge(dat, piter=None):
-#     """
-#     Merge datasets found in a single PyGMI data object.
-
-#     The aim is to ensure that all datasets have the same number of rows and
-#     columns.
-
-#     Parameters
-#     ----------
-#     dat : PyGMI Data
-#         data object which stores datasets
-
-#     Returns
-#     -------
-#     out : PyGMI Data
-#         data object which stores datasets
-#     """
-#     if piter is None:
-#         piter = iter
-
-#     if dat[0].isrgb:
-#         return dat
-
-#     needsmerge = False
-#     rows, cols = dat[0].data.shape
-#     for i in dat:
-#         irows, icols = i.data.shape
-#         if irows != rows or icols != cols:
-#             needsmerge = True
-
-#     if needsmerge is False:
-#         dat = check_dataid(dat)
-#         return dat
-
-#     self.showprocesslog('Merging data...')
-#     mrg = DataMerge()
-#     mrg.indata['Raster'] = dat
-#     data = dat[0]
-#     dxy0 = min(data.xdim, data.ydim)
-#     for data in dat:
-#         dxy = min(dxy0, data.xdim, data.ydim)
-
-#     mrg.dsb_dxy.setValue(dxy)
-#     mrg.acceptall()
-#     out = mrg.outdata['Raster']
-
-#     out = check_dataid(out)
-
-#     return out
-
-
-def merge(dat, piter=None, dxy=None):
+def merge(dat, piter=iter, dxy=None):
     """
     Merge datasets found in a single PyGMI data object.
 
@@ -2123,9 +2072,6 @@ def merge(dat, piter=None, dxy=None):
     out : PyGMI Data
         data object which stores datasets
     """
-
-    if piter is None:
-        piter = iter
 
     if dat[0].isrgb:
         return dat

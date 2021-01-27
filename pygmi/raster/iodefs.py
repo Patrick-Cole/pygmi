@@ -540,7 +540,7 @@ def get_ascii(ifile):
     return dat
 
 
-def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
+def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
                iraster=None):
     """
     This function loads a raster dataset off the disk using the GDAL
@@ -565,9 +565,6 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     dat : PyGMI raster Data
         dataset imported
     """
-
-    if piter is None:
-        piter = iter
 
     dat = []
     bname = ifile.split('/')[-1].rpartition('.')[0]
@@ -604,6 +601,8 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                     custom_wkt = orig.ExportToWkt()
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    if dataset is None:
+        return None
     istruct = dataset.GetMetadata('IMAGE_STRUCTURE')
     driver = dataset.GetDriver().GetDescription()
 
@@ -612,9 +611,6 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             dataset = None
             dat = get_bil(ifile, nval, piter, showprocesslog)
             return dat
-
-    if dataset is None:
-        return None
 
     if custom_wkt is None:
         srs = osr.SpatialReference()
@@ -1385,7 +1381,7 @@ class ExportData():
         return file_out
 
 
-def export_gdal(ofile, dat, drv, envimeta='', piter=None):
+def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
     """
     Export to GDAL format.
 
@@ -1407,9 +1403,6 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=None):
     None.
 
     """
-
-    if piter is None:
-        piter = iter
 
     if isinstance(dat, dict):
         dat2 = []
@@ -1483,7 +1476,6 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=None):
                             len(data), fmt)
 
     out.SetGeoTransform(data[0].get_gtr())
-
     out.SetProjection(data[0].wkt)
 
     numbands = len(data)

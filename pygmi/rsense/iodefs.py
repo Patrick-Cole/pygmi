@@ -1005,7 +1005,7 @@ def get_modis(ifile, showprocesslog=print):
     return dat
 
 
-def get_modisv6(ifile, piter=None):
+def get_modisv6(ifile, piter=iter):
     """
     Gets MODIS v006 data.
 
@@ -1021,9 +1021,6 @@ def get_modisv6(ifile, piter=None):
     """
     dat = []
     ifile = ifile[:]
-
-    if piter is None:
-        piter = iter
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
     # dmeta = dataset.GetMetadata()
@@ -1093,7 +1090,7 @@ def get_modisv6(ifile, piter=None):
     return dat
 
 
-def get_landsat(ifilet, piter=None, showprocesslog=print):
+def get_landsat(ifilet, piter=iter, showprocesslog=print):
     """
     Gets Landsat Data.
 
@@ -1107,9 +1104,6 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
     out : Data
         PyGMI raster dataset
     """
-
-    if piter is None:
-        piter = iter
 
     idir = os.path.dirname(ifilet)
 
@@ -1181,7 +1175,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
     return dat
 
 
-def get_sentinel2(ifile, piter=None, showprocesslog=print):
+def get_sentinel2(ifile, piter=iter, showprocesslog=print):
     """
     Gets Sentinel-2 Data.
 
@@ -1195,9 +1189,6 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print):
     dat : PyGMI raster Data
         dataset imported
     """
-
-    if piter is None:
-        piter = iter
 
     ifile = ifile[:]
 
@@ -1242,7 +1233,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print):
     return dat
 
 
-def get_aster_zip(ifile, piter=None, showprocesslog=print):
+def get_aster_zip(ifile, piter=iter, showprocesslog=print):
     """
     Gets ASTER Data.
 
@@ -1256,10 +1247,6 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print):
     dat : PyGMI raster Data
         dataset imported
     """
-
-    if piter is None:
-        piter = iter
-
     if 'AST_07' in ifile:
         scalefactor = 0.001
         units = 'Surface Reflectance'
@@ -1321,7 +1308,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print):
     return dat
 
 
-def get_aster_hdf(ifile, piter=None):
+def get_aster_hdf(ifile, piter=iter):
     """
     Gets ASTER Data.
 
@@ -1347,9 +1334,6 @@ def get_aster_hdf(ifile, piter=None):
         ptype = '08'
     else:
         return None
-
-    if piter is None:
-        piter = iter
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
 
