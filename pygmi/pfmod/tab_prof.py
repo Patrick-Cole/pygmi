@@ -2580,7 +2580,6 @@ class ImportPicture(QtWidgets.QDialog):
         self.lmod = self.parent.lmod1
 
         self.ifile = ''
-        self.pbar = None
         self.indata = {}
         self.outdata = {}
         self.grid = None

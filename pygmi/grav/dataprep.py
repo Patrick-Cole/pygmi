@@ -58,7 +58,6 @@ class ProcessData(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-#        self.pbar = parent.pbar
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.dsb_null = QtWidgets.QDoubleSpinBox()

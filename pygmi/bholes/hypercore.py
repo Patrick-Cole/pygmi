@@ -53,6 +53,7 @@ import glob
 
 import numpy as np
 import scipy.interpolate as si
+from scipy.signal import savgol_filter
 from matplotlib.figure import Figure
 from matplotlib import cm
 from matplotlib.patches import Polygon as mPolygon
@@ -60,8 +61,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from numba import jit
 from PyQt5 import QtWidgets, QtCore
-import geopandas as gpd
+import gdal
 
+from pygmi.raster.dataprep import data_to_gdal_mem, gdal_to_dat
 from pygmi.misc import frm
 import pygmi.menu_default as menu_default
 from pygmi.raster.iodefs import get_raster, export_gdal
@@ -87,8 +89,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.parent = parent
         self.polyi = None
         self.data = []
-        self.cdata = []
-        self.mindx = [0, 0]
+        self.mindx = 0
         self.csp = None
         self.subplot = None
 
@@ -101,16 +102,14 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
-        mtmp = self.mindx
-        dat = self.data[mtmp[0]]
+        dat = self.data[self.mindx]
 
         self.figure.clf()
         self.subplot = self.figure.add_subplot(111)
         # self.subplot.get_xaxis().set_visible(False)
         # self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, extent=dat.extent,
-                                       cmap=cm.get_cmap('jet'))
+        self.csp = self.subplot.imshow(dat.data, cmap=cm.get_cmap('jet'))
         axes = self.figure.gca()
 
         # axes.set_xlabel('ColumnsEastings')
@@ -132,16 +131,10 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
-        mtmp = self.mindx
-        dat = self.data[mtmp[0]]
+        dat = self.data[self.mindx]
 
-        if mtmp[1] > 0:
-            cdat = self.cdata[mtmp[1] - 1].data
-            self.csp.set_data(cdat)
-            self.csp.set_clim(cdat.min(), cdat.max())
-        else:
-            self.csp.set_data(dat.data)
-            self.csp.set_clim(dat.data.min(), dat.data.max())
+        self.csp.set_data(dat.data)
+        self.csp.set_clim(dat.data.min(), dat.data.max())
 
         self.csp.changed()
         self.figure.canvas.draw()
@@ -164,7 +157,7 @@ class PolygonInteractor(QtCore.QObject):
         self.poly.set_alpha(0.5)
         self.background = None
 
-        xtmp, ytmp = zip(*self.poly.xy)
+        # xtmp, ytmp = zip(*self.poly.xy)
 
         self.ind = None  # the active vert
 
@@ -254,6 +247,9 @@ class PolygonInteractor(QtCore.QObject):
         if event.button != 1:
             return
 
+        if self.ax.get_navigate_mode() is not None:
+            return
+
         self.set_line(event.xdata, event.ydata)
 
         self.ind = None
@@ -279,39 +275,10 @@ class PolygonInteractor(QtCore.QObject):
             return
         if event.button != 1:
             return
+        if self.ax.get_navigate_mode() is not None:
+            return
 
         self.set_line(event.xdata, event.ydata)
-
-    def get_ind_under_point(self, xdata, ydata):
-        """
-        Get the index of vertex under point if within epsilon tolerance.
-
-        Parameters
-        ----------
-        event : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        ind : int or None
-            Index of vertex under point.
-
-        """
-        # display coords
-
-        ptmp = self.poly.get_transform().transform([xdata, ydata])
-        xytmp = np.asarray(self.poly.xy)
-        xyt = self.poly.get_transform().transform(xytmp)
-
-        xtt, ytt = xyt[:, 0], xyt[:, 1]
-        dtt = np.sqrt((xtt - ptmp[0]) ** 2 + (ytt - ptmp[1]) ** 2)
-        indseq = np.nonzero(np.equal(dtt, np.amin(dtt)))[0]
-        ind = indseq[0]
-
-        if dtt[ind] >= self.epsilon:
-            ind = None
-
-        return ind
 
     def update_plots(self):
         """
@@ -346,46 +313,18 @@ class PolygonInteractor(QtCore.QObject):
         xys = self.poly.get_transform().transform(self.poly.xy)
         ptmp = self.poly.get_transform().transform([xdata, ydata])
 
-        self.ind = self.get_ind_under_point(xdata, ydata)
+        dtmp = []
+        for i in range(len(xys) - 1):
+            dtmp.append(dist_point_to_segment(ptmp, xys[i], xys[i + 1]))
 
-        if self.ind is None:
-            dtmp = []
-            for i in range(len(xys) - 1):
-                dtmp.append(dist_point_to_segment(ptmp, xys[i], xys[i + 1]))
+        dtmp = np.array(dtmp)
+        imin = np.nonzero(dtmp < self.epsilon)[0]
 
-            dtmp = np.array(dtmp)
-            imin = np.nonzero(dtmp < self.epsilon)[0]
-
-            if imin.size == 0:
-                return
-            # self.ind = True
-        else:
-            imin = [self.ind]
+        if imin.size == 0:
+            return
 
         for i in imin:
-            if i == self.ind:
-                xdiff = xdata - self.poly.xy[i, 0]
-                self.poly.xy[i, 0] = xdata
-                self.poly.xy[i, 1] = ydata
-                if i == 2:
-                    self.poly.xy[1, 0] += xdiff
-                    self.poly.xy[1, 1] = ydata
-                if i == 1:
-                    self.poly.xy[2, 0] += xdiff
-                    self.poly.xy[2, 1] = ydata
-                if i == 0:
-                    self.poly.xy[3, 0] += xdiff
-                    self.poly.xy[3, 1] = ydata
-                if i == 3:
-                    self.poly.xy[0, 0] += xdiff
-                    self.poly.xy[0, 1] = ydata
-
-                dx = self.poly.xy[1, 0] - self.poly.xy[0, 0]
-                dy = self.poly.xy[1, 1] - self.poly.xy[0, 1]
-                rad = np.arctan(dy/dx)
-                print(rad)
-
-            elif i in [0, 2]:
+            if i in [0, 2]:
                 self.poly.xy[i, 0] = xdata
                 self.poly.xy[i+1, 0] = xdata
             else:
@@ -420,17 +359,21 @@ class CorePrep(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
+            self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.df = None
 
         self.map = GraphMap(self)
         self.combo = QtWidgets.QComboBox()
+        self.combostart = QtWidgets.QComboBox()
+        self.comboend = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
+        self.asave = QtWidgets.QCheckBox('Auto Save (adds clip_ prefix)')
 
         self.setupui()
 
@@ -444,62 +387,112 @@ class CorePrep(QtWidgets.QDialog):
 
         """
         grid_main = QtWidgets.QGridLayout(self)
-        group_map = QtWidgets.QGroupBox('Options')
-        grid_right = QtWidgets.QGridLayout(group_map)
 
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        pb_fenix = QtWidgets.QPushButton('Default FENIX settings')
+        pb_owl = QtWidgets.QPushButton('Default OWL settings')
 
-        loadshape = QtWidgets.QPushButton('Load Class Shapefile')
-        saveshape = QtWidgets.QPushButton('Save Class Shapefile')
+        self.setWindowTitle('Tray Clipping and Band Selection')
 
-        self.setWindowTitle('Borehole Preparation')
+        lbl_combo = QtWidgets.QLabel('Display Band:')
+        lbl_combostart = QtWidgets.QLabel('Start Band:')
+        lbl_comboend = QtWidgets.QLabel('End Band:')
 
-        lbl_combo = QtWidgets.QLabel('Data Band:')
+        grid_main.addWidget(lbl_combo, 0, 1, 1, 1)
+        grid_main.addWidget(self.combo, 0, 2, 1, 1)
 
-        grid_right.addWidget(lbl_combo, 0, 0, 1, 1)
-        grid_right.addWidget(self.combo, 0, 1, 1, 2)
+        grid_main.addWidget(lbl_combostart, 1, 1, 1, 1)
+        grid_main.addWidget(self.combostart, 1, 2, 1, 1)
 
-        grid_main.addWidget(self.map, 0, 0, 2, 1)
-        grid_main.addWidget(self.mpl_toolbar, 2, 0, 1, 1)
+        grid_main.addWidget(lbl_comboend, 2, 1, 1, 1)
+        grid_main.addWidget(self.comboend, 2, 2, 1, 1)
 
-        grid_main.addWidget(group_map, 0, 1, 1, 1)
-        grid_main.addWidget(buttonbox, 2, 1, 1, 1)
+        grid_main.addWidget(pb_fenix, 3, 1, 1, 2)
+        grid_main.addWidget(pb_owl, 4, 1, 1, 2)
+        grid_main.addWidget(self.asave, 9, 1, 1, 2)
 
-        loadshape.clicked.connect(self.load_shape)
-        saveshape.clicked.connect(self.save_shape)
+        grid_main.addWidget(self.map, 0, 0, 10, 1)
+        grid_main.addWidget(self.mpl_toolbar, 11, 0, 1, 1)
+
+        grid_main.addWidget(buttonbox, 11, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
+        pb_fenix.pressed.connect(self.default_fenix)
+        pb_owl.pressed.connect(self.default_owl)
 
-    def updatepoly(self, xycoords=None):
+    def default_fenix(self):
         """
-        Update polygon.
-
-        Parameters
-        ----------
-        xycoords : TYPE, optional
-            DESCRIPTION. The default is None.
+        Default settings for FENIX.
 
         Returns
         -------
         None.
 
         """
-#         row = self.tablewidget.currentRow()
-#         if row == -1:
-#             return
 
-#         self.df.loc[row] = None
-#         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
-# #        self.df.loc[row, 'kappa'] = self.tablewidget.item(row, 1).text()
+        self.combostart.setCurrentText('479.54')
+        self.comboend.setCurrentText('2482.69')
 
-#         xycoords = self.map.polyi.poly.xy
-#         if xycoords.size < 8:
-#             self.df.loc[row, 'geometry'] = Polygon([])
-#         else:
-#             self.df.loc[row, 'geometry'] = Polygon(xycoords)
+        ymax, xmax = self.indata['Raster'][0].data.shape
+
+        x1 = xmax*0.1
+        x2 = xmax-xmax*0.1
+        y1 = ymax*0.1
+        y2 = ymax-ymax*0.1
+
+        if xmax > 330:
+            x1 = 75
+            x2 = 330
+
+        if ymax > 975:
+            y1 = 20
+            y2 = 975
+
+        poly = [[x1, y1],
+                [x1, y2],
+                [x2, y2],
+                [x2, y1]]
+
+        self.map.polyi.new_poly(poly)
+        self.map.update_graph()
+
+    def default_owl(self):
+        """
+        Default settings for OWL.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.combostart.setCurrentText('7603.31')
+        self.comboend.setCurrentText('11992.60')
+
+        ymax, xmax = self.indata['Raster'][0].data.shape
+
+        x1 = xmax*0.1
+        x2 = xmax-xmax*0.1
+        y1 = ymax*0.1
+        y2 = ymax-ymax*0.1
+
+        # if xmax > 330:
+        #     x1 = 75
+        #     x2 = 330
+
+        # if ymax > 975:
+        #     y1 = 20
+        #     y2 = 975
+
+        poly = [[x1, y1],
+                [x1, y2],
+                [x2, y2],
+                [x2, y1]]
+
+        self.map.polyi.new_poly(poly)
+        self.map.update_graph()
 
     def on_combo(self):
         """
@@ -510,62 +503,8 @@ class CorePrep(QtWidgets.QDialog):
         None.
 
         """
-        self.m[0] = self.combo.currentIndex()
+        self.map.mindx = self.combo.currentIndex()
         self.map.update_graph()
-
-    def load_shape(self):
-        """
-        Load shapefile.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        ext = 'Shapefile (*.shp)'
-
-        filename, _ = QtWidgets.QFileDialog.getOpenFileName(self.parent,
-                                                            'Open File',
-                                                            '.', ext)
-        if filename == '':
-            return False
-
-        df = gpd.read_file(filename)
-        if 'class' not in df or 'geometry' not in df:
-            return False
-
-        self.df = df
-        self.tablewidget.setRowCount(0)
-        for index, _ in self.df.iterrows():
-            self.tablewidget.insertRow(index)
-            item = QtWidgets.QTableWidgetItem('Class '+str(index+1))
-            self.tablewidget.setItem(index, 0, item)
-
-        self.tablewidget.selectRow(0)
-        coords = list(self.df.loc[0, 'geometry'].exterior.coords)
-        self.map.polyi.new_poly(coords)
-
-        return True
-
-    def save_shape(self):
-        """
-        Save shapefile.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
-            self.parent, 'Save File', '.', 'Shapefile (*.shp)')
-
-        if filename == '':
-            return False
-
-        self.df.to_file(filename)
-        return True
 
     def settings(self, nodialog=False):
         """
@@ -584,6 +523,7 @@ class CorePrep(QtWidgets.QDialog):
             return False
 
         self.map.data = self.indata['Raster']
+        idir = os.path.dirname(self.indata['Raster'][0].filename)
 
         bands = [i.dataid for i in self.indata['Raster']]
 
@@ -591,37 +531,41 @@ class CorePrep(QtWidgets.QDialog):
         self.combo.addItems(bands)
         self.combo.currentIndexChanged.connect(self.on_combo)
 
+        self.combostart.clear()
+        self.combostart.addItems(bands)
+
+        self.comboend.clear()
+        self.comboend.addItems(bands)
+        self.comboend.setCurrentIndex(len(bands)-1)
+
         self.map.init_graph()
-        self.map.polyi.polyi_changed.connect(self.updatepoly)
-        self.map.update_graph()
 
-        axes = self.map.figure.gca()
+        if 'FENIX' in idir.upper():
+            self.default_fenix()
+        elif 'OWL' in idir.upper():
+            self.default_owl()
+        else:
+            ymax, xmax = self.indata['Raster'][0].data.shape
 
-        xmin, xmax = axes.get_xlim()
-        ymin, ymax = axes.get_ylim()
+            x1 = xmax*0.1
+            x2 = xmax-xmax*0.1
+            y1 = ymax*0.1
+            y2 = ymax-ymax*0.1
 
-        x1 = xmin+(xmax-xmin)*0.1
-        x2 = xmax-(xmax-xmin)*0.1
+            poly = [[x1, y1],
+                    [x1, y2],
+                    [x2, y2],
+                    [x2, y1]]
 
-        y1 = ymin+(ymax-ymin)*0.1
-        y2 = ymax-(ymax-ymin)*0.1
-
-        poly = [[x1, y1],
-                [x1, y2],
-                [x2, y2],
-                [x2, y1]]
-
-        self.map.polyi.new_poly(poly)
-        self.map.update_graph()
-
-        # self.map.polyi.line.set_visible(True)
+            self.map.polyi.new_poly(poly)
+            self.map.update_graph()
 
         tmp = self.exec_()
 
         if tmp == 0:
             return False
 
-        self.outdata['Raster'] = self.indata['Raster']
+        self.acceptall()
 
         return True
 
@@ -640,12 +584,8 @@ class CorePrep(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-        self.combo_class.setCurrentText(projdata['combo_class'])
-        self.KNalgorithm.setCurrentText(projdata['KNalgorithm'])
-        self.DTcriterion.setCurrentText(projdata['DTcriterion'])
-        self.RFcriterion.setCurrentText(projdata['RFcriterion'])
-        self.SVCkernel.setCurrentText(projdata['SVCkernel'])
-#        self.df.read_json(projdata['classes'])
+
+        # self.combo_class.setCurrentText(projdata['combo_class'])
 
         return False
 
@@ -661,43 +601,60 @@ class CorePrep(QtWidgets.QDialog):
         """
         projdata = {}
 
-        projdata['combo_class'] = self.combo_class.currentText()
-        projdata['KNalgorithm'] = self.KNalgorithm.currentText()
-        projdata['DTcriterion'] = self.DTcriterion.currentText()
-        projdata['RFcriterion'] = self.RFcriterion.currentText()
-        projdata['SVCkernel'] = self.SVCkernel.currentText()
-#        projdata['classes'] = self.df.to_json()
+        # projdata['combo_class'] = self.combo_class.currentText()
 
         return projdata
 
-    def update_map(self, polymask):
+    def acceptall(self):
         """
-        Update map.
+        Accept option.
 
-        Parameters
-        ----------
-        polymask : numpy array
-            Polygon mask.
+        Updates self.outdata, which is used as input to other modules.
 
         Returns
         -------
         None.
 
         """
-        if max(polymask) is False:
-            return
 
-        mtmp = self.combo.currentIndex()
-        mask = self.indata['Raster'][mtmp].data.mask
+        data = copy.copy(self.indata['Raster'])
+        xy = self.map.polyi.poly.xy
 
-        polymask = np.array(polymask)
-        polymask.shape = mask.shape
-        polymask = np.logical_or(polymask, mask)
+        xy = xy.astype(int)
+        xy = np.abs(xy)
 
-        dattmp = self.map.csp.get_array()
-        dattmp.mask = polymask
-        self.map.csp.changed()
-        self.map.figure.canvas.draw()
+        rows = np.unique(xy[:, 1])
+        cols = np.unique(xy[:, 0])
+
+        for dat in data:
+            dat.data = dat.data[rows.min():rows.max(),
+                                cols.min():cols.max()]
+        datfin = []
+        start = False
+        for i in data:
+            if i.dataid == self.combostart.currentText():
+                start = True
+            if not start:
+                continue
+            if i.dataid == self.comboend.currentText():
+                break
+            datfin.append(i)
+
+
+        if self.asave.isChecked():
+            meta = 'reflectance scale factor = 10000\n'
+            meta += 'wavelength = {\n'
+            for i in datfin:
+                meta += i.dataid + ',\n'
+            meta = meta[:-2]+'}\n'
+
+            odir = os.path.dirname(self.indata['Raster'][0].filename)
+            hfile = os.path.basename(self.indata['Raster'][0].filename)
+            ofile = os.path.join(odir, 'clip_'+hfile[:-4]+'.hdr')
+            export_gdal(ofile, datfin, 'ENVI', envimeta=meta, piter=self.piter)
+
+        self.outdata['Raster'] = datfin
+        return True
 
 
 class CoreInt(QtWidgets.QDialog):
@@ -718,8 +675,7 @@ class CoreInt(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
-            pbar = ProgressBarText()
-            self.piter = pbar.iter
+            self.piter = ProgressBarText().iter
 
         else:
             self.showprocesslog = parent.showprocesslog
@@ -887,11 +843,11 @@ class ImageCor(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
-            self.pbar = ProgressBarText()
+            self.piter = ProgressBarText().iter
 
         else:
             self.showprocesslog = parent.showprocesslog
-            self.pbar = parent.pbar
+            self.piter = parent.pbar.iter
 
         self.indata = {}
         self.outdata = {}
@@ -903,6 +859,8 @@ class ImageCor(QtWidgets.QDialog):
         self.odir = QtWidgets.QLineEdit('')
         self.dccor = QtWidgets.QCheckBox('DC Correction')
         self.smilecor = QtWidgets.QCheckBox('Geometric Smile Correction (FENIX only)')
+        self.hampel = QtWidgets.QCheckBox('Spike removal (Hampel Filter)')
+        self.savgol = QtWidgets.QCheckBox('Smoothing (Savitzky-Golay filter)')
 
         self.setupui()
 
@@ -935,6 +893,8 @@ class ImageCor(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.odir, 1, 1, 1, 1)
         gridlayout_main.addWidget(self.dccor, 2, 0, 1, 2)
         gridlayout_main.addWidget(self.smilecor, 3, 0, 1, 2)
+        gridlayout_main.addWidget(self.hampel, 4, 0, 1, 2)
+        gridlayout_main.addWidget(self.savgol, 5, 0, 1, 2)
 
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
@@ -1051,17 +1011,21 @@ class ImageCor(QtWidgets.QDialog):
 
             self.showprocesslog('Processing '+hfile+'...')
 
-            datah = get_raster(ifile, piter=self.pbar.iter)
+            datah = get_raster(ifile, piter=self.piter)
 
             if datah is None:
                 self.showprocesslog('Could not open file.')
                 continue
 
             if self.dccor.isChecked():
-                datah = dc_correct(idir2, hfile, datah, piter=self.pbar.iter,
+                datah = dc_correct(idir2, hfile, datah, piter=self.piter,
                                    showprocesslog=self.showprocesslog)
             if self.smilecor.isChecked() and 'FENIX' in idir2:
-                datah = smile(datah, piter=self.pbar.iter)
+                datah = smile(datah, piter=self.piter)
+            if self.hampel.isChecked():
+                datah = filter_data(datah, 'hampel', piter=self.piter)
+            if self.savgol.isChecked():
+                datah = filter_data(datah, 'savgol', piter=self.piter)
 
             if datah[0] is None:
                 breakpoint()
@@ -1249,37 +1213,94 @@ def dc_correct(idir, hfile, datah, piter=iter, showprocesslog=print):
     return datfin
 
 
-def smile(datah, piter=iter):
+def smile(dat, piter=iter):
     """:)"""
-    dath = data_to_dict(datah)
-
     x = np.array([20, 50, 100, 150, 200, 250, 300, 350])
     y = np.array([3, 7, 12, 14, 15, 14, 11, 5])
 
     func = si.interp1d(x, y, kind='cubic', fill_value="extrapolate")
+    col = np.arange(384, dtype=float)
+    row = func(col)
 
-    xnew = np.arange(384)
-    ynew = func(xnew)
+    arows, _ = dat[0].data.shape
 
-    ynew2 = ynew.astype(int)
-    maxy = ynew2.max()
+    gcps = []
+    for j in np.linspace(0., arows-1, 3):
+        for i, _ in enumerate(col):
+            gcps.append(gdal.GCP(col[i], -j, 0., col[i], j+row[i]))
 
-    for i in piter(dath):
+    dat2 = []
+    for data in piter(dat):
+        doffset = 0.0
+        data.data.set_fill_value(data.nullvalue)
+        data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
+        if data.data.min() <= 0:
+            doffset = data.data.min()-1.
+            data.data = data.data - doffset
+        gtr0 = data.get_gtr()
+        orig_wkt = data.wkt
 
-        datcor = np.zeros_like(dath[i])
-        for j, _ in enumerate(datcor[:-maxy]):
-            datcor[j] = dath[i][j+ynew2, xnew]
-        dath[i] = datcor
+        drows, dcols = data.data.shape
+        src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
 
-    datfin = dict_to_data(dath, datah)
+        src.SetGCPs(gcps, orig_wkt)
 
-    return datfin
+        dest = gdal.AutoCreateWarpedVRT(src)
 
+        gdal.ReprojectImage(src, dest, None, None, gdal.GRA_Bilinear)
+
+        dat2.append(gdal_to_dat(dest, data.dataid))
+        dat2[-1].data = dat2[-1].data + doffset
+        data.data = data.data + doffset
+
+    return dat2
+
+def filter_data(datah, ftype, piter=iter):
+    """
+    Filter data
+
+    Parameters
+    ----------
+    datah : TYPE
+        DESCRIPTION.
+    ftype : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+
+    print('Filtering using '+ftype+'...')
+
+    pdat = []
+    for i in datah:
+        pdat.append(i.data)
+
+    pdat = np.array(pdat)
+    pdat = np.moveaxis(pdat, 0, -1)
+
+    rows, cols, _ = pdat.shape
+
+    for i in piter(range(rows)):
+        for j in range(cols):
+            if ftype == 'hampel':
+                pdat[i, j], _ = hampel_filter(pdat[i, j], 5, 3)
+            if ftype == 'savgol':
+                pdat[i, j] = savgol_filter(pdat[i, j], 7, 2)
+
+    for i, val in enumerate(datah):
+        val.data = pdat[:, :, i]
+
+    # res, outliers = hampel_filter(pdat[ycrd, xcrd], 10, 2)
+
+    return datah
 
 @jit(nopython=True)
 def hampel_filter(input_series, window_size, n_sigmas=3):
     """From https://towardsdatascience.com/outlier-detection-with-hampel-
-       filter-85ddf523c73d."""
+       filter-85ddf523c73d"""
     n = len(input_series)
     new_series = input_series.copy()
     k = 1.4826  # scale factor for Gaussian distribution
@@ -1298,20 +1319,16 @@ def hampel_filter(input_series, window_size, n_sigmas=3):
 
 def testfn():
     """Main testing routine."""
-    # app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-    # tmp = ImageCor()
-    # tmp.get_idir(r'D:\Workdata\HyperspectralScanner\Raw Data')
-    # tmp.get_odir(r'D:\Workdata\HyperspectralScanner\PTest')
-    # tmp.settings()
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    tmp = ImageCor()
+    tmp.get_idir(r'D:\Workdata\HyperspectralScanner\Raw Data\VNIR-SWIR (FENIX)')
+    tmp.get_odir(r'D:\Workdata\HyperspectralScanner\PTest\smile')
+    tmp.settings()
 
 
-    # ifile = r'D:\Workdata\HyperspectralScanner\Raw Data\LWIR(OWL)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
-    # ifile = r'D:\Workdata\HyperspectralScanner\Raw Data\VNIR-SWIR (FENIX)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
-
-    # data = get_raster(ifile, piter=pbar.iter)
-
+def testfn2():
+    """Main testing routine."""
     import matplotlib.pyplot as plt
-    from pygmi.raster.datatypes import pygmi_to_numpy
     pbar = ProgressBarText()
 
     ifile = r'C:\Work\Workdata\HyperspectralScanner\PTest\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
@@ -1328,15 +1345,15 @@ def testfn():
     pdat = np.array(pdat)
     pdat = np.moveaxis(pdat, 0, -1)
 
-    ifile = r'C:\Work\Workdata\HyperspectralScanner\Processed Data\FENIX L201 Data Preparation v0810\BV1_17_extracted_image.img'
-    data = get_raster(ifile, piter=pbar.iter)
+    # ifile = r'C:\Work\Workdata\HyperspectralScanner\Processed Data\FENIX L201 Data Preparation v0810\BV1_17_extracted_image.img'
+    # data = get_raster(ifile, piter=pbar.iter)
 
-    tdat = []
-    for i in data:
-        tdat.append(i.data)
+    # tdat = []
+    # for i in data:
+    #     tdat.append(i.data)
 
-    tdat = np.array(tdat)
-    tdat = np.moveaxis(tdat, 0, -1)
+    # tdat = np.array(tdat)
+    # tdat = np.moveaxis(tdat, 0, -1)
 
     xcrd = 130
     ycrd = 500
@@ -1348,42 +1365,102 @@ def testfn():
     plt.plot(xcrd, ycrd, 'k.')
     plt.show()
 
-    plt.imshow(tdat[:, :, 60])
-    plt.plot(xcrd, ycrd, 'k.')
-    plt.show()
+    # plt.imshow(tdat[:, :, 60])
+    # plt.plot(xcrd, ycrd, 'k.')
+    # plt.show()
 
-    plt.plot(tdat[ycrd, xcrd], label='Terra')
-    plt.legend()
-    plt.show()
+    # plt.plot(tdat[ycrd, xcrd], label='Terra')
+    # plt.legend()
+    # plt.show()
 
     plt.plot(pdat[ycrd, xcrd], label='Raw')
     plt.legend()
     plt.show()
 
-
-    from scipy.signal import savgol_filter
-    from statsmodels.nonparametric.smoothers_lowess import lowess
-
-    res = savgol_filter(pdat[ycrd, xcrd], 11, 3)
-    # res, outliers = hampel_filter(pdat[ycrd, xcrd], 10, 2)
-    plt.plot(res, label='SavGol')
+    # res = savgol_filter(pdat[ycrd, xcrd], 7, 2)
+    res, outliers = hampel_filter(pdat[ycrd, xcrd], 7, 3)
+    plt.plot(res, 'k', label='SavGol')
+    plt.vlines(outliers, 1250, 2750)
     plt.legend()
     plt.show()
 
 
-    xxx = np.arange(tdat[ycrd, xcrd].size)
+def testfn3():
+    """Main testing routine."""
+    import matplotlib.pyplot as plt
+    pbar = ProgressBarText()
 
-    res = lowess(pdat[ycrd, xcrd], xxx, is_sorted=True, frac=0.015, it=0)
-    res = res[:, 1]
+    ifile = r'C:\Work\Workdata\HyperspectralScanner\PTest\smile\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
+    data = get_raster(ifile, piter=pbar.iter)
 
-    plt.plot(res, label='Lowess')
-    plt.legend()
+    pdat = []
+    for i in data:
+        if float(i.dataid) < 479.54:
+            continue
+        if float(i.dataid) > 2482.69:
+            continue
+        pdat.append(i.data)
+
+    pdat = np.array(pdat)
+    pdat = np.moveaxis(pdat, 0, -1)
+
+    ifile = r'D:\Workdata\HyperspectralScanner\PTest\nosmile\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
+    data = get_raster(ifile, piter=pbar.iter)
+
+    tdat = []
+    for i in data:
+        if float(i.dataid) < 479.54:
+            continue
+        if float(i.dataid) > 2482.69:
+            continue
+        tdat.append(i.data)
+
+    tdat = np.array(tdat)
+    tdat = np.moveaxis(tdat, 0, -1)
+
+
+    pdat = pdat[7:100, 72:337]
+    tdat = tdat[7:100, 72:337]
+
+    plt.figure(dpi = 200)
+    plt.imshow(pdat[:, :, 60])
     plt.show()
 
+    plt.figure(dpi = 200)
+    plt.imshow(tdat[:, :, 60])
+    plt.show()
+
+
+def testfn4():
+    """Main testing routine."""
+    import matplotlib.pyplot as plt
+
+    ifile = r'D:\Workdata\HyperspectralScanner\PTest\smile\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
+
+    pbar = ProgressBarText()
+    data = get_raster(ifile, piter=pbar.iter)
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    tmp = CorePrep()
+    tmp.indata['Raster'] = data
+    tmp.settings()
+
+    # datfin = tmp.outdata['Raster']
+
+    # plt.imshow(datfin[0].data)
+    # plt.show()
 
     breakpoint()
 
 
-
 if __name__ == "__main__":
-    testfn()
+    testfn4()
+
+"""
+SOM - borehole SOM (box only) and SOM of SOMs (whole borehole, no library
+      matching, pure pixel spectra, unsupervised? 100 classes, some are
+      combined).
+pearson correlation.
+Compare directly mean spectra? to library. Dominant mineral map.
+
+"""

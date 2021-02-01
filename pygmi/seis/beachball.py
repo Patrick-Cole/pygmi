@@ -135,7 +135,6 @@ class BeachBall(QtWidgets.QDialog):
             self.showprocesslog = parent.showprocesslog
 
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}

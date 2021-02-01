@@ -28,6 +28,7 @@ from PyQt5 import QtWidgets
 from pygmi.bholes import iodefs
 from pygmi.bholes import graphs
 from pygmi.bholes import hypercore
+from pygmi.bholes import coremask
 
 
 class MenuWidget():
@@ -64,10 +65,14 @@ class MenuWidget():
         self.menu.addAction(self.action_imagecor)
         self.action_imagecor.triggered.connect(self.imagecor)
 
-        self.action_coreprep = QtWidgets.QAction('Core Imagery Metadata '
-                                                     'and Masking')
+        self.action_coreprep = QtWidgets.QAction('Tray Clipping and Band '
+                                                 'Selection')
         self.menu.addAction(self.action_coreprep)
         self.action_coreprep.triggered.connect(self.coreprep)
+
+        self.action_coremask = QtWidgets.QAction('Core Masking')
+        self.menu.addAction(self.action_coremask)
+        self.action_coremask.triggered.connect(self.coremask)
 
         self.action_coreint = QtWidgets.QAction('Core Hyperspectral '
                                                 'Interpretation')
@@ -88,10 +93,16 @@ class MenuWidget():
         self.parent.item_insert('Io', 'Import Data', iodefs.ImportData)
 
     def coreprep(self):
-        """Core Imagery Metadata and Masking."""
+        """Tray Clipping and Band Selection."""
         self.parent.item_insert('Step',
-                                'Core Imagery Metadata and Masking',
+                                'Tray Clipping and Band Selection',
                                 hypercore.CorePrep)
+
+    def coremask(self):
+        """Tray Clipping and Band Selection."""
+        self.parent.item_insert('Step',
+                                'Core Masking',
+                                coremask.CoreMask)
 
     def coreint(self):
         """Interpret Borehole Data."""

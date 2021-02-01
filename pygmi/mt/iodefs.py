@@ -52,7 +52,6 @@ class ImportLEMI417Data():
     """
 
     def __init__(self, parent=None):
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -160,7 +159,6 @@ class ImportEDI():
     def __init__(self, parent=None):
         self.ifile = ''
         self.ifilelist = []
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -289,7 +287,6 @@ class ExportEDI():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}

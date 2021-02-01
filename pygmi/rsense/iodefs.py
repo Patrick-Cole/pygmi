@@ -162,7 +162,6 @@ class ImportData():
     def __init__(self, parent=None, extscene=None):
         self.ifile = ''
         self.filt = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -280,7 +279,6 @@ class ImportBatch():
     def __init__(self, parent=None):
         self.ifile = ''
         self.idir = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -407,7 +405,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
         else:
             self.showprocesslog = parent.showprocesslog
 
-        self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -714,7 +711,6 @@ class ImportShapeData():
     """
 
     def __init__(self, parent=None):
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}

@@ -177,8 +177,6 @@ class DataGrid(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        if parent is not None:
-            self.pbar = parent.pbar
         self.dxy = None
         self.dataid_text = None
 
@@ -444,7 +442,6 @@ class DataReproj(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = self.parent.pbar
         self.orig_wkt = None
         self.targ_wkt = None
 

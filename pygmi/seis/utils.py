@@ -57,7 +57,6 @@ class CorrectDescriptions(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = parent.pbar
 
         idir = os.path.dirname(os.path.realpath(__file__))
         tfile = os.path.join(idir, r'descriptions.txt')

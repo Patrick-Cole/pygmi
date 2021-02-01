@@ -51,7 +51,6 @@ class ImportData():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}

@@ -133,7 +133,6 @@ class ImportSeisan():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -788,7 +787,6 @@ class ImportGenericFPS():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -913,7 +911,6 @@ class ExportSeisan():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -1422,7 +1419,6 @@ class ExportCSV():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -1969,7 +1965,6 @@ class ExportSummaryCSV():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -2129,7 +2124,6 @@ class FilterSeisan(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = parent.pbar
 
         self.datlimits = None
 

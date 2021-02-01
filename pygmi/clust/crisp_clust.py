@@ -56,13 +56,11 @@ class CrispClust(QtWidgets.QDialog):
 
         self.indata = {}
         self.outdata = {}
+        self.parent = parent
 
         if parent is not None:
-            self.parent = parent
-            self.pbar = parent.pbar
             self.piter = parent.pbar.iter
         else:
-            self.pbar = None
             self.piter = iter
 
         self.spinbox_maxclusters = QtWidgets.QSpinBox()
@@ -216,7 +214,7 @@ class CrispClust(QtWidgets.QDialog):
 
         if not nodialog:
             self.parent.process_is_active(False)
-            self.pbar.to_max()
+            self.parent.pbar.to_max()
         return True
 
     def loadproj(self, projdata):

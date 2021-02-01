@@ -352,13 +352,14 @@ class DataReproj(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
+            self.piter = iter
         else:
             self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = self.parent.pbar
         self.orig_wkt = None
         self.targ_wkt = None
 
@@ -434,7 +435,7 @@ class DataReproj(QtWidgets.QDialog):
 
 # Now create virtual dataset
         dat = []
-        for data in self.pbar.iter(self.indata['Raster']):
+        for data in self.piter(self.indata['Raster']):
             datamin = data.data.min()
             if datamin <= 0:
                 data.data = data.data-(datamin-1)
@@ -590,14 +591,15 @@ class GetProf():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
         if parent is None:
             self.showprocesslog = print
+            self.piter = iter
         else:
             self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
     def settings(self, nodialog=False):
         """
@@ -644,7 +646,7 @@ class GetProf():
         data = merge(data)
         gdf = None
 
-        for idata in self.pbar.iter(data):
+        for idata in self.piter(data):
             tmp = line.GetGeometryRef()
             points = tmp.GetPoints()
 
@@ -1108,7 +1110,10 @@ class RTP(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = self.parent.pbar
+        if parent is None:
+            self.piter = iter
+        else:
+            self.piter = parent.pbar.iter
 
         self.dataid = QtWidgets.QComboBox()
         self.dsb_inc = QtWidgets.QDoubleSpinBox()
@@ -1242,7 +1247,7 @@ class RTP(QtWidgets.QDialog):
         D_deg = self.dsb_dec.value()
 
         newdat = []
-        for data in self.pbar.iter(self.indata['Raster']):
+        for data in self.piter(self.indata['Raster']):
             if data.dataid != self.dataid.currentText():
                 continue
             dat = rtp(data, I_deg, D_deg)
@@ -1271,7 +1276,6 @@ class Continuation(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = self.parent.pbar
 
         self.dataid = QtWidgets.QComboBox()
         self.continuation = QtWidgets.QComboBox()

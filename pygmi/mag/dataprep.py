@@ -59,7 +59,11 @@ class Tilt1(QtWidgets.QDialog):
         self.outdata = {}
         self.azi = 75
         self.smooth = 0
-        self.pbar = self.parent.pbar
+
+        if parent is not None:
+            self.piter = self.parent.pbar.iter
+        else:
+            self.piter = iter
 
         self.sb_azi = QtWidgets.QSpinBox()
         self.sb_s = QtWidgets.QSpinBox()
@@ -127,7 +131,7 @@ class Tilt1(QtWidgets.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
         data2 = []
 
-        for i in self.pbar.iter(range(len(data))):
+        for i in self.piter(range(len(data))):
             t1, th, t2, ta, tdx = tilt1(data[i].data, self.azi, self.smooth)
             data2.append(copy.deepcopy(data[i]))
             data2.append(copy.deepcopy(data[i]))
@@ -369,7 +373,11 @@ class RTP(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = self.parent.pbar
+
+        if parent is not None:
+            self.piter = self.parent.pbar
+        else:
+            self.piter = iter
 
         self.dataid = QtWidgets.QComboBox()
         self.dsb_inc = QtWidgets.QDoubleSpinBox()
@@ -503,7 +511,7 @@ class RTP(QtWidgets.QDialog):
         D_deg = self.dsb_dec.value()
 
         newdat = []
-        for data in self.pbar.iter(self.indata['Raster']):
+        for data in self.piter(self.indata['Raster']):
             if data.dataid != self.dataid.currentText():
                 continue
             dat = rtp(data, I_deg, D_deg)

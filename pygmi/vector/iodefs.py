@@ -60,7 +60,6 @@ class ImportLineData(QtWidgets.QDialog):
         else:
             self.showprocesslog = parent.showprocesslog
 
-        self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -342,7 +341,6 @@ class ExportLine():
     """
 
     def __init__(self, parent=None):
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         if parent is None:
@@ -402,7 +400,6 @@ class ExportShapeData():
     """
 
     def __init__(self, parent=None):
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         if parent is None:
@@ -468,7 +465,6 @@ class ImportShapeData():
     """
 
     def __init__(self, parent=None):
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}

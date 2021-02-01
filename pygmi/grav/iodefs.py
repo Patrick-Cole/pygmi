@@ -58,7 +58,6 @@ class ImportCG5(QtWidgets.QDialog):
         else:
             self.showprocesslog = parent.showprocesslog
 
-        self.pbar = None  # self.parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}

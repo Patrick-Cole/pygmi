@@ -54,14 +54,15 @@ class ImageSeg(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
+            self.pbar = None
         else:
             self.showprocesslog = parent.showprocesslog
+            self.pbar = parent.pbar
 
         self.parent = parent
         self.indata = {}
         self.outdata = {}
         self.ifile = ''
-        self.pbar = self.parent.pbar
 
         self.scale = QtWidgets.QLineEdit('1000')
         self.wcompact = QtWidgets.QLineEdit('0.5')
@@ -317,9 +318,10 @@ class ImageSeg(QtWidgets.QDialog):
             elist = set(olist.keys())
 
             clen = len(elist)
-            self.pbar.setMaximum(clen)
-            self.pbar.setMinimum(0)
-            self.pbar.setValue(0)
+            if self.pbar is not None:
+                self.pbar.setMaximum(clen)
+                self.pbar.setMinimum(0)
+                self.pbar.setValue(0)
             self.showprocesslog('Iteration number: '+str(cnt))
             oldperc = 0
 
@@ -459,7 +461,8 @@ class ImageSeg(QtWidgets.QDialog):
 
                 cnow = clen-len(elist)
                 if cnow*1000//clen-oldperc > 0:
-                    self.pbar.setValue(cnow)
+                    if self.pbar is not None:
+                        self.pbar.setValue(cnow)
                     oldperc = cnow*1000//clen
 
                 rmin, rmax = rminmax[i]

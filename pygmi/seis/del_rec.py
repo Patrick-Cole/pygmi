@@ -163,7 +163,6 @@ class Quarry():
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.pbar = None
         if parent is None:
             self.showprocesslog = print
         else:

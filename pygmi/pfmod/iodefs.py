@@ -56,7 +56,9 @@ class ImportMod3D():
         self.outdata = {}
 
         if parent is not None:
-            self.pbars = parent.pbar
+            self.piter = parent.pbar.iter
+        else:
+            self.piter = iter
 
     def settings(self, nodialog=False):
         """
@@ -163,8 +165,6 @@ class ImportMod3D():
         None.
 
         """
-        piter = self.pbars.iter
-
         with open(filename) as fno:
             tmp = fno.readlines()
 
@@ -189,7 +189,7 @@ class ImportMod3D():
         ycell = float(tmp[0].split(',')[4])
         zcell = float(tmp[0].split(',')[5])
 
-        for i in piter(tmp):
+        for i in self.piter(tmp):
             i2 = i.split(',')
             x.append(float(i2[0]))
             y.append(float(i2[1]))
@@ -246,7 +246,7 @@ class ImportMod3D():
                     usedtm=True)
         lmod.update_lith_list_reverse()
 
-        for i in piter(range(len(x))):
+        for i in self.piter(range(len(x))):
             xi = x[i]
             col = int((xi-lmod.xrange[0])/lmod.dxy)
             row = int((lmod.yrange[1]-y[i])/lmod.dxy)
@@ -484,7 +484,6 @@ class ExportMod3D():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = None
         self.parent = parent
         self.indata = {}
         self.outdata = {}

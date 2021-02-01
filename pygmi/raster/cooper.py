@@ -69,7 +69,10 @@ class Gradients(QtWidgets.QDialog):
         self.azi = 45.
         self.elev = 45.
         self.order = 1
-        self.pbar = self.parent.pbar
+        if parent is not None:
+            self.piter = self.parent.pbar.iter
+        else:
+            self.piter = iter
 
         self.sb_order = QtWidgets.QSpinBox()
         self.sb_azi = QtWidgets.QSpinBox()
@@ -145,7 +148,7 @@ class Gradients(QtWidgets.QDialog):
 
         data = copy.deepcopy(self.indata['Raster'])
 
-        for i in self.pbar.iter(range(len(data))):
+        for i in self.piter(range(len(data))):
             if self.rb_ddir.isChecked():
                 data[i].data = gradients(data[i].data, self.azi, data[i].xdim,
                                          data[i].ydim)
@@ -338,7 +341,11 @@ class Visibility2d(QtWidgets.QDialog):
         self.outdata = {}
         self.wsize = 11
         self.dh = 10
-        self.pbar = self.parent.pbar
+
+        if parent is not None:
+            self.piter = self.parent.pbar.iter
+        else:
+            self.piter = iter
 
         self.sb_dh = QtWidgets.QSpinBox()
         self.sb_wsize = QtWidgets.QSpinBox()
@@ -410,7 +417,7 @@ class Visibility2d(QtWidgets.QDialog):
 
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
                                             self.dh*data[i].data.std()/100.,
-                                            self.pbar.iter)
+                                            self.piter)
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
