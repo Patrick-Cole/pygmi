@@ -117,8 +117,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
+        vstd = 2.5 * data1.data.std()
+        vmean = data1.data.mean()
+        vmin = vmean-vstd
+        vmax = vmean+vstd
+
         rdata = self.axes.imshow(data1.data, extent=data1.extent,
-                                 cmap=cm.get_cmap('jet'),
+                                 cmap=cm.get_cmap('jet'), vmin=vmin, vmax=vmax,
                                  interpolation='nearest')
 
         # rdata = imshow(self.axes, data1.data, extent=data1.extent,

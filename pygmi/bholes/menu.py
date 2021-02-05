@@ -29,6 +29,7 @@ from pygmi.bholes import iodefs
 from pygmi.bholes import graphs
 from pygmi.bholes import hypercore
 from pygmi.bholes import coremask
+from pygmi.bholes import coremeta
 
 
 class MenuWidget():
@@ -74,6 +75,11 @@ class MenuWidget():
         self.menu.addAction(self.action_coremask)
         self.action_coremask.triggered.connect(self.coremask)
 
+        self.action_coremeta = QtWidgets.QAction('Core Metadata and Depth '
+                                                 'Assignment')
+        self.menu.addAction(self.action_coremeta)
+        self.action_coremeta.triggered.connect(self.coremeta)
+
         self.action_coreint = QtWidgets.QAction('Core Hyperspectral '
                                                 'Interpretation')
         self.menu.addAction(self.action_coreint)
@@ -99,10 +105,16 @@ class MenuWidget():
                                 hypercore.CorePrep)
 
     def coremask(self):
-        """Tray Clipping and Band Selection."""
+        """Core Masking."""
         self.parent.item_insert('Step',
                                 'Core Masking',
                                 coremask.CoreMask)
+
+    def coremeta(self):
+        """Core Metadata and depth assignment."""
+        self.parent.item_insert('Step',
+                                'Core Metadata and Depth Assignment',
+                                coremeta.CoreMeta)
 
     def coreint(self):
         """Interpret Borehole Data."""
@@ -111,7 +123,7 @@ class MenuWidget():
                                 hypercore.CoreInt)
 
     def imagecor(self):
-        """Raw cor imagery corrections."""
+        """Raw core imagery corrections."""
         self.parent.item_insert('Io',
                                 'Raw Core Imagery Corrections',
                                 hypercore.ImageCor)

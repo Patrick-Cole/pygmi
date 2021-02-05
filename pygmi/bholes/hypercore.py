@@ -416,7 +416,7 @@ class CorePrep(QtWidgets.QDialog):
         grid_main.addWidget(self.map, 0, 0, 10, 1)
         grid_main.addWidget(self.mpl_toolbar, 11, 0, 1, 1)
 
-        grid_main.addWidget(buttonbox, 11, 1, 1, 1)
+        grid_main.addWidget(buttonbox, 12, 0, 1, 1, QtCore.Qt.AlignLeft)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -640,7 +640,6 @@ class CorePrep(QtWidgets.QDialog):
                 break
             datfin.append(i)
 
-
         if self.asave.isChecked():
             meta = 'reflectance scale factor = 10000\n'
             meta += 'wavelength = {\n'
@@ -818,9 +817,6 @@ class CoreInt(QtWidgets.QDialog):
         """
         datfin = []
 
-
-
-
         self.outdata['Raster'] = datfin
         return True
 
@@ -858,7 +854,8 @@ class ImageCor(QtWidgets.QDialog):
         self.idir = QtWidgets.QLineEdit('')
         self.odir = QtWidgets.QLineEdit('')
         self.dccor = QtWidgets.QCheckBox('DC Correction')
-        self.smilecor = QtWidgets.QCheckBox('Geometric Smile Correction (FENIX only)')
+        self.smilecor = QtWidgets.QCheckBox('Geometric Smile Correction '
+                                            '(FENIX only)')
         self.hampel = QtWidgets.QCheckBox('Spike removal (Hampel Filter)')
         self.savgol = QtWidgets.QCheckBox('Smoothing (Savitzky-Golay filter)')
 
@@ -903,7 +900,6 @@ class ImageCor(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
         pb_idir.pressed.connect(self.get_idir)
         pb_odir.pressed.connect(self.get_odir)
-
 
     def settings(self, nodialog=False):
         """
@@ -1255,6 +1251,7 @@ def smile(dat, piter=iter):
 
     return dat2
 
+
 def filter_data(datah, ftype, piter=iter):
     """
     Filter data
@@ -1435,7 +1432,7 @@ def testfn4():
     """Main testing routine."""
     import matplotlib.pyplot as plt
 
-    ifile = r'D:\Workdata\HyperspectralScanner\PTest\smile\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
+    ifile = r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
 
     pbar = ProgressBarText()
     data = get_raster(ifile, piter=pbar.iter)

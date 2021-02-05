@@ -22,8 +22,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Profile Display Tab Routines."""
+"""Core Mask Routines."""
 
+import copy
+import os
 import sys
 
 from PyQt5 import QtWidgets, QtCore, QtGui
@@ -55,6 +57,7 @@ class CoreMask(QtWidgets.QDialog):
 
         self.parent = parent
         self.class_index = None
+        self.mask_index = None
         self.indata = {}
 
         self.mmc = MyMplCanvas(self)
@@ -67,7 +70,8 @@ class CoreMask(QtWidgets.QDialog):
         self.lw_prof_defs = QtWidgets.QListWidget()
 
         self.SVCkernel = QtWidgets.QComboBox()
-        self.pb_test = QtWidgets.QPushButton('Classify Data')
+        self.pb_classify = QtWidgets.QPushButton('Classify Data')
+        self.pb_savemask = QtWidgets.QPushButton('Save Mask')
 
         self.setupui()
 
@@ -93,8 +97,8 @@ class CoreMask(QtWidgets.QDialog):
 
         lbl_class = QtWidgets.QLabel('SVC kernel:')
         self.SVCkernel.addItems(['rbf', 'linear', 'poly'])
-        self.pb_test.setAutoDefault(False)
 
+        self.pb_savemask.setEnabled(False)
 
 # Set groupboxes and layouts
         gridlayout = QtWidgets.QGridLayout(self)
@@ -113,7 +117,8 @@ class CoreMask(QtWidgets.QDialog):
         vl_tools.addWidget(self.sb_profile_linethick)
         vl_tools.addWidget(lbl_class)
         vl_tools.addWidget(self.SVCkernel)
-        vl_tools.addWidget(self.pb_test)
+        vl_tools.addWidget(self.pb_classify)
+        vl_tools.addWidget(self.pb_savemask)
 
         gridlayout.addLayout(vl_plots, 0, 0, 8, 1)
         gridlayout.addLayout(vl_tools, 0, 1, 8, 1)
@@ -124,7 +129,8 @@ class CoreMask(QtWidgets.QDialog):
 
         self.hs_overview.valueChanged.connect(self.pic_overview2)
         self.combo_overview.currentIndexChanged.connect(self.pic_overview)
-        self.pb_test.pressed.connect(self.test)
+        self.pb_classify.pressed.connect(self.classify)
+        self.pb_savemask.pressed.connect(self.savemask)
 
     def change_defs(self):
         """
@@ -143,70 +149,29 @@ class CoreMask(QtWidgets.QDialog):
 
         self.mmc.curmodel = self.mmc.classes[itxt]
 
-    def init_classifier(self):
+    def savemask(self):
         """
-        Initialise classifier.
+        Save mask to a file.
 
         Returns
         -------
-        classifier : object
-            Scikit learn classification object.
-        lbls : numpy array
-            Class labels.
-        datall : numpy array
-            Dataset.
-        X_test : numpy array
-            X test dataset.
-        y_test : numpy array
-            Y test dataset.
+        None.
 
         """
-        # ctext = self.combo_class.currentText()
+        if self.pb_classify.text() == 'Revert to classes':
+            self.mask_index = self.mmc.class_index.copy()
 
-        ker = self.SVCkernel.currentText()
-        classifier = SVC(gamma='scale', kernel=ker)
+        odir = os.path.dirname(self.indata['Raster'][0].filename)
+        hfile = os.path.basename(self.indata['Raster'][0].filename)
 
-        rows, cols = self.indata['Raster'][0].data.shape
-        masks = {}
+        ofile = os.path.join(odir, 'mask_'+hfile[:-4]+'.hdr')
 
-        for cname in self.mmc.classes:
-            if cname == 'Erase':
-                continue
-            masks[cname] = (self.class_index.T ==
-                            self.mmc.classes[cname])
+        datfin = copy.copy(self.indata['Raster'][0])
+        datfin.data = self.mask_index[::-1].T
+        datfin.data = (datfin.data == 2) | (datfin.data == 0)
+        datfin = [datfin]
 
-        # masks['Tray'] = ~masks['Core']
-
-        datall = []
-        for i in self.indata['Raster']:
-            datall.append(i.data)
-        datall = np.array(datall)
-        datall = np.moveaxis(datall, 0, -1)
-
-        y = []
-        x = []
-        tlbls = []
-        for i, lbl in enumerate(masks):
-            y += [i]*masks[lbl].sum()
-            x.append(datall[masks[lbl]])
-            tlbls.append(lbl)
-
-        y = np.array(y)
-        x = np.vstack(x)
-        lbls = np.unique(y)
-
-        if len(lbls) < 2:
-            self.showprocesslog('Error: You need at least two classes')
-            # return False
-
-        # Encoding categorical data
-        # labelencoder = LabelEncoder()
-        # y = labelencoder.fit_transform(y)
-        X_train, X_test, y_train, y_test = train_test_split(x, y, stratify=y)
-
-        classifier.fit(X_train, y_train)
-
-        return classifier, lbls, datall, X_test, y_test, tlbls
+        export_gdal(ofile, datfin, 'ENVI')
 
     def setwidth(self, width):
         """
@@ -265,7 +230,7 @@ class CoreMask(QtWidgets.QDialog):
         self.mmc.update_line()
         self.mmc.figure.canvas.draw()
 
-    def test(self):
+    def classify(self):
         """
         Test classification.
 
@@ -275,41 +240,76 @@ class CoreMask(QtWidgets.QDialog):
 
         """
 
-        self.mmc.ignore_press = not(self.mmc.ignore_press)
-
-        if self.pb_test.text() == 'Revert to classes':
-            self.pb_test.setText('Classify Data')
+        if self.pb_classify.text() == 'Revert to classes':
+            self.pb_classify.setText('Classify Data')
             self.mmc.class_index = self.class_index
             self.pic_overview2()
             return
 
         self.class_index = self.mmc.class_index.copy()
 
-        self.pb_test.setEnabled(False)
-        self.pb_test.setStyleSheet("background-color: red; color: white")
-        self.pb_test.setText('Busy...')
+        self.pb_classify.setEnabled(False)
+        self.pb_classify.setStyleSheet("background-color: red; color: white")
+        self.pb_classify.setText('Busy...')
         QtWidgets.QApplication.processEvents()
 
-        classifier, lbls, datall, _, _, _ = self.init_classifier()
+        ker = self.SVCkernel.currentText()
+        classifier = SVC(gamma='scale', kernel=ker)
 
-        mask = self.indata['Raster'][0].data.mask
-        mask = ~mask
+        masks = {}
+        for cname in self.mmc.classes:
+            if cname == 'Erase':
+                continue
+            masks[cname] = (self.class_index.T ==
+                            self.mmc.classes[cname])
 
+        datall = []
+        for i in self.indata['Raster']:
+            datall.append(i.data)
+        datall = np.array(datall)
+        datall = np.moveaxis(datall, 0, -1)
+
+        y = []
+        x = []
+        tlbls = []
+        for i, lbl in enumerate(masks):
+            y += [i]*masks[lbl].sum()
+            x.append(datall[masks[lbl]])
+            tlbls.append(lbl)
+
+        y = np.array(y)
+        x = np.vstack(x)
+        lbls = np.unique(y)
+
+        if len(lbls) < 2:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error',
+                                          'You need at least two classes',
+                                          QtWidgets.QMessageBox.Ok)
+            self.pb_classify.setStyleSheet("")
+            self.pb_classify.setText('Classify Data')
+            self.pb_classify.setEnabled(True)
+            return
+
+        X_train, X_test, y_train, y_test = train_test_split(x, y, stratify=y)
+
+        classifier.fit(X_train, y_train)
+
+        mask = ~self.indata['Raster'][0].data.mask
         datall = datall[mask]
 
         yout1 = classifier.predict(datall)
         yout = np.zeros_like(mask, dtype=int)
         yout[mask] = yout1
+        self.mask_index = (yout.T+1)[::-1]
 
-        self.mmc.class_index = (yout.T+1)[::-1]
+        self.mmc.class_index = self.mask_index
 
         self.pic_overview2()
 
-        self.pb_test.setStyleSheet("")
-
-        self.pb_test.setText('Revert to classes')
-        self.pb_test.setEnabled(True)
-
+        self.pb_classify.setStyleSheet("")
+        self.pb_classify.setText('Revert to classes')
+        self.pb_classify.setEnabled(True)
+        self.pb_savemask.setEnabled(True)
 
     def settings(self, nodialog=False):
         """
@@ -378,7 +378,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.yold = None
         self.press = False
         self.newline = False
-        self.ignore_press = False
 
         self.classes = {}
         self.class_index = np.zeros([100, 100])
@@ -423,7 +422,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        if event.inaxes is None or self.ignore_press:
+        if event.inaxes is None:
             return
 
         nmode = event.inaxes.get_navigate_mode()
@@ -759,7 +758,7 @@ def update_lith_lw(lith_list, mlut, lwidget):
 
 def testfn():
     """Main testing routine."""
-    ifile = r'D:\Workdata\HyperspectralScanner\PTest\smile\FENIX\clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
+    ifile = r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
 
     pbar = ProgressBarText()
     data = get_raster(ifile, piter=pbar.iter)

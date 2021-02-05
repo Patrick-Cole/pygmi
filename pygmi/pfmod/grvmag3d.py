@@ -85,6 +85,7 @@ class GravMag():
         self.actioncalculate2 = QtWidgets.QAction('Calculate\nMagnetics\n(All)')
         self.actioncalculate3 = QtWidgets.QAction('Calculate\nGravity\n(Changes Only)')
         self.actioncalculate4 = QtWidgets.QAction('Calculate\nMagnetics\n(Changes Only)')
+        self.cb_demag = QtWidgets.QCheckBox('Apply\nDemagnetization\nCorrection')
         self.setupui()
 
     def setupui(self):
@@ -96,6 +97,8 @@ class GravMag():
         None.
 
         """
+        self.cb_demag.setChecked(False)
+
         self.parent.toolbardock.addSeparator()
         self.parent.toolbardock.addAction(self.actionregionaltest)
         self.parent.toolbardock.addSeparator()
@@ -103,6 +106,7 @@ class GravMag():
         self.parent.toolbardock.addAction(self.actioncalculate2)
         self.parent.toolbardock.addAction(self.actioncalculate3)
         self.parent.toolbardock.addAction(self.actioncalculate4)
+        self.parent.toolbardock.addWidget(self.cb_demag)
         self.parent.toolbardock.addSeparator()
 
         self.actionregionaltest.triggered.connect(self.test_pattern)
@@ -206,9 +210,11 @@ class GravMag():
         None.
 
         """
+        demag = self.cb_demag.isChecked()
+
         calc_field(self.lmod, pbars=self.pbars, showtext=self.showtext,
                    parent=self.parent, showreports=showreports,
-                   magcalc=magcalc)
+                   magcalc=magcalc, demag=demag)
 
     def calc_regional(self):
         """
@@ -470,7 +476,7 @@ class GeoData():
 
             self.modified = False
 
-    def calc_origin_mag(self, hcor=None):
+    def calc_origin_mag(self, hcor=None, demag=False):
         """
         Calculate the field values for the lithologies.
 
@@ -503,7 +509,7 @@ class GeoData():
             else:
                 hcor2 = int(self.numz-hcor.max())
 
-            self.mboxmain(xdist, ydist, self.zobsm, hcor2)
+            self.mboxmain(xdist, ydist, self.zobsm, hcor2, demag)
 
             self.modified = False
 
@@ -661,7 +667,7 @@ class GeoData():
 
         self.glayers = np.array(glayers)
 
-    def mboxmain(self, xobs, yobs, zobs, hcor):
+    def mboxmain(self, xobs, yobs, zobs, hcor, demag=False):
         """
         Mbox routine by Blakely
 
@@ -733,6 +739,12 @@ class GeoData():
         mi = self.susc*self.hintn*np.array([fa, fb, fc]) / (4*np.pi)
         m3 = mr+mi
 
+        if demag is True:
+            m3 = calc_demag(m3, self.susc,
+                            np.abs(self.x12[1]-self.x12[0]),
+                            np.abs(self.y12[1]-self.y12[0]),
+                            np.abs(self.z12[1]-self.z12[0]))
+
         mt = np.sqrt(m3 @ m3)
         if mt > 0:
             m3 /= mt
@@ -765,6 +777,57 @@ class GeoData():
 
         self.mlayers = np.array(mlayers) * mt
         self.mlayers = self.mlayers[:-1]-self.mlayers[1:]
+
+
+def calc_demag(mvec, k, dx, dy, dz):
+    """
+    Calculate demagnetisation correction.
+
+    Parameters
+    ----------
+    mvec : numpy array
+        Body Magnetisation.
+
+    Returns
+    -------
+    outvec : numpy array
+        Corrected magnetisation.
+
+    """
+
+    Y = dy/2
+    t = dx
+    d = dz
+
+    # Ndz = 4*np.pi*(2*Y*t/(d*t+2*Y*t+2*Y*d))
+    # Ndy = 4*np.pi*(d*t/(d*t+2*Y*t+2*Y*d))
+    # Ndx = 4*np.pi*(2*Y*d/(d*t+2*Y*t+2*Y*d))
+
+    Ndz = 4*np.pi*(t/(2*d+t))
+    Ndy = 4*np.pi*(d/(2*d+t))
+    Ndx = 4*np.pi*(d/(2*d+t))
+
+    Jx, Jy, Jz = mvec
+
+    # Jdz = Jz
+    # Jdy = Jz
+    # Jdx = Jx
+
+    # Jdz2 = Jdz/(1+Ndz*k)
+    # Jdy2 = Jdy/(1+Ndy*k)
+    # Jdx2 = Jdx/(1+Ndx*k)
+
+    # Jx2 = Jdx2
+    # Jy2 = Jdy2
+    # Jz2 = Jdz2
+
+    Jz2 = Jz/(1+Ndz*k)
+    Jy2 = Jy/(1+Ndy*k)
+    Jx2 = Jx/(1+Ndx*k)
+
+    outvec = np.array([Jx2, Jy2, Jz2])
+
+    return outvec
 
 
 def save_layer(mlist):
@@ -851,7 +914,7 @@ def gridmatch(lmod, ctxt, rtxt):
 
 
 def calc_field(lmod, pbars=None, showtext=None, parent=None,
-               showreports=False, magcalc=False):
+               showreports=False, magcalc=False, demag=False):
     """
     Calculate magnetic and gravity field.
 
@@ -919,12 +982,9 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 #        showtext('No changes to model!')
 #        return None
 
-    try:
-        if False not in tmp:
-            showtext('No changes to model!')
-            return None
-    except:
-        breakpoint()
+    if False not in tmp:
+        showtext('No changes to model!')
+        return None
 
 # get height corrections
     tmp = np.copy(lmod.lith_index)
@@ -944,7 +1004,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
                 mlist[1].pbars = parent.pbars
                 mlist[1].showtext = parent.showtext
             if magcalc:
-                mlist[1].calc_origin_mag(hcor)
+                mlist[1].calc_origin_mag(hcor, demag)
             else:
                 mlist[1].calc_origin_grav()
             tmpfiles[mlist[0]] = save_layer(mlist)
