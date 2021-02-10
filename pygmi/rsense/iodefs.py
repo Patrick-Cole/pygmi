@@ -1103,7 +1103,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
 
     idir = os.path.dirname(ifilet)
 
-    if 'tar.gz' in ifilet:
+    if '.tar' in ifilet:
         with tarfile.open(ifilet) as tar:
             tarnames = tar.getnames()
             ifile = next((i for i in tarnames if '_MTL.txt' in i), None)
@@ -1163,7 +1163,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     if dat == []:
         dat = None
 
-    if 'tar.gz' in ifilet:
+    if '.tar' in ifilet:
         showprocesslog('Cleaning Extracted tar files...')
         for tfile in tarnames:
             os.remove(os.path.join(os.path.dirname(ifile), tfile))

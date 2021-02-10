@@ -37,14 +37,11 @@ section end depth
 QC on depth range to see it makes sense
 """
 
-import copy
-import os
 import sys
 
 import numpy as np
+from scipy.interpolate import interp1d
 from matplotlib.figure import Figure
-from matplotlib import cm
-from matplotlib.patches import Polygon as mPolygon
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from PyQt5 import QtWidgets, QtCore
@@ -76,6 +73,9 @@ class GraphMap(FigureCanvasQTAgg):
         self.csp = None
         self.subplot = None
         self.numcores = 5
+        self.depthmarkers = {}
+        self.currentmark = ''
+        self.format_coord = None
 
     def init_graph(self):
         """
@@ -105,6 +105,9 @@ class GraphMap(FigureCanvasQTAgg):
         axes = self.figure.gca()
         axes.set_xlim((0, cols))
         axes.set_ylim((0, rows))
+        axes.format_coord = self.format_coord
+
+        # self.figure.canvas.toolbar.set_message = lambda x: ""
 
         # axes.set_xlabel('ColumnsEastings')
         # axes.set_ylabel('Northings')
@@ -112,31 +115,39 @@ class GraphMap(FigureCanvasQTAgg):
         axes.xaxis.set_major_formatter(frm)
         axes.yaxis.set_major_formatter(frm)
 
+        for key in self.depthmarkers:
+            x, y, _ = self.depthmarkers[key]
+
+            hrow = rows / self.numcores
+            y0 = (y // hrow) * hrow
+            y1 = y0 + hrow
+            if key == self.currentmark:
+                self.subplot.plot([x, x], [y0, y1], 'k')
+            else:
+                self.subplot.plot([x, x], [y0, y1], 'w')
+
         self.figure.canvas.draw()
 
-    def update_graph(self):
-        """
-        Update graph.
+    # def update_graph(self):
+    #     """
+    #     Update graph.
 
-        Returns
-        -------
-        None.
+    #     Returns
+    #     -------
+    #     None.
 
-        """
-        dat = self.data[self.mindx]
+    #     """
+    #     dat = self.data[self.mindx]
 
-        self.csp.set_data(dat.data.T)
+    #     self.csp.set_data(dat.data.T)
 
-        ymin = dat.data.mean()-2*dat.data.std()
-        ymax = dat.data.mean()+2*dat.data.std()
+    #     ymin = dat.data.mean()-2*dat.data.std()
+    #     ymax = dat.data.mean()+2*dat.data.std()
 
-        self.csp.set_clim(ymin, ymax)
+    #     self.csp.set_clim(ymin, ymax)
 
-        self.csp.changed()
-        self.figure.canvas.draw()
-
-
-
+    #     self.csp.changed()
+    #     self.figure.canvas.draw()
 
 
 class CoreMeta(QtWidgets.QDialog):
@@ -165,12 +176,22 @@ class CoreMeta(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
+        self.depthmarkers = {'Start': [0., 0., 0.]}
+        self.nummarkers = 1
+        self.depthfunc = None
+        self.dx = 1.
 
         self.map = GraphMap(self)
+        self.map.format_coord = self.format_coord
         self.combo = QtWidgets.QComboBox()
+        self.combo_dmark = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
-        self.idir = QtWidgets.QLineEdit('')
+        self.dsb_mdepth = QtWidgets.QDoubleSpinBox()
+        self.dsb_traylen = QtWidgets.QDoubleSpinBox()
         self.sb_numcore = QtWidgets.QSpinBox()
+        self.pb_deldmark = QtWidgets.QPushButton('Delete Current Depth Mark')
+        self.lbl_info = QtWidgets.QLabel('')
+        self.group_info = QtWidgets.QGroupBox('Information:')
 
         self.setupui()
 
@@ -178,6 +199,7 @@ class CoreMeta(QtWidgets.QDialog):
 
         self.canvas.mpl_connect('button_press_event',
                                 self.button_press_callback)
+        self.resize(800, 400)
 
     def setupui(self):
         """
@@ -194,18 +216,45 @@ class CoreMeta(QtWidgets.QDialog):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
+        infolayout = QtWidgets.QVBoxLayout(self.group_info)
+
+        self.lbl_info.setWordWrap(True)
+
         self.setWindowTitle('Tray Clipping and Band Selection')
         self.sb_numcore.setMinimum(1)
         self.sb_numcore.setMaximum(10)
         self.sb_numcore.setValue(5)
 
+        self.dsb_mdepth.setMaximum(10000.0)
+        self.dsb_mdepth.setValue(0.0)
+        self.dsb_mdepth.setSuffix(' mm')
+
+        self.dsb_traylen.setMaximum(10000.0)
+        self.dsb_traylen.setValue(1500.0)
+        self.dsb_traylen.setSuffix(' mm')
+
+        self.pb_deldmark.setEnabled(False)
+
         lbl_combo = QtWidgets.QLabel('Display Band:')
         lbl_numcore = QtWidgets.QLabel('Number of core per tray:')
+        lbl_traylen = QtWidgets.QLabel('Tray Length:')
+        lbl_depthm = QtWidgets.QLabel('Current Depth Marker:')
+        lbl_mdepth = QtWidgets.QLabel('Marker Depth:')
+
+        infolayout.addWidget(self.lbl_info)
 
         grid_main.addWidget(lbl_combo, 0, 1)
         grid_main.addWidget(self.combo, 0, 2)
         grid_main.addWidget(lbl_numcore, 1, 1)
         grid_main.addWidget(self.sb_numcore, 1, 2)
+        grid_main.addWidget(lbl_traylen, 2, 1)
+        grid_main.addWidget(self.dsb_traylen, 2, 2)
+        grid_main.addWidget(lbl_depthm, 3, 1)
+        grid_main.addWidget(self.combo_dmark, 3, 2)
+        grid_main.addWidget(lbl_mdepth, 4, 1)
+        grid_main.addWidget(self.dsb_mdepth, 4, 2)
+        grid_main.addWidget(self.pb_deldmark, 5, 1, 1, 2)
+        grid_main.addWidget(self.group_info, 6, 1, 4, 2)
 
         grid_main.addWidget(self.map, 0, 0, 10, 1)
         grid_main.addWidget(self.mpl_toolbar, 11, 0)
@@ -213,8 +262,154 @@ class CoreMeta(QtWidgets.QDialog):
         grid_main.addWidget(buttonbox, 12, 0, 1, 1, QtCore.Qt.AlignLeft)
 
         self.sb_numcore.valueChanged.connect(self.ncore_change)
+        self.combo_dmark.currentIndexChanged.connect(self.dmark_change)
+        self.dsb_mdepth.valueChanged.connect(self.dmarkval_change)
+        self.pb_deldmark.clicked.connect(self.dmark_del)
+
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
+
+    def update_depthfunc(self):
+        """
+        Updates the depth function
+
+        Returns
+        -------
+        None.
+
+        """
+        tmp = []
+        for i in self.depthmarkers.values():
+            tmp.append(i)
+
+        tmp = np.array(tmp)
+
+        x0 = tmp[:, 0]
+        y0 = tmp[:, 1]
+        z0 = tmp[:, 2]
+
+        rows, cols = self.indata['Raster'][0].data.T.shape
+        hrow = rows / self.sb_numcore.value()
+
+        y1 = (y0 // hrow) + 1
+        x1 = (y1-1)*cols + x0
+
+        xy1 = np.transpose([x1, y1, z0])
+        xy = xy1[np.argsort(xy1[:, 0])]
+
+        x2 = xy[:, 0]
+        z2 = xy[:, 2]
+        z2[-1] = (x2[-1]-x2[-2])*self.dx + z2[-2]
+
+        xend, yend, _ = self.depthmarkers['End']
+        self.depthmarkers['End'] = [xend, yend, z2[-1]]
+
+        self.depthfunc = interp1d(x2, z2)
+
+        if not (z2 == np.sort(z2)).all():
+            self.group_info.setStyleSheet("background-color: red; color: white")
+            self.lbl_info.setText('Your depths are out of order! Please check.')
+        else:
+            self.group_info.setStyleSheet('')
+            self.lbl_info.setText('')
+
+    def dmark_change(self):
+        """
+        Change depth marker combo.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = self.combo_dmark.currentText()
+        dval = self.depthmarkers[txt][2]
+
+        self.dsb_mdepth.setValue(dval)
+
+        if txt not in ['Start', 'End']:
+            self.pb_deldmark.setEnabled(True)
+        else:
+            self.pb_deldmark.setEnabled(False)
+
+        self.map.currentmark = txt
+        self.map.init_graph()
+
+    def dmarkval_change(self):
+        """
+        Change depth marker value in spinbox.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = self.combo_dmark.currentText()
+        dval = self.dsb_mdepth.value()
+        self.depthmarkers[txt][2] = dval
+        self.map.currentmark = txt
+        self.map.init_graph()
+        self.update_depthfunc()
+
+    def dmark_del(self):
+        """
+        Delete depth marker.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = self.combo_dmark.currentText()
+
+        self.combo_dmark.setCurrentText('Start')
+
+        # txt = 'Start'
+        # dval = self.depthmarkers[txt][2]
+        # self.dsb_mdepth.setValue(dval)
+
+        if txt not in ['Start', 'End']:
+            del self.depthmarkers[txt]
+
+            self.combo_dmark.disconnect()
+            self.dsb_mdepth.disconnect()
+
+            self.combo_dmark.clear()
+            self.combo_dmark.addItems(self.depthmarkers.keys())
+
+            self.combo_dmark.currentIndexChanged.connect(self.dmark_change)
+            self.dsb_mdepth.valueChanged.connect(self.dmarkval_change)
+
+            self.map.depthmarkers = self.depthmarkers
+            self.map.currentmark = 'Start'
+            self.map.init_graph()
+            self.update_depthfunc()
+
+    def format_coord(self, x, y):
+        """
+
+
+        Parameters
+        ----------
+        x : TYPE
+            DESCRIPTION.
+        y : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        rows, cols = self.indata['Raster'][0].data.T.shape
+        hrow = rows / self.sb_numcore.value()
+
+        y1 = int((y // hrow) + 1)
+        x1 = (y1-1)*cols + x
+
+        x2 = self.depthfunc(x1)
+
+        return f'depth: {x2:1.2f}, core: {y1}'
 
     def ncore_change(self):
         """
@@ -226,7 +421,10 @@ class CoreMeta(QtWidgets.QDialog):
 
         """
         self.map.numcores = self.sb_numcore.value()
+        self.map.currentmark = self.combo_dmark.currentText()
+
         self.map.init_graph()
+        self.update_depthfunc()
 
     def on_combo(self):
         """
@@ -238,7 +436,8 @@ class CoreMeta(QtWidgets.QDialog):
 
         """
         self.map.mindx = self.combo.currentIndex()
-        self.map.update_graph()
+        self.map.currentmark = self.combo_dmark.currentText()
+        self.map.init_graph()
 
     def settings(self, nodialog=False):
         """
@@ -264,9 +463,21 @@ class CoreMeta(QtWidgets.QDialog):
         self.combo.addItems(bands)
         self.combo.currentIndexChanged.connect(self.on_combo)
 
+        rows, cols = self.indata['Raster'][0].data.T.shape
+        cores = self.sb_numcore.value()
+        endlen = cores * self.dsb_traylen.value()
+        self.dx = endlen/(cols*cores)
+        self.depthmarkers['End'] = [cols, rows-1, endlen]
+
+        self.combo_dmark.clear()
+        self.combo_dmark.addItems(self.depthmarkers.keys())
+
         self.ncore_change()
 
-        # self.map.update_graph()
+        if self.combo_dmark.currentText() not in ['Start', 'End']:
+            self.pb_deldmark.setEnabled(True)
+
+        self.update_depthfunc()
 
         tmp = self.exec_()
 
@@ -336,7 +547,34 @@ class CoreMeta(QtWidgets.QDialog):
         if ax.get_navigate_mode() is not None:
             return
 
-        print(event.xdata, event.ydata)
+        chk = QtWidgets.QMessageBox.question(self, 'New Depth Marker',
+                                             'Add depth marker?',
+                                             QtWidgets.QMessageBox.Yes |
+                                             QtWidgets.QMessageBox.No)
+
+        if chk == QtWidgets.QMessageBox.Yes:
+            self.nummarkers += 1
+            txt = 'Marker '+str(self.nummarkers)
+
+            rows, cols = self.indata['Raster'][0].data.T.shape
+            hrow = rows / self.sb_numcore.value()
+            y1 = int((event.ydata // hrow) + 1)
+            x1 = (y1-1)*cols + event.xdata
+            depth = self.depthfunc(x1)
+            self.depthmarkers[txt] = [event.xdata, event.ydata, depth]
+
+            self.combo_dmark.disconnect()
+            self.dsb_mdepth.disconnect()
+
+            self.combo_dmark.clear()
+            self.combo_dmark.addItems(self.depthmarkers.keys())
+
+            self.combo_dmark.currentIndexChanged.connect(self.dmark_change)
+            self.dsb_mdepth.valueChanged.connect(self.dmarkval_change)
+
+            self.map.depthmarkers = self.depthmarkers
+            self.map.init_graph()
+            self.combo_dmark.setCurrentText(txt)
 
     def acceptall(self):
         """
@@ -350,42 +588,42 @@ class CoreMeta(QtWidgets.QDialog):
 
         """
 
-        data = copy.copy(self.indata['Raster'])
-        xy = self.map.polyi.poly.xy
+        # data = copy.copy(self.indata['Raster'])
+        # xy = self.map.polyi.poly.xy
 
-        xy = xy.astype(int)
-        xy = np.abs(xy)
+        # xy = xy.astype(int)
+        # xy = np.abs(xy)
 
-        rows = np.unique(xy[:, 1])
-        cols = np.unique(xy[:, 0])
+        # rows = np.unique(xy[:, 1])
+        # cols = np.unique(xy[:, 0])
 
-        for dat in data:
-            dat.data = dat.data[rows.min():rows.max(),
-                                cols.min():cols.max()]
-        datfin = []
-        start = False
-        for i in data:
-            if i.dataid == self.combostart.currentText():
-                start = True
-            if not start:
-                continue
-            if i.dataid == self.comboend.currentText():
-                break
-            datfin.append(i)
+        # for dat in data:
+        #     dat.data = dat.data[rows.min():rows.max(),
+        #                         cols.min():cols.max()]
+        # datfin = []
+        # start = False
+        # for i in data:
+        #     if i.dataid == self.combostart.currentText():
+        #         start = True
+        #     if not start:
+        #         continue
+        #     if i.dataid == self.comboend.currentText():
+        #         break
+        #     datfin.append(i)
 
-        if self.asave.isChecked():
-            meta = 'reflectance scale factor = 10000\n'
-            meta += 'wavelength = {\n'
-            for i in datfin:
-                meta += i.dataid + ',\n'
-            meta = meta[:-2]+'}\n'
+        # if self.asave.isChecked():
+        #     meta = 'reflectance scale factor = 10000\n'
+        #     meta += 'wavelength = {\n'
+        #     for i in datfin:
+        #         meta += i.dataid + ',\n'
+        #     meta = meta[:-2]+'}\n'
 
-            odir = os.path.dirname(self.indata['Raster'][0].filename)
-            hfile = os.path.basename(self.indata['Raster'][0].filename)
-            ofile = os.path.join(odir, 'clip_'+hfile[:-4]+'.hdr')
-            export_gdal(ofile, datfin, 'ENVI', envimeta=meta, piter=self.piter)
+        #     odir = os.path.dirname(self.indata['Raster'][0].filename)
+        #     hfile = os.path.basename(self.indata['Raster'][0].filename)
+        #     ofile = os.path.join(odir, 'clip_'+hfile[:-4]+'.hdr')
+        #     export_gdal(ofile, datfin, 'ENVI', envimeta=meta, piter=self.piter)
 
-        self.outdata['Raster'] = datfin
+        self.outdata['Raster'] = self.indata['Raster']
         return True
 
 

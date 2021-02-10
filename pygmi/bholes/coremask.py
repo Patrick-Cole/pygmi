@@ -74,6 +74,7 @@ class CoreMask(QtWidgets.QDialog):
         self.pb_savemask = QtWidgets.QPushButton('Save Mask')
 
         self.setupui()
+        self.resize(800, 400)
 
     def setupui(self):
         """
@@ -129,8 +130,8 @@ class CoreMask(QtWidgets.QDialog):
 
         self.hs_overview.valueChanged.connect(self.pic_overview2)
         self.combo_overview.currentIndexChanged.connect(self.pic_overview)
-        self.pb_classify.pressed.connect(self.classify)
-        self.pb_savemask.pressed.connect(self.savemask)
+        self.pb_classify.clicked.connect(self.classify)
+        self.pb_savemask.clicked.connect(self.savemask)
 
     def change_defs(self):
         """

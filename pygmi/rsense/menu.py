@@ -177,7 +177,7 @@ class MenuWidget():
     def import_landsat(self):
         """Import Landsat data."""
         self.parent.item_insert('Io', 'Import Landsat', iodefs.ImportData,
-                                params='Landsat (L*.tar.gz L*_MTL.txt);;')
+                                params='Landsat (L*.tar L*.tar.gz L*_MTL.txt);;')
 
     def import_ged(self):
         """Import GED data."""

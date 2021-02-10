@@ -109,7 +109,7 @@ class GraphMap(FigureCanvasQTAgg):
         # self.subplot.get_xaxis().set_visible(False)
         # self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, cmap=cm.get_cmap('jet'))
+        self.csp = self.subplot.imshow(dat.data.T, cmap=cm.get_cmap('jet'))
         axes = self.figure.gca()
 
         # axes.set_xlabel('ColumnsEastings')
@@ -133,7 +133,7 @@ class GraphMap(FigureCanvasQTAgg):
         """
         dat = self.data[self.mindx]
 
-        self.csp.set_data(dat.data)
+        self.csp.set_data(dat.data.T)
         self.csp.set_clim(dat.data.min(), dat.data.max())
 
         self.csp.changed()
@@ -377,6 +377,8 @@ class CorePrep(QtWidgets.QDialog):
 
         self.setupui()
 
+        self.resize(800, 400)
+
     def setupui(self):
         """
         Set up UI.
@@ -451,10 +453,10 @@ class CorePrep(QtWidgets.QDialog):
             y1 = 20
             y2 = 975
 
-        poly = [[x1, y1],
-                [x1, y2],
-                [x2, y2],
-                [x2, y1]]
+        poly = [[y1, x1],
+                [y1, x2],
+                [y2, x2],
+                [y2, x1]]
 
         self.map.polyi.new_poly(poly)
         self.map.update_graph()
@@ -486,10 +488,10 @@ class CorePrep(QtWidgets.QDialog):
         #     y1 = 20
         #     y2 = 975
 
-        poly = [[x1, y1],
-                [x1, y2],
-                [x2, y2],
-                [x2, y1]]
+        poly = [[y1, x1],
+                [y1, x2],
+                [y2, x2],
+                [y2, x1]]
 
         self.map.polyi.new_poly(poly)
         self.map.update_graph()
@@ -552,10 +554,10 @@ class CorePrep(QtWidgets.QDialog):
             y1 = ymax*0.1
             y2 = ymax-ymax*0.1
 
-            poly = [[x1, y1],
-                    [x1, y2],
-                    [x2, y2],
-                    [x2, y1]]
+            poly = [[y1, x1],
+                    [y1, x2],
+                    [y2, x2],
+                    [y2, x1]]
 
             self.map.polyi.new_poly(poly)
             self.map.update_graph()
@@ -623,8 +625,8 @@ class CorePrep(QtWidgets.QDialog):
         xy = xy.astype(int)
         xy = np.abs(xy)
 
-        rows = np.unique(xy[:, 1])
-        cols = np.unique(xy[:, 0])
+        rows = np.unique(xy[:, 0])
+        cols = np.unique(xy[:, 1])
 
         for dat in data:
             dat.data = dat.data[rows.min():rows.max(),
@@ -1294,6 +1296,7 @@ def filter_data(datah, ftype, piter=iter):
 
     return datah
 
+
 @jit(nopython=True)
 def hampel_filter(input_series, window_size, n_sigmas=3):
     """From https://towardsdatascience.com/outlier-detection-with-hampel-
@@ -1318,8 +1321,8 @@ def testfn():
     """Main testing routine."""
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = ImageCor()
-    tmp.get_idir(r'D:\Workdata\HyperspectralScanner\Raw Data\VNIR-SWIR (FENIX)')
-    tmp.get_odir(r'D:\Workdata\HyperspectralScanner\PTest\smile')
+    tmp.get_idir(r'c:\work\Workdata\HyperspectralScanner\Raw Data\VNIR-SWIR (FENIX)')
+    tmp.get_odir(r'c:\work\Workdata\HyperspectralScanner\PTest\smile')
     tmp.settings()
 
 
@@ -1355,8 +1358,7 @@ def testfn2():
     xcrd = 130
     ycrd = 500
 
-
-    plt.figure(dpi = 200)
+    plt.figure(dpi=200)
     pdat = pdat[7:961, 72:337]
     plt.imshow(pdat[:, :, 60])
     plt.plot(xcrd, ycrd, 'k.')
@@ -1415,15 +1417,14 @@ def testfn3():
     tdat = np.array(tdat)
     tdat = np.moveaxis(tdat, 0, -1)
 
-
     pdat = pdat[7:100, 72:337]
     tdat = tdat[7:100, 72:337]
 
-    plt.figure(dpi = 200)
+    plt.figure(dpi=200)
     plt.imshow(pdat[:, :, 60])
     plt.show()
 
-    plt.figure(dpi = 200)
+    plt.figure(dpi=200)
     plt.imshow(tdat[:, :, 60])
     plt.show()
 
@@ -1446,8 +1447,6 @@ def testfn4():
 
     # plt.imshow(datfin[0].data)
     # plt.show()
-
-    breakpoint()
 
 
 if __name__ == "__main__":
