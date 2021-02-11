@@ -375,7 +375,7 @@ class RTP(QtWidgets.QDialog):
         self.parent = parent
 
         if parent is not None:
-            self.piter = self.parent.pbar
+            self.piter = self.parent.pbar.iter
         else:
             self.piter = iter
 
