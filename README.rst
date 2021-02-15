@@ -39,6 +39,7 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * geopandas 0.8.1
 * llvmlite 0.34.0
 * matplotlib 3.3.2
+* msvc-runtime 14.28.29325  (Windows only)
 * mtpy 1.1.3
 * numba 0.51.2
 * numexpr 2.7.2

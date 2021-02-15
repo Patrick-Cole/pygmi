@@ -50,10 +50,8 @@ class CoreMask(QtWidgets.QDialog):
 
         if parent is None:
             self.showprocesslog = print
-            self.showtext = print
         else:
             self.showprocesslog = parent.showprocesslog
-            self.showtext = parent.showtext
 
         self.parent = parent
         self.class_index = None

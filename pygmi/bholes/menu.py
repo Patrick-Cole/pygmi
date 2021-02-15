@@ -30,6 +30,7 @@ from pygmi.bholes import graphs
 from pygmi.bholes import hypercore
 from pygmi.bholes import coremask
 from pygmi.bholes import coremeta
+from pygmi.bholes import coreint
 
 
 class MenuWidget():
@@ -120,7 +121,7 @@ class MenuWidget():
         """Interpret Borehole Data."""
         self.parent.item_insert('Step',
                                 'Core Hyperspectral Interpretation',
-                                hypercore.CoreInt)
+                                coreint.CoreInt)
 
     def imagecor(self):
         """Raw core imagery corrections."""

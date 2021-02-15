@@ -676,6 +676,7 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
         dat[i].nullvalue = nval
         dat[i].wkt = custom_wkt
         dat[i].filename = filename
+        dat[i].metadata['Raster'] = rtmp.GetMetadata()
 
     dataset = None
 
@@ -825,6 +826,7 @@ def get_bil(ifile, nval, piter, showprocesslog):
         dat[i].nullvalue = nval
         dat[i].wkt = custom_wkt
         dat[i].filename = filename
+        dat[i].metadata['Raster'] = rtmp.GetMetadata()
     return dat
 
 

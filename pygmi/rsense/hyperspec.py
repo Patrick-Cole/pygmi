@@ -234,7 +234,7 @@ class AnalSpec(QtWidgets.QDialog):
 
 class ProcFeatures(QtWidgets.QDialog):
     """
-    Calculate Satellite Ratios.
+    Process Hyperspectral Features.
 
     Attributes
     ----------
