@@ -27,6 +27,8 @@ Core Metadata Routine.
 
 """
 
+import os
+import shutil
 import json
 import sys
 
@@ -70,6 +72,8 @@ class GraphMap(FigureCanvasQTAgg):
         self.row = 20
         self.col = 20
         self.remhull = False
+        self.currentspectra = 'None'
+        self.spectra = None
 
     def init_graph(self):
         """
@@ -81,6 +85,9 @@ class GraphMap(FigureCanvasQTAgg):
 
         """
         dat = self.data[self.mindx]
+
+        refl = float(dat.metadata['Raster']['reflectance_scale_factor'])
+        dat.data = dat.data / refl
         rows, cols = dat.data.T.shape
 
         self.figure.clf()
@@ -102,7 +109,7 @@ class GraphMap(FigureCanvasQTAgg):
         ax1.plot(self.col, self.row, '+w')
 
         ax2 = self.figure.add_subplot(212)
-        prof = self.datarr[self.row, self.col]
+        prof = self.datarr[self.row, self.col] / refl
 
         ax2.format_coord = lambda x, y: f'Wavelength: {x:1.2f}, Y: {y:1.2f}'
         ax2.grid(True)
@@ -129,6 +136,17 @@ class GraphMap(FigureCanvasQTAgg):
         ax2.add_patch(rect)
         ax2.xaxis.set_major_formatter(frm)
         ax2.yaxis.set_major_formatter(frm)
+
+        if self.currentspectra != 'None':
+            spec = self.spectra[self.currentspectra]
+            prof2 = spec['refl']
+
+            if self.remhull is True:
+                hull = phull(prof2)
+                ax2.plot(spec['wvl'], prof2/hull)
+                ax2.set_ylim(top=1.01)
+            else:
+                ax2.plot(spec['wvl'], prof2)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -164,6 +182,7 @@ class CoreInt(QtWidgets.QDialog):
         self.nummarkers = 1
         self.depthfunc = None
         self.dx = 1.
+        self.spectra = None
         self.feature = {}
         self.feature[900] = [776, 1050, 850, 910]
         self.feature[1300] = [1260, 1420]
@@ -182,6 +201,7 @@ class CoreInt(QtWidgets.QDialog):
         self.lbl_info = QtWidgets.QLabel('')
         self.group_info = QtWidgets.QGroupBox('Information:')
         self.chk_hull = QtWidgets.QCheckBox('Remove Hull')
+        self.lw_speclib = QtWidgets.QListWidget()
 
         self.setupui()
 
@@ -208,7 +228,13 @@ class CoreInt(QtWidgets.QDialog):
 
         infolayout = QtWidgets.QVBoxLayout(self.group_info)
 
+
+        pb_speclib = QtWidgets.QPushButton('Load ENVI Spectral Library')
+
+
         self.lbl_info.setWordWrap(True)
+
+        self.lw_speclib.addItem('None')
 
         self.setWindowTitle('Core Metadata and Depth Assignment')
 
@@ -222,7 +248,10 @@ class CoreInt(QtWidgets.QDialog):
         grid_main.addWidget(lbl_feature, 1, 1)
         grid_main.addWidget(self.combo_feature, 1, 2)
         grid_main.addWidget(self.chk_hull, 2, 2, 1, 2)
-        grid_main.addWidget(self.group_info, 5, 1, 4, 2)
+        grid_main.addWidget(pb_speclib, 3, 1, 1, 2)
+        grid_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
+
+        grid_main.addWidget(self.group_info, 5, 1, 8, 2)
         # grid_main.addWidget(self.pb_save, 9, 1, 1, 2)
 
         grid_main.addWidget(self.map, 0, 0, 10, 1)
@@ -232,7 +261,8 @@ class CoreInt(QtWidgets.QDialog):
 
         self.combo_feature.currentIndexChanged.connect(self.feature_change)
         self.chk_hull.clicked.connect(self.hull)
-        # self.pb_save.clicked.connect(self.save)
+        pb_speclib.clicked.connect(self.load_splib)
+        self.lw_speclib.currentRowChanged.connect(self.disp_splib)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -264,6 +294,24 @@ class CoreInt(QtWidgets.QDialog):
         self.map.col = int(event.xdata)
         self.map.init_graph()
 
+    def disp_splib(self, row):
+        """
+        Change library spectra for display
+
+        Parameters
+        ----------
+        row : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.map.currentspectra = self.lw_speclib.currentItem().text()
+
+        self.map.init_graph()
+
     def feature_change(self):
         """
         Change depth marker combo.
@@ -292,7 +340,31 @@ class CoreInt(QtWidgets.QDialog):
         self.map.remhull = self.chk_hull.isChecked()
         self.map.init_graph()
 
+    def load_splib(self):
+        """
+        Load ENVI spectral library data.
 
+        Returns
+        -------
+        None.
+
+        """
+        ext = ('ENVI Spectral Library (*.sli)')
+
+        filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, 'Open File', '.', ext)
+        if filename == '':
+            return
+
+        self.spectra = readsli(filename)
+
+        self.lw_speclib.disconnect()
+        self.lw_speclib.clear()
+        tmp = ['None'] + list(self.spectra.keys())
+        self.lw_speclib.addItems(tmp)
+        self.lw_speclib.currentRowChanged.connect(self.disp_splib)
+
+        self.map.spectra = self.spectra
 
     def on_combo(self):
         """
@@ -467,12 +539,106 @@ def phull(sample):
     return out
 
 
+def readsli(ifile):
+    """
+    Reads an ENVI sli file.
+
+    Parameters
+    ----------
+    ifile : str
+        Input sli spectra file.
+
+    Returns
+    -------
+    spectra : dictionary
+        Dictionary of spectra with wavelengths and reflectances.
+    """
+    with open(ifile[:-4]+'.hdr') as file:
+        hdr = file.read()
+
+    hdr = hdr.split('\n')
+
+    hdr2 = []
+    i = -1
+    brackets = False
+    while hdr:
+        tmp = hdr.pop(0)
+        if not brackets:
+            hdr2.append(tmp)
+        else:
+            hdr2[-1] += tmp
+        if '{' in tmp:
+            brackets = True
+        if '}' in tmp:
+            brackets = False
+
+    hdr3 = {}
+    for i in hdr2:
+        tmp = i.split('=')
+        if len(tmp) > 1:
+            hdr3[tmp[0].strip()] = tmp[1].strip()
+
+    for i in hdr3:
+        if i in ['samples', 'lines', 'bands', 'header offset', 'data type']:
+            hdr3[i] = int(hdr3[i])
+            continue
+        if i in ['reflectance scale factor']:
+            hdr3[i] = float(hdr3[i])
+            continue
+        if '{' in hdr3[i]:
+            hdr3[i] = hdr3[i].replace('{', '')
+            hdr3[i] = hdr3[i].replace('}', '')
+            hdr3[i] = hdr3[i].split(',')
+            hdr3[i] = [j.strip() for j in hdr3[i]]
+            if i in ['wavelength', 'z plot range']:
+                hdr3[i] = [float(j) for j in hdr3[i]]
+
+    if hdr3['bands'] > 1:
+        print('More than one band in sli file. Cannot import')
+        return None
+
+    dtype = hdr3['data type']
+    dt2np = {}
+    dt2np[1] = np.uint8
+    dt2np[2] = np.int16
+    dt2np[3] = np.int32
+    dt2np[4] = np.float32
+    dt2np[5] = np.float64
+    dt2np[6] = np.complex64
+    dt2np[9] = np.complex128
+    dt2np[12] = np.uint16
+    dt2np[13] = np.uint32
+    dt2np[14] = np.int64
+    dt2np[15] = np.uint64
+
+    data = np.fromfile(ifile, dtype=dt2np[dtype])
+    data = data / hdr3['reflectance scale factor']
+
+    data.shape = (hdr3['lines'], hdr3['samples'])
+
+    spectra = {}
+    for i, val in enumerate(hdr3['spectra names']):
+        spectra[val] = {'wvl': hdr3['wavelength'],
+                        'refl': data[i]}
+
+    return spectra
+
+
 def testfn():
+    """Main testing routine."""
+    ifile = r'D:/workdata/Spectra/DG18057.sli'
+
+    data = readsli(ifile)
+
+    breakpoint()
+
+
+def testfn2():
     """Main testing routine."""
     import matplotlib.pyplot as plt
 
-    ifile = (r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\\'
-             r'clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat')
+    # ifile = (r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\\'
+    #          r'clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat')
 
     ifile = (r'C:\Work\Workdata\HyperspectralScanner\Processed Data\\'
               r'FENIX L201 Data Preparation v0810\BV1_17_extracted_image.img')
@@ -487,4 +653,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    testfn2()

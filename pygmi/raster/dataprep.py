@@ -413,7 +413,11 @@ class DataReproj(QtWidgets.QDialog):
 
         """
         if self.in_proj.wkt == 'Unknown' or self.out_proj.wkt == 'Unknown':
-            self.showprocesslog('Could not reproject')
+            self.showprocesslog('Unknown Projection. Could not reproject')
+            return
+
+        if self.in_proj.wkt == '' or self.out_proj.wkt == '':
+            self.showprocesslog('Unknown Projection. Could not reproject')
             return
 
 # Input stuff

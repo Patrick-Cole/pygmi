@@ -235,7 +235,10 @@ class EquationEditor(QtWidgets.QDialog):
                 return None
             eq4[-1] = np.ma.array(eq4[-1], mask=mask[-1])
 
-        master = np.ma.mean(eq4, 0)
+        # master = np.ma.mean(eq4, 0)
+        master = eq4.pop()
+        for i in eq4[::-1]:
+            master[~i.mask] = i.data[~i.mask]
 
         return master
 

@@ -601,8 +601,13 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
     if dataset is None:
         return None
+
     istruct = dataset.GetMetadata('IMAGE_STRUCTURE')
     driver = dataset.GetDriver().GetDescription()
+
+    dmeta = {}
+    if driver == 'ENVI':
+        dmeta = dataset.GetMetadata('ENVI')
 
     if 'INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr']:
         if istruct['INTERLEAVE'] == 'LINE':
@@ -676,7 +681,9 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
         dat[i].nullvalue = nval
         dat[i].wkt = custom_wkt
         dat[i].filename = filename
-        dat[i].metadata['Raster'] = rtmp.GetMetadata()
+
+        dest = rtmp.GetMetadata()
+        dat[i].metadata['Raster'] = {**dmeta, **dest}
 
     dataset = None
 
@@ -738,6 +745,11 @@ def get_bil(ifile, nval, piter, showprocesslog):
                     custom_wkt = orig.ExportToWkt()
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    driver = dataset.GetDriver().GetDescription()
+
+    dmeta = {}
+    if driver == 'ENVI':
+        dmeta = dataset.GetMetadata('ENVI')
 
     if custom_wkt is None:
         srs = osr.SpatialReference()
@@ -826,7 +838,8 @@ def get_bil(ifile, nval, piter, showprocesslog):
         dat[i].nullvalue = nval
         dat[i].wkt = custom_wkt
         dat[i].filename = filename
-        dat[i].metadata['Raster'] = rtmp.GetMetadata()
+        dest = rtmp.GetMetadata()
+        dat[i].metadata['Raster'] = {**dmeta, **dest}
     return dat
 
 
