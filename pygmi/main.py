@@ -998,8 +998,6 @@ class MainWidget(QtWidgets.QMainWindow):
         if ifile == '':
             return False
 
-        # ifile = r'C:\Work\Workdata\jason.json'
-
         with open(ifile, 'r') as fromdisk:
             ilist = json.load(fromdisk)
 
@@ -1014,7 +1012,7 @@ class MainWidget(QtWidgets.QMainWindow):
             my_class = my_class.rsplit('.', 1)
 
             class_name = getattr(sys.modules[my_class[0]], my_class[1])
-            class_name = class_name(self)
+            # class_name = class_name(self)
             item_name = item['my_class_name']
             item_type = item['diagram_type']
 
@@ -1027,6 +1025,9 @@ class MainWidget(QtWidgets.QMainWindow):
             ditems[key] = citem
 
             citem.setBrush(QtGui.QColor(0, 255, 255, 254))
+
+            class_name = citem.my_class
+
             if hasattr(class_name, 'loadproj'):
                 chk = class_name.loadproj(item['itemdata'])
                 if chk is True:
@@ -1106,7 +1107,7 @@ class MainWidget(QtWidgets.QMainWindow):
             self.showprocesslog('No connections. Aborting run.')
             return
 
-        # Collect only items recieving data
+        # Collect only items receiving data
         ilist = []
         slist = []
         for item in self.scene.items():

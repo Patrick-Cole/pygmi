@@ -167,8 +167,7 @@ class ImportData():
             True if successful, False otherwise.
 
         """
-
-        piter = None
+        piter = iter
         if not nodialog:
             if self.parent is not None:
                 piter = self.parent.pbar.iter
@@ -623,7 +622,6 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
         custom_wkt = srs.ExportToWkt()
 
     gtr = dataset.GetGeoTransform()
-
     for i in piter(range(dataset.RasterCount)):
         rtmp = dataset.GetRasterBand(i+1)
         bandid = rtmp.GetDescription()
