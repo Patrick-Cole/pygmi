@@ -681,6 +681,11 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
         dat[i].filename = filename
 
         dest = rtmp.GetMetadata()
+        for j in ['Wavelength', 'WAVELENGTH']:
+            if j in dest:
+                dest[j.lower()] = dest[j]
+                del dest[j]
+
         dat[i].metadata['Raster'] = {**dmeta, **dest}
 
     dataset = None
@@ -837,6 +842,10 @@ def get_bil(ifile, nval, piter, showprocesslog):
         dat[i].wkt = custom_wkt
         dat[i].filename = filename
         dest = rtmp.GetMetadata()
+        for j in ['Wavelength', 'WAVELENGTH']:
+            if j in dest:
+                dest[j.lower()] = dest[j]
+                del dest[j]
         dat[i].metadata['Raster'] = {**dmeta, **dest}
     return dat
 
