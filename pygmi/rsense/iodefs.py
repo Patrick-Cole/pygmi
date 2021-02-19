@@ -25,8 +25,10 @@
 """Import Data."""
 
 import os
+import shutil
 import copy
 import glob
+import tempfile
 import tarfile
 import zipfile
 import datetime
@@ -303,7 +305,7 @@ class ImportBatch():
         zipdat = glob.glob(self.idir+'//AST*.zip')
         hdfdat = glob.glob(self.idir+'//AST*.hdf')
 #        tifdat = glob.glob(directory+'//AST*.tif')
-        targzdat = glob.glob(self.idir+'//L*.tar.gz')
+        targzdat = glob.glob(self.idir+'//L*.tar*')
         mtldat = glob.glob(self.idir+'//L*MTL.txt')
 
         sendat = []
@@ -827,7 +829,7 @@ def calculate_toa(dat, showprocesslog=print):
     return out
 
 
-def get_data(ifile, piter=None, showprocesslog=print):
+def get_data(ifile, piter=iter, showprocesslog=print):
     """
     This function loads a raster dataset off the disk using the GDAL
     libraries. It returns the data in a PyGMI data object.
@@ -1111,6 +1113,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
                 showprocesslog('Could not find MTL.txt file in tar archive')
                 return None
             showprocesslog('Extracting tar...')
+
             tar.extractall(idir)
             ifile = os.path.join(idir, ifile)
     elif '_MTL.txt' in ifilet:
@@ -1165,9 +1168,10 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
 
     if '.tar' in ifilet:
         showprocesslog('Cleaning Extracted tar files...')
-        for tfile in tarnames:
+        for tfile in piter(tarnames):
+            print(tfile)
             os.remove(os.path.join(os.path.dirname(ifile), tfile))
-
+    print('Import complete')
     return dat
 
 

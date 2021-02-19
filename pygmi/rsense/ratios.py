@@ -35,6 +35,7 @@ import pygmi.menu_default as menu_default
 import pygmi.rsense.iodefs as iodefs
 from pygmi.raster.iodefs import export_gdal
 from pygmi.raster.dataprep import merge
+from pygmi.misc import ProgressBarText
 
 
 class SatRatios(QtWidgets.QDialog):
@@ -55,8 +56,10 @@ class SatRatios(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
+            self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
         self.indata = {}
         self.outdata = {}
@@ -219,13 +222,16 @@ class SatRatios(QtWidgets.QDialog):
 
         for ifile in flist:
             if isinstance(ifile, str):
-                dat = iodefs.get_data(ifile, showprocesslog=self.showprocesslog)
+                dat = iodefs.get_data(ifile,
+                                      showprocesslog=self.showprocesslog,
+                                      piter=self.piter)
                 ofile = ifile
             elif isinstance(ifile, list) and 'RasterFileList' in self.indata:
                 dat = []
                 for jfile in ifile:
                     dat += iodefs.get_data(jfile,
-                                           showprocesslog=self.showprocesslog)
+                                           showprocesslog=self.showprocesslog,
+                                           piter=self.piter)
                 ofile = ifile[-1]
             else:
                 dat = ifile

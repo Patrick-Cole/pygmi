@@ -57,37 +57,23 @@ as one borehole. It can also allow for manual interpretation as well as
 comparison between existing logs and the core images.
 
 """
-
-import os
+import json
 import sys
 import re
 
 import numpy as np
 import numexpr as ne
 from PyQt5 import QtWidgets, QtCore
-
-import pygmi.menu_default as menu_default
-from pygmi.raster.iodefs import get_raster
-from pygmi.misc import ProgressBarText
-from pygmi.raster.datatypes import numpy_to_pygmi
-
-
-import os
-import shutil
-import json
-import sys
-
-import numpy as np
-from scipy.interpolate import interp1d
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.patches as mpatches
-from PyQt5 import QtWidgets, QtCore
 
 from pygmi.misc import frm
+import pygmi.menu_default as menu_default
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
+from pygmi.raster.datatypes import numpy_to_pygmi
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -118,6 +104,8 @@ class GraphMap(FigureCanvasQTAgg):
         self.remhull = False
         self.currentspectra = 'None'
         self.spectra = None
+        self.refl = 1.
+        self.rotate = False
 
     def init_graph(self):
         """
@@ -128,7 +116,7 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
-        dat = self.datarr[self.mindx]
+        dat = self.datarr[self.mindx]/self.refl
 
         rows, cols = dat.shape
 
@@ -138,7 +126,11 @@ class GraphMap(FigureCanvasQTAgg):
         ymin = dat.mean()-2*dat.std()
         ymax = dat.mean()+2*dat.std()
 
-        self.csp = ax1.imshow(dat, vmin=ymin, vmax=ymax)
+        if self.rotate is True:
+            self.csp = ax1.imshow(dat.T, vmin=ymin, vmax=ymax)
+            rows, cols = cols, rows
+        else:
+            self.csp = ax1.imshow(dat, vmin=ymin, vmax=ymax)
 
         ax1.set_xlim((0, cols))
         ax1.set_ylim((0, rows))
@@ -151,7 +143,7 @@ class GraphMap(FigureCanvasQTAgg):
         ax1.plot(self.col, self.row, '+w')
 
         ax2 = self.figure.add_subplot(212)
-        prof = self.datarr[:, self.row, self.col]
+        prof = self.datarr[:, self.row, self.col]/self.refl
 
         ax2.format_coord = lambda x, y: f'Wavelength: {x:1.2f}, Y: {y:1.2f}'
         ax2.grid(True)
@@ -330,6 +322,10 @@ class AnalSpec(QtWidgets.QDialog):
 
         self.map.row = int(event.ydata)
         self.map.col = int(event.xdata)
+
+        if self.chk_rot.isChecked():
+            self.map.row, self.map.col = self.map.col, self.map.row
+
         self.map.init_graph()
 
     def disp_splib(self, row):
@@ -426,10 +422,7 @@ class AnalSpec(QtWidgets.QDialog):
         None.
 
         """
-        dat = self.map.datarr
-        self.map.datarr = np.moveaxis(dat, 1, 2)
-        self.map.row, self.map.col = self.map.col, self.map.row
-
+        self.map.rotate = self.chk_rot.isChecked()
         self.map.init_graph()
 
     def save(self):
@@ -477,7 +470,7 @@ class AnalSpec(QtWidgets.QDialog):
             return False
 
         dat = self.indata['Raster']
-        refl = float(dat[0].metadata['Raster']['reflectance_scale_factor'])
+        self.map.refl = float(dat[0].metadata['Raster']['reflectance_scale_factor'])
 
         dat2 = []
         wvl = []
@@ -488,7 +481,7 @@ class AnalSpec(QtWidgets.QDialog):
                 dat2.append(j.data)
             wvl.append(float(j.metadata['Raster']['wavelength']))
 
-        self.map.datarr = np.array(dat2)/refl
+        self.map.datarr = np.array(dat2)
         self.map.wvl = np.array(wvl)
 
         bands = [i.dataid for i in self.indata['Raster']]
@@ -550,6 +543,449 @@ class AnalSpec(QtWidgets.QDialog):
         # projdata['combo_class'] = self.combo_class.currentText()
 
         return projdata
+
+
+class ProcFeatures(QtWidgets.QDialog):
+    """
+    Process Hyperspectral Features.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+            pbar = ProgressBarText()
+            self.piter = pbar.iter
+
+        else:
+            self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.product = {}
+        self.ratio = {}
+
+        # self.combo_sensor = QtWidgets.QComboBox()
+        self.cb_ratios = QtWidgets.QComboBox()
+        self.tablewidget = QtWidgets.QTableWidget()
+
+        self.setupui()
+
+        self.resize(500, 350)
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        # label_sensor = QtWidgets.QLabel('Sensor:')
+        lbl_ratios = QtWidgets.QLabel('Product:')
+        lbl_details = QtWidgets.QLabel('Details:')
+
+        self.tablewidget.setRowCount(2)
+        self.tablewidget.setColumnCount(3)
+        self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter', 'Threshold'])
+        self.tablewidget.resizeColumnsToContents()
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Process Hyperspectral Features')
+
+        gridlayout_main.addWidget(lbl_ratios, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.cb_ratios, 1, 1, 1, 1)
+        gridlayout_main.addWidget(lbl_details, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.tablewidget, 2, 1, 1, 1)
+
+        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+
+        self.cb_ratios.currentIndexChanged.connect(self.product_change)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def product_change(self):
+        """
+        Change product combo.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = self.cb_ratios.currentText()
+        self.tablewidget.clear()
+
+        product = self.product[txt]+self.product['filter']
+        numrows = len(product)
+
+        self.tablewidget.setRowCount(numrows)
+        self.tablewidget.setColumnCount(4)
+        self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter',
+                                                    'Threshold', 'Description'])
+
+        item = QtWidgets.QTableWidgetItem(str(product[0]))
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        self.tablewidget.setItem(0, 0, item)
+
+        item = QtWidgets.QTableWidgetItem('None')
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        self.tablewidget.setItem(0, 1, item)
+
+        item = QtWidgets.QTableWidgetItem('None')
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        self.tablewidget.setItem(0, 2, item)
+
+        if isinstance(product[0], int):
+            desc = 'Feature Depth'
+        elif product[0] in self.ratio:
+            desc = self.ratio[product[0]]
+        else:
+            desc = 'None'
+
+        item = QtWidgets.QTableWidgetItem(desc)
+        item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+        self.tablewidget.setItem(0, 3, item)
+
+
+        for i in range(1, numrows):
+            cb = QtWidgets.QComboBox()
+            cb.addItems(['<', '>'])
+            self.tablewidget.setCellWidget(i, 1, cb)
+
+            txt2 = str(product[i])
+            txt2 = txt2.split()
+
+            cb.setCurrentText(txt2[1])
+            item = QtWidgets.QTableWidgetItem(txt2[0])
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.tablewidget.setItem(i, 0, item)
+            item = QtWidgets.QTableWidgetItem(txt2[2])
+            self.tablewidget.setItem(i, 2, item)
+
+            desc = self.ratio[txt2[0]]
+            item = QtWidgets.QTableWidgetItem(desc)
+            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.tablewidget.setItem(i, 3, item)
+
+        self.tablewidget.resizeColumnsToContents()
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        tmp = []
+        if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
+            self.showprocesslog('No Satellite Data')
+            return False
+
+        self.feature = {}
+        self.feature[900] = [776, 1050, 850, 910]
+        self.feature[1300] = [1260, 1420]
+        self.feature[1800] = [1740, 1820]
+        self.feature[2080] = [2000, 2150]
+        self.feature[2500] = [2500, 2500]
+        self.feature[2200] = [2120, 2245]
+        self.feature[2290] = [2270, 2330]
+        self.feature[2330] = [2120, 2370]
+
+        self.ratio = {}
+        self.ratio['NDVI'] = '(R860-R687)/(R860+R687)'
+        self.ratio['dryveg'] = '(R2006+R2153)/(R2081+R2100)'
+        self.ratio['albedo'] = 'R1650'
+
+        self.ratio['r2350De'] = '(R2326+R2376)/(R2343+R2359)'
+        self.ratio['r2160D2190'] = '(R2136+R2188)/(R2153+R2171)'  # Kaolin from non kaolin
+        self.ratio['r2250D'] = '(R2227+R2275)/(R2241+R2259)'  # Chlorite epidote biotite
+        self.ratio['r2380D'] = '(R2365+R2415)/(R2381+R2390)'  # Amphibole, talc
+        self.ratio['r2330D'] = '(R2265+R2349)/(R2316+R2333)'  # MgOH and CO3
+        self.ratio['r1100D'] = '(R921+R1650)/(R1020+R1231)'   # Ferrous iron
+
+        # Elementwise product would work for formula below
+        self.cb_ratios.disconnect()
+        self.product = {}
+        self.product['mica'] = [2200, 'r2350De > 1.02', 'r2160D2190 < 1.005']
+        self.product['smectite'] = [2200, 'r2350De < 1.02', 'r2160D2190 < 1.005']
+        self.product['kaolin'] = [2200, 'r2160D2190 > 1.005']
+        self.product['chlorite, epidote'] = ['r2250D', 'r2330D > 1.06']
+        self.product['ferrous iron'] = ['r1100D']
+        self.cb_ratios.clear()
+        self.cb_ratios.addItems(self.product)
+
+        # The filter line is added after the other products so that it does
+        # not make it into the list widget
+        self.product['filter'] = ['NDVI < .25', 'dryveg < 1.015', 'albedo > 1000']
+        self.cb_ratios.currentIndexChanged.connect(self.product_change)
+        self.product_change()
+
+        if not nodialog:
+            tmp = self.exec_()
+        else:
+            tmp = 1
+
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        return True
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+
+        # self.combo_sensor.setCurrentText(projdata['sensor'])
+        # self.setratios()
+
+        # for i in self.lw_ratios.selectedItems():
+        #     if i.text()[2:] not in projdata['ratios']:
+        #         i.setSelected(False)
+        # self.set_selected_ratios()
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+        # projdata['sensor'] = self.combo_sensor.currentText()
+
+        # rlist = []
+        # for i in self.lw_ratios.selectedItems():
+        #     rlist.append(i.text()[2:])
+
+        # projdata['ratios'] = rlist
+
+        return projdata
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        datfin = []
+
+        mineral = self.cb_ratios.currentText()
+
+        feature = self.feature
+        ratio = self.ratio
+        product = self.product
+
+        try:
+            product = [int(self.tablewidget.item(0, 0).text())]
+        except ValueError:
+            product = [self.tablewidget.item(0, 0).text()]
+        for i in range(1, self.tablewidget.rowCount()):
+            product.append(self.tablewidget.item(i, 0).text())
+            product[-1] += ' ' + self.tablewidget.cellWidget(i, 1).currentText()
+            product[-1] += ' ' + self.tablewidget.item(i, 2).text()
+
+        dat = self.indata['Raster']
+        datfin = calcfeatures(dat, mineral, feature, ratio, product,
+                              piter=self.piter)
+
+        self.outdata['Raster'] = datfin
+        return True
+
+
+def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
+    """
+    Calculate feature dataset.
+
+    Returns
+    -------
+    None.
+
+    """
+
+    allfeatures = [i for i in product if isinstance(i, int)]
+    allratios = [i.split()[0] for i in product
+                 if not isinstance(i, int)]
+    # allratios += [i.split()[0] for i in product['filter']
+    #               if not isinstance(i, int)]
+
+    # Get list of wavelengths and data
+    dat2 = []
+    xval = []
+    for j in dat:
+        dat2.append(j.data)
+        refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
+        xval.append(refl)
+
+    xval = np.array(xval)
+    dat2 = np.ma.array(dat2)
+
+    # This gets nearest wavelength and assigns to R number.
+    # It does not interpolate.
+    RBands = {}
+    for j in range(1, 2501):
+        i = abs(xval-j).argmin()
+        RBands['R'+str(j)] = dat2[i]
+
+    datfin = []
+    # Calclate ratios
+    datcalc = {}
+    for j in allratios:
+        if j in datcalc:
+            continue
+        tmp = indexcalc(ratio[j], RBands)
+        datcalc[j] = tmp
+
+    # Start processing
+    depths = {}
+    wvl = {}
+    for fname in allfeatures:
+        if len(feature[fname]) == 4:
+            fmin, fmax, lmin, lmax = feature[fname]
+        else:
+            fmin, fmax = feature[fname]
+            lmin, lmax = fmin, fmax
+
+        # get index of closest wavelength
+        i1 = abs(xval-fmin).argmin()
+        i2 = abs(xval-fmax).argmin()
+
+        fdat = dat2[i1:i2+1]
+        xdat = xval[i1:i2+1]
+
+        # Raster calculation
+        _, rows, cols = dat2.shape
+        dtmp = np.zeros((rows, cols))
+        ptmp = np.zeros((rows, cols))
+
+        tmp = np.nonzero((xdat > lmin) & (xdat < lmax))[0]
+        i1a = tmp[0]
+        i2a = tmp[-1]
+
+        for i in piter(range(rows)):
+            for j in range(cols):
+                yval = fdat[:, i, j]
+                if True in np.ma.getmaskarray(yval):
+                    continue
+
+                yhull = phull(yval)
+                crem = yval/yhull
+                imin = crem[i1a:i2a].argmin()
+                dtmp[i, j] = 1. - crem[i1a:i2a][imin]
+                ptmp[i, j] = xdat[i1a:i2a][imin]
+
+        depths[fname] = dtmp
+        wvl[fname] = ptmp
+
+    datout = None
+    datout2 = None
+    tmpw = None
+
+    for i in product:
+        if isinstance(i, int):
+            tmp = depths[i]
+            tmpw = wvl[i]
+        else:
+            tmp = ne.evaluate(i, datcalc)
+
+        if datout is None:
+            datout = np.nan_to_num(tmp)
+            datout2 = np.nan_to_num(tmpw)
+        else:
+            if tmp.max() > 1:
+                print('Problem with filter. Max value greater that 1')
+                breakpoint()
+            datout = datout * np.nan_to_num(tmp)
+            if datout2 is not None:
+                datout2 = datout2 * np.nan_to_num(tmp)
+
+    if isinstance(product[0], int):
+        label = f'{mineral} depth'
+    else:
+        label = f'{mineral} ratio'
+
+    datout = np.ma.masked_equal(datout, 0)
+    datfin.append(numpy_to_pygmi(datout, dat[0], label))
+
+    if datout2 is not None:
+        datout2 = np.ma.masked_equal(datout2, 0)
+        datfin.append(numpy_to_pygmi(datout2, dat[0], f'{mineral} wvl'))
+
+    return datfin
+
+
+def indexcalc(formula, dat):
+    """
+    Calculates an index using numexpr.
+
+    Parameters
+    ----------
+    formula : str
+        string expression containing index formula.
+    dat : dict
+        Dictionary of variables to be used in calculation.
+
+    Returns
+    -------
+    out : numpy array
+        This can be a masked array.
+
+    """
+
+    out = ne.evaluate(formula, dat)
+
+    key = list(dat.keys())[0]
+
+    if np.ma.isMaskedArray(dat[key]):
+        mask = dat[key].mask
+        out = np.ma.array(out, mask=mask)
+
+    return out
 
 
 def phull(sample):
@@ -676,371 +1112,6 @@ def readsli(ifile):
     return spectra
 
 
-class ProcFeatures(QtWidgets.QDialog):
-    """
-    Process Hyperspectral Features.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    indata : dictionary
-        dictionary of input datasets
-    outdata : dictionary
-        dictionary of output datasets
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        if parent is None:
-            self.showprocesslog = print
-            pbar = ProgressBarText()
-            self.piter = pbar.iter
-
-        else:
-            self.showprocesslog = parent.showprocesslog
-            self.piter = parent.pbar.iter
-
-        self.indata = {}
-        self.outdata = {}
-        self.parent = parent
-        self.product = {}
-        self.ratio = {}
-
-        # self.combo_sensor = QtWidgets.QComboBox()
-        self.lw_ratios = QtWidgets.QListWidget()
-
-        self.setupui()
-
-    def setupui(self):
-        """
-        Set up UI.
-
-        Returns
-        -------
-        None.
-
-        """
-        gridlayout_main = QtWidgets.QGridLayout(self)
-        buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
-        # label_sensor = QtWidgets.QLabel('Sensor:')
-        label_ratios = QtWidgets.QLabel('Ratios:')
-
-        # self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
-
-        # self.combo_sensor.addItems(['ASTER',
-        #                             'Landsat 8 (OLI)',
-        #                             'Landsat 7 (ETM+)',
-        #                             'Landsat 4 and 5 (TM)',
-        #                             'Sentinel-2'])
-        buttonbox.setOrientation(QtCore.Qt.Horizontal)
-        buttonbox.setCenterButtons(True)
-        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-
-        self.setWindowTitle('Process Hyperspectral Features')
-
-        # gridlayout_main.addWidget(label_sensor, 0, 0, 1, 1)
-        # gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
-        gridlayout_main.addWidget(label_ratios, 1, 0, 1, 1)
-        gridlayout_main.addWidget(self.lw_ratios, 1, 1, 1, 1)
-
-        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
-
-        buttonbox.accepted.connect(self.accept)
-        buttonbox.rejected.connect(self.reject)
-
-    def settings(self, nodialog=False):
-        """
-        Entry point into item.
-
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        tmp = []
-        if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
-            self.showprocesslog('No Satellite Data')
-            return False
-
-        self.feature = {}
-        self.feature[900] = [776, 1050, 850, 910]
-        self.feature[1300] = [1260, 1420]
-        self.feature[1800] = [1740, 1820]
-        self.feature[2080] = [2000, 2150]
-        self.feature[2500] = [2500, 2500]
-        self.feature[2200] = [2120, 2245]
-        self.feature[2290] = [2270, 2330]
-        self.feature[2330] = [2120, 2370]
-
-        self.ratio = {}
-        self.ratio['NDVI'] = '(R860-R687)/(R860+R687)'
-        self.ratio['dryveg'] = '(R2006+R2153)/(R2081+R2100)'
-        self.ratio['albedo'] = 'R1650'
-
-        self.ratio['r2350De'] = '(R2326+R2376)/(R2343+R2359)'
-        self.ratio['r2160D2190'] = '(R2136+R2188)/(R2153+R2171)' # Kaolin from non kaolin
-        self.ratio['r2250D'] = '(R2227+R2275)/(R2241+R2259)'  # Chlorite epidote biotite
-        self.ratio['r2380D'] = '(R2365+R2415)/(R2381+R2390)'  # Amphibole, talc
-        self.ratio['r2330D'] = '(R2265+R2349)/(R2316+R2333)'  # MgOH and CO3
-
-
-        self.product['mica'] = [2200, 'r2350De > 1.02', 'r2160D2190 < 1.005']
-        self.product['smectite'] = [2200, 'r2350De < 1.02', 'r2160D2190 < 1.005']
-        self.product['kaolin'] = [2200, 'r2160D2190 > 1.005']
-        self.product['chlorite, epidote'] = ['r2250D', 'r2330D > 1.06']
-
-        self.lw_ratios.clear()
-        self.lw_ratios.addItems(self.product)
-
-        self.product['filter'] = ['NDVI < .25', 'dryveg < 1.015', 'albedo > 1000']
-
-
-        if not nodialog:
-            tmp = self.exec_()
-        else:
-            tmp = 1
-
-        if tmp != 1:
-            return False
-
-        self.acceptall()
-
-        return True
-
-    def loadproj(self, projdata):
-        """
-        Load project data into class.
-
-        Parameters
-        ----------
-        projdata : dictionary
-            Project data loaded from JSON project file.
-
-        Returns
-        -------
-        chk : bool
-            A check to see if settings was successfully run.
-
-        """
-
-        # self.combo_sensor.setCurrentText(projdata['sensor'])
-        # self.setratios()
-
-        # for i in self.lw_ratios.selectedItems():
-        #     if i.text()[2:] not in projdata['ratios']:
-        #         i.setSelected(False)
-        # self.set_selected_ratios()
-
-        return False
-
-    def saveproj(self):
-        """
-        Save project data from class.
-
-        Returns
-        -------
-        projdata : dictionary
-            Project data to be saved to JSON project file.
-
-        """
-        projdata = {}
-        # projdata['sensor'] = self.combo_sensor.currentText()
-
-        # rlist = []
-        # for i in self.lw_ratios.selectedItems():
-        #     rlist.append(i.text()[2:])
-
-        # projdata['ratios'] = rlist
-
-        return projdata
-
-    def acceptall(self):
-        """
-        Accept option.
-
-        Updates self.outdata, which is used as input to other modules.
-
-        Returns
-        -------
-        None.
-
-        """
-        datfin = []
-
-        mineral = self.lw_ratios.currentItem().text()
-
-        feature = self.feature
-        ratio = self.ratio
-        product = self.product
-
-        allfeatures = [i for i in product[mineral] if isinstance(i, int)]
-        allratios = [i.split()[0] for i in product[mineral]
-                     if not isinstance(i, int)]
-        allratios += [i.split()[0] for i in product['filter']
-                      if not isinstance(i, int)]
-
-        # Get list of wavelengths and data
-        dat2 = []
-        xval = []
-        for j in self.indata['Raster']:
-            dat2.append(j.data)
-            refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
-            xval.append(refl)
-
-        xval = np.array(xval)
-        dat2 = np.array(dat2)
-
-        # This gets nearest wavelength adn assigns to R number.
-        # It does not interpolate.
-        RBands = {}
-        for j in range(1, 2501):
-            i = abs(xval-j).argmin()
-            RBands['R'+str(j)] = dat2[i]
-
-        # Calclate ratios
-        datcalc = {}
-        for j in allratios:
-            if j in datcalc:
-                continue
-            tmp = indexcalc(ratio[j], RBands)
-            datcalc[j] = tmp
-
-        # Start processing
-        depths = {}
-        # wvl = {}
-        for fname in allfeatures:
-            if len(feature[fname]) == 4:
-                fmin, fmax, lmin, lmax = feature[fname]
-            else:
-                fmin, fmax = feature[fname]
-                # lmin, lmax = fmin, fmax
-
-            # get index of closest wavelength
-            i1 = abs(xval-fmin).argmin()
-            i2 = abs(xval-fmax).argmin()
-
-            fdat = dat2[i1:i2+1]
-            xdat = xval[i1:i2+1]
-
-            # Raster calculation
-            _, rows, cols = dat2.shape
-            dtmp = np.zeros((rows, cols))
-            ptmp = np.zeros((rows, cols))
-
-            # tmp = np.nonzero((xdat > lmin) & (xdat < lmax))[0]
-            # i1a = tmp[0]
-            # i2a = tmp[-1]
-
-            for i in self.piter(range(rows)):
-                for j in range(cols):
-                    yval = fdat[:, i, j]
-                    if yval.max() == 0:
-                        continue
-
-                    yhull = phull(yval)
-                    crem = yval/yhull
-
-                    imin = crem.argmin()
-                    dtmp[i, j] = crem[imin]
-                    ptmp[i, j] = xdat[imin]
-
-
-            depths[fname] = 1. - dtmp
-            # wvl[fname] = ptmp
-
-        datout = None
-        for i in product[mineral]:
-            if isinstance(i, int):
-                tmp = depths[i]
-            else:
-                tmp = ne.evaluate(i, datcalc)
-
-            if datout is None:
-                datout = tmp
-            else:
-                datout = datout * tmp
-
-        datout = np.ma.masked_equal(datout, 0)
-        datfin.append(numpy_to_pygmi(datout, self.indata['Raster'][0],
-                                     f'{mineral} depth'))
-        # datfin.append(numpy_to_pygmi(pos1, dat[0], f'{product} {fname} wvl'))
-
-
-        self.outdata['Raster'] = datfin
-        return True
-
-
-def indexcalc(formula, dat):
-    """
-    Calculates an index using numexpr.
-
-    Parameters
-    ----------
-    formula : str
-        string expression containing index formula.
-    dat : dict
-        Dictionary of variables to be used in calculation.
-
-    Returns
-    -------
-    out : numpy array
-        This can be a masked array.
-
-    """
-
-    out = ne.evaluate(formula, dat)
-
-    key = list(dat.keys())[0]
-
-    if np.ma.isMaskedArray(dat[key]):
-        mask = dat[key].mask
-        out = np.ma.array(out, mask=mask)
-
-    return out
-
-
-def phull(sample):
-    """
-    Hull Calculation
-
-    Parameters
-    ----------
-    sample : TYPE
-        DESCRIPTION.
-
-    Returns
-    -------
-    out : TYPE
-        DESCRIPTION.
-
-    """
-
-    xvals = np.arange(sample.size)
-    sample = np.transpose([xvals, sample])
-
-    edge = sample[:1]
-    rest = sample[1:]
-
-    hull = [0]
-    while len(rest) > 0:
-        grad = rest - edge
-        grad = grad[:, 1]/grad[:, 0]
-        pivot = np.argmax(grad)
-        edge = rest[pivot]
-        rest = rest[pivot+1:]
-        hull.append(pivot)
-
-    hull = np.array(hull) + 1
-    hull = hull.cumsum()-1
-    out = np.transpose([hull, np.take(sample[:, 1], hull)])
-    out = np.interp(xvals, out[:, 0], out[:, 1])
-
-    return out
-
 
 def testfn():
     """Main testing routine."""
@@ -1093,7 +1164,7 @@ def testfn2():
     nodata = 0
 
     iraster = (xoff, yoff, xsize, ysize)
-    # iraster = None
+    iraster = None
 
     data = get_raster(ifile, nval=nodata, iraster=iraster, piter = pbar.iter)
 
@@ -1104,4 +1175,4 @@ def testfn2():
 
 
 if __name__ == "__main__":
-    testfn2()
+    testfn()
