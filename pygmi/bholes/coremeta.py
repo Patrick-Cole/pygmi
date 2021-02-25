@@ -24,7 +24,7 @@
 # -----------------------------------------------------------------------------
 """
 Core Metadata Routine.
-
+terracore uses from to depth assignments.
 """
 
 import json

@@ -1931,7 +1931,6 @@ def testfn():
     for edi_file in allfiles:
     # Create an MT object
         mt_obj = MT(edi_file)
-        breakpoint()
 
     print('loading complete')
 

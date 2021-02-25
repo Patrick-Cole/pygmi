@@ -121,7 +121,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for trace in data.trace:
             x = tracemult*trace+offset
-            # breakpoint()
             ax1.plot(x[start:finish], y[start:finish], 'k-')
 
             ax1.fill_betweenx(y, offset, x, where=(x > offset), color='k')

@@ -511,7 +511,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         extent = dat[self.bands[0]].extent
-#        breakpoint()
         if self.manip == 'NDWI':
             if self.cbar is None:
                 self.cbar = self.figure.colorbar(self.im1, format=frm)
@@ -1159,7 +1158,6 @@ def testfn():
     CSL.settings(True)
 
     plt.show()
-    breakpoint()
 
 
 def testanim():
@@ -1172,7 +1170,6 @@ def testanim():
 
     rcParams['figure.dpi'] = 300
     # rcParams['savefig.dpi'] = 300
-    # breakpoint()
 
     # APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     fig = plt.figure()

@@ -1357,7 +1357,10 @@ def get_aster_hdf(ifile, piter=iter):
 
     solarelev = float(meta['SOLARDIRECTION'].split()[1])
     cdate = meta['CALENDARDATE']
-    fmt = '%Y-%m-%d'
+    if len(cdate) == 8:
+        fmt = '%Y%m%d'
+    else:
+        fmt = '%Y-%m-%d'
     dte = datetime.datetime.strptime(cdate, fmt)
     jdate = dte.timetuple().tm_yday
 
@@ -1382,21 +1385,26 @@ def get_aster_hdf(ifile, piter=iter):
 
     dat = []
     nval = 0
+    calctoa = False
     for bfile, bandid in piter(subdata):
         if 'QA' in bfile:
             continue
         if ptype == 'L1T' and 'ImageData3B' in bfile:
             continue
 
-        bandid2 = bandid[bandid.lower().index(' band'):
+        bandid2 = bandid[bandid.lower().index(']')+1:
                          bandid.lower().index('(')].strip()
 
         dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
 
         tmpds = gdal.AutoCreateWarpedVRT(dataset)
 
+        if tmpds is None:
+            continue
         dat.append(Data())
         dat[-1].data = tmpds.ReadAsArray()
+        if ptype == '08':
+            dat[-1].data[dat[-1].data == 2000] = nval
         dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
         dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
         if dat[-1].data.mask.size == 1:
@@ -1413,13 +1421,14 @@ def get_aster_hdf(ifile, piter=iter):
         dat[-1].filename = ifile
         dat[-1].units = units
 
-        if ptype == 'L1T':
+        if ptype == 'L1T' and 'ImageData' in ifile:
             dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
+            calctoa = True
 
     if dat == []:
         dat = None
 
-    if ptype == 'L1T':
+    if ptype == 'L1T' and calctoa is True:
         dat = calculate_toa(dat)
 
     return dat

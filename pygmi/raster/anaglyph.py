@@ -739,8 +739,6 @@ def anaglyph(red, blue, atype='dubois'):
         mat = np.array([[0.0, 0.7, 0.3, 0.0, 0.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
                         [0.0, 0.0, 0.0, 0.0, 0.0, 1.0]])
-    else:
-        breakpoint()
 
     newshape = (red.shape[0]*red.shape[1], 3)
     data1 = red[:, :, :3].copy()

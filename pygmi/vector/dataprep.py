@@ -792,8 +792,5 @@ def testfn():
     plt.plot(grd.data.data.T[0])
     plt.show()
 
-    breakpoint()
-
-
 if __name__ == "__main__":
     testfn()

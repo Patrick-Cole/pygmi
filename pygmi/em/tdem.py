@@ -752,8 +752,6 @@ def testrun():
     # os.environ['KMP_WARNINGS'] ='0'
     tmp.settings(True)
 
-    breakpoint()
-
 
 if __name__ == "__main__":
     testrun()

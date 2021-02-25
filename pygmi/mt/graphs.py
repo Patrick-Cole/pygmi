@@ -423,8 +423,5 @@ def testfn():
     plt.show()
 
 
-    breakpoint()
-
-
 if __name__ == "__main__":
     testfn()

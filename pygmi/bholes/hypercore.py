@@ -860,9 +860,6 @@ class ImageCor(QtWidgets.QDialog):
             if self.savgol.isChecked():
                 datah = filter_data(datah, 'savgol', piter=self.piter)
 
-            if datah[0] is None:
-                breakpoint()
-
             meta = 'reflectance scale factor = 10000\n'
             meta += 'wavelength = {\n'
             for i in datah:
