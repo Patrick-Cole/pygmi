@@ -141,6 +141,14 @@ class ImportSeisan():
         else:
             self.showprocesslog = parent.showprocesslog
 
+        idir = os.path.dirname(os.path.realpath(__file__))
+        self.tfile = os.path.join(idir, r'descriptions.txt')
+
+        with open(self.tfile) as inp:
+            self.rnames = inp.read()
+
+        self.rnames = self.rnames.split('\n')
+
     def settings(self, nodialog=False):
         """
         Entry point into item.
@@ -244,6 +252,13 @@ class ImportSeisan():
             elif ltype == '3':
                 if tmp.region != '':
                     event[ltype] = tmp
+                    if tmp.region not in self.rnames:
+                        errs = ['Warning: Possible spelling error on on '
+                                'line: '+str(iii+1)+'. Make sure the region '
+                                'spelling, case and punctuation '
+                                'matches exactly the definitions '
+                                'in '+self.tfile, i]
+                        file_errors.append(errs)
             else:
                 event[ltype] = tmp
 

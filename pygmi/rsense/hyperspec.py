@@ -1174,5 +1174,16 @@ def testfn2():
     tmp.settings()
 
 
+from dataclasses import dataclass
+@dataclass
+class hope:
+    """class."""
+    name: str ='a'
+    age: int =1
+
+
+
+
 if __name__ == "__main__":
+    breakpoint()
     testfn()

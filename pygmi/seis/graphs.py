@@ -345,6 +345,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         pid = np.array(data1['4_phase_id'])
         tres = np.array(data1['4_travel_time_residual'])
+        weight = np.array(data1['4_weighting_indicator'])
+        pid = pid[weight != 9]
+        tres = tres[weight != 9]
 
         pid = pid[~np.isnan(tres)]
         tres = tres[~np.isnan(tres)].astype(float)
@@ -472,6 +475,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             P = {}
             S = {}
             for rec in event['4']:
+                if rec.weighting_indicator == 9:
+                    continue
+                # breakpoint()
                 time = rec.hour*3600+rec.minutes*60+rec.seconds
                 if rec.phase_id == 'P   ':
                     P[rec.station_name] = time
@@ -876,3 +882,31 @@ def eigsorted(cov):
     vals, vecs = np.linalg.eigh(cov)
     order = vals.argsort()[::-1]
     return vals[order], vecs[:, order]
+
+
+def testfn():
+    """Main testing routine."""
+    import matplotlib.pyplot as plt
+    import sys
+    import time
+    from pygmi.seis.iodefs import ImportSeisan
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    tmp = ImportSeisan()
+    tmp.ifile = r'C:\Work\Workdata\seismology\march2021\select.out'
+    # tmp.ifile = r'C:\Work\Workdata\seismology\march2021\wadati_err2.out'
+    tmp.settings(True)
+
+    data = tmp.outdata['Seis']
+
+    dat = import_for_plots(data)
+    # breakpoint()
+
+    tmp = PlotQC()
+    tmp.indata['Seis'] = data
+    tmp.run()
+    tmp.exec_()
+
+
+if __name__ == "__main__":
+    testfn()
