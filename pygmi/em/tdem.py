@@ -708,7 +708,7 @@ def tonumber(test, alttext=None):
     Returns
     -------
     str or int or float
-        Returns a lower case verion of alttext, or a number.
+        Returns a lower case version of alttext, or a number.
 
     """
     if alttext is not None and test.lower() == alttext.lower():

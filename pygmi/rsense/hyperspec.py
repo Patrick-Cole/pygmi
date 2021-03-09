@@ -265,7 +265,7 @@ class AnalSpec(QtWidgets.QDialog):
 
         self.lbl_info.setWordWrap(True)
         self.lw_speclib.addItem('None')
-        self.setWindowTitle('Core Metadata and Depth Assignment')
+        self.setWindowTitle('Analyse Features')
         lbl_combo = QtWidgets.QLabel('Display Band:')
         lbl_feature = QtWidgets.QLabel('Feature:')
 
@@ -595,14 +595,15 @@ class ProcFeatures(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.pfeat')
         # label_sensor = QtWidgets.QLabel('Sensor:')
         lbl_ratios = QtWidgets.QLabel('Product:')
         lbl_details = QtWidgets.QLabel('Details:')
 
         self.tablewidget.setRowCount(2)
         self.tablewidget.setColumnCount(3)
-        self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter', 'Threshold'])
+        self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter',
+                                                    'Threshold'])
         self.tablewidget.resizeColumnsToContents()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)

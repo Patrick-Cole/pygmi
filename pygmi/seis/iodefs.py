@@ -129,7 +129,7 @@ def str2int(inp):
 
 
 class ImportSeisan():
-    """Import Seisan Data."""
+    """Import SEISAN Data."""
 
     def __init__(self, parent=None):
         self.ifile = ''
@@ -374,7 +374,7 @@ def read_record_type_1(i):
     Returns
     -------
     tmp : sdt.seisan_1
-        Seisan 1 record.
+        SEISAN 1 record.
 
     """
     tmp = sdt.seisan_1()
@@ -421,7 +421,7 @@ def read_record_type_2(i):
     Returns
     -------
     tmp : sdt.seisan_2
-        Seisan 2 record.
+        SEISAN 2 record.
 
     """
     dat = sdt.seisan_2()
@@ -461,7 +461,7 @@ def read_record_type_3(i):
     Returns
     -------
     tmp : sdt.seisan_4
-        Seisan 4 record.
+        SEISAN 4 record.
 
     """
     dat = sdt.seisan_3()
@@ -484,7 +484,7 @@ def read_record_type_4(i):
     Returns
     -------
     tmp : sdt.seisan_4
-        Seisan 4 record.
+        SEISAN 4 record.
 
     """
     tmp = sdt.seisan_4()
@@ -532,7 +532,7 @@ def read_record_type_5(i):
     Returns
     -------
     tmp : sdt.seisan_5
-        Seisan 5 record.
+        SEISAN 5 record.
 
     """
     tmp = sdt.seisan_5()
@@ -552,7 +552,7 @@ def read_record_type_6(i):
     Returns
     -------
     tmp : sdt.seisan_6
-        Seisan 6 record.
+        SEISAN 6 record.
 
     """
     tmp = sdt.seisan_6()
@@ -573,7 +573,7 @@ def read_record_type_e(i):
     Returns
     -------
     tmp : sdt.seisan_E
-        Seisan E record.
+        SEISAN E record.
 
     """
     tmp = sdt.seisan_E()
@@ -602,7 +602,7 @@ def read_record_type_f(i):
     Returns
     -------
     out : dictionary
-        Dictionary with a Seisan F record.
+        Dictionary with a SEISAN F record.
 
     """
     tmp = sdt.seisan_F()
@@ -643,7 +643,7 @@ def read_record_type_h(i):
     Returns
     -------
     tmp : sdt.seisan_H
-        Seisan H record.
+        SEISAN H record.
 
     """
     tmp = sdt.seisan_H()
@@ -674,7 +674,7 @@ def read_record_type_i(i):
     Returns
     -------
     tmp : sdt.seisan_I
-        Seisan I record.
+        SEISAN I record.
 
     """
     tmp = sdt.seisan_I()
@@ -702,7 +702,7 @@ def read_record_type_m(i):
     Returns
     -------
     tmp : sdt.seisan_M
-        Seisan M record.
+        SEISAN M record.
 
     """
     if i[1:3] != 'MT':
@@ -747,14 +747,14 @@ def merge_m(rec1, rec2):
     Parameters
     ----------
     rec1 : sdt.seisan_M
-        Seisan M record.
+        SEISAN M record.
     rec2 : sdt.seisan_M
-        Seisan M record.
+        SEISAN M record.
 
     Returns
     -------
     rec1 : sdt.seisan_M
-        Seisan M record.
+        SEISAN M record.
 
     """
     rec1.mrr_mzz = rec2.mrr_mzz
@@ -785,7 +785,7 @@ def read_record_type_p(i):
     Returns
     -------
     tmp : sdt.seisan_P
-        Seisan P record.
+        SEISAN P record.
 
     """
     tmp = sdt.seisan_P()
@@ -922,7 +922,7 @@ class ImportGenericFPS():
 
 
 class ExportSeisan():
-    """Export Seisan Data."""
+    """Export SEISAN Data."""
 
     def __init__(self, parent=None):
         self.ifile = ''
@@ -1430,7 +1430,7 @@ class ExportSeisan():
 
 
 class ExportCSV():
-    """Export Seisan Data."""
+    """Export SEISAN Data."""
 
     def __init__(self, parent=None):
         self.ifile = ''
@@ -1976,7 +1976,7 @@ class ExportCSV():
 
 
 class ExportSummaryCSV():
-    """Export Seisan Data."""
+    """Export SEISAN Data."""
 
     def __init__(self, parent=None):
         self.ifile = ''
@@ -2304,7 +2304,7 @@ class FilterSeisan(QtWidgets.QDialog):
 
     def get_limits(self):
         """
-        Get limits for seisan data.
+        Get limits for SEISAN data.
 
         Returns
         -------

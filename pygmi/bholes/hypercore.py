@@ -682,7 +682,7 @@ class ImageCor(QtWidgets.QDialog):
             self.showprocesslog = parent.showprocesslog
             self.piter = parent.pbar.iter
 
-        self.indata = {}
+        self.indata = {'tmp': True}
         self.outdata = {}
         self.parent = parent
         self.product = {}
@@ -709,7 +709,7 @@ class ImageCor(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        helpdocs = menu_default.HelpButton('pygmi.bhole.rawcore')
         pb_idir = QtWidgets.QPushButton('Input Raw Directory')
         pb_odir = QtWidgets.QPushButton('Output Processed Directory')
         self.dccor.setChecked(True)
@@ -719,7 +719,7 @@ class ImageCor(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle('Process Hyperspectral Features')
+        self.setWindowTitle('Raw Imagery Corrections')
 
         gridlayout_main.addWidget(pb_idir, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.idir, 0, 1, 1, 1)

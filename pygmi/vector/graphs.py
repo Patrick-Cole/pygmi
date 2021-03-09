@@ -305,7 +305,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ival : dictionary key
             dictionary key representing the line data channel to be plotted.
         scale: float
-            scale of exxageration for the profile data on the map.
+            scale of exaggeration for the profile data on the map.
         uselabels: bool
             boolean choice whether to use labels or not.
 
@@ -390,7 +390,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_vector(self, data, col):
         """
-        Update the plot from vactor data.
+        Update the plot from vector data.
 
         Parameters
         ----------

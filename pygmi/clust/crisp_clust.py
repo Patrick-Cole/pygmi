@@ -572,7 +572,7 @@ class CrispClust(QtWidgets.QDialog):
         ----------
         data : numpy array
             NxP matrix containing the data to be clustered, N is number of
-            samples, P is number of different attributes availabe for each
+            samples, P is number of different attributes available for each
             sample.
         no_clust : int
             Number of clusters to be used.
@@ -583,7 +583,7 @@ class CrispClust(QtWidgets.QDialog):
         centfix : TYPE
             Constrains the position of cluster centers, if centfix is empty,
             cluster centers can freely vary during cluster analysis, otherwise
-            CENTFIX is of equal size to CENT and gives an absolut deviation
+            CENTFIX is of equal size to CENT and gives an absolute deviation
             from initial center positions that should not be exceeded during
             clustering. Note, CETNFIX applies only if center values are
             provided by the user.
@@ -603,7 +603,7 @@ class CrispClust(QtWidgets.QDialog):
             latter is the crisp version of the Gustafson-Kessel algorithm
         cov_constr : float
             scalar between [0 1], values > 0 trim the covariance matrix
-            to avoid needle-like ellpsoids for the clusters, applies only for
+            to avoid needle-like ellipsoids for the clusters, applies only for
             CLTYPE='vardet', but must always be provided.
 
         Returns

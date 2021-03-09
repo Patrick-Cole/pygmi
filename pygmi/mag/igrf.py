@@ -257,7 +257,7 @@ class IGRF(QtWidgets.QDialog):
         """
         Setting Dialog.
 
-        This is the main entrypoint into this routine. It also
+        This is the main entry point into this routine. It also
         contains the main IGRF code.
 
         Parameters

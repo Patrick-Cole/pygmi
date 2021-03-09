@@ -87,14 +87,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         usgs = xl.parse('USGS')
         cgs = xl.parse('CGS')
         cgslookup = xl.parse('250K Lookup')
-        colours = xl.parse('Colours')
+        colors = xl.parse('Colors')
         xl.close()
 
         usgs = usgs.set_index('code').to_dict()['description']
         cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].astype(str)
         cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply('{0:0>3}'.format)
         stratcol = cgslookup.set_index('LITHO_NAME').to_dict()['COLOR_CODE']
-        col = colours.set_index('code').to_dict()['colour']
+        col = colors.set_index('code').to_dict()['color']
         clith = cgs.set_index('lithology').to_dict()['lithology description']
         cgs = cgs.set_index('lithology').to_dict()['code']
         col['none'] = 'ffffff'
@@ -224,14 +224,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         usgs = xl.parse('USGS')
         cgs = xl.parse('CGS')
         cgslookup = xl.parse('250K Lookup')
-        colours = xl.parse('Colours')
+        colors = xl.parse('Colors')
         xl.close()
 
         usgs = usgs.set_index('code').to_dict()['description']
         cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].astype(str)
         cgslookup['COLOR_CODE'] = cgslookup['COLOR_CODE'].apply('{0:0>3}'.format)
         stratcol = cgslookup.set_index('LITHO_NAME').to_dict()['COLOR_CODE']
-        col = colours.set_index('code').to_dict()['colour']
+        col = colors.set_index('code').to_dict()['color']
         # clith = cgs.set_index('lithology').to_dict()['lithology description']
         cgs = cgs.set_index('lithology').to_dict()['code']
         col['none'] = 'ffffff'

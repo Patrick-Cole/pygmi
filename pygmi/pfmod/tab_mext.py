@@ -599,7 +599,7 @@ class MextDisplay(QtWidgets.QDialog):
         Parameters
         ----------
         d_z : float
-            Layer thinkcness.
+            Layer thickness.
 
         Returns
         -------

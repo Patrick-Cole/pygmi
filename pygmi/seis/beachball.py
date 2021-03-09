@@ -479,11 +479,11 @@ def beachball(fm, centerx, centery, diam, isgeog, showprocesslog=print):
     Parameters
     ----------
     fm : numpy array
-        focal mechanism that is either number of mechnisms (NM) by 3
+        focal mechanism that is either number of mechanisms (NM) by 3
         (strike, dip, and rake) or NM x 6 (mxx, myy, mzz, mxy, mxz, myz -
         the six independent components of the moment tensor). The strike is
         of the first plane, clockwise relative to north. The dip is of the
-        first plane, defined clockwise and perpedicular to strike, relative
+        first plane, defined clockwise and perpendicular to strike, relative
         to horizontal such that 0 is horizontal and 90 is vertical. The rake is
         of the first focal plane solution. 90 moves the hanging wall up-dip
         (thrust), 0 moves it in the strike direction (left-lateral), -90 moves

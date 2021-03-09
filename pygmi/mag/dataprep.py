@@ -602,7 +602,7 @@ def fft_getkxy(fftmod, xdim, ydim):
 
 def rtp(data, I_deg, D_deg):
     """
-    Reduction to th epole.
+    Reduction to the pole.
 
     Parameters
     ----------

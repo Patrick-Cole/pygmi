@@ -80,7 +80,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     sdata : list
         list of PyGMI raster data objects - used for shaded images
     gmode : str
-        string contaning the graphics mode - Contour, Ternary, Sunshade,
+        string containing the graphics mode - Contour, Ternary, Sunshade,
         Single Color Map.
     argb : list
         list of matplotlib subplots. There are up to three.
@@ -105,7 +105,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         green histogram bounding box
     bbox_hist_blue :  matplotlib bounding box
         blue histogram bounding box
-    axes : matpolotlib axes
+    axes : matplotlib axes
         axes for the plot
     pinit : numpy array
         calculated with aspect - used in sunshading
@@ -1621,7 +1621,7 @@ def currentshader(data, cell, theta, phi, alpha):
     Returns
     -------
     R : numpy array
-        array containg the shaded results.
+        array containing the shaded results.
 
     """
     asp = aspect2(data)

@@ -766,7 +766,7 @@ class GroupProj(QtWidgets.QWidget):
         Parameters
         ----------
         wkt : str
-            Well Known Text descriptions for coordfinates (WKT) .
+            Well Known Text descriptions for coordinates (WKT) .
 
         Returns
         -------
@@ -1035,7 +1035,7 @@ class Metadata(QtWidgets.QDialog):
 
     def run(self):
         """
-        Entrypoint to start this routine.
+        Entry point to start this routine.
 
         Returns
         -------
@@ -1669,7 +1669,7 @@ def taylorcont(data, h):
 
 def rtp(data, I_deg, D_deg):
     """
-    Reduction to th epole.
+    Reduction to the epole.
 
     Parameters
     ----------

@@ -505,7 +505,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
             z = np.arange(nshape[2]) * self.spacing[2]
             xx, yy, zz = np.meshgrid(x, y, z)
 
-            # Set up gaussian smoothing filter
+            # Set up Gaussian smoothing filter
             ix, iy, iz = np.mgrid[-1:2, -1:2, -1:2]
             sigma = 2
             cci = np.exp(-(ix**2+iy**2+iz**2)/(3*sigma**2))
@@ -1185,7 +1185,7 @@ class GLWidget(QtOpenGL.QGLWidget):
 
     def mousePressEvent(self, event):
         """
-        MOuse press event.
+        Mouse press event.
 
         Parameters
         ----------
@@ -1564,7 +1564,7 @@ def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
 
 def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
     """
-    Interpolate verices.
+    Interpolate vertices.
 
     Parameters
     ----------
@@ -1590,7 +1590,7 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
     Returns
     -------
     p : numpy array
-        Interpolated verices.
+        Interpolated vertices.
 
     """
     p = np.zeros([len(p1x), 3])

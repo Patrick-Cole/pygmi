@@ -432,7 +432,7 @@ def theoretical_gravity(lat):
     Returns
     -------
     gT : numpy array
-        Array of theoretrical gravity values.
+        Array of theoretical gravity values.
 
     """
     gT = 978032.67715*((1 + 0.001931851353 * np.sin(lat)**2) /
@@ -448,7 +448,7 @@ def atmospheric_correction(h):
     Parameters
     ----------
     h : numpy array
-        Heights relative to elipsoid (GPS heights).
+        Heights relative to ellipsoid (GPS heights).
 
     Returns
     -------
@@ -470,7 +470,7 @@ def height_correction(lat, h):
     lat : numpy array
         Latitude in radians.
     h : numpy array
-        Heights relative to elipsoid (GPS heights).
+        Heights relative to ellipsoid (GPS heights).
 
     Returns
     -------
@@ -485,12 +485,12 @@ def height_correction(lat, h):
 
 def spherical_bouguer(h, dens):
     """
-    Calculate spherical bouguer.
+    Calculate spherical Bouguer.
 
     Parameters
     ----------
     h : numpy array
-        Heights relative to elipsoid (GPS heights).
+        Heights relative to ellipsoid (GPS heights).
     dens : float
         Density.
 

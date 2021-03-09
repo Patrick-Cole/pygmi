@@ -602,7 +602,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
 
 
 class RotateEDI(QtWidgets.QDialog):
-    """Roitate EDI data."""
+    """Rotate EDI data."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -1371,7 +1371,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         pdata : numpy array
             Phase data.
         rdata : numpy array
-            Apperent resistivity data.
+            Apparent resistivity data.
         depths : numpy array, optional
             Model depths. The default is None.
         res : numpy array, optional
@@ -1890,7 +1890,7 @@ def tonumber(test, alttext=None):
     Returns
     -------
     str or int or float
-        Returns a lower case verion of alttext, or a number.
+        Returns a lower case version of alttext, or a number.
 
     """
     if alttext is not None and test.lower() == alttext.lower():

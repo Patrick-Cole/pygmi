@@ -61,7 +61,7 @@ def test_tilt1():
 
 
 def test_rtp():
-    """test rtp."""
+    """Test RTP."""
     datin = Data()
     datin.data = np.ma.array([[1, 2], [1, 2]])
     dat2 = [[0.7212671143002998, 1.9651600796627182],

@@ -249,7 +249,7 @@ class ImportLineData(QtWidgets.QDialog):
 
     def get_GXYZ(self):
         """
-        Get geosoft XYZ.
+        Get Geosoft XYZ.
 
         Returns
         -------

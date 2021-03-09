@@ -85,7 +85,7 @@ class ImageSeg(QtWidgets.QDialog):
         helpdocs = menu_default.HelpButton('pygmi.clust.segmentation')
 
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
-        lbl_wcolor = QtWidgets.QLabel('Colour weight')
+        lbl_wcolor = QtWidgets.QLabel('Color weight')
         lbl_scale = QtWidgets.QLabel('Maximum allowable cost function')
 
         val = QtGui.QDoubleValidator(0.0, 1.0, 2)

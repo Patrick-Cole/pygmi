@@ -32,9 +32,9 @@ from PyQt5 import QtWidgets, QtCore
 
 class CorrectDescriptions(QtWidgets.QDialog):
     """
-    Correct seisan descriptions.
+    Correct SEISAN descriptions.
 
-    This compares the descriptions found in seisan type 3 lines to a custom
+    This compares the descriptions found in SEISAN type 3 lines to a custom
     list.
 
     Attributes

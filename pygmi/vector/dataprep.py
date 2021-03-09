@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Data Preperation for Vector Data."""
+"""Data Preparation for Vector Data."""
 
 import os
 import copy

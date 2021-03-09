@@ -99,6 +99,8 @@ class CoreMask(QtWidgets.QDialog):
 
         self.pb_savemask.setEnabled(False)
 
+        self.setWindowTitle('Core Masking')
+
 # Set groupboxes and layouts
         gridlayout = QtWidgets.QGridLayout(self)
 
@@ -602,7 +604,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         dat2 : str, optional
-            Comobox text. The default is None.
+            Combobox text. The default is None.
         opac : float, optional
             Opacity between 0 and 100. The default is 100.0.
 

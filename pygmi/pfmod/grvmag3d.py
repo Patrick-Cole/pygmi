@@ -697,7 +697,7 @@ class GeoData():
         |    horizontal and declinations positive east of true north.
         |    Magnetization in A/m.
 
-        Output paramters:
+        Output parameters:
         |    Total field anomaly t, in nT.
 
         Parameters
@@ -1327,7 +1327,7 @@ def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
     |    horizontal and declinations positive east of true north.
     |    Magnetization in A/m.
 
-    Output paramters:
+    Output parameters:
     |    Total field anomaly t, in nT.
 
 
@@ -1554,7 +1554,7 @@ def dat_extent(dat, axes):
     dat : PyGMI Data
         PyGMI raster dataset.
     axes : matplotlib.axes._subplots.AxesSubplot
-        Matploltib axes.
+        Matplotlib axes.
 
     Returns
     -------

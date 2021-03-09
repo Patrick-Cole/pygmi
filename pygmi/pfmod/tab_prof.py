@@ -1894,7 +1894,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         dat2 : str, optional
-            Comobox text. The default is None.
+            Combobox text. The default is None.
         opac : float, optional
             Opacity between 0 and 100. The default is 100.0.
 

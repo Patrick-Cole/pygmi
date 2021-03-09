@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Raw Core Imagery Corrections</h1>
+		<p>The interface for raw imagery corrections combines the DC corrections, smile correction as well as spike removal and smoothing.</p>
+		<h2>Options</h2>
+		<ul>
+			<li>Input raw directory – This is the directory where raw scanned core data resides, in ENVI format.</li>
+			<li>Output processed directory – location for processed files to be stored.</li>
+			<li>DC Correction – applies white balance correction. This requires a white reference and dark reference file to be in the same directory as the scanned core data.</li>
+			<li>Geometric smile correction – applicable to FENIX data.</li>
+			<li>Spike removal – spikes are located and removed using a Hampel filter.</li>
+			<li>Smoothing – smoothing is done using a Savitzky-Golay filter.</li>
+
+		</ul>
+	</body>
+</html>

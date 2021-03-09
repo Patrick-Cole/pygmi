@@ -326,7 +326,7 @@ class GraphWindow(QtWidgets.QDialog):
 
 class PlotCCoef(GraphWindow):
     """
-    Plot 2D Correlation Coeffiecients.
+    Plot 2D Correlation Coefficients.
 
     Attributes
     ----------

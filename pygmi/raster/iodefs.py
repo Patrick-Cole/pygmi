@@ -223,7 +223,7 @@ class ImportData():
                                               'Could not import the surfer 6 '
                                               'grid. Please make sure it not '
                                               'another format, such as '
-                                              'geosoft.',
+                                              'Geosoft.',
                                               QtWidgets.QMessageBox.Ok)
             elif self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -970,7 +970,7 @@ def get_geopak(hfile):
 
 def get_geosoft(hfile):
     """
-    Get geosoft file.
+    Get Geosoft file.
 
     Parameters
     ----------

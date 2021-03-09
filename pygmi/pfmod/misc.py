@@ -506,9 +506,9 @@ def gmerge(master, slave, xrange=None, yrange=None):
     slave : PyGMI Data
         PyGMI raster dataset.
     xrange : list, optional
-        List containg range of minimum and maximum X. The default is None.
+        List containing range of minimum and maximum X. The default is None.
     yrange : list, optional
-        List containg range of minimum and maximum Y. The default is None.
+        List containing range of minimum and maximum Y. The default is None.
 
     Returns
     -------

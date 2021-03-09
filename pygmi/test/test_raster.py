@@ -58,7 +58,7 @@ def test_dratio():
 
 
 def test_viz():
-    """test vizibility."""
+    """test visibility."""
     datin = np.ma.array([[1, 2], [1, 2]])
     vtot2 = [[4., 4.], [4., 4.]]
     vstd2 = [[0.5345224838248488, 0.5345224838248488],
@@ -219,7 +219,7 @@ def test_histeq():
 
 
 def test_img2rgb():
-    """tests img to rgb."""
+    """tests img to RGB."""
 
     data = np.ma.array([[0, 1, 2, 1],
                         [0, 1, 2, 1],

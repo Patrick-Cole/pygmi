@@ -505,7 +505,7 @@ def vgrad(cnt):
     gy : numpy array
         Y gradients.
     cgrad : numpy array
-        Countour gradient.
+        Contour gradient.
     cntid : numpy array
         Contour index.
 

@@ -646,7 +646,7 @@ class SuperClass(QtWidgets.QDialog):
 
     def oncellchange(self, row, col):
         """
-        Routine qactivated whenever a cell is changed.
+        Routine activated whenever a cell is changed.
 
         Parameters
         ----------

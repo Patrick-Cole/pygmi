@@ -152,7 +152,7 @@ class seisan_2():
     28-29 i2      Max Intensity
     30    a1      Max Intensity qualifier
     -                    (+ or - indicating more precicely the intensity)
-    31-32 a2      Intensity scale (ISC type defintions)
+    31-32 a2      Intensity scale (ISC type definitions)
     -                    MM = Modified Mercalli
     -                    RF = Rossi Forel
     -                    CS = Mercalli - Cancani - Seberg
@@ -172,10 +172,10 @@ class seisan_2():
     53-56 f4.2    Logarithm (base 10) of radius of felt area.
     57-61 f5.2    Logarithm (base 10) of area (km**2) number 1 where
     -                    earthquake was felt exceeding a given intensity.
-    62-63 i2      Intensity boardering the area number 1.
+    62-63 i2      Intensity bordering the area number 1.
     64-68 f5.2    Logarithm (base 10) of area (km**2) number 2 where
     -                    earthquake was felt exceeding a given intensity.
-    69-70 i2      Intensity boardering the area number 2.
+    69-70 i2      Intensity bordering the area number 2.
     71            Free
     72    a1      Quality rank of the report (A, B, C, D)
     73-75 a3      Reporting agency
@@ -400,7 +400,7 @@ class seisan_E():
     33-38 F6.1 Longitude (x) error (km)
     39-43 F5.1 Depth (z) error (km)
     44-55 E12.4 Covariance (x,y) km*km
-    56-67 E12.4 Covarience (x,z) km*km
+    56-67 E12.4 Covariance (x,z) km*km
     68-79 E14.4 Covariance (y,z) km*km
 
     covariance matrix:
@@ -587,7 +587,7 @@ class seisan_M():
     39:44   F6.3   Mtp or Mxy [Nm]
     46:48   A3     Reporting Agency
     49:49   A1     MT coordinate system (S=spherical, C=Cartesian)
-    50:51   i2     Exponental
+    50:51   i2     Exponential
     53:62   G6.3   Scalar Moment [Nm]
     71:77   A7     Method used
     78:78   A1     Quality of solution, A (best), B C or D (worst), added

@@ -830,7 +830,7 @@ class MainWidget(QtWidgets.QMainWindow):
         Item insert.
 
         Insert an item on the main interface. The item is an object passed by
-        one of the menu.py routines and is one of the algorithims chosen on
+        one of the menu.py routines and is one of the algorithms chosen on
         the main PyGMI menu.
 
         Parameters
@@ -1225,7 +1225,7 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         Clean deleted objects in self.pdlg and appends a new object.
 
-        self.pdlg allows for modeless dialogs to remain in existance until they
+        self.pdlg allows for modeless dialogues to remain in existence until they
         are closed
 
         Parameters

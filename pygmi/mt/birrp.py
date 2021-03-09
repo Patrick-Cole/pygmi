@@ -226,7 +226,7 @@ class BIRRP(QtWidgets.QDialog):
                         self.c2threshe)
         self.lay.addRow("OFIL: output filename root", self.ofil)
         self.lay.addRow("NLEV: output level", self.nlev)
-        self.lay.addRow("NPCS: numer of data pieces", self.npcs)
+        self.lay.addRow("NPCS: number of data pieces", self.npcs)
         self.lay.addRow("NAR: length of ar filter (0 for none, <0 for "
                         "filename)", self.nar)
         self.lay.addRow("IMODE: file mode", self.imode)

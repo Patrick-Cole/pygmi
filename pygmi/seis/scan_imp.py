@@ -188,7 +188,7 @@ class SIMP():
                 self.minute = self.datamins[0]
                 self.sec = self.datasecs[0]
 
-# Put data into seisan structures
+# Put data into SEISAN structures
             self.event = {}
             self.get_record_type_1()
             self.get_record_type_e()
@@ -989,7 +989,7 @@ class SIMP():
         Parameters
         ----------
         eline : str
-            String containging error.
+            String containing error.
 
         Returns
         -------
@@ -1015,7 +1015,7 @@ class SIMP():
         Returns
         -------
         mrecs : list
-            List of relevent records.
+            List of relevant records.
         monconv : dictionary
             Dictionary to convert string months to numbers.
 

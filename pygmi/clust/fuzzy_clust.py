@@ -550,7 +550,7 @@ class FuzzyClust(QtWidgets.QDialog):
             DATA is size M-by-N, where M is the number of samples
             and N is the number of coordinates (attributes) for each sample.
         no_clust : int
-            Numer of clusters.
+            Number of clusters.
         init : TYPE
             INIT may be set to [], in this case the fcm generates random
             initial center locations to start the algorithm. Alternatively,
@@ -567,7 +567,7 @@ class FuzzyClust(QtWidgets.QDialog):
         expo : float
             Fuzzification exponent.
         cltype : str
-            either 'FCM' for fuzy c-means (spherically shaped clusters),
+            either 'FCM' for fuzzy c-means (spherically shaped clusters),
             'DET' for advanced fuzzy c-means (ellipsoidal clusters, all
             clusters use the same ellipsoid), or 'GK' for Gustafson-Kessel
             clustering (ellipsoidal clusters, each cluster uses its own
@@ -576,7 +576,7 @@ class FuzzyClust(QtWidgets.QDialog):
             COV_CONSTR applies only to the GK algorithm. constrains the cluster
             shape towards spherical clusters to avoid needle-like clusters.
             COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
-            COV_CONSTR = 0 results in no constraining of the covarince matrices
+            COV_CONSTR = 0 results in no constraining of the covariance matrices
             of the clusters.
 
         Returns
