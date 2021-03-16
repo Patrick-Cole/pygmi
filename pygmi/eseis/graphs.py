@@ -135,7 +135,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class PlotSEGY(GraphWindow):
-    """Plot Raster Class."""
+    """Plot SEG-Y Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)

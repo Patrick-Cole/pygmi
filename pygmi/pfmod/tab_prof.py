@@ -2947,7 +2947,7 @@ def rotate2d(pts, cntr, ang=np.pi/4):
     return pts2
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     aaa = np.arange(12.).reshape((4, 3))
     print(aaa)
@@ -2958,4 +2958,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

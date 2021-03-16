@@ -46,12 +46,6 @@ class PointCut():
     ----------
     ifile : str
         input file name.
-    name : str
-        item name
-    ext : str
-        file name extension.
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     indata : dictionary
@@ -697,6 +691,8 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
     numits : int
         number of iterations. By default its 4. If this is negative, a maximum
         numits will be calculated and used.
+    showprogresslog : print, optional
+        Routine for displaying messages. Default is print
 
     Returns
     -------
@@ -762,7 +758,7 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
     return newz
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     import sys
     import matplotlib.pyplot as plt
@@ -793,4 +789,4 @@ def testfn():
     plt.show()
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

@@ -278,7 +278,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.repaint()
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     import sys
     from pygmi.pfmod.iodefs import ImportMod3D
@@ -299,4 +299,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

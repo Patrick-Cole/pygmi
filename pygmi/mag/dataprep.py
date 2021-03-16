@@ -652,8 +652,8 @@ def rtp(data, I_deg, D_deg):
     return dat
 
 
-def testfn():
-    """Main RTP testing routine."""
+def _testfn():
+    """RTP testing routine."""
     import matplotlib.pyplot as plt
     from matplotlib import cm
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
@@ -682,4 +682,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

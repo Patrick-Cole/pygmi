@@ -671,7 +671,7 @@ def import_for_plots(ifile, dind='R'):
     return datd
 
 
-def main():
+def _testfn():
     """Routine for testing."""
     ifile = r'C:\Work\Workdata\review\seismology\pygmi.out'
     # ifile = r'C:\Work\Workdata\review\seismology\collect.out'
@@ -693,4 +693,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _testfn()

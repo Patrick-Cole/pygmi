@@ -1669,7 +1669,7 @@ def taylorcont(data, h):
 
 def rtp(data, I_deg, D_deg):
     """
-    Reduction to the epole.
+    Reduction to the pole.
 
     Parameters
     ----------
@@ -2208,7 +2208,7 @@ def trim_raster(olddata):
     return olddata
 
 
-def testrtp():
+def _testrtp():
     """Main RTP testing routine."""
     import matplotlib.pyplot as plt
     from matplotlib import cm
@@ -2237,7 +2237,7 @@ def testrtp():
     plt.show()
 
 
-def testdown():
+def _testdown():
     """Main continuation testing routine."""
     import matplotlib.pyplot as plt
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
@@ -2300,7 +2300,7 @@ def testdown():
     plt.show()
 
 
-def testgrid():
+def _testgrid():
     """
     Test.
 
@@ -2374,4 +2374,4 @@ def testgrid():
 
 
 if __name__ == "__main__":
-    testdown()
+    _testdown()

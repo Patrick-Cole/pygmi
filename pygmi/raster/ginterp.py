@@ -1814,7 +1814,7 @@ def norm255(dat):
     return out
 
 
-def test():
+def _testfn():
     """Test."""
     import matplotlib
 
@@ -1833,5 +1833,4 @@ def test():
 
 
 if __name__ == "__main__":
-
-    test()
+    _testfn()

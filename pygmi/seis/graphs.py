@@ -884,7 +884,7 @@ def eigsorted(cov):
     return vals[order], vecs[:, order]
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     import matplotlib.pyplot as plt
     import sys
@@ -909,4 +909,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

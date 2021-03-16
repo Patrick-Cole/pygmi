@@ -553,7 +553,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class PlotPoints(GraphWindow):
-    """Plot Points2 Class."""
+    """Plot Points Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -707,7 +707,7 @@ class PlotLines(GraphWindow):
 
 
 class PlotLineMap(GraphWindow):
-    """Plot Lines2 Class."""
+    """Plot Lines Map Class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)

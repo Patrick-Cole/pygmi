@@ -266,6 +266,10 @@ def gradients(data, azi, xint, yint):
         input numpy data array
     azi : float
         Filter direction (degrees)
+    xint : float
+        X interval/distance.
+    yint : float
+        Y interval/distance.
 
     Returns
     -------
@@ -486,6 +490,8 @@ def visibility2d(data, wsize, dh, piter=iter):
         window size, must be odd
     dh : float
         height of observer above surface
+    piter : iter
+        Progress bar iterable. The default is iter.
 
     Returns
     -------
@@ -668,6 +674,8 @@ def vertical(data, npts=None, xint=1, order=1):
         Number of points. The default is None.
     xint : float, optional
         X interval. The default is 1.
+    order : int, optional
+        Order. The default is 1.
 
     Returns
     -------

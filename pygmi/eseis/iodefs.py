@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import and export data."""
+"""Import and export seismic data data."""
 
 import os
 from PyQt5 import QtWidgets
@@ -31,7 +31,7 @@ import segyio
 
 class ImportSEGY():
     """
-    Import Data.
+    Import SEG-Y Data.
 
     Attributes
     ----------
@@ -130,7 +130,7 @@ class ImportSEGY():
 
 class ExportSEGY():
     """
-    Export Data.
+    Export SEG-Y Data.
 
     Attributes
     ----------

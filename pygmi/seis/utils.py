@@ -217,7 +217,7 @@ class CorrectDescriptions(QtWidgets.QDialog):
         self.outdata['Seis'] = data
 
 
-def test():
+def _testfn():
     """
     Test routine.
 
@@ -271,4 +271,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    _testfn()

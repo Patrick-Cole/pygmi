@@ -43,7 +43,7 @@ from pygmi.misc import ProgressBarText
 
 
 class CoreMask(QtWidgets.QDialog):
-    """Widget class to call the main interface."""
+    """Core masking class."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -192,7 +192,7 @@ class CoreMask(QtWidgets.QDialog):
 
     def pic_overview(self):
         """
-        Horizontal slider to change picture opacity.
+        Change the current viewed data, cased on the combo_overview value.
 
         Returns
         -------
@@ -558,12 +558,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         dat : numpy array
-            DESCRIPTION.
+            Input array.
 
         Returns
         -------
         tmp : numpy array
-            DESCRIPTION.
+            Output array.
 
         """
         tmp = np.zeros([dat.shape[0], dat.shape[1], 4])
@@ -730,8 +730,10 @@ def update_lith_lw(lith_list, mlut, lwidget):
 
     Parameters
     ----------
-    lmod : LithModel
-        3D model.
+    lith_list : list
+        Lithology list.
+    mlut : list
+        Lithology color.
     lwidget : QListWidget
         List widget.
 
@@ -757,7 +759,7 @@ def update_lith_lw(lith_list, mlut, lwidget):
             tmp.setForeground(QtGui.QColor('white'))
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     ifile = r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
 
@@ -771,4 +773,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

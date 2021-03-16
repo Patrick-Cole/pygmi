@@ -2052,7 +2052,7 @@ def GetTables():
     return [edgeTable, triTable]
 
 
-def main():
+def _testfn():
     """Main routine, used for testing."""
 
     c = np.zeros([5, 5, 5])
@@ -2126,4 +2126,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    _testfn()

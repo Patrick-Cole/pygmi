@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Calculate remote sensing ratios."""
 
 import copy
 import os
@@ -513,7 +513,7 @@ def get_sentinel_list(flist):
     return flist2
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     ifile = r'C:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
     dat = iodefs.get_data(ifile)
@@ -534,4 +534,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

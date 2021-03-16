@@ -547,7 +547,7 @@ def time_convert(x):
     return (h*60+m)*60+s
 
 
-def test():
+def _testfn():
     """Test routine."""
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -584,6 +584,6 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    _testfn()
 
     print('Finished!')

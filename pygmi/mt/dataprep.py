@@ -1905,7 +1905,7 @@ def tonumber(test, alttext=None):
     return int(test)
 
 
-def testfn_occam():
+def _testfn_occam():
     """ main test """
     datadir = r'C:\Work\workdata\MT\\'
     edi_file = datadir+r"synth02.edi"
@@ -1921,7 +1921,7 @@ def testfn_occam():
     test.settings()
 
 
-def testfn():
+def _testfn():
     """ main test """
     from mtpy.utils.shapefiles_creator import ShapeFilesCreator
 
@@ -1941,4 +1941,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

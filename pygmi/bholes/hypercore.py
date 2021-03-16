@@ -24,26 +24,6 @@
 # -----------------------------------------------------------------------------
 """
 Hyperspectral Core Routines.
-
-1) Initial import and corrections, includes smile correction, white balance
-   and filtering
-2) Clipping of tray
-3) Masking of Boreholes
-4) Assigning depths. Click a section and assign depth to that point. Depths are
-   auto interpolated between assigned depths
-
-Each tray gets a text/xlsx file, with relevant metadata such as:
-    tray number, num cores, core number, depth from, depth to,
-    tray x (auto get from core number?), tray y from, tray y to
-
-section start depth
-section end depth
-QC on depth range to see it makes sense
-
-Mask can be raster (separate or in main file with band called 'mask')
-Mask can be a shapefile, but I think this is not great unless it is initially
-created as a shapefile
-
 """
 
 import copy
@@ -343,7 +323,7 @@ class PolygonInteractor(QtCore.QObject):
 
 class CorePrep(QtWidgets.QDialog):
     """
-    Main Supervised Classification Tool Routine.
+    Tray clipping and band selection.
 
     Attributes
     ----------
@@ -660,7 +640,7 @@ class CorePrep(QtWidgets.QDialog):
 
 class ImageCor(QtWidgets.QDialog):
     """
-    Calculate Satellite Ratios.
+    Raw Imagery Corrections.
 
     Attributes
     ----------
@@ -921,7 +901,20 @@ class ImageCor(QtWidgets.QDialog):
 
 
 def data_to_dict(dat):
-    """Data to dictionary."""
+    """
+    Data to dictionary.
+
+    Parameters
+    ----------
+    dat : list of Data
+        Input PyGMI dataset.
+
+    Returns
+    -------
+    dictionary
+        Output dictionary of data.
+
+    """
     dat2 = {}
     for j in dat:
         dat2[j.dataid] = j.data
@@ -930,7 +923,22 @@ def data_to_dict(dat):
 
 
 def dict_to_data(arr, data):
-    """Dictionary to data"""
+    """
+    Dictionary to Data.
+
+    Parameters
+    ----------
+    arr : dictionary
+        Dictionary of raster datasets.
+    data : list of Data
+        PyGMI Data to use as a template.
+
+    Returns
+    -------
+    list of Data
+        Output list of Data.
+
+    """
     dat = []
     for key in arr:
         tmp = copy.copy(data[0])
@@ -985,8 +993,28 @@ def dist_point_to_segment(p, s0, s1):
 
 
 def dc_correct(idir, hfile, datah, piter=iter, showprocesslog=print):
-    """main."""
+    """
+    DC Correct.
 
+    Parameters
+    ----------
+    idir : str
+        Input directory.
+    hfile : str
+        core filename.
+    datah : list of Data
+        Input core data to be corrected.
+    piter : iter, optional
+        Progress bar iterator. The default is iter.
+    showprocesslog : print, optional
+        Default routine to show messages. The default is print.
+
+    Returns
+    -------
+    list of Data
+        Output Data.
+
+    """
     # ofile = os.path.join(odir, hfile[:-4]+'.hdr')
     dfile = 'darkref_'+hfile
     wfile = 'whiteref_'+hfile
@@ -1044,7 +1072,22 @@ def dc_correct(idir, hfile, datah, piter=iter, showprocesslog=print):
 
 
 def smile(dat, piter=iter):
-    """:)"""
+    """
+    Geometric smile correction.
+
+    Parameters
+    ----------
+    dat : list of Data
+        Input data to be corrected.
+    piter : iter, optional
+        Progress bar iterator. The default is iter.
+
+    Returns
+    -------
+    list of Data
+        Output Data.
+
+    """
     x = np.array([20, 50, 100, 150, 200, 250, 300, 350])
     y = np.array([3, 7, 12, 14, 15, 14, 11, 5])
 
@@ -1092,15 +1135,15 @@ def filter_data(datah, ftype, piter=iter):
 
     Parameters
     ----------
-    datah : TYPE
-        DESCRIPTION.
-    ftype : TYPE
-        DESCRIPTION.
+    datah : list of PyGMI Data
+        Input data.
+    ftype : str
+        Filter type. Can be hampel or savgol.
 
     Returns
     -------
-    None.
-
+    list of PyGMI Data
+        Output data.
     """
 
     print('Filtering using '+ftype+'...')
@@ -1131,8 +1174,27 @@ def filter_data(datah, ftype, piter=iter):
 
 @jit(nopython=True)
 def hampel_filter(input_series, window_size, n_sigmas=3):
-    """From https://towardsdatascience.com/outlier-detection-with-hampel-
-       filter-85ddf523c73d"""
+    """
+    Hampel filter.
+
+    From https://towardsdatascience.com/outlier-detection-with-hampel-filter-85ddf523c73d
+
+    Parameters
+    ----------
+    input_series : numpy array
+        Input series.
+    window_size : int
+        Filter window size.
+    n_sigmas : int, optional
+        Number of sigmas. The default is 3.
+
+    Returns
+    -------
+    new_series : numpy array
+        Output filtered series.
+    indices : numpy array
+        Indices of values filtered.
+    """
     n = len(input_series)
     new_series = input_series.copy()
     k = 1.4826  # scale factor for Gaussian distribution
@@ -1149,8 +1211,8 @@ def hampel_filter(input_series, window_size, n_sigmas=3):
     return new_series, indices
 
 
-def testfn():
-    """Main testing routine."""
+def _testfn():
+    """Testing routine."""
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = ImageCor()
     tmp.get_idir(r'c:\work\Workdata\HyperspectralScanner\Raw Data\VNIR-SWIR (FENIX)')
@@ -1158,8 +1220,8 @@ def testfn():
     tmp.settings()
 
 
-def testfn2():
-    """Main testing routine."""
+def _testfn2():
+    """Testing routine."""
     import matplotlib.pyplot as plt
     pbar = ProgressBarText()
 
@@ -1216,8 +1278,8 @@ def testfn2():
     plt.show()
 
 
-def testfn3():
-    """Main testing routine."""
+def _testfn3():
+    """Testing routine."""
     import matplotlib.pyplot as plt
     pbar = ProgressBarText()
 
@@ -1261,8 +1323,8 @@ def testfn3():
     plt.show()
 
 
-def testfn4():
-    """Main testing routine."""
+def _testfn4():
+    """Testing routine."""
     import matplotlib.pyplot as plt
 
     ifile = r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
@@ -1282,13 +1344,29 @@ def testfn4():
 
 
 if __name__ == "__main__":
-    testfn4()
+    _testfn4()
 
-"""
-SOM - borehole SOM (box only) and SOM of SOMs (whole borehole, no library
-      matching, pure pixel spectra, unsupervised? 100 classes, some are
-      combined).
-pearson correlation.
-Compare directly mean spectra? to library. Dominant mineral map.
+# 1) Initial import and corrections, includes smile correction, white balance
+#    and filtering
+# 2) Clipping of tray
+# 3) Masking of Boreholes
+# 4) Assigning depths. Click a section and assign depth to that point. Depths
+#    are auto interpolated between assigned depths
 
-"""
+# Each tray gets a text/xlsx file, with relevant metadata such as:
+#     tray number, num cores, core number, depth from, depth to,
+#     tray x (auto get from core number?), tray y from, tray y to
+
+# section start depth
+# section end depth
+# QC on depth range to see it makes sense
+
+# Mask can be raster (separate or in main file with band called 'mask')
+# Mask can be a shapefile, but I think this is not great unless it is initially
+# created as a shapefile
+
+# SOM - borehole SOM (box only) and SOM of SOMs (whole borehole, no library
+#       matching, pure pixel spectra, unsupervised? 100 classes, some are
+#       combined).
+# pearson correlation.
+# Compare directly mean spectra? to library. Dominant mineral map.

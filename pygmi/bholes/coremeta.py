@@ -23,9 +23,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Core Metadata Routine.
-Terracore uses from to depth assignments.
+Core metadata and depth Assignment routine.
 """
+
+# Terracore uses from to depth assignments.
 
 import json
 import sys
@@ -595,10 +596,8 @@ class CoreMeta(QtWidgets.QDialog):
         return projdata
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
-    import matplotlib.pyplot as plt
-
     ifile = (r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\\'
              r'clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat')
 
@@ -612,4 +611,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

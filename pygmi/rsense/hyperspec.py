@@ -843,9 +843,25 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
     """
     Calculate feature dataset.
 
+    Parameters
+    ----------
+    dat : PyGMI Data
+        Input PyGMI data.
+    mineral : str
+        Mineral description.
+    feature : dictionary
+        Dictionary containing the hyperspectral features.
+    ratio : dictionary
+        Dictionary containing string definitions of ratios.
+    product : dictionary
+        Final hyperspectral products. Each dictionary value, is a list of features or ratios with thresholds to be combined.
+    piter : iter, optional
+        Progress bar iterable. The default is iter.
+
     Returns
     -------
-    None.
+    datfin : TYPE
+        DESCRIPTION.
 
     """
 
@@ -991,17 +1007,17 @@ def indexcalc(formula, dat):
 
 def phull(sample):
     """
-    Hull Calculation
+    Hull Calculation.
 
     Parameters
     ----------
-    sample : TYPE
-        DESCRIPTION.
+    sample : numpy array
+        Sample to create a hull for.
 
     Returns
     -------
-    out : TYPE
-        DESCRIPTION.
+    out : numpy array
+        Output hull.
 
     """
 
@@ -1114,7 +1130,7 @@ def readsli(ifile):
 
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     pbar = ProgressBarText()
 
@@ -1141,7 +1157,7 @@ def testfn():
     tmp.settings()
 
 
-def testfn2():
+def _testfn2():
     """Main testing routine."""
     import matplotlib.pyplot as plt
 
@@ -1175,16 +1191,5 @@ def testfn2():
     tmp.settings()
 
 
-from dataclasses import dataclass
-@dataclass
-class hope:
-    """class."""
-    name: str ='a'
-    age: int =1
-
-
-
-
 if __name__ == "__main__":
-    breakpoint()
-    testfn()
+    _testfn()

@@ -620,7 +620,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 
 class SceneViewer(QtWidgets.QDialog):
-    """Application Window."""
+    """Scene Viewer."""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -940,7 +940,7 @@ class SceneViewer(QtWidgets.QDialog):
 
     def get_tiff(self, ifile, firstrun=False):
         """
-        Gets tiff images
+        Gets TIFF images
 
         Parameters
         ----------
@@ -1114,13 +1114,13 @@ def get_kml_coords(kml):
 
     Parameters
     ----------
-    kml : TYPE
-        DESCRIPTION.
+    kml : str.
+        kml file name.
 
     Returns
     -------
-    coordinates : TYPE
-        DESCRIPTION.
+    coordinates : numpy array
+        Coordinate in numpy format.
 
     """
     ns = "{http://www.opengis.net/kml/2.2}"
@@ -1142,7 +1142,7 @@ def get_kml_coords(kml):
     return coordinates
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     import sys
 #    sfile = r'C:\Work\Workdata\change\PlanetaryPolygon.shp'
@@ -1160,7 +1160,7 @@ def testfn():
     plt.show()
 
 
-def testanim():
+def _testanim():
     """Test for animation."""
     # import sys
     from matplotlib import rcParams
@@ -1206,4 +1206,4 @@ def testanim():
 
 
 if __name__ == "__main__":
-    testanim()
+    _testanim()

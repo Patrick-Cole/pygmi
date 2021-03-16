@@ -1584,7 +1584,7 @@ def dat_extent(dat, axes):
     return (left, right, bottom, top)
 
 
-def test():
+def _testfn():
     """This routine is for testing purposes."""
 #    from pygmi.pfmod.iodefs import ImportMod3D
 
@@ -1615,4 +1615,4 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    _testfn()

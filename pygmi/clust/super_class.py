@@ -1151,7 +1151,7 @@ def dist_point_to_segment(p, s0, s1):
     return np.linalg.norm(p - pb)
 
 
-def test():
+def _testfn():
     """Test."""
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  '..//..')))
@@ -1168,4 +1168,4 @@ def test():
 
 if __name__ == "__main__":
 
-    test()
+    _testfn()

@@ -70,16 +70,10 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 
 class BIRRP(QtWidgets.QDialog):
     """
-    Import Line Data.
-
-    This class imports ASCII point data.
+    Class to export config file for BIRRP .
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary

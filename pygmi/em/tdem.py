@@ -459,7 +459,7 @@ class TDEM1D(QtWidgets.QDialog):
 
     def change_source(self):
         """
-
+        Change Source.
 
         Returns
         -------
@@ -480,7 +480,7 @@ class TDEM1D(QtWidgets.QDialog):
 
     def disp_wave(self):
         """
-
+        Display waveform.
 
         Returns
         -------
@@ -516,12 +516,12 @@ class TDEM1D(QtWidgets.QDialog):
 
     def update_wave(self):
         """
-
+        Update waveform.
 
         Returns
         -------
-        wform : TYPE
-            DESCRIPTION.
+        wform : tdem waveform.
+            Waveform.
 
         """
         offtime = float(self.txofftime.text())
@@ -723,7 +723,7 @@ def tonumber(test, alttext=None):
     return int(test)
 
 
-def testrun():
+def _testfn():
     """Test routine."""
 
     from pygmi.vector.iodefs import ImportLineData
@@ -754,4 +754,4 @@ def testrun():
 
 
 if __name__ == "__main__":
-    testrun()
+    _testfn()

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Import remote sensing data."""
 
 import os
 import shutil
@@ -260,22 +260,23 @@ class ImportData():
 
 class ImportBatch():
     """
-    Import Data - Interfaces with GDAL routines
+    Batch Import Data Interface.
+
+    This does not actually import data, but rather defines a list of datasets
+    to be used by other routines.
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
-        reference to the parent routine
-    outdata : dictionary
-        dictionary of output datasets
+        reference to the parent routine.
+    idir : str
+        Input directory.
     ifile : str
-        input file name. Used in main.py
-    ext : str
-        filename extension
+        Input file.
+    indata : dictionary
+        dictionary of input datasets.
+    outdata : dictionary
+        dictionary of output datasets.
     """
 
     def __init__(self, parent=None):
@@ -838,6 +839,10 @@ def get_data(ifile, piter=iter, showprocesslog=print):
     ----------
     ifile : str
         filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
+    showprogresslog : print, optional
+        Routine for displaying messages. Default is print
 
     Returns
     -------
@@ -873,6 +878,8 @@ def get_modis(ifile, showprocesslog=print):
     ----------
     ifile : str
         filename to import
+    showprogresslog : print, optional
+        Routine for displaying messages. Default is print
 
     Returns
     -------
@@ -1011,6 +1018,8 @@ def get_modisv6(ifile, piter=iter):
     ----------
     ifile : str
         filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
 
     Returns
     -------
@@ -1096,6 +1105,10 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     ----------
     ifilet : str
         filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
+    showprogresslog : print, optional
+        Routine for displaying messages. Default is print
 
     Returns
     -------
@@ -1183,6 +1196,10 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
     ----------
     ifile : str
         filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
+    showprogresslog : print, optional
+        Routine for displaying messages. Default is print
 
     Returns
     -------
@@ -1235,12 +1252,16 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
 
 def get_aster_zip(ifile, piter=iter, showprocesslog=print):
     """
-    Gets ASTER Data.
+    Gets ASTER zip Data.
 
     Parameters
     ----------
     ifile : str
         filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
+    showprogresslog : print, optional
+        Routine for displaying messages. Default is print
 
     Returns
     -------
@@ -1310,12 +1331,14 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
 
 def get_aster_hdf(ifile, piter=iter):
     """
-    Gets ASTER Data.
+    Gets ASTER hdf Data.
 
     Parameters
     ----------
     ifile : str
         filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
 
     Returns
     -------
@@ -1632,7 +1655,7 @@ def get_aster_ged_bin(ifile):
     return dat
 
 
-def testfn():
+def _testfn():
     """Main testing routine."""
     # from pprint import pprint
     # ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20170813T080011_N0205_R035_T35JKG_20170813T082818.SAFE\MTD_MSIL2A.xml'
@@ -1655,4 +1678,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()

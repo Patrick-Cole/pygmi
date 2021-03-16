@@ -1525,7 +1525,7 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
             myfile.write(envimeta)
 
 
-def filespeedtest():
+def _filespeedtest():
     """Test."""
     from pygmi.misc import ProgressBarText
 
@@ -1548,5 +1548,4 @@ def filespeedtest():
 
 
 if __name__ == "__main__":
-    # test()
-    filespeedtest()
+    _filespeedtest()

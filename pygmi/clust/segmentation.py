@@ -502,7 +502,7 @@ def get_l(data):
     return ltmp
 
 
-def test():
+def _testfn():
     """Main testing routine."""
     data1 = skimage.data.coffee()  # 400x600 50.6 secs
 
@@ -535,6 +535,6 @@ def test():
 
 
 if __name__ == "__main__":
-    test()
+    _testfn()
 
     print('Finished!')

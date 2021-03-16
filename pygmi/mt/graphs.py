@@ -327,7 +327,7 @@ class PlotPoints(GraphWindow):
         self.combobox2.setCurrentIndex(0)
 
 
-def testfn():
+def _testfn():
     """ main test """
     import numpy as np
     import glob
@@ -424,4 +424,4 @@ def testfn():
 
 
 if __name__ == "__main__":
-    testfn()
+    _testfn()
