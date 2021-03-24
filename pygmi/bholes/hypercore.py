@@ -41,7 +41,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from numba import jit
 from PyQt5 import QtWidgets, QtCore
-import gdal
+from osgeo import gdal
 
 from pygmi.raster.dataprep import data_to_gdal_mem, gdal_to_dat
 from pygmi.misc import frm
