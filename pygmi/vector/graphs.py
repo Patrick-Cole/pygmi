@@ -433,11 +433,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.axis('equal')
 
         elif 'Point' in data:
-            self.axes.scatter(data['Point'].geometry.x,
-                              data['Point'].geometry.y,
-                              c=data['Point'][col])
-            # self.axes.plot(data['Point'].geometry.x,
-            #                data['Point'].geometry.y, 'go')
+            if col != '':
+                self.axes.scatter(data['Point'].geometry.x,
+                                  data['Point'].geometry.y,
+                                  c=data['Point'][col])
+            else:
+                self.axes.scatter(data['Point'].geometry.x,
+                                  data['Point'].geometry.y)
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)

@@ -29,6 +29,7 @@ import re
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
+import geopandas as gpd
 import pygmi.seis.datatypes as sdt
 import pygmi.menu_default as menu_default
 
@@ -1975,7 +1976,7 @@ class ExportCSV():
         return tmp
 
 
-class ExportSummaryCSV():
+class ExportSummary():
     """Export SEISAN Data."""
 
     def __init__(self, parent=None):
@@ -2005,9 +2006,13 @@ class ExportSummaryCSV():
 
         data = self.indata['Seis']
 
-        filename, _ = QtWidgets.QFileDialog.getSaveFileName(self.parent,
-                                                            'Save File',
-                                                            '.', 'csv (*.csv)')
+        ext = ('csv (*.csv);;'
+               'Excel (*.xlsx);;'
+               'Shapefile (*.shp)')
+
+        filename, filt = QtWidgets.QFileDialog.getSaveFileName(self.parent,
+                                                               'Save File',
+                                                               '.', ext)
         if filename == '':
             return
         os.chdir(os.path.dirname(filename))
@@ -2071,7 +2076,16 @@ class ExportSummaryCSV():
                     dat = idat['3']
                     df.loc[i, 'Description'] = dat.region
 
-        df.to_csv(filename, index=False)
+        if filt == 'csv (*.csv)':
+            df.to_csv(filename, index=False)
+        elif filt == 'Excel (*.xlsx)':
+            df.to_excel(filename, index=False)
+        elif filt == 'Shapefile (*.shp)':
+            geom = gpd.points_from_xy(df.Longitude, df.Latitude)
+            gdf = gpd.GeoDataFrame(df, geometry=geom)
+            gdf = gdf.set_crs("EPSG:4326")
+            # breakpoint()
+            gdf.to_file(filename)
 
 
 def mercalli(mag):

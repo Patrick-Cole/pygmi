@@ -106,9 +106,10 @@ class MenuWidget():
         context_menu['Seis'].addAction(self.action_export_csv)
         self.action_export_csv.triggered.connect(self.export_csv)
 
-        self.action_sexport_csv = QtWidgets.QAction('Export Summary to CSV')
-        context_menu['Seis'].addAction(self.action_sexport_csv)
-        self.action_sexport_csv.triggered.connect(self.sexport_csv)
+        self.action_sexport = QtWidgets.QAction('Export Summary to CSV, XLSX '
+                                                'or SHP')
+        context_menu['Seis'].addAction(self.action_sexport)
+        self.action_sexport.triggered.connect(self.sexport)
 
     def export_seisan(self):
         """Export Seisan data."""
@@ -118,9 +119,9 @@ class MenuWidget():
         """Export Seisan data to csv."""
         self.parent.launch_context_item(iodefs.ExportCSV)
 
-    def sexport_csv(self):
-        """Export Summary data to csv."""
-        self.parent.launch_context_item(iodefs.ExportSummaryCSV)
+    def sexport(self):
+        """Export Summary data."""
+        self.parent.launch_context_item(iodefs.ExportSummary)
 
     def beachball(self):
         """Create Beachballs from Fault Plane Solutions."""
