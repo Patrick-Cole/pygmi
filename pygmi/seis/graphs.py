@@ -291,34 +291,51 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         data1 = np.ma.masked_invalid(data1a)
+        data1 = data1.compressed()
+
+        # Magnitude of completeness
+        dval, dcnt = np.unique(data1, return_counts=True)
+        cmax = dval[dcnt == dcnt.max()][0]
+
+        # Least squares a and b value
+        bins = np.arange(data1.min()-0.05, data1.max()+.15, 0.1)
 
         num, bins2 = np.histogram(data1, bins)
-        bins2 = bins2[:-1]+(bins2[1]-bins2[0])/2
+        bins2 = bins2[:-1] + 0.05
+        bins2 = np.round(bins2, 1)  # gets rid of round off error.
+
         num2 = np.cumsum(num[::-1])[::-1]
         num3 = np.log10(num2)
 
-        nmax = np.percentile(num3, 75)
-        nmin = np.percentile(num3, 25)
+        xtmp = bins2[bins2 >= cmax]
+        ytmp = num3[bins2 >= cmax]
 
-        i1 = np.nonzero(num3 < nmax)[0][0]
-        i2 = np.nonzero(num3 <= nmin)[0][0]
-
-        xtmp = bins2[i1:i2+1]
-        ytmp = num3[i1:i2+1]
         abvals = np.polyfit(xtmp, ytmp, 1)
         aval = np.around(abvals, 2)[1]
         bval = -np.around(abvals, 2)[0]
 
-        dattmp = data1
-        self.axes.hist(dattmp, bins, edgecolor='black', label='actual')
-        self.axes.set_yscale('log')
-        self.axes.plot(bins2, num2, '.')
+        # Maximum likelihood
+        data2 = data1[data1 >= cmax]
+        b_mle = np.log10(np.exp(1)) / (data2.mean() - data2.min())
+        b_mle = np.around(b_mle, 2)
 
-        txt = 'a-value: '+str(aval)+'\nb-value: '+str(bval)
+        # Plotting
+        self.axes.hist(data1, bins, edgecolor='black',
+                       label='Actual distribution')
+        self.axes.set_yscale('log')
+        self.axes.plot(bins2, num2, '.', label='Cumulative distribution')
+
+        self.axes.plot([cmax, cmax], [0, num2.max()], 'k--',
+                       label=f'Magnitude of completeness: {cmax}\n')
+
+        txt = (f'a-value (Least Squares): {aval}\n'
+               f'b-value (Least Squares): {bval}\n'
+               f'b-value (Maximum Likelihood): {b_mle}')
         self.axes.plot(xtmp, 10**np.poly1d(abvals)(xtmp), 'k', label=txt)
 
         self.axes.set_xlabel('ML', fontsize=8)
         self.axes.set_ylabel('Number of observations', fontsize=8)
+
         self.axes.legend()
 
         self.figure.tight_layout()
@@ -886,14 +903,13 @@ def eigsorted(cov):
 
 def _testfn():
     """Main testing routine."""
-    import matplotlib.pyplot as plt
     import sys
-    import time
     from pygmi.seis.iodefs import ImportSeisan
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = ImportSeisan()
-    tmp.ifile = r'C:\Work\Workdata\seismology\march2021\select.out'
+    tmp.ifile = r'D:\Workdata\seismology\collect1.out'
+    # tmp.ifile = r'C:\Work\Workdata\seismology\march2021\select.out'
     # tmp.ifile = r'C:\Work\Workdata\seismology\march2021\wadati_err2.out'
     tmp.settings(True)
 
@@ -908,5 +924,57 @@ def _testfn():
     tmp.exec_()
 
 
+def _testfn2():
+    """Testing for wave files."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.seis.iodefs import ImportSeisan
+
+    ifile = r'D:\Workdata\seismology\april2021\collect.out'
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    tmp = ImportSeisan()
+    tmp.ifile = ifile
+    tmp.settings(True)
+
+    data = tmp.outdata['Seis']
+
+
+    ifile = r'D:\Workdata\seismology\april2021\mulplt.wav'
+
+    with open(ifile) as pntfile:
+        ltmp = pntfile.read()
+
+    ltmp = ltmp.split('\n')
+
+    l1 = ltmp.pop(0)
+    l2 = ltmp.pop(0)
+
+    while len(ltmp) > 2:
+        h1 = ltmp.pop(0)
+        h2 = ltmp.pop(0).split()
+
+        samples = int(h2[0])
+        rate = float(h2[1])
+        comp = h2[5]
+        year = h2[6]
+        month = h2[7]
+        day = h2[8]
+
+
+        lines = samples // 7 + 1
+        y = ''.join(ltmp[:lines]).split()
+        y = np.array(y, dtype=float)
+        x = np.arange(0, samples*rate, rate)
+
+        ltmp = ltmp[lines:]
+
+        plt.title(comp)
+        plt.plot(x, y)
+        plt.show()
+
+    breakpoint()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

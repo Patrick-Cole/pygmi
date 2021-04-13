@@ -624,7 +624,7 @@ def read_record_type_f(i):
     tmp.solution_quality = i[77]
 
     if prg == '':
-        out = {}
+        out = {'OTHER': tmp}
     else:
         out = {prg: tmp}
 
