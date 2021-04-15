@@ -212,7 +212,7 @@ class PolygonInteractor(QtCore.QObject):
 
     def new_poly(self, npoly=None):
         """
-        New polygon.
+        Create new polygon.
 
         Parameters
         ----------
@@ -561,7 +561,7 @@ class SuperClass(QtWidgets.QDialog):
 
     def class_change(self):
         """
-        Current classification choice changed.
+        Routine called when current classification choice changes.
 
         Returns
         -------
@@ -834,7 +834,10 @@ class SuperClass(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Settings.
+        Entrypoint into class.
+
+        This is called when the used double clicks the routine from the
+        main PyGMI interface.
 
         Returns
         -------
@@ -931,7 +934,7 @@ class SuperClass(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -1092,7 +1095,6 @@ class SuperClass(QtWidgets.QDialog):
 
     def update_class_polys(self):
         """Update class poly summaries."""
-
         axes = self.map.figure.gca()
 
         [p.remove() for p in reversed(axes.patches)]

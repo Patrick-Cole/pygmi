@@ -1,4 +1,1 @@
-"""
-Borehole routines
-"""
-
+"""Borehole routines."""

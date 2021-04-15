@@ -252,7 +252,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         pb_cprof_add.clicked.connect(self.cprof_add)
         pb_cprof_delete.clicked.connect(self.cprof_del)
 
-    ### Custom Profiles
     def cprof_add(self):
         """
         Add new custom profile.
@@ -467,7 +466,6 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.update_plot(slide=True)
 
-    ### Misc
     def borehole_import(self):
         """
         Import borehole data.
@@ -889,7 +887,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         # Reset the profile back to the current profile
         self.calc_prof_limits()
 
-    ### Profiles
     def change_defs(self):
         """
         Change definitions.
@@ -1092,7 +1089,6 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         self.update_plot(slide=True)
 
-    ### Layers
     def hlayer(self):
         """
         Horizontal slider to change the layer.
@@ -1146,7 +1142,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.mmc.update_line()
         self.mmc.figure.canvas.draw()
 
-    ### Profile Direction
     def calc_prof_limits(self, curprof=None):
         """
         Calculate profile limits.
@@ -1528,7 +1523,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib Canvas"""
+    """Matplotlib Canvas."""
 
     def __init__(self, parent=None):
         fig = Figure()
@@ -1753,8 +1748,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def set_mdata(self, xdata, ydata, mdata):
         """
-        Routine to 'draw' the line on mdata. xdata and ydata are the cursor
-        centre coordinates.
+        Routine to 'draw' the line on mdata.
+
+        xdata and ydata are the cursor centre coordinates.
 
         Parameters
         ----------
@@ -2038,7 +2034,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.draw_artist(self.prfc[0])
 
-
     def update_line_top(self):
         """
         Update the top line position.
@@ -2196,7 +2191,7 @@ class MySlider(QtWidgets.QSlider):
 
 
 class LithBound(QtWidgets.QDialog):
-    """ Class to call up a dialog for lithological boundary."""
+    """Class to call up a dialog for lithological boundary."""
 
     def __init__(self, lmod):
         super().__init__(None)
@@ -2285,7 +2280,7 @@ class LithBound(QtWidgets.QDialog):
 
 
 class PlotScale(QtWidgets.QDialog):
-    """ Class to call up a dialog for plot axis scale."""
+    """Class to call up a dialog for plot axis scale."""
 
     def __init__(self, parent, lmod):
         super().__init__(parent)
@@ -2727,7 +2722,10 @@ class ImportPicture(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Settings.
+        Entrypoint into class.
+
+        This is called when the used double clicks the routine from the
+        main PyGMI interface.
 
         This section also imports the picture.
 
@@ -2839,7 +2837,7 @@ class ImportPicture(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -2852,13 +2850,11 @@ class ImportPicture(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -2948,7 +2944,7 @@ def rotate2d(pts, cntr, ang=np.pi/4):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     aaa = np.arange(12.).reshape((4, 3))
     print(aaa)
 

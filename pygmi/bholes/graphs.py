@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-Plot Borehole Data
+Plot Borehole Data.
 
 This module provides a variety of methods to plot borehole data via the context
 menu.
@@ -179,7 +179,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if strat[j] == 'none':
                 ax.text(19.2, j*2+1.9, strat[j].capitalize())
             else:
-                ax.text(19.2, j*2+1.9, strat[j].capitalize()+' '+rlookup[rank[j]])
+                ax.text(19.2, j*2+1.9, strat[j].capitalize() + ' ' +
+                        rlookup[rank[j]])
 
         self.figure.canvas.draw()
 
@@ -197,7 +198,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-
         fig = self.figure
         fig.clear()
         ax = fig.gca()
@@ -422,7 +422,7 @@ class PlotLog(GraphWindow):
         self.parent = parent
 
     def change_band(self):
-        """ Combo box to choose band """
+        """Combo box to choose band."""
         i = self.combobox1.currentText()
         if 'Borehole' in self.indata:
             data = self.indata['Borehole'][i]
@@ -605,7 +605,7 @@ def gethatch(svgfile):
 
 def commentprep(mystring, slen=50):
     """
-    Creates the correct case for a string and inserts carriage returns.
+    Create the correct case for a string and inserts carriage returns.
 
     Parameters
     ----------
@@ -638,7 +638,7 @@ def commentprep(mystring, slen=50):
 
 def chkname(iname):
     """
-    Checks filename for illegal characters.
+    Check filename for illegal characters.
 
     Parameters
     ----------

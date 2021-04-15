@@ -98,35 +98,18 @@ class HelpMenu():
 
     def about(self):
         """About box for PyGMI."""
-
         year = str(date.today().year)
 
-        # msg = ('Name:\t\tPyGMI - Python Geoscience Modelling\n\t\tand '
-        #        'Interpretation\n'
-        #        'Version:\t\t'+self.parent.__version__+'\n'
-        #        'Author:\t\tPatrick Cole\n'
-        #        'E-Mail:\t\tpcole@geoscience.org.za\n'
-        #        'Copyright:\t\xa9 2013-'+year+' Council for Geoscience\n'
-        #        'Licence:\t\tGPL-3.0\n\n'
-        #        'PyGMI is free software: you can redistribute it and/or '
-        #        'modify it under the terms of the GNU General Public License '
-        #        'as published by the Free Software Foundation, either version '
-        #        '3 of the License, or (at your option) any later version.\n\n'
-        #        'PyGMI is distributed in the hope that it will be useful, '
-        #        'but WITHOUT ANY WARRANTY; without even the implied warranty '
-        #        'of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. '
-        #        'See the GNU General Public License for more details.\n\n'
-        #        'You should have received a copy of the GNU General Public '
-        #        'License along with this program. If not, see\n'
-        #        'http://www.gnu.org/licenses/')
-
-        msg = ('<p>Name: PyGMI - Python Geoscience Modelling and Interpretation</p>'
+        msg = ('<p>Name: PyGMI - Python Geoscience Modelling and '
+               'Interpretation</p>'
                'Version: '+self.parent.__version__+'<br>'
                'Author: Patrick Cole<br>'
                'E-Mail: pcole@geoscience.org.za<br>'
                'Copyright: \xa9 2013-' + year +
-               ' <a href="https://www.geoscience.org.za/">Council for Geoscience</a><br>'
-               'Licence: <a href="http://www.gnu.org/licenses/gpl-3.0.html">GPL-3.0</a></p>'
+               ' <a href="https://www.geoscience.org.za/">'
+               'Council for Geoscience</a><br>'
+               'Licence: <a href="http://www.gnu.org/licenses/gpl-3.0.html">'
+               'GPL-3.0</a></p>'
                '<p>PyGMI is free software: you can redistribute it and/or '
                'modify it under the terms of the GNU General Public License '
                'as published by the Free Software Foundation, either version '
@@ -137,7 +120,8 @@ class HelpMenu():
                'See the GNU General Public License for more details.</p>'
                '<p>You should have received a copy of the GNU General Public '
                'License along with this program. If not, see '
-               '<a href="http://www.gnu.org/licenses">http://www.gnu.org/licenses </a></p>')
+               '<a href="http://www.gnu.org/licenses">'
+               'http://www.gnu.org/licenses </a></p>')
 
         ipth = os.path.dirname(__file__)+r'/images/'
 

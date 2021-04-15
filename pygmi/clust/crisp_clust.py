@@ -34,7 +34,7 @@ import pygmi.clust.var_ratio as vr
 
 class CrispClust(QtWidgets.QDialog):
     """
-    Crisp Cluster Class
+    Crisp Cluster Class.
 
     Attributes
     ----------
@@ -219,7 +219,7 @@ class CrispClust(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -232,7 +232,6 @@ class CrispClust(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.combobox_alg.setCurrentText(projdata['cltype'])
         self.spinbox_minclusters.setProperty('value', projdata['min_cluster'])
         self.spinbox_maxclusters.setProperty('value', projdata['max_cluster'])
@@ -248,7 +247,6 @@ class CrispClust(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -644,7 +642,7 @@ class CrispClust(QtWidgets.QDialog):
     # initial size of objective function
         obj_fcn_initial = np.sum(mindist**2)
         obj_fcn_prev = obj_fcn_initial
-        obj_fcn = np.zeros(maxit)  # This is new - we must initialize this.
+        obj_fcn = np.zeros(maxit)  # This is new - we must initialise this.
 
         for i in self.piter(range(maxit)):  # =1:maxit. loop over all iters
             cent_prev = cent  # store result of last iteration

@@ -480,7 +480,6 @@ class MextDisplay(QtWidgets.QDialog):
         None.
 
         """
-
         self.combo_dataset.currentIndexChanged.disconnect()
 
         gkeys = list(self.parent.inraster.keys())

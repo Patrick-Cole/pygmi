@@ -25,10 +25,8 @@
 """Import remote sensing data."""
 
 import os
-import shutil
 import copy
 import glob
-import tempfile
 import tarfile
 import zipfile
 import datetime
@@ -143,7 +141,7 @@ ESUN = [1848, 1549, 1114, 225.4, 86.63, 81.85, 74.85, 66.49, 59.85]
 
 class ImportData():
     """
-    Import Data - Interfaces with GDAL routines
+    Import Data - Interfaces with GDAL routines.
 
     Attributes
     ----------
@@ -183,7 +181,6 @@ class ImportData():
             True if successful, False otherwise.
 
         """
-
         piter = self.parent.pbar.iter
 
         if self.extscene is None:
@@ -217,7 +214,7 @@ class ImportData():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -241,7 +238,6 @@ class ImportData():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -344,7 +340,7 @@ class ImportBatch():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -366,7 +362,6 @@ class ImportBatch():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -477,7 +472,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             ext = ('Sentinel-5P (*.nc)')
 
@@ -529,7 +523,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -552,7 +546,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -577,7 +570,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
             Dictionary containing metadata.
 
         """
-
         dataset = gdal.Open(self.ifile, gdal.GA_ReadOnly)
         if dataset is None:
             self.showprocesslog('Problem! Unable to import')
@@ -613,7 +605,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
     def get_5P_data(self, meta):
         """
-        Get data.
+        Get 5P data.
 
         Parameters
         ----------
@@ -626,7 +618,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
             geopandas dataframe.
 
         """
-
         dataset = gdal.Open(meta['latitude'][0], gdal.GA_ReadOnly)
         rtmp = dataset.GetRasterBand(1)
         lats = rtmp.ReadAsArray()
@@ -748,7 +739,7 @@ class ImportShapeData():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -770,7 +761,6 @@ class ImportShapeData():
         """
         Save project data from class.
 
-
         Returns
         -------
         projdata : dictionary
@@ -785,7 +775,9 @@ class ImportShapeData():
 
 def calculate_toa(dat, showprocesslog=print):
     """
-    Top of atmosphere correction. Includes VNIR, SWIR and TIR bands.
+    Top of atmosphere correction.
+
+    Includes VNIR, SWIR and TIR bands.
 
     Parameters
     ----------
@@ -797,7 +789,6 @@ def calculate_toa(dat, showprocesslog=print):
     out : Data
         PyGMI raster dataset
     """
-
     showprocesslog('Calculating top of atmosphere...')
 
     datanew = {}
@@ -832,8 +823,9 @@ def calculate_toa(dat, showprocesslog=print):
 
 def get_data(ifile, piter=iter, showprocesslog=print):
     """
-    This function loads a raster dataset off the disk using the GDAL
-    libraries. It returns the data in a PyGMI data object.
+    Load a raster dataset off the disk using the GDAL libraries.
+
+    It returns the data in a PyGMI data object.
 
     Parameters
     ----------
@@ -872,7 +864,7 @@ def get_data(ifile, piter=iter, showprocesslog=print):
 
 def get_modis(ifile, showprocesslog=print):
     """
-    Gets MODIS data
+    Get MODIS data.
 
     Parameters
     ----------
@@ -1012,7 +1004,7 @@ def get_modis(ifile, showprocesslog=print):
 
 def get_modisv6(ifile, piter=iter):
     """
-    Gets MODIS v006 data.
+    Get MODIS v006 data.
 
     Parameters
     ----------
@@ -1099,7 +1091,7 @@ def get_modisv6(ifile, piter=iter):
 
 def get_landsat(ifilet, piter=iter, showprocesslog=print):
     """
-    Gets Landsat Data.
+    Get Landsat Data.
 
     Parameters
     ----------
@@ -1115,7 +1107,6 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     out : Data
         PyGMI raster dataset
     """
-
     idir = os.path.dirname(ifilet)
 
     if '.tar' in ifilet:
@@ -1190,7 +1181,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
 
 def get_sentinel2(ifile, piter=iter, showprocesslog=print):
     """
-    Gets Sentinel-2 Data.
+    Get Sentinel-2 Data.
 
     Parameters
     ----------
@@ -1206,7 +1197,6 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
     dat : PyGMI raster Data
         dataset imported
     """
-
     ifile = ifile[:]
 
     dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
@@ -1252,7 +1242,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
 
 def get_aster_zip(ifile, piter=iter, showprocesslog=print):
     """
-    Gets ASTER zip Data.
+    Get ASTER zip Data.
 
     Parameters
     ----------
@@ -1331,7 +1321,7 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
 
 def get_aster_hdf(ifile, piter=iter):
     """
-    Gets ASTER hdf Data.
+    Get ASTER hdf Data.
 
     Parameters
     ----------
@@ -1459,7 +1449,7 @@ def get_aster_hdf(ifile, piter=iter):
 
 def get_aster_ged(ifile):
     """
-    Gets ASTER GED data
+    Get ASTER GED data.
 
     Parameters
     ----------
@@ -1553,7 +1543,7 @@ def get_aster_ged(ifile):
 
 def get_aster_ged_bin(ifile):
     """
-    Get ASTER GED binary format
+    Get ASTER GED binary format.
 
     Emissivity_Mean_Description: Mean Emissivity for each pixel on grid-box
     using all ASTER data from 2000-2010
@@ -1584,7 +1574,6 @@ def get_aster_ged_bin(ifile):
     dat : PyGMI raster Data
         dataset imported
     """
-
     dat = []
     nval = -9999
     bandid = {}
@@ -1656,7 +1645,7 @@ def get_aster_ged_bin(ifile):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     # from pprint import pprint
     # ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20170813T080011_N0205_R035_T35JKG_20170813T082818.SAFE\MTD_MSIL2A.xml'
     # dat = get_sentinel2(ifile)

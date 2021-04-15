@@ -60,7 +60,7 @@ class QLabelVStack:
 
     def addWidget(self, widget1, widget2):
         """
-        Adds a two widgets on a row, widget1 can also be text.
+        Add two widgets on a row, widget1 can also be text.
 
         Parameters
         ----------
@@ -74,7 +74,6 @@ class QLabelVStack:
         None.
 
         """
-
         if isinstance(widget1, str):
             widget1 = QtWidgets.QLabel(widget1)
 
@@ -208,9 +207,7 @@ class ProgressBar(QtWidgets.QProgressBar):
 
 
 class ProgressBarText():
-    """
-    Text Progress bar.
-    """
+    """Text Progress bar."""
 
     def __init__(self):
         self.otime = 0
@@ -222,7 +219,6 @@ class ProgressBarText():
 
     def iter(self, iterable):
         """Iterate Routine."""
-
         if not isinstance(iterable, types.GeneratorType):
             self.total = len(iterable)
 
@@ -301,7 +297,6 @@ def tick_formatter(x, pos):
         DESCRIPTION.
 
     """
-
     if np.ma.is_masked(x):
         return '--'
 

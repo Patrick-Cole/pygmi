@@ -72,19 +72,11 @@ class MenuWidget():
         self.menu.addAction(self.action_import_genfps)
         self.action_import_genfps.triggered.connect(self.import_genfps)
 
-#        self.action_import_scans = QtWidgets.QAction('Import Scanned Bulletins')
-#        self.menu.addAction(self.action_import_scans)
-#        self.action_import_scans.triggered.connect(self.import_scans)
-
         self.menu.addSeparator()
 
         self.action_beachball = QtWidgets.QAction('Fault Plane Solutions')
         self.menu.addAction(self.action_beachball)
         self.action_beachball.triggered.connect(self.beachball)
-
-#        self.action_delete_recs = QtWidgets.QAction('Delete Records')
-#        self.menu.addAction(self.action_delete_recs)
-#        self.action_delete_recs.triggered.connect(self.delete_recs)
 
         self.action_quarry = QtWidgets.QAction('Remove Quarry Events')
         self.menu.addAction(self.action_quarry)

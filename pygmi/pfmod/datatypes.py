@@ -247,7 +247,7 @@ class LithModel():
 
     def init_grid(self, data):
         """
-        Initializes raster variables in the Data class.
+        Initialize raster variables in the Data class.
 
         Parameters
         ----------
@@ -271,7 +271,7 @@ class LithModel():
 
     def init_calc_grids(self):
         """
-        Initializes mag and gravity from the model.
+        Initialize mag and gravity from the model.
 
         Returns
         -------
@@ -288,7 +288,7 @@ class LithModel():
 
     def is_modified(self, modified=True):
         """
-        Updates modified flag.
+        Update modified flag.
 
         Parameters
         ----------
@@ -307,7 +307,7 @@ class LithModel():
     def update(self, cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht=-1,
                ght=-1, usedtm=True, pbar=None):
         """
-        Updates the local variables for the LithModel class.
+        Update the local variables for the LithModel class.
 
         Parameters
         ----------
@@ -388,7 +388,7 @@ class LithModel():
 
     def update_lithlist(self):
         """
-        Updates lith_list from local variables.
+        Update lith_list from local variables.
 
         Returns
         -------

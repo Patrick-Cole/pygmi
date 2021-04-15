@@ -82,10 +82,14 @@ class GravMag():
 
         self.actionregionaltest = QtWidgets.QAction('Regional\nTest')
         self.actioncalculate = QtWidgets.QAction('Calculate\nGravity\n(All)')
-        self.actioncalculate2 = QtWidgets.QAction('Calculate\nMagnetics\n(All)')
-        self.actioncalculate3 = QtWidgets.QAction('Calculate\nGravity\n(Changes Only)')
-        self.actioncalculate4 = QtWidgets.QAction('Calculate\nMagnetics\n(Changes Only)')
-        self.cb_demag = QtWidgets.QCheckBox('Apply\nDemagnetization\nCorrection')
+        self.actioncalculate2 = QtWidgets.QAction('Calculate\nMagnetics\n'
+                                                  '(All)')
+        self.actioncalculate3 = QtWidgets.QAction('Calculate\nGravity\n'
+                                                  '(Changes Only)')
+        self.actioncalculate4 = QtWidgets.QAction('Calculate\nMagnetics\n'
+                                                  '(Changes Only)')
+        self.cb_demag = QtWidgets.QCheckBox('Apply\nDemagnetization\n'
+                                            'Correction')
         self.setupui()
 
     def setupui(self):
@@ -454,7 +458,6 @@ class GeoData():
         None.
 
         """
-
         if self.modified is True:
             numx = self.g_cols*self.g_dxy
             numy = self.g_rows*self.g_dxy
@@ -490,7 +493,6 @@ class GeoData():
         None.
 
         """
-
         if self.modified is True:
             numx = self.g_cols*self.g_dxy
             numy = self.g_rows*self.g_dxy
@@ -669,7 +671,7 @@ class GeoData():
 
     def mboxmain(self, xobs, yobs, zobs, hcor, demag=False):
         """
-        Mbox routine by Blakely
+        Mbox routine by Blakely.
 
         Note: xobs, yobs and zobs must be floats or there will be problems
         later.
@@ -787,6 +789,14 @@ def calc_demag(mvec, k, dx, dy, dz):
     ----------
     mvec : numpy array
         Body Magnetisation.
+    k : TYPE
+        DESCRIPTION.
+    dx : TYPE
+        DESCRIPTION.
+    dy : TYPE
+        DESCRIPTION.
+    dz : TYPE
+        DESCRIPTION.
 
     Returns
     -------
@@ -794,8 +804,7 @@ def calc_demag(mvec, k, dx, dy, dz):
         Corrected magnetisation.
 
     """
-
-    Y = dy/2
+    # Y = dy/2
     t = dx
     d = dz
 
@@ -863,8 +872,7 @@ def save_layer(mlist):
 
 def gridmatch(lmod, ctxt, rtxt):
     """
-    Matches the rows and columns of the second grid to the first
-    grid.
+    Match the rows and columns of the second grid to the first grid.
 
     Parameters
     ----------
@@ -940,7 +948,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     lmod.griddata : dictionary
         dictionary of items of type Data.
     """
-
     if showtext is None:
         showtext = print
     if pbars is not None:
@@ -1298,8 +1305,9 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
 def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
           fm4, fm5, fm6, alpha, beta):
     """
-    Mbox routine by Blakely, continued from Geodata.mboxmain. It exists
-    in a separate function for JIT purposes.
+    Mbox routine by Blakely, continued from Geodata.mboxmain.
+
+    It exists in a separate function for JIT purposes.
 
     Note: xobs, yobs and zobs must be floats or there will be problems
     later.
@@ -1419,8 +1427,9 @@ def _mbox(mval, xobs, yobs, numx, numy, z0, x1, y1, z1, x2, y2, fm1, fm2, fm3,
 def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
           x, y, z, isign):
     """
-    Gbox routine by Blakely, continued from Geodata.gboxmain. It exists
-    in a separate function for JIT purposes.
+    Gbox routine by Blakely, continued from Geodata.gboxmain.
+
+    It exists in a separate function for JIT purposes.
 
     Note: xobs, yobs and zobs must be floats or there will be problems
     later.
@@ -1512,8 +1521,7 @@ def _gbox(gval, xobs, yobs, numx, numy, z_0, x_1, y_1, z_1, x_2, y_2, z_2,
 
 def dircos(incl, decl, azim):
     """
-    Subroutine DIRCOS computes direction cosines from inclination
-    and declination.
+    DIRCOS computes direction cosines from inclination and declination.
 
     Parameters
     ----------
@@ -1585,7 +1593,7 @@ def dat_extent(dat, axes):
 
 
 def _testfn():
-    """This routine is for testing purposes."""
+    """Test routine."""
 #    from pygmi.pfmod.iodefs import ImportMod3D
 
 # Import model file

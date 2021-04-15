@@ -287,7 +287,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
         data1 = np.ma.masked_invalid(data1a)
@@ -902,7 +901,7 @@ def eigsorted(cov):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     import sys
     from pygmi.seis.iodefs import ImportSeisan
 
@@ -916,7 +915,6 @@ def _testfn():
     data = tmp.outdata['Seis']
 
     dat = import_for_plots(data)
-    # breakpoint()
 
     tmp = PlotQC()
     tmp.indata['Seis'] = data
@@ -925,7 +923,7 @@ def _testfn():
 
 
 def _testfn2():
-    """Testing for wave files."""
+    """Test for wave files."""
     import sys
     import matplotlib.pyplot as plt
     from pygmi.seis.iodefs import ImportSeisan
@@ -938,7 +936,6 @@ def _testfn2():
     tmp.settings(True)
 
     data = tmp.outdata['Seis']
-
 
     ifile = r'D:\Workdata\seismology\april2021\mulplt.wav'
 
@@ -960,7 +957,6 @@ def _testfn2():
         year = h2[6]
         month = h2[7]
         day = h2[8]
-
 
         lines = samples // 7 + 1
         y = ''.join(ltmp[:lines]).split()

@@ -178,7 +178,6 @@ class ProcessData(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.dsb_dxy.setValue(projdata['dxy'])
         self.dsb_null.setValue(projdata['null'])
         self.dataid.setCurrentText(projdata['dataid'])
@@ -576,8 +575,8 @@ def _testfn():
 
     gdf = datout['Gravity']
 
-    gdf = gdf[(gdf.STATION >4470) & (gdf.STATION<4472)]
-#    gdf = gdf[(gdf.STATION >2213) & (gdf.STATION<2900)]
+    gdf = gdf[(gdf.STATION > 4470) & (gdf.STATION < 4472)]
+#    gdf = gdf[(gdf.STATION > 2213) & (gdf.STATION < 2900)]
 
     plt.plot(gdf.longitude, gdf.latitude, '.')
     plt.show()

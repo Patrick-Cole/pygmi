@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""This is the main program for the modelling package."""
+"""The main program for the modelling package."""
 
 from PyQt5 import QtWidgets, QtCore
 
@@ -279,7 +279,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     import sys
     from pygmi.pfmod.iodefs import ImportMod3D
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes

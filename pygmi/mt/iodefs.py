@@ -99,7 +99,7 @@ class ImportLEMI417Data():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -121,7 +121,6 @@ class ImportLEMI417Data():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -200,7 +199,7 @@ class ImportEDI():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -222,7 +221,6 @@ class ImportEDI():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -251,7 +249,6 @@ def get_EDI(ifiles):
     dat : EDI data.
         Dataset imported
     """
-
     dat = {}
 
     for edi_file in ifiles:

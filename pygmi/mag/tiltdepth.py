@@ -235,7 +235,7 @@ class TiltDepth(QtWidgets.QDialog):
 
     def change_band1(self):
         """
-        Action which occurs when apply button is pressed.
+        Routine which occurs when apply button is pressed.
 
         Returns
         -------

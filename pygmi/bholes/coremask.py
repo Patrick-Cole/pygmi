@@ -240,7 +240,6 @@ class CoreMask(QtWidgets.QDialog):
         None.
 
         """
-
         if self.pb_classify.text() == 'Revert to classes':
             self.pb_classify.setText('Classify Data')
             self.mmc.class_index = self.class_index
@@ -365,7 +364,7 @@ class CoreMask(QtWidgets.QDialog):
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib Canvas"""
+    """Matplotlib Canvas."""
 
     def __init__(self, parent=None):
         fig = Figure()
@@ -401,7 +400,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
 # Initial Images
         self.laxes = fig.add_subplot(111)
-        self.lims2 = self.laxes.imshow(self.class_index, aspect='equal', interpolation='none')
+        self.lims2 = self.laxes.imshow(self.class_index, aspect='equal',
+                                       interpolation='none')
 
         self.lims = self.laxes.imshow(self.cbar(self.class_index),
                                       aspect='equal',
@@ -514,8 +514,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def set_mdata(self, xdata, ydata, mdata):
         """
-        Routine to 'draw' the line on mdata. xdata and ydata are the cursor
-        centre coordinates.
+        Routine to 'draw' the line on mdata.
+
+        xdata and ydata are the cursor centre coordinates.
 
         Parameters
         ----------
@@ -760,7 +761,7 @@ def update_lith_lw(lith_list, mlut, lwidget):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     ifile = r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'
 
     pbar = ProgressBarText()

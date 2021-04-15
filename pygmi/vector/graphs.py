@@ -199,7 +199,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-
         r, data = self.line.get_data()
         self.update_lines(r, data)
 
@@ -873,7 +872,6 @@ class PlotVector(GraphWindow):
         None.
 
         """
-
         data = self.indata['Vector']
         key = list(data.keys())[0]
         data = data[key]

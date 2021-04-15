@@ -70,7 +70,6 @@ class ImportMod3D():
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             ext = ('npz (*.npz);;'
                    'Leapfrog Block Model (*.csv);;'
@@ -113,7 +112,7 @@ class ImportMod3D():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -137,7 +136,6 @@ class ImportMod3D():
         """
         Save project data from class.
 
-
         Returns
         -------
         projdata : dictionary
@@ -153,7 +151,7 @@ class ImportMod3D():
 
     def import_leapfrog_csv(self, filename):
         """
-        Imports leapfrog csv block models.
+        Import leapfrog csv block models.
 
         Parameters
         ----------
@@ -348,7 +346,7 @@ class ImportMod3D():
 
     def dict2lmod(self, indict, pre=''):
         """
-        Convert a dictionary to a LithModel
+        Convert a dictionary to a LithModel.
 
         Parameters
         ----------
@@ -622,7 +620,7 @@ class ExportMod3D():
 
     def mod3dtocsv(self):
         """
-        Saves the 3D model in a csv file.
+        Save the 3D model in a csv file.
 
         Returns
         -------
@@ -673,7 +671,7 @@ class ExportMod3D():
 
     def mod3dtokmz(self):
         """
-        Saves the 3D model and grids in a kmz file.
+        Save the 3D model and grids in a kmz file.
 
         Only the boundary of the area is in degrees. The actual coordinates
         are still in meters.
@@ -1029,7 +1027,7 @@ class ExportMod3D():
 
     def mod3dtoshp(self):
         """
-        Saves the 3D model and grids in a shapefile file.
+        Save the 3D model and grids in a shapefile file.
 
         Only the boundary of the area is in degrees. The actual coordinates
         are still in meters.
@@ -1168,7 +1166,6 @@ class Exportkmz(QtWidgets.QDialog):
         None.
 
         """
-
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.pfmod.iodefs.exportkmz')

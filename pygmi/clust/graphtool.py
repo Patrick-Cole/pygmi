@@ -22,9 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Graph tool is a multi-function graphing tool for use with cluster analysis.
-"""
+"""Multi-function graphing tool for use with cluster analysis."""
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
@@ -404,7 +402,7 @@ class PolygonInteractor(QtCore.QObject):
 
     def new_poly(self, npoly):
         """
-        New Polygon.
+        Create new Polygon.
 
         Parameters
         ----------
@@ -867,7 +865,7 @@ class ScatterPlot(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -880,13 +878,11 @@ class ScatterPlot(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

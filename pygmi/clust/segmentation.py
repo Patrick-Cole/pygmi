@@ -26,7 +26,6 @@
 import copy
 import numpy as np
 import skimage
-import matplotlib.pyplot as plt
 from numba import jit
 from PyQt5 import QtWidgets, QtCore, QtGui
 import pygmi.menu_default as menu_default
@@ -503,7 +502,7 @@ def get_l(data):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     data1 = skimage.data.coffee()  # 400x600 50.6 secs
 
     wcolor = 0.5

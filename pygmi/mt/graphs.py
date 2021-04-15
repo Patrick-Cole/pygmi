@@ -328,7 +328,7 @@ class PlotPoints(GraphWindow):
 
 
 def _testfn():
-    """ main test """
+    """Test routine."""
     import numpy as np
     import glob
     import matplotlib.pyplot as plt

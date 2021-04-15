@@ -22,17 +22,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""This program deletes SEISAN records."""
+"""Delete SEISAN records."""
 
 import os
 import numpy as np
 from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
-#from pygmi.misc import PTime
 import pygmi.seis.iodefs as iodefs
-#from sklearn.cluster import DBSCAN
-#import cartopy.crs as ccrs
-#import cartopy.io.img_tiles as cimgt
 
 
 class DeleteRecord():
@@ -73,7 +69,7 @@ class DeleteRecord():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -86,13 +82,11 @@ class DeleteRecord():
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -214,7 +208,7 @@ class Quarry():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -227,13 +221,11 @@ class Quarry():
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

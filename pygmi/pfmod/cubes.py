@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""This is code for the 3d model creation."""
+"""Code for the 3d model creation."""
 
 import ctypes
 import os
@@ -198,7 +198,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
     def update_for_kmz(self):
         """
-        Update for the kmz file
+        Update for the kmz file.
 
         Returns
         -------
@@ -221,7 +221,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
     def change_defs(self):
         """
-        List box routine
+        List box routine.
 
         Returns
         -------
@@ -235,7 +235,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
     def data_init(self):
         """
-        Data initialisation routine.
+        Initialise data.
 
         Returns
         -------
@@ -253,7 +253,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
         None.
 
         """
-
         for i in range(self.lw_3dmod_defs.count()):
             item = self.lw_3dmod_defs.item(i)
             if item.isSelected():
@@ -270,7 +269,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.sliths = np.intersect1d(self.gdata, lith3d)
 
     def mod3d_vs(self):
-        """ Vertical slider used to scale 3d view """
+        """Vertical slider used to scale 3d view."""
         perc = (float(self.vslider_3dmodel.value()) /
                 float(self.vslider_3dmodel.maximum()))
 
@@ -638,7 +637,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
         None.
 
         """
-
         self.glwidget.is_ortho = self.checkbox_ortho.isChecked()
         self.glwidget.has_axis = self.checkbox_axis.isChecked()
 
@@ -1318,7 +1316,7 @@ class MySunCanvas(FigureCanvasQTAgg):
 
 def calc_norms(faces, vtx):
     """
-    Calculate normals
+    Calculate normals.
 
     Parameters
     ----------
@@ -1363,7 +1361,6 @@ def normalize_v3(arr):
         Output array of 3 component vectors.
 
     """
-
     arr = arr.astype(np.float64)
 
     lens = np.sqrt(arr[:, 0]**2 + arr[:, 1]**2 + arr[:, 2]**2)
@@ -1376,36 +1373,27 @@ def normalize_v3(arr):
 
 def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
     """
-    # function [F,V,col] = MarchingCubes(x,y,z,c,iso,colors)
+    Marching cubes.
 
-    # [F,V] = MarchingCubes(X,Y,Z,C,ISO)
-    # [F,V,COL] = MarchingCubes(X,Y,Z,C,ISO,COLORS)
-    #
-    # Use marching cubes algorithm to compute a triangulated mesh of the
-    # isosurface within the 3D matrix of scalar values C at isosurface value
-    # ISO. The 3D matrices (X,Y,Z) represent a Cartesian, axis-aligned grid
-    # specifying the points at which the data C is given. These coordinate
-    # arrays must be in the format produced by Matlab's meshgrid function.
-    # Output arguments F and V are the face list and vertex list
-    # of the resulting triangulated mesh. The orientation of the triangles is
-    # chosen such that the normals point from the higher values to the lower
-    # values. Optional arguments COLORS ans COLS can be used to produce
-    # interpolated mesh face colors. For usage, see Matlab's isosurface.m.
-    # To avoid Out of Memory errors when matrix C is large, convert matrices
-    # X,Y,Z and C from doubles (Matlab default) to singles (32-bit floats).
-    #
-    # Adapted for Matlab by Peter Hammer in 2011 based on an
-    # Octave function written by Martin Helm <martin@mhelm.de> in 2009
-    # http://www.mhelm.de/octave/m/marching_cube.m
-    #
-    # Revised 30 September, 2011 to add code by Oliver Woodford for removing
-    # duplicate vertices.
+    Use marching cubes algorithm to compute a triangulated mesh of the
+    isosurface within the 3D matrix of scalar values C at isosurface value
+    ISO. The 3D matrices (X,Y,Z) represent a Cartesian, axis-aligned grid
+    specifying the points at which the data C is given. These coordinate
+    arrays must be in the format produced by Matlab's meshgrid function.
+    Output arguments F and V are the face list and vertex list
+    of the resulting triangulated mesh. The orientation of the triangles is
+    chosen such that the normals point from the higher values to the lower
+    values. Optional arguments COLORS ans COLS can be used to produce
+    interpolated mesh face colors. For usage, see Matlab's isosurface.m.
+    To avoid Out of Memory errors when matrix C is large, convert matrices
+    X,Y,Z and C from doubles (Matlab default) to singles (32-bit floats).
 
-    #    error('x, y, z, c must be matrices of dim 3')
-    #    error('x, y, z, c must be the same size')
-    #    error('grid size must be at least 2x2x2')
-    #    error('iso needs to be scalar value')
-    #    error( 'color must be matrix of same size as c')
+    Originally Adapted for Matlab by Peter Hammer in 2011 based on an
+    Octave function written by Martin Helm <martin@mhelm.de> in 2009
+    http://www.mhelm.de/octave/m/marching_cube.m
+
+    Revised 30 September, 2011 to add code by Oliver Woodford for removing
+    duplicate vertices.
 
     Parameters
     ----------
@@ -1692,7 +1680,7 @@ def bitset(byteval, idx):
 
 def sub2ind(msize, row, col, layer):
     """
-    Sub to index
+    Sub to index.
 
     Parameters
     ----------
@@ -2053,8 +2041,7 @@ def GetTables():
 
 
 def _testfn():
-    """Main routine, used for testing."""
-
+    """Test routine."""
     c = np.zeros([5, 5, 5])
     c[1:4, 1:4, 1:4] = 1
     c = zoom(c, 1, order=1)

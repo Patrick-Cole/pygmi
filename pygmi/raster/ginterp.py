@@ -452,7 +452,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_hist_text(self, hst, zval):
         """
-        Update the value on the histogram
+        Update the value on the histogram.
 
         Parameters
         ----------
@@ -555,7 +555,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_single_color_map(self):
         """
-        Updates the single color map.
+        Update the single color map.
 
         Returns
         -------
@@ -611,7 +611,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-
         if self.shade is not True:
             return 1
 
@@ -674,8 +673,9 @@ class MySunCanvas(FigureCanvasQTAgg):
 
 class PlotInterp(QtWidgets.QDialog):
     """
-    This is the primary class for the raster data interpretation module. The
-    main interface is set up from here, as well as monitoring of the mouse
+    The primary class for the raster data interpretation module.
+
+    The main interface is set up from here, as well as monitoring of the mouse
     over the sunshading.
 
     The PlotInterp class allows for the display of raster data in a variety of
@@ -1021,7 +1021,7 @@ class PlotInterp(QtWidgets.QDialog):
 
     def change_sunsliders(self):
         """
-        Changes the sun shading sliders.
+        Change the sun shading sliders.
 
         Returns
         -------
@@ -1086,7 +1086,7 @@ class PlotInterp(QtWidgets.QDialog):
 
     def data_init(self):
         """
-        Data initialise.
+        Initialise Data.
 
         Entry point into routine. This entry point exists for
         the case  where data must be initialised before entering at the
@@ -1180,7 +1180,6 @@ class PlotInterp(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         snorm = self.mmc.update_shade_plot()
 
         ext = 'GeoTiff (*.tif)'
@@ -1498,7 +1497,7 @@ class PlotInterp(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Settings.
+        Entrypoint into class.
 
         This is called when the used double clicks the routine from the
         main PyGMI interface.
@@ -1530,7 +1529,7 @@ class PlotInterp(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -1543,13 +1542,11 @@ class PlotInterp(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -1649,7 +1646,7 @@ def currentshader(data, cell, theta, phi, alpha):
 
 def histcomp(img, nbr_bins=None, perc=5.):
     """
-    Histogram Compaction
+    Histogram Compaction.
 
     This compacts a % of the outliers in data, allowing for a cleaner, linear
     representation of the data.
@@ -1666,7 +1663,6 @@ def histcomp(img, nbr_bins=None, perc=5.):
     img2 : numpy array
         compacted array
     """
-
     if nbr_bins is None:
         nbr_bins = max(img.shape)
         nbr_bins = max(nbr_bins, 256)
@@ -1815,7 +1811,7 @@ def norm255(dat):
 
 
 def _testfn():
-    """Test."""
+    """Test routine."""
     import matplotlib
 
     matplotlib.interactive(False)

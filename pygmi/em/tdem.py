@@ -100,14 +100,13 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
     def disp_wave(self, times, wave, title):
         """
-
+        Display waveform.
 
         Returns
         -------
         None.
 
         """
-
         self.figure.clear()
 
         ax1 = self.figure.add_subplot(111)
@@ -466,7 +465,6 @@ class TDEM1D(QtWidgets.QDialog):
         None.
 
         """
-
         stype = self.combostype.currentText()
 
         if stype == 'CircularLoop':
@@ -487,7 +485,6 @@ class TDEM1D(QtWidgets.QDialog):
         None.
 
         """
-
         offtime = float(self.txofftime.text())
         times = np.linspace(0, offtime, 1000)
         wtype = self.combowtype.currentText()
@@ -629,7 +626,8 @@ class TDEM1D(QtWidgets.QDialog):
         self.combobalt.addItems(cnames)
         for i, tmp in enumerate(cnames):
             tmp = tmp.lower()
-            if ('elev' in tmp or 'alt' in tmp or 'height' in tmp or 'radar' in tmp):
+            if ('elev' in tmp or 'alt' in tmp or 'height' in tmp or
+                    'radar' in tmp):
                 self.combobalt.setCurrentIndex(i)
                 break
 
@@ -674,7 +672,6 @@ class TDEM1D(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
@@ -725,7 +722,6 @@ def tonumber(test, alttext=None):
 
 def _testfn():
     """Test routine."""
-
     from pygmi.vector.iodefs import ImportLineData
 
     app = QtWidgets.QApplication(sys.argv)

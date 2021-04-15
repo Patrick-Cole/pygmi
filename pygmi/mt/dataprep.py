@@ -281,9 +281,7 @@ class Metadata(QtWidgets.QDialog):
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    MPL Canvas class.
-    """
+    """MPL Canvas class."""
 
     def __init__(self, parent=None):
         fig = Figure()
@@ -532,7 +530,6 @@ class StaticShiftEDI(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
@@ -561,7 +558,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -574,7 +571,6 @@ class StaticShiftEDI(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.shiftx.setValue(projdata['shiftx'])
         self.shifty.setValue(projdata['shifty'])
         self.checkbox.setChecked(projdata['checkbox'])
@@ -584,7 +580,6 @@ class StaticShiftEDI(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -749,7 +744,6 @@ class RotateEDI(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if 'MT - EDI' in self.indata:
             self.data = copy.deepcopy(self.indata['MT - EDI'])
         else:
@@ -781,7 +775,7 @@ class RotateEDI(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -794,7 +788,6 @@ class RotateEDI(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.spinbox.setValue(projdata['rotz'])
         self.checkbox.setChecked(projdata['checkbox'])
 
@@ -803,7 +796,6 @@ class RotateEDI(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -1267,7 +1259,7 @@ class EditEDI(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -1280,13 +1272,11 @@ class EditEDI(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -1303,7 +1293,7 @@ class EditEDI(QtWidgets.QDialog):
 
 class MySlider(QtWidgets.QSlider):
     """
-    My Slider
+    My Slider.
 
     Custom class which allows clicking on a horizontal slider bar with slider
     moving to click in a single step.
@@ -1352,9 +1342,7 @@ class MySlider(QtWidgets.QSlider):
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
-    """
-    MPL Canvas class.
-    """
+    """MPL Canvas class."""
 
     def __init__(self, parent=None):
         fig = Figure()
@@ -1477,7 +1465,9 @@ class Occam1D(QtWidgets.QDialog):
         self.errfloorres.setSizePolicy(sizepolicy)
         self.errfloorphase = QtWidgets.QLineEdit('2.')
         self.errfloorphase.setSizePolicy(sizepolicy)
-        self.remove_out_quad = QtWidgets.QCheckBox(r'Remove Resistivity/Phase values out of 1st/3rd Quadrant')
+        self.remove_out_quad = QtWidgets.QCheckBox(r'Remove Resistivity/'
+                                                   r'Phase values out of '
+                                                   r'1st/3rd Quadrant')
 
         self.targetdepth = QtWidgets.QLineEdit('40000.')
         self.targetdepth.setSizePolicy(sizepolicy)
@@ -1505,7 +1495,8 @@ class Occam1D(QtWidgets.QDialog):
         label5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
         label6 = QtWidgets.QLabel('Resistivity Error Floor (%):')
         label7 = QtWidgets.QLabel('Phase Error Floor (degrees):')
-        label7a = QtWidgets.QLabel(r'Remove Resistivity/Phase values out of 1st/3rd Quadrant (True/False):')
+        label7a = QtWidgets.QLabel(r'Remove Resistivity/Phase values out of'
+                                   r' 1st/3rd Quadrant (True/False):')
         label8 = QtWidgets.QLabel('Height of air layer:')
         label9 = QtWidgets.QLabel('Bottom of model:')
         label10 = QtWidgets.QLabel('Depth of target to investigate:')
@@ -1817,7 +1808,7 @@ class Occam1D(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -1850,7 +1841,6 @@ class Occam1D(QtWidgets.QDialog):
         """
         Save project data from class.
 
-
         Returns
         -------
         projdata : dictionary
@@ -1878,7 +1868,7 @@ class Occam1D(QtWidgets.QDialog):
 
 def tonumber(test, alttext=None):
     """
-    Checks if something is a number or matches alttext
+    Check if something is a number or matches alttext.
 
     Parameters
     ----------
@@ -1906,7 +1896,7 @@ def tonumber(test, alttext=None):
 
 
 def _testfn_occam():
-    """ main test """
+    """Test routine."""
     datadir = r'C:\Work\workdata\MT\\'
     edi_file = datadir+r"synth02.edi"
 
@@ -1922,14 +1912,12 @@ def _testfn_occam():
 
 
 def _testfn():
-    """ main test """
-    from mtpy.utils.shapefiles_creator import ShapeFilesCreator
-
+    """Test routine."""
     datadir = r'C:\Work\workdata\MT\\'
     allfiles = glob.glob(datadir+'\\*.edi')
 
     for edi_file in allfiles:
-    # Create an MT object
+        # Create an MT object
         mt_obj = MT(edi_file)
 
     print('loading complete')

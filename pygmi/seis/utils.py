@@ -76,7 +76,7 @@ class CorrectDescriptions(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-#        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        # helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
         pb_textfile = QtWidgets.QPushButton('Load Description List')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)

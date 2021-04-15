@@ -780,7 +780,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
     def merge_defs(self):
         """
-        Merge geophysical definitions
+        Merge geophysical definitions.
 
         Returns
         -------
@@ -814,7 +814,7 @@ class ParamDisplay(QtWidgets.QDialog):
 
     def rename_defs(self):
         """
-        Rename a definition
+        Rename a definition.
 
         Returns
         -------

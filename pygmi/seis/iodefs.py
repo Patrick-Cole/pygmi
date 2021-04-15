@@ -326,7 +326,7 @@ class ImportSeisan():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -348,7 +348,6 @@ class ImportSeisan():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -885,7 +884,7 @@ class ImportGenericFPS():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -907,7 +906,6 @@ class ImportGenericFPS():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

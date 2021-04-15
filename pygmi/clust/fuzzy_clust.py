@@ -228,7 +228,7 @@ class FuzzyClust(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -257,7 +257,6 @@ class FuzzyClust(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -670,7 +669,7 @@ class FuzzyClust(QtWidgets.QDialog):
     # initial size of objective function
     #    obj_fcn_initial = np.sum((edist**2)*m_f)
     #    obj_fcn_prev = obj_fcn_initial
-        obj_fcn = np.zeros(maxit)  # This is new - we must initialize this.
+        obj_fcn = np.zeros(maxit)  # This is new - we must initialise this.
 
 #    hh = waitbar(0,['No. of clusters: ',
 #    num2unicode(info(1)),'/[',num2unicode(info(2)),

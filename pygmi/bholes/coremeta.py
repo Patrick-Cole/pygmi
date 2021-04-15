@@ -22,9 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Core metadata and depth Assignment routine.
-"""
+"""Core metadata and depth Assignment routine."""
 
 # Terracore uses from to depth assignments.
 
@@ -373,18 +371,19 @@ class CoreMeta(QtWidgets.QDialog):
 
     def format_coord(self, x, y):
         """
-
+        Format coordinate.
 
         Parameters
         ----------
-        x : TYPE
-            DESCRIPTION.
-        y : TYPE
-            DESCRIPTION.
+        x : float
+            x-coordinate.
+        y : float
+            y-coordinate.
 
         Returns
         -------
-        None.
+        str
+            Formatted string.
 
         """
         rows, cols = self.indata['Raster'][0].data.T.shape
@@ -399,7 +398,7 @@ class CoreMeta(QtWidgets.QDialog):
 
     def ncore_change(self):
         """
-        Number of cores has changed.
+        Routine is called when number of cores has changed.
 
         Returns
         -------
@@ -434,7 +433,6 @@ class CoreMeta(QtWidgets.QDialog):
         None.
 
         """
-
         sdata = {}
 
         ofile = self.indata['Raster'][0].filename[:-4]+'.json'
@@ -450,14 +448,13 @@ class CoreMeta(QtWidgets.QDialog):
 
     def traylen_change(self):
         """
-        Called whenever the tray length parameter is changed.
+        Routine is called whenever the tray length parameter is changed.
 
         Returns
         -------
         None.
 
         """
-
         rows, cols = self.indata['Raster'][0].data.T.shape
         cores = self.sb_numcore.value()
         endlen = cores * self.dsb_traylen.value()
@@ -470,7 +467,7 @@ class CoreMeta(QtWidgets.QDialog):
 
     def update_depthfunc(self):
         """
-        Updates the depth function
+        Update the depth function.
 
         Returns
         -------
@@ -516,7 +513,7 @@ class CoreMeta(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Settings.
+        Entrypoint into class.
 
         Returns
         -------
@@ -561,7 +558,7 @@ class CoreMeta(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -574,7 +571,6 @@ class CoreMeta(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         # self.combo_class.setCurrentText(projdata['combo_class'])
 
         return False
@@ -597,7 +593,7 @@ class CoreMeta(QtWidgets.QDialog):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     ifile = (r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\\'
              r'clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat')
 

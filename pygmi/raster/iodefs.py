@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-""" Import Data """
+"""Import raster data."""
 
 import warnings
 import os
@@ -128,7 +128,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
 
 class ImportData():
     """
-    Import Data - Interfaces with GDAL routines
+    Import Data - Interfaces with GDAL routines.
 
     Attributes
     ----------
@@ -171,7 +171,8 @@ class ImportData():
         if not nodialog:
             if self.parent is not None:
                 piter = self.parent.pbar.iter
-            ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix *.bil);;'
+            ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix '
+                   '*.bil);;'
                    'ERMapper (*.ers);;'
                    'ENVI (*.hdr *.dat *.img *.raw);;'
                    'ERDAS Imagine (*.img);;'
@@ -259,7 +260,7 @@ class ImportData():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -283,7 +284,6 @@ class ImportData():
         """
         Save project data from class.
 
-
         Returns
         -------
         projdata : dictionary
@@ -300,7 +300,7 @@ class ImportData():
 
 class ImportRGBData():
     """
-    Import RGB Image - Interfaces with GDAL routines
+    Import RGB Image - Interfaces with GDAL routines.
 
     Attributes
     ----------
@@ -385,7 +385,7 @@ class ImportRGBData():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -407,7 +407,6 @@ class ImportRGBData():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -454,7 +453,7 @@ def clusterprep(dat):
 
 def get_ascii(ifile):
     """
-    Import ascii raster dataset
+    Import ascii raster dataset.
 
     Parameters
     ----------
@@ -540,6 +539,8 @@ def get_ascii(ifile):
 def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
                iraster=None):
     """
+    Get raster dataset.
+
     This function loads a raster dataset off the disk using the GDAL
     libraries. It returns the data in a PyGMI data object.
 
@@ -562,7 +563,6 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
     dat : PyGMI raster Data
         dataset imported
     """
-
     dat = []
     bname = ifile.split('/')[-1].rpartition('.')[0]
     ifile = ifile[:]
@@ -852,7 +852,7 @@ def get_bil(ifile, nval, piter, showprocesslog):
 
 def get_geopak(hfile):
     """
-    GeoPak Import
+    Geopak Import.
 
     Parameters
     ----------
@@ -870,7 +870,6 @@ def get_geopak(hfile):
         PyGMI raster dataset.
 
     """
-
     with open(hfile, 'rb') as fin:
         fall = fin.read()
 
@@ -1058,7 +1057,7 @@ def get_geosoft(hfile):
 
 class ExportData():
     """
-    Export Data
+    Export Data.
 
     Attributes
     ----------
@@ -1181,7 +1180,7 @@ class ExportData():
 
     def export_gxf(self, data):
         """
-        Export GXF data
+        Export GXF data.
 
         Parameters
         ----------
@@ -1247,7 +1246,7 @@ class ExportData():
 
     def export_surfer(self, data):
         """
-        Export a surfer binary grid
+        Export a surfer binary grid.
 
         Parameters
         ----------
@@ -1292,7 +1291,7 @@ class ExportData():
 
     def export_ascii(self, data):
         """
-        Export Ascii file
+        Export Ascii file.
 
         Parameters
         ----------
@@ -1339,7 +1338,7 @@ class ExportData():
 
     def export_ascii_xyz(self, data):
         """
-        Export and xyz file
+        Export and xyz file.
 
         Parameters
         ----------
@@ -1377,7 +1376,7 @@ class ExportData():
 
     def get_filename(self, data, ext):
         """
-        Gets a valid filename in the case of multi band image
+        Get a valid filename in the case of multi band image.
 
         Parameters
         ----------
@@ -1422,7 +1421,6 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
     None.
 
     """
-
     if isinstance(dat, dict):
         dat2 = []
         for i in dat:
@@ -1535,7 +1533,6 @@ def _filespeedtest():
     ifile = r'E:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
     ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
     # ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
-
 
     # xoff = 0
     # yoff = 0

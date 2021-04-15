@@ -134,7 +134,6 @@ class CreateSceneList(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             tmp = self.exec_()
 
@@ -435,7 +434,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.fig.canvas.mpl_connect('button_release_event', self.onClick)
 
     def capture(self):
-        """ capture """
+        """Capture."""
         self.capture_active = not self.capture_active
 
         if self.capture_active:
@@ -587,7 +586,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def onClick(self, event):
         """
-        onClick event.
+        On click event.
 
         Parameters
         ----------
@@ -706,7 +705,6 @@ class SceneViewer(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if 'SceneList' not in self.indata:
             return False
 
@@ -745,7 +743,6 @@ class SceneViewer(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         return False
 
     def saveproj(self):
@@ -783,7 +780,7 @@ class SceneViewer(QtWidgets.QDialog):
 
     def updateanim(self, event):
         """
-        Update animation file
+        Update animation file.
 
         Parameters
         ----------
@@ -796,7 +793,6 @@ class SceneViewer(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         ext = ('Scene List File (*.xlsx)')
 
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
@@ -810,7 +806,7 @@ class SceneViewer(QtWidgets.QDialog):
 
     def nextscene(self, event):
         """
-        Gets next scene
+        Get next scene.
 
         Parameters
         ----------
@@ -858,7 +854,7 @@ class SceneViewer(QtWidgets.QDialog):
 
     def newdata(self, indx, capture=False):
         """
-        New dataset.
+        Get new dataset.
 
         Parameters
         ----------
@@ -885,8 +881,7 @@ class SceneViewer(QtWidgets.QDialog):
         self.canvas.update_plot(dat, dates)
 
     def capture(self):
-        """ Capture """
-
+        """Capture."""
         self.slider.valueChanged.disconnect()
 
         self.canvas.capture()
@@ -940,7 +935,7 @@ class SceneViewer(QtWidgets.QDialog):
 
     def get_tiff(self, ifile, firstrun=False):
         """
-        Gets TIFF images
+        Get TIFF images.
 
         Parameters
         ----------
@@ -955,7 +950,6 @@ class SceneViewer(QtWidgets.QDialog):
             Data images
 
         """
-
         datall = {}
         ifile = str(ifile)
 
@@ -1051,7 +1045,7 @@ class SceneViewer(QtWidgets.QDialog):
 
 def get_shape_coords(sfile, todegrees=False):
     """
-    Gets coords from a shapefile.
+    Get coordinates from a shapefile.
 
     Parameters
     ----------
@@ -1143,7 +1137,7 @@ def get_kml_coords(kml):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     import sys
 #    sfile = r'C:\Work\Workdata\change\PlanetaryPolygon.shp'
     sfile = r'C:\Work\Workdata\change\fl35.shp'

@@ -156,7 +156,6 @@ class SatRatios(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.combo_sensor.setCurrentText(projdata['sensor'])
         self.setratios()
 
@@ -514,7 +513,7 @@ def get_sentinel_list(flist):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     ifile = r'C:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
     dat = iodefs.get_data(ifile)
 

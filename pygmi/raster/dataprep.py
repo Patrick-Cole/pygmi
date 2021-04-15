@@ -2080,7 +2080,6 @@ def merge(dat, piter=iter, dxy=None):
     out : PyGMI Data
         data object which stores datasets
     """
-
     if dat[0].isrgb:
         return dat
 
@@ -2209,7 +2208,7 @@ def trim_raster(olddata):
 
 
 def _testrtp():
-    """Main RTP testing routine."""
+    """RTP testing routine."""
     import matplotlib.pyplot as plt
     from matplotlib import cm
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
@@ -2238,7 +2237,7 @@ def _testrtp():
 
 
 def _testdown():
-    """Main continuation testing routine."""
+    """Continuation testing routine."""
     import matplotlib.pyplot as plt
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
     from IPython import get_ipython
@@ -2302,7 +2301,7 @@ def _testdown():
 
 def _testgrid():
     """
-    Test.
+    Test routine.
 
     Returns
     -------
@@ -2373,5 +2372,92 @@ def _testgrid():
     ttt.since_last_call('Griddata, nearest')
 
 
+def _testfft():
+    """Test FFT."""
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
+    import scipy
+    from pygmi.pfmod.grvmag3d import quick_model, calc_field
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
+
+# quick model
+    finc = -57
+    fdec = 50
+
+    lmod = quick_model(numx=300, numy=300, numz=30, finc=finc, fdec=fdec)
+    lmod.lith_index[100:200, 100:200, 0:10] = 1
+#    lmod.lith_index[:, :, 10] = 1
+    lmod.mht = 100
+    calc_field(lmod, magcalc=True)
+
+# Calculate the field
+
+    magval = lmod.griddata['Calculated Magnetics'].data
+    plt.imshow(magval, cmap=cm.get_cmap('jet'))
+    plt.show()
+
+    dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
+    plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
+    plt.show()
+
+    data = dat2
+    xdim = data.xdim
+    ydim = data.ydim
+
+    ndat, rdiff, cdiff, datamedian = fftprep(data)
+
+    datamedian = np.ma.median(data.data)
+    ndat = data.data - datamedian
+
+    fftmod = np.fft.fft2(ndat)
+    # fftmod = np.fft.fftshift(fftmod)
+
+    # ny, nx = fftmod.shape
+    KX, KY = fft_getkxy(fftmod, xdim, ydim)
+
+    plt.imshow(fftmod.real)
+    plt.show()
+
+    knrm = np.sqrt(KX**2+KY**2)
+
+    plt.imshow(knrm)
+
+    plt.show()
+
+    knrm = knrm.flatten()
+    fftamp = np.abs(fftmod)**2
+    fftamp = fftamp.flatten()
+
+    plt.plot(knrm, fftamp, '.')
+    plt.yscale('log')
+    plt.show()
+
+    bins = max(fftmod.shape)//2
+
+    abins, bedge, _ = scipy.stats.binned_statistic(knrm, fftamp,
+                                                   statistic='mean',
+                                                   bins=bins)
+
+    bins = (bedge[:-1] + bedge[1:])/2
+    plt.plot(bins, abins)
+    plt.yscale('log')
+    plt.show()
+
+    breakpoint()
+
+    # I = np.deg2rad(I_deg)
+    # D = np.deg2rad(D_deg)
+    # alpha = np.arctan2(KY, KX)
+
+    # filt = 1/(np.sin(I)+1j*np.cos(I)*np.sin(D+alpha))**2
+
+    # zout = np.real(np.fft.ifft2(fftmod*filt))
+    # zout = zout[rdiff:-rdiff, cdiff:-cdiff]
+    # zout = zout + datamedian
+
+    # zout[data.data.mask] = data.data.fill_value
+
+
 if __name__ == "__main__":
-    _testdown()
+    _testfft()

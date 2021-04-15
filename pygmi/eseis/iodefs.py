@@ -65,7 +65,6 @@ class ImportSEGY():
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             ext = 'SEG-Y (*.sgy)'
 
@@ -91,7 +90,7 @@ class ImportSEGY():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -113,7 +112,6 @@ class ImportSEGY():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

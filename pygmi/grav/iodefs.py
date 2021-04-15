@@ -269,7 +269,7 @@ class ImportCG5(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -282,7 +282,6 @@ class ImportCG5(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.get_cg5(projdata['cg5file'])
         self.get_gps(projdata['gpsfile'])
 
@@ -302,7 +301,6 @@ class ImportCG5(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -421,7 +419,8 @@ class ImportCG5(QtWidgets.QDialog):
                 xind = i
             elif 'lat' in tmp.lower():
                 yind = i
-            elif 'elev' in tmp.lower() or 'alt' in tmp.lower() or 'height' in tmp.lower():
+            elif ('elev' in tmp.lower() or 'alt' in tmp.lower() or
+                  'height' in tmp.lower()):
                 zind = i
             elif 'stat' in tmp.lower():
                 sind = i

@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""This is the function which calls the equation editor."""
+"""Equation editor."""
 
 import copy
 from PyQt5 import QtWidgets, QtCore

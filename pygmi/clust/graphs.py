@@ -322,7 +322,8 @@ class PlotMembership(GraphWindow):
 
         """
         data = self.indata['Cluster']
-        if 'memdat' not in data[0].metadata['Cluster'] or len(data[0].metadata['Cluster']['memdat']) == 0:
+        if ('memdat' not in data[0].metadata['Cluster'] or
+                len(data[0].metadata['Cluster']['memdat']) == 0):
             return
 
         self.show()
@@ -377,7 +378,8 @@ class PlotVRCetc(GraphWindow):
 
         j = str(self.combobox1.currentText())
 
-        if j == 'Objective Function' and data[0].metadata['Cluster']['obj_fcn'] is not None:
+        if (j == 'Objective Function' and
+                data[0].metadata['Cluster']['obj_fcn'] is not None):
             x = len(data)
             y = 0
             for i in data:
@@ -398,15 +400,18 @@ class PlotVRCetc(GraphWindow):
             x += data[0].metadata['Cluster']['no_clusters']
             self.mmc.update_wireframe(x.T, y.T, np.log(z))
 
-        if j == 'Variance Ratio Criterion' and data[0].metadata['Cluster']['vrc'] is not None:
+        if (j == 'Variance Ratio Criterion' and
+                data[0].metadata['Cluster']['vrc'] is not None):
             x = [k.metadata['Cluster']['no_clusters'] for k in data]
             y = [k.metadata['Cluster']['vrc'] for k in data]
             self.mmc.update_scatter(x, y)
-        if j == 'Normalized Class Entropy' and data[0].metadata['Cluster']['nce'] is not None:
+        if (j == 'Normalized Class Entropy' and
+                data[0].metadata['Cluster']['nce'] is not None):
             x = [k.metadata['Cluster']['no_clusters'] for k in data]
             y = [k.metadata['Cluster']['nce'] for k in data]
             self.mmc.update_scatter(x, y)
-        if j == 'Xie-Beni Index' and data[0].metadata['Cluster']['xbi'] is not None:
+        if (j == 'Xie-Beni Index' and
+                data[0].metadata['Cluster']['xbi'] is not None):
             x = [k.metadata['Cluster']['no_clusters'] for k in data]
             y = [k.metadata['Cluster']['xbi'] for k in data]
             self.mmc.update_scatter(x, y)

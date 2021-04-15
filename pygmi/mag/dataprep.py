@@ -195,8 +195,10 @@ class Tilt1(QtWidgets.QDialog):
 
 def tilt1(data, azi, s):
     """
-    Tilt angle calculations. Based on work by Gordon Cooper (School of
-    Geosciences, University of the Witwatersrand, Johannesburg, South Africa)
+    Tilt angle calculations.
+
+    Based on work by Gordon Cooper (School of Geosciences, University of the
+                                    Witwatersrand, Johannesburg, South Africa)
 
     Parameters
     ----------
@@ -280,8 +282,10 @@ def tilt1(data, azi, s):
 
 def nextpow2(n):
     """
-    Next power of 2. Based on work by Gordon Cooper (School of Geosciences,
-    University of the Witwatersrand, Johannesburg, South Africa).
+    Next power of 2.
+
+    Based on work by Gordon Cooper (School of Geosciences, University of the
+                                    Witwatersrand, Johannesburg, South Africa).
 
     Parameters
     ----------
@@ -300,8 +304,10 @@ def nextpow2(n):
 
 def vertical(data, npts=None, xint=1, order=1):
     """
-    Vertical derivative. Based on work by Gordon Cooper (School of Geosciences,
-    University of the Witwatersrand, Johannesburg, South Africa).
+    Vertical derivative.
+
+    Based on work by Gordon Cooper (School of Geosciences, University of the
+                                    Witwatersrand, Johannesburg, South Africa).
 
     Parameters
     ----------

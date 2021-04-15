@@ -182,7 +182,7 @@ class Smooth(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -195,7 +195,6 @@ class Smooth(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         if projdata['ftype'] == '2D Mean':
             self.radiobutton_2dmean.setChecked(True)
         else:
@@ -219,7 +218,6 @@ class Smooth(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

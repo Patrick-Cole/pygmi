@@ -30,9 +30,10 @@ import numpy as np
 
 def numpy_to_pygmi(data, pdata=None, dataid=None):
     """
-    Convert an MxN numpy array into a PyGMI data object. For convenience, if
-    pdata is defined, parameters from another dataset will be used (such as
-    xdim, ydim etc).
+    Convert an MxN numpy array into a PyGMI data object.
+
+    For convenience, if pdata is defined, parameters from another dataset
+    will be used (such as xdim, ydim etc).
 
     Parameters
     ----------

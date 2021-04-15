@@ -202,7 +202,7 @@ class Normalisation(QtWidgets.QDialog):
 
 def datacommon(data, tmp1, tmp2, tmp3):
     """
-    Common stuff used in the process routine.
+    Variables used in the process routine.
 
     Parameters
     ----------

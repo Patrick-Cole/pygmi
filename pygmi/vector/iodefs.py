@@ -120,7 +120,6 @@ class ImportLineData(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             ext = ('Geosoft XYZ (*.xyz);;'
                    'ASCII XYZ (*.xyz);;'
@@ -202,7 +201,7 @@ class ImportLineData(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -215,7 +214,6 @@ class ImportLineData(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.ifile = projdata['ifile']
         self.filt = projdata['filt']
         self.xchan.setCurrentText(projdata['xchan'])
@@ -229,7 +227,6 @@ class ImportLineData(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -257,7 +254,6 @@ class ImportLineData(QtWidgets.QDialog):
             Pandas dataframe.
 
         """
-
         with open(self.ifile) as fno:
             head = fno.readline()
             tmp = fno.read()
@@ -300,7 +296,6 @@ class ImportLineData(QtWidgets.QDialog):
             Pandas dataframe.
 
         """
-
         with open(self.ifile) as fno:
             head = fno.readline()
             tmp = fno.read()
@@ -484,7 +479,6 @@ class ImportShapeData():
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             ext = 'Shapefile (*.shp);;' + 'All Files (*.*)'
 
@@ -506,7 +500,7 @@ class ImportShapeData():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -519,7 +513,6 @@ class ImportShapeData():
             A check to see if settings was successfully run.
 
         """
-
         self.ifile = projdata['ifile']
 
         chk = self.settings(True)
@@ -529,7 +522,6 @@ class ImportShapeData():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------

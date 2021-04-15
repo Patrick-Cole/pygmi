@@ -330,7 +330,7 @@ class AnalSpec(QtWidgets.QDialog):
 
     def disp_splib(self, row):
         """
-        Change library spectra for display
+        Change library spectra for display.
 
         Parameters
         ----------
@@ -370,7 +370,6 @@ class AnalSpec(QtWidgets.QDialog):
         None.
 
         """
-
         self.map.remhull = self.chk_hull.isChecked()
         self.map.init_graph()
 
@@ -434,7 +433,6 @@ class AnalSpec(QtWidgets.QDialog):
         None.
 
         """
-
         sdata = {}
 
         ofile = self.indata['Raster'][0].filename[:-4]+'.json'
@@ -450,7 +448,10 @@ class AnalSpec(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Settings.
+        Entrypoint into class.
+
+        This is called when the used double clicks the routine from the
+        main PyGMI interface.
 
         Returns
         -------
@@ -510,7 +511,7 @@ class AnalSpec(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -642,7 +643,8 @@ class ProcFeatures(QtWidgets.QDialog):
         self.tablewidget.setRowCount(numrows)
         self.tablewidget.setColumnCount(4)
         self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter',
-                                                    'Threshold', 'Description'])
+                                                    'Threshold',
+                                                    'Description'])
 
         item = QtWidgets.QTableWidgetItem(str(product[0]))
         item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
@@ -666,7 +668,6 @@ class ProcFeatures(QtWidgets.QDialog):
         item = QtWidgets.QTableWidgetItem(desc)
         item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
         self.tablewidget.setItem(0, 3, item)
-
 
         for i in range(1, numrows):
             cb = QtWidgets.QComboBox()
@@ -692,7 +693,10 @@ class ProcFeatures(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Entry point into item.
+        Entrypoint into class.
+
+        This is called when the used double clicks the routine from the
+        main PyGMI interface.
 
         Returns
         -------
@@ -771,7 +775,6 @@ class ProcFeatures(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         # self.combo_sensor.setCurrentText(projdata['sensor'])
         # self.setratios()
 
@@ -854,7 +857,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
     ratio : dictionary
         Dictionary containing string definitions of ratios.
     product : dictionary
-        Final hyperspectral products. Each dictionary value, is a list of features or ratios with thresholds to be combined.
+        Final hyperspectral products. Each dictionary value, is a list of
+        features or ratios with thresholds to be combined.
     piter : iter, optional
         Progress bar iterable. The default is iter.
 
@@ -864,7 +868,6 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
         DESCRIPTION.
 
     """
-
     allfeatures = [i for i in product if isinstance(i, int)]
     allratios = [i.split()[0] for i in product
                  if not isinstance(i, int)]
@@ -978,7 +981,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
 
 def indexcalc(formula, dat):
     """
-    Calculates an index using numexpr.
+    Calculate an index using numexpr.
 
     Parameters
     ----------
@@ -993,7 +996,6 @@ def indexcalc(formula, dat):
         This can be a masked array.
 
     """
-
     out = ne.evaluate(formula, dat)
 
     key = list(dat.keys())[0]
@@ -1020,7 +1022,6 @@ def phull(sample):
         Output hull.
 
     """
-
     xvals = np.arange(sample.size)
     sample = np.transpose([xvals, sample])
 
@@ -1046,7 +1047,7 @@ def phull(sample):
 
 def readsli(ifile):
     """
-    Reads an ENVI sli file.
+    Read an ENVI sli file.
 
     Parameters
     ----------
@@ -1129,9 +1130,8 @@ def readsli(ifile):
     return spectra
 
 
-
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     pbar = ProgressBarText()
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
@@ -1148,7 +1148,7 @@ def _testfn():
     iraster = (xoff, yoff, xsize, ysize)
     # iraster = None
 
-    data = get_raster(ifile, nval=nodata, iraster=iraster, piter = pbar.iter)
+    data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
 
     # data = get_raster(ifile, piter=pbar.iter)
 
@@ -1158,9 +1158,7 @@ def _testfn():
 
 
 def _testfn2():
-    """Main testing routine."""
-    import matplotlib.pyplot as plt
-
+    """Test routine."""
     pbar = ProgressBarText()
 
     # ifile = (r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\\'

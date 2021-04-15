@@ -22,9 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Hyperspectral Core Routines.
-"""
+"""Hyperspectral Core Routines."""
 
 import copy
 import os
@@ -169,7 +167,7 @@ class PolygonInteractor(QtCore.QObject):
 
     def new_poly(self, npoly):
         """
-        New polygon.
+        Routine for new polygon.
 
         Parameters
         ----------
@@ -250,7 +248,6 @@ class PolygonInteractor(QtCore.QObject):
         None.
 
         """
-
         if event.inaxes is None:
             return
         if event.button != 1:
@@ -275,19 +272,20 @@ class PolygonInteractor(QtCore.QObject):
 
     def set_line(self, xdata, ydata):
         """
-
+        Routine to set line.
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        xdata : float
+            x coordinate.
+        ydata : float
+            y coordinate data.
 
         Returns
         -------
         None.
 
         """
-
         # We transform coords to screen coords so that picking tolerance is
         # always valid.
         xys = self.poly.get_transform().transform(self.poly.xy)
@@ -407,14 +405,13 @@ class CorePrep(QtWidgets.QDialog):
 
     def default_fenix(self):
         """
-        Default settings for FENIX.
+        Choose default settings for FENIX.
 
         Returns
         -------
         None.
 
         """
-
         self.combostart.setCurrentText('479.54')
         self.comboend.setCurrentText('2482.69')
 
@@ -443,7 +440,7 @@ class CorePrep(QtWidgets.QDialog):
 
     def default_owl(self):
         """
-        Default settings for OWL.
+        Choose default settings for OWL.
 
         Returns
         -------
@@ -490,7 +487,7 @@ class CorePrep(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Settings.
+        Entrypoint into class.
 
         Returns
         -------
@@ -553,7 +550,7 @@ class CorePrep(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -566,7 +563,6 @@ class CorePrep(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         # self.combo_class.setCurrentText(projdata['combo_class'])
 
         return False
@@ -598,7 +594,6 @@ class CorePrep(QtWidgets.QDialog):
         None.
 
         """
-
         data = copy.copy(self.indata['Raster'])
         xy = self.map.polyi.poly.xy
 
@@ -760,15 +755,6 @@ class ImageCor(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
-        # self.combo_sensor.setCurrentText(projdata['sensor'])
-        # self.setratios()
-
-        # for i in self.lw_ratios.selectedItems():
-        #     if i.text()[2:] not in projdata['ratios']:
-        #         i.setSelected(False)
-        # self.set_selected_ratios()
-
         return False
 
     def saveproj(self):
@@ -782,14 +768,6 @@ class ImageCor(QtWidgets.QDialog):
 
         """
         projdata = {}
-        # projdata['sensor'] = self.combo_sensor.currentText()
-
-        # rlist = []
-        # for i in self.lw_ratios.selectedItems():
-        #     rlist.append(i.text()[2:])
-
-        # projdata['ratios'] = rlist
-
         return projdata
 
     def acceptall(self):
@@ -889,7 +867,6 @@ class ImageCor(QtWidgets.QDialog):
         None.
 
         """
-
         if dirname == '':
             dirname = QtWidgets.QFileDialog.getExistingDirectory(
                 self.parent, 'Open File')
@@ -902,7 +879,7 @@ class ImageCor(QtWidgets.QDialog):
 
 def data_to_dict(dat):
     """
-    Data to dictionary.
+    Convert Data list to dictionary.
 
     Parameters
     ----------
@@ -924,7 +901,7 @@ def data_to_dict(dat):
 
 def dict_to_data(arr, data):
     """
-    Dictionary to Data.
+    Convert dictionary of Data to Data list.
 
     Parameters
     ----------
@@ -1131,7 +1108,7 @@ def smile(dat, piter=iter):
 
 def filter_data(datah, ftype, piter=iter):
     """
-    Filter data
+    Filter data.
 
     Parameters
     ----------
@@ -1145,7 +1122,6 @@ def filter_data(datah, ftype, piter=iter):
     list of PyGMI Data
         Output data.
     """
-
     print('Filtering using '+ftype+'...')
 
     pdat = []
@@ -1212,7 +1188,7 @@ def hampel_filter(input_series, window_size, n_sigmas=3):
 
 
 def _testfn():
-    """Testing routine."""
+    """Test routine."""
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = ImageCor()
     tmp.get_idir(r'c:\work\Workdata\HyperspectralScanner\Raw Data\VNIR-SWIR (FENIX)')
@@ -1221,7 +1197,7 @@ def _testfn():
 
 
 def _testfn2():
-    """Testing routine."""
+    """Test routine."""
     import matplotlib.pyplot as plt
     pbar = ProgressBarText()
 
@@ -1279,7 +1255,7 @@ def _testfn2():
 
 
 def _testfn3():
-    """Testing routine."""
+    """Test routine."""
     import matplotlib.pyplot as plt
     pbar = ProgressBarText()
 
@@ -1324,7 +1300,7 @@ def _testfn3():
 
 
 def _testfn4():
-    """Testing routine."""
+    """Test routine."""
     import matplotlib.pyplot as plt
 
     ifile = r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\BV1_17_118m16_125m79_2020-06-30_12-43-14.dat'

@@ -1,3 +1,1 @@
-"""
-Potential Field Routines
-"""
+"""Potential Field Routines."""

@@ -1,4 +1,2 @@
-"""
-Raster Routines
-"""
+"""Raster Routines."""
 

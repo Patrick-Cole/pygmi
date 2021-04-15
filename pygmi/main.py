@@ -784,7 +784,6 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
-
         if event.key() == QtCore.Qt.Key_Delete:
             self.delete_item()
 
@@ -982,14 +981,13 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def load(self):
         """
-        Loads project state from JSON file.
+        Load project state from JSON file.
 
         Returns
         -------
         None.
 
         """
-
         self.process_is_active()
         self.showprocesslog('Project load busy...')
 
@@ -1052,14 +1050,13 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def save(self):
         """
-        Saves project state to a JSON file.
+        Save project state to a JSON file.
 
         Returns
         -------
         None.
 
         """
-
         ofile, _ = QtWidgets.QFileDialog.getSaveFileName(
             self, 'Save Project', '.', 'PyGMI project (*.json);;')
         if ofile == '':
@@ -1096,7 +1093,6 @@ class MainWidget(QtWidgets.QMainWindow):
         None.
 
         """
-
         # get all arrows
         alist = {}
         for item in self.scene.items():
@@ -1207,7 +1203,6 @@ class MainWidget(QtWidgets.QMainWindow):
             flag to indicate whether the last row on the log should be
             overwritten.
         """
-
         txtobj = self.textbrowser_processlog
 
         txtmsg = str(txtobj.toPlainText()+'\n')
@@ -1225,8 +1220,8 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         Clean deleted objects in self.pdlg and appends a new object.
 
-        self.pdlg allows for modeless dialogues to remain in existence until they
-        are closed
+        self.pdlg allows for modeless dialogues to remain in existence until
+        they are closed
 
         Parameters
         ----------
@@ -1274,13 +1269,13 @@ class Startup(QtWidgets.QDialog):
         self.open()
 
     def update(self):
-        """Update the text on the dialog"""
+        """Update the text on the dialog."""
         self.pbar.setValue(self.pbar.value() + 1)
         QtWidgets.QApplication.processEvents()
 
 
 class EmittingStream(QtCore.QObject):
-    """ Class to intercept stdout for later use in a textbox """
+    """Class to intercept stdout for later use in a textbox."""
 
     def __init__(self, textWritten):
         self.textWritten = textWritten
@@ -1303,7 +1298,7 @@ class EmittingStream(QtCore.QObject):
 
     def flush(self):
         """
-        Flush
+        Flush.
 
         Returns
         -------
@@ -1313,7 +1308,7 @@ class EmittingStream(QtCore.QObject):
 
     def fileno(self):
         """
-        Fileno
+        Fileno.
 
         Returns
         -------
@@ -1321,12 +1316,11 @@ class EmittingStream(QtCore.QObject):
             Returns -1.
 
         """
-
         return -1
 
 
 def main():
-    """Entry point for the PyGMI software"""
+    """Entry point for the PyGMI software."""
     app = QtWidgets.QApplication(sys.argv)
     # The try statement is because this command is only available for qt>=5.10
     try:

@@ -109,7 +109,7 @@ class PointCut():
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -130,7 +130,6 @@ class PointCut():
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -312,7 +311,7 @@ class DataGrid(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -338,7 +337,6 @@ class DataGrid(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -580,7 +578,7 @@ class DataReproj(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -601,7 +599,6 @@ class DataReproj(QtWidgets.QDialog):
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -699,7 +696,6 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
     newz : numpy array
         M x N array of z values
     """
-
     showprocesslog('Creating Grid')
     x = x.flatten()
     y = y.flatten()
@@ -759,7 +755,7 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
 
 
 def _testfn():
-    """Main testing routine."""
+    """Test routine."""
     import sys
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportLineData

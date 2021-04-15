@@ -23,6 +23,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
+IGRF calculations.
+
 This code is based on the Geomag software, with information given below. It was
 translated into Python from the Geomag code.
 
@@ -255,7 +257,7 @@ class IGRF(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Setting Dialog.
+        Entrypoint into class.
 
         This is the main entry point into this routine. It also
         contains the main IGRF code.
@@ -460,7 +462,7 @@ class IGRF(QtWidgets.QDialog):
 
     def loadproj(self, projdata):
         """
-        Loads project data into class.
+        Load project data into class.
 
         Parameters
         ----------
@@ -473,28 +475,16 @@ class IGRF(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         self.wkt = projdata['wkt']
         self.dsb_alt.setValue(projdata['alt'])
         date = self.dateedit.date().fromString(projdata['date'])
         self.dateedit.setDate(date)
-
-        # dtmitems = [self.combobox_dtm.itemText(i)
-        #             for i in range(self.combobox_dtm.count())]
-        # magitems = [self.combobox_mag.itemText(i)
-        #             for i in range(self.combobox_mag.count())]
-
-        # if projdata['dtm'] in dtmitems:
-        #     self.combobox_dtm.setCurrentText(projdata['dtm'])
-        # if projdata['mag'] in magitems:
-        #     self.combobox_mag.setCurrentText(projdata['mag'])
 
         return False
 
     def saveproj(self):
         """
         Save project data from class.
-
 
         Returns
         -------
@@ -514,6 +504,8 @@ class IGRF(QtWidgets.QDialog):
 
     def getshc(self, file, iflag, strec, nmax_of_gh, gh):
         """
+        Read spherical harmonic coefficients from the specified model.
+
         Reads spherical harmonic coefficients from the specified model into an
         array (Schmidt quasi-normal internal spherical harmonic coefficients).
 
@@ -565,11 +557,11 @@ class IGRF(QtWidgets.QDialog):
 
     def extrapsh(self, date, dte1, nmax1, nmax2, gh):
         """
-        Extrapolates linearly a spherical harmonic model with a
-        rate-of-change model.
+        Extrapolate a spherical harmonic model.
 
-        Updates self.gh (Schmidt quasi-normal internal spherical harmonic
-        coefficients).
+        Extrapolates linearly a spherical harmonic model with a rate-of-change
+        model. Updates self.gh (Schmidt quasi-normal internal spherical
+                                harmonic coefficients).
 
         | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
         | CO. 80225
@@ -621,6 +613,8 @@ class IGRF(QtWidgets.QDialog):
 
     def interpsh(self, date, dte1, nmax1, dte2, nmax2, gh):
         """
+        Temporal Interpolation between two spherical harmonic models.
+
         Interpolates linearly, in time, between two spherical harmonic
         models.
 
@@ -679,7 +673,7 @@ class IGRF(QtWidgets.QDialog):
 
     def shval3(self, igdgc, flat, flon, elev, nmax, gh):
         """
-        Calculates field components from spherical harmonic (sh) models.
+        Calculate field components from spherical harmonic (sh) models.
 
         This routine updates self.x, self.y, self.z (Northward, Eastward and
         vertically downward components respectively NED)
@@ -713,7 +707,6 @@ class IGRF(QtWidgets.QDialog):
         -------
         None.
         """
-
         sl = np.zeros(14)
         cl = np.zeros(14)
         p = np.zeros(119)
@@ -867,7 +860,7 @@ class IGRF(QtWidgets.QDialog):
 
     def dihf(self, gh):
         """
-        Computes the geomagnetic d, i, h, and f from x, y, and z.
+        Compute the geomagnetic d, i, h, and f from x, y, and z.
 
         This updates self.d, self.i, self.h and self.f (declination,
         inclination, horizontal intensity and total intensity).
@@ -887,7 +880,6 @@ class IGRF(QtWidgets.QDialog):
 
         Returns
         -------
-
         None.
 
         """
@@ -915,10 +907,10 @@ class IGRF(QtWidgets.QDialog):
             argument = h2
             h = sqrt(argument)       # calculate horizontal intensity
             argument = h2 + z*z
-            f = sqrt(argument)      # calculate total intensity
+            f = sqrt(argument)       # calculate total intensity
             if f < sn:
-                d = np.nan        # If d and i cannot be determined,
-                i = np.nan        # set equal to NaN
+                d = np.nan           # If d and i cannot be determined,
+                i = np.nan           # set equal to NaN
             else:
                 argument = z
                 argument2 = h
