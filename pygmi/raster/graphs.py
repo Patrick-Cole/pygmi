@@ -98,7 +98,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_raster(self, data1):
+    def update_raster(self, data1, cmap):
         """
         Update the raster plot.
 
@@ -106,6 +106,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         data1 : PyGMI raster Data
             raster dataset to be used in contouring
+        cmap : str
+            Matplotlib colormap description
 
         Returns
         -------
@@ -121,7 +123,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         vmax = vmean+vstd
 
         rdata = self.axes.imshow(data1.data, extent=data1.extent,
-                                 cmap=cm.get_cmap('jet'), vmin=vmin, vmax=vmax,
+                                 cmap=cm.get_cmap(cmap), vmin=vmin, vmax=vmax,
                                  interpolation='nearest')
 
         if not data1.isrgb:
@@ -181,7 +183,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_surface(self, data):
+    def update_surface(self, data, cmap):
         """
         Update the surface plot.
 
@@ -189,6 +191,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         data : PyGMI raster Data
             raster dataset to be used
+        cmap : str
+            Matplotlib colormap description
 
         Returns
         -------
@@ -210,7 +214,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         x = np.ma.array(x, mask=z.mask)
         y = np.ma.array(y, mask=z.mask)
 
-        cmap = cm.get_cmap('jet')
+        cmap = cm.get_cmap(cmap)
 
         norml = mcolors.Normalize(vmin=z.min(), vmax=z.max())
 
@@ -220,7 +224,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111, projection='3d')
 
-        surf = self.axes.plot_surface(x, y, z, cmap=cmap, linewidth=0.1,
+        surf = self.axes.plot_surface(x, y, z, cmap=cmap,
                                       norm=norml, vmin=z.min(), vmax=z.max(),
                                       shade=False, antialiased=False)
 
@@ -235,6 +239,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_ylabel('Y')
         self.axes.set_zlabel('Z')
 
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_hist(self, data1, ylog):
@@ -358,12 +363,19 @@ class PlotRaster(QtWidgets.QDialog):
         hbl.addWidget(label1)
         hbl.addWidget(self.combobox1)
 
+        self.combobox2 = QtWidgets.QComboBox()
+        label2 = QtWidgets.QLabel('Colormap:')
+        hbl.addWidget(label2)
+        hbl.addWidget(self.combobox2)
+        self.combobox2.addItems(['viridis', 'jet', 'gray', 'terrain'])
+
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
         self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -375,9 +387,10 @@ class PlotRaster(QtWidgets.QDialog):
 
         """
         i = self.combobox1.currentIndex()
+        cmap = self.combobox2.currentText()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
-            self.mmc.update_raster(data[i])
+            self.mmc.update_raster(data[i], cmap)
 
     def run(self):
         """
@@ -428,6 +441,12 @@ class PlotSurface(QtWidgets.QDialog):
         hbl.addWidget(label1)
         hbl.addWidget(self.combobox1)
 
+        self.combobox2 = QtWidgets.QComboBox()
+        label2 = QtWidgets.QLabel('Colormap:')
+        hbl.addWidget(label2)
+        hbl.addWidget(self.combobox2)
+        self.combobox2.addItems(['viridis', 'jet', 'gray', 'terrain'])
+
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
         vbl.addLayout(hbl)
@@ -435,6 +454,7 @@ class PlotSurface(QtWidgets.QDialog):
         self.setFocus()
 
         self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -446,9 +466,10 @@ class PlotSurface(QtWidgets.QDialog):
 
         """
         i = self.combobox1.currentIndex()
+        cmap = self.combobox2.currentText()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
-            self.mmc.update_surface(data[i])
+            self.mmc.update_surface(data[i], cmap)
 
     def run(self):
         """
