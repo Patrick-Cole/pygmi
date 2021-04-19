@@ -41,9 +41,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.colors as mcolors
-# from pygmi.raster.ginterp import imshow
 from pygmi.misc import frm
-# from pygmi.raster.modest_image import imshow
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -62,7 +60,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
-    def update_pcolor(self, data1, dmat):
+    def update_ccoef(self, data1, dmat):
         """
         Update the correlation coefficient plot.
 
@@ -126,10 +124,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                                  cmap=cm.get_cmap('jet'), vmin=vmin, vmax=vmax,
                                  interpolation='nearest')
 
-        # rdata = imshow(self.axes, data1.data, extent=data1.extent,
-        #                cmap=cm.get_cmap('jet'),
-        #                interpolation='nearest')
-
         if not data1.isrgb:
             cbar = self.figure.colorbar(rdata, format=frm)
             cbar.set_label(data1.units)
@@ -187,9 +181,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.tight_layout()
         self.figure.canvas.draw()
 
-    def update_wireframe(self, data):
+    def update_surface(self, data):
         """
-        Update the surface wireframe plot.
+        Update the surface plot.
 
         Parameters
         ----------
@@ -251,6 +245,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         data1 : PyGMI raster Data
             raster dataset to be used
+        ylog : bool
+            Boolean for a log scale on y-axis.
 
         Returns
         -------
@@ -276,71 +272,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-class GraphWindow(QtWidgets.QDialog):
-    """
-    Graph Window - The QDialog window which will contain our image.
-
-    Attributes
-    ----------
-    parent : parent
-        reference to the parent routine
-    """
-
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.parent = parent
-
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle('Graph Window')
-
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
-        self.hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.combobox1 = QtWidgets.QComboBox()
-        self.combobox2 = QtWidgets.QComboBox()
-        self.label1 = QtWidgets.QLabel('Bands:')
-        self.label2 = QtWidgets.QLabel('Bands:')
-        self.hbl.addWidget(self.label1)
-        self.hbl.addWidget(self.combobox1)
-        self.hbl.addWidget(self.label2)
-        self.hbl.addWidget(self.combobox2)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(self.hbl)
-
-        self.setFocus()
-
-        self.combobox1.currentIndexChanged.connect(self.change_band)
-        self.combobox2.currentIndexChanged.connect(self.change_band)
-
-    def change_band(self):
-        """
-        Combo box to choose band.
-
-        Returns
-        -------
-        None.
-
-        """
-
-
-class PlotCCoef(GraphWindow):
+class PlotCCoef(QtWidgets.QDialog):
     """
     Plot 2D Correlation Coefficients.
 
     Attributes
     ----------
-    label1 : QLabel
-        reference to GraphWindow's label1
-    combobox1 : QComboBox
-        reference to GraphWindow's combobox1
-    label2 : QLabel
-        reference to GraphWindow's label2
-    combobox2 : QComboBox
-        reference to GraphWindow's combobox2
     parent : parent
         reference to the parent routine
     indata : dictionary
@@ -349,22 +286,20 @@ class PlotCCoef(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.label1.hide()
-        self.combobox1.hide()
-        self.label2.hide()
-        self.combobox2.hide()
         self.indata = {}
         self.parent = parent
 
-    def change_band(self):
-        """
-        Combo box to choose band.
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Graph Window')
 
-        Returns
-        -------
-        None.
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        """
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+
+        self.setFocus()
 
     def run(self):
         """
@@ -390,78 +325,15 @@ class PlotCCoef(GraphWindow):
         dummy_mat = [[corr2d(i.data, j.data) for j in data] for i in data]
         dummy_mat = np.array(dummy_mat)
 
-        self.mmc.update_pcolor(data, dummy_mat)
+        self.mmc.update_ccoef(data, dummy_mat)
 
 
-def check_bands(data):
-    """
-    Check that band sizes are the same.
-
-    Parameters
-    ----------
-    data : PyGMI Data
-        PyGMI raster dataset.
-
-    Returns
-    -------
-    chk : bool
-        True if sizes are the same, False otherwise.
-
-    """
-    chk = True
-
-    dshape = data[0].data.shape
-    for i in data:
-        if i.data.shape != dshape:
-            chk = False
-
-    return chk
-
-
-def corr2d(dat1, dat2):
-    """
-    Calculate the 2D correlation.
-
-    Parameters
-    ----------
-    dat1 : numpy array
-        dataset 1 for use in correlation calculation.
-    dat2 : numpy array
-        dataset 2 for use in correlation calculation.
-
-    Returns
-    -------
-    out : numpy array
-        array of correlation coefficients
-    """
-    out = None
-    if dat1.shape == dat2.shape:
-        # These line are to avoid warnings due to powers of large fill values
-        mask = np.logical_or(dat1.mask, dat1.mask)
-        dat1.mask = mask
-        dat2.mask = mask
-        dat1 = dat1.compressed()
-        dat2 = dat2.compressed()
-
-        mdat1 = dat1 - dat1.mean()
-        mdat2 = dat2 - dat2.mean()
-        numerator = (mdat1 * mdat2).sum()
-        denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
-        out = numerator / denominator
-
-    return out
-
-
-class PlotRaster(GraphWindow):
+class PlotRaster(QtWidgets.QDialog):
     """
     Plot Raster Class.
 
     Attributes
     ----------
-    label2 : QLabel
-        reference to GraphWindow's label2
-    combobox2 : QComboBox
-        reference to GraphWindow's combobox2
     parent : parent
         reference to the parent routine
     indata : dictionary
@@ -470,10 +342,28 @@ class PlotRaster(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.label2.hide()
-        self.combobox2.hide()
         self.indata = {}
         self.parent = parent
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Graph Window')
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.combobox1 = QtWidgets.QComboBox()
+        label1 = QtWidgets.QLabel('Bands:')
+        hbl.addWidget(label1)
+        hbl.addWidget(self.combobox1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+        self.combobox1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -506,19 +396,14 @@ class PlotRaster(GraphWindow):
 
         for i in data:
             self.combobox1.addItem(i.dataid)
-#        self.change_band()
 
 
-class PlotSurface(GraphWindow):
+class PlotSurface(QtWidgets.QDialog):
     """
-    Plot Raster Class.
+    Plot Surface Class.
 
     Attributes
     ----------
-    label2 : QLabel
-        reference to GraphWindow's label2
-    combobox2 : QComboBox
-        reference to GraphWindow's combobox2
     parent : parent
         reference to the parent routine
     indata : dictionary
@@ -527,10 +412,29 @@ class PlotSurface(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.label2.hide()
-        self.combobox2.hide()
         self.indata = {}
         self.parent = parent
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Graph Window')
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.combobox1 = QtWidgets.QComboBox()
+        label1 = QtWidgets.QLabel('Bands:')
+        hbl.addWidget(label1)
+        hbl.addWidget(self.combobox1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.combobox1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -544,7 +448,7 @@ class PlotSurface(GraphWindow):
         i = self.combobox1.currentIndex()
         if 'Raster' in self.indata:
             data = self.indata['Raster']
-            self.mmc.update_wireframe(data[i])
+            self.mmc.update_surface(data[i])
 
     def run(self):
         """
@@ -564,7 +468,7 @@ class PlotSurface(GraphWindow):
             self.change_band()
 
 
-class PlotScatter(GraphWindow):
+class PlotScatter(QtWidgets.QDialog):
     """
     Plot Hexbin Class. A Hexbin is a type of scatter plot which is raster.
 
@@ -578,9 +482,34 @@ class PlotScatter(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-
         self.indata = {}
         self.parent = parent
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Graph Window')
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.combobox1 = QtWidgets.QComboBox()
+        self.combobox2 = QtWidgets.QComboBox()
+        label1 = QtWidgets.QLabel('X Band:')
+        label2 = QtWidgets.QLabel('Y Band:')
+        hbl.addWidget(label1)
+        hbl.addWidget(self.combobox1)
+        hbl.addWidget(label2)
+        hbl.addWidget(self.combobox2)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.combobox2.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -622,22 +551,16 @@ class PlotScatter(GraphWindow):
             self.combobox1.addItem(i.dataid)
             self.combobox2.addItem(i.dataid)
 
-        self.label1.setText('X Band:')
-        self.label2.setText('Y Band:')
         self.combobox1.setCurrentIndex(0)
         self.combobox2.setCurrentIndex(1)
 
 
 class PlotHist(QtWidgets.QDialog):
     """
-    Plot Hist Class.
+    Plot Histogram Class.
 
     Attributes
     ----------
-    label2 : QLabel
-        reference to GraphWindow's label2
-    combobox2 : QComboBox
-        reference to GraphWindow's combobox2
     parent : parent
         reference to the parent routine
     indata : dictionary
@@ -703,3 +626,62 @@ class PlotHist(QtWidgets.QDialog):
 
         self.combobox1.setCurrentIndex(0)
         self.change_band()
+
+
+def check_bands(data):
+    """
+    Check that band sizes are the same.
+
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI raster dataset.
+
+    Returns
+    -------
+    chk : bool
+        True if sizes are the same, False otherwise.
+
+    """
+    chk = True
+
+    dshape = data[0].data.shape
+    for i in data:
+        if i.data.shape != dshape:
+            chk = False
+
+    return chk
+
+
+def corr2d(dat1, dat2):
+    """
+    Calculate the 2D correlation.
+
+    Parameters
+    ----------
+    dat1 : numpy array
+        dataset 1 for use in correlation calculation.
+    dat2 : numpy array
+        dataset 2 for use in correlation calculation.
+
+    Returns
+    -------
+    out : numpy array
+        array of correlation coefficients
+    """
+    out = None
+    if dat1.shape == dat2.shape:
+        # These line are to avoid warnings due to powers of large fill values
+        mask = np.logical_or(dat1.mask, dat1.mask)
+        dat1.mask = mask
+        dat2.mask = mask
+        dat1 = dat1.compressed()
+        dat2 = dat2.compressed()
+
+        mdat1 = dat1 - dat1.mean()
+        mdat2 = dat2 - dat2.mean()
+        numerator = (mdat1 * mdat2).sum()
+        denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
+        out = numerator / denominator
+
+    return out
