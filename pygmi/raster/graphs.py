@@ -171,7 +171,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ymin = y.min()
         ymax = y.max()
 
-        hbin = self.axes.hexbin(x, y, bins='log')
+        hbin = self.axes.hexbin(x, y, bins='log', cmap='inferno')
         self.axes.axis([xmin, xmax, ymin, ymax])
         self.axes.set_title('Hexbin Plot')
         cbar = self.figure.colorbar(hbin, format=frm)
