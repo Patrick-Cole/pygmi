@@ -2117,7 +2117,7 @@ def merge(dat, piter=iter, dxy=None):
 
     cols = int((xmax - xmin)/dxy)
     rows = int((ymax - ymin)/dxy)
-    gtr = (xmin, dxy, 0.0, ymax, 0.0, -dxy)
+    gtr = (xmin, dxy, 0.0, ymax, 0.0, -1.0*dxy)
 
     if cols == 0 or rows == 0:
         print('Your rows or cols are zero. Your input projection may be wrong')
@@ -2379,29 +2379,39 @@ def _testfft():
     import scipy
     from pygmi.pfmod.grvmag3d import quick_model, calc_field
     from IPython import get_ipython
+    from pygmi.raster.iodefs import get_raster, export_gdal
+
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-# quick model
-    finc = -57
-    fdec = 50
+    # ifile = r'D:\Workdata\geothermal\bushveld.hdr'
+    # dat = get_raster(ifile)[0]
 
-    lmod = quick_model(numx=300, numy=300, numz=30, finc=finc, fdec=fdec)
-    lmod.lith_index[100:200, 100:200, 0:10] = 1
-#    lmod.lith_index[:, :, 10] = 1
-    lmod.mht = 100
-    calc_field(lmod, magcalc=True)
+    # finc = -63.4
+    # fdec = -16.25
+    # # quick model
+    # plt.imshow(dat.data, cmap=cm.get_cmap('jet'), vmin=-1000, vmax=1000)
+    # plt.colorbar()
+    # plt.show()
 
-# Calculate the field
+    # dat2 = rtp(dat, finc, fdec)
+    # dat2.data -= np.ma.median(dat2.data)
 
-    magval = lmod.griddata['Calculated Magnetics'].data
-    plt.imshow(magval, cmap=cm.get_cmap('jet'))
+    # plt.imshow(dat2.data, cmap=cm.get_cmap('jet'), vmin=-500, vmax=500)
+    # plt.colorbar()
+    # plt.show()
+
+    # ofile = r'D:\Workdata\geothermal\bushveldrtp.hdr'
+    # export_gdal(ofile, [dat2], 'ENVI')
+
+    ifile = r'D:\Workdata\geothermal\bushveldrtp.hdr'
+    data = get_raster(ifile)[0]
+
+    # quick model
+    plt.imshow(data.data, cmap=cm.get_cmap('jet'), vmin=-500, vmax=500)
+    plt.colorbar()
     plt.show()
 
-    dat2 = rtp(lmod.griddata['Calculated Magnetics'], finc, fdec)
-    plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
-    plt.show()
-
-    data = dat2
+    # Start new stuff
     xdim = data.xdim
     ydim = data.ydim
 
@@ -2416,7 +2426,9 @@ def _testfft():
     # ny, nx = fftmod.shape
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
-    plt.imshow(fftmod.real)
+    vmin = fftmod.real.mean()-2*fftmod.real.std()
+    vmax = fftmod.real.mean()+2*fftmod.real.std()
+    plt.imshow(np.fft.fftshift(fftmod.real), vmin=vmin, vmax=vmax)
     plt.show()
 
     knrm = np.sqrt(KX**2+KY**2)

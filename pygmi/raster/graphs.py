@@ -243,7 +243,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_hist(self, data1):
+    def update_hist(self, data1, ylog):
         """
         Update the hiostogram plot.
 
@@ -268,6 +268,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
+
+        if ylog is True:
+            self.axes.set_yscale('log')
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -625,7 +628,7 @@ class PlotScatter(GraphWindow):
         self.combobox2.setCurrentIndex(1)
 
 
-class PlotHist(GraphWindow):
+class PlotHist(QtWidgets.QDialog):
     """
     Plot Hist Class.
 
@@ -643,10 +646,32 @@ class PlotHist(GraphWindow):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.label2.hide()
-        self.combobox2.hide()
         self.indata = {}
         self.parent = parent
+
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+        self.setWindowTitle('Graph Window')
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = MyMplCanvas(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.combobox1 = QtWidgets.QComboBox()
+        label1 = QtWidgets.QLabel('Bands:')
+        self.chk_log = QtWidgets.QCheckBox('Log Y Axis:')
+        hbl.addWidget(self.chk_log)
+        hbl.addWidget(label1)
+        hbl.addWidget(self.combobox1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.combobox1.currentIndexChanged.connect(self.change_band)
+        self.chk_log.stateChanged.connect(self.change_band)
 
     def change_band(self):
         """
@@ -659,7 +684,8 @@ class PlotHist(GraphWindow):
         """
         data = self.indata['Raster']
         i = self.combobox1.currentIndex()
-        self.mmc.update_hist(data[i])
+        ylog = self.chk_log.isChecked()
+        self.mmc.update_hist(data[i], ylog)
 
     def run(self):
         """
@@ -675,6 +701,5 @@ class PlotHist(GraphWindow):
         for i in data:
             self.combobox1.addItem(i.dataid)
 
-        self.label1.setText('Band:')
         self.combobox1.setCurrentIndex(0)
         self.change_band()

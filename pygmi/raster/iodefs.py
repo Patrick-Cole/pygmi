@@ -173,21 +173,22 @@ class ImportData():
                 piter = self.parent.pbar.iter
             ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix '
                    '*.bil);;'
-                   'ERMapper (*.ers);;'
-                   'ENVI (*.hdr *.dat *.img *.raw);;'
-                   'ERDAS Imagine (*.img);;'
-                   'PCI Geomatics Database File (*.pix);;'
-                   'GeoTiff (*.tif);;'
-                   'SAGA binary grid (*.sdat);;'
-                   'Geosoft UNCOMPRESSED grid (*.grd);;'
-                   'Geosoft (*.gxf);;'
-                   'Surfer grid (*.grd);;'
-                   'GeoPak grid (*.grd);;'
-                   'ESRI ASCII (*.asc);;'
+                   'ArcGIS BIL (*.bil);;'
+                   'Arcinfo Binary Grid (hdr.adf);;'
                    'ASCII with .hdr header (*.asc);;'
                    'ASCII XYZ (*.xyz);;'
-                   'Arcinfo Binary Grid (hdr.adf);;'
-                   'ArcGIS BIL (*.bil)')
+                   'ENVI (*.hdr);;'
+                   'ESRI ASCII (*.asc);;'
+                   'ERMapper (*.ers);;'
+                   'ERDAS Imagine (*.img);;'
+                   'GeoPak grid (*.grd);;'
+                   'Geosoft UNCOMPRESSED grid (*.grd);;'
+                   'Geosoft (*.gxf);;'
+                   'GeoTiff (*.tif);;'
+                   'PCI Geomatics Database File (*.pix);;'
+                   'SAGA binary grid (*.sdat);;'
+                   'Surfer grid (*.grd);;'
+                   )
 
             self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
@@ -573,9 +574,14 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
     # Envi Case
     if ext == 'hdr':
         ifile = ifile[:-4]
-        tmp = glob.glob(ifile+'.dat')
-        if tmp:
-            ifile = tmp[0]
+        if os.path.exists(ifile+'.dat'):
+            ifile = ifile+'.dat'
+        elif os.path.exists(ifile+'.raw'):
+            ifile = ifile+'.raw'
+        elif os.path.exists(ifile+'.img'):
+            ifile = ifile+'.img'
+        elif not os.path.exists(ifile):
+            return None
 
     if ext == 'ers':
         with open(ifile) as f:
@@ -723,9 +729,14 @@ def get_bil(ifile, nval, piter, showprocesslog):
 
     if ext == 'hdr':
         ifile = ifile[:-4]
-        tmp = glob.glob(ifile+'.dat')
-        if tmp:
-            ifile = tmp[0]
+        if os.path.exists(ifile+'.dat'):
+            ifile = ifile+'.dat'
+        elif os.path.exists(ifile+'.raw'):
+            ifile = ifile+'.raw'
+        elif os.path.exists(ifile+'.img'):
+            ifile = ifile+'.img'
+        elif not os.path.exists(ifile):
+            return None
 
     if ext == 'ers':
         with open(ifile) as f:
