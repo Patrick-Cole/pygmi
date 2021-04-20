@@ -513,6 +513,13 @@ class DataReproj(QtWidgets.QDialog):
         dd = np.transpose([data.pygmiX, data.pygmiY])
         xy = ctrans.TransformPoints(dd)
         xy = np.array(xy)
+
+        if np.inf in xy:
+            self.showprocesslog('Note: inf values in reprojected results. '
+                                'Please check your input and output '
+                                'projections or input x and y data for '
+                                'mistakes.')
+
         data = data.assign(Xnew=xy[:, 0])
         data = data.assign(Ynew=xy[:, 1])
         data.pygmiX = xy[:, 0]
@@ -758,31 +765,29 @@ def _testfn():
     """Test routine."""
     import sys
     import matplotlib.pyplot as plt
-    from pygmi.vector.iodefs import ImportLineData
+    from pygmi.vector.iodefs import ImportLineData, ImportShapeData
+
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'C:\Work\Workdata\Mpumi\MSc_L3870_cutmag_coords.csv'
+    ifile = r'D:\Workdata\vector\linecut\test2.csv'
+    sfile = r'D:\Workdata\vector\linecut\test2_cut_outline.shp'
 
     IO = ImportLineData()
-
     IO.ifile = ifile
     IO.filt = 'Comma Delimited (*.csv)'
     IO.settings(True)
 
     line = list(IO.outdata['Line'].values())
-    plt.plot(line[0].magmicrolevel)
+    plt.plot(line[0].x, line[0].y)
     plt.show()
 
-    GR = DataGrid()
 
-    GR.indata = IO.outdata
-    GR.dataid_text = 'magmicrolevel'
-    GR.settings(True)
+    DR = DataReproj()
+    DR.indata = IO.outdata
+    DR.settings(True)
 
-    grd = GR.outdata['Raster'][0]
+    breakpoint()
 
-    plt.plot(grd.data.data.T[0])
-    plt.show()
 
 if __name__ == "__main__":
     _testfn()

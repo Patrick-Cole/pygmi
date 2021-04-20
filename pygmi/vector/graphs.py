@@ -443,6 +443,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
+        self.figure.tight_layout()
         self.figure.canvas.draw()
 
     def update_rose(self, data, rtype, nbins=8, equal=False):

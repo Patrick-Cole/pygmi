@@ -487,6 +487,7 @@ class ImportShapeData():
                                                                   '.', ext)
             if self.ifile == '':
                 return False
+
         os.chdir(os.path.dirname(self.ifile))
 
         gdf = gpd.read_file(self.ifile)
