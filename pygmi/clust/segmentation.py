@@ -158,6 +158,7 @@ class ImageSeg(QtWidgets.QDialog):
 
         odat = copy.deepcopy(self.indata['Raster'][0])
         odat.data = np.ma.array(omap, mask=self.indata['Raster'][0].data.mask)
+        odat.dataid = 'Segments'
 
         self.outdata['Raster'] = [odat]
 
@@ -503,12 +504,40 @@ def get_l(data):
 
 def _testfn():
     """Test routine."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.datatypes import Data
+
+    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
     data1 = skimage.data.coffee()  # 400x600 50.6 secs
 
     wcolor = 0.5
     wcompact = 0.5
     doshape = True
     scale = 1000
+
+
+    b1 = Data()
+    b1.data = np.ma.array(data1[:, :, 0])
+    b2 = Data()
+    b2.data = np.ma.array(data1[:, :, 1])
+    b3 = Data()
+    b3.data = np.ma.array(data1[:, :, 2])
+
+    data = [b1, b2, b3]
+
+    IS = ImageSeg()
+    IS.indata = {'Raster': data}
+    IS.settings(True)
+
+    odata = IS.outdata['Raster'][0]
+
+    plt.imshow(odata.data)
+    plt.show()
+
+    breakpoint()
+
 
     # omap = segment1(data1, scale=scale, wcolor=wcolor,
     #                 wcompact=wcompact, doshape=doshape)
