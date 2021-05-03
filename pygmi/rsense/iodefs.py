@@ -859,6 +859,10 @@ def get_data(ifile, piter=iter, showprocesslog=print):
     else:
         dat = None
 
+    if dat is not None:
+        for i in dat:
+            i.dataid = i.dataid.replace(',', ' ')
+
     return dat
 
 
@@ -1216,6 +1220,12 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
         for i in piter(range(dataset.RasterCount)):
             rtmp = dataset.GetRasterBand(i+1)
             bname = rtmp.GetDescription()
+            bmeta = rtmp.GetMetadata()
+            if 'WAVELENGTH' in bmeta and 'BANDWIDTH' in bmeta:
+                wlen = float(bmeta['WAVELENGTH'])
+                bwidth = float(bmeta['BANDWIDTH'])
+            bmeta['WaveLengthMin'] = wlen - bwidth/2
+            bmeta['WaveLengthMax'] = wlen + bwidth/2
             # self.showprocesslog('Importing '+bname)
 
             dat.append(Data())
@@ -1233,6 +1243,11 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
             dat[-1].wkt = dataset.GetProjectionRef()
             dat[-1].filename = ifile
             dat[-1].units = 'Reflectance'
+            dat[-1].metadata = bmeta
+
+            if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
+                dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']
+
 
     if dat == []:
         dat = None

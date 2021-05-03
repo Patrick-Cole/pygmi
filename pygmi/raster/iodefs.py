@@ -1527,6 +1527,12 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
         rtmp.WriteArray(dtmp)
         rtmp.GetStatistics(False, True)
 
+        if 'WavelengthMin' in datai.metadata:
+            rtmp.SetMetadataItem('WavelengthMin',
+                                 datai.metadata['WavelengthMin'])
+            rtmp.SetMetadataItem('WavelengthMax',
+                                 datai.metadata['WavelengthMax'])
+
     out = None  # Close File
     if drv == 'ENVI':
         with open(tmpfile[:-4]+'.hdr', 'a') as myfile:

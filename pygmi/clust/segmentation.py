@@ -25,6 +25,7 @@
 """Image segmentation routines."""
 import copy
 import numpy as np
+from sklearn.cluster import DBSCAN
 import skimage
 from numba import jit
 from PyQt5 import QtWidgets, QtCore, QtGui
@@ -507,10 +508,19 @@ def _testfn():
     import sys
     import matplotlib.pyplot as plt
     from pygmi.raster.datatypes import Data
+    from pygmi.misc import PTime
+
+
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    data1 = skimage.data.coffee()  # 400x600 50.6 secs
+    data1 = skimage.data.coffee()  # 400x600 48.5 secs
+
+
+    # data1 = data1[:, :300]  # 26
+
+    plt.imshow(data1)
+    plt.show()
 
     wcolor = 0.5
     wcompact = 0.5
@@ -527,13 +537,37 @@ def _testfn():
 
     data = [b1, b2, b3]
 
+    ttt = PTime()
     IS = ImageSeg()
     IS.indata = {'Raster': data}
     IS.settings(True)
+    ttt.since_last_call()
 
     odata = IS.outdata['Raster'][0]
 
     plt.imshow(odata.data)
+    plt.show()
+
+    means = []
+    for i in range(odata.data.max()+1):
+        tmp = data1[odata.data==i]
+        means.append(tmp.mean(0))
+
+    dbout = DBSCAN(eps=10).fit_predict(means)
+
+    data2 = odata.data.copy()
+
+    newmax = dbout.max()+1
+    for i, val in enumerate(dbout):
+        filt = (odata.data==i)
+        if val == -1:
+            data2[filt] = newmax
+            newmax += 1
+            continue
+        data2[filt] = val
+
+    plt.imshow(data2, cmap='inferno')
+    plt.colorbar()
     plt.show()
 
     breakpoint()
