@@ -1111,6 +1111,43 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     out : Data
         PyGMI raster dataset
     """
+
+    platform = os.path.basename(ifilet)[2: 4]
+    satbands = None
+
+    if platform == '04' or platform == '05':
+        satbands = {'1': [450, 520],
+                    '2': [520, 600],
+                    '3': [630, 690],
+                    '4': [760, 900],
+                    '5': [1550, 1750],
+                    '6': [10400, 12500],
+                    '7': [2080, 2350]}
+
+
+    if platform == '07':
+        satbands = {'1': [450, 520],
+                    '2': [520, 600],
+                    '3': [630, 690],
+                    '4': [770, 900],
+                    '5': [1550, 1750],
+                    '6': [10400, 12500],
+                    '7': [2090, 2350],
+                    '8': [520, 900]}
+
+    if platform == '08':
+        satbands = {'1': [430, 450],
+                    '2': [450, 510],
+                    '3': [530, 590],
+                    '4': [640, 670],
+                    '5': [850, 880],
+                    '6': [1570, 1650],
+                    '7': [2110, 2290],
+                    '8': [500, 680],
+                    '9': [1360, 1380],
+                    '10': [1060, 11190],
+                    '11': [11500, 12510]}
+
     idir = os.path.dirname(ifilet)
 
     if '.tar' in ifilet:
@@ -1150,7 +1187,6 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
 
         if dataset is None:
             showprocesslog('Problem with band '+fext)
-            breakpoint()
             continue
 
         rtmp = dataset.GetRasterBand(1)
@@ -1168,6 +1204,11 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
         dat[-1].nullvalue = nval
         dat[-1].wkt = dataset.GetProjectionRef()
         dat[-1].filename = ifile
+
+        bmeta = dat[-1].metadata
+        if satbands is not None:
+            bmeta['WavelengthMin'] = satbands[fext][0]
+            bmeta['WavelengthMax'] = satbands[fext][1]
 
         dataset = None
 
@@ -1273,6 +1314,23 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
     dat : PyGMI raster Data
         dataset imported
     """
+
+    satbands = {'1': [520, 600],
+                '2': [630, 690],
+                '3N': [780, 860],
+                '3B': [780, 860],
+                '4': [1600, 1700],
+                '5': [2145, 2185],
+                '6': [2185, 2225],
+                '7': [2235, 2285],
+                '8': [2295, 2365],
+                '9': [2360, 2430],
+                '10': [8125, 8475],
+                '11': [8475, 8825],
+                '12': [8925, 9275],
+                '13': [10250, 10950],
+                '14': [10950, 11650]}
+
     if 'AST_07' in ifile:
         scalefactor = 0.001
         units = 'Surface Reflectance'
@@ -1325,6 +1383,12 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
         dat[-1].filename = ifile
         dat[-1].units = units
 
+        bmeta = dat[-1].metadata
+        if satbands is not None:
+            fext = dat[-1].dataid[4:]
+            bmeta['WavelengthMin'] = satbands[fext][0]
+            bmeta['WavelengthMax'] = satbands[fext][1]
+
         dataset = None
 
     showprocesslog('Cleaning Extracted zip files...')
@@ -1350,6 +1414,23 @@ def get_aster_hdf(ifile, piter=iter):
     dat : PyGMI raster Data
         dataset imported
     """
+
+    satbands = {'1': [520, 600],
+                '2': [630, 690],
+                '3N': [780, 860],
+                '3B': [780, 860],
+                '4': [1600, 1700],
+                '5': [2145, 2185],
+                '6': [2185, 2225],
+                '7': [2235, 2285],
+                '8': [2295, 2365],
+                '9': [2360, 2430],
+                '10': [8125, 8475],
+                '11': [8475, 8825],
+                '12': [8925, 9275],
+                '13': [10250, 10950],
+                '14': [10950, 11650]}
+
     ifile = ifile[:]
 
     if 'AST_07' in ifile:
@@ -1448,6 +1529,12 @@ def get_aster_hdf(ifile, piter=iter):
         dat[-1].metadata['ShortName'] = meta['SHORTNAME']
         dat[-1].filename = ifile
         dat[-1].units = units
+
+        bmeta = dat[-1].metadata
+        if satbands is not None:
+            fext = dat[-1].dataid[4:].split()[0]
+            bmeta['WavelengthMin'] = satbands[fext][0]
+            bmeta['WavelengthMax'] = satbands[fext][1]
 
         if ptype == 'L1T' and 'ImageData' in ifile:
             dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
@@ -1661,24 +1748,21 @@ def get_aster_ged_bin(ifile):
 
 def _testfn():
     """Test routine."""
-    # from pprint import pprint
-    # ifile = r'C:\Work\Workdata\ASTER\S2A_MSIL2A_20170813T080011_N0205_R035_T35JKG_20170813T082818.SAFE\MTD_MSIL2A.xml'
-    # dat = get_sentinel2(ifile)
 
-    # ifile = r'C:\Work\Workdata\ASTER\AST_07XT_00309042002082052_20200518021739_29313.zip'
-    # dat = get_aster_zip(ifile)
 
-    # ifile = r'C:\Work\Workdata\ASTER\LC081740432017101901T1-SC20180409064853.tar.gz'
-    # dat = get_landsat(ifile)
 
-    # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD16A2.A2013073.h20v11.006.2017101224330.hdf'
-    ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
-    dat = get_modisv6(ifile)
+    ifile = r'D:/Workdata/Remote Sensing/Landsat/LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz'
+    # ifile = r'D:/Workdata/Remote Sensing/Landsat/LE071700782002070201T1-SC20200519113053.tar.gz'
+    # ifile = r'D:/Workdata/Remote Sensing/Landsat/LT051700781997071201T1-SC20200519120230.tar.gz'
 
-    # ifile = r'C:\Work\Workdata\ASTER\AST_05_00305282005083844_20180604061610_15573.hdf'
-    # ofile = r'C:\Work\Workdata\ASTER\hope.tif'
-    # dat = iodefs.get_data(ifile)
-    # export_gdal(ofile, dat, 'GTiff')
+    ifile = r'D:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf'
+    # ifile = r'D:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021739_29313.zip'
+
+    dat = get_data(ifile)
+
+    # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
+    # dat = get_modisv6(ifile)
+    breakpoint()
 
 
 if __name__ == "__main__":
