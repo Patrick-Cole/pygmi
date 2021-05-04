@@ -1224,8 +1224,8 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
             if 'WAVELENGTH' in bmeta and 'BANDWIDTH' in bmeta:
                 wlen = float(bmeta['WAVELENGTH'])
                 bwidth = float(bmeta['BANDWIDTH'])
-            bmeta['WaveLengthMin'] = wlen - bwidth/2
-            bmeta['WaveLengthMax'] = wlen + bwidth/2
+                bmeta['WavelengthMin'] = wlen - bwidth/2
+                bmeta['WavelengthMax'] = wlen + bwidth/2
             # self.showprocesslog('Importing '+bname)
 
             dat.append(Data())
@@ -1243,7 +1243,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
             dat[-1].wkt = dataset.GetProjectionRef()
             dat[-1].filename = ifile
             dat[-1].units = 'Reflectance'
-            dat[-1].metadata = bmeta
+            dat[-1].metadata.update(bmeta)
 
             if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
                 dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']

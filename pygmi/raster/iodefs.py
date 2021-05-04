@@ -1439,7 +1439,7 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
     else:
         dat2 = dat
 
-    data = merge(dat2)
+    data = merge(dat2, piter)
 
     driver = gdal.GetDriverByName(drv)
     dtype = data[0].data.dtype
@@ -1529,9 +1529,9 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
 
         if 'WavelengthMin' in datai.metadata:
             rtmp.SetMetadataItem('WavelengthMin',
-                                 datai.metadata['WavelengthMin'])
+                                 str(datai.metadata['WavelengthMin']))
             rtmp.SetMetadataItem('WavelengthMax',
-                                 datai.metadata['WavelengthMax'])
+                                 str(datai.metadata['WavelengthMax']))
 
     out = None  # Close File
     if drv == 'ENVI':

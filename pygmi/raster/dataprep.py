@@ -2141,6 +2141,7 @@ def merge(dat, piter=iter, dxy=None):
                             gdal.GRA_Bilinear)
 
         dat2.append(gdal_to_dat(dest, data.dataid))
+        dat2[-1].metadata = data.metadata
         dat2[-1].data = dat2[-1].data + doffset
         data.data = data.data + doffset
 
