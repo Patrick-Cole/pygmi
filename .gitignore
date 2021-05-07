@@ -12,6 +12,7 @@ dist/
 docs/
 olddocs/
 pygmi.egg-info/
+pygmi/bholes
 
 *.py[co]
 *.cmd
