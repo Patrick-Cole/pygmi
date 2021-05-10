@@ -952,10 +952,10 @@ class Metadata(QtWidgets.QDialog):
                     tmp.nullvalue = i.nullvalue
                     tmp.wkt = wkt
                     tmp.units = i.units
-                    if tmp.dataid[-1] == ')':
-                        tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
-                    if i.units != '':
-                        tmp.dataid += ' ('+i.units+')'
+                    # if tmp.dataid[-1] == ')':
+                    #     tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
+                    # if i.units != '':
+                    #     tmp.dataid += ' ('+i.units+')'
                     tmp.data.mask = (tmp.data.data == i.nullvalue)
 
     def rename_id(self):

@@ -679,8 +679,18 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
         if bandid == '':
             bandid = 'Band '+str(i+1)+' '+bname
         dat[i].dataid = bandid
-        if bandid[-1] == ')':
-            dat[i].units = bandid[bandid.rfind('(')+1:-1]
+
+        for unit in ['micrometers', 'nanometers', 'nT', 'mGal']:
+            if unit in bandid or unit in bandid.lower():
+                if unit == 'micrometers':
+                    dat[i].units = 'μm'
+                elif unit == 'nanometers':
+                    dat[i].units = 'nm'
+                else:
+                    dat[i].units = unit
+
+        # if bandid[-1] == ')':
+        #     dat[i].units = bandid[bandid.rfind('(')+1:-1]
 
         dat[i].nullvalue = nval
         dat[i].wkt = custom_wkt
