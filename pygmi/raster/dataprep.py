@@ -328,7 +328,8 @@ class DataMerge(QtWidgets.QDialog):
         """
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
-        dat = merge(self.indata['Raster'], self.piter, dxy)
+        dat = merge(self.indata['Raster'], self.piter, dxy,
+                    pprint=self.showprocesslog)
         self.outdata['Raster'] = dat
 
 
@@ -647,7 +648,7 @@ class GetProf():
             self.showprocesslog('You need lines in that shape file')
             return False
 
-        data = merge(data)
+        data = merge(data, self.piter, pprint=self.showprocesslog)
         gdf = None
 
         for idata in self.piter(data):
@@ -2063,7 +2064,7 @@ def getepsgcodes():
     return pcodes
 
 
-def merge(dat, piter=iter, dxy=None):
+def merge(dat, piter=iter, dxy=None, pprint=print):
     """
     Merge datasets found in a single PyGMI data object.
 
@@ -2097,7 +2098,7 @@ def merge(dat, piter=iter, dxy=None):
         dat = check_dataid(dat)
         return dat
 
-    # self.showprocesslog('Merging data...')
+    pprint('Merging data...')
 
     data = dat[0]
     dxy0 = min(data.xdim, data.ydim)
@@ -2120,7 +2121,7 @@ def merge(dat, piter=iter, dxy=None):
     gtr = (xmin, dxy, 0.0, ymax, 0.0, -1.0*dxy)
 
     if cols == 0 or rows == 0:
-        print('Your rows or cols are zero. Your input projection may be wrong')
+        pprint('Your rows or cols are zero. Your input projection may be wrong')
         return None
 
     dat2 = []

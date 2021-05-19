@@ -239,7 +239,7 @@ class SatRatios(QtWidgets.QDialog):
             if dat is None:
                 continue
 
-            dat = merge(dat)
+            dat = merge(dat, self.piter, pprint=self.showprocesslog)
 
             datd = {}
             for i in dat:
@@ -251,6 +251,9 @@ class SatRatios(QtWidgets.QDialog):
                 if 'Band' not in txt and 'B' in txt and ',' in txt:
                     txt = txt.replace('B', 'Band')
                     txt = txt.replace(',', '')
+
+                if 'Band' not in txt and 'B' in txt:
+                    txt = txt.replace('B', 'Band')
 
                 if txt == 'Band3N':
                     txt = 'Band3'
@@ -294,8 +297,8 @@ class SatRatios(QtWidgets.QDialog):
             if datfin:
                 self.showprocesslog('Exporting to '+ofile)
                 export_gdal(ofile, datfin, 'GTiff', piter=self.pbar.iter)
+                self.outdata['Raster'] = datfin
 
-        self.outdata['Raster'] = datfin
         return True
 
     def setratios(self):
