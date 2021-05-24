@@ -614,7 +614,23 @@ class SuperClass(QtWidgets.QDialog):
         message += '<p>Accuracy: '+str(accuracy)+'</p>'
         message += '<p>Kappa:\t  '+str(kappa)+'</p>'
 
-        QtWidgets.QMessageBox.information(self.parent, 'Metrics', message)
+        qsave = QtWidgets.QMessageBox.Save
+        qokay = QtWidgets.QMessageBox.Ok
+        ret = QtWidgets.QMessageBox.information(self.parent, 'Metrics',
+                                                message,
+                                                buttons=qsave | qokay)
+        if ret == qsave:
+            filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+                self.parent, 'Save File', '.', 'Excel spreadsheet (*.xlsx)')
+
+            if filename != '':
+                df = pd.DataFrame(cmat, columns=tlbls, index=tlbls)
+                df.loc['Accuracy'] = np.nan
+                df.loc['Accuracy', tlbls[0]] = accuracy
+                df.loc['Kappa'] = np.nan
+                df.loc['Kappa', tlbls[0]] = kappa
+
+                df.to_excel(filename)
 
     def updatepoly(self, xycoords=None):
         """
