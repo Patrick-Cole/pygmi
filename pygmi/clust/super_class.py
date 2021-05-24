@@ -796,6 +796,10 @@ class SuperClass(QtWidgets.QDialog):
             return False
 
         df = gpd.read_file(filename)
+        df.columns = df.columns.str.lower()
+        if 'id' in df:
+            df = df.drop('id', axis='columns')
+
         if 'class' not in df or 'geometry' not in df:
             return False
 
@@ -1158,10 +1162,16 @@ def _testfn():
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  '..//..')))
     from pygmi.raster import iodefs
+    from pygmi.misc import ProgressBarText
     app = QtWidgets.QApplication(sys.argv)
 
-    data = iodefs.get_raster(r'D:\Workdata\BV1_17_fx_extracted_image_1.hdr')
-    os.chdir(r'D:\Workdata')
+    piter = ProgressBarText().iter
+
+    ifile = r'E:\Workdata\people\janinetest2\coal_12052020_pan.img'
+
+    data = iodefs.get_raster(ifile, piter=piter)
+    # data = iodefs.get_raster(r'D:\Workdata\BV1_17_fx_extracted_image_1.hdr')
+    os.chdir(r'e:\Workdata\people\janinetest2')
 
     tmp = SuperClass(None)
     tmp.indata['Raster'] = data
