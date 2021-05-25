@@ -484,6 +484,10 @@ class AnalSpec(QtWidgets.QDialog):
 
         self.map.datarr = np.array(dat2)
         self.map.wvl = np.array(wvl)
+        if self.map.wvl.max() < 20:
+            self.map.wvl = self.map.wvl*1000.
+            self.showprocesslog('Wavelengths appear to be in nanometers. '
+                                'Converting to micrometers.')
 
         bands = [i.dataid for i in self.indata['Raster']]
 
@@ -1169,7 +1173,8 @@ def _testfn2():
 
     # data = get_raster(ifile, piter=pbar.iter)
 
-    ifile = r'c:\work\Workdata\Richtersveld\Reprocessed\057_0818-1117_ref_rect_BSQ.hdr'
+    ifile = r'e:\Workdata\Richtersveld\Reprocessed\057_0818-1117_ref_rect_BSQ.hdr'
+    ifile = r'e:\Workdata\Richtersveld\Reprocessed\030_0815-1050_ref_rect.hdr'
 
     xoff = 0
     yoff = 2000
@@ -1190,4 +1195,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
