@@ -25,6 +25,7 @@
 """Remote Sensing Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.rsense import change
 from pygmi.rsense import iodefs
 from pygmi.rsense import ratios

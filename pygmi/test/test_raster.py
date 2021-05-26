@@ -34,6 +34,7 @@ import tempfile
 from PyQt5 import QtWidgets
 import numpy as np
 import pytest
+
 from pygmi.raster.datatypes import Data
 from pygmi.raster import cooper, dataprep, equation_editor, ginterp, graphs
 from pygmi.raster import iodefs, normalisation, smooth

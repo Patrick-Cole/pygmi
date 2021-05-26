@@ -28,6 +28,7 @@ import copy
 import warnings
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+
 import pygmi.menu_default as menu_default
 from pygmi.raster.ginterp import histeq
 

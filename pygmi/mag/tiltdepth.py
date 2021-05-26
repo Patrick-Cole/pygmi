@@ -46,6 +46,7 @@ import pygmi.raster.cooper as cooper
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 import pygmi.misc as misc
+
 from pygmi.raster.datatypes import Data
 from pygmi.vector.dataprep import quickgrid
 from pygmi.misc import frm

@@ -74,6 +74,7 @@ import pygmi.menu_default as menu_default
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
+from pygmi.raster.modest_image import imshow
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -125,6 +126,12 @@ class GraphMap(FigureCanvasQTAgg):
 
         ymin = dat.mean()-2*dat.std()
         ymax = dat.mean()+2*dat.std()
+
+        # if self.rotate is True:
+        #     self.csp = imshow(ax1, dat.T, vmin=ymin, vmax=ymax)
+        #     rows, cols = cols, rows
+        # else:
+        #     self.csp = imshow(ax1, dat, vmin=ymin, vmax=ymax)
 
         if self.rotate is True:
             self.csp = ax1.imshow(dat.T, vmin=ymin, vmax=ymax)

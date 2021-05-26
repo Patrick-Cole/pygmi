@@ -47,8 +47,10 @@ import sklearn.metrics as skm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC
+
 from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
+from pygmi.raster.modest_image import imshow
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -92,8 +94,10 @@ class GraphMap(FigureCanvasQTAgg):
         # self.subplot.get_xaxis().set_visible(False)
         # self.subplot.get_yaxis().set_visible(False)
 
-        self.csp = self.subplot.imshow(dat.data, extent=dat.extent,
-                                       cmap=cm.get_cmap('jet'))
+        # self.csp = self.subplot.imshow(dat.data, extent=dat.extent,
+        #                                cmap=cm.get_cmap('jet'))
+        self.csp = imshow(self.subplot, dat.data, extent=dat.extent,
+                          cmap=cm.get_cmap('jet'))
         axes = self.figure.gca()
 
         axes.set_xlabel('Eastings')

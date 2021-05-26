@@ -35,6 +35,7 @@ import pandas as pd
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
 from scipy.signal import tukey
+
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 

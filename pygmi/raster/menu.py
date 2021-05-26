@@ -25,6 +25,7 @@
 """Raster Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.raster import smooth
 from pygmi.raster import equation_editor
 from pygmi.raster import normalisation

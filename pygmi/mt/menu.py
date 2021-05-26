@@ -25,6 +25,7 @@
 """EM Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.mt import iodefs
 from pygmi.mt import dataprep
 from pygmi.mt import graphs

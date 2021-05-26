@@ -33,6 +33,7 @@ from matplotlib.figure import Figure
 from matplotlib import collections as mc
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.pyplot import colormaps
+
 from pygmi.misc import frm
 
 

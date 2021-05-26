@@ -30,6 +30,7 @@ import numpy as np
 import sklearn.cluster as skc
 from sklearn.metrics import calinski_harabasz_score
 import sklearn.preprocessing as skp
+
 from pygmi.raster.datatypes import Data
 import pygmi.menu_default as menu_default
 

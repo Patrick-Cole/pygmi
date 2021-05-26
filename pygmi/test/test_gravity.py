@@ -31,6 +31,7 @@ import os
 import sys
 from PyQt5 import QtWidgets
 import numpy as np
+
 from pygmi.grav import iodefs, dataprep
 
 APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes

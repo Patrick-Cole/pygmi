@@ -37,10 +37,12 @@ from matplotlib.figure import Figure
 import matplotlib.animation as manimation
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
+
 # import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
 from pygmi.raster.ginterp import histcomp, norm255
+from pygmi.raster.modest_image import imshow
 
 
 class CreateSceneList(QtWidgets.QDialog):
@@ -487,6 +489,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         extent = dat[self.bands[0]].extent
 
+        # self.im1 = imshow(self.ax1, dtmp, extent=extent)
         self.im1 = self.ax1.imshow(dtmp, extent=extent)
         self.ax1.plot(points[:, 0], points[:, 1])
         self.cbar = None

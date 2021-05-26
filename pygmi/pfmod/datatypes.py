@@ -25,6 +25,7 @@
 """Class for data types."""
 
 import numpy as np
+
 from pygmi.raster.datatypes import Data
 
 

@@ -25,6 +25,7 @@
 """Magnetic Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.mag import dataprep
 from pygmi.mag import igrf
 from pygmi.mag import tiltdepth

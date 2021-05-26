@@ -25,6 +25,7 @@
 """Clustering Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.clust import cluster
 from pygmi.clust import graphtool
 from pygmi.clust import graphs

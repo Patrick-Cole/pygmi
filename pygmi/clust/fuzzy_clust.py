@@ -28,6 +28,7 @@ import os
 import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+
 from pygmi.raster.datatypes import Data
 from pygmi.clust import var_ratio as vr
 from pygmi.clust import xie_beni as xb

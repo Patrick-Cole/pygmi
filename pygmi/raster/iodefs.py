@@ -32,6 +32,7 @@ import struct
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import gdal, osr
+
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import merge
 

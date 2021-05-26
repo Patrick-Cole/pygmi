@@ -25,6 +25,7 @@
 """Exploration seismics Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.eseis import iodefs
 from pygmi.eseis import graphs
 

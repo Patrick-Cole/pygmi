@@ -32,6 +32,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr, ogr
 import matplotlib.pyplot as plt
+
 from pygmi.pfmod.datatypes import LithModel
 import pygmi.pfmod.grvmag3d as grvmag3d
 import pygmi.pfmod.cubes as mvis3d
@@ -40,6 +41,7 @@ import pygmi.raster.dataprep as dp
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
 from pygmi.pfmod import datatypes
+
 sys.modules['datatypes'] = datatypes
 
 

@@ -25,6 +25,7 @@
 """Vector Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.vector import iodefs
 from pygmi.vector import graphs
 from pygmi.vector import dataprep

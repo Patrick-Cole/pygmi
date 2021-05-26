@@ -30,6 +30,7 @@ the tests.
 import sys
 from PyQt5 import QtWidgets
 import numpy as np
+
 from pygmi.raster.datatypes import Data
 from pygmi.clust import cluster, crisp_clust, fuzzy_clust
 

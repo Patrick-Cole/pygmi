@@ -39,6 +39,7 @@ from SimPEG import (maps, data_misfit, regularization,
 from SimPEG.electromagnetics import time_domain
 import SimPEG.data as Sdata
 import pygmi.menu_default as menu_default
+
 from pygmi.misc import QLabelVStack
 from contextlib import redirect_stdout
 

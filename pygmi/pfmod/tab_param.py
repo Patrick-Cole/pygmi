@@ -26,6 +26,7 @@
 
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
+
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
 import pygmi.menu_default as menu_default

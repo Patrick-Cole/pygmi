@@ -58,9 +58,11 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
+
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
+from pygmi.raster.modest_image import imshow
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -239,8 +241,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
-        self.image = self.axes.imshow(self.data[0].data, origin='upper',
-                                      extent=(x_1, x_2, y_1, y_2))
+        # self.image = self.axes.imshow(self.data[0].data, origin='upper',
+        #                               extent=(x_1, x_2, y_1, y_2))
+
+        self.image = imshow(self.axes, self.data[0].data, origin='upper',
+                            extent=(x_1, x_2, y_1, y_2))
 
         # This line prevents imshow from generating color values on the
         # toolbar

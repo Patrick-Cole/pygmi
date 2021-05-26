@@ -39,6 +39,7 @@ from osgeo import gdal
 from osgeo import osr
 import pandas as pd
 import pygmi.raster.iodefs as ir
+
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
 import pygmi.menu_default as menu_default

@@ -37,6 +37,7 @@ import pandas as pd
 import geopandas as gpd
 from geopandas import GeoDataFrame
 from shapely.geometry import Point
+
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.vector.dataprep import quickgrid

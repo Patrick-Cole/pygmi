@@ -31,6 +31,7 @@ import re
 import numexpr as ne
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
+
 import pygmi.menu_default as menu_default
 import pygmi.rsense.iodefs as iodefs
 from pygmi.raster.iodefs import export_gdal

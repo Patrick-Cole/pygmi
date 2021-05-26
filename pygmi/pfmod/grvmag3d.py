@@ -48,6 +48,7 @@ from numba import jit, prange
 from matplotlib import cm
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+
 from pygmi.raster.dataprep import gdal_to_dat
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.pfmod.datatypes import LithModel

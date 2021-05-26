@@ -30,6 +30,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import matplotlib.path as mplPath
 from osgeo import osr, ogr
+
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import GroupProj
 from pygmi.raster.datatypes import Data

@@ -28,6 +28,7 @@ import time
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 from osgeo import gdal
+
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import data_to_gdal_mem
 from pygmi.raster.dataprep import gdal_to_dat

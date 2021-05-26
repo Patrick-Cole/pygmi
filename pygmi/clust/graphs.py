@@ -31,7 +31,9 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
+
 from pygmi.misc import frm
+from pygmi.raster.modest_image import imshow
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -72,8 +74,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = self.figure.add_subplot(111)
 
         cdat = data1.data
-        csp = self.axes.imshow(cdat, cmap=cm.get_cmap('jet'),
-                               extent=data1.extent)
+        csp = imshow(self.axes, cdat, cmap=cm.get_cmap('jet'),
+                     extent=data1.extent)
+        # csp = self.axes.imshow(cdat, cmap=cm.get_cmap('jet'),
+        #                        extent=data1.extent)
         vals = np.unique(cdat)
         vals = vals.compressed()
         bnds = (vals - 0.5).tolist() + [vals.max() + .5]
@@ -164,9 +168,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        rdata = self.axes.imshow(data1.metadata['Cluster']['memdat'][mem],
-                                 extent=data1.extent, cmap=cm.get_cmap('jet'))
+        # rdata = self.axes.imshow(data1.metadata['Cluster']['memdat'][mem],
+        #                          extent=data1.extent, cmap=cm.get_cmap('jet'))
+
+        rdata = imshow(self.axes, data1.metadata['Cluster']['memdat'][mem],
+                       extent=data1.extent, cmap=cm.get_cmap('jet'))
+
         self.figure.colorbar(rdata)
+
 #        self.axes.set_title('Data')
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')

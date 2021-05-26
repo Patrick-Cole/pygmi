@@ -31,6 +31,7 @@ from scipy.signal import tukey
 import scipy.interpolate as si
 import scipy.signal as signal
 import pygmi.menu_default as menu_default
+
 from pygmi.raster.datatypes import Data
 
 

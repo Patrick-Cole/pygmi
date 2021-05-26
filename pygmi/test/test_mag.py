@@ -31,6 +31,7 @@ import sys
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pytest
+
 from pygmi.raster.datatypes import Data
 from pygmi.mag import dataprep
 from pygmi.mag import igrf, tiltdepth

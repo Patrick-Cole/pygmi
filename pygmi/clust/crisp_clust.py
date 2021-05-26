@@ -28,6 +28,7 @@ import os
 import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+
 from pygmi.raster.datatypes import Data
 import pygmi.clust.var_ratio as vr
 

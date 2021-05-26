@@ -25,6 +25,7 @@
 """Gravity Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.grav import iodefs
 from pygmi.grav import dataprep
 

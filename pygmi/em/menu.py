@@ -25,6 +25,7 @@
 """EM Menu Routines."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.em import tdem
 
 
