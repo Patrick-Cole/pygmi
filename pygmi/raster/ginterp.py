@@ -254,6 +254,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.cid = self.figure.canvas.mpl_connect('resize_event',
                                                   self.revent)
+        self.figure.canvas.draw()
 
     def move(self, event):
         """
@@ -400,8 +401,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
             for j in patches:
                 j.set_color(hcol[i])
 
-            if np.ma.is_masked(zval[i]) is True:
+            if np.ma.is_masked(zval[i]) is True or zval[i] is None:
                 bnum.append(0)
+                self.update_hist_text(self.htxt[i], None)
                 continue
 
             binnum = (bins < zval[i]).sum()-1
@@ -414,7 +416,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.update_hist_text(self.htxt[i], zval[i])
         return bnum
 
-    def update_hist_single(self, zval, hno=0):
+    def update_hist_single(self, zval=None, hno=0):
         """
         Update the color on a single histogram.
 
@@ -444,11 +446,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
             patches[j].set_color(bincol[j])
 
         # This section draws the black line.
-        if np.ma.is_masked(zval) is True:
+        if zval is None or np.ma.is_masked(zval) is True:
+            self.update_hist_text(self.htxt[hno], None)
             return 0
-        binnum = (bins < zval).sum()-1
 
+        binnum = (bins < zval).sum()-1
         if binnum < 0 or binnum >= len(patches):
+            self.update_hist_text(self.htxt[hno], zval)
             return 0
 
         patches[binnum].set_color('k')
@@ -475,7 +479,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         xnew = 0.95*(xmax-xmin)+xmin
         ynew = 0.95*(ymax-ymin)+ymin
         hst.set_position((xnew, ynew))
-        hst.set_text(f'{zval:.4f}')
+
+        if zval is None:
+            hst.set_text('')
+        else:
+            hst.set_text(f'{zval:.4f}')
 
     def update_rgb(self):
         """
@@ -535,7 +543,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                                   self.hhist[i][1].max())
             self.argb[i].set_ylim(0, self.hhist[i][0].max()*1.2)
 
-        self.update_hist_rgb([-999, -999, -999])
+        self.update_hist_rgb([None, None, None])
 
         self.axes.draw_artist(self.image)
 
@@ -594,7 +602,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.argb[0].set_xlim(self.hhist[0][1].min(), self.hhist[0][1].max())
         self.argb[0].set_ylim(0, self.hhist[0][0].max()*1.2)
 
-        self.update_hist_single(0.0)
+        self.update_hist_single()
         self.axes.draw_artist(self.image)
 
         for i in self.hhist[0][2]:
@@ -1825,7 +1833,9 @@ def _testfn():
                                                  '..//..')))
     app = QtWidgets.QApplication(sys.argv)
 
-    data = iodefs.get_raster(r'C:\work\WorkData\testdata.hdr')
+    data = iodefs.get_raster(r'E:\Workdata\raster\polygon cut get profile\mag_IGRFcorrected.ers')
+
+    # data = iodefs.get_raster(r'e:\WorkData\testdata.hdr')
 
     tmp = PlotInterp(None)
     tmp.indata['Raster'] = data

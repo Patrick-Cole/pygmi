@@ -172,7 +172,7 @@ class ImportData():
         if not nodialog:
             if self.parent is not None:
                 piter = self.parent.pbar.iter
-            ext = ('Common formats (*.ers *.hdr *.tif *.sdat *.img *.pix '
+            ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img *.pix '
                    '*.bil);;'
                    'ArcGIS BIL (*.bil);;'
                    'Arcinfo Binary Grid (hdr.adf);;'
@@ -185,7 +185,7 @@ class ImportData():
                    'GeoPak grid (*.grd);;'
                    'Geosoft UNCOMPRESSED grid (*.grd);;'
                    'Geosoft (*.gxf);;'
-                   'GeoTiff (*.tif);;'
+                   'GeoTiff (*.tif *.tiff);;'
                    'PCI Geomatics Database File (*.pix);;'
                    'SAGA binary grid (*.sdat);;'
                    'Surfer grid (*.grd);;'

@@ -2122,7 +2122,8 @@ def merge(dat, piter=iter, dxy=None, pprint=print):
     gtr = (xmin, dxy, 0.0, ymax, 0.0, -1.0*dxy)
 
     if cols == 0 or rows == 0:
-        pprint('Your rows or cols are zero. Your input projection may be wrong')
+        pprint('Your rows or cols are zero. '
+               'Your input projection may be wrong')
         return None
 
     dat2 = []
