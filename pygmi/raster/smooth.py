@@ -407,6 +407,7 @@ class Smooth(QtWidgets.QDialog):
         dummy.mask[drr-1:drr-1+rowd, dcc-1:dcc-1+cold] = dat.mask
 
         dummy.data[dummy.mask] = np.nan
+        dat = dat.astype(float)
         dat.data[dat.mask] = np.nan
 
         if itype == '2D Mean':
