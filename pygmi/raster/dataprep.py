@@ -102,14 +102,9 @@ class DataCut():
                 return False
 
         os.chdir(os.path.dirname(self.ifile))
-        data = cut_raster(data, self.ifile)
+        data = cut_raster(data, self.ifile, pprint=self.showprocesslog)
 
         if data is None:
-            err = ('There was a problem importing the shapefile. Please make '
-                   'sure you have at all the individual files which make up '
-                   'the shapefile.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                          QtWidgets.QMessageBox.Ok)
             return False
 
         self.pbar.to_max()
@@ -1782,7 +1777,7 @@ def cluster_to_raster(indata):
     return indata
 
 
-def cut_raster(data, ifile):
+def cut_raster(data, ifile, pprint=print):
     """Cuts a raster dataset.
 
     Cut a raster dataset using a shapefile.
@@ -1801,6 +1796,9 @@ def cut_raster(data, ifile):
     """
     shapef = ogr.Open(ifile)
     if shapef is None:
+        pprint('There was a problem importing the shapefile. Please make '
+               'sure you have at all the individual files which make up '
+               'the shapefile.')
         return None
     lyr = shapef.GetLayer()
     poly = lyr.GetNextFeature()
@@ -1811,6 +1809,17 @@ def cut_raster(data, ifile):
 
     for idata in data:
         # Convert the layer extent to image pixel coordinates
+        dext = idata.extent
+        lext = lyr.GetExtent()
+
+        if ((dext[0] > lext[1]) or (dext[1] < lext[0]) or
+                (dext[2] > lext[3]) or (dext[3] < lext[2])):
+
+            pprint('The shapefile is not in the same area as the raster '
+                   'dataset. Please check its coordinates and make sure its '
+                   'projection is the same as the raster dataset')
+            return None
+
         minX, maxX, minY, maxY = lyr.GetExtent()
         itlx = idata.extent[0]
         itly = idata.extent[-1]

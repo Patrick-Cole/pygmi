@@ -251,12 +251,12 @@ class Cluster(QtWidgets.QDialog):
 
             self.parent.process_is_active()
 
-        self.run()
+        flag = self.run()
 
         if not nodialog:
             self.parent.process_is_active(False)
             self.parent.pbar.to_max()
-        return True
+        return flag
 
     def loadproj(self, projdata):
         """
@@ -381,6 +381,11 @@ class Cluster(QtWidgets.QDialog):
 
             if cfit.labels_.max() < i-1 and self.cltype != 'DBSCAN':
                 self.showprocesslog('Could not find '+str(i)+' clusters. '
+                                    'Please change settings.')
+
+                return False
+            elif cfit.labels_.max() < 0 and self.cltype == 'DBSCAN':
+                self.showprocesslog('Could not find any clusters. '
                                     'Please change settings.')
 
                 return False

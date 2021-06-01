@@ -56,7 +56,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         super().__init__(fig)
 
-    def update_contour(self, data1):
+    def update_classes(self, data1):
         """
         Update the plot.
 
@@ -81,8 +81,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         vals = np.unique(cdat)
         vals = vals.compressed()
         bnds = (vals - 0.5).tolist() + [vals.max() + .5]
-        self.axes.figure.colorbar(csp, boundaries=bnds, values=vals,
-                                  ticks=vals)
+
+        if len(vals) > 1:
+            self.axes.figure.colorbar(csp, boundaries=bnds, values=vals,
+                                      ticks=vals)
+        # else:
+        #     self.axes.figure.colorbar(csp)
 
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
@@ -265,7 +269,7 @@ class PlotRaster(GraphWindow):
         """
         i = self.combobox1.currentIndex()
         data = self.indata['Cluster']
-        self.mmc.update_contour(data[i])
+        self.mmc.update_classes(data[i])
 
     def run(self):
         """

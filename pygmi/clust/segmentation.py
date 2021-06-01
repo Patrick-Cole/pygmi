@@ -27,6 +27,7 @@ import copy
 import numpy as np
 from sklearn.cluster import DBSCAN
 import skimage
+import sklearn.preprocessing as skp
 from numba import jit
 from PyQt5 import QtWidgets, QtCore, QtGui
 import pygmi.menu_default as menu_default
@@ -67,7 +68,8 @@ class ImageSeg(QtWidgets.QDialog):
         self.scale = QtWidgets.QLineEdit('1000')
         self.wcompact = QtWidgets.QLineEdit('0.5')
         self.wcolor = QtWidgets.QLineEdit('0.9')
-        self.isrecursive = QtWidgets.QCheckBox('Recursive file search')
+        self.eps = QtWidgets.QLineEdit('0.1')
+        self.dbscan = QtWidgets.QCheckBox('Use DBSCAN to group segments')
 
         self.setupui()
 
@@ -87,6 +89,7 @@ class ImageSeg(QtWidgets.QDialog):
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
         lbl_wcolor = QtWidgets.QLabel('Color weight')
         lbl_scale = QtWidgets.QLabel('Maximum allowable cost function')
+        lbl_eps = QtWidgets.QLabel('DBSCAN eps')
 
         val = QtGui.QDoubleValidator(0.0, 1.0, 2)
         val.setNotation(QtGui.QDoubleValidator.StandardNotation)
@@ -94,6 +97,7 @@ class ImageSeg(QtWidgets.QDialog):
 
         self.wcompact.setValidator(val)
         self.wcolor.setValidator(val)
+        self.dbscan.setChecked(False)
 
         val = QtGui.QDoubleValidator()
         val.setBottom = 0
@@ -114,7 +118,10 @@ class ImageSeg(QtWidgets.QDialog):
         gridlayout_main.addWidget(lbl_scale, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.scale, 2, 1, 1, 1)
 
-        # gridlayout_main.addWidget(self.isrecursive, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.dbscan, 3, 0, 1, 2)
+
+        gridlayout_main.addWidget(lbl_eps, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.eps, 4, 1, 1, 1)
 
         gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
@@ -151,6 +158,7 @@ class ImageSeg(QtWidgets.QDialog):
         scale = float(self.scale.text())
         wcolor = float(self.wcolor.text())
         wcompact = float(self.wcompact.text())
+        eps = float(self.eps.text())
 
         doshape = True
 
@@ -161,6 +169,34 @@ class ImageSeg(QtWidgets.QDialog):
         odat.data = np.ma.array(omap, mask=self.indata['Raster'][0].data.mask)
         odat.dataid = 'Segments'
 
+        self.outdata['Raster'] = [odat]
+
+        if not self.dbscan.isChecked():
+            return True
+
+        means = []
+        for i in range(odat.data.max()+1):
+            tmp = data1[odat.data == i]
+            if tmp.size == 0:
+                continue
+            means.append(tmp.mean(0))
+
+        means = np.array(means)
+        means = skp.StandardScaler().fit_transform(means)
+        dbout = DBSCAN(eps=eps).fit_predict(means)
+
+        data2 = odat.data.copy()
+
+        newmax = dbout.max()+1
+        for i, val in enumerate(dbout):
+            filt = (odat.data == i)
+            if val == -1:
+                data2[filt] = newmax
+                newmax += 1
+                continue
+            data2[filt] = val
+
+        odat.data = data2
         self.outdata['Raster'] = [odat]
 
         return True
@@ -509,7 +545,7 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.raster.datatypes import Data
     from pygmi.misc import PTime
-
+    from pygmi.raster import iodefs
 
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
@@ -537,10 +573,15 @@ def _testfn():
 
     data = [b1, b2, b3]
 
+    ifile = r'E:\Workdata\testdata.hdr'
+
+    data = iodefs.get_raster(ifile)
+
     ttt = PTime()
     IS = ImageSeg()
     IS.indata = {'Raster': data}
-    IS.settings(True)
+    # IS.settings(True)
+    IS.settings()
     ttt.since_last_call()
 
     odata = IS.outdata['Raster'][0]
@@ -548,27 +589,30 @@ def _testfn():
     plt.imshow(odata.data)
     plt.show()
 
-    means = []
-    for i in range(odata.data.max()+1):
-        tmp = data1[odata.data==i]
-        means.append(tmp.mean(0))
+    # means = []
+    # for i in range(odata.data.max()+1):
+    #     tmp = data1[odata.data==i]
+    #     means.append(tmp.mean(0))
 
-    dbout = DBSCAN(eps=10).fit_predict(means)
+    # means = np.array(means)
+    # means = skp.StandardScaler().fit_transform(means)
 
-    data2 = odata.data.copy()
+    # dbout = DBSCAN(eps=0.15).fit_predict(means)
 
-    newmax = dbout.max()+1
-    for i, val in enumerate(dbout):
-        filt = (odata.data==i)
-        if val == -1:
-            data2[filt] = newmax
-            newmax += 1
-            continue
-        data2[filt] = val
+    # data2 = odata.data.copy()
 
-    plt.imshow(data2, cmap='inferno')
-    plt.colorbar()
-    plt.show()
+    # newmax = dbout.max()+1
+    # for i, val in enumerate(dbout):
+    #     filt = (odata.data==i)
+    #     if val == -1:
+    #         data2[filt] = newmax
+    #         newmax += 1
+    #         continue
+    #     data2[filt] = val
+
+    # plt.imshow(data2, cmap='inferno')
+    # plt.colorbar()
+    # plt.show()
 
     breakpoint()
 
