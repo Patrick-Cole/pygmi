@@ -7,11 +7,7 @@ PyGMI
 =====
 Welcome to the PyGMI website! It contains more information, including API documentation for the project.
 
-August 5, 2020: `PyGMI 3.2.1.1 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
-
-This is the next release of PyGMI. It contains various bug fixes, and some additional functions, including remote sensing capabilities, continuation, and reorganisation of magnetic function into a magnetic menu. Remote sensing imports now occur at the remote sensing menu.
-
-PyGMI is being developed using python 3.8 and Qt5.
+The latest release can be downloaded `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
 
 If there are requests or concerns, please contact me.
 

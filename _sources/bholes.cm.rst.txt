@@ -1,9 +1,0 @@
-Boreholes: Context Menu
-=======================
-The borehole context menus are available for modules which have output borehole data. Output data is only available on green modules. To access the context menu, simply right-click a green module.
-
-Show Borehole Log
------------------
-The borehole log with key information can be displayed here. Lithologies are displayed with symbols, while stratigraphies are colour coded.
-
-.. image:: _images/bholedisplay.png
