@@ -4,7 +4,7 @@ The seismics menus are available for modules which have output seismic data. Out
 
 Show Graphs
 -----------
-SEG-Y data is dsiplayed using this tool. It can then be exported from here as a graphical image, for use in the modelling module, if necessary.
+SEG-Y data is displayed using this tool. It can then be exported from here as a graphical image, for use in the modelling module, if necessary.
 
 .. image:: _images/eseisdisp.png
 

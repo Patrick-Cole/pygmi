@@ -66,7 +66,7 @@ An anaglyph of the raster data (3D image) can be displayed. This type of display
 * Contour - slider to display a simple contour version of the data
 * Bands - dropdown to choose the band to display
 * Type - Choice for which type of anaglyph to calculate. This can be Dubois (red-green), green-magenta, amber-blue, True (red-green), gray (red-green), optimised (red-green)
-* Color Bar - colors to map to the image.
+* Colour Bar - colours to map to the image.
 * Scale
 * Image angle
 * Sunshade
@@ -106,5 +106,5 @@ step in order to exclude bands of information which are too similar.
 Export Data
 -----------
 This exports the raster data into a variety of raster formats, including ENVI,
-ER Mapper, Geotiff, Geosoft GXF and Surfer. In most cases the GDAL library was
+ER Mapper, GeoTIFF, Geosoft GXF and Surfer. In most cases the GDAL library was
 used.

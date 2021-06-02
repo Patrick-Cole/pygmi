@@ -13,7 +13,7 @@ rotated using the left and right click buttons on your mouse. The
 
 By default all lithologies are selected. The viewer provides a means to save an image of the model to a .jpg or .png file format.
 
-* Vertical slider - used to adjust the zscale of the model.
+* Vertical slider - used to adjust the z scale of the model.
 * Light Position - this is the position of a light, controlling shadow effects on the model.
 * Smooth model - applied smoothing to the model, showing a more aesthetically pleasing version
 * Orthographic projection

@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Classification: Description of Modules &#8212; PyGMI 3 documentation</title>
+    <title>Classification: Description of Modules &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="cluster.ref.html" />
@@ -97,10 +96,10 @@
 <li><p>Minimum Clusters and Maximum Clusters (k-means, Birch) - This refers to the generation of a range of solutions. For example, if minimum clusters is 5, and maximum clusters is 7, then 3 interpretations are produced - one with 5 classes, one with 6 classes and one with 7 classes.</p></li>
 <li><p>Maximum iterations (k-means) - Maximum number of iterations to use when generating a solution.</p></li>
 <li><p>Tolerance (k-means) - Refers to the relative tolerance with regards to inertia to declare convergence and stop iterating. When the relative decrease in the objective function between iterations is less than the given tolerance value, this results in the stopping of the iterations.</p></li>
-<li><p>eps (DBSCAN) - The maximum distance between two samples for them to be considered as in the same neighborhood.</p></li>
-<li><p>Minimum samples (DBSCAN) - The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.</p></li>
+<li><p>eps (DBSCAN) - The maximum distance between two samples for them to be considered as in the same neighbourhood.</p></li>
+<li><p>Minimum samples (DBSCAN) - The number of samples (or total weight) in a neighbourhood for a point to be considered as a core point. This includes the point itself.</p></li>
 <li><p>Threshold(Birch) - The radius of the subcluster obtained by merging a new sample and the closest subcluster should be lesser than the threshold. Otherwise a new subcluster is started. Setting this value to be very low promotes splitting and vice-versa.</p></li>
-<li><p>Branching factor (Birch) - Maximum number of Charactersitic Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching_factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the 2 split nodes.</p></li>
+<li><p>Branching factor (Birch) - Maximum number of Characteristic Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching_factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the 2 split nodes.</p></li>
 </ul>
 </div>
 <div class="section" id="scaling">
@@ -162,12 +161,12 @@
 <p>The classification metrics can be calculated and displayed in a dialog (Figure 33). The current metrics include the confusion matrix, as well as accuracy and kappa scores.</p>
 <p>The user is also able to choose an appropriate supervised classification algorithm. These are:</p>
 <ul class="simple">
-<li><p>K Neighbors Classification</p></li>
+<li><p>K Neighbours Classification</p></li>
 <li><p>Decision Tree Classification</p></li>
 <li><p>Random Forests Classification</p></li>
 <li><p>Support Vector Classification</p></li>
 </ul>
-<p>Under each of these, an appropriate algorithm (K neighbors), criterion (Decision Tree and Random Forests) or kernel (Support Vector) can be selected.</p>
+<p>Under each of these, an appropriate algorithm (K neighbours), criterion (Decision Tree and Random Forests) or kernel (Support Vector) can be selected.</p>
 <img alt="_images/clustsuper.png" src="_images/clustsuper.png" />
 </div>
 </div>
@@ -221,7 +220,7 @@
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -283,10 +282,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

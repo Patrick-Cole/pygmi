@@ -1,11 +1,6 @@
 pygmi.seis package
 ==================
 
-.. automodule:: pygmi.seis
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -69,6 +64,14 @@ pygmi.seis.utils module
 -----------------------
 
 .. automodule:: pygmi.seis.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.seis
    :members:
    :undoc-members:
    :show-inheritance:

@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Magnetics: Description of Modules &#8212; PyGMI 3 documentation</title>
+    <title>Magnetics: Description of Modules &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="mag.ref.html" />
@@ -88,7 +87,7 @@
 <h1>Magnetics: Description of Modules<a class="headerlink" href="#magnetics-description-of-modules" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="tilt-angle-calculation">
 <h2>Tilt Angle Calculation<a class="headerlink" href="#tilt-angle-calculation" title="Permalink to this headline">¶</a></h2>
-<p>This calculates the tilt angle of the data (Cooper and Cowan 2006). It allows for smoothing as well. It outputs the Standard tilt angle, Hyperbolic tilt angle, 2nd order tilt angle, Tilt Based Directional Derivative and the Total Derivative.</p>
+<p>This calculates the tilt angle of the data (Cooper and Cowan 2006). It allows for smoothing as well. It outputs the Standard tilt angle, Hyperbolic tilt angle, second order tilt angle, Tilt Based Directional Derivative and the Total Derivative.</p>
 <p>Options:</p>
 <ul class="simple">
 <li><p>Smoothing Matrix - an odd matrix used to smooth the data</p></li>
@@ -116,7 +115,7 @@
 <div class="section" id="igrf-options">
 <h3>IGRF Options<a class="headerlink" href="#igrf-options" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>Sensor Clearance above ground - This is the height, in meters, of the sensor measuring the magentic field, above the ground.</p></li>
+<li><p>Sensor Clearance above ground - This is the height, in meters, of the sensor measuring the magnetic field, above the ground.</p></li>
 <li><p>Date - This is the survey date. The IGRF field changes depending on when the magnetic data was collected, so the survey date must be taken into account.</p></li>
 <li><p>Digital Elevation Model - raster grid of the terrain in height above sea level.</p></li>
 <li><p>Magnetic Data - raster grid of the magnetic data to be corrected.</p></li>
@@ -131,7 +130,7 @@
 <p>The results can be output to a text file, with columns x, y, id and depth. In this case, id refers to a contour id where the tilt angle is equal to zero.</p>
 <p>Options:
 * Band to perform tilt depth - this should be magnetic data
-* Color Bar - colors used to display the tilt angle data.
+* Colour Bar - colours used to display the tilt angle data.
 * Inclination of Magnetic Field - inclination of the field at the location and date of survey.
 * Declination of Magnetic Field - declination of the field at the location and date of survey.
 * Recalculate Tilt Depth - used to recalculate after changing inclination or declination.</p>
@@ -187,7 +186,7 @@
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -249,10 +248,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

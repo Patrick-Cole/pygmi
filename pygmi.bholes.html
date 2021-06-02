@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.bholes package &#8212; PyGMI 3 documentation</title>
+    <title>pygmi.bholes package &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.clust package" href="pygmi.clust.html" />
@@ -84,25 +83,665 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.bholes">
-<span id="pygmi-bholes-package"></span><h1>pygmi.bholes package<a class="headerlink" href="#module-pygmi.bholes" title="Permalink to this headline">¶</a></h1>
-<p>Borehole routines</p>
+  <div class="section" id="pygmi-bholes-package">
+<h1>pygmi.bholes package<a class="headerlink" href="#pygmi-bholes-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-pygmi.bholes.coremask">
+<span id="pygmi-bholes-coremask-module"></span><h2>pygmi.bholes.coremask module<a class="headerlink" href="#module-pygmi.bholes.coremask" title="Permalink to this headline">¶</a></h2>
+<p>Core Mask Routines.</p>
+<dl class="py class">
+<dt id="pygmi.bholes.coremask.CoreMask">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.coremask.</span></code><code class="sig-name descname"><span class="pre">CoreMask</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Core masking class.</p>
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.change_defs">
+<code class="sig-name descname"><span class="pre">change_defs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.change_defs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change definitions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.classify">
+<code class="sig-name descname"><span class="pre">classify</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.classify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test classification.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.pic_overview">
+<code class="sig-name descname"><span class="pre">pic_overview</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.pic_overview" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the current viewed data, cased on the combo_overview value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.pic_overview2">
+<code class="sig-name descname"><span class="pre">pic_overview2</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.pic_overview2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horizontal slider to change picture opacity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.savemask">
+<code class="sig-name descname"><span class="pre">savemask</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.savemask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save mask to a file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.settings">
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.setupui">
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.setwidth">
+<code class="sig-name descname"><span class="pre">setwidth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.setwidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the width of the edits on the profile view.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>width</strong> (<em>int</em>) – Edit width.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.CoreMask.slayer">
+<code class="sig-name descname"><span class="pre">slayer</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.CoreMask.slayer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change model layer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pygmi.bholes.coremask.MyMplCanvas">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.coremask.</span></code><code class="sig-name descname"><span class="pre">MyMplCanvas</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<p>Matplotlib Canvas.</p>
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MyMplCanvas.button_press">
+<code class="sig-name descname"><span class="pre">button_press</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas.button_press" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MyMplCanvas.button_release">
+<code class="sig-name descname"><span class="pre">button_release</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas.button_release" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button release event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MyMplCanvas.init_grid_top">
+<code class="sig-name descname"><span class="pre">init_grid_top</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">opac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas.init_grid_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise top grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dat2</strong> (<em>str</em><em>, </em><em>optional</em>) – Combobox text. The default is None.</p></li>
+<li><p><strong>opac</strong> (<em>float</em><em>, </em><em>optional</em>) – Opacity between 0 and 100. The default is 100.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MyMplCanvas.luttodat">
+<code class="sig-name descname"><span class="pre">luttodat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas.luttodat" title="Permalink to this definition">¶</a></dt>
+<dd><p>LUT to dat grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dat</strong> (<em>numpy array</em>) – Input array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>tmp</strong> – Output array.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MyMplCanvas.move">
+<code class="sig-name descname"><span class="pre">move</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas.move" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse move event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MyMplCanvas.on_resize">
+<code class="sig-name descname"><span class="pre">on_resize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas.on_resize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Resize event.</p>
+<p>Used to make sure tight_layout happens on startup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MyMplCanvas.set_mdata">
+<code class="sig-name descname"><span class="pre">set_mdata</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas.set_mdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to ‘draw’ the line on mdata.</p>
+<p>xdata and ydata are the cursor centre coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xdata</strong> (<em>float</em>) – X data.</p></li>
+<li><p><strong>ydata</strong> (<em>float</em>) – Y data.</p></li>
+<li><p><strong>mdata</strong> (<em>numpy array</em>) – Model array.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MyMplCanvas.slide_grid_top">
+<code class="sig-name descname"><span class="pre">slide_grid_top</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">opac</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MyMplCanvas.slide_grid_top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slide top grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>opac</strong> (<em>float</em><em>, </em><em>optional</em>) – Opacity between 0 and 100. The default is None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pygmi.bholes.coremask.MySlider">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.coremask.</span></code><code class="sig-name descname"><span class="pre">MySlider</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MySlider" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QSlider</span></code></p>
+<p>My Slider.</p>
+<p>Custom class which allows clicking on a horizontal slider bar with slider
+moving to click in a single step.</p>
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MySlider.mouseMoveEvent">
+<code class="sig-name descname"><span class="pre">mouseMoveEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MySlider.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse move event.</p>
+<p>Jump to pointer position while moving.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremask.MySlider.mousePressEvent">
+<code class="sig-name descname"><span class="pre">mousePressEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.MySlider.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Mouse press event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.bholes.coremask.update_lith_lw">
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.coremask.</span></code><code class="sig-name descname"><span class="pre">update_lith_lw</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lith_list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mlut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lwidget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremask.update_lith_lw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the lithology list widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lith_list</strong> (<em>list</em>) – Lithology list.</p></li>
+<li><p><strong>mlut</strong> (<em>list</em>) – Lithology color.</p></li>
+<li><p><strong>lwidget</strong> (<em>QListWidget</em>) – List widget.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-pygmi.bholes.coremeta">
+<span id="pygmi-bholes-coremeta-module"></span><h2>pygmi.bholes.coremeta module<a class="headerlink" href="#module-pygmi.bholes.coremeta" title="Permalink to this headline">¶</a></h2>
+<p>Core metadata and depth Assignment routine.</p>
+<dl class="py class">
+<dt id="pygmi.bholes.coremeta.CoreMeta">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.coremeta.</span></code><code class="sig-name descname"><span class="pre">CoreMeta</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Core metadata and depth assignment routine.</p>
+<dl class="py attribute">
+<dt id="pygmi.bholes.coremeta.CoreMeta.parent">
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.coremeta.CoreMeta.indata">
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of input datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.coremeta.CoreMeta.outdata">
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.button_press_callback">
+<code class="sig-name descname"><span class="pre">button_press_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.button_press_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.dmark_change">
+<code class="sig-name descname"><span class="pre">dmark_change</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.dmark_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change depth marker combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.dmark_del">
+<code class="sig-name descname"><span class="pre">dmark_del</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.dmark_del" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete depth marker.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.dmarkval_change">
+<code class="sig-name descname"><span class="pre">dmarkval_change</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.dmarkval_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change depth marker value in spinbox.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.format_coord">
+<code class="sig-name descname"><span class="pre">format_coord</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.format_coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format coordinate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>float</em>) – x-coordinate.</p></li>
+<li><p><strong>y</strong> (<em>float</em>) – y-coordinate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Formatted string.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.loadproj">
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.ncore_change">
+<code class="sig-name descname"><span class="pre">ncore_change</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.ncore_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine is called when number of cores has changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.on_combo">
+<code class="sig-name descname"><span class="pre">on_combo</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.on_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>On combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.savedmark">
+<code class="sig-name descname"><span class="pre">savedmark</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.savedmark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save depth marks to a json file, with same name as the raster image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.saveproj">
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.settings">
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entrypoint into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.setupui">
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.traylen_change">
+<code class="sig-name descname"><span class="pre">traylen_change</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.traylen_change" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine is called whenever the tray length parameter is changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.CoreMeta.update_depthfunc">
+<code class="sig-name descname"><span class="pre">update_depthfunc</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.CoreMeta.update_depthfunc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the depth function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pygmi.bholes.coremeta.GraphMap">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.coremeta.</span></code><code class="sig-name descname"><span class="pre">GraphMap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.GraphMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<p>Graph Map.</p>
+<dl class="py attribute">
+<dt id="pygmi.bholes.coremeta.GraphMap.parent">
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.coremeta.GraphMap.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.coremeta.GraphMap.init_graph">
+<code class="sig-name descname"><span class="pre">init_graph</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.coremeta.GraphMap.init_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-pygmi.bholes.graphs">
 <span id="pygmi-bholes-graphs-module"></span><h2>pygmi.bholes.graphs module<a class="headerlink" href="#module-pygmi.bholes.graphs" title="Permalink to this headline">¶</a></h2>
-<p>Plot Borehole Data</p>
+<p>Plot Borehole Data.</p>
 <p>This module provides a variety of methods to plot borehole data via the context
 menu.</p>
 <dl class="py class">
 <dt id="pygmi.bholes.graphs.GraphWindow">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.bholes.graphs.</code><code class="sig-name descname">GraphWindow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.graphs.</span></code><code class="sig-name descname"><span class="pre">GraphWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Graph Window.</p>
 <dl class="py attribute">
 <dt id="pygmi.bholes.graphs.GraphWindow.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.bholes.graphs.GraphWindow.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.graphs.GraphWindow.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -113,7 +752,7 @@ menu.</p>
 
 <dl class="py method">
 <dt id="pygmi.bholes.graphs.GraphWindow.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to change band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -129,12 +768,12 @@ menu.</p>
 
 <dl class="py class">
 <dt id="pygmi.bholes.graphs.MyMplCanvas">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.bholes.graphs.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.graphs.</span></code><code class="sig-name descname"><span class="pre">MyMplCanvas</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>Canvas for the actual plot.</p>
 <dl class="py attribute">
 <dt id="pygmi.bholes.graphs.MyMplCanvas.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.bholes.graphs.MyMplCanvas.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.graphs.MyMplCanvas.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -145,7 +784,7 @@ menu.</p>
 
 <dl class="py method">
 <dt id="pygmi.bholes.graphs.MyMplCanvas.update_legend">
-<code class="sig-name descname">update_legend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.MyMplCanvas.update_legend" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_legend</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.MyMplCanvas.update_legend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update legend.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -162,7 +801,7 @@ menu.</p>
 
 <dl class="py method">
 <dt id="pygmi.bholes.graphs.MyMplCanvas.update_log">
-<code class="sig-name descname">update_log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.MyMplCanvas.update_log" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_log</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.MyMplCanvas.update_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the raster plot.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -181,12 +820,12 @@ menu.</p>
 
 <dl class="py class">
 <dt id="pygmi.bholes.graphs.PlotLog">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.bholes.graphs.</code><code class="sig-name descname">PlotLog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.PlotLog" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.graphs.</span></code><code class="sig-name descname"><span class="pre">PlotLog</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.PlotLog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.bholes.graphs.GraphWindow" title="pygmi.bholes.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.bholes.graphs.GraphWindow</span></code></a></p>
 <p>Plot Log Class.</p>
 <dl class="py attribute">
 <dt id="pygmi.bholes.graphs.PlotLog.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.bholes.graphs.PlotLog.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.graphs.PlotLog.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -197,13 +836,13 @@ menu.</p>
 
 <dl class="py method">
 <dt id="pygmi.bholes.graphs.PlotLog.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.PlotLog.change_band" title="Permalink to this definition">¶</a></dt>
-<dd><p>Combo box to choose band</p>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.PlotLog.change_band" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combo box to choose band.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.bholes.graphs.PlotLog.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.PlotLog.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.PlotLog.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -219,8 +858,8 @@ menu.</p>
 
 <dl class="py function">
 <dt id="pygmi.bholes.graphs.chkname">
-<code class="sig-prename descclassname">pygmi.bholes.graphs.</code><code class="sig-name descname">chkname</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iname</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.chkname" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks filename for illegal characters.</p>
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.graphs.</span></code><code class="sig-name descname"><span class="pre">chkname</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.chkname" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check filename for illegal characters.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>iname</strong> (<em>str</em>) – Input filename.</p>
@@ -236,8 +875,8 @@ menu.</p>
 
 <dl class="py function">
 <dt id="pygmi.bholes.graphs.commentprep">
-<code class="sig-prename descclassname">pygmi.bholes.graphs.</code><code class="sig-name descname">commentprep</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mystring</span></em>, <em class="sig-param"><span class="n">slen</span><span class="o">=</span><span class="default_value">50</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.commentprep" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates the correct case for a string and inserts carriage returns.</p>
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.graphs.</span></code><code class="sig-name descname"><span class="pre">commentprep</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mystring</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slen</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">50</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.commentprep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the correct case for a string and inserts carriage returns.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -256,7 +895,7 @@ menu.</p>
 
 <dl class="py function">
 <dt id="pygmi.bholes.graphs.gethatch">
-<code class="sig-prename descclassname">pygmi.bholes.graphs.</code><code class="sig-name descname">gethatch</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">svgfile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.gethatch" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.graphs.</span></code><code class="sig-name descname"><span class="pre">gethatch</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">svgfile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.graphs.gethatch" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get Hatching from SVG file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -272,17 +911,658 @@ menu.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-pygmi.bholes.hypercore">
+<span id="pygmi-bholes-hypercore-module"></span><h2>pygmi.bholes.hypercore module<a class="headerlink" href="#module-pygmi.bholes.hypercore" title="Permalink to this headline">¶</a></h2>
+<p>Hyperspectral Core Routines.</p>
+<dl class="py class">
+<dt id="pygmi.bholes.hypercore.CorePrep">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">CorePrep</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Tray clipping and band selection.</p>
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.CorePrep.parent">
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.CorePrep.indata">
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of input datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.CorePrep.outdata">
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.CorePrep.acceptall">
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.acceptall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.CorePrep.default_fenix">
+<code class="sig-name descname"><span class="pre">default_fenix</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.default_fenix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose default settings for FENIX.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.CorePrep.default_owl">
+<code class="sig-name descname"><span class="pre">default_owl</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.default_owl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Choose default settings for OWL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.CorePrep.loadproj">
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.CorePrep.on_combo">
+<code class="sig-name descname"><span class="pre">on_combo</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.on_combo" title="Permalink to this definition">¶</a></dt>
+<dd><p>On combo.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.CorePrep.saveproj">
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.CorePrep.settings">
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entrypoint into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.CorePrep.setupui">
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.CorePrep.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pygmi.bholes.hypercore.GraphMap">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">GraphMap</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.GraphMap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
+<p>Graph Map.</p>
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.GraphMap.parent">
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.hypercore.GraphMap.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.GraphMap.init_graph">
+<code class="sig-name descname"><span class="pre">init_graph</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.GraphMap.init_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialise the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.GraphMap.update_graph">
+<code class="sig-name descname"><span class="pre">update_graph</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.GraphMap.update_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pygmi.bholes.hypercore.ImageCor">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">ImageCor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
+<p>Raw Imagery Corrections.</p>
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.ImageCor.parent">
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>reference to the parent routine</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>parent</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.ImageCor.indata">
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.indata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of input datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.ImageCor.outdata">
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.outdata" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionary of output datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.ImageCor.acceptall">
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.acceptall" title="Permalink to this definition">¶</a></dt>
+<dd><p>Accept option.</p>
+<p>Updates self.outdata, which is used as input to other modules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.ImageCor.get_idir">
+<code class="sig-name descname"><span class="pre">get_idir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.get_idir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get input directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory name submitted for testing. The default is ‘’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.ImageCor.get_odir">
+<code class="sig-name descname"><span class="pre">get_odir</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.get_odir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get output directory.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em><em>, </em><em>optional</em>) – Directory name submitted for testing. The default is ‘’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.ImageCor.loadproj">
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>chk</strong> – A check to see if settings was successfully run.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.ImageCor.saveproj">
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.saveproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save project data from class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>projdata</strong> – Project data to be saved to JSON project file.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.ImageCor.settings">
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entry point into item.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if successful, False otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.ImageCor.setupui">
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.ImageCor.setupui" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">PolygonInteractor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axtmp</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
+<p>Polygon Interactor.</p>
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.button_press_callback">
+<code class="sig-name descname"><span class="pre">button_press_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.button_press_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button press callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.button_release_callback">
+<code class="sig-name descname"><span class="pre">button_release_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.button_release_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Button release callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.draw_callback">
+<code class="sig-name descname"><span class="pre">draw_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.draw_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draw callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.epsilon">
+<code class="sig-name descname"><span class="pre">epsilon</span></code><em class="property"> <span class="pre">=</span> <span class="pre">5</span></em><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.epsilon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.motion_notify_callback">
+<code class="sig-name descname"><span class="pre">motion_notify_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
+<dd><p>Motion notify on mouse movement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.new_poly">
+<code class="sig-name descname"><span class="pre">new_poly</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">npoly</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.new_poly" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine for new polygon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>npoly</strong> (<em>list</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – New polygon coordinates.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.polyi_changed">
+<code class="sig-name descname"><span class="pre">polyi_changed</span></code><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.polyi_changed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.set_line">
+<code class="sig-name descname"><span class="pre">set_line</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.set_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine to set line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xdata</strong> (<em>float</em>) – x coordinate.</p></li>
+<li><p><strong>ydata</strong> (<em>float</em>) – y coordinate data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.showverts">
+<code class="sig-name descname"><span class="pre">showverts</span></code><em class="property"> <span class="pre">=</span> <span class="pre">True</span></em><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.showverts" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.hypercore.PolygonInteractor.update_plots">
+<code class="sig-name descname"><span class="pre">update_plots</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.PolygonInteractor.update_plots" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.bholes.hypercore.data_to_dict">
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">data_to_dict</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.data_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert Data list to dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dat</strong> (<em>list of Data</em>) – Input PyGMI dataset.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output dictionary of data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.bholes.hypercore.dc_correct">
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">dc_correct</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">idir</span></em>, <em class="sig-param"><span class="pre">hfile</span></em>, <em class="sig-param"><span class="pre">datah</span></em>, <em class="sig-param"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></em>, <em class="sig-param"><span class="pre">showprocesslog=&lt;built-in</span> <span class="pre">function</span> <span class="pre">print&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.dc_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>DC Correct.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>idir</strong> (<em>str</em>) – Input directory.</p></li>
+<li><p><strong>hfile</strong> (<em>str</em>) – core filename.</p></li>
+<li><p><strong>datah</strong> (<em>list of Data</em>) – Input core data to be corrected.</p></li>
+<li><p><strong>piter</strong> (<em>iter</em><em>, </em><em>optional</em>) – Progress bar iterator. The default is iter.</p></li>
+<li><p><strong>showprocesslog</strong> (<em>print</em><em>, </em><em>optional</em>) – Default routine to show messages. The default is print.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output Data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.bholes.hypercore.dict_to_data">
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">dict_to_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.dict_to_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert dictionary of Data to Data list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>arr</strong> (<em>dictionary</em>) – Dictionary of raster datasets.</p></li>
+<li><p><strong>data</strong> (<em>list of Data</em>) – PyGMI Data to use as a template.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output list of Data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.bholes.hypercore.dist_point_to_segment">
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">dist_point_to_segment</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.dist_point_to_segment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dist point to segment.</p>
+<p>Reimplementation of Matplotlib’s dist_point_to_segment, after it was
+depreciated. Follows <a class="reference external" href="http://geomalgorithms.com/a02-_lines.html">http://geomalgorithms.com/a02-_lines.html</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>numpy array</em>) – Point.</p></li>
+<li><p><strong>s0</strong> (<em>numpy array</em>) – Start of segment.</p></li>
+<li><p><strong>s1</strong> (<em>numpy array</em>) – End of segment.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Distance of point to segment.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.bholes.hypercore.filter_data">
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">filter_data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">datah</span></em>, <em class="sig-param"><span class="pre">ftype</span></em>, <em class="sig-param"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.filter_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Filter data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>datah</strong> (<em>list of PyGMI Data</em>) – Input data.</p></li>
+<li><p><strong>ftype</strong> (<em>str</em>) – Filter type. Can be hampel or savgol.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of PyGMI Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.bholes.hypercore.hampel_filter">
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">hampel_filter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_series</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_sigmas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.hampel_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hampel filter.</p>
+<p>From <a class="reference external" href="https://towardsdatascience.com/outlier-detection-with-hampel-filter-85ddf523c73d">https://towardsdatascience.com/outlier-detection-with-hampel-filter-85ddf523c73d</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_series</strong> (<em>numpy array</em>) – Input series.</p></li>
+<li><p><strong>window_size</strong> (<em>int</em>) – Filter window size.</p></li>
+<li><p><strong>n_sigmas</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of sigmas. The default is 3.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>new_series</strong> (<em>numpy array</em>) – Output filtered series.</p></li>
+<li><p><strong>indices</strong> (<em>numpy array</em>) – Indices of values filtered.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="pygmi.bholes.hypercore.smile">
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.hypercore.</span></code><code class="sig-name descname"><span class="pre">smile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="pre">dat</span></em>, <em class="sig-param"><span class="pre">piter=&lt;built-in</span> <span class="pre">function</span> <span class="pre">iter&gt;</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.hypercore.smile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Geometric smile correction.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dat</strong> (<em>list of Data</em>) – Input data to be corrected.</p></li>
+<li><p><strong>piter</strong> (<em>iter</em><em>, </em><em>optional</em>) – Progress bar iterator. The default is iter.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Output Data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list of Data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-pygmi.bholes.iodefs">
 <span id="pygmi-bholes-iodefs-module"></span><h2>pygmi.bholes.iodefs module<a class="headerlink" href="#module-pygmi.bholes.iodefs" title="Permalink to this headline">¶</a></h2>
 <p>Import Borehole Data.</p>
 <dl class="py class">
 <dt id="pygmi.bholes.iodefs.ImportData">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.bholes.iodefs.</code><code class="sig-name descname">ImportData</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.iodefs.</span></code><code class="sig-name descname"><span class="pre">ImportData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Import Data.</p>
 <dl class="py attribute">
 <dt id="pygmi.bholes.iodefs.ImportData.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>item name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -293,7 +1573,7 @@ menu.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.bholes.iodefs.ImportData.pbar">
-<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.pbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pbar</span></code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.pbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -304,7 +1584,7 @@ menu.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.bholes.iodefs.ImportData.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -315,7 +1595,7 @@ menu.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.bholes.iodefs.ImportData.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -326,7 +1606,7 @@ menu.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.bholes.iodefs.ImportData.ifile">
-<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ifile</span></code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -337,7 +1617,7 @@ menu.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.bholes.iodefs.ImportData.ext">
-<code class="sig-name descname">ext</code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.ext" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ext</span></code><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.ext" title="Permalink to this definition">¶</a></dt>
 <dd><p>filename extension</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -348,7 +1628,7 @@ menu.</p>
 
 <dl class="py method">
 <dt id="pygmi.bholes.iodefs.ImportData.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.loadproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -365,7 +1645,7 @@ menu.</p>
 
 <dl class="py method">
 <dt id="pygmi.bholes.iodefs.ImportData.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -379,7 +1659,7 @@ menu.</p>
 
 <dl class="py method">
 <dt id="pygmi.bholes.iodefs.ImportData.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.ImportData.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -395,7 +1675,7 @@ menu.</p>
 
 <dl class="py function">
 <dt id="pygmi.bholes.iodefs.get_CGS">
-<code class="sig-prename descclassname">pygmi.bholes.iodefs.</code><code class="sig-name descname">get_CGS</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lithfile</span></em>, <em class="sig-param"><span class="n">headerfile</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.get_CGS" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.bholes.iodefs.</span></code><code class="sig-name descname"><span class="pre">get_CGS</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lithfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">headerfile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.iodefs.get_CGS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Borehole Import.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -419,14 +1699,14 @@ menu.</p>
 <p>Borehole Menu Routines.</p>
 <dl class="py class">
 <dt id="pygmi.bholes.menu.MenuWidget">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.bholes.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.bholes.menu.</span></code><code class="sig-name descname"><span class="pre">MenuWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <p>This widget class creates the menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="py attribute">
 <dt id="pygmi.bholes.menu.MenuWidget.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -436,19 +1716,47 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="pygmi.bholes.menu.MenuWidget.coremask">
+<code class="sig-name descname"><span class="pre">coremask</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.coremask" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core Masking.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.menu.MenuWidget.coremeta">
+<code class="sig-name descname"><span class="pre">coremeta</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.coremeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Core Metadata and depth assignment.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.menu.MenuWidget.coreprep">
+<code class="sig-name descname"><span class="pre">coreprep</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.coreprep" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tray Clipping and Band Selection.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="pygmi.bholes.menu.MenuWidget.imagecor">
+<code class="sig-name descname"><span class="pre">imagecor</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.imagecor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raw core imagery corrections.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="pygmi.bholes.menu.MenuWidget.import_data">
-<code class="sig-name descname">import_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">import_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.bholes.menu.MenuWidget.show_log">
-<code class="sig-name descname">show_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.show_log" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">show_log</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.bholes.menu.MenuWidget.show_log" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show log data.</p>
 </dd></dl>
 
 </dd></dl>
 
+</div>
+<div class="section" id="module-pygmi.bholes">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.bholes" title="Permalink to this headline">¶</a></h2>
+<p>Borehole routines.</p>
 </div>
 </div>
 
@@ -501,7 +1809,7 @@ interface. Normal as well as context menus are defined here.</p>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -563,10 +1871,10 @@ interface. Normal as well as context menus are defined here.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

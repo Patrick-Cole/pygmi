@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Potential Field Modelling: Description of Modules &#8212; PyGMI 3 documentation</title>
+    <title>Potential Field Modelling: Description of Modules &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="pfmod.ref.html" />
@@ -117,7 +116,7 @@ data is based on the work by Blakely (1996).</p>
 <div class="section" id="model-extents-parameters">
 <h3>Model Extents Parameters<a class="headerlink" href="#model-extents-parameters" title="Permalink to this headline">¶</a></h3>
 <p>This dialog sets up the extents of the model. The Current Models section displays the imported models. The current model is the model being edited. The regional model is a model used to apply a regional correction to field calculations.</p>
-<p>The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, dtm data can be obtained from the SRTM archives.</p>
+<p>The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, DTM data can be obtained from the SRTM archives.</p>
 <p>The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.</p>
 <div class="section" id="current-model">
 <h4>Current Model<a class="headerlink" href="#current-model" title="Permalink to this headline">¶</a></h4>
@@ -133,7 +132,7 @@ data is based on the work by Blakely (1996).</p>
 <li><p>Magnetic Dataset - This is the magnetic data to be modelled.</p></li>
 <li><p>Gravity Dataset - This is the gravity data to be modelled.</p></li>
 <li><p>Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data.</p></li>
-<li><p>Other - This option can be used to add an additional layer for comparison purposes - for example a geotiff of the geological map.</p></li>
+<li><p>Other - This option can be used to add an additional layer for comparison purposes - for example a GeoTIFF of the geological map.</p></li>
 </ul>
 </div>
 <div class="section" id="model-extent-properties">
@@ -238,7 +237,7 @@ data is based on the work by Blakely (1996).</p>
 <p>PyGMI sets up geophysical properties on a lithology basis, and not on a body by body basis.</p>
 <p>Lithological Definitions List:</p>
 <ul class="simple">
-<li><p>Add New Lithological Definition - allows for adding a new definition. The user will also be able to select the color of the definition.</p></li>
+<li><p>Add New Lithological Definition - allows for adding a new definition. The user will also be able to select the colour of the definition.</p></li>
 <li><p>Rename Current Definition - allows for renaming a selected definition.</p></li>
 <li><p>Remove Current Definition - allows for deleting a selected definition.</p></li>
 <li><p>Merge Definitions - allows for the merging of two definitions.</p></li>
@@ -265,7 +264,7 @@ data is based on the work by Blakely (1996).</p>
 </div>
 <div class="section" id="regional-test">
 <h3>Regional Test<a class="headerlink" href="#regional-test" title="Permalink to this headline">¶</a></h3>
-<p>In magnetic and gravity modelling, the calculated field will decay past the edge of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpedicular to the profile by a constant amount. This is not the case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.</p>
+<p>In magnetic and gravity modelling, the calculated field will decay past the edges of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpendicular to the profile by a constant amount. This is not the case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.</p>
 <img alt="_images/pfmodregtest.png" src="_images/pfmodregtest.png" />
 </div>
 </div>
@@ -320,7 +319,7 @@ data is based on the work by Blakely (1996).</p>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -382,10 +381,10 @@ data is based on the work by Blakely (1996).</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

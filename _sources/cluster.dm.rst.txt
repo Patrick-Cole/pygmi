@@ -13,10 +13,10 @@ Algorithm Options
 * Minimum Clusters and Maximum Clusters (k-means, Birch) - This refers to the generation of a range of solutions. For example, if minimum clusters is 5, and maximum clusters is 7, then 3 interpretations are produced - one with 5 classes, one with 6 classes and one with 7 classes.
 * Maximum iterations (k-means) - Maximum number of iterations to use when generating a solution.
 * Tolerance (k-means) - Refers to the relative tolerance with regards to inertia to declare convergence and stop iterating. When the relative decrease in the objective function between iterations is less than the given tolerance value, this results in the stopping of the iterations.
-* eps (DBSCAN) - The maximum distance between two samples for them to be considered as in the same neighborhood.
-* Minimum samples (DBSCAN) - The number of samples (or total weight) in a neighborhood for a point to be considered as a core point. This includes the point itself.
+* eps (DBSCAN) - The maximum distance between two samples for them to be considered as in the same neighbourhood.
+* Minimum samples (DBSCAN) - The number of samples (or total weight) in a neighbourhood for a point to be considered as a core point. This includes the point itself.
 * Threshold(Birch) - The radius of the subcluster obtained by merging a new sample and the closest subcluster should be lesser than the threshold. Otherwise a new subcluster is started. Setting this value to be very low promotes splitting and vice-versa.
-* Branching factor (Birch) - Maximum number of Charactersitic Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching_factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the 2 split nodes.
+* Branching factor (Birch) - Maximum number of Characteristic Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching_factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the 2 split nodes.
 
 Scaling
 ^^^^^^^
@@ -80,12 +80,12 @@ The classification metrics can be calculated and displayed in a dialog (Figure 3
 
 The user is also able to choose an appropriate supervised classification algorithm. These are:
 
-* K Neighbors Classification
+* K Neighbours Classification
 * Decision Tree Classification
 * Random Forests Classification
 * Support Vector Classification
 
-Under each of these, an appropriate algorithm (K neighbors), criterion (Decision Tree and Random Forests) or kernel (Support Vector) can be selected.
+Under each of these, an appropriate algorithm (K neighbours), criterion (Decision Tree and Random Forests) or kernel (Support Vector) can be selected.
 
 .. image:: _images/clustsuper.png
 

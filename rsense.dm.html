@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Remote Sensing: Description of Modules &#8212; PyGMI 3 documentation</title>
+    <title>Remote Sensing: Description of Modules &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="References" href="rsense.ref.html" />
@@ -92,11 +91,11 @@
 <p>This is a menu with submenus enabling the importing of remote sensing data</p>
 <div class="section" id="import-aster">
 <h3>Import ASTER<a class="headerlink" href="#import-aster" title="Permalink to this headline">¶</a></h3>
-<p>ASTER data can be imported here. Note that it is the data as obtained from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a>. It can either be in .hdf format or imported as a zip file containing geotiff images.</p>
+<p>ASTER data can be imported here. Note that it is the data as obtained from <a class="reference external" href="https://earthdata.nasa.gov">https://earthdata.nasa.gov</a>. It can either be in .hdf format or imported as a zip file containing GeoTIFF images.</p>
 </div>
 <div class="section" id="import-landsat-4-to-landsat-8">
 <h3>Import Landsat 4 to Landsat 8<a class="headerlink" href="#import-landsat-4-to-landsat-8" title="Permalink to this headline">¶</a></h3>
-<p>Landsat data can be imported here. Note that it is the data as obtained from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and geotiff files.</p>
+<p>Landsat data can be imported here. Note that it is the data as obtained from <a class="reference external" href="https://earthexplorer.usgs.gov">https://earthexplorer.usgs.gov</a>. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and GeoTIFF files.</p>
 </div>
 <div class="section" id="import-sentinel-2">
 <h3>Import Sentinel 2<a class="headerlink" href="#import-sentinel-2" title="Permalink to this headline">¶</a></h3>
@@ -114,22 +113,52 @@
 </ul>
 <img alt="_images/rsenseimp5p.png" src="_images/rsenseimp5p.png" />
 </div>
+<div class="section" id="import-modis-v6">
+<h3>Import MODIS v6<a class="headerlink" href="#import-modis-v6" title="Permalink to this headline">¶</a></h3>
+<p>MODIS data can be imported here.</p>
+</div>
 <div class="section" id="create-batch-list">
 <h3>Create Batch List<a class="headerlink" href="#create-batch-list" title="Permalink to this headline">¶</a></h3>
 <p>This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it does not actually import any data. It merely creates a list within PyGMI. The user must select a directory as input.</p>
 </div>
 </div>
-<div class="section" id="band-ratio-calculations">
-<h2>Band Ratio Calculations<a class="headerlink" href="#band-ratio-calculations" title="Permalink to this headline">¶</a></h2>
-<p>This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to geotiff format with the suffix <strong>_ratio.tif</strong></p>
+<div class="section" id="calculate-band-ratios">
+<h2>Calculate Band Ratios<a class="headerlink" href="#calculate-band-ratios" title="Permalink to this headline">¶</a></h2>
+<p>This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to GeoTIFF format with the suffix <strong>_ratio.tif</strong></p>
 <img alt="_images/rsenseratio.png" src="_images/rsenseratio.png" />
+</div>
+<div class="section" id="hyperspectral-imaging">
+<h2>Hyperspectral Imaging<a class="headerlink" href="#hyperspectral-imaging" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="analyse-spectra">
+<h3>Analyse Spectra<a class="headerlink" href="#analyse-spectra" title="Permalink to this headline">¶</a></h3>
+<p>This module allows for a user to select a spectrum from a dataset, and compare it with library spectra. Different features can be highlighted, and a hull can be removed from the spectrum. This tool is essentially a viewer, allowing for the user to strategize interpretation strategies.</p>
+<p>Options are:</p>
+<ul class="simple">
+<li><p>Display band – choice of which data wavelength to display.</p></li>
+<li><p>Feature – highlight a standard spectral feature.</p></li>
+<li><p>Rotate view – Allows a dataset to be rotated for display purposes.</p></li>
+<li><p>Remove hull – allows for the hull removed representation of a spectrum.</p></li>
+<li><p>Load ENVI spectral library. This can be any spectral library in ENVI spectral library format. The user then chooses the appropriate reference spectrum to compare with.</p></li>
+</ul>
+<img alt="_images/rsenseanalyse.png" src="_images/rsenseanalyse.png" />
+</div>
+<div class="section" id="process-features">
+<h3>Process Features<a class="headerlink" href="#process-features" title="Permalink to this headline">¶</a></h3>
+<p>This module takes as input hyperspectral data, and allows for a standard set of feature definitions to be calculated (Haest et al. 2012). Currently this includes mica, spectate, kaolin, chlorine, epidote and ferrous iron. Once a product is selected, the details of the various datasets which make up the calculation are shown on a table, including feature name, filter, threshold and description. The user is able to alter details such as the respective dataset threshold.</p>
+<p>Options are:</p>
+<ul class="simple">
+<li><p>Product - includes mica, spectate, kaolin, chlorine, epidote and ferrous iron.</p></li>
+<li><p>Details - including feature name, filter, threshold and description. The user is able to alter the respective dataset threshold.</p></li>
+</ul>
+<img alt="_images/rsensefproc.png" src="_images/rsensefproc.png" />
+</div>
 </div>
 <div class="section" id="change-detection">
 <h2>Change Detection<a class="headerlink" href="#change-detection" title="Permalink to this headline">¶</a></h2>
 <p>The change detection menu allows a user to create a list of scenes for comparison, and then view the scenes sequentially in a viewer.</p>
 <div class="section" id="create-scene-list">
 <h3>Create Scene List<a class="headerlink" href="#create-scene-list" title="Permalink to this headline">¶</a></h3>
-<p>This allows the user to create a list of scenes for comparison. Currently geotiff is supported. The inputs are as follows:</p>
+<p>This allows the user to create a list of scenes for comparison. Currently GeoTIFF is supported. The inputs are as follows:</p>
 <ul class="simple">
 <li><p>Load Shapefile - This is a boundary to define an area of interest within the scenes. Only scenes which contain boundary will be selected.</p></li>
 <li><p>Set Scene Directory - The directory which contains all the scenes for comparison.</p></li>
@@ -207,7 +236,7 @@
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -269,10 +298,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

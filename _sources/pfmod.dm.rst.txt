@@ -37,7 +37,7 @@ Model Extents Parameters
 ^^^^^^^^^^^^^^^^^^^^^^^^
 This dialog sets up the extents of the model. The Current Models section displays the imported models. The current model is the model being edited. The regional model is a model used to apply a regional correction to field calculations.
 
-The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, dtm data can be obtained from the SRTM archives.
+The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, DTM data can be obtained from the SRTM archives.
 
 The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.
 
@@ -53,7 +53,7 @@ This is used to define the data connected to the modelling module. The data is e
 * Magnetic Dataset - This is the magnetic data to be modelled.
 * Gravity Dataset - This is the gravity data to be modelled.
 * Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data.
-* Other - This option can be used to add an additional layer for comparison purposes - for example a geotiff of the geological map.
+* Other - This option can be used to add an additional layer for comparison purposes - for example a GeoTIFF of the geological map.
 
 Model Extent Properties
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -156,7 +156,7 @@ PyGMI sets up geophysical properties on a lithology basis, and not on a body by 
 
 Lithological Definitions List:
 
-* Add New Lithological Definition - allows for adding a new definition. The user will also be able to select the color of the definition.
+* Add New Lithological Definition - allows for adding a new definition. The user will also be able to select the colour of the definition.
 * Rename Current Definition - allows for renaming a selected definition.
 * Remove Current Definition - allows for deleting a selected definition.
 * Merge Definitions - allows for the merging of two definitions.
@@ -185,6 +185,6 @@ Each lithology can have a lithology code and lithology notes assigned to it.
 
 Regional Test
 ^^^^^^^^^^^^^
-In magnetic and gravity modelling, the calculated field will decay past the edge of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpedicular to the profile by a constant amount. This is not the case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.
+In magnetic and gravity modelling, the calculated field will decay past the edges of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpendicular to the profile by a constant amount. This is not the case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.
 
 .. image:: _images/pfmodregtest.png

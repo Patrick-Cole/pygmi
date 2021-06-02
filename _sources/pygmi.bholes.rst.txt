@@ -1,18 +1,37 @@
 pygmi.bholes package
 ====================
 
-.. automodule:: pygmi.bholes
+Submodules
+----------
+
+pygmi.bholes.coremask module
+----------------------------
+
+.. automodule:: pygmi.bholes.coremask
    :members:
    :undoc-members:
    :show-inheritance:
 
-Submodules
-----------
+pygmi.bholes.coremeta module
+----------------------------
+
+.. automodule:: pygmi.bholes.coremeta
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
 pygmi.bholes.graphs module
 --------------------------
 
 .. automodule:: pygmi.bholes.graphs
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.bholes.hypercore module
+-----------------------------
+
+.. automodule:: pygmi.bholes.hypercore
    :members:
    :undoc-members:
    :show-inheritance:
@@ -29,6 +48,14 @@ pygmi.bholes.menu module
 ------------------------
 
 .. automodule:: pygmi.bholes.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.bholes
    :members:
    :undoc-members:
    :show-inheritance:

@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.grav package &#8212; PyGMI 3 documentation</title>
+    <title>pygmi.grav package &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.mag package" href="pygmi.mag.html" />
@@ -84,9 +83,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.grav">
-<span id="pygmi-grav-package"></span><h1>pygmi.grav package<a class="headerlink" href="#module-pygmi.grav" title="Permalink to this headline">¶</a></h1>
-<p>Gravity Routines</p>
+  <div class="section" id="pygmi-grav-package">
+<h1>pygmi.grav package<a class="headerlink" href="#pygmi-grav-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -95,13 +93,13 @@
 <p>A set of Data Preparation routines.</p>
 <dl class="py class">
 <dt id="pygmi.grav.dataprep.ProcessData">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">ProcessData</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></code><code class="sig-name descname"><span class="pre">ProcessData</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Process Gravity Data.</p>
 <p>This class processes gravity data.</p>
 <dl class="py attribute">
 <dt id="pygmi.grav.dataprep.ProcessData.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -112,7 +110,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.grav.dataprep.ProcessData.indata">
-<code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.indata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -123,7 +121,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.grav.dataprep.ProcessData.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -134,7 +132,7 @@
 
 <dl class="py method">
 <dt id="pygmi.grav.dataprep.ProcessData.acceptall">
-<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.acceptall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
 <p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
@@ -149,7 +147,7 @@
 
 <dl class="py method">
 <dt id="pygmi.grav.dataprep.ProcessData.calcbase">
-<code class="sig-name descname">calcbase</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.calcbase" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">calcbase</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.calcbase" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate local base station value.</p>
 <p>Ties in the local base station to a known absolute base station.</p>
 <dl class="field-list simple">
@@ -164,7 +162,7 @@
 
 <dl class="py method">
 <dt id="pygmi.grav.dataprep.ProcessData.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.loadproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -181,7 +179,7 @@
 
 <dl class="py method">
 <dt id="pygmi.grav.dataprep.ProcessData.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -195,7 +193,7 @@
 
 <dl class="py method">
 <dt id="pygmi.grav.dataprep.ProcessData.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -209,7 +207,7 @@
 
 <dl class="py method">
 <dt id="pygmi.grav.dataprep.ProcessData.setupui">
-<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.ProcessData.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -225,11 +223,11 @@
 
 <dl class="py function">
 <dt id="pygmi.grav.dataprep.atmospheric_correction">
-<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">atmospheric_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.atmospheric_correction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></code><code class="sig-name descname"><span class="pre">atmospheric_correction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.atmospheric_correction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the atmospheric correction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to elipsoid (GPS heights).</p>
+<dd class="field-odd"><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to ellipsoid (GPS heights).</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p><strong>gATM</strong> – Atmospheric correction</p>
@@ -242,7 +240,7 @@
 
 <dl class="py function">
 <dt id="pygmi.grav.dataprep.geocentric_radius">
-<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">geocentric_radius</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.geocentric_radius" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></code><code class="sig-name descname"><span class="pre">geocentric_radius</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.geocentric_radius" title="Permalink to this definition">¶</a></dt>
 <dd><p>Geocentric radius calculation.</p>
 <p>Calculate the distance from the Earth’s center to a point on the spheroid
 surface at a specified geodetic latitude.</p>
@@ -261,13 +259,13 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py function">
 <dt id="pygmi.grav.dataprep.height_correction">
-<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">height_correction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span></em>, <em class="sig-param"><span class="n">h</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.height_correction" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></code><code class="sig-name descname"><span class="pre">height_correction</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">h</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.height_correction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate height correction.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lat</strong> (<em>numpy array</em>) – Latitude in radians.</p></li>
-<li><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to elipsoid (GPS heights).</p></li>
+<li><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to ellipsoid (GPS heights).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -281,12 +279,12 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py function">
 <dt id="pygmi.grav.dataprep.spherical_bouguer">
-<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">spherical_bouguer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h</span></em>, <em class="sig-param"><span class="n">dens</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.spherical_bouguer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate spherical bouguer.</p>
+<code class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></code><code class="sig-name descname"><span class="pre">spherical_bouguer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dens</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.spherical_bouguer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate spherical Bouguer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to elipsoid (GPS heights).</p></li>
+<li><p><strong>h</strong> (<em>numpy array</em>) – Heights relative to ellipsoid (GPS heights).</p></li>
 <li><p><strong>dens</strong> (<em>float</em>) – Density.</p></li>
 </ul>
 </dd>
@@ -300,21 +298,15 @@ surface at a specified geodetic latitude.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pygmi.grav.dataprep.test">
-<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.test" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test routine.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="pygmi.grav.dataprep.theoretical_gravity">
-<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">theoretical_gravity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.theoretical_gravity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></code><code class="sig-name descname"><span class="pre">theoretical_gravity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.theoretical_gravity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the theoretical gravity.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>lat</strong> (<em>numpy array</em>) – Latitude in radians</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><strong>gT</strong> – Array of theoretrical gravity values.</p>
+<dd class="field-even"><p><strong>gT</strong> – Array of theoretical gravity values.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>numpy array</p>
@@ -324,7 +316,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py function">
 <dt id="pygmi.grav.dataprep.time_convert">
-<code class="sig-prename descclassname">pygmi.grav.dataprep.</code><code class="sig-name descname">time_convert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.time_convert" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.grav.dataprep.</span></code><code class="sig-name descname"><span class="pre">time_convert</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.dataprep.time_convert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert hh:mm:ss to seconds.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -345,13 +337,13 @@ surface at a specified geodetic latitude.</p>
 <p>Import Data.</p>
 <dl class="py class">
 <dt id="pygmi.grav.iodefs.ImportCG5">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.grav.iodefs.</code><code class="sig-name descname">ImportCG5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.grav.iodefs.</span></code><code class="sig-name descname"><span class="pre">ImportCG5</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Import Line Data.</p>
 <p>This class imports ASCII point data.</p>
 <dl class="py attribute">
 <dt id="pygmi.grav.iodefs.ImportCG5.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>item name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -362,7 +354,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.grav.iodefs.ImportCG5.pbar">
-<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.pbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pbar</span></code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.pbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -373,7 +365,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.grav.iodefs.ImportCG5.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -384,7 +376,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.grav.iodefs.ImportCG5.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -395,7 +387,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.grav.iodefs.ImportCG5.ifile">
-<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ifile</span></code><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -406,7 +398,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py method">
 <dt id="pygmi.grav.iodefs.ImportCG5.get_cg5">
-<code class="sig-name descname">get_cg5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.get_cg5" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_cg5</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.get_cg5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get CG-5 filename.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -423,7 +415,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py method">
 <dt id="pygmi.grav.iodefs.ImportCG5.get_gps">
-<code class="sig-name descname">get_gps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.get_gps" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_gps</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.get_gps" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get GPS filename.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -440,8 +432,8 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py method">
 <dt id="pygmi.grav.iodefs.ImportCG5.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -457,7 +449,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py method">
 <dt id="pygmi.grav.iodefs.ImportCG5.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -471,7 +463,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py method">
 <dt id="pygmi.grav.iodefs.ImportCG5.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -485,7 +477,7 @@ surface at a specified geodetic latitude.</p>
 
 <dl class="py method">
 <dt id="pygmi.grav.iodefs.ImportCG5.setupui">
-<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.iodefs.ImportCG5.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -505,14 +497,14 @@ surface at a specified geodetic latitude.</p>
 <p>Gravity Menu Routines.</p>
 <dl class="py class">
 <dt id="pygmi.grav.menu.MenuWidget">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.grav.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.grav.menu.</span></code><code class="sig-name descname"><span class="pre">MenuWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <p>This widget class creates menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="py attribute">
 <dt id="pygmi.grav.menu.MenuWidget.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -523,18 +515,22 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.grav.menu.MenuWidget.import_data">
-<code class="sig-name descname">import_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">import_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.grav.menu.MenuWidget.process_data">
-<code class="sig-name descname">process_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.process_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">process_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.grav.menu.MenuWidget.process_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process data.</p>
 </dd></dl>
 
 </dd></dl>
 
+</div>
+<div class="section" id="module-pygmi.grav">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.grav" title="Permalink to this headline">¶</a></h2>
+<p>Gravity Routines</p>
 </div>
 </div>
 
@@ -587,7 +583,7 @@ interface. Normal as well as context menus are defined here.</p>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -649,10 +645,10 @@ interface. Normal as well as context menus are defined here.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

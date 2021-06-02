@@ -1,9 +1,9 @@
-Exploration Sesimics
+Exploration Seismics
 ====================
 
 Introduction
 ------------
-Currently this menu is just used as a means to display SEGY data, for use in interpretation. 
+Currently this menu is just used as a means to display SEGY data, for use in interpretation.
 
 Subpackages
 -----------

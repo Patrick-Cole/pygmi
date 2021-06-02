@@ -1,11 +1,6 @@
 pygmi package
 =============
 
-.. automodule:: pygmi
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Subpackages
 -----------
 
@@ -49,6 +44,14 @@ pygmi.misc module
 -----------------
 
 .. automodule:: pygmi.misc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi
    :members:
    :undoc-members:
    :show-inheritance:

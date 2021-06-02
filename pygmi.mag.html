@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.mag package &#8212; PyGMI 3 documentation</title>
+    <title>pygmi.mag package &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.mt package" href="pygmi.mt.html" />
@@ -84,9 +83,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.mag">
-<span id="pygmi-mag-package"></span><h1>pygmi.mag package<a class="headerlink" href="#module-pygmi.mag" title="Permalink to this headline">¶</a></h1>
-<p>Magnetic Routines</p>
+  <div class="section" id="pygmi-mag-package">
+<h1>pygmi.mag package<a class="headerlink" href="#pygmi-mag-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -95,12 +93,12 @@
 <p>A set of Magnetic Data routines.</p>
 <dl class="py class">
 <dt id="pygmi.mag.dataprep.RTP">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">RTP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></code><code class="sig-name descname"><span class="pre">RTP</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Perform Reduction to the Pole on Magnetic data.</p>
 <dl class="py attribute">
 <dt id="pygmi.mag.dataprep.RTP.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mag.dataprep.RTP.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mag.dataprep.RTP.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -111,7 +109,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.mag.dataprep.RTP.indata">
-<code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.mag.dataprep.RTP.indata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.mag.dataprep.RTP.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -122,7 +120,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.mag.dataprep.RTP.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mag.dataprep.RTP.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mag.dataprep.RTP.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -133,7 +131,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.RTP.acceptall">
-<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.acceptall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
 <p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
@@ -148,7 +146,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.RTP.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.loadproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -165,7 +163,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.RTP.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -179,7 +177,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.RTP.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -193,7 +191,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.RTP.setupui">
-<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.RTP.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -209,12 +207,12 @@
 
 <dl class="py class">
 <dt id="pygmi.mag.dataprep.Tilt1">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">Tilt1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></code><code class="sig-name descname"><span class="pre">Tilt1</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class used to gather information via a GUI, for function tilt1.</p>
 <dl class="py attribute">
 <dt id="pygmi.mag.dataprep.Tilt1.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.parent" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>parent</p>
@@ -224,7 +222,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.mag.dataprep.Tilt1.indata">
-<code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.indata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>PyGMI input data in a dictionary</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -235,13 +233,13 @@
 
 <dl class="py attribute">
 <dt id="pygmi.mag.dataprep.Tilt1.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>PyGMI input data in a dictionary</p>
 </dd></dl>
 
 <dl class="py attribute">
 <dt id="pygmi.mag.dataprep.Tilt1.azi">
-<code class="sig-name descname">azi</code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.azi" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">azi</span></code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.azi" title="Permalink to this definition">¶</a></dt>
 <dd><p>directional filter azimuth in degrees from East</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -252,7 +250,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.mag.dataprep.Tilt1.smooth">
-<code class="sig-name descname">smooth</code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.smooth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">smooth</span></code><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.smooth" title="Permalink to this definition">¶</a></dt>
 <dd><p>size of smoothing matrix to use - must be odd input 0 for no smoothing</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -263,7 +261,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.Tilt1.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.loadproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -280,7 +278,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.Tilt1.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -294,7 +292,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.Tilt1.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -308,7 +306,7 @@
 
 <dl class="py method">
 <dt id="pygmi.mag.dataprep.Tilt1.setupui">
-<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.Tilt1.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -324,7 +322,7 @@
 
 <dl class="py function">
 <dt id="pygmi.mag.dataprep.fft_getkxy">
-<code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">fft_getkxy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fftmod</span></em>, <em class="sig-param"><span class="n">xdim</span></em>, <em class="sig-param"><span class="n">ydim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.fft_getkxy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></code><code class="sig-name descname"><span class="pre">fft_getkxy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fftmod</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xdim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.fft_getkxy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get KX and KY.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -344,7 +342,7 @@
 
 <dl class="py function">
 <dt id="pygmi.mag.dataprep.fftprep">
-<code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">fftprep</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.fftprep" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></code><code class="sig-name descname"><span class="pre">fftprep</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.fftprep" title="Permalink to this definition">¶</a></dt>
 <dd><p>FFT preparation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -364,9 +362,12 @@
 
 <dl class="py function">
 <dt id="pygmi.mag.dataprep.nextpow2">
-<code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">nextpow2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.nextpow2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Next power of 2. Based on work by Gordon Cooper (School of Geosciences,
-University of the Witwatersrand, Johannesburg, South Africa).</p>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></code><code class="sig-name descname"><span class="pre">nextpow2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.nextpow2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Next power of 2.</p>
+<dl class="simple">
+<dt>Based on work by Gordon Cooper (School of Geosciences, University of the</dt><dd><p>Witwatersrand, Johannesburg, South Africa).</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>n</strong> (<em>float</em><em> or </em><em>numpy array</em>) – Current value.</p>
@@ -382,8 +383,8 @@ University of the Witwatersrand, Johannesburg, South Africa).</p>
 
 <dl class="py function">
 <dt id="pygmi.mag.dataprep.rtp">
-<code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">rtp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">I_deg</span></em>, <em class="sig-param"><span class="n">D_deg</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.rtp" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reduction to th epole.</p>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></code><code class="sig-name descname"><span class="pre">rtp</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I_deg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">D_deg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.rtp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduction to the pole.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -402,16 +403,13 @@ University of the Witwatersrand, Johannesburg, South Africa).</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pygmi.mag.dataprep.testfn">
-<code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">testfn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.testfn" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main RTP testing routine.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="pygmi.mag.dataprep.tilt1">
-<code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">tilt1</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">azi</span></em>, <em class="sig-param"><span class="n">s</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.tilt1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tilt angle calculations. Based on work by Gordon Cooper (School of
-Geosciences, University of the Witwatersrand, Johannesburg, South Africa)</p>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></code><code class="sig-name descname"><span class="pre">tilt1</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.tilt1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tilt angle calculations.</p>
+<dl class="simple">
+<dt>Based on work by Gordon Cooper (School of Geosciences, University of the</dt><dd><p>Witwatersrand, Johannesburg, South Africa)</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -435,9 +433,12 @@ Geosciences, University of the Witwatersrand, Johannesburg, South Africa)</p>
 
 <dl class="py function">
 <dt id="pygmi.mag.dataprep.vertical">
-<code class="sig-prename descclassname">pygmi.mag.dataprep.</code><code class="sig-name descname">vertical</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">npts</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xint</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.vertical" title="Permalink to this definition">¶</a></dt>
-<dd><p>Vertical derivative. Based on work by Gordon Cooper (School of Geosciences,
-University of the Witwatersrand, Johannesburg, South Africa).</p>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mag.dataprep.</span></code><code class="sig-name descname"><span class="pre">vertical</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">npts</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xint</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.dataprep.vertical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Vertical derivative.</p>
+<dl class="simple">
+<dt>Based on work by Gordon Cooper (School of Geosciences, University of the</dt><dd><p>Witwatersrand, Johannesburg, South Africa).</p>
+</dd>
+</dl>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -458,6 +459,7 @@ University of the Witwatersrand, Johannesburg, South Africa).</p>
 </div>
 <div class="section" id="module-pygmi.mag.igrf">
 <span id="pygmi-mag-igrf-module"></span><h2>pygmi.mag.igrf module<a class="headerlink" href="#module-pygmi.mag.igrf" title="Permalink to this headline">¶</a></h2>
+<p>IGRF calculations.</p>
 <p>This code is based on the Geomag software, with information given below. It was
 translated into Python from the Geomag code.</p>
 <div class="line-block">
@@ -495,7 +497,7 @@ translated into Python from the Geomag code.</p>
 </div>
 <dl class="py class">
 <dt id="pygmi.mag.igrf.IGRF">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mag.igrf.</code><code class="sig-name descname">IGRF</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mag.igrf.</span></code><code class="sig-name descname"><span class="pre">IGRF</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>IGRF field calculation.</p>
 <p>This produces two datasets. The first is an IGRF dataset for the area of
@@ -506,7 +508,7 @@ to degrees, where the IGRF correction will take place. This is done within
 this class.</p>
 <dl class="py attribute">
 <dt id="pygmi.mag.igrf.IGRF.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mag.igrf.IGRF.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mag.igrf.IGRF.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -517,7 +519,7 @@ this class.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mag.igrf.IGRF.indata">
-<code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.mag.igrf.IGRF.indata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.mag.igrf.IGRF.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -528,7 +530,7 @@ this class.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mag.igrf.IGRF.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mag.igrf.IGRF.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mag.igrf.IGRF.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -571,7 +573,7 @@ Coefficients of rate of change model.</p></li>
 </dl>
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.acceptall">
-<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.acceptall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -585,8 +587,8 @@ Coefficients of rate of change model.</p></li>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.dihf">
-<code class="sig-name descname">dihf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">gh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.dihf" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the geomagnetic d, i, h, and f from x, y, and z.</p>
+<code class="sig-name descname"><span class="pre">dihf</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.dihf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the geomagnetic d, i, h, and f from x, y, and z.</p>
 <p>This updates self.d, self.i, self.h and self.f (declination,
 inclination, horizontal intensity and total intensity).</p>
 <div class="line-block">
@@ -613,11 +615,11 @@ inclination, horizontal intensity and total intensity).</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.extrapsh">
-<code class="sig-name descname">extrapsh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date</span></em>, <em class="sig-param"><span class="n">dte1</span></em>, <em class="sig-param"><span class="n">nmax1</span></em>, <em class="sig-param"><span class="n">nmax2</span></em>, <em class="sig-param"><span class="n">gh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.extrapsh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extrapolates linearly a spherical harmonic model with a
-rate-of-change model.</p>
-<p>Updates self.gh (Schmidt quasi-normal internal spherical harmonic
-coefficients).</p>
+<code class="sig-name descname"><span class="pre">extrapsh</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dte1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmax1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmax2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.extrapsh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extrapolate a spherical harmonic model.</p>
+<p>Extrapolates linearly a spherical harmonic model with a rate-of-change
+model. Updates self.gh (Schmidt quasi-normal internal spherical
+harmonic coefficients).</p>
 <div class="line-block">
 <div class="line">FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,</div>
 <div class="line">CO. 80225</div>
@@ -645,8 +647,9 @@ base model and rate-of-change model</p></li>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.getshc">
-<code class="sig-name descname">getshc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">iflag</span></em>, <em class="sig-param"><span class="n">strec</span></em>, <em class="sig-param"><span class="n">nmax_of_gh</span></em>, <em class="sig-param"><span class="n">gh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.getshc" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads spherical harmonic coefficients from the specified model into an
+<code class="sig-name descname"><span class="pre">getshc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iflag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strec</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmax_of_gh</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.getshc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read spherical harmonic coefficients from the specified model.</p>
+<p>Reads spherical harmonic coefficients from the specified model into an
 array (Schmidt quasi-normal internal spherical harmonic coefficients).</p>
 <div class="line-block">
 <div class="line">FORTRAN: Bill Flanagan, NOAA CORPS, DESDIS, NGDC, 325 Broadway,</div>
@@ -675,8 +678,9 @@ statements</p></li>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.interpsh">
-<code class="sig-name descname">interpsh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">date</span></em>, <em class="sig-param"><span class="n">dte1</span></em>, <em class="sig-param"><span class="n">nmax1</span></em>, <em class="sig-param"><span class="n">dte2</span></em>, <em class="sig-param"><span class="n">nmax2</span></em>, <em class="sig-param"><span class="n">gh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.interpsh" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interpolates linearly, in time, between two spherical harmonic
+<code class="sig-name descname"><span class="pre">interpsh</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">date</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dte1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmax1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dte2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmax2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.interpsh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporal Interpolation between two spherical harmonic models.</p>
+<p>Interpolates linearly, in time, between two spherical harmonic
 models.</p>
 <p>Updates self.gh (Schmidt quasi-normal internal spherical harmonic
 coefficients).</p>
@@ -708,8 +712,8 @@ earlier model and internal model</p></li>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -725,7 +729,7 @@ earlier model and internal model</p></li>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -739,9 +743,9 @@ earlier model and internal model</p></li>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.settings" title="Permalink to this definition">¶</a></dt>
-<dd><p>Setting Dialog.</p>
-<p>This is the main entrypoint into this routine. It also
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.settings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Entrypoint into class.</p>
+<p>This is the main entry point into this routine. It also
 contains the main IGRF code.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -758,7 +762,7 @@ contains the main IGRF code.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.setupui">
-<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -772,8 +776,8 @@ contains the main IGRF code.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.igrf.IGRF.shval3">
-<code class="sig-name descname">shval3</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">igdgc</span></em>, <em class="sig-param"><span class="n">flat</span></em>, <em class="sig-param"><span class="n">flon</span></em>, <em class="sig-param"><span class="n">elev</span></em>, <em class="sig-param"><span class="n">nmax</span></em>, <em class="sig-param"><span class="n">gh</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.shval3" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates field components from spherical harmonic (sh) models.</p>
+<code class="sig-name descname"><span class="pre">shval3</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">igdgc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flat</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flon</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.igrf.IGRF.shval3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate field components from spherical harmonic (sh) models.</p>
 <p>This routine updates self.x, self.y, self.z (Northward, Eastward and
 vertically downward components respectively NED)</p>
 <p>Based on subroutine ‘igrf’ by D. R. Barraclough and S. R. C. Malin,
@@ -814,14 +818,14 @@ earlier model and internal model</p></li>
 <p>Magnetic Menu Routines.</p>
 <dl class="py class">
 <dt id="pygmi.mag.menu.MenuWidget">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mag.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mag.menu.</span></code><code class="sig-name descname"><span class="pre">MenuWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <p>This widget class creates the raster menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="py attribute">
 <dt id="pygmi.mag.menu.MenuWidget.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -832,25 +836,25 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.menu.MenuWidget.depth_susc">
-<code class="sig-name descname">depth_susc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.depth_susc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">depth_susc</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.depth_susc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Depth and Susceptibility calculations.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mag.menu.MenuWidget.igrf">
-<code class="sig-name descname">igrf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.igrf" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">igrf</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.igrf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute IGRF.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mag.menu.MenuWidget.rtp">
-<code class="sig-name descname">rtp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.rtp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">rtp</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.rtp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute RTP.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mag.menu.MenuWidget.tilt">
-<code class="sig-name descname">tilt</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.tilt" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tilt</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.menu.MenuWidget.tilt" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute tilt angle.</p>
 </dd></dl>
 
@@ -865,12 +869,12 @@ interface. Normal as well as context menus are defined here.</p>
 <p>Salem et al., 2007, Leading Edge, Dec,p1502-5</p>
 <dl class="py class">
 <dt id="pygmi.mag.tiltdepth.TiltDepth">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mag.tiltdepth.</code><code class="sig-name descname">TiltDepth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mag.tiltdepth.</span></code><code class="sig-name descname"><span class="pre">TiltDepth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Primary class for the Tilt Depth.</p>
 <dl class="py attribute">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -881,7 +885,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.indata">
-<code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.indata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -892,7 +896,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -903,7 +907,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.self.mmc">
-<code class="sig-prename descclassname">self.</code><code class="sig-name descname">mmc</code><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.self.mmc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">self.</span></code><code class="sig-name descname"><span class="pre">mmc</span></code><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.self.mmc" title="Permalink to this definition">¶</a></dt>
 <dd><p>main canvas containing the image</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -914,8 +918,8 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.change_band1">
-<code class="sig-name descname">change_band1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.change_band1" title="Permalink to this definition">¶</a></dt>
-<dd><p>Action which occurs when apply button is pressed.</p>
+<code class="sig-name descname"><span class="pre">change_band1</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.change_band1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Routine which occurs when apply button is pressed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
@@ -928,7 +932,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.change_cbar">
-<code class="sig-name descname">change_cbar</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.change_cbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_cbar</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.change_cbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the color map for the color bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -942,7 +946,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.loadproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -959,7 +963,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.save_depths">
-<code class="sig-name descname">save_depths</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.save_depths" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">save_depths</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.save_depths" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save depths.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -973,7 +977,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -987,7 +991,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point.</p>
 <p>This is called when the used double clicks the routine from the
 main PyGMI interface.</p>
@@ -1006,7 +1010,7 @@ main PyGMI interface.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.setupui">
-<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1020,7 +1024,7 @@ main PyGMI interface.</p>
 
 <dl class="py method">
 <dt id="pygmi.mag.tiltdepth.TiltDepth.tiltdepth">
-<code class="sig-name descname">tiltdepth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.tiltdepth" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tiltdepth</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.TiltDepth.tiltdepth" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate tilt depth.</p>
 <p>Output is stored in self.outdata.</p>
 <dl class="field-list simple">
@@ -1040,7 +1044,7 @@ main PyGMI interface.</p>
 
 <dl class="py function">
 <dt id="pygmi.mag.tiltdepth.distpc">
-<code class="sig-prename descclassname">pygmi.mag.tiltdepth.</code><code class="sig-name descname">distpc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dx</span></em>, <em class="sig-param"><span class="n">dy</span></em>, <em class="sig-param"><span class="n">dx0</span></em>, <em class="sig-param"><span class="n">dy0</span></em>, <em class="sig-param"><span class="n">dcnt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.distpc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mag.tiltdepth.</span></code><code class="sig-name descname"><span class="pre">distpc</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dx0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcnt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.distpc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find closest distances.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1063,7 +1067,7 @@ main PyGMI interface.</p>
 
 <dl class="py function">
 <dt id="pygmi.mag.tiltdepth.vgrad">
-<code class="sig-prename descclassname">pygmi.mag.tiltdepth.</code><code class="sig-name descname">vgrad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cnt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.vgrad" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mag.tiltdepth.</span></code><code class="sig-name descname"><span class="pre">vgrad</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cnt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mag.tiltdepth.vgrad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get contour gradients at vertices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1073,7 +1077,7 @@ main PyGMI interface.</p>
 <dd class="field-even"><p><ul class="simple">
 <li><p><strong>gx</strong> (<em>numpy array</em>) – X gradients.</p></li>
 <li><p><strong>gy</strong> (<em>numpy array</em>) – Y gradients.</p></li>
-<li><p><strong>cgrad</strong> (<em>numpy array</em>) – Countour gradient.</p></li>
+<li><p><strong>cgrad</strong> (<em>numpy array</em>) – Contour gradient.</p></li>
 <li><p><strong>cntid</strong> (<em>numpy array</em>) – Contour index.</p></li>
 </ul>
 </p>
@@ -1081,6 +1085,10 @@ main PyGMI interface.</p>
 </dl>
 </dd></dl>
 
+</div>
+<div class="section" id="module-pygmi.mag">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.mag" title="Permalink to this headline">¶</a></h2>
+<p>Magnetic Routines</p>
 </div>
 </div>
 
@@ -1133,7 +1141,7 @@ main PyGMI interface.</p>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -1195,10 +1203,10 @@ main PyGMI interface.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

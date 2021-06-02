@@ -14,8 +14,8 @@ A series of graph routines were developed to assess the SEISAN catalogue data. T
 * Events by Year - Histogram
 * Number of stations - Histogram
 * RMS of time residuals - Histogram
-* ML vs Time - Scatterplot
-* ML vs Year - Scatterplot
+* ML vs Time - Scatter plot
+* ML vs Year - Scatter plot
 * b-value - Cumulative histogram and line
 * Error Ellipse
 * Error Ellipse (No depth errors)

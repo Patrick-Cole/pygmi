@@ -3,9 +3,9 @@ File Menu
 
 Introduction
 ------------
-The file menu contains options to open and save projects. A project contains the layout of linked modules, and where possible, it contains all relevant settings. 
+The file menu contains options to open and save projects. A project contains the layout of linked modules, and where possible, it contains all relevant settings.
 
-When loading a project in, note that only import data sections are run automatically. You will either need to run modules maunally, or click the play symbol on the toolbar as seen below:
+When loading a project in, note that only import data sections are run automatically. You will either need to run modules manually, or click the play symbol on the toolbar as seen below:
 
 .. image:: _images/play.png
 

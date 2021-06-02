@@ -1,11 +1,6 @@
 pygmi.raster package
 ====================
 
-.. automodule:: pygmi.raster
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -81,6 +76,14 @@ pygmi.raster.menu module
    :undoc-members:
    :show-inheritance:
 
+pygmi.raster.modest\_image module
+---------------------------------
+
+.. automodule:: pygmi.raster.modest_image
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pygmi.raster.normalisation module
 ---------------------------------
 
@@ -101,6 +104,14 @@ pygmi.raster.smooth module
 --------------------------
 
 .. automodule:: pygmi.raster.smooth
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.raster
    :members:
    :undoc-members:
    :show-inheritance:

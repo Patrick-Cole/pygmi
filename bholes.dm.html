@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Boreholes: Description of Modules &#8212; PyGMI 3 documentation</title>
+    <title>Boreholes: Description of Modules &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Classification" href="cluster.html" />
@@ -86,6 +85,7 @@
             
   <div class="section" id="boreholes-description-of-modules">
 <h1>Boreholes: Description of Modules<a class="headerlink" href="#boreholes-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<p>This section is a work in progress and will most likely change in the future.</p>
 <div class="section" id="import-borehole-data">
 <h2>Import Borehole Data<a class="headerlink" href="#import-borehole-data" title="Permalink to this headline">¶</a></h2>
 <p>Borehole data in the Council for Geoscience format can be imported here. It consists of two excel files:</p>
@@ -93,6 +93,66 @@
 <li><p>Header file with columns: Seqno, Farmname, Farmno, Regdist, Companyno, Boreholeid, Depth from, Depth to, Drill date, Inclination, Azimuth, Map, Latitude, Longitude, Elevation, Lox, Loy, Locunc, Declat, Declon, Commodity, Commodity2, Commodity3, Commodity4, Company</p></li>
 <li><p>Lithology file with columns: Seqno, Farmname, Farmno, Regdist, Companyno, Boreholeid, Map, Depth from, Depth to, Lithology status, Lithology, Stratigraphy, Rank, Lithology description</p></li>
 </ul>
+</div>
+<div class="section" id="raw-core-imagery-corrections">
+<h2>Raw Core Imagery Corrections<a class="headerlink" href="#raw-core-imagery-corrections" title="Permalink to this headline">¶</a></h2>
+<p>The interface for raw imagery corrections combines the DC corrections, smile correction as well as spike removal and smoothing. Options are as follows:</p>
+<ul class="simple">
+<li><p>Input raw directory – This is the directory where raw scanned core data resides, in ENVI format.</p></li>
+<li><p>Output processed directory – location for processed files to be stored.</p></li>
+<li><p>DC Correction – applies white balance correction. This requires a white reference and dark reference file to be in the same directory as the scanned core data.</p></li>
+<li><p>Geometric smile correction – applicable to FENIX data.</p></li>
+<li><p>Spike removal – spikes are located and removed using a Hampel filter.</p></li>
+<li><p>Smoothing – smoothing is done using a Savitzky-Golay filter</p></li>
+</ul>
+<img alt="_images/bholercicor.png" src="_images/bholercicor.png" />
+</div>
+<div class="section" id="tray-clipping-and-band-selection">
+<h2>Tray Clipping and Band Selection<a class="headerlink" href="#tray-clipping-and-band-selection" title="Permalink to this headline">¶</a></h2>
+<p>The box mask correction is used to cut out the space of the image around the box, as well as mask out data which is not related to the core.  The user clicks on the black boundary and drags it into the desired location. Options on the interface include:</p>
+<ul class="simple">
+<li><p>Zoom and pan tools for the plot.</p></li>
+<li><p>Display Band – which data band to display on the plot.</p></li>
+<li><p>Start Band for the exported data.</p></li>
+<li><p>End Band for the exported data.</p></li>
+<li><p>Default FENIX settings. Sets up a default box clip and default band range.</p></li>
+<li><p>Default OWL settings. Sets up a default box clip and default band range.</p></li>
+</ul>
+<p>The data is exported outside of the tool using the standard raster data export.</p>
+<img alt="_images/bholetrayclip.png" src="_images/bholetrayclip.png" />
+</div>
+<div class="section" id="core-masking">
+<h2>Core Masking<a class="headerlink" href="#core-masking" title="Permalink to this headline">¶</a></h2>
+<p>This tool makes use of supervised classification, applying the SVC technique. The user selects a class (either ‘Core’ or ‘Tray’) and draws it over sections of the core (like using a paint program). When a few samples are drawn in, the ‘Classify Data’ option is pressed and a possible mask solution is displayed.</p>
+<p>If this solution is not accurate, the user can revert to an unclassified image, and start again, or use the paint tool to correct the mask. Alternatively the mask can be saved to disk.</p>
+<p>Options are:</p>
+<ul class="simple">
+<li><p>Band selection (below plot) - this is purely for display purposes.</p></li>
+<li><p>Slider – allows for comparison between a calculated mask and the original core.</p></li>
+<li><p>Class selection list – can be ‘Erase’, ‘Core’ or ‘Tray’ to either choose a class or erase a previous class.</p></li>
+<li><p>Line thickness – thickness of draw line</p></li>
+<li><p>SVC kernel – can be RBF (radial basis function), linear of poly (polynomial).</p></li>
+<li><p>Classify Data – option to start classification. This text changes to ‘Revert to classes’ after classification</p></li>
+<li><p>Save Mask – option to save mask to disk. The filename is the same as the input, with a ‘mask’ prefix to the filename.</p></li>
+</ul>
+<img alt="_images/bholemask.png" src="_images/bholemask.png" />
+</div>
+<div class="section" id="core-metadata-and-depth-assignment">
+<h2>Core Metadata and Depth Assignment<a class="headerlink" href="#core-metadata-and-depth-assignment" title="Permalink to this headline">¶</a></h2>
+<p>All core data has metadata associated with it. The most critical (for PyGMI purposes) is information relating the core tray, and associated core depths</p>
+<p>By default, all trays are assumed to start at 0 depth, and have a maximum depth calculated based on the number of core rows per tray, and the tray length. By adding depth markers, these depths are then recalculated.</p>
+<p>The options are as follows:</p>
+<ul class="simple">
+<li><p>Display Band: wavelength to display.</p></li>
+<li><p>Number of core per tray – refers to rows of core</p></li>
+<li><p>Tray Length – in mm.</p></li>
+<li><p>Current Depth Marker – depth markers are added by clicking on the plot.</p></li>
+<li><p>Marker Depth – this is a manual depth entry option. All depths, except for the final depth, can be altered.</p></li>
+<li><p>Delete Current Depth Mark – this applied to all depth marks, excluding the ‘Start’ and ‘End’ mark</p></li>
+<li><p>Information</p></li>
+<li><p>Save Depth Marks – marks are saved to a .json file. This is a universal text format for storing data. The filename is the same as the core data file, but has a .json extension.</p></li>
+</ul>
+<img alt="_images/bholedepth.png" src="_images/bholedepth.png" />
 </div>
 </div>
 
@@ -145,7 +205,7 @@
 <li class="toctree-l2 current"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -207,10 +267,10 @@
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

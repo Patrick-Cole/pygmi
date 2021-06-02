@@ -18,9 +18,9 @@ Options are as follows:
 * Tx Off Time – time when the waveform is completely off.
 * Source Type – can be Circular Loop or  Mag Dipole.
 * Tx Orientation – transmitter orientation, can be x, y or z.
-* Tx Area  – transmitter area (only for circular loop souce)
-* Number of turns in loop (only for circular loop souce)
-* Current in loop (only for circular loop souce)
+* Tx Area  – transmitter area (only for circular loop source)
+* Number of turns in loop (only for circular loop source)
+* Current in loop (only for circular loop source)
 * Permeability of the background
 * Rx Orientation – receiver orientation, can be x, y or z.
 * Mesh cell size

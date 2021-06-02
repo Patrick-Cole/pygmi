@@ -16,9 +16,9 @@ will see that the item appears as a flow chart element on the main interface.
 
 .. image:: _images/main.png
 
-* By clicking on the line connector icon on the menubar, it is possible to
+* By clicking on the line connector icon on the menu bar, it is possible to
   connect two tasks on the flow chart.
-* Clicking on the Play icon on the menubar runs all tasks in sequence.
+* Clicking on the Play icon on the menu bar runs all tasks in sequence.
 * **Double clicking** on a task activates the task.
 * **Right clicking** on the task allows for the display of any data and results
   associated with that task.
@@ -38,7 +38,7 @@ A window should now pop up displaying the raster data which was imported. Close
 this window.
 
 1. In the Raster menu click on 'Smoothing'
-2. Click on the Line Pointer tool on the menubar
+2. Click on the Line Pointer tool on the menu bar
 3. Draw a line between the import symbol and the smoothing symbol. A line with
    an arrowhead should appear
 4. Double-click on the smoothing symbol.

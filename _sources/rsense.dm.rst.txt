@@ -9,11 +9,11 @@ This is a menu with submenus enabling the importing of remote sensing data
 
 Import ASTER
 ^^^^^^^^^^^^
-ASTER data can be imported here. Note that it is the data as obtained from https://earthdata.nasa.gov. It can either be in .hdf format or imported as a zip file containing geotiff images.
+ASTER data can be imported here. Note that it is the data as obtained from https://earthdata.nasa.gov. It can either be in .hdf format or imported as a zip file containing GeoTIFF images.
 
 Import Landsat 4 to Landsat 8
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Landsat data can be imported here. Note that it is the data as obtained from https://earthexplorer.usgs.gov. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and geotiff files.
+Landsat data can be imported here. Note that it is the data as obtained from https://earthexplorer.usgs.gov. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and GeoTIFF files.
 
 Import Sentinel 2
 ^^^^^^^^^^^^^^^^^
@@ -31,15 +31,47 @@ Sentinel 5-P data is imported here, but unlike other imports, this converts data
 
 .. image:: _images/rsenseimp5p.png
 
+Import MODIS v6
+^^^^^^^^^^^^^^^
+MODIS data can be imported here.
+
 Create Batch List
 ^^^^^^^^^^^^^^^^^
 This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it does not actually import any data. It merely creates a list within PyGMI. The user must select a directory as input.
 
-Band Ratio Calculations
------------------------
-This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to geotiff format with the suffix **_ratio.tif**
+Calculate Band Ratios
+---------------------
+This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to GeoTIFF format with the suffix **_ratio.tif**
 
 .. image:: _images/rsenseratio.png
+
+Hyperspectral Imaging
+---------------------
+
+Analyse Spectra
+^^^^^^^^^^^^^^^
+This module allows for a user to select a spectrum from a dataset, and compare it with library spectra. Different features can be highlighted, and a hull can be removed from the spectrum. This tool is essentially a viewer, allowing for the user to strategize interpretation strategies.
+
+Options are:
+
+* Display band – choice of which data wavelength to display.
+* Feature – highlight a standard spectral feature.
+* Rotate view – Allows a dataset to be rotated for display purposes.
+* Remove hull – allows for the hull removed representation of a spectrum.
+* Load ENVI spectral library. This can be any spectral library in ENVI spectral library format. The user then chooses the appropriate reference spectrum to compare with.
+
+.. image:: _images/rsenseanalyse.png
+
+Process Features
+^^^^^^^^^^^^^^^^
+This module takes as input hyperspectral data, and allows for a standard set of feature definitions to be calculated (Haest et al. 2012). Currently this includes mica, spectate, kaolin, chlorine, epidote and ferrous iron. Once a product is selected, the details of the various datasets which make up the calculation are shown on a table, including feature name, filter, threshold and description. The user is able to alter details such as the respective dataset threshold.
+
+Options are:
+
+* Product - includes mica, spectate, kaolin, chlorine, epidote and ferrous iron.
+* Details - including feature name, filter, threshold and description. The user is able to alter the respective dataset threshold.
+
+.. image:: _images/rsensefproc.png
 
 Change Detection
 ----------------
@@ -47,7 +79,7 @@ The change detection menu allows a user to create a list of scenes for compariso
 
 Create Scene List
 ^^^^^^^^^^^^^^^^^
-This allows the user to create a list of scenes for comparison. Currently geotiff is supported. The inputs are as follows:
+This allows the user to create a list of scenes for comparison. Currently GeoTIFF is supported. The inputs are as follows:
 
 * Load Shapefile - This is a boundary to define an area of interest within the scenes. Only scenes which contain boundary will be selected.
 * Set Scene Directory - The directory which contains all the scenes for comparison.

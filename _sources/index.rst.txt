@@ -7,7 +7,11 @@ PyGMI
 =====
 Welcome to the PyGMI website! It contains more information, including API documentation for the project.
 
-You can get the latest release of PyGMI `here <https://github.com/Patrick-Cole/pygmi/releases>`_.
+August 5, 2020: `PyGMI 3.2.1.1 <https://github.com/Patrick-Cole/pygmi/releases>`_ is now released.
+
+This is the next release of PyGMI. It contains various bug fixes, and some additional functions, including remote sensing capabilities, continuation, and reorganisation of magnetic function into a magnetic menu. Remote sensing imports now occur at the remote sensing menu.
+
+PyGMI is being developed using python 3.8 and Qt5.
 
 If there are requests or concerns, please contact me.
 
@@ -23,7 +27,7 @@ It includes:
 * Magnetic and Gravity 3D forward modelling.
 * Cluster Analysis, including use of scikit-learn libraries.
 * Routines for cutting, reprojecting and doing simple modifications to data.
-* Convenient display of data using pseudo-color, ternary and sunshaded representation.
+* Convenient display of data using pseudo-colour, ternary and sunshaded representation.
 * MT processing and 1D inversion using MTpy.
 * Gravity processing.
 * Seismological functions for SEISAN data.

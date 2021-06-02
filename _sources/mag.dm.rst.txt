@@ -3,7 +3,7 @@ Magnetics: Description of Modules
 
 Tilt Angle Calculation
 ----------------------
-This calculates the tilt angle of the data (Cooper and Cowan 2006). It allows for smoothing as well. It outputs the Standard tilt angle, Hyperbolic tilt angle, 2nd order tilt angle, Tilt Based Directional Derivative and the Total Derivative.
+This calculates the tilt angle of the data (Cooper and Cowan 2006). It allows for smoothing as well. It outputs the Standard tilt angle, Hyperbolic tilt angle, second order tilt angle, Tilt Based Directional Derivative and the Total Derivative.
 
 Options:
 
@@ -32,7 +32,7 @@ Should you wish choose degrees, the entry will be Datum / Geodetic Geographic, w
 
 IGRF Options
 ^^^^^^^^^^^^
-* Sensor Clearance above ground - This is the height, in meters, of the sensor measuring the magentic field, above the ground.
+* Sensor Clearance above ground - This is the height, in meters, of the sensor measuring the magnetic field, above the ground.
 * Date - This is the survey date. The IGRF field changes depending on when the magnetic data was collected, so the survey date must be taken into account.
 * Digital Elevation Model - raster grid of the terrain in height above sea level.
 * Magnetic Data - raster grid of the magnetic data to be corrected.
@@ -49,7 +49,7 @@ The results can be output to a text file, with columns x, y, id and depth. In th
 
 Options:
 * Band to perform tilt depth - this should be magnetic data
-* Color Bar - colors used to display the tilt angle data.
+* Colour Bar - colours used to display the tilt angle data.
 * Inclination of Magnetic Field - inclination of the field at the location and date of survey.
 * Declination of Magnetic Field - declination of the field at the location and date of survey.
 * Recalculate Tilt Depth - used to recalculate after changing inclination or declination.

@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.mt package &#8212; PyGMI 3 documentation</title>
+    <title>pygmi.mt package &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.pfmod package" href="pygmi.pfmod.html" />
@@ -84,9 +83,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.mt">
-<span id="pygmi-mt-package"></span><h1>pygmi.mt package<a class="headerlink" href="#module-pygmi.mt" title="Permalink to this headline">¶</a></h1>
-<p>MT Routines</p>
+  <div class="section" id="pygmi-mt-package">
+<h1>pygmi.mt package<a class="headerlink" href="#pygmi-mt-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -127,35 +125,12 @@ return e-mail.</p>
 <p>Note, it will still be necessary for the end-user to compile the code.</p>
 <dl class="py class">
 <dt id="pygmi.mt.birrp.BIRRP">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.birrp.</code><code class="sig-name descname">BIRRP</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.birrp.</span></code><code class="sig-name descname"><span class="pre">BIRRP</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Import Line Data.</p>
-<p>This class imports ASCII point data.</p>
-<dl class="py attribute">
-<dt id="pygmi.mt.birrp.BIRRP.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>item name</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py attribute">
-<dt id="pygmi.mt.birrp.BIRRP.pbar">
-<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.pbar" title="Permalink to this definition">¶</a></dt>
-<dd><p>reference to a progress bar.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Type</dt>
-<dd class="field-odd"><p>progressbar</p>
-</dd>
-</dl>
-</dd></dl>
-
+<p>Class to export config file for BIRRP .</p>
 <dl class="py attribute">
 <dt id="pygmi.mt.birrp.BIRRP.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -166,7 +141,7 @@ return e-mail.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.birrp.BIRRP.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -177,7 +152,7 @@ return e-mail.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.birrp.BIRRP.ifile">
-<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ifile</span></code><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -188,7 +163,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.get_filename">
-<code class="sig-name descname">get_filename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.get_filename" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_filename</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.get_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get filename for a component.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -205,7 +180,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.imode_changed">
-<code class="sig-name descname">imode_changed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indx</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.imode_changed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">imode_changed</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.imode_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Value of imode changed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -222,7 +197,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.importbirrp">
-<code class="sig-name descname">importbirrp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.importbirrp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">importbirrp</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.importbirrp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import a BIRRP config file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -236,7 +211,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.jmode_changed">
-<code class="sig-name descname">jmode_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.jmode_changed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">jmode_changed</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.jmode_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Value of jmode changed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -250,8 +225,8 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -267,7 +242,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.nar_changed">
-<code class="sig-name descname">nar_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.nar_changed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">nar_changed</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.nar_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Value of nar changed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -281,7 +256,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.nfil_changed">
-<code class="sig-name descname">nfil_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.nfil_changed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">nfil_changed</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.nfil_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Value of nfil changed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -295,7 +270,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.nout_changed">
-<code class="sig-name descname">nout_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.nout_changed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">nout_changed</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.nout_changed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Value of nout changed.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -309,7 +284,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.removerow">
-<code class="sig-name descname">removerow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">widget</span></em>, <em class="sig-param"><span class="n">lay</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.removerow" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">removerow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.removerow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a row.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -329,7 +304,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.runbirrp">
-<code class="sig-name descname">runbirrp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.runbirrp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">runbirrp</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.runbirrp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save and runs a birrp config file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -343,7 +318,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -357,7 +332,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -371,7 +346,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.setupui">
-<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -385,7 +360,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.birrp.BIRRP.showrow">
-<code class="sig-name descname">showrow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">row</span></em>, <em class="sig-param"><span class="n">label</span></em>, <em class="sig-param"><span class="n">widget</span></em>, <em class="sig-param"><span class="n">lay</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.showrow" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">showrow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lay</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.birrp.BIRRP.showrow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show a row within a widget.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -413,12 +388,12 @@ return e-mail.</p>
 <p>A set of Data Preparation routines.</p>
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.EditEDI">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">EditEDI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">EditEDI</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Edit EDI Class.</p>
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.EditEDI.acceptall">
-<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.acceptall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
 <p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
@@ -433,7 +408,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.EditEDI.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.apply" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">apply</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply edited data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -447,7 +422,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.EditEDI.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to choose band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -461,8 +436,8 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.EditEDI.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -478,7 +453,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.EditEDI.reset_data">
-<code class="sig-name descname">reset_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.reset_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">reset_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.reset_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -492,7 +467,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.EditEDI.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -506,7 +481,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.EditEDI.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.EditEDI.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -522,13 +497,13 @@ return e-mail.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.Metadata">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">Metadata</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">Metadata</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Edit Metadata.</p>
 <p>This class allows the editing of the metadata for MT data using a GUI.</p>
 <dl class="py attribute">
 <dt id="pygmi.mt.dataprep.Metadata.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>old text</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -539,7 +514,7 @@ return e-mail.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.dataprep.Metadata.banddata">
-<code class="sig-name descname">banddata</code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.banddata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">banddata</span></code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.banddata" title="Permalink to this definition">¶</a></dt>
 <dd><p>band data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -550,7 +525,7 @@ return e-mail.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.dataprep.Metadata.bandid">
-<code class="sig-name descname">bandid</code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.bandid" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">bandid</span></code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.bandid" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of strings containing band names.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -561,7 +536,7 @@ return e-mail.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.dataprep.Metadata.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -572,7 +547,7 @@ return e-mail.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.dataprep.Metadata.indata">
-<code class="sig-name descname">indata</code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.indata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -583,7 +558,7 @@ return e-mail.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.dataprep.Metadata.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -594,7 +569,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Metadata.acceptall">
-<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.acceptall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option. Updates self.indata.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -608,7 +583,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Metadata.rename_id">
-<code class="sig-name descname">rename_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.rename_id" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">rename_id</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.rename_id" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename station name.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -622,7 +597,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Metadata.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -636,7 +611,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Metadata.setupui">
-<code class="sig-name descname">setupui</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.setupui" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -650,7 +625,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Metadata.update_vals">
-<code class="sig-name descname">update_vals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.update_vals" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_vals</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Metadata.update_vals" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the values on the interface.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -666,12 +641,12 @@ return e-mail.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.MyMplCanvas">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">MyMplCanvas</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>MPL Canvas class.</p>
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MyMplCanvas.update_line">
-<code class="sig-name descname">update_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">ival</span></em>, <em class="sig-param"><span class="n">itype</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvas.update_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_line</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ival</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvas.update_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from point data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -694,19 +669,19 @@ return e-mail.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.MyMplCanvas2">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">MyMplCanvas2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvas2" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">MyMplCanvas2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvas2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>MPL Canvas class.</p>
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MyMplCanvas2.update_line">
-<code class="sig-name descname">update_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">pdata</span></em>, <em class="sig-param"><span class="n">rdata</span></em>, <em class="sig-param"><span class="n">depths</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">res</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">title</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvas2.update_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_line</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">res</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvas2.update_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>numpy array</em>) – X coordinates (period).</p></li>
 <li><p><strong>pdata</strong> (<em>numpy array</em>) – Phase data.</p></li>
-<li><p><strong>rdata</strong> (<em>numpy array</em>) – Apperent resistivity data.</p></li>
+<li><p><strong>rdata</strong> (<em>numpy array</em>) – Apparent resistivity data.</p></li>
 <li><p><strong>depths</strong> (<em>numpy array</em><em>, </em><em>optional</em>) – Model depths. The default is None.</p></li>
 <li><p><strong>res</strong> (<em>numpy array</em><em>, </em><em>optional</em>) – Resistivities. The default is None.</p></li>
 <li><p><strong>title</strong> (<em>str</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p></li>
@@ -725,13 +700,13 @@ return e-mail.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.MyMplCanvasPick">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">MyMplCanvasPick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">MyMplCanvasPick</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>MPL Canvas class.</p>
 <p>This routine will also allow the picking and movement of nodes of data.</p>
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MyMplCanvasPick.button_press_callback">
-<code class="sig-name descname">button_press_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.button_press_callback" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">button_press_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.button_press_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse button release callback.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -748,7 +723,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MyMplCanvasPick.button_release_callback">
-<code class="sig-name descname">button_release_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.button_release_callback" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">button_release_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.button_release_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse button release callback.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -765,7 +740,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MyMplCanvasPick.motion_notify_callback">
-<code class="sig-name descname">motion_notify_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">motion_notify_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move mouse callback.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -782,7 +757,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MyMplCanvasPick.onpick">
-<code class="sig-name descname">onpick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.onpick" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">onpick</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.onpick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Picker event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -799,7 +774,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MyMplCanvasPick.resize">
-<code class="sig-name descname">resize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">canvas</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.resize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">resize</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">canvas</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.resize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resize event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -819,7 +794,7 @@ return e-mail.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MyMplCanvasPick.update_line">
-<code class="sig-name descname">update_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">ival</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">itype</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.update_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_line</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ival</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MyMplCanvasPick.update_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from point data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -842,14 +817,14 @@ return e-mail.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.MySlider">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">MySlider</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MySlider" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">MySlider</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MySlider" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QSlider</span></code></p>
-<p>My Slider</p>
+<p>My Slider.</p>
 <p>Custom class which allows clicking on a horizontal slider bar with slider
 moving to click in a single step.</p>
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MySlider.mouseMoveEvent">
-<code class="sig-name descname">mouseMoveEvent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MySlider.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">mouseMoveEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MySlider.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Jump to pointer position while moving.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -866,7 +841,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.MySlider.mousePressEvent">
-<code class="sig-name descname">mousePressEvent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MySlider.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">mousePressEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.MySlider.mousePressEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse press event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -885,12 +860,12 @@ moving to click in a single step.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.Occam1D">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">Occam1D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">Occam1D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Occam 1D inversion.</p>
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Occam1D.acceptall">
-<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.acceptall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
 <p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
@@ -905,7 +880,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Occam1D.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.apply" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">apply</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -919,7 +894,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Occam1D.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to change band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -933,8 +908,8 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Occam1D.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -950,7 +925,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Occam1D.reset_data">
-<code class="sig-name descname">reset_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.reset_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">reset_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.reset_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -964,7 +939,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Occam1D.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -978,7 +953,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Occam1D.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -992,7 +967,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.Occam1D.snum">
-<code class="sig-name descname">snum</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.snum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">snum</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.Occam1D.snum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change solution graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1008,12 +983,12 @@ moving to click in a single step.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.RotateEDI">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">RotateEDI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">RotateEDI</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
-<p>Roitate EDI data.</p>
+<p>Rotate EDI data.</p>
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.RotateEDI.acceptall">
-<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.acceptall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
 <p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
@@ -1028,7 +1003,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.RotateEDI.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.apply" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">apply</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply rotation to data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1042,7 +1017,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.RotateEDI.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to change band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1056,8 +1031,8 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.RotateEDI.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -1073,7 +1048,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.RotateEDI.reset_data">
-<code class="sig-name descname">reset_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.reset_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">reset_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.reset_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1087,7 +1062,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.RotateEDI.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1101,7 +1076,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.RotateEDI.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.RotateEDI.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1117,12 +1092,12 @@ moving to click in a single step.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.dataprep.StaticShiftEDI">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">StaticShiftEDI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">StaticShiftEDI</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Static shift EDI data.</p>
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.StaticShiftEDI.acceptall">
-<code class="sig-name descname">acceptall</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.acceptall" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">acceptall</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.acceptall" title="Permalink to this definition">¶</a></dt>
 <dd><p>Accept option.</p>
 <p>Updates self.outdata, which is used as input to other modules.</p>
 <dl class="field-list simple">
@@ -1137,7 +1112,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.StaticShiftEDI.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.apply" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">apply</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply static shift.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1151,7 +1126,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.StaticShiftEDI.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to change band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1165,8 +1140,8 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.StaticShiftEDI.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -1182,7 +1157,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.StaticShiftEDI.reset_data">
-<code class="sig-name descname">reset_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.reset_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">reset_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.reset_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reset data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1196,7 +1171,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.StaticShiftEDI.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1210,7 +1185,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.dataprep.StaticShiftEDI.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.StaticShiftEDI.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1225,21 +1200,9 @@ moving to click in a single step.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pygmi.mt.dataprep.testfn">
-<code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">testfn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.testfn" title="Permalink to this definition">¶</a></dt>
-<dd><p>main test</p>
-</dd></dl>
-
-<dl class="py function">
-<dt id="pygmi.mt.dataprep.testfn_occam">
-<code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">testfn_occam</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.testfn_occam" title="Permalink to this definition">¶</a></dt>
-<dd><p>main test</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="pygmi.mt.dataprep.tonumber">
-<code class="sig-prename descclassname">pygmi.mt.dataprep.</code><code class="sig-name descname">tonumber</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">test</span></em>, <em class="sig-param"><span class="n">alttext</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.tonumber" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if something is a number or matches alttext</p>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mt.dataprep.</span></code><code class="sig-name descname"><span class="pre">tonumber</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alttext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.dataprep.tonumber" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if something is a number or matches alttext.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1248,7 +1211,7 @@ moving to click in a single step.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns a lower case verion of alttext, or a number.</p>
+<dd class="field-even"><p>Returns a lower case version of alttext, or a number.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str or int or float</p>
@@ -1262,12 +1225,12 @@ moving to click in a single step.</p>
 <p>Plot Data using Matplotlib.</p>
 <dl class="py class">
 <dt id="pygmi.mt.graphs.GraphWindow">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.graphs.</code><code class="sig-name descname">GraphWindow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.graphs.</span></code><code class="sig-name descname"><span class="pre">GraphWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Graph Window - Main QT Dialog class for graphs.</p>
 <dl class="py method">
 <dt id="pygmi.mt.graphs.GraphWindow.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
 </dd></dl>
 
@@ -1275,13 +1238,13 @@ moving to click in a single step.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.graphs.MyMplCanvas">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.graphs.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.graphs.</span></code><code class="sig-name descname"><span class="pre">MyMplCanvas</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>MPL Canvas class.</p>
 <p>This routine will also allow the picking and movement of nodes of data.</p>
 <dl class="py method">
 <dt id="pygmi.mt.graphs.MyMplCanvas.button_release_callback">
-<code class="sig-name descname">button_release_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas.button_release_callback" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">button_release_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas.button_release_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse button release callback.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1298,7 +1261,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.graphs.MyMplCanvas.motion_notify_callback">
-<code class="sig-name descname">motion_notify_callback</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">motion_notify_callback</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas.motion_notify_callback" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move mouse callback.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1315,7 +1278,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.graphs.MyMplCanvas.onpick">
-<code class="sig-name descname">onpick</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas.onpick" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">onpick</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas.onpick" title="Permalink to this definition">¶</a></dt>
 <dd><p>Picker event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1332,7 +1295,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.graphs.MyMplCanvas.update_line">
-<code class="sig-name descname">update_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">ival</span></em>, <em class="sig-param"><span class="n">itype</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas.update_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_line</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ival</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">itype</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.MyMplCanvas.update_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from point data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1355,12 +1318,12 @@ moving to click in a single step.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.graphs.PlotPoints">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.graphs.</code><code class="sig-name descname">PlotPoints</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.PlotPoints" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.graphs.</span></code><code class="sig-name descname"><span class="pre">PlotPoints</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.PlotPoints" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.mt.graphs.GraphWindow" title="pygmi.mt.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.mt.graphs.GraphWindow</span></code></a></p>
 <p>Plot points class.</p>
 <dl class="py method">
 <dt id="pygmi.mt.graphs.PlotPoints.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.PlotPoints.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.PlotPoints.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to choose band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1374,7 +1337,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.graphs.PlotPoints.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.PlotPoints.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.PlotPoints.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1388,24 +1351,18 @@ moving to click in a single step.</p>
 
 </dd></dl>
 
-<dl class="py function">
-<dt id="pygmi.mt.graphs.testfn">
-<code class="sig-prename descclassname">pygmi.mt.graphs.</code><code class="sig-name descname">testfn</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.graphs.testfn" title="Permalink to this definition">¶</a></dt>
-<dd><p>main test</p>
-</dd></dl>
-
 </div>
 <div class="section" id="module-pygmi.mt.iodefs">
 <span id="pygmi-mt-iodefs-module"></span><h2>pygmi.mt.iodefs module<a class="headerlink" href="#module-pygmi.mt.iodefs" title="Permalink to this headline">¶</a></h2>
 <p>Import and export EDI data.</p>
 <dl class="py class">
 <dt id="pygmi.mt.iodefs.ExportEDI">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.iodefs.</code><code class="sig-name descname">ExportEDI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.iodefs.</span></code><code class="sig-name descname"><span class="pre">ExportEDI</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Export Data.</p>
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ExportEDI.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>item name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1416,7 +1373,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ExportEDI.pbar">
-<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.pbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pbar</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.pbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1427,7 +1384,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ExportEDI.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1438,7 +1395,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ExportEDI.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1449,7 +1406,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ExportEDI.ifile">
-<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ifile</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1460,7 +1417,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ExportEDI.ext">
-<code class="sig-name descname">ext</code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.ext" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ext</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.ext" title="Permalink to this definition">¶</a></dt>
 <dd><p>filename extension</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1471,7 +1428,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.iodefs.ExportEDI.export_edi">
-<code class="sig-name descname">export_edi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dat</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.export_edi" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">export_edi</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dat</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.export_edi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export to EDI format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1488,7 +1445,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.iodefs.ExportEDI.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ExportEDI.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1504,12 +1461,12 @@ moving to click in a single step.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.iodefs.ImportEDI">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.iodefs.</code><code class="sig-name descname">ImportEDI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.iodefs.</span></code><code class="sig-name descname"><span class="pre">ImportEDI</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Import Data.</p>
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportEDI.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>item name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1520,7 +1477,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportEDI.pbar">
-<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.pbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pbar</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.pbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1531,7 +1488,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportEDI.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1542,7 +1499,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportEDI.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1553,7 +1510,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportEDI.ifile">
-<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ifile</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1564,7 +1521,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportEDI.ext">
-<code class="sig-name descname">ext</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.ext" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ext</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.ext" title="Permalink to this definition">¶</a></dt>
 <dd><p>filename extension</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1575,8 +1532,8 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.iodefs.ImportEDI.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -1592,7 +1549,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.iodefs.ImportEDI.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1606,7 +1563,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.iodefs.ImportEDI.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportEDI.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1622,13 +1579,13 @@ moving to click in a single step.</p>
 
 <dl class="py class">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.iodefs.</code><code class="sig-name descname">ImportLEMI417Data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.iodefs.</span></code><code class="sig-name descname"><span class="pre">ImportLEMI417Data</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Import LEMI-417 ASCII MT Data.</p>
 <p>This is a class used to import LEMI-417 MT Data in ASCII format.</p>
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>item name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1639,7 +1596,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data.pbar">
-<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.pbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pbar</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.pbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1650,7 +1607,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1661,7 +1618,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1672,7 +1629,7 @@ moving to click in a single step.</p>
 
 <dl class="py attribute">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data.ifile">
-<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ifile</span></code><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1683,8 +1640,8 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -1700,7 +1657,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1714,7 +1671,7 @@ moving to click in a single step.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.iodefs.ImportLEMI417Data.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.ImportLEMI417Data.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -1730,7 +1687,7 @@ moving to click in a single step.</p>
 
 <dl class="py function">
 <dt id="pygmi.mt.iodefs.get_EDI">
-<code class="sig-prename descclassname">pygmi.mt.iodefs.</code><code class="sig-name descname">get_EDI</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ifiles</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.get_EDI" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.mt.iodefs.</span></code><code class="sig-name descname"><span class="pre">get_EDI</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ifiles</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.iodefs.get_EDI" title="Permalink to this definition">¶</a></dt>
 <dd><p>EDI Import.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1751,14 +1708,14 @@ moving to click in a single step.</p>
 <p>EM Menu Routines.</p>
 <dl class="py class">
 <dt id="pygmi.mt.menu.MenuWidget">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.mt.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.mt.menu.</span></code><code class="sig-name descname"><span class="pre">MenuWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <p>This widget class creates menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="py attribute">
 <dt id="pygmi.mt.menu.MenuWidget.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1769,66 +1726,70 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.birrp">
-<code class="sig-name descname">birrp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.birrp" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">birrp</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.birrp" title="Permalink to this definition">¶</a></dt>
 <dd><p>BIRRP.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.export_data">
-<code class="sig-name descname">export_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.export_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">export_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.export_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.import_data">
-<code class="sig-name descname">import_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">import_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.import_lemi417_data">
-<code class="sig-name descname">import_lemi417_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.import_lemi417_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">import_lemi417_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.import_lemi417_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import LEMI-417 MT data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.metadata">
-<code class="sig-name descname">metadata</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.metadata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">metadata</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Metadata.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.mi_data">
-<code class="sig-name descname">mi_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.mi_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">mi_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.mi_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mask and interpolate data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.occam1d">
-<code class="sig-name descname">occam1d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.occam1d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">occam1d</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.occam1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Occam 1D inversion.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.rotate_data">
-<code class="sig-name descname">rotate_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.rotate_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">rotate_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.rotate_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rotate data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.show_graphs">
-<code class="sig-name descname">show_graphs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.show_graphs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">show_graphs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.show_graphs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show graphs.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.mt.menu.MenuWidget.sshift_data">
-<code class="sig-name descname">sshift_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.sshift_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">sshift_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.mt.menu.MenuWidget.sshift_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate Static Shift.</p>
 </dd></dl>
 
 </dd></dl>
 
+</div>
+<div class="section" id="module-pygmi.mt">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.mt" title="Permalink to this headline">¶</a></h2>
+<p>MT Routines</p>
 </div>
 </div>
 
@@ -1881,7 +1842,7 @@ interface. Normal as well as context menus are defined here.</p>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -1943,10 +1904,10 @@ interface. Normal as well as context menus are defined here.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

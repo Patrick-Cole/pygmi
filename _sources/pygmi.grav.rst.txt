@@ -1,11 +1,6 @@
 pygmi.grav package
 ==================
 
-.. automodule:: pygmi.grav
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -29,6 +24,14 @@ pygmi.grav.menu module
 ----------------------
 
 .. automodule:: pygmi.grav.menu
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.grav
    :members:
    :undoc-members:
    :show-inheritance:

@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.em package &#8212; PyGMI 3 documentation</title>
+    <title>pygmi.em package &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.eseis package" href="pygmi.eseis.html" />
@@ -84,9 +83,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.em">
-<span id="pygmi-em-package"></span><h1>pygmi.em package<a class="headerlink" href="#module-pygmi.em" title="Permalink to this headline">¶</a></h1>
-<p>EM Routines</p>
+  <div class="section" id="pygmi-em-package">
+<h1>pygmi.em package<a class="headerlink" href="#pygmi-em-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -95,14 +93,14 @@
 <p>EM Menu Routines.</p>
 <dl class="py class">
 <dt id="pygmi.em.menu.MenuWidget">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.em.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.em.menu.</span></code><code class="sig-name descname"><span class="pre">MenuWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <p>This widget class creates menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="py attribute">
 <dt id="pygmi.em.menu.MenuWidget.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.em.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.em.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -113,7 +111,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.menu.MenuWidget.tdem1d">
-<code class="sig-name descname">tdem1d</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.menu.MenuWidget.tdem1d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">tdem1d</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.menu.MenuWidget.tdem1d" title="Permalink to this definition">¶</a></dt>
 <dd><p>TDEM 1D inversion.</p>
 </dd></dl>
 
@@ -125,13 +123,14 @@ interface. Normal as well as context menus are defined here.</p>
 <p>Time Domain EM.</p>
 <dl class="py class">
 <dt id="pygmi.em.tdem.MyMplCanvas2">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.em.tdem.</code><code class="sig-name descname">MyMplCanvas2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.MyMplCanvas2" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.em.tdem.</span></code><code class="sig-name descname"><span class="pre">MyMplCanvas2</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.MyMplCanvas2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>MPL Canvas class.</p>
 <dl class="py method">
 <dt id="pygmi.em.tdem.MyMplCanvas2.disp_wave">
-<code class="sig-name descname">disp_wave</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">times</span></em>, <em class="sig-param"><span class="n">wave</span></em>, <em class="sig-param"><span class="n">title</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.MyMplCanvas2.disp_wave" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<code class="sig-name descname"><span class="pre">disp_wave</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wave</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.MyMplCanvas2.disp_wave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display waveform.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
 </dd>
@@ -143,7 +142,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.MyMplCanvas2.update_line">
-<code class="sig-name descname">update_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sigma</span></em>, <em class="sig-param"><span class="n">z</span></em>, <em class="sig-param"><span class="n">times_off</span></em>, <em class="sig-param"><span class="n">zobs</span></em>, <em class="sig-param"><span class="n">zpred</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.MyMplCanvas2.update_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_line</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sigma</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times_off</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zobs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zpred</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.MyMplCanvas2.update_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -169,12 +168,12 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py class">
 <dt id="pygmi.em.tdem.TDEM1D">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.em.tdem.</code><code class="sig-name descname">TDEM1D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.em.tdem.</span></code><code class="sig-name descname"><span class="pre">TDEM1D</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Occam 1D inversion.</p>
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.apply">
-<code class="sig-name descname">apply</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.apply" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">apply</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Invert the data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -188,7 +187,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.change_line">
-<code class="sig-name descname">change_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.change_line" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_line</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.change_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to change line.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -202,8 +201,9 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.change_source">
-<code class="sig-name descname">change_source</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.change_source" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<code class="sig-name descname"><span class="pre">change_source</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.change_source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change Source.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
 </dd>
@@ -215,8 +215,9 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.disp_wave">
-<code class="sig-name descname">disp_wave</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.disp_wave" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<code class="sig-name descname"><span class="pre">disp_wave</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.disp_wave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display waveform.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>
 </dd>
@@ -228,7 +229,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.get_wfile">
-<code class="sig-name descname">get_wfile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.get_wfile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">get_wfile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.get_wfile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get window time filename.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -245,7 +246,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.loadproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.loadproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -262,7 +263,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -276,7 +277,7 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -290,13 +291,14 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.em.tdem.TDEM1D.update_wave">
-<code class="sig-name descname">update_wave</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.update_wave" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="field-list simple">
+<code class="sig-name descname"><span class="pre">update_wave</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.TDEM1D.update_wave" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update waveform.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><strong>wform</strong> – DESCRIPTION.</p>
+<dd class="field-odd"><p><strong>wform</strong> – Waveform.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>TYPE</p>
+<dd class="field-even"><p>tdem waveform.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -304,14 +306,8 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pygmi.em.tdem.testrun">
-<code class="sig-prename descclassname">pygmi.em.tdem.</code><code class="sig-name descname">testrun</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.testrun" title="Permalink to this definition">¶</a></dt>
-<dd><p>Test routine.</p>
-</dd></dl>
-
-<dl class="py function">
 <dt id="pygmi.em.tdem.tonumber">
-<code class="sig-prename descclassname">pygmi.em.tdem.</code><code class="sig-name descname">tonumber</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">test</span></em>, <em class="sig-param"><span class="n">alttext</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.tonumber" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">pygmi.em.tdem.</span></code><code class="sig-name descname"><span class="pre">tonumber</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">test</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alttext</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.em.tdem.tonumber" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check if something is a number or matches alttext.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -321,7 +317,7 @@ interface. Normal as well as context menus are defined here.</p>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Returns a lower case verion of alttext, or a number.</p>
+<dd class="field-even"><p>Returns a lower case version of alttext, or a number.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str or int or float</p>
@@ -329,6 +325,10 @@ interface. Normal as well as context menus are defined here.</p>
 </dl>
 </dd></dl>
 
+</div>
+<div class="section" id="module-pygmi.em">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.em" title="Permalink to this headline">¶</a></h2>
+<p>EM Routines</p>
 </div>
 </div>
 
@@ -381,7 +381,7 @@ interface. Normal as well as context menus are defined here.</p>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -443,10 +443,10 @@ interface. Normal as well as context menus are defined here.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -1,11 +1,6 @@
 pygmi.test package
 ==================
 
-.. automodule:: pygmi.test
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Submodules
 ----------
 
@@ -45,6 +40,14 @@ pygmi.test.test\_raster module
 ------------------------------
 
 .. automodule:: pygmi.test.test_raster
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: pygmi.test
    :members:
    :undoc-members:
    :show-inheritance:

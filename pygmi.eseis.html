@@ -5,14 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi.eseis package &#8212; PyGMI 3 documentation</title>
+    <title>pygmi.eseis package &#8212; PyGMI 3.2.2 documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pygmi.grav package" href="pygmi.grav.html" />
@@ -84,9 +83,8 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="module-pygmi.eseis">
-<span id="pygmi-eseis-package"></span><h1>pygmi.eseis package<a class="headerlink" href="#module-pygmi.eseis" title="Permalink to this headline">¶</a></h1>
-<p>Exploration Seismics Routines</p>
+  <div class="section" id="pygmi-eseis-package">
+<h1>pygmi.eseis package<a class="headerlink" href="#pygmi-eseis-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -95,12 +93,12 @@
 <p>Plot Vector Data using Matplotlib.</p>
 <dl class="py class">
 <dt id="pygmi.eseis.graphs.GraphWindow">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.eseis.graphs.</code><code class="sig-name descname">GraphWindow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.eseis.graphs.</span></code><code class="sig-name descname"><span class="pre">GraphWindow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.GraphWindow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Graph Window - Main QT Dialog class for graphs.</p>
 <dl class="py method">
 <dt id="pygmi.eseis.graphs.GraphWindow.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.GraphWindow.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo box to choose band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -116,13 +114,13 @@
 
 <dl class="py class">
 <dt id="pygmi.eseis.graphs.MyMplCanvas">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.eseis.graphs.</code><code class="sig-name descname">MyMplCanvas</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.eseis.graphs.</span></code><code class="sig-name descname"><span class="pre">MyMplCanvas</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.MyMplCanvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">matplotlib.backends.backend_qt5agg.FigureCanvasQTAgg</span></code></p>
 <p>MPL Canvas class.</p>
 <p>This routine will also allow the picking and movement of nodes of data.</p>
 <dl class="py method">
 <dt id="pygmi.eseis.graphs.MyMplCanvas.update_segy">
-<code class="sig-name descname">update_segy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.MyMplCanvas.update_segy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">update_segy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.MyMplCanvas.update_segy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the plot from point data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -141,12 +139,12 @@
 
 <dl class="py class">
 <dt id="pygmi.eseis.graphs.PlotSEGY">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.eseis.graphs.</code><code class="sig-name descname">PlotSEGY</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.PlotSEGY" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.eseis.graphs.</span></code><code class="sig-name descname"><span class="pre">PlotSEGY</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.PlotSEGY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pygmi.eseis.graphs.GraphWindow" title="pygmi.eseis.graphs.GraphWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">pygmi.eseis.graphs.GraphWindow</span></code></a></p>
-<p>Plot Raster Class.</p>
+<p>Plot SEG-Y Class.</p>
 <dl class="py method">
 <dt id="pygmi.eseis.graphs.PlotSEGY.change_band">
-<code class="sig-name descname">change_band</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.PlotSEGY.change_band" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">change_band</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.PlotSEGY.change_band" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combo to choose band.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -160,7 +158,7 @@
 
 <dl class="py method">
 <dt id="pygmi.eseis.graphs.PlotSEGY.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.PlotSEGY.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.graphs.PlotSEGY.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -177,15 +175,15 @@
 </div>
 <div class="section" id="module-pygmi.eseis.iodefs">
 <span id="pygmi-eseis-iodefs-module"></span><h2>pygmi.eseis.iodefs module<a class="headerlink" href="#module-pygmi.eseis.iodefs" title="Permalink to this headline">¶</a></h2>
-<p>Import and export data.</p>
+<p>Import and export seismic data data.</p>
 <dl class="py class">
 <dt id="pygmi.eseis.iodefs.ExportSEGY">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.eseis.iodefs.</code><code class="sig-name descname">ExportSEGY</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.eseis.iodefs.</span></code><code class="sig-name descname"><span class="pre">ExportSEGY</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Export Data.</p>
+<p>Export SEG-Y Data.</p>
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ExportSEGY.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>item name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -196,7 +194,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ExportSEGY.pbar">
-<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.pbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pbar</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.pbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -207,7 +205,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ExportSEGY.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -218,7 +216,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ExportSEGY.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -229,7 +227,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ExportSEGY.ifile">
-<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ifile</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -240,7 +238,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ExportSEGY.ext">
-<code class="sig-name descname">ext</code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.ext" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ext</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.ext" title="Permalink to this definition">¶</a></dt>
 <dd><p>filename extension</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -251,7 +249,7 @@
 
 <dl class="py method">
 <dt id="pygmi.eseis.iodefs.ExportSEGY.export_segy">
-<code class="sig-name descname">export_segy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">src</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.export_segy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">export_segy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.export_segy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export to SEGY format.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -268,7 +266,7 @@
 
 <dl class="py method">
 <dt id="pygmi.eseis.iodefs.ExportSEGY.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ExportSEGY.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -284,12 +282,12 @@
 
 <dl class="py class">
 <dt id="pygmi.eseis.iodefs.ImportSEGY">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.eseis.iodefs.</code><code class="sig-name descname">ImportSEGY</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.eseis.iodefs.</span></code><code class="sig-name descname"><span class="pre">ImportSEGY</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Import Data.</p>
+<p>Import SEG-Y Data.</p>
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.name">
-<code class="sig-name descname">name</code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.name" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">name</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.name" title="Permalink to this definition">¶</a></dt>
 <dd><p>item name</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -300,7 +298,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.pbar">
-<code class="sig-name descname">pbar</code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.pbar" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">pbar</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.pbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to a progress bar.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -311,7 +309,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -322,7 +320,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.outdata">
-<code class="sig-name descname">outdata</code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.outdata" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -333,7 +331,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.ifile">
-<code class="sig-name descname">ifile</code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.ifile" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ifile</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.ifile" title="Permalink to this definition">¶</a></dt>
 <dd><p>input file name. Used in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -344,7 +342,7 @@
 
 <dl class="py attribute">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.ext">
-<code class="sig-name descname">ext</code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.ext" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">ext</span></code><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.ext" title="Permalink to this definition">¶</a></dt>
 <dd><p>filename extension</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -355,8 +353,8 @@
 
 <dl class="py method">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.loadproj">
-<code class="sig-name descname">loadproj</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">projdata</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.loadproj" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads project data into class.</p>
+<code class="sig-name descname"><span class="pre">loadproj</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">projdata</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.loadproj" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load project data into class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>projdata</strong> (<em>dictionary</em>) – Project data loaded from JSON project file.</p>
@@ -372,7 +370,7 @@
 
 <dl class="py method">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.saveproj">
-<code class="sig-name descname">saveproj</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.saveproj" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">saveproj</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.saveproj" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project data from class.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -386,7 +384,7 @@
 
 <dl class="py method">
 <dt id="pygmi.eseis.iodefs.ImportSEGY.settings">
-<code class="sig-name descname">settings</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nodialog</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.settings" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.iodefs.ImportSEGY.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point into item.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -406,14 +404,14 @@
 <p>Exploration seismics Menu Routines.</p>
 <dl class="py class">
 <dt id="pygmi.eseis.menu.MenuWidget">
-<em class="property">class </em><code class="sig-prename descclassname">pygmi.eseis.menu.</code><code class="sig-name descname">MenuWidget</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parent</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.eseis.menu.</span></code><code class="sig-name descname"><span class="pre">MenuWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <p>This widget class creates menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="py attribute">
 <dt id="pygmi.eseis.menu.MenuWidget.parent">
-<code class="sig-name descname">parent</code><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -424,24 +422,28 @@ interface. Normal as well as context menus are defined here.</p>
 
 <dl class="py method">
 <dt id="pygmi.eseis.menu.MenuWidget.export_data">
-<code class="sig-name descname">export_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget.export_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">export_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget.export_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.eseis.menu.MenuWidget.import_data">
-<code class="sig-name descname">import_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">import_data</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget.import_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Import data.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt id="pygmi.eseis.menu.MenuWidget.show_graphs">
-<code class="sig-name descname">show_graphs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget.show_graphs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">show_graphs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.eseis.menu.MenuWidget.show_graphs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show graphs.</p>
 </dd></dl>
 
 </dd></dl>
 
+</div>
+<div class="section" id="module-pygmi.eseis">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi.eseis" title="Permalink to this headline">¶</a></h2>
+<p>Exploration Seismics Routines</p>
 </div>
 </div>
 
@@ -494,7 +496,7 @@ interface. Normal as well as context menus are defined here.</p>
 <li class="toctree-l2"><a class="reference internal" href="bholes.html">Boreholes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Sesimics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
@@ -556,10 +558,10 @@ interface. Normal as well as context menus are defined here.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2020 Council for Geoscience.
+      &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.3.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
