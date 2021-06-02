@@ -262,6 +262,7 @@ class SatRatios(QtWidgets.QDialog):
                 if txt == 'Band8A':
                     txt = 'Band8'
 
+                self.showprocesslog(i.dataid+' mapped to '+txt)
                 datd[txt] = i.data
 
             datfin = []

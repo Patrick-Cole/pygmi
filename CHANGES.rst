@@ -2,6 +2,53 @@
 Changelog
 =========
 
+v3.2.3.0, 01 June 2021
+----------------------
+*Cluster - reports when no classes are found.
+*Segmentation - now has DBSCAN for grouping segments
+*Raster cut - will give a better error when teh polygon is not overlapping the data
+*Added *.tiff as opposed to *.tif to imports
+*Fixed some display bugs with ginterp.
+*Fixed a big with integer datasets when smoothing
+*Fixed an issue where projection information was not save in supervised classification results
+*Started to use modest_image for some of the raster image displays
+*Fixed a bug on analyze spectra causing scale problems
+*Calculate metrics now allows for saving of metrics to excel
+*Fixed bug importing some class shapefiles
+*Fixed a bug causing ratios to break when using sentinel 2 data.
+*Fixed an issue causing some dataset units to be imported incorrectly
+*Import wavelengths for ASTER and Landsat data
+*Merge tool will now have progress bar when use in export.
+*S2 data will store wavelengths for use in ArcGIS
+*Remove commas from remote sensing band names to ensure ESRI compatibility
+*Vector reprojection now warns if inf values are output.
+*Change hexbin colormap to inferno
+*Added colormaps to show raster and show surface
+*Set histogram number of bins to 'sqrt' as opposed to a fixed 50 bins.
+*Simplified ENVI import
+*Added log option for y-axis of histogram.
+*Added export for SEISAN to xlsx and shp
+*Bugfix - fixed a bug displaying some point vector data.
+*Seismology - to beachball plot import and b value calculation
+*Updates to spelling and help files
+*Updates QC graphs to take into account weight 9 for record type 4
+*Fixed bugs importing some thermal aster data and L1T data
+*Hyperspectral analysis tool.
+*Project load bugfix
+*Added spectral interpretation tool.
+*Changed mosaic in equation editor to overlay grids.
+*Progress bar bugfix for RTP
+*Added 2.5 stddev to quick raster display.
+*Outlines of all polygons now remain on the map.
+*Confusion matrix display now has appropriate labels.
+*Shapefiles save and load class names
+*Fixed a bug which caused supervised classification to crash if a class was empty
+*Added equal area rose diagrams
+*Code to make sure only ENVI, ERS and EHdr  can use BIL routine
+*Added faster import for BIL binary files. (i.e. ENVI and ER Mapper)
+*Added drift rate curve to gravity QC
+*MT tipper graphs added
+
 v3.2.2.4, 20 November 2020
 --------------------------
 *Fixed library installer problem in windows installer.

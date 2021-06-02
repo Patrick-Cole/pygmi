@@ -561,7 +561,7 @@ class IGRF(QtWidgets.QDialog):
 
         Extrapolates linearly a spherical harmonic model with a rate-of-change
         model. Updates self.gh (Schmidt quasi-normal internal spherical
-                                harmonic coefficients).
+        harmonic coefficients).
 
         | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
         | CO. 80225
