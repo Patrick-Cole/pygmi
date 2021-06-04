@@ -79,6 +79,7 @@ class Gradients(QtWidgets.QDialog):
         self.rb_ddir = QtWidgets.QRadioButton('Directional Derivative')
         self.rb_vgrad = QtWidgets.QRadioButton('Vertical Derivative')
         self.rb_dratio = QtWidgets.QRadioButton('Derivative Ratio')
+        self.rb_thg = QtWidgets.QRadioButton('Total Horizonal Gradient')
         self.label_or = QtWidgets.QLabel('Strength Factor')
         self.label_az = QtWidgets.QLabel('Azimuth')
 
@@ -115,18 +116,20 @@ class Gradients(QtWidgets.QDialog):
         gridlayout.addWidget(self.rb_ddir, 0, 0, 1, 1)
         gridlayout.addWidget(self.rb_dratio, 1, 0, 1, 1)
         gridlayout.addWidget(self.rb_vgrad, 2, 0, 1, 1)
-        gridlayout.addWidget(self.label_az, 3, 0, 1, 1)
-        gridlayout.addWidget(self.sb_azi, 3, 1, 1, 1)
-        gridlayout.addWidget(self.label_or, 4, 0, 1, 1)
-        gridlayout.addWidget(self.sb_order, 4, 1, 1, 1)
-        gridlayout.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout.addWidget(buttonbox, 5, 1, 1, 1)
+        gridlayout.addWidget(self.rb_thg, 3, 0, 1, 1)
+        gridlayout.addWidget(self.label_az, 4, 0, 1, 1)
+        gridlayout.addWidget(self.sb_azi, 4, 1, 1, 1)
+        gridlayout.addWidget(self.label_or, 5, 0, 1, 1)
+        gridlayout.addWidget(self.sb_order, 5, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 6, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.rb_ddir.clicked.connect(self.radiochange)
         self.rb_dratio.clicked.connect(self.radiochange)
         self.rb_vgrad.clicked.connect(self.radiochange)
+        self.rb_thg.clicked.connect(self.radiochange)
 
     def settings(self, nodialog=False):
         """
@@ -155,6 +158,8 @@ class Gradients(QtWidgets.QDialog):
             elif self.rb_dratio.isChecked():
                 data[i].data = derivative_ratio(data[i].data, self.azi,
                                                 self.order)
+            elif self.rb_thg.isChecked():
+                data[i].data = thgrad(data[i].data, data[i].xdim, data[i].ydim)
             else:
                 if data[i].xdim != data[i].ydim:
                     self.showprocesslog('X and Y dimension are different. '
@@ -279,6 +284,32 @@ def gradients(data, azi, xint, yint):
     azi = np.deg2rad(azi)
     dy, dx = np.gradient(data, yint, xint)
     dt1 = -dy*np.sin(azi)-dx*np.cos(azi)
+
+    return dt1
+
+
+def thgrad(data, xint, yint):
+    """
+    Gradients.
+
+    Compute total horizontal gradient.
+
+    Parameters
+    ----------
+    data : numpy array
+        input numpy data array
+    xint : float
+        X interval/distance.
+    yint : float
+        Y interval/distance.
+
+    Returns
+    -------
+    dt1 : float
+        returns gradient.
+    """
+    dy, dx = np.gradient(data, yint, xint)
+    dt1 = np.sqrt(dx**2+dy**2)
 
     return dt1
 
