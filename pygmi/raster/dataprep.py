@@ -2105,6 +2105,7 @@ def merge(dat, piter=iter, dxy=None, pprint=print):
             needsmerge = True
 
     if needsmerge is False:
+        dat = copy.deepcopy(dat)
         dat = check_dataid(dat)
         return dat
 
