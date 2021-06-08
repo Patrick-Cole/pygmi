@@ -167,11 +167,13 @@ class Smooth(QtWidgets.QDialog):
             for i, _ in enumerate(data):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
                                                  '2D Mean', data[i].dataid)
+                data[i].dataid = data[i].dataid+' 2D Mean'
 
         if self.radiobutton_2dmedian.isChecked():
             for i, _ in enumerate(data):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
                                                  '2D Median', data[i].dataid)
+                data[i].dataid = data[i].dataid+' 2D Median'
 
         if not nodialog:
             self.parent.process_is_active(False)
@@ -421,8 +423,6 @@ class Smooth(QtWidgets.QDialog):
             dummy = dummy.data
 
             for i in self.piter(range(rowd)):
-                # self.showprocesslog(title+' Progress: ' +
-                #                     str(round(100*i/rowd))+'%', True)
                 for j in range(cold):
                     tmp1 = dummy[i:i+rowf, j:j+colf][fmat]
                     if np.isnan(tmp1).min() == False:

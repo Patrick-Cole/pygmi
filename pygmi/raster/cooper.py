@@ -747,3 +747,192 @@ def vertical(data, npts=None, xint=1, order=1):
     dz = np.real(fzinv[rdiff:nr+rdiff, cdiff:nc+cdiff])
 
     return dz
+
+class AGC(QtWidgets.QDialog):
+    """
+    Class used to gather information via a GUI, for function agc.
+
+    Attributes
+    ----------
+    parent : parent
+    indata : dictionary
+        PyGMI input data in a dictionary
+    outdata :
+        PyGMI input data in a dictionary
+    wsize : int
+        window size, must be odd
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+            self.piter = iter
+        else:
+            self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
+
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+        self.wsize = 11
+
+        self.sb_wsize = QtWidgets.QSpinBox()
+        self.rb_mean = QtWidgets.QRadioButton('Mean')
+        self.rb_median = QtWidgets.QRadioButton('Median')
+        self.rb_rms = QtWidgets.QRadioButton('RMS')
+
+        self.setupui()
+
+        self.sb_wsize.setValue(self.wsize)
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.cooper.AGC')
+        label_2 = QtWidgets.QLabel('Window Size (Odd)')
+
+        self.sb_wsize.setPrefix('')
+        self.sb_wsize.setMinimum(3)
+        self.sb_wsize.setMaximum(100000)
+        self.sb_wsize.setSingleStep(2)
+        self.sb_wsize.setValue(self.wsize)
+        self.rb_mean.setChecked(True)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Automatic Gain Control')
+
+        gridlayout.addWidget(self.rb_mean, 0, 0, 1, 1)
+        gridlayout.addWidget(self.rb_median, 1, 0, 1, 1)
+        gridlayout.addWidget(self.rb_rms, 2, 0, 1, 1)
+        gridlayout.addWidget(label_2, 3, 0, 1, 1)
+        gridlayout.addWidget(self.sb_wsize, 3, 1, 1, 1)
+        gridlayout.addWidget(helpdocs, 4, 0, 1, 1)
+        gridlayout.addWidget(buttonbox, 4, 1, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if not nodialog:
+            temp = self.exec_()
+            if temp == 0:
+                return False
+
+        atype = 'mean'
+        if self.rb_median.isChecked():
+            atype = 'median'
+        if self.rb_rms.isChecked():
+            atype = 'rms'
+
+        self.wsize = self.sb_wsize.value()
+
+        data = copy.deepcopy(self.indata['Raster'])
+        data2 = []
+
+        for i, datai in enumerate(data):
+            self.showprocesslog(datai.dataid+':')
+
+            agcdata = agc(datai.data, self.wsize, atype, piter=self.piter)
+            data2.append(copy.deepcopy(datai))
+            data2[-1].data = agcdata
+            data2[-1].dataid += ' AGC'
+
+        self.outdata['Raster'] = data2
+        self.showprocesslog('Finished!')
+
+        return True
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        self.sb_wsize.setValue(projdata['wsize'])
+        self.sb_dh.setValue(projdata['vheight'])
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['wsize'] = self.sb_wsize.value()
+        projdata['vheight'] = self.sb_dh.value()
+
+        return projdata
+
+
+def agc(data, wsize, atype='mean', piter=iter):
+    """
+    AGC for map data, based on code by Gordon Cooper.
+
+    Parameters
+    ----------
+    data : numpy array
+        Raster data.
+    wsize : int
+        Window size, must be odd.
+    atype : str
+        AGC type - can be median or mean.
+
+    Returns
+    -------
+    agcdata : numpy array
+        Output AGC data
+    """
+    data = data.copy()-data.min()
+    nr, nc = data.shape
+
+    weight = np.ones((nr, nc))
+    w2 = int(np.floor(wsize/2))
+
+    for i in piter(range(w2, nr-w2)):
+        for j in range(w2, nc-w2):
+            w = data[i-w2:i+w2+1, j-w2:j+w2+1]
+            if atype == 'mean':
+                weight[i, j] = np.mean(np.abs(w))
+            elif atype == 'median':
+                weight[i, j] = np.median(np.abs(w))
+            elif atype == 'rms':
+                weight[i, j] = np.sqrt(np.mean(w**2))
+
+    agcdata = data/weight
+
+    return agcdata

@@ -80,6 +80,10 @@ class MenuWidget():
         self.menu.addAction(self.action_smoothing)
         self.action_smoothing.triggered.connect(self.smoothing)
 
+        self.action_agc = QtWidgets.QAction('Automatic Gain Control')
+        self.menu.addAction(self.action_agc)
+        self.action_agc.triggered.connect(self.agc)
+
         self.action_normalisation = QtWidgets.QAction('Normalisation')
         self.menu.addAction(self.action_normalisation)
         self.action_normalisation.triggered.connect(self.norm_data)
@@ -239,6 +243,10 @@ class MenuWidget():
     def smoothing(self):
         """Smoothing of Data."""
         self.parent.item_insert('Step', 'Smoothing', smooth.Smooth)
+
+    def agc(self):
+        """Compute AGC."""
+        self.parent.item_insert('Step', 'AGC', cooper.AGC)
 
     def visibility(self):
         """Compute visibility."""
