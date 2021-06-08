@@ -58,6 +58,7 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
+from matplotlib.colors import ListedColormap
 
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
@@ -133,6 +134,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.htype = 'Linear'
         self.hstype = 'Linear'
         self.cbar = cm.get_cmap('jet')
+        self.newcmp = self.cbar
+        self.fullhist = False
         self.data = []
         self.sdata = []
         self.gmode = None
@@ -149,8 +152,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.bbox_hist_blue = None
         self.shade = False
         self.ccbar = None
-        self.clipperc = 0.0
+        self.clippercu = 0.0
+        self.clippercl = 0.0
         self.flagresize = False
+        self.clipvalu = [None, None, None]
+        self.clipvall = [None, None, None]
 
         gspc = gridspec.GridSpec(3, 4)
         self.axes = fig.add_subplot(gspc[0:, 1:])
@@ -292,6 +298,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 self.figure.canvas.restore_region(self.bbox_hist_red)
                 self.argb[0].draw_artist(self.htxt[0])
                 self.argb[0].draw_artist(self.hhist[0][2][bnum])
+                self.argb[0].draw_artist(self.clipvalu[0])
+                self.argb[0].draw_artist(self.clipvall[0])
                 self.figure.canvas.update()
 
             if 'Ternary' in self.gmode:
@@ -303,6 +311,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 for j in range(3):
                     self.argb[j].draw_artist(self.htxt[j])
                     self.argb[j].draw_artist(self.hhist[j][2][bnum[j]])
+                    if self.clipvalu[j] is not None:
+                        self.argb[j].draw_artist(self.clipvalu[j])
+                    if self.clipvall[j] is not None:
+                        self.argb[j].draw_artist(self.clipvall[j])
 
                 self.figure.canvas.update()
 
@@ -324,8 +336,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if self.htype == 'Histogram Equalization':
             dat = histeq(dat)
-        elif self.clipperc > 0.:
-            dat = histcomp(dat, perc=self.clipperc)
+        elif self.clippercl > 0. or self.clippercu > 0.:
+            dat, _, _ = histcomp(dat, perc=self.clippercl, uperc=self.clippercu)
 
         self.image.set_data(dat)
 
@@ -422,8 +434,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        zval : numpy array
-            Data values.
+        zval : float
+            Data value.
         hno : int, optional
             Histogram number. The default is 0.
 
@@ -438,7 +450,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         binave = np.arange(0, 1, 1/(bins.size-2))
 
         if hno == 0:
-            bincol = self.cbar(binave)
+            # bincol = self.cbar(binave)
+            bincol = self.newcmp(binave)
         else:
             bincol = cm.get_cmap('gray')(binave)
 
@@ -506,14 +519,20 @@ class MyMplCanvas(FigureCanvasQTAgg):
         mask = np.logical_or(red.mask, green.mask)
         mask = np.logical_or(mask, blue.mask)
 
+        lclip = [0, 0, 0]
+        uclip = [0, 0, 0]
+
         if self.htype == 'Histogram Equalization':
             red = histeq(red)
             green = histeq(green)
             blue = histeq(blue)
-        elif self.clipperc > 0.:
-            red = histcomp(red, perc=self.clipperc)
-            green = histcomp(green, perc=self.clipperc)
-            blue = histcomp(blue, perc=self.clipperc)
+        elif self.clippercl > 0. or self.clippercu > 0.:
+            red, lclip[0], uclip[0] = histcomp(red, perc=self.clippercl,
+                                               uperc=self.clippercu)
+            green, lclip[1], uclip[1] = histcomp(green, perc=self.clippercl,
+                                                 uperc=self.clippercu)
+            blue, lclip[2], uclip[2] = histcomp(blue, perc=self.clippercl,
+                                                uperc=self.clippercu)
 
         colormap = np.ma.ones((red.shape[0], red.shape[1], 4))
         colormap[:, :, 0] = norm2(red)
@@ -534,8 +553,16 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.image.set_data(colormap)
 
+
         for i, hdata in enumerate([red, green, blue]):
-            self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
+            if (self.clippercu > 0. or self.clippercl > 0.) and self.fullhist is True:
+                self.hhist[i] = self.argb[i].hist(dat[i].compressed(), 50,
+                                                  ec='none')
+                self.clipvall[i] = self.argb[i].axvline(lclip[i], ls='--')
+                self.clipvalu[i] = self.argb[i].axvline(uclip[i], ls='--')
+
+            else:
+                self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
                                               ec='none')
             self.htxt[i] = self.argb[i].text(0., 0., '', ha='right', va='top')
 
@@ -580,11 +607,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 pseudo = i.data.copy()
 
         mask = np.ma.getmaskarray(pseudo)
+        pseudoold = pseudo.copy()
 
+        lclip = pseudo.min()
+        uclip = pseudo.max()
         if self.htype == 'Histogram Equalization':
             pseudo = histeq(pseudo)
-        elif self.clipperc > 0.:
-            pseudo = histcomp(pseudo, perc=self.clipperc)
+        elif self.clippercl > 0. or self.clippercu > 0.:
+            pseudo, lclip, uclip = histcomp(pseudo, perc=self.clippercl,
+                                            uperc=self.clippercu)
 
         colormap = self.cbar(norm2(pseudo))
 
@@ -597,10 +628,30 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.image.set_data(colormap)
 
-        self.hhist[0] = self.argb[0].hist(pseudo.compressed(), 50, ec='none')
+        self.newcmp = self.cbar
+        if (self.clippercu > 0. or self.clippercl > 0.) and self.fullhist is True:
+            tmp = np.histogram(pseudoold.compressed(), 50)[1]
+            filt = (tmp > lclip) & (tmp < uclip)
+            bcnt = np.sum(filt)
+
+            cols = self.cbar(np.linspace(0, 1, bcnt))
+            tmp = np.nonzero(filt)
+
+            tmp1 = np.vstack(([cols[0]]*tmp[0][0], cols,
+                              [cols[-1]]*(49-tmp[0][-1])))
+            self.newcmp = ListedColormap(tmp1)
+            self.hhist[0] = self.argb[0].hist(pseudoold.compressed(), 50,
+                                              ec='none')
+        else:
+            self.hhist[0] = self.argb[0].hist(pseudo.compressed(), 50,
+                                              ec='none')
+
         self.htxt[0] = self.argb[0].text(0.0, 0.0, '', ha='right', va='top')
         self.argb[0].set_xlim(self.hhist[0][1].min(), self.hhist[0][1].max())
         self.argb[0].set_ylim(0, self.hhist[0][0].max()*1.2)
+
+        self.clipvall[0] = self.argb[0].axvline(lclip, ls='--')
+        self.clipvalu[0] = self.argb[0].axvline(uclip, ls='--')
 
         self.update_hist_single()
         self.axes.draw_artist(self.image)
@@ -723,13 +774,15 @@ class PlotInterp(QtWidgets.QDialog):
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
         self.btn_saveimg = QtWidgets.QPushButton('Save GeoTiff')
+        self.chk_histtype = QtWidgets.QCheckBox('Full histogram with clip lines')
         self.cbox_dtype = QtWidgets.QComboBox()
         self.cbox_band1 = QtWidgets.QComboBox()
         self.cbox_band2 = QtWidgets.QComboBox()
         self.cbox_band3 = QtWidgets.QComboBox()
         self.cbox_bands = QtWidgets.QComboBox()
         self.cbox_htype = QtWidgets.QComboBox()
-        self.lineclip = QtWidgets.QLineEdit()
+        self.lineclipu = QtWidgets.QLineEdit()
+        self.lineclipl = QtWidgets.QLineEdit()
         # self.cbox_hstype = QtWidgets.QComboBox()
         self.cbox_cbar = QtWidgets.QComboBox(self)
         self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # cmyK
@@ -826,7 +879,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider.setValue(1)
 
         # self.lineclip.setInputMask('00.0')
-        self.lineclip.setPlaceholderText('Percent Clip (0 Default)')
+        self.lineclipu.setPlaceholderText('Upper Percent Clip (0 Default)')
+        self.lineclipl.setPlaceholderText('Lower Percent Clip (0 Default)')
         self.btn_saveimg.setAutoDefault(False)
         helpdocs.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
@@ -855,7 +909,9 @@ class PlotInterp(QtWidgets.QDialog):
         vbl_raster.addWidget(gbox2)
 
         v3.addWidget(self.cbox_htype)
-        v3.addWidget(self.lineclip)
+        v3.addWidget(self.lineclipl)
+        v3.addWidget(self.lineclipu)
+        v3.addWidget(self.chk_histtype)
         v3.addWidget(btn_apply)
         v3.addWidget(self.labelc)
         v3.addWidget(self.cbox_cbar)
@@ -889,7 +945,9 @@ class PlotInterp(QtWidgets.QDialog):
         self.btn_saveimg.clicked.connect(self.save_img)
         self.gbox_sun.clicked.connect(self.change_dtype)
         btn_apply.clicked.connect(self.change_lclip)
-        self.lineclip.returnPressed.connect(self.change_lclip)
+        self.lineclipu.returnPressed.connect(self.change_lclip_upper)
+        self.lineclipl.returnPressed.connect(self.change_lclip_lower)
+        self.chk_histtype.clicked.connect(self.change_dtype)
 
         if self.parent is not None:
             self.resize(self.parent.width(), self.parent.height())
@@ -903,7 +961,19 @@ class PlotInterp(QtWidgets.QDialog):
         None.
 
         """
-        txt = self.lineclip.text()
+        self.change_lclip_lower()
+        self.change_lclip_upper()
+
+    def change_lclip_upper(self):
+        """
+        Change the linear clip percentage.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = self.lineclipu.text()
 
         try:
             clip = float(txt)
@@ -911,13 +981,40 @@ class PlotInterp(QtWidgets.QDialog):
             if txt == '':
                 clip = 0.0
             else:
-                clip = self.mmc.clipperc
-            self.lineclip.setText(str(clip))
+                clip = self.mmc.clippercu
+            self.lineclipu.setText(str(clip))
 
         if clip < 0.0 or clip >= 100.0:
-            clip = self.mmc.clipperc
-            self.lineclip.setText(str(clip))
-        self.mmc.clipperc = clip
+            clip = self.mmc.clippercu
+            self.lineclipu.setText(str(clip))
+        self.mmc.clippercu = clip
+
+        self.change_dtype()
+
+    def change_lclip_lower(self):
+        """
+        Change the linear clip percentage.
+
+        Returns
+        -------
+        None.
+
+        """
+        txt = self.lineclipl.text()
+
+        try:
+            clip = float(txt)
+        except ValueError:
+            if txt == '':
+                clip = 0.0
+            else:
+                clip = self.mmc.clippercl
+            self.lineclipl.setText(str(clip))
+
+        if clip < 0.0 or clip >= 100.0:
+            clip = self.mmc.clippercl
+            self.lineclipl.setText(str(clip))
+        self.mmc.clippercl = clip
 
         self.change_dtype()
 
@@ -961,6 +1058,7 @@ class PlotInterp(QtWidgets.QDialog):
         txt = str(self.cbox_dtype.currentText())
         self.mmc.gmode = txt
         self.cbox_band1.show()
+        self.mmc.fullhist = self.chk_histtype.isChecked()
 
         if txt == 'Single Color Map':
             # self.slabel.hide()
@@ -1068,6 +1166,14 @@ class PlotInterp(QtWidgets.QDialog):
 
         """
         txt = str(self.cbox_htype.currentText())
+
+        if txt == 'Histogram Equalization':
+            self.lineclipl.hide()
+            self.lineclipu.hide()
+        else:
+            self.lineclipl.show()
+            self.lineclipu.show()
+
         self.mmc.htype = txt
         self.mmc.init_graph()
 
@@ -1269,7 +1375,7 @@ class PlotInterp(QtWidgets.QDialog):
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
             elif clipperc > 0.:
-                pseudo = histcomp(pseudo, perc=clipperc)
+                pseudo, _, _ = histcomp(pseudo, perc=clipperc)
 
             cmin = pseudo.min()
             cmax = pseudo.max()
@@ -1305,9 +1411,9 @@ class PlotInterp(QtWidgets.QDialog):
                 green = histeq(green)
                 blue = histeq(blue)
             elif clipperc > 0.:
-                red = histcomp(red, perc=clipperc)
-                green = histcomp(green, perc=clipperc)
-                blue = histcomp(blue, perc=clipperc)
+                red, _, _ = histcomp(red, perc=clipperc)
+                green, _, _ = histcomp(green, perc=clipperc)
+                blue, _, _ = histcomp(blue, perc=clipperc)
 
             cmin = red.min()
             cmax = red.max()
@@ -1334,7 +1440,7 @@ class PlotInterp(QtWidgets.QDialog):
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
             elif clipperc > 0.:
-                pseudo = histcomp(pseudo, perc=clipperc)
+                pseudo, _, _ = histcomp(pseudo, perc=clipperc)
 
             cmin = pseudo.min()
             cmax = pseudo.max()
@@ -1657,7 +1763,7 @@ def currentshader(data, cell, theta, phi, alpha):
     return R
 
 
-def histcomp(img, nbr_bins=None, perc=5.):
+def histcomp(img, nbr_bins=None, perc=5., uperc=None):
     """
     Histogram Compaction.
 
@@ -1670,12 +1776,22 @@ def histcomp(img, nbr_bins=None, perc=5.):
         data to compact
     nbr_bins : int
         number of bins to use in compaction
+    perc : float
+        percentage of histogram to clip. If uperc is not None, then this is
+        the lower percentage
+    uperc : float
+        upper percentage to clip. If uperc is None, then it is set to the
+        same value as perc
 
     Returns
     -------
     img2 : numpy array
         compacted array
     """
+
+    if uperc is None:
+        uperc = perc
+
     if nbr_bins is None:
         nbr_bins = max(img.shape)
         nbr_bins = max(nbr_bins, 256)
@@ -1691,12 +1807,13 @@ def histcomp(img, nbr_bins=None, perc=5.):
     cdf = cdf / float(cdf[-1])  # normalize
 
     perc = perc/100.
+    uperc = uperc/100.
 
     sindx = np.arange(nbr_bins)[cdf > perc][0]
-    if cdf[0] > (1-perc):
+    if cdf[0] > (1-uperc):
         eindx = 1
     else:
-        eindx = np.arange(nbr_bins)[cdf < (1-perc)][-1]+1
+        eindx = np.arange(nbr_bins)[cdf < (1-uperc)][-1]+1
     svalue = bins[sindx]
     evalue = bins[eindx]
 
@@ -1710,8 +1827,8 @@ def histcomp(img, nbr_bins=None, perc=5.):
     img2[filt] = evalue
 
     img2 = np.ma.array(img2, mask=imask)
-# use linear interpolation of cdf to find new pixel values
-    return img2
+
+    return img2, svalue, evalue
 
 
 def histeq(img, nbr_bins=32768):
@@ -1736,7 +1853,7 @@ def histeq(img, nbr_bins=32768):
     """
     # get image histogram
     imhist, bins = np.histogram(img.compressed(), nbr_bins)
-    bins = (bins[1:]-bins[:-1])/2+bins[:-1]
+    bins = (bins[1:]-bins[:-1])/2+bins[:-1] # get bin center point
 
     cdf = imhist.cumsum()  # cumulative distribution function
     cdf = cdf - cdf[0]  # subtract min, which is first val in cdf
