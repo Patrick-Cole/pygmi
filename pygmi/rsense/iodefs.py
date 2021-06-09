@@ -193,7 +193,8 @@ class ImportData():
             if self.ifile == '':
                 return False
         os.chdir(os.path.dirname(self.ifile))
-        dat = get_data(self.ifile, piter, self.showprocesslog)
+
+        dat = get_data(self.ifile, piter, self.showprocesslog, self.extscene)
 
         if dat is None:
             if self.filt == 'hdf (*.hdf *.h5)':
@@ -822,7 +823,7 @@ def calculate_toa(dat, showprocesslog=print):
     return out
 
 
-def get_data(ifile, piter=iter, showprocesslog=print):
+def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
     """
     Load a raster dataset off the disk using the GDAL libraries.
 
@@ -836,6 +837,8 @@ def get_data(ifile, piter=iter, showprocesslog=print):
         Progress bar iterable. Default is iter
     showprogresslog : print, optional
         Routine for displaying messages. Default is print
+    extscene : str or None
+        String used currently to give an option to limit bands in Sentinel-2
 
     Returns
     -------
@@ -854,7 +857,7 @@ def get_data(ifile, piter=iter, showprocesslog=print):
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']:
         dat = get_landsat(ifile, piter, showprocesslog)
     elif '.xml' in bfile and '.SAFE' in ifile:
-        dat = get_sentinel2(ifile, piter, showprocesslog)
+        dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
     elif 'MOD' in bfile and 'hdf' in bfile.lower() and '.006.' in bfile:
         dat = get_modisv6(ifile, piter)
     else:
@@ -1225,7 +1228,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     return dat
 
 
-def get_sentinel2(ifile, piter=iter, showprocesslog=print):
+def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
     """
     Get Sentinel-2 Data.
 
@@ -1237,6 +1240,8 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
         Progress bar iterable. Default is iter
     showprogresslog : print, optional
         Routine for displaying messages. Default is print
+    extscene : str or None
+        String used currently to give an option to limit bands in Sentinel-2
 
     Returns
     -------
@@ -1263,6 +1268,11 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print):
             rtmp = dataset.GetRasterBand(i+1)
             bname = rtmp.GetDescription()
             bmeta = rtmp.GetMetadata()
+
+            if (extscene == 'Sentinel-2 Bands Only (*.xml);;' and
+                    'central wavelength' not in bname.lower()):
+                continue
+
             if 'WAVELENGTH' in bmeta and 'BANDWIDTH' in bmeta:
                 wlen = float(bmeta['WAVELENGTH'])
                 bwidth = float(bmeta['BANDWIDTH'])

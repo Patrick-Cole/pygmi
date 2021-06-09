@@ -73,6 +73,10 @@ class MenuWidget():
         self.menu3.addAction(self.action_import_sentinel2)
         self.action_import_sentinel2.triggered.connect(self.import_sentinel2)
 
+        self.action_import_sentinel2b = QtWidgets.QAction('Import Sentinel-2 (bands only)')
+        self.menu3.addAction(self.action_import_sentinel2b)
+        self.action_import_sentinel2b.triggered.connect(self.import_sentinel2b)
+
         self.action_import_sentinel5p = QtWidgets.QAction('Import Sentinel-5P')
         self.menu3.addAction(self.action_import_sentinel5p)
         self.action_import_sentinel5p.triggered.connect(self.import_sentinel5p)
@@ -159,6 +163,11 @@ class MenuWidget():
         """Import Sentinel 2 data."""
         self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
                                 params='Sentinel-2 (*.xml);;')
+
+    def import_sentinel2b(self):
+        """Import Sentinel 2 data."""
+        self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
+                                params='Sentinel-2 Bands Only (*.xml);;')
 
     def import_modis(self):
         """Import MODIS data."""
