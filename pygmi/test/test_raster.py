@@ -198,7 +198,7 @@ def test_histcomp():
             [0.0, 1.0, 1.9921875, 1.0],
             [0.0, 1.0, 1.9921875, 1.0]]
 
-    dat = ginterp.histcomp(data)
+    dat, _, _ = ginterp.histcomp(data)
     np.testing.assert_array_equal(dat, dat2)
 
 

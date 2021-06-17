@@ -6,7 +6,7 @@ v3.2.3.0, 01 June 2021
 ----------------------
 *Cluster - reports when no classes are found.
 *Segmentation - now has DBSCAN for grouping segments
-*Raster cut - will give a better error when teh polygon is not overlapping the data
+*Raster cut - will give a better error when the polygon is not overlapping the data
 *Added *.tiff as opposed to *.tif to imports
 *Fixed some display bugs with ginterp.
 *Fixed a big with integer datasets when smoothing

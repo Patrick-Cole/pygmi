@@ -546,6 +546,9 @@ def _testfn():
     from pygmi.raster.datatypes import Data
     from pygmi.misc import PTime
     from pygmi.raster import iodefs
+    from matplotlib import rcParams
+
+    rcParams['figure.dpi'] = 300
 
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
@@ -556,6 +559,7 @@ def _testfn():
     # data1 = data1[:, :300]  # 26
 
     plt.imshow(data1)
+    plt.axis('off')
     plt.show()
 
     wcolor = 0.5
@@ -573,9 +577,9 @@ def _testfn():
 
     data = [b1, b2, b3]
 
-    ifile = r'E:\Workdata\testdata.hdr'
+    # ifile = r'E:\Workdata\testdata.hdr'
 
-    data = iodefs.get_raster(ifile)
+    # data = iodefs.get_raster(ifile)
 
     ttt = PTime()
     IS = ImageSeg()
@@ -587,6 +591,7 @@ def _testfn():
     odata = IS.outdata['Raster'][0]
 
     plt.imshow(odata.data)
+    plt.axis('off')
     plt.show()
 
     # means = []
@@ -613,9 +618,6 @@ def _testfn():
     # plt.imshow(data2, cmap='inferno')
     # plt.colorbar()
     # plt.show()
-
-    breakpoint()
-
 
     # omap = segment1(data1, scale=scale, wcolor=wcolor,
     #                 wcompact=wcompact, doshape=doshape)
