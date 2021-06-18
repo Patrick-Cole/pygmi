@@ -73,6 +73,7 @@ class EquationEditor(QtWidgets.QDialog):
         self.textbrowser = QtWidgets.QTextEdit()
         self.textbrowser2 = QtWidgets.QTextBrowser()
         self.label = QtWidgets.QLabel(': iall')
+        self.dtype = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -87,7 +88,11 @@ class EquationEditor(QtWidgets.QDialog):
         """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
+        label_1 = QtWidgets.QLabel('Data Band Key:')
         label_2 = QtWidgets.QLabel('Output Equation:')
+        label_3 = QtWidgets.QLabel('Output Data Type:')
+        self.dtype.addItems(['auto', 'uint8', 'int16', 'int32',
+                             'float32', 'float64'])
 
         self.textbrowser.setEnabled(True)
         self.resize(600, 480)
@@ -137,10 +142,13 @@ class EquationEditor(QtWidgets.QDialog):
 
         gridlayout.addWidget(label_2, 0, 0, 1, 1)
         gridlayout.addWidget(self.textbrowser, 1, 0, 1, 2)
+        gridlayout.addWidget(label_1, 3, 0, 1, 1)
         gridlayout.addWidget(self.combobox, 4, 0, 1, 1)
         gridlayout.addWidget(self.label, 4, 1, 1, 1)
-        gridlayout.addWidget(self.textbrowser2, 5, 0, 1, 2)
-        gridlayout.addWidget(buttonbox, 6, 0, 1, 2)
+        gridlayout.addWidget(self.dtype, 6, 0, 1, 1)
+        gridlayout.addWidget(label_3, 5, 0, 1, 1)
+        gridlayout.addWidget(self.textbrowser2, 7, 0, 1, 2)
+        gridlayout.addWidget(buttonbox, 8, 0, 1, 2)
 
         self.combobox.currentIndexChanged.connect(self.combo)
         buttonbox.accepted.connect(self.accept)
@@ -354,10 +362,13 @@ class EquationEditor(QtWidgets.QDialog):
                                                   indata[i].nullvalue)
             outdata[-1].nullvalue = indata[i].nullvalue
 
+        dtype = self.dtype.currentText()
         # This is needed to get rid of bad, unmasked values etc.
         for i, outdatai in enumerate(outdata):
             outdatai.data.set_fill_value(indata[i].nullvalue)
             outdatai.data = np.ma.fix_invalid(outdatai.data)
+            if dtype != 'auto':
+                outdatai.data = outdatai.data.astype(dtype)
 
         if len(outdata) == 1:
             outdata[0].dataid = self.equation
