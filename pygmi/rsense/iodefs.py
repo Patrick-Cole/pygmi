@@ -856,7 +856,7 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
         dat = get_aster_zip(ifile, piter, showprocesslog)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']:
         dat = get_landsat(ifile, piter, showprocesslog)
-    elif '.xml' in bfile and '.SAFE' in ifile:
+    elif ('.xml' in bfile and '.SAFE' in ifile) or 'Sentinel-2' in extscene:
         dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
     elif 'MOD' in bfile and 'hdf' in bfile.lower() and '.006.' in bfile:
         dat = get_modisv6(ifile, piter)
@@ -1269,7 +1269,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
             bname = rtmp.GetDescription()
             bmeta = rtmp.GetMetadata()
 
-            if (extscene == 'Sentinel-2 Bands Only (*.xml);;' and
+            if ('Sentinel-2 Bands Only' in extscene and
                     'central wavelength' not in bname.lower()):
                 continue
 

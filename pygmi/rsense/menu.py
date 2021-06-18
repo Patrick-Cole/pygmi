@@ -162,12 +162,12 @@ class MenuWidget():
     def import_sentinel2(self):
         """Import Sentinel 2 data."""
         self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
-                                params='Sentinel-2 (*.xml);;')
+                                params='Sentinel-2 (*.xml *.zip);;')
 
     def import_sentinel2b(self):
         """Import Sentinel 2 data."""
         self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
-                                params='Sentinel-2 Bands Only (*.xml);;')
+                                params='Sentinel-2 Bands Only (*.xml *.zip);;')
 
     def import_modis(self):
         """Import MODIS data."""
