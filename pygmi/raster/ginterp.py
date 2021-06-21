@@ -337,7 +337,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if self.htype == 'Histogram Equalization':
             dat = histeq(dat)
         elif self.clippercl > 0. or self.clippercu > 0.:
-            dat, _, _ = histcomp(dat, perc=self.clippercl, uperc=self.clippercu)
+            dat, _, _ = histcomp(dat, perc=self.clippercl,
+                                 uperc=self.clippercu)
 
         self.image.set_data(dat)
 
@@ -553,9 +554,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.image.set_data(colormap)
 
-
         for i, hdata in enumerate([red, green, blue]):
-            if (self.clippercu > 0. or self.clippercl > 0.) and self.fullhist is True:
+            if ((self.clippercu > 0. or self.clippercl > 0.) and
+                    self.fullhist is True):
                 self.hhist[i] = self.argb[i].hist(dat[i].compressed(), 50,
                                                   ec='none')
                 self.clipvall[i] = self.argb[i].axvline(lclip[i], ls='--')
@@ -563,7 +564,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             else:
                 self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
-                                              ec='none')
+                                                  ec='none')
             self.htxt[i] = self.argb[i].text(0., 0., '', ha='right', va='top')
 
             self.argb[i].set_xlim(self.hhist[i][1].min(),
@@ -629,7 +630,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.image.set_data(colormap)
 
         self.newcmp = self.cbar
-        if (self.clippercu > 0. or self.clippercl > 0.) and self.fullhist is True:
+        if ((self.clippercu > 0. or self.clippercl > 0.) and
+                self.fullhist is True):
             tmp = np.histogram(pseudoold.compressed(), 50)[1]
             filt = (tmp > lclip) & (tmp < uclip)
             bcnt = np.sum(filt)
@@ -774,7 +776,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.mmc = MyMplCanvas(self)
         self.msc = MySunCanvas(self)
         self.btn_saveimg = QtWidgets.QPushButton('Save GeoTiff')
-        self.chk_histtype = QtWidgets.QCheckBox('Full histogram with clip lines')
+        self.chk_histtype = QtWidgets.QCheckBox('Full histogram with clip '
+                                                'lines')
         self.cbox_dtype = QtWidgets.QComboBox()
         self.cbox_band1 = QtWidgets.QComboBox()
         self.cbox_band2 = QtWidgets.QComboBox()
@@ -1364,7 +1367,8 @@ class PlotInterp(QtWidgets.QDialog):
                 return False
 
         htype = str(self.cbox_htype.currentText())
-        clipperc = self.mmc.clipperc
+        clippercl = self.mmc.clippercl
+        clippercu = self.mmc.clippercu
 
         if dtype == 'Single Color Map':
 
@@ -1374,8 +1378,9 @@ class PlotInterp(QtWidgets.QDialog):
 
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
-            elif clipperc > 0.:
-                pseudo, _, _ = histcomp(pseudo, perc=clipperc)
+            elif clippercl > 0. or clippercu > 0.:
+                pseudo, _, _ = histcomp(pseudo, perc=clippercl,
+                                        uperc=clippercu)
 
             cmin = pseudo.min()
             cmax = pseudo.max()
@@ -1410,10 +1415,10 @@ class PlotInterp(QtWidgets.QDialog):
                 red = histeq(red)
                 green = histeq(green)
                 blue = histeq(blue)
-            elif clipperc > 0.:
-                red, _, _ = histcomp(red, perc=clipperc)
-                green, _, _ = histcomp(green, perc=clipperc)
-                blue, _, _ = histcomp(blue, perc=clipperc)
+            elif clippercl > 0. or clippercu > 0.:
+                red, _, _ = histcomp(red, perc=clippercl, uperc=clippercu)
+                green, _, _ = histcomp(green, perc=clippercl, uperc=clippercu)
+                blue, _, _ = histcomp(blue, perc=clippercl, uperc=clippercu)
 
             cmin = red.min()
             cmax = red.max()
@@ -1439,8 +1444,9 @@ class PlotInterp(QtWidgets.QDialog):
             pseudo = self.mmc.image._full_res.copy()
             if htype == 'Histogram Equalization':
                 pseudo = histeq(pseudo)
-            elif clipperc > 0.:
-                pseudo, _, _ = histcomp(pseudo, perc=clipperc)
+            elif clippercl > 0. or clippercu > 0.:
+                pseudo, _, _ = histcomp(pseudo, perc=clippercl,
+                                        uperc=clippercu)
 
             cmin = pseudo.min()
             cmax = pseudo.max()
@@ -1853,7 +1859,7 @@ def histeq(img, nbr_bins=32768):
     """
     # get image histogram
     imhist, bins = np.histogram(img.compressed(), nbr_bins)
-    bins = (bins[1:]-bins[:-1])/2+bins[:-1] # get bin center point
+    bins = (bins[1:]-bins[:-1])/2+bins[:-1]  # get bin center point
 
     cdf = imhist.cumsum()  # cumulative distribution function
     cdf = cdf - cdf[0]  # subtract min, which is first val in cdf
