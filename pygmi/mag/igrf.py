@@ -278,7 +278,9 @@ class IGRF(QtWidgets.QDialog):
 
         self.proj.set_current(self.wkt)
 
-        data = dp.merge(self.indata['Raster'])
+        # data = dp.merge(self.indata['Raster'])
+        data = self.indata['Raster']
+
         self.combobox_dtm.clear()
         self.combobox_mag.clear()
         for i in data:
@@ -331,10 +333,20 @@ class IGRF(QtWidgets.QDialog):
                 irec_pos.append(fileline)
 
         i = self.combobox_mag.currentIndex()
-        maggrid = data[i]
 
-        i = self.combobox_dtm.currentIndex()
-        data = data[i]
+        for i in data:
+            if i.dataid == self.combobox_mag.currentText():
+                dxy = min(i.xdim, i.ydim)
+
+        data = dp.merge(data, dxy=dxy, piter=self.piter,
+                        pprint=self.showprocesslog)
+
+        for i in data:
+            if i.dataid == self.combobox_mag.currentText():
+                maggrid = i
+            if i.dataid == self.combobox_dtm.currentText():
+                data = i
+
         altgrid = data.data.flatten() * 0.001  # in km
 
         maxyr = max(yrmax)
