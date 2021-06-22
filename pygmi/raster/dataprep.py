@@ -2156,6 +2156,12 @@ def merge(dat, piter=iter, dxy=None, pprint=print):
         dat2.append(gdal_to_dat(dest, data.dataid))
         dat2[-1].metadata = data.metadata
         dat2[-1].data = dat2[-1].data + doffset
+
+        dat2[-1].nullvalue = data.nullvalue
+        dat2[-1].data.set_fill_value(data.nullvalue)
+        dat2[-1].data = np.ma.array(dat2[-1].data.filled(),
+                                    mask=dat2[-1].data.mask)
+
         data.data = data.data + doffset
 
     out = check_dataid(dat2)
