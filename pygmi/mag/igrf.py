@@ -338,6 +338,7 @@ class IGRF(QtWidgets.QDialog):
             if i.dataid == self.combobox_mag.currentText():
                 dxy = min(i.xdim, i.ydim)
 
+        # breakpoint()
         data = dp.merge(data, dxy=dxy, piter=self.piter,
                         pprint=self.showprocesslog)
 
@@ -431,7 +432,7 @@ class IGRF(QtWidgets.QDialog):
         bname = bname + 'F:{0:.2f} I:{1:.2f} D:{2:.2f}'
         bname = bname.format(fmean, imean, dmean)
 
-        self.outdata['Raster'] = copy.deepcopy(self.indata['Raster'])
+        self.outdata['Raster'] = []  # copy.deepcopy(self.indata['Raster'])
 
         igrf_F = np.ma.array(igrf_F)
         igrf_F.shape = data.data.shape
