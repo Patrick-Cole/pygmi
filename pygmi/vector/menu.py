@@ -76,7 +76,7 @@ class MenuWidget():
 
         self.menufile.addSeparator()
 
-        self.action_grid = QtWidgets.QAction('Grid Point Data (Linear)')
+        self.action_grid = QtWidgets.QAction('Grid Point Data')
         self.menufile.addAction(self.action_grid)
         self.action_grid.triggered.connect(self.grid)
 

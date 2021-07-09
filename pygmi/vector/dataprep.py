@@ -30,10 +30,12 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import matplotlib.path as mplPath
 from osgeo import osr, ogr
+from scipy.interpolate import griddata
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.dataprep import GroupProj
 from pygmi.raster.datatypes import Data
+from pygmi.vector.minc import minc
 
 
 class PointCut():
@@ -176,10 +178,13 @@ class DataGrid(QtWidgets.QDialog):
 
         self.dsb_dxy = QtWidgets.QLineEdit('1.0')
         self.dsb_null = QtWidgets.QLineEdit('0.0')
+        self.bdist = QtWidgets.QLineEdit('4.0')
 
         self.dataid = QtWidgets.QComboBox()
+        self.grid_method = QtWidgets.QComboBox()
         self.label_rows = QtWidgets.QLabel('Rows: 0')
         self.label_cols = QtWidgets.QLabel('Columns: 0')
+        self.label_bdist = QtWidgets.QLabel('Blanking Distance:')
 
         self.setupui()
 
@@ -198,6 +203,7 @@ class DataGrid(QtWidgets.QDialog):
         label_band = QtWidgets.QLabel('Column to Grid:')
         label_dxy = QtWidgets.QLabel('Cell Size:')
         label_null = QtWidgets.QLabel('Null Value:')
+        label_method = QtWidgets.QLabel('Gridding Method:')
 
         val = QtGui.QDoubleValidator(0.0000001, 9999999999.0, 9)
         val.setNotation(QtGui.QDoubleValidator.ScientificNotation)
@@ -206,30 +212,44 @@ class DataGrid(QtWidgets.QDialog):
         self.dsb_dxy.setValidator(val)
         self.dsb_null.setValidator(val)
 
+        # self.grid_method.addItems(['Quick Grid', 'Nearest Neighbour',
+        #                            'Linear', 'Cubic', 'Minimum Curvature'])
+
+        self.grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
+                                   'Minimum Curvature'])
+
+        self.label_bdist.hide()
+        self.bdist.hide()
+
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle('Dataset Gridding')
 
-        gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
-        gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
-        gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
-        gridlayout_main.addWidget(label_band, 3, 0, 1, 1)
-        gridlayout_main.addWidget(self.dataid, 3, 1, 1, 1)
-        gridlayout_main.addWidget(label_null, 4, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_null, 4, 1, 1, 1)
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
+        gridlayout_main.addWidget(label_method, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.grid_method, 0, 1, 1, 1)
+        gridlayout_main.addWidget(label_dxy, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_dxy, 1, 1, 1, 1)
+        gridlayout_main.addWidget(self.label_rows, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.label_cols, 3, 0, 1, 2)
+        gridlayout_main.addWidget(label_band, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.dataid, 4, 1, 1, 1)
+        gridlayout_main.addWidget(label_null, 5, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_null, 5, 1, 1, 1)
+        gridlayout_main.addWidget(self.label_bdist, 6, 0, 1, 1)
+        gridlayout_main.addWidget(self.bdist, 6, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 7, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 7, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.dsb_dxy.textChanged.connect(self.dxy_change)
+        self.grid_method.currentIndexChanged.connect(self.grid_method_change)
 
     def dxy_change(self):
         """
-        When dxy is changed on the interface, this update rows and columns.
+        When dxy is changed on the interface, this updates rows and columns.
 
         Returns
         -------
@@ -254,6 +274,22 @@ class DataGrid(QtWidgets.QDialog):
 
         self.label_rows.setText('Rows: '+str(rows))
         self.label_cols.setText('Columns: '+str(cols))
+
+    def grid_method_change(self):
+        """
+        When grid method is changed, this updated hidden controls.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.grid_method.currentText() == 'Minimum Curvature':
+            self.label_bdist.show()
+            self.bdist.show()
+        else:
+            self.label_bdist.hide()
+            self.bdist.hide()
 
     def settings(self, nodialog=False):
         """
@@ -306,6 +342,14 @@ class DataGrid(QtWidgets.QDialog):
             if tmp != 1:
                 return False
 
+        try:
+            float(self.dsb_dxy.text())
+            float(self.dsb_null.text())
+            float(self.bdist.text())
+        except ValueError:
+            self.showprocesslog('Value Error')
+            return False
+
         self.acceptall()
 
         return True
@@ -329,6 +373,7 @@ class DataGrid(QtWidgets.QDialog):
         self.dataid_text = projdata['band']
         self.dsb_dxy.setText(projdata['dxy'])
         self.dsb_null.setText(projdata['nullvalue'])
+        self.bdist.setText(projdata['bdist'])
 
         self.dsb_dxy.textChanged.connect(self.dxy_change)
 #        self.dxy_change()
@@ -349,6 +394,7 @@ class DataGrid(QtWidgets.QDialog):
 
         projdata['dxy'] = self.dsb_dxy.text()
         projdata['nullvalue'] = self.dsb_null.text()
+        projdata['bdist'] = self.bdist.text()
         projdata['band'] = self.dataid_text
 
         return projdata
@@ -365,25 +411,53 @@ class DataGrid(QtWidgets.QDialog):
 
         """
         dxy = float(self.dsb_dxy.text())
+        method = self.grid_method.currentText()
         nullvalue = float(self.dsb_null.text())
+        bdist = float(self.bdist.text())
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
         data = data.dropna()
         newdat = []
+
+        if bdist < 1:
+            bdist = None
+            self.showprocesslog('Blanking distance too small.')
 
         filt = (data[self.dataid.currentText()] != nullvalue)
         x = data.pygmiX.values[filt]
         y = data.pygmiY.values[filt]
         z = data[self.dataid.currentText()].values[filt]
 
-        tmp = quickgrid(x, y, z, dxy, showprocesslog=self.showprocesslog)
-        mask = np.ma.getmaskarray(tmp)
-        gdat = tmp.data
+        if method == 'Minimum Curvature':
+            gdat = minc(x, y, z, dxy, showprocesslog=self.showprocesslog,
+                       bdist=bdist)
+            gdat = np.ma.filled(gdat, fill_value=nullvalue)
+        else:
+            extent = np.array([x.min(), x.max(), y.min(), y.max()])
+
+            rows = int((extent[3] - extent[2])/dxy+1)
+            cols = int((extent[1] - extent[0])/dxy+1)
+
+            xxx = np.linspace(extent[0], extent[1], cols)
+            yyy = np.linspace(extent[2], extent[3], rows)
+            xxx, yyy = np.meshgrid(xxx, yyy)
+
+            points = np.transpose([x.flatten(), y.flatten()])
+
+            if method == 'Nearest Neighbour':
+                gdat = griddata(points, z, (xxx, yyy), method='nearest')
+            elif method == 'Linear':
+                gdat = griddata(points, z, (xxx, yyy), method='linear',
+                                fill_value=nullvalue)
+            elif method == 'Cubic':
+                gdat = griddata(points, z, (xxx, yyy), method='cubic',
+                                fill_value=nullvalue)
+            gdat = gdat[::-1]
+        gdat = np.ma.masked_equal(gdat, nullvalue)
 
 # Create dataset
         dat = Data()
-        dat.data = np.ma.masked_invalid(gdat[::-1])
-        dat.data.mask = mask[::-1]
+        dat.data = gdat
         dat.nullvalue = nullvalue
         dat.dataid = self.dataid.currentText()
         dat.xdim = dxy
@@ -770,22 +844,35 @@ def _testfn():
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'D:\Workdata\vector\linecut\test2.csv'
-    sfile = r'D:\Workdata\vector\linecut\test2_cut_outline.shp'
+
+    ifile = r'C:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+
+    # ifile = r'D:\Workdata\vector\linecut\test2.csv'
+    # sfile = r'D:\Workdata\vector\linecut\test2_cut_outline.shp'
 
     IO = ImportLineData()
     IO.ifile = ifile
-    IO.filt = 'Comma Delimited (*.csv)'
+    # IO.filt = 'Comma Delimited (*.csv)'
+    IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
 
-    line = list(IO.outdata['Line'].values())
-    plt.plot(line[0].x, line[0].y)
+    # line = list(IO.outdata['Line'].values())
+    # plt.plot(line[0].x, line[0].y)
+    # plt.show()
+
+
+    DG = DataGrid()
+    DG.indata = IO.outdata
+    DG.settings()
+
+    dat = DG.outdata['Raster'][0].data
+
+    plt.imshow(dat)
     plt.show()
 
-
-    DR = DataReproj()
-    DR.indata = IO.outdata
-    DR.settings(True)
+    # DR = DataReproj()
+    # DR.indata = IO.outdata
+    # DR.settings(True)
 
     breakpoint()
 

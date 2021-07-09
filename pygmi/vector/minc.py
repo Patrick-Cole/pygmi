@@ -1,0 +1,547 @@
+# -----------------------------------------------------------------------------
+# Name:        minc.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2021 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+"""Minimum Curvature Grudding Routine."""
+
+from operator import itemgetter
+import numpy as np
+from numba import jit
+from scipy.interpolate import griddata
+from scipy.ndimage import distance_transform_edt
+
+from pygmi.misc import PTime
+
+
+def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
+         maxiters=100):
+    """Main."""
+    # Set extent
+    # extent = (left, right, bottom, top)
+
+    ttt = PTime()
+
+    if extent is None:
+        extent = [x.min(), x.max(), y.min(), y.max()]
+
+    extent = np.array(extent)
+
+    showprocesslog('Setting up grid...')
+
+    # Add buffer
+    extent[0] -= dxy*3
+    extent[1] += dxy*3
+    extent[2] -= dxy*3
+    extent[3] += dxy*3
+
+    rows = int((extent[3] - extent[2])/dxy+1)
+    cols = int((extent[1] - extent[0])/dxy+1)
+
+    dxy1 = dxy
+    for mult in [4, 2, 1]:
+        dxy = dxy1*mult
+
+    # Make new start grid
+
+    xxx = np.linspace(extent[0], extent[1], cols)
+    yyy = np.linspace(extent[2], extent[3], rows)
+    xxx, yyy = np.meshgrid(xxx, yyy)
+
+    points = np.transpose([x.flatten(), y.flatten()])
+
+    showprocesslog('Creating nearest neighbour starting value...')
+
+    u = griddata(points, z, (xxx, yyy), method='nearest')
+    u = u[::-1]
+
+    # define new grid
+    ufixed = np.zeros((rows, cols), dtype=bool)
+
+    x2 = x.flatten()
+    y2 = y.flatten()
+    z2 = z.flatten()
+
+    ttt.since_last_call()
+
+    showprocesslog('Organizing input data...')
+
+    crds, blist = morg(x2, y2, z2, extent, dxy, rows, cols)
+
+    coords = {}
+    for k, val in enumerate(crds):
+        iint, jint, r, i, j, zval = val
+        iint = int(iint)
+        jint = int(jint)
+        if (iint, jint) not in coords:
+            coords[iint, jint] = []
+        b = blist[k]
+        if b is None:
+            bmax = np.inf
+        else:
+            bmax = np.abs(b).max()
+        coords[iint, jint].append([bmax, r, i, j, zval, b])
+
+    ttt.since_last_call()
+
+    # Choose only the closest coordinate per cell
+    ijxyz = []
+    for key in coords:
+        iint, jint = key
+        coords[key].sort(key=itemgetter(1))
+        _, r, _, _, zval, _ = coords[key][0]
+        if r < 0.05:
+            u[iint, jint] = zval
+            ufixed[iint, jint] = True
+            continue
+        elif (iint > 1 and iint < rows-2 and jint > 1 and jint < cols-2):
+            coords[key].sort()
+            _, _, i, j, zval, b = coords[key][0]
+            ijxyz.append([iint, jint, i, j, zval, b])
+
+    ttt.since_last_call()
+
+    showprocesslog('Creating minimum curvature grid...')
+    uold = np.zeros((rows, cols))
+
+    # mean error per cell
+    errdiff1 = np.abs(u-uold)
+    errdiff = np.sum(errdiff1)/(rows*cols)
+    errold = errdiff*1.1  # Starting 'old' error.
+    errstd = errdiff1.std()*2.5
+
+    iters = 0
+    while errdiff < errold and iters < maxiters:
+        iters += 1
+        uold = u.copy()
+        errold = errdiff
+
+        if iters < 2:
+            for vals in ijxyz:
+                i, j, i1, j1, w, b = vals
+                tmp = off_grid(uold, i, j, i1, j1, w, b)
+
+                if (abs(tmp-uold[i, j]) > errdiff1[i, j]+errstd and iters > 1):
+                    ufixed[i, j] = False
+                else:
+                    ufixed[i, j] = True
+                    u[i, j] = tmp
+
+        u = mcurv(u, ufixed, rows, cols)
+
+        errdiff1 = np.abs(u-uold)
+        errstd = errdiff1.std()*2.5
+        errdiff = np.sum(errdiff1)/(rows*cols)
+        showprocesslog(f'Solution Error: {errdiff:.5f}')
+        # print(iters, ufixed.sum())
+
+        # plt.figure(dpi=300)
+        # plt.imshow(ufixed)
+        # plt.grid(True)
+        # plt.colorbar()
+        # plt.show()
+
+        if errdiff > errold:
+            u = uold
+            showprocesslog('Solution diverging. Stopping...')
+            break
+    showprocesslog('Finished!')
+
+    ttt.since_first_call()
+
+    u = np.ma.array(u)
+
+    # Trim buffer
+    u = u[3:-3, 3:-3]
+    ufixed = ufixed[3:-3, 3:-3]
+
+    if bdist is not None:
+        dist = distance_transform_edt(np.logical_not(ufixed))
+        mask = (dist > bdist)
+        u = np.ma.array(u, mask=mask)
+
+    return u
+
+
+@jit(nopython=True)
+def u_normal(u, i, j):
+    """
+    normal
+
+    u[i+2, j] + u[i, j+2] + u[i-2, j] + u[i, j-2] +
+    2*(u[i+1, j+1] + u[i-1, j+1] + u[i+1, j-1] + u[i-1, j-1]) -
+    8*(u[i+1, j]+u[i-1, j]+u[i, j+1]+u[i, j-1]) + 20*u[i, j] = 0
+    """
+    uij = -(u[i+2, j] + u[i, j+2] + u[i-2, j] + u[i, j-2] +
+            2*(u[i+1, j+1] + u[i-1, j+1] + u[i+1, j-1] + u[i-1, j-1]) -
+            8*(u[i+1, j]+u[i-1, j]+u[i, j+1]+u[i, j-1]))/20
+    return uij
+
+
+@jit(nopython=True)
+def u_edge(u, i):
+    """
+    edge
+    u[i-2, j] + u[i+2, j] + u[i, j+2] + u[i-1, j+1] + u[i+1, j+1] -
+    4*(u[i-1, j] + u[i, j+1] + u[i+1, j]) + 7*u[i, j] = 0
+    """
+    uij = -(u[i-2, 0] + u[i+2, 0] + u[i, 2] + u[i-1, 1] + u[i+1, 1] -
+            4*(u[i-1, 0] + u[i, 1] + u[i+1, 0]))/7
+    return uij
+
+
+@jit(nopython=True)
+def u_one_row_from_edge(u, i):
+    """
+    one row from edge
+    u[i-2, j] + u[i+2, j] + u[i, j+2] +
+    2*(u[i-1, j+1] + u[i+1, j+1]) + u[i-1, j-1]+u[i+1, j-1] -
+    8*([i-1, j]+u[i, j+1]+u[i+1, j]) - 4*u[i, j-1] + 19*u[i, j] = 0
+    """
+    uij = -(u[i-2, 1] + u[i+2, 1] + u[i, 3] +
+            2*(u[i-1, 2] + u[i+1, 2]) + u[i-1, 0] + u[i+1, 0] -
+            8*(u[i-1, 1]+u[i, 2]+u[i+1, 1]) - 4*u[i, 0])/19
+    return uij
+
+
+@jit(nopython=True)
+def u_corner(u):
+    """
+    corner
+    2*u[i, j]+u[i, j+2] + u[i+2, j] - 2*(u[i, j+1] + u[i+1, j] = 0
+    """
+    uij = -(u[0, 2] + u[2, 0] - 2*(u[0, 1] + u[1, 0]))/2
+    return uij
+
+
+@jit(nopython=True)
+def u_next_to_corner(u):
+    """
+    next to corner
+    u[i, j+2] + u[i+2, j] + u[i-1, j+1] + u[i+1, j-1] + 2*u[i+1, j+1] -
+    8*(u[i, j+1] + u[i+1, j]) - 4*([i, j-1]+u[i-1, j]) + 18*u[i, j] = 0
+    """
+    uij = -(u[1, 3] + u[3, 1] + u[0, 2] + u[2, 0] + 2*u[2, 2] -
+            8*(u[1, 2] + u[2, 1]) - 4*(u[1, 0]+u[0, 1]))/18
+    return uij
+
+
+@jit(nopython=True)
+def u_edge_next_to_corner(u):
+    """
+    edge next to corner
+    u[i, j+2] + u[i+1, j+1] + u[i-1, j+1] + u[i+2, j] - 2*u[i-1, j] -
+    4*(u[i+1, j] + u[i, j+1]) + 6*u[i, j] = 0
+    """
+    uij = -(u[2, 3] + u[3, 2] + u[1, 2] + u[4, 1] - 2*u[1, 1] -
+            4*(u[3, 1] + u[2, 2]))/6
+    return uij
+
+
+def off_grid(u, i, j, i1, j1, wn, b):
+    """
+    off grid.
+    """
+
+    ba, bb, bc, bd, be = b
+
+    ba1, ba2, ba3, ba4, ba5 = ba
+    bb1, bb2, bb3, bb4, bb5 = bb
+    bc1, bc2, bc3, bc4, bc5 = bc
+    bd1, bd2, bd3, bd4, bd5 = bd
+    be1, be2, be3, be4, be5 = be
+
+    uij = ((4*ba1*u[i + 1, j - 1] + 4*ba2*u[i, j - 1] + 4*ba3*u[i - 1, j] +
+            4*ba4*u[i - 1, j + 1] + 4*ba5*wn
+
+            + bb1*u[i - 1, j]
+            - bb1*u[i, j - 1] - bb2*u[i - 1, j - 1] + bb2*u[i - 1, j]
+            + bb3*u[i - 1, j] - bb3*u[i - 2, j] + bb4*u[i - 1, j]
+            - bb4*u[i - 2, j + 1] - bb5*wn + bb5*u[i - 1, j]
+
+            + bc1*u[i + 1, j] - bc1*u[i + 2, j - 1] - bc2*u[i + 1, j - 1]
+            + bc2*u[i + 1, j] + bc3*u[i + 1, j] + bc4*u[i + 1, j]
+            - bc4*u[i, j + 1] - bc5*wn + bc5*u[i + 1, j]
+
+            - bd1*u[i + 1, j - 2] + bd1*u[i, j - 1] + bd2*u[i, j - 1]
+            - bd2*u[i, j - 2] - bd3*u[i - 1, j - 1] + bd3*u[i, j - 1]
+            - bd4*u[i - 1, j] + bd4*u[i, j - 1] - bd5*wn + bd5*u[i, j - 1]
+
+            - be1*u[i + 1, j] + be1*u[i, j + 1] + be2*u[i, j + 1]
+            - be3*u[i - 1, j + 1] + be3*u[i, j + 1] - be4*u[i - 1, j + 2]
+            + be4*u[i, j + 1] - be5*wn + be5*u[i, j + 1]) /
+           (4*ba1 + 4*ba2 + 4*ba3 + 4*ba4 + 4*ba5 + bc3 + be2))
+
+    return uij
+
+
+@jit(nopython=True)
+def get_b(e5, n5):
+    """
+    gets b values.
+    """
+    d2 = e5 + n5 + 1
+    d1 = d2*(n5 + e5)
+
+    if d1 == 0.0 or d2 == 0:
+        return None
+
+    b1 = (-e5**2 + 2*e5*n5 - e5 + n5**2 + n5)/d1
+    b2 = 2*(e5 - n5 + 1)/d2
+    b3 = 2*(-e5 + n5 + 1)/d2
+    b4 = (e5**2 + 2*e5*n5 + e5 - n5**2 - n5)/d1
+    b5 = 4/d1
+
+    # b = [b1, b2, b3, b4, b5]
+
+    return b1, b2, b3, b4, b5
+
+
+def rchk(i, j):
+
+    iint = round(i)
+    jint = round(j)
+
+    e5 = i-iint
+    n5 = j-jint
+
+    r1 = np.sqrt(e5**2+n5**2)
+    d12 = e5 + n5 + 1
+    d11 = d12*(n5 + e5)
+
+    e5, n5 = (i-(iint-1), j-jint)
+    r2 = np.sqrt(e5**2+n5**2)
+    d22 = e5 + n5 + 1
+    d21 = d22*(n5 + e5)
+
+    e5, n5 = (i-(iint+1), j-jint)
+    r3 = np.sqrt(e5**2+n5**2)
+    d32 = e5 + n5 + 1
+    d31 = d32*(n5 + e5)
+
+    e5, n5 = (i-iint, j-(jint-1))
+    r4 = np.sqrt(e5**2+n5**2)
+    d42 = e5 + n5 + 1
+    d41 = d42*(n5 + e5)
+
+    e5, n5 = (i-iint, j-(jint+1))
+    r5 = np.sqrt(e5**2+n5**2)
+    d52 = e5 + n5 + 1
+    d51 = d52*(n5 + e5)
+
+    r = [r1, r2, r3, r4, r5]
+    d = [d11, d12, d21, d22, d31, d32, d41, d42, d51, d52]
+
+    return r, d
+
+
+@jit(nopython=True)
+def mcurv(u, ufixed, rows, cols):
+    """
+    Minimum curvature smooothing.
+
+    Parameters
+    ----------
+    u : TYPE
+        DESCRIPTION.
+    rows : TYPE
+        DESCRIPTION.
+    cols : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    for i in range(rows):
+        for j in range(cols):
+            if ufixed[i, j] == True:
+                continue
+
+            if i > 1 and i < rows-2 and j > 0 and j < cols-2:
+                u[i, j] = u_normal(u, i, j)
+
+            elif j == 0 and i > 1 and i < rows-2:
+                u[i, j] = u_edge(u, i)
+            elif j == cols-1 and i > 1 and i < rows-2:
+                u[i, j] = u_edge(u[:, ::-1], i)
+            elif i == 0 and j > 1 and j < cols-2:
+                u[i, j] = u_edge(u.T, j)
+            elif i == rows-1 and j > 1 and j < cols-2:
+                u[i, j] = u_edge(u.T[:, ::-1], j)
+
+            elif j == 1 and i > 1 and i < rows-2:
+                u[i, j] = u_one_row_from_edge(u, i)
+            elif j == cols-2 and i > 1 and i < rows-2:
+                u[i, j] = u_one_row_from_edge(u[:, ::-1], i)
+            elif i == 1 and j > 1 and j < cols-2:
+                u[i, j] = u_one_row_from_edge(u.T, j)
+            elif i == rows-2 and j > 1 and j < cols-2:
+                u[i, j] = u_one_row_from_edge(u.T[:, ::-1], j)
+
+            elif i == 0 and j == 0:
+                u[i, j] = u_corner(u)
+            elif i == 0 and j == cols-1:
+                u[i, j] = u_corner(u[:, ::-1])
+            elif i == rows-1 and j == 0:
+                u[i, j] = u_corner(u[::-1])
+            elif i == rows-1 and j == cols-1:
+                u[i, j] = u_corner(u[::-1, ::-1])
+
+            elif i == 1 and j == 1:
+                u[i, j] = u_next_to_corner(u)
+            elif i == 1 and j == cols-2:
+                u[i, j] = u_next_to_corner(u[:, ::-1])
+            elif i == rows-2 and j == 1:
+                u[i, j] = u_next_to_corner(u[::-1])
+            elif i == rows-2 and j == cols-2:
+                u[i, j] = u_next_to_corner(u[::-1, ::-1])
+
+            elif i == 2 and j == 1:
+                u[i, j] = u_edge_next_to_corner(u)
+            elif i == 1 and j == 2:
+                u[i, j] = u_edge_next_to_corner(u.T)
+            elif i == 2 and j == cols-1:
+                u[i, j] = u_edge_next_to_corner(u[:, ::-1])
+            elif i == 1 and j == cols-2:
+                u[i, j] = u_edge_next_to_corner(u[:, ::-1].T)
+            elif i == rows-1 and j == 2:
+                u[i, j] = u_edge_next_to_corner(u[::-1])
+            elif i == rows-2 and j == 1:
+                u[i, j] = u_edge_next_to_corner(u[::-1].T)
+            elif i == rows-1 and j == cols-2:
+                u[i, j] = u_edge_next_to_corner(u[::-1, ::-1])
+            elif i == rows-2 and j == cols-1:
+                u[i, j] = u_edge_next_to_corner(u[::-1, ::-1].T)
+    return u
+
+
+@jit(nopython=True)
+def morg(x2, y2, z2, extent, dxy, rows, cols):
+    """
+    Organize coordinates.
+
+    Returns
+    -------
+    None.
+
+    """
+    coords = []
+    b = []
+    for k, zval in enumerate(z2):
+        i = (extent[3] - y2[k])/dxy
+        j = (x2[k]-extent[0])/dxy
+
+        iint = round(i)
+        jint = round(j)
+
+        # Ignore values outside extents
+        if iint < 0 or jint < 0 or iint >= rows-1 or jint >= cols-1:
+            continue
+
+        e5 = i-iint
+        n5 = j-jint
+        r = np.sqrt(e5**2+n5**2)
+        if r >= 0.75:
+            continue
+
+        if r < 0.05:
+            coords.append([iint, jint, r, i, j, zval])
+            b.append(None)
+
+            continue
+
+        blist = [get_b(i-iint, j-jint),
+                 get_b(i-(iint-1), j-jint),
+                 get_b(i-(iint+1), j-jint),
+                 get_b(i-iint, j-(jint-1)),
+                 get_b(i-iint, j-(jint+1))]
+
+        b.append(blist)
+
+        coords.append([iint, jint, r, i, j, zval])
+
+    return coords, b
+
+
+def _testfn():
+    """Test routine."""
+    import sys
+    from PyQt5 import QtWidgets
+    import matplotlib.pyplot as plt
+    from pygmi.vector.iodefs import ImportLineData
+    from IPython import get_ipython
+    # get_ipython().run_line_magic('matplotlib', 'qt5')
+
+    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    ifile = r'C:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+
+    IO = ImportLineData()
+    IO.ifile = ifile
+    IO.filt = 'Geosoft XYZ (*.xyz)'
+    IO.settings(True)
+
+    dat = IO.outdata['Line']
+
+    filt = dat[ifile].line.str.contains('line')
+    dat[ifile] = dat[ifile][filt]
+
+    x = dat[ifile]['X'].to_numpy()
+    y = dat[ifile]['Y'].to_numpy()
+    z = dat[ifile]['MAGMICROLEVEL'].to_numpy()
+    dxy = 40
+
+    # extent = None
+    extent = np.array([x.min(), x.max(), y.min(), y.max()])
+
+    # extent = [-22100, -20000, -2655000, -2652000]
+    # extent = [-19000, -14000, -2639000, -2634000]
+
+    odat = minc(x, y, z, dxy, extent=extent, bdist=4)
+
+    # extent = np.array([x.min(), x.max(), y.min(), y.max()])
+    # filt = ((x > extent[0]) & (x < extent[1]) &
+    #         (y > extent[2]) & (y < extent[3]))
+
+    # x = x[filt]
+    # y = y[filt]
+    # z = z[filt]
+
+    vmin = odat.mean()-2*odat.std()
+    vmax = odat.mean()+2*odat.std()
+
+    # vmin = 27500
+    # vmax = 30500
+
+    plt.figure(dpi=150)
+    plt.imshow(odat, extent=extent, vmin=vmin, vmax=vmax)
+    # plt.plot(x, y, 'k.', markersize=0.5)
+    plt.colorbar()
+    plt.show()
+
+    # breakpoint()
+
+
+if __name__ == "__main__":
+    _testfn()

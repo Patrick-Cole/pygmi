@@ -13,6 +13,7 @@ docs/
 olddocs/
 pygmi.egg-info/
 pygmi/bholes
+pygmi/gabby
 
 *.py[co]
 *.cmd
