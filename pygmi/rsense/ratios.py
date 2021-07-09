@@ -240,7 +240,8 @@ class SatRatios(QtWidgets.QDialog):
             if dat is None:
                 continue
 
-            dat = merge(dat, self.piter, pprint=self.showprocesslog)
+            dat = merge(dat, self.piter, pprint=self.showprocesslog,
+                        commonmask=True)
 
             datd = {}
             for i in dat:

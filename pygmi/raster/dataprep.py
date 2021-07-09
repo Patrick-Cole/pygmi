@@ -177,6 +177,7 @@ class DataMerge(QtWidgets.QDialog):
         self.parent = parent
         self.dxy = None
         self.piter = parent.pbar.iter
+        self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.dsb_dxy = QtWidgets.QDoubleSpinBox()
         self.label_rows = QtWidgets.QLabel('Rows: 0')
@@ -206,14 +207,17 @@ class DataMerge(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
+        self.cmask.setChecked(True)
+
         self.setWindowTitle('Dataset Merge and Resample')
 
         gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
         gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
         gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
-        gridlayout_main.addWidget(helpdocs, 3, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 3, 1, 1, 1)
+        gridlayout_main.addWidget(self.cmask, 3, 0, 1, 2)
+        gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 4, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
@@ -292,6 +296,7 @@ class DataMerge(QtWidgets.QDialog):
 
         """
         self.dxy = projdata['dxy']
+        self.cmask.setChecked(projdata['cmask'])
 
         return False
 
@@ -308,6 +313,7 @@ class DataMerge(QtWidgets.QDialog):
         projdata = {}
 
         projdata['dxy'] = self.dsb_dxy.value()
+        projdata['cmask'] = self.cmask.isChecked()
 
         return projdata
 
@@ -325,7 +331,8 @@ class DataMerge(QtWidgets.QDialog):
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
         dat = merge(self.indata['Raster'], self.piter, dxy,
-                    pprint=self.showprocesslog)
+                    pprint=self.showprocesslog,
+                    commonmask=self.cmask.isChecked())
         self.outdata['Raster'] = dat
 
 
@@ -2074,7 +2081,7 @@ def getepsgcodes():
     return pcodes
 
 
-def merge(dat, piter=iter, dxy=None, pprint=print):
+def merge(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
     """
     Merge datasets found in a single PyGMI data object.
 
@@ -2102,6 +2109,8 @@ def merge(dat, piter=iter, dxy=None, pprint=print):
         if irows != rows or icols != cols:
             needsmerge = True
         if dxy is not None and (i.xdim != dxy or i.ydim != dxy):
+            needsmerge = True
+        if commonmask is True:
             needsmerge = True
 
     if needsmerge is False:
@@ -2137,10 +2146,12 @@ def merge(dat, piter=iter, dxy=None, pprint=print):
         return None
 
     dat2 = []
+    cmask = None
     for data in piter(dat):
         doffset = 0.0
         data.data.set_fill_value(data.nullvalue)
         data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
+
         if data.data.min() <= 0:
             doffset = data.data.min()-1.
             data.data = data.data - doffset
@@ -2154,6 +2165,12 @@ def merge(dat, piter=iter, dxy=None, pprint=print):
                             gdal.GRA_Bilinear)
 
         dat2.append(gdal_to_dat(dest, data.dataid))
+
+        if cmask is None:
+            cmask = dat2[-1].data.mask
+        else:
+            cmask = np.logical_or(cmask, dat2[-1].data.mask)
+
         dat2[-1].metadata = data.metadata
         dat2[-1].data = dat2[-1].data + doffset
 
@@ -2163,6 +2180,11 @@ def merge(dat, piter=iter, dxy=None, pprint=print):
                                     mask=dat2[-1].data.mask)
 
         data.data = data.data + doffset
+
+    if commonmask is True:
+        for dat in piter(dat2):
+            dat.data.mask = cmask
+            dat.data = np.ma.array(dat.data.filled(), mask=cmask)
 
     out = check_dataid(dat2)
 

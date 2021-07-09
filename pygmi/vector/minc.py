@@ -22,7 +22,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Minimum Curvature Grudding Routine."""
+"""
+Minimum Curvature Gridding Routine.
+
+Based on the work by:
+
+Briggs, I. C., 1974, Machine contouring using minimum curvature, Geophysics
+vol. 39, No. 1, pp. 39-48
+"""
 
 from operator import itemgetter
 import numpy as np
@@ -30,17 +37,38 @@ from numba import jit
 from scipy.interpolate import griddata
 from scipy.ndimage import distance_transform_edt
 
-from pygmi.misc import PTime
-
 
 def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
          maxiters=100):
-    """Main."""
+    """
+    Minimum Curvature Gridding.
+
+    Parameters
+    ----------
+    x : numpy array
+        1D array with x coordinates.
+    y : numpy array
+        1D array with y coordinates.
+    z : numpy array
+        1D array with z coordinates.
+    dxy : float
+        Cell x and y dimension.
+    showprocesslog : function, optional
+        Function to print data in program or to stdout. The default is print.
+    extent : list, optional
+        Extent defined as (left, right, bottom, top). The default is None.
+    bdist : float, optional
+        Blanking distance in units of cell. The default is None.
+    maxiters : int, optional
+        Maximum number of iterations. The default is 100.
+
+    Returns
+    -------
+    u : numpy array
+        2D numpy array with gridding z values.
+
+    """
     # Set extent
-    # extent = (left, right, bottom, top)
-
-    ttt = PTime()
-
     if extent is None:
         extent = [x.min(), x.max(), y.min(), y.max()]
 
@@ -81,15 +109,13 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
     y2 = y.flatten()
     z2 = z.flatten()
 
-    ttt.since_last_call()
-
     showprocesslog('Organizing input data...')
 
     crds, blist = morg(x2, y2, z2, extent, dxy, rows, cols)
 
     coords = {}
     for k, val in enumerate(crds):
-        iint, jint, r, i, j, zval = val
+        iint, jint, r, zval = val
         iint = int(iint)
         jint = int(jint)
         if (iint, jint) not in coords:
@@ -99,26 +125,22 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
             bmax = np.inf
         else:
             bmax = np.abs(b).max()
-        coords[iint, jint].append([bmax, r, i, j, zval, b])
-
-    ttt.since_last_call()
+        coords[iint, jint].append([bmax, r, zval, b])
 
     # Choose only the closest coordinate per cell
     ijxyz = []
     for key in coords:
         iint, jint = key
         coords[key].sort(key=itemgetter(1))
-        _, r, _, _, zval, _ = coords[key][0]
+        _, r, zval, _ = coords[key][0]
         if r < 0.05:
             u[iint, jint] = zval
             ufixed[iint, jint] = True
             continue
         elif (iint > 1 and iint < rows-2 and jint > 1 and jint < cols-2):
             coords[key].sort()
-            _, _, i, j, zval, b = coords[key][0]
-            ijxyz.append([iint, jint, i, j, zval, b])
-
-    ttt.since_last_call()
+            _, _, zval, b = coords[key][0]
+            ijxyz.append([iint, jint, zval, b])
 
     showprocesslog('Creating minimum curvature grid...')
     uold = np.zeros((rows, cols))
@@ -137,8 +159,8 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
 
         if iters < 2:
             for vals in ijxyz:
-                i, j, i1, j1, w, b = vals
-                tmp = off_grid(uold, i, j, i1, j1, w, b)
+                i, j, w, b = vals
+                tmp = off_grid(uold, i, j, w, b)
 
                 if (abs(tmp-uold[i, j]) > errdiff1[i, j]+errstd and iters > 1):
                     ufixed[i, j] = False
@@ -146,7 +168,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
                     ufixed[i, j] = True
                     u[i, j] = tmp
 
-        u = mcurv(u, ufixed, rows, cols)
+        u = mcurv(u, ufixed)
 
         errdiff1 = np.abs(u-uold)
         errstd = errdiff1.std()*2.5
@@ -166,8 +188,6 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
             break
     showprocesslog('Finished!')
 
-    ttt.since_first_call()
-
     u = np.ma.array(u)
 
     # Trim buffer
@@ -179,17 +199,35 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
         mask = (dist > bdist)
         u = np.ma.array(u, mask=mask)
 
+    # return u, ufixed
     return u
 
 
 @jit(nopython=True)
 def u_normal(u, i, j):
     """
-    normal
+    Normal minimum curvature smoothing.
+
+    It is defined as:
 
     u[i+2, j] + u[i, j+2] + u[i-2, j] + u[i, j-2] +
     2*(u[i+1, j+1] + u[i-1, j+1] + u[i+1, j-1] + u[i-1, j-1]) -
     8*(u[i+1, j]+u[i-1, j]+u[i, j+1]+u[i, j-1]) + 20*u[i, j] = 0
+
+    Parameters
+    ----------
+    u : numpy array
+        2D grid of z values.
+    i : int
+        Current row.
+    j : int
+        Current Column.
+
+    Returns
+    -------
+    uij : float
+        Smoothed value to replace in master grid.
+
     """
     uij = -(u[i+2, j] + u[i, j+2] + u[i-2, j] + u[i, j-2] +
             2*(u[i+1, j+1] + u[i-1, j+1] + u[i+1, j-1] + u[i-1, j-1]) -
@@ -200,9 +238,25 @@ def u_normal(u, i, j):
 @jit(nopython=True)
 def u_edge(u, i):
     """
-    edge
+    Minimum curvature smoothing for edges.
+
+    It is defined as:
+
     u[i-2, j] + u[i+2, j] + u[i, j+2] + u[i-1, j+1] + u[i+1, j+1] -
     4*(u[i-1, j] + u[i, j+1] + u[i+1, j]) + 7*u[i, j] = 0
+
+    Parameters
+    ----------
+    u : numpy array
+        2D grid of z values.
+    i : int
+        Current row.
+
+    Returns
+    -------
+    uij : float
+        Smoothed value to replace in master grid.
+
     """
     uij = -(u[i-2, 0] + u[i+2, 0] + u[i, 2] + u[i-1, 1] + u[i+1, 1] -
             4*(u[i-1, 0] + u[i, 1] + u[i+1, 0]))/7
@@ -212,10 +266,26 @@ def u_edge(u, i):
 @jit(nopython=True)
 def u_one_row_from_edge(u, i):
     """
-    one row from edge
+    Minimum curvature smoothing for one row from edge.
+
+    It is defined as:
+
     u[i-2, j] + u[i+2, j] + u[i, j+2] +
     2*(u[i-1, j+1] + u[i+1, j+1]) + u[i-1, j-1]+u[i+1, j-1] -
     8*([i-1, j]+u[i, j+1]+u[i+1, j]) - 4*u[i, j-1] + 19*u[i, j] = 0
+
+    Parameters
+    ----------
+    u : numpy array
+        2D grid of z values.
+    i : int
+        Current row.
+
+    Returns
+    -------
+    uij : float
+        Smoothed value to replace in master grid.
+
     """
     uij = -(u[i-2, 1] + u[i+2, 1] + u[i, 3] +
             2*(u[i-1, 2] + u[i+1, 2]) + u[i-1, 0] + u[i+1, 0] -
@@ -226,8 +296,22 @@ def u_one_row_from_edge(u, i):
 @jit(nopython=True)
 def u_corner(u):
     """
-    corner
+    Minimum curvature smoothing for corner point.
+
+    It is defined as:
+
     2*u[i, j]+u[i, j+2] + u[i+2, j] - 2*(u[i, j+1] + u[i+1, j] = 0
+
+    Parameters
+    ----------
+    u : numpy array
+        2D grid of z values.
+
+    Returns
+    -------
+    uij : float
+        Smoothed value to replace in master grid.
+
     """
     uij = -(u[0, 2] + u[2, 0] - 2*(u[0, 1] + u[1, 0]))/2
     return uij
@@ -236,9 +320,23 @@ def u_corner(u):
 @jit(nopython=True)
 def u_next_to_corner(u):
     """
-    next to corner
+    Minimum curvature smoothing for next to corner.
+
+    It is defined as:
+
     u[i, j+2] + u[i+2, j] + u[i-1, j+1] + u[i+1, j-1] + 2*u[i+1, j+1] -
     8*(u[i, j+1] + u[i+1, j]) - 4*([i, j-1]+u[i-1, j]) + 18*u[i, j] = 0
+
+    Parameters
+    ----------
+    u : numpy array
+        2D grid of z values.
+
+    Returns
+    -------
+    uij : float
+        Smoothed value to replace in master grid.
+
     """
     uij = -(u[1, 3] + u[3, 1] + u[0, 2] + u[2, 0] + 2*u[2, 2] -
             8*(u[1, 2] + u[2, 1]) - 4*(u[1, 0]+u[0, 1]))/18
@@ -248,20 +346,52 @@ def u_next_to_corner(u):
 @jit(nopython=True)
 def u_edge_next_to_corner(u):
     """
-    edge next to corner
+    Minimum curvature smoothing for edge next to corner.
+
+    It is defined as:
+
     u[i, j+2] + u[i+1, j+1] + u[i-1, j+1] + u[i+2, j] - 2*u[i-1, j] -
     4*(u[i+1, j] + u[i, j+1]) + 6*u[i, j] = 0
+
+    Parameters
+    ----------
+    u : numpy array
+        2D grid of z values.
+
+    Returns
+    -------
+    uij : float
+        Smoothed value to replace in master grid.
+
     """
     uij = -(u[2, 3] + u[3, 2] + u[1, 2] + u[4, 1] - 2*u[1, 1] -
             4*(u[3, 1] + u[2, 2]))/6
     return uij
 
 
-def off_grid(u, i, j, i1, j1, wn, b):
+def off_grid(u, i, j, wn, b):
     """
-    off grid.
-    """
+    Node value calculation when data value is too far from node.
 
+    Parameters
+    ----------
+    u : numpy array
+        2D grid of z values.
+    i : int
+        Current row.
+    j : TYPE
+        Current Column.
+    wn : float
+        Data value.
+    b : list
+        List of b values for calculation.
+
+    Returns
+    -------
+    uij : TYPE
+        DESCRIPTION.
+
+    """
     ba, bb, bc, bd, be = b
 
     ba1, ba2, ba3, ba4, ba5 = ba
@@ -297,7 +427,31 @@ def off_grid(u, i, j, i1, j1, wn, b):
 @jit(nopython=True)
 def get_b(e5, n5):
     """
-    gets b values.
+    Get b values for input data.
+
+    Calculates the b values based on the distance between the data point and
+    the nearest node. Distances are expressed in units of cell.
+
+    Parameters
+    ----------
+    e5 : float
+        x distance error.
+    n5 : float
+        y distance error.
+
+    Returns
+    -------
+    b1 : float
+        b1 value.
+    b2 : float
+        b2 value.
+    b3 : float
+        b3 value.
+    b4 : float
+        b4 value.
+    b5 : float
+        b5 value.
+
     """
     d2 = e5 + n5 + 1
     d1 = d2*(n5 + e5)
@@ -311,68 +465,30 @@ def get_b(e5, n5):
     b4 = (e5**2 + 2*e5*n5 + e5 - n5**2 - n5)/d1
     b5 = 4/d1
 
-    # b = [b1, b2, b3, b4, b5]
-
     return b1, b2, b3, b4, b5
 
 
-def rchk(i, j):
-
-    iint = round(i)
-    jint = round(j)
-
-    e5 = i-iint
-    n5 = j-jint
-
-    r1 = np.sqrt(e5**2+n5**2)
-    d12 = e5 + n5 + 1
-    d11 = d12*(n5 + e5)
-
-    e5, n5 = (i-(iint-1), j-jint)
-    r2 = np.sqrt(e5**2+n5**2)
-    d22 = e5 + n5 + 1
-    d21 = d22*(n5 + e5)
-
-    e5, n5 = (i-(iint+1), j-jint)
-    r3 = np.sqrt(e5**2+n5**2)
-    d32 = e5 + n5 + 1
-    d31 = d32*(n5 + e5)
-
-    e5, n5 = (i-iint, j-(jint-1))
-    r4 = np.sqrt(e5**2+n5**2)
-    d42 = e5 + n5 + 1
-    d41 = d42*(n5 + e5)
-
-    e5, n5 = (i-iint, j-(jint+1))
-    r5 = np.sqrt(e5**2+n5**2)
-    d52 = e5 + n5 + 1
-    d51 = d52*(n5 + e5)
-
-    r = [r1, r2, r3, r4, r5]
-    d = [d11, d12, d21, d22, d31, d32, d41, d42, d51, d52]
-
-    return r, d
-
-
 @jit(nopython=True)
-def mcurv(u, ufixed, rows, cols):
+def mcurv(u, ufixed):
     """
     Minimum curvature smooothing.
 
+    This routine smooths the data between fixed data nodes.
+
     Parameters
     ----------
-    u : TYPE
-        DESCRIPTION.
-    rows : TYPE
-        DESCRIPTION.
-    cols : TYPE
-        DESCRIPTION.
+    u : numpy array
+        2D grid of z values.
+    ufixed : numpy array
+        2D grid of fixed node values.
 
     Returns
     -------
-    None.
+    u : numpy array
+        2D grid of z values.
 
     """
+    rows, cols = u.shape
     for i in range(rows):
         for j in range(cols):
             if ufixed[i, j] == True:
@@ -439,11 +555,31 @@ def mcurv(u, ufixed, rows, cols):
 @jit(nopython=True)
 def morg(x2, y2, z2, extent, dxy, rows, cols):
     """
-    Organize coordinates.
+    Organise coordinates and calculate b values.
+
+    Parameters
+    ----------
+    x2 : numpy array
+        1D array with x coordinates.
+    y2 : numpy array
+        1D array with y coordinates.
+    z2 : numpy array
+        1D array with z coordinates.
+    extent : list
+        Extent defined as (left, right, bottom, top).
+    dxy : float
+        Cell x and y dimension.
+    rows : int
+        Number of rows.
+    cols : int
+        Number of columns.
 
     Returns
     -------
-    None.
+    coords : list
+        List containing iint, jint, r and zval.
+    b : list
+        List of b values.
 
     """
     coords = []
@@ -459,14 +595,18 @@ def morg(x2, y2, z2, extent, dxy, rows, cols):
         if iint < 0 or jint < 0 or iint >= rows-1 or jint >= cols-1:
             continue
 
-        e5 = i-iint
-        n5 = j-jint
+        # e5 = i-iint
+        # n5 = j-jint
+
+        n5 = i-iint
+        e5 = j-jint
+
         r = np.sqrt(e5**2+n5**2)
         if r >= 0.75:
             continue
 
         if r < 0.05:
-            coords.append([iint, jint, r, i, j, zval])
+            coords.append([iint, jint, r, zval])
             b.append(None)
 
             continue
@@ -479,7 +619,7 @@ def morg(x2, y2, z2, extent, dxy, rows, cols):
 
         b.append(blist)
 
-        coords.append([iint, jint, r, i, j, zval])
+        coords.append([iint, jint, r, zval])
 
     return coords, b
 
@@ -490,7 +630,7 @@ def _testfn():
     from PyQt5 import QtWidgets
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportLineData
-    from IPython import get_ipython
+    # from IPython import get_ipython
     # get_ipython().run_line_magic('matplotlib', 'qt5')
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
@@ -518,6 +658,7 @@ def _testfn():
     # extent = [-22100, -20000, -2655000, -2652000]
     # extent = [-19000, -14000, -2639000, -2634000]
 
+    # odat, err = minc(x, y, z, dxy, extent=extent, bdist=4)
     odat = minc(x, y, z, dxy, extent=extent, bdist=4)
 
     # extent = np.array([x.min(), x.max(), y.min(), y.max()])
@@ -539,6 +680,10 @@ def _testfn():
     # plt.plot(x, y, 'k.', markersize=0.5)
     plt.colorbar()
     plt.show()
+
+    # plt.figure(dpi=150)
+    # plt.imshow(err, extent=extent)
+    # plt.show()
 
     # breakpoint()
 
