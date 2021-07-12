@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>Dataset Gridding</h1>
+		<p>The gridding is either nearest neighbour, linear, cubic (all from scipy) or minimum curvature. The input is a point or line dataset, imported from the vector menu. Note that the x and y columns are defined when importing the line or point data.</p>
+		<h2>Options</h2>
+		<ul>
+			<li>Gridding method - This can be nearest neighbour, linear, cubic or minimum curvature.</li>
+			<li>Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).</li>
+			<li>Column to grid - This allows you to select the z column to grid.</li>
+			<li>Null value - masked data value.</li>
+			<li>Blanking distance - Minimum curvature only.This is a distance in cells from data points, beyond which the grid will be masked.</li>
+		</ul>
+		<h2>References</h2>
+		<p>Briggs, I. C., 1974, Machine contouring using minimum curvature, Geophysics vol. 39, No. 1, pp. 39-48</p>
+	</body>
+</html>

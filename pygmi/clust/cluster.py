@@ -33,6 +33,7 @@ import sklearn.preprocessing as skp
 
 from pygmi.raster.datatypes import Data
 import pygmi.menu_default as menu_default
+from pygmi.misc import ProgressBarText
 
 
 class Cluster(QtWidgets.QDialog):
@@ -64,7 +65,7 @@ class Cluster(QtWidgets.QDialog):
         if parent is not None:
             self.piter = parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.combobox_alg = QtWidgets.QComboBox()
         self.spinbox_branchfac = QtWidgets.QSpinBox()
@@ -227,6 +228,11 @@ class Cluster(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

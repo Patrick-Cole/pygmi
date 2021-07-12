@@ -102,7 +102,11 @@ class MenuWidget():
 
         self.menu.addSeparator()
 
-        self.action_merge = QtWidgets.QAction('Merge and Resampling')
+        self.action_lstack = QtWidgets.QAction('Layer Stack and Resampling')
+        self.menu.addAction(self.action_lstack)
+        self.action_lstack.triggered.connect(self.lstack)
+
+        self.action_merge = QtWidgets.QAction('Merge')
         self.menu.addAction(self.action_merge)
         self.action_merge.triggered.connect(self.merge)
 
@@ -260,6 +264,10 @@ class MenuWidget():
     def merge(self):
         """Merge datasets."""
         self.parent.item_insert('Step', 'Data Merge', dataprep.DataMerge)
+
+    def lstack(self):
+        """Layer stack datasets."""
+        self.parent.item_insert('Step', 'Data Layer Stack', dataprep.DataMerge)
 
     def import_data(self):
         """Import data."""

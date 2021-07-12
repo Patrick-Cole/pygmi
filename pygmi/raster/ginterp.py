@@ -207,7 +207,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         event : TYPE
-            DESCRIPTION.
+            Unused.
 
         Returns
         -------
@@ -223,7 +223,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         event : TYPE, optional
-            Event. The default is None.
+            Unused. The default is None.
 
         Returns
         -------
@@ -1273,8 +1273,8 @@ class PlotInterp(QtWidgets.QDialog):
 
         Parameters
         ----------
-        event : matplotlib button press event
-            Event returned by matplotlib when a button is pressed
+        event : TYPE
+            Unused.
 
         Returns
         -------
@@ -1622,10 +1622,12 @@ class PlotInterp(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Entrypoint into class.
+        Entry point into item.
 
-        This is called when the used double clicks the routine from the
-        main PyGMI interface.
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

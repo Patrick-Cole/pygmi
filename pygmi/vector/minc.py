@@ -54,7 +54,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
     dxy : float
         Cell x and y dimension.
     showprocesslog : function, optional
-        Function to print data in program or to stdout. The default is print.
+        Routine to show text messages. The default is print.
     extent : list, optional
         Extent defined as (left, right, bottom, top). The default is None.
     bdist : float, optional

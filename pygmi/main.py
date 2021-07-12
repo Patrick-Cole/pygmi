@@ -1286,8 +1286,8 @@ class EmittingStream(QtCore.QObject):
 
         Parameters
         ----------
-        text : TYPE
-            DESCRIPTION.
+        text : str
+            Text to write.
 
         Returns
         -------

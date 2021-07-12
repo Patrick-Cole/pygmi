@@ -29,7 +29,9 @@ import warnings
 from PyQt5 import QtWidgets
 import numpy as np
 import scipy.signal as ssig
+
 import pygmi.menu_default as menu_default
+from pygmi.misc import ProgressBarText
 
 
 class Smooth(QtWidgets.QDialog):
@@ -48,7 +50,7 @@ class Smooth(QtWidgets.QDialog):
         if parent is not None:
             self.piter = self.parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.label = QtWidgets.QLabel('X:')
         self.spinbox_x = QtWidgets.QSpinBox()
@@ -148,6 +150,11 @@ class Smooth(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

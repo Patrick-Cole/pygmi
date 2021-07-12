@@ -256,8 +256,8 @@ class EquationEditor(QtWidgets.QDialog):
 
         Parameters
         ----------
-        equation : str, optional
-            Equation submitted (for testing). The default is None.
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

@@ -42,7 +42,8 @@ from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
 from pygmi.raster.ginterp import histcomp, norm255
-from pygmi.raster.modest_image import imshow
+from pygmi.misc import ProgressBarText
+# from pygmi.raster.modest_image import imshow
 
 
 class CreateSceneList(QtWidgets.QDialog):
@@ -53,8 +54,6 @@ class CreateSceneList(QtWidgets.QDialog):
 
     Attributes
     ----------
-    name : str
-        item name
     piter : progressbar
         reference to a progress bar.
     parent : parent
@@ -79,7 +78,7 @@ class CreateSceneList(QtWidgets.QDialog):
         if parent is not None:
             self.piter = self.parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.shapefile = QtWidgets.QLineEdit('')
         self.scenefile = QtWidgets.QLineEdit('')
@@ -129,6 +128,11 @@ class CreateSceneList(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -326,18 +330,12 @@ class LoadSceneList():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None):
@@ -349,6 +347,11 @@ class LoadSceneList():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -436,7 +439,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.fig.canvas.mpl_connect('button_release_event', self.onClick)
 
     def capture(self):
-        """Capture."""
+        """
+        Capture.
+
+        Returns
+        -------
+        None.
+
+        """
         self.capture_active = not self.capture_active
 
         if self.capture_active:
@@ -638,7 +648,7 @@ class SceneViewer(QtWidgets.QDialog):
 
         self.df = None
         if parent is None:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
         else:
             self.piter = self.parent.pbar.iter
 
@@ -701,6 +711,11 @@ class SceneViewer(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

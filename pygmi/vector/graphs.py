@@ -117,7 +117,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         event : TYPE
-            DESCRIPTION.
+            Button release event.
 
         Returns
         -------
@@ -137,7 +137,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         event : TYPE
-            DESCRIPTION.
+            Motion notify event.
 
         Returns
         -------
@@ -166,12 +166,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         event : TYPE
-            DESCRIPTION.
+            Picker event.
 
         Returns
         -------
         bool
-            Return TRUE if pick succeeded.
+            Return TRUE if pick succeeded, False otherwise.
 
         """
         if event.mouseevent.inaxes is None:
@@ -193,7 +193,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         event : TYPE
-            DESCRIPTION.
+            Unused.
 
         Returns
         -------
@@ -256,10 +256,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        data : Pandas dataframe object
-            Point data
-        ival : dictionary key
-            dictionary key Point Data
+        xdata : numpy array
+            1D x-data array.
+        ydata : numpy array
+            1D y-data array.
+        zdata : numpy array
+            1D z-data array.
 
         Returns
         -------
@@ -396,6 +398,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ----------
         data : dictionary
             Geopandas data in a dictionary.
+        col : str
+            Label for column to extract.
 
         Returns
         -------
@@ -458,7 +462,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         rtype : int
             Rose diagram type. Can be either 0 or 1.
         nbins : int, optional
-            Number of bins used in rose diagram.
+            Number of bins used in rose diagram. The default is 8.
+        equal : bool, optional
+            Option for an equal area rose diagram. The default is False.
 
         Returns
         -------
@@ -591,7 +597,7 @@ class PlotPoints(GraphWindow):
 
     def run(self):
         """
-        Combo box to choose band.
+        Entry point to run class.
 
         Returns
         -------
@@ -673,7 +679,7 @@ class PlotLines(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point to run class.
 
         Returns
         -------
@@ -739,7 +745,7 @@ class PlotLineMap(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point to run class.
 
         Returns
         -------
@@ -819,7 +825,7 @@ class PlotRose(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point to run class.
 
         Returns
         -------
@@ -867,7 +873,7 @@ class PlotVector(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point to run class.
 
         Returns
         -------
@@ -910,13 +916,13 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
     x : numpy array
         Input data
     y : numpy array
-        Input data weights. A value of 1 is default behaviour
+        Input data weights. The default is None.
     xmin : float
-        Lower value for the bins
+        Lower value for the bins. The default is None.
     xmax : float
-        Upper value for the bins
+        Upper value for the bins. The default is None.
     bins : int
-        number of bins
+        number of bins. The default is None.
 
     Returns
     -------

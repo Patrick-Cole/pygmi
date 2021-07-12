@@ -39,10 +39,6 @@ class ImportCG5(QtWidgets.QDialog):
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
@@ -149,6 +145,11 @@ class ImportCG5(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

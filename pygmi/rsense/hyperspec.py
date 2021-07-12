@@ -74,7 +74,7 @@ import pygmi.menu_default as menu_default
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
-from pygmi.raster.modest_image import imshow
+# from pygmi.raster.modest_image import imshow
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -342,7 +342,7 @@ class AnalSpec(QtWidgets.QDialog):
         Parameters
         ----------
         row : TYPE
-            DESCRIPTION.
+            Unused.
 
         Returns
         -------
@@ -455,10 +455,12 @@ class AnalSpec(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Entrypoint into class.
+        Entry point into item.
 
-        This is called when the used double clicks the routine from the
-        main PyGMI interface.
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -535,7 +537,6 @@ class AnalSpec(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-
         # self.combo_class.setCurrentText(projdata['combo_class'])
 
         return False
@@ -575,8 +576,7 @@ class ProcFeatures(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
-            pbar = ProgressBarText()
-            self.piter = pbar.iter
+            self.piter = ProgressBarText().iter
 
         else:
             self.showprocesslog = parent.showprocesslog
@@ -704,10 +704,12 @@ class ProcFeatures(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Entrypoint into class.
+        Entry point into item.
 
-        This is called when the used double clicks the routine from the
-        main PyGMI interface.
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -875,8 +877,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
 
     Returns
     -------
-    datfin : TYPE
-        DESCRIPTION.
+    datfin : list
+        Output datasets.
 
     """
     allfeatures = [i for i in product if isinstance(i, int)]

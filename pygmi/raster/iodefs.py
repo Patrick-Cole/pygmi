@@ -26,7 +26,6 @@
 
 import warnings
 import os
-import glob
 import copy
 import struct
 from PyQt5 import QtWidgets, QtCore
@@ -35,6 +34,7 @@ from osgeo import gdal, osr
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import merge
+from pygmi.misc import ProgressBarText
 
 
 class ComboBoxBasic(QtWidgets.QDialog):
@@ -133,18 +133,12 @@ class ImportData():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None):
@@ -161,6 +155,11 @@ class ImportData():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -306,18 +305,12 @@ class ImportRGBData():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None):
@@ -333,6 +326,11 @@ class ImportRGBData():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -554,8 +552,8 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
         No data/null value. The default is None.
     piter : iterable from misc.ProgressBar or misc.ProgressBarText
         progress bar iterable
-    showprocesslog : print or other text output
-        Allows for printing either using print or to the Qt interface.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
     iraster : None or tuple
         Incremental raster import, to import a section of a file. The tuple is
         (xoff, yoff, xsize, ysize)
@@ -710,7 +708,7 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
     return dat
 
 
-def get_bil(ifile, nval, piter, showprocesslog):
+def get_bil(ifile, nval, piter, showprocesslog=print):
     """
     Get BIL format file.
 
@@ -722,8 +720,8 @@ def get_bil(ifile, nval, piter, showprocesslog):
         No data/null value. The default is None.
     piter : iterable from misc.ProgressBar or misc.ProgressBarText
         progress bar iterable
-    showprocesslog : print or other text output
-        Allows for printing either using print or to the Qt interface.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------
@@ -1083,25 +1081,19 @@ class ExportData():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None):
         self.ifile = ''
 
         if parent is None:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
         else:
             self.piter = parent.pbar.iter
         self.parent = parent

@@ -106,6 +106,11 @@ class Normalisation(QtWidgets.QDialog):
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
         bool

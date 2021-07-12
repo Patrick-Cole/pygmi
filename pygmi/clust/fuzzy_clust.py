@@ -32,6 +32,7 @@ import numpy as np
 from pygmi.raster.datatypes import Data
 from pygmi.clust import var_ratio as vr
 from pygmi.clust import xie_beni as xb
+from pygmi.misc import ProgressBarText
 
 
 class FuzzyClust(QtWidgets.QDialog):
@@ -62,7 +63,7 @@ class FuzzyClust(QtWidgets.QDialog):
         if parent is not None:
             self.piter = parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.combobox_alg = QtWidgets.QComboBox()
         self.doublespinbox_maxerror = QtWidgets.QDoubleSpinBox()
@@ -199,6 +200,11 @@ class FuzzyClust(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

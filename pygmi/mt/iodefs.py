@@ -39,10 +39,6 @@ class ImportLEMI417Data():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
@@ -60,6 +56,11 @@ class ImportLEMI417Data():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -141,18 +142,12 @@ class ImportEDI():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None):
@@ -165,6 +160,11 @@ class ImportEDI():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -268,18 +268,12 @@ class ExportEDI():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None):

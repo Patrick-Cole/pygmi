@@ -35,9 +35,12 @@ import pandas as pd
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
 from scipy.signal import tukey
+import rasterio
+import rasterio.merge
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
+from pygmi.misc import ProgressBarText
 
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
@@ -53,12 +56,6 @@ class DataCut():
     ----------
     ifile : str
         input file name.
-    name : str
-        item name
-    ext : str
-        file name extension.
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     indata : dictionary
@@ -81,6 +78,11 @@ class DataCut():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -148,9 +150,9 @@ class DataCut():
         return projdata
 
 
-class DataMerge(QtWidgets.QDialog):
+class DataLayerStack(QtWidgets.QDialog):
     """
-    Data Merge.
+    Data Layer Stack.
 
     This class merges datasets which have different rows and columns. It
     resamples them so that they have the same rows and columns.
@@ -196,7 +198,8 @@ class DataMerge(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.'
+                                           'datalayerstack')
         label_dxy = QtWidgets.QLabel('Cell Size:')
 
         self.dsb_dxy.setMaximum(9999999999.0)
@@ -209,7 +212,7 @@ class DataMerge(QtWidgets.QDialog):
 
         self.cmask.setChecked(True)
 
-        self.setWindowTitle('Dataset Merge and Resample')
+        self.setWindowTitle('Dataset Layer Stack and Resample')
 
         gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
         gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
@@ -255,6 +258,11 @@ class DataMerge(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -336,6 +344,232 @@ class DataMerge(QtWidgets.QDialog):
         self.outdata['Raster'] = dat
 
 
+class DataMerge(QtWidgets.QDialog):
+    """
+    Data Merge.
+
+    This class merges datasets which have different rows and columns. It
+    resamples them so that they have the same rows and columns.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+            self.piter = ProgressBarText().iter
+        else:
+            self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.dxy = None
+        self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
+
+        self.dsb_dxy = QtWidgets.QDoubleSpinBox()
+        self.label_rows = QtWidgets.QLabel('Rows: 0')
+        self.label_cols = QtWidgets.QLabel('Columns: 0')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
+        label_dxy = QtWidgets.QLabel('Cell Size:')
+
+        self.dsb_dxy.setMaximum(9999999999.0)
+        self.dsb_dxy.setMinimum(0.00001)
+        self.dsb_dxy.setDecimals(5)
+        self.dsb_dxy.setValue(40.)
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.cmask.setChecked(True)
+
+        self.setWindowTitle('Dataset Merge')
+
+        gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
+        gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
+        gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
+        gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.cmask, 3, 0, 1, 2)
+        gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 4, 1, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        self.dsb_dxy.valueChanged.connect(self.dxy_change)
+
+    def dxy_change(self):
+        """
+        Update dxy.
+
+        This is the size of a grid cell in the x and y directions.
+
+        Returns
+        -------
+        None.
+
+        """
+        data = self.indata['Raster'][0]
+        dxy = self.dsb_dxy.value()
+
+        xmin0, xmax0, ymin0, ymax0 = data.extent
+
+        for data in self.indata['Raster']:
+            xmin, xmax, ymin, ymax = data.extent
+            xmin = min(xmin, xmin0)
+            xmax = max(xmax, xmax0)
+            ymin = min(ymin, ymin0)
+            ymax = max(ymax, ymax0)
+
+        cols = int((xmax - xmin)/dxy)
+        rows = int((ymax - ymin)/dxy)
+
+        self.label_rows.setText('Rows: '+str(rows))
+        self.label_cols.setText('Columns: '+str(cols))
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if not nodialog:
+            data = self.indata['Raster'][0]
+
+            if self.dxy is None:
+                dxy0 = min(data.xdim, data.ydim)
+                for data in self.indata['Raster']:
+                    self.dxy = min(dxy0, data.xdim, data.ydim)
+
+            self.dsb_dxy.setValue(self.dxy)
+
+            tmp = self.exec_()
+            if tmp != 1:
+                return False
+
+        self.acceptall()
+
+        return True
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        self.dxy = projdata['dxy']
+        self.cmask.setChecked(projdata['cmask'])
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+
+        projdata['dxy'] = self.dsb_dxy.value()
+        projdata['cmask'] = self.cmask.isChecked()
+
+        return projdata
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        dxy = self.dsb_dxy.value()
+        self.dxy = dxy
+        # dat = merge(self.indata['Raster'], self.piter, dxy,
+        #             pprint=self.showprocesslog,
+        #             commonmask=self.cmask.isChecked())
+        # self.outdata['Raster'] = dat
+
+        ifiles = []
+        for i in self.indata['Raster']:
+            ifiles.append(i.filename)
+
+        # idir = r'E:\Workdata\Richtersveld\Ratios1'
+        # ifiles = glob.glob(os.path.join(idir, '*.tif'))
+        # ofile = os.path.join(idir, 'merge.tif')
+
+        src_files_to_mosaic = []
+        for fp in ifiles:
+            print(os.path.basename(fp))
+            src = rasterio.open(fp)
+            src_files_to_mosaic.append(src)
+
+        self.showprocesslog('mosaicing')
+        mosaic, out_trans = rasterio.merge(src_files_to_mosaic)
+
+        mosaic = np.ma.masked_equal(mosaic, 0)
+
+        out_meta = src.meta.copy()
+
+        out_meta.update({"height": mosaic.shape[1],
+                         "width": mosaic.shape[2],
+                         "transform": out_trans,
+                         })
+
+        # with rasterio.open(ofile, "w", **out_meta) as dest:
+        #     dest.write(mosaic)
+        #     for i, val in enumerate(src.descriptions):
+        #         dest.set_band_description(i+1, val)
+
+
+
 class DataReproj(QtWidgets.QDialog):
     """
     Reprojections.
@@ -356,7 +590,7 @@ class DataReproj(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
-            self.piter = iter
+            self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
             self.piter = parent.pbar.iter
@@ -512,6 +746,11 @@ class DataReproj(QtWidgets.QDialog):
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
         bool
@@ -583,12 +822,6 @@ class GetProf():
     ----------
     ifile : str
         input file name.
-    name : str
-        item name
-    ext : str
-        file name extension.
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     indata : dictionary
@@ -604,7 +837,7 @@ class GetProf():
         self.outdata = {}
         if parent is None:
             self.showprocesslog = print
-            self.piter = iter
+            self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
             self.piter = parent.pbar.iter
@@ -612,6 +845,11 @@ class GetProf():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -814,8 +1052,6 @@ class Metadata(QtWidgets.QDialog):
 
     Attributes
     ----------
-    name : oldtxt
-        old text
     banddata : dictionary
         band data
     bandid : dictionary
@@ -1119,7 +1355,7 @@ class RTP(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
         if parent is None:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
         else:
             self.piter = parent.pbar.iter
 
@@ -1174,6 +1410,11 @@ class RTP(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -1335,6 +1576,11 @@ class Continuation(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -2513,5 +2759,36 @@ def _testfft():
     # zout[data.data.mask] = data.data.fill_value
 
 
+
+def _testmerge():
+    """Test Merge."""
+    import glob
+    import sys
+    import matplotlib.pyplot as plt
+    # from IPython import get_ipython
+    from pygmi.raster.iodefs import get_raster
+
+    # get_ipython().run_line_magic('matplotlib', 'inline')
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    idir = r'c:\Workdata\merge'
+    ifiles = glob.glob(os.path.join(idir, '*.tif'))
+
+
+    indata = []
+
+    print('Import Data...')
+    for ifile in ifiles:
+        indata += get_raster(ifile)
+
+    print('Merge')
+    DM = DataMerge()
+    DM.indata['Raster'] = indata
+    DM.settings(True)
+
+
+    breakpoint()
+
 if __name__ == "__main__":
-    _testfft()
+    _testmerge()

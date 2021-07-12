@@ -413,11 +413,17 @@ class BeachBall(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Run.
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
-        None.
+        bool
+            True if successful, False otherwise.
 
         """
         if self.nofps:
@@ -497,6 +503,8 @@ def beachball(fm, centerx, centery, diam, isgeog, showprocesslog=print):
         draw beachball with this diameter.
     isgeog : bool
         True if in geographic coordinates, False otherwise.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------

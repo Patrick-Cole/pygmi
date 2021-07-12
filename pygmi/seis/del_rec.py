@@ -50,6 +50,11 @@ class DeleteRecord():
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
         bool
@@ -169,6 +174,11 @@ class Quarry():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -607,7 +617,8 @@ def import_for_plots(ifile, dind='R'):
 
     Returns
     -------
-    None.
+    datd : dictionary
+        Output data.
 
     """
     iseis = iodefs.ImportSeisan()

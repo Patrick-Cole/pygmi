@@ -123,9 +123,14 @@ class CorrectDescriptions(QtWidgets.QDialog):
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
-        tmp : bool
+        bool
             True if successful, False otherwise.
 
         """

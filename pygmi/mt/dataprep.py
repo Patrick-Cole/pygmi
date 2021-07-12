@@ -50,8 +50,6 @@ class Metadata(QtWidgets.QDialog):
 
     Attributes
     ----------
-    name : oldtxt
-        old text
     banddata : dictionary
         band data
     bandid : dictionary
@@ -524,6 +522,11 @@ class StaticShiftEDI(QtWidgets.QDialog):
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
         bool
@@ -737,6 +740,11 @@ class RotateEDI(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -1224,6 +1232,11 @@ class EditEDI(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -1762,6 +1775,11 @@ class Occam1D(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

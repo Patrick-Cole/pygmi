@@ -1631,7 +1631,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         event : TYPE
-            DESCRIPTION.
+            Unused.
 
         Returns
         -------
@@ -1824,7 +1824,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         event : TYPE
-            DESCRIPTION.
+            Unused.
 
         Returns
         -------
@@ -2723,16 +2723,17 @@ class ImportPicture(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Entrypoint into class.
+        Entry point into item.
 
-        This is called when the used double clicks the routine from the
-        main PyGMI interface.
-
-        This section also imports the picture.
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
-        None.
+        bool
+            True if successful, False otherwise.
 
         """
         temp = self.exec_()

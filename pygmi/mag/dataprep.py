@@ -33,6 +33,7 @@ import scipy.signal as signal
 import pygmi.menu_default as menu_default
 
 from pygmi.raster.datatypes import Data
+from pygmi.misc import ProgressBarText
 
 
 class Tilt1(QtWidgets.QDialog):
@@ -64,7 +65,7 @@ class Tilt1(QtWidgets.QDialog):
         if parent is not None:
             self.piter = self.parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.sb_azi = QtWidgets.QSpinBox()
         self.sb_s = QtWidgets.QSpinBox()
@@ -114,6 +115,11 @@ class Tilt1(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -384,7 +390,7 @@ class RTP(QtWidgets.QDialog):
         if parent is not None:
             self.piter = self.parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.dataid = QtWidgets.QComboBox()
         self.dsb_inc = QtWidgets.QDoubleSpinBox()
@@ -437,6 +443,11 @@ class RTP(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

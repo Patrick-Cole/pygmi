@@ -72,6 +72,11 @@ class PointCut():
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
         bool
@@ -199,7 +204,7 @@ class DataGrid(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
+        helpdocs = menu_default.HelpButton('pygmi.vector.dataprep.datagrid')
         label_band = QtWidgets.QLabel('Column to Grid:')
         label_dxy = QtWidgets.QLabel('Cell Size:')
         label_null = QtWidgets.QLabel('Null Value:')
@@ -295,6 +300,11 @@ class DataGrid(QtWidgets.QDialog):
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
         bool
@@ -376,7 +386,6 @@ class DataGrid(QtWidgets.QDialog):
         self.bdist.setText(projdata['bdist'])
 
         self.dsb_dxy.textChanged.connect(self.dxy_change)
-#        self.dxy_change()
 
         return False
 
@@ -606,6 +615,11 @@ class DataReproj(QtWidgets.QDialog):
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
         bool
@@ -711,7 +725,7 @@ def cut_point(data, ifile):
 
     Returns
     -------
-    Data
+    data : Data
         PyGMI Dataset
     """
     shapef = ogr.Open(ifile)
@@ -770,8 +784,8 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
     numits : int
         number of iterations. By default its 4. If this is negative, a maximum
         numits will be calculated and used.
-    showprogresslog : print, optional
-        Routine for displaying messages. Default is print
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------

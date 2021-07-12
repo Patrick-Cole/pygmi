@@ -35,6 +35,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 
 import pygmi.menu_default as menu_default
+from pygmi.misc import ProgressBarText
 
 
 class Gradients(QtWidgets.QDialog):
@@ -72,7 +73,7 @@ class Gradients(QtWidgets.QDialog):
         if parent is not None:
             self.piter = self.parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.sb_order = QtWidgets.QSpinBox()
         self.sb_azi = QtWidgets.QSpinBox()
@@ -134,6 +135,11 @@ class Gradients(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -380,7 +386,7 @@ class Visibility2d(QtWidgets.QDialog):
         if parent is not None:
             self.piter = self.parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.sb_dh = QtWidgets.QSpinBox()
         self.sb_wsize = QtWidgets.QSpinBox()
@@ -429,6 +435,11 @@ class Visibility2d(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -767,7 +778,7 @@ class AGC(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
-            self.piter = iter
+            self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
             self.piter = parent.pbar.iter
@@ -825,6 +836,11 @@ class AGC(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

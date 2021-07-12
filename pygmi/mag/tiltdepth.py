@@ -260,15 +260,12 @@ class TiltDepth(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Entry point.
-
-        This is called when the used double clicks the routine from the
-        main PyGMI interface.
+        Entry point into item.
 
         Parameters
         ----------
-        test : bool, optional
-            Parameter indicating testing. The default is False.
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

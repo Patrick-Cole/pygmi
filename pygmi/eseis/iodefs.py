@@ -35,18 +35,12 @@ class ImportSEGY():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None):
@@ -58,6 +52,11 @@ class ImportSEGY():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -132,18 +131,12 @@ class ExportSEGY():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None):

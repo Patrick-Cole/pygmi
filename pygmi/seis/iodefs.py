@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Import Data."""
+"""Import Seismology Data."""
 
 import os
 import re
@@ -49,12 +49,14 @@ def sform(strform, val, tmp, col1, col2=None, nval=-999):
         This string must be of the form {0:4.1f}, where 4.1f can be changed.
     val : float, int, str
         input value
-    nval : float, int
-        null value which gets substituted by spaces
+    tmp : str
+        Input string
     col1 : int
         start column (1 is first column)
-    col2 : inr
-        end column
+    col2 : int
+        end column. The default is None.
+    nval : float, int
+        null value which gets substituted by spaces. The default is -999.
 
     Returns
     -------
@@ -153,6 +155,11 @@ class ImportSeisan():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -809,6 +816,11 @@ class ImportGenericFPS():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -2377,9 +2389,14 @@ class FilterSeisan(QtWidgets.QDialog):
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
-        tmp : bool
+        bool
             True if successful, False otherwise.
 
         """

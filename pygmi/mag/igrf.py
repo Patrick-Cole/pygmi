@@ -60,8 +60,10 @@ import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr
+
 import pygmi.raster.dataprep as dp
 import pygmi.menu_default as menu_default
+from pygmi.misc import ProgressBarText
 
 
 class IGRF(QtWidgets.QDialog):
@@ -150,7 +152,7 @@ class IGRF(QtWidgets.QDialog):
         self.outdata = {}
         self.wkt = None
         if parent is None:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
         else:
             self.piter = self.parent.pbar.iter
 
@@ -257,15 +259,12 @@ class IGRF(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Entrypoint into class.
-
-        This is the main entry point into this routine. It also
-        contains the main IGRF code.
+        Entry point into item.
 
         Parameters
         ----------
-        test : bool, optional
-            Flag to allow testing. The default is None.
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

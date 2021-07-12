@@ -199,7 +199,7 @@ class PolygonInteractor(QtCore.QObject):
         Parameters
         ----------
         event : TYPE, optional
-            DESCRIPTION. The default is None.
+            Unused. The default is None.
 
         Returns
         -------
@@ -858,10 +858,12 @@ class SuperClass(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Entrypoint into class.
+        Entry point into item.
 
-        This is called when the used double clicks the routine from the
-        main PyGMI interface.
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

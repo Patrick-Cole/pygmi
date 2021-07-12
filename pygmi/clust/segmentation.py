@@ -39,8 +39,6 @@ class ImageSeg(QtWidgets.QDialog):
 
     Attributes
     ----------
-    name : str
-        item name
     pbar : progressbar
         reference to a progress bar.
     parent : parent
@@ -132,6 +130,11 @@ class ImageSeg(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

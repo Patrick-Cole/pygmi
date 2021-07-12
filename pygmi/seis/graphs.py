@@ -235,9 +235,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         data1 : numpy array.
             raster dataset to be used
         xlbl : str, optional
-            X-axis label. The default is 'Time'.
+            X-axis label. The default is 'Data Value'.
         ylbl : str, optional
-            Y-axis label. The default is 'ML'.
+            Y-axis label. The default is 'Number of Observations'.
         bins : int or str, optional
             Number of bins or binning strategy. See matplotlib.pyplot.hist.
             The default is 'doane'.
@@ -387,7 +387,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_residual(self, dat, res='ML'):
         """
-        Update the residualplot.
+        Update the residual plot.
 
         Parameters
         ----------
@@ -708,7 +708,7 @@ class PlotQC(GraphWindow):
 
     def run(self):
         """
-        Run.
+        Entry point to run routine.
 
         Returns
         -------

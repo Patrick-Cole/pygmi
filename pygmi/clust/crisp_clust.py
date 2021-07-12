@@ -31,6 +31,7 @@ import numpy as np
 
 from pygmi.raster.datatypes import Data
 import pygmi.clust.var_ratio as vr
+from pygmi.misc import ProgressBarText
 
 
 class CrispClust(QtWidgets.QDialog):
@@ -62,7 +63,7 @@ class CrispClust(QtWidgets.QDialog):
         if parent is not None:
             self.piter = parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
         self.spinbox_maxclusters = QtWidgets.QSpinBox()
         self.combobox_alg = QtWidgets.QComboBox()
@@ -190,6 +191,11 @@ class CrispClust(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

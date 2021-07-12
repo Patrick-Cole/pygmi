@@ -38,6 +38,7 @@ import pygmi.pfmod.grvmag3d as grvmag3d
 import pygmi.pfmod.cubes as mvis3d
 import pygmi.menu_default as menu_default
 import pygmi.raster.dataprep as dp
+from pygmi.misc import ProgressBarText
 # This is necessary for loading npz files, since I moved the location of
 # datatypes.
 from pygmi.pfmod import datatypes
@@ -60,11 +61,16 @@ class ImportMod3D():
         if parent is not None:
             self.piter = parent.pbar.iter
         else:
-            self.piter = iter
+            self.piter = ProgressBarText().iter
 
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------

@@ -79,8 +79,6 @@ class LithModel():
         height of gravity sensor
     gregional : float
         gravity regional correction
-    name : str
-        name of the model
 
     """
 

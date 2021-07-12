@@ -146,18 +146,12 @@ class ImportData():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
         dictionary of output datasets
     ifile : str
         input file name. Used in main.py
-    ext : str
-        filename extension
     """
 
     def __init__(self, parent=None, extscene=None):
@@ -175,6 +169,11 @@ class ImportData():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -288,6 +287,11 @@ class ImportBatch():
         """
         Entry point into item.
 
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
         Returns
         -------
         bool
@@ -386,10 +390,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
@@ -467,6 +467,11 @@ class ImportSentinel5P(QtWidgets.QDialog):
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -564,7 +569,7 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
     def get_5P_meta(self):
         """
-        Get metadata.
+        Get 5P metadata.
 
         Returns
         -------
@@ -694,10 +699,6 @@ class ImportShapeData():
 
     Attributes
     ----------
-    name : str
-        item name
-    pbar : progressbar
-        reference to a progress bar.
     parent : parent
         reference to the parent routine
     outdata : dictionary
@@ -715,6 +716,11 @@ class ImportShapeData():
     def settings(self, nodialog=False):
         """
         Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
@@ -785,6 +791,8 @@ def calculate_toa(dat, showprocesslog=print):
     ----------
     dat : Data
         PyGMI raster dataset
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------
@@ -835,8 +843,8 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is iter
-    showprogresslog : print, optional
-        Routine for displaying messages. Default is print
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
     extscene : str or None
         String used currently to give an option to limit bands in Sentinel-2
 
@@ -878,8 +886,8 @@ def get_modis(ifile, showprocesslog=print):
     ----------
     ifile : str
         filename to import
-    showprogresslog : print, optional
-        Routine for displaying messages. Default is print
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------
@@ -1107,15 +1115,14 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is iter
-    showprogresslog : print, optional
-        Routine for displaying messages. Default is print
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------
     out : Data
         PyGMI raster dataset
     """
-
     platform = os.path.basename(ifilet)[2: 4]
     satbands = None
 
@@ -1238,8 +1245,8 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is iter
-    showprogresslog : print, optional
-        Routine for displaying messages. Default is print
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
     extscene : str or None
         String used currently to give an option to limit bands in Sentinel-2
 
@@ -1317,15 +1324,14 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
         filename to import
     piter : iter, optional
         Progress bar iterable. Default is iter
-    showprogresslog : print, optional
-        Routine for displaying messages. Default is print
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
 
     Returns
     -------
     dat : PyGMI raster Data
         dataset imported
     """
-
     satbands = {'1': [520, 600],
                 '2': [630, 690],
                 '3N': [780, 860],
@@ -1425,7 +1431,6 @@ def get_aster_hdf(ifile, piter=iter):
     dat : PyGMI raster Data
         dataset imported
     """
-
     satbands = {'1': [520, 600],
                 '2': [630, 690],
                 '3N': [780, 860],
@@ -1759,9 +1764,6 @@ def get_aster_ged_bin(ifile):
 
 def _testfn():
     """Test routine."""
-
-
-
     ifile = r'D:/Workdata/Remote Sensing/Landsat/LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz'
     # ifile = r'D:/Workdata/Remote Sensing/Landsat/LE071700782002070201T1-SC20200519113053.tar.gz'
     # ifile = r'D:/Workdata/Remote Sensing/Landsat/LT051700781997071201T1-SC20200519120230.tar.gz'

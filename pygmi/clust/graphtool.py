@@ -447,7 +447,7 @@ class PolygonInteractor(QtCore.QObject):
         Parameters
         ----------
         event : TYPE
-            DESCRIPTION.
+            Unused.
 
         Returns
         -------
@@ -798,7 +798,12 @@ class ScatterPlot(QtWidgets.QDialog):
 
     def settings(self, nodialog=False):
         """
-        Run.
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
 
         Returns
         -------
