@@ -55,11 +55,6 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
         warnings.warn('Error: you need 2 dimensions')
         return None
 
-    if pdata.data.shape != data.shape:
-        warnings.warn('Error: you need your data and pygmi data '
-                      'shape to be the same')
-        return None
-
     tmp = Data()
     if np.ma.isMaskedArray(data):
         tmp.data = data
@@ -67,6 +62,10 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
         tmp.data = np.ma.array(data)
 
     if isinstance(pdata, Data):
+        if pdata.data.shape != data.shape:
+            warnings.warn('Error: you need your data and pygmi data '
+                          'shape to be the same')
+            return None
         tmp.extent = pdata.extent
         tmp.xdim = pdata.xdim
         tmp.ydim = pdata.ydim

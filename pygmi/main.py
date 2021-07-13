@@ -824,7 +824,7 @@ class MainWidget(QtWidgets.QMainWindow):
         menu_default.HelpDocs(self, 'pygmi.main')
 
     def item_insert(self, item_type, item_name, class_name, runimport=True,
-                    params=None):
+                    params=None, hasimport=False):
         """
         Item insert.
 
@@ -859,7 +859,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         item.my_class_name = item_name.replace('\n', ' ')
 
-        if 'Import' in item_name:
+        if 'Import' in item_name or hasimport is True:
             item.is_import = True
 
         if 'Import' in item_name and runimport is True:

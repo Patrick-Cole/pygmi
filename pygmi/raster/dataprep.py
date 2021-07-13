@@ -26,6 +26,7 @@
 
 import math
 import os
+import glob
 import copy
 from collections import Counter
 from PyQt5 import QtWidgets, QtCore
@@ -37,10 +38,13 @@ import scipy.ndimage as ndimage
 from scipy.signal import tukey
 import rasterio
 import rasterio.merge
+from rasterio.io import MemoryFile
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ProgressBarText
+from pygmi.raster.datatypes import numpy_to_pygmi
+
 
 gdal.PushErrorHandler('CPLQuietErrorHandler')
 
@@ -373,13 +377,13 @@ class DataMerge(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.dxy = None
-        self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
+        self.idir = None
+        # self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
-        self.dsb_dxy = QtWidgets.QDoubleSpinBox()
-        self.label_rows = QtWidgets.QLabel('Rows: 0')
-        self.label_cols = QtWidgets.QLabel('Columns: 0')
-
+        self.idirlist = QtWidgets.QLineEdit('')
+        self.files_identical = QtWidgets.QCheckBox('All files are identical '
+                                                   '(same bands and band '
+                                                   'order)')
         self.setupui()
 
     def setupui(self):
@@ -394,60 +398,42 @@ class DataMerge(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
-        label_dxy = QtWidgets.QLabel('Cell Size:')
+        pb_idirlist = QtWidgets.QPushButton('Batch Directory')
 
-        self.dsb_dxy.setMaximum(9999999999.0)
-        self.dsb_dxy.setMinimum(0.00001)
-        self.dsb_dxy.setDecimals(5)
-        self.dsb_dxy.setValue(40.)
+        self.files_identical.setChecked(False)
+
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.cmask.setChecked(True)
-
         self.setWindowTitle('Dataset Merge')
 
-        gridlayout_main.addWidget(label_dxy, 0, 0, 1, 1)
-        gridlayout_main.addWidget(self.dsb_dxy, 0, 1, 1, 1)
-        gridlayout_main.addWidget(self.label_rows, 1, 0, 1, 2)
-        gridlayout_main.addWidget(self.label_cols, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.cmask, 3, 0, 1, 2)
+        gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
+        gridlayout_main.addWidget(self.files_identical, 2, 0, 1, 2)
         gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 4, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-        self.dsb_dxy.valueChanged.connect(self.dxy_change)
+        pb_idirlist.pressed.connect(self.get_idir)
 
-    def dxy_change(self):
+    def get_idir(self):
         """
-        Update dxy.
-
-        This is the size of a grid cell in the x and y directions.
+        Get the input directory.
 
         Returns
         -------
         None.
 
         """
-        data = self.indata['Raster'][0]
-        dxy = self.dsb_dxy.value()
+        self.idir = QtWidgets.QFileDialog.getExistingDirectory(
+             self.parent, 'Select Directory')
 
-        xmin0, xmax0, ymin0, ymax0 = data.extent
+        self.idirlist.setText(self.idir)
 
-        for data in self.indata['Raster']:
-            xmin, xmax, ymin, ymax = data.extent
-            xmin = min(xmin, xmin0)
-            xmax = max(xmax, xmax0)
-            ymin = min(ymin, ymin0)
-            ymax = max(ymax, ymax0)
-
-        cols = int((xmax - xmin)/dxy)
-        rows = int((ymax - ymin)/dxy)
-
-        self.label_rows.setText('Rows: '+str(rows))
-        self.label_cols.setText('Columns: '+str(cols))
+        if self.idir == '':
+            self.idir = None
 
     def settings(self, nodialog=False):
         """
@@ -465,22 +451,13 @@ class DataMerge(QtWidgets.QDialog):
 
         """
         if not nodialog:
-            data = self.indata['Raster'][0]
-
-            if self.dxy is None:
-                dxy0 = min(data.xdim, data.ydim)
-                for data in self.indata['Raster']:
-                    self.dxy = min(dxy0, data.xdim, data.ydim)
-
-            self.dsb_dxy.setValue(self.dxy)
-
             tmp = self.exec_()
             if tmp != 1:
                 return False
 
-        self.acceptall()
+        tmp = self.acceptall()
 
-        return True
+        return tmp
 
     def loadproj(self, projdata):
         """
@@ -497,8 +474,8 @@ class DataMerge(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-        self.dxy = projdata['dxy']
-        self.cmask.setChecked(projdata['cmask'])
+        # self.dxy = projdata['dxy']
+        # self.cmask.setChecked(projdata['cmask'])
 
         return False
 
@@ -514,8 +491,8 @@ class DataMerge(QtWidgets.QDialog):
         """
         projdata = {}
 
-        projdata['dxy'] = self.dsb_dxy.value()
-        projdata['cmask'] = self.cmask.isChecked()
+        # projdata['dxy'] = self.dsb_dxy.value()
+        # projdata['cmask'] = self.cmask.isChecked()
 
         return projdata
 
@@ -527,47 +504,176 @@ class DataMerge(QtWidgets.QDialog):
 
         Returns
         -------
-        None.
+        bool
+            Success of routine.
 
         """
-        dxy = self.dsb_dxy.value()
-        self.dxy = dxy
-        # dat = merge(self.indata['Raster'], self.piter, dxy,
-        #             pprint=self.showprocesslog,
-        #             commonmask=self.cmask.isChecked())
-        # self.outdata['Raster'] = dat
+        if self.files_identical.isChecked():
+            tmp = self.merge_same()
+        else:
+            tmp = self.merge_different()
 
+        return tmp
+
+
+    def merge_different(self):
+        """
+        Merge files with different numbers of bands and/or band order.
+
+        This uses more memory, but is flexible.
+
+        Returns
+        -------
+        bool
+            Success of routine.
+
+        """
+        # The next line is only to avoid circular dependancies with merge
+        # function.
+
+        from pygmi.raster.iodefs import get_raster
+
+        indata = []
+        if 'Raster' in self.indata:
+            for i in self.indata['Raster']:
+                indata.append(i)
+
+        if self.idir is not None:
+            ifiles = []
+            for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
+                ifiles += glob.glob(os.path.join(self.idir, ftype))
+
+            for ifile in self.piter(ifiles):
+                indata += get_raster(ifile)
+
+        if indata is None:
+            self.showprocesslog('No input datasets')
+            return False
+
+        # Get projection information
+        wkt = []
+        for i in indata:
+            wkt.append(i.wkt)
+            nodata = i.nullvalue
+
+        wkt = list(set(wkt))
+
+        if len(wkt) > 1:
+            self.showprocesslog('Error: Mismatched input projections')
+            return False
+
+        wkt = wkt[0]
+
+        # Start Merge
+        bandlist = []
+        for i in indata:
+            bandlist.append(i.dataid)
+        bandlist = list(set(bandlist))
+
+        outdat = []
+
+        for dataid in self.piter(bandlist):
+            ifiles = []
+
+            for i in indata:
+                if i.dataid != dataid:
+                    continue
+                # ifiles.append(i.filename)
+                trans = rasterio.transform.from_origin(i.extent[0], i.extent[3],
+                                                       i.xdim, i.ydim)
+
+                raster = MemoryFile().open(driver='GTiff',
+                                           height=i.data.shape[0],
+                                           width=i.data.shape[1], count=1,
+                                           dtype=i.data.dtype,
+                                           transform=trans)
+                raster.write(i.data, 1)
+                ifiles.append(raster)
+
+            if len(ifiles) < 2:
+                self.showprocesslog('Too few bands of name '+dataid)
+
+            mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata)
+            for j in ifiles:
+                j.close()
+
+            mosaic = mosaic.squeeze()
+            mosaic = np.ma.masked_equal(mosaic, nodata)
+            outdat.append(numpy_to_pygmi(mosaic, dataid=dataid))
+            gtr = (otrans[2], otrans[0], otrans[1], otrans[5], otrans[3],
+                    otrans[4])
+            outdat[-1].extent_from_gtr(gtr)
+            outdat[-1].wkt = wkt
+            outdat[-1].nullvalue = nodata
+
+        self.outdata['Raster'] = outdat
+
+        return True
+
+    def merge_same(self):
+        """
+        Merge files with same numbers of bands and band order.
+
+        This uses much less memory, but is less flexible.
+
+        Returns
+        -------
+        bool
+            Success of routine.
+
+        """
+        indata = []
         ifiles = []
-        for i in self.indata['Raster']:
-            ifiles.append(i.filename)
+        if 'Raster' in self.indata:
+            for i in self.indata['Raster']:
+                ifiles.append(i.filename)
 
-        # idir = r'E:\Workdata\Richtersveld\Ratios1'
-        # ifiles = glob.glob(os.path.join(idir, '*.tif'))
-        # ofile = os.path.join(idir, 'merge.tif')
+        if self.idir is not None:
+            for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
+                ifiles += glob.glob(os.path.join(self.idir, ftype))
 
-        src_files_to_mosaic = []
-        for fp in ifiles:
-            print(os.path.basename(fp))
-            src = rasterio.open(fp)
-            src_files_to_mosaic.append(src)
 
-        self.showprocesslog('mosaicing')
-        mosaic, out_trans = rasterio.merge(src_files_to_mosaic)
+        if not ifiles:
+            self.showprocesslog('No input datasets')
+            return False
 
-        mosaic = np.ma.masked_equal(mosaic, 0)
+        # Get projection information
+        wkt = []
+        for ifile in ifiles:
+            with rasterio.open(ifile) as dataset:
+                wkt.append(dataset.crs.wkt)
 
-        out_meta = src.meta.copy()
+        # Get band names and nodata
+        bnames = []
+        with rasterio.open(ifiles[0]) as dataset:
+            for i in range(dataset.count):
+                bnames.append(dataset.tags(i+1)['BandName'])
+            nodata = dataset.nodata
 
-        out_meta.update({"height": mosaic.shape[1],
-                         "width": mosaic.shape[2],
-                         "transform": out_trans,
-                         })
+        wkt = list(set(wkt))
 
-        # with rasterio.open(ofile, "w", **out_meta) as dest:
-        #     dest.write(mosaic)
-        #     for i, val in enumerate(src.descriptions):
-        #         dest.set_band_description(i+1, val)
+        if len(wkt) > 1:
+            self.showprocesslog('Error: Mismatched input projections')
+            return False
 
+        wkt = wkt[0]
+
+        # Start Merge
+        mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata)
+        mosaic = np.ma.masked_equal(mosaic, nodata)
+        gtr = (otrans[2], otrans[0], otrans[1], otrans[5], otrans[3],
+               otrans[4])
+
+        outdat = []
+        for i, dataid in enumerate(bnames):
+            outdat.append(numpy_to_pygmi(mosaic[i], dataid=dataid))
+            outdat[-1].extent_from_gtr(gtr)
+            outdat[-1].wkt = wkt
+            outdat[-1].nullvalue = nodata
+
+        self.outdata['Raster'] = outdat
+
+        return True
 
 
 class DataReproj(QtWidgets.QDialog):
@@ -2764,31 +2870,28 @@ def _testmerge():
     """Test Merge."""
     import glob
     import sys
+    import psutil
     import matplotlib.pyplot as plt
     # from IPython import get_ipython
-    from pygmi.raster.iodefs import get_raster
+
 
     # get_ipython().run_line_magic('matplotlib', 'inline')
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     idir = r'c:\Workdata\merge'
-    ifiles = glob.glob(os.path.join(idir, '*.tif'))
+    # ifiles = glob.glob(os.path.join(idir, '*.tif'))
 
-
-    indata = []
-
-    print('Import Data...')
-    for ifile in ifiles:
-        indata += get_raster(ifile)
+    print(f'Start: {psutil.virtual_memory().used:,}')
+    # mosaic, otrans = rasterio.merge.merge(ifiles)
 
     print('Merge')
     DM = DataMerge()
-    DM.indata['Raster'] = indata
+    DM.idir = idir
+    DM.files_identical.setChecked(True)
     DM.settings(True)
 
-
-    breakpoint()
+    print(f'Finished: {psutil.virtual_memory().used:,}')
 
 if __name__ == "__main__":
     _testmerge()

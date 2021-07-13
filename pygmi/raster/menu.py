@@ -263,7 +263,8 @@ class MenuWidget():
 
     def merge(self):
         """Merge datasets."""
-        self.parent.item_insert('Step', 'Data Merge', dataprep.DataMerge)
+        self.parent.item_insert('Step', 'Data Merge', dataprep.DataMerge,
+                                runimport=False, hasimport=True)
 
     def lstack(self):
         """Layer stack datasets."""
