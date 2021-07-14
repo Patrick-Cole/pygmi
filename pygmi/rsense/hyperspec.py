@@ -60,9 +60,11 @@ comparison between existing logs and the core images.
 import json
 import sys
 import re
+import os
 
 import numpy as np
 import numexpr as ne
+from numba import jit
 from PyQt5 import QtWidgets, QtCore
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -74,6 +76,7 @@ import pygmi.menu_default as menu_default
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
+from pygmi.raster.iodefs import export_gdal
 # from pygmi.raster.modest_image import imshow
 
 
@@ -476,11 +479,13 @@ class AnalSpec(QtWidgets.QDialog):
 
         if 'wavelength' not in self.indata['Raster'][0].metadata['Raster']:
             self.showprocesslog('Error: Your data should have wavelengths in'
-                                'the metadata')
+                                ' the metadata')
             return False
 
         dat = self.indata['Raster']
-        self.map.refl = float(dat[0].metadata['Raster']['reflectance_scale_factor'])
+
+        if 'reflectance_scale_factor' in dat[0].metadata['Raster']:
+            self.map.refl = float(dat[0].metadata['Raster']['reflectance_scale_factor'])
 
         dat2 = []
         wvl = []
@@ -847,9 +852,27 @@ class ProcFeatures(QtWidgets.QDialog):
             product[-1] += ' ' + self.tablewidget.cellWidget(i, 1).currentText()
             product[-1] += ' ' + self.tablewidget.item(i, 2).text()
 
-        dat = self.indata['Raster']
-        datfin = calcfeatures(dat, mineral, feature, ratio, product,
-                              piter=self.piter)
+        if 'RasterFileList' in self.indata:
+            flist = self.indata['RasterFileList']
+            odir = os.path.join(os.path.dirname(flist[0]), 'feature')
+
+            os.makedirs(odir, exist_ok=True)
+            for ifile in flist:
+                self.showprocesslog('Processing '+os.path.basename(ifile))
+
+                dat = get_raster(ifile)
+                datfin = calcfeatures(dat, mineral, feature, ratio, product,
+                                      piter=self.piter)
+
+                ofile = os.path.basename(ifile).split('.')[0] + '_feature.tif'
+                ofile = os.path.join(odir, ofile)
+                self.showprocesslog('Exporting '+os.path.basename(ofile))
+                export_gdal(ofile, datfin, 'GTiff', piter=self.piter)
+
+        elif 'Raster' in self.indata:
+            dat = self.indata['Raster']
+            datfin = calcfeatures(dat, mineral, feature, ratio, product,
+                                  piter=self.piter)
 
         self.outdata['Raster'] = datfin
         return True
@@ -908,7 +931,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
     datfin = []
     # Calclate ratios
     datcalc = {}
-    for j in allratios:
+    for j in piter(allratios):
         if j in datcalc:
             continue
         tmp = indexcalc(ratio[j], RBands)
@@ -940,17 +963,23 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
         i1a = tmp[0]
         i2a = tmp[-1]
 
-        for i in piter(range(rows)):
-            for j in range(cols):
-                yval = fdat[:, i, j]
-                if True in np.ma.getmaskarray(yval):
-                    continue
+        fdat = np.moveaxis(fdat, 0, -1)
+        # ptmp = fproc(fdat)
 
-                yhull = phull(yval)
-                crem = yval/yhull
-                imin = crem[i1a:i2a].argmin()
-                dtmp[i, j] = 1. - crem[i1a:i2a][imin]
-                ptmp[i, j] = xdat[i1a:i2a][imin]
+        for i in piter(range(rows)):
+            ptmp[i], dtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
+                                     xdat)
+        #     for j in range(cols):
+        #         yval = fdat[:, i, j]
+        #         if True in np.ma.getmaskarray(yval):
+        #             continue
+
+        #         yhull = 1.0
+        #         # yhull = phull(yval)
+        #         crem = yval/yhull
+        #         # imin = crem[i1a:i2a].argmin()
+        #         # dtmp[i, j] = 1. - crem[i1a:i2a][imin]
+        #         # ptmp[i, j] = xdat[i1a:i2a][imin]
 
         depths[fname] = dtmp
         wvl[fname] = ptmp
@@ -1020,7 +1049,41 @@ def indexcalc(formula, dat):
     return out
 
 
-def phull(sample):
+@jit(nopython=True)
+def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
+    """
+    Feature process
+
+    Parameters
+    ----------
+    fdat : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+    cols, _ = fdat.shape
+
+    for j in range(cols):
+        yval = fdat[j]
+        if yval.mean() == 0:
+            continue
+        # if True in yval.mask:
+        #     continue
+
+        yhull = phull(yval)
+        crem = yval/yhull
+        imin = crem[i1a:i2a].argmin()
+        dtmp[j] = 1. - crem[i1a:i2a][imin]
+        ptmp[j] = xdat[i1a:i2a][imin]
+
+    return ptmp, dtmp
+
+
+@jit(nopython=True)
+def phull(sample1):
     """
     Hull Calculation.
 
@@ -1035,25 +1098,30 @@ def phull(sample):
         Output hull.
 
     """
-    xvals = np.arange(sample.size)
-    sample = np.transpose([xvals, sample])
+    xvals = np.arange(sample1.size, dtype=np.int64)
+    sample = np.empty((sample1.size, 2))
+    sample[:, 0] = xvals
+    sample[:, 1] = sample1
 
-    edge = sample[:1]
+    edge = sample[:1].copy()
     rest = sample[1:]
 
     hull = [0]
     while len(rest) > 0:
-        grad = rest - edge
-        grad = grad[:, 1]/grad[:, 0]
-        pivot = np.argmax(grad)
-        edge = rest[pivot]
-        rest = rest[pivot+1:]
-        hull.append(pivot)
+         grad = rest - edge
+         grad = grad[:, 1]/grad[:, 0]
+         pivot = np.argmax(grad)
+         edge[0, 0] = rest[pivot, 0]
+         edge[0, 1] = rest[pivot, 1]
+         rest = rest[pivot+1:]
+         hull.append(pivot)
 
     hull = np.array(hull) + 1
     hull = hull.cumsum()-1
-    out = np.transpose([hull, np.take(sample[:, 1], hull)])
-    out = np.interp(xvals, out[:, 0], out[:, 1])
+
+    take = np.take(sample[:, 1], hull)
+
+    out = np.interp(xvals, hull, take)
 
     return out
 
@@ -1149,7 +1217,8 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'c:\work\Workdata\Richtersveld\Reprocessed\057_0818-1117_ref_rect_BSQ.hdr'
+    ifile = r'C:\Workdata\Hyperspectral\056_0818-1125_ref_rect_BSQ.hdr'
+    # ifile = r'c:\work\Workdata\Richtersveld\Reprocessed\057_0818-1117_ref_rect_BSQ.hdr'
 
     xoff = 0
     yoff = 2000
@@ -1159,7 +1228,7 @@ def _testfn():
     nodata = 0
 
     iraster = (xoff, yoff, xsize, ysize)
-    # iraster = None
+    iraster = None
 
     data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
 
@@ -1182,8 +1251,10 @@ def _testfn2():
 
     # data = get_raster(ifile, piter=pbar.iter)
 
-    ifile = r'e:\Workdata\Richtersveld\Reprocessed\057_0818-1117_ref_rect_BSQ.hdr'
-    ifile = r'e:\Workdata\Richtersveld\Reprocessed\030_0815-1050_ref_rect.hdr'
+    ifile = r'C:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
+
+    # ifile = r'e:\Workdata\Richtersveld\Reprocessed\057_0818-1117_ref_rect_BSQ.hdr'
+    # ifile = r'e:\Workdata\Richtersveld\Reprocessed\030_0815-1050_ref_rect.hdr'
 
     xoff = 0
     yoff = 2000
@@ -1193,7 +1264,7 @@ def _testfn2():
     nodata = 0
 
     iraster = (xoff, yoff, xsize, ysize)
-    iraster = None
+    # iraster = None
 
     data = get_raster(ifile, nval=nodata, iraster=iraster, piter = pbar.iter)
 
@@ -1204,4 +1275,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()

@@ -310,6 +310,9 @@ class ImportBatch():
 #        tifdat = glob.glob(directory+'//AST*.tif')
         targzdat = glob.glob(self.idir+'//L*.tar*')
         mtldat = glob.glob(self.idir+'//L*MTL.txt')
+        rasterdat = []
+        for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
+            rasterdat += glob.glob(os.path.join(self.idir, ftype))
 
         sendat = []
         sendir = [f.path for f in os.scandir(self.idir) if f.is_dir() and
@@ -318,7 +321,7 @@ class ImportBatch():
             sendat.extend(glob.glob(i+'//MTD*.xml'))
 
         if (not hdfdat and not zipdat and not targzdat and not mtldat and not
-                sendat):
+                sendat and not rasterdat):
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           'No valid files in the directory.',
                                           QtWidgets.QMessageBox.Ok)
@@ -333,6 +336,7 @@ class ImportBatch():
         dat.extend(targzdat)
         dat.extend(zipdat)
         dat.extend(sendat)
+        dat.extend(rasterdat)
 
         # for i in tifdat:
         #     if i[:i.rindex('_')]+'_MTL.txt' in mtldat:
