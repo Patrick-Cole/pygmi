@@ -78,6 +78,7 @@ from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_gdal
 # from pygmi.raster.modest_image import imshow
+import pygmi.rsense.features as features
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -595,6 +596,7 @@ class ProcFeatures(QtWidgets.QDialog):
 
         # self.combo_sensor = QtWidgets.QComboBox()
         self.cb_ratios = QtWidgets.QComboBox()
+        self.filtercheck = QtWidgets.QCheckBox('Filter Albedo and Vegetation')
         self.tablewidget = QtWidgets.QTableWidget()
 
         self.setupui()
@@ -622,6 +624,7 @@ class ProcFeatures(QtWidgets.QDialog):
         self.tablewidget.setHorizontalHeaderLabels(['Feature', 'Filter',
                                                     'Threshold'])
         self.tablewidget.resizeColumnsToContents()
+        self.filtercheck.setChecked(True)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -633,11 +636,13 @@ class ProcFeatures(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.cb_ratios, 1, 1, 1, 1)
         gridlayout_main.addWidget(lbl_details, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.tablewidget, 2, 1, 1, 1)
+        gridlayout_main.addWidget(self.filtercheck, 3, 0, 1, 2)
 
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
 
         self.cb_ratios.currentIndexChanged.connect(self.product_change)
+        self.filtercheck.stateChanged.connect(self.product_change)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -653,7 +658,11 @@ class ProcFeatures(QtWidgets.QDialog):
         txt = self.cb_ratios.currentText()
         self.tablewidget.clear()
 
-        product = self.product[txt]+self.product['filter']
+        product = self.product[txt]
+
+        if self.filtercheck.isChecked():
+            product = product + self.product['filter']
+
         numrows = len(product)
 
         self.tablewidget.setRowCount(numrows)
@@ -727,42 +736,18 @@ class ProcFeatures(QtWidgets.QDialog):
             self.showprocesslog('No Satellite Data')
             return False
 
-        self.feature = {}
-        self.feature[900] = [776, 1050, 850, 910]
-        self.feature[1300] = [1260, 1420]
-        self.feature[1800] = [1740, 1820]
-        self.feature[2080] = [2000, 2150]
-        self.feature[2500] = [2500, 2500]
-        self.feature[2200] = [2120, 2245]
-        self.feature[2290] = [2270, 2330]
-        self.feature[2330] = [2120, 2370]
+        self.feature = features.feature
+        self.ratio = features.ratio
 
-        self.ratio = {}
-        self.ratio['NDVI'] = '(R860-R687)/(R860+R687)'
-        self.ratio['dryveg'] = '(R2006+R2153)/(R2081+R2100)'
-        self.ratio['albedo'] = 'R1650'
-
-        self.ratio['r2350De'] = '(R2326+R2376)/(R2343+R2359)'
-        self.ratio['r2160D2190'] = '(R2136+R2188)/(R2153+R2171)'  # Kaolin from non kaolin
-        self.ratio['r2250D'] = '(R2227+R2275)/(R2241+R2259)'  # Chlorite epidote biotite
-        self.ratio['r2380D'] = '(R2365+R2415)/(R2381+R2390)'  # Amphibole, talc
-        self.ratio['r2330D'] = '(R2265+R2349)/(R2316+R2333)'  # MgOH and CO3
-        self.ratio['r1100D'] = '(R921+R1650)/(R1020+R1231)'   # Ferrous iron
-
-        # Elementwise product would work for formula below
         self.cb_ratios.disconnect()
-        self.product = {}
-        self.product['mica'] = [2200, 'r2350De > 1.02', 'r2160D2190 < 1.005']
-        self.product['smectite'] = [2200, 'r2350De < 1.02', 'r2160D2190 < 1.005']
-        self.product['kaolin'] = [2200, 'r2160D2190 > 1.005']
-        self.product['chlorite, epidote'] = ['r2250D', 'r2330D > 1.06']
-        self.product['ferrous iron'] = ['r1100D']
+        self.product = features.product.copy()
+        del self.product['filter']
         self.cb_ratios.clear()
         self.cb_ratios.addItems(self.product)
 
         # The filter line is added after the other products so that it does
         # not make it into the list widget
-        self.product['filter'] = ['NDVI < .25', 'dryveg < 1.015', 'albedo > 1000']
+        self.product['filter'] = features.product['filter']
         self.cb_ratios.currentIndexChanged.connect(self.product_change)
         self.product_change()
 
@@ -964,23 +949,10 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
         i2a = tmp[-1]
 
         fdat = np.moveaxis(fdat, 0, -1)
-        # ptmp = fproc(fdat)
 
         for i in piter(range(rows)):
             ptmp[i], dtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
                                      xdat)
-        #     for j in range(cols):
-        #         yval = fdat[:, i, j]
-        #         if True in np.ma.getmaskarray(yval):
-        #             continue
-
-        #         yhull = 1.0
-        #         # yhull = phull(yval)
-        #         crem = yval/yhull
-        #         # imin = crem[i1a:i2a].argmin()
-        #         # dtmp[i, j] = 1. - crem[i1a:i2a][imin]
-        #         # ptmp[i, j] = xdat[i1a:i2a][imin]
-
         depths[fname] = dtmp
         wvl[fname] = ptmp
 
@@ -1108,13 +1080,13 @@ def phull(sample1):
 
     hull = [0]
     while len(rest) > 0:
-         grad = rest - edge
-         grad = grad[:, 1]/grad[:, 0]
-         pivot = np.argmax(grad)
-         edge[0, 0] = rest[pivot, 0]
-         edge[0, 1] = rest[pivot, 1]
-         rest = rest[pivot+1:]
-         hull.append(pivot)
+        grad = rest - edge
+        grad = grad[:, 1]/grad[:, 0]
+        pivot = np.argmax(grad)
+        edge[0, 0] = rest[pivot, 0]
+        edge[0, 1] = rest[pivot, 1]
+        rest = rest[pivot+1:]
+        hull.append(pivot)
 
     hull = np.array(hull) + 1
     hull = hull.cumsum()-1
@@ -1218,7 +1190,6 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     ifile = r'C:\Workdata\Hyperspectral\056_0818-1125_ref_rect_BSQ.hdr'
-    # ifile = r'c:\work\Workdata\Richtersveld\Reprocessed\057_0818-1117_ref_rect_BSQ.hdr'
 
     xoff = 0
     yoff = 2000
@@ -1228,7 +1199,7 @@ def _testfn():
     nodata = 0
 
     iraster = (xoff, yoff, xsize, ysize)
-    iraster = None
+    # iraster = None
 
     data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
 
@@ -1253,9 +1224,6 @@ def _testfn2():
 
     ifile = r'C:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
 
-    # ifile = r'e:\Workdata\Richtersveld\Reprocessed\057_0818-1117_ref_rect_BSQ.hdr'
-    # ifile = r'e:\Workdata\Richtersveld\Reprocessed\030_0815-1050_ref_rect.hdr'
-
     xoff = 0
     yoff = 2000
     xsize = None
@@ -1266,7 +1234,7 @@ def _testfn2():
     iraster = (xoff, yoff, xsize, ysize)
     # iraster = None
 
-    data = get_raster(ifile, nval=nodata, iraster=iraster, piter = pbar.iter)
+    data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = AnalSpec()
