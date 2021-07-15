@@ -27,17 +27,18 @@ List of features for hyperspectral interpretation.
 """
 
 feature = {}
-feature[900] = [776, 1050, 850, 910]
-feature[1300] = [1260, 1420]
-feature[1480] = [1440, 1520]
-feature[1760] = [1730, 1790]
-feature[1800] = [1740, 1820]
-feature[2080] = [2000, 2150]
-feature[2200] = [2120, 2245]
-feature[2290] = [2270, 2330]
-feature[2320] = [2295, 2345]
-feature[2330] = [2220, 2337]
-feature[2390] = [2375, 2435]
+feature['f900'] = [776, 1050, 850, 910]
+feature['f1300'] = [1260, 1420]
+feature['f1480'] = [1440, 1520]
+feature['f1760'] = [1730, 1790]
+feature['f1800'] = [1740, 1820]
+feature['f2080'] = [2000, 2150]
+feature['f2160'] = [2138, 2179]
+feature['f2200'] = [2120, 2245]
+feature['f2290'] = [2270, 2330]
+feature['f2320'] = [2295, 2345]
+feature['f2330'] = [2220, 2337]
+feature['f2390'] = [2375, 2435]
 
 ratio = {}
 ratio['NDVI'] = '(R860-R687)/(R860+R687)'
@@ -55,15 +56,15 @@ ratio['r1950D'] = '(R1900+R1980)/(R1930+R1960)'   # Water feature
 
 product = {}
 product['filter'] = ['NDVI < .25', 'dryveg < 1.015', 'albedo > 1000']
-product['mica'] = [2200, 'r2350De > 1.02', 'r2160D2190 < 1.005']
-product['smectite'] = [2200, 'r2350De < 1.02', 'r2160D2190 < 1.005']
-product['kaolin'] = [2200, 'r2160D2190 > 1.005']
+product['mica'] = ['f2200', 'r2350De > 1.02', 'r2160D2190 < 1.005']
+product['smectite'] = ['f2200', 'r2350De < 1.02', 'r2160D2190 < 1.005']
+product['kaolin'] = ['f2200', 'f2160 > 1.', 'r2160D2190 > 1.005']
 product['chlorite, epidote'] = ['r2250D', 'r2330D > 1.06']
 product['amphibole, talc'] = ['r2380D', 'r2330D > 1.01', 'r2160D2190 < 1.005']
 #product['amphibole2390, talc'] = [2390]
 product['ferrous iron'] = ['r1100D']
-product['ferric iron'] = [900]
-product['gypsum'] = ['r1750D > 1.0'] #, 'r1950D > 1.001']
-product['alunite'] = [1480, 'r1750D > 1.1']
+product['ferric iron'] = ['f900']
+product['gypsum'] = ['r1750D', 'r1750D > 1.0'] #, 'r1950D > 1.001']
+product['alunite'] = ['f1480', 'r1750D > 1.1']
 product['carbonate'] = ['r2330D']
-product['carbonate_w'] = [2330, 'r2330D > 1.1']
+product['carbonate_w'] = ['f2330', 'r2330D > 1.1']

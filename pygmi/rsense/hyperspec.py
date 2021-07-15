@@ -517,8 +517,6 @@ class AnalSpec(QtWidgets.QDialog):
         self.feature_change()
         self.combo_feature.currentIndexChanged.connect(self.feature_change)
 
-        # self.map.init_graph()
-
         tmp = self.exec_()
 
         if tmp == 0:
@@ -683,7 +681,7 @@ class ProcFeatures(QtWidgets.QDialog):
         item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
         self.tablewidget.setItem(0, 2, item)
 
-        if isinstance(product[0], int):
+        if product[0] in self.feature:
             desc = 'Feature Depth'
         elif product[0] in self.ratio:
             desc = self.ratio[product[0]]
@@ -709,7 +707,10 @@ class ProcFeatures(QtWidgets.QDialog):
             item = QtWidgets.QTableWidgetItem(txt2[2])
             self.tablewidget.setItem(i, 2, item)
 
-            desc = self.ratio[txt2[0]]
+            if txt2[0] in self.ratio:
+                desc = self.ratio[txt2[0]]
+            else:
+                desc = 'Feature between ' + str(self.feature[txt2[0]])
             item = QtWidgets.QTableWidgetItem(desc)
             item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tablewidget.setItem(i, 3, item)
@@ -824,8 +825,8 @@ class ProcFeatures(QtWidgets.QDialog):
 
         mineral = self.cb_ratios.currentText()
 
-        feature = self.feature
-        ratio = self.ratio
+        # feature = self.feature
+        # ratio = self.ratio
         product = self.product
 
         try:
@@ -834,7 +835,8 @@ class ProcFeatures(QtWidgets.QDialog):
             product = [self.tablewidget.item(0, 0).text()]
         for i in range(1, self.tablewidget.rowCount()):
             product.append(self.tablewidget.item(i, 0).text())
-            product[-1] += ' ' + self.tablewidget.cellWidget(i, 1).currentText()
+            product[-1] += (' ' +
+                            self.tablewidget.cellWidget(i, 1).currentText())
             product[-1] += ' ' + self.tablewidget.item(i, 2).text()
 
         if 'RasterFileList' in self.indata:
@@ -846,8 +848,8 @@ class ProcFeatures(QtWidgets.QDialog):
                 self.showprocesslog('Processing '+os.path.basename(ifile))
 
                 dat = get_raster(ifile)
-                datfin = calcfeatures(dat, mineral, feature, ratio, product,
-                                      piter=self.piter)
+                datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
+                                      product, piter=self.piter)
 
                 ofile = os.path.basename(ifile).split('.')[0] + '_feature.tif'
                 ofile = os.path.join(odir, ofile)
@@ -856,8 +858,8 @@ class ProcFeatures(QtWidgets.QDialog):
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
-            datfin = calcfeatures(dat, mineral, feature, ratio, product,
-                                  piter=self.piter)
+            datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
+                                  product, piter=self.piter)
 
         self.outdata['Raster'] = datfin
         return True
@@ -889,11 +891,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
         Output datasets.
 
     """
-    allfeatures = [i for i in product if isinstance(i, int)]
-    allratios = [i.split()[0] for i in product
-                 if not isinstance(i, int)]
-    # allratios += [i.split()[0] for i in product['filter']
-    #               if not isinstance(i, int)]
+    allfeatures = [i.split()[0] for i in product if i[0] == 'f']
+    allratios = [i.split()[0] for i in product if i[0] != 'f']
 
     # Get list of wavelengths and data
     dat2 = []
@@ -961,11 +960,11 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
     tmpw = None
 
     for i in product:
-        if isinstance(i, int):
+        if '>' in i or '<' in i or '=' in i:
+            tmp = ne.evaluate(i, datcalc)
+        else:
             tmp = depths[i]
             tmpw = wvl[i]
-        else:
-            tmp = ne.evaluate(i, datcalc)
 
         if datout is None:
             datout = np.nan_to_num(tmp)
@@ -978,7 +977,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
             if datout2 is not None:
                 datout2 = datout2 * np.nan_to_num(tmp)
 
-    if isinstance(product[0], int):
+    if product[0][0] == 'f':
         label = f'{mineral} depth'
     else:
         label = f'{mineral} ratio'
@@ -1185,6 +1184,7 @@ def readsli(ifile):
 
 def _testfn():
     """Test routine."""
+    import matplotlib.pyplot as plt
     pbar = ProgressBarText()
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
@@ -1208,6 +1208,11 @@ def _testfn():
     tmp = ProcFeatures(None)
     tmp.indata['Raster'] = data
     tmp.settings()
+
+    dat = tmp.outdata['Raster'][0]
+
+    plt.imshow(dat.data)
+    plt.show()
 
 
 def _testfn2():
