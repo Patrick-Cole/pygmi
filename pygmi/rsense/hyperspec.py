@@ -960,7 +960,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
     tmpw = None
 
     for i in product:
-        if '>' in i or '<' in i or '=' in i:
+        if '>' in i or '<' in i or '=' in i or i[0] == 'r':
             tmp = ne.evaluate(i, datcalc)
         else:
             tmp = depths[i]

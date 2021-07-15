@@ -1534,13 +1534,14 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
         rtmp.WriteArray(dtmp)
         rtmp.GetStatistics(False, True)
 
-        if 'wavelength' in datai.metadata['Raster']:
-            rtmp.SetMetadataItem('wavelength',
-                                 str(datai.metadata['Raster']['wavelength']))
+        if 'Raster' in datai.metadata:
+            if 'wavelength' in datai.metadata['Raster']:
+                rtmp.SetMetadataItem('wavelength',
+                                     str(datai.metadata['Raster']['wavelength']))
 
-        if 'reflectance_scale_factor' in datai.metadata['Raster']:
-            rtmp.SetMetadataItem('reflectance_scale_factor',
-                                 str(datai.metadata['Raster']['reflectance_scale_factor']))
+            if 'reflectance_scale_factor' in datai.metadata['Raster']:
+                rtmp.SetMetadataItem('reflectance_scale_factor',
+                                     str(datai.metadata['Raster']['reflectance_scale_factor']))
 
         if 'WavelengthMin' in datai.metadata:
             rtmp.SetMetadataItem('WavelengthMin',
