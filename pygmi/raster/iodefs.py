@@ -846,8 +846,12 @@ def get_bil(ifile, nval, piter, showprocesslog=print):
             dat[i].data[dat[-1].data <= nval] = -1.0e+32
 
         dat[i].data = np.ma.array(dat[i].data)
-        dat[i].data.mask = (dat[i].data == nval)
 
+        dat[i].data = np.ma.masked_invalid(dat[i].data)
+        dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
+                            (dat[i].data == nval))
+
+        # dat[i].data.mask = (dat[i].data == nval)
         # dat[i].data = np.ma.masked_invalid(dat[i].data)
 
         dat[i].extent_from_gtr(gtr)
