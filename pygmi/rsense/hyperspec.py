@@ -954,6 +954,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
                                      xdat)
         depths[fname] = dtmp
         wvl[fname] = ptmp
+        datcalc[fname] = dtmp
 
     datout = None
     datout2 = None
