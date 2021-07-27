@@ -25,178 +25,405 @@
 """
 Transforms such as PCA and MNF.
 """
-import sys
 import os
-import glob
 import copy
+from math import ceil
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-from sklearn.decomposition import IncrementalPCA
 from sklearn.decomposition import PCA
-from osgeo import gdal
 import spectral as sp
+import matplotlib.pyplot as plt
+import scipy.signal as ssig
 
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 from pygmi.raster.iodefs import export_gdal
+import pygmi.menu_default as menu_default
 from pygmi.misc import PTime
 
 
-def main_pca():
-    """PCA."""
+class MNF(QtWidgets.QDialog):
+    """
+    Perform MNF Transform.
 
-    idir = r'C:\Work\Workdata\Richtersveld\Reprocessed'
-    odir = r'C:\Work\Workdata\Richtersveld\PCA'
-    cmps = 7
-    windows = [[0, 322],
-               [0, 72],
-               [72, 172],
-               [172, 210],
-               [210, 262],
-               [262, 322]]
-    win = windows[-1]
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
 
-    allfiles = glob.glob(os.path.join(idir, '*.dat'))
-    allfiles = [allfiles[0]]
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+            self.piter = ProgressBarText().iter
 
-    pbar = ProgressBarText()
+        else:
+            self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
-    for ifile in allfiles:
-        ofile = os.path.join(odir, os.path.basename(ifile[:-4]) +
-                             f'{win[0]}_{win[1]}_I_PCA.tif')
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.ev = None
 
-        print('Importing data...')
-        print(os.path.basename(ifile))
-        dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-        rowsall = dataset.RasterYSize
-        dataset = None
-        rinc = 10
+        self.sb_comps = QtWidgets.QSpinBox()
+        self.cb_fwdonly = QtWidgets.QCheckBox('Forward Transform Only.')
+        self.rb_noise_diag = QtWidgets.QRadioButton('Noise estimated by '
+                                                    'diagonal shift')
+        self.rb_noise_hv = QtWidgets.QRadioButton('Noise estimated by average '
+                                                  'of horizontal and vertical '
+                                                  'shift')
+        self.rb_noise_quad = QtWidgets.QRadioButton('Noise estimated by local '
+                                                    'quadratic surface')
 
-        print('Fitting PCA')
-        ttt = PTime()
-        pca = IncrementalPCA(n_components=cmps)
+        self.setupui()
 
-        pca.n_samples_seen_ = np.int64(0)
-        pca.mean_ = .0
-        pca.var_ = .0
+        self.resize(500, 350)
 
-        for i in pbar.iter(range(0, rowsall, rinc)):
+    def setupui(self):
+        """
+        Set up UI.
 
-            xoff = 0
-            yoff = i
-            xsize = None
-            ysize = rinc
-            iraster = (xoff, yoff, xsize, ysize)
-            dat = get_raster(ifile, nval=0, iraster=iraster)
+        Returns
+        -------
+        None.
 
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.rsense.mnf')
+        lbl_comps = QtWidgets.QLabel('Number of components:')
+
+        self.cb_fwdonly.setChecked(True)
+        self.sb_comps.setEnabled(False)
+        self.sb_comps.setMaximum(10000)
+        self.sb_comps.setMinimum(1)
+        self.rb_noise_hv.setChecked(True)
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Minimum Noise Fraction')
+
+        gridlayout_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
+        gridlayout_main.addWidget(lbl_comps, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.sb_comps, 2, 1, 1, 1)
+        gridlayout_main.addWidget(self.rb_noise_hv, 3, 0, 1, 2)
+        gridlayout_main.addWidget(self.rb_noise_diag, 4, 0, 1, 2)
+        gridlayout_main.addWidget(self.rb_noise_quad, 5, 0, 1, 2)
+
+        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+
+        self.cb_fwdonly.stateChanged.connect(self.changeoutput)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        self.ev = None
+        tmp = []
+        if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
+            self.showprocesslog('No Satellite Data')
+            return False
+
+        if 'Raster' in self.indata:
+            indata = self.indata['Raster']
+            self.sb_comps.setMaximum(len(indata))
+            self.sb_comps.setValue(ceil(len(indata)*0.04))
+
+        if not nodialog:
+            tmp = self.exec_()
+        else:
+            tmp = 1
+
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        if not nodialog and self.ev is not None:
+            plt.figure('Explained Variance')
+            plt.subplot(1, 1, 1)
+            plt.plot(self.ev)
+            plt.xlabel('Component')
+            plt.ylabel('Explained Variance')
+            plt.grid(True)
+            plt.tight_layout()
+
+            if hasattr(plt.get_current_fig_manager(), 'window'):
+                plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
+
+            plt.show()
+
+        return True
+
+    def changeoutput(self):
+        """
+        Change the interface to reflect whether full calculation is needed.
+
+        Returns
+        -------
+        None.
+
+        """
+        uienabled = not self.cb_fwdonly.isChecked()
+        self.sb_comps.setEnabled(uienabled)
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        # self.combo_sensor.setCurrentText(projdata['sensor'])
+        # self.setratios()
+
+        # for i in self.lw_ratios.selectedItems():
+        #     if i.text()[2:] not in projdata['ratios']:
+        #         i.setSelected(False)
+        # self.set_selected_ratios()
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+        # projdata['sensor'] = self.combo_sensor.currentText()
+
+        # rlist = []
+        # for i in self.lw_ratios.selectedItems():
+        #     rlist.append(i.text()[2:])
+
+        # projdata['ratios'] = rlist
+
+        return projdata
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        ncmps = self.sb_comps.value()
+        odata = []
+
+        if self.rb_noise_diag.isChecked():
+            noise = 'diagonal'
+        elif self.rb_noise_hv.isChecked():
+            noise = 'hv average'
+        else:
+            noise = 'quad'
+
+        if 'RasterFileList' in self.indata:
+            flist = self.indata['RasterFileList']
+            odir = os.path.join(os.path.dirname(flist[0]), 'feature')
+
+            os.makedirs(odir, exist_ok=True)
+            for ifile in flist:
+                self.showprocesslog('Processing '+os.path.basename(ifile))
+
+                dat = get_raster(ifile)
+                dat2 = []
+                maskall = []
+                for j in dat:
+                    dat2.append(j.data)
+                    maskall.append(j.data.mask)
+
+                maskall = np.moveaxis(maskall, 0, -1)
+                dat2 = np.moveaxis(dat2, 0, -1)
+
+                if self.cb_fwdonly.isChecked():
+                    pmnf, self.ev = mnf_fwd(dat2, maskall, piter=self.piter,
+                                            pprint=self.showprocesslog,
+                                            noisetxt=noise)
+                else:
+                    pmnf = mnf_calc(dat2, maskall, ncmps, piter=self.piter,
+                                    pprint=self.showprocesslog, noisetxt=noise)
+
+                del dat2
+                odata = copy.deepcopy(dat)
+                for j, band in enumerate(odata):
+                    band.data = pmnf[:, :, j].astype(np.float32)
+
+                ofile = os.path.basename(ifile).split('.')[0] + '_mnf.tif'
+                ofile = os.path.join(odir, ofile)
+
+                self.showprocesslog('Exporting '+os.path.basename(ofile))
+                export_gdal(ofile, odata, 'GTiff', piter=self.piter)
+
+        elif 'Raster' in self.indata:
+            dat = self.indata['Raster']
             dat2 = []
+            maskall = []
             for j in dat:
-                dat2.append(dat[j].data)
-                mask = dat[j].data.mask
-                datorig = dat[j]
-
-            dat2 = np.array(dat2)
+                dat2.append(j.data)
+                maskall.append(j.data.mask)
+            maskall = np.moveaxis(maskall, 0, -1)
             dat2 = np.moveaxis(dat2, 0, -1)
-            dat2 = dat2[:, :, win[0]:win[1]]
-            dat3 = dat2[~mask]
 
-            if dat3.size == 0:
-                continue
+            if self.cb_fwdonly.isChecked():
+                pmnf, self.ev = mnf_fwd(dat2, maskall, piter=self.piter,
+                                        pprint=self.showprocesslog,
+                                        noisetxt=noise)
+            else:
+                pmnf = mnf_calc(dat2, maskall, ncmps, piter=self.piter,
+                                pprint=self.showprocesslog, noisetxt=noise)
 
-            if dat3.shape[0] < cmps:
-                continue
-            pca.partial_fit(dat3)
+            del dat2
+            odata = copy.deepcopy(dat)
+            for j, band in enumerate(odata):
+                band.data = pmnf[:, :, j].astype(np.float32)
 
-        ttt.since_last_call('\nFit time')
-
-        np.set_printoptions(suppress=True, precision=3)
-        print('Percentage of variance explained by each of the components:')
-        print(pca.explained_variance_ratio_*100)
-
-        print('Calculating PCA')
-        xpca = []
-        maskall = []
-        for i in pbar.iter(range(0, rowsall, rinc)):
-            xoff = 0
-            yoff = i
-            xsize = None
-            ysize = rinc
-            iraster = (xoff, yoff, xsize, ysize)
-            dat = get_raster(ifile, nval=0, iraster=iraster)
-
-            dat2 = []
-            for j in dat:
-                dat2.append(dat[j].data)
-                mask = dat[j].data.mask
-                datorig = dat[j]
-
-            dat2 = np.array(dat2)
-            dat2 = np.moveaxis(dat2, 0, -1)
-            dat2 = dat2[:, :, win[0]:win[1]]
-            dat3 = dat2[~mask]
-
-            if dat3.size == 0:
-                continue
-
-            if dat3.shape[0] < cmps:
-                continue
-
-            maskall.append(mask)
-            xpca.append(pca.transform(dat3))
-
-        maskall = np.vstack(maskall)
-        xpca = np.vstack(xpca)
-
-        ttt.since_last_call('\nTransform time')
-
-        rows, cols = maskall.shape
-        datall = np.zeros([rows, cols, cmps])
-        datall[~maskall] = xpca
-
-        datfin = {}
-        for i in range(cmps):
-            rband = copy.copy(datorig)
-            rband.data = datall[:, :, i]
-            rband.dataid = str(i+1)
-
-            datfin[str(i+1)] = rband
-
-        if datfin:
-            export_gdal(ofile, datfin, 'GTiff')
-
-        del datall
-        del maskall
-        del dat3
-        del rband
-        del datfin
+        self.outdata['Raster'] = odata
+        return True
 
 
-def mnf_calc(x2d, maskall, ncmps=7):
+def get_noise(x2d, mask, noise=''):
+    """
+    Calculates noise dataset from original data.
+
+    Parameters
+    ----------
+    x2d : numpy array
+        Input array, of dimension (MxNxChannels).
+    mask : numpy array
+        mask of dimension (MxN).
+    noise : str, optional
+        Noise type to calculate. Can be 'diagonal', 'hv average' or ''.
+        The default is ''.
+
+    Returns
+    -------
+    nevals : numpy array
+        Noise eigen values.
+    nevecs : numpy array
+        Noise eigen vectors.
+
+    """
+    mask = ~mask
+
+    if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
+        x2d = x2d.astype(np.int32)
+    elif x2d.dtype == np.uint32 or x2d.dtype == np.uint64:
+        x2d = x2d.astype(np.int64)
+
+    if noise == 'diagonal':
+        noise = x2d[:-1, :-1] - x2d[1:, 1:]
+        mask2 = mask[:-1, :-1]*mask[1:, 1:]
+        noise = noise[mask2]
+        ncov = np.cov(noise.T)/2
+    elif noise == 'hv average':
+        vdiff = x2d[:-1] - x2d[1:]
+        hdiff = x2d[:, :-1] - x2d[:, 1:]
+        noise = (vdiff[:, :-1]+hdiff[:-1])/2
+
+        mask2a = mask[:-1]*mask[1:]
+        mask2b = mask[:, :-1]*mask[:, 1:]
+        mask2 = mask2a[:, :-1]*mask2b[:-1]
+
+        noise = noise[mask2]
+        ncov = np.cov(noise.T)/2
+    else:
+        noise = (x2d[:-2, :-2] - 2*x2d[:-2, 1:-1] + x2d[:-2, 2:]
+                 - 2*x2d[1:-1, :-2] + 4*x2d[1:-1, 1:-1] - 2*x2d[1:-1, 2:]
+                 + x2d[2:, :-2] - 2*x2d[2:, 1:-1] + x2d[2:, 2:])/9
+
+        mask2 = (mask[:-2, :-2] * mask[:-2, 1:-1] * mask[:-2, 2:] *
+                 mask[1:-1, :-2] * mask[1:-1, 1:-1] * mask[1:-1, 2:] *
+                 mask[2:, :-2] * mask[2:, 1:-1] * mask[2:, 2:])
+
+        noise = noise[mask2]
+        ncov = np.cov(noise.T)/2
+
+    # Calculate evecs and evals
+    nevals, nevecs = np.linalg.eig(ncov)
+
+    return nevals, nevecs
+
+
+def mnf_fwd(x2d, maskall, noisetxt='hv average', pprint=print, piter=iter):
     """MNF Filtering"""
 
     dim = x2d.shape[-1]
     mask = maskall[:, :, 0]
     x = x2d[~mask]
 
-    # Diagonal or SPy
-    noise = x2d[:-1, :-1] - x2d[1:, 1:]
-    mask2 = np.logical_or(mask[:-1, :-1], mask[1:, 1:])
-    noise = noise[~mask2]
-    ncov = np.cov(noise.T)/2
+    pprint('Calculating noise data...')
+    nevals, nevecs = get_noise(x2d, mask, noisetxt)
 
-    # ENVI
-    # vdiff = x2d[:-1] - x2d[1:]
-    # hdiff = x2d[:, :-1] - x2d[:, 1:]
-    # noise = (vdiff[:, :-1]+hdiff[:-1])/2
-    # mask2 = np.logical_or(mask[:-1, :-1], mask[1:, 1:])
-    # noise = noise[~mask2]
-    # ncov = np.cov(noise.T)
+    pprint('Calculating MNF...')
+    Ln = np.power(nevals, -0.5)
+    Ln = np.diag(Ln)
 
-    # Calculate evecs and evals
+    W = Ln @ nevecs.T
+    Pnorm = W @ x.T
 
-    nevals, nevecs = np.linalg.eig(ncov)
+    pca = PCA()
+    x2 = pca.fit_transform(Pnorm.T)
+    ev = pca.explained_variance_
 
+    rows, cols = mask.shape
+    datall = np.zeros([rows, cols, dim])
+    datall[~mask] = x2
+    datall = np.ma.array(datall, mask=maskall)
+
+    return datall, ev
+
+
+def mnf_calc(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
+    """MNF Filtering"""
+
+    dim = x2d.shape[-1]
+    mask = maskall[:, :, 0]
+    x = x2d[~mask]
+
+    pprint('Calculating noise data...')
+    nevals, nevecs = get_noise(x2d, mask, noisetxt)
+
+    pprint('Calculating MNF...')
     Ln = np.power(nevals, -0.5)
     Ln = np.diag(Ln)
 
@@ -207,6 +434,8 @@ def mnf_calc(x2d, maskall, ncmps=7):
 
     pca = PCA(n_components=ncmps)
     P = pca.fit_transform(Pnorm.T)
+
+    pprint('Calculating inverse MNF...')
     P = pca.inverse_transform(P)
 
     x2 = (Winv @  P.T).T
@@ -275,5 +504,35 @@ def _testfn():
     return
 
 
+def _testfn2():
+    """Test routine."""
+    import sys
+
+    from matplotlib import rcParams
+
+    rcParams['figure.dpi'] = 300
+
+    pbar = ProgressBarText()
+
+
+    idir = r'C:\Workdata\Lithosphere\batch'
+    ifile = r'C:\Workdata\lithosphere\Cut-90-0824-.hdr'
+
+    data = get_raster(ifile, nval=0, iraster=None, piter=pbar.iter)
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    tmp = MNF()
+    tmp.indata['Raster'] = data
+    tmp.settings()
+
+    odata = tmp.outdata['Raster']
+
+    # for i, dat in enumerate(odata):
+    #     plt.title('New MNF denoised band '+str(i+1))
+    #     plt.imshow(dat.data)
+    #     plt.colorbar()
+    #     plt.show()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

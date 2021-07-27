@@ -30,6 +30,7 @@ from pygmi.rsense import change
 from pygmi.rsense import iodefs
 from pygmi.rsense import ratios
 from pygmi.rsense import hyperspec
+from pygmi.rsense import transforms
 
 
 class MenuWidget():
@@ -97,6 +98,10 @@ class MenuWidget():
         self.menu.addAction(self.action_calc_ratios)
         self.action_calc_ratios.triggered.connect(self.calc_ratios)
 
+        self.action_mnf = QtWidgets.QAction('MNF Transform')
+        self.menu.addAction(self.action_mnf)
+        self.action_mnf.triggered.connect(self.mnf)
+
         self.menu.addSeparator()
 
         self.menu4 = self.menu.addMenu('Hyperspectral Imaging')
@@ -144,6 +149,11 @@ class MenuWidget():
         """Calculate Ratios."""
         self.parent.item_insert('Step', 'Calculate Band Ratios',
                                 ratios.SatRatios)
+
+    def mnf(self):
+        """Calculate MNF."""
+        self.parent.item_insert('Step', 'MNF Transform',
+                                transforms.MNF)
 
     def anal_spec(self):
         """Analyse Spectra."""
