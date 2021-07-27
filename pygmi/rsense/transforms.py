@@ -32,9 +32,9 @@ from math import ceil
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from sklearn.decomposition import PCA
-import spectral as sp
+# import spectral as sp
 import matplotlib.pyplot as plt
-import scipy.signal as ssig
+# import scipy.signal as ssig
 
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
@@ -478,10 +478,10 @@ def _testfn():
     print('Calculating MNF')
     pmnf = mnf_calc(dat2, maskall, ncmps)
 
-    signal = sp.calc_stats(dat2)
-    noise = sp.noise_from_diffs(dat2)
-    mnfr = sp.mnf(signal, noise)
-    denoised = mnfr.denoise(dat2, num=ncmps)
+    # signal = sp.calc_stats(dat2)
+    # noise = sp.noise_from_diffs(dat2)
+    # mnfr = sp.mnf(signal, noise)
+    # denoised = mnfr.denoise(dat2, num=ncmps)
 
     ttt.since_last_call()
 
@@ -491,10 +491,10 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
-        plt.title('SPy MNF denoised band'+str(i))
-        plt.imshow(denoised[:, :, i])
-        plt.colorbar()
-        plt.show()
+        # plt.title('SPy MNF denoised band'+str(i))
+        # plt.imshow(denoised[:, :, i])
+        # plt.colorbar()
+        # plt.show()
 
         plt.title('New MNF denoised band'+str(i))
         plt.imshow(pmnf[:, :, i])
