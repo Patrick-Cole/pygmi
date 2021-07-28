@@ -32,7 +32,7 @@ import gc
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-from sklearn.decomposition import PCA
+from sklearn.decomposition import IncrementalPCA, PCA
 import numexpr as ne
 import matplotlib.pyplot as plt
 
@@ -383,6 +383,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
              piter=iter):
     """MNF Filtering"""
 
+    ttt = PTime()
     getmem('mnf in')
 
     x2d = []
@@ -415,29 +416,34 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
 
     getmem('3')
 
-    W = Ln @ nevecs.T
+    # W = Ln @ nevecs.T
+    W = np.dot(Ln, nevecs.T)
 
     x = x2d[~mask]
 
     getmem('4')
 
-    # breakpoint()
-    Pnorm = np.dot(W, x.T)
-    # Pnorm = W @ x.T
+    ttt.since_last_call('before pnorm')
+    Pnorm = np.dot(x, W.T)
+    ttt.since_last_call('after pnorm')
 
     getmem('5')
-    pca = PCA(n_components=ncmps)
-    x2 = pca.fit_transform(Pnorm.T)
+    pca = IncrementalPCA(n_components=ncmps)
+    x2 = pca.fit_transform(Pnorm)
     ev = pca.explained_variance_
 
+    ttt.since_last_call('6')
     getmem('6')
 
     if ncmps is not None:
         pprint('Calculating inverse MNF...')
         Winv = np.linalg.inv(W)
         P = pca.inverse_transform(x2)
-        x2 = (Winv @  P.T).T
+        # x2 = (Winv @  P.T).T
+        # x2 = (np.dot(Winv, P.T)).T
+        x2 = np.dot(P, Winv.T)
 
+    ttt.since_last_call('7')
     getmem('7')
 
     datall = np.zeros(x2d.shape, dtype=np.float32)
@@ -476,7 +482,7 @@ def mnf_calc2(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
 
     Pnorm = W @ x.T
 
-    pca = PCA(n_components=ncmps)
+    pca = IncrementalPCA(n_components=ncmps)
     P = pca.fit_transform(Pnorm.T)
 
     pprint('Calculating inverse MNF...')
