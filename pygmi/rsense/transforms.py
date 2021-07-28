@@ -28,6 +28,7 @@ Transforms such as PCA and MNF.
 import os
 import copy
 from math import ceil
+import gc
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
@@ -40,7 +41,7 @@ from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 from pygmi.raster.iodefs import export_gdal
 import pygmi.menu_default as menu_default
-from pygmi.misc import PTime
+from pygmi.misc import PTime, getmem
 
 
 class MNF(QtWidgets.QDialog):
@@ -249,6 +250,8 @@ class MNF(QtWidgets.QDialog):
         """
         ncmps = self.sb_comps.value()
         odata = []
+        if self.cb_fwdonly.isChecked():
+            ncmps = None
 
         if self.rb_noise_diag.isChecked():
             noise = 'diagonal'
@@ -266,27 +269,9 @@ class MNF(QtWidgets.QDialog):
                 self.showprocesslog('Processing '+os.path.basename(ifile))
 
                 dat = get_raster(ifile)
-                dat2 = []
-                maskall = []
-                for j in dat:
-                    dat2.append(j.data)
-                    maskall.append(j.data.mask)
-
-                maskall = np.moveaxis(maskall, 0, -1)
-                dat2 = np.moveaxis(dat2, 0, -1)
-
-                if self.cb_fwdonly.isChecked():
-                    pmnf, self.ev = mnf_fwd(dat2, maskall, piter=self.piter,
-                                            pprint=self.showprocesslog,
-                                            noisetxt=noise)
-                else:
-                    pmnf = mnf_calc(dat2, maskall, ncmps, piter=self.piter,
-                                    pprint=self.showprocesslog, noisetxt=noise)
-
-                del dat2
-                odata = copy.deepcopy(dat)
-                for j, band in enumerate(odata):
-                    band.data = pmnf[:, :, j].astype(np.float32)
+                odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
+                                          pprint=self.showprocesslog,
+                                          noisetxt=noise)
 
                 ofile = os.path.basename(ifile).split('.')[0] + '_mnf.tif'
                 ofile = os.path.join(odir, ofile)
@@ -296,26 +281,9 @@ class MNF(QtWidgets.QDialog):
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
-            dat2 = []
-            maskall = []
-            for j in dat:
-                dat2.append(j.data)
-                maskall.append(j.data.mask)
-            maskall = np.moveaxis(maskall, 0, -1)
-            dat2 = np.moveaxis(dat2, 0, -1)
-
-            if self.cb_fwdonly.isChecked():
-                pmnf, self.ev = mnf_fwd(dat2, maskall, piter=self.piter,
-                                        pprint=self.showprocesslog,
-                                        noisetxt=noise)
-            else:
-                pmnf = mnf_calc(dat2, maskall, ncmps, piter=self.piter,
-                                pprint=self.showprocesslog, noisetxt=noise)
-
-            del dat2
-            odata = copy.deepcopy(dat)
-            for j, band in enumerate(odata):
-                band.data = pmnf[:, :, j].astype(np.float32)
+            odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
+                                      pprint=self.showprocesslog,
+                                      noisetxt=noise)
 
         self.outdata['Raster'] = odata
         return True
@@ -345,10 +313,7 @@ def get_noise(x2d, mask, noise=''):
     """
     mask = ~mask
 
-    if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
-        x2d = x2d.astype(np.int32)
-    elif x2d.dtype == np.uint32 or x2d.dtype == np.uint64:
-        x2d = x2d.astype(np.int64)
+    getmem('noise1')
 
     if noise == 'diagonal':
         noise = x2d[:-1, :-1] - x2d[1:, 1:]
@@ -378,42 +343,92 @@ def get_noise(x2d, mask, noise=''):
         noise = noise[mask2]
         ncov = np.cov(noise.T)/2
 
+    # print(ncov)
     # Calculate evecs and evals
     nevals, nevecs = np.linalg.eig(ncov)
+
+    getmem('noise3')
 
     return nevals, nevecs
 
 
-def mnf_fwd(x2d, maskall, noisetxt='hv average', pprint=print, piter=iter):
+def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
+             piter=iter):
     """MNF Filtering"""
 
-    dim = x2d.shape[-1]
+    getmem('mnf in')
+
+    x2d = []
+    maskall = []
+    for j in dat:
+        x2d.append(j.data)
+        maskall.append(j.data.mask)
+    maskall = np.moveaxis(maskall, 0, -1)
+    x2d = np.moveaxis(x2d, 0, -1)
+
+    getmem('0')
+
+    if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
+        x2d = x2d.astype(np.int32)
+    elif x2d.dtype == np.uint32 or x2d.dtype == np.uint64:
+        x2d = x2d.astype(np.int64)
+
     mask = maskall[:, :, 0]
-    x = x2d[~mask]
+
+    getmem('1')
 
     pprint('Calculating noise data...')
     nevals, nevecs = get_noise(x2d, mask, noisetxt)
+
+    getmem('2')
 
     pprint('Calculating MNF...')
     Ln = np.power(nevals, -0.5)
     Ln = np.diag(Ln)
 
+    getmem('3')
+
     W = Ln @ nevecs.T
+
+    x = x2d[~mask]
+
+    getmem('4')
+
     Pnorm = W @ x.T
 
-    pca = PCA()
+    getmem('5')
+    pca = PCA(n_components=ncmps)
     x2 = pca.fit_transform(Pnorm.T)
     ev = pca.explained_variance_
 
-    rows, cols = mask.shape
-    datall = np.zeros([rows, cols, dim])
+    getmem('6')
+
+    if ncmps is not None:
+        pprint('Calculating inverse MNF...')
+        Winv = np.linalg.inv(W)
+        P = pca.inverse_transform(x2)
+        x2 = (Winv @  P.T).T
+
+    getmem('7')
+
+    datall = np.zeros(x2d.shape, dtype=np.float32)
     datall[~mask] = x2
     datall = np.ma.array(datall, mask=maskall)
 
-    return datall, ev
+    del x2
+    getmem('8')
+
+    odata = copy.deepcopy(dat)
+    for j, band in enumerate(odata):
+        band.data = datall[:, :, j]
+
+    del datall
+    getmem('9')
+
+    return odata, ev
 
 
-def mnf_calc(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
+def mnf_calc2(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
     """MNF Filtering"""
 
     dim = x2d.shape[-1]
@@ -447,11 +462,11 @@ def mnf_calc(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
 
     return datall
 
-
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
     from matplotlib import rcParams
+    import spectral as sp
 
     rcParams['figure.dpi'] = 300
 
@@ -467,37 +482,53 @@ def _testfn():
     dat2 = []
     maskall = []
     for j in dat:
-        dat2.append(j.data[500:1000, 500:1000])
-        mask = j.data[500:1000, 500:1000].mask
+        dat2.append(j.data.astype(float))
+        mask = j.data.mask
         maskall.append(mask)
 
     maskall = np.moveaxis(maskall, 0, -1)
     dat2 = np.moveaxis(dat2, 0, -1)
 
     ttt = PTime()
-    print('Calculating MNF')
-    pmnf = mnf_calc(dat2, maskall, ncmps)
 
-    # signal = sp.calc_stats(dat2)
-    # noise = sp.noise_from_diffs(dat2)
-    # mnfr = sp.mnf(signal, noise)
-    # denoised = mnfr.denoise(dat2, num=ncmps)
+    signal = sp.calc_stats(dat2)
+    noise = sp.noise_from_diffs(dat2)
+    mnfr = sp.mnf(signal, noise)
+    denoised = mnfr.denoise(dat2, num=ncmps)
+    scov = noise.cov
+
+    mask = ~mask
+    x2d = dat2
+    noise = x2d[:-1, :-1] - x2d[1:, 1:]
+    # mask2 = mask[:-1, :-1]*mask[1:, 1:]
+    mask2 = mask[:-1, :-1]
+    noise = noise[mask2]
+    ncov = np.cov(noise.T)/2
+
+    print('Calculating MNF')
+    pmnf, ev = mnf_calc2(dat, ncmps=ncmps, noisetxt='diagonal')
+    # pmnf = mnf_calc(dat2, maskall, ncmps=ncmps, noisetxt='diagonal')
+    # pmnf, ev = mnf_calc(dat, ncmps=None, noisetxt='diagonal')
 
     ttt.since_last_call()
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
+        vmax = dat[i].data.max()
+        vmin = dat[i].data.min()
+
         plt.title('█████████████████Old dat2 band'+str(i))
-        plt.imshow(dat2[:, :, i])
+        plt.imshow(dat[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
-        # plt.title('SPy MNF denoised band'+str(i))
-        # plt.imshow(denoised[:, :, i])
-        # plt.colorbar()
-        # plt.show()
+        plt.title('SPy MNF denoised band'+str(i))
+        plt.imshow(np.ma.array(denoised[:, :, i], mask=~mask), vmin=vmin, vmax=vmax)
+        plt.colorbar()
+        plt.show()
 
         plt.title('New MNF denoised band'+str(i))
-        plt.imshow(pmnf[:, :, i])
+        # plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
+        plt.imshow(pmnf[:, :, i], vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
@@ -514,25 +545,40 @@ def _testfn2():
 
     pbar = ProgressBarText()
 
-
     idir = r'C:\Workdata\Lithosphere\batch'
     ifile = r'C:\Workdata\lithosphere\Cut-90-0824-.hdr'
+    ifile = r'C:\Workdata\lithosphere\cut-087-0824.hdr'
 
     data = get_raster(ifile, nval=0, iraster=None, piter=pbar.iter)
+
+    getmem('testfn')
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = MNF()
     tmp.indata['Raster'] = data
     tmp.settings()
 
-    odata = tmp.outdata['Raster']
-
-    # for i, dat in enumerate(odata):
-    #     plt.title('New MNF denoised band '+str(i+1))
-    #     plt.imshow(dat.data)
-    #     plt.colorbar()
-    #     plt.show()
-
 
 if __name__ == "__main__":
     _testfn2()
+
+
+"""
+Memory check: testfn, RAM memory used: 8.7 GB (27.3%)
+Memory check: mnf in, RAM memory used: 8.7 GB (27.3%)
+Memory check: 0, RAM memory used: 13.2 GB (41.5%)
+Memory check: 1, RAM memory used: 16.3 GB (51.0%)
+Calculating noise data...
+Memory check: noise1, RAM memory used: 16.3 GB (51.0%)
+Memory check: noise3, RAM memory used: 16.4 GB (51.2%)
+Memory check: 2, RAM memory used: 6.5 GB (20.3%)
+Calculating MNF...
+Memory check: 3, RAM memory used: 6.5 GB (20.3%)
+Memory check: 4, RAM memory used: 19.3 GB (60.4%)
+Memory check: 5, RAM memory used: 22.1 GB (69.3%)
+Memory check: 6, RAM memory used: 11.4 GB (35.6%)
+Memory check: 7, RAM memory used: 11.4 GB (35.6%)
+Memory check: 8, RAM memory used: 7.3 GB (22.9%)
+Memory check: 9, RAM memory used: 13.8 GB (43.2%)
+
+"""

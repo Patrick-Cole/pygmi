@@ -29,6 +29,7 @@ ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called.
 """
 
+import psutil
 import types
 import time
 import numpy as np
@@ -278,6 +279,37 @@ class ProgressBarText():
         # Print New Line on Complete
         if iteration == self.total:
             print()
+
+
+def getmem(txt=None):
+    """
+    Gets memory in use.
+
+    Parameters
+    ----------
+    txt : str or number, optional
+        Text to display. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+
+    pre = 'Memory check'
+    if txt is not None:
+        pre += ': ' + str(txt)
+
+    mem = psutil.virtual_memory()
+    if mem.used < 1024:
+        print(pre+f', RAM memory used: {mem.used:.1f} B ({mem.percent}%)')
+    elif mem.used < (1024*1024):
+        print(pre+f', RAM memory used: {mem.used/1024:.1f} kB ({mem.percent}%)')
+    elif mem.used < (1024*1024*1024):
+        print(pre+f', RAM memory used: {mem.used/1024/1024:.1f} MB ({mem.percent}%)')
+    else:
+        print(pre+f', RAM memory used: {mem.used/1024/1024/1024:.1f} GB '
+              f'({mem.percent}%)')
 
 
 def tick_formatter(x, pos):
