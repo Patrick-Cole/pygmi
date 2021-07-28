@@ -33,9 +33,8 @@ import gc
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 from sklearn.decomposition import PCA
-# import spectral as sp
+import numexpr as ne
 import matplotlib.pyplot as plt
-# import scipy.signal as ssig
 
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
@@ -315,15 +314,43 @@ def get_noise(x2d, mask, noise=''):
 
     getmem('noise1')
 
+    ttt = PTime()
+
     if noise == 'diagonal':
-        noise = x2d[:-1, :-1] - x2d[1:, 1:]
+        t1 = x2d[:-1, :-1]
+        t2 = x2d[1:, 1:]
+        noise = ne.evaluate('t1-t2')
+        # noise = x2d[:-1, :-1] - x2d[1:, 1:]
+        getmem('noise1c')
+        ttt.since_last_call('noise')
+
         mask2 = mask[:-1, :-1]*mask[1:, 1:]
         noise = noise[mask2]
         ncov = np.cov(noise.T)/2
     elif noise == 'hv average':
-        vdiff = x2d[:-1] - x2d[1:]
-        hdiff = x2d[:, :-1] - x2d[:, 1:]
-        noise = (vdiff[:, :-1]+hdiff[:-1])/2
+        t1 = x2d[:-1, :-1]
+        t2 = x2d[1:, :-1]
+        t3 = x2d[:-1, :-1]
+        t4 = x2d[:-1, 1:]
+        # vdiff = ne.evaluate('t1-t2')
+        # hdiff = ne.evaluate('t3-t4')
+        # t5 = vdiff[:, :-1]
+        # t6 = hdiff[:-1]
+        # noise = ne.evaluate('(t5+t6)/2')
+        noise = ne.evaluate('(t1-t2+t3-t4)/2')
+        # vdiff = x2d[:-1] - x2d[1:]
+        # hdiff = x2d[:, :-1] - x2d[:, 1:]
+        # noise = (vdiff[:, :-1]+hdiff[:-1])/2
+
+        getmem('noise1c')
+        ttt.since_last_call('noise')
+
+        """
+        Memory check: noise1, RAM memory used: 16.0 GB (50.3%)
+        Memory check: noise1c, RAM memory used: 25.5 GB (79.8%)
+        noise time(s): 31.180524300000002 since last call
+        """
+
 
         mask2a = mask[:-1]*mask[1:]
         mask2b = mask[:, :-1]*mask[:, 1:]
