@@ -321,8 +321,6 @@ def get_noise(x2d, mask, noise=''):
         t2 = x2d[1:, 1:]
         noise = ne.evaluate('t1-t2')
         # noise = x2d[:-1, :-1] - x2d[1:, 1:]
-        getmem('noise1c')
-        ttt.since_last_call('noise')
 
         mask2 = mask[:-1, :-1]*mask[1:, 1:]
         noise = noise[mask2]
@@ -332,36 +330,39 @@ def get_noise(x2d, mask, noise=''):
         t2 = x2d[1:, :-1]
         t3 = x2d[:-1, :-1]
         t4 = x2d[:-1, 1:]
-        # vdiff = ne.evaluate('t1-t2')
-        # hdiff = ne.evaluate('t3-t4')
-        # t5 = vdiff[:, :-1]
-        # t6 = hdiff[:-1]
-        # noise = ne.evaluate('(t5+t6)/2')
+
         noise = ne.evaluate('(t1-t2+t3-t4)/2')
+
         # vdiff = x2d[:-1] - x2d[1:]
         # hdiff = x2d[:, :-1] - x2d[:, 1:]
         # noise = (vdiff[:, :-1]+hdiff[:-1])/2
 
         getmem('noise1c')
-        ttt.since_last_call('noise')
 
-        """
-        Memory check: noise1, RAM memory used: 16.0 GB (50.3%)
-        Memory check: noise1c, RAM memory used: 25.5 GB (79.8%)
-        noise time(s): 31.180524300000002 since last call
-        """
+        # mask2a = mask[:-1]*mask[1:]
+        # mask2b = mask[:, :-1]*mask[:, 1:]
+        # mask2 = mask2a[:, :-1]*mask2b[:-1]
 
-
-        mask2a = mask[:-1]*mask[1:]
-        mask2b = mask[:, :-1]*mask[:, 1:]
-        mask2 = mask2a[:, :-1]*mask2b[:-1]
-
+        mask2 = mask[:-1, :-1]*mask[1:, :-1]*mask[:-1, 1:]
         noise = noise[mask2]
         ncov = np.cov(noise.T)/2
+
     else:
-        noise = (x2d[:-2, :-2] - 2*x2d[:-2, 1:-1] + x2d[:-2, 2:]
-                 - 2*x2d[1:-1, :-2] + 4*x2d[1:-1, 1:-1] - 2*x2d[1:-1, 2:]
-                 + x2d[2:, :-2] - 2*x2d[2:, 1:-1] + x2d[2:, 2:])/9
+        t1 = x2d[:-2, :-2]
+        t2 = x2d[:-2, 1:-1]
+        t3 = x2d[:-2, 2:]
+        t4 = x2d[1:-1, :-2]
+        t5 = x2d[1:-1, 1:-1]
+        t6 = x2d[1:-1, 2:]
+        t7 = x2d[2:, :-2]
+        t8 = x2d[2:, 1:-1]
+        t9 = x2d[2:, 2:]
+
+        noise = ne.evaluate('(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)/9')
+
+        # noise = (x2d[:-2, :-2] - 2*x2d[:-2, 1:-1] + x2d[:-2, 2:]
+        #          - 2*x2d[1:-1, :-2] + 4*x2d[1:-1, 1:-1] - 2*x2d[1:-1, 2:]
+        #          + x2d[2:, :-2] - 2*x2d[2:, 1:-1] + x2d[2:, 2:])/9
 
         mask2 = (mask[:-2, :-2] * mask[:-2, 1:-1] * mask[:-2, 2:] *
                  mask[1:-1, :-2] * mask[1:-1, 1:-1] * mask[1:-1, 2:] *
@@ -370,7 +371,6 @@ def get_noise(x2d, mask, noise=''):
         noise = noise[mask2]
         ncov = np.cov(noise.T)/2
 
-    # print(ncov)
     # Calculate evecs and evals
     nevals, nevecs = np.linalg.eig(ncov)
 
@@ -421,7 +421,9 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
 
     getmem('4')
 
-    Pnorm = W @ x.T
+    # breakpoint()
+    Pnorm = np.dot(W, x.T)
+    # Pnorm = W @ x.T
 
     getmem('5')
     pca = PCA(n_components=ncmps)
