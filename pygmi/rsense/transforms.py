@@ -319,8 +319,8 @@ def get_noise(x2d, mask, noise=''):
         # noise = x2d[:-1, :-1] - x2d[1:, 1:]
 
         mask2 = mask[:-1, :-1]*mask[1:, 1:]
-        noise = noise[mask2]
-        ncov = np.cov(noise.T)/2
+        # noise = noise[mask2]
+        # ncov = np.cov(noise.T)/2
     elif noise == 'hv average':
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, :-1]
@@ -338,8 +338,8 @@ def get_noise(x2d, mask, noise=''):
         # mask2 = mask2a[:, :-1]*mask2b[:-1]
 
         mask2 = mask[:-1, :-1]*mask[1:, :-1]*mask[:-1, 1:]
-        noise = noise[mask2]
-        ncov = np.cov(noise.T)/2
+        # noise = noise[mask2]
+        # ncov = np.cov(noise.T)
 
     else:
         t1 = x2d[:-2, :-2]
@@ -362,12 +362,16 @@ def get_noise(x2d, mask, noise=''):
                  mask[1:-1, :-2] * mask[1:-1, 1:-1] * mask[1:-1, 2:] *
                  mask[2:, :-2] * mask[2:, 1:-1] * mask[2:, 2:])
 
-        noise = noise[mask2]
-        ncov = np.cov(noise.T)/2
+        # noise = noise[mask2]
+        # ncov = np.cov(noise.T)
+
+    noise = noise[mask2]
+    ncov = np.cov(noise.T)
 
     # Calculate evecs and evals
     nevals, nevecs = np.linalg.eig(ncov)
 
+    # return noise, mask2
     return nevals, nevecs
 
 
@@ -543,20 +547,8 @@ def _testfn():
     noise = sp.noise_from_diffs(dat2)
     mnfr = sp.mnf(signal, noise)
     denoised = mnfr.denoise(dat2, num=ncmps)
-    # scov = noise.cov
 
-    # mask = ~mask
-    # x2d = dat2
-    # noise = x2d[:-1, :-1] - x2d[1:, 1:]
-    # # mask2 = mask[:-1, :-1]*mask[1:, 1:]
-    # mask2 = mask[:-1, :-1]
-    # noise = noise[mask2]
-    # ncov = np.cov(noise.T)/2
-
-    print('Calculating MNF')
-    pmnf, ev = mnf_calc2(dat, ncmps=ncmps, noisetxt='diagonal')
-    # pmnf = mnf_calc(dat2, maskall, ncmps=ncmps, noisetxt='diagonal')
-    # pmnf, ev = mnf_calc(dat, ncmps=None, noisetxt='diagonal')
+    pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='hv average', piter=pbar.iter)
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
@@ -567,15 +559,15 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
-        plt.title('SPy MNF denoised band'+str(i))
-        plt.imshow(np.ma.array(denoised[:, :, i], mask=~mask), vmin=vmin,
-                   vmax=vmax)
+        plt.title('New MNF denoised band'+str(i))
+        # plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
+        plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
-        plt.title('New MNF denoised band'+str(i))
-        # plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
-        plt.imshow(pmnf[:, :, i], vmin=vmin, vmax=vmax)
+        plt.title('SPy MNF denoised band'+str(i))
+        plt.imshow(np.ma.array(denoised[:, :, i], mask=mask), vmin=vmin,
+                    vmax=vmax)
         plt.colorbar()
         plt.show()
 
@@ -583,25 +575,63 @@ def _testfn():
 
 
 def _testfn2():
-    """Test routine."""
-    import sys
-
+    import matplotlib.pyplot as plt
     from matplotlib import rcParams
+    import spectral as sp
 
     rcParams['figure.dpi'] = 300
 
     pbar = ProgressBarText()
 
     ifile = r'C:\Workdata\lithosphere\Cut-90-0824-.hdr'
-    ifile = r'C:\Workdata\lithosphere\cut-087-0824.hdr'
+    ncmps = 10
+    nodata = 0
+    iraster = None
 
-    data = get_raster(ifile, nval=0, iraster=None, piter=pbar.iter)
+    dat = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-    tmp = MNF()
-    tmp.indata['Raster'] = data
-    tmp.settings()
+    dat2 = []
+    maskall = []
+    for j in dat:
+        dat2.append(j.data.astype(float))
+        mask = j.data.mask
+        maskall.append(mask)
+
+    maskall = np.moveaxis(maskall, 0, -1)
+    dat2 = np.moveaxis(dat2, 0, -1)
+
+    # signal = sp.calc_stats(dat2)
+    # noise = sp.noise_from_diffs(dat2)
+    # mnfr = sp.mnf(signal, noise)
+    # denoised = mnfr.denoise(dat2, num=ncmps)
+    # scov = noise.cov
+
+    for i in ['diagonal', 'hv average', '']:
+        noise, maskp = get_noise(dat2, mask = mask, noise=i)
+
+        n2 = np.zeros(maskp.shape+(dat2.shape[-1],))
+        n2[maskp] = noise
+        n2 = np.ma.array(n2[:,:,0], mask=~maskp)
+
+        vmin = n2.mean()-2*n2.std()
+        vmax = n2.mean()+2*n2.std()
+        plt.title(i)
+        plt.grid(True)
+        plt.imshow(n2[600:800, 600:800], vmin=vmin, vmax=vmax)
+        plt.colorbar()
+        plt.show()
+        plt.hist(n2.flatten(), 50)
+        plt.show()
+        plt.plot(n2[600])
+        plt.show()
+
+    # pmnf = mnf_calc(dat2, maskall, ncmps=ncmps, noisetxt='diagonal')
+    # pmnf, ev = mnf_calc(dat, ncmps=None, noisetxt='diagonal')
+
+
+    return
+
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
