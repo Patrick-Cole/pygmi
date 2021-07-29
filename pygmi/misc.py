@@ -50,6 +50,7 @@ QProgressBar::chunk {
 }
 """
 
+PTIME = None
 
 class QLabelVStack:
     """QLabelVStack."""
@@ -281,35 +282,49 @@ class ProgressBarText():
             print()
 
 
-def getmem(txt=None):
+def getinfo(txt=None, reset=False):
     """
-    Gets memory in use.
+    Gets time and memory info.
 
     Parameters
     ----------
-    txt : str or number, optional
-        Text to display. The default is None.
+    txt : TYPE, optional
+        DESCRIPTION. The default is None.
 
     Returns
     -------
     None.
 
     """
+    global PTIME
 
-    pre = 'Memory check'
+    timebefore = PTIME
+    PTIME = time.perf_counter()
+
+    if timebefore is None or reset is True:
+        tdiff = 0.
+    else:
+        tdiff = PTIME - timebefore
+
     if txt is not None:
-        pre += ': ' + str(txt)
+        heading = '===== '+str(txt)+': '
+    else:
+        heading = '===== Info: '
 
     mem = psutil.virtual_memory()
     if mem.used < 1024:
-        print(pre+f', RAM memory used: {mem.used:.1f} B ({mem.percent}%)')
+        memtxt = f'RAM memory used: {mem.used:.1f} B ({mem.percent}%)'
     elif mem.used < (1024*1024):
-        print(pre+f', RAM memory used: {mem.used/1024:.1f} kB ({mem.percent}%)')
+        memtxt = (f'RAM memory used: {mem.used/1024:.1f} kB '
+                  f'({mem.percent}%)')
     elif mem.used < (1024*1024*1024):
-        print(pre+f', RAM memory used: {mem.used/1024/1024:.1f} MB ({mem.percent}%)')
+        memtxt = (f'RAM memory used: {mem.used/1024/1024:.1f} MB '
+                  f'({mem.percent}%)')
     else:
-        print(pre+f', RAM memory used: {mem.used/1024/1024/1024:.1f} GB '
-              f'({mem.percent}%)')
+        memtxt = (f'RAM memory used: {mem.used/1024/1024/1024:.1f} GB '
+                  f'({mem.percent}%)')
+
+    print(heading+memtxt+f' Time(s): {tdiff:.3f}')
 
 
 def tick_formatter(x, pos):

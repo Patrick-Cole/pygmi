@@ -25,6 +25,7 @@
 """
 Transforms such as PCA and MNF.
 """
+from memory_profiler import profile
 import os
 import copy
 from math import ceil
@@ -40,7 +41,7 @@ from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 from pygmi.raster.iodefs import export_gdal
 import pygmi.menu_default as menu_default
-from pygmi.misc import PTime, getmem
+from pygmi.misc import getinfo
 
 
 class MNF(QtWidgets.QDialog):
@@ -288,6 +289,7 @@ class MNF(QtWidgets.QDialog):
         return True
 
 
+@profile
 def get_noise(x2d, mask, noise=''):
     """
     Calculates noise dataset from original data.
@@ -312,10 +314,6 @@ def get_noise(x2d, mask, noise=''):
     """
     mask = ~mask
 
-    getmem('noise1')
-
-    ttt = PTime()
-
     if noise == 'diagonal':
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, 1:]
@@ -336,8 +334,6 @@ def get_noise(x2d, mask, noise=''):
         # vdiff = x2d[:-1] - x2d[1:]
         # hdiff = x2d[:, :-1] - x2d[:, 1:]
         # noise = (vdiff[:, :-1]+hdiff[:-1])/2
-
-        getmem('noise1c')
 
         # mask2a = mask[:-1]*mask[1:]
         # mask2b = mask[:, :-1]*mask[:, 1:]
@@ -374,17 +370,13 @@ def get_noise(x2d, mask, noise=''):
     # Calculate evecs and evals
     nevals, nevecs = np.linalg.eig(ncov)
 
-    getmem('noise3')
-
     return nevals, nevecs
 
 
+@profile
 def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
              piter=iter):
     """MNF Filtering"""
-
-    ttt = PTime()
-    getmem('mnf in')
 
     x2d = []
     maskall = []
@@ -393,8 +385,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
         maskall.append(j.data.mask)
     maskall = np.moveaxis(maskall, 0, -1)
     x2d = np.moveaxis(x2d, 0, -1)
-
-    getmem('0')
+    x2dshape = x2d.shape
 
     if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
         x2d = x2d.astype(np.int32)
@@ -403,62 +394,63 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
 
     mask = maskall[:, :, 0]
 
-    getmem('1')
-
     pprint('Calculating noise data...')
     nevals, nevecs = get_noise(x2d, mask, noisetxt)
-
-    getmem('2')
 
     pprint('Calculating MNF...')
     Ln = np.power(nevals, -0.5)
     Ln = np.diag(Ln)
 
-    getmem('3')
-
     # W = Ln @ nevecs.T
     W = np.dot(Ln, nevecs.T)
 
     x = x2d[~mask]
+    del x2d
 
-    getmem('4')
-
-    ttt.since_last_call('before pnorm')
     Pnorm = np.dot(x, W.T)
-    ttt.since_last_call('after pnorm')
 
-    getmem('5')
     pca = IncrementalPCA(n_components=ncmps)
-    x2 = pca.fit_transform(Pnorm)
-    ev = pca.explained_variance_
 
-    ttt.since_last_call('6')
-    getmem('6')
+    iold = 0
+    pprint('Fitting PCA')
+    for i in piter(np.linspace(0, Pnorm.shape[0], 20, dtype=int)):
+        if i == 0:
+            continue
+        pca.partial_fit(Pnorm[iold: i])
+        iold = i
+
+    pprint('Calculating PCA transform...')
+
+    x2 = np.zeros((Pnorm.shape[0], pca.n_components_))
+    iold = 0
+    for i in piter(np.linspace(0, Pnorm.shape[0], 20, dtype=int)):
+        if i == 0:
+            continue
+        x2[iold: i] = pca.transform(Pnorm[iold: i])
+        iold = i
+
+    del Pnorm
+    ev = pca.explained_variance_
 
     if ncmps is not None:
         pprint('Calculating inverse MNF...')
         Winv = np.linalg.inv(W)
         P = pca.inverse_transform(x2)
         # x2 = (Winv @  P.T).T
-        # x2 = (np.dot(Winv, P.T)).T
         x2 = np.dot(P, Winv.T)
+        del P
 
-    ttt.since_last_call('7')
-    getmem('7')
-
-    datall = np.zeros(x2d.shape, dtype=np.float32)
+    datall = np.zeros(x2dshape, dtype=np.float32)
     datall[~mask] = x2
     datall = np.ma.array(datall, mask=maskall)
 
     del x2
-    getmem('8')
 
     odata = copy.deepcopy(dat)
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
 
     del datall
-    getmem('9')
 
     return odata, ev
 
@@ -524,8 +516,6 @@ def _testfn():
     maskall = np.moveaxis(maskall, 0, -1)
     dat2 = np.moveaxis(dat2, 0, -1)
 
-    ttt = PTime()
-
     signal = sp.calc_stats(dat2)
     noise = sp.noise_from_diffs(dat2)
     mnfr = sp.mnf(signal, noise)
@@ -544,8 +534,6 @@ def _testfn():
     pmnf, ev = mnf_calc2(dat, ncmps=ncmps, noisetxt='diagonal')
     # pmnf = mnf_calc(dat2, maskall, ncmps=ncmps, noisetxt='diagonal')
     # pmnf, ev = mnf_calc(dat, ncmps=None, noisetxt='diagonal')
-
-    ttt.since_last_call()
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
@@ -586,8 +574,6 @@ def _testfn2():
 
     data = get_raster(ifile, nval=0, iraster=None, piter=pbar.iter)
 
-    getmem('testfn')
-
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = MNF()
     tmp.indata['Raster'] = data
@@ -599,21 +585,154 @@ if __name__ == "__main__":
 
 
 """
-Memory check: testfn, RAM memory used: 8.7 GB (27.3%)
-Memory check: mnf in, RAM memory used: 8.7 GB (27.3%)
-Memory check: 0, RAM memory used: 13.2 GB (41.5%)
-Memory check: 1, RAM memory used: 16.3 GB (51.0%)
-Calculating noise data...
-Memory check: noise1, RAM memory used: 16.3 GB (51.0%)
-Memory check: noise3, RAM memory used: 16.4 GB (51.2%)
-Memory check: 2, RAM memory used: 6.5 GB (20.3%)
+Line #    Mem usage    Increment  Occurences   Line Contents
+============================================================
+   292  12567.6 MiB  12567.6 MiB           1   @profile
+   293                                         def get_noise(x2d, mask, noise=''):
+   315  12572.4 MiB      4.8 MiB           1       mask = ~mask
+   316
+   317  12572.4 MiB      0.0 MiB           1       if noise == 'diagonal':
+   318                                                 t1 = x2d[:-1, :-1]
+   319                                                 t2 = x2d[1:, 1:]
+   320                                                 noise = ne.evaluate('t1-t2')
+   321                                                 # noise = x2d[:-1, :-1] - x2d[1:, 1:]
+   322
+   323                                                 mask2 = mask[:-1, :-1]*mask[1:, 1:]
+   324                                                 noise = noise[mask2]
+   325                                                 ncov = np.cov(noise.T)/2
+   326  12572.4 MiB      0.0 MiB           1       elif noise == 'hv average':
+   327  12572.4 MiB      0.0 MiB           1           t1 = x2d[:-1, :-1]
+   328  12572.4 MiB      0.0 MiB           1           t2 = x2d[1:, :-1]
+   329  12572.4 MiB      0.0 MiB           1           t3 = x2d[:-1, :-1]
+   330  12572.4 MiB      0.0 MiB           1           t4 = x2d[:-1, 1:]
+   331
+   332  24915.9 MiB  12343.5 MiB           1           noise = ne.evaluate('(t1-t2+t3-t4)/2')
+   333
+   334                                                 # vdiff = x2d[:-1] - x2d[1:]
+   335                                                 # hdiff = x2d[:, :-1] - x2d[:, 1:]
+   336                                                 # noise = (vdiff[:, :-1]+hdiff[:-1])/2
+   337
+   338                                                 # mask2a = mask[:-1]*mask[1:]
+   339                                                 # mask2b = mask[:, :-1]*mask[:, 1:]
+   340                                                 # mask2 = mask2a[:, :-1]*mask2b[:-1]
+   341
+   342  24920.7 MiB      4.8 MiB           1           mask2 = mask[:-1, :-1]*mask[1:, :-1]*mask[:-1, 1:]
+   343  13994.1 MiB -10926.6 MiB           1           noise = noise[mask2]
+   344  14014.7 MiB     20.5 MiB           1           ncov = np.cov(noise.T)/2
+   345
+   346                                             else:
+   347                                                 t1 = x2d[:-2, :-2]
+   348                                                 t2 = x2d[:-2, 1:-1]
+   349                                                 t3 = x2d[:-2, 2:]
+   350                                                 t4 = x2d[1:-1, :-2]
+   351                                                 t5 = x2d[1:-1, 1:-1]
+   352                                                 t6 = x2d[1:-1, 2:]
+   353                                                 t7 = x2d[2:, :-2]
+   354                                                 t8 = x2d[2:, 1:-1]
+   355                                                 t9 = x2d[2:, 2:]
+   356
+   357                                                 noise = ne.evaluate('(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)/9')
+   358
+   359                                                 # noise = (x2d[:-2, :-2] - 2*x2d[:-2, 1:-1] + x2d[:-2, 2:]
+   360                                                 #          - 2*x2d[1:-1, :-2] + 4*x2d[1:-1, 1:-1] - 2*x2d[1:-1, 2:]
+   361                                                 #          + x2d[2:, :-2] - 2*x2d[2:, 1:-1] + x2d[2:, 2:])/9
+   362
+   363                                                 mask2 = (mask[:-2, :-2] * mask[:-2, 1:-1] * mask[:-2, 2:] *
+   364                                                          mask[1:-1, :-2] * mask[1:-1, 1:-1] * mask[1:-1, 2:] *
+   365                                                          mask[2:, :-2] * mask[2:, 1:-1] * mask[2:, 2:])
+   366
+   367                                                 noise = noise[mask2]
+   368                                                 ncov = np.cov(noise.T)/2
+   369
+   370                                             # Calculate evecs and evals
+   371  14019.4 MiB      4.7 MiB           1       nevals, nevecs = np.linalg.eig(ncov)
+   372
+   373  14019.4 MiB      0.0 MiB           1       return nevals, nevecs
+
+
 Calculating MNF...
-Memory check: 3, RAM memory used: 6.5 GB (20.3%)
-Memory check: 4, RAM memory used: 19.3 GB (60.4%)
-Memory check: 5, RAM memory used: 22.1 GB (69.3%)
-Memory check: 6, RAM memory used: 11.4 GB (35.6%)
-Memory check: 7, RAM memory used: 11.4 GB (35.6%)
-Memory check: 8, RAM memory used: 7.3 GB (22.9%)
-Memory check: 9, RAM memory used: 13.8 GB (43.2%)
+Fitting PCA
+Progress: |██████████████████████████████████████████████████| 100.0%  0.0 sec left  50.3 sec total
+Calculating PCA transform...
+Progress: |██████████████████████████████████████████████████| 100.0%  0.0 sec left  9.2 sec total
+Filename: C:\Work\Programming\pygmi\pygmi\rsense\transforms.py
+
+Line #    Mem usage    Increment  Occurences   Line Contents
+============================================================
+   376   4846.1 MiB   4846.1 MiB           1   @profile
+   377                                         def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
+   378                                                      piter=iter):
+   380
+   381   4846.1 MiB      0.0 MiB           1       x2d = []
+   382   4846.1 MiB      0.0 MiB           1       maskall = []
+   383   4846.2 MiB      0.0 MiB         323       for j in dat:
+   384   4846.2 MiB      0.0 MiB         322           x2d.append(j.data)
+   385   4846.2 MiB      0.0 MiB         322           maskall.append(j.data.mask)
+   386   6390.5 MiB   1544.3 MiB           1       maskall = np.moveaxis(maskall, 0, -1)
+   387   9479.0 MiB   3088.6 MiB           1       x2d = np.moveaxis(x2d, 0, -1)
+   388
+   389   9479.0 MiB      0.0 MiB           1       if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
+   390  12567.6 MiB   3088.6 MiB           1           x2d = x2d.astype(np.int32)
+   391                                             elif x2d.dtype == np.uint32 or x2d.dtype == np.uint64:
+   392                                                 x2d = x2d.astype(np.int64)
+   393
+   394  12567.6 MiB      0.0 MiB           1       mask = maskall[:, :, 0]
+   395
+   396  12567.6 MiB      0.0 MiB           1       pprint('Calculating noise data...')
+   397   5450.2 MiB  -7117.3 MiB           1       nevals, nevecs = get_noise(x2d, mask, noisetxt)
+   398
+   399   5450.2 MiB      0.0 MiB           1       pprint('Calculating MNF...')
+   400   5450.3 MiB      0.0 MiB           1       Ln = np.power(nevals, -0.5)
+   401   5450.7 MiB      0.4 MiB           1       Ln = np.diag(Ln)
+   402
+   403                                             # W = Ln @ nevecs.T
+   404   5450.7 MiB      0.0 MiB           1       W = np.dot(Ln, nevecs.T)
+   405
+   406  14063.1 MiB   8612.4 MiB           1       x = x2d[~mask]
+   407
+   408 # 19049.0 MiB   4985.8 MiB           1       Pnorm = np.dot(x, W.T)
+   409
+   410  19049.1 MiB      0.1 MiB           1       pca = IncrementalPCA(n_components=ncmps)
+   411
+   412  19049.1 MiB      0.0 MiB           1       iold = 0
+   413  19049.1 MiB      0.0 MiB           1       pprint('Fitting PCA')
+   414  19057.3 MiB     -5.2 MiB          21       for i in piter(np.linspace(0, Pnorm.shape[0], 20, dtype=int)):
+   415  19057.3 MiB     -5.8 MiB          20           if i == 0:
+   416  19049.6 MiB      0.0 MiB           1               continue
+   417  19057.3 MiB      1.8 MiB          19           pca.partial_fit(Pnorm[iold: i])
+   418  19057.3 MiB     -5.8 MiB          19           iold = i
+   419
+   420  19057.3 MiB      0.0 MiB           1       pprint('Calculating PCA transform...')
+   421
+   422  19057.3 MiB      0.0 MiB           1       x2 = np.zeros((Pnorm.shape[0], pca.n_components_))
+   423  19057.3 MiB      0.0 MiB           1       iold = 0
+   424  27636.8 MiB      0.0 MiB          21       for i in piter(np.linspace(0, Pnorm.shape[0], 20, dtype=int)):
+   425  27185.4 MiB      0.0 MiB          20           if i == 0:
+   426  19057.3 MiB      0.0 MiB           1               continue
+   427  27636.8 MiB   8579.5 MiB          19           x2[iold: i] = pca.transform(Pnorm[iold: i])
+   428  27636.8 MiB      0.0 MiB          19           iold = i
+   429
+   430  27636.8 MiB      0.0 MiB           1       ev = pca.explained_variance_
+   431
+   432  27636.8 MiB      0.0 MiB           1       if ncmps is not None:
+   433                                                 pprint('Calculating inverse MNF...')
+   434                                                 Winv = np.linalg.inv(W)
+   435                                                 P = pca.inverse_transform(x2)
+   436                                                 # x2 = (Winv @  P.T).T
+   437                                                 x2 = np.dot(P, Winv.T)
+   438
+   439  27636.8 MiB      0.0 MiB           1       datall = np.zeros(x2d.shape, dtype=np.float32)
+   440  20784.0 MiB  -6852.8 MiB           1       datall[~mask] = x2
+   441  20784.5 MiB      0.5 MiB           1       datall = np.ma.array(datall, mask=maskall)
+   442
+   443  12208.1 MiB  -8576.4 MiB           1       del x2
+   444
+   445  22995.0 MiB  10786.9 MiB           1       odata = copy.deepcopy(dat)
+   446  22995.0 MiB -991629.2 MiB         323       for j, band in enumerate(odata):
+   447  22975.9 MiB -997777.4 MiB         322           band.data = datall[:, :, j]
+   448
+   449  16816.7 MiB  -6178.3 MiB           1       del datall
+   450
+   451  16816.7 MiB      0.0 MiB           1       return odata, ev
 
 """
