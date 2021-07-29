@@ -2,13 +2,18 @@
 <html>
 	<body>
 		<h1>Minimum Noise Fraction</h1>
-		<p>This module takes as input... </p>
+		<p>This module performs Minimum Noise Fraction (MNF) on data, with the aim of performing noise filtering. Upon completion of the calculation, a graph of explained variance is displayed, which can be used to assist in defining the optimal number of components for filtering.</p>
 		<h2>Options</h2>
 		<ul>
-			<li>Option 1 - ....</li>
-			<li>Option 2 - ....</li>
+			<li>Forward Transform Only - This outputs the forward transformed data with teh full number of components.</li>
+			<li>Number of components - Number fo components used in the inverse transform (if calculated).</li>
+			<li>Noise estimated by average horizontal and vertical shift - This is the noise estimation as performed in ENVI.</li>
+			<li>Noise estimated by diagonal shift.</li>
+			<li>Noise estimated by local quadratic surface - Option recommended by Berman et al (2012), but slower.</li>
 		</ul>
 		<h2>References</h2>
-		<p>Haest, M. Cudahy, T., Laukamp, C., and Gregory S., (2012) ‘Quantitative mineralogy from infrared spectroscopic data. I. Validation of mineral abundance and composition scripts at the rocklea channel iron deposit in Western Australia’, Economic Geology, 107(2), pp. 209–228. doi: 10.2113/econgeo.107.2.209.</p>
+		<p>Green, A., Berman, M., Switzer, P., & Craig, M. (1988). A transformation for ordering multispectral data in terms of image quality with implications for noise removal. IEEE Transactions on Geoscience and Remote Sensing, 26, 65-74.</p>
+		<p>Ientilucci, E. (2003). Comparison and Usage of Principal Component Analysis (PCA) and Noise Adjusted Principal Component (NAPC) Analysis or Maximum Noise Fraction (MNF).</p>
+		<p>Berman, M., Phatak, A., & Traylen, A. (2012). Some invariance properties of the minimum noise fraction transform. Chemometrics and Intelligent Laboratory Systems, 117, 189-199.</p>
 	</body>
 </html>
