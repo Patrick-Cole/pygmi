@@ -515,7 +515,6 @@ class DataMerge(QtWidgets.QDialog):
 
         return tmp
 
-
     def merge_different(self):
         """
         Merge files with different numbers of bands and/or band order.
