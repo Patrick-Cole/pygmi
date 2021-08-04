@@ -171,8 +171,8 @@ class ImportData():
         if not nodialog:
             if self.parent is not None:
                 piter = self.parent.pbar.iter
-            ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img *.pix '
-                   '*.bil);;'
+            ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img '
+                   '*.pix *.bil);;'
                    'ArcGIS BIL (*.bil);;'
                    'Arcinfo Binary Grid (hdr.adf);;'
                    'ASCII with .hdr header (*.asc);;'
@@ -1514,6 +1514,7 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
     out.SetProjection(data[0].wkt)
 
     numbands = len(data)
+    wavelength = []
     for i in piter(range(numbands)):
         datai = data[i]
         rtmp = out.GetRasterBand(i+1)
@@ -1538,6 +1539,7 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
             if 'wavelength' in datai.metadata['Raster']:
                 rtmp.SetMetadataItem('wavelength',
                                      str(datai.metadata['Raster']['wavelength']))
+                wavelength.append(datai.metadata['Raster']['wavelength'])
 
             if 'reflectance_scale_factor' in datai.metadata['Raster']:
                 rtmp.SetMetadataItem('reflectance_scale_factor',
@@ -1551,8 +1553,20 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
 
     out = None  # Close File
     if drv == 'ENVI':
+        wout = ''
+        if (wavelength and envimeta is not None and
+                'wavelength' not in envimeta):
+            wout = str(wavelength)
+            wout = wout.replace('[', '{')
+            wout = wout.replace(']', '}')
+            wout = wout.replace("'", '')
+            wout = 'wavelength = '+wout+'\n'
+        if 'fwhm' in dat[0].metadata['Raster']:
+            wout += 'fwhm = ' + dat[0].metadata['Raster']['fwhm']+'\n'
+
         with open(tmpfile[:-4]+'.hdr', 'a') as myfile:
-            myfile.write('data ignore value = ' + str(data[0].nullvalue)+'\n')
+            myfile.write(wout)
+            # myfile.write('data ignore value = ' + str(data[0].nullvalue)+'\n')
             myfile.write(envimeta)
 
 

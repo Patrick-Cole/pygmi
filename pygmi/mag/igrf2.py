@@ -57,6 +57,8 @@ from math import cos
 from math import sqrt
 from math import atan2
 import copy
+
+from numba import jit
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr
@@ -947,3 +949,590 @@ class IGRF(QtWidgets.QDialog):
             self.ftemp = f
             self.itemp = i
             self.dtemp = d
+
+
+def calc_igrf(data, sdate, alt=100, igrfonly=True, piter=iter, pprint=print):
+    """
+    Calculate IGRF.
+
+    Parameters
+    ----------
+    nodialog : bool, optional
+        Run settings without a dialog. The default is False.
+
+    Returns
+    -------
+    bool
+        True if successful, False otherwise.
+
+    """
+
+    MAXDEG = 13
+    MAXCOEFF = (MAXDEG*(MAXDEG+2)+1)
+
+    gh = np.zeros([4, MAXCOEFF])
+    decl = 0
+    fint = 0
+    hint = 0
+    incl = 0
+    x = 0
+    y = 0
+    z = 0
+
+    # if wkt is None:
+    #     wkt = data.wkt
+
+    # orig_wkt = wkt
+
+    # orig = osr.SpatialReference()
+    # orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+    # if orig_wkt == '':
+    #     orig.SetWellKnownGeogCS('WGS84')
+    # else:
+    #     orig.ImportFromWkt(orig_wkt)
+
+    # targ = osr.SpatialReference()
+    # targ.SetWellKnownGeogCS('WGS84')
+    # targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+
+    # ctrans = osr.CoordinateTransformation(orig, targ)
+
+    with open(os.path.join(os.path.dirname(__file__),
+                           'IGRF13.cof')) as mdf:
+        modbuff = mdf.readlines()
+    fileline = -1                            # First line will be 1
+    model = []
+    epoch = []
+    max1 = []
+    max2 = []
+    max3 = []
+    yrmin = []
+    yrmax = []
+    altmin = []
+    altmax = []
+    irec_pos = []
+# First model will be 0
+    for i in modbuff:
+        fileline += 1  # On new line
+        if i[:3] == '   ':
+            i2 = i.split()
+            model.append(i2[0])
+            epoch.append(float(i2[1]))
+            max1.append(int(i2[2]))
+            max2.append(int(i2[3]))
+            max3.append(int(i2[4]))
+            yrmin.append(float(i2[5]))
+            yrmax.append(float(i2[6]))
+            altmin.append(float(i2[7]))
+            altmax.append(float(i2[8]))
+            irec_pos.append(fileline)
+
+    # dxy = min(data.xdim, data.ydim)
+    altgrid = data.data.flatten() * 0.001  # in km
+
+    maxyr = max(yrmax)
+    # sdate = self.dateedit.date()
+    # sdate = sdate.year()+sdate.dayOfYear()/sdate.daysInYear()
+    # alt = self.dsb_alt.value()
+
+    drows, dcols = data.data.shape
+    dtlx = data.extent[0]
+    dtly = data.extent[-1]
+    xrange = dtlx+data.xdim/2.+np.arange(dcols)*data.xdim
+    yrange = dtly-data.ydim/2.-np.arange(drows)*data.ydim
+
+    xdat, ydat = np.meshgrid(xrange, yrange)
+    xdat = xdat.flatten()
+    ydat = ydat.flatten()
+
+    igrf_F = altgrid * 0
+    igrf_I = altgrid * 0
+    igrf_D = altgrid * 0
+    # Pick model
+    yrmax = np.array(yrmax)
+    modelI = sum(yrmax < sdate)
+    igdgc = 1
+
+    if maxyr < sdate < maxyr+1:
+        pprint('Warning: The date ' + str(sdate) + ' is out of range,')
+        pprint('but still within one year of model expiration date.')
+        pprint('An updated model file is available before 1.1.' + str(maxyr))
+
+    if max2[modelI] == 0:
+        gh = getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0, gh)
+        gh = getshc(modbuff, 1, irec_pos[modelI+1], max1[modelI+1], 1, gh)
+        nmax, gh = interpsh(sdate, yrmin[modelI], max1[modelI],
+                            yrmin[modelI+1], max1[modelI+1], 2, gh)
+        nmax, gh = interpsh(sdate+1, yrmin[modelI], max1[modelI],
+                            yrmin[modelI+1], max1[modelI+1], 3, gh)
+    else:
+        gh = getshc(modbuff, 1, irec_pos[modelI], max1[modelI], 0, gh)
+        gh = getshc(modbuff, 0, irec_pos[modelI], max2[modelI], 1, gh)
+        nmax, gh = extrapsh(sdate, epoch[modelI], max1[modelI],
+                            max2[modelI], 2, gh)
+        nmax, gh = extrapsh(sdate+1, epoch[modelI], max1[modelI],
+                            max2[modelI], 3, gh)
+
+    # progress = 0
+    maxlen = xdat.size
+
+    # alli = []
+    # alld = []
+    # allf = []
+    for i in piter(range(maxlen)):
+        if igrf_F.mask[i]:
+            continue
+
+        # tmp = int(i*100/maxlen)
+        # if tmp > progress:
+        #     progress = tmp
+
+        # longitude, latitude, _ = ctrans.TransformPoint(xdat[i], ydat[i])
+        longitude, latitude = xdat[i], ydat[i]
+        alt = altgrid[i]
+
+# Do the first calculations
+        x, y, z = shval3(igdgc, latitude, longitude, alt, nmax, 3, gh)
+        hint, fint, incl, decl = dihf(x, y, z)
+
+        igrf_F[i] = fint
+        igrf_I[i] = np.rad2deg(incl)
+        igrf_D[i] = np.rad2deg(decl)
+
+        # alli.append(incl)
+        # alld.append(decl)
+        # allf.append(fint)
+
+    # fmean = np.mean(allf)
+    # imean = np.rad2deg(np.mean(alli))
+    # dmean = np.rad2deg(np.mean(alld))
+    # bname = 'Magnetic Data: IGRF Corrected '
+    # bname = bname + 'F:{0:.2f} I:{1:.2f} D:{2:.2f}'
+    # bname = bname.format(fmean, imean, dmean)
+
+    igrf_F = np.ma.array(igrf_F)
+    igrf_F.shape = data.data.shape
+    igrf_F.mask = np.ma.getmaskarray(data.data)
+
+    igrf_I = np.ma.array(igrf_I)
+    igrf_I.shape = data.data.shape
+    igrf_I.mask = np.ma.getmaskarray(data.data)
+
+    igrf_D = np.ma.array(igrf_D)
+    igrf_D.shape = data.data.shape
+    igrf_D.mask = np.ma.getmaskarray(data.data)
+
+    fmean = igrf_F.mean()
+    imean = igrf_I.mean()
+    dmean = igrf_D.mean()
+
+    pprint('Mean Values in Calculation')
+    pprint('=============================')
+    pprint(f'Total Intensity: {fmean:.2f}')
+    pprint(f'Inclination: {imean:.2f}')
+    pprint(f'Declination: {dmean:.2f}')
+
+    outdata = []
+    outdata.append(copy.deepcopy(data))
+    outdata[-1].data = igrf_F
+    outdata[-1].dataid = 'IGRF'
+
+    if not igrfonly:
+        outdata.append(copy.deepcopy(data))
+        outdata[-1].data = igrf_I
+        outdata[-1].dataid = 'Inclination'
+
+        outdata.append(copy.deepcopy(data))
+        outdata[-1].data = igrf_D
+        outdata[-1].dataid = 'Declination'
+
+    return outdata
+
+
+def getshc(file, iflag, strec, nmax_of_gh, igh, gh):
+    """
+    Read spherical harmonic coefficients from the specified model.
+
+    Reads spherical harmonic coefficients from the specified model into an
+    array (Schmidt quasi-normal internal spherical harmonic coefficients).
+
+    | FORTRAN: Bill Flanagan, NOAA CORPS, DESDIS, NGDC, 325 Broadway,
+    | Boulder CO.  80301
+    | C: C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+    Parameters
+    ----------
+    file : file
+        reference to a file object
+    iflag :
+        Flag for SV equal to 1 or not equal to 1 for designated read
+        statements
+    strec : int
+        Starting record number to read from model
+    nmax_of_gh : int
+        Maximum degree and order of model
+    igh : int
+        Index for gh.
+
+    Returns
+    -------
+    None.
+    """
+    ii = -1
+    cnt = 0
+
+    for nn in range(1, nmax_of_gh+1):
+        for _ in range(nn+1):
+            cnt += 1
+            tmp = file[strec+cnt]
+            tmp = tmp.split()
+            m = int(tmp[1])
+
+            if iflag == 1:
+                g = float(tmp[2])
+                hh = float(tmp[3])
+            else:
+                g = float(tmp[4])
+                hh = float(tmp[5])
+
+            ii = ii + 1
+            gh[igh][ii] = g
+
+            if m != 0:
+                ii = ii + 1
+                gh[igh][ii] = hh
+
+    return gh
+
+
+@jit(nopython=True)
+def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
+    """
+    Extrapolate a spherical harmonic model.
+
+    Extrapolates linearly a spherical harmonic model with a rate-of-change
+    model. Updates self.gh (Schmidt quasi-normal internal spherical
+    harmonic coefficients).
+
+    | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
+    | CO. 80225
+    | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+    Parameters
+    ----------
+    date : float
+        date of resulting model (in decimal year)
+    dte1 : float
+        date of base model
+    nmax1 : int
+        maximum degree and order of base model
+    nmax2 : int
+        maximum degree and order of rate-of-change model
+    gh  : numpy array
+        Schmidt quasi-normal internal spherical harmonic coefficients of
+        base model and rate-of-change model
+
+    Returns
+    -------
+    nmax : int
+        maximum degree and order of resulting model
+    """
+    factor = date - dte1
+    if nmax1 == nmax2:
+        k = nmax1 * (nmax1 + 2)
+        nmax = nmax1
+    else:
+        if nmax1 > nmax2:
+            k = nmax2 * (nmax2 + 2)
+            l = nmax1 * (nmax1 + 2)
+            for ii in range(k, l):
+                gh[igh][ii] = gh[0][ii]
+
+            nmax = nmax1
+        else:
+            k = nmax1 * (nmax1 + 2)
+            l = nmax2 * (nmax2 + 2)
+            for ii in range(k, l):
+                gh[igh][ii] = factor * gh[1][ii]
+
+            nmax = nmax2
+
+    for ii in range(k):
+        gh[igh][ii] = gh[0][ii] + factor * gh[1][ii]
+
+    return nmax, gh
+
+
+@jit(nopython=True)
+def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
+    """
+    Temporal Interpolation between two spherical harmonic models.
+
+    Interpolates linearly, in time, between two spherical harmonic
+    models.
+
+    Updates self.gh (Schmidt quasi-normal internal spherical harmonic
+    coefficients).
+
+    | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
+    | CO. 80225
+    | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+    Parameters
+    ----------
+    date : float
+        date of resulting model (in decimal year)
+    dte1 : float
+        date of earlier model
+    nmax1 : int
+        maximum degree and order of earlier model
+    dte2 : float
+        date of later model
+    nmax2 : int
+        maximum degree and order of later model
+    gh : numpy array
+        Schmidt quasi-normal internal spherical harmonic coefficients of
+        earlier model and internal model
+
+    Returns
+    -------
+    nmax : int
+        maximum degree and order of resulting model
+    """
+    factor = (date - dte1) / (dte2 - dte1)
+    if nmax1 == nmax2:
+        k = nmax1 * (nmax1 + 2)
+        nmax = nmax1
+    else:
+        if nmax1 > nmax2:
+            k = nmax2 * (nmax2 + 2)
+            l = nmax1 * (nmax1 + 2)
+            for ii in range(k, l):
+                gh[igh][ii] = gh[0][ii] + factor*(-gh[0][ii])
+            nmax = nmax1
+        else:
+            k = nmax1 * (nmax1 + 2)
+            l = nmax2 * (nmax2 + 2)
+            for ii in range(k, l):
+                gh[igh][ii] = factor * gh[1][ii]
+
+            nmax = nmax2
+
+    for ii in range(k):
+        gh[igh][ii] = gh[0][ii] + factor*(gh[1][ii] - gh[0][ii])
+
+    return nmax, gh
+
+
+@jit(nopython=True)
+def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
+    """
+    Calculate field components from spherical harmonic (sh) models.
+
+    This routine updates self.x, self.y, self.z (Northward, Eastward and
+    vertically downward components respectively NED)
+
+    Based on subroutine 'igrf' by D. R. Barraclough and S. R. C. Malin,
+    report no. 71/1, institute of geological sciences, U.K.
+
+    | FORTRAN : Norman W. Peddie, USGS, MS 964, box 25046 Federal Center,
+    | Denver, CO. 80225
+    | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+    Parameters
+    ----------
+    igdgc : int
+        indicates coordinate system used set equal to 1 if geodetic, 2 if
+        geocentric
+    flat : float
+        north latitude, in degrees
+    flon : float
+        east longitude, in degrees
+    elev : float
+        WGS84 altitude above ellipsoid (igdgc=1), or radial distance from
+        earth's center (igdgc=2)
+    nmax : int
+        maximum degree and order of coefficients
+    gh : numpy array
+        Schmidt quasi-normal internal spherical harmonic coefficients of
+        earlier model and internal model
+
+    Returns
+    -------
+    None.
+    """
+    sl = np.zeros(14)
+    cl = np.zeros(14)
+    p = np.zeros(119)
+    q = np.zeros(119)
+    earths_radius = 6371.2
+    dtr = np.pi/180.0
+
+    # a2,b2 are squares of semi-major and semi-minor axes of the reference
+    # spheroid used for transforming between geodetic and geocentric
+    # coordinates or components
+
+    a2 = 40680631.59            # WGS84
+    b2 = 40408299.98            # WGS84
+    r = elev
+    argument = flat * dtr
+    slat = sin(argument)
+    if (90.0 - flat) < 0.001:
+        aa = 89.999            # 300 ft. from North pole
+    elif (90.0 + flat) < 0.001:
+        aa = -89.999        # 300 ft. from South pole
+    else:
+        aa = flat
+
+    argument = aa * dtr
+    clat = cos(argument)
+    argument = flon * dtr
+    sl[1] = sin(argument)
+    cl[1] = cos(argument)
+
+    x = 0
+    y = 0
+    z = 0
+
+    sd = 0.0
+    cd = 1.0
+    l = 0
+    n = 0
+    m = 1
+    npq = int((nmax * (nmax + 3)) / 2)
+    if igdgc == 1:
+        aa = a2 * clat * clat
+        bb = b2 * slat * slat
+        cc = aa + bb
+        argument = cc
+        dd = sqrt(argument)
+        argument = elev * (elev + 2.0 * dd) + (a2 * aa + b2 * bb) / cc
+        r = sqrt(argument)
+        cd = (elev + dd) / r
+        sd = (a2 - b2) / dd * slat * clat / r
+        aa = slat
+        slat = slat * cd - clat * sd
+        clat = clat * cd + aa * sd
+
+    ratio = earths_radius / r
+    argument = 3.0
+    aa = sqrt(argument)
+    p[1] = 2.0 * slat
+    p[2] = 2.0 * clat
+    p[3] = 4.5 * slat * slat - 1.5
+    p[4] = 3.0 * aa * clat * slat
+    q[1] = -clat
+    q[2] = slat
+    q[3] = -3.0 * clat * slat
+    q[4] = aa * (slat * slat - clat * clat)
+    for k in range(1, npq+1):
+        if n < m:
+            m = 0
+            n = n + 1
+            argument = ratio
+            power = n + 2
+            rr = pow(argument, power)
+            fn = n
+
+        fm = m
+        if k >= 5:
+            if m == n:
+                argument = (1.0 - 0.5/fm)
+                aa = sqrt(argument)
+                j = k - n - 1
+                p[k] = (1.0 + 1.0/fm) * aa * clat * p[j]
+                q[k] = aa * (clat * q[j] + slat/fm * p[j])
+                sl[m] = sl[m-1] * cl[1] + cl[m-1] * sl[1]
+                cl[m] = cl[m-1] * cl[1] - sl[m-1] * sl[1]
+            else:
+                argument = fn*fn - fm*fm
+                aa = sqrt(argument)
+                argument = ((fn - 1.0)*(fn-1.0)) - (fm * fm)
+                bb = sqrt(argument)/aa
+                cc = (2.0 * fn - 1.0)/aa
+                ii = k - n
+                j = k - 2 * n + 1
+                p[k] = (fn + 1.0) * (cc * slat/fn * p[ii]-bb/(fn-1.0)*p[j])
+                q[k] = cc * (slat * q[ii] - clat/fn * p[ii]) - bb * q[j]
+
+        aa = rr * gh[igh -1][l]
+
+        if m == 0:
+            x = x + aa * q[k]
+            z = z - aa * p[k]
+
+            l = l + 1
+        else:
+            bb = rr * gh[igh-1][l+1]
+            cc = aa * cl[m] + bb * sl[m]
+            x = x + cc * q[k]
+            z = z - cc * p[k]
+            if clat > 0:
+                y = (y + (aa*sl[m] - bb*cl[m])*fm*p[k]/((fn + 1.0)*clat))
+            else:
+                y = y + (aa*sl[m] - bb*cl[m])*q[k]*slat
+            l = l + 2
+
+        m = m + 1
+
+    aa = x
+    x = x * cd + z * sd
+    z = z * cd - aa * sd
+
+    return x, y, z
+
+
+@jit(nopython=True)
+def dihf(x, y, z):
+    """
+    Compute the geomagnetic d, i, h, and f from x, y, and z.
+
+    This updates self.d, self.i, self.h and self.f (declination,
+    inclination, horizontal intensity and total intensity).
+
+    | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
+    | CO. 80225
+    | C : C. H. Shaffer, Lockheed Missiles and Space Company, Sunnyvale CA
+
+    Parameters
+    ----------
+    x : float
+        northward component
+    y : float
+        eastward component
+    z : float
+        vertically-downward component
+
+    Returns
+    -------
+    None.
+
+    """
+    sn = 0.0001
+
+    for _ in range(2):
+        h2 = x*x + y*y
+        argument = h2
+        h = sqrt(argument)       # calculate horizontal intensity
+        argument = h2 + z*z
+        f = sqrt(argument)       # calculate total intensity
+        if f < sn:
+            d = np.nan           # If d and i cannot be determined,
+            i = np.nan           # set equal to NaN
+        else:
+            argument = z
+            argument2 = h
+            i = atan2(argument, argument2)
+            if h < sn:
+                d = np.nan
+            else:
+                hpx = h + x
+                if hpx < sn:
+                    d = np.pi
+                else:
+                    argument = y
+                    argument2 = hpx
+                    d = 2.0 * atan2(argument, argument2)
+
+    return h, f, i, d

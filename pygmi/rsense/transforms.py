@@ -36,7 +36,7 @@ from sklearn.decomposition import IncrementalPCA
 import numexpr as ne
 import matplotlib.pyplot as plt
 
-from pygmi.raster.iodefs import get_raster
+from pygmi.raster.iodefs import get_raster, export_gdal
 from pygmi.misc import ProgressBarText
 from pygmi.raster.iodefs import export_gdal
 import pygmi.menu_default as menu_default
@@ -527,11 +527,14 @@ def _testfn():
     pbar = ProgressBarText()
 
     ifile = r'C:\Workdata\lithosphere\Cut-90-0824-.hdr'
+    ofile = r'C:\Workdata\lithosphere\hope.hdr'
     ncmps = 10
     nodata = 0
     iraster = None
 
     dat = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
+    export_gdal(ofile, dat, 'ENVI')
+    breakpoint()
 
     dat2 = []
     maskall = []
