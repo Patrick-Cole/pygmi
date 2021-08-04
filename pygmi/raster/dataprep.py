@@ -621,7 +621,7 @@ class DataMerge(QtWidgets.QDialog):
             Success of routine.
 
         """
-        indata = []
+        # indata = []
         ifiles = []
         if 'Raster' in self.indata:
             for i in self.indata['Raster']:
@@ -643,10 +643,10 @@ class DataMerge(QtWidgets.QDialog):
                 wkt.append(dataset.crs.wkt)
 
         # Get band names and nodata
-        bnames = []
         with rasterio.open(ifiles[0]) as dataset:
-            for i in range(dataset.count):
-                bnames.append(dataset.tags(i+1)['BandName'])
+            bnames = dataset.descriptions
+            if None in bnames:
+                bnames = ['Band '+str(i) for i in dataset.indexes]
             nodata = dataset.nodata
 
         wkt = list(set(wkt))
