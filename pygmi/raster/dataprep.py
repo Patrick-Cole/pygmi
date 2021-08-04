@@ -381,9 +381,9 @@ class DataMerge(QtWidgets.QDialog):
         # self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.idirlist = QtWidgets.QLineEdit('')
-        self.files_identical = QtWidgets.QCheckBox('All files are identical '
-                                                   '(same bands and band '
-                                                   'order)')
+        self.files_diff = QtWidgets.QCheckBox('Input files have different '
+                                              'numbers of bands, but common '
+                                              'band labels for bands to merge')
         self.setupui()
 
     def setupui(self):
@@ -400,7 +400,7 @@ class DataMerge(QtWidgets.QDialog):
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
 
-        self.files_identical.setChecked(False)
+        self.files_diff.setChecked(False)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -410,7 +410,7 @@ class DataMerge(QtWidgets.QDialog):
 
         gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
-        gridlayout_main.addWidget(self.files_identical, 2, 0, 1, 2)
+        gridlayout_main.addWidget(self.files_diff, 2, 0, 1, 2)
         gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 4, 1, 1, 1)
 
@@ -474,8 +474,9 @@ class DataMerge(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-        # self.dxy = projdata['dxy']
-        # self.cmask.setChecked(projdata['cmask'])
+        self.idir = projdata['idir']
+        self.idirlist.setText(self.idir)
+        self.files_diff.setChecked(projdata['files_diff'])
 
         return False
 
@@ -491,8 +492,8 @@ class DataMerge(QtWidgets.QDialog):
         """
         projdata = {}
 
-        # projdata['dxy'] = self.dsb_dxy.value()
-        # projdata['cmask'] = self.cmask.isChecked()
+        projdata['idir'] = self.idir
+        projdata['diles_diff'] = self.files_diff.isChecked()
 
         return projdata
 
@@ -508,10 +509,10 @@ class DataMerge(QtWidgets.QDialog):
             Success of routine.
 
         """
-        if self.files_identical.isChecked():
-            tmp = self.merge_same()
-        else:
+        if self.files_diff.isChecked():
             tmp = self.merge_different()
+        else:
+            tmp = self.merge_same()
 
         return tmp
 

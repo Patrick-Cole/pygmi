@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
 	<body>
-		<h1>Data Merge and Resampling</h1>
-		<p>This will allow datasets to be merged and resampled to a common cell size. It can also be used for a single dataset to be resampled. The resulting rows and columns of the new grid are displayed.</p>
+		<h1>Data Merge</h1>
+		<p>This will allow datasets to be merged or mosaiced. The input is a directory which contains ONLY data to be merged. Two merging modes are possible.</p> 
+		<p>If all files to be merged have the same number of bands, in the same order (band name is not checked) then a fast merge will result. This is the default. Alternatively, the user can merge files with different numbers of bands, and only bands with common names will be merged. This option is slower.</p>
 		<h2>Options</h2>
 		<ul>
-			<li>Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).</li>
-			<li>Common mask for all bands - This option forces the nodata areas to be the same on all bands.</li>
+			<li>Batch directory - location of files to be merged.</li>
+			<li>Input files have different numbers of bands, but common band labels for bands to merge - unchecked by default.</li>
 		</ul>
 	</body>
 </html>
