@@ -851,7 +851,8 @@ class ProcFeatures(QtWidgets.QDialog):
                 datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
                                       product, piter=self.piter)
 
-                ofile = os.path.basename(ifile).split('.')[0] + '_feature.tif'
+                ofile = (os.path.basename(ifile).split('.')[0] + '_' +
+                         mineral.replace(' ', '_') + '.tif')
                 ofile = os.path.join(odir, ofile)
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
                 export_gdal(ofile, datfin, 'GTiff', piter=self.piter)
