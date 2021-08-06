@@ -70,6 +70,9 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+from scipy.optimize import minimize
+from scipy.interpolate import CubicSpline
 
 from pygmi.misc import frm
 import pygmi.menu_default as menu_default
@@ -1025,7 +1028,9 @@ def indexcalc(formula, dat):
 @jit(nopython=True)
 def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
     """
-    Feature process
+    Feature process.
+
+    This function finds the minimum value of a feature.
 
     Parameters
     ----------
@@ -1049,10 +1054,69 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
         yhull = phull(yval)
         crem = yval/yhull
         imin = crem[i1a:i2a].argmin()
-        dtmp[j] = 1. - crem[i1a:i2a][imin]
-        ptmp[j] = xdat[i1a:i2a][imin]
+        # dtmp[j] = 1. - crem[i1a:i2a][imin]
+        # ptmp[j] = xdat[i1a:i2a][imin]
+        # continue
+
+        # fun = CubicSpline(xdat[i1a:i2a], crem[i1a: i2a])
+        # tmp = minimize(fun, (xdat[i2a]+xdat[i1a])/2)
+
+        if imin == 0 or imin == (i2a-i1a-1):
+            dtmp[j] = 1. - crem[i1a:i2a][imin]
+            ptmp[j] = xdat[i1a:i2a][imin]
+            continue
+
+
+        x1 = xdat[i1a:i2a][imin-1]
+        x2 = xdat[i1a:i2a][imin]
+        x3 = xdat[i1a:i2a][imin+1]
+
+        y1 = crem[i1a:i2a][imin-1]
+        y2 = crem[i1a:i2a][imin]
+        y3 = crem[i1a:i2a][imin+1]
+
+        a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 + 2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 + x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 - 2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 + 2*x2**2*x3**2*y1)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+        b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 + 3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 - 2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 - 2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+        c1 = -3*x1*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+        d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+
+        a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 + 2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 + 2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 - 3*x2**2*x3**2*y1 - x2**2*x3**2*y2 + 2*x2*x3**3*y1)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+        b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 - x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 - x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 - 2*x3**3*y1 + 2*x3**3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+        c2 = 3*x3*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+        d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+
+
+        min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
+                -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
+
+        min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
+                -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
+
+
+        for i in min1:
+            if x1<i and i<x2:
+                x = i
+                y = a1+b1*x+c1*x**2+d1*x**3
+
+        for i in min2:
+            if x2<i and i<x3:
+                x = i
+                y = a2+b2*x+c2*x**2+d2*x**3
+
+        ptmp[j] = x
+        dtmp[j] = 1. - y
+
+        # xxx = np.arange(xdat[i1a], xdat[i2a-1], 0.1)
+
+        # plt.figure(dpi=150)
+        # plt.plot(xxx, fun(xxx))
+        # plt.plot(xdat[i1a:i2a], crem[i1a:i2a],'-+')
+        # plt.plot(tmp.x, tmp.fun, 'o')
+        # plt.show()
 
     return ptmp, dtmp
+
+
 
 
 @jit(nopython=True)
@@ -1209,12 +1273,16 @@ def _testfn():
 
     tmp = ProcFeatures(None)
     tmp.indata['Raster'] = data
+    # tmp.cb_ratios.setCurrentText('ferric iron')
     tmp.settings()
 
-    dat = tmp.outdata['Raster'][0]
+    dat = tmp.outdata['Raster'][1]
 
     plt.imshow(dat.data)
+    plt.colorbar()
     plt.show()
+
+    print(dat.data.mean())
 
 
 def _testfn2():
@@ -1249,5 +1317,117 @@ def _testfn2():
     tmp.settings()
 
 
+# @jit(nopython=True)
+def test():
+
+    A = [[1,1,1,1,0,0,0,0],
+         [8,4,2,1,0,0,0,0],
+         [0,0,0,0,8,4,2,1],
+         [0,0,0,0,27,9,3,1],
+         [12,4,1,0,-12,-4,-1,0],
+         [12,2,0,0,-12,-2,0,0],
+         [6,2,0,0,0,0,0,0],
+         [0,0,0,0,18,2,0,0]]
+
+    b = [1,5,5,4,0,0,0,0]
+    aa = np.linalg.lstsq(A, b)
+
+    import sympy as sp
+    x1, x2, x3 = sp.symbols('x1 x2 x3')
+    y1, y2, y3 = sp.symbols('y1 y2 y3')
+    a1, b1, c1, d1 = sp.symbols('a1 b1 c1 d1')
+    a2, b2, c2, d2 = sp.symbols('a2 b2 c2 d2')
+
+    # y1 = a+b*x1+c*x1**2+d*x1**3
+    # y2 = a+b*x2+c*x2**2+d*x2**3
+    # y2 = a+b*x3+c*x3**2+d*x3**3
+    # y3 = a+b*x3+c*x3**2+d*x3**3
+    # b + 2*c*x1 + 3*d*x1**2 = b + 2*c*x2 + 3*d*x2**2
+    # 2*c + 6*d*x1 = 2*c + 6*d*x2
+    # 2*c + 6*d*x1 = 0
+    # 2*c + 6*d*x2 = 0
+
+    eq1 = y1 - (a1+b1*x1+c1*x1**2+d1*x1**3)
+    eq2 = y2 - (a1+b1*x2+c1*x2**2+d1*x2**3)
+    eq3 = y2 - (a2+b2*x2+c2*x2**2+d2*x2**3)
+    eq4 = y3 - (a2+b2*x3+c2*x3**2+d2*x3**3)
+    eq5 = b1 + 2*c1*x2 + 3*d1*x2**2 - (b2 + 2*c2*x2 + 3*d2*x2**2)
+    eq6 = 2*c1 + 6*d1*x2 - (2*c2 + 6*d2*x2)
+    eq7 = 2*c1 + 6*d1*x1
+    eq8 = 2*c2 + 6*d2*x3
+
+    eq9 = b1 + 2*c1*x2 + 3*d1*x2**2
+
+    out = sp.solve([eq1, eq2, eq3, eq4, eq5, eq6, eq7, eq8],
+                   [a1, b1, c1, d1, a2, b2, c2, d2])
+
+
+
+    x1 = 1
+    y1 = 1
+    x2 = 2
+    y2 = 5
+    x3 = 3
+    y3 = 4
+
+    # a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 + 2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 + x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 - 2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 + 2*x2**2*x3**2*y1)/(2*x1**3*x2 - 2*x1**3*x3 - 4*x1**2*x2**2 + 2*x1**2*x2*x3 + 2*x1**2*x3**2 + 2*x1*x2**3 + 2*x1*x2**2*x3 - 4*x1*x2*x3**2 - 2*x2**3*x3 + 2*x2**2*x3**2)
+    # b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 + 3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 - 2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 - 2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*x1**3*x2 - 2*x1**3*x3 - 4*x1**2*x2**2 + 2*x1**2*x2*x3 + 2*x1**2*x3**2 + 2*x1*x2**3 + 2*x1*x2**2*x3 - 4*x1*x2*x3**2 - 2*x2**3*x3 + 2*x2**2*x3**2)
+    # c1 = (-3*x1**2*y2 + 3*x1**2*y3 + 3*x1*x2*y1 - 3*x1*x2*y3 - 3*x1*x3*y1 + 3*x1*x3*y2)/(2*x1**3*x2 - 2*x1**3*x3 - 4*x1**2*x2**2 + 2*x1**2*x2*x3 + 2*x1**2*x3**2 + 2*x1*x2**3 + 2*x1*x2**2*x3 - 4*x1*x2*x3**2 - 2*x2**3*x3 + 2*x2**2*x3**2)
+    # d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*x1**3*x2 - 2*x1**3*x3 - 4*x1**2*x2**2 + 2*x1**2*x2*x3 + 2*x1**2*x3**2 + 2*x1*x2**3 + 2*x1*x2**2*x3 - 4*x1*x2*x3**2 - 2*x2**3*x3 + 2*x2**2*x3**2)
+
+    # a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 + 2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 + 2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 - 3*x2**2*x3**2*y1 - x2**2*x3**2*y2 + 2*x2*x3**3*y1)/(2*x1**2*x2**2 - 4*x1**2*x2*x3 + 2*x1**2*x3**2 - 2*x1*x2**3 + 2*x1*x2**2*x3 + 2*x1*x2*x3**2 - 2*x1*x3**3 + 2*x2**3*x3 - 4*x2**2*x3**2 + 2*x2*x3**3)
+    # b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 - x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 - x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 - 2*x3**3*y1 + 2*x3**3*y2)/(2*x1**2*x2**2 - 4*x1**2*x2*x3 + 2*x1**2*x3**2 - 2*x1*x2**3 + 2*x1*x2**2*x3 + 2*x1*x2*x3**2 - 2*x1*x3**3 + 2*x2**3*x3 - 4*x2**2*x3**2 + 2*x2*x3**3)
+
+    # c2 = (3*x1*x3*y2 - 3*x1*x3*y3 - 3*x2*x3*y1 + 3*x2*x3*y3 + 3*x3**2*y1 - 3*x3**2*y2)/(2*x1**2*x2**2 - 4*x1**2*x2*x3 + 2*x1**2*x3**2 - 2*x1*x2**3 + 2*x1*x2**2*x3 + 2*x1*x2*x3**2 - 2*x1*x3**3 + 2*x2**3*x3 - 4*x2**2*x3**2 + 2*x2*x3**3)
+    # d2 = (-x1*y2 + x1*y3 + x2*y1 - x2*y3 - x3*y1 + x3*y2)/(2*x1**2*x2**2 - 4*x1**2*x2*x3 + 2*x1**2*x3**2 - 2*x1*x2**3 + 2*x1*x2**2*x3 + 2*x1*x2*x3**2 - 2*x1*x3**3 + 2*x2**3*x3 - 4*x2**2*x3**2 + 2*x2*x3**3)
+
+    a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 + 2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 + x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 - 2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 + 2*x2**2*x3**2*y1)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 + 3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 - 2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 - 2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    c1 = -3*x1*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+
+    a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 + 2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 + 2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 - 3*x2**2*x3**2*y1 - x2**2*x3**2*y2 + 2*x2*x3**3*y1)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 - x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 - x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 - 2*x3**3*y1 + 2*x3**3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    c2 = 3*x3*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+
+
+
+ #sp.solve([eq1, eq2, eq3, eq4, eq5, eq6, eq7, eq8], [a, b, c, d])
+
+    # bb = [d1, c1, b1, a1, d2, c2, b2, a2]
+
+    min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
+            -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
+
+    min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
+            -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
+
+
+    for i in min1:
+        if x1<i and i<x2:
+            x = i
+            y = a1+b1*x+c1*x**2+d1*x**3
+
+    for i in min2:
+        if x2<i and i<x3:
+            x = i
+            y = a2+b2*x+c2*x**2+d2*x**3
+
+
+
+    # min1 = np.array(min1)
+    # min2 = np.array(min2)
+    # cc=min1[(x1<min1) & (min1<x2)]
+    # dd=min2[(x2<min2) & (min2<x3)]
+
+
+
+    # dd = sp.solve(eq4, d)[0]
+
+
+    breakpoint()
+
 if __name__ == "__main__":
+    # test()
     _testfn()
