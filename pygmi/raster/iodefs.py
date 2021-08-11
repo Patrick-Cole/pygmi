@@ -614,7 +614,7 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
         dmeta = dataset.GetMetadata('ENVI')
 
     if 'INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr']:
-        if istruct['INTERLEAVE'] == 'LINE':
+        if istruct['INTERLEAVE'] == 'LINE' and iraster is None:
             dataset = None
             dat = get_bil(ifile, nval, piter, showprocesslog)
             return dat
@@ -673,7 +673,7 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
             dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape)
                                 + np.ma.getmaskarray(dat[i].data))
 
-        dat[i].extent_from_gtr(gtr)
+        dat[i].extent_from_gtr(gtr, iraster)
 
         if bandid == '':
             bandid = 'Band '+str(i+1)+' '+bname

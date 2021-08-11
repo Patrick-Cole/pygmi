@@ -637,6 +637,18 @@ class DataMerge(QtWidgets.QDialog):
             self.showprocesslog('No input datasets')
             return False
 
+        for i, ifile in enumerate(ifiles):
+            if ifile[-3:] == 'hdr':
+                ifile = ifile[:-4]
+                if os.path.exists(ifile+'.dat'):
+                    ifiles[i] = ifile+'.dat'
+                elif os.path.exists(ifile+'.raw'):
+                    ifiles[i] = ifile+'.raw'
+                elif os.path.exists(ifile+'.img'):
+                    ifiles[i] = ifile+'.img'
+                elif not os.path.exists(ifile):
+                    return False
+
         # Get projection information
         wkt = []
         for ifile in ifiles:

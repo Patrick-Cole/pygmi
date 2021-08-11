@@ -952,7 +952,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
         i2a = tmp[-1]
 
         fdat = np.moveaxis(fdat, 0, -1)
-
+        breakpoint()
         for i in piter(range(rows)):
             ptmp[i], dtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
                                      xdat)
@@ -1106,12 +1106,9 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
         ptmp[j] = x
         dtmp[j] = 1. - y
 
-        # xxx = np.arange(xdat[i1a], xdat[i2a-1], 0.1)
-
         # plt.figure(dpi=150)
-        # plt.plot(xxx, fun(xxx))
         # plt.plot(xdat[i1a:i2a], crem[i1a:i2a],'-+')
-        # plt.plot(tmp.x, tmp.fun, 'o')
+        # plt.plot(x, y, 'o')
         # plt.show()
 
     return ptmp, dtmp
@@ -1317,117 +1314,171 @@ def _testfn2():
     tmp.settings()
 
 
-# @jit(nopython=True)
-def test():
+def _testfn3():
+    """Test"""
+    pbar = ProgressBarText()
 
-    A = [[1,1,1,1,0,0,0,0],
-         [8,4,2,1,0,0,0,0],
-         [0,0,0,0,8,4,2,1],
-         [0,0,0,0,27,9,3,1],
-         [12,4,1,0,-12,-4,-1,0],
-         [12,2,0,0,-12,-2,0,0],
-         [6,2,0,0,0,0,0,0],
-         [0,0,0,0,18,2,0,0]]
+    ifile1 = r'C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr'
+    ifile2 = r'C:\Workdata\Lithosphere\merge\cut-088-0824_iMNF15.hdr'
+    ifile3 = r'C:\Workdata\Lithosphere\merge\cut-089-0824_iMNF15.hdr'
 
-    b = [1,5,5,4,0,0,0,0]
-    aa = np.linalg.lstsq(A, b)
+    # ifile1 = r'C:\Workdata\Lithosphere\merge\cut-087-0824.hdr'
+    # ifile2 = r'C:\Workdata\Lithosphere\merge\cut-088-0824.hdr'
+    # ifile3 = r'C:\Workdata\Lithosphere\merge\cut-089-0824.hdr'
 
-    import sympy as sp
-    x1, x2, x3 = sp.symbols('x1 x2 x3')
-    y1, y2, y3 = sp.symbols('y1 y2 y3')
-    a1, b1, c1, d1 = sp.symbols('a1 b1 c1 d1')
-    a2, b2, c2, d2 = sp.symbols('a2 b2 c2 d2')
+    feat = 18
 
-    # y1 = a+b*x1+c*x1**2+d*x1**3
-    # y2 = a+b*x2+c*x2**2+d*x2**3
-    # y2 = a+b*x3+c*x3**2+d*x3**3
-    # y3 = a+b*x3+c*x3**2+d*x3**3
-    # b + 2*c*x1 + 3*d*x1**2 = b + 2*c*x2 + 3*d*x2**2
-    # 2*c + 6*d*x1 = 2*c + 6*d*x2
-    # 2*c + 6*d*x1 = 0
-    # 2*c + 6*d*x2 = 0
+    yoff = 2425
+    ysize = 400
+    nodata = 0
+    iraster = (0, yoff, None, ysize)
 
-    eq1 = y1 - (a1+b1*x1+c1*x1**2+d1*x1**3)
-    eq2 = y2 - (a1+b1*x2+c1*x2**2+d1*x2**3)
-    eq3 = y2 - (a2+b2*x2+c2*x2**2+d2*x2**3)
-    eq4 = y3 - (a2+b2*x3+c2*x3**2+d2*x3**3)
-    eq5 = b1 + 2*c1*x2 + 3*d1*x2**2 - (b2 + 2*c2*x2 + 3*d2*x2**2)
-    eq6 = 2*c1 + 6*d1*x2 - (2*c2 + 6*d2*x2)
-    eq7 = 2*c1 + 6*d1*x1
-    eq8 = 2*c2 + 6*d2*x3
+    data1 = get_raster(ifile1, nval=nodata, iraster=iraster, piter=pbar.iter)
+    data2 = get_raster(ifile2, nval=nodata, iraster=iraster, piter=pbar.iter)
+    data3 = get_raster(ifile3, nval=nodata, iraster=iraster, piter=pbar.iter)
 
-    eq9 = b1 + 2*c1*x2 + 3*d1*x2**2
+    plt.figure(dpi=150)
+    plt.imshow(data1[0].data, extent=data1[0].extent)
+    plt.plot(277545, 6774900, '+k')
+    plt.show()
 
-    out = sp.solve([eq1, eq2, eq3, eq4, eq5, eq6, eq7, eq8],
-                   [a1, b1, c1, d1, a2, b2, c2, d2])
+    plt.figure(dpi=150)
+    plt.imshow(data2[0].data, extent=data2[0].extent)
+    plt.plot(277545, 6774900, '+k')
+    plt.plot(279900, 6774900, '+k')
+    plt.show()
 
+    plt.figure(dpi=150)
+    plt.imshow(data3[0].data, extent=data3[0].extent)
+    plt.plot(279900, 6774900, '+k')
+    plt.show()
 
+    yoff = 2625
+    ysize = 1
+    nodata = 0
+    iraster = (0, yoff, None, ysize)
+    # iraster = None
 
-    x1 = 1
-    y1 = 1
-    x2 = 2
-    y2 = 5
-    x3 = 3
-    y3 = 4
+    data1 = get_raster(ifile1, nval=nodata, iraster=iraster, piter=pbar.iter)
+    data2 = get_raster(ifile2, nval=nodata, iraster=iraster, piter=pbar.iter)
+    data3 = get_raster(ifile3, nval=nodata, iraster=iraster, piter=pbar.iter)
 
-    # a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 + 2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 + x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 - 2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 + 2*x2**2*x3**2*y1)/(2*x1**3*x2 - 2*x1**3*x3 - 4*x1**2*x2**2 + 2*x1**2*x2*x3 + 2*x1**2*x3**2 + 2*x1*x2**3 + 2*x1*x2**2*x3 - 4*x1*x2*x3**2 - 2*x2**3*x3 + 2*x2**2*x3**2)
-    # b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 + 3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 - 2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 - 2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*x1**3*x2 - 2*x1**3*x3 - 4*x1**2*x2**2 + 2*x1**2*x2*x3 + 2*x1**2*x3**2 + 2*x1*x2**3 + 2*x1*x2**2*x3 - 4*x1*x2*x3**2 - 2*x2**3*x3 + 2*x2**2*x3**2)
-    # c1 = (-3*x1**2*y2 + 3*x1**2*y3 + 3*x1*x2*y1 - 3*x1*x2*y3 - 3*x1*x3*y1 + 3*x1*x3*y2)/(2*x1**3*x2 - 2*x1**3*x3 - 4*x1**2*x2**2 + 2*x1**2*x2*x3 + 2*x1**2*x3**2 + 2*x1*x2**3 + 2*x1*x2**2*x3 - 4*x1*x2*x3**2 - 2*x2**3*x3 + 2*x2**2*x3**2)
-    # d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*x1**3*x2 - 2*x1**3*x3 - 4*x1**2*x2**2 + 2*x1**2*x2*x3 + 2*x1**2*x3**2 + 2*x1*x2**3 + 2*x1*x2**2*x3 - 4*x1*x2*x3**2 - 2*x2**3*x3 + 2*x2**2*x3**2)
+     # plt.figure(dpi=150)
+    # plt.imshow(data1[0].data, extent=data1[0].extent)
+    # plt.plot(277545, 6774900, '+k')
+    # plt.show()
 
-    # a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 + 2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 + 2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 - 3*x2**2*x3**2*y1 - x2**2*x3**2*y2 + 2*x2*x3**3*y1)/(2*x1**2*x2**2 - 4*x1**2*x2*x3 + 2*x1**2*x3**2 - 2*x1*x2**3 + 2*x1*x2**2*x3 + 2*x1*x2*x3**2 - 2*x1*x3**3 + 2*x2**3*x3 - 4*x2**2*x3**2 + 2*x2*x3**3)
-    # b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 - x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 - x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 - 2*x3**3*y1 + 2*x3**3*y2)/(2*x1**2*x2**2 - 4*x1**2*x2*x3 + 2*x1**2*x3**2 - 2*x1*x2**3 + 2*x1*x2**2*x3 + 2*x1*x2*x3**2 - 2*x1*x3**3 + 2*x2**3*x3 - 4*x2**2*x3**2 + 2*x2*x3**3)
-
-    # c2 = (3*x1*x3*y2 - 3*x1*x3*y3 - 3*x2*x3*y1 + 3*x2*x3*y3 + 3*x3**2*y1 - 3*x3**2*y2)/(2*x1**2*x2**2 - 4*x1**2*x2*x3 + 2*x1**2*x3**2 - 2*x1*x2**3 + 2*x1*x2**2*x3 + 2*x1*x2*x3**2 - 2*x1*x3**3 + 2*x2**3*x3 - 4*x2**2*x3**2 + 2*x2*x3**3)
-    # d2 = (-x1*y2 + x1*y3 + x2*y1 - x2*y3 - x3*y1 + x3*y2)/(2*x1**2*x2**2 - 4*x1**2*x2*x3 + 2*x1**2*x3**2 - 2*x1*x2**3 + 2*x1*x2**2*x3 + 2*x1*x2*x3**2 - 2*x1*x3**3 + 2*x2**3*x3 - 4*x2**2*x3**2 + 2*x2*x3**3)
-
-    a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 + 2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 + x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 - 2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 + 2*x2**2*x3**2*y1)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 + 3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 - 2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 - 2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    c1 = -3*x1*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-
-    a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 + 2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 + 2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 - 3*x2**2*x3**2*y1 - x2**2*x3**2*y2 + 2*x2*x3**3*y1)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 - x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 - x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 - 2*x3**3*y1 + 2*x3**3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    c2 = 3*x3*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    for i in range(2):
+        if i == 0:
+            xxx = 277545
+            yyy = 6774900
+        else:
+            xxx = 279900
+            yyy = 6774900
+            data1 = data3
 
 
+        i1 = int((xxx-data1[0].extent[0])/data1[0].xdim)
+        i2 = int((xxx-data2[0].extent[0])/data2[0].xdim)
 
- #sp.solve([eq1, eq2, eq3, eq4, eq5, eq6, eq7, eq8], [a, b, c, d])
+        # Get list of wavelengths and data
+        dat1 = []
+        xval1 = []
+        for j in data1:
+            dat1.append(j.data)
+            refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
+            xval1.append(refl)
 
-    # bb = [d1, c1, b1, a1, d2, c2, b2, a2]
+        xval1 = np.array(xval1)
+        dat1 = np.array(dat1)
 
-    min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
-            -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
+        dat2 = []
+        xval2 = []
+        for j in data2:
+            dat2.append(j.data)
+            refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
+            xval2.append(refl)
 
-    min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
-            -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
+        xval2 = np.array(xval2)
+        dat2 = np.array(dat2)
 
+        """
+        i1 = 55
+        i2 = 97
+        i1a = 11
+        i2a = 19
+        fdat.shape = rows, cols, spec
+        fdat.shape = spec (42)
+        """
 
-    for i in min1:
-        if x1<i and i<x2:
-            x = i
-            y = a1+b1*x+c1*x**2+d1*x**3
+        dat1 = dat1[55: 98]
+        dat2 = dat2[55: 98]
+        xval1 = xval1[55: 98]
+        xval2 = xval2[55: 98]
 
-    for i in min2:
-        if x2<i and i<x3:
-            x = i
-            y = a2+b2*x+c2*x**2+d2*x**3
+        fdat = []
+        xdat = []
+        fdat.append(dat1[:, 0, i1])
+        fdat.append(dat2[:, 0, i2])
+        # xdat.append(xval1)
+        # xdat.append(xval2)
+        xdat = xval1
 
+        fdat = np.array(fdat)
 
+        ptmp = np.array([0, 0])
+        dtmp = np.array([0, 0])
 
-    # min1 = np.array(min1)
-    # min2 = np.array(min2)
-    # cc=min1[(x1<min1) & (min1<x2)]
-    # dd=min2[(x2<min2) & (min2<x3)]
+        ptmp, dtmp = fproc(fdat, ptmp, dtmp, 11, 19, xdat)
 
+        spec1 = dat1[:, 0, i1]
+        spec2 = dat2[:, 0, i2]
 
+        plt.figure(dpi=150)
+        plt.title(str(i)+': '+str(i1))
+        plt.plot(xval1, spec1)
+        plt.plot(xval2, spec2, '-.')
+        ymin, ymax = plt.gca().get_ylim()
+        plt.vlines(ptmp[0], ymin, ymax, 'k')
+        plt.vlines(ptmp[1], ymin, ymax, 'k')
 
-    # dd = sp.solve(eq4, d)[0]
+        spec1 = spec1/phull(spec1)
+        spec2 = spec2/phull(spec2)
 
+        plt.figure(dpi=150)
+        plt.title(str(i)+': '+str(i1))
+        plt.plot(xval1, spec1)
+        plt.plot(xval2, spec2, 'r-.')
 
-    breakpoint()
+        plt.plot(xval1[11:19], spec1[11:19], '.')
+        plt.plot(xval2[11:19], spec2[11:19], '.')
+
+        ymin, ymax = plt.gca().get_ylim()
+        plt.vlines(ptmp[0], ymin, ymax, label=str(ptmp[0]))
+        plt.vlines(ptmp[1], ymin, ymax, colors='r', linestyles='-.', label=str(ptmp[1]))
+        plt.legend()
+        plt.show()
+
+        plt.figure(dpi=150)
+
+        dat1 = np.ma.masked_equal(dat1, 0)
+        dat2 = np.ma.masked_equal(dat2, 0)
+
+        x1 = np.linspace(data1[0].extent[0], data1[0].extent[1],
+                          dat1[feat, 0].size)
+        x2 = np.linspace(data2[0].extent[0], data2[0].extent[1],
+                          dat2[feat, 0].size)
+        plt.plot(x1, dat1[feat, 0])
+        plt.plot(x2, dat2[feat, 0], '-.')
+
+        ymin, ymax = plt.gca().get_ylim()
+
+        plt.vlines(xxx, ymin, ymax, 'k')
+        plt.show()
+
+    # breakpoint()
+
 
 if __name__ == "__main__":
-    # test()
-    _testfn()
+    _testfn3()
+    # _testfn()

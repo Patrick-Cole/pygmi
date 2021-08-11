@@ -157,7 +157,7 @@ class Data():
 
         return gtr
 
-    def extent_from_gtr(self, gtr):
+    def extent_from_gtr(self, gtr, iraster=None):
         """
         Import extent, xdim and ydim from a gtr list.
 
@@ -171,6 +171,13 @@ class Data():
         None.
 
         """
+        if iraster is None:
+            xoff = 0
+            yoff = 0
+        else:
+            xoff, yoff, _, _ = iraster
+
+
         rows, cols = self.data.shape
 
         if gtr == (0.0, 1.0, 0.0, 0.0, 0.0, 1.0):
@@ -180,8 +187,8 @@ class Data():
             self.xdim = gtr[1]
             self.ydim = -gtr[5]
 
-        left = gtr[0]
-        top = gtr[3]
+        left = gtr[0] + xoff*self.xdim
+        top = gtr[3] - yoff*self.ydim
         right = left + self.xdim*cols
         bottom = top - self.ydim*rows
 
