@@ -3,11 +3,12 @@
 	<body>
 		<h1>Data Merge</h1>
 		<p>This will allow datasets to be merged or mosaiced. The input is a directory which contains ONLY data to be merged. Two merging modes are possible.</p> 
-		<p>If all files to be merged have the same number of bands, in the same order (band name is not checked) then a fast merge will result. This is the default. Alternatively, the user can merge files with different numbers of bands, and only bands with common names will be merged. This option is slower.</p>
+		<p>If all files to be merged have the same number of bands, in the same order (band name is not checked) then a fast merge will result. This is the default. Alternatively, the user can merge files with different numbers of bands, and only bands with common names will be merged. This option is slower. If files being merged have z values which are offset, the user can select to shift the bands to their respective mean value prior to merge to minimise this. In this case the slower merge will result.</p>
 		<h2>Options</h2>
 		<ul>
 			<li>Batch directory - location of files to be merged.</li>
-			<li>Input files have different numbers of bands, but common band labels for bands to merge - unchecked by default.</li>
+			<li>Check band labels, since band order may differ, or input files have different numbers of bands. - unchecked by default.</li>
+			<li>Shift bands to mean value before merge. May allow for cleaner merge if datasets are offset - unchecked by default.'</li>
 		</ul>
 	</body>
 </html>

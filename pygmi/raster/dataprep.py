@@ -378,12 +378,22 @@ class DataMerge(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
         self.idir = None
+        self.method = 'first'
+        self.rb_first = QtWidgets.QRadioButton('First - copy first file over last file at overlap.')
+        self.rb_last = QtWidgets.QRadioButton('Last - copy last file over first file at overlap.')
+        self.rb_min = QtWidgets.QRadioButton('Min - copy pixel wise minimum at overlap')
+        self.rb_max = QtWidgets.QRadioButton('Max - copy pixel wise maximum at overlap')
         # self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.idirlist = QtWidgets.QLineEdit('')
-        self.files_diff = QtWidgets.QCheckBox('Input files have different '
-                                              'numbers of bands, but common '
-                                              'band labels for bands to merge')
+        self.files_diff = QtWidgets.QCheckBox('Check band labels, since band '
+                                              'order may differ, or input '
+                                              'files have different '
+                                              'numbers of bands.')
+        self.shift_to_median = QtWidgets.QCheckBox('Shift bands to median '
+                                                   'value before merge. May '
+                                                   'allow for cleaner merge '
+                                                   'if datasets are offset.')
         self.setupui()
 
     def setupui(self):
@@ -401,6 +411,8 @@ class DataMerge(QtWidgets.QDialog):
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
 
         self.files_diff.setChecked(False)
+        self.shift_to_median.setChecked(False)
+        self.rb_first.setChecked(True)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -408,15 +420,76 @@ class DataMerge(QtWidgets.QDialog):
 
         self.setWindowTitle('Dataset Merge')
 
+        gb_merge_method = QtWidgets.QGroupBox('Merge method')
+        gl_merge_method = QtWidgets.QVBoxLayout(gb_merge_method)
+
+        gl_merge_method.addWidget(self.rb_first)
+        gl_merge_method.addWidget(self.rb_last)
+        gl_merge_method.addWidget(self.rb_min)
+        gl_merge_method.addWidget(self.rb_max)
+
         gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
         gridlayout_main.addWidget(self.files_diff, 2, 0, 1, 2)
-        gridlayout_main.addWidget(helpdocs, 4, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 4, 1, 1, 1)
+        gridlayout_main.addWidget(self.shift_to_median, 3, 0, 1, 2)
+        gridlayout_main.addWidget(gb_merge_method, 4, 0, 1, 2)
+        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         pb_idirlist.pressed.connect(self.get_idir)
+        self.shift_to_median.stateChanged.connect(self.shiftchanged)
+        self.files_diff.stateChanged.connect(self.filesdiffchanged)
+        self.rb_first.clicked.connect(self.method_change)
+        self.rb_last.clicked.connect(self.method_change)
+        self.rb_min.clicked.connect(self.method_change)
+        self.rb_max.clicked.connect(self.method_change)
+
+    def method_change(self):
+        """
+        Change method.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if self.rb_first.isChecked():
+            self.method = 'first'
+        if self.rb_last.isChecked():
+            self.method = 'last'
+        if self.rb_min.isChecked():
+            self.method = 'min'
+        if self.rb_max.isChecked():
+            self.method = 'max'
+
+    def shiftchanged(self):
+        """
+        Shift mean clicked.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if self.shift_to_median.isChecked():
+            self.files_diff.setChecked(True)
+
+    def filesdiffchanged(self):
+        """
+        Files different clicked.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if not self.files_diff.isChecked():
+            self.shift_to_median.setChecked(False)
 
     def get_idir(self):
         """
@@ -477,6 +550,7 @@ class DataMerge(QtWidgets.QDialog):
         self.idir = projdata['idir']
         self.idirlist.setText(self.idir)
         self.files_diff.setChecked(projdata['files_diff'])
+        self.shift_to_median.setChecked(projdata['mean_shift'])
 
         return False
 
@@ -493,7 +567,8 @@ class DataMerge(QtWidgets.QDialog):
         projdata = {}
 
         projdata['idir'] = self.idir
-        projdata['diles_diff'] = self.files_diff.isChecked()
+        projdata['files_diff'] = self.files_diff.isChecked()
+        projdata['mean_shift'] = self.shift_to_median.isChecked()
 
         return projdata
 
@@ -578,8 +653,13 @@ class DataMerge(QtWidgets.QDialog):
             for i in indata:
                 if i.dataid != dataid:
                     continue
-                # ifiles.append(i.filename)
-                trans = rasterio.transform.from_origin(i.extent[0], i.extent[3],
+                if self.shift_to_median.isChecked():
+                    mval = np.ma.median(i.data)
+                else:
+                    mval = 0
+
+                trans = rasterio.transform.from_origin(i.extent[0],
+                                                       i.extent[3],
                                                        i.xdim, i.ydim)
 
                 raster = MemoryFile().open(driver='GTiff',
@@ -587,21 +667,25 @@ class DataMerge(QtWidgets.QDialog):
                                            width=i.data.shape[1], count=1,
                                            dtype=i.data.dtype,
                                            transform=trans)
-                raster.write(i.data, 1)
+
+                raster.write(i.data-mval, 1)
+                raster.write_mask(~i.data.mask)
                 ifiles.append(raster)
 
             if len(ifiles) < 2:
                 self.showprocesslog('Too few bands of name '+dataid)
 
-            mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata)
+            mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
+                                                  method=self.method)
             for j in ifiles:
                 j.close()
 
             mosaic = mosaic.squeeze()
             mosaic = np.ma.masked_equal(mosaic, nodata)
+            mosaic = mosaic + mval
             outdat.append(numpy_to_pygmi(mosaic, dataid=dataid))
             gtr = (otrans[2], otrans[0], otrans[1], otrans[5], otrans[3],
-                    otrans[4])
+                   otrans[4])
             outdat[-1].extent_from_gtr(gtr)
             outdat[-1].wkt = wkt
             outdat[-1].nullvalue = nodata
@@ -631,7 +715,6 @@ class DataMerge(QtWidgets.QDialog):
         if self.idir is not None:
             for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
                 ifiles += glob.glob(os.path.join(self.idir, ftype))
-
 
         if not ifiles:
             self.showprocesslog('No input datasets')
@@ -671,7 +754,8 @@ class DataMerge(QtWidgets.QDialog):
         wkt = wkt[0]
 
         # Start Merge
-        mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata)
+        mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
+                                              method=self.method)
         mosaic = np.ma.masked_equal(mosaic, nodata)
         gtr = (otrans[2], otrans[0], otrans[1], otrans[5], otrans[3],
                otrans[4])
@@ -1793,6 +1877,37 @@ class Continuation(QtWidgets.QDialog):
         self.outdata['Raster'] = [dat]
 
 
+def custom_merge_works(old_data, new_data, old_nodata, new_nodata, index=None,
+                       roff=None, coff=None):
+    """
+    Example of custom merge for rasterio.
+
+    Parameters
+    ----------
+    old_data : numpy array
+        Old data.
+    new_data : numpy array
+        New data to merge to old data.
+    old_nodata : float
+        Old mask.
+    new_nodata : float
+        New mask.
+    index : int, optional
+        index of the current dataset within the merged dataset collection.
+        The default is None.
+    roff : int, optional
+        row offset in base array. The default is None.
+    coff : int, optional
+        col offset in base array. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+    old_data[:] = np.maximum(old_data, new_data)  # <== NOTE old_data[:] updates the old data array *in place*
+
+
 def fftprep(data):
     """
     FFT preparation.
@@ -2305,7 +2420,7 @@ def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
         else:
             tmp = np.zeros((rows, cols))
             tmp = np.ma.masked_equal(tmp, 0)
-            src.GetRasterBand(i+1).SetNoDataValue(0)  # Set to this because of Reproj
+            src.GetRasterBand(i+1).SetNoDataValue(0)  # Set to this for Reproj
             src.GetRasterBand(i+1).WriteArray(tmp)
 
     return src
@@ -2546,9 +2661,9 @@ def merge(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
         data.data = data.data + doffset
 
     if commonmask is True:
-        for dat in piter(dat2):
-            dat.data.mask = cmask
-            dat.data = np.ma.array(dat.data.filled(), mask=cmask)
+        for idat in piter(dat2):
+            idat.data.mask = cmask
+            idat.data = np.ma.array(idat.data.filled(), mask=cmask)
 
     out = check_dataid(dat2)
 
@@ -2783,9 +2898,8 @@ def _testfft():
     import matplotlib.pyplot as plt
     from matplotlib import cm
     import scipy
-    from pygmi.pfmod.grvmag3d import quick_model, calc_field
     from IPython import get_ipython
-    from pygmi.raster.iodefs import get_raster, export_gdal
+    from pygmi.raster.iodefs import get_raster
 
     get_ipython().run_line_magic('matplotlib', 'inline')
 
@@ -2862,8 +2976,6 @@ def _testfft():
     plt.yscale('log')
     plt.show()
 
-    breakpoint()
-
     # I = np.deg2rad(I_deg)
     # D = np.deg2rad(D_deg)
     # alpha = np.arctan2(KY, KX)
@@ -2877,33 +2989,41 @@ def _testfft():
     # zout[data.data.mask] = data.data.fill_value
 
 
-
 def _testmerge():
     """Test Merge."""
-    import glob
     import sys
     import psutil
     import matplotlib.pyplot as plt
-    # from IPython import get_ipython
-
-
-    # get_ipython().run_line_magic('matplotlib', 'inline')
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     idir = r'c:\Workdata\merge'
-    # ifiles = glob.glob(os.path.join(idir, '*.tif'))
-
-    print(f'Start: {psutil.virtual_memory().used:,}')
-    # mosaic, otrans = rasterio.merge.merge(ifiles)
 
     print('Merge')
     DM = DataMerge()
     DM.idir = idir
-    DM.files_identical.setChecked(True)
-    DM.settings(True)
+    DM.files_diff.setChecked(True)
+    DM.shift_to_median.setChecked(True)
+    DM.method = 'max'  # first last min max
+    DM.settings()
 
-    print(f'Finished: {psutil.virtual_memory().used:,}')
+    for i in DM.outdata['Raster']:
+        if 'wvl' in i.dataid:
+            dat = i.data
+
+    dat.mask = np.logical_or(dat.mask, dat>900)
+
+    vmin = dat.mean()-2*dat.std()
+    vmax = dat.mean()+2*dat.std()
+
+    plt.figure(dpi=150)
+    plt.imshow(dat, vmin=vmin, vmax=vmax)
+    plt.colorbar()
+    plt.show()
+
+    plt.hist(dat.flatten(), 100)
+    plt.show()
+
 
 if __name__ == "__main__":
     _testmerge()
