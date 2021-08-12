@@ -952,7 +952,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
         i2a = tmp[-1]
 
         fdat = np.moveaxis(fdat, 0, -1)
-        breakpoint()
+        # breakpoint()
         for i in piter(range(rows)):
             ptmp[i], dtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
                                      xdat)
@@ -1056,63 +1056,105 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
         imin = crem[i1a:i2a].argmin()
         # dtmp[j] = 1. - crem[i1a:i2a][imin]
         # ptmp[j] = xdat[i1a:i2a][imin]
-        # continue
-
-        # fun = CubicSpline(xdat[i1a:i2a], crem[i1a: i2a])
-        # tmp = minimize(fun, (xdat[i2a]+xdat[i1a])/2)
 
         if imin == 0 or imin == (i2a-i1a-1):
             dtmp[j] = 1. - crem[i1a:i2a][imin]
             ptmp[j] = xdat[i1a:i2a][imin]
             continue
-
-
-        x1 = xdat[i1a:i2a][imin-1]
-        x2 = xdat[i1a:i2a][imin]
-        x3 = xdat[i1a:i2a][imin+1]
-
-        y1 = crem[i1a:i2a][imin-1]
-        y2 = crem[i1a:i2a][imin]
-        y3 = crem[i1a:i2a][imin+1]
-
-        a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 + 2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 + x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 - 2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 + 2*x2**2*x3**2*y1)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-        b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 + 3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 - 2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 - 2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-        c1 = -3*x1*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-        d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-
-        a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 + 2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 + 2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 - 3*x2**2*x3**2*y1 - x2**2*x3**2*y2 + 2*x2*x3**3*y1)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-        b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 - x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 - x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 - 2*x3**3*y1 + 2*x3**3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-        c2 = 3*x3*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-        d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-
-
-        min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
-                -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
-
-        min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
-                -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
-
-
-        for i in min1:
-            if x1<i and i<x2:
-                x = i
-                y = a1+b1*x+c1*x**2+d1*x**3
-
-        for i in min2:
-            if x2<i and i<x3:
-                x = i
-                y = a2+b2*x+c2*x**2+d2*x**3
+        x, y = cubic_calc(xdat[i1a:i2a], crem[i1a:i2a], imin)
 
         ptmp[j] = x
         dtmp[j] = 1. - y
 
-        # plt.figure(dpi=150)
-        # plt.plot(xdat[i1a:i2a], crem[i1a:i2a],'-+')
-        # plt.plot(x, y, 'o')
-        # plt.show()
+        # if ptmp[j] > 880. and ptmp[j] < 884:
+        #     # fun = CubicSpline(xdat[i1a:i2a], crem[i1a: i2a], bc_type='natural')
+        #     fun = CubicSpline(xdat[i1a:i2a][imin-2:imin+3], crem[i1a:i2a][imin-2: imin+3])
+        #     xxx = np.arange(xdat[i1a:i2a][imin-2], xdat[i1a:i2a][imin+2], 0.1)
+        #     tmp = minimize(fun, xdat[i1a:i2a][imin])
+
+        #     x, y = cubic_calc(xdat[i1a:i2a], crem[i1a:i2a], imin)
+
+        #     plt.figure(dpi=150)
+        #     plt.plot(xdat[i1a:i2a], crem[i1a:i2a], '-+')
+        #     plt.plot(xxx, fun(xxx))
+        #     plt.plot(tmp.x, tmp.fun, 'o')
+        #     plt.plot(x, y, 'k+')
+        #     print(tmp.x, x)
+        #     plt.show()
+
+        #     yval = fdat[j-1]
+        #     yhull = phull(yval)
+        #     crem = yval/yhull
+        #     imin = crem[i1a:i2a].argmin()
+
+        #     x, y = cubic_calc(xdat[i1a:i2a], crem[i1a:i2a], imin)
+
+        #     fun = CubicSpline(xdat[i1a:i2a][imin-2:imin+3], crem[i1a: i2a][imin-2:imin+3])
+        #     xxx = np.arange(xdat[i1a:i2a][imin-2], xdat[i1a:i2a][imin+2], 0.1)
+        #     tmp = minimize(fun, xdat[i1a:i2a][imin])
+
+        #     plt.figure(dpi=150)
+        #     plt.plot(xxx, fun(xxx))
+        #     plt.plot(xdat[i1a:i2a], crem[i1a:i2a], '-+')
+        #     plt.plot(tmp.x, tmp.fun, 'o')
+        #     plt.plot(x, y, 'k+')
+
+        #     plt.show()
+        #     print(tmp.x, x)
+
+        #     breakpoint()
 
     return ptmp, dtmp
 
+
+@jit(nopython=True)
+def cubic_calc(xdat, crem, imin):
+        # if imin == 0 or imin == (i2a-i1a-1):
+        #     dtmp[j] = 1. - crem[i1a:i2a][imin]
+        #     ptmp[j] = xdat[i1a:i2a][imin]
+        #     continue
+
+
+    x1 = xdat[imin-1]
+    x2 = xdat[imin]
+    x3 = xdat[imin+1]
+
+    y1 = crem[imin-1]
+    y2 = crem[imin]
+    y3 = crem[imin+1]
+
+    a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 + 2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 + x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 - 2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 + 2*x2**2*x3**2*y1)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 + 3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 - 2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 - 2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    c1 = -3*x1*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+
+    a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 + 2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 + 2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 - 3*x2**2*x3**2*y1 - x2**2*x3**2*y2 + 2*x2*x3**3*y1)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 - x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 - x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 - 2*x3**3*y1 + 2*x3**3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    c2 = 3*x3*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+
+
+    min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
+            -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
+
+    min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
+            -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
+
+
+    for i in min1:
+        if x1<i and i<x2:
+            x = i
+            y = a1+b1*x+c1*x**2+d1*x**3
+
+    for i in min2:
+        if x2<i and i<x3:
+            x = i
+            y = a2+b2*x+c2*x**2+d2*x**3
+
+        # ptmp[j] = x
+        # dtmp[j] = 1. - y
+
+    return x, y
 
 
 
@@ -1252,7 +1294,7 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'C:\Workdata\Hyperspectral\056_0818-1125_ref_rect_BSQ.hdr'
+    ifile = r"C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
 
     xoff = 0
     yoff = 2000
@@ -1275,11 +1317,20 @@ def _testfn():
 
     dat = tmp.outdata['Raster'][1]
 
+    plt.figure(dpi=150)
     plt.imshow(dat.data)
     plt.colorbar()
     plt.show()
 
     print(dat.data.mean())
+
+    plt.figure(dpi=150)
+    plt.hist(dat.data.flatten(), bins=200)
+    plt.show()
+
+    tmp = np.histogram(dat.data[dat.data>0])
+
+    breakpoint()
 
 
 def _testfn2():
@@ -1480,5 +1531,5 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
-    # _testfn()
+    # _testfn3()
+    _testfn()
