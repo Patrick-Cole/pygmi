@@ -461,9 +461,9 @@ class DataMerge(QtWidgets.QDialog):
         if self.rb_last.isChecked():
             self.method = 'last'
         if self.rb_min.isChecked():
-            self.method = 'min'
+            self.method = merge_min
         if self.rb_max.isChecked():
-            self.method = 'max'
+            self.method = merge_max
 
     def shiftchanged(self):
         """
@@ -1877,20 +1877,20 @@ class Continuation(QtWidgets.QDialog):
         self.outdata['Raster'] = [dat]
 
 
-def custom_merge_works(old_data, new_data, old_nodata, new_nodata, index=None,
-                       roff=None, coff=None):
+def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
+              roff=None, coff=None):
     """
     Example of custom merge for rasterio.
 
     Parameters
     ----------
-    old_data : numpy array
+    merged_data : numpy array
         Old data.
     new_data : numpy array
         New data to merge to old data.
-    old_nodata : float
+    merged_mask : float
         Old mask.
-    new_nodata : float
+    new_mask : float
         New mask.
     index : int, optional
         index of the current dataset within the merged dataset collection.
@@ -1905,7 +1905,50 @@ def custom_merge_works(old_data, new_data, old_nodata, new_nodata, index=None,
     None.
 
     """
-    old_data[:] = np.maximum(old_data, new_data)  # <== NOTE old_data[:] updates the old data array *in place*
+    tmp = np.logical_and(~merged_mask, ~new_mask)
+
+    tmp1 = merged_data.copy()
+    tmp1[~new_mask] = new_data[~new_mask]
+    tmp1[tmp] = np.minimum(merged_data[tmp], new_data[tmp])
+
+    merged_data[:] = tmp1
+
+
+def merge_max(merged_data, new_data, merged_mask, new_mask, index=None,
+              roff=None, coff=None):
+    """
+    Example of custom merge for rasterio.
+
+    Parameters
+    ----------
+    merged_data : numpy array
+        Old data.
+    new_data : numpy array
+        New data to merge to old data.
+    merged_mask : float
+        Old mask.
+    new_mask : float
+        New mask.
+    index : int, optional
+        index of the current dataset within the merged dataset collection.
+        The default is None.
+    roff : int, optional
+        row offset in base array. The default is None.
+    coff : int, optional
+        col offset in base array. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+    tmp = np.logical_and(~merged_mask, ~new_mask)
+
+    tmp1 = merged_data.copy()
+    tmp1[~new_mask] = new_data[~new_mask]
+    tmp1[tmp] = np.maximum(merged_data[tmp], new_data[tmp])
+
+    merged_data[:] = tmp1
 
 
 def fftprep(data):
@@ -3004,14 +3047,14 @@ def _testmerge():
     DM.idir = idir
     DM.files_diff.setChecked(True)
     DM.shift_to_median.setChecked(True)
-    DM.method = 'max'  # first last min max
+    # DM.method = 'max'  # first last min max
     DM.settings()
 
     for i in DM.outdata['Raster']:
         if 'wvl' in i.dataid:
             dat = i.data
 
-    dat.mask = np.logical_or(dat.mask, dat>900)
+    # dat.mask = np.logical_or(dat.mask, dat>900)
 
     vmin = dat.mean()-2*dat.std()
     vmax = dat.mean()+2*dat.std()
@@ -3019,11 +3062,17 @@ def _testmerge():
     plt.figure(dpi=150)
     plt.imshow(dat, vmin=vmin, vmax=vmax)
     plt.colorbar()
+    plt.tight_layout()
     plt.show()
 
+    plt.figure(dpi=150)
     plt.hist(dat.flatten(), 100)
     plt.show()
 
+    plt.imshow(dat.mask)
+    plt.show()
+
+    breakpoint()
 
 if __name__ == "__main__":
     _testmerge()

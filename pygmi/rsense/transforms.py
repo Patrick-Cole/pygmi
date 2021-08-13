@@ -365,6 +365,7 @@ def get_noise(x2d, mask, noise=''):
         # noise = noise[mask2]
         # ncov = np.cov(noise.T)
 
+    # breakpoint()
     noise = noise[mask2]
     ncov = np.cov(noise.T)
 
