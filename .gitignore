@@ -16,7 +16,6 @@ pygmi/bholes
 pygmi/gabby
 
 *.py[co]
-*.cmd
 *.lnk
 *.exe
 grvmagc_*.html
@@ -26,6 +25,7 @@ builddocs.py
 pygmi_pypi.py
 findlibs.py
 log.txt
+err.log
 Thumbs.db
 pygmi/test/2D_INV_Lines.csv
 pygmi/test/2D_INV_Lines_1000m.csv

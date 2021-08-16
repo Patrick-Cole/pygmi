@@ -311,6 +311,7 @@ def get_noise(x2d, mask, noise=''):
         Noise eigen vectors.
 
     """
+    getinfo()
     mask = ~mask
 
     if noise == 'diagonal':
@@ -319,17 +320,19 @@ def get_noise(x2d, mask, noise=''):
         noise = ne.evaluate('t1-t2')
 
         mask2 = mask[:-1, :-1]*mask[1:, 1:]
-        # noise = noise[mask2]
-        # ncov = np.cov(noise.T)/2
+        noise = noise[mask2]
+        ncov = np.cov(noise.T)
     elif noise == 'hv average':
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, :-1]
         t3 = x2d[:-1, :-1]
         t4 = x2d[:-1, 1:]
 
-        noise = ne.evaluate('(t1-t2+t3-t4)/2')
+        noise = ne.evaluate('(t1-t2+t3-t4)')
         mask2 = mask[:-1, :-1]*mask[1:, :-1]*mask[:-1, 1:]
 
+        noise = noise[mask2]
+        ncov = np.cov(noise.T)/4
     else:
         t1 = x2d[:-2, :-2]
         t2 = x2d[:-2, 1:-1]
@@ -341,7 +344,7 @@ def get_noise(x2d, mask, noise=''):
         t8 = x2d[2:, 1:-1]
         t9 = x2d[2:, 2:]
 
-        noise = ne.evaluate('(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)/9')
+        noise = ne.evaluate('(t1-2*t2+t3-2*t4+4*t5-2*t6+t7-2*t8+t9)')
 
         # noise = (x2d[:-2, :-2] - 2*x2d[:-2, 1:-1] + x2d[:-2, 2:]
         #          - 2*x2d[1:-1, :-2] + 4*x2d[1:-1, 1:-1] - 2*x2d[1:-1, 2:]
@@ -351,8 +354,10 @@ def get_noise(x2d, mask, noise=''):
                  mask[1:-1, :-2] * mask[1:-1, 1:-1] * mask[1:-1, 2:] *
                  mask[2:, :-2] * mask[2:, 1:-1] * mask[2:, 2:])
 
-    noise = noise[mask2]
-    ncov = np.cov(noise.T)
+        noise = noise[mask2]
+        ncov = np.cov(noise.T)/81
+
+    getinfo()
 
     # Calculate evecs and evals
     nevals, nevecs = np.linalg.eig(ncov)
@@ -399,8 +404,8 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     x2d = np.moveaxis(x2d, 0, -1)
     x2dshape = x2d.shape
 
-    if x2d.dtype != np.float64:
-        x2d = x2d.astype(np.float32)
+    # if x2d.dtype != np.float64:
+    #     x2d = x2d.astype(np.float32)
 
     # if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
     #     x2d = x2d.astype(np.int32)
