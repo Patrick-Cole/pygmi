@@ -38,9 +38,9 @@ import matplotlib.pyplot as plt
 
 from pygmi.raster.iodefs import get_raster, export_gdal
 from pygmi.misc import ProgressBarText
-from pygmi.raster.iodefs import export_gdal
+# from pygmi.raster.iodefs import export_gdal
 import pygmi.menu_default as menu_default
-from pygmi.misc import getinfo
+# from pygmi.misc import getinfo
 
 
 class MNF(QtWidgets.QDialog):
@@ -311,7 +311,6 @@ def get_noise(x2d, mask, noise=''):
         Noise eigen vectors.
 
     """
-    getinfo()
     mask = ~mask
 
     if noise == 'diagonal':
@@ -357,8 +356,6 @@ def get_noise(x2d, mask, noise=''):
         noise = noise[mask2]
         ncov = np.cov(noise.T)/81
 
-    getinfo()
-
     # Calculate evecs and evals
     nevals, nevecs = np.linalg.eig(ncov)
 
@@ -400,6 +397,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     for j in dat:
         x2d.append(j.data)
         maskall.append(j.data.mask)
+
     maskall = np.moveaxis(maskall, 0, -1)
     x2d = np.moveaxis(x2d, 0, -1)
     x2dshape = x2d.shape
@@ -413,6 +411,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     #     x2d = x2d.astype(np.int64)
 
     mask = maskall[:, :, 0]
+
 
     pprint('Calculating noise data...')
     nevals, nevecs = get_noise(x2d, mask, noisetxt)
@@ -513,61 +512,58 @@ def mnf_calc2(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
-    from matplotlib import rcParams
-    import spectral as sp
-
-    rcParams['figure.dpi'] = 300
+    # import spectral as sp
 
     pbar = ProgressBarText()
 
     ifile = r'C:\Workdata\lithosphere\Cut-90-0824-.hdr'
     # ifile = r"C:\Workdata\Lithosphere\crash\033_0815-1111_ref_rect.hdr"
-    ofile = r'C:\Workdata\lithosphere\hope.hdr'
     ncmps = 10
     nodata = 0
     iraster = None
 
     dat = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
-    # export_gdal(ofile, dat, 'ENVI')
-    # breakpoint()
-
-    dat2 = []
-    maskall = []
-    for j in dat:
-        dat2.append(j.data.astype(float))
-        mask = j.data.mask
-        maskall.append(mask)
-
-    maskall = np.moveaxis(maskall, 0, -1)
-    dat2 = np.moveaxis(dat2, 0, -1)
-
-    signal = sp.calc_stats(dat2)
-    noise = sp.noise_from_diffs(dat2)
-    mnfr = sp.mnf(signal, noise)
-    denoised = mnfr.denoise(dat2, num=ncmps)
-
     pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
+
+    # dat2 = []
+    # maskall = []
+    # for j in dat:
+    #     dat2.append(j.data.astype(float))
+    #     mask = j.data.mask
+    #     maskall.append(mask)
+
+    # maskall = np.moveaxis(maskall, 0, -1)
+    # dat2 = np.moveaxis(dat2, 0, -1)
+
+    # signal = sp.calc_stats(dat2)
+    # noise = sp.noise_from_diffs(dat2)
+    # mnfr = sp.mnf(signal, noise)
+    # denoised = mnfr.denoise(dat2, num=ncmps)
+
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
         vmin = dat[i].data.min()
 
+        plt.figure(dpi=150)
         plt.title('█████████████████Old dat2 band'+str(i))
         plt.imshow(dat[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
+        plt.figure(dpi=150)
         plt.title('New MNF denoised band'+str(i))
         # plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
         plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
-        plt.title('SPy MNF denoised band'+str(i))
-        plt.imshow(np.ma.array(denoised[:, :, i], mask=mask), vmin=vmin,
-                    vmax=vmax)
-        plt.colorbar()
-        plt.show()
+        # plt.figure(dpi=150)
+        # plt.title('SPy MNF denoised band'+str(i))
+        # plt.imshow(np.ma.array(denoised[:, :, i], mask=mask), vmin=vmin,
+        #             vmax=vmax)
+        # plt.colorbar()
+        # plt.show()
 
     return
 
