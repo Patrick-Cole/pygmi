@@ -25,7 +25,7 @@
 """
 Transforms such as PCA and MNF.
 """
-from memory_profiler import profile
+# from memory_profiler import profile
 import os
 import copy
 from math import ceil
