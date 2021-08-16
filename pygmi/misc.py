@@ -312,17 +312,19 @@ def getinfo(txt=None, reset=False):
         heading = '===== Info: '
 
     mem = psutil.virtual_memory()
-    if mem.used < 1024:
-        memtxt = f'RAM memory used: {mem.used:.1f} B ({mem.percent}%)'
-    elif mem.used < (1024*1024):
-        memtxt = (f'RAM memory used: {mem.used/1024:.1f} kB '
-                  f'({mem.percent}%)')
-    elif mem.used < (1024*1024*1024):
-        memtxt = (f'RAM memory used: {mem.used/1024/1024:.1f} MB '
-                  f'({mem.percent}%)')
-    else:
-        memtxt = (f'RAM memory used: {mem.used/1024/1024/1024:.1f} GB '
-                  f'({mem.percent}%)')
+    memtxt = f'RAM memory used: {mem.used:,.1f} B ({mem.percent}%)'
+
+    # if mem.used < 1024:
+    #     memtxt = f'RAM memory used: {mem.used:,.1f} B ({mem.percent}%)'
+    # elif mem.used < (1024*1024):
+    #     memtxt = (f'RAM memory used: {mem.used/1024:.1f} kB '
+    #               f'({mem.percent}%)')
+    # elif mem.used < (1024*1024*1024):
+    #     memtxt = (f'RAM memory used: {mem.used/1024/1024:.1f} MB '
+    #               f'({mem.percent}%)')
+    # else:
+    #     memtxt = (f'RAM memory used: {mem.used/1024/1024/1024:.1f} GB '
+    #               f'({mem.percent}%)')
 
     print(heading+memtxt+f' Time(s): {tdiff:.3f}')
 

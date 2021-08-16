@@ -25,7 +25,7 @@
 """
 Transforms such as PCA and MNF.
 """
-# from memory_profiler import profile
+from memory_profiler import profile
 import os
 import copy
 from math import ceil
@@ -40,6 +40,7 @@ from pygmi.raster.iodefs import get_raster, export_gdal
 from pygmi.misc import ProgressBarText
 from pygmi.raster.iodefs import export_gdal
 import pygmi.menu_default as menu_default
+from pygmi.misc import getinfo
 
 
 class MNF(QtWidgets.QDialog):
@@ -316,7 +317,6 @@ def get_noise(x2d, mask, noise=''):
         t1 = x2d[:-1, :-1]
         t2 = x2d[1:, 1:]
         noise = ne.evaluate('t1-t2')
-        # noise = x2d[:-1, :-1] - x2d[1:, 1:]
 
         mask2 = mask[:-1, :-1]*mask[1:, 1:]
         # noise = noise[mask2]
@@ -328,18 +328,7 @@ def get_noise(x2d, mask, noise=''):
         t4 = x2d[:-1, 1:]
 
         noise = ne.evaluate('(t1-t2+t3-t4)/2')
-
-        # vdiff = x2d[:-1] - x2d[1:]
-        # hdiff = x2d[:, :-1] - x2d[:, 1:]
-        # noise = (vdiff[:, :-1]+hdiff[:-1])/2
-
-        # mask2a = mask[:-1]*mask[1:]
-        # mask2b = mask[:, :-1]*mask[:, 1:]
-        # mask2 = mask2a[:, :-1]*mask2b[:-1]
-
         mask2 = mask[:-1, :-1]*mask[1:, :-1]*mask[:-1, 1:]
-        # noise = noise[mask2]
-        # ncov = np.cov(noise.T)
 
     else:
         t1 = x2d[:-2, :-2]
@@ -362,10 +351,6 @@ def get_noise(x2d, mask, noise=''):
                  mask[1:-1, :-2] * mask[1:-1, 1:-1] * mask[1:-1, 2:] *
                  mask[2:, :-2] * mask[2:, 1:-1] * mask[2:, 2:])
 
-        # noise = noise[mask2]
-        # ncov = np.cov(noise.T)
-
-    # breakpoint()
     noise = noise[mask2]
     ncov = np.cov(noise.T)
 
@@ -414,10 +399,13 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     x2d = np.moveaxis(x2d, 0, -1)
     x2dshape = x2d.shape
 
-    if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
-        x2d = x2d.astype(np.int32)
-    elif x2d.dtype == np.uint32 or x2d.dtype == np.uint64:
-        x2d = x2d.astype(np.int64)
+    if x2d.dtype != np.float64:
+        x2d = x2d.astype(np.float32)
+
+    # if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
+    #     x2d = x2d.astype(np.int32)
+    # elif x2d.dtype == np.uint32 or x2d.dtype == np.uint64:
+    #     x2d = x2d.astype(np.int64)
 
     mask = maskall[:, :, 0]
 
@@ -528,14 +516,15 @@ def _testfn():
     pbar = ProgressBarText()
 
     ifile = r'C:\Workdata\lithosphere\Cut-90-0824-.hdr'
+    # ifile = r"C:\Workdata\Lithosphere\crash\033_0815-1111_ref_rect.hdr"
     ofile = r'C:\Workdata\lithosphere\hope.hdr'
     ncmps = 10
     nodata = 0
     iraster = None
 
     dat = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
-    export_gdal(ofile, dat, 'ENVI')
-    breakpoint()
+    # export_gdal(ofile, dat, 'ENVI')
+    # breakpoint()
 
     dat2 = []
     maskall = []
@@ -552,7 +541,7 @@ def _testfn():
     mnfr = sp.mnf(signal, noise)
     denoised = mnfr.denoise(dat2, num=ncmps)
 
-    pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='hv average', piter=pbar.iter)
+    pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
