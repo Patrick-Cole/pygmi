@@ -6,9 +6,7 @@ pcole, 2021  - Bugfix to allow for correct zooming if origin is set to 'upper'
 """
 from __future__ import print_function, division
 
-import matplotlib
-rcParams = matplotlib.rcParams
-
+from matplotlib import rcParams
 import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.cbook as cbook
@@ -82,6 +80,41 @@ class ModestImage(mi.AxesImage):
     def get_array(self):
         """Override to return the full-resolution array"""
         return self._full_res
+
+    def get_cursor_data(self, event):
+        """Correct z-value display when zoomed"""
+
+        x = event.xdata
+        y = event.ydata
+
+        # if self._full_extent is None:
+        #     col = int(x + 0.5)
+        #     row = int(y + 0.5)
+        # else:
+        #     col, row = self._world2pixel.transform((x, y))
+        #     col = int(col + 0.5)
+        #     row = int(row + 0.5)
+
+        col, row = self._world2pixel.transform((x, y))
+        col = int(col + 0.5)
+        row = int(row + 0.5)
+
+        numrows, numcols = self._full_res.shape
+        if col >= 0 and col < numcols and row >= 0 and row < numrows:
+            z = self._full_res[row, col]
+            return z
+
+        return np.nan
+
+    def format_cursor_data(self, data):
+        """Format z data"""
+
+        if np.ma.is_masked(data):
+            zval = 'z = masked'
+        else:
+            zval = f'z = {data:,.5f}'
+
+        return zval
 
     @property
     def _pixel2world(self):
@@ -239,6 +272,28 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     im.set_alpha(alpha)
     axes._set_artist_props(im)
 
+    # def format_coord(x, y):
+
+    #     if extent is None:
+    #         col = int(x + 0.5)
+    #         row = int(y + 0.5)
+    #     else:
+    #         col, row = im._world2pixel.transform((x, y))
+    #         col = int(col + 0.5)
+    #         row = int(row + 0.5)
+
+    #     numrows, numcols = im._full_res.shape
+    #     if col >= 0 and col < numcols and row >= 0 and row < numrows:
+    #         z = im._full_res[row, col]
+    #         if np.ma.is_masked(z):
+    #             return 'x=%1.4f, y=%1.4f' % (x, y)
+    #         else:
+    #             return 'x=%1.4f, y=%1.4f, z=%1.4f' % (x, y, z)
+    #     else:
+    #         return 'x=%1.4f, y=%1.4f' % (x, y)
+
+    axes.format_coord = lambda x,y:f'x = {x:,.5f}, y = {y:,.5f}'
+
     if im.get_clip_path() is None:
         # image does not already have clipping set, clip to axes patch
         im.set_clip_path(axes.patch)
@@ -323,7 +378,7 @@ def main2():
 
 
     ifile = r'E:\Work\Programming\mpl-modest-image-master\test.tif'
-    ifile = r'E:\workdata\testdata.hdr'
+    ifile = r'c:\workdata\testdata.hdr'
     # ifile = r'E:\Workdata\Richtersveld\Reprocessed\030_0815-1050_ref_rect.hdr'
 
     pbar = ProgressBarText()
