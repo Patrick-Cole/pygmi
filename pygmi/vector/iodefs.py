@@ -26,11 +26,15 @@
 
 import os
 import re
+from io import StringIO
+
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
 import geopandas as gpd
+
 import pygmi.menu_default as menu_default
+from pygmi.misc import ProgressBarText
 
 
 class ImportLineData(QtWidgets.QDialog):
@@ -53,8 +57,10 @@ class ImportLineData(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
+            self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
         self.parent = parent
         self.indata = {}
@@ -256,34 +262,56 @@ class ImportLineData(QtWidgets.QDialog):
 
         """
         with open(self.ifile) as fno:
-            head = fno.readline()
             tmp = fno.read()
-        if r'/' not in head:
+
+        chktxt = tmp[:tmp.index('\n')].lower()
+
+        if r'/' not in chktxt and 'line' not in chktxt and 'tie' not in chktxt:
             self.showprocesslog('Not Geosoft XYZ format')
             return None
-        head = head.split()
-        head.pop(0)
+
+        head = None
+        while r'/' in tmp[:tmp.index('\n')]:
+            head =  tmp[:tmp.index('\n')]
+            tmp = tmp[tmp.index('\n')+1:]
+            head = head.split()
+            head.pop(0)
+
+        while r'/' in tmp:
+            t1 = tmp[:tmp.index(r'/')]
+            t2 = tmp[tmp.index(r'/')+1:]
+            t3 = t2[t2.index('\n')+1:]
+            tmp = t1+t3
+
         tmp = tmp.lower()
+        tmp = tmp.lstrip()
         tmp = re.split('(line|tie)', tmp)
         if tmp[0] == '':
             tmp.pop(0)
 
-        dtype = {}
-        dtype['names'] = head
-        dtype['formats'] = ['f4']*len(head)
-
         df2 = None
-        for i in range(0, len(tmp), 2):
+        dflist = []
+        for i in self.piter(range(0, len(tmp), 2)):
             tmp2 = tmp[i+1]
-            tmp2 = tmp2.split('\n')
-            line = tmp[i]+tmp2.pop(0)
-            tmp2 = np.genfromtxt(tmp2, names=head)
-            df1 = pd.DataFrame(tmp2)
+
+            line = tmp[i]+' '+tmp2[:tmp2.index('\n')].strip()
+            tmp2 = tmp2[tmp2.index('\n')+1:]
+            if head is None:
+                head = [f'Column {i+1}' for i in
+                        range(len(tmp2[:tmp2.index('\n')].split()))]
+
+            tmp2 = tmp2.replace('*', 'NaN')
+            df1 = pd.read_csv(StringIO(tmp2), sep='\s+', names=head)
+
             df1['line'] = line
-            if df2 is None:
-                df2 = df1
-            else:
-                df2 = df2.append(df1, ignore_index=True)
+            dflist.append(df1)
+
+            # if object in list(df1.dtypes[:-1]):
+            #     breakpoint()
+
+
+        # Concat in all df in one go is much faster
+        df2 = pd.concat(dflist, ignore_index=True)
 
         return df2
 

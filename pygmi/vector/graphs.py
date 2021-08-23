@@ -27,7 +27,7 @@
 import math
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
-from scipy.stats import median_absolute_deviation
+from scipy.stats import median_abs_deviation
 import matplotlib.collections as mc
 from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -330,7 +330,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         zdata = data[ival]
         med = np.median(zdata)
-        std = 2.5 * median_absolute_deviation(zdata, axis=None)
+        std = 2.5 * median_abs_deviation(zdata, axis=None, scale=1/1.4826)
 
         if std == 0:
             std = 1

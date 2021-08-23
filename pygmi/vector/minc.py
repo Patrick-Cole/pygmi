@@ -68,6 +68,17 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
         2D numpy array with gridding z values.
 
     """
+    x = x.astype(float)
+    y = y.astype(float)
+    z = z.astype(float)
+
+    filt = np.isnan(x) | np.isnan(y) | np.isnan(z)
+    if filt.max() == True:
+        filt = ~filt
+        x = x[filt]
+        y = y[filt]
+        z = z[filt]
+
     # Set extent
     if extent is None:
         extent = [x.min(), x.max(), y.min(), y.max()]
@@ -117,10 +128,9 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
     excludedpnts = 0
     for k, val in enumerate(crds):
         iint, jint, r, zval = val
+
         iint = int(iint)
         jint = int(jint)
-        if (iint, jint) not in coords:
-            coords[iint, jint] = []
         b = blist[k]
         if b is None:
             bmax = np.inf
@@ -129,16 +139,22 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
             continue
         else:
             bmax = np.abs(b).max()
+
+        if (iint, jint) not in coords:
+            coords[iint, jint] = []
         coords[iint, jint].append([bmax, r, zval, b])
 
     if excludedpnts > 0:
-        showprocesslog(str(excludedpnts)+' point excluded.')
+        showprocesslog(str(excludedpnts)+' point(s) excluded.')
     # Choose only the closest coordinate per cell
     ijxyz = []
     for key in coords:
         iint, jint = key
         coords[key].sort(key=itemgetter(1))
-        _, r, zval, _ = coords[key][0]
+        try:
+            _, r, zval, _ = coords[key][0]
+        except:
+            breakpoint()
         if r < 0.05:
             u[iint, jint] = zval
             ufixed[iint, jint] = True
@@ -641,32 +657,35 @@ def _testfn():
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'C:\Workdata\vector\Line Data\Kweneng_mag_flightlines_IGRF.csv'
+    # ifile = r'C:\Workdata\vector\Line Data\Kweneng_mag_flightlines_IGRF.csv'
 
-    IO = ImportLineData()
-    IO.ifile = ifile
-    IO.filt = 'Comma Delimited (*.csv)'
-    IO.settings(True)
-
-    # ifile = r'C:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
     # IO = ImportLineData()
     # IO.ifile = ifile
-    # IO.filt = 'Geosoft XYZ (*.xyz)'
+    # IO.filt = 'Comma Delimited (*.csv)'
     # IO.settings(True)
+
+    ifile = r'C:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+    ifile = r"C:\Workdata\MagMerge\data\1_66\Pre_2011\WESTCMAG.XYZ"
+    IO = ImportLineData()
+    IO.ifile = ifile
+    IO.filt = 'Geosoft XYZ (*.xyz)'
+    IO.settings(True)
 
     dat = IO.outdata['Line']
 
     # filt = dat[ifile].line.str.contains('line')
     # dat[ifile] = dat[ifile][filt]
 
-    x = dat[ifile]['x'].to_numpy()
-    y = dat[ifile]['y'].to_numpy()
-    z = dat[ifile]['igrf'].to_numpy()
+    # dat[ifile] = dat[ifile].dropna()
+
+    x = dat[ifile]['pygmiX'].to_numpy()
+    y = dat[ifile]['pygmiY'].to_numpy()
+    z = dat[ifile]['Column 8'].to_numpy()
 
     # x = dat[ifile]['X'].to_numpy()
     # y = dat[ifile]['Y'].to_numpy()
     # z = dat[ifile]['MAGMICROLEVEL'].to_numpy()
-    dxy = 250
+    dxy = 125
 
     # extent = None
     extent = np.array([x.min(), x.max(), y.min(), y.max()])
