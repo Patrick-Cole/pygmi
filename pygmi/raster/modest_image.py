@@ -99,7 +99,8 @@ class ModestImage(mi.AxesImage):
         col = int(col + 0.5)
         row = int(row + 0.5)
 
-        numrows, numcols = self._full_res.shape
+        numrows, numcols = self._full_res.shape[:2]
+
         if col >= 0 and col < numcols and row >= 0 and row < numrows:
             z = self._full_res[row, col]
             return z

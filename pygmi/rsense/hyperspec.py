@@ -71,8 +71,8 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
-from scipy.optimize import minimize
-from scipy.interpolate import CubicSpline
+# from scipy.optimize import minimize
+# from scipy.interpolate import CubicSpline
 
 from pygmi.misc import frm
 import pygmi.menu_default as menu_default

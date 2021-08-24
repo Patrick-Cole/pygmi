@@ -224,6 +224,9 @@ class ProgressBarText():
         if not isinstance(iterable, types.GeneratorType):
             self.total = len(iterable)
 
+        if self.total == 0:
+            self.total = 1
+
         self.otime = time.perf_counter()
         time1 = self.otime
         time2 = self.otime
