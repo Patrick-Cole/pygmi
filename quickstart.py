@@ -30,9 +30,9 @@ formally install PyGMI as a library and prefer to run it from within the
 default extracted directory structure.
 """
 from pygmi.main import main
-import warnings
+# import warnings
 
-warnings.simplefilter("default")
+# warnings.simplefilter("default")
 
 
 if __name__ == "__main__":

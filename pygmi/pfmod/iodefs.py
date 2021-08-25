@@ -32,6 +32,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import osr, ogr
 import matplotlib.pyplot as plt
+import pandas as pd
 
 from pygmi.pfmod.datatypes import LithModel
 import pygmi.pfmod.grvmag3d as grvmag3d
@@ -60,8 +61,10 @@ class ImportMod3D():
 
         if parent is not None:
             self.piter = parent.pbar.iter
+            self.showprocesslog = parent.showprocesslog
         else:
             self.piter = ProgressBarText().iter
+            self.showprocesslog = print
 
     def settings(self, nodialog=False):
         """
@@ -81,8 +84,8 @@ class ImportMod3D():
         if not nodialog:
             ext = ('npz (*.npz);;'
                    'Leapfrog Block Model (*.csv);;'
-                   'x,y,z,label (*.csv);;'
-                   'x,y,z,label (*.txt)')
+                   'x, y, z, label (*.csv);;'
+                   'x, y, z, label (*.txt)')
 
             self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
@@ -98,7 +101,7 @@ class ImportMod3D():
 
         if self.filt == 'Leapfrog Block Model (*.csv)':
             self.import_leapfrog_csv(self.ifile)
-        elif self.filt in ('x,y,z,label (*.csv)', 'x,y,z,label (*.txt)'):
+        elif self.filt in ('x, y, z, label (*.csv)', 'x, y, z, label (*.txt)'):
             self.import_ascii_xyz_model(self.ifile)
         else:
             indict = np.load(self.ifile, allow_pickle=True)
@@ -264,7 +267,7 @@ class ImportMod3D():
                 lmod.lith_index[col, row, layer] = \
                     lmod.lith_list[label[i]].lith_index
 
-    def import_ascii_xyz_model(self, filename):
+    def import_ascii_xyz_model_old(self, filename):
         """
         Use to import ASCII XYZ Models of the form x,y,z,label.
 
@@ -306,6 +309,8 @@ class ImportMod3D():
         if dz_u[0] < 0:
             dz_u *= -1
 
+        breakpoint()
+
         xcell = np.max(dx_u)
         ycell = np.max(dy_u)
         zcell = np.max(dz_u)
@@ -320,7 +325,6 @@ class ImportMod3D():
         lmod.numx = int(np.ptp(lmod.xrange)/lmod.dxy+1)
         lmod.numy = int(np.ptp(lmod.yrange)/lmod.dxy+1)
         lmod.numz = int(np.ptp(lmod.zrange)/lmod.d_z+1)
-
 
 # Section to load lithologies.
         if 'Generic 1' in lmod.lith_list:
@@ -351,6 +355,97 @@ class ImportMod3D():
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
             lmod.lith_index[col, row, layer] = \
                 lmod.lith_list[label[i]].lith_index
+
+
+    def import_ascii_xyz_model(self, filename):
+        """
+        Use to import ASCII XYZ Models of the form x,y,z,label.
+
+        Parameters
+        ----------
+        filename : str
+            Input filename.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        names = ['x', 'y', 'z', 'label']
+        try:
+            if filename.find('.csv') > -1:
+                df1 = pd.read_csv(filename, delimiter=',', names=names)
+            else:
+                df1 = pd.read_csv(filename, delimeter=' ', names=names)
+        except:
+            self.showprocesslog('Unable to import file')
+            return
+
+        x = df1.x.to_numpy(float)
+        y = df1.y.to_numpy(float)
+        z = df1.z.to_numpy(float)
+        label = df1.label.to_numpy(str)
+
+        x_u = df1.x.unique()
+        y_u = df1.y.unique()
+        z_u = df1.z.unique()
+        labelu = df1.label.unique()
+
+        x_u.sort()
+        y_u.sort()
+        z_u.sort()
+
+        dx_u = np.diff(x_u)
+        dy_u = np.diff(y_u)
+        dz_u = np.diff(z_u)
+
+        xcell = np.min(dx_u)
+        ycell = np.min(dy_u)
+        zcell = np.min(dz_u)
+
+        lmod = self.lmod
+
+        lmod.dxy = min(xcell, ycell)
+        lmod.d_z = zcell
+        lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
+        lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
+        lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
+        lmod.numx = int(np.ptp(lmod.xrange)/lmod.dxy+1)
+        lmod.numy = int(np.ptp(lmod.yrange)/lmod.dxy+1)
+        lmod.numz = int(np.ptp(lmod.zrange)/lmod.d_z+1)
+
+    # Section to load lithologies.
+        if 'Generic 1' in lmod.lith_list:
+            lmod.lith_list.pop('Generic 1')
+
+        lindx = 0
+        for itxt in labelu:
+            lindx += 1
+            lmod.mlut[lindx] = [np.random.randint(0, 255),
+                                np.random.randint(0, 255),
+                                np.random.randint(0, 255)]
+            lmod.lith_list[itxt] = grvmag3d.GeoData(
+                self.parent, ncols=lmod.numx, nrows=lmod.numy, numz=lmod.numz,
+                dxy=lmod.dxy, d_z=lmod.d_z)
+
+            lmod.lith_list[itxt].lith_index = lindx
+            lmod.lith_list[itxt].modified = True
+            lmod.lith_list[itxt].set_xyz12()
+
+        lmod.lith_index = None
+        lmod.update(lmod.numx, lmod.numy, lmod.numz, lmod.xrange[0],
+                    lmod.yrange[1], lmod.zrange[1], lmod.dxy, lmod.d_z)
+        lmod.update_lith_list_reverse()
+
+        for i, xi in enumerate(x):
+            col = int((xi-lmod.xrange[0])/lmod.dxy)
+            row = int((y[i]-lmod.yrange[0])/lmod.dxy)
+            # row = int((lmod.yrange[1]-y[i])/lmod.dxy)
+            layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
+            lmod.lith_index[col, row, layer] = \
+                lmod.lith_list[label[i]].lith_index
+
 
     def dict2lmod(self, indict, pre=''):
         """

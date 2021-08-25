@@ -128,9 +128,9 @@ class ImportLineData(QtWidgets.QDialog):
 
         """
         if not nodialog:
-            ext = ('Geosoft XYZ (*.xyz);;'
+            ext = ('Comma Delimited (*.csv);;'
+                   'Geosoft XYZ (*.xyz);;'
                    'ASCII XYZ (*.xyz);;'
-                   'Comma Delimited (*.csv);;'
                    'Tab Delimited (*.txt);;'
                    'All Files (*.*)')
 

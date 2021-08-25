@@ -860,6 +860,9 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
     ifile = ifile[:]
     bfile = os.path.basename(ifile)
 
+    if extscene is None:
+        extscene = ['']
+
     showprocesslog('Importing', bfile)
 
     if 'AST_' in bfile and 'hdf' in bfile.lower():
@@ -870,7 +873,8 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
         dat = get_landsat(ifile, piter, showprocesslog)
     elif ('.xml' in bfile and '.SAFE' in ifile) or 'Sentinel-2' in extscene:
         dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
-    elif 'MOD' in bfile and 'hdf' in bfile.lower() and '.006.' in bfile:
+    elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
+              '.006.' in bfile):
         dat = get_modisv6(ifile, piter)
     else:
         dat = None
@@ -1065,13 +1069,19 @@ def get_modisv6(ifile, piter=iter):
                               'SPHEROID["S_Unknown"')
 
         meta = dataset.GetMetadata()
-        nval = int(meta['_FillValue'])
+        if '_FillValue' in meta:
+            nval = int(meta['_FillValue'])
         bandid = bandid2.split('] ')[1].split(' (')[0]
 
         if 'scale_factor' in meta:
             scale = float(meta['scale_factor'])
         else:
             scale = 1
+
+        if 'MOD13' in ifile and scale > 1:
+            scale = 1./scale
+
+        print('scale', scale)
 
         if 'add_offset' in meta:
             offset = float(meta['add_offset'])
@@ -1768,14 +1778,13 @@ def get_aster_ged_bin(ifile):
 
 def _testfn():
     """Test routine."""
-    ifile = r'D:/Workdata/Remote Sensing/Landsat/LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz'
-    # ifile = r'D:/Workdata/Remote Sensing/Landsat/LE071700782002070201T1-SC20200519113053.tar.gz'
-    # ifile = r'D:/Workdata/Remote Sensing/Landsat/LT051700781997071201T1-SC20200519120230.tar.gz'
+    ifiles = glob.glob(r'C:\Workdata\modis\*.hdf')
 
-    ifile = r'D:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf'
-    # ifile = r'D:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021739_29313.zip'
+    ifile = ifiles[0]
 
-    dat = get_data(ifile)
+    for ifile in ifiles:
+        dat = get_data(ifile)
+
 
     # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
     # dat = get_modisv6(ifile)

@@ -131,6 +131,66 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
+    def t2_linegraph(self, ifile, efile, title, ylabel, ycol, magmin, magmax):
+        """
+        Common routine to plot a line graph of X vs earthquakes.
+
+        Parameters
+        ----------
+        ifile : str
+            input filename.
+        title : str
+            graph title.
+        ylabel: str
+            y axis label.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.figure.clf()
+
+        headers = ['date', ycol]
+
+        dp = pd.read_excel(ifile, usecols=headers)
+        dp['date'] = pd.to_datetime(dp['date'], infer_datetime_format=True)
+        dp['year'], dp['month'], dp['day'] = (dp['date'].dt.year,
+                                              dp['date'].dt.month,
+                                              dp['date'].dt.day)
+
+        headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
+        dm = pd.read_excel(efile, usecols=headers)
+
+        dm = dm[(magmin <= dm.mag) & (dm.mag <= magmax)]
+        dm['date'] = pd.to_datetime(dm['date'], infer_datetime_format=True)
+        dm['year'], dm['month'], dm['day'] = (dm['date'].dt.year,
+                                              dm['date'].dt.month,
+                                              dm['date'].dt.day)
+
+        ds = dm.groupby(['year', 'month'])['month'].count().to_frame('count').reset_index()
+        ds["date"] = pd.to_datetime(ds['year'].map(str) + ' ' +
+                                    ds["month"].map(str), format='%Y/%m')
+
+        ax1 = self.figure.add_subplot(111, label='2D')
+        ax1.plot(dp['date'], dp[ycol], color='b', label=ylabel)
+        ax2 = ax1.twinx()
+        ax2.plot(ds['date'], ds['count'], color='r',  label='Earthquakes')
+
+        ax1.set_title(title)
+        ax1.set_xlabel('Date')
+        ax1.set_ylabel(ylabel)
+        ax2.set_ylabel('Number of Earthquakes')
+
+        h1, l1 = ax1.get_legend_handles_labels()
+        h2, l2 = ax2.get_legend_handles_labels()
+
+        ax1.legend(h1+h2, l1+l2, loc=2)
+        self.figure.tight_layout()
+        self.figure.canvas.draw()
+
+
+
 class AI_Seis(QtWidgets.QDialog):
     """AI Sesimology routines."""
 
@@ -158,8 +218,14 @@ class AI_Seis(QtWidgets.QDialog):
         self.tab4 = QtWidgets.QWidget()
         self.tab5 = QtWidgets.QWidget()
 
+        # Tab 1
         self.qfile = {}
-        self.mpl = MyMplCanvas(self)
+
+        # Tab 2
+        self.mt2 = MyMplCanvas(self)
+        self.t2_combobox1 = QtWidgets.QComboBox()
+        self.t2_maxmag = QtWidgets.QDoubleSpinBox()
+        self.t2_minmag = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
 
@@ -205,22 +271,22 @@ class AI_Seis(QtWidgets.QDialog):
         self.qfile['streamshp'] = QtWidgets.QLineEdit('')
         self.qfile['lineamentshp'] = QtWidgets.QLineEdit('')
 
-        self.tab1.layout = QtWidgets.QGridLayout(self)
+        tab1_layout = QtWidgets.QGridLayout(self)
 
-        self.tab1.layout.addWidget(pb_edata, 0, 0, 1, 1)
-        self.tab1.layout.addWidget(self.qfile['edata'], 0, 1, 1, 1)
-        self.tab1.layout.addWidget(pb_rain, 1, 0, 1, 1)
-        self.tab1.layout.addWidget(self.qfile['rain'], 1, 1, 1, 1)
-        self.tab1.layout.addWidget(pb_lineaments, 2, 0, 1, 1)
-        self.tab1.layout.addWidget(self.qfile['lineaments'], 2, 1, 1, 1)
-        self.tab1.layout.addWidget(pb_streamflow, 3, 0, 1, 1)
-        self.tab1.layout.addWidget(self.qfile['streamflow'], 3, 1, 1, 1)
-        self.tab1.layout.addWidget(pb_streamshp, 4, 0, 1, 1)
-        self.tab1.layout.addWidget(self.qfile['streamshp'], 4, 1, 1, 1)
-        self.tab1.layout.addWidget(pb_lineamentshp, 5, 0, 1, 1)
-        self.tab1.layout.addWidget(self.qfile['lineamentshp'], 5, 1, 1, 1)
+        tab1_layout.addWidget(pb_edata, 0, 0, 1, 1)
+        tab1_layout.addWidget(self.qfile['edata'], 0, 1, 1, 1)
+        tab1_layout.addWidget(pb_rain, 1, 0, 1, 1)
+        tab1_layout.addWidget(self.qfile['rain'], 1, 1, 1, 1)
+        tab1_layout.addWidget(pb_lineaments, 2, 0, 1, 1)
+        tab1_layout.addWidget(self.qfile['lineaments'], 2, 1, 1, 1)
+        tab1_layout.addWidget(pb_streamflow, 3, 0, 1, 1)
+        tab1_layout.addWidget(self.qfile['streamflow'], 3, 1, 1, 1)
+        tab1_layout.addWidget(pb_streamshp, 4, 0, 1, 1)
+        tab1_layout.addWidget(self.qfile['streamshp'], 4, 1, 1, 1)
+        tab1_layout.addWidget(pb_lineamentshp, 5, 0, 1, 1)
+        tab1_layout.addWidget(self.qfile['lineamentshp'], 5, 1, 1, 1)
 
-        self.tab1.setLayout(self.tab1.layout)
+        self.tab1.setLayout(tab1_layout)
 
         pb_edata.clicked.connect(lambda: self.load_data('edata', 'xlsx'))
         pb_rain.clicked.connect(lambda: self.load_data('rain', 'xlsx'))
@@ -234,51 +300,112 @@ class AI_Seis(QtWidgets.QDialog):
 
 
 # Create Second Tab
-        self.tab2.layout = QtWidgets.QGridLayout(self)
+        mpl_toolbar_t2 = NavigationToolbar2QT(self.mt2, self.parent)
+        t2_label1 = QtWidgets.QLabel('Calculation:')
+        t2_label2 = QtWidgets.QLabel('Minimum Magnitude:')
+        t2_label3 = QtWidgets.QLabel('Maximum Magnitude:')
+        self.t2_maxmag.setValue(5.)
+        self.t2_minmag.setValue(0.)
 
-        self.tab2.layout.addWidget(self.mpl, 0, 0, 1, 2)
+        self.t2_combobox1.addItems(['Patterns in Seismicity',
+                                    'Correlations with rainfall',
+                                    'Correlations with stream flow',
+                                    'Correlations with geological lineaments'])
 
-        self.tab2.setLayout(self.tab2.layout)
+        tab2_layout = QtWidgets.QGridLayout(self)
+        tab2_layout.addWidget(self.mt2, 0, 0, 1, 2)
+        tab2_layout.addWidget(mpl_toolbar_t2, 1, 0, 1, 2)
+        tab2_layout.addWidget(t2_label2, 2, 0, 1, 1)
+        tab2_layout.addWidget(self.t2_minmag, 2, 1, 1, 1)
+        tab2_layout.addWidget(t2_label3, 3, 0, 1, 1)
+        tab2_layout.addWidget(self.t2_maxmag, 3, 1, 1, 1)
+
+        tab2_layout.addWidget(t2_label1, 4, 0, 1, 1)
+        tab2_layout.addWidget(self.t2_combobox1, 4, 1, 1, 1)
+
+        self.tab2.setLayout(tab2_layout)
+
+        self.t2_combobox1.currentIndexChanged.connect(self.t2_change_graph)
+        self.t2_minmag.valueChanged.connect(self.t2_change_graph)
+        self.t2_maxmag.valueChanged.connect(self.t2_change_graph)
+
+        # General
+
+        self.tabs.currentChanged.connect(self.change_tab)
+
 
 # Add tabs to widget
         layout.addWidget(self.tabs)
-        # self.setLayout(self.layout)
 
-        # hbl_all = QtWidgets.QHBoxLayout(self)
-        # mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
-        # vbl_raster = QtWidgets.QVBoxLayout()
-        # label2 = QtWidgets.QLabel('FPS Algorithm:')
-        # label3 = QtWidgets.QLabel('Width Scale Factor:')
+    def change_tab(self, index):
+        """
+        Change tab
 
-        # self.dsb_dist.setDecimals(4)
-        # self.dsb_dist.setMinimum(0.0001)
-        # self.dsb_dist.setSingleStep(0.0001)
-        # self.dsb_dist.setProperty('value', 0.001)
+        Parameters
+        ----------
+        index : int
+            Tab index.
 
-        # self.radio_geog.setChecked(True)
+        Returns
+        -------
+        None.
 
-        # spacer = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum,
-        #                                QtWidgets.QSizePolicy.Expanding)
+        """
+        if index == 1:
+            self.t2_change_graph()
 
-        # self.setWindowTitle('Fault Plane Solution (FPS)')
+    def t2_change_graph(self):
+        """
+        Change the graph type on tab 2.
 
-        # vbl_raster.addWidget(label2)
-        # vbl_raster.addWidget(self.cbox_alg)
-        # vbl_raster.addWidget(label3)
-        # vbl_raster.addWidget(self.dsb_dist)
-        # vbl_raster.addWidget(self.radio_geog)
-        # vbl_raster.addWidget(self.radio_proj)
-        # vbl_raster.addItem(spacer)
-        # vbl_raster.addWidget(self.btn_saveshp)
-        # vbl_right = QtWidgets.QVBoxLayout()
-        # vbl_right.addWidget(self.mmc)
-        # vbl_right.addWidget(mpl_toolbar)
-        # hbl_all.addLayout(vbl_raster)
-        # hbl_all.addLayout(vbl_right)
+        Returns
+        -------
+        None.
 
-        # self.btn_saveshp.clicked.connect(self.save_shp)
-        # self.dsb_dist.valueChanged.connect(self.change_alg)
-        # self.radio_geog.toggled.connect(self.change_alg)
+        """
+        text = self.t2_combobox1.currentText()
+        minmag = self.t2_minmag.value()
+        maxmag = self.t2_maxmag.value()
+        efile = self.qfile['edata'].text()
+
+        if text == 'Patterns in Seismicity':
+            self.mt2.figure.clf()
+
+            headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
+            de = pd.read_excel(efile, usecols=headers)
+            de = de[(minmag <= de.mag) & (de.mag <= maxmag)]
+
+            ax = self.mt2.figure.add_subplot(111, projection="3d")
+            ax.set_title('Patterns in seismicity')
+            ax.set_xlabel('Longitude')
+            ax.set_ylabel('Latitude')
+            ax.set_zlabel('Magnitude')
+            ax.set_facecolor('xkcd:white')
+            self.mt2.figure.patch.set_facecolor('xkcd:white')
+
+            ax.scatter(de['lat'], de['long'], de['mag'], label='Earthquakes')
+            self.mt2.figure.tight_layout()
+            self.mt2.figure.canvas.draw()
+
+        elif text == 'Correlations with rainfall':
+            ifile = self.qfile['rain'].text()
+            title = 'Rainfall and number of earthquakes per month'
+            ylabel = 'Rainfall'
+            ycol = 'rain'
+
+            self.mt2.t2_linegraph(ifile, efile, title, ylabel, ycol,
+                                  minmag, maxmag)
+
+        elif text == 'Correlations with stream flow':
+            ifile = self.qfile['streamflow'].text()
+            title = 'Streamflow and number of earthquakes per month'
+            ylabel = 'Volume of water'
+
+            self.mt2.t2_linegraph(ifile, efile, title, ylabel, 'metre',
+                                  minmag, maxmag)
+
+        elif text == 'Correlations with geological lineaments':
+            pass
 
 
 
@@ -639,350 +766,6 @@ def get_distances(ifile, geo_df, df_mg, lbl):
     return pd1
 
 
-class SampleApp(tk.Tk):
-    """SampleApp"""
-
-    def __init__(self, *args, **kwargs):
-        tk.Tk.__init__(self, *args, **kwargs)
-        tk.Tk.wm_title(self, "AI - Seismicity Program")
-        tk.Tk.geometry(self, "1290x718+30+30")
-        self.title_font = tk.font.Font(family='Helvetica', size=30,
-                                       weight="bold", slant="italic")
-
-        container = tk.Frame(self)
-        container.pack(side="top", fill="both", expand=True)
-        container.grid_rowconfigure(0, weight=1)
-        container.grid_columnconfigure(0, weight=1)
-
-        menubar = tk.Menu(container)
-        filemenu = tk.Menu(menubar, tearoff=0)
-        filemenu.add_separator()
-        filemenu.add_command(label="Exit", command=sys.exit)
-        menubar.add_cascade(label="File", menu=filemenu)
-
-        filemenu1 = tk.Menu(menubar, tearoff=0)
-        filemenu1.add_separator()
-        filemenu1.add_command(label="About", command=click_about)
-        filemenu1.add_command(label="Manual", command=aihelp)
-        menubar.add_cascade(label="Help", menu=filemenu1)
-
-        tk.Tk.config(self, menu=menubar)
-
-        self.shared_data = {"filename1": tk.StringVar(),
-                            "filename2": tk.StringVar(),
-                            "filename3": tk.StringVar(),
-                            "filename4": tk.StringVar(),
-                            "filename5": tk.StringVar(),
-                            "filename6": tk.StringVar(),
-                            "file_stream": tk.StringVar(),
-                            "file_line": tk.StringVar(),
-                            "out_dir": tk.StringVar()}
-
-        self.frames = {}
-        for F in (StartPage, PageOne, PageTwo, PageThree, PageCluster,
-                  PageComplete, Pagebvalue, PageFour):
-            page_name = F.__name__
-            frame = F(parent=container, controller=self)
-            self.frames[page_name] = frame
-
-            frame.grid(row=0, column=0, sticky="nsew")
-
-        self.show_frame("StartPage")
-
-    def show_frame(self, page_name):
-        '''Show a frame for the given page name'''
-        frame = self.frames[page_name]
-        if hasattr(frame, 'entrypnt'):
-            frame.entrypnt()
-        frame.tkraise()
-
-
-class StartPage(tk.Frame):
-    """StartPage."""
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        tk.Frame.pack(self, fill="both", expand=True)
-        tk.Frame.config(self, bg='white')
-        self.controller = controller
-
-        if os.path.exists("ai_software.jpg"):
-            load = Image.open("ai_software.jpg")
-            render = ImageTk.PhotoImage(load)
-            img = tk.Label(self, image=render)
-            img.image = render
-            img.place(x=0, y=0, relwidth=1, relheight=1)
-
-        label = tk.Label(self, text="UNDERSTANDING SEISMICITY PROGRAM",
-                         fg="brown",
-                         bg="white", font=controller.title_font)
-        label.pack()
-        label.place(x=250, y=50)
-        label1 = tk.Label(self, text=("Program to identify the relationship "
-                                      "between seismicity and environmental "
-                                      "conditions"),
-                          bg="white", fg="brown", font=("Times bold", 20))
-        label1.pack()
-        label1.place(x=100, y=250)
-        label2 = tk.Label(self, text="STEP 1: Select data to import",
-                          bg="white", fg="brown", font=("Times bold", 20))
-        label2.pack()
-        label2.place(x=60, y=420)
-        label3 = tk.Label(self, text="STEP 2: View imported data",
-                          bg="white", fg="brown", font=("Times bold", 20))
-        label3.pack()
-        label3.place(x=60, y=490)
-        label4 = tk.Label(self, text="STEP 3: Identify Clusters within the "
-                          "data",
-                          bg="white", fg="brown", font=("Times bold", 20))
-        label4.pack()
-        label4.place(x=60, y=560)
-        label5 = tk.Label(self, text="STEP 4: Parameters associated with the "
-                          "point of interest",
-                          bg="white", fg="brown", font=("Times bold", 20))
-        label5.pack()
-        label5.place(x=60, y=630)
-
-        button1 = tk.Button(self, text="LAUNCH PROGRAM",
-                            font=('Times', 15, "bold"), bg='brown', fg='white',
-                            command=lambda: controller.show_frame("PageOne"))
-
-        button1.pack()
-        button1.place(x=860, y=580)
-
-
-class PageOne(tk.Frame):
-    """PageOne."""
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-        tk.Frame.config(self, bg='white')
-        self.controller = controller
-
-        if os.path.exists("pages.jpg"):
-            load = Image.open(r"pages.jpg")
-            render = ImageTk.PhotoImage(load)
-            img = tk.Label(self, image=render)
-            img.image = render
-            img.place(x=0, y=0, relwidth=1, relheight=1)
-
-        label = tk.Label(self, text="STEP 1: Select data to import",
-                         bg="white", fg="brown",
-                         font=controller.title_font)
-        label.pack()
-        label.place(x=350, y=50)
-        label2 = tk.Label(self, text="Earthquake Data (.xlsx)",
-                          bg="white", fg="brown", font=("Times", 15))
-        label2.pack()
-        label2.place(x=100, y=220)
-
-        label4 = tk.Label(self, text="Monthly Rainfall Data (.xlsx)",
-                          bg="white", fg="brown", font=("Times", 15))
-        label4.pack()
-        label4.place(x=100, y=270)
-        label7 = tk.Label(self, text="Geological Lineament Data (.xlsx)",
-                          bg="white", fg="brown", font=("Times", 15))
-        label7.pack()
-        label7.place(x=100, y=320)
-
-        label5 = tk.Label(self, text="Monthly Stream Flow Data (.xlsx)",
-                          bg="white", fg="brown", font=("Times", 15))
-        label5.pack()
-        label5.place(x=100, y=370)
-
-        label9 = tk.Label(self, text="Stream/ River Vector Data (.shp)",
-                          bg="white", fg="brown", font=("Times", 15))
-        label9.pack()
-        label9.place(x=100, y=420)
-        label9 = tk.Label(self, text="Geology Lineament Vector Data (.shp)",
-                          bg="white", fg="brown", font=("Times", 15))
-        label9.pack()
-        label9.place(x=100, y=470)
-
-        label8 = tk.Label(self, text="Select output directory to save results",
-                          bg="white", fg="brown", font=("Times", 15))
-        label8.pack()
-        label8.place(x=100, y=590)
-
-        self.ent_bp3 = tk.Entry(self, state=tk.DISABLED, width=50, bg='brown',
-                                fg='white')
-        self.ent_bp3.pack()
-        self.ent_bp3.place(x=500, y=220)
-
-        self.ent_bp4 = tk.Entry(self, state=tk.DISABLED, width=50, bg='brown',
-                                fg='white')
-        self.ent_bp4.pack()
-        self.ent_bp4.place(x=500, y=270)
-
-        self.ent_bp6 = tk.Entry(self, state=tk.DISABLED, width=50, bg='brown',
-                                fg='white')
-        self.ent_bp6.pack()
-        self.ent_bp6.place(x=500, y=320)
-
-        self.ent_bp8 = tk.Entry(self, state=tk.DISABLED, width=50, bg='brown',
-                                fg='white')
-        self.ent_bp8.pack()
-        self.ent_bp8.place(x=500, y=370)
-
-        self.ent_bp9 = tk.Entry(self, state=tk.DISABLED, width=50, bg='brown',
-                                fg='white')
-        self.ent_bp9.pack()
-        self.ent_bp9.place(x=500, y=420)
-
-        self.ent_bp10 = tk.Entry(self, state=tk.DISABLED, width=50, bg='brown',
-                                 fg='white',)
-        self.ent_bp10.pack()
-        self.ent_bp10.place(x=500, y=470)
-
-        self.ent_bp7 = tk.Entry(self, state=tk.DISABLED, width=50, bg='brown',
-                                fg='white')
-        self.ent_bp7.pack()
-        self.ent_bp7.place(x=500, y=590)
-
-        button = tk.Button(self, text="Return to the home page",
-                           font=("Times", 14),
-                           command=lambda: controller.show_frame("StartPage"))
-        button.pack()
-        button.place(x=30, y=650)
-
-        button = tk.Button(self, text="Proceed To STEP 2", font=("Times", 14),
-                           command=lambda: controller.show_frame("PageTwo"))
-        button.pack()
-        button.place(x=800, y=650)
-
-        button3 = tk.Button(self, text='Browse', font=("Times", 12),
-                            bg='brown', fg='white',
-                            state=tk.NORMAL, command=self.file_in1)
-        button3.pack()
-        button3.place(x=900, y=220)
-
-        button4 = tk.Button(self, text='Browse', font=("Times", 12),
-                            bg='brown', fg='white',
-                            state=tk.NORMAL, command=self.file_in3)
-        button4.pack()
-        button4.place(x=900, y=270)
-
-        button6 = tk.Button(self, text='Browse', font=("Times", 12),
-                            bg='brown', fg='white',
-                            state=tk.NORMAL, command=self.file_in6)
-        button6.pack()
-        button6.place(x=900, y=320)
-
-        button6 = tk.Button(self, text='Browse', font=("Times", 12),
-                            bg='brown', fg='white',
-                            state=tk.NORMAL, command=self.file_in4)
-        button6.pack()
-        button6.place(x=900, y=370)
-
-        button9 = tk.Button(self, text='Browse', font=("Times", 12),
-                            bg='brown', fg='white',
-                            state=tk.NORMAL, command=self.file_stream)
-        button9.pack()
-        button9.place(x=900, y=420)
-
-        button10 = tk.Button(self, text='Browse', font=("Times", 12),
-                             bg='brown', fg='white',
-                             state=tk.NORMAL, command=self.file_line)
-        button10.pack()
-        button10.place(x=900, y=470)
-
-        button8 = tk.Button(self, text='Browse', font=("Times", 12),
-                            bg='brown', fg='white',
-                            state=tk.NORMAL, command=self.folder_out)
-        button8.pack()
-        button8.place(x=900, y=590)
-
-    def file_in1(self):
-        """
-        File in 1.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.ent_bp3.config(state='normal')
-        self.controller.shared_data["filename1"].set(select_xlsx(self.ent_bp3))
-        self.ent_bp3.config(state='disabled')
-
-    def file_in3(self):
-        """
-        File in 3.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.ent_bp4.config(state='normal')
-        self.controller.shared_data["filename3"].set(select_xlsx(self.ent_bp4))
-        self.ent_bp4.config(state='disabled')
-
-    def file_in4(self):
-        """
-        File in 4.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.ent_bp8.config(state='normal')
-        self.controller.shared_data["filename4"].set(select_xlsx(self.ent_bp8))
-        self.ent_bp8.config(state='disabled')
-
-    def file_in6(self):
-        """
-        File in 5.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.ent_bp6.config(state='normal')
-        self.controller.shared_data["filename6"].set(select_xlsx(self.ent_bp6))
-        self.ent_bp6.config(state='disabled')
-
-    def folder_out(self):
-        """
-        File in 6.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.ent_bp7.config(state='normal')
-        self.controller.shared_data["out_dir"].set(output_folder(self.ent_bp7))
-        self.ent_bp7.config(state='disabled')
-
-    def file_stream(self):
-        """
-        File in streams.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.ent_bp9.config(state='normal')
-        self.controller.shared_data["file_stream"].set(select_shp(self.ent_bp9))
-        self.ent_bp9.config(state='disabled')
-
-    def file_line(self):
-        """
-        File in lineaments.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.ent_bp10.config(state='normal')
-        self.controller.shared_data["file_line"].set(select_shp(self.ent_bp10))
-        self.ent_bp10.config(state='disabled')
-
 
 class PageTwo(tk.Frame):
     """PageTwo."""
@@ -1090,36 +873,6 @@ class PageTwo(tk.Frame):
         toolbarFrame.pack()
         toolbarFrame.place(x=750, y=580)
         toolbar = NavigationToolbar2Tk(self.canvas, toolbarFrame)
-
-    def plotting1(self):
-        """
-        Plot 1.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.fig.clf()
-
-        n = self.e1Variable.get()
-        n2 = self.e2Variable.get()
-
-        headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
-        de = pd.read_excel(self.filename1.get(), usecols=headers)
-        de = de[(n <= de.mag) & (de.mag <= n2)]
-
-        ax = self.fig.add_subplot(111, projection="3d")
-        ax.set_title('Patterns in seismicity')
-        ax.set_xlabel('Longitude')
-        ax.set_ylabel('Latitude')
-        ax.set_zlabel('Magnitude')
-        ax.set_facecolor('xkcd:white')
-        self.fig.patch.set_facecolor('xkcd:white')
-
-        ax.scatter(de['lat'], de['long'], de['mag'], label='Earthquakes')
-        self.fig.tight_layout()
-        self.fig.canvas.draw()
 
     def plotting4(self):
         """
