@@ -1081,7 +1081,10 @@ def get_modisv6(ifile, piter=iter):
         if 'MOD13' in ifile and scale > 1:
             scale = 1./scale
 
-        print('scale', scale)
+        if 'MOD44B' in ifile and '_SD' in bandid and scale == 1:
+            scale = 0.01
+
+        # print('scale', scale, bandid)
 
         if 'add_offset' in meta:
             offset = float(meta['add_offset'])
@@ -1783,6 +1786,8 @@ def _testfn():
     ifile = ifiles[0]
 
     for ifile in ifiles:
+        if 'MOD44' not in ifile:
+            continue
         dat = get_data(ifile)
 
 

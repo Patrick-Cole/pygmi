@@ -384,6 +384,35 @@ class AI_Seis(QtWidgets.QDialog):
             self.mt2.figure.patch.set_facecolor('xkcd:white')
 
             ax.scatter(de['lat'], de['long'], de['mag'], label='Earthquakes')
+            ax.legend()
+            self.mt2.figure.tight_layout()
+            self.mt2.figure.canvas.draw()
+
+        elif text == 'Correlations with geological lineaments':
+            self.mt2.figure.clf()
+
+            headers = ['lat', 'long', 'properties']
+            degeo = pd.read_excel(self.qfile['lineaments'].text(),
+                                  usecols=headers)
+            headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
+            de = pd.read_excel(efile, usecols=headers)
+            de = de[(minmag <= de.mag) & (de.mag <= maxmag)]
+
+            ax = self.mt2.figure.add_subplot(111, projection="3d",
+                                                label='3D')
+            ax.set_title('Correlation between seismicity and geological '
+                            'structures')
+            ax.set_xlabel('Longitude')
+            ax.set_ylabel('Latitude')
+            ax.set_zlabel('Magnitude')
+            ax.set_facecolor('xkcd:white')
+            self.mt2.figure.patch.set_facecolor('xkcd:white')
+
+            ax.scatter(de['lat'], de['long'], de['mag'], label='Earthquakes')
+            ax.scatter(degeo['lat'], degeo['long'], label='Lineaments')
+
+            ax.legend()
+
             self.mt2.figure.tight_layout()
             self.mt2.figure.canvas.draw()
 
@@ -403,11 +432,6 @@ class AI_Seis(QtWidgets.QDialog):
 
             self.mt2.t2_linegraph(ifile, efile, title, ylabel, 'metre',
                                   minmag, maxmag)
-
-        elif text == 'Correlations with geological lineaments':
-            pass
-
-
 
     def load_data(self, datatype, ext):
         """
@@ -764,314 +788,6 @@ def get_distances(ifile, geo_df, df_mg, lbl):
     pd1.dropna(subset=['mag'], inplace=True)
 
     return pd1
-
-
-
-class PageTwo(tk.Frame):
-    """PageTwo."""
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.controller = controller
-        self.filename1 = self.controller.shared_data["filename1"]
-        # self.filename2 = self.controller.shared_data["filename2"]
-        self.filename3 = self.controller.shared_data["filename3"]
-        self.filename4 = self.controller.shared_data["filename4"]
-        self.filename5 = self.controller.shared_data["filename5"]
-        self.filename6 = self.controller.shared_data["filename6"]
-        self.out_dir = self.controller.shared_data["out_dir"]
-
-        tk.Frame.config(self, bg='white')
-
-        if os.path.exists("pages.jpg"):
-            load = Image.open(r"pages.jpg")
-            render = ImageTk.PhotoImage(load)
-            img = tk.Label(self, image=render)
-            img.image = render
-            img.place(x=0, y=0, relwidth=1, relheight=1)
-
-        label = tk.Label(self, text="STEP 2: View imported data",
-                         bg="white", fg="brown",
-                         font=controller.title_font)
-        label.pack()
-        label.place(x=350, y=30)
-        label2 = tk.Label(self, text="Please input the magnitude range you "
-                          "wish to view:",
-                          bg="white", fg="brown", font=("Times", 18))
-        label2.pack()
-        label2.place(x=30, y=230)
-        label3 = tk.Label(self, text="Minimum magnitude", bg="white",
-                          fg="brown", font=("Times", 18))
-        label3.pack()
-        label3.place(x=45, y=270)
-        label4 = tk.Label(self, text="Maximum magnitude", bg="white",
-                          fg="brown", font=("Times", 18))
-        label4.pack()
-        label4.place(x=45, y=310)
-
-        self.e1Variable = tk.IntVar()
-        self.e1 = tk.Entry(self, textvariable=self.e1Variable, bg='brown',
-                           fg='white',)
-        self.e1Variable.set(0)
-        self.e2Variable = tk.IntVar()
-        self.e2 = tk.Entry(self, textvariable=self.e2Variable, bg='brown',
-                           fg='white',)
-        self.e2Variable.set(5)
-        self.e1.pack()
-        self.e1.place(x=270, y=278)
-        self.e2.pack()
-        self.e2.place(x=270, y=318)
-
-        button11 = tk.Button(self, text='   Patterns in seismicity   ',
-                             font=("Times", 15), fg="white", bg="brown",
-                             state=tk.NORMAL, command=self.plotting1)
-        button11.pack()
-        button11.place(x=30, y=350)
-
-        button14 = tk.Button(self, text='Correlations with rainfall',
-                             font=("Times", 15), fg="white", bg="brown",
-                             state=tk.NORMAL, command=self.plotting4)
-        button14.pack()
-        button14.place(x=30, y=420)
-
-        button15 = tk.Button(self, text='Correlations with stream flow',
-                             font=("Times", 15), fg="white", bg="brown",
-                             state=tk.NORMAL, command=self.plotting5)
-        button15.pack()
-        button15.place(x=30, y=490)
-
-        button16 = tk.Button(self, text=('Correlations with '
-                                         'Geological Lineament'),
-                             font=("Times", 15), fg="white", bg="brown",
-                             state=tk.NORMAL, command=self.plotting6)
-        button16.pack()
-        button16.place(x=30, y=560)
-
-        button = tk.Button(self, text="Return to the home page",
-                           font=("Times", 14),
-                           command=lambda: controller.show_frame("StartPage"))
-        button.pack()
-        button.place(x=30, y=650)
-
-        button = tk.Button(self, text="Return to STEP 1", font=("Times", 14),
-                           command=lambda: controller.show_frame("PageOne"))
-        button.pack()
-        button.place(x=400, y=650)
-
-        button = tk.Button(self, text="Proceed To STEP 3", font=("Times", 14),
-                           command=lambda: controller.show_frame("PageThree"))
-        button.pack()
-        button.place(x=800, y=650)
-
-        self.fig = Figure(figsize=(6, 5), dpi=100)
-        self.canvas = FigureCanvasTkAgg(self.fig, self)
-        self.canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-        self.canvas.get_tk_widget().place(x=680, y=80)
-
-        toolbarFrame = tk.Frame(self)
-        toolbarFrame.pack()
-        toolbarFrame.place(x=750, y=580)
-        toolbar = NavigationToolbar2Tk(self.canvas, toolbarFrame)
-
-    def plotting4(self):
-        """
-        Plot 4.
-
-        Returns
-        -------
-        None.
-
-        """
-        ifile = self.filename3.get()
-        title = 'Rainfall and number of earthquakes per month'
-        ylabel = 'Rainfall'
-        self.plotgraph(ifile, title, ylabel, 'rain')
-
-    def plotting5(self):
-        """
-        Plot 5.
-
-        Returns
-        -------
-        None.
-
-        """
-        ifile = self.filename4.get()
-        title = 'Streamflow and number of earthquakes per month'
-        ylabel = 'Volume of water'
-        self.plotgraph(ifile, title, ylabel, 'metre')
-
-    def plotgraph(self, ifile, title, ylabel, ycol):
-        """
-        Common routine to plot a line graph of X vs earthquakes.
-
-        Parameters
-        ----------
-        ifile : str
-            input filename.
-        title : str
-            graph title.
-        ylabel: str
-            y axis label.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.fig.clf()
-
-        headers = ['date', ycol]
-
-        dp = pd.read_excel(ifile, usecols=headers)
-        dp['date'] = pd.to_datetime(dp['date'], infer_datetime_format=True)
-        dp['year'], dp['month'], dp['day'] = (dp['date'].dt.year,
-                                              dp['date'].dt.month,
-                                              dp['date'].dt.day)
-
-        n = self.e1Variable.get()
-        n2 = self.e2Variable.get()
-
-        headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
-        dm = pd.read_excel(self.filename1.get(), usecols=headers)
-
-        dm = dm[(n <= dm.mag) & (dm.mag <= n2)]
-        dm['date'] = pd.to_datetime(dm['date'], infer_datetime_format=True)
-        dm['year'], dm['month'], dm['day'] = (dm['date'].dt.year,
-                                              dm['date'].dt.month,
-                                              dm['date'].dt.day)
-
-        ds = dm.groupby(['year', 'month'])['month'].count().to_frame('count').reset_index()
-        ds["date"] = pd.to_datetime(ds['year'].map(str) + ' ' +
-                                    ds["month"].map(str), format='%Y/%m')
-
-        ax1 = self.fig.add_subplot(111, label='2D')
-        ax1.plot(dp['date'], dp[ycol], color='b', label=ylabel)
-        ax2 = ax1.twinx()
-        ax2.plot(ds['date'], ds['count'], color='r',  label='Earthquakes')
-
-        ax1.set_title(title)
-        ax1.set_xlabel('Date')
-        ax1.set_ylabel(ylabel)
-        ax2.set_ylabel('Number of Earthquakes')
-
-        h1, l1 = ax1.get_legend_handles_labels()
-        h2, l2 = ax2.get_legend_handles_labels()
-
-        ax1.legend(h1+h2, l1+l2, loc=2)
-        self.fig.tight_layout()
-        self.fig.canvas.draw()
-
-    def plotting6(self):
-        """
-        Plot 6.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.fig.clf()
-
-        n = self.e1Variable.get()
-        n2 = self.e2Variable.get()
-        headers = ['lat', 'long', 'properties']
-        degeo = pd.read_excel(self.filename6.get(), usecols=headers)
-        headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
-        de2 = pd.read_excel(self.filename1.get(), usecols=headers)
-        de2 = de2[(n <= de2.mag) & (de2.mag <= n2)]
-
-        axgeo = self.fig.add_subplot(111, projection="3d", label='3D')
-        axgeo.set_title('Correlation between seismicity and geological '
-                        'structures')
-        axgeo.set_xlabel('Longitude')
-        axgeo.set_ylabel('Latitude')
-        axgeo.set_zlabel('Magnitude')
-        axgeo.set_facecolor('xkcd:white')
-        self.fig.patch.set_facecolor('xkcd:white')
-
-        axgeo.scatter(de2['lat'], de2['long'], de2['mag'],
-                      label='Earthquakes')
-        axgeo.scatter(degeo['lat'], degeo['long'],
-                      label='Linearments')
-
-        self.fig.tight_layout()
-        self.fig.canvas.draw()
-
-
-class PageThree(tk.Frame):
-    """PageThree."""
-    counter = 0
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.controller = controller
-        self.filename1 = self.controller.shared_data["filename1"]
-        self.filename3 = self.controller.shared_data["filename3"]
-        self.filename4 = self.controller.shared_data["filename4"]
-        self.filename5 = self.controller.shared_data["filename5"]
-        self.filename6 = self.controller.shared_data["filename6"]
-        self.out_dir = self.controller.shared_data["out_dir"]
-
-        tk.Frame.config(self, bg='black')
-
-        if os.path.exists("pages.jpg"):
-            load = Image.open(r"pages.jpg")
-            render = ImageTk.PhotoImage(load)
-            img = tk.Label(self, image=render)
-            img.image = render
-            img.place(x=0, y=0, relwidth=1, relheight=1)
-
-        label = tk.Label(self, text="STEP 3: Identify Clusters within the "
-                         "data", bg="white", fg="brown",
-                         font=controller.title_font)
-        label.pack()
-        label.place(x=250, y=50)
-        label2 = tk.Label(self, text="This page is dedicated to determining "
-                          "clusters within the datatset using DBSCAN, "
-                          "\ndetermining the magnitude of completeness of "
-                          "the data set and the identified clusters, as well "
-                          "as calculating the b-value",
-                          bg="white", fg="brown", font=("Times", 18))
-        label2.pack()
-        label2.place(x=30, y=250)
-
-        button11 = tk.Button(self, text='   Determine Clusters   ',
-                             font=("Times", 18), fg="white", bg="brown",
-                             state=tk.NORMAL,
-                             command=lambda:
-                                 controller.show_frame("PageCluster"))
-        button11.pack()
-        button11.place(x=500, y=350)
-
-        button14 = tk.Button(self, text='Completeness of data',
-                             font=("Times", 18), fg="white", bg="brown",
-                             state=tk.DISABLED,
-                             command=lambda:
-                                 controller.show_frame("PageComplete"))
-        button14.pack()
-        button14.place(x=505, y=450)
-
-        button15 = tk.Button(self, text='Determine b-value',
-                             font=("Times", 18), fg="white", bg="brown",
-                             state=tk.DISABLED,
-                             command=lambda:
-                                 controller.show_frame("PageBValue"))
-        button15.pack()
-        button15.place(x=515, y=550)
-
-        button = tk.Button(self, text="Return to the home page",
-                           font=("Times", 14),
-                           command=lambda: controller.show_frame("StartPage"))
-        button.pack()
-        button.place(x=30, y=650)
-
-        button = tk.Button(self, text="Return to STEP 2", font=("Times", 14),
-                           command=lambda: controller.show_frame("PageTwo"))
-        button.pack()
-        button.place(x=340, y=650)
 
 
 class PageCluster(tk.Frame):
