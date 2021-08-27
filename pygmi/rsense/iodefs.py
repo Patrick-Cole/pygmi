@@ -693,7 +693,8 @@ class ImportSentinel5P(QtWidgets.QDialog):
         # tmp = tmp.replace('/PRODUCT/', '')
         # tmp = tmp.replace('/', '')
 
-#        gdf.to_file(tmp)
+        gdf = gdf.set_crs("EPSG:4326")
+
         return gdf
 
 
