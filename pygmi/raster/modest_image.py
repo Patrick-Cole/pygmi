@@ -102,7 +102,8 @@ class ModestImage(mi.AxesImage):
         numrows, numcols = self._full_res.shape[:2]
 
         if col >= 0 and col < numcols and row >= 0 and row < numrows:
-            z = self._full_res[row, col]
+            # -1 because we are reversing rows.
+            z = self._full_res[numrows-row-1, col]
             return z
 
         return np.nan
@@ -390,8 +391,19 @@ def main2():
     extent = data[1].extent
 
     f = plt.figure()
-    ax = f.add_subplot(111)
+    ax = f.add_subplot(121)
     imshow(ax, cdat, extent=extent)
+    ax.grid(True)
+
+
+    plt.subplot(122)
+    numrows, numcols = cdat.shape
+
+    im = plt.imshow(cdat, extent=extent)
+
+    im.format_cursor_data = lambda data: f'z = {data:,.5f}'
+
+    plt.grid(True)
     plt.show()
 
 

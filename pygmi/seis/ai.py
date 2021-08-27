@@ -80,7 +80,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.showprocesslog = parent.showprocesslog
 
         # figure stuff
-        self.axes = fig.add_subplot(111)
+        # self.axes = fig.add_subplot(111)
 
         self.setParent(parent)
 
@@ -88,48 +88,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                                         QtWidgets.QSizePolicy.Expanding,
                                         QtWidgets.QSizePolicy.Expanding)
         FigureCanvasQTAgg.updateGeometry(self)
-
-    def init_graph(self):
-        """
-        Initialize the graph.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.axes.clear()
-        self.axes.set_aspect('equal')
-
-        maxdiam = self.pwidth*self.data[:, -1].max()
-        xmin = self.data[:, 0].min()-maxdiam
-        xmax = self.data[:, 0].max()+maxdiam
-        ymin = self.data[:, 1].min()-maxdiam
-        ymax = self.data[:, 1].max()+maxdiam
-
-        self.axes.set_xlim((xmin, xmax))
-        self.axes.set_ylim((ymin, ymax))
-
-        self.figure.canvas.draw()
-        QtWidgets.QApplication.processEvents()
-
-        # for idat in self.data:
-        #     pxy = idat[:2]
-        #     np1 = idat[3:-1]
-        #     pwidth = self.pwidth*idat[-1]
-        #     xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth,
-        #                                      self.isgeog)
-
-        #     pvert1 = np.transpose([yyy, xxx])
-        #     pvert0 = np.transpose([xxx2, yyy2])
-
-        #     self.axes.add_patch(patches.Polygon(pvert1,
-        #                                         edgecolor=(0.0, 0.0, 0.0)))
-        #     self.axes.add_patch(patches.Polygon(pvert0, facecolor='none',
-        #                                         edgecolor=(0.0, 0.0, 0.0)))
-
-        self.figure.canvas.draw()
-
 
     def t2_linegraph(self, ifile, efile, title, ylabel, ycol, magmin, magmax):
         """
@@ -201,12 +159,6 @@ class AI_Seis(QtWidgets.QDialog):
         else:
             self.showprocesslog = parent.showprocesslog
 
-        self.ifiles = {'edata': '',
-                       'rain': '',
-                       'lineaments': '',
-                       'streamflow': '',
-                       'streamshp': '',
-                       'lineamentshp': ''}
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -226,6 +178,33 @@ class AI_Seis(QtWidgets.QDialog):
         self.t2_combobox1 = QtWidgets.QComboBox()
         self.t2_maxmag = QtWidgets.QDoubleSpinBox()
         self.t2_minmag = QtWidgets.QDoubleSpinBox()
+        self.t2_firstrun = True
+
+        # Tab 3
+        self.cluster = None
+        self.mt3 = MyMplCanvas(self)
+        self.t3_rundbscan = QtWidgets.QPushButton('Run DBSCAN')
+        self.t3_minnum = QtWidgets.QSpinBox()
+        self.t3_eps = QtWidgets.QDoubleSpinBox()
+
+        # Tab 4
+        self.mt4 = MyMplCanvas(self)
+        self.t4_combobox1 = QtWidgets.QComboBox()
+        self.t4_text = QtWidgets.QLabel()
+
+        # Tab 5
+        self.mt5 = MyMplCanvas(self)
+        self.t5_distlin = QtWidgets.QDoubleSpinBox()
+        self.t5_diststream = QtWidgets.QDoubleSpinBox()
+        self.t5_watervolume = QtWidgets.QDoubleSpinBox()
+        self.t5_monthlyrain = QtWidgets.QDoubleSpinBox()
+        self.t5_latitude = QtWidgets.QDoubleSpinBox()
+        self.t5_longitude = QtWidgets.QDoubleSpinBox()
+        self.t5_text = QtWidgets.QLabel()
+        self.t5_text2 = QtWidgets.QLabel()
+        self.t5_result = QtWidgets.QLabel('Result:')
+        self.t5_pbar = QtWidgets.QProgressBar()
+        self.t5_minmag = 0.
 
         self.setupui()
 
@@ -256,7 +235,7 @@ class AI_Seis(QtWidgets.QDialog):
         self.tabs.setTabEnabled(3, False)
         self.tabs.setTabEnabled(4, False)
 
-# Create first tab
+        # Create first tab
         pb_edata = QtWidgets.QPushButton('Earthquake Data (.xlsx)')
         pb_rain = QtWidgets.QPushButton('Monthly Rainfall Data (.xlsx)')
         pb_lineaments = QtWidgets.QPushButton('Geological Lineament Data (.xlsx)')
@@ -299,7 +278,7 @@ class AI_Seis(QtWidgets.QDialog):
                                                                'shp'))
 
 
-# Create Second Tab
+        # Create Second Tab
         mpl_toolbar_t2 = NavigationToolbar2QT(self.mt2, self.parent)
         t2_label1 = QtWidgets.QLabel('Calculation:')
         t2_label2 = QtWidgets.QLabel('Minimum Magnitude:')
@@ -329,6 +308,119 @@ class AI_Seis(QtWidgets.QDialog):
         self.t2_minmag.valueChanged.connect(self.t2_change_graph)
         self.t2_maxmag.valueChanged.connect(self.t2_change_graph)
 
+        # Create Third Tab
+        mpl_toolbar_t3 = NavigationToolbar2QT(self.mt2, self.parent)
+        t3_label1 = QtWidgets.QLabel('Calculation:')
+        t3_label2 = QtWidgets.QLabel('Minimum Magnitude:')
+        t3_label3 = QtWidgets.QLabel('Maximum Magnitude:')
+        self.t3_minnum.setValue(30)
+        self.t3_eps.setValue(0.01)
+
+        tab3_layout = QtWidgets.QGridLayout(self)
+        tab3_layout.addWidget(t3_label2, 2, 0, 1, 1)
+        tab3_layout.addWidget(self.t3_minnum, 2, 1, 1, 1)
+        tab3_layout.addWidget(t3_label3, 3, 0, 1, 1)
+        tab3_layout.addWidget(self.t3_eps, 3, 1, 1, 1)
+
+        tab3_layout.addWidget(self.t3_rundbscan, 4, 0, 1, 2)
+
+        tab3_layout.addWidget(self.mt3, 5, 0, 1, 2)
+        tab3_layout.addWidget(mpl_toolbar_t3, 6, 0, 1, 2)
+
+
+        self.tab3.setLayout(tab3_layout)
+
+        self.t3_rundbscan.clicked.connect(self.t3_run_dbscan)
+
+
+        # Create Fourth Tab
+        mpl_toolbar_t4 = NavigationToolbar2QT(self.mt4, self.parent)
+        t4_label1 = QtWidgets.QLabel('Cluster:')
+
+        text = (f'Magnitude of completeness (MC): -\n'
+                f'Total number of earthquakes: -\n'
+                f'Annual number of earthquakes greater than MC: -\n'
+                f'Maximum catalog magnitude: -\n'
+                f'Mmax = -')
+        self.t4_text.setText(text)
+
+        tab4_layout = QtWidgets.QGridLayout(self)
+        tab4_layout.addWidget(self.mt4, 0, 0, 1, 2)
+        tab4_layout.addWidget(mpl_toolbar_t4, 1, 0, 1, 2)
+        tab4_layout.addWidget(t4_label1, 2, 0, 1, 1)
+        tab4_layout.addWidget(self.t4_combobox1, 2, 1, 1, 1)
+        tab4_layout.addWidget(self.t4_text, 3, 0, 1, 2)
+
+        self.tab4.setLayout(tab4_layout)
+
+        self.t4_combobox1.currentIndexChanged.connect(self.t4_change_graph)
+
+
+
+        # Create Fifth Tab
+        t5_pushbutton = QtWidgets.QPushButton('Calculate')
+
+        mpl_toolbar_t5 = NavigationToolbar2QT(self.mt5, self.parent)
+        t5_label1 = QtWidgets.QLabel('Distance to closest geological '
+                                     'lineament (metres)')
+        t5_label2 = QtWidgets.QLabel(r'Distance to closest stream/river '
+                                     '(metres)')
+        t5_label3 = QtWidgets.QLabel('Water volume of stream flow '
+                                     '(cubic metres)')
+        t5_label4 = QtWidgets.QLabel('Average monthly rainfall (mm)')
+        t5_label5 = QtWidgets.QLabel('Latitude:')
+        t5_label6 = QtWidgets.QLabel('Longitude:')
+
+        self.t5_distlin.setMinimum(0.)
+        self.t5_diststream.setMinimum(0.)
+        self.t5_watervolume.setMinimum(0.)
+        self.t5_monthlyrain.setMinimum(0.)
+        self.t5_latitude.setMinimum(-90.)
+        self.t5_longitude.setMinimum(-180.)
+
+        self.t5_distlin.setMaximum(100000.)
+        self.t5_diststream.setMaximum(10000.)
+        self.t5_watervolume.setMaximum(10000.)
+        self.t5_monthlyrain.setMaximum(10000.)
+        self.t5_latitude.setMaximum(90.)
+        self.t5_longitude.setMaximum(180.)
+
+        self.t5_distlin.setValue(2000.)
+        self.t5_diststream.setValue(2000.)
+        self.t5_watervolume.setValue(100.)
+        self.t5_monthlyrain.setValue(10.)
+        self.t5_latitude.setDecimals(4)
+        self.t5_longitude.setDecimals(4)
+        self.t5_latitude.setValue(-26.9055)
+        self.t5_longitude.setValue(26.7666)
+
+        tab5_layout = QtWidgets.QGridLayout(self)
+        tab5_layout.addWidget(self.mt5, 0, 0, 1, 4)
+        tab5_layout.addWidget(mpl_toolbar_t5, 1, 0, 1, 4)
+        tab5_layout.addWidget(t5_label1, 2, 0, 1, 1)
+        tab5_layout.addWidget(self.t5_distlin, 2, 1, 1, 1)
+        tab5_layout.addWidget(t5_label2, 2, 2, 1, 1)
+        tab5_layout.addWidget(self.t5_diststream, 2, 3, 1, 1)
+        tab5_layout.addWidget(t5_label3, 3, 0, 1, 1)
+        tab5_layout.addWidget(self.t5_watervolume, 3, 1, 1, 1)
+        tab5_layout.addWidget(t5_label4, 3, 2, 1, 1)
+        tab5_layout.addWidget(self.t5_monthlyrain, 3, 3, 1, 1)
+        tab5_layout.addWidget(t5_label5, 6, 0, 1, 1)
+        tab5_layout.addWidget(self.t5_latitude, 6, 1, 1, 1)
+        tab5_layout.addWidget(t5_label6, 6, 2, 1, 1)
+        tab5_layout.addWidget(self.t5_longitude, 6, 3, 1, 1)
+        tab5_layout.addWidget(self.t5_text, 7, 0, 1, 4)
+        tab5_layout.addWidget(self.t5_text2, 7, 2, 1, 2)
+        tab5_layout.addWidget(t5_pushbutton, 8, 0, 1, 4)
+        tab5_layout.addWidget(self.t5_result, 9, 0, 1, 4)
+        tab5_layout.addWidget(self.t5_pbar, 10, 0, 1, 4)
+
+        self.tab5.setLayout(tab5_layout)
+
+        t5_pushbutton.clicked.connect(self.t5_aicalc)
+        self.t5_latitude.valueChanged.connect(self.t5_updatetext)
+        self.t5_longitude.valueChanged.connect(self.t5_updatetext)
+
         # General
 
         self.tabs.currentChanged.connect(self.change_tab)
@@ -351,8 +443,13 @@ class AI_Seis(QtWidgets.QDialog):
         None.
 
         """
-        if index == 1:
+        if index == 1 and self.t2_firstrun is True:
+            self.t2_firstrun = False
             self.t2_change_graph()
+        elif index == 3:
+            self.t4_change_graph()
+        elif index == 4:
+            self.t5_updatetext()
 
     def t2_change_graph(self):
         """
@@ -363,12 +460,12 @@ class AI_Seis(QtWidgets.QDialog):
         None.
 
         """
-        text = self.t2_combobox1.currentText()
+        option = self.t2_combobox1.currentText()
         minmag = self.t2_minmag.value()
         maxmag = self.t2_maxmag.value()
         efile = self.qfile['edata'].text()
 
-        if text == 'Patterns in Seismicity':
+        if option == 'Patterns in Seismicity':
             self.mt2.figure.clf()
 
             headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
@@ -380,15 +477,13 @@ class AI_Seis(QtWidgets.QDialog):
             ax.set_xlabel('Longitude')
             ax.set_ylabel('Latitude')
             ax.set_zlabel('Magnitude')
-            ax.set_facecolor('xkcd:white')
-            self.mt2.figure.patch.set_facecolor('xkcd:white')
 
             ax.scatter(de['lat'], de['long'], de['mag'], label='Earthquakes')
             ax.legend()
             self.mt2.figure.tight_layout()
             self.mt2.figure.canvas.draw()
 
-        elif text == 'Correlations with geological lineaments':
+        elif option == 'Correlations with geological lineaments':
             self.mt2.figure.clf()
 
             headers = ['lat', 'long', 'properties']
@@ -405,8 +500,6 @@ class AI_Seis(QtWidgets.QDialog):
             ax.set_xlabel('Longitude')
             ax.set_ylabel('Latitude')
             ax.set_zlabel('Magnitude')
-            ax.set_facecolor('xkcd:white')
-            self.mt2.figure.patch.set_facecolor('xkcd:white')
 
             ax.scatter(de['lat'], de['long'], de['mag'], label='Earthquakes')
             ax.scatter(degeo['lat'], degeo['long'], label='Lineaments')
@@ -416,7 +509,7 @@ class AI_Seis(QtWidgets.QDialog):
             self.mt2.figure.tight_layout()
             self.mt2.figure.canvas.draw()
 
-        elif text == 'Correlations with rainfall':
+        elif option == 'Correlations with rainfall':
             ifile = self.qfile['rain'].text()
             title = 'Rainfall and number of earthquakes per month'
             ylabel = 'Rainfall'
@@ -425,13 +518,607 @@ class AI_Seis(QtWidgets.QDialog):
             self.mt2.t2_linegraph(ifile, efile, title, ylabel, ycol,
                                   minmag, maxmag)
 
-        elif text == 'Correlations with stream flow':
+        elif option == 'Correlations with stream flow':
             ifile = self.qfile['streamflow'].text()
             title = 'Streamflow and number of earthquakes per month'
             ylabel = 'Volume of water'
 
             self.mt2.t2_linegraph(ifile, efile, title, ylabel, 'metre',
                                   minmag, maxmag)
+
+    def t3_run_dbscan(self):
+        """
+        Run DBSCAN and update the graph type on tab 3.
+
+        Returns
+        -------
+        None.
+
+        """
+        # text = self.t3_combobox1.currentText()
+        dbs = self.t3_minnum.value()
+        epsilon = self.t3_eps.value()
+
+        headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
+        df = pd.read_excel(self.qfile['edata'].text(), usecols=headers)
+
+        coords = df[['lat', 'long']].to_numpy()
+
+        db = DBSCAN(eps=epsilon, min_samples=dbs,
+                    algorithm='ball_tree').fit(coords)
+
+        df['cluster'] = db.labels_
+        self.cluster = df
+
+        self.mt3.figure.clf()
+        ax = self.mt3.figure.add_subplot(122)
+
+        ax.set_title('Clusters identified')
+        ax.set_xlabel('Longitude')
+        ax.set_ylabel('Latitude')
+
+        sc = ax.scatter(df['long'], df['lat'], c=db.labels_, cmap='Paired',
+                        marker='.')
+
+        ax1 = self.mt3.figure.add_subplot(121)
+
+        minl = np.unique(db.labels_).min()
+        maxl = np.unique(db.labels_).max()
+        bins = np.arange(minl-0.5, maxl+1.5)
+        N, bins, patches = ax1.hist(db.labels_, log=True, bins=bins)
+
+        for i, patch in enumerate(patches):
+            height = patch.get_height()
+            patch.set_facecolor(sc.to_rgba(i-1))
+            ax1.text(patch.get_x() + patch.get_width()/2, height+0.01,
+                     f'{int(N[i])}', ha='center', va='bottom')
+
+        ax1.set_title('Cluster Population')
+        ax1.set_xlabel('Cluster (where -1 is Noise)')
+        ax1.set_ylabel('Count')
+
+        self.mt3.figure.tight_layout()
+        self.mt3.figure.canvas.draw()
+
+        # Activate Tab 4 and fill its combobox
+        self.tabs.setTabEnabled(3, True)
+        dr = self.cluster
+        clist = np.unique(dr['cluster'])
+        clist = clist[clist >= 0]
+
+        options = ['All Data']
+        for i in clist:
+            options.append('Cluster '+str(i))
+
+        self.t4_combobox1.disconnect()
+        self.t4_combobox1.addItems(options)
+        self.t4_combobox1.currentIndexChanged.connect(self.t4_change_graph)
+
+
+    def t4_change_graph(self):
+        """
+        Change the graph on tab 4.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        dr = self.cluster
+        option = self.t4_combobox1.currentText()
+
+        self.mt4.figure.clf()
+        ax1 = self.mt4.figure.add_subplot(121)
+        ax1.set_title('Number of earthquakes per magnitude')
+        ax1.set_xlabel('Magnitude')
+        ax1.set_ylabel('Number of earthquakes')
+
+        if option == "All Data":
+            df = dr['mag'].value_counts().to_frame('count').reset_index()
+            mag = df['index'].iloc[0]
+
+            ax1.scatter(x=df['index'], y=df['count'], color='red')
+            ax1.set_title('Number of earthquakes per magnitude for dataset')
+        else:
+            cnum = int(option.split()[1])
+
+            df = dr.loc[dr['cluster'] == cnum]
+            df = df['mag'].value_counts().to_frame('count').reset_index()
+            mag = df['index'].iloc[0]
+
+            ax1.scatter(x=df['index'], y=df['count'], color='blue')
+            ax1.set_title('Number of earthquakes per magnitude for cluster '
+                         f'{cnum}')
+
+        # b-value calculations
+        if option == "All Data":
+            df = dr
+        else:
+            df = dr.loc[dr['cluster'] == cnum]
+
+        df = df[df['mag'] >= mag]
+
+        magnitudes = df['mag']
+        years = df['date'].dt.year
+        # This should be the magnitude of completeness from the script
+        min_mag = min(magnitudes)
+        max_mag = max(magnitudes) + 0.1
+
+        num_eq = len(magnitudes)
+
+        num_years = max(years)-min(years)
+        annual_num_eq = num_eq/num_years
+
+        max_mag_bin = max(magnitudes) + 0.15
+
+        # Magnitude bins
+        bins = np.arange(min_mag, max_mag_bin, 0.05)
+        # Magnitude bins for plotting - we will re-arrange bins later
+        plot_bins = np.arange(min_mag, max_mag, 0.05)
+
+        # #####################################################################
+        # Generate distribution
+        # #####################################################################
+        # Generate histogram
+        hist = np.histogram(magnitudes, bins=bins)
+
+        # # Reverse array order
+        hist = hist[0][::-1]
+        bins = bins[::-1]
+
+        # Calculate cumulative sum
+        cum_hist = hist.cumsum()
+        # Ensure bins have the same length has the cumulative histogram.
+        # Remove the upper bound for the highest interval.
+        bins = bins[1:]
+
+        # Get annual rate
+        cum_annual_rate = cum_hist/num_years
+
+        new_cum_annual_rate = []
+        for i in cum_annual_rate:
+            new_cum_annual_rate.append(i+1e-20)
+
+        # Take logarithm
+        log_cum_sum = np.log10(new_cum_annual_rate)
+
+        # #####################################################################
+        # Fit a and b parameters using a varity of methods
+        # #####################################################################
+
+        # Fit a least squares curve
+        b, a = np.polyfit(bins, log_cum_sum, 1)
+
+        # alpha = np.log(10) * a
+        beta = -1.0 * np.log(10) * b
+        # Maximum Likelihood Estimator fitting
+        # b value
+        b_mle = np.log10(np.exp(1)) / (np.mean(magnitudes) - min_mag)
+        beta_mle = np.log(10) * b_mle
+
+        # #####################################################################
+        # Generate data to plot results
+        # #####################################################################
+        # Generate data to plot least squares linear curve
+        # Calculate y-intercept for least squares solution
+        yintercept = log_cum_sum[-1] - b * min_mag
+        ls_fit = b * plot_bins + yintercept
+        log_ls_fit = []
+        for value in ls_fit:
+            log_ls_fit.append(np.power(10, value))
+        # Generate data to plot bounded Gutenberg-Richter for LS solution
+        numer = (np.exp(-1. * beta * (plot_bins - min_mag)) -
+                 np.exp(-1. * beta * (max_mag - min_mag)))
+        denom = 1. - np.exp(-1. * beta * (max_mag - min_mag))
+        ls_bounded = annual_num_eq * (numer / denom)
+
+        # Generate data to plot maximum likelihood linear curve
+        mle_fit = (-1.0 * b_mle * plot_bins + 1.0 * b_mle * min_mag +
+                   np.log10(annual_num_eq))
+        log_mle_fit = []
+        for value in mle_fit:
+            log_mle_fit.append(np.power(10, value))
+        # Generate data to plot bounded Gutenberg-Richter for MLE solution
+        numer = (np.exp(-1. * beta_mle * (plot_bins - min_mag)) -
+                 np.exp(-1. * beta_mle * (max_mag - min_mag)))
+        denom = 1. - np.exp(-1. * beta_mle * (max_mag - min_mag))
+        mle_bounded = annual_num_eq * (numer / denom)
+        # Compare b-value of 1
+        fit_data = -1.0 * plot_bins + min_mag + np.log10(annual_num_eq)
+        log_fit_data = []
+        for value in fit_data:
+            log_fit_data.append(np.power(10, value))
+        # #####################################################################
+        # Plot the results
+        # #####################################################################
+
+        ax = self.mt4.figure.add_subplot(122)
+
+        ax.scatter(bins, new_cum_annual_rate, label='Catalogue')
+        ax.plot(plot_bins, log_ls_fit, c='r', label='Least Squares')
+        ax.plot(plot_bins, ls_bounded, c='r', linestyle='--',
+                label='Least Squares Bounded')
+        ax.plot(plot_bins, log_mle_fit, c='g', label='Maximum Likelihood')
+        ax.plot(plot_bins, mle_bounded, c='g', linestyle='--',
+                label='Maximum Likelihood Bounded')
+        ax.plot(plot_bins, log_fit_data, c='b', label='b = 1')
+
+        ax.set_yscale('log')
+        ax.legend()
+        ax.set_ylim([min(new_cum_annual_rate) * 0.1,
+                     max(new_cum_annual_rate) * 10.])
+        ax.set_xlim([min_mag - 0.5, max_mag + 0.5])
+        ax.set_ylabel('Annual probability')
+        ax.set_xlabel('Magnitude')
+        ax.set_title('B-value for the data')
+
+        self.mt4.figure.tight_layout()
+        self.mt4.figure.canvas.draw()
+
+        text = (f'Magnitude of completeness (MC): {min_mag}\n'
+                f'Total number of earthquakes: {num_eq}\n'
+                'Annual number of earthquakes greater than MC '
+                f'{annual_num_eq}\n'
+                f'Maximum catalog magnitude: {max(magnitudes)}\n'
+                f'Mmax = {max_mag}\n'
+                f'Least Squares: b value {-b}\n'
+                f'Least Squares: a value {a}\n'
+                f'Maximum Likelihood: b value {b_mle}')
+        self.t4_text.setText(text)
+
+        self.tabs.setTabEnabled(4, True)
+
+    def t5_aicalc(self):
+        """
+        AI Calculation.
+
+        Returns
+        -------
+        None.
+
+        """
+        # odir = os.path.dirname(self.qfile['edata'].text())
+        # Final_Result_L = os.path.join(odir, 'Output_Result_All.csv')
+
+        cut_off_MG = self.t5_minmag
+
+        # ###################### Merge files ##################################
+
+        self.t5_pbar.setMaximum(100)
+        self.t5_pbar.setValue(10)
+
+        in_rain = self.qfile['rain'].text()
+        in_stream = self.qfile['streamflow'].text()
+        in_earth = self.qfile['edata'].text()
+        stream_file = self.qfile['streamshp'].text()
+        lineament_file = self.qfile['lineamentshp'].text()
+
+        my_dict = {'Rainfall': [self.t5_monthlyrain.value()],
+                   'Stream_flow': [self.t5_watervolume.value()],
+                   'Dis_lineament': [self.t5_distlin.value()],
+                   'Dis_Stream': [self.t5_diststream.value()]}
+        f_pred = pd.DataFrame(my_dict)
+
+        f1 = pd.read_excel(in_rain)
+        f2 = pd.read_excel(in_stream)
+
+        file_out_var = pd.merge(f1, f2, on='date')
+        # #############Convert datetime to date and time ######################
+
+        headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
+        df_mg = pd.read_excel(in_earth, usecols=headers)
+
+        # ################Seting the lowest cutoff ############################
+        mg1 = df_mg['mag'].values.reshape(-1, 1)
+        z = pd.DataFrame(mg1)
+        transformer = Binarizer(threshold=1).fit(z)
+        output = transformer.transform(z)
+
+        df_mg['Binary'] = output
+        data = df_mg[df_mg.Binary != 0]
+
+        points = [Point(row['long'], row['lat'])
+                  for key, row in data.iterrows()]
+
+        geo_df = GeoDataFrame(data, geometry=points)
+
+        self.t5_pbar.setValue(25)
+
+        # #####################################################################
+        # Stream File
+        output_stream_var = get_distances(stream_file, geo_df, df_mg,
+                                          "Dis_Stream")
+
+        self.t5_pbar.setValue(50)
+        # #####################################################################
+        # Lineament File
+        output_line_var = get_distances(lineament_file, geo_df, df_mg,
+                                        "Dis_lineament")
+
+        self.t5_pbar.setValue(75)
+
+        # #####################################################################
+        # Merge lineaments and stream distances
+        out_line_stream_var = pd.merge(output_stream_var,
+                                       output_line_var,
+                                       how='left', on=['long', 'lat'])
+
+        # #####################################################################
+        df1 = out_line_stream_var
+        df2 = file_out_var
+
+        df1['Date'] = pd.to_datetime(df1['date_x'])
+        df2['Date'] = pd.to_datetime(df2['date'])
+
+        lefton = df1['Date'].apply(lambda x: (x.year, x.month))
+        righton = df2['Date'].apply(lambda y: (y.year, y.month))
+
+        df4 = pd.merge(df1, df2, left_on=lefton, right_on=righton, how='outer')
+        # #####################################################################
+
+        df4['MG_Reclass'] = np.where((df4['mag_x'].astype(float) >=
+                                      cut_off_MG), int(1), int(0))
+
+        df4.sort_values(by=['MG_Reclass'], inplace=True)
+
+        df4 = df4[['rain', 'metre', 'Dis_lineament', 'Dis_Stream',
+                   'mag_y']]
+        df4.rename(columns={'rain': 'Rainfall', 'metre': 'Stream_flow',
+                            'mag_y': 'Magnitude'}, inplace=True)
+
+        self.t5_pbar.setValue(85)
+        # #####################################################################
+
+        mg1 = df4['Magnitude'].values.reshape(-1, 1)
+        z = pd.DataFrame(mg1)
+        transformer = Binarizer(threshold=2).fit(z)
+        output = transformer.transform(z)
+        ser = pd.DataFrame(output)
+        ser.columns = ["Magnitude"]
+
+        df1 = df4.copy()
+        df1['Magnitude'] = ser['Magnitude']
+
+        dfaa = (df1-df1.min())/(df1.max()-df1.min())
+
+        dfaa.dropna(inplace=True, axis=0, how='all')
+        Xa = dfaa[['Rainfall', 'Stream_flow', 'Dis_lineament',
+                   'Dis_Stream', 'Magnitude']]
+        Xa.sort_values(by=['Magnitude'], inplace=True)
+
+        RF = df1["Rainfall"]
+        MF = df1["Stream_flow"]
+        DL = df1["Dis_lineament"]
+        DS = df1["Dis_Stream"]
+
+        RF1 = f_pred["Rainfall"]
+        MF1 = f_pred["Stream_flow"]
+        DL1 = f_pred["Dis_lineament"]
+        DS1 = f_pred["Dis_Stream"]
+
+        X11 = ((RF1-RF.min())/(RF1.max()-RF.min()))
+        X21 = ((MF1-MF.min())/(MF1.max()-MF.min()))
+        X31 = ((DL1-DL.min())/(DL1.max()-DL.min()))
+        X41 = ((DS1-DS.min())/(DS1.max()-DS.min()))
+
+        # The variable is always 1 for parameters on interface.
+        file_pred_out_var = pd.concat([X11, X21, X31, X41], axis=1)
+
+        X1a = file_pred_out_var.to_numpy()
+
+        tmp = Xa.to_numpy()
+        X = tmp[:, :4]
+        Y = tmp[:, 4:]
+        Y = Y.astype(int)
+        Y = one_hot_encode(Y)
+
+        X, Y = shuffle(X, Y, random_state=1)
+
+        # Convert the dataset into train and test parts
+        train_x, test_x, train_y, test_y = train_test_split(X, Y,
+                                                            test_size=0.2,
+                                                            random_state=415)
+
+        # Define the important parameters and variables to work with
+        # the tensors
+        learning_rate = 0.3
+        training_epochs = 100
+        cost_history = np.empty(shape=[1], dtype=float)
+        n_dim = X.shape[1]
+        n_class = 2
+
+        # Define the number of hidden layers and number of neurons for
+        # each layer
+        n_hidden_1 = 30
+        n_hidden_2 = 30
+        n_hidden_3 = 30
+        n_hidden_4 = 30
+
+        x = tf.placeholder(tf.float32, [None, n_dim])
+        y_ = tf.placeholder(tf.float32, [None, n_class])
+
+        # Define the model
+
+        weights = {
+            'h1': tf.Variable(tf.truncated_normal([n_dim,
+                                                   n_hidden_1])),
+            'h2': tf.Variable(tf.truncated_normal([n_hidden_1,
+                                                   n_hidden_2])),
+            'h3': tf.Variable(tf.truncated_normal([n_hidden_2,
+                                                   n_hidden_3])),
+            'h4': tf.Variable(tf.truncated_normal([n_hidden_3,
+                                                   n_hidden_4])),
+            'out': tf.Variable(tf.truncated_normal([n_hidden_4,
+                                                    n_class]))
+            }
+        biases = {
+            'b1': tf.Variable(tf.truncated_normal([n_hidden_1])),
+            'b2': tf.Variable(tf.truncated_normal([n_hidden_2])),
+            'b3': tf.Variable(tf.truncated_normal([n_hidden_3])),
+            'b4': tf.Variable(tf.truncated_normal([n_hidden_4])),
+            'out': tf.Variable(tf.truncated_normal([n_class]))
+            }
+        init = tf.global_variables_initializer()
+
+        y = multilayer_perceptron(x, weights, biases)
+        cost_function = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits_v2(logits=y, labels=y_))
+        training_step = tf.train.GradientDescentOptimizer(learning_rate).minimize(cost_function)
+
+        sess = tf.Session()
+        sess.run(init)
+
+        mse_history = []
+        accuracy_history = []
+
+        for _ in range(training_epochs):
+            sess.run(training_step,
+                     feed_dict={x: train_x, y_: train_y})
+            cost = sess.run(cost_function,
+                            feed_dict={x: train_x, y_: train_y})
+            cost_history = np.append(cost_history, cost)
+            correct_prediction = tf.equal(tf.argmax(y, 1),
+                                          tf.argmax(y_, 1))
+            accuracy = abs(tf.reduce_mean(tf.cast(correct_prediction,
+                                                  tf.float32)))*100
+
+            pred_y = sess.run(y, feed_dict={x: test_x})
+            mse = tf.reduce_mean(tf.square(pred_y-test_y))
+            mse_ = sess.run(mse)
+            mse_history.append(mse_)
+            accuracy = (sess.run(accuracy, feed_dict={x: train_x,
+                                                      y_: train_y}))
+            accuracy_history.append(accuracy)
+
+        test_out_history = []
+        df_ct = file_pred_out_var
+        X1a = X1a.reshape(df_ct.shape[0], 4)
+        test_out = sess.run(y, feed_dict={x: X1a})
+        test_out_history.append(test_out)
+
+        tmp = np.transpose(test_out_history).squeeze(axis=-1)
+        df_final = pd.DataFrame(tmp)
+        df_final.columns = ['Result']
+
+
+        self.mt5.figure.clf()
+        ax1 = self.mt5.figure.add_subplot(121)
+
+        ax1.set_title('MSE plot')
+        ax1.plot(mse_history, 'r')
+        ax1.set_ylabel('MSE Error')
+        ax1.set_xlabel('Epochs (Iterations)')
+
+        ax2 = self.mt5.figure.add_subplot(122)
+
+        ax2.set_title('Accuracy')
+        ax2.plot(accuracy_history)
+        ax2.set_ylabel('Accuracy (%)')
+        ax2.set_xlabel('Epochs (Iterations)')
+
+        self.mt5.figure.tight_layout()
+        self.mt5.figure.canvas.draw()
+
+        correct_prediction = tf.equal(tf.argmax(y, 1),
+                                      tf.argmax(y_, 1))
+        accuracy = tf.reduce_mean(tf.cast(correct_prediction,
+                                          tf.float32))
+        pred_y = sess.run(y, feed_dict={x: test_x})
+        mse = tf.reduce_mean(tf.square(pred_y-test_y))
+        # self.results_txt.insert(tk.INSERT, 'Test Accuracy: ' +
+        #                         str(round(sess.run(accuracy,
+        #                                            feed_dict={x: test_x,
+        #                                                       y_: test_y}),
+        #                                   0)*100)+' % ' + ' ' + 'MSE: ' +
+        #                         str(round(sess.run(mse), 3)) + '\n')
+        mg_tsh = self.t5_minmag
+
+        df1 = df_final
+        x1 = abs(df1['Result'][0])
+
+        self.t5_pbar.setValue(100)
+
+        if x1 > 0.5:
+            x = ('For these given parameters there is a higher '
+                 'chance of an earthquake with magnitude '
+                 'greater than '+str(mg_tsh))
+
+        else:
+            x = ('For these given parameters there is less chance of '
+                 'an earthquake with magnitude '
+                 'greater than '+str(mg_tsh))
+
+
+        self.t5_result.setText(x)
+
+    def t5_updatetext(self):
+        """
+        Update text relating to event.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        latn = self.t5_latitude.value()
+        lonn = self.t5_longitude.value()
+        locations_A = self.cluster
+        locations_new =  pd.DataFrame({"lat_new": [latn], "lon_new": [lonn]})
+
+        # add columns with radians for latitude and longitude
+        locations_A[['lat_radians_A', 'long_radians_A']] = (
+            np.radians(locations_A.loc[:, ['lat', 'long']]))
+
+        locations_new[['lat_radians_B', 'long_radians_B']] = (
+            np.radians(locations_new.loc[:, ['lat_new', 'lon_new']]))
+
+        dist = sklearn.neighbors.DistanceMetric.get_metric('haversine')
+        dist_matrix = (dist.pairwise(
+            locations_A[['lat_radians_A', 'long_radians_A']],
+            locations_new[['lat_radians_B', 'long_radians_B']])*6371.0)
+        # Note that 6371.0 is the radius of the earth in kilometres
+
+        locations_A["distance to new point"] = dist_matrix.flatten()
+
+        close = locations_A[locations_A["distance to new point"] ==
+                            locations_A["distance to new point"].min()]
+        close = close.iloc[0]
+
+        if close['cluster'].max() == -1:
+            minclose = -1
+        else:
+            minclose = close['cluster'][close['cluster'] > -1].min()
+
+
+        if minclose == -1:
+            minmag = 'outside the clusters'
+        else:
+            dr = self.cluster
+            df = dr.loc[dr['cluster'] == minclose]
+            df = df['mag'].value_counts().to_frame('count').reset_index()
+            minmag = df.loc[0, 'index']
+            self.t5_minmag = minmag
+
+        if minclose == -1:
+            b_mle = 'outside the clusters'
+        else:
+            df = dr.loc[dr['cluster'] == minclose]
+            magnitudes = df.loc[df.mag > minmag].mag
+            min_mag = magnitudes.min()
+            b_mle = np.log10(np.exp(1)) / (np.mean(magnitudes) - min_mag)
+
+        text = ('Distance to closest earthquake (metres): '
+                f'{close["distance to new point"]:.2f}\n'
+                f'Date and time: {close["date"]}\n'
+                f'Magnitude: {close["mag"]}')
+
+        text2 = (f'Cluster Number: {close["cluster"]}\n'
+                 f'Magnitude of completeness: {minmag}\n'
+                 f'b-value of cluster: {b_mle}')
+
+        self.t5_text.setText(text)
+        self.t5_text2.setText(text2)
 
     def load_data(self, datatype, ext):
         """
@@ -460,6 +1147,7 @@ class AI_Seis(QtWidgets.QDialog):
 
         if '' not in test:
             self.tabs.setTabEnabled(1, True)
+            self.tabs.setTabEnabled(2, True)
 
     def settings(self, nodialog=False):
         """
@@ -788,233 +1476,6 @@ def get_distances(ifile, geo_df, df_mg, lbl):
     pd1.dropna(subset=['mag'], inplace=True)
 
     return pd1
-
-
-class PageCluster(tk.Frame):
-    """PageCluster."""
-    counter = 0
-
-    def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
-
-        self.controller = controller
-        self.filename1 = self.controller.shared_data["filename1"]
-        self.filename3 = self.controller.shared_data["filename3"]
-        self.filename4 = self.controller.shared_data["filename4"]
-        self.filename5 = self.controller.shared_data["filename5"]
-        self.filename6 = self.controller.shared_data["filename6"]
-        self.out_dir = self.controller.shared_data["out_dir"]
-        self.clusterdat = None
-
-        tk.Frame.config(self, bg='white')
-
-        if os.path.exists("pages.jpg"):
-            load = Image.open(r"pages.jpg")
-            render = ImageTk.PhotoImage(load)
-            img = tk.Label(self, image=render)
-            img.image = render
-            img.place(x=0, y=0, relwidth=1, relheight=1)
-
-        label = tk.Label(self, text="Determining Clusters within the data",
-                         bg="white", fg="brown",
-                         font=controller.title_font)
-        label.pack()
-        label.place(x=350, y=50)
-
-        label3 = tk.Label(self, text="Please input the minimum number of "
-                          "events to be used for DBSCAN", bg="white",
-                          fg="brown", font=("Times", 15))
-        label3.pack()
-        label3.place(x=170, y=120)
-
-        label4 = tk.Label(self, text="Please input the maximum distance for "
-                          "two events to be grouped (eps)",
-                          bg="white", fg="brown", font=("Times", 15))
-        label4.pack()
-        label4.place(x=170, y=140)
-
-        self.dbsVariable = tk.IntVar()
-        dbs = tk.Entry(self, textvariable=self.dbsVariable, fg="white",
-                       bg="brown")
-        self.dbsVariable.set(30)
-        dbs.pack()
-        dbs.place(x=750, y=120)
-
-        self.epsVariable = tk.DoubleVar()
-        eps = tk.Entry(self, textvariable=self.epsVariable, fg="white",
-                       bg="brown")
-        self.epsVariable.set(0.01)
-        eps.pack()
-        eps.place(x=750, y=140)
-
-        buttondb = tk.Button(self, text='  Run DBSCAN  ',
-                             font=("Times", 15), fg="white", bg="brown",
-                             state=tk.NORMAL, command=self.calculate_eps)
-        buttondb.pack()
-        buttondb.place(x=900, y=120)
-
-        ll = tk.Label(self, text='Results from DBSCAN:', bg="white",
-                      fg="brown", font=("Times", 15))
-        ll.pack()
-
-        ll.place(x=50, y=240)
-
-        button = tk.Button(self, text="Return to the home page",
-                           font=("Times", 14),
-                           command=lambda: controller.show_frame("StartPage"))
-        button.pack()
-        button.place(x=30, y=650)
-
-        button = tk.Button(self, text="Return to STEP 3", font=("Times", 14),
-                           command=lambda: controller.show_frame("PageThree"))
-        button.pack()
-        button.place(x=400, y=650)
-
-        self.button = tk.Button(self, text="Proceed To Completeness",
-                                font=("Times", 14),
-                                command=lambda:
-                                controller.show_frame("PageComplete"))
-        self.button.pack()
-        self.button.place(x=800, y=650)
-        self.button['state'] = 'disabled'
-
-        self.lbl = tk.Label(self, bg="white", fg="brown", font=("Times", 15))
-        self.lbl.pack()
-        self.lbl.place(x=50, y=285)
-
-        self.m = tk.Label(self, bg="white", fg="brown", font=("Times", 15))
-        self.m.pack()
-        self.m.place(x=50, y=310)
-
-        self.n = tk.Label(self, bg="white", fg="brown", font=("Times", 15))
-        self.n.pack()
-        self.n.place(x=50, y=400)
-
-        self.fig = Figure(figsize=(6, 4))
-        canvas = FigureCanvasTkAgg(self.fig, self)
-        canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH)
-        canvas.get_tk_widget().place(x=580, y=180)
-
-        toolbarFrame = tk.Frame(self)
-        toolbarFrame.pack()
-        toolbarFrame.place(x=710, y=600)
-        toolbar = NavigationToolbar2Tk(canvas, toolbarFrame)
-
-        OPTIONS = [r"N/A"]
-        self.variable = tk.StringVar(self)
-        self.variable.set(OPTIONS[0])
-
-        self.om = tk.OptionMenu(self, self.variable, *OPTIONS)
-        self.om.config(width=20, bg='brown', fg='white', font=("Times", 15))
-        self.om.pack()
-        self.om.place(x=50, y=340)
-
-    def calculate_eps(self):
-        """
-        Calculate eps
-
-        Returns
-        -------
-        None
-
-        """
-
-        headers = ['lat', 'long', 'depth', 'date', 'time', 'mag']
-        df = pd.read_excel(self.filename1.get(), usecols=headers)
-
-        # lat = df['lat']
-        # lon = df['long']
-
-        # dq = pd.DataFrame(list(zip(lat, lon)))
-
-        # To determine eps:
-        # neigh = NearestNeighbors(n_neighbors=2)
-        # nbrs = neigh.fit(dq)
-        # distances, _ = nbrs.kneighbors(dq)
-
-        # distances = np.sort(distances, axis=0)
-        # distances = distances[:, 1]
-
-        # dq = pd.DataFrame({'B': distances})
-        # epsilon = dq['B'].max()
-        epsilon = self.epsVariable.get()
-
-        # dq['B_dif'] = dq['B'].diff()
-        # dq = dq.dropna()
-
-        self.lbl['text'] = f'Epsilon value used: {epsilon}'
-        ##########################################################
-        # first the eps should be determined, then the dbscan can run
-        # after this file is the sorting clusters file
-        # this works below
-        dbs = self.dbsVariable.get()
-        # perform dbscan
-
-        coords = df[['lat', 'long']].to_numpy()
-
-        db = DBSCAN(eps=epsilon, min_samples=dbs,
-                    algorithm='ball_tree').fit(coords)
-
-        cluster_labels = db.labels_
-        self.clusterdat = np.transpose(np.unique(db.labels_,
-                                                 return_counts=True))
-
-        num_clusters = cluster_labels.max()+1
-
-        menu = self.om["menu"]
-        menu.delete(0, "end")
-
-        options = ['Noise cluster']
-        for i in range(num_clusters):
-            options.append('Cluster '+str(i))
-
-        for string in options:
-            menu.add_command(label=string, command=lambda value=string:
-                             self.change_option(value))
-        self.variable.set(options[0])
-
-        num_clusters = self.clusterdat[0, 1]
-
-        self.n['text'] = f'Number of events: {num_clusters}'
-
-        # save as extra column in dataframe
-        df["cluster"] = pd.DataFrame({'cluster': cluster_labels})
-
-        self.controller.shared_data['cluster'] = df
-
-        self.fig.clf()
-        ax = self.fig.add_subplot(111)
-
-        ax.set_title('Clusters identified')
-        ax.set_xlabel('Longitude')
-        ax.set_ylabel('Latitude')
-        ax.set_facecolor('xkcd:white')
-        self.fig.patch.set_facecolor('xkcd:white')
-
-        ax.scatter(df['long'], df['lat'], c=cluster_labels, cmap='Paired')
-        self.fig.tight_layout()
-        self.fig.canvas.draw()
-
-        self.button['state'] = 'normal'
-
-    def change_option(self, option):
-        """
-        Change option menu.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.variable.set(option)
-
-        if option == "Noise cluster":
-            num_clusters = self.clusterdat[0, 1]
-        else:
-            cnum = int(option.split()[1])
-            num_clusters = self.clusterdat[cnum+1, 1]
-
-        self.n['text'] = f'Number of events: {num_clusters}'
 
 
 class PageComplete(tk.Frame):
@@ -2218,6 +2679,7 @@ def _testfn():
     tmp.qfile['streamshp'].setText(r'C:\Work\Programming\AI\AI_SEIS\data\Vaal_River.shp')
     tmp.qfile['lineamentshp'].setText(r'C:\Work\Programming\AI\AI_SEIS\data\geo_lineament.shp')
     tmp.tabs.setTabEnabled(1, True)
+    tmp.tabs.setTabEnabled(2, True)
 
     tmp.settings()
 
