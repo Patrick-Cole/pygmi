@@ -6,13 +6,17 @@ pcole, 2021  - Bugfix to allow for correct zooming if origin is set to 'upper'
 """
 from __future__ import print_function, division
 
+from math import cos, sin, tan
+import numpy as np
+import numexpr as ne
+from scipy import ndimage
+
 from matplotlib import rcParams
+import matplotlib.cm as cm
 import matplotlib.image as mi
 import matplotlib.colors as mcolors
 import matplotlib.cbook as cbook
 from matplotlib.transforms import IdentityTransform, Affine2D
-
-import numpy as np
 
 IDENTITY_TRANSFORM = IdentityTransform()
 
@@ -43,6 +47,13 @@ class ModestImage(mi.AxesImage):
         super(ModestImage, self).__init__(*args, **kwargs)
         self.invalidate_cache()
 
+        # Custom lines for PyGMI
+        self.shade = None
+        self.rgbmode = ''  # Can be None, CMY Ternary or RGB Ternary
+        self.rgbclip = [[None, None], [None, None], [None, None]]
+        self.dohisteq = False
+        self.kval = 0.01  # For CMYK Ternary
+
     def set_data(self, A):
         """
         Set the image array
@@ -56,8 +67,10 @@ class ModestImage(mi.AxesImage):
                                                          float):
             raise TypeError("Image data can not convert to float")
 
-        if (self._A.ndim not in (2, 3) or
-                (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4))):
+        if self._A.ndim not in (2, 3):
+            raise TypeError("Invalid dimensions for image data")
+        elif (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4) and
+              self.shade is False):
             raise TypeError("Invalid dimensions for image data")
 
         self.invalidate_cache()
@@ -111,8 +124,8 @@ class ModestImage(mi.AxesImage):
     def format_cursor_data(self, data):
         """Format z data"""
 
-        if np.ma.is_masked(data):
-            zval = 'z = masked'
+        if np.ma.is_masked(data) or isinstance(data, (list, np.ndarray)):
+            zval = 'z = None'
         else:
             zval = f'z = {data:,.5f}'
 
@@ -161,7 +174,6 @@ class ModestImage(mi.AxesImage):
         Change self._A and _extent to render an image whose resolution is
         matched to the eventual rendering.
         """
-
         # Find out how we need to slice the array to make sure we match the
         # resolution of the display. We pass self._world2pixel which matters
         # for cases where the extent has been set.
@@ -169,14 +181,13 @@ class ModestImage(mi.AxesImage):
                                                         shape=self._full_res.shape,
                                                         transform=self._world2pixel)
 
-        # breakpoint()
         # Check whether we've already calculated what we need, and if so just
         # return without doing anything further.
-        if (self._bounds is not None and
-                sx >= self._sx and sy >= self._sy and
-                x0 >= self._bounds[0] and x1 <= self._bounds[1] and
-                y0 >= self._bounds[2] and y1 <= self._bounds[3]):
-            return
+        # if (self._bounds is not None and
+        #         sx >= self._sx and sy >= self._sy and
+        #         x0 >= self._bounds[0] and x1 <= self._bounds[1] and
+        #         y0 >= self._bounds[2] and y1 <= self._bounds[3]):
+        #     return
 
         # Slice the array using the slices determined previously to optimally
         # match the display
@@ -219,10 +230,372 @@ class ModestImage(mi.AxesImage):
         self.changed()
 
     def draw(self, renderer, *args, **kwargs):
+
         if self._full_res.shape is None:
             return
         self._scale_to_res()
+        if (self.dohisteq is True and self.shade is None and
+                'Ternary' not in self.rgbmode):
+            self._A = norm2(histeq(self._A))
+            self.set_clim(0, 1)
+
+        if 'Ternary' in self.rgbmode:
+            colormap = self.draw_ternary()
+        else:
+            colormap = self._A
+
+        if self.shade is not None:
+            colormap = self.draw_sunshade(colormap)
+
+        self._A = colormap
+
         super(ModestImage, self).draw(renderer, *args, **kwargs)
+
+
+    def draw_ternary(self):
+        """
+        Draw ternary.
+
+        Returns
+        -------
+        None.
+
+        """
+        colormap = np.ma.ones((self._A.shape[0], self._A.shape[1], 4))
+        if self.dohisteq:
+            colormap[:, :, 0] = norm2(histeq(self._A[:, :, 0]))
+            colormap[:, :, 1] = norm2(histeq(self._A[:, :, 1]))
+            colormap[:, :, 2] = norm2(histeq(self._A[:, :, 2]))
+        else:
+            colormap[:, :, 0] = norm2(self._A[:, :, 0],
+                                      self.rgbclip[0][0], self.rgbclip[0][1])
+            colormap[:, :, 1] = norm2(self._A[:, :, 1],
+                                      self.rgbclip[1][0], self.rgbclip[1][1])
+            colormap[:, :, 2] = norm2(self._A[:, :, 2],
+                                      self.rgbclip[2][0], self.rgbclip[2][1])
+
+        if 'CMY' in self.rgbmode:
+            colormap[:, :, 0] = (1-colormap[:, :, 0])*(1-self.kval)
+            colormap[:, :, 1] = (1-colormap[:, :, 1])*(1-self.kval)
+            colormap[:, :, 2] = (1-colormap[:, :, 2])*(1-self.kval)
+
+        if np.ma.isMaskedArray(self._A):
+            mask = np.logical_or(self._A[:, :, 0].mask,
+                                  self._A[:, :, 1].mask)
+            mask = np.logical_or(mask, self._A[:, :, 2].mask)
+            colormap[:, :, 3] = np.logical_not(mask)
+        return colormap
+
+    def draw_sunshade(self, colormap=None):
+        """
+        Apply sunshading
+
+        Returns
+        -------
+        None.
+
+        """
+        sun = self._A[:, :, -1]
+        self._A = self._A[:, :, :-1]
+        self._A = self._A.squeeze()
+        if self.dohisteq is True:
+            self._A = norm2(histeq(self._A))
+        else:
+            datmin, datmax = self.get_clim()
+            self._A = norm2(self._A, datmin, datmax)
+
+        cell, theta, phi, alpha = self.shade
+        sunshader = currentshader(sun.data, cell, theta, phi, alpha)
+        snorm = norm2(sunshader)
+
+        if 'Ternary' not in self.rgbmode:
+            colormap = self.cmap(self._A)
+
+        colormap[:, :, 0] *= snorm  # red
+        colormap[:, :, 1] *= snorm  # green
+        colormap[:, :, 2] *= snorm  # blue
+        if np.ma.isMaskedArray(sun):
+            colormap[:, :, 3] = np.logical_not(sun.mask)
+
+        return colormap
+
+
+
+
+
+
+def aspect2(data):
+    """
+    Aspect of a dataset.
+
+    Parameters
+    ----------
+    data : numpy MxN array
+        input data used for the aspect calculation
+
+    Returns
+    -------
+    adeg : numpy masked array
+        aspect in degrees
+    dzdx : numpy array
+        gradient in x direction
+    dzdy : numpy array
+        gradient in y direction
+    """
+    cdy = np.array([[1., 2., 1.], [0., 0., 0.], [-1., -2., -1.]])
+    cdx = np.array([[1., 0., -1.], [2., 0., -2.], [1., 0., -1.]])
+
+    dzdx = ndimage.convolve(data, cdx)  # Use convolve: matrix filtering
+    dzdy = ndimage.convolve(data, cdy)  # 'valid' gets reduced array
+
+    dzdx = ne.evaluate('dzdx/8.')
+    dzdy = ne.evaluate('dzdy/8.')
+
+# Aspect Section
+    pi = np.pi
+    adeg = ne.evaluate('90-arctan2(dzdy, -dzdx)*180./pi')
+    adeg = np.ma.masked_invalid(adeg)
+    adeg[np.ma.less(adeg, 0.)] += 360.
+    adeg[np.logical_and(dzdx == 0, dzdy == 0)] = -1.
+
+    return [adeg, dzdx, dzdy]
+
+
+def currentshader(data, cell, theta, phi, alpha):
+    """
+    Blinn shader - used for sun shading.
+
+    Parameters
+    ----------
+    data : numpy array
+        Dataset to be shaded.
+    cell : float
+        between 1 and 100 - controls sunshade detail.
+    theta : float
+        sun elevation (also called g in code below)
+    phi : float
+        azimuth
+    alpha : float
+        how much incident light is reflected (0 to 1)
+
+    Returns
+    -------
+    R : numpy array
+        array containing the shaded results.
+
+    """
+    asp = aspect2(data)
+    n = 2
+    pinit = asp[1]
+    qinit = asp[2]
+    p = ne.evaluate('pinit/cell')
+    q = ne.evaluate('qinit/cell')
+    sqrt_1p2q2 = ne.evaluate('sqrt(1+p**2+q**2)')
+
+    cosg2 = cos(theta/2)
+    p0 = -cos(phi)*tan(theta)
+    q0 = -sin(phi)*tan(theta)
+    sqrttmp = ne.evaluate('(1+sqrt(1+p0**2+q0**2))')
+    p1 = ne.evaluate('p0 / sqrttmp')
+    q1 = ne.evaluate('q0 / sqrttmp')
+
+    cosi = ne.evaluate('((1+p0*p+q0*q)/(sqrt_1p2q2*sqrt(1+p0**2+q0**2)))')
+    coss = ne.evaluate('((1+p1*p+q1*q)/(sqrt_1p2q2*sqrt(1+p1**2+q1**2)))')
+    Ps = ne.evaluate('coss**n')
+    R = np.ma.masked_invalid(ne.evaluate('((1-alpha)+alpha*Ps)*cosi/cosg2'))
+
+    return R
+
+
+def histcomp(img, nbr_bins=None, perc=5., uperc=None):
+    """
+    Histogram Compaction.
+
+    This compacts a % of the outliers in data, allowing for a cleaner, linear
+    representation of the data.
+
+    Parameters
+    ----------
+    img : numpy array
+        data to compact
+    nbr_bins : int
+        number of bins to use in compaction
+    perc : float
+        percentage of histogram to clip. If uperc is not None, then this is
+        the lower percentage
+    uperc : float
+        upper percentage to clip. If uperc is None, then it is set to the
+        same value as perc
+
+    Returns
+    -------
+    img2 : numpy array
+        compacted array
+    """
+
+    if uperc is None:
+        uperc = perc
+
+    if nbr_bins is None:
+        nbr_bins = max(img.shape)
+        nbr_bins = max(nbr_bins, 256)
+
+# get image histogram
+    imask = np.ma.getmaskarray(img)
+    tmp = img.compressed()
+    imhist, bins = np.histogram(tmp, nbr_bins)
+
+    cdf = imhist.cumsum()  # cumulative distribution function
+    if cdf[-1] == 0:
+        return img
+    cdf = cdf / float(cdf[-1])  # normalize
+
+    perc = perc/100.
+    uperc = uperc/100.
+
+    sindx = np.arange(nbr_bins)[cdf > perc][0]
+    if cdf[0] > (1-uperc):
+        eindx = 1
+    else:
+        eindx = np.arange(nbr_bins)[cdf < (1-uperc)][-1]+1
+    svalue = bins[sindx]
+    evalue = bins[eindx]
+
+    img2 = np.empty_like(img, dtype=np.float32)
+    np.copyto(img2, img)
+
+    filt = np.ma.less(img2, svalue)
+    img2[filt] = svalue
+
+    filt = np.ma.greater(img2, evalue)
+    img2[filt] = evalue
+
+    img2 = np.ma.array(img2, mask=imask)
+
+    return img2, svalue, evalue
+
+
+def histeq(img, nbr_bins=32768):
+    """
+    Histogram Equalization.
+
+    Equalizes the histogram to colors. This allows for seeing as much data as
+    possible in the image, at the expense of knowing the real value of the
+    data at a point. It bins the data equally - flattening the distribution.
+
+    Parameters
+    ----------
+    img : numpy array
+        input data to be equalised
+    nbr_bins : integer
+        number of bins to be used in the calculation
+
+    Returns
+    -------
+    im2 : numpy array
+        output data
+    """
+    # get image histogram
+    imhist, bins = np.histogram(img.compressed(), nbr_bins)
+    bins = (bins[1:]-bins[:-1])/2+bins[:-1]  # get bin center point
+
+    cdf = imhist.cumsum()  # cumulative distribution function
+    cdf = cdf - cdf[0]  # subtract min, which is first val in cdf
+    cdf = cdf.astype(np.int64)
+    cdf = nbr_bins * cdf / cdf[-1]  # norm to nbr_bins
+
+    # use linear interpolation of cdf to find new pixel values
+    im2 = np.interp(img, bins, cdf)
+    im2 = np.ma.array(im2, mask=img.mask)
+
+    return im2
+
+
+def img2rgb(img, cbar=cm.get_cmap('jet')):
+    """
+    Image to RGB.
+
+    convert image to 4 channel rgba color image.
+
+    Parameters
+    ----------
+    img : numpy array
+        array to be converted to rgba image.
+    cbar : matplotlib color map
+        colormap to apply to the image
+
+    Returns
+    -------
+    im2 : numpy array
+        output rgba image
+    """
+    im2 = img.copy()
+    im2 = norm255(im2)
+    cbartmp = cbar(range(255))
+    cbartmp = np.array([[0., 0., 0., 1.]]+cbartmp.tolist())*255
+    cbartmp = cbartmp.round()
+    cbartmp = cbartmp.astype(np.uint8)
+    im2 = cbartmp[im2]
+    im2[:, :, 3] = np.logical_not(img.mask)*254+1
+
+    return im2
+
+
+def norm2(dat, datmin=None, datmax=None):
+    """
+    Normalise array vector between 0 and 1.
+
+    Parameters
+    ----------
+    dat : numpy array
+        array to be normalised
+
+    Returns
+    -------
+    out : numpy array of floats
+        normalised array
+    """
+    if datmin is None:
+        datmin = float(dat.min())
+    if datmax is None:
+        datmax = float(dat.max())
+    datptp = datmax - datmin
+    out = np.ma.array(ne.evaluate('(dat-datmin)/datptp'))
+    out.mask = np.ma.getmaskarray(dat)
+
+    # breakpoint()
+
+    return out
+
+
+def norm255(dat):
+    """
+    Normalise array vector between 1 and 255.
+
+    Parameters
+    ----------
+    dat : numpy array
+        array to be normalised
+
+    Returns
+    -------
+    out : numpy array of 8 bit integers
+        normalised array
+    """
+    datmin = float(dat.min())
+    datptp = float(dat.ptp())
+    out = ne.evaluate('254*(dat-datmin)/datptp+1')
+    out = out.round()
+    out = out.astype(np.uint8)
+    return out
+
+
+
+
+
+
+
+
 
 
 def main():

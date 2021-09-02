@@ -149,8 +149,10 @@ class ImportData():
         self.filt = ''
         if parent is None:
             self.showprocesslog = print
+            self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
     def settings(self, nodialog=False):
         """
@@ -167,10 +169,7 @@ class ImportData():
             True if successful, False otherwise.
 
         """
-        piter = iter
         if not nodialog:
-            if self.parent is not None:
-                piter = self.parent.pbar.iter
             ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img '
                    '*.pix *.bil);;'
                    'ArcGIS BIL (*.bil);;'
@@ -213,10 +212,10 @@ class ImportData():
                                                         nval)
             if not ok:
                 nval = 0.0
-            dat = get_raster(self.ifile, nval, piter=piter,
+            dat = get_raster(self.ifile, nval, piter=self.piter,
                              showprocesslog=self.showprocesslog)
         else:
-            dat = get_raster(self.ifile, piter=piter,
+            dat = get_raster(self.ifile, piter=self.piter,
                              showprocesslog=self.showprocesslog)
 
         if dat is None:
@@ -320,8 +319,10 @@ class ImportRGBData():
         self.outdata = {}
         if parent is None:
             self.showprocesslog = print
+            self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
     def settings(self, nodialog=False):
         """
@@ -348,7 +349,8 @@ class ImportRGBData():
 
         os.chdir(os.path.dirname(self.ifile))
 
-        dat = get_raster(self.ifile, showprocesslog=self.showprocesslog)
+        dat = get_raster(self.ifile, piter=self.piter,
+                         showprocesslog=self.showprocesslog)
 
         if dat is None:
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -536,7 +538,7 @@ def get_ascii(ifile):
     return dat
 
 
-def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
+def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                iraster=None):
     """
     Get raster dataset.
@@ -563,6 +565,10 @@ def get_raster(ifile, nval=None, piter=iter, showprocesslog=print,
     dat : PyGMI raster Data
         dataset imported
     """
+
+    if piter is None:
+        piter = ProgressBarText().iter
+
     dat = []
     bname = ifile.split('/')[-1].rpartition('.')[0]
     ifile = ifile[:]
@@ -1417,7 +1423,7 @@ class ExportData():
         return file_out
 
 
-def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
+def export_gdal(ofile, dat, drv, envimeta='', piter=None):
     """
     Export to GDAL format.
 
@@ -1439,6 +1445,9 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=iter):
     None.
 
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
     if isinstance(dat, dict):
         dat2 = []
         for i in dat:
