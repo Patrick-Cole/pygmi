@@ -263,8 +263,7 @@ class MenuWidget():
 
     def merge(self):
         """Merge datasets."""
-        self.parent.item_insert('Step', 'Data Merge', dataprep.DataMerge,
-                                runimport=False, hasimport=True)
+        self.parent.item_insert('Io', 'Data Merge', dataprep.DataMerge)
 
     def lstack(self):
         """Layer stack datasets."""
@@ -272,7 +271,7 @@ class MenuWidget():
 
     def import_data(self):
         """Import data."""
-        self.parent.item_insert('Io', 'Import Data', iodefs.ImportData)
+        self.parent.item_insert('Io', 'Import Raster Data', iodefs.ImportData)
 
     def import_rgb_data(self):
         """Import RGB data."""

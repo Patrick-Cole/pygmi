@@ -148,7 +148,7 @@ class MenuWidget():
 
     def delete_recs(self):
         """Delete Records."""
-        self.parent.item_insert('Io', 'Delete Records', del_rec.DeleteRecord)
+        self.parent.item_insert('Step', 'Delete Records', del_rec.DeleteRecord)
 
     def quarry(self):
         """Remove quarry events."""

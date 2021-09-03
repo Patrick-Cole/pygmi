@@ -823,8 +823,8 @@ class MainWidget(QtWidgets.QMainWindow):
         """Help Routine."""
         menu_default.HelpDocs(self, 'pygmi.main')
 
-    def item_insert(self, item_type, item_name, class_name, runimport=True,
-                    params=None, hasimport=False):
+    def item_insert(self, item_type, item_name, class_name, params=None,
+                    projimport=False):
         """
         Item insert.
 
@@ -859,10 +859,10 @@ class MainWidget(QtWidgets.QMainWindow):
 
         item.my_class_name = item_name.replace('\n', ' ')
 
-        if 'Import' in item_name  or 'Load' in item_name or hasimport is True:
+        if item_type == 'Io':
             item.is_import = True
 
-        if ('Import' in item_name or 'Load' in item_name) and runimport is True:
+        if item_type == 'Io' and projimport is False:
             iflag = item.settings()
             if iflag is False:
                 return None
@@ -1015,7 +1015,7 @@ class MainWidget(QtWidgets.QMainWindow):
             item_type = item['diagram_type']
 
             citem = self.item_insert(item_type, item_name, class_name,
-                                     runimport=False)
+                                     projimport=True)
 
             citem.setX(item['x'])
             citem.setY(item['y'])
