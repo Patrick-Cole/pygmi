@@ -267,96 +267,6 @@ class ImportMod3D():
                 lmod.lith_index[col, row, layer] = \
                     lmod.lith_list[label[i]].lith_index
 
-    def import_ascii_xyz_model_old(self, filename):
-        """
-        Use to import ASCII XYZ Models of the form x,y,z,label.
-
-        Parameters
-        ----------
-        filename : str
-            Input filename.
-
-        Returns
-        -------
-        None.
-
-        """
-        if filename.find('.csv') > -1:
-            tmp = np.genfromtxt(filename, delimiter=',', dtype=np.str)
-        else:
-            tmp = np.genfromtxt(filename, dtype=np.str)
-
-        x = tmp[:, 0].astype(np.float)
-        y = tmp[:, 1].astype(np.float)
-        z = tmp[:, 2].astype(np.float)
-        label = tmp[:, 3]
-        labelu = np.unique(label)
-
-        idx = np.unique(x, return_index=True)[1]
-        x_u = x[np.sort(idx)]
-        dx_u = np.diff(x_u)
-        idx = np.unique(y, return_index=True)[1]
-        y_u = y[np.sort(idx)]
-        dy_u = np.diff(y_u)
-        idx = np.unique(z, return_index=True)[1]
-        z_u = z[np.sort(idx)]
-        dz_u = np.diff(z_u)
-
-        if dx_u[0] < 0:
-            dx_u *= -1
-        if dy_u[0] < 0:
-            dy_u *= -1
-        if dz_u[0] < 0:
-            dz_u *= -1
-
-        breakpoint()
-
-        xcell = np.max(dx_u)
-        ycell = np.max(dy_u)
-        zcell = np.max(dz_u)
-
-        lmod = self.lmod
-
-        lmod.dxy = min(xcell, ycell)
-        lmod.d_z = zcell
-        lmod.xrange = [x_u.min()-lmod.dxy/2., x_u.max()+lmod.dxy/2.]
-        lmod.yrange = [y_u.min()-lmod.dxy/2., y_u.max()+lmod.dxy/2.]
-        lmod.zrange = [z_u.min()-lmod.d_z/2., z_u.max()+lmod.d_z/2.]
-        lmod.numx = int(np.ptp(lmod.xrange)/lmod.dxy+1)
-        lmod.numy = int(np.ptp(lmod.yrange)/lmod.dxy+1)
-        lmod.numz = int(np.ptp(lmod.zrange)/lmod.d_z+1)
-
-# Section to load lithologies.
-        if 'Generic 1' in lmod.lith_list:
-            lmod.lith_list.pop('Generic 1')
-
-        lindx = 0
-        for itxt in labelu:
-            lindx += 1
-            lmod.mlut[lindx] = [np.random.randint(0, 255),
-                                np.random.randint(0, 255),
-                                np.random.randint(0, 255)]
-            lmod.lith_list[itxt] = grvmag3d.GeoData(
-                self.parent, ncols=lmod.numx, nrows=lmod.numy, numz=lmod.numz,
-                dxy=lmod.dxy, d_z=lmod.d_z)
-
-            lmod.lith_list[itxt].lith_index = lindx
-            lmod.lith_list[itxt].modified = True
-            lmod.lith_list[itxt].set_xyz12()
-
-        lmod.lith_index = None
-        lmod.update(lmod.numx, lmod.numy, lmod.numz, lmod.xrange[0],
-                    lmod.yrange[1], lmod.zrange[1], lmod.dxy, lmod.d_z)
-        lmod.update_lith_list_reverse()
-
-        for i, xi in enumerate(x):
-            col = int((xi-lmod.xrange[0])/lmod.dxy)
-            row = int((lmod.yrange[1]-y[i])/lmod.dxy)
-            layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
-            lmod.lith_index[col, row, layer] = \
-                lmod.lith_list[label[i]].lith_index
-
-
     def import_ascii_xyz_model(self, filename):
         """
         Use to import ASCII XYZ Models of the form x,y,z,label.
@@ -371,7 +281,6 @@ class ImportMod3D():
         None.
 
         """
-
         names = ['x', 'y', 'z', 'label']
         try:
             if filename.find('.csv') > -1:
@@ -405,6 +314,7 @@ class ImportMod3D():
         zcell = np.min(dz_u)
 
         lmod = self.lmod
+        lmod.lith_list['Background'] = grvmag3d.GeoData(self.parent)
 
         lmod.dxy = min(xcell, ycell)
         lmod.d_z = zcell
@@ -416,9 +326,6 @@ class ImportMod3D():
         lmod.numz = int(np.ptp(lmod.zrange)/lmod.d_z+1)
 
     # Section to load lithologies.
-        if 'Generic 1' in lmod.lith_list:
-            lmod.lith_list.pop('Generic 1')
-
         lindx = 0
         for itxt in labelu:
             lindx += 1
@@ -445,7 +352,6 @@ class ImportMod3D():
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
             lmod.lith_index[col, row, layer] = \
                 lmod.lith_list[label[i]].lith_index
-
 
     def dict2lmod(self, indict, pre=''):
         """

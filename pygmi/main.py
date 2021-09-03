@@ -859,10 +859,10 @@ class MainWidget(QtWidgets.QMainWindow):
 
         item.my_class_name = item_name.replace('\n', ' ')
 
-        if 'Import' in item_name or hasimport is True:
+        if 'Import' in item_name  or 'Load' in item_name or hasimport is True:
             item.is_import = True
 
-        if 'Import' in item_name and runimport is True:
+        if ('Import' in item_name or 'Load' in item_name) and runimport is True:
             iflag = item.settings()
             if iflag is False:
                 return None
