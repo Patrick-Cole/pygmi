@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        graph_tool.py (part of PyGMI)
+# Name:        super_class.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za

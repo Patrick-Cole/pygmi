@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        test_cluster.py (part of PyGMI)
+# Name:        test_gravity.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za

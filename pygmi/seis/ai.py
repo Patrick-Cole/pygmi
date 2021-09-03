@@ -1,10 +1,10 @@
 # -----------------------------------------------------------------------------
-# Name:        seis/graphs.py (part of PyGMI)
+# Name:        ai.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
 #
-# Copyright:   (c) 2018 Council for Geoscience
+# Copyright:   (c) 2021 Council for Geoscience
 # Licence:     GPL-3.0
 #
 # This file is part of PyGMI

@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        test_raster.py (part of PyGMI)
+# Name:        test_mag.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za

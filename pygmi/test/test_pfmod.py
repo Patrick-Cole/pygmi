@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        pfmod.py (part of PyGMI)
+# Name:        test_pfmod.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za
