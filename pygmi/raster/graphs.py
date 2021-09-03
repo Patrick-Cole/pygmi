@@ -42,7 +42,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 
-from pygmi.misc import frm
+from pygmi.misc import frm, getinfo
 from pygmi.raster.modest_image import imshow
 
 
@@ -119,20 +119,20 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        vstd = 2.5 * data1.data.std()
-        vmean = data1.data.mean()
-        vmin = vmean-vstd
-        vmax = vmean+vstd
+        # vstd = 2.5 * data1.data.std()
+        # vmean = data1.data.mean()
+        # vmin = vmean-vstd
+        # vmax = vmean+vstd
 
         rdata = imshow(self.axes, data1.data, extent=data1.extent,
-                       cmap=cm.get_cmap(cmap), vmin=vmin, vmax=vmax,
-                       interpolation='nearest')
+                       cmap=cm.get_cmap(cmap), interpolation='nearest')
 
         # rdata = self.axes.imshow(data1.data, extent=data1.extent,
         #                          cmap=cm.get_cmap(cmap), vmin=vmin, vmax=vmax,
         #                          interpolation='nearest')
 
         if not data1.isrgb:
+            rdata.set_clim_std(2.5)
             cbar = self.figure.colorbar(rdata, format=frm)
             cbar.set_label(data1.units)
 

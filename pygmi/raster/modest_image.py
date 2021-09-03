@@ -319,9 +319,35 @@ class ModestImage(mi.AxesImage):
 
         return colormap
 
+    def set_clim_std(self, mult):
+        """
+        Sets the vmin and vmax to mult*std(self._A).
 
+        This routine only works on a 2D array.
 
+        Parameters
+        ----------
+        mult : float
+            Multiplier.
 
+        Returns
+        -------
+        None.
+
+        """
+
+        self._scale_to_res()
+
+        if self._A.ndim > 2:
+            raise TypeError("Invalid dimensions for image data. Should be 2D.")
+            return
+
+        vstd = self._A.std()
+        vmean = self._A.mean()
+        vmin = vmean - mult*vstd
+        vmax = vmean + mult*vstd
+
+        self.set_clim(vmin, vmax)
 
 
 def aspect2(data):
