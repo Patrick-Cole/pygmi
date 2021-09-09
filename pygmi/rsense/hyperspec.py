@@ -857,8 +857,12 @@ class ProcFeatures(QtWidgets.QDialog):
                 ofile = (os.path.basename(ifile).split('.')[0] + '_' +
                          mineral.replace(' ', '_') + '.tif')
                 ofile = os.path.join(odir, ofile)
-                self.showprocesslog('Exporting '+os.path.basename(ofile))
-                export_gdal(ofile, datfin, 'GTiff', piter=self.piter)
+                if datfin[0].data.mask.min() == True:
+                    self.showprocesslog(' Could not find any ' + mineral +
+                                        '. No data to export.')
+                else:
+                    self.showprocesslog('Exporting '+os.path.basename(ofile))
+                    export_gdal(ofile, datfin, 'GTiff', piter=self.piter)
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
@@ -868,7 +872,7 @@ class ProcFeatures(QtWidgets.QDialog):
         if datfin[0].data.mask.min() == True:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' Could not find any ' + mineral +
-                                          '. No data exported.',
+                                          '. No data to export.',
                                           QtWidgets.QMessageBox.Ok)
             return False
 
