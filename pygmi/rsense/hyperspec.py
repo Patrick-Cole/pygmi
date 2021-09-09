@@ -865,6 +865,13 @@ class ProcFeatures(QtWidgets.QDialog):
             datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
                                   product, piter=self.piter)
 
+        if datfin[0].data.mask.min() == True:
+            QtWidgets.QMessageBox.warning(self.parent, 'Warning',
+                                          ' Could not find any ' + mineral +
+                                          '. No data exported.',
+                                          QtWidgets.QMessageBox.Ok)
+            return False
+
         self.outdata['Raster'] = datfin
         return True
 
@@ -1294,7 +1301,8 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r"C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
+    # ifile = r"C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
+    ifile = r"E:\Workdata\bugs\chi\030_0815-1050_ref_rect_30a_15MNF.hdr"
 
     xoff = 0
     yoff = 2000
@@ -1304,7 +1312,7 @@ def _testfn():
     nodata = 0
 
     iraster = (xoff, yoff, xsize, ysize)
-    # iraster = None
+    iraster = None
 
     data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
 

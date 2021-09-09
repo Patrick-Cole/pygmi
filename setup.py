@@ -91,7 +91,8 @@ setup(name='pygmi',
                         'openpyxl',
                         'setuptools'],
 
-      package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html', 'bholes/images/*.svg',
+      package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
+                              'bholes/images/*.svg',
                               'helpdocs/*.png', 'images/*.png', 'bholes/*.xlsx'
                               'images/*.emf', 'images/*.ico']},
 
