@@ -866,12 +866,13 @@ class MainWidget(QtWidgets.QMainWindow):
             iflag = item.settings()
             if iflag is False:
                 return None
-            ifile = os.path.basename(item.my_class.ifile)
-            if len(ifile) > len(item_name):
-                ifile = ifile[:len(item_name)]+'\n'+ifile[len(item_name):]
-            if len(ifile) > 2*len(item_name):
-                ifile = ifile[:2*len(item_name)]+'...\n'
-            item_name += ':\n'+ifile
+            if hasattr(item.my_class, 'ifile'):
+                ifile = os.path.basename(item.my_class.ifile)
+                if len(ifile) > len(item_name):
+                    ifile = ifile[:len(item_name)]+'\n'+ifile[len(item_name):]
+                if len(ifile) > 2*len(item_name):
+                    ifile = ifile[:2*len(item_name)]+'...\n'
+                item_name += ':\n'+ifile
             item_color = QtGui.QColor(0, 255, 0, 127)
 
 # Do text first, since this determines size of polygon
