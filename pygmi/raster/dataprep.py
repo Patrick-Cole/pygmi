@@ -42,7 +42,7 @@ from rasterio.io import MemoryFile
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, getinfo
 from pygmi.raster.datatypes import numpy_to_pygmi
 
 
@@ -394,6 +394,7 @@ class DataMerge(QtWidgets.QDialog):
                                                    'value before merge. May '
                                                    'allow for cleaner merge '
                                                    'if datasets are offset.')
+        self.forcetype = None
         self.setupui()
 
     def setupui(self):
@@ -619,7 +620,7 @@ class DataMerge(QtWidgets.QDialog):
                 ifiles += glob.glob(os.path.join(self.idir, ftype))
 
             for ifile in self.piter(ifiles):
-                indata += get_raster(ifile)
+                indata += get_raster(ifile, piter=iter)
 
         if indata is None:
             self.showprocesslog('No input datasets')
@@ -646,13 +647,16 @@ class DataMerge(QtWidgets.QDialog):
         bandlist = list(set(bandlist))
 
         outdat = []
-
-        for dataid in self.piter(bandlist):
+        for dataid in bandlist:
+            self.showprocesslog('Merging '+dataid+'...')
             ifiles = []
-
-            for i in indata:
+            for i in self.piter(indata):
                 if i.dataid != dataid:
                     continue
+
+                if self.forcetype is not None:
+                    i.data = i.data.astype(self.forcetype)
+
                 if self.shift_to_median.isChecked():
                     mval = np.ma.median(i.data)
                 else:
@@ -3037,42 +3041,48 @@ def _testmerge():
     import sys
     import psutil
     import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import export_gdal
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    idir = r'c:\Workdata\merge'
+    idir = r'E:\Workdata\bugs\Feat_whitemica_78-114'
+    ofile = r'E:\Workdata\bugs\whitemica_78-114_MNF15.tif'
 
     print('Merge')
     DM = DataMerge()
     DM.idir = idir
     DM.files_diff.setChecked(True)
     DM.shift_to_median.setChecked(True)
+    DM.forcetype = np.float32
     # DM.method = 'max'  # first last min max
     DM.settings()
 
-    for i in DM.outdata['Raster']:
-        if 'wvl' in i.dataid:
-            dat = i.data
+    # for i in DM.outdata['Raster']:
+    #     if 'wvl' in i.dataid:
+    #         dat = i.data
 
     # dat.mask = np.logical_or(dat.mask, dat>900)
 
-    vmin = dat.mean()-2*dat.std()
-    vmax = dat.mean()+2*dat.std()
+    # vmin = dat.mean()-2*dat.std()
+    # vmax = dat.mean()+2*dat.std()
 
-    plt.figure(dpi=150)
-    plt.imshow(dat, vmin=vmin, vmax=vmax)
-    plt.colorbar()
-    plt.tight_layout()
-    plt.show()
+    # plt.figure(dpi=150)
+    # plt.imshow(dat, vmin=vmin, vmax=vmax)
+    # plt.colorbar()
+    # plt.tight_layout()
+    # plt.show()
 
-    plt.figure(dpi=150)
-    plt.hist(dat.flatten(), 100)
-    plt.show()
+    # plt.figure(dpi=150)
+    # plt.hist(dat.flatten(), 100)
+    # plt.show()
 
-    plt.imshow(dat.mask)
-    plt.show()
+    # plt.imshow(dat.mask)
+    # plt.show()
 
-    breakpoint()
+    print('export')
+    dat2 = DM.outdata['Raster']
+    export_gdal(ofile, dat2, 'GTiff')
+
 
 if __name__ == "__main__":
     _testmerge()

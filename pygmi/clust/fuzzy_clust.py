@@ -328,12 +328,23 @@ class FuzzyClust(QtWidgets.QDialog):
 
 # #############################################################################
 # Section to deal with different bands having different null values.
-        masktmp = data[0].data.mask   # Start with the first entry
-# Add the masks to this.This promotes False values to True if necessary
+#         masktmp = data[0].data.mask   # Start with the first entry
+# # Add the masks to this.This promotes False values to True if necessary
+#         for i in data:
+#             masktmp += i.data.mask
+#         for i, _ in enumerate(data):    # Apply this to all the bands
+#             data[i].data.mask = masktmp
+
+        masktmp = ~data[0].data.mask
         for i in data:
-            masktmp += i.data.mask
-        for i, _ in enumerate(data):    # Apply this to all the bands
+            masktmp += ~i.data.mask
+        masktmp = ~masktmp
+        for i, _ in enumerate(data):
+            if data[i].nullvalue != 0.0:
+                self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
+                data[i].data = np.ma.array(data[i].data.filled(0))
             data[i].data.mask = masktmp
+
 # #############################################################################
 
         dat_in = np.array([i.data.compressed() for i in data]).T

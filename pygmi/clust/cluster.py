@@ -344,7 +344,7 @@ class Cluster(QtWidgets.QDialog):
         None.
 
         """
-        data = copy.copy(self.indata['Raster'])
+        data = copy.deepcopy(self.indata['Raster'])
         self.update_vars()
 
         no_clust = range(self.min_cluster, self.max_cluster+1)
@@ -352,10 +352,15 @@ class Cluster(QtWidgets.QDialog):
         self.showprocesslog('Cluster analysis started')
 
 # Section to deal with different bands having different null values.
-        masktmp = data[0].data.mask
+        masktmp = ~data[0].data.mask
         for i in data:
-            masktmp += i.data.mask
+            masktmp += ~i.data.mask
+        masktmp = ~masktmp
         for i, _ in enumerate(data):
+            if data[i].nullvalue != 0.0 and data[i]:
+                self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
+                data[i].data = np.ma.array(data[i].data.filled(0))
+
             data[i].data.mask = masktmp
         X = np.array([i.data.compressed() for i in data]).T
         Xorig = X.copy()
@@ -445,3 +450,50 @@ class Cluster(QtWidgets.QDialog):
         self.outdata['Raster'] = self.indata['Raster']
 
         return True
+
+
+def _testfn():
+    import sys
+    import glob
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster, export_gdal
+
+    ifiles = glob.glob(r'E:\Workdata\bugs\*.tif')
+
+    piter = ProgressBarText().iter
+
+    dat2 = []
+    for ifile in ifiles:
+        if 'class.tif' in ifile:
+            continue
+        print(ifile)
+        dat = get_raster(ifile, piter=piter)
+        for i in dat:
+            if 'wvl' not in i.dataid:
+                dat2.append(i)
+                print(i.data.mask.min())
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    print('Merge')
+    DM = Cluster()
+    DM.indata['Raster'] = dat2
+    DM.settings(True)
+
+    breakpoint()
+
+    dat2 = np.ma.masked_equal(dat2, 0)
+    plt.imshow(dat2)
+    plt.show()
+
+    dat = dat[0]
+    dat.dataid = 'simple class'
+    dat.data = dat2
+
+    # export_gdal(r'E:\Workdata\bugs\class2.tif', [dat], 'GTiff')
+
+    breakpoint()
+
+
+if __name__ == "__main__":
+    _testfn()
