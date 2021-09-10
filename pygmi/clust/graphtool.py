@@ -336,13 +336,24 @@ class GraphMap(FigureCanvasQTAgg):
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
 
+        self.subplot.images[-1].colorbar.remove()
+
         if mtmp[1] > 0:
             cdat = self.cdata[mtmp[1] - 1].data
             self.csp.set_data(cdat)
             self.csp.set_clim(cdat.min(), cdat.max())
+            vals = np.unique(cdat)
+            vals = vals.compressed()
+            bnds = (vals - 0.5).tolist() + [vals.max() + .5]
+
+            if len(vals) > 1:
+                self.subplot.figure.colorbar(self.csp, boundaries=bnds,
+                                             values=vals, ticks=vals)
         else:
             self.csp.set_data(dat.data)
             self.csp.set_clim(dat.data.min(), dat.data.max())
+
+            self.subplot.figure.colorbar(self.csp)
 
         self.csp.changed()
         self.figure.canvas.draw()
