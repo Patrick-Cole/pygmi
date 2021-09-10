@@ -357,7 +357,7 @@ class EquationEditor(QtWidgets.QDialog):
         for i, findati in enumerate(findat):
             findati[mask] = indata[i].nullvalue
 
-            outdata.append(copy.copy(indata[i]))
+            outdata.append(copy.deepcopy(indata[i]))
             outdata[-1].data = np.ma.masked_equal(findati,
                                                   indata[i].nullvalue)
             outdata[-1].nullvalue = indata[i].nullvalue

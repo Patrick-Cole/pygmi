@@ -300,7 +300,7 @@ class CrispClust(QtWidgets.QDialog):
         None.
 
         """
-        data = copy.copy(self.indata['Raster'])
+        data = copy.deepcopy(self.indata['Raster'])
         self.update_vars()
 
         cltype = self.cltype

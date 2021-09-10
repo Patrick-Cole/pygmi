@@ -905,7 +905,7 @@ class SuperClass(QtWidgets.QDialog):
         yout1 = classifier.predict(datall)
         yout[~mask] = yout1
 
-        data = copy.copy(self.indata['Raster'])
+        data = copy.deepcopy(self.indata['Raster'])
         dat_out = [Data()]
 
         dat_out[-1].metadata['Cluster']['input_type'] = []

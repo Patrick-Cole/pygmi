@@ -1397,8 +1397,24 @@ class PlotInterp(QtWidgets.QDialog):
 
         self.indata['Raster'] = dataprep.merge(self.indata['Raster'])
 
-        data = self.indata['Raster']
-        sdata = self.indata['Raster']
+        if 'Cluster' in self.indata:
+            data = self.indata['Cluster']
+            newdat = copy.copy(self.indata['Raster'])
+            for i in data:
+                if 'memdat' not in i.metadata['Cluster']:
+                    continue
+                for j, val in enumerate(i.metadata['Cluster']['memdat']):
+                    tmp = copy.deepcopy(i)
+                    tmp.memdat = None
+                    tmp.data = val
+                    tmp.dataid = ('Membership of class ' + str(j+1)
+                                  + ': '+tmp.dataid)
+                    newdat.append(tmp)
+            data = newdat
+            sdata = newdat
+        else:
+            data = self.indata['Raster']
+            sdata = self.indata['Raster']
 
         for i in data:
             self.units[i.dataid] = i.units
