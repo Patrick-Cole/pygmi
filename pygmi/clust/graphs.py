@@ -176,7 +176,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         #                          extent=data1.extent, cmap=cm.get_cmap('jet'))
 
         rdata = imshow(self.axes, data1.metadata['Cluster']['memdat'][mem],
-                       extent=data1.extent, cmap=cm.get_cmap('jet'))
+                       extent=data1.extent, cmap=cm.get_cmap('jet'),
+                       vmin=0., vmax=1.)
 
         self.figure.colorbar(rdata)
 
