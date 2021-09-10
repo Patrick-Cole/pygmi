@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """A set of Raster Data Preparation routines."""
 
+import tempfile
 import math
 import os
 import glob
@@ -592,7 +593,7 @@ class DataMerge(QtWidgets.QDialog):
 
         return tmp
 
-    def merge_different(self):
+    def merge_different_old(self):
         """
         Merge files with different numbers of bands and/or band order.
 
@@ -654,8 +655,8 @@ class DataMerge(QtWidgets.QDialog):
                 if i.dataid != dataid:
                     continue
 
-                if self.forcetype is not None:
-                    i.data = i.data.astype(self.forcetype)
+                # if self.forcetype is not None:
+                #     i.data = i.data.astype(self.forcetype)
 
                 if self.shift_to_median.isChecked():
                     mval = np.ma.median(i.data)
@@ -675,6 +676,7 @@ class DataMerge(QtWidgets.QDialog):
                 raster.write(i.data-mval, 1)
                 raster.write_mask(~i.data.mask)
                 ifiles.append(raster)
+                getinfo()
 
             if len(ifiles) < 2:
                 self.showprocesslog('Too few bands of name '+dataid)
@@ -683,6 +685,125 @@ class DataMerge(QtWidgets.QDialog):
                                                   method=self.method)
             for j in ifiles:
                 j.close()
+
+            mosaic = mosaic.squeeze()
+            mosaic = np.ma.masked_equal(mosaic, nodata)
+            mosaic = mosaic + mval
+            outdat.append(numpy_to_pygmi(mosaic, dataid=dataid))
+            gtr = (otrans[2], otrans[0], otrans[1], otrans[5], otrans[3],
+                   otrans[4])
+            outdat[-1].extent_from_gtr(gtr)
+            outdat[-1].wkt = wkt
+            outdat[-1].nullvalue = nodata
+
+        self.outdata['Raster'] = outdat
+
+        return True
+
+    def merge_different(self):
+        """
+        Merge files with different numbers of bands and/or band order.
+
+        This uses more memory, but is flexible.
+
+        Returns
+        -------
+        bool
+            Success of routine.
+
+        """
+        # The next line is only to avoid circular dependancies with merge
+        # function.
+
+        from pygmi.raster.iodefs import get_raster
+
+        indata = []
+        if 'Raster' in self.indata:
+            for i in self.indata['Raster']:
+                indata.append(i)
+
+        if self.idir is not None:
+            ifiles = []
+            for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
+                ifiles += glob.glob(os.path.join(self.idir, ftype))
+
+            for ifile in self.piter(ifiles):
+                indata += get_raster(ifile, piter=iter)
+
+        if indata is None:
+            self.showprocesslog('No input datasets')
+            return False
+
+        # Get projection information
+        wkt = []
+        for i in indata:
+            wkt.append(i.wkt)
+            nodata = i.nullvalue
+
+        wkt = list(set(wkt))
+
+        if len(wkt) > 1:
+            self.showprocesslog('Error: Mismatched input projections')
+            return False
+
+        wkt = wkt[0]
+
+        # Start Merge
+        bandlist = []
+        for i in indata:
+            bandlist.append(i.dataid)
+        bandlist = list(set(bandlist))
+
+        outdat = []
+        for dataid in bandlist:
+            self.showprocesslog('Extracting '+dataid+'...')
+            ifiles = []
+            for i in self.piter(indata):
+                if i.dataid != dataid:
+                    continue
+
+                if self.forcetype is not None:
+                    i.data = i.data.astype(self.forcetype)
+
+                if self.shift_to_median.isChecked():
+                    mval = np.ma.median(i.data)
+                else:
+                    mval = 0
+
+                trans = rasterio.transform.from_origin(i.extent[0],
+                                                       i.extent[3],
+                                                       i.xdim, i.ydim)
+
+                tmpfile = os.path.join(tempfile.gettempdir(),
+                                       os.path.basename(i.filename))
+                tmpfile = tmpfile[:-4]+'_'+i.dataid+'.tif'
+
+                raster = rasterio.open(tmpfile, 'w', driver='GTiff',
+                                       height=i.data.shape[0],
+                                       width=i.data.shape[1], count=1,
+                                       dtype=i.data.dtype,
+                                       transform=trans)
+
+                # raster = MemoryFile().open(driver='GTiff',
+                #                            height=i.data.shape[0],
+                #                            width=i.data.shape[1], count=1,
+                #                            dtype=i.data.dtype,
+                #                            transform=trans)
+
+                raster.write(i.data-mval, 1)
+                raster.write_mask(~i.data.mask)
+                raster.close()
+                # ifiles.append(raster)
+                ifiles.append(tmpfile)
+
+            if len(ifiles) < 2:
+                self.showprocesslog('Too few bands of name '+dataid)
+
+            self.showprocesslog('Merging '+dataid+'...')
+            mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
+                                                  method=self.method)
+            for j in ifiles:
+                os.remove(j)
 
             mosaic = mosaic.squeeze()
             mosaic = np.ma.masked_equal(mosaic, nodata)
@@ -3045,8 +3166,8 @@ def _testmerge():
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    idir = r'E:\Workdata\bugs\Feat_whitemica_78-114'
-    ofile = r'E:\Workdata\bugs\whitemica_78-114_MNF15.tif'
+    idir = r'E:\Workdata\bugs\Feat_chlorite_78-114'
+    ofile = r'E:\Workdata\bugs\chlorite_78-114_MNF15.tif'
 
     print('Merge')
     DM = DataMerge()
