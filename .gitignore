@@ -14,6 +14,7 @@ olddocs/
 pygmi.egg-info/
 pygmi/bholes
 pygmi/gabby
+pygmi/ai_dolo
 
 *.py[co]
 *.lnk
