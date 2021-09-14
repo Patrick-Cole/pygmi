@@ -777,6 +777,8 @@ class DataMerge(QtWidgets.QDialog):
                 tmpfile = os.path.join(tempfile.gettempdir(),
                                        os.path.basename(i.filename))
                 tmpfile = tmpfile[:-4]+'_'+i.dataid+'.tif'
+                tmpfile = tmpfile.replace('*', 'mult')
+                tmpfile = tmpfile.replace(r'/', 'div')
 
                 raster = rasterio.open(tmpfile, 'w', driver='GTiff',
                                        height=i.data.shape[0],
