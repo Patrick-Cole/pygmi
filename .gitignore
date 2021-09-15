@@ -13,8 +13,7 @@ docs/
 olddocs/
 pygmi.egg-info/
 pygmi/bholes
-pygmi/gabby
-pygmi/ai_dolo
+pygmi/cgs
 
 *.py[co]
 *.lnk
