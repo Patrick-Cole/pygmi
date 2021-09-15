@@ -139,7 +139,7 @@ class Data():
         self.wkt = ''
         self.units = ''
         self.isrgb = False
-        self.metadata = {'Cluster': {}}
+        self.metadata = {'Cluster': {}, 'Raster': {}}
         self.filename = ''
 
     def get_gtr(self):

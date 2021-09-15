@@ -73,29 +73,25 @@ def test_rtp():
     np.testing.assert_array_equal(dat.data, dat2)
 
 
-@pytest.fixture
-def smalldata():
-    """Small test dataset."""
+def test_IGRF():
+    """Tests IGRF Calculation."""
     dat = Data()
     dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
                            mask=[[0, 0], [0, 0]])
     dat.extent = (25, 25, -28, -27)  # left, right, bottom, top
+    dat.dataid='mag'
 
-    return dat
-
-
-def test_IGRF(smalldata):
-    """Tests IGRF Calculation."""
     datin2 = Data()
     datin2.data = np.ma.array([[0., 0.], [0., 0.]], mask=[[0, 0], [0, 0]])
 
     datin2.extent = (25, 25, -28, -27)  # left, right, bottom, top
+    datin2.dataid='dtm'
 
     dat2 = [[940.640983, 864.497698],
             [1164.106631, 1079.494023]]
 
     tmp = igrf.IGRF()
-    tmp.indata = {'Raster': [smalldata, datin2]}
+    tmp.indata = {'Raster': [dat, datin2]}
     tmp.dateedit.setDate(QtCore.QDate(2000, 1, 1))
     tmp.dsb_alt.setValue(0.)
     tmp.settings(True)
@@ -137,4 +133,5 @@ def test_tilt():
 
 
 if __name__ == "__main__":
-    test_tilt()
+    # pytest.main(['test_mag.py::test_IGRF'])
+    test_IGRF()

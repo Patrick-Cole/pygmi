@@ -300,16 +300,14 @@ class IGRF(QtWidgets.QDialog):
                                                igrfonly=False,
                                                piter=self.piter,
                                                pprint=self.showprocesslog)
-
         bname = 'Magnetic Data: IGRF Corrected '
         bname = bname + f'F:{fmean:.2f} I:{imean:.2f} D:{dmean:.2f}'
 
         self.outdata['Raster'] = odata  # copy.deepcopy(self.indata['Raster'])
 
         self.outdata['Raster'].append(copy.deepcopy(maggrid))
-        self.outdata['Raster'][-1].data -= maggrid.data
+        self.outdata['Raster'][-1].data -= odata[0].data
         self.outdata['Raster'][-1].dataid = bname
-
         return True
 
     def loadproj(self, projdata):
