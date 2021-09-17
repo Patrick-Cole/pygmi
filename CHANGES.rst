@@ -2,6 +2,65 @@
 Changelog
 =========
 
+v3.2.4.0, 17 September 2021
+---------------------------
+*Fixed bug with new IGRF data correction.
+*Minor bugs
+*Fixed a bug in merge tool when * is in band name
+*Scatterplot tool displays classes using discrete colorbar.
+*Membership maps now display between 0 and 1 only.
+*Ginterp now includes membership data.
+*Copy.copy has been converted to copy.deepcopy in some instances.
+*Merge/mosaic now writes to disk to avoid memory slow downs.
+*Fixed bug where masks could eliminate data for classification, if no data at that point in another layer.
+*Fixed a bug on exiting mosaic
+*Added a warning if no feature found in process fetures.
+*Fixed a bug with importing xyz models, not having background.
+*Comment corrections for headings
+*Faster calculation of std dev in standard raster display.
+*Large update to speed for ginterp with big images.
+*Added projection information to Sentinel  5P import.
+*Z value on  graphs fixed
+*Fixed some problems with modis import
+*Fixed geosoft xyz import
+*Fixed a bug in minc
+*Bugfix for display of z values when zoomed into raster modest image
+*Memory for MNF reduced on 1 step
+*Fixed bug with min and max merging
+*Merge tool has new options
+*Improved detection of minimum feature value.
+*IGRF code modified to allow for API calls and calculate faster
+*Batch export from process features now describes the mineral in the file name.
+*Updated help and option description.
+*Bugfix merge tool
+*Export raster will now export wavelengths and fwhm to ENVI, if present
+*Update to MNF help
+*MNF memory problem bugfix
+*Added MNF
+*Minimum curvature bugfix
+*Process features bug
+*Fixed a bug when importing bil files with nan values
+*Update processing features to allow for feature depth thresholds
+*Process features can now have new features added in features.py
+*Raster export will export wavelengths and reflectance scale factors, if available.
+*Any routine using hull removal is significantly faster, (e.g. feature processing)
+*Merge has been renames layer stack.
+*New merge module added to merge adjacent datasets (from rasterio)
+*Added text progressbars to all classes where necessary (for testing)
+*Merging can now have a common mask for all bands.
+*Scipy nearest neighbour replaces quickgrid, linear and cubic options added to gridding as well as minimum curvature
+*Fixed issue with merge assigning wrong nullvalue
+*Change to output IGRF bands only.
+*Added resampling of dtm to match magnetic data.
+*Fixed a bug when exporting geotiffs from ginterp.py
+*Allows for datatype to be set, eg to uint8.
+*Add sentinel 2 zip file functionality
+*Added an import for Sentinel 2 data, with bands only
+*Added AGC
+*Fixed a labelling bug after merge
+*Adds lower and upper clip functionality as well as display of clip values to histogram.
+*Added total horizontal gradient
+
 v3.2.3.0, 01 June 2021
 ----------------------
 *Cluster - reports when no classes are found.

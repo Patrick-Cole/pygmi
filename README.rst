@@ -28,34 +28,39 @@ If you have any comments or queries, you can contact the author either through `
 
 Requirements
 ------------
-PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.8 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.9 on Windows.
+
+PyGMI should still work with Python 3.8.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.8.9
-* discretize 0.6.3
-* fiona 1.8.19
+* python 3.9.5
+* discretize 0.7.0
+* fiona 1.8.20
 * geopandas 0.9.0
 * llvmlite 0.36.0
-* matplotlib 3.4.1
+* matplotlib 3.4.2
 * mtpy 1.1.5
 * numba 0.53.1
 * numexpr 2.7.3
-* numpy 1.20.2+mkl
-* pandas 1.2.4
+* numpy 1.21.0+mkl
+* pandas 1.2.5
 * pillow 8.2.0
-* pymatsolver 0.1.2
+* psutil 5.8.0
+* pymatsolver 0.1.3
 * pyopengl 3.1.5
+* pyproj 3.1.0
 * PyQt5 5.12.3
-* pytest 6.2.3
-* scikit-image 0.18.1
-* scikit-learn 0.24.1
-* scipy 1.6.2
+* pytest 6.2.4
+* rasterio 1.2.6
+* requests 2.25.1
+* scikit-image 0.18.2
+* scikit-learn 0.24.2
+* scipy 1.7.0
 * segyio 1.9.6
 * shapely 1.7.1
-* SimPEG 0.14.3
-* msvc-runtime 14.28.29325  (Windows only)
-* openpyxl 3.0.7
+* SimPEG 0.15.0
+
 
 Installation
 ------------

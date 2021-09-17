@@ -567,7 +567,7 @@ def _testfn():
 def _testfn2():
     import matplotlib.pyplot as plt
     from matplotlib import rcParams
-    import spectral as sp
+    # import spectral as sp
 
     rcParams['figure.dpi'] = 300
 
