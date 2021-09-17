@@ -4,11 +4,12 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Classification: Description of Modules &#8212; PyGMI 3.2.3 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Classification: Description of Modules &#8212; PyGMI 3.2.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
@@ -83,13 +84,13 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="classification-description-of-modules">
+  <section id="classification-description-of-modules">
 <h1>Classification: Description of Modules<a class="headerlink" href="#classification-description-of-modules" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="cluster-analysis">
+<section id="cluster-analysis">
 <h2>Cluster Analysis<a class="headerlink" href="#cluster-analysis" title="Permalink to this headline">¶</a></h2>
 <p>The tool uses clustering methodologies implemented by the scikit-learn team (scikit-learn.org). This clustering is unsupervised, meaning that a multiple band dataset is supplied, and regions of the dataset is automatically grouped into classes.</p>
 <img alt="_images/clustanalysis.png" src="_images/clustanalysis.png" />
-<div class="section" id="algorithm-options">
+<section id="algorithm-options">
 <h3>Algorithm Options<a class="headerlink" href="#algorithm-options" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Cluster Algorithm - This can be k-means, DBSCAN or Birch.</p></li>
@@ -101,8 +102,8 @@
 <li><p>Threshold(Birch) - The radius of the subcluster obtained by merging a new sample and the closest subcluster should be lesser than the threshold. Otherwise a new subcluster is started. Setting this value to be very low promotes splitting and vice-versa.</p></li>
 <li><p>Branching factor (Birch) - Maximum number of Characteristic Feature subclusters in each node. If a new sample enters such that the number of subclusters exceed the branching_factor then that node is split into two nodes with the subclusters redistributed in each. The parent subcluster of that node is removed and two new subclusters are added as parents of the 2 split nodes.</p></li>
 </ul>
-</div>
-<div class="section" id="scaling">
+</section>
+<section id="scaling">
 <h3>Scaling<a class="headerlink" href="#scaling" title="Permalink to this headline">¶</a></h3>
 <p>This refers to the scaling of data as a preprocessing step. It can be one of the following:</p>
 <ul class="simple">
@@ -110,9 +111,9 @@
 <li><p>Standard Scaling - standardize features by removing the mean and scaling to unit variance.</p></li>
 <li><p>Robust Scaling - scale features using statistics that are robust to outliers</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="crisp-clustering">
+</section>
+</section>
+<section id="crisp-clustering">
 <h2>Crisp Clustering<a class="headerlink" href="#crisp-clustering" title="Permalink to this headline">¶</a></h2>
 <p>The following crisp clustering (Paasche 2009) options are supported:</p>
 <ul class="simple">
@@ -124,8 +125,8 @@
 <li><p>Constrain cluster shape (w-means only) - 0 is unconstrained, 1 is spherical.</p></li>
 </ul>
 <img alt="_images/clustcrisp.png" src="_images/clustcrisp.png" />
-</div>
-<div class="section" id="fuzzy-clustering">
+</section>
+<section id="fuzzy-clustering">
 <h2>Fuzzy Clustering<a class="headerlink" href="#fuzzy-clustering" title="Permalink to this headline">¶</a></h2>
 <p>The following fuzzy clustering (Paasche 2009) options are supported:</p>
 <ul class="simple">
@@ -137,14 +138,14 @@
 <li><p>Fuzzyness exponent - typically between 1 and 2.</p></li>
 </ul>
 <img alt="_images/clustfuzzy.png" src="_images/clustfuzzy.png" />
-</div>
-<div class="section" id="scatter-plot-tool">
+</section>
+<section id="scatter-plot-tool">
 <h2>Scatter Plot Tool<a class="headerlink" href="#scatter-plot-tool" title="Permalink to this headline">¶</a></h2>
 <p>The scatter plot tool is used for scatter plot analysis. By supplying the results of a cluster analysis, in addition to the raster data input into the cluster analysis, it is also possible to see where the clusters are located within the scatter plots.</p>
 <p>The scatter plot tool shows both a scatter plot and a view of the raster data. A polygon can be drawn on either view, and the corresponding pixels will be displayed in the other view.</p>
 <img alt="_images/clustscatter.png" src="_images/clustscatter.png" />
-</div>
-<div class="section" id="image-segmentation">
+</section>
+<section id="image-segmentation">
 <h2>Image Segmentation<a class="headerlink" href="#image-segmentation" title="Permalink to this headline">¶</a></h2>
 <p>This tool performs image segmentation, following the technique by Baatz and Schäpe (2000).</p>
 <p>It has the following parameters:</p>
@@ -154,8 +155,8 @@
 <li><p>Maximum allowable cost function.</p></li>
 </ul>
 <img alt="_images/clustseg.png" src="_images/clustseg.png" />
-</div>
-<div class="section" id="supervised-classification">
+</section>
+<section id="supervised-classification">
 <h2>Supervised Classification<a class="headerlink" href="#supervised-classification" title="Permalink to this headline">¶</a></h2>
 <p>This module allows for the user to define classes by adding polygons onto the map portion of the interface. The user clicks the ‘Add Polygon’ button to add a row to the table and interactively add a polygon to the map. This can be labelled appropriately. Classes can be stored in shapefiles, and can be reloaded again in future sessions. Because the shapefile format is used, the classes are compatible with standard GIS software.</p>
 <p>The classification metrics can be calculated and displayed in a dialog (Figure 33). The current metrics include the confusion matrix, as well as accuracy and kappa scores.</p>
@@ -168,8 +169,8 @@
 </ul>
 <p>Under each of these, an appropriate algorithm (K neighbours), criterion (Decision Tree and Random Forests) or kernel (Support Vector) can be selected.</p>
 <img alt="_images/clustsuper.png" src="_images/clustsuper.png" />
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -284,7 +285,7 @@
       &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

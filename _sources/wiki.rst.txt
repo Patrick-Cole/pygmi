@@ -22,7 +22,6 @@ Contents:
    file
    raster
    vector
-   bholes
    cluster
    em
    eseis

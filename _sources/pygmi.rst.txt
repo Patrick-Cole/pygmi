@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   pygmi.bholes
    pygmi.clust
    pygmi.em
    pygmi.eseis

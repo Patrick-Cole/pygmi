@@ -36,6 +36,14 @@ pygmi.vector.menu module
    :undoc-members:
    :show-inheritance:
 
+pygmi.vector.minc module
+------------------------
+
+.. automodule:: pygmi.vector.minc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

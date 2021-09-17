@@ -12,6 +12,14 @@ pygmi.rsense.change module
    :undoc-members:
    :show-inheritance:
 
+pygmi.rsense.features module
+----------------------------
+
+.. automodule:: pygmi.rsense.features
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pygmi.rsense.hyperspec module
 -----------------------------
 
@@ -40,6 +48,14 @@ pygmi.rsense.ratios module
 --------------------------
 
 .. automodule:: pygmi.rsense.ratios
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.rsense.transforms module
+------------------------------
+
+.. automodule:: pygmi.rsense.transforms
    :members:
    :undoc-members:
    :show-inheritance:

@@ -4,17 +4,18 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pygmi package &#8212; PyGMI 3.2.3 documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>pygmi package &#8212; PyGMI 3.2.4 documentation</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pygmi.bholes package" href="pygmi.bholes.html" />
+    <link rel="next" title="pygmi.clust package" href="pygmi.clust.html" />
     <link rel="prev" title="PyGMI API" href="api.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -73,7 +74,7 @@
           <a href="api.html" title="Previous document">PyGMI API</a>
         </li>
         <li>
-          <a href="pygmi.bholes.html" title="Next document">pygmi.bholes package</a>
+          <a href="pygmi.clust.html" title="Next document">pygmi.clust package</a>
           &rarr;
         </li>
     </ul>
@@ -83,23 +84,12 @@
 
           <div class="body" role="main">
             
-  <div class="section" id="pygmi-package">
+  <section id="pygmi-package">
 <h1>pygmi package<a class="headerlink" href="#pygmi-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="subpackages">
+<section id="subpackages">
 <h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="pygmi.bholes.html">pygmi.bholes package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.bholes.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.bholes.html#module-pygmi.bholes.coremask">pygmi.bholes.coremask module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.bholes.html#module-pygmi.bholes.coremeta">pygmi.bholes.coremeta module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.bholes.html#module-pygmi.bholes.graphs">pygmi.bholes.graphs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.bholes.html#module-pygmi.bholes.hypercore">pygmi.bholes.hypercore module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.bholes.html#module-pygmi.bholes.iodefs">pygmi.bholes.iodefs module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.bholes.html#module-pygmi.bholes.menu">pygmi.bholes.menu module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pygmi.bholes.html#module-pygmi.bholes">Module contents</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="pygmi.clust.html">pygmi.clust package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.clust.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.clust.html#module-pygmi.clust.cluster">pygmi.clust.cluster module</a></li>
@@ -193,10 +183,12 @@
 <li class="toctree-l1"><a class="reference internal" href="pygmi.rsense.html">pygmi.rsense package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#module-pygmi.rsense.change">pygmi.rsense.change module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#module-pygmi.rsense.features">pygmi.rsense.features module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#module-pygmi.rsense.hyperspec">pygmi.rsense.hyperspec module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#module-pygmi.rsense.iodefs">pygmi.rsense.iodefs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#module-pygmi.rsense.menu">pygmi.rsense.menu module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#module-pygmi.rsense.ratios">pygmi.rsense.ratios module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#module-pygmi.rsense.transforms">pygmi.rsense.transforms module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.rsense.html#module-pygmi.rsense">Module contents</a></li>
 </ul>
 </li>
@@ -229,16 +221,17 @@
 <li class="toctree-l2"><a class="reference internal" href="pygmi.vector.html#module-pygmi.vector.graphs">pygmi.vector.graphs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.vector.html#module-pygmi.vector.iodefs">pygmi.vector.iodefs module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.vector.html#module-pygmi.vector.menu">pygmi.vector.menu module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pygmi.vector.html#module-pygmi.vector.minc">pygmi.vector.minc module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pygmi.vector.html#module-pygmi.vector">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </div>
-</div>
-<div class="section" id="submodules">
+</section>
+<section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-pygmi.main">
+</section>
+<section id="module-pygmi.main">
 <span id="pygmi-main-module"></span><h2>pygmi.main module<a class="headerlink" href="#module-pygmi.main" title="Permalink to this headline">¶</a></h2>
 <p>Main module for PyGMI.</p>
 <p>This module comprises a series of classes which are responsible for the primary
@@ -248,13 +241,13 @@ of this was originally based.</p>
 routines is not. The menus and corresponding classes are found within the
 pygmi packages.</p>
 <dl class="py class">
-<dt id="pygmi.main.Arrow">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.main.</span></code><code class="sig-name descname"><span class="pre">Arrow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Arrow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.main.</span></span><span class="sig-name descname"><span class="pre">Arrow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_item</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QGraphicsLineItem</span></code></p>
 <p>Class responsible for drawing arrows on the main interface.</p>
 <dl class="py attribute">
-<dt id="pygmi.main.Arrow.arrow_head">
-<code class="sig-name descname"><span class="pre">arrow_head</span></code><a class="headerlink" href="#pygmi.main.Arrow.arrow_head" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Arrow.arrow_head">
+<span class="sig-name descname"><span class="pre">arrow_head</span></span><a class="headerlink" href="#pygmi.main.Arrow.arrow_head" title="Permalink to this definition">¶</a></dt>
 <dd><p>Arrow head polygon.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -264,8 +257,8 @@ pygmi packages.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.Arrow.my_start_item">
-<code class="sig-name descname"><span class="pre">my_start_item</span></code><a class="headerlink" href="#pygmi.main.Arrow.my_start_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Arrow.my_start_item">
+<span class="sig-name descname"><span class="pre">my_start_item</span></span><a class="headerlink" href="#pygmi.main.Arrow.my_start_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Starting DiagramItem object. This will send information to my_end_item</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -275,8 +268,8 @@ pygmi packages.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.Arrow.my_end_item">
-<code class="sig-name descname"><span class="pre">my_end_item</span></code><a class="headerlink" href="#pygmi.main.Arrow.my_end_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Arrow.my_end_item">
+<span class="sig-name descname"><span class="pre">my_end_item</span></span><a class="headerlink" href="#pygmi.main.Arrow.my_end_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>End DiagramItem object. This will get information from my_start_item</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -286,8 +279,8 @@ pygmi packages.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.Arrow.my_color">
-<code class="sig-name descname"><span class="pre">my_color</span></code><a class="headerlink" href="#pygmi.main.Arrow.my_color" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Arrow.my_color">
+<span class="sig-name descname"><span class="pre">my_color</span></span><a class="headerlink" href="#pygmi.main.Arrow.my_color" title="Permalink to this definition">¶</a></dt>
 <dd><p>Color</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -297,8 +290,8 @@ pygmi packages.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.Arrow.boundingRect">
-<code class="sig-name descname"><span class="pre">boundingRect</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow.boundingRect" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Arrow.boundingRect">
+<span class="sig-name descname"><span class="pre">boundingRect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow.boundingRect" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bounding Rectangle.</p>
 <p>Overloaded bounding rectangle. This is necessary to ensure that the
 line and arrowhead are cleaned properly when moving.</p>
@@ -313,8 +306,8 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.Arrow.paint">
-<code class="sig-name descname"><span class="pre">paint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow.paint" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Arrow.paint">
+<span class="sig-name descname"><span class="pre">paint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">painter</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">option</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Arrow.paint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded paint method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -330,13 +323,13 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.main.DiagramItem">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.main.</span></code><code class="sig-name descname"><span class="pre">DiagramItem</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diagram_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_menu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.main.</span></span><span class="sig-name descname"><span class="pre">DiagramItem</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diagram_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">context_menu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">my_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QGraphicsPolygonItem</span></code></p>
 <p>Diagram Item.</p>
 <dl class="py attribute">
-<dt id="pygmi.main.DiagramItem.arrows">
-<code class="sig-name descname"><span class="pre">arrows</span></code><a class="headerlink" href="#pygmi.main.DiagramItem.arrows" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.arrows">
+<span class="sig-name descname"><span class="pre">arrows</span></span><a class="headerlink" href="#pygmi.main.DiagramItem.arrows" title="Permalink to this definition">¶</a></dt>
 <dd><p>list of Arrow objects</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -346,8 +339,8 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.DiagramItem.diagram_type">
-<code class="sig-name descname"><span class="pre">diagram_type</span></code><a class="headerlink" href="#pygmi.main.DiagramItem.diagram_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.diagram_type">
+<span class="sig-name descname"><span class="pre">diagram_type</span></span><a class="headerlink" href="#pygmi.main.DiagramItem.diagram_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>string denoting the diagram type. Can be ‘StartEnd’, ‘Conditional’ or
 ‘Step’</p>
 <dl class="field-list simple">
@@ -358,13 +351,13 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt>
-<code class="sig-name descname"><span class="pre">context_menu</span> <span class="pre">=</span> <span class="pre">context_menu</span></code></dt>
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">context_menu</span> <span class="pre">=</span> <span class="pre">context_menu</span></span></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.DiagramItem.my_class">
-<code class="sig-name descname"><span class="pre">my_class</span></code><a class="headerlink" href="#pygmi.main.DiagramItem.my_class" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.my_class">
+<span class="sig-name descname"><span class="pre">my_class</span></span><a class="headerlink" href="#pygmi.main.DiagramItem.my_class" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class that the diagram item is linked to.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -374,8 +367,8 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.DiagramItem.is_import">
-<code class="sig-name descname"><span class="pre">is_import</span></code><a class="headerlink" href="#pygmi.main.DiagramItem.is_import" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.is_import">
+<span class="sig-name descname"><span class="pre">is_import</span></span><a class="headerlink" href="#pygmi.main.DiagramItem.is_import" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flags whether my_class is used to import data</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -385,8 +378,8 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.DiagramItem.text_item">
-<code class="sig-name descname"><span class="pre">text_item</span></code><a class="headerlink" href="#pygmi.main.DiagramItem.text_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.text_item">
+<span class="sig-name descname"><span class="pre">text_item</span></span><a class="headerlink" href="#pygmi.main.DiagramItem.text_item" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>None</p>
@@ -395,8 +388,8 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.DiagramItem.my_class_name">
-<code class="sig-name descname"><span class="pre">my_class_name</span></code><a class="headerlink" href="#pygmi.main.DiagramItem.my_class_name" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.my_class_name">
+<span class="sig-name descname"><span class="pre">my_class_name</span></span><a class="headerlink" href="#pygmi.main.DiagramItem.my_class_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Class name being referenced</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -406,8 +399,8 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramItem.add_arrow">
-<code class="sig-name descname"><span class="pre">add_arrow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrow</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.add_arrow" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.add_arrow">
+<span class="sig-name descname"><span class="pre">add_arrow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrow</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.add_arrow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add Arrow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -417,8 +410,8 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramItem.contextMenuEvent">
-<code class="sig-name descname"><span class="pre">contextMenuEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.contextMenuEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.contextMenuEvent">
+<span class="sig-name descname"><span class="pre">contextMenuEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.contextMenuEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded context menu event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -428,8 +421,8 @@ line and arrowhead are cleaned properly when moving.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramItem.mouseDoubleClickEvent">
-<code class="sig-name descname"><span class="pre">mouseDoubleClickEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.mouseDoubleClickEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.mouseDoubleClickEvent">
+<span class="sig-name descname"><span class="pre">mouseDoubleClickEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.mouseDoubleClickEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Mouse double click event.</p>
 <p>This event is used to activate an item. It does this by calling the
 settings() method of the item. The event also changes the color of the
@@ -437,8 +430,8 @@ item to reflect whether it is busy working.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramItem.remove_arrow">
-<code class="sig-name descname"><span class="pre">remove_arrow</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrow</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.remove_arrow" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.remove_arrow">
+<span class="sig-name descname"><span class="pre">remove_arrow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arrow</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.remove_arrow" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove a single Arrow.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -448,14 +441,14 @@ item to reflect whether it is busy working.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramItem.remove_arrows">
-<code class="sig-name descname"><span class="pre">remove_arrows</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.remove_arrows" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.remove_arrows">
+<span class="sig-name descname"><span class="pre">remove_arrows</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.remove_arrows" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove Arrows. Uses the remove_arrow method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramItem.settings">
-<code class="sig-name descname"><span class="pre">settings</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.settings" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.settings">
+<span class="sig-name descname"><span class="pre">settings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nodialog</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.settings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine Settings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -472,21 +465,21 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramItem.update_indata">
-<code class="sig-name descname"><span class="pre">update_indata</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.update_indata" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramItem.update_indata">
+<span class="sig-name descname"><span class="pre">update_indata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramItem.update_indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Routine to add datasets.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.main.DiagramScene">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.main.</span></code><code class="sig-name descname"><span class="pre">DiagramScene</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_menu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramScene">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.main.</span></span><span class="sig-name descname"><span class="pre">DiagramScene</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_menu</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QGraphicsScene</span></code></p>
 <p>Diagram Scene.</p>
 <dl class="py method">
-<dt id="pygmi.main.DiagramScene.mouseMoveEvent">
-<code class="sig-name descname"><span class="pre">mouseMoveEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramScene.mouseMoveEvent">
+<span class="sig-name descname"><span class="pre">mouseMoveEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mouseMoveEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded Mouse Move Event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -496,8 +489,8 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramScene.mousePressEvent">
-<code class="sig-name descname"><span class="pre">mousePressEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mousePressEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramScene.mousePressEvent">
+<span class="sig-name descname"><span class="pre">mousePressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mousePressEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded Mouse Press Event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -507,8 +500,8 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramScene.mouseReleaseEvent">
-<code class="sig-name descname"><span class="pre">mouseReleaseEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramScene.mouseReleaseEvent">
+<span class="sig-name descname"><span class="pre">mouseReleaseEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mouse_event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.mouseReleaseEvent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Overloaded Mouse Release Event.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -518,22 +511,22 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.DiagramScene.selected_item_info">
-<code class="sig-name descname"><span class="pre">selected_item_info</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.selected_item_info" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.DiagramScene.selected_item_info">
+<span class="sig-name descname"><span class="pre">selected_item_info</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.DiagramScene.selected_item_info" title="Permalink to this definition">¶</a></dt>
 <dd><p>Display info about selected item.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.main.EmittingStream">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.main.</span></code><code class="sig-name descname"><span class="pre">EmittingStream</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">textWritten</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.EmittingStream">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.main.</span></span><span class="sig-name descname"><span class="pre">EmittingStream</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">textWritten</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtCore.QObject</span></code></p>
 <p>Class to intercept stdout for later use in a textbox.</p>
 <dl class="py method">
-<dt id="pygmi.main.EmittingStream.fileno">
-<code class="sig-name descname"><span class="pre">fileno</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.fileno" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fileno.</p>
+<dt class="sig sig-object py" id="pygmi.main.EmittingStream.fileno">
+<span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.fileno" title="Permalink to this definition">¶</a></dt>
+<dd><p>File number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Returns -1.</p>
@@ -545,8 +538,8 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.EmittingStream.flush">
-<code class="sig-name descname"><span class="pre">flush</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.flush" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.EmittingStream.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.flush" title="Permalink to this definition">¶</a></dt>
 <dd><p>Flush.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -559,12 +552,12 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.EmittingStream.write">
-<code class="sig-name descname"><span class="pre">write</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.write" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.EmittingStream.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.EmittingStream.write" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>text</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text to write.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p></p>
@@ -578,13 +571,13 @@ method.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.main.MainWidget">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.main.</span></code><code class="sig-name descname"><span class="pre">MainWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.main.</span></span><span class="sig-name descname"><span class="pre">MainWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code></p>
 <p>Widget class to call the main interface.</p>
 <dl class="py attribute">
-<dt id="pygmi.main.MainWidget.pdlg">
-<code class="sig-name descname"><span class="pre">pdlg</span></code><a class="headerlink" href="#pygmi.main.MainWidget.pdlg" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.pdlg">
+<span class="sig-name descname"><span class="pre">pdlg</span></span><a class="headerlink" href="#pygmi.main.MainWidget.pdlg" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>list</p>
@@ -593,8 +586,8 @@ method.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.main.MainWidget.context_menu">
-<code class="sig-name descname"><span class="pre">context_menu</span></code><a class="headerlink" href="#pygmi.main.MainWidget.context_menu" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.context_menu">
+<span class="sig-name descname"><span class="pre">context_menu</span></span><a class="headerlink" href="#pygmi.main.MainWidget.context_menu" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Type</dt>
 <dd class="field-odd"><p>dictionary</p>
@@ -603,8 +596,8 @@ method.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.add_to_context">
-<code class="sig-name descname"><span class="pre">add_to_context</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.add_to_context" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.add_to_context">
+<span class="sig-name descname"><span class="pre">add_to_context</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.add_to_context" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add to a context menu.</p>
 <p>Each dataset type which PyGMI uses can have its own context menu. This
 method allows for the definition of each group of context menu items
@@ -617,26 +610,26 @@ under a user defined text label.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.bring_to_front">
-<code class="sig-name descname"><span class="pre">bring_to_front</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.bring_to_front" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.bring_to_front">
+<span class="sig-name descname"><span class="pre">bring_to_front</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.bring_to_front" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bring the selected item to front.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.clearprocesslog">
-<code class="sig-name descname"><span class="pre">clearprocesslog</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.clearprocesslog" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.clearprocesslog">
+<span class="sig-name descname"><span class="pre">clearprocesslog</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.clearprocesslog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clear the process log.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.delete_item">
-<code class="sig-name descname"><span class="pre">delete_item</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.delete_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.delete_item">
+<span class="sig-name descname"><span class="pre">delete_item</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.delete_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete the selected item from main interface.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.get_indata">
-<code class="sig-name descname"><span class="pre">get_indata</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.get_indata" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.get_indata">
+<span class="sig-name descname"><span class="pre">get_indata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.get_indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get input data from the selected item on the main interface.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -649,8 +642,8 @@ under a user defined text label.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.get_outdata">
-<code class="sig-name descname"><span class="pre">get_outdata</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.get_outdata" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.get_outdata">
+<span class="sig-name descname"><span class="pre">get_outdata</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.get_outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get output data from the selected item on the main interface.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -663,14 +656,14 @@ under a user defined text label.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.help_docs">
-<code class="sig-name descname"><span class="pre">help_docs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.help_docs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.help_docs">
+<span class="sig-name descname"><span class="pre">help_docs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.help_docs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Help Routine.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.item_insert">
-<code class="sig-name descname"><span class="pre">item_insert</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runimport</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.item_insert" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.item_insert">
+<span class="sig-name descname"><span class="pre">item_insert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">item_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">class_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">projimport</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.item_insert" title="Permalink to this definition">¶</a></dt>
 <dd><p>Item insert.</p>
 <p>Insert an item on the main interface. The item is an object passed by
 one of the menu.py routines and is one of the algorithms chosen on
@@ -693,9 +686,9 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.keyPressEvent">
-<code class="sig-name descname"><span class="pre">keyPressEvent</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.keyPressEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Intercept keypress for custom key presses.</p>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.keyPressEvent">
+<span class="sig-name descname"><span class="pre">keyPressEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.keyPressEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Intercept key press for custom key presses.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>event</strong> (<em>TYPE</em>) – DESCRIPTION.</p>
@@ -710,8 +703,8 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.launch_context_item">
-<code class="sig-name descname"><span class="pre">launch_context_item</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newitem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.launch_context_item">
+<span class="sig-name descname"><span class="pre">launch_context_item</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newitem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launch a context menu item, using output data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -721,8 +714,8 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.launch_context_item_indata">
-<code class="sig-name descname"><span class="pre">launch_context_item_indata</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newitem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item_indata" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.launch_context_item_indata">
+<span class="sig-name descname"><span class="pre">launch_context_item_indata</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">newitem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.launch_context_item_indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Launch a context menu item, using input data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -732,14 +725,14 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.linepointer">
-<code class="sig-name descname"><span class="pre">linepointer</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.linepointer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.linepointer">
+<span class="sig-name descname"><span class="pre">linepointer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.linepointer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select line pointer.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.load">
-<code class="sig-name descname"><span class="pre">load</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.load" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load project state from JSON file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -752,14 +745,14 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.pointer">
-<code class="sig-name descname"><span class="pre">pointer</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.pointer" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.pointer">
+<span class="sig-name descname"><span class="pre">pointer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.pointer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Select pointer.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.process_is_active">
-<code class="sig-name descname"><span class="pre">process_is_active</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">isactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.process_is_active" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.process_is_active">
+<span class="sig-name descname"><span class="pre">process_is_active</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">isactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.process_is_active" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change process log color when a process is active.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -769,8 +762,8 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.run">
-<code class="sig-name descname"><span class="pre">run</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.run" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run entire script.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -783,8 +776,8 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.save">
-<code class="sig-name descname"><span class="pre">save</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.save" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save project state to a JSON file.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -797,14 +790,14 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.send_to_back">
-<code class="sig-name descname"><span class="pre">send_to_back</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.send_to_back" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.send_to_back">
+<span class="sig-name descname"><span class="pre">send_to_back</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.send_to_back" title="Permalink to this definition">¶</a></dt>
 <dd><p>Send the selected item to the back.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.setupui">
-<code class="sig-name descname"><span class="pre">setupui</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.setupui" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.setupui">
+<span class="sig-name descname"><span class="pre">setupui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.setupui" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set up UI.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -817,8 +810,8 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.showdatainfo">
-<code class="sig-name descname"><span class="pre">showdatainfo</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.showdatainfo" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.showdatainfo">
+<span class="sig-name descname"><span class="pre">showdatainfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.showdatainfo" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show text in the dataset information panel.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -828,8 +821,8 @@ the main PyGMI menu.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.showprocesslog">
-<code class="sig-name descname"><span class="pre">showprocesslog</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replacelast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.showprocesslog" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.showprocesslog">
+<span class="sig-name descname"><span class="pre">showprocesslog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replacelast</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.showprocesslog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show text on the process log.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -843,8 +836,8 @@ overwritten.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.main.MainWidget.update_pdlg">
-<code class="sig-name descname"><span class="pre">update_pdlg</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dlg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.update_pdlg" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.MainWidget.update_pdlg">
+<span class="sig-name descname"><span class="pre">update_pdlg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dlg</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.MainWidget.update_pdlg" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clean deleted objects in self.pdlg and appends a new object.</p>
 <p>self.pdlg allows for modeless dialogues to remain in existence until
 they are closed</p>
@@ -858,39 +851,39 @@ they are closed</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.main.Startup">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.main.</span></code><code class="sig-name descname"><span class="pre">Startup</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbarmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Startup" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Startup">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.main.</span></span><span class="sig-name descname"><span class="pre">Startup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pbarmax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Startup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>Class to provide a startup display while PyGMI loads into memory.</p>
 <dl class="py method">
-<dt id="pygmi.main.Startup.update">
-<code class="sig-name descname"><span class="pre">update</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Startup.update" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.Startup.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.Startup.update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the text on the dialog.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py function">
-<dt id="pygmi.main.main">
-<code class="sig-prename descclassname"><span class="pre">pygmi.main.</span></code><code class="sig-name descname"><span class="pre">main</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.main" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.main.main">
+<span class="sig-prename descclassname"><span class="pre">pygmi.main.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.main.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>Entry point for the PyGMI software.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-pygmi.menu_default">
+</section>
+<section id="module-pygmi.menu_default">
 <span id="pygmi-menu-default-module"></span><h2>pygmi.menu_default module<a class="headerlink" href="#module-pygmi.menu_default" title="Permalink to this headline">¶</a></h2>
 <p>Default set of menus for the main interface.</p>
 <p>It also includes the about box.</p>
 <dl class="py class">
-<dt id="pygmi.menu_default.FileMenu">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.menu_default.</span></code><code class="sig-name descname"><span class="pre">FileMenu</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.FileMenu" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.FileMenu">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.menu_default.</span></span><span class="sig-name descname"><span class="pre">FileMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.FileMenu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <p>This widget class creates the raster menus to be found on the main
 interface. Normal as well as context menus are defined here.</p>
 <dl class="py attribute">
-<dt id="pygmi.menu_default.FileMenu.parent">
-<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.menu_default.FileMenu.parent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.FileMenu.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.menu_default.FileMenu.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reference to MainWidget class found in main.py</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -902,27 +895,27 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.menu_default.HelpButton">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.menu_default.</span></code><code class="sig-name descname"><span class="pre">HelpButton</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">htmlfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpButton" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpButton">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.menu_default.</span></span><span class="sig-name descname"><span class="pre">HelpButton</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">htmlfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpButton" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QPushButton</span></code></p>
 <p>Help Button.</p>
 <p>Convenience class to add an image to a pushbutton</p>
 <dl class="py method">
-<dt id="pygmi.menu_default.HelpButton.help_docs">
-<code class="sig-name descname"><span class="pre">help_docs</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpButton.help_docs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpButton.help_docs">
+<span class="sig-name descname"><span class="pre">help_docs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpButton.help_docs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Help Routine.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.menu_default.HelpDocs">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.menu_default.</span></code><code class="sig-name descname"><span class="pre">HelpDocs</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">helptxt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpDocs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpDocs">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.menu_default.</span></span><span class="sig-name descname"><span class="pre">HelpDocs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">helptxt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpDocs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QDialog</span></code></p>
 <p>A basic combo box application.</p>
 <dl class="py attribute">
-<dt id="pygmi.menu_default.HelpDocs.parent">
-<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.parent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpDocs.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.menu_default.HelpDocs.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -932,8 +925,8 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.menu_default.HelpDocs.indata">
-<code class="sig-name descname"><span class="pre">indata</span></code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.indata" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpDocs.indata">
+<span class="sig-name descname"><span class="pre">indata</span></span><a class="headerlink" href="#pygmi.menu_default.HelpDocs.indata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of input datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -943,8 +936,8 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="py attribute">
-<dt id="pygmi.menu_default.HelpDocs.outdata">
-<code class="sig-name descname"><span class="pre">outdata</span></code><a class="headerlink" href="#pygmi.menu_default.HelpDocs.outdata" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpDocs.outdata">
+<span class="sig-name descname"><span class="pre">outdata</span></span><a class="headerlink" href="#pygmi.menu_default.HelpDocs.outdata" title="Permalink to this definition">¶</a></dt>
 <dd><p>dictionary of output datasets</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -956,13 +949,13 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.menu_default.HelpMenu">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.menu_default.</span></code><code class="sig-name descname"><span class="pre">HelpMenu</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpMenu">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.menu_default.</span></span><span class="sig-name descname"><span class="pre">HelpMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Widget class to call the main interface.</p>
 <dl class="py attribute">
-<dt id="pygmi.menu_default.HelpMenu.parent">
-<code class="sig-name descname"><span class="pre">parent</span></code><a class="headerlink" href="#pygmi.menu_default.HelpMenu.parent" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpMenu.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#pygmi.menu_default.HelpMenu.parent" title="Permalink to this definition">¶</a></dt>
 <dd><p>reference to the parent routine</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -972,36 +965,36 @@ interface. Normal as well as context menus are defined here.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.menu_default.HelpMenu.about">
-<code class="sig-name descname"><span class="pre">about</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu.about" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpMenu.about">
+<span class="sig-name descname"><span class="pre">about</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu.about" title="Permalink to this definition">¶</a></dt>
 <dd><p>About box for PyGMI.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.menu_default.HelpMenu.webhelp">
-<code class="sig-name descname"><span class="pre">webhelp</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu.webhelp" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.menu_default.HelpMenu.webhelp">
+<span class="sig-name descname"><span class="pre">webhelp</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.menu_default.HelpMenu.webhelp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Help File.</p>
 </dd></dl>
 
 </dd></dl>
 
-</div>
-<div class="section" id="module-pygmi.misc">
+</section>
+<section id="module-pygmi.misc">
 <span id="pygmi-misc-module"></span><h2>pygmi.misc module<a class="headerlink" href="#module-pygmi.misc" title="Permalink to this headline">¶</a></h2>
 <p>Misc is a collection of routines which can be used in PyGMI in general.</p>
 <p>ptimer is utility module used to simplify checking how much time has passed
 in a program. It also outputs a message at the point when called.</p>
 <dl class="py class">
-<dt id="pygmi.misc.PTime">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></code><code class="sig-name descname"><span class="pre">PTime</span></code><a class="headerlink" href="#pygmi.misc.PTime" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.PTime">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></span><span class="sig-name descname"><span class="pre">PTime</span></span><a class="headerlink" href="#pygmi.misc.PTime" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>PTime class.</p>
 <p>Main class in the ptimer module. Once activated, this class keeps track
 of all time since activation. Times are stored whenever its methods are
 called.</p>
 <dl class="py attribute">
-<dt id="pygmi.misc.PTime.tchk">
-<code class="sig-name descname"><span class="pre">tchk</span></code><a class="headerlink" href="#pygmi.misc.PTime.tchk" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.PTime.tchk">
+<span class="sig-name descname"><span class="pre">tchk</span></span><a class="headerlink" href="#pygmi.misc.PTime.tchk" title="Permalink to this definition">¶</a></dt>
 <dd><p>List of times generated by the time.perf_counter routine.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1011,8 +1004,8 @@ called.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.misc.PTime.since_first_call">
-<code class="sig-name descname"><span class="pre">since_first_call</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'since</span> <span class="pre">first</span> <span class="pre">call'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.PTime.since_first_call" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.PTime.since_first_call">
+<span class="sig-name descname"><span class="pre">since_first_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'since</span> <span class="pre">first</span> <span class="pre">call'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.PTime.since_first_call" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time lapsed since first call.</p>
 <p>This function prints out a message and lets you know the time
 passed since the first call.</p>
@@ -1024,8 +1017,8 @@ passed since the first call.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.misc.PTime.since_last_call">
-<code class="sig-name descname"><span class="pre">since_last_call</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'since</span> <span class="pre">last</span> <span class="pre">call'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.PTime.since_last_call" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.PTime.since_last_call">
+<span class="sig-name descname"><span class="pre">since_last_call</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'since</span> <span class="pre">last</span> <span class="pre">call'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.PTime.since_last_call" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time lapsed since last call.</p>
 <p>This function prints out a message and lets you know the time
 passed since the last call.</p>
@@ -1039,16 +1032,16 @@ passed since the last call.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.misc.ProgressBar">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></code><code class="sig-name descname"><span class="pre">ProgressBar</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.ProgressBar">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></span><span class="sig-name descname"><span class="pre">ProgressBar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QProgressBar</span></code></p>
 <p>Progress bar.</p>
 <p>Progress Bar routine which expands the QProgressBar class slightly so that
 there is a time function as well as a convenient of calling it via an
 iterable.</p>
 <dl class="py attribute">
-<dt id="pygmi.misc.ProgressBar.otime">
-<code class="sig-name descname"><span class="pre">otime</span></code><a class="headerlink" href="#pygmi.misc.ProgressBar.otime" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.ProgressBar.otime">
+<span class="sig-name descname"><span class="pre">otime</span></span><a class="headerlink" href="#pygmi.misc.ProgressBar.otime" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the original time recorded when the progress bar starts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type</dt>
@@ -1058,33 +1051,33 @@ iterable.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.misc.ProgressBar.iter">
-<code class="sig-name descname"><span class="pre">iter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar.iter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.ProgressBar.iter">
+<span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar.iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate Routine.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.misc.ProgressBar.to_max">
-<code class="sig-name descname"><span class="pre">to_max</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar.to_max" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.ProgressBar.to_max">
+<span class="sig-name descname"><span class="pre">to_max</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBar.to_max" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the progress to maximum.</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.misc.ProgressBarText">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></code><code class="sig-name descname"><span class="pre">ProgressBarText</span></code><a class="headerlink" href="#pygmi.misc.ProgressBarText" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.ProgressBarText">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></span><span class="sig-name descname"><span class="pre">ProgressBarText</span></span><a class="headerlink" href="#pygmi.misc.ProgressBarText" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Text Progress bar.</p>
 <dl class="py method">
-<dt id="pygmi.misc.ProgressBarText.iter">
-<code class="sig-name descname"><span class="pre">iter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBarText.iter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.ProgressBarText.iter">
+<span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iterable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBarText.iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Iterate Routine.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="pygmi.misc.ProgressBarText.printprogressbar">
-<code class="sig-name descname"><span class="pre">printprogressbar</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBarText.printprogressbar" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.ProgressBarText.printprogressbar">
+<span class="sig-name descname"><span class="pre">printprogressbar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">iteration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.ProgressBarText.printprogressbar" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call in a loop to create terminal progress bar.</p>
 <p>Code by Alexander Veysov. (<a class="reference external" href="https://gist.github.com/snakers4">https://gist.github.com/snakers4</a>).</p>
 <dl class="field-list simple">
@@ -1106,13 +1099,13 @@ iterable.</p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="pygmi.misc.QLabelVStack">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></code><code class="sig-name descname"><span class="pre">QLabelVStack</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.QLabelVStack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.QLabelVStack">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></span><span class="sig-name descname"><span class="pre">QLabelVStack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.QLabelVStack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>QLabelVStack.</p>
 <dl class="py method">
-<dt id="pygmi.misc.QLabelVStack.addWidget">
-<code class="sig-name descname"><span class="pre">addWidget</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.QLabelVStack.addWidget" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.QLabelVStack.addWidget">
+<span class="sig-name descname"><span class="pre">addWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widget1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">widget2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.QLabelVStack.addWidget" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add two widgets on a row, widget1 can also be text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1133,8 +1126,25 @@ iterable.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="pygmi.misc.tick_formatter">
-<code class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></code><code class="sig-name descname"><span class="pre">tick_formatter</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.tick_formatter" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pygmi.misc.getinfo">
+<span class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></span><span class="sig-name descname"><span class="pre">getinfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">txt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.getinfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get time and memory info.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>txt</strong> (<em>TYPE</em><em>, </em><em>optional</em>) – DESCRIPTION. The default is None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pygmi.misc.tick_formatter">
+<span class="sig-prename descclassname"><span class="pre">pygmi.misc.</span></span><span class="sig-name descname"><span class="pre">tick_formatter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmi.misc.tick_formatter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Format thousands separator in ticks for plots.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1152,8 +1162,8 @@ iterable.</p>
 </dl>
 </dd></dl>
 
-</div>
-<div class="section" id="module-pygmi">
+</section>
+<section id="module-pygmi">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-pygmi" title="Permalink to this headline">¶</a></h2>
 <p>PyGMI stands for Python Geoscience Modelling and Interpretation.</p>
 <p>It is a modelling and interpretation suite aimed at magnetic, gravity and other
@@ -1167,8 +1177,8 @@ datasets. It includes:</p>
 </ul>
 </div></blockquote>
 <p>It is released under the Gnu General Public License version 3.0</p>
-</div>
-</div>
+</section>
+</section>
 
 
           </div>
@@ -1181,7 +1191,7 @@ datasets. It includes:</p>
           <a href="api.html" title="Previous document">PyGMI API</a>
         </li>
         <li>
-          <a href="pygmi.bholes.html" title="Next document">pygmi.bholes package</a>
+          <a href="pygmi.clust.html" title="Next document">pygmi.clust package</a>
           &rarr;
         </li>
     </ul>
@@ -1250,7 +1260,7 @@ datasets. It includes:</p>
   <li><a href="index.html">Documentation overview</a><ul>
   <li><a href="api.html">PyGMI API</a><ul>
       <li>Previous: <a href="api.html" title="previous chapter">PyGMI API</a></li>
-      <li>Next: <a href="pygmi.bholes.html" title="next chapter">pygmi.bholes package</a></li>
+      <li>Next: <a href="pygmi.clust.html" title="next chapter">pygmi.clust package</a></li>
   </ul></li>
   </ul></li>
 </ul>
@@ -1281,7 +1291,7 @@ datasets. It includes:</p>
       &copy;2021 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.5.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
