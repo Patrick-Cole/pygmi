@@ -151,10 +151,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
     for key in coords:
         iint, jint = key
         coords[key].sort(key=itemgetter(1))
-        try:
-            _, r, zval, _ = coords[key][0]
-        except:
-            breakpoint()
+        _, r, zval, _ = coords[key][0]
         if r < 0.05:
             u[iint, jint] = zval
             ufixed[iint, jint] = True
@@ -493,7 +490,7 @@ def get_b(e5, n5):
 @jit(nopython=True)
 def mcurv(u, ufixed):
     """
-    Minimum curvature smooothing.
+    Minimum curvature smoothing.
 
     This routine smooths the data between fixed data nodes.
 

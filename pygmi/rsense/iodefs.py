@@ -875,7 +875,7 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
     elif ('.xml' in bfile and '.SAFE' in ifile) or 'Sentinel-2' in extscene:
         dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
     elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
-              '.006.' in bfile):
+          '.006.' in bfile):
         dat = get_modisv6(ifile, piter)
     else:
         dat = None
@@ -1153,7 +1153,6 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
                     '6': [10400, 12500],
                     '7': [2080, 2350]}
 
-
     if platform == '07':
         satbands = {'1': [450, 520],
                     '2': [520, 600],
@@ -1324,7 +1323,6 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
 
             if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
                 dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']
-
 
     if dat == []:
         dat = None
@@ -1790,7 +1788,6 @@ def _testfn():
         if 'MOD44' not in ifile:
             continue
         dat = get_data(ifile)
-
 
     # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
     # dat = get_modisv6(ifile)

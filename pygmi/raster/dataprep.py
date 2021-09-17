@@ -380,10 +380,14 @@ class DataMerge(QtWidgets.QDialog):
         self.parent = parent
         self.idir = None
         self.method = 'first'
-        self.rb_first = QtWidgets.QRadioButton('First - copy first file over last file at overlap.')
-        self.rb_last = QtWidgets.QRadioButton('Last - copy last file over first file at overlap.')
-        self.rb_min = QtWidgets.QRadioButton('Min - copy pixel wise minimum at overlap')
-        self.rb_max = QtWidgets.QRadioButton('Max - copy pixel wise maximum at overlap')
+        self.rb_first = QtWidgets.QRadioButton('First - copy first file over '
+                                               'last file at overlap.')
+        self.rb_last = QtWidgets.QRadioButton('Last - copy last file over '
+                                              'first file at overlap.')
+        self.rb_min = QtWidgets.QRadioButton('Min - copy pixel wise minimum '
+                                             'at overlap')
+        self.rb_max = QtWidgets.QRadioButton('Max - copy pixel wise maximum '
+                                             'at overlap')
         # self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.idirlist = QtWidgets.QLineEdit('')
@@ -457,7 +461,6 @@ class DataMerge(QtWidgets.QDialog):
         None.
 
         """
-
         if self.rb_first.isChecked():
             self.method = 'first'
         if self.rb_last.isChecked():
@@ -476,7 +479,6 @@ class DataMerge(QtWidgets.QDialog):
         None.
 
         """
-
         if self.shift_to_median.isChecked():
             self.files_diff.setChecked(True)
 
@@ -489,7 +491,6 @@ class DataMerge(QtWidgets.QDialog):
         None.
 
         """
-
         if not self.files_diff.isChecked():
             self.shift_to_median.setChecked(False)
 
@@ -1836,7 +1837,7 @@ class RTP(QtWidgets.QDialog):
 
 class Continuation(QtWidgets.QDialog):
     """
-    Perform upward and downward contiuation on potential field data.
+    Perform upward and downward continuation on potential field data.
 
     Attributes
     ----------
@@ -2007,7 +2008,7 @@ class Continuation(QtWidgets.QDialog):
 def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
               roff=None, coff=None):
     """
-    Example of custom merge for rasterio.
+    Custom merge for rasterio, taking minimum value.
 
     Parameters
     ----------
@@ -2044,7 +2045,7 @@ def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
 def merge_max(merged_data, new_data, merged_mask, new_mask, index=None,
               roff=None, coff=None):
     """
-    Example of custom merge for rasterio.
+    Custom merge for rasterio, taking maximum value.
 
     Parameters
     ----------
@@ -3162,7 +3163,6 @@ def _testfft():
 def _testmerge():
     """Test Merge."""
     import sys
-    import psutil
     import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import export_gdal
 

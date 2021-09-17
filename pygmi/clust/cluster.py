@@ -480,8 +480,6 @@ def _testfn():
     DM.indata['Raster'] = dat2
     DM.settings(True)
 
-    breakpoint()
-
     dat2 = np.ma.masked_equal(dat2, 0)
     plt.imshow(dat2)
     plt.show()

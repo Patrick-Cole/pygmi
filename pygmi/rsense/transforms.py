@@ -22,9 +22,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Transforms such as PCA and MNF.
-"""
+"""Transforms such as PCA and MNF."""
+
 # from memory_profiler import profile
 import os
 import copy
@@ -291,7 +290,7 @@ class MNF(QtWidgets.QDialog):
 # @profile
 def get_noise(x2d, mask, noise=''):
     """
-    Calculates noise dataset from original data.
+    Calculate noise dataset from original data.
 
     Parameters
     ----------
@@ -306,9 +305,9 @@ def get_noise(x2d, mask, noise=''):
     Returns
     -------
     nevals : numpy array
-        Noise eigen values.
+        Noise eigenvalues.
     nevecs : numpy array
-        Noise eigen vectors.
+        Noise eigenvectors.
 
     """
     mask = ~mask
@@ -367,14 +366,14 @@ def get_noise(x2d, mask, noise=''):
 def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
              piter=iter):
     """
-    MNF Calculation
+    MNF Calculation.
 
     Parameters
     ----------
     dat : List
         List of PyGMI Data.
     ncmps : int or None, optional
-        Numer of components to use for filtering. The default is None
+        Number of components to use for filtering. The default is None
         (meaning all).
     noisetxt : txt, optional
         Noise type. Can be 'diagonal', 'hv average' or 'quad'. The default is
@@ -411,7 +410,6 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     #     x2d = x2d.astype(np.int64)
 
     mask = maskall[:, :, 0]
-
 
     pprint('Calculating noise data...')
     nevals, nevecs = get_noise(x2d, mask, noisetxt)
@@ -474,39 +472,38 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     return odata, ev
 
 
-def mnf_calc2(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
-    """MNF Filtering Copy"""
+# def mnf_calc2(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
+#     """MNF Filtering Copy."""
+#     dim = x2d.shape[-1]
+#     mask = maskall[:, :, 0]
+#     x = x2d[~mask]
 
-    dim = x2d.shape[-1]
-    mask = maskall[:, :, 0]
-    x = x2d[~mask]
+#     pprint('Calculating noise data...')
+#     nevals, nevecs = get_noise(x2d, mask, noisetxt)
 
-    pprint('Calculating noise data...')
-    nevals, nevecs = get_noise(x2d, mask, noisetxt)
+#     pprint('Calculating MNF...')
+#     Ln = np.power(nevals, -0.5)
+#     Ln = np.diag(Ln)
 
-    pprint('Calculating MNF...')
-    Ln = np.power(nevals, -0.5)
-    Ln = np.diag(Ln)
+#     W = Ln @ nevecs.T
+#     Winv = np.linalg.inv(W)
 
-    W = Ln @ nevecs.T
-    Winv = np.linalg.inv(W)
+#     Pnorm = W @ x.T
 
-    Pnorm = W @ x.T
+#     pca = IncrementalPCA(n_components=ncmps)
+#     P = pca.fit_transform(Pnorm.T)
 
-    pca = IncrementalPCA(n_components=ncmps)
-    P = pca.fit_transform(Pnorm.T)
+#     pprint('Calculating inverse MNF...')
+#     P = pca.inverse_transform(P)
 
-    pprint('Calculating inverse MNF...')
-    P = pca.inverse_transform(P)
+#     x2 = (Winv @  P.T).T
 
-    x2 = (Winv @  P.T).T
+#     rows, cols = mask.shape
+#     datall = np.zeros([rows, cols, dim])
+#     datall[~mask] = x2
+#     datall = np.ma.array(datall, mask=maskall)
 
-    rows, cols = mask.shape
-    datall = np.zeros([rows, cols, dim])
-    datall[~mask] = x2
-    datall = np.ma.array(datall, mask=maskall)
-
-    return datall
+#     return datall
 
 
 def _testfn():
@@ -539,7 +536,6 @@ def _testfn():
     # noise = sp.noise_from_diffs(dat2)
     # mnfr = sp.mnf(signal, noise)
     # denoised = mnfr.denoise(dat2, num=ncmps)
-
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
@@ -601,11 +597,11 @@ def _testfn2():
     # scov = noise.cov
 
     for i in ['diagonal', 'hv average', '']:
-        noise, maskp = get_noise(dat2, mask = mask, noise=i)
+        noise, maskp = get_noise(dat2, mask=mask, noise=i)
 
         n2 = np.zeros(maskp.shape+(dat2.shape[-1],))
         n2[maskp] = noise
-        n2 = np.ma.array(n2[:,:,0], mask=~maskp)
+        n2 = np.ma.array(n2[:, :, 0], mask=~maskp)
 
         vmin = n2.mean()-2*n2.std()
         vmax = n2.mean()+2*n2.std()
@@ -622,9 +618,7 @@ def _testfn2():
     # pmnf = mnf_calc(dat2, maskall, ncmps=ncmps, noisetxt='diagonal')
     # pmnf, ev = mnf_calc(dat, ncmps=None, noisetxt='diagonal')
 
-
     return
-
 
 
 if __name__ == "__main__":

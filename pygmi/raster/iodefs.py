@@ -565,7 +565,6 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     dat : PyGMI raster Data
         dataset imported
     """
-
     if piter is None:
         piter = ProgressBarText().iter
 
@@ -1315,7 +1314,7 @@ class ExportData():
 
     def export_ascii(self, data):
         """
-        Export Ascii file.
+        Export ASCII file.
 
         Parameters
         ----------
@@ -1581,11 +1580,8 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=None):
 
 def _filespeedtest():
     """Test."""
-    from pygmi.misc import ProgressBarText
-
     print('Starting')
     pbar = ProgressBarText()
-    ifile = r'E:\WorkData\HyperspectralScanner\Raw Data\LWIR(OWL)\bv1_17_118m16_125m79_2020-06-30_12-43-14\capture\BV1_17_118m16_125m79_2020-06-30_12-43-14.raw'
     ifile = r'E:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
     ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
     # ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'

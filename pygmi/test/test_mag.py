@@ -60,7 +60,6 @@ def test_tilt1():
     np.testing.assert_array_equal(ta, ta2)
     np.testing.assert_array_equal(tdx, tdx2)
 
-
 def test_rtp():
     """Test RTP."""
     datin = Data()

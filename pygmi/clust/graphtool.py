@@ -706,7 +706,7 @@ class ScatterPlot(QtWidgets.QDialog):
 
     def on_cp_dpoly(self):
         """
-        On cp dpoly.
+        On cp delete polygon.
 
         Returns
         -------
@@ -725,7 +725,7 @@ class ScatterPlot(QtWidgets.QDialog):
 
     def on_map_dpoly(self):
         """
-        On map dpoly.
+        On map delete polygon.
 
         Returns
         -------

@@ -782,7 +782,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         Parameters
         ----------
         rcopy : RangedCopy
-            Handle of ranged copy gui.
+            Handle of ranged copy GUI.
 
         Returns
         -------

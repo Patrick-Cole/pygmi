@@ -759,9 +759,10 @@ def vertical(data, npts=None, xint=1, order=1):
 
     return dz
 
+
 class AGC(QtWidgets.QDialog):
     """
-    Class used to gather information via a GUI, for function agc.
+    Class used to gather information via a GUI, for function AGC.
 
     Attributes
     ----------

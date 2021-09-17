@@ -42,7 +42,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.colors as mcolors
 
-from pygmi.misc import frm, getinfo
+from pygmi.misc import frm
 from pygmi.raster.modest_image import imshow
 
 
@@ -128,8 +128,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
                        cmap=cm.get_cmap(cmap), interpolation='nearest')
 
         # rdata = self.axes.imshow(data1.data, extent=data1.extent,
-        #                          cmap=cm.get_cmap(cmap), vmin=vmin, vmax=vmax,
-        #                          interpolation='nearest')
+        #                           cmap=cm.get_cmap(cmap), vmin=vmin,
+        #                           vmax=vmax, interpolation='nearest')
 
         if not data1.isrgb:
             rdata.set_clim_std(2.5)

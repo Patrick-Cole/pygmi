@@ -594,6 +594,7 @@ class ProcFeatures(QtWidgets.QDialog):
         self.parent = parent
         self.product = {}
         self.ratio = {}
+        self.feature = None
 
         # self.combo_sensor = QtWidgets.QComboBox()
         self.cb_ratios = QtWidgets.QComboBox()
@@ -1120,11 +1121,30 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
 
 @jit(nopython=True)
 def cubic_calc(xdat, crem, imin):
-        # if imin == 0 or imin == (i2a-i1a-1):
-        #     dtmp[j] = 1. - crem[i1a:i2a][imin]
-        #     ptmp[j] = xdat[i1a:i2a][imin]
-        #     continue
+    """
+    Find minimum of function using an analytic cubic calculation for speed.
 
+    Parameters
+    ----------
+    xdat : numpy array
+        wavelengths - x data.
+    crem : numpy array
+        continuum removed data - y data.
+    imin : int
+        Index for estimated minimum.
+
+    Returns
+    -------
+    x : float
+        wavelength at minimum.
+    y : float
+        y value at minimum.
+
+    """
+    # if imin == 0 or imin == (i2a-i1a-1):
+    #     dtmp[j] = 1. - crem[i1a:i2a][imin]
+    #     ptmp[j] = xdat[i1a:i2a][imin]
+    #     continue
 
     x1 = xdat[imin-1]
     x2 = xdat[imin]
@@ -1134,16 +1154,33 @@ def cubic_calc(xdat, crem, imin):
     y2 = crem[imin]
     y3 = crem[imin+1]
 
-    a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 + 2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 + x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 - 2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 + 2*x2**2*x3**2*y1)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 + 3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 - 2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 - 2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    c1 = -3*x1*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
-    d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    a1 = (2*x1**3*x2*y3 - 2*x1**3*x3*y2 - x1**2*x2**2*y2 - 3*x1**2*x2**2*y3 +
+          2*x1**2*x2*x3*y2 + 2*x1**2*x3**2*y2 + x1*x2**3*y1 + x1*x2**3*y3 +
+          x1*x2**2*x3*y1 + x1*x2**2*x3*y2 - 2*x1*x2*x3**2*y1 -
+          2*x1*x2*x3**2*y2 - 2*x2**3*x3*y1 +
+          2*x2**2*x3**2*y1)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    b1 = (2*x1**3*y2 - 2*x1**3*y3 - 4*x1*x2**2*y1 + x1*x2**2*y2 +
+          3*x1*x2**2*y3 + 2*x1*x2*x3*y1 - 2*x1*x2*x3*y2 + 2*x1*x3**2*y1 -
+          2*x1*x3**2*y2 + x2**3*y1 - x2**3*y3 + x2**2*x3*y1 - x2**2*x3*y2 -
+          2*x2*x3**2*y1 + 2*x2*x3**2*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    c1 = -3*x1*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
+                x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
+    d1 = (x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
+          x3*y2)/(2*(x1 - x2)**2*(x1 - x3)*(x2 - x3))
 
-    a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 + 2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 + 2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 - 3*x2**2*x3**2*y1 - x2**2*x3**2*y2 + 2*x2*x3**3*y1)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 - x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 - x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 - 2*x3**3*y1 + 2*x3**3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    c2 = 3*x3*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-    d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 - x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
-
+    a2 = (2*x1**2*x2**2*y3 - 2*x1**2*x2*x3*y2 - 2*x1**2*x2*x3*y3 +
+          2*x1**2*x3**2*y2 - 2*x1*x2**3*y3 + x1*x2**2*x3*y2 + x1*x2**2*x3*y3 +
+          2*x1*x2*x3**2*y2 - 2*x1*x3**3*y2 + x2**3*x3*y1 + x2**3*x3*y3 -
+          3*x2**2*x3**2*y1 - x2**2*x3**2*y2 +
+          2*x2*x3**3*y1)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    b2 = (2*x1**2*x2*y2 - 2*x1**2*x2*y3 - 2*x1**2*x3*y2 + 2*x1**2*x3*y3 -
+          x1*x2**2*y2 + x1*x2**2*y3 - 2*x1*x2*x3*y2 + 2*x1*x2*x3*y3 -
+          x2**3*y1 + x2**3*y3 + 3*x2**2*x3*y1 + x2**2*x3*y2 - 4*x2**2*x3*y3 -
+          2*x3**3*y1 + 2*x3**3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    c2 = 3*x3*(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
+               x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
+    d2 = -(x1*y2 - x1*y3 - x2*y1 + x2*y3 + x3*y1 -
+           x3*y2)/(2*(x1 - x2)*(x1 - x3)*(x2 - x3)**2)
 
     min1 = [(-c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1),
             -(c1 + np.sqrt(-3*b1*d1 + c1**2))/(3*d1)]
@@ -1151,22 +1188,17 @@ def cubic_calc(xdat, crem, imin):
     min2 = [(-c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2),
             -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
 
-
     for i in min1:
-        if x1<i and i<x2:
+        if x1 < i and i < x2:
             x = i
             y = a1+b1*x+c1*x**2+d1*x**3
 
     for i in min2:
-        if x2<i and i<x3:
+        if x2 < i and i < x3:
             x = i
             y = a2+b2*x+c2*x**2+d2*x**3
 
-        # ptmp[j] = x
-        # dtmp[j] = 1. - y
-
     return x, y
-
 
 
 @jit(nopython=True)
@@ -1300,7 +1332,6 @@ def readsli(ifile):
 
 def _testfn():
     """Test routine."""
-    import matplotlib.pyplot as plt
     pbar = ProgressBarText()
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
@@ -1340,7 +1371,7 @@ def _testfn():
     plt.hist(dat.data.flatten(), bins=200)
     plt.show()
 
-    tmp = np.histogram(dat.data[dat.data>0])
+    tmp = np.histogram(dat.data[dat.data > 0])
 
     breakpoint()
 
@@ -1348,14 +1379,6 @@ def _testfn():
 def _testfn2():
     """Test routine."""
     pbar = ProgressBarText()
-
-    # ifile = (r'c:\work\Workdata\HyperspectralScanner\PTest\smile\FENIX\\'
-    #          r'clip_BV1_17_118m16_125m79_2020-06-30_12-43-14.dat')
-
-    # ifile = (r'C:\Work\Workdata\HyperspectralScanner\Processed Data\\'
-    #           r'FENIX L201 Data Preparation v0810\BV1_17_extracted_image.img')
-
-    # data = get_raster(ifile, piter=pbar.iter)
 
     ifile = r'C:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
 
@@ -1378,16 +1401,12 @@ def _testfn2():
 
 
 def _testfn3():
-    """Test"""
+    """Test."""
     pbar = ProgressBarText()
 
     ifile1 = r'C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr'
     ifile2 = r'C:\Workdata\Lithosphere\merge\cut-088-0824_iMNF15.hdr'
     ifile3 = r'C:\Workdata\Lithosphere\merge\cut-089-0824_iMNF15.hdr'
-
-    # ifile1 = r'C:\Workdata\Lithosphere\merge\cut-087-0824.hdr'
-    # ifile2 = r'C:\Workdata\Lithosphere\merge\cut-088-0824.hdr'
-    # ifile3 = r'C:\Workdata\Lithosphere\merge\cut-089-0824.hdr'
 
     feat = 18
 
@@ -1426,11 +1445,6 @@ def _testfn3():
     data2 = get_raster(ifile2, nval=nodata, iraster=iraster, piter=pbar.iter)
     data3 = get_raster(ifile3, nval=nodata, iraster=iraster, piter=pbar.iter)
 
-     # plt.figure(dpi=150)
-    # plt.imshow(data1[0].data, extent=data1[0].extent)
-    # plt.plot(277545, 6774900, '+k')
-    # plt.show()
-
     for i in range(2):
         if i == 0:
             xxx = 277545
@@ -1439,7 +1453,6 @@ def _testfn3():
             xxx = 279900
             yyy = 6774900
             data1 = data3
-
 
         i1 = int((xxx-data1[0].extent[0])/data1[0].xdim)
         i2 = int((xxx-data2[0].extent[0])/data2[0].xdim)
@@ -1464,15 +1477,6 @@ def _testfn3():
 
         xval2 = np.array(xval2)
         dat2 = np.array(dat2)
-
-        """
-        i1 = 55
-        i2 = 97
-        i1a = 11
-        i2a = 19
-        fdat.shape = rows, cols, spec
-        fdat.shape = spec (42)
-        """
 
         dat1 = dat1[55: 98]
         dat2 = dat2[55: 98]
@@ -1518,7 +1522,8 @@ def _testfn3():
 
         ymin, ymax = plt.gca().get_ylim()
         plt.vlines(ptmp[0], ymin, ymax, label=str(ptmp[0]))
-        plt.vlines(ptmp[1], ymin, ymax, colors='r', linestyles='-.', label=str(ptmp[1]))
+        plt.vlines(ptmp[1], ymin, ymax, colors='r', linestyles='-.',
+                   label=str(ptmp[1]))
         plt.legend()
         plt.show()
 
@@ -1528,9 +1533,9 @@ def _testfn3():
         dat2 = np.ma.masked_equal(dat2, 0)
 
         x1 = np.linspace(data1[0].extent[0], data1[0].extent[1],
-                          dat1[feat, 0].size)
+                         dat1[feat, 0].size)
         x2 = np.linspace(data2[0].extent[0], data2[0].extent[1],
-                          dat2[feat, 0].size)
+                         dat2[feat, 0].size)
         plt.plot(x1, dat1[feat, 0])
         plt.plot(x2, dat2[feat, 0], '-.')
 

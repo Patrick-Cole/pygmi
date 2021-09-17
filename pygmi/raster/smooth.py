@@ -470,7 +470,7 @@ def filters2d(filtertype, sze, *sigma):
 
     FSPECIAL - Create spatial filters for image processing
 
-    Usage:  f = fspecial(filtertype, optionalparams)
+    Usage:  f = fspecial(filtertype, optional parameters)
 
     filtertype can be
 

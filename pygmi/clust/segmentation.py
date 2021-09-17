@@ -553,11 +553,9 @@ def _testfn():
 
     rcParams['figure.dpi'] = 300
 
-
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     data1 = skimage.data.coffee()  # 400x600 48.5 secs
-
 
     # data1 = data1[:, :300]  # 26
 
@@ -569,7 +567,6 @@ def _testfn():
     wcompact = 0.5
     doshape = True
     scale = 1000
-
 
     b1 = Data()
     b1.data = np.ma.array(data1[:, :, 0])

@@ -439,7 +439,7 @@ class DataGrid(QtWidgets.QDialog):
 
         if method == 'Minimum Curvature':
             gdat = minc(x, y, z, dxy, showprocesslog=self.showprocesslog,
-                       bdist=bdist)
+                        bdist=bdist)
             gdat = np.ma.filled(gdat, fill_value=nullvalue)
         else:
             extent = np.array([x.min(), x.max(), y.min(), y.max()])
@@ -783,7 +783,7 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
         cell size for the grid, in both the x and y direction.
     numits : int
         number of iterations. By default its 4. If this is negative, a maximum
-        numits will be calculated and used.
+        will be calculated and used.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
 
@@ -858,7 +858,6 @@ def _testfn():
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-
     ifile = r'C:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
 
     # ifile = r'D:\Workdata\vector\linecut\test2.csv'
@@ -873,7 +872,6 @@ def _testfn():
     # line = list(IO.outdata['Line'].values())
     # plt.plot(line[0].x, line[0].y)
     # plt.show()
-
 
     DG = DataGrid()
     DG.indata = IO.outdata

@@ -735,7 +735,7 @@ class SuperClass(QtWidgets.QDialog):
 
     def on_apoly(self):
         """
-        On apoly.
+        On add polygon.
 
         Returns
         -------
@@ -768,7 +768,7 @@ class SuperClass(QtWidgets.QDialog):
 
     def on_dpoly(self):
         """
-        On dpoly.
+        On delete polygon.
 
         Returns
         -------

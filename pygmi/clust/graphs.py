@@ -172,16 +172,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        # rdata = self.axes.imshow(data1.metadata['Cluster']['memdat'][mem],
-        #                          extent=data1.extent, cmap=cm.get_cmap('jet'))
-
         rdata = imshow(self.axes, data1.metadata['Cluster']['memdat'][mem],
                        extent=data1.extent, cmap=cm.get_cmap('jet'),
                        vmin=0., vmax=1.)
 
         self.figure.colorbar(rdata)
 
-#        self.axes.set_title('Data')
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
         self.figure.canvas.draw()

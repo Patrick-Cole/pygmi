@@ -476,7 +476,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         min_vps : float, optional
             Minimum VPS. The default is 1.53.
         max_vps : float, optional
-            Maximu VPS. The default is 1.93.
+            Maximum VPS. The default is 1.93.
 
         Returns
         -------
@@ -880,7 +880,7 @@ def import_for_plots(dat):
 
 def eigsorted(cov):
     """
-    Calculate and sort eigen values.
+    Calculate and sort eigenvalues.
 
     Parameters
     ----------

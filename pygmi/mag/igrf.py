@@ -25,8 +25,8 @@
 """
 IGRF calculations.
 
-This code is based on the Geomag software, with information given below. It was
-translated into Python from the Geomag code.
+This code is based on the GEOMAG software, with information given below. It was
+translated into Python from the GEOMAG code.
 
 | This program, originally written in FORTRAN, was developed using subroutines
 | written by   : A. Zunde
@@ -369,7 +369,6 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
         True if successful, False otherwise.
 
     """
-
     MAXDEG = 13
     MAXCOEFF = (MAXDEG*(MAXDEG+2)+1)
 
@@ -556,7 +555,10 @@ def getshc(file, iflag, strec, nmax_of_gh, igh, gh):
     nmax_of_gh : int
         Maximum degree and order of model
     igh : int
-        Index for gh.
+        Index for Schmidt quasi-normal internal spherical harmonic
+        coefficients.
+    gh : numpy array
+        Schmidt quasi-normal internal spherical harmonic coefficients.
 
     Returns
     -------
@@ -595,8 +597,8 @@ def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
     Extrapolate a spherical harmonic model.
 
     Extrapolates linearly a spherical harmonic model with a rate-of-change
-    model. Updates self.gh (Schmidt quasi-normal internal spherical
-    harmonic coefficients).
+    model. Updates Schmidt quasi-normal internal spherical
+    harmonic coefficients.
 
     | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
     | CO. 80225
@@ -655,8 +657,8 @@ def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
     Interpolates linearly, in time, between two spherical harmonic
     models.
 
-    Updates self.gh (Schmidt quasi-normal internal spherical harmonic
-    coefficients).
+    Updates Schmidt quasi-normal internal spherical harmonic
+    coefficients.
 
     | FORTRAN : A. Zunde, USGS, MS 964, box 25046 Federal Center, Denver,
     | CO. 80225

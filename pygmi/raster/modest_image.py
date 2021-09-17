@@ -1,8 +1,10 @@
 """
+Modest Image.
+
 Modification of Chris Beaumont's mpl-modest-image package to allow the use of
 set_extent.
 
-pcole, 2021  - Bugfix to allow for correct zooming if origin is set to 'upper'
+pcole, 2021  - Bug fix to allow for correct zooming if origin is set to 'upper'
 """
 from __future__ import print_function, division
 
@@ -22,7 +24,6 @@ IDENTITY_TRANSFORM = IdentityTransform()
 
 
 class ModestImage(mi.AxesImage):
-
     """
     Computationally modest image class.
 
@@ -56,9 +57,22 @@ class ModestImage(mi.AxesImage):
 
     def set_data(self, A):
         """
-        Set the image array
 
-        ACCEPTS: numpy/PIL Image A
+
+        Parameters
+        ----------
+        A : numpy/PIL Image A
+            A numpy or PIL image.
+
+        Raises
+        ------
+        TypeError
+            Error when data has incorrect dimensions.
+
+        Returns
+        -------
+        None.
+
         """
         self._full_res = A
         self._A = A
@@ -76,6 +90,14 @@ class ModestImage(mi.AxesImage):
         self.invalidate_cache()
 
     def invalidate_cache(self):
+        """
+        Invalidate cache.
+
+        Returns
+        -------
+        None.
+
+        """
         self._bounds = None
         self._imcache = None
         self._rgbacache = None
@@ -86,17 +108,50 @@ class ModestImage(mi.AxesImage):
         self._world2pixel_cache = None
 
     def set_extent(self, extent):
+        """
+        Set extent.
+
+        Parameters
+        ----------
+        extent : tuple
+            Extent of data.
+
+        Returns
+        -------
+        None.
+
+        """
         self._full_extent = extent
         self.invalidate_cache()
         mi.AxesImage.set_extent(self, extent)
 
     def get_array(self):
-        """Override to return the full-resolution array"""
+        """
+        Override to return the full-resolution array.
+
+        Returns
+        -------
+        numpy array
+            Return data array of full resolution.
+
+        """
         return self._full_res
 
     def get_cursor_data(self, event):
-        """Correct z-value display when zoomed"""
+        """
+        Correct z-value display when zoomed.
 
+        Parameters
+        ----------
+        event : matpltolib cursor event.
+            Cursor event.
+
+        Returns
+        -------
+        float
+            z-value or NAN.
+
+        """
         x = event.xdata
         y = event.ydata
 
@@ -122,8 +177,20 @@ class ModestImage(mi.AxesImage):
         return np.nan
 
     def format_cursor_data(self, data):
-        """Format z data"""
+        """
+        Format z data on graph.
 
+        Parameters
+        ----------
+        data : float
+            Data value to display.
+
+        Returns
+        -------
+        zval : str
+            Formatted string to display.
+
+        """
         if np.ma.is_masked(data) or isinstance(data, (list, np.ndarray)):
             zval = 'z = None'
         else:
@@ -171,6 +238,8 @@ class ModestImage(mi.AxesImage):
 
     def _scale_to_res(self):
         """
+        Scale to resolution.
+
         Change self._A and _extent to render an image whose resolution is
         matched to the eventual rendering.
         """
@@ -230,7 +299,7 @@ class ModestImage(mi.AxesImage):
         self.changed()
 
     def draw(self, renderer, *args, **kwargs):
-
+        """Draw."""
         if self._full_res.shape is None:
             return
         self._scale_to_res()
@@ -250,7 +319,6 @@ class ModestImage(mi.AxesImage):
         self._A = colormap
 
         super(ModestImage, self).draw(renderer, *args, **kwargs)
-
 
     def draw_ternary(self):
         """
@@ -281,14 +349,14 @@ class ModestImage(mi.AxesImage):
 
         if np.ma.isMaskedArray(self._A):
             mask = np.logical_or(self._A[:, :, 0].mask,
-                                  self._A[:, :, 1].mask)
+                                 self._A[:, :, 1].mask)
             mask = np.logical_or(mask, self._A[:, :, 2].mask)
             colormap[:, :, 3] = np.logical_not(mask)
         return colormap
 
     def draw_sunshade(self, colormap=None):
         """
-        Apply sunshading
+        Apply sunshading.
 
         Returns
         -------
@@ -321,7 +389,7 @@ class ModestImage(mi.AxesImage):
 
     def set_clim_std(self, mult):
         """
-        Sets the vmin and vmax to mult*std(self._A).
+        Set the vmin and vmax to mult*std(self._A).
 
         This routine only works on a 2D array.
 
@@ -335,12 +403,10 @@ class ModestImage(mi.AxesImage):
         None.
 
         """
-
         self._scale_to_res()
 
         if self._A.ndim > 2:
             raise TypeError("Invalid dimensions for image data. Should be 2D.")
-            return
 
         vstd = self._A.std()
         vmean = self._A.mean()
@@ -458,7 +524,6 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
     img2 : numpy array
         compacted array
     """
-
     if uperc is None:
         uperc = perc
 
@@ -616,15 +681,8 @@ def norm255(dat):
     return out
 
 
-
-
-
-
-
-
-
-
 def main():
+    """Main."""
     from time import time
     import matplotlib.pyplot as plt
     x, y = np.mgrid[0:2000, 0:2000]
@@ -656,9 +714,10 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
            interpolation=None, alpha=None, vmin=None, vmax=None,
            origin=None, extent=None, shape=None, filternorm=1,
            filterrad=4.0, imlim=None, resample=None, url=None, **kwargs):
-    """Similar to matplotlib's imshow command, but produces a ModestImage
+    """
+    Similar to matplotlib's imshow command, but produces a ModestImage.
 
-    Unlike matplotlib version, must explicitly specify axes
+    Unlike matplotlib version, must explicitly specify axes.
     """
     if norm is not None:
         assert(isinstance(norm, mcolors.Normalize))
@@ -673,27 +732,7 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     im.set_alpha(alpha)
     axes._set_artist_props(im)
 
-    # def format_coord(x, y):
-
-    #     if extent is None:
-    #         col = int(x + 0.5)
-    #         row = int(y + 0.5)
-    #     else:
-    #         col, row = im._world2pixel.transform((x, y))
-    #         col = int(col + 0.5)
-    #         row = int(row + 0.5)
-
-    #     numrows, numcols = im._full_res.shape
-    #     if col >= 0 and col < numcols and row >= 0 and row < numrows:
-    #         z = im._full_res[row, col]
-    #         if np.ma.is_masked(z):
-    #             return 'x=%1.4f, y=%1.4f' % (x, y)
-    #         else:
-    #             return 'x=%1.4f, y=%1.4f, z=%1.4f' % (x, y, z)
-    #     else:
-    #         return 'x=%1.4f, y=%1.4f' % (x, y)
-
-    axes.format_coord = lambda x,y:f'x = {x:,.5f}, y = {y:,.5f}'
+    axes.format_coord = lambda x, y: f'x = {x:,.5f}, y = {y:,.5f}'
 
     if im.get_clip_path() is None:
         # image does not already have clipping set, clip to axes patch
@@ -729,12 +768,11 @@ def extract_matched_slices(axes=None, shape=None, extent=None,
                boundaries for slices will be cropped to fit within
                this shape.
 
-    :rtype: tulpe of x0, x1, sx, y0, y1, sy
+    :rtype: tuple of x0, x1, sx, y0, y1, sy
 
     Indexing the full resolution array as array[y0:y1:sy, x0:x1:sx] returns
     a view well-matched to the axes' resolution and extent
     """
-
     # Find extent in display pixels (this gives the resolution we need
     # to sample the array to)
     ext = (axes.transAxes.transform([(1, 1)]) -
@@ -777,10 +815,8 @@ def main2():
     from IPython import get_ipython
     get_ipython().magic('matplotlib qt5')
 
-
     ifile = r'E:\Work\Programming\mpl-modest-image-master\test.tif'
     ifile = r'c:\workdata\testdata.hdr'
-    # ifile = r'E:\Workdata\Richtersveld\Reprocessed\030_0815-1050_ref_rect.hdr'
 
     pbar = ProgressBarText()
 
@@ -793,7 +829,6 @@ def main2():
     ax = f.add_subplot(121)
     imshow(ax, cdat, extent=extent)
     ax.grid(True)
-
 
     plt.subplot(122)
     numrows, numcols = cdat.shape

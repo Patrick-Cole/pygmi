@@ -208,7 +208,7 @@ class GravMag():
         showreports : bool, optional
             Flag for showing reports. The default is False.
         magcalc : bool, optional
-            Flac for choosing the magnetic calculation. The default is False.
+            Flag for choosing the magnetic calculation. The default is False.
 
         Returns
         -------

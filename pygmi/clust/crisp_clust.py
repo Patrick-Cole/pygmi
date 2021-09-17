@@ -587,7 +587,7 @@ class CrispClust(QtWidgets.QDialog):
         Parameters
         ----------
         data : numpy array
-            NxP matrix containing the data to be clustered, N is number of
+            N x P matrix containing the data to be clustered, N is number of
             samples, P is number of different attributes available for each
             sample.
         no_clust : int
@@ -597,7 +597,7 @@ class CrispClust(QtWidgets.QDialog):
             center positions will be used for initialisation or NO_CLUSTxP
             matrix
         centfix : TYPE
-            Constrains the position of cluster centers, if centfix is empty,
+            Constrains the position of cluster centers, if CENTFIX is empty,
             cluster centers can freely vary during cluster analysis, otherwise
             CENTFIX is of equal size to CENT and gives an absolute deviation
             from initial center positions that should not be exceeded during

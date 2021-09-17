@@ -272,7 +272,7 @@ class ImportLineData(QtWidgets.QDialog):
 
         head = None
         while r'/' in tmp[:tmp.index('\n')]:
-            head =  tmp[:tmp.index('\n')]
+            head = tmp[:tmp.index('\n')]
             tmp = tmp[tmp.index('\n')+1:]
             head = head.split()
             head.pop(0)
@@ -308,7 +308,6 @@ class ImportLineData(QtWidgets.QDialog):
 
             # if object in list(df1.dtypes[:-1]):
             #     breakpoint()
-
 
         # Concat in all df in one go is much faster
         df2 = pd.concat(dflist, ignore_index=True)

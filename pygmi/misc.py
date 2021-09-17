@@ -52,6 +52,7 @@ QProgressBar::chunk {
 
 PTIME = None
 
+
 class QLabelVStack:
     """QLabelVStack."""
 
@@ -287,7 +288,7 @@ class ProgressBarText():
 
 def getinfo(txt=None, reset=False):
     """
-    Gets time and memory info.
+    Get time and memory info.
 
     Parameters
     ----------

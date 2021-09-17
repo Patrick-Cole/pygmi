@@ -177,7 +177,6 @@ class Data():
         else:
             xoff, yoff, _, _ = iraster
 
-
         rows, cols = self.data.shape
 
         if gtr == (0.0, 1.0, 0.0, 0.0, 0.0, 1.0):

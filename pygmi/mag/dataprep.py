@@ -223,7 +223,7 @@ def tilt1(data, azi, s):
     th : numpy masked array
         Hyperbolic tilt angle
     t2 : numpy masked array
-        2nd order tilt angle
+        Second order tilt angle
     ta : numpy masked array
         Tilt Based Directional Derivative
     tdx : numpy masked array

@@ -1559,7 +1559,7 @@ def InterpolateVertices(isolevel, p1x, p1y, p1z, p2x, p2y, p2z, valp1, valp2):
     Parameters
     ----------
     isolevel : float
-        Iso level.
+        ISO level.
     p1x : numpy array
         p1 x coordinate.
     p1y : numpy array

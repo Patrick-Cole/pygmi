@@ -74,7 +74,8 @@ class MenuWidget():
         self.menu3.addAction(self.action_import_sentinel2)
         self.action_import_sentinel2.triggered.connect(self.import_sentinel2)
 
-        self.action_import_sentinel2b = QtWidgets.QAction('Import Sentinel-2 (bands only)')
+        self.action_import_sentinel2b = QtWidgets.QAction('Import Sentinel-2 '
+                                                          '(bands only)')
         self.menu3.addAction(self.action_import_sentinel2b)
         self.action_import_sentinel2b.triggered.connect(self.import_sentinel2b)
 

@@ -533,7 +533,7 @@ def _testfn():
     idir = r'C:\Work\Workdata\Sentinel-2'
 
     SR = SatRatios()
-    SR.indata['Raster'] = dat  #single file only
+    SR.indata['Raster'] = dat  # single file only
 
     # IO = iodefs.ImportBatch()
     # IO.idir = idir

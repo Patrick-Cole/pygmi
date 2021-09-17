@@ -772,7 +772,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def keyPressEvent(self, event):
         """
-        Intercept keypress for custom key presses.
+        Intercept key press for custom key presses.
 
         Parameters
         ----------
@@ -1309,7 +1309,7 @@ class EmittingStream(QtCore.QObject):
 
     def fileno(self):
         """
-        Fileno.
+        File number.
 
         Returns
         -------

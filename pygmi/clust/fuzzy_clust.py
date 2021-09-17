@@ -569,7 +569,7 @@ class FuzzyClust(QtWidgets.QDialog):
         no_clust : int
             Number of clusters.
         init : TYPE
-            INIT may be set to [], in this case the fcm generates random
+            INIT may be set to [], in this case the FCM generates random
             initial center locations to start the algorithm. Alternatively,
             INIT can be of matrix type, either containing a user-given
             membership matrix [NO_CLUST M] or a cluster center matrix
@@ -593,13 +593,13 @@ class FuzzyClust(QtWidgets.QDialog):
             COV_CONSTR applies only to the GK algorithm. constrains the cluster
             shape towards spherical clusters to avoid needle-like clusters.
             COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
-            COV_CONSTR = 0 results in no constraining of the covariance matrices
-            of the clusters.
+            COV_CONSTR = 0 results in no constraining of the covariance
+            matrices of the clusters.
 
         Returns
         -------
         uuu : numpy array
-            The membership function matrix uuu contains the grade of
+            This membership function matrix contains the grade of
             membership of each data sample to each cluster.
         cent : numpy array
             The coordinates for each cluster center are returned in the rows

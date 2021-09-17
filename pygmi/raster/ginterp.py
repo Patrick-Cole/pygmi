@@ -57,14 +57,13 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
-from matplotlib.pyplot import colormaps, pause
+from matplotlib.pyplot import colormaps
 from matplotlib.colors import ListedColormap
 
 import pygmi.raster.iodefs as iodefs
 import pygmi.raster.dataprep as dataprep
 import pygmi.menu_default as menu_default
 from pygmi.raster.modest_image import imshow
-from pygmi.misc import getinfo
 
 
 class MyMplCanvas(FigureCanvasQTAgg):
@@ -309,7 +308,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if self.flagresize is True:
                 self.flagresize = False
                 # self.init_graph()
-
 
                 self.update_graph()
 
@@ -669,7 +667,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-
         self.clipvalu = [None, None, None]
         self.clipvall = [None, None, None]
         self.image.rgbmode = self.gmode
@@ -786,15 +783,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_shade_plot(self):
         """
-        Updates shade plot for export.
+        Update shade plot for export.
 
         Returns
         -------
-        int
-            DESCRIPTION.
+        numpy array
+            Sunshader data.
 
         """
-
         if self.shade is not True:
             return 1
 
@@ -1265,7 +1261,7 @@ class PlotInterp(QtWidgets.QDialog):
 
     def change_sun_checkbox(self):
         """
-        Used when sunshading checkbox is clicked.
+        Use when sunshading checkbox is clicked.
 
         Returns
         -------
@@ -1982,7 +1978,6 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
     img2 : numpy array
         compacted array
     """
-
     if uperc is None:
         uperc = perc
 
@@ -2145,9 +2140,8 @@ def _testfn():
                                                  '..//..')))
     app = QtWidgets.QApplication(sys.argv)
 
-    # data = iodefs.get_raster(r'E:\Workdata\raster\polygon cut get profile\mag_IGRFcorrected.ers')
-    data = iodefs.get_raster(r"C:\Workdata\MagMerge\NC_reg_highres_merge_wgs84dd.tif")
-    # data = iodefs.get_raster(r'c:\WorkData\testdata.hdr')
+    # data = iodefs.get_raster(r"C:\Workdata\MagMerge\NC_reg_highres_merge_wgs84dd.tif")
+    data = iodefs.get_raster(r'c:\WorkData\testdata.hdr')
 
     tmp = PlotInterp()
     tmp.indata['Raster'] = data
