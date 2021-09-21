@@ -2,6 +2,10 @@
 Changelog
 =========
 
+v3.2.4.1, 20 September 2021
+---------------------------
+*Fixed a bug where layerstack was not loading properly.
+
 v3.2.4.0, 17 September 2021
 ---------------------------
 *Fixed bug with new IGRF data correction.
