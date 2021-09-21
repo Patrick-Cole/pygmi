@@ -3092,7 +3092,7 @@ def _testfft():
     # plt.show()
 
     # ofile = r'D:\Workdata\geothermal\bushveldrtp.hdr'
-    # export_gdal(ofile, [dat2], 'ENVI')
+    # export_raster(ofile, [dat2], 'ENVI')
 
     ifile = r'D:\Workdata\geothermal\bushveldrtp.hdr'
     data = get_raster(ifile)[0]
@@ -3164,7 +3164,7 @@ def _testmerge():
     """Test Merge."""
     import sys
     import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import export_gdal
+    from pygmi.raster.iodefs import export_raster
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -3204,7 +3204,7 @@ def _testmerge():
 
     print('export')
     dat2 = DM.outdata['Raster']
-    export_gdal(ofile, dat2, 'GTiff')
+    export_raster(ofile, dat2, 'GTiff')
 
 
 if __name__ == "__main__":

@@ -34,7 +34,7 @@ from PyQt5 import QtWidgets, QtCore
 
 import pygmi.menu_default as menu_default
 import pygmi.rsense.iodefs as iodefs
-from pygmi.raster.iodefs import export_gdal
+from pygmi.raster.iodefs import export_raster
 from pygmi.raster.dataprep import merge
 from pygmi.misc import ProgressBarText
 
@@ -304,7 +304,7 @@ class SatRatios(QtWidgets.QDialog):
             self.pbar.setValue(0)
             if datfin:
                 self.showprocesslog('Exporting to '+ofile)
-                export_gdal(ofile, datfin, 'GTiff', piter=self.pbar.iter)
+                export_raster(ofile, datfin, 'GTiff', piter=self.pbar.iter)
                 self.outdata['Raster'] = datfin
 
         return True

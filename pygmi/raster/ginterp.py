@@ -1697,7 +1697,7 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[2].dataid = btext
         newimg[3].dataid = 'Alpha'
 
-        iodefs.export_gdal(str(filename), newimg, 'GTiff')
+        iodefs.export_raster(str(filename), newimg, 'GTiff')
 
 # Section for colorbars
         if 'Ternary' not in dtype:

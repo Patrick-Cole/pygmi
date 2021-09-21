@@ -35,11 +35,9 @@ from sklearn.decomposition import IncrementalPCA
 import numexpr as ne
 import matplotlib.pyplot as plt
 
-from pygmi.raster.iodefs import get_raster, export_gdal
+from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.misc import ProgressBarText
-# from pygmi.raster.iodefs import export_gdal
 import pygmi.menu_default as menu_default
-# from pygmi.misc import getinfo
 
 
 class MNF(QtWidgets.QDialog):
@@ -275,7 +273,7 @@ class MNF(QtWidgets.QDialog):
                 ofile = os.path.join(odir, ofile)
 
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
-                export_gdal(ofile, odata, 'GTiff', piter=self.piter)
+                export_raster(ofile, odata, 'GTiff', piter=self.piter)
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
