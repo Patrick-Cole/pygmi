@@ -1438,7 +1438,6 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
             dtmp = np.ma.array(datai.data)
             dtmp.set_fill_value(datai.nullvalue)
             dtmp = dtmp.filled()
-            breakpoint()
             # rtmp.GetStatistics(False, True)
 
             out.write(dtmp, i+1)

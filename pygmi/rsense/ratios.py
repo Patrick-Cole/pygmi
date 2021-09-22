@@ -65,7 +65,6 @@ class SatRatios(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = parent.pbar
 
         self.combo_sensor = QtWidgets.QComboBox()
         self.lw_ratios = QtWidgets.QListWidget()
@@ -249,6 +248,7 @@ class SatRatios(QtWidgets.QDialog):
                         commonmask=True)
 
             datd = {}
+            newmask = None
             for i in dat:
                 tmp = i.dataid.split()
                 txt = tmp[0]
@@ -270,9 +270,13 @@ class SatRatios(QtWidgets.QDialog):
 
                 self.showprocesslog(i.dataid+' mapped to '+txt)
                 datd[txt] = i.data
+                if newmask is None:
+                    newmask = i.data.mask
+                else:
+                    newmask = (newmask | i.data.mask)
 
             datfin = []
-            for i in self.pbar.iter(rlist):
+            for i in self.piter(rlist):
                 self.showprocesslog('Calculating '+i)
                 formula = i.split(' ')[0]
                 formula = re.sub(r'(\d+)', r'Band\1', formula)
@@ -291,20 +295,19 @@ class SatRatios(QtWidgets.QDialog):
                     continue
 
                 ratio = ne.evaluate(formula, datd)
-
                 ratio = ratio.astype(np.float32)
-                ratio = np.ma.masked_invalid(ratio)
-                ratio.set_fill_value(dat[0].nullvalue)
+                ratio[newmask] = dat[0].nullvalue
+                ratio = np.ma.array(ratio, mask=newmask,
+                                    fill_value=dat[0].nullvalue)
                 ratio = np.ma.fix_invalid(ratio)
                 rband = copy.deepcopy(dat[0])
                 rband.data = ratio
                 rband.dataid = i.replace(r'/', 'div')
                 datfin.append(rband)
             ofile = ofile.split('.')[0] + '_ratio.tif'
-            self.pbar.setValue(0)
             if datfin:
                 self.showprocesslog('Exporting to '+ofile)
-                export_raster(ofile, datfin, 'GTiff', piter=self.pbar.iter)
+                export_raster(ofile, datfin, 'GTiff', piter=self.piter)
                 self.outdata['Raster'] = datfin
 
         return True
@@ -525,12 +528,13 @@ def get_sentinel_list(flist):
 
 def _testfn():
     """Test routine."""
-    ifile = r'C:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
+    # ifile = r'C:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
+    ifile = r"E:\Workdata\Remote Sensing\Landsat\LM05_L1TP_171078_19840629_20180410_01_T2.tar.gz"
     dat = iodefs.get_data(ifile)
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    idir = r'C:\Work\Workdata\Sentinel-2'
+    # idir = r'C:\Work\Workdata\Sentinel-2'
 
     SR = SatRatios()
     SR.indata['Raster'] = dat  # single file only
