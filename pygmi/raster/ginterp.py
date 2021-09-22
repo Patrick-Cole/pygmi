@@ -654,6 +654,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         for j in range(3):
             self.argb[j].draw_artist(self.htxt[j])
+            if self.clipvalu[j] is not None:
+                self.argb[j].draw_artist(self.clipvalu[j])
+            if self.clipvall[j] is not None:
+                self.argb[j].draw_artist(self.clipvall[j])
 
         self.figure.canvas.update()
         self.figure.canvas.flush_events()
@@ -748,7 +752,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.argb[0].bbox)
 
         self.argb[0].draw_artist(self.htxt[0])
-
+        self.argb[0].draw_artist(self.clipvalu[0])
+        self.argb[0].draw_artist(self.clipvall[0])
         self.figure.canvas.update()
 
     def update_shade(self):

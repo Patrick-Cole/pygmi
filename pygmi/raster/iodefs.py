@@ -1382,6 +1382,14 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
     trans = dat[0].transform
     crs = dat[0].crs
 
+    if trans is None:
+        trans = rasterio.transform.from_origin(dat[0].extent[0],
+                                               dat[0].extent[3],
+                                               dat[0].xdim, dat[0].ydim)
+
+    if crs is None:
+        crs = CRS.from_string(dat[0].wkt)
+
     tmp = ofile.rpartition('.')
 
     if drv == 'GTiff':
@@ -1413,8 +1421,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
         kwargs = {'COMPRESS': 'NONE',
                   'INTERLEAVE': 'BAND',
                   'TFW': 'YES',
-                  'PROFILE': 'GeoTIFF',
-                  'ESRI_XML_PAM': 'True'}
+                  'PROFILE': 'GeoTIFF'}
 
     with rasterio.open(tmpfile, 'w', driver=drv,
                        width=int(dcols), height=int(drows), count=len(data),
@@ -1431,6 +1438,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
             dtmp = np.ma.array(datai.data)
             dtmp.set_fill_value(datai.nullvalue)
             dtmp = dtmp.filled()
+            breakpoint()
             # rtmp.GetStatistics(False, True)
 
             out.write(dtmp, i+1)
