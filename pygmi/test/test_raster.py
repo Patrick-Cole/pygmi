@@ -320,7 +320,7 @@ def test_io_gdal(smalldata, ext, drv):
     """Tests IO for gdal files."""
     ofile = tempfile.gettempdir() + '\\iotest'+ext
 
-    iodefs.export_gdal(ofile, [smalldata], drv)
+    iodefs.export_raster(ofile, [smalldata], drv)
     dat2 = iodefs.get_raster(ofile)
 
     # Cleanup files

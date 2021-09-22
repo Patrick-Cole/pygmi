@@ -79,7 +79,7 @@ import pygmi.menu_default as menu_default
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
-from pygmi.raster.iodefs import export_gdal
+from pygmi.raster.iodefs import export_raster
 # from pygmi.raster.modest_image import imshow
 import pygmi.rsense.features as features
 
@@ -863,7 +863,7 @@ class ProcFeatures(QtWidgets.QDialog):
                                         '. No data to export.')
                 else:
                     self.showprocesslog('Exporting '+os.path.basename(ofile))
-                    export_gdal(ofile, datfin, 'GTiff', piter=self.piter)
+                    export_raster(ofile, datfin, 'GTiff', piter=self.piter)
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']

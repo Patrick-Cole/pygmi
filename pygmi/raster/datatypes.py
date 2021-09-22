@@ -141,6 +141,8 @@ class Data():
         self.isrgb = False
         self.metadata = {'Cluster': {}, 'Raster': {}}
         self.filename = ''
+        self.transform = None
+        self.crs = None
 
     def get_gtr(self):
         """

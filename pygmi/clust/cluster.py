@@ -456,7 +456,7 @@ def _testfn():
     import sys
     import glob
     import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster, export_gdal
+    from pygmi.raster.iodefs import get_raster, export_raster
 
     ifiles = glob.glob(r'E:\Workdata\bugs\*.tif')
 
@@ -488,7 +488,7 @@ def _testfn():
     dat.dataid = 'simple class'
     dat.data = dat2
 
-    # export_gdal(r'E:\Workdata\bugs\class2.tif', [dat], 'GTiff')
+    # export_raster(r'E:\Workdata\bugs\class2.tif', [dat], 'GTiff')
 
     breakpoint()
 

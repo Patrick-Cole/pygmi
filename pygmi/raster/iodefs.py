@@ -31,6 +31,10 @@ import struct
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from osgeo import gdal, osr
+import rasterio
+from rasterio.plot import plotting_extent
+from rasterio.windows import Window
+from rasterio.crs import CRS
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import merge
@@ -569,8 +573,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
         piter = ProgressBarText().iter
 
     dat = []
-    bname = ifile.split('/')[-1].rpartition('.')[0]
-    ifile = ifile[:]
+    bname = os.path.basename(ifile).rpartition('.')[0]
     ext = ifile[-3:]
     custom_wkt = None
     filename = ifile
@@ -593,129 +596,165 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             if 'STMLO' in metadata:
                 clong = metadata.split('STMLO')[1][:2]
 
-                orig = osr.SpatialReference()
-                orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
                 if 'CAPE' in metadata:
-                    orig.ImportFromEPSG(4222)
-                    orig.SetTM(0., float(clong), 1., 0., 0.)
-                    orig.SetProjCS(r'Cape / TM'+clong)
-                    custom_wkt = orig.ExportToWkt()
+                    custom_wkt = ('PROJCS["Cape / TM'+clong+'",'
+                                  'GEOGCS["Cape",'
+                                  'DATUM["Cape",'
+                                  'SPHEROID["Clarke 1880 (Arc)",'
+                                  '6378249.145,293.4663077,'
+                                  'AUTHORITY["EPSG","7013"]],'
+                                  'AUTHORITY["EPSG","6222"]],'
+                                  'PRIMEM["Greenwich",0,'
+                                  'AUTHORITY["EPSG","8901"]],'
+                                  'UNIT["degree",0.0174532925199433,'
+                                  'AUTHORITY["EPSG","9122"]],'
+                                  'AUTHORITY["EPSG","4222"]],'
+                                  'PROJECTION["Transverse_Mercator"],'
+                                  'PARAMETER["latitude_of_origin",0],'
+                                  'PARAMETER["central_meridian",'+clong+'],'
+                                  'PARAMETER["scale_factor",1],'
+                                  'PARAMETER["false_easting",0],'
+                                  'PARAMETER["false_northing",0],'
+                                  'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+                                  'AXIS["Easting",EAST],'
+                                  'AXIS["Northing",NORTH]]')
+
                 elif 'WGS84' in metadata:
-                    orig.ImportFromEPSG(4148)
-                    orig.SetTM(0., float(clong), 1., 0., 0.)
-                    orig.SetProjCS(r'Hartebeesthoek94 / TM'+clong)
-                    custom_wkt = orig.ExportToWkt()
-
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-    if dataset is None:
-        return None
-
-    istruct = dataset.GetMetadata('IMAGE_STRUCTURE')
-    driver = dataset.GetDriver().GetDescription()
+                    custom_wkt = ('PROJCS["Hartebeesthoek94 / TM'+clong+'",'
+                                  'GEOGCS["Hartebeesthoek94",'
+                                  'DATUM["Hartebeesthoek94",'
+                                  'SPHEROID["WGS 84",6378137,298.257223563,'
+                                  'AUTHORITY["EPSG","7030"]],'
+                                  'AUTHORITY["EPSG","6148"]],'
+                                  'PRIMEM["Greenwich",0,'
+                                  'AUTHORITY["EPSG","8901"]],'
+                                  'UNIT["degree",0.0174532925199433,'
+                                  'AUTHORITY["EPSG","9122"]],'
+                                  'AUTHORITY["EPSG","4148"]],'
+                                  'PROJECTION["Transverse_Mercator"],'
+                                  'PARAMETER["latitude_of_origin",0],'
+                                  'PARAMETER["central_meridian",'+clong+'],'
+                                  'PARAMETER["scale_factor",1],'
+                                  'PARAMETER["false_easting",0],'
+                                  'PARAMETER["false_northing",0],'
+                                  'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+                                  'AXIS["Easting",EAST],'
+                                  'AXIS["Northing",NORTH]]')
 
     dmeta = {}
-    if driver == 'ENVI':
-        dmeta = dataset.GetMetadata('ENVI')
+    with rasterio.open(ifile) as dataset:
+        if dataset is None:
+            return None
+        istruct = dataset.tags(ns='IMAGE_STRUCTURE')
+        driver = dataset.driver
 
+        if driver == 'ENVI':
+            dmeta = dataset.tags(ns='ENVI')
+
+        if custom_wkt is None:
+            custom_wkt = dataset.crs.to_wkt()
+
+    cols = dataset.width
+    rows = dataset.height
+    bands = dataset.count
+    nval = dataset.nodata
+    dtype = rasterio.band(dataset, 1).dtype
+    crs = CRS.from_string(custom_wkt)
+
+    isbil = False
     if 'INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr']:
         if istruct['INTERLEAVE'] == 'LINE' and iraster is None:
-            dataset = None
-            dat = get_bil(ifile, nval, piter, showprocesslog)
-            return dat
+            isbil = True
+            datin = get_bil(ifile, bands, cols, rows, nval, dtype, piter,
+                            showprocesslog)
 
-    if custom_wkt is None:
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(dataset.GetProjection())
-        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-        srs.AutoIdentifyEPSG()
-        custom_wkt = srs.ExportToWkt()
+    with rasterio.open(ifile) as dataset:
+        for i in piter(range(dataset.count)):
+            index = dataset.indexes[i]
+            bandid = dataset.descriptions[i]
+            if bandid == '' or bandid is None:
+                bandid = 'Band '+str(index)+' '+bname
 
-    gtr = dataset.GetGeoTransform()
-    for i in piter(range(dataset.RasterCount)):
-        rtmp = dataset.GetRasterBand(i+1)
-        bandid = rtmp.GetDescription()
-        if nval is None:
-            nval = rtmp.GetNoDataValue()
+            unit = dataset.units[i]
+            if unit is None:
+                unit = ''
+            if unit.lower() == 'micrometers':
+                dat[i].units = 'μm'
+            elif unit.lower() == 'nanometers':
+                dat[i].units = 'nm'
 
-        dat.append(Data())
-        if iraster is None:
-            dat[i].data = rtmp.ReadAsArray()
-        else:
-            xoff, yoff, xsize, ysize = iraster
-            dat[i].data = rtmp.ReadAsArray(xoff, yoff, xsize, ysize)
-
-        if dat[i].data.dtype.kind == 'i':
             if nval is None:
-                nval = 999999
-                showprocesslog('Adjusting null value to '+str(nval))
-            nval = int(nval)
-        elif dat[i].data.dtype.kind == 'u':
-            if nval is None:
-                nval = 0
-                showprocesslog('Adjusting null value to '+str(nval))
-            nval = int(nval)
-        else:
-            if nval is None:
-                nval = 1e+20
-            nval = float(nval)
-            if nval not in dat[i].data and np.isclose(dat[i].data.min(), nval):
-                nval = dat[i].data.min()
-                showprocesslog('Adjusting null value to '+str(nval))
-            if nval not in dat[i].data and np.isclose(dat[i].data.max(), nval):
-                nval = dat[i].data.max()
-                showprocesslog('Adjusting null value to '+str(nval))
+                nval = dataset.nodata
 
-        if ext == 'ers' and nval == -1.0e+32:
-            dat[i].data[np.ma.less_equal(dat[i].data, nval)] = -1.0e+32
+            dat.append(Data())
+            if isbil is True:
+                dat[i].data = datin[i]
+            elif iraster is None:
+                dat[i].data = dataset.read(index)
+            else:
+                xoff, yoff, xsize, ysize = iraster
+                dat[i].data = dataset.read(1, window=Window(xoff, yoff,
+                                                            xsize, ysize))
 
-# Note that because the data is stored in a masked array, the array ends up
-# being double the size that it was on the disk.
-        dat[i].data = np.ma.masked_invalid(dat[i].data)
-        dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
-                            (dat[i].data == nval))
-        if dat[i].data.mask.size == 1:
-            dat[i].data.mask = (np.ma.make_mask_none(dat[i].data.shape)
-                                + np.ma.getmaskarray(dat[i].data))
+            if dat[i].data.dtype.kind == 'i':
+                if nval is None:
+                    nval = 999999
+                    showprocesslog('Adjusting null value to '+str(nval))
+                nval = int(nval)
+            elif dat[i].data.dtype.kind == 'u':
+                if nval is None:
+                    nval = 0
+                    showprocesslog('Adjusting null value to '+str(nval))
+                nval = int(nval)
+            else:
+                if nval is None:
+                    nval = 1e+20
+                nval = float(nval)
+                if nval not in dat[i].data and np.isclose(dat[i].data.min(),
+                                                          nval):
+                    nval = dat[i].data.min()
+                    showprocesslog('Adjusting null value to '+str(nval))
+                if nval not in dat[i].data and np.isclose(dat[i].data.max(),
+                                                          nval):
+                    nval = dat[i].data.max()
+                    showprocesslog('Adjusting null value to '+str(nval))
 
-        dat[i].extent_from_gtr(gtr, iraster)
+            if ext == 'ers' and nval == -1.0e+32:
+                dat[i].data[dat[i].data <= nval] = -1.0e+32
 
-        if bandid == '':
-            bandid = 'Band '+str(i+1)+' '+bname
-        dat[i].dataid = bandid
+    # Note that because the data is stored in a masked array, the array ends up
+    # being double the size that it was on the disk.
+            dat[i].data = np.ma.masked_invalid(dat[i].data)
+            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
+                                (dat[i].data == nval))
 
-        for unit in ['micrometers', 'nanometers', 'nT', 'mGal']:
-            if unit in bandid or unit in bandid.lower():
-                if unit == 'micrometers':
-                    dat[i].units = 'μm'
-                elif unit == 'nanometers':
-                    dat[i].units = 'nm'
-                else:
-                    dat[i].units = unit
+            dat[i].extent = plotting_extent(dataset)
+            dat[i].dataid = bandid
+            dat[i].nullvalue = nval
+            dat[i].wkt = custom_wkt
+            dat[i].filename = filename
+            dat[i].units = unit
+            dat[i].transform = dataset.transform
+            dat[i].crs = crs
+            dat[i].xdim, dat[i].ydim = dataset.res
 
-        # if bandid[-1] == ')':
-        #     dat[i].units = bandid[bandid.rfind('(')+1:-1]
+            dest = dataset.tags(index)
+            for j in ['Wavelength', 'WAVELENGTH']:
+                if j in dest:
+                    dest[j.lower()] = dest[j]
+                    del dest[j]
 
-        dat[i].nullvalue = nval
-        dat[i].wkt = custom_wkt
-        dat[i].filename = filename
-
-        dest = rtmp.GetMetadata()
-        for j in ['Wavelength', 'WAVELENGTH']:
-            if j in dest:
-                dest[j.lower()] = dest[j]
-                del dest[j]
-
-        dat[i].metadata['Raster'] = {**dmeta, **dest}
-
-    dataset = None
+            dat[i].metadata['Raster'] = {**dmeta, **dest}
 
     return dat
 
 
-def get_bil(ifile, nval, piter, showprocesslog=print):
+def get_bil(ifile, bands, cols, rows, nval, dtype, piter,
+            showprocesslog=print):
     """
     Get BIL format file.
+
+    This routine is called from get_raster
 
     Parameters
     ----------
@@ -734,149 +773,31 @@ def get_bil(ifile, nval, piter, showprocesslog=print):
         dataset imported
 
     """
-    dat = []
-    bname = ifile.split('/')[-1].rpartition('.')[0]
-    ifile = ifile[:]
-    ext = ifile[-3:]
-    custom_wkt = None
-    filename = ifile
-
-    if ext == 'hdr':
-        ifile = ifile[:-4]
-        if os.path.exists(ifile+'.dat'):
-            ifile = ifile+'.dat'
-        elif os.path.exists(ifile+'.raw'):
-            ifile = ifile+'.raw'
-        elif os.path.exists(ifile+'.img'):
-            ifile = ifile+'.img'
-        elif not os.path.exists(ifile):
-            return None
-
-    if ext == 'ers':
-        with open(ifile) as f:
-            metadata = f.read()
-            if 'STMLO' in metadata:
-                clong = metadata.split('STMLO')[1][:2]
-
-                orig = osr.SpatialReference()
-                orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-                if 'CAPE' in metadata:
-                    orig.ImportFromEPSG(4222)
-                    orig.SetTM(0., float(clong), 1., 0., 0.)
-                    orig.SetProjCS(r'Cape / TM'+clong)
-                    custom_wkt = orig.ExportToWkt()
-                elif 'WGS84' in metadata:
-                    orig.ImportFromEPSG(4148)
-                    orig.SetTM(0., float(clong), 1., 0., 0.)
-                    orig.SetProjCS(r'Hartebeesthoek94 / TM'+clong)
-                    custom_wkt = orig.ExportToWkt()
-
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-    driver = dataset.GetDriver().GetDescription()
-
-    dmeta = {}
-    if driver == 'ENVI':
-        dmeta = dataset.GetMetadata('ENVI')
-
-    if custom_wkt is None:
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(dataset.GetProjection())
-        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-        srs.AutoIdentifyEPSG()
-        custom_wkt = srs.ExportToWkt()
-
-    bands = dataset.RasterCount
-    cols = dataset.RasterXSize
-    rows = dataset.RasterYSize
-    # envimeta = dataset.GetMetadata('ENVI')
-    gtr = dataset.GetGeoTransform()
-
-    band = dataset.GetRasterBand(1)
-    cols = band.XSize
-    rows = band.YSize
-    dtype = band.DataType
-
-    dt2np = {}
-    dt2np[0] = None
-    dt2np[1] = np.uint8
-    dt2np[2] = np.uint16
-    dt2np[3] = np.int16
-    dt2np[4] = np.uint32
-    dt2np[5] = np.int32
-    dt2np[6] = np.float32
-    dt2np[7] = np.float64
-
-    if dt2np[dtype] is None:
-        return False
+    dtype = np.dtype(dtype)
 
     count = bands*cols*rows
 
     offset = 0
     icount = count//10
     datin = []
-    dsize = dt2np[dtype]().itemsize
+    dsize = dtype.itemsize
     for i in piter(range(0, 10)):
-        tmp = np.fromfile(ifile, dtype=dt2np[dtype], sep='', count=icount,
+        tmp = np.fromfile(ifile, dtype=dtype, sep='', count=icount,
                           offset=offset)
         offset += icount*dsize
         datin.append(tmp)
 
     extra = int(count-offset/dsize)
     if extra > 0:
-        tmp = np.fromfile(ifile, dtype=dt2np[dtype], sep='', count=extra,
+        tmp = np.fromfile(ifile, dtype=dtype, sep='', count=extra,
                           offset=offset)
         datin.append(tmp)
 
     datin = np.concatenate(datin)
-
     datin.shape = (rows, bands, cols)
-
     datin = np.swapaxes(datin, 0, 1)
 
-    if nval is None:
-        nval = 0
-
-    dat = []
-    for i in piter(range(bands)):
-        rtmp = dataset.GetRasterBand(i+1)
-        bandid = rtmp.GetDescription()
-        if nval is None:
-            nval = rtmp.GetNoDataValue()
-        dat.append(Data())
-
-        dat[-1].data = datin[i]
-
-        if ext == 'ers' and nval == -1.0e+32:
-            dat[i].data[dat[-1].data <= nval] = -1.0e+32
-
-        dat[i].data = np.ma.array(dat[i].data)
-
-        dat[i].data = np.ma.masked_invalid(dat[i].data)
-        dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
-                            (dat[i].data == nval))
-
-        # dat[i].data.mask = (dat[i].data == nval)
-        # dat[i].data = np.ma.masked_invalid(dat[i].data)
-
-        dat[i].extent_from_gtr(gtr)
-
-        if bandid == '':
-            bandid = 'Band '+str(i+1)+' '+bname
-        dat[i].dataid = bandid
-        if bandid[-1] == ')':
-            dat[i].units = bandid[bandid.rfind('(')+1:-1]
-
-        dat[i].nullvalue = nval
-        dat[i].wkt = custom_wkt
-        dat[i].filename = filename
-        dest = rtmp.GetMetadata()
-        for j in ['Wavelength', 'WAVELENGTH']:
-            if j in dest:
-                dest[j.lower()] = dest[j]
-                del dest[j]
-        dat[i].metadata['Raster'] = {**dmeta, **dest}
-    return dat
+    return datin
 
 
 def get_geopak(hfile):
@@ -1178,24 +1099,24 @@ class ExportData():
             self.export_gxf(data)
         if filt == 'Surfer grid (v.6) (*.grd)':
             self.export_surfer(data)
-#            self.export_gdal(data, 'GSBG', piter=self.piter)
+#            self.export_raster(data, 'GSBG', piter=self.piter)
         if filt == 'ERDAS Imagine (*.img)':
-            export_gdal(self.ifile, data, 'HFA', piter=self.piter)
+            export_raster(self.ifile, data, 'HFA', piter=self.piter)
         if filt == 'ERMapper (*.ers)':
-            export_gdal(self.ifile, data, 'ERS', piter=self.piter)
+            export_raster(self.ifile, data, 'ERS', piter=self.piter)
         if filt == 'SAGA binary grid (*.sdat)':
             if len(data) > 1:
                 for i, dat in enumerate(data):
                     file_out = self.get_filename(dat, 'sdat')
-                    export_gdal(file_out, [dat], 'SAGA', piter=self.piter)
+                    export_raster(file_out, [dat], 'SAGA', piter=self.piter)
             else:
-                export_gdal(self.ifile, data, 'SAGA', piter=self.piter)
+                export_raster(self.ifile, data, 'SAGA', piter=self.piter)
         if filt == 'GeoTiff (*.tif)':
-            export_gdal(self.ifile, data, 'GTiff', piter=self.piter)
+            export_raster(self.ifile, data, 'GTiff', piter=self.piter)
         if filt == 'ENVI (*.hdr)':
-            export_gdal(self.ifile, data, 'ENVI', piter=self.piter)
+            export_raster(self.ifile, data, 'ENVI', piter=self.piter)
         if filt == 'ArcGIS BIL (*.bil)':
-            export_gdal(self.ifile, data, 'EHdr', piter=self.piter)
+            export_raster(self.ifile, data, 'EHdr', piter=self.piter)
 
         self.showprocesslog('Export Data Finished!')
         self.parent.process_is_active(False)
@@ -1422,7 +1343,7 @@ class ExportData():
         return file_out
 
 
-def export_gdal(ofile, dat, drv, envimeta='', piter=None):
+def export_raster(ofile, dat, drv, envimeta='', piter=None):
     """
     Export to GDAL format.
 
@@ -1456,31 +1377,22 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=None):
 
     data = merge(dat2, piter)
 
-    driver = gdal.GetDriverByName(drv)
     dtype = data[0].data.dtype
-
-    if dtype == np.uint8:
-        fmt = gdal.GDT_Byte
-    elif dtype == np.uint16:
-        fmt = gdal.GDT_UInt16
-    elif dtype == np.int32:
-        fmt = gdal.GDT_Int32
-    elif dtype == np.float64:
-        fmt = gdal.GDT_Float64
-    else:
-        fmt = gdal.GDT_Float32
+    nodata = dat[0].nullvalue
+    trans = dat[0].transform
+    crs = dat[0].crs
 
     tmp = ofile.rpartition('.')
 
     if drv == 'GTiff':
         tmpfile = tmp[0] + '.tif'
     elif drv == 'EHdr':
-        fmt = gdal.GDT_Float32
+        # fmt = gdal.GDT_Float32
         dtype = np.float32
         tmpfile = tmp[0] + '.bil'
     elif drv == 'GSBG':
         tmpfile = tmp[0]+'.grd'
-        fmt = gdal.GDT_Float32
+        # fmt = gdal.GDT_Float32
         dtype = np.float32
     elif drv == 'SAGA':
         tmpfile = tmp[0]+'.sdat'
@@ -1495,71 +1407,46 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=None):
         tmpfile = ofile
 
     drows, dcols = data[0].data.shape
+
+    kwargs = {}
     if drv == 'GTiff':
-        out = driver.Create(tmpfile, int(dcols), int(drows),
-                            len(data), fmt, options=['COMPRESS=NONE',
-                                                     'INTERLEAVE=BAND',
-                                                     'TFW=YES',
-                                                     'PROFILE=GeoTIFF',
-                                                     'ESRI_XML_PAM=True'])
-    elif drv == 'ERS' and 'Cape / TM' in data[0].wkt:
-        tmp = data[0].wkt.split('TM')[1][:2]
-        out = driver.Create(tmpfile, int(dcols), int(drows),
-                            len(data), fmt,
-                            options=['PROJ=STMLO'+tmp, 'DATUM=CAPE',
-                                     'UNITS=METERS'])
-    elif drv == 'ERS' and 'Hartebeesthoek94 / TM' in data[0].wkt:
-        tmp = data[0].wkt.split('TM')[1][:2]
-        out = driver.Create(tmpfile, int(dcols), int(drows),
-                            len(data), fmt,
-                            options=['PROJ=STMLO'+tmp, 'DATUM=WGS84',
-                                     'UNITS=METERS'])
-    else:
-        out = driver.Create(tmpfile, int(dcols), int(drows),
-                            len(data), fmt)
+        kwargs = {'COMPRESS': 'NONE',
+                  'INTERLEAVE': 'BAND',
+                  'TFW': 'YES',
+                  'PROFILE': 'GeoTIFF',
+                  'ESRI_XML_PAM': 'True'}
 
-    out.SetGeoTransform(data[0].get_gtr())
-    out.SetProjection(data[0].wkt)
+    with rasterio.open(tmpfile, 'w', driver=drv,
+                       width=int(dcols), height=int(drows), count=len(data),
+                       dtype=dtype, transform=trans, crs=crs,
+                       nodata=nodata, **kwargs) as out:
+        numbands = len(data)
+        wavelength = []
+        for i in piter(range(numbands)):
+            datai = data[i]
+            out.set_band_description(i+1, datai.dataid)
+            # rtmp.SetDescription(datai.dataid)
+            # rtmp.SetMetadataItem('BandName', datai.dataid)
 
-    numbands = len(data)
-    wavelength = []
-    for i in piter(range(numbands)):
-        datai = data[i]
-        rtmp = out.GetRasterBand(i+1)
-        rtmp.SetDescription(datai.dataid)
-        rtmp.SetMetadataItem('BandName', datai.dataid)
+            dtmp = np.ma.array(datai.data)
+            dtmp.set_fill_value(datai.nullvalue)
+            dtmp = dtmp.filled()
+            # rtmp.GetStatistics(False, True)
 
-        dtmp = np.ma.array(datai.data).astype(dtype)
-        dtmp.set_fill_value(datai.nullvalue)
-        dtmp = dtmp.filled()
+            out.write(dtmp, i+1)
 
-        # This makes sure the nullvalue is of types GDAL accepts
-        if dtype == np.uint8:
-            datai.nullvalue = int(datai.nullvalue)
-        elif dtype == np.float32 or dtype == np.float64:
-            datai.nullvalue = float(datai.nullvalue)
+            if 'Raster' in datai.metadata:
+                if 'wavelength' in datai.metadata['Raster']:
+                    out.update_tags(i+1, wavelength=str(datai.metadata['Raster']['wavelength']))
+                    wavelength.append(datai.metadata['Raster']['wavelength'])
 
-        rtmp.SetNoDataValue(datai.nullvalue)
-        rtmp.WriteArray(dtmp)
-        rtmp.GetStatistics(False, True)
+                if 'reflectance_scale_factor' in datai.metadata['Raster']:
+                    out.update_tags(i+1, reflectance_scale_factor=str(datai.metadata['Raster']['reflectance_scale_factor']))
 
-        if 'Raster' in datai.metadata:
-            if 'wavelength' in datai.metadata['Raster']:
-                rtmp.SetMetadataItem('wavelength',
-                                     str(datai.metadata['Raster']['wavelength']))
-                wavelength.append(datai.metadata['Raster']['wavelength'])
+            if 'WavelengthMin' in datai.metadata:
+                out.update_tags(i+1, WavelengthMin=str(datai.metadata['WavelengthMin']))
+                out.update_tags(i+1, WavelengthMax=str(datai.metadata['WavelengthMax']))
 
-            if 'reflectance_scale_factor' in datai.metadata['Raster']:
-                rtmp.SetMetadataItem('reflectance_scale_factor',
-                                     str(datai.metadata['Raster']['reflectance_scale_factor']))
-
-        if 'WavelengthMin' in datai.metadata:
-            rtmp.SetMetadataItem('WavelengthMin',
-                                 str(datai.metadata['WavelengthMin']))
-            rtmp.SetMetadataItem('WavelengthMax',
-                                 str(datai.metadata['WavelengthMax']))
-
-    out = None  # Close File
     if drv == 'ENVI':
         wout = ''
         if (wavelength and envimeta is not None and
@@ -1580,12 +1467,16 @@ def export_gdal(ofile, dat, drv, envimeta='', piter=None):
 
 def _filespeedtest():
     """Test."""
+    import matplotlib.pyplot as plt
+    from pygmi.misc import getinfo
     print('Starting')
     pbar = ProgressBarText()
-    ifile = r'E:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
-    ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
-    # ifile = r'C:\Work\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
-
+    # ifile = r'E:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
+    ifile = r'C:\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
+    # ifile = r'C:\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
+    # ifile = r"C:\Workdata\testdata.hdr"
+    # ifile = r"C:\Workdata\raster\rad_3bands.ers"
+    ofile = r"C:\Workdata\hope.tif"
     # xoff = 0
     # yoff = 0
     # xsize = None
@@ -1593,7 +1484,19 @@ def _filespeedtest():
     # iraster = (xoff, yoff, xsize, ysize)
     iraster = None
 
+    getinfo('Start')
+
     dataset = get_raster(ifile, piter=pbar.iter, iraster=iraster)
+
+    getinfo('End')
+
+    plt.figure(dpi=150)
+    plt.imshow(dataset[0].data, extent=dataset[0].extent)
+    plt.show()
+
+
+    export_raster(ofile, dataset, 'ENVI', piter=pbar.iter)
+    breakpoint()
 
 
 if __name__ == "__main__":
