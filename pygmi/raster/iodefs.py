@@ -575,7 +575,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     dat = []
     bname = os.path.basename(ifile).rpartition('.')[0]
     ext = ifile[-3:]
-    custom_wkt = None
+    custom_wkt = ''
     filename = ifile
 
     # Envi Case
@@ -651,7 +651,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
         if driver == 'ENVI':
             dmeta = dataset.tags(ns='ENVI')
 
-        if custom_wkt is None:
+        if custom_wkt == '' and dataset.crs is not None:
             custom_wkt = dataset.crs.to_wkt()
 
     cols = dataset.width
@@ -659,7 +659,10 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     bands = dataset.count
     nval = dataset.nodata
     dtype = rasterio.band(dataset, 1).dtype
-    crs = CRS.from_string(custom_wkt)
+    if custom_wkt != '':
+        crs = CRS.from_string(custom_wkt)
+    else:
+        crs = None
 
     isbil = False
     if 'INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr']:

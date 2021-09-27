@@ -725,8 +725,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             cols = self.cbar(np.linspace(0, 1, bcnt))
             tmp = np.nonzero(filt)
 
-            tmp1 = np.vstack(([cols[0]]*tmp[0][0], cols,
-                              [cols[-1]]*(49-tmp[0][-1])))
+            tmp1 = cols.copy()
+            if tmp[0][0] > 0:
+                tmp1 = np.vstack(([cols[0]]*tmp[0][0], tmp1))
+            if tmp[0][-1] < 49:
+                tmp1 = np.vstack((tmp1, [cols[-1]]*(49-tmp[0][-1])))
             self.newcmp = ListedColormap(tmp1)
         else:
             self.hhist[0] = self.argb[0].hist(pseudoc, 50, ec='none',
@@ -2145,8 +2148,11 @@ def _testfn():
                                                  '..//..')))
     app = QtWidgets.QApplication(sys.argv)
 
+
+
     # data = iodefs.get_raster(r"C:\Workdata\MagMerge\NC_reg_highres_merge_wgs84dd.tif")
-    data = iodefs.get_raster(r'c:\WorkData\testdata.hdr')
+    # data = iodefs.get_raster(r'c:\WorkData\testdata.hdr')
+    data = iodefs.get_raster(r"E:\Workdata\people\mikedentith\perth_surf_win.grd")
 
     tmp = PlotInterp()
     tmp.indata['Raster'] = data
