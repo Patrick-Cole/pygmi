@@ -43,6 +43,7 @@ import rasterio.merge
 from rasterio.io import MemoryFile
 from rasterio.crs import CRS
 from rasterio.warp import calculate_default_transform, reproject
+from rasterio import Affine
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
@@ -2593,9 +2594,13 @@ def cut_raster(data, ifile, pprint=print):
         idata.data = idata.data[ulY:lrY, ulX:lrX]
         ixmin = ulX*idata.xdim + idata.extent[0]  # minX
         iymax = idata.extent[-1] - ulY*idata.ydim  # maxY
-        ixmax = ixmin + icols*idata.xdim
-        iymin = iymax - irows*idata.ydim
-        idata.extent = [ixmin, ixmax, iymin, iymax]
+        # ixmax = ixmin + icols*idata.xdim
+        # iymin = iymax - irows*idata.ydim
+        # idata.extent = [ixmin, ixmax, iymin, iymax]
+
+        idata.transform = Affine(idata.xdim, 0, ixmin,
+                                 0, -idata.ydim, iymax)
+        idata.extent_from_transform(idata.transform)
 
     shapef = None
     data = trim_raster(data)
