@@ -35,7 +35,6 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.figure import Figure
 from matplotlib import cm
-from osgeo import gdal
 from osgeo import osr
 import pandas as pd
 import pygmi.raster.iodefs as ir
@@ -43,8 +42,9 @@ import pygmi.raster.iodefs as ir
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
 import pygmi.menu_default as menu_default
-from pygmi.raster.dataprep import gdal_to_dat
-from pygmi.raster.dataprep import data_to_gdal_mem
+# from pygmi.raster.dataprep import gdal_to_dat
+# from pygmi.raster.dataprep import data_to_gdal_mem
+from pygmi.raster.dataprep import data_reproject
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import frm
 
@@ -2892,29 +2892,33 @@ def gridmatch2(cgrv, rgrv):
     """
     data = rgrv
     data2 = cgrv
-    orig_wkt = data.wkt
-    orig_wkt2 = data2.wkt
+    # orig_wkt = data.wkt
+    # orig_wkt2 = data2.wkt
 
-    doffset = 0.0
-    if data.data.min() <= 0:
-        doffset = data.data.min()-1.
-        data.data = data.data - doffset
+    # doffset = 0.0
+    # if data.data.min() <= 0:
+    #     doffset = data.data.min()-1.
+    #     data.data = data.data - doffset
 
-    drows, dcols = data.data.shape
-    d2rows, d2cols = data2.data.shape
+    # drows, dcols = data.data.shape
+    # d2rows, d2cols = data2.data.shape
 
-    gtr0 = data.get_gtr()
-    gtr = data2.get_gtr()
-    src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
-    dest = data_to_gdal_mem(data, gtr, orig_wkt2, d2cols, d2rows, True)
+    # gtr0 = data.get_gtr()
+    # gtr = data2.get_gtr()
+    # src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
+    # dest = data_to_gdal_mem(data, gtr, orig_wkt2, d2cols, d2rows, True)
 
-    gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt2, gdal.GRA_Bilinear)
+    # gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt2, gdal.GRA_Bilinear)
 
-    dat = gdal_to_dat(dest, data.dataid)
+    # dat = gdal_to_dat(dest, data.dataid)
 
-    if doffset != 0.0:
-        dat.data = dat.data + doffset
-        data.data = data.data + doffset
+    # if doffset != 0.0:
+    #     dat.data = dat.data + doffset
+    #     data.data = data.data + doffset
+
+    rows2, cols2 = data2.data.shape
+
+    dat = data_reproject(data, data2.crs, data2.otransform, rows2, cols2)
 
     return dat.data
 

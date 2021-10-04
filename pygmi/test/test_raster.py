@@ -316,8 +316,8 @@ def smalldata():
                                       ('.ers', 'ERS'), ('.hdr', 'ENVI'),
                                       ('.grd', 'GSBG'), ('.sdat', 'SAGA'),
                                       ('.img', 'HFA')])
-def test_io_gdal(smalldata, ext, drv):
-    """Tests IO for gdal files."""
+def test_io_rasterio(smalldata, ext, drv):
+    """Tests IO for rasterio files."""
     ofile = tempfile.gettempdir() + '\\iotest'+ext
 
     iodefs.export_raster(ofile, [smalldata], drv)

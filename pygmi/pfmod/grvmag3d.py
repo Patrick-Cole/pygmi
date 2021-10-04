@@ -43,14 +43,12 @@ from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
 # from scipy.linalg import norm
-from osgeo import gdal
 from numba import jit, prange
 from matplotlib import cm
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-from pygmi.raster.dataprep import gdal_to_dat
-from pygmi.raster.dataprep import data_to_gdal_mem
+from pygmi.raster.dataprep import data_reproject
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.misc import PTime
 from pygmi.misc import frm
@@ -890,34 +888,12 @@ def gridmatch(lmod, ctxt, rtxt):
         Numpy array of data.
 
     """
-    rgrv = lmod.griddata[rtxt]
-    cgrv = lmod.griddata[ctxt]
+    data = lmod.griddata[rtxt]
+    data2 = lmod.griddata[ctxt]
 
-    data = rgrv
-    data2 = cgrv
-    orig_wkt = data.wkt
-    orig_wkt2 = data2.wkt
-
-    doffset = 0.0
-    if data.data.min() <= 0:
-        doffset = data.data.min()-1.
-        data.data = data.data - doffset
-
-    rows, cols = data.data.shape
     rows2, cols2 = data2.data.shape
 
-    gtr0 = data.get_gtr()
-    gtr = data2.get_gtr()
-    src = data_to_gdal_mem(data, gtr0, orig_wkt, cols, rows)
-    dest = data_to_gdal_mem(data, gtr, orig_wkt2, cols2, rows2, True)
-
-    gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt2, gdal.GRA_Bilinear)
-
-    dat = gdal_to_dat(dest, data.dataid)
-
-    if doffset != 0.0:
-        dat.data = dat.data + doffset
-        data.data = data.data + doffset
+    dat = data_reproject(data, data2.crs, data2.otransform, rows2, cols2)
 
     return dat.data
 

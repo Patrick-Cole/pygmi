@@ -32,7 +32,8 @@ import copy
 from collections import Counter
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import gdal, osr, ogr
+# from osgeo import gdal, osr, ogr
+from osgeo import ogr
 import pandas as pd
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
@@ -40,6 +41,8 @@ from scipy.signal import tukey
 import rasterio
 import rasterio.merge
 from rasterio.io import MemoryFile
+from rasterio.crs import CRS
+from rasterio.warp import calculate_default_transform, reproject
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
@@ -47,7 +50,7 @@ from pygmi.misc import ProgressBarText, getinfo
 from pygmi.raster.datatypes import numpy_to_pygmi
 
 
-gdal.PushErrorHandler('CPLQuietErrorHandler')
+# gdal.PushErrorHandler('CPLQuietErrorHandler')
 
 
 class DataCut():
@@ -343,7 +346,7 @@ class DataLayerStack(QtWidgets.QDialog):
         """
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
-        dat = merge(self.indata['Raster'], self.piter, dxy,
+        dat = lstack(self.indata['Raster'], self.piter, dxy,
                     pprint=self.showprocesslog,
                     commonmask=self.cmask.isChecked())
         self.outdata['Raster'] = dat
@@ -933,7 +936,7 @@ class DataReproj(QtWidgets.QDialog):
 
         self.groupboxb = QtWidgets.QGroupBox()
         self.combobox_inp_epsg = QtWidgets.QComboBox()
-        self.inp_epsg_info = QtWidgets.QLabel()
+        self.inp_epsg_info = QtWidgets.QLabel(wordWrap=True)
         self.groupbox2b = QtWidgets.QGroupBox()
         self.combobox_out_epsg = QtWidgets.QComboBox()
         self.out_epsg_info = QtWidgets.QLabel()
@@ -991,82 +994,61 @@ class DataReproj(QtWidgets.QDialog):
 # Input stuff
         orig_wkt = self.in_proj.wkt
 
-        orig = osr.SpatialReference()
-        orig.ImportFromWkt(orig_wkt)
-        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        # orig = osr.SpatialReference()
+        # orig.ImportFromWkt(orig_wkt)
+        # orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        src_crs = CRS.from_wkt(self.in_proj.wkt)
 
 # Output stuff
         targ_wkt = self.out_proj.wkt
+        dst_crs = CRS.from_wkt(self.out_proj.wkt)
 
-        targ = osr.SpatialReference()
-        targ.ImportFromWkt(targ_wkt)
-        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        # targ = osr.SpatialReference()
+        # targ.ImportFromWkt(targ_wkt)
+        # targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
 # Set transformation
-        ctrans = osr.CoordinateTransformation(orig, targ)
+        # ctrans = osr.CoordinateTransformation(orig, targ)
 
 # Now create virtual dataset
         dat = []
         for data in self.piter(self.indata['Raster']):
-            datamin = data.data.min()
-            if datamin <= 0:
-                data.data = data.data-(datamin-1)
+            # datamin = data.data.min()
+            # if datamin <= 0:
+            #     data.data = data.data-(datamin-1)
+
+            src_height, src_width = data.data.shape
+
+            transform, width, height = calculate_default_transform(
+                src_crs, dst_crs, src_width, src_height, *data.bounds)
 
 # Work out the boundaries of the new dataset in the target projection
-            rows, cols = data.data.shape
-            u_l = ctrans.TransformPoint(data.extent[0], data.extent[-1])
-            u_r = ctrans.TransformPoint(data.extent[1], data.extent[-1])
-            l_l = ctrans.TransformPoint(data.extent[0], data.extent[-2])
-            l_r = ctrans.TransformPoint(data.extent[1], data.extent[-2])
+            data2 = data_reproject(data, dst_crs, transform, height, width)
+            # odata = np.zeros((height, width), dtype= data.data.dtype)
+            # odata, _ = reproject(source=data.data,
+            #                 destination=odata,
+            #                 src_transform=data.transform,
+            #                 src_crs=src_crs,
+            #                 dst_transform=transform,
+            #                 dst_crs=dst_crs)
 
-            lrx = l_r[0]
-            llx = l_l[0]
-            ulx = u_l[0]
-            urx = u_r[0]
-            lry = l_r[1]
-            lly = l_l[1]
-            uly = u_l[1]
-            ury = u_r[1]
+            # data2 = Data()
+            # data2.data = odata
+            # data2.transform = transform
+            # data2.crs = dst_crs
+            # data2.extent_from_transform(transform)
+            # data2.data = data2.data.astype(data.data.dtype)
+            # data2.dataid = data.dataid
+            # data2.wkt = self.out_proj.wkt
 
-            drows, dcols = data.data.shape
-            minx = min(llx, ulx, urx, lrx)
-            maxx = max(llx, ulx, urx, lrx)
-            miny = min(lly, lry, ury, uly)
-            maxy = max(lly, lry, ury, uly)
-            newdimx = (maxx-minx)/dcols
-            newdimy = (maxy-miny)/drows
-            newdim = min(newdimx, newdimy)
-            cols = round((maxx - minx)/newdim)
-            rows = round((maxy - miny)/newdim)
-
-            if cols == 0 or rows == 0:
-                self.showprocesslog('Your rows or cols are zero. '
-                                    'Your input projection may be wrong')
-                return
-
-# top left x, w-e pixel size, rotation, top left y, rotation, n-s pixel size
-            old_geo = data.get_gtr()
-            drows, dcols = data.data.shape
-            src = data_to_gdal_mem(data, old_geo, orig_wkt, dcols, drows)
-
-            new_geo = (minx, newdim, 0, maxy, 0, -newdim)
-            dest = data_to_gdal_mem(data, new_geo, targ_wkt, cols, rows, True)
-
-            gdal.ReprojectImage(src, dest, orig_wkt, targ_wkt,
-                                gdal.GRA_Bilinear)
-
-            data2 = gdal_to_dat(dest, data.dataid)
-            data2.data = data2.data.astype(data.data.dtype)
-
-            if datamin <= 0:
-                data2.data = data2.data+(datamin-1)
-                data.data = data.data+(datamin-1)
-            data2.data = np.ma.masked_equal(data2.data.filled(data.nullvalue),
-                                            data.nullvalue)
-            data2.nullvalue = data.nullvalue
-            data2.data = np.ma.masked_invalid(data2.data)
-            data2.data = np.ma.masked_less(data2.data, data.data.min())
-            data2.data = np.ma.masked_greater(data2.data, data.data.max())
+            # if datamin <= 0:
+            #     data2.data = data2.data+(datamin-1)
+            #     data.data = data.data+(datamin-1)
+            # data2.data = np.ma.masked_equal(data2.data, data.nullvalue)
+            # data2.nullvalue = data.nullvalue
+            # data2.data = np.ma.masked_invalid(data2.data)
+            # data2.data = np.ma.masked_less(data2.data, data.data.min())
+            # data2.data = np.ma.masked_greater(data2.data, data.data.max())
 
             dat.append(data2)
 
@@ -1219,7 +1201,7 @@ class GetProf():
             self.showprocesslog('You need lines in that shape file')
             return False
 
-        data = merge(data, self.piter, pprint=self.showprocesslog)
+        data = lstack(data, self.piter, pprint=self.showprocesslog)
         gdf = None
 
         for idata in self.piter(data):
@@ -1313,23 +1295,47 @@ class GroupProj(QtWidgets.QWidget):
 
         self.gridlayout = QtWidgets.QGridLayout(self)
         self.groupbox = QtWidgets.QGroupBox(title)
-        self.combobox = QtWidgets.QComboBox()
+        self.combodatum = QtWidgets.QComboBox()
+        self.comboproj = QtWidgets.QComboBox()
         self.label = QtWidgets.QLabel()
 
         self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
 
         gridlayout = QtWidgets.QGridLayout(self.groupbox)
-        gridlayout.addWidget(self.combobox, 0, 0, 1, 1)
-        gridlayout.addWidget(self.label, 1, 0, 1, 1)
+        gridlayout.addWidget(self.combodatum, 0, 0, 1, 1)
+        gridlayout.addWidget(self.comboproj, 1, 0, 1, 1)
+        gridlayout.addWidget(self.label, 2, 0, 1, 1)
 
         self.epsg_proj = getepsgcodes()
-        self.epsg_proj['Current'] = self.wkt
+        self.epsg_proj[r'Current / Current'] = self.wkt
         tmp = list(self.epsg_proj.keys())
         tmp.sort(key=lambda c: c.lower())
-        tmp = ['Current']+tmp
 
-        self.combobox.addItems(tmp)
-        self.combobox.currentIndexChanged.connect(self.combo_change)
+        self.plist = {}
+        for i in tmp:
+            if r' / ' in i:
+                datum, proj = i.split(r' / ')
+            else:
+                datum = i
+                proj = i
+
+            if datum not in self.plist:
+                self.plist[datum] = []
+            self.plist[datum].append(proj)
+
+        tmp = list(set(self.plist.keys()))
+        tmp.sort()
+        tmp = ['Current', 'WGS 84']+tmp
+
+        for i in tmp:
+            j = self.plist[i]
+            if r'Geodetic Geographic' in j and j[0] != r'Geodetic Geographic':
+                self.plist[i] = [r'Geodetic Geographic']+self.plist[i]
+
+        self.combodatum.addItems(tmp)
+        self.comboproj.addItem('Current')
+        self.combodatum.currentIndexChanged.connect(self.combo_datum_change)
+        self.comboproj.currentIndexChanged.connect(self.combo_change)
 
     def set_current(self, wkt):
         """
@@ -1346,8 +1352,29 @@ class GroupProj(QtWidgets.QWidget):
 
         """
         self.wkt = wkt
-        self.epsg_proj['Current'] = self.wkt
+        self.epsg_proj[r'Current / Current'] = self.wkt
         self.combo_change()
+
+    def combo_datum_change(self):
+        """
+        Change Combo.
+
+        Returns
+        -------
+        None.
+
+        """
+        indx = self.combodatum.currentIndex()
+        txt = self.combodatum.itemText(indx)
+        self.comboproj.currentIndexChanged.disconnect()
+
+        self.comboproj.clear()
+        self.comboproj.addItems(self.plist[txt])
+
+        self.comboproj.currentIndexChanged.connect(self.combo_change)
+
+        self.combo_change()
+
 
     def combo_change(self):
         """
@@ -1358,19 +1385,34 @@ class GroupProj(QtWidgets.QWidget):
         None.
 
         """
-        indx = self.combobox.currentIndex()
-        txt = self.combobox.itemText(indx)
+        # indx = self.combodatum.currentIndex()
+
+        dtxt = self.combodatum.currentText()
+        ptxt = self.comboproj.currentText()
+
+        txt = dtxt + r' / '+ptxt
 
         self.wkt = self.epsg_proj[txt]
 
         if not isinstance(self.wkt, str):
             self.wkt = epsgtowkt(self.wkt)
 
-        srs = osr.SpatialReference()
-        srs.ImportFromWkt(self.wkt)
-        srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        # srs = osr.SpatialReference()
+        # srs.ImportFromWkt(self.wkt)
+        # srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
-        self.label.setText(srs.ExportToPrettyWkt())
+        # self.label.setText(srs.ExportToPrettyWkt())
+        wkttmp = self.wkt.replace('GEOGCS', '\nGEOGCS')
+        wkttmp = wkttmp.replace('DATUM', '\n   DATUM')
+        wkttmp = wkttmp.replace('SPHEROID', '\n   SPHEROID')
+        wkttmp = wkttmp.replace('AUTHORITY', '\n   AUTHORITY')
+        wkttmp = wkttmp.replace('PRIMEM', '\n   PRIMEM')
+        wkttmp = wkttmp.replace('UNIT', '\n   UNIT')
+        wkttmp = wkttmp.replace('PROJECTION', '\nPROJECTION')
+        wkttmp = wkttmp.replace('PARAMETER', '\n   PARAMETER')
+        wkttmp = wkttmp.replace('AXIS', '\nAXIS')
+
+        self.label.setText(wkttmp)
 
 
 class Metadata(QtWidgets.QDialog):
@@ -2005,6 +2047,37 @@ class Continuation(QtWidgets.QDialog):
         self.outdata['Raster'] = [dat]
 
 
+def data_reproject(data, ocrs, otransform, orows, ocolumns):
+
+    odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
+    odata, _ = reproject(source=data.data,
+                    destination=odata,
+                    src_transform=data.transform,
+                    src_crs=data.crs,
+                    dst_transform=otransform,
+                    dst_crs=ocrs)
+
+    data2 = Data()
+    data2.data = odata
+    data2.transform = otransform
+    data2.crs = ocrs
+    data2.extent_from_transform(otransform)
+    data2.data = data2.data.astype(data.data.dtype)
+    data2.dataid = data.dataid
+    data2.wkt = CRS.to_wkt(ocrs)
+
+    # if datamin <= 0:
+    #     data2.data = data2.data+(datamin-1)
+    #     data.data = data.data+(datamin-1)
+    data2.data = np.ma.masked_equal(data2.data, data.nullvalue)
+    data2.nullvalue = data.nullvalue
+    # data2.data = np.ma.masked_invalid(data2.data)
+    # data2.data = np.ma.masked_less(data2.data, data.data.min())
+    # data2.data = np.ma.masked_greater(data2.data, data.data.max())
+
+    return data2
+
+
 def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
               roff=None, coff=None):
     """
@@ -2529,74 +2602,6 @@ def cut_raster(data, ifile, pprint=print):
     return data
 
 
-def data_to_gdal_mem(data, gtr, wkt, cols, rows, nodata=False):
-    """
-    Input Data to GDAL mem format.
-
-    Parameters
-    ----------
-    data : PyGMI Data
-        PyGMI Dataset
-    gtr : tuple
-        Geotransform
-    wkt : str
-        Projection in wkt (well known text) format
-    cols : int
-        columns
-    rows : int
-        rows
-    nodata : bool, optional
-        no data
-
-    Returns
-    -------
-    src : GDAL mem format
-        GDAL memory format data
-
-    """
-    data.data = np.ma.array(data.data)
-    dtype = data.data.dtype
-# Get rid of array() which can break driver.create later
-    cols = int(cols)
-    rows = int(rows)
-
-    if data.isrgb is True:
-        nbands = data.data.shape[2]
-    else:
-        nbands = 1
-
-    if dtype == np.uint8:
-        fmt = gdal.GDT_Byte
-    elif dtype == np.int32:
-        fmt = gdal.GDT_Int32
-    elif dtype == np.float64:
-        fmt = gdal.GDT_Float64
-    else:
-        fmt = gdal.GDT_Float32
-
-    driver = gdal.GetDriverByName('MEM')
-    src = driver.Create('', cols, rows, nbands, fmt)
-
-    src.SetGeoTransform(gtr)
-    src.SetProjection(wkt)
-
-    for i in range(nbands):
-        if nodata is False:
-            if data.nullvalue is not None:
-                src.GetRasterBand(i+1).SetNoDataValue(data.nullvalue)
-            if data.isrgb is True:
-                src.GetRasterBand(i+1).WriteArray(data.data[:, :, i])
-            else:
-                src.GetRasterBand(i+1).WriteArray(data.data)
-        else:
-            tmp = np.zeros((rows, cols))
-            tmp = np.ma.masked_equal(tmp, 0)
-            src.GetRasterBand(i+1).SetNoDataValue(0)  # Set to this for Reproj
-            src.GetRasterBand(i+1).WriteArray(tmp)
-
-    return src
-
-
 def epsgtowkt(epsg):
     """
     Routine to get a WKT from an epsg code.
@@ -2612,61 +2617,16 @@ def epsgtowkt(epsg):
         WKT description.
 
     """
-    orig = osr.SpatialReference()
-    orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+    # orig = osr.SpatialReference()
+    # orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
-    err = orig.ImportFromEPSG(int(epsg))
-    if err != 0:
-        return 'Unknown'
-    out = orig.ExportToWkt()
+    # err = orig.ImportFromEPSG(int(epsg))
+    # if err != 0:
+    #     return 'Unknown'
+    # out = orig.ExportToWkt()
+
+    out = CRS.from_epsg(int(epsg)).to_wkt()
     return out
-
-
-def gdal_to_dat(dest, bandid='Data'):
-    """
-    GDAL to Data format.
-
-    Parameters
-    ----------
-    dest : GDAL format
-        GDAL format
-    bandid : str
-        band identity
-
-    Returns
-    -------
-    dat : PyGMI Data
-        PyGMI raster dataset.
-
-    """
-    dat = Data()
-    gtr = dest.GetGeoTransform()
-
-    nbands = dest.RasterCount
-
-    if nbands == 1:
-        rtmp = dest.GetRasterBand(1)
-        dat.data = rtmp.ReadAsArray()
-    else:
-        dat.data = []
-        for i in range(nbands):
-            rtmp = dest.GetRasterBand(i+1)
-            dat.data.append(rtmp.ReadAsArray())
-        dat.data = np.array(dat.data)
-        dat.data = np.moveaxis(dat.data, 0, -1)
-
-    nval = rtmp.GetNoDataValue()
-
-    dat.data = np.ma.masked_equal(dat.data, nval)
-    dat.data.set_fill_value(nval)
-    dat.data = np.ma.fix_invalid(dat.data)
-
-    dat.extent_from_gtr(gtr)
-    dat.dataid = bandid
-    dat.nullvalue = nval
-    dat.wkt = dest.GetProjection()
-
-    return dat
 
 
 def getepsgcodes():
@@ -2688,16 +2648,11 @@ def getepsgcodes():
         tmp = i.split(',')
         if tmp[1][0] == '"':
             tmp[1] = tmp[1][1:-1]
-#        wkttmp = epsgtowkt(tmp[0])
-#        if wkttmp != '':
-#            dcodes[tmp[1]] = wkttmp
+
         dcodes[tmp[1]] = int(tmp[0])
 
     with open(os.path.join(os.path.dirname(__file__), 'pcs.csv')) as pfile:
         plines = pfile.readlines()
-
-    orig = osr.SpatialReference()
-    orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
     pcodes = {}
     for i in dcodes:
@@ -2708,30 +2663,62 @@ def getepsgcodes():
         tmp = i.split(',')
         if tmp[1][0] == '"':
             tmp[1] = tmp[1][1:-1]
-#        err = orig.ImportFromEPSG(int(tmp[0]))
-#        if err == 0:
-#            pcodes[tmp[1]] = orig.ExportToWkt()
+
         pcodes[tmp[1]] = int(tmp[0])
 
-    clat = 0.
-    scale = 1.
-    f_e = 0.
-    f_n = 0.
-    orig = osr.SpatialReference()
-    orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
     for datum in ['Cape', 'Hartebeesthoek94']:
-        orig.ImportFromEPSG(dcodes[datum])
-#        orig.ImportFromWkt(dcodes[datum])
         for clong in range(15, 35, 2):
-            orig.SetTM(clat, clong, scale, f_e, f_n)
-            orig.SetProjCS(datum+r' / TM'+str(clong))
-            pcodes[datum+r' / TM'+str(clong)] = orig.ExportToWkt()
+            if 'Cape' in datum:
+                wkt = ('PROJCS["Cape / TM'+str(clong)+'",'
+                       'GEOGCS["Cape",'
+                       'DATUM["Cape",'
+                       'SPHEROID["Clarke 1880 (Arc)",'
+                       '6378249.145,293.4663077,'
+                       'AUTHORITY["EPSG","7013"]],'
+                       'AUTHORITY["EPSG","6222"]],'
+                       'PRIMEM["Greenwich",0,'
+                       'AUTHORITY["EPSG","8901"]],'
+                       'UNIT["degree",0.0174532925199433,'
+                       'AUTHORITY["EPSG","9122"]],'
+                       'AUTHORITY["EPSG","4222"]],'
+                       'PROJECTION["Transverse_Mercator"],'
+                       'PARAMETER["latitude_of_origin",0],'
+                       'PARAMETER["central_meridian",'+str(clong)+'],'
+                       'PARAMETER["scale_factor",1],'
+                       'PARAMETER["false_easting",0],'
+                       'PARAMETER["false_northing",0],'
+                       'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+                       'AXIS["Easting",EAST],'
+                       'AXIS["Northing",NORTH]]')
+
+            elif 'Hartebeesthoek94' in datum:
+                wkt = ('PROJCS["Hartebeesthoek94 / TM'+str(clong)+'",'
+                       'GEOGCS["Hartebeesthoek94",'
+                       'DATUM["Hartebeesthoek94",'
+                       'SPHEROID["WGS 84",6378137,298.257223563,'
+                       'AUTHORITY["EPSG","7030"]],'
+                       'AUTHORITY["EPSG","6148"]],'
+                       'PRIMEM["Greenwich",0,'
+                       'AUTHORITY["EPSG","8901"]],'
+                       'UNIT["degree",0.0174532925199433,'
+                       'AUTHORITY["EPSG","9122"]],'
+                       'AUTHORITY["EPSG","4148"]],'
+                       'PROJECTION["Transverse_Mercator"],'
+                       'PARAMETER["latitude_of_origin",0],'
+                       'PARAMETER["central_meridian",'+str(clong)+'],'
+                       'PARAMETER["scale_factor",1],'
+                       'PARAMETER["false_easting",0],'
+                       'PARAMETER["false_northing",0],'
+                       'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+                       'AXIS["Easting",EAST],'
+                       'AXIS["Northing",NORTH]]')
+
+            pcodes[datum+r' / TM'+str(clong)] = wkt
 
     return pcodes
 
 
-def merge(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
+def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
     """
     Merge datasets found in a single PyGMI data object.
 
@@ -2776,9 +2763,7 @@ def merge(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
         for data in dat:
             dxy = min(dxy0, data.xdim, data.ydim)
 
-    orig_wkt = data.wkt
     xmin0, xmax0, ymin0, ymax0 = data.extent
-
     for data in dat:
         xmin, xmax, ymin, ymax = data.extent
         xmin = min(xmin, xmin0)
@@ -2788,7 +2773,7 @@ def merge(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
 
     cols = int((xmax - xmin)/dxy)
     rows = int((ymax - ymin)/dxy)
-    gtr = (xmin, dxy, 0.0, ymax, 0.0, -1.0*dxy)
+    trans = rasterio.Affine(dxy, 0, xmin, 0, -1*dxy, ymax)
 
     if cols == 0 or rows == 0:
         pprint('Your rows or cols are zero. '
@@ -2805,16 +2790,30 @@ def merge(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
         if data.data.min() <= 0:
             doffset = data.data.min()-1.
             data.data = data.data - doffset
-        gtr0 = data.get_gtr()
 
-        drows, dcols = data.data.shape
-        src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
-        dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
+        trans0 = data.transform
 
-        gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt,
-                            gdal.GRA_Bilinear)
+        height, width = data.data.shape
 
-        dat2.append(gdal_to_dat(dest, data.dataid))
+        odata = np.zeros((rows, cols), dtype=data.data.dtype)
+        odata, _ = reproject(source=data.data,
+                             destination=odata,
+                             src_transform=trans0,
+                             src_crs=data.crs,
+                             dst_transform=trans,
+                             dst_crs=data.crs)
+
+        data2 = Data()
+        data2.data = np.ma.masked_equal(odata, data.nullvalue)
+        data2.nullvalue = data.nullvalue
+        data2.transform = trans
+        data2.crs = data.crs
+        data2.extent_from_transform(trans)
+        data2.data = data2.data.astype(data.data.dtype)
+        data2.dataid = data.dataid
+        data2.wkt = data.wkt
+
+        dat2.append(data2)
 
         if cmask is None:
             cmask = dat2[-1].data.mask
@@ -3207,5 +3206,51 @@ def _testmerge():
     export_raster(ofile, dat2, 'GTiff')
 
 
+def _testreproj():
+    """Test Reprojection."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
+    import matplotlib.pyplot as plt
+
+    ifile = r"E:\Workdata\testdata.hdr"
+
+    piter = ProgressBarText().iter
+
+    dat = get_raster(ifile, piter=piter)
+    dat[1].data = dat[1].data+10000
+
+    # dat2 = lstack(dat, piter, 60)
+
+    # plt.figure(dpi=150)
+    # plt.imshow(dat[1].data, extent=dat[1].extent)
+    # plt.show()
+
+    # plt.figure(dpi=150)
+    # plt.imshow(dat2[1].data, extent=dat2[1].extent)
+    # plt.show()
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    DM = DataReproj()
+    DM.indata['Raster'] = dat
+    DM.settings()
+
+    plt.figure(dpi=150)
+    plt.imshow(DM.indata['Raster'][1].data,
+               extent=DM.indata['Raster'][1].extent)
+    plt.colorbar()
+    plt.show()
+
+    plt.figure(dpi=150)
+    plt.imshow(DM.outdata['Raster'][1].data,
+               extent=DM.outdata['Raster'][1].extent)
+    plt.colorbar()
+    plt.show()
+
+
+
+    # breakpoint()
+
+
 if __name__ == "__main__":
-    _testmerge()
+    _testreproj()

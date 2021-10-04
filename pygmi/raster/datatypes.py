@@ -26,6 +26,7 @@
 
 import warnings
 import numpy as np
+from rasterio.io import MemoryFile
 
 
 def numpy_to_pygmi(data, pdata=None, dataid=None):
@@ -131,7 +132,8 @@ class Data():
 
     def __init__(self):
         self.data = np.ma.array([])
-        self.extent = (0, 1, -1, 0)
+        self.extent = (0, 1, -1, 0)  # left, right, bottom, top
+        self.bounds = (0, -1, 1, 0)  # left, bottom, right, top
         self.xdim = 1.0
         self.ydim = 1.0
         self.dataid = ''
@@ -158,6 +160,50 @@ class Data():
                -self.ydim)
 
         return gtr
+
+
+    def extent_from_transform(self, trans, iraster=None):
+        """
+        Import extent, xdim and ydim from a gtr list.
+
+        Parameters
+        ----------
+        trans : Affine
+            Affine transform.
+        iraster : list
+            list of xoff, yoff, xsize, ysize for a subset of original dataset.
+
+        Returns
+        -------
+        None.
+
+        """
+        # gtr = (trans[2], trans[0], trans[1], trans[5], trans[3], trans[4])
+        self.transform = trans
+        self.xdim = trans.a
+        self.ydim = trans.e
+        left = trans.c
+        top = trans.f
+
+        self.ydim = abs(self.ydim)
+
+        if iraster is None:
+            xoff = 0
+            yoff = 0
+        else:
+            xoff, yoff, _, _ = iraster
+
+        rows, cols = self.data.shape
+
+        left = left + xoff*self.xdim
+        top = top - yoff*self.ydim
+        right = left + self.xdim*cols
+        bottom = top - self.ydim*rows
+
+        self.extent = (left, right, bottom, top)
+        self.bounds = (left, bottom, right, top)
+
+
 
     def extent_from_gtr(self, gtr, iraster=None):
         """
@@ -194,3 +240,24 @@ class Data():
         bottom = top - self.ydim*rows
 
         self.extent = (left, right, bottom, top)
+
+
+    def to_mem(self):
+        """
+        Create a rasterio memory file from one band.
+
+        Returns
+        -------
+        None.
+
+        """
+
+        raster = MemoryFile().open(driver='GTiff',
+                                   height=self.data.shape[0],
+                                   width=self.data.shape[1],
+                                   count=1,
+                                   dtype=self.data.dtype,
+                                   transform=self.transform,
+                                   crs=self.crs,
+                                   nodata=self.nullvalue)
+        return raster

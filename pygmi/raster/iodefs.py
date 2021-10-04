@@ -30,14 +30,13 @@ import copy
 import struct
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import gdal, osr
 import rasterio
 from rasterio.plot import plotting_extent
 from rasterio.windows import Window
 from rasterio.crs import CRS
 
 from pygmi.raster.datatypes import Data
-from pygmi.raster.dataprep import merge
+from pygmi.raster.dataprep import lstack
 from pygmi.misc import ProgressBarText
 
 
@@ -133,7 +132,7 @@ class ComboBoxBasic(QtWidgets.QDialog):
 
 class ImportData():
     """
-    Import Data - Interfaces with GDAL routines.
+    Import Data - Interfaces with rasterio routines.
 
     Attributes
     ----------
@@ -304,7 +303,7 @@ class ImportData():
 
 class ImportRGBData():
     """
-    Import RGB Image - Interfaces with GDAL routines.
+    Import RGB Image - Interfaces with rasterio routines.
 
     Attributes
     ----------
@@ -547,7 +546,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     """
     Get raster dataset.
 
-    This function loads a raster dataset off the disk using the GDAL
+    This function loads a raster dataset off the disk using the rasterio
     libraries. It returns the data in a PyGMI data object.
 
     Parameters
@@ -732,6 +731,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                                 (dat[i].data == nval))
 
             dat[i].extent = plotting_extent(dataset)
+            dat[i].bounds = dataset.bounds
             dat[i].dataid = bandid
             dat[i].nullvalue = nval
             dat[i].wkt = custom_wkt
@@ -740,6 +740,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             dat[i].transform = dataset.transform
             dat[i].crs = crs
             dat[i].xdim, dat[i].ydim = dataset.res
+            dat[i].meta = dataset.meta
 
             dest = dataset.tags(index)
             for j in ['Wavelength', 'WAVELENGTH']:
@@ -1348,7 +1349,7 @@ class ExportData():
 
 def export_raster(ofile, dat, drv, envimeta='', piter=None):
     """
-    Export to GDAL format.
+    Export to rasterio format.
 
     Parameters
     ----------
@@ -1357,7 +1358,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
     dat : PyGMI raster Data
         dataset to export
     drv : str
-        name of the GDAL driver to use
+        name of the rasterio driver to use
     envimeta : str, optional
         ENVI metadata. The default is ''.
     piter : ProgressBar.iter/ProgressBarText.iter, optional
@@ -1378,7 +1379,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
     else:
         dat2 = dat
 
-    data = merge(dat2, piter)
+    data = lstack(dat2, piter)
 
     dtype = data[0].data.dtype
     nodata = dat[0].nullvalue
@@ -1398,12 +1399,10 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
     if drv == 'GTiff':
         tmpfile = tmp[0] + '.tif'
     elif drv == 'EHdr':
-        # fmt = gdal.GDT_Float32
         dtype = np.float32
         tmpfile = tmp[0] + '.bil'
     elif drv == 'GSBG':
         tmpfile = tmp[0]+'.grd'
-        # fmt = gdal.GDT_Float32
         dtype = np.float32
     elif drv == 'SAGA':
         tmpfile = tmp[0]+'.sdat'

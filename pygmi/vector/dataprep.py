@@ -496,7 +496,7 @@ class DataReproj(QtWidgets.QDialog):
     """
     Reprojections.
 
-    This class reprojects datasets using the GDAL routines.
+    This class reprojects datasets using the rasterio routines.
 
     Attributes
     ----------

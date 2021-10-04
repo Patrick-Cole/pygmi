@@ -35,7 +35,7 @@ from PyQt5 import QtWidgets, QtCore
 import pygmi.menu_default as menu_default
 import pygmi.rsense.iodefs as iodefs
 from pygmi.raster.iodefs import export_raster
-from pygmi.raster.dataprep import merge
+from pygmi.raster.dataprep import lstack
 from pygmi.misc import ProgressBarText
 
 
@@ -244,7 +244,7 @@ class SatRatios(QtWidgets.QDialog):
             if dat is None:
                 continue
 
-            dat = merge(dat, self.piter, pprint=self.showprocesslog,
+            dat = lstack(dat, self.piter, pprint=self.showprocesslog,
                         commonmask=True)
 
             datd = {}
