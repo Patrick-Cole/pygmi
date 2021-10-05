@@ -465,10 +465,14 @@ class Visibility2d(QtWidgets.QDialog):
                                             self.dh*data[i].data.std()/100.,
                                             self.piter)
 
+            buff = self.wsize//2
+
+            xmin, ymax = datai.transform*(buff, buff)
             xdim = datai.transform[0]
-            ydim = -abs(datai.transform[4])
-            xmin = datai.transform[2] + xdim*(self.wsize-1)/2
-            ymax = datai.transform[5] - ydim*(self.wsize-1)/2
+            ydim = abs(datai.transform[4])
+            # xmin = datai.transform[2] + xdim*(self.wsize-1)/2
+            # ymax = datai.transform[5] - ydim*(self.wsize-1)/2
+            # breakpoint()
 
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
@@ -977,13 +981,15 @@ def _test():
     dat = get_raster(ifile, piter=piter)
 
 
-    datai = dat[0]
-    dh = 10
-    wsize = 11
+    # datai = dat[0]
+    # dh = 10
+    # wsize = 11
 
-    vtot, vstd, vsum = visibility2d(datai.data, wsize,
-                                    dh*datai.data.std()/100.,
-                                    piter)
+    # vtot, vstd, vsum = visibility2d(datai.data, wsize,
+    #                                 dh*datai.data.std()/100.,
+    #                                 piter)
+
+
 
 
     # dat2 = lstack(dat, piter, 60)
@@ -997,6 +1003,22 @@ def _test():
     # plt.show()
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    V2D = Visibility2d()
+    V2D.indata['Raster'] = dat
+    V2D.settings()
+
+    odat = V2D.outdata['Raster']
+
+
+    plt.figure(dpi=150)
+    plt.imshow(dat[0].data, extent=dat[0].extent)
+    plt.imshow(odat[0].data, extent=odat[0].extent)
+    plt.show()
+
+
+
+
 
     breakpoint()
 

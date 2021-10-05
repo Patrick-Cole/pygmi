@@ -2892,8 +2892,8 @@ def gridmatch2(cgrv, rgrv):
     """
     data = rgrv
     data2 = cgrv
-    # orig_wkt = data.wkt
-    # orig_wkt2 = data2.wkt
+    # orig_wkt = data.crs.wkt
+    # orig_wkt2 = data2.crs.wkt
 
     # doffset = 0.0
     # if data.data.min() <= 0:

@@ -248,7 +248,7 @@ class IGRF(QtWidgets.QDialog):
 
         """
         if self.wkt is None:
-            self.wkt = self.indata['Raster'][0].wkt
+            self.wkt = self.indata['Raster'][0].crs.wkt
 
         self.proj.set_current(self.wkt)
 
@@ -290,7 +290,7 @@ class IGRF(QtWidgets.QDialog):
                 maggrid = i
             if i.dataid == self.combobox_dtm.currentText():
                 data = i
-                wkt = i.wkt
+                wkt = i.crs.wkt
 
         sdate = self.dateedit.date()
         sdate = sdate.year()+sdate.dayOfYear()/sdate.daysInYear()
@@ -382,7 +382,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
     # z = 0
 
     # if wkt is None:
-    #     wkt = data.wkt
+    #     wkt = data.crs.wkt
 
     if wkt is not None:
         orig_wkt = wkt

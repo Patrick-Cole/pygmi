@@ -69,11 +69,13 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
                           'shape to be the same')
             return None
         tmp.extent = pdata.extent
+        tmp.bounds = pdata.bounds
         tmp.xdim = pdata.xdim
         tmp.ydim = pdata.ydim
         tmp.dataid = pdata.dataid
         tmp.nodata = pdata.nodata
-        tmp.wkt = pdata.wkt
+        tmp.crs = pdata.crs
+        tmp.transform = pdata.transform
         tmp.units = pdata.units
         tmp.isrgb = pdata.isrgb
         tmp.metadata = pdata.metadata
@@ -139,7 +141,6 @@ class Data():
         self.ydim = 1.0
         self.dataid = ''
         self.nodata = 1e+20
-        self.wkt = ''
         self.units = ''
         self.isrgb = False
         self.metadata = {'Cluster': {}, 'Raster': {}}
@@ -213,7 +214,7 @@ class Data():
         """
         if transform is not None:
             xdim = transform[0]
-            ydim = transform[4]
+            ydim = abs(transform[4])
             xmin = transform[2]
             ymax = transform[5]
 

@@ -734,7 +734,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             dat[i].bounds = dataset.bounds
             dat[i].dataid = bandid
             dat[i].nodata = nval
-            dat[i].wkt = custom_wkt
+            # dat[i].wkt = custom_wkt
             dat[i].filename = filename
             dat[i].units = unit
             dat[i].transform = dataset.transform

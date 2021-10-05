@@ -438,17 +438,17 @@ class ImportMod3D():
                 del lmod.griddata[i].tlx
                 del lmod.griddata[i].tly
 
-        wktfin = None
+        crsfin = None
         for i in lmod.griddata:
-            wkt = lmod.griddata[i].wkt
+            wkt = lmod.griddata[i].crs.wkt
             if wkt != '' and wkt is not None:
-                wktfin = wkt
+                crsfin = lmod.griddata[i].crs
 
-        if wktfin is not None:
+        if crsfin is not None:
             for i in lmod.griddata:
-                wkt = lmod.griddata[i].wkt
+                wkt = lmod.griddata[i].crs.wkt
                 if wkt == '' or wkt is None:
-                    lmod.griddata[i].wkt = wktfin
+                    lmod.griddata[i].crs = crsfin
 
 # Section to load lithologies.
         lmod.lith_list['Background'] = grvmag3d.GeoData(self.parent)

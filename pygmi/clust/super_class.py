@@ -939,7 +939,7 @@ class SuperClass(QtWidgets.QDialog):
 
         # self.log = ('Cluster complete' + ' (' + self.cltype+')')
 
-        dat_out[-1].wkt = data[0].wkt
+        dat_out[-1].crs = data[0].crs
         dat_out[-1].xdim = data[0].xdim
         dat_out[-1].ydim = data[0].ydim
         dat_out[-1].dataid = 'Clusters: '+str(dat_out[-1].metadata['Cluster']['no_clusters'])

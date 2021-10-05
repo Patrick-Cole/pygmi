@@ -598,113 +598,6 @@ class DataMerge(QtWidgets.QDialog):
 
         return tmp
 
-    def merge_different_old(self):
-        """
-        Merge files with different numbers of bands and/or band order.
-
-        This uses more memory, but is flexible.
-
-        Returns
-        -------
-        bool
-            Success of routine.
-
-        """
-        # The next line is only to avoid circular dependancies with merge
-        # function.
-
-        from pygmi.raster.iodefs import get_raster
-
-        indata = []
-        if 'Raster' in self.indata:
-            for i in self.indata['Raster']:
-                indata.append(i)
-
-        if self.idir is not None:
-            ifiles = []
-            for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
-                ifiles += glob.glob(os.path.join(self.idir, ftype))
-
-            for ifile in self.piter(ifiles):
-                indata += get_raster(ifile, piter=iter)
-
-        if indata is None:
-            self.showprocesslog('No input datasets')
-            return False
-
-        # Get projection information
-        wkt = []
-        for i in indata:
-            wkt.append(i.wkt)
-            nodata = i.nodata
-
-        wkt = list(set(wkt))
-
-        if len(wkt) > 1:
-            self.showprocesslog('Error: Mismatched input projections')
-            return False
-
-        wkt = wkt[0]
-
-        # Start Merge
-        bandlist = []
-        for i in indata:
-            bandlist.append(i.dataid)
-        bandlist = list(set(bandlist))
-
-        outdat = []
-        for dataid in bandlist:
-            self.showprocesslog('Merging '+dataid+'...')
-            ifiles = []
-            for i in self.piter(indata):
-                if i.dataid != dataid:
-                    continue
-
-                # if self.forcetype is not None:
-                #     i.data = i.data.astype(self.forcetype)
-
-                if self.shift_to_median.isChecked():
-                    mval = np.ma.median(i.data)
-                else:
-                    mval = 0
-
-                trans = rasterio.transform.from_origin(i.extent[0],
-                                                       i.extent[3],
-                                                       i.xdim, i.ydim)
-
-                raster = MemoryFile().open(driver='GTiff',
-                                           height=i.data.shape[0],
-                                           width=i.data.shape[1], count=1,
-                                           dtype=i.data.dtype,
-                                           transform=trans)
-
-                raster.write(i.data-mval, 1)
-                raster.write_mask(~i.data.mask)
-                ifiles.append(raster)
-                getinfo()
-
-            if len(ifiles) < 2:
-                self.showprocesslog('Too few bands of name '+dataid)
-
-            mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
-                                                  method=self.method)
-            for j in ifiles:
-                j.close()
-
-            mosaic = mosaic.squeeze()
-            mosaic = np.ma.masked_equal(mosaic, nodata)
-            mosaic = mosaic + mval
-            outdat.append(numpy_to_pygmi(mosaic, dataid=dataid))
-            gtr = (otrans[2], otrans[0], otrans[1], otrans[5], otrans[3],
-                   otrans[4])
-            outdat[-1].extent_from_gtr(gtr)
-            outdat[-1].wkt = wkt
-            outdat[-1].nodata = nodata
-
-        self.outdata['Raster'] = outdat
-
-        return True
-
     def merge_different(self):
         """
         Merge files with different numbers of bands and/or band order.
@@ -742,7 +635,7 @@ class DataMerge(QtWidgets.QDialog):
         # Get projection information
         wkt = []
         for i in indata:
-            wkt.append(i.wkt)
+            wkt.append(i.crs.to_wkt())
             nodata = i.nodata
 
         wkt = list(set(wkt))
@@ -751,7 +644,8 @@ class DataMerge(QtWidgets.QDialog):
             self.showprocesslog('Error: Mismatched input projections')
             return False
 
-        wkt = wkt[0]
+        # wkt = wkt[0]
+        crs = indata[0].crs
 
         # Start Merge
         bandlist = []
@@ -816,10 +710,8 @@ class DataMerge(QtWidgets.QDialog):
             mosaic = np.ma.masked_equal(mosaic, nodata)
             mosaic = mosaic + mval
             outdat.append(numpy_to_pygmi(mosaic, dataid=dataid))
-            gtr = (otrans[2], otrans[0], otrans[1], otrans[5], otrans[3],
-                   otrans[4])
-            outdat[-1].extent_from_gtr(gtr)
-            outdat[-1].wkt = wkt
+            outdat[-1].set_transform(transform=otrans)
+            outdat[-1].crs = crs
             outdat[-1].nodata = nodata
 
         self.outdata['Raster'] = outdat
@@ -869,6 +761,12 @@ class DataMerge(QtWidgets.QDialog):
         for ifile in ifiles:
             with rasterio.open(ifile) as dataset:
                 wkt.append(dataset.crs.wkt)
+                crs = dataset.crs
+
+        wkt = list(set(wkt))
+        if len(wkt) > 1:
+            self.showprocesslog('Error: Mismatched input projections')
+            return False
 
         # Get band names and nodata
         with rasterio.open(ifiles[0]) as dataset:
@@ -877,26 +775,18 @@ class DataMerge(QtWidgets.QDialog):
                 bnames = ['Band '+str(i) for i in dataset.indexes]
             nodata = dataset.nodata
 
-        wkt = list(set(wkt))
 
-        if len(wkt) > 1:
-            self.showprocesslog('Error: Mismatched input projections')
-            return False
-
-        wkt = wkt[0]
 
         # Start Merge
         mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
                                               method=self.method)
         mosaic = np.ma.masked_equal(mosaic, nodata)
-        gtr = (otrans[2], otrans[0], otrans[1], otrans[5], otrans[3],
-               otrans[4])
 
         outdat = []
         for i, dataid in enumerate(bnames):
             outdat.append(numpy_to_pygmi(mosaic[i], dataid=dataid))
-            outdat[-1].extent_from_gtr(gtr)
-            outdat[-1].wkt = wkt
+            outdat[-1].set_transform(transform=otrans)
+            outdat[-1].crs = crs
             outdat[-1].nodata = nodata
 
         self.outdata['Raster'] = outdat
@@ -1070,9 +960,9 @@ class DataReproj(QtWidgets.QDialog):
 
         """
         if self.orig_wkt is None:
-            self.orig_wkt = self.indata['Raster'][0].wkt
+            self.orig_wkt = self.indata['Raster'][0].crs.wkt
         if self.targ_wkt is None:
-            self.targ_wkt = self.indata['Raster'][0].wkt
+            self.targ_wkt = self.indata['Raster'][0].crs.wkt
 
         self.in_proj.set_current(self.orig_wkt)
         self.out_proj.set_current(self.targ_wkt)
@@ -1562,7 +1452,7 @@ class Metadata(QtWidgets.QDialog):
                     tmp.ydim = i.ydim
                     tmp.extent = i.extent
                     tmp.nodata = i.nodata
-                    tmp.wkt = wkt
+                    tmp.crs = CRS.from_wkt(wkt)
                     tmp.units = i.units
                     # if tmp.dataid[-1] == ')':
                     #     tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
@@ -1656,7 +1546,7 @@ class Metadata(QtWidgets.QDialog):
 
         """
         bandid = []
-        self.proj.set_current(self.indata['Raster'][0].wkt)
+        self.proj.set_current(self.indata['Raster'][0].crs.wkt)
 
         for i in self.indata['Raster']:
             bandid.append(i.dataid)
@@ -1666,7 +1556,7 @@ class Metadata(QtWidgets.QDialog):
             tmp.xdim = i.xdim
             tmp.ydim = i.ydim
             tmp.nodata = i.nodata
-            tmp.wkt = i.wkt
+            tmp.crs = i.crs
             tmp.extent = i.extent
             tmp.data = i.data
             tmp.units = i.units
@@ -2814,7 +2704,6 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
         data2.set_transform(transform=trans)
         data2.data = data2.data.astype(data.data.dtype)
         data2.dataid = data.dataid
-        data2.wkt = data.wkt
 
         dat2.append(data2)
 
