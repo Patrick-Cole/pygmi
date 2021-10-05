@@ -466,7 +466,7 @@ class Visibility2d(QtWidgets.QDialog):
                                             self.piter)
 
             xdim = datai.transform[0]
-            ydim = datai.transform[4]
+            ydim = -abs(datai.transform[4])
             xmin = datai.transform[2] + xdim*(self.wsize-1)/2
             ymax = datai.transform[5] - ydim*(self.wsize-1)/2
 
