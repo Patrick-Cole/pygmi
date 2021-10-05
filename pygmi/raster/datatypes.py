@@ -72,7 +72,7 @@ def numpy_to_pygmi(data, pdata=None, dataid=None):
         tmp.xdim = pdata.xdim
         tmp.ydim = pdata.ydim
         tmp.dataid = pdata.dataid
-        tmp.nullvalue = pdata.nullvalue
+        tmp.nodata = pdata.nodata
         tmp.wkt = pdata.wkt
         tmp.units = pdata.units
         tmp.isrgb = pdata.isrgb
@@ -138,7 +138,7 @@ class Data():
         self.xdim = 1.0
         self.ydim = 1.0
         self.dataid = ''
-        self.nullvalue = 1e+20
+        self.nodata = 1e+20
         self.wkt = ''
         self.units = ''
         self.isrgb = False
@@ -289,5 +289,5 @@ class Data():
                                    dtype=self.data.dtype,
                                    transform=self.transform,
                                    crs=self.crs,
-                                   nodata=self.nullvalue)
+                                   nodata=self.nodata)
         return raster

@@ -149,7 +149,7 @@ class Normalisation(QtWidgets.QDialog):
 
         # Correct the null value
         for i in data:
-            i.data.data[i.data.mask] = i.nullvalue
+            i.data.data[i.data.mask] = i.nodata
 
         self.outdata['Raster'] = data
         if self.pbar is not None:

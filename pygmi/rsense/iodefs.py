@@ -828,7 +828,7 @@ def calculate_toa(dat, showprocesslog=print):
             datai.data = np.pi*lrad*EDIST[jday]**2/(ESUN[i]*np.cos(theta))
         else:
             datai.data = K2[i-9]/np.log(K1[i-9]/lrad+1)
-        datai.data.set_fill_value(datai.nullvalue)
+        datai.data.set_fill_value(datai.nodata)
         dmask = datai.data.mask
         datai.data = np.ma.array(datai.data.filled(), mask=dmask)
         out.append(datai)
@@ -1004,7 +1004,7 @@ def get_modis(ifile, showprocesslog=print):
                 dat[i].mask = np.ma.getmaskarray(dat[i].data)
 
             dat[i].dataid = bandid2+' '+bandid
-            dat[i].nullvalue = nval
+            dat[i].nodata = nval
             dat[i].xdim = abs(lonsdim)
             dat[i].ydim = abs(latsdim)
 
@@ -1112,7 +1112,7 @@ def get_modisv6(ifile, piter=iter):
 
         dat[-1].extent_from_gtr(dataset.GetGeoTransform())
         dat[-1].dataid = bandid
-        dat[-1].nullvalue = nval
+        dat[-1].nodata = nval
         dat[-1].wkt = wkt
         dat[-1].filename = ifile
         if 'units' in meta and meta['units'] != 'none':
@@ -1229,7 +1229,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
 
         dat[-1].extent_from_gtr(dataset.GetGeoTransform())
         dat[-1].dataid = 'Band' + fext
-        dat[-1].nullvalue = nval
+        dat[-1].nodata = nval
         dat[-1].wkt = dataset.GetProjectionRef()
         dat[-1].filename = ifile
 
@@ -1314,7 +1314,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
             dat[-1].data = dat[-1].data / 10000.
 
             dat[-1].dataid = bname
-            dat[-1].nullvalue = nval
+            dat[-1].nodata = nval
             dat[-1].extent_from_gtr(dataset.GetGeoTransform())
             dat[-1].wkt = dataset.GetProjectionRef()
             dat[-1].filename = ifile
@@ -1411,7 +1411,7 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
 
         dat[-1].extent_from_gtr(dataset.GetGeoTransform())
         dat[-1].dataid = zfile[zfile.index('Band'):zfile.index('.tif')]
-        dat[-1].nullvalue = nval
+        dat[-1].nodata = nval
         dat[-1].wkt = dataset.GetProjectionRef()
         dat[-1].filename = ifile
         dat[-1].units = units
@@ -1552,7 +1552,7 @@ def get_aster_hdf(ifile, piter=iter):
             dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
         dat[-1].dataid = bandid2
-        dat[-1].nullvalue = nval
+        dat[-1].nodata = nval
         dat[-1].extent_from_gtr(tmpds.GetGeoTransform())
         dat[-1].wkt = tmpds.GetProjectionRef()
         dat[-1].metadata['SolarElev'] = solarelev
@@ -1665,7 +1665,7 @@ def get_aster_ged(ifile):
                 dat[i].data = dat[i].data * 0.01
 
             dat[i].dataid = bandid
-            dat[i].nullvalue = nval
+            dat[i].nodata = nval
             dat[i].extent_from_gtr(dataset.GetGeoTransform())
             dat[i].units = units
             dat[i].wkt = dataset.GetProjectionRef()
@@ -1759,7 +1759,7 @@ def get_aster_ged_bin(ifile):
         dat[i].data = data[i]*scale[i]
 
         dat[i].dataid = bandid[i]
-        dat[i].nullvalue = nval*scale[i]
+        dat[i].nodata = nval*scale[i]
         dat[i].xdim = lonsdim
         dat[i].ydim = latsdim
         dat[i].units = units[i]

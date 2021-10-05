@@ -442,7 +442,7 @@ class TiltDepth(QtWidgets.QDialog):
         dat = Data()
         dat.data = np.ma.masked_invalid(gdat[::-1])
         dat.data.mask = mask[::-1]
-        dat.nullvalue = dat.data.fill_value
+        dat.nodata = dat.data.fill_value
         dat.dataid = data.dataid
         dat.xdim = data.xdim
         dat.ydim = data.xdim

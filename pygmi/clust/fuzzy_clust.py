@@ -340,7 +340,7 @@ class FuzzyClust(QtWidgets.QDialog):
             masktmp += ~i.data.mask
         masktmp = ~masktmp
         for i, _ in enumerate(data):
-            if data[i].nullvalue != 0.0:
+            if data[i].nodata != 0.0:
                 self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
                 data[i].data = np.ma.array(data[i].data.filled(0))
             data[i].data.mask = masktmp
@@ -540,7 +540,7 @@ class FuzzyClust(QtWidgets.QDialog):
             i.xdim = data[0].xdim
             i.ydim = data[0].ydim
             i.dataid = 'Fuzzy Cluster: ' + str(i.metadata['Cluster']['no_clusters'])
-            i.nullvalue = data[0].nullvalue
+            i.nodata = data[0].nodata
             i.extent = data[0].extent
             i.data += 1
 

@@ -357,7 +357,7 @@ class Cluster(QtWidgets.QDialog):
             masktmp += ~i.data.mask
         masktmp = ~masktmp
         for i, _ in enumerate(data):
-            if data[i].nullvalue != 0.0 and data[i]:
+            if data[i].nodata != 0.0 and data[i]:
                 self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
                 data[i].data = np.ma.array(data[i].data.filled(0))
 
@@ -412,7 +412,7 @@ class Cluster(QtWidgets.QDialog):
             zonal[alpha == 1] = cfit.labels_
 
             dat_out[-1].data = zonal
-            dat_out[-1].nullvalue = zonal.fill_value
+            dat_out[-1].nodata = zonal.fill_value
             dat_out[-1].metadata['Cluster']['no_clusters'] = i
             dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
             dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
@@ -436,7 +436,7 @@ class Cluster(QtWidgets.QDialog):
             i.dataid = 'Clusters: '+str(i.metadata['Cluster']['no_clusters'])
             if self.cltype == 'DBSCAN':
                 i.dataid = 'Clusters: '+str(int(i.data.max()+1))
-            i.nullvalue = data[0].nullvalue
+            i.nodata = data[0].nodata
             i.extent = data[0].extent
 
         self.showprocesslog('Cluster complete' + ' ('+self.cltype + ' ' + ')')
@@ -444,7 +444,7 @@ class Cluster(QtWidgets.QDialog):
         for i in dat_out:
             i.data += 1
             i.data = i.data.astype(np.uint8)
-            i.nullvalue = 0
+            i.nodata = 0
 
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']

@@ -1695,10 +1695,10 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[1].data[mask <= 1] = 0
         newimg[2].data[mask <= 1] = 0
 
-        newimg[0].nullvalue = 0
-        newimg[1].nullvalue = 0
-        newimg[2].nullvalue = 0
-        newimg[3].nullvalue = 0
+        newimg[0].nodata = 0
+        newimg[1].nodata = 0
+        newimg[2].nodata = 0
+        newimg[3].nodata = 0
 
         newimg[0].dataid = rtext
         newimg[1].dataid = gtext

@@ -185,7 +185,7 @@ class EquationEditor(QtWidgets.QDialog):
         neweq = str(self.equation)
         neweq = neweq.replace('ln', 'log')
         neweq = neweq.replace('^', '**')
-        neweq = neweq.replace('nodata', str(indata[0].nullvalue))
+        neweq = neweq.replace('nodata', str(indata[0].nodata))
 
         return neweq
 
@@ -355,17 +355,17 @@ class EquationEditor(QtWidgets.QDialog):
             findat.shape = (1, findat.shape[0], findat.shape[1])
 
         for i, findati in enumerate(findat):
-            findati[mask] = indata[i].nullvalue
+            findati[mask] = indata[i].nodata
 
             outdata.append(copy.deepcopy(indata[i]))
             outdata[-1].data = np.ma.masked_equal(findati,
-                                                  indata[i].nullvalue)
-            outdata[-1].nullvalue = indata[i].nullvalue
+                                                  indata[i].nodata)
+            outdata[-1].nodata = indata[i].nodata
 
         dtype = self.dtype.currentText()
         # This is needed to get rid of bad, unmasked values etc.
         for i, outdatai in enumerate(outdata):
-            outdatai.data.set_fill_value(indata[i].nullvalue)
+            outdatai.data.set_fill_value(indata[i].nodata)
             outdatai.data = np.ma.fix_invalid(outdatai.data)
             if dtype != 'auto':
                 outdatai.data = outdatai.data.astype(dtype)

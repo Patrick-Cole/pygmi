@@ -549,7 +549,7 @@ def gmerge(master, slave, xrange=None, yrange=None):
         # data.data.set_fill_value(0.)
         # tmp = data.data.filled()
         # data.data = np.ma.masked_equal(tmp, 0.)
-        # data.nullvalue = 0
+        # data.nodata = 0
 
         dat.append(data_reproject(data, data.crs, otransform, rows, cols))
 
@@ -571,7 +571,7 @@ def gmerge(master, slave, xrange=None, yrange=None):
         # dat[-1].data.set_fill_value(1e+20)
         # tmp = dat[-1].data.filled()
         # dat[-1].data = np.ma.masked_equal(tmp, 1e+20)
-        # dat[-1].nullvalue = 1e+20
+        # dat[-1].nodata = 1e+20
 
     imask = np.logical_and(dat[0].data.mask, np.logical_not(dat[1].data.mask))
     if imask.size > 1:

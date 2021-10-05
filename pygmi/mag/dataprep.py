@@ -157,7 +157,7 @@ class Tilt1(QtWidgets.QDialog):
             data2[-1].dataid += ' Total Derivative'
 
         for i in data2:
-            i.data.data[i.data.mask] = i.nullvalue
+            i.data.data[i.data.mask] = i.nodata
 
         self.outdata['Raster'] = data2
         return True
@@ -661,7 +661,7 @@ def rtp(data, I_deg, D_deg):
     dat = Data()
     dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.nullvalue = data.data.fill_value
+    dat.nodata = data.data.fill_value
     dat.dataid = 'RTP_'+data.dataid
     dat.extent = data.extent
     dat.xdim = data.xdim

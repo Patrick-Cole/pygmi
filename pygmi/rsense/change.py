@@ -1044,7 +1044,7 @@ class SceneViewer(QtWidgets.QDialog):
                     nval = 1e+20
                 nval = float(nval)
 
-            dat.nullvalue = nval
+            dat.nodata = nval
             dat.xdim = xdim
             dat.ydim = ydim
             dat.extent_from_gtr(gtrnew)

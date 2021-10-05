@@ -467,7 +467,7 @@ class DataGrid(QtWidgets.QDialog):
 # Create dataset
         dat = Data()
         dat.data = gdat
-        dat.nullvalue = nullvalue
+        dat.nodata = nullvalue
         dat.dataid = self.dataid.currentText()
         dat.xdim = dxy
         dat.ydim = dxy

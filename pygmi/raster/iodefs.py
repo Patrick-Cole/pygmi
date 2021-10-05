@@ -525,7 +525,7 @@ def get_ascii(ifile):
                             dat[i].data.mask)
 
     dat[i].dataid = bandid
-    dat[i].nullvalue = nval
+    dat[i].nodata = nval
     dat[i].xdim = xdim
     dat[i].ydim = ydim
     dat[i].filename = ifile
@@ -733,7 +733,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             dat[i].extent = plotting_extent(dataset)
             dat[i].bounds = dataset.bounds
             dat[i].dataid = bandid
-            dat[i].nullvalue = nval
+            dat[i].nodata = nval
             dat[i].wkt = custom_wkt
             dat[i].filename = filename
             dat[i].units = unit
@@ -906,7 +906,7 @@ def get_geopak(hfile):
     dat[i].data = data
     dat[i].dataid = hfile[:-4]
 
-    dat[i].nullvalue = nval
+    dat[i].nodata = nval
     dat[i].xdim = dx
     dat[i].ydim = dy
 
@@ -994,7 +994,7 @@ def get_geosoft(hfile):
 
     dat[i].data = data
     dat[i].dataid = hfile[:-4]
-    dat[i].nullvalue = nval
+    dat[i].nodata = nval
     dat[i].xdim = dx
     dat[i].ydim = dy
 
@@ -1174,9 +1174,9 @@ class ExportData():
             fno.write('\n#SENSE\n')
             fno.write('1')
             fno.write('\n#DUMMY\n')
-            fno.write(str(k.nullvalue))
+            fno.write(str(k.nodata))
             fno.write('\n#GRID\n')
-            tmp = k.data.filled(k.nullvalue)
+            tmp = k.data.filled(k.nodata)
 
             for i in range(k.data.shape[0]-1, -1, -1):
                 kkk = 0
@@ -1272,9 +1272,9 @@ class ExportData():
             fno.write('\nxllcorner \t\t\t' + str(xmin))
             fno.write('\nyllcorner \t\t\t' + str(ymin))
             fno.write('\ncellsize \t\t\t' + str(k.xdim))
-            fno.write('\nnodata_value \t\t' + str(k.nullvalue))
+            fno.write('\nnodata_value \t\t' + str(k.nodata))
 
-            tmp = k.data.filled(k.nullvalue)
+            tmp = k.data.filled(k.nodata)
             krows, kcols = k.data.shape
 
             for j in range(krows):
@@ -1309,7 +1309,7 @@ class ExportData():
                 file_out = self.get_filename(k, 'xyz')
             fno = open(file_out, 'w')
 
-            tmp = k.data.filled(k.nullvalue)
+            tmp = k.data.filled(k.nodata)
 
             xmin = k.extent[0]
             ymax = k.extent[-1]
@@ -1382,7 +1382,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
     data = lstack(dat2, piter)
 
     dtype = data[0].data.dtype
-    nodata = dat[0].nullvalue
+    nodata = dat[0].nodata
     trans = dat[0].transform
     crs = dat[0].crs
 
@@ -1406,7 +1406,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
         dtype = np.float32
     elif drv == 'SAGA':
         tmpfile = tmp[0]+'.sdat'
-        data[0].nullvalue = -99999.0
+        data[0].nodata = -99999.0
     elif drv == 'HFA':
         tmpfile = tmp[0]+'.img'
     elif drv == 'ENVI':
@@ -1438,7 +1438,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
             # rtmp.SetMetadataItem('BandName', datai.dataid)
 
             dtmp = np.ma.array(datai.data)
-            dtmp.set_fill_value(datai.nullvalue)
+            dtmp.set_fill_value(datai.nodata)
             dtmp = dtmp.filled()
             # rtmp.GetStatistics(False, True)
 
@@ -1470,7 +1470,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
 
         with open(tmpfile[:-4]+'.hdr', 'a') as myfile:
             myfile.write(wout)
-            # myfile.write('data ignore value = ' + str(data[0].nullvalue)+'\n')
+            # myfile.write('data ignore value = ' + str(data[0].nodata)+'\n')
             myfile.write(envimeta)
 
 

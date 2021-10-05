@@ -328,7 +328,7 @@ class CrispClust(QtWidgets.QDialog):
             masktmp += ~i.data.mask
         masktmp = ~masktmp
         for i, _ in enumerate(data):
-            if data[i].nullvalue != 0.0:
+            if data[i].nodata != 0.0:
                 self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
                 data[i].data = np.ma.array(data[i].data.filled(0))
             data[i].data.mask = masktmp
@@ -531,7 +531,7 @@ class CrispClust(QtWidgets.QDialog):
 
             dat_out[cnt].data = zonal
 #            dat_out[cnt].data.mask = masktmp
-            dat_out[cnt].nullvalue = zonal.fill_value
+            dat_out[cnt].nodata = zonal.fill_value
             dat_out[cnt].metadata['Cluster']['no_clusters'] = i
             dat_out[cnt].metadata['Cluster']['center'] = clcent
             dat_out[cnt].metadata['Cluster']['center_std'] = cent_std
@@ -564,7 +564,7 @@ class CrispClust(QtWidgets.QDialog):
             i.xdim = data[0].xdim
             i.ydim = data[0].ydim
             i.dataid = 'Crisp Cluster: '+str(i.metadata['Cluster']['no_clusters'])
-            i.nullvalue = data[0].nullvalue
+            i.nodata = data[0].nodata
             i.extent = data[0].extent
 
         self.showprocesslog('Crisp Cluster complete' + ' ('+self.cltype + ' ' +
@@ -573,7 +573,7 @@ class CrispClust(QtWidgets.QDialog):
         for i in dat_out:
             i.data += 1
             i.data = i.data.astype(np.uint8)
-            i.nullvalue = 0
+            i.nodata = 0
         self.outdata['Cluster'] = dat_out
         self.outdata['Raster'] = self.indata['Raster']
 

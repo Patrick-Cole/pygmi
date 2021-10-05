@@ -296,9 +296,9 @@ class SatRatios(QtWidgets.QDialog):
 
                 ratio = ne.evaluate(formula, datd)
                 ratio = ratio.astype(np.float32)
-                ratio[newmask] = dat[0].nullvalue
+                ratio[newmask] = dat[0].nodata
                 ratio = np.ma.array(ratio, mask=newmask,
-                                    fill_value=dat[0].nullvalue)
+                                    fill_value=dat[0].nodata)
                 ratio = np.ma.fix_invalid(ratio)
                 rband = copy.deepcopy(dat[0])
                 rband.data = ratio

@@ -636,7 +636,7 @@ class DataMerge(QtWidgets.QDialog):
         wkt = []
         for i in indata:
             wkt.append(i.wkt)
-            nodata = i.nullvalue
+            nodata = i.nodata
 
         wkt = list(set(wkt))
 
@@ -699,7 +699,7 @@ class DataMerge(QtWidgets.QDialog):
                    otrans[4])
             outdat[-1].extent_from_gtr(gtr)
             outdat[-1].wkt = wkt
-            outdat[-1].nullvalue = nodata
+            outdat[-1].nodata = nodata
 
         self.outdata['Raster'] = outdat
 
@@ -743,7 +743,7 @@ class DataMerge(QtWidgets.QDialog):
         wkt = []
         for i in indata:
             wkt.append(i.wkt)
-            nodata = i.nullvalue
+            nodata = i.nodata
 
         wkt = list(set(wkt))
 
@@ -820,7 +820,7 @@ class DataMerge(QtWidgets.QDialog):
                    otrans[4])
             outdat[-1].extent_from_gtr(gtr)
             outdat[-1].wkt = wkt
-            outdat[-1].nullvalue = nodata
+            outdat[-1].nodata = nodata
 
         self.outdata['Raster'] = outdat
 
@@ -897,7 +897,7 @@ class DataMerge(QtWidgets.QDialog):
             outdat.append(numpy_to_pygmi(mosaic[i], dataid=dataid))
             outdat[-1].extent_from_gtr(gtr)
             outdat[-1].wkt = wkt
-            outdat[-1].nullvalue = nodata
+            outdat[-1].nodata = nodata
 
         self.outdata['Raster'] = outdat
 
@@ -1045,8 +1045,8 @@ class DataReproj(QtWidgets.QDialog):
             # if datamin <= 0:
             #     data2.data = data2.data+(datamin-1)
             #     data.data = data.data+(datamin-1)
-            # data2.data = np.ma.masked_equal(data2.data, data.nullvalue)
-            # data2.nullvalue = data.nullvalue
+            # data2.data = np.ma.masked_equal(data2.data, data.nodata)
+            # data2.nodata = data.nodata
             # data2.data = np.ma.masked_invalid(data2.data)
             # data2.data = np.ma.masked_less(data2.data, data.data.min())
             # data2.data = np.ma.masked_greater(data2.data, data.data.max())
@@ -1562,14 +1562,14 @@ class Metadata(QtWidgets.QDialog):
                     tmp.xdim = i.xdim
                     tmp.ydim = i.ydim
                     tmp.extent = i.extent
-                    tmp.nullvalue = i.nullvalue
+                    tmp.nodata = i.nodata
                     tmp.wkt = wkt
                     tmp.units = i.units
                     # if tmp.dataid[-1] == ')':
                     #     tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
                     # if i.units != '':
                     #     tmp.dataid += ' ('+i.units+')'
-                    tmp.data.mask = (tmp.data.data == i.nullvalue)
+                    tmp.data.mask = (tmp.data.data == i.nodata)
 
     def rename_id(self):
         """
@@ -1609,7 +1609,7 @@ class Metadata(QtWidgets.QDialog):
         odata.units = self.led_units.text()
 
         try:
-            odata.nullvalue = float(self.txt_null.text())
+            odata.nodata = float(self.txt_null.text())
             left = float(self.dsb_tlx.text())
             top = float(self.dsb_tly.text())
             odata.xdim = float(self.dsb_xdim.text())
@@ -1636,7 +1636,7 @@ class Metadata(QtWidgets.QDialog):
 
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
-        self.txt_null.setText(str(idata.nullvalue))
+        self.txt_null.setText(str(idata.nodata))
         self.dsb_tlx.setText(str(idata.extent[0]))
         self.dsb_tly.setText(str(idata.extent[-1]))
         self.dsb_xdim.setText(str(idata.xdim))
@@ -1666,7 +1666,7 @@ class Metadata(QtWidgets.QDialog):
             self.dataid[i.dataid] = i.dataid
             tmp.xdim = i.xdim
             tmp.ydim = i.ydim
-            tmp.nullvalue = i.nullvalue
+            tmp.nodata = i.nodata
             tmp.wkt = i.wkt
             tmp.extent = i.extent
             tmp.data = i.data
@@ -1685,7 +1685,7 @@ class Metadata(QtWidgets.QDialog):
 
         self.lbl_cols.setText(str(icols))
         self.lbl_rows.setText(str(irows))
-        self.txt_null.setText(str(idata.nullvalue))
+        self.txt_null.setText(str(idata.nodata))
         self.dsb_tlx.setText(str(idata.extent[0]))
         self.dsb_tly.setText(str(idata.extent[-1]))
         self.dsb_xdim.setText(str(idata.xdim))
@@ -2057,7 +2057,7 @@ def data_reproject(data, ocrs, otransform, orows, ocolumns):
                     src_crs=data.crs,
                     dst_transform=otransform,
                     dst_crs=ocrs,
-                    src_nodata=data.nullvalue)
+                    src_nodata=data.nodata)
 
     data2 = Data()
     data2.data = odata
@@ -2072,8 +2072,8 @@ def data_reproject(data, ocrs, otransform, orows, ocolumns):
     #     data2.data = data2.data+(datamin-1)
     #     data.data = data.data+(datamin-1)
 
-    data2.data = np.ma.masked_equal(data2.data, data.nullvalue)
-    data2.nullvalue = data.nullvalue
+    data2.data = np.ma.masked_equal(data2.data, data.nodata)
+    data2.nodata = data.nodata
     # data2.data = np.ma.masked_invalid(data2.data)
     # data2.data = np.ma.masked_less(data2.data, data.data.min())
     # data2.data = np.ma.masked_greater(data2.data, data.data.max())
@@ -2353,7 +2353,7 @@ def fftcont(data, h):
     dat = Data()
     dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.nullvalue = data.data.fill_value
+    dat.nodata = data.data.fill_value
     dat.dataid = 'Upward_'+str(h)+'_'+data.dataid
     dat.extent = data.extent
     dat.xdim = data.xdim
@@ -2388,7 +2388,7 @@ def taylorcont(data, h):
     dat = Data()
     dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.nullvalue = data.data.fill_value
+    dat.nodata = data.data.fill_value
     dat.dataid = 'Downward_'+str(h)+'_'+data.dataid
     dat.extent = data.extent
     dat.xdim = data.xdim
@@ -2440,7 +2440,7 @@ def rtp(data, I_deg, D_deg):
     dat = Data()
     dat.data = np.ma.masked_invalid(zout)
     dat.data.mask = np.ma.getmaskarray(data.data)
-    dat.nullvalue = data.data.fill_value
+    dat.nodata = data.data.fill_value
     dat.dataid = 'RTP_'+data.dataid
     dat.extent = data.extent
     dat.xdim = data.xdim
@@ -2791,7 +2791,7 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
     cmask = None
     for data in piter(dat):
         doffset = 0.0
-        data.data.set_fill_value(data.nullvalue)
+        data.data.set_fill_value(data.nodata)
         data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
 
         if data.data.min() <= 0:
@@ -2811,8 +2811,8 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
                              dst_crs=data.crs)
 
         data2 = Data()
-        data2.data = np.ma.masked_equal(odata, data.nullvalue)
-        data2.nullvalue = data.nullvalue
+        data2.data = np.ma.masked_equal(odata, data.nodata)
+        data2.nodata = data.nodata
         data2.transform = trans
         data2.crs = data.crs
         data2.extent_from_transform(trans)
@@ -2830,8 +2830,8 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
         dat2[-1].metadata = data.metadata
         dat2[-1].data = dat2[-1].data + doffset
 
-        dat2[-1].nullvalue = data.nullvalue
-        dat2[-1].data.set_fill_value(data.nullvalue)
+        dat2[-1].nodata = data.nodata
+        dat2[-1].data.set_fill_value(data.nodata)
         dat2[-1].data = np.ma.array(dat2[-1].data.filled(),
                                     mask=dat2[-1].data.mask)
 
@@ -2867,7 +2867,7 @@ def trim_raster(olddata):
     """
     for data in olddata:
         mask = np.ma.getmaskarray(data.data)
-        data.data.data[mask] = data.nullvalue
+        data.data.data[mask] = data.nodata
 
         rowstart = 0
         for i in range(mask.shape[0]):
@@ -2895,7 +2895,7 @@ def trim_raster(olddata):
 
         drows, dcols = data.data.shape
         data.data = data.data[rowstart:rowend, colstart:colend]
-        data.data.mask = (data.data.data == data.nullvalue)
+        data.data.mask = (data.data.data == data.nodata)
         xmin = data.extent[0] + colstart*data.xdim
         ymax = data.extent[-1] - rowstart*data.ydim
         xmax = xmin + data.xdim*dcols

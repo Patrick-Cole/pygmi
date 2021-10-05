@@ -921,7 +921,7 @@ class SuperClass(QtWidgets.QDialog):
         i = len(lbls)
 
         dat_out[-1].data = zonal
-        dat_out[-1].nullvalue = zonal.fill_value
+        dat_out[-1].nodata = zonal.fill_value
         dat_out[-1].metadata['Cluster']['no_clusters'] = i
         dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
         dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
@@ -943,13 +943,13 @@ class SuperClass(QtWidgets.QDialog):
         dat_out[-1].xdim = data[0].xdim
         dat_out[-1].ydim = data[0].ydim
         dat_out[-1].dataid = 'Clusters: '+str(dat_out[-1].metadata['Cluster']['no_clusters'])
-        dat_out[-1].nullvalue = data[0].nullvalue
+        dat_out[-1].nodata = data[0].nodata
         dat_out[-1].extent = data[0].extent
 
         for i in dat_out:
             i.data += 1
             i.data = i.data.astype(np.uint8)
-            i.nullvalue = 0
+            i.nodata = 0
             i.data.data[i.data.mask] = 0
 
         self.showprocesslog('Cluster complete')
