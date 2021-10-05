@@ -2056,7 +2056,8 @@ def data_reproject(data, ocrs, otransform, orows, ocolumns):
                     src_transform=data.transform,
                     src_crs=data.crs,
                     dst_transform=otransform,
-                    dst_crs=ocrs)
+                    dst_crs=ocrs,
+                    src_nodata=data.nullvalue)
 
     data2 = Data()
     data2.data = odata
@@ -2070,6 +2071,7 @@ def data_reproject(data, ocrs, otransform, orows, ocolumns):
     # if datamin <= 0:
     #     data2.data = data2.data+(datamin-1)
     #     data.data = data.data+(datamin-1)
+
     data2.data = np.ma.masked_equal(data2.data, data.nullvalue)
     data2.nullvalue = data.nullvalue
     # data2.data = np.ma.masked_invalid(data2.data)
@@ -3217,12 +3219,11 @@ def _testreproj():
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"E:\Workdata\testdata.hdr"
+    ifile = r"E:\Workdata\bugs\Au5_SRTM30.tif"
 
     piter = ProgressBarText().iter
 
     dat = get_raster(ifile, piter=piter)
-    dat[1].data = dat[1].data+10000
 
     # dat2 = lstack(dat, piter, 60)
 
@@ -3241,20 +3242,20 @@ def _testreproj():
     DM.settings()
 
     plt.figure(dpi=150)
-    plt.imshow(DM.indata['Raster'][1].data,
-               extent=DM.indata['Raster'][1].extent)
+    plt.imshow(DM.indata['Raster'][0].data,
+               extent=DM.indata['Raster'][0].extent)
     plt.colorbar()
     plt.show()
 
     plt.figure(dpi=150)
-    plt.imshow(DM.outdata['Raster'][1].data,
-               extent=DM.outdata['Raster'][1].extent)
+    plt.imshow(DM.outdata['Raster'][0].data,
+               extent=DM.outdata['Raster'][0].extent)
     plt.colorbar()
     plt.show()
 
 
 
-    # breakpoint()
+    breakpoint()
 
 
 if __name__ == "__main__":

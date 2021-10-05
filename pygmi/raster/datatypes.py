@@ -27,6 +27,7 @@
 import warnings
 import numpy as np
 from rasterio.io import MemoryFile
+from rasterio import Affine
 
 
 def numpy_to_pygmi(data, pdata=None, dataid=None):
@@ -241,6 +242,35 @@ class Data():
 
         self.extent = (left, right, bottom, top)
 
+    def set_transform(self, xdim, xmin, ydim, ymax, iraster=None):
+        """
+        Set the transform
+
+        Returns
+        -------
+        None.
+
+        """
+
+        if iraster is None:
+            xoff = 0
+            yoff = 0
+        else:
+            xoff, yoff, _, _ = iraster
+
+        rows, cols = self.data.shape
+
+        left = xmin + xoff*self.xdim
+        top = ymax - yoff*self.ydim
+        right = left + self.xdim*cols
+        bottom = top - self.ydim*rows
+
+        self.transform = Affine(left, 0, xmin, 0, -abs(ydim), top)
+        self.xdim = xdim
+        self.ydim = abs(ydim)
+
+        self.extent = (left, right, bottom, top)
+        self.bounds = (left, bottom, right, top)
 
     def to_mem(self):
         """
