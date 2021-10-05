@@ -281,7 +281,7 @@ class EquationEditor(QtWidgets.QDialog):
             self.showprocesslog('No raster data')
             return False
 
-        indata = dataprep.merge(self.indata[intype])
+        indata = dataprep.lstack(self.indata[intype])
 
         for j, i in enumerate(indata):
             self.combobox.addItem(i.dataid)

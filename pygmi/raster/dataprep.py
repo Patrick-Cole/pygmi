@@ -1035,9 +1035,8 @@ class DataReproj(QtWidgets.QDialog):
 
             # data2 = Data()
             # data2.data = odata
-            # data2.transform = transform
             # data2.crs = dst_crs
-            # data2.extent_from_transform(transform)
+            # data2.set_transform(transform=transform)
             # data2.data = data2.data.astype(data.data.dtype)
             # data2.dataid = data.dataid
             # data2.wkt = self.out_proj.wkt
@@ -2061,9 +2060,8 @@ def data_reproject(data, ocrs, otransform, orows, ocolumns):
 
     data2 = Data()
     data2.data = odata
-    data2.transform = otransform
     data2.crs = ocrs
-    data2.extent_from_transform(otransform)
+    data2.set_transform(transform=otransform)
     data2.data = data2.data.astype(data.data.dtype)
     data2.dataid = data.dataid
     data2.wkt = CRS.to_wkt(ocrs)
@@ -2600,9 +2598,8 @@ def cut_raster(data, ifile, pprint=print):
         # iymin = iymax - irows*idata.ydim
         # idata.extent = [ixmin, ixmax, iymin, iymax]
 
-        idata.transform = Affine(idata.xdim, 0, ixmin,
-                                 0, -idata.ydim, iymax)
-        idata.extent_from_transform(idata.transform)
+        transform = Affine(idata.xdim, 0, ixmin, 0, -idata.ydim, iymax)
+        idata.set_transform(transform=transform)
 
     shapef = None
     data = trim_raster(data)
@@ -2813,9 +2810,8 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
         data2 = Data()
         data2.data = np.ma.masked_equal(odata, data.nodata)
         data2.nodata = data.nodata
-        data2.transform = trans
         data2.crs = data.crs
-        data2.extent_from_transform(trans)
+        data2.set_transform(transform=trans)
         data2.data = data2.data.astype(data.data.dtype)
         data2.dataid = data.dataid
         data2.wkt = data.wkt

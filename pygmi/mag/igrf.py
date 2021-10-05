@@ -252,7 +252,7 @@ class IGRF(QtWidgets.QDialog):
 
         self.proj.set_current(self.wkt)
 
-        # data = dp.merge(self.indata['Raster'])
+        # data = dp.lstack(self.indata['Raster'])
         data = self.indata['Raster']
 
         self.combobox_dtm.clear()
@@ -282,7 +282,7 @@ class IGRF(QtWidgets.QDialog):
             if i.dataid == self.combobox_mag.currentText():
                 dxy = min(i.xdim, i.ydim)
 
-        data = dp.merge(data, dxy=dxy, piter=self.piter,
+        data = dp.lstack(data, dxy=dxy, piter=self.piter,
                         pprint=self.showprocesslog)
 
         for i in data:

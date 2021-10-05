@@ -464,6 +464,12 @@ class Visibility2d(QtWidgets.QDialog):
             vtot, vstd, vsum = visibility2d(datai.data, self.wsize,
                                             self.dh*data[i].data.std()/100.,
                                             self.piter)
+
+            xdim = datai.transform[0]
+            ydim = datai.transform[4]
+            xmin = datai.transform[2] + xdim*(self.wsize-1)/2
+            ymax = datai.transform[5] - ydim*(self.wsize-1)/2
+
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
@@ -473,6 +479,9 @@ class Visibility2d(QtWidgets.QDialog):
             data2[-3].dataid += ' Total Visibility'
             data2[-2].dataid += ' Visibility Variation'
             data2[-1].dataid += ' Visibility Vector Resultant'
+            data2[-3].set_transform(xdim, xmin, ydim, ymax)
+            data2[-2].set_transform(xdim, xmin, ydim, ymax)
+            data2[-1].set_transform(xdim, xmin, ydim, ymax)
 
         self.outdata['Raster'] = data2
         self.showprocesslog('Finished!')
@@ -953,3 +962,44 @@ def agc(data, wsize, atype='mean', piter=iter):
     agcdata = data/weight
 
     return agcdata
+
+
+def _test():
+    """Test Reprojection."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
+    import matplotlib.pyplot as plt
+
+    ifile = r"E:\Workdata\testmag.tif"
+
+    piter = ProgressBarText().iter
+
+    dat = get_raster(ifile, piter=piter)
+
+
+    datai = dat[0]
+    dh = 10
+    wsize = 11
+
+    vtot, vstd, vsum = visibility2d(datai.data, wsize,
+                                    dh*datai.data.std()/100.,
+                                    piter)
+
+
+    # dat2 = lstack(dat, piter, 60)
+
+    # plt.figure(dpi=150)
+    # plt.imshow(dat[1].data, extent=dat[1].extent)
+    # plt.show()
+
+    # plt.figure(dpi=150)
+    # plt.imshow(dat2[1].data, extent=dat2[1].extent)
+    # plt.show()
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    breakpoint()
+
+
+if __name__ == "__main__":
+    _test()

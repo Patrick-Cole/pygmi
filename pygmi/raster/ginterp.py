@@ -1399,7 +1399,7 @@ class PlotInterp(QtWidgets.QDialog):
         if 'Raster' not in self.indata:
             return
 
-        self.indata['Raster'] = dataprep.merge(self.indata['Raster'])
+        self.indata['Raster'] = dataprep.lstack(self.indata['Raster'])
 
         if 'Cluster' in self.indata:
             data = self.indata['Cluster']

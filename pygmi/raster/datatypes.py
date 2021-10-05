@@ -147,65 +147,6 @@ class Data():
         self.transform = None
         self.crs = None
 
-    def get_gtr(self):
-        """
-        Ger gtr.
-
-        Returns
-        -------
-        gtr : tuple
-            tuple containing the gtr as (left, xdim, 0, top, 0., -ydim)
-
-        """
-        gtr = (self.extent[0], self.xdim, 0.0, self.extent[-1], 0.0,
-               -self.ydim)
-
-        return gtr
-
-
-    def extent_from_transform(self, trans, iraster=None):
-        """
-        Import extent, xdim and ydim from a gtr list.
-
-        Parameters
-        ----------
-        trans : Affine
-            Affine transform.
-        iraster : list
-            list of xoff, yoff, xsize, ysize for a subset of original dataset.
-
-        Returns
-        -------
-        None.
-
-        """
-        # gtr = (trans[2], trans[0], trans[1], trans[5], trans[3], trans[4])
-        self.transform = trans
-        self.xdim = trans.a
-        self.ydim = trans.e
-        left = trans.c
-        top = trans.f
-
-        self.ydim = abs(self.ydim)
-
-        if iraster is None:
-            xoff = 0
-            yoff = 0
-        else:
-            xoff, yoff, _, _ = iraster
-
-        rows, cols = self.data.shape
-
-        left = left + xoff*self.xdim
-        top = top - yoff*self.ydim
-        right = left + self.xdim*cols
-        bottom = top - self.ydim*rows
-
-        self.extent = (left, right, bottom, top)
-        self.bounds = (left, bottom, right, top)
-
-
-
     def extent_from_gtr(self, gtr, iraster=None):
         """
         Import extent, xdim and ydim from a gtr list.
@@ -242,15 +183,39 @@ class Data():
 
         self.extent = (left, right, bottom, top)
 
-    def set_transform(self, xdim, xmin, ydim, ymax, iraster=None):
+    def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
+                      transform=None, iraster=None):
         """
-        Set the transform
+        Set the transform.
+
+        This requires either transform as input OR xdim, ydim, xmin, ymax.
+
+        Parameters
+        ----------
+        xdim : float, optional
+            x dimension. The default is None.
+        xmin : float, optional
+            x minimum. The default is None.
+        ydim : float, optional
+            y dimension. The default is None.
+        ymax : float, optional
+            y maximum. The default is None.
+        transform : list of Affine, optional
+            transform. The default is None.
+        iraster : list, optional
+            list containing offsets etc in even of cutting data. The default
+            is None.
 
         Returns
         -------
         None.
 
         """
+        if transform is not None:
+            xdim = transform[0]
+            ydim = transform[4]
+            xmin = transform[2]
+            ymax = transform[5]
 
         if iraster is None:
             xoff = 0
@@ -265,7 +230,7 @@ class Data():
         right = left + self.xdim*cols
         bottom = top - self.ydim*rows
 
-        self.transform = Affine(left, 0, xmin, 0, -abs(ydim), top)
+        self.transform = Affine(xdim, 0, left, 0, -abs(ydim), top)
         self.xdim = xdim
         self.ydim = abs(ydim)
 
