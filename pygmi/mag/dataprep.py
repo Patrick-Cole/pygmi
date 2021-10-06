@@ -663,9 +663,7 @@ def rtp(data, I_deg, D_deg):
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nodata = data.data.fill_value
     dat.dataid = 'RTP_'+data.dataid
-    dat.extent = data.extent
-    dat.xdim = data.xdim
-    dat.ydim = data.ydim
+    dat.set_transform(transform=data.transform)
 
     return dat
 

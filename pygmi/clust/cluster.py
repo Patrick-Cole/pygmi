@@ -431,13 +431,11 @@ class Cluster(QtWidgets.QDialog):
             self.log = ('Cluster complete' + ' (' + self.cltype+')')
 
         for i in dat_out:
-            i.xdim = data[0].xdim
-            i.ydim = data[0].ydim
             i.dataid = 'Clusters: '+str(i.metadata['Cluster']['no_clusters'])
             if self.cltype == 'DBSCAN':
                 i.dataid = 'Clusters: '+str(int(i.data.max()+1))
             i.nodata = data[0].nodata
-            i.extent = data[0].extent
+            i.set_transform(transform=data[0].transform)
 
         self.showprocesslog('Cluster complete' + ' ('+self.cltype + ' ' + ')')
 

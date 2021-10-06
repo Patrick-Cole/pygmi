@@ -431,10 +431,11 @@ class ImportMod3D():
 
                 xmin = lmod.griddata[i].tlx
                 ymax = lmod.griddata[i].tly
-                ymin = ymax - rows*lmod.griddata[i].ydim
-                xmax = xmin + cols*lmod.griddata[i].xdim
 
-                lmod.griddata[i].extent = [xmin, xmax, ymin, ymax]
+                ydim = lmod.griddata[i].ydim
+                xdim = lmod.griddata[i].xdim
+
+                lmod.griddata[i].set_transform(xdim, xmin, ydim, ymax)
                 del lmod.griddata[i].tlx
                 del lmod.griddata[i].tly
 

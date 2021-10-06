@@ -469,22 +469,13 @@ class DataGrid(QtWidgets.QDialog):
         dat.data = gdat
         dat.nodata = nullvalue
         dat.dataid = self.dataid.currentText()
-        dat.xdim = dxy
-        dat.ydim = dxy
-        # dat.extent = [x.min(), x.max(), y.min(), y.max()]
 
-        rows, cols = dat.data.shape
-        # left = x.min()
-        # top = y.max()
-        # right = left + dxy*cols
-        # bottom = top - dxy*rows
+        rows, _ = dat.data.shape
 
         left = x.min()
-        bottom = y.min()
-        top = bottom + dxy*rows
-        right = left + dxy*cols
+        top = y.min() + dxy*rows
 
-        dat.extent = (left, right, bottom, top)
+        dat.set_transform(dxy, left, dxy, top)
 
         newdat.append(dat)
 

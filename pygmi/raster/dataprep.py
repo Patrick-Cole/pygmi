@@ -1448,9 +1448,7 @@ class Metadata(QtWidgets.QDialog):
                 if j[1] == tmp.dataid:
                     i = self.banddata[j[0]]
                     tmp.dataid = j[0]
-                    tmp.xdim = i.xdim
-                    tmp.ydim = i.ydim
-                    tmp.extent = i.extent
+                    tmp.set_transform(i.transform)
                     tmp.nodata = i.nodata
                     tmp.crs = CRS.from_wkt(wkt)
                     tmp.units = i.units
@@ -1501,16 +1499,10 @@ class Metadata(QtWidgets.QDialog):
             odata.nodata = float(self.txt_null.text())
             left = float(self.dsb_tlx.text())
             top = float(self.dsb_tly.text())
-            odata.xdim = float(self.dsb_xdim.text())
-            odata.ydim = float(self.dsb_ydim.text())
+            xdim = float(self.dsb_xdim.text())
+            ydim = float(self.dsb_ydim.text())
 
-            rows = odata.data.shape[0]
-            cols = odata.data.shape[1]
-
-            right = left + odata.xdim*cols
-            bottom = top - odata.ydim*rows
-
-            odata.extent = (left, right, bottom, top)
+            odata.set_transform(xdim, left, ydim, top)
 
         except ValueError:
             self.showprocesslog('Value error - abandoning changes')
@@ -1553,11 +1545,9 @@ class Metadata(QtWidgets.QDialog):
             self.banddata[i.dataid] = Data()
             tmp = self.banddata[i.dataid]
             self.dataid[i.dataid] = i.dataid
-            tmp.xdim = i.xdim
-            tmp.ydim = i.ydim
+            tmp.set_transform(transform=i.transform)
             tmp.nodata = i.nodata
             tmp.crs = i.crs
-            tmp.extent = i.extent
             tmp.data = i.data
             tmp.units = i.units
 
@@ -2243,9 +2233,8 @@ def fftcont(data, h):
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nodata = data.data.fill_value
     dat.dataid = 'Upward_'+str(h)+'_'+data.dataid
-    dat.extent = data.extent
-    dat.xdim = data.xdim
-    dat.ydim = data.ydim
+    dat.set_transform(transform=data.transform)
+    dat.crs = data.crs
 
     return dat
 
@@ -2278,10 +2267,8 @@ def taylorcont(data, h):
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nodata = data.data.fill_value
     dat.dataid = 'Downward_'+str(h)+'_'+data.dataid
-    dat.extent = data.extent
-    dat.xdim = data.xdim
-    dat.ydim = data.ydim
-
+    dat.set_transform(transform=data.transform)
+    dat.crs = data.crs
     return dat
 
 
@@ -2330,10 +2317,8 @@ def rtp(data, I_deg, D_deg):
     dat.data.mask = np.ma.getmaskarray(data.data)
     dat.nodata = data.data.fill_value
     dat.dataid = 'RTP_'+data.dataid
-    dat.extent = data.extent
-    dat.xdim = data.xdim
-    dat.ydim = data.ydim
-
+    dat.set_transform(transform=data.transform)
+    dat.crs = data.crs
     return dat
 
 
@@ -2484,12 +2469,8 @@ def cut_raster(data, ifile, pprint=print):
         idata.data = idata.data[ulY:lrY, ulX:lrX]
         ixmin = ulX*idata.xdim + idata.extent[0]  # minX
         iymax = idata.extent[-1] - ulY*idata.ydim  # maxY
-        # ixmax = ixmin + icols*idata.xdim
-        # iymin = iymax - irows*idata.ydim
-        # idata.extent = [ixmin, ixmax, iymin, iymax]
 
-        transform = Affine(idata.xdim, 0, ixmin, 0, -idata.ydim, iymax)
-        idata.set_transform(transform=transform)
+        idata.set_transform(idata.xdim, ixmin, idata.ydim, iymax)
 
     shapef = None
     data = trim_raster(data)
@@ -2783,9 +2764,7 @@ def trim_raster(olddata):
         data.data.mask = (data.data.data == data.nodata)
         xmin = data.extent[0] + colstart*data.xdim
         ymax = data.extent[-1] - rowstart*data.ydim
-        xmax = xmin + data.xdim*dcols
-        ymin = ymax - data.ydim*drows
-        data.extent = [xmin, xmax, ymin, ymax]
+        data.set_transform(data.xdim, xmin, data.ydim, ymax)
 
     return olddata
 

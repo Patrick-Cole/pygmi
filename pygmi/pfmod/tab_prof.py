@@ -2831,8 +2831,11 @@ class ImportPicture(QtWidgets.QDialog):
 
             ra = np.sqrt((x1a-x1)**2+(y1a-y1)**2)
             rb = np.sqrt((x2a-x1)**2+(y2a-y1)**2)
+            xdim = (rb-ra)/dat.shape[1]
+            ydim = (zmax-zmin)/dat.shape[0]
 
-            dat.extent = (ra, rb, zmin, zmax)
+            dat.set_transform(dat.xdim, ra, dat.ydim, zmax)
+            # dat.extent = (ra, rb, zmin, zmax)
             self.lmod.profpics[curline] = dat
 
         return curline

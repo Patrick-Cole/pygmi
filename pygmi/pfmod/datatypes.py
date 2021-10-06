@@ -261,10 +261,7 @@ class LithModel():
         """
         grid = Data()
         grid.data = data
-        grid.xdim = self.dxy
-        grid.ydim = self.dxy
-        grid.extent = [self.xrange[0], self.xrange[1],
-                       self.yrange[0], self.yrange[1]]
+        grid.set_transform(self.dxy, self.xrange[0], self.dxy, self.yrange[1])
 
         return grid
 

@@ -443,10 +443,8 @@ class TiltDepth(QtWidgets.QDialog):
         dat.data = np.ma.masked_invalid(gdat[::-1])
         dat.data.mask = mask[::-1]
         dat.nodata = dat.data.fill_value
+        dat.set_transform(data.xdim, gx0.min(), data.ydim, gy0.max())
         dat.dataid = data.dataid
-        dat.xdim = data.xdim
-        dat.ydim = data.xdim
-        dat.extent = [gx0.min(), gx0.max(), gy0.min(), gy0.max()]
 
         self.outdata['Raster'] = [dat]
 

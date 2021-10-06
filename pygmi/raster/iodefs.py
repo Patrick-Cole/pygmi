@@ -526,17 +526,12 @@ def get_ascii(ifile):
 
     dat[i].dataid = bandid
     dat[i].nodata = nval
-    dat[i].xdim = xdim
-    dat[i].ydim = ydim
     dat[i].filename = ifile
 
-    rows, cols = dat[i].data.shape
     xmin = ulxmap
     ymax = ulymap
-    ymin = ymax - rows*ydim
-    xmax = xmin + cols*xdim
 
-    dat[i].extent = [xmin, xmax, ymin, ymax]
+    dat[i].set_transform(xdim, xmin, ydim, ymax)
 
     return dat
 
@@ -907,15 +902,12 @@ def get_geopak(hfile):
     dat[i].dataid = hfile[:-4]
 
     dat[i].nodata = nval
-    dat[i].xdim = dx
-    dat[i].ydim = dy
 
     xmin = x0
     ymax = y0 + dy*nrows
-    ymin = y0
-    xmax = xmin + ncols*dx
 
-    dat[i].extent = [xmin, xmax, ymin, ymax]
+    dat[i].set_transform(dx, xmin, dy, ymax)
+
     dat[i].filename = hfile
 
     return dat
@@ -995,15 +987,11 @@ def get_geosoft(hfile):
     dat[i].data = data
     dat[i].dataid = hfile[:-4]
     dat[i].nodata = nval
-    dat[i].xdim = dx
-    dat[i].ydim = dy
 
     xmin = x0
     ymax = y0 + dy*nrows
-    ymin = y0
-    xmax = xmin + ncols*dx
 
-    dat[i].extent = [xmin, xmax, ymin, ymax]
+    dat[i].set_transform(dx, xmin, dy, ymax)
     dat[i].filename = hfile
 
     return dat
