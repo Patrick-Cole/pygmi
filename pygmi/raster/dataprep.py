@@ -959,6 +959,11 @@ class DataReproj(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if self.indata['Raster'][0].crs is None:
+            self.showprocesslog('Your input data has no projection. '
+                                'Please assign one in the metadata summary.')
+            return False
+
         if self.orig_wkt is None:
             self.orig_wkt = self.indata['Raster'][0].crs.wkt
         if self.targ_wkt is None:
@@ -1448,7 +1453,7 @@ class Metadata(QtWidgets.QDialog):
                 if j[1] == tmp.dataid:
                     i = self.banddata[j[0]]
                     tmp.dataid = j[0]
-                    tmp.set_transform(i.transform)
+                    tmp.set_transform(transform=i.transform)
                     tmp.nodata = i.nodata
                     tmp.crs = CRS.from_wkt(wkt)
                     tmp.units = i.units
@@ -1538,17 +1543,20 @@ class Metadata(QtWidgets.QDialog):
 
         """
         bandid = []
-        self.proj.set_current(self.indata['Raster'][0].crs.wkt)
+        if self.indata['Raster'][0].crs is None:
+            self.proj.set_current('None')
+        else:
+            self.proj.set_current(self.indata['Raster'][0].crs.wkt)
 
         for i in self.indata['Raster']:
             bandid.append(i.dataid)
             self.banddata[i.dataid] = Data()
             tmp = self.banddata[i.dataid]
             self.dataid[i.dataid] = i.dataid
+            tmp.data = i.data
             tmp.set_transform(transform=i.transform)
             tmp.nodata = i.nodata
             tmp.crs = i.crs
-            tmp.data = i.data
             tmp.units = i.units
 
         self.combobox_bandid.currentIndexChanged.disconnect()
@@ -3083,12 +3091,11 @@ def _testreproj():
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"E:\Workdata\bugs\Au5_SRTM30.tif"
+    ifile = r"C:\Workdata\bugs\mag_IGRFrem_hbhk94.ers"
 
     piter = ProgressBarText().iter
 
     dat = get_raster(ifile, piter=piter)
-
     # dat2 = lstack(dat, piter, 60)
 
     # plt.figure(dpi=150)

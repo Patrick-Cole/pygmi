@@ -214,9 +214,11 @@ class Data():
         """
         if transform is not None:
             xdim = transform[0]
-            ydim = abs(transform[4])
+            ydim = transform[4]
             xmin = transform[2]
             ymax = transform[5]
+
+        ydim = abs(ydim)
 
         if iraster is None:
             xoff = 0
@@ -226,14 +228,14 @@ class Data():
 
         rows, cols = self.data.shape
 
-        left = xmin + xoff*self.xdim
-        top = ymax - yoff*self.ydim
-        right = left + self.xdim*cols
-        bottom = top - self.ydim*rows
+        left = xmin + xoff*xdim
+        top = ymax - yoff*ydim
+        right = left + xdim*cols
+        bottom = top - ydim*rows
 
-        self.transform = Affine(xdim, 0, left, 0, -abs(ydim), top)
+        self.transform = Affine(xdim, 0, left, 0, -ydim, top)
         self.xdim = xdim
-        self.ydim = abs(ydim)
+        self.ydim = ydim
 
         self.extent = (left, right, bottom, top)
         self.bounds = (left, bottom, right, top)
@@ -247,7 +249,6 @@ class Data():
         None.
 
         """
-
         raster = MemoryFile().open(driver='GTiff',
                                    height=self.data.shape[0],
                                    width=self.data.shape[1],
