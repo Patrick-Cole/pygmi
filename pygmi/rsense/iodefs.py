@@ -1186,6 +1186,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
 
             if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
                 dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']
+            dataset.close()
 
     if dat == []:
         dat = None
@@ -1256,36 +1257,36 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
         if zfile.lower()[-4:] != '.tif':
             continue
 
-        dataset = gdal.Open(os.path.join(idir, zfile), gdal.GA_ReadOnly)
-
-        if dataset is None:
+        dataset1 = rasterio.open(os.path.join(idir, zfile))
+        if dataset1 is None:
             showprocesslog('Problem with '+zfile)
             continue
 
-        dataset = gdal.AutoCreateWarpedVRT(dataset)
-        rtmp = dataset.GetRasterBand(1)
+        dataset = rasterio.vrt.WarpedVRT(dataset1)
+        # dataset = gdal.AutoCreateWarpedVRT(dataset)
+        rtmp = dataset.read(1)
 
         dat.append(Data())
-        dat[-1].data = rtmp.ReadAsArray()
+        dat[-1].data = rtmp
         dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
         dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
         if dat[-1].data.mask.size == 1:
             dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
-        dat[-1].extent_from_gtr(dataset.GetGeoTransform())
         dat[-1].dataid = zfile[zfile.index('Band'):zfile.index('.tif')]
         dat[-1].nodata = nval
-        dat[-1].wkt = dataset.GetProjectionRef()
+        dat[-1].crs = dataset.crs
+        dat[-1].set_transform(transform=dataset.transform)
         dat[-1].filename = ifile
         dat[-1].units = units
 
         bmeta = dat[-1].metadata
-        if satbands is not None:
-            fext = dat[-1].dataid[4:]
-            bmeta['WavelengthMin'] = satbands[fext][0]
-            bmeta['WavelengthMax'] = satbands[fext][1]
+        fext = dat[-1].dataid[4:]
+        bmeta['WavelengthMin'] = satbands[fext][0]
+        bmeta['WavelengthMax'] = satbands[fext][1]
 
-        dataset = None
+        dataset.close()
+        dataset1.close()
 
     showprocesslog('Cleaning Extracted zip files...')
     for zfile in zipnames:
@@ -1338,10 +1339,13 @@ def get_aster_hdf(ifile, piter=iter):
         ptype = '08'
     else:
         return None
+    with rasterio.open(ifile) as dataset:
+        meta = dataset.tags()
+        subdata = dataset.subdatasets
+        crs = dataset.crs
 
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-    meta = dataset.GetMetadata()
+    if crs is None and 'UTMZONECODE1' in meta:
+        crs = CRS.from_epsg('326'+meta['UTMZONECODE1'])
 
     if ptype == 'L1T':
         ucc = {'ImageData1': float(meta['INCL1']),
@@ -1368,20 +1372,19 @@ def get_aster_hdf(ifile, piter=iter):
     dte = datetime.datetime.strptime(cdate, fmt)
     jdate = dte.timetuple().tm_yday
 
-    subdata = dataset.GetSubDatasets()
     if ptype == '07':
-        subdata = [i for i in subdata if 'SurfaceReflectance' in i[0]]
+        subdata = [i for i in subdata if 'SurfaceReflectance' in i]
         scalefactor = 0.001
         units = 'Surface Reflectance'
     elif ptype == '05':
-        subdata = [i for i in subdata if 'SurfaceEmissivity' in i[0]]
+        subdata = [i for i in subdata if 'SurfaceEmissivity' in i]
         scalefactor = 0.001
         units = 'Surface Emissivity'
     elif ptype == '08':
         scalefactor = 0.1
         units = 'Surface Kinetic Temperature'
     elif ptype == 'L1T':
-        subdata = [i for i in subdata if 'ImageData' in i[0]]
+        subdata = [i for i in subdata if 'ImageData' in i]
         scalefactor = 1
         units = ''
     else:
@@ -1390,23 +1393,17 @@ def get_aster_hdf(ifile, piter=iter):
     dat = []
     nval = 0
     calctoa = False
-    for bfile, bandid in piter(subdata):
+    for bfile in piter(subdata):
         if 'QA' in bfile:
             continue
         if ptype == 'L1T' and 'ImageData3B' in bfile:
             continue
 
-        bandid2 = bandid[bandid.lower().index(']')+1:
-                         bandid.lower().index('(')].strip()
+        dataset1 = rasterio.open(bfile)
+        dataset = rasterio.vrt.WarpedVRT(dataset1)
 
-        dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
-
-        tmpds = gdal.AutoCreateWarpedVRT(dataset)
-
-        if tmpds is None:
-            continue
         dat.append(Data())
-        dat[-1].data = tmpds.ReadAsArray()
+        dat[-1].data = dataset.read(1)
         if ptype == '08':
             dat[-1].data[dat[-1].data == 2000] = nval
         dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
@@ -1414,10 +1411,10 @@ def get_aster_hdf(ifile, piter=iter):
         if dat[-1].data.mask.size == 1:
             dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
-        dat[-1].dataid = bandid2
+        dat[-1].dataid = bfile[bfile.index('Band'):]
         dat[-1].nodata = nval
-        dat[-1].extent_from_gtr(tmpds.GetGeoTransform())
-        dat[-1].wkt = tmpds.GetProjectionRef()
+        dat[-1].set_transform(transform=dataset.transform)
+        dat[-1].crs = crs
         dat[-1].metadata['SolarElev'] = solarelev
         dat[-1].metadata['JulianDay'] = jdate
         dat[-1].metadata['CalendarDate'] = cdate
@@ -1426,14 +1423,15 @@ def get_aster_hdf(ifile, piter=iter):
         dat[-1].units = units
 
         bmeta = dat[-1].metadata
-        if satbands is not None:
-            fext = dat[-1].dataid[4:].split()[0]
-            bmeta['WavelengthMin'] = satbands[fext][0]
-            bmeta['WavelengthMax'] = satbands[fext][1]
+        fext = dat[-1].dataid[4:].split()[0]
+        bmeta['WavelengthMin'] = satbands[fext][0]
+        bmeta['WavelengthMax'] = satbands[fext][1]
 
         if ptype == 'L1T' and 'ImageData' in ifile:
             dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
             calctoa = True
+        dataset.close()
+        dataset1.close()
 
     if dat == []:
         dat = None
@@ -1648,13 +1646,15 @@ def _testfn():
     ifile = r"C:\Workdata\Remote Sensing\Modis\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
     ifile = r"C:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
     ifile = r"C:\Workdata\Remote Sensing\Sentinel-2\S2B_MSIL2A_20201213T081239_N0214_R078_T34JGP_20201213T105149.SAFE\MTD_MSIL2A.xml"
+    ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
+    ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf"
 
     dat = get_data(ifile)
 
     for i in dat:
         plt.figure(dpi=150)
         plt.title(i.dataid)
-        plt.imshow(i.data)
+        plt.imshow(i.data, extent=i.extent)
         plt.show()
 
     # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
