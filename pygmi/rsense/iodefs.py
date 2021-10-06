@@ -32,20 +32,16 @@ import zipfile
 import datetime
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import gdal, osr
+from osgeo import gdal
 import pandas as pd
 import geopandas as gpd
 from geopandas import GeoDataFrame
 from shapely.geometry import Point
 import rasterio
-from rasterio.plot import plotting_extent
-from rasterio.windows import Window
 from rasterio.crs import CRS
-
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
-from pygmi.vector.dataprep import quickgrid
 
 EDIST = {1: 0.98331, 2: 0.9833, 3: 0.9833, 4: 0.9833,
          5: 0.9833, 6: 0.98332, 7: 0.98333, 8: 0.98335,
@@ -1148,7 +1144,6 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
     dat = []
     for bfile in subdata:
         dataset = rasterio.open(bfile)
-        # dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
         showprocesslog('Importing '+os.path.basename(bfile))
         if dataset is None:
             showprocesslog('Problem with '+ifile)
@@ -1265,7 +1260,6 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
             continue
 
         dataset = rasterio.vrt.WarpedVRT(dataset1)
-        # dataset = gdal.AutoCreateWarpedVRT(dataset)
         rtmp = dataset.read(1)
 
         dat.append(Data())
@@ -1482,13 +1476,11 @@ def get_aster_ged(ifile, piter=iter):
 
         rtmp2 = dataset.read()
         if 'Latitude' in ifile2:
-            lats = rtmp2.squeeze()
             ymax = rtmp2.max()
             ydim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[1])
             continue
 
         if 'Longitude' in ifile2:
-            lons = rtmp2.squeeze()
             xmin = rtmp2.min()
             xdim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[2])
             continue

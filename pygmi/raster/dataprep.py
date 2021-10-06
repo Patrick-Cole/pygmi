@@ -32,7 +32,6 @@ import copy
 from collections import Counter
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-# from osgeo import gdal, osr, ogr
 from osgeo import ogr
 import pandas as pd
 from PIL import Image, ImageDraw
@@ -40,18 +39,13 @@ import scipy.ndimage as ndimage
 from scipy.signal import tukey
 import rasterio
 import rasterio.merge
-from rasterio.io import MemoryFile
 from rasterio.crs import CRS
 from rasterio.warp import calculate_default_transform, reproject
-from rasterio import Affine
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
-from pygmi.misc import ProgressBarText, getinfo
+from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
-
-
-# gdal.PushErrorHandler('CPLQuietErrorHandler')
 
 
 class DataCut():
@@ -348,8 +342,8 @@ class DataLayerStack(QtWidgets.QDialog):
         dxy = self.dsb_dxy.value()
         self.dxy = dxy
         dat = lstack(self.indata['Raster'], self.piter, dxy,
-                    pprint=self.showprocesslog,
-                    commonmask=self.cmask.isChecked())
+                     pprint=self.showprocesslog,
+                     commonmask=self.cmask.isChecked())
         self.outdata['Raster'] = dat
 
 
@@ -775,8 +769,6 @@ class DataMerge(QtWidgets.QDialog):
                 bnames = ['Band '+str(i) for i in dataset.indexes]
             nodata = dataset.nodata
 
-
-
         # Start Merge
         mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
                                               method=self.method)
@@ -798,7 +790,7 @@ class DataReproj(QtWidgets.QDialog):
     """
     Reprojections.
 
-    This class reprojects datasets using the GDAL routines.
+    This class reprojects datasets using the rasterio routines.
 
     Attributes
     ----------
@@ -883,31 +875,14 @@ class DataReproj(QtWidgets.QDialog):
             return
 
 # Input stuff
-        orig_wkt = self.in_proj.wkt
-
-        # orig = osr.SpatialReference()
-        # orig.ImportFromWkt(orig_wkt)
-        # orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
         src_crs = CRS.from_wkt(self.in_proj.wkt)
 
 # Output stuff
-        targ_wkt = self.out_proj.wkt
         dst_crs = CRS.from_wkt(self.out_proj.wkt)
-
-        # targ = osr.SpatialReference()
-        # targ.ImportFromWkt(targ_wkt)
-        # targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-# Set transformation
-        # ctrans = osr.CoordinateTransformation(orig, targ)
 
 # Now create virtual dataset
         dat = []
         for data in self.piter(self.indata['Raster']):
-            # datamin = data.data.min()
-            # if datamin <= 0:
-            #     data.data = data.data-(datamin-1)
-
             src_height, src_width = data.data.shape
 
             transform, width, height = calculate_default_transform(
@@ -915,30 +890,6 @@ class DataReproj(QtWidgets.QDialog):
 
 # Work out the boundaries of the new dataset in the target projection
             data2 = data_reproject(data, dst_crs, transform, height, width)
-            # odata = np.zeros((height, width), dtype= data.data.dtype)
-            # odata, _ = reproject(source=data.data,
-            #                 destination=odata,
-            #                 src_transform=data.transform,
-            #                 src_crs=src_crs,
-            #                 dst_transform=transform,
-            #                 dst_crs=dst_crs)
-
-            # data2 = Data()
-            # data2.data = odata
-            # data2.crs = dst_crs
-            # data2.set_transform(transform=transform)
-            # data2.data = data2.data.astype(data.data.dtype)
-            # data2.dataid = data.dataid
-            # data2.wkt = self.out_proj.wkt
-
-            # if datamin <= 0:
-            #     data2.data = data2.data+(datamin-1)
-            #     data.data = data.data+(datamin-1)
-            # data2.data = np.ma.masked_equal(data2.data, data.nodata)
-            # data2.nodata = data.nodata
-            # data2.data = np.ma.masked_invalid(data2.data)
-            # data2.data = np.ma.masked_less(data2.data, data.data.min())
-            # data2.data = np.ma.masked_greater(data2.data, data.data.max())
 
             dat.append(data2)
 
@@ -1269,7 +1220,6 @@ class GroupProj(QtWidgets.QWidget):
         self.comboproj.currentIndexChanged.connect(self.combo_change)
 
         self.combo_change()
-
 
     def combo_change(self):
         """
@@ -1936,15 +1886,36 @@ class Continuation(QtWidgets.QDialog):
 
 
 def data_reproject(data, ocrs, otransform, orows, ocolumns):
+    """
+    Reproject dataset.
 
+    Parameters
+    ----------
+    data : PyGMI Data
+        PyGMI dataset.
+    ocrs : CRS
+        output crs.
+    otransform : Affine
+        Output affine transform.
+    orows : int
+        output rows.
+    ocolumns : int
+        output columns.
+
+    Returns
+    -------
+    data2 : TYPE
+        DESCRIPTION.
+
+    """
     odata = np.zeros((orows, ocolumns), dtype=data.data.dtype)
     odata, _ = reproject(source=data.data,
-                    destination=odata,
-                    src_transform=data.transform,
-                    src_crs=data.crs,
-                    dst_transform=otransform,
-                    dst_crs=ocrs,
-                    src_nodata=data.nodata)
+                         destination=odata,
+                         src_transform=data.transform,
+                         src_crs=data.crs,
+                         dst_transform=otransform,
+                         dst_crs=ocrs,
+                         src_nodata=data.nodata)
 
     data2 = Data()
     data2.data = odata
@@ -1954,15 +1925,8 @@ def data_reproject(data, ocrs, otransform, orows, ocolumns):
     data2.dataid = data.dataid
     data2.wkt = CRS.to_wkt(ocrs)
 
-    # if datamin <= 0:
-    #     data2.data = data2.data+(datamin-1)
-    #     data.data = data.data+(datamin-1)
-
     data2.data = np.ma.masked_equal(data2.data, data.nodata)
     data2.nodata = data.nodata
-    # data2.data = np.ma.masked_invalid(data2.data)
-    # data2.data = np.ma.masked_less(data2.data, data.data.min())
-    # data2.data = np.ma.masked_greater(data2.data, data.data.max())
 
     return data2
 
