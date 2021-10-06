@@ -37,6 +37,11 @@ import pandas as pd
 import geopandas as gpd
 from geopandas import GeoDataFrame
 from shapely.geometry import Point
+import rasterio
+from rasterio.plot import plotting_extent
+from rasterio.windows import Window
+from rasterio.crs import CRS
+
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
@@ -887,146 +892,6 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
     return dat
 
 
-def get_modis(ifile, showprocesslog=print):
-    """
-    Get MODIS data.
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-    showprocesslog : function, optional
-        Routine to show text messages. The default is print.
-
-    Returns
-    -------
-    dat : PyGMI raster Data
-        dataset imported
-    """
-    dat = []
-    ifile = ifile[:]
-
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-    subdata = dataset.GetSubDatasets()
-
-    latentry = [i for i in subdata if 'Latitude' in i[1]]
-    subdata.pop(subdata.index(latentry[0]))
-    dataset = None
-
-    dataset = gdal.Open(latentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lats = rtmp.ReadAsArray()
-    latsdim = ((lats.max()-lats.min())/(lats.shape[0]-1))/2
-
-    lonentry = [i for i in subdata if 'Longitude' in i[1]]
-    subdata.pop(subdata.index(lonentry[0]))
-
-    dataset = None
-    dataset = gdal.Open(lonentry[0][0], gdal.GA_ReadOnly)
-    rtmp = dataset.GetRasterBand(1)
-    lons = rtmp.ReadAsArray()
-    lonsdim = ((lons.max()-lons.min())/(lons.shape[1]-1))/2
-
-    lonsdim = latsdim
-    tlx = lons.min()-abs(lonsdim/2)
-    tly = lats.max()+abs(latsdim/2)
-    cols = int((lons.max()-lons.min())/lonsdim)+1
-    rows = int((lats.max()-lats.min())/latsdim)+1
-
-    newx2, newy2 = np.mgrid[0:rows, 0:cols]
-    newx2 = newx2*lonsdim + tlx
-    newy2 = tlx - newy2*latsdim
-
-    tmp = []
-    for i in subdata:
-        if 'HDF4_EOS:EOS_SWATH' in i[0]:
-            tmp.append(i)
-    subdata = tmp
-
-    i = -1
-    for ifile2, bandid2 in subdata:
-        dataset = None
-        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
-
-        rtmp2 = dataset.ReadAsArray()
-
-        if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
-            rtmp2 = np.transpose(rtmp2, (2, 0, 1))
-
-        nbands = 1
-        if rtmp2.ndim == 3:
-            nbands = rtmp2.shape[0]
-
-        for i2 in range(nbands):
-            rtmp = dataset.GetRasterBand(i2+1)
-            bandid = rtmp.GetDescription()
-            nval = rtmp.GetNoDataValue()
-            i += 1
-
-            dat.append(Data())
-            if rtmp2.ndim == 3:
-                dat[i].data = rtmp2[i2]
-            else:
-                dat[i].data = rtmp2
-
-            newx = lons[dat[i].data != nval]
-            newy = lats[dat[i].data != nval]
-            newz = dat[i].data[dat[i].data != nval]
-
-            if newx.size == 0:
-                dat[i].data = np.zeros((rows, cols)) + nval
-            else:
-                tmp = quickgrid(newx, newy, newz, latsdim,
-                                showprocesslog=showprocesslog)
-                mask = np.ma.getmaskarray(tmp)
-                gdat = tmp.data
-                dat[i].data = np.ma.masked_invalid(gdat[::-1])
-                dat[i].data.mask = mask[::-1]
-
-            if dat[i].data.dtype.kind == 'i':
-                if nval is None:
-                    nval = 999999
-                nval = int(nval)
-            elif dat[i].data.dtype.kind == 'u':
-                if nval is None:
-                    nval = 0
-                nval = int(nval)
-            else:
-                if nval is None:
-                    nval = 1e+20
-                nval = float(nval)
-
-            dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
-                                (dat[i].data == nval))
-            if dat[i].data.mask.size == 1:
-                dat[i].mask = np.ma.getmaskarray(dat[i].data)
-
-            dat[i].dataid = bandid2+' '+bandid
-            dat[i].nodata = nval
-            dat[i].xdim = abs(lonsdim)
-            dat[i].ydim = abs(latsdim)
-
-            rows, cols = dat[i].data.shape
-            xmin = tlx
-            ymax = tly
-            ymin = ymax - rows*dat[i].ydim
-            xmax = xmin + cols*dat[i].xdim
-
-            dat[i].extent = [xmin, xmax, ymin, ymax]
-
-            srs = osr.SpatialReference()
-            srs.ImportFromWkt(dataset.GetProjection())
-            srs.AutoIdentifyEPSG()
-            srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-            dat[i].wkt = srs.ExportToWkt()
-
-    dataset = None
-    return dat
-
-
 def get_modisv6(ifile, piter=iter):
     """
     Get MODIS v006 data.
@@ -1046,18 +911,17 @@ def get_modisv6(ifile, piter=iter):
     dat = []
     ifile = ifile[:]
 
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-    # dmeta = dataset.GetMetadata()
-
-    subdata = dataset.GetSubDatasets()
-    dataset = None
+    with rasterio.open(ifile) as dataset:
+        if dataset is None:
+            return None
+        subdata = dataset.subdatasets
 
     dat = []
-    nval = 0
-    for ifile2, bandid2 in subdata:
-        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
+    for ifile2 in subdata:
+        dataset = rasterio.open(ifile2)
 
-        wkt = dataset.GetProjectionRef()
+        wkt = dataset.crs.wkt
+        crs = dataset.crs
         if 'Sinusoidal' in wkt:
             wkt = wkt.replace('PROJCS["unnamed"', 'PROJCS["Sinusoidal"')
             wkt = wkt.replace('GEOGCS["Unknown datum based upon the custom '
@@ -1068,11 +932,11 @@ def get_modisv6(ifile, piter=iter):
                               'DATUM["D_Unknown"')
             wkt = wkt.replace('SPHEROID["Custom spheroid"',
                               'SPHEROID["S_Unknown"')
+            crs = CRS.from_wkt(wkt)
 
-        meta = dataset.GetMetadata()
-        if '_FillValue' in meta:
-            nval = int(meta['_FillValue'])
-        bandid = bandid2.split('] ')[1].split(' (')[0]
+        meta = dataset.tags()
+        bandid = dataset.descriptions[0]
+        nval = dataset.nodata
 
         if 'scale_factor' in meta:
             scale = float(meta['scale_factor'])
@@ -1085,14 +949,12 @@ def get_modisv6(ifile, piter=iter):
         if 'MOD44B' in ifile and '_SD' in bandid and scale == 1:
             scale = 0.01
 
-        # print('scale', scale, bandid)
-
         if 'add_offset' in meta:
             offset = float(meta['add_offset'])
         else:
             offset = 0
 
-        rtmp2 = dataset.ReadAsArray()
+        rtmp2 = dataset.read(1)
         rtmp2 = rtmp2.astype(float)
         mask = (rtmp2 == nval)
         if nval == 32767:
@@ -1110,15 +972,14 @@ def get_modisv6(ifile, piter=iter):
             dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
                                  dat[-1].data.mask)
 
-        dat[-1].extent_from_gtr(dataset.GetGeoTransform())
         dat[-1].dataid = bandid
         dat[-1].nodata = nval
-        dat[-1].wkt = wkt
+        dat[-1].crs = crs
+        dat[-1].set_transform(transform=dataset.transform)
         dat[-1].filename = ifile
-        if 'units' in meta and meta['units'] != 'none':
-            dat[-1].units = '$'+meta['units']+'$'
+        dat[-1].units = dataset.units[0]
 
-        dataset = None
+        dataset.close()
 
     return dat
 
@@ -1211,26 +1072,26 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
 
         showprocesslog('Importing Band', fext)
 
-        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
+        dataset = rasterio.open(ifile2)
 
         if dataset is None:
             showprocesslog('Problem with band '+fext)
             continue
 
-        rtmp = dataset.GetRasterBand(1)
+        rtmp = dataset.read(1)
 
         dat.append(Data())
-        dat[-1].data = rtmp.ReadAsArray()
+        dat[-1].data = rtmp
         dat[-1].data = np.ma.masked_invalid(dat[-1].data)
         dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
         if dat[-1].data.mask.size == 1:
             dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
                                  dat[-1].data.mask)
 
-        dat[-1].extent_from_gtr(dataset.GetGeoTransform())
         dat[-1].dataid = 'Band' + fext
         dat[-1].nodata = nval
-        dat[-1].wkt = dataset.GetProjectionRef()
+        dat[-1].crs = dataset.crs
+        dat[-1].set_transform(transform=dataset.transform)
         dat[-1].filename = ifile
 
         bmeta = dat[-1].metadata
@@ -1238,7 +1099,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
 
-        dataset = None
+        dataset.close()
 
     if dat == []:
         dat = None
@@ -1274,24 +1135,27 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
     """
     ifile = ifile[:]
 
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    with rasterio.open(ifile) as dataset:
+        if dataset is None:
+            return None
+        subdata = dataset.subdatasets
 
-    subdata = dataset.GetSubDatasets()
     subdata = [i for i in subdata if 'True color' not in i[1]]
 
     nval = 0
     dat = []
-    for bfile, _ in subdata:
-        dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
+    for bfile in subdata:
+        dataset = rasterio.open(bfile)
+        # dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
         showprocesslog('Importing '+os.path.basename(bfile))
         if dataset is None:
             showprocesslog('Problem with '+ifile)
             continue
 
-        for i in piter(range(dataset.RasterCount)):
-            rtmp = dataset.GetRasterBand(i+1)
-            bname = rtmp.GetDescription()
-            bmeta = rtmp.GetMetadata()
+        for i in piter(dataset.indexes):
+            rtmp = dataset.read(i)
+            bname = dataset.descriptions[i-1]
+            bmeta = dataset.tags(i)
 
             if ('Sentinel-2 Bands Only' in extscene and
                     'central wavelength' not in bname.lower()):
@@ -1302,10 +1166,9 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
                 bwidth = float(bmeta['BANDWIDTH'])
                 bmeta['WavelengthMin'] = wlen - bwidth/2
                 bmeta['WavelengthMax'] = wlen + bwidth/2
-            # self.showprocesslog('Importing '+bname)
 
             dat.append(Data())
-            dat[-1].data = rtmp.ReadAsArray()
+            dat[-1].data = rtmp
             dat[-1].data = np.ma.masked_invalid(dat[-1].data)
             dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
             if dat[-1].data.mask.size == 1:
@@ -1315,8 +1178,8 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
 
             dat[-1].dataid = bname
             dat[-1].nodata = nval
-            dat[-1].extent_from_gtr(dataset.GetGeoTransform())
-            dat[-1].wkt = dataset.GetProjectionRef()
+            dat[-1].crs = dataset.crs
+            dat[-1].set_transform(transform=dataset.transform)
             dat[-1].filename = ifile
             dat[-1].units = 'Reflectance'
             dat[-1].metadata.update(bmeta)
@@ -1780,14 +1643,19 @@ def get_aster_ged_bin(ifile):
 
 def _testfn():
     """Test routine."""
-    ifiles = glob.glob(r'C:\Workdata\modis\*.hdf')
+    import matplotlib.pyplot as plt
 
-    ifile = ifiles[0]
+    ifile = r"C:\Workdata\Remote Sensing\Modis\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
+    ifile = r"C:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    ifile = r"C:\Workdata\Remote Sensing\Sentinel-2\S2B_MSIL2A_20201213T081239_N0214_R078_T34JGP_20201213T105149.SAFE\MTD_MSIL2A.xml"
 
-    for ifile in ifiles:
-        if 'MOD44' not in ifile:
-            continue
-        dat = get_data(ifile)
+    dat = get_data(ifile)
+
+    for i in dat:
+        plt.figure(dpi=150)
+        plt.title(i.dataid)
+        plt.imshow(i.data)
+        plt.show()
 
     # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
     # dat = get_modisv6(ifile)
