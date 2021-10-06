@@ -1047,7 +1047,7 @@ class SceneViewer(QtWidgets.QDialog):
             dat.nodata = nval
             dat.xdim = xdim
             dat.ydim = ydim
-            dat.extent_from_gtr(gtrnew)
+            # dat.extent_from_gtr(gtrnew)
             dat.wkt = dataset.GetProjection()
             datall[i+1] = dat
 

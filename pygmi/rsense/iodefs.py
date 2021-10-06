@@ -1188,7 +1188,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
 
             if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
                 dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']
-            dataset.close()
+        dataset.close()
 
     if dat == []:
         dat = None
@@ -1661,9 +1661,9 @@ def _testfn():
     ifile = r"C:\Workdata\Remote Sensing\Modis\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
     ifile = r"C:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
     ifile = r"C:\Workdata\Remote Sensing\Sentinel-2\S2B_MSIL2A_20201213T081239_N0214_R078_T34JGP_20201213T105149.SAFE\MTD_MSIL2A.xml"
-    ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
-    ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf"
-    ifile = r"C:\Workdata\Remote Sensing\AG100.v003.-23.030.0001.h5"
+    # ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
+    # ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf"
+    # ifile = r"C:\Workdata\Remote Sensing\AG100.v003.-23.030.0001.h5"
 
     dat = get_data(ifile)
 

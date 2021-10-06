@@ -148,42 +148,6 @@ class Data():
         self.transform = None
         self.crs = None
 
-    def extent_from_gtr(self, gtr, iraster=None):
-        """
-        Import extent, xdim and ydim from a gtr list.
-
-        Parameters
-        ----------
-        gtr : list
-            gtr list.
-
-        Returns
-        -------
-        None.
-
-        """
-        if iraster is None:
-            xoff = 0
-            yoff = 0
-        else:
-            xoff, yoff, _, _ = iraster
-
-        rows, cols = self.data.shape
-
-        if gtr == (0.0, 1.0, 0.0, 0.0, 0.0, 1.0):
-            self.xdim = 1.0
-            self.ydim = 1.0
-        else:
-            self.xdim = gtr[1]
-            self.ydim = -gtr[5]
-
-        left = gtr[0] + xoff*self.xdim
-        top = gtr[3] - yoff*self.ydim
-        right = left + self.xdim*cols
-        bottom = top - self.ydim*rows
-
-        self.extent = (left, right, bottom, top)
-
     def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
                       transform=None, iraster=None):
         """
