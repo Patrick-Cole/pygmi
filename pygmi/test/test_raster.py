@@ -33,6 +33,7 @@ import sys
 import tempfile
 from PyQt5 import QtWidgets
 import numpy as np
+from rasterio.crs import CRS
 import pytest
 
 from pygmi.raster.datatypes import Data
@@ -307,7 +308,8 @@ def smalldata():
     dat = Data()
     dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
                            mask=[[0, 0], [0, 0]])
-    dat.extent = (25, 25, -28, -27)  # left, right, bottom, top
+    dat.set_transform(1, 25, 1, -27)
+    dat.crs = CRS.from_epsg(4326)
 
     return dat
 

@@ -43,10 +43,12 @@ def test_cluster():
     dat1 = Data()
     dat1.data = np.ma.identity(3)
     dat1.data.mask = np.zeros([3, 3])
+    dat1.set_transform(1, 0, 1, 0)
 
     dat2 = Data()
     dat2.data = np.ma.ones([3, 3])
     dat2.data.mask = np.zeros([3, 3])
+    dat2.set_transform(1, 0, 1, 0)
 
     tmp = cluster.Cluster(None)
     tmp.indata = {'Raster': [dat1, dat2, dat1]}

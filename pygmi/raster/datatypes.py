@@ -134,11 +134,11 @@ class Data():
     """
 
     def __init__(self):
-        self.data = np.ma.array([])
-        self.extent = (0, 1, -1, 0)  # left, right, bottom, top
-        self.bounds = (0, -1, 1, 0)  # left, bottom, right, top
-        self.xdim = 1.0
-        self.ydim = 1.0
+        self.data = np.ma.array([[0]])
+        self.extent = None  # left, right, bottom, top
+        self.bounds = None  # left, bottom, right, top
+        self.xdim = None
+        self.ydim = None
         self.dataid = ''
         self.nodata = 1e+20
         self.units = ''
@@ -147,6 +147,8 @@ class Data():
         self.filename = ''
         self.transform = None
         self.crs = None
+
+        self.set_transform(1, 0, 1,0)
 
     def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
                       transform=None, iraster=None):

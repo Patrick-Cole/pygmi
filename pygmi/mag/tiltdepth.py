@@ -276,7 +276,7 @@ class TiltDepth(QtWidgets.QDialog):
         if 'Raster' not in self.indata:
             return False
 
-        self.indata['Raster'] = dataprep.merge(self.indata['Raster'])
+        self.indata['Raster'] = dataprep.lstack(self.indata['Raster'])
 
         data = self.indata['Raster']
         blist = []

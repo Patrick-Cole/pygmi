@@ -1379,8 +1379,8 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
                                                dat[0].extent[3],
                                                dat[0].xdim, dat[0].ydim)
 
-    if crs is None:
-        crs = CRS.from_string(dat[0].wkt)
+    # if crs is None:
+    #     crs = CRS.from_string(dat[0].wkt)
 
     tmp = ofile.rpartition('.')
 

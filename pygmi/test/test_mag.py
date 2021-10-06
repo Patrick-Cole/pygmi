@@ -30,6 +30,7 @@ the tests.
 import sys
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+from rasterio.crs import CRS
 import pytest
 
 from pygmi.raster.datatypes import Data
@@ -77,14 +78,18 @@ def test_IGRF():
     dat = Data()
     dat.data = np.ma.array([[29000., 29000.], [29000., 29000.]],
                            mask=[[0, 0], [0, 0]])
-    dat.extent = (25, 25, -28, -27)  # left, right, bottom, top
-    dat.dataid='mag'
+    # dat.extent = (25, 25, -28, -27)  # left, right, bottom, top
+    dat.set_transform(1, 25, 1, -27)
+    dat.crs = CRS.from_epsg(4326)
+    dat.dataid = 'mag'
 
     datin2 = Data()
     datin2.data = np.ma.array([[0., 0.], [0., 0.]], mask=[[0, 0], [0, 0]])
 
-    datin2.extent = (25, 25, -28, -27)  # left, right, bottom, top
-    datin2.dataid='dtm'
+    # datin2.extent = (25, 25, -28, -27)  # left, right, bottom, top
+    datin2.set_transform(1, 25, 1, -27)
+    datin2.crs = CRS.from_epsg(4326)
+    datin2.dataid = 'dtm'
 
     dat2 = [[940.640983, 864.497698],
             [1164.106631, 1079.494023]]
