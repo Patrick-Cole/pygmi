@@ -148,7 +148,7 @@ class Data():
         self.transform = None
         self.crs = None
 
-        self.set_transform(1, 0, 1,0)
+        self.set_transform(1, 0, 1, 0)
 
     def set_transform(self, xdim=None, xmin=None, ydim=None, ymax=None,
                       transform=None, iraster=None):
