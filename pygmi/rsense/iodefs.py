@@ -882,6 +882,8 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
     elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
           '.006.' in bfile):
         dat = get_modisv6(ifile, piter)
+    elif 'AG1' in bfile and 'h5' in bfile.lower():
+        dat = get_aster_ged(ifile, piter)
     else:
         dat = None
 
@@ -1442,7 +1444,7 @@ def get_aster_hdf(ifile, piter=iter):
     return dat
 
 
-def get_aster_ged(ifile):
+def get_aster_ged(ifile, piter=iter):
     """
     Get ASTER GED data.
 
@@ -1459,26 +1461,37 @@ def get_aster_ged(ifile):
     dat = []
     ifile = ifile[:]
 
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-    subdata = dataset.GetSubDatasets()
+    with rasterio.open(ifile) as dataset:
+        # meta = dataset.tags()
+        subdata = dataset.subdatasets
+        # crs = dataset.crs
 
     i = -1
-    for ifile2, bandid2 in subdata:
-        dataset = gdal.Open(ifile2, gdal.GA_ReadOnly)
-        bandid = bandid2
+    for ifile2 in subdata:
+        dataset = rasterio.open(ifile2)
         units = ''
 
-        if 'ASTER_GDEM' in bandid2:
+        if 'ASTER_GDEM' in ifile2:
             bandid = 'ASTER GDEM'
             units = 'meters'
-        if 'Land_Water_Map' in bandid2:
+        if 'Land_Water_Map' in ifile2:
             bandid = 'Land_water_map'
-        if 'Observations' in bandid2:
+        if 'Observations' in ifile2:
             bandid = 'Observations'
             units = 'number per pixel'
 
-        rtmp2 = dataset.ReadAsArray()
+        rtmp2 = dataset.read()
+        if 'Latitude' in ifile2:
+            lats = rtmp2.squeeze()
+            ymax = rtmp2.max()
+            ydim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[1])
+            continue
+
+        if 'Longitude' in ifile2:
+            lons = rtmp2.squeeze()
+            xmin = rtmp2.min()
+            xdim = abs((rtmp2.max()-rtmp2.min())/rtmp2.shape[2])
+            continue
 
         if rtmp2.shape[-1] == min(rtmp2.shape) and rtmp2.ndim == 3:
             rtmp2 = np.transpose(rtmp2, (2, 0, 1))
@@ -1504,34 +1517,36 @@ def get_aster_ged(ifile):
                 dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
             dat[i].data = dat[i].data * 1.0
-            if 'Emissivity/Mean' in bandid2:
+            if 'Emissivity/Mean' in ifile2:
                 bandid = 'Emissivity_mean_band_'+str(10+i2)
                 dat[i].data = dat[i].data * 0.001
-            if 'Emissivity/SDev' in bandid2:
+            if 'Emissivity/SDev' in ifile2:
                 bandid = 'Emissivity_std_dev_band_'+str(10+i2)
                 dat[i].data = dat[i].data * 0.0001
-            if 'NDVI/Mean' in bandid2:
+            if 'NDVI/Mean' in ifile2:
                 bandid = 'NDVI_mean'
                 dat[i].data = dat[i].data * 0.01
-            if 'NDVI/SDev' in bandid2:
+            if 'NDVI/SDev' in ifile2:
                 bandid = 'NDVI_std_dev'
                 dat[i].data = dat[i].data * 0.01
-            if 'Temperature/Mean' in bandid2:
+            if 'Temperature/Mean' in ifile2:
                 bandid = 'Temperature_mean'
                 units = 'Kelvin'
                 dat[i].data = dat[i].data * 0.01
-            if 'Temperature/SDev' in bandid2:
+            if 'Temperature/SDev' in ifile2:
                 bandid = 'Temperature_std_dev'
                 units = 'Kelvin'
                 dat[i].data = dat[i].data * 0.01
 
             dat[i].dataid = bandid
             dat[i].nodata = nval
-            dat[i].extent_from_gtr(dataset.GetGeoTransform())
+            dat[i].crs = CRS.from_epsg(4326)  # WGS85 geodetic
             dat[i].units = units
-            dat[i].wkt = dataset.GetProjectionRef()
 
-        dataset = None
+        dataset.close()
+
+    for i in dat:
+        i.set_transform(xdim, xmin, ydim, ymax)
 
     return dat
 
@@ -1648,6 +1663,7 @@ def _testfn():
     ifile = r"C:\Workdata\Remote Sensing\Sentinel-2\S2B_MSIL2A_20201213T081239_N0214_R078_T34JGP_20201213T105149.SAFE\MTD_MSIL2A.xml"
     ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
     ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf"
+    ifile = r"C:\Workdata\Remote Sensing\AG100.v003.-23.030.0001.h5"
 
     dat = get_data(ifile)
 

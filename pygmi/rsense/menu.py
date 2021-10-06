@@ -87,6 +87,10 @@ class MenuWidget():
         self.menu3.addAction(self.action_import_modis)
         self.action_import_modis.triggered.connect(self.import_modis)
 
+        self.action_import_ged = QtWidgets.QAction('Import ASTER Global Emissivity Database')
+        self.menu3.addAction(self.action_import_ged)
+        self.action_import_ged.triggered.connect(self.import_ged)
+
         self.menu3.addSeparator()
 
         self.action_batch_list = QtWidgets.QAction('Create Batch List')
@@ -190,21 +194,16 @@ class MenuWidget():
         self.parent.item_insert('Io', 'Import ASTER', iodefs.ImportData,
                                 params='ASTER (AST*.hdf AST*.zip);;')
 
-    def import_hdf(self):
+    def import_ged(self):
         """Import HDF data."""
-        self.parent.item_insert('Io', 'Import HDF', iodefs.ImportData,
-                                params='hdf (*.hdf *.h5);;')
+        self.parent.item_insert('Io', 'Import ASTER Global Emissivity Data',
+                                iodefs.ImportData,
+                                params='h5 (*.h5);;')
 
     def import_landsat(self):
         """Import Landsat data."""
         self.parent.item_insert('Io', 'Import Landsat', iodefs.ImportData,
                                 params='Landsat (L*.tar L*.tar.gz L*_MTL.txt);;')
-
-    def import_ged(self):
-        """Import GED data."""
-        self.parent.item_insert('Io', 'Import ASTER Global Emissivity Data',
-                                iodefs.ImportData,
-                                params='ASTER GED (*.bin);;')
 
     def batch_list(self):
         """Import batch list."""
