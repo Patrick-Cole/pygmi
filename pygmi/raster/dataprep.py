@@ -29,19 +29,17 @@ import math
 import os
 import glob
 import copy
+import json
 from collections import Counter
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import ogr
 import pandas as pd
-from PIL import Image, ImageDraw
-import scipy.ndimage as ndimage
 from scipy.signal import tukey
-from scipy.spatial.distance import pdist
 import rasterio
 import rasterio.merge
 from rasterio.crs import CRS
 from rasterio.warp import calculate_default_transform, reproject
+from rasterio.mask import mask as riomask
 import geopandas as gpd
 from shapely.geometry import LineString
 
@@ -99,7 +97,8 @@ class DataCut():
 
         """
         if 'Raster' in self.indata:
-            data = copy.deepcopy(self.indata['Raster'])
+            data = self.indata['Raster']
+            # data = copy.deepcopy(self.indata['Raster'])
         else:
             self.showprocesslog('No raster data')
             return False
@@ -1035,24 +1034,17 @@ class GetProf():
 
         os.chdir(os.path.dirname(self.ifile))
 
-        gdf = gpd.read_file(self.ifile)
+        try:
+            gdf = gpd.read_file(self.ifile)
+        except:
+            self.showprocesslog('There was a problem importing the shapefile. '
+                                'Please make sure you have at all the '
+                                'individual files which make up the '
+                                'shapefile.')
+            return None
+
         gdf = gdf[gdf.geometry != None]
 
-        # dat = {gdf.geom_type.iloc[0]: gdf}
-
-        # self.outdata['Vector'] = dat
-
-        # shapef = ogr.Open(self.ifile)
-        # if shapef is None:
-        #     err = ('There was a problem importing the shapefile. Please make '
-        #            'sure you have at all the individual files which make up '
-        #            'the shapefile.')
-        #     QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-        #                                   QtWidgets.QMessageBox.Ok)
-        #     return False
-
-        # lyr = shapef.GetLayer()
-        # line = lyr.GetNextFeature()
         if gdf.geom_type.iloc[0] != 'LineString':
             self.showprocesslog('You need lines in that shape file')
             return False
@@ -1066,39 +1058,13 @@ class GetProf():
             line2 = redistribute_vertices(line, dxy)
             x, y = line2.coords.xy
             xy = np.transpose([x, y])
-            r = np.cumsum(np.sqrt(np.diff(x, prepend=0)**2 +
-                                  np.diff(y, prepend=0)**2))
             ogdf = None
+
             for idata in self.piter(data):
                 mdata = idata.to_mem()
                 z = []
                 for pnt in xy:
                     z.append(idata.data[mdata.index(pnt[0], pnt[1])])
-
-                # tmp = line.GetGeometryRef()
-                # points = tmp.GetPoints()
-
-                # x_0, y_0 = points[0]
-                # x_1, y_1 = points[1]
-
-                # bly = idata.extent[-2]
-                # tlx = idata.extent[0]
-                # x_0 = (x_0-tlx)/idata.xdim
-                # x_1 = (x_1-tlx)/idata.xdim
-                # y_0 = (y_0-bly)/idata.ydim
-                # y_1 = (y_1-bly)/idata.ydim
-                # rcell = int(np.sqrt((x_1-x_0)**2+(y_1-y_0)**2))
-
-                # xxx = np.linspace(x_0, x_1, rcell, False)
-                # yyy = np.linspace(y_0, y_1, rcell, False)
-
-                # tmpprof = ndimage.map_coordinates(idata.data[::-1], [yyy, xxx],
-                #                                   order=1, cval=np.nan)
-                # xxx = xxx[np.logical_not(np.isnan(tmpprof))]
-                # yyy = yyy[np.logical_not(np.isnan(tmpprof))]
-                # tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
-                # xxx = xxx*idata.xdim+tlx
-                # yyy = yyy*idata.ydim+bly
 
                 if ogdf is None:
                     ogdf = pd.DataFrame(xy[:, 0], columns=['X'])
@@ -1108,7 +1074,6 @@ class GetProf():
 
                 ogdf[idata.dataid] = z
 
-        # shapef = None
             icnt += 1
             ogdf['line'] = str(icnt)
             if ogdf2 is None:
@@ -1913,7 +1878,33 @@ class Continuation(QtWidgets.QDialog):
 
         self.outdata['Raster'] = [dat]
 
+
 def redistribute_vertices(geom, distance):
+    """
+    Redistribute vertices in a geometry.
+
+    From https://stackoverflow.com/questions/34906124/interpolating-every-x-distance-along-multiline-in-shapely,
+    and by Mike-T.
+
+    Parameters
+    ----------
+    geom : shapely geometry
+        Geometry from geopandas.
+    distance : float
+        samping distance.
+
+    Raises
+    ------
+    ValueError
+        Error when there is an unknown geometry.
+
+    Returns
+    -------
+    shapely geometry
+        New geometry.
+
+    """
+
     if geom.geom_type == 'LineString':
         num_vert = int(round(geom.length / distance))
         if num_vert == 0:
@@ -2416,80 +2407,42 @@ def cut_raster(data, ifile, pprint=print):
     data : Data
         PyGMI Dataset
     """
-    shapef = ogr.Open(ifile)
-    if shapef is None:
+    data = copy.deepcopy(data)
+
+    try:
+        gdf = gpd.read_file(ifile)
+    except:
         pprint('There was a problem importing the shapefile. Please make '
                'sure you have at all the individual files which make up '
                'the shapefile.')
         return None
-    lyr = shapef.GetLayer()
-    poly = lyr.GetNextFeature()
-    geom = poly.GetGeometryRef()
 
-    if 'POLYGON' not in geom.GetGeometryName() or poly is None:
+    gdf = gdf[gdf.geometry != None]
+
+    if gdf.geom_type.iloc[0] != 'Polygon':
+        pprint('You need a polygon in that shape file')
         return None
 
     for idata in data:
         # Convert the layer extent to image pixel coordinates
-        dext = idata.extent
-        lext = lyr.GetExtent()
+        poly = gdf['geometry'].iloc[0]
+        dext = idata.bounds
+        lext = poly.bounds
 
-        if ((dext[0] > lext[1]) or (dext[1] < lext[0]) or
-                (dext[2] > lext[3]) or (dext[3] < lext[2])):
+        if ((dext[0] > lext[2]) or (dext[2] < lext[0]) or
+                (dext[1] > lext[3]) or (dext[3] < lext[1])):
 
             pprint('The shapefile is not in the same area as the raster '
                    'dataset. Please check its coordinates and make sure its '
                    'projection is the same as the raster dataset')
             return None
 
-        minX, maxX, minY, maxY = lyr.GetExtent()
-        itlx = idata.extent[0]
-        itly = idata.extent[-1]
+        coords = [json.loads(gdf.to_json())['features'][0]['geometry']]
+        dat, trans = riomask(idata.to_mem(), coords, crop=True)
 
-        ulX = max(0, int((minX - itlx) / idata.xdim))
-        ulY = max(0, int((itly - maxY) / idata.ydim))
-        lrX = int((maxX - itlx) / idata.xdim)
-        lrY = int((itly - minY) / idata.ydim)
+        idata.data = np.ma.masked_equal(dat.squeeze(), idata.nodata)
 
-        # Map points to pixels for drawing the
-        # boundary on a mas image
-        points = []
-        pixels = []
-
-        ifin = 0
-        imax = 0
-        if geom.GetGeometryName() == 'MULTIPOLYGON':
-            for i in range(geom.GetGeometryCount()):
-                geom.GetGeometryRef(i)
-                itmp = geom.GetGeometryRef(i)
-                itmp = itmp.GetGeometryRef(0).GetPointCount()
-                if itmp > imax:
-                    imax = itmp
-                    ifin = i
-            geom = geom.GetGeometryRef(ifin)
-
-        pts = geom.GetGeometryRef(0)
-        for p in range(pts.GetPointCount()):
-            points.append((pts.GetX(p), pts.GetY(p)))
-        for p in points:
-            tmpx = int((p[0] - idata.extent[0]) / idata.xdim)
-            tmpy = int((idata.extent[-1] - p[1]) / idata.ydim)
-            pixels.append((tmpx, tmpy))
-        irows, icols = idata.data.shape
-        rasterPoly = Image.new('L', (icols, irows), 1)
-        rasterize = ImageDraw.Draw(rasterPoly)
-        rasterize.polygon(pixels, 0)
-        mask = np.array(rasterPoly)
-
-        idata.data.mask = mask
-        idata.data = idata.data[ulY:lrY, ulX:lrX]
-        ixmin = ulX*idata.xdim + idata.extent[0]  # minX
-        iymax = idata.extent[-1] - ulY*idata.ydim  # maxY
-
-        idata.set_transform(idata.xdim, ixmin, idata.ydim, iymax)
-
-    shapef = None
-    data = trim_raster(data)
+        idata.set_transform(transform=trans)
 
     return data
 

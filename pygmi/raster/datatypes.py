@@ -223,4 +223,5 @@ class Data():
                                    transform=self.transform,
                                    crs=self.crs,
                                    nodata=self.nodata)
+        raster.write(self.data, 1)
         return raster
