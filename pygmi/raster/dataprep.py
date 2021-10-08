@@ -37,10 +37,13 @@ import pandas as pd
 from PIL import Image, ImageDraw
 import scipy.ndimage as ndimage
 from scipy.signal import tukey
+from scipy.spatial.distance import pdist
 import rasterio
 import rasterio.merge
 from rasterio.crs import CRS
 from rasterio.warp import calculate_default_transform, reproject
+import geopandas as gpd
+from shapely.geometry import LineString
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
@@ -69,14 +72,16 @@ class DataCut():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        self.pbar = parent.pbar
+        # self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
         if parent is None:
             self.showprocesslog = print
+            self.pbar = None
         else:
             self.showprocesslog = parent.showprocesslog
+            self.pbar = parent.pbar
 
     def settings(self, nodialog=False):
         """
@@ -99,7 +104,6 @@ class DataCut():
             self.showprocesslog('No raster data')
             return False
 
-        nodialog = False
         if not nodialog:
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open Shape File', '.', 'Shape file (*.shp)')
@@ -112,7 +116,7 @@ class DataCut():
         if data is None:
             return False
 
-        self.pbar.to_max()
+        # self.pbar.to_max()
         self.outdata['Raster'] = data
 
         return True
@@ -1023,7 +1027,6 @@ class GetProf():
 
         ext = 'Shape file (*.shp)'
 
-        nodialog = False
         if not nodialog:
             self.ifile, _ = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open Shape File', '.', ext)
@@ -1032,62 +1035,88 @@ class GetProf():
 
         os.chdir(os.path.dirname(self.ifile))
 
-        shapef = ogr.Open(self.ifile)
-        if shapef is None:
-            err = ('There was a problem importing the shapefile. Please make '
-                   'sure you have at all the individual files which make up '
-                   'the shapefile.')
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
-                                          QtWidgets.QMessageBox.Ok)
-            return False
+        gdf = gpd.read_file(self.ifile)
+        gdf = gdf[gdf.geometry != None]
 
-        lyr = shapef.GetLayer()
-        line = lyr.GetNextFeature()
-        if lyr.GetGeomType() is not ogr.wkbLineString:
+        # dat = {gdf.geom_type.iloc[0]: gdf}
+
+        # self.outdata['Vector'] = dat
+
+        # shapef = ogr.Open(self.ifile)
+        # if shapef is None:
+        #     err = ('There was a problem importing the shapefile. Please make '
+        #            'sure you have at all the individual files which make up '
+        #            'the shapefile.')
+        #     QtWidgets.QMessageBox.warning(self.parent, 'Error', err,
+        #                                   QtWidgets.QMessageBox.Ok)
+        #     return False
+
+        # lyr = shapef.GetLayer()
+        # line = lyr.GetNextFeature()
+        if gdf.geom_type.iloc[0] != 'LineString':
             self.showprocesslog('You need lines in that shape file')
             return False
 
         data = lstack(data, self.piter, pprint=self.showprocesslog)
-        gdf = None
+        dxy = min(data[0].xdim, data[0].ydim)
+        ogdf2 = None
 
-        for idata in self.piter(data):
-            tmp = line.GetGeometryRef()
-            points = tmp.GetPoints()
+        icnt = 0
+        for line in gdf.geometry:
+            line2 = redistribute_vertices(line, dxy)
+            x, y = line2.coords.xy
+            xy = np.transpose([x, y])
+            r = np.cumsum(np.sqrt(np.diff(x, prepend=0)**2 +
+                                  np.diff(y, prepend=0)**2))
+            ogdf = None
+            for idata in self.piter(data):
+                mdata = idata.to_mem()
+                z = []
+                for pnt in xy:
+                    z.append(idata.data[mdata.index(pnt[0], pnt[1])])
 
-            x_0, y_0 = points[0]
-            x_1, y_1 = points[1]
+                # tmp = line.GetGeometryRef()
+                # points = tmp.GetPoints()
 
-            bly = idata.extent[-2]
-            tlx = idata.extent[0]
-            x_0 = (x_0-tlx)/idata.xdim
-            x_1 = (x_1-tlx)/idata.xdim
-            y_0 = (y_0-bly)/idata.ydim
-            y_1 = (y_1-bly)/idata.ydim
-            rcell = int(np.sqrt((x_1-x_0)**2+(y_1-y_0)**2))
+                # x_0, y_0 = points[0]
+                # x_1, y_1 = points[1]
 
-            xxx = np.linspace(x_0, x_1, rcell, False)
-            yyy = np.linspace(y_0, y_1, rcell, False)
+                # bly = idata.extent[-2]
+                # tlx = idata.extent[0]
+                # x_0 = (x_0-tlx)/idata.xdim
+                # x_1 = (x_1-tlx)/idata.xdim
+                # y_0 = (y_0-bly)/idata.ydim
+                # y_1 = (y_1-bly)/idata.ydim
+                # rcell = int(np.sqrt((x_1-x_0)**2+(y_1-y_0)**2))
 
-            tmpprof = ndimage.map_coordinates(idata.data[::-1], [yyy, xxx],
-                                              order=1, cval=np.nan)
-            xxx = xxx[np.logical_not(np.isnan(tmpprof))]
-            yyy = yyy[np.logical_not(np.isnan(tmpprof))]
-            tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
-            xxx = xxx*idata.xdim+tlx
-            yyy = yyy*idata.ydim+bly
+                # xxx = np.linspace(x_0, x_1, rcell, False)
+                # yyy = np.linspace(y_0, y_1, rcell, False)
 
-            if gdf is None:
-                gdf = pd.DataFrame(xxx, columns=['X'])
-                gdf['Y'] = yyy
-                gdf['pygmiX'] = gdf['X']
-                gdf['pygmiY'] = gdf['Y']
+                # tmpprof = ndimage.map_coordinates(idata.data[::-1], [yyy, xxx],
+                #                                   order=1, cval=np.nan)
+                # xxx = xxx[np.logical_not(np.isnan(tmpprof))]
+                # yyy = yyy[np.logical_not(np.isnan(tmpprof))]
+                # tmpprof = tmpprof[np.logical_not(np.isnan(tmpprof))]
+                # xxx = xxx*idata.xdim+tlx
+                # yyy = yyy*idata.ydim+bly
 
-            gdf[idata.dataid] = tmpprof
+                if ogdf is None:
+                    ogdf = pd.DataFrame(xy[:, 0], columns=['X'])
+                    ogdf['Y'] = xy[:, 1]
+                    ogdf['pygmiX'] = ogdf['X']
+                    ogdf['pygmiY'] = ogdf['Y']
 
-        shapef = None
-        gdf['line'] = 'None'
+                ogdf[idata.dataid] = z
 
-        self.outdata['Line'] = {'profile': gdf}
+        # shapef = None
+            icnt += 1
+            ogdf['line'] = str(icnt)
+            if ogdf2 is None:
+                ogdf2 = ogdf
+            else:
+                ogdf2 = ogdf2.append(ogdf, ignore_index=True)
+
+        self.outdata['Line'] = {'profile': ogdf2}
 
         return True
 
@@ -1883,6 +1912,21 @@ class Continuation(QtWidgets.QDialog):
             dat = fftcont(data, h)
 
         self.outdata['Raster'] = [dat]
+
+def redistribute_vertices(geom, distance):
+    if geom.geom_type == 'LineString':
+        num_vert = int(round(geom.length / distance))
+        if num_vert == 0:
+            num_vert = 1
+        return LineString(
+            [geom.interpolate(float(n) / num_vert, normalized=True)
+             for n in range(num_vert + 1)])
+    elif geom.geom_type == 'MultiLineString':
+        parts = [redistribute_vertices(part, distance)
+                 for part in geom]
+        return type(geom)([p for p in parts if not p.is_empty])
+    else:
+        raise ValueError('unhandled geometry %s', (geom.geom_type,))
 
 
 def data_reproject(data, ocrs, otransform, orows, ocolumns):
@@ -3089,9 +3133,70 @@ def _testreproj():
     plt.show()
 
 
+def _testcut():
+    """Test Reprojection."""
+    import sys
+    from pygmi.rsense.iodefs import get_data
+    import matplotlib.pyplot as plt
 
-    breakpoint()
+    ifile = r"E:\Workdata\bugs\AST_05_00309232013204629_20211004081945_4263.hdf"
+    sfile = r"E:\Workdata\bugs\AU5_block_larger_utm36N.shp"
 
+    piter = ProgressBarText().iter
+
+    dat = get_data(ifile, piter=piter)
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    DM = DataCut()
+    DM.indata['Raster'] = dat
+    DM.ifile = sfile
+    DM.settings(nodialog=True)
+
+    plt.figure(dpi=150)
+    plt.imshow(DM.indata['Raster'][0].data,
+               extent=DM.indata['Raster'][0].extent)
+    plt.colorbar()
+    plt.show()
+
+    plt.figure(dpi=150)
+    plt.imshow(DM.outdata['Raster'][0].data,
+               extent=DM.outdata['Raster'][0].extent)
+    plt.colorbar()
+    plt.show()
+
+
+def _testprof():
+    """Test Reprojection."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
+    import matplotlib.pyplot as plt
+
+    ifile = r"E:\Workdata\bugs\Au5_SRTM30_utm36s.tif"
+    sfile = r"E:\Workdata\bugs\Profiles_utm36s.shp"
+
+    piter = ProgressBarText().iter
+
+    dat = get_raster(ifile, piter=piter)
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    DM = GetProf()
+    DM.indata['Raster'] = dat
+    DM.ifile = sfile
+    DM.settings(nodialog=True)
+
+    plt.figure(dpi=150)
+    plt.imshow(DM.indata['Raster'][0].data,
+               extent=DM.indata['Raster'][0].extent)
+    plt.colorbar()
+    plt.show()
+
+    plt.figure(dpi=150)
+    plt.imshow(DM.outdata['Raster'][0].data,
+               extent=DM.outdata['Raster'][0].extent)
+    plt.colorbar()
+    plt.show()
 
 if __name__ == "__main__":
-    _testreproj()
+    _testprof()

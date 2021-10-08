@@ -1138,7 +1138,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
             return None
         subdata = dataset.subdatasets
 
-    subdata = [i for i in subdata if 'True color' not in i[1]]
+    subdata = [i for i in subdata if 'TCI' not in i]  # TCI is true color
 
     nval = 0
     dat = []
@@ -1183,6 +1183,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
 
             if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
                 dat[-1].units = bmeta['SOLAR_IRRADIANCE_UNIT']
+
         dataset.close()
 
     if dat == []:
@@ -1340,8 +1341,13 @@ def get_aster_hdf(ifile, piter=iter):
         subdata = dataset.subdatasets
         crs = dataset.crs
 
-    if crs is None and 'UTMZONECODE1' in meta:
-        crs = CRS.from_epsg('326'+meta['UTMZONECODE1'])
+    zone = None
+    if crs is None:
+        for i in meta:
+            if 'UTMZONECODE' in i:
+                zone = meta[i]
+        if zone is not None:
+            crs = CRS.from_epsg('326'+zone)
 
     if ptype == 'L1T':
         ucc = {'ImageData1': float(meta['INCL1']),
@@ -1396,7 +1402,10 @@ def get_aster_hdf(ifile, piter=iter):
             continue
 
         dataset1 = rasterio.open(bfile)
-        dataset = rasterio.vrt.WarpedVRT(dataset1)
+        if dataset1.transform[1] == 0.0 and dataset1.transform[3] == 0.:
+            dataset = dataset1
+        else:
+            dataset = rasterio.vrt.WarpedVRT(dataset1)
 
         dat.append(Data())
         dat[-1].data = dataset.read(1)
@@ -1407,7 +1416,7 @@ def get_aster_hdf(ifile, piter=iter):
         if dat[-1].data.mask.size == 1:
             dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
 
-        dat[-1].dataid = bfile[bfile.index('Band'):]
+        dat[-1].dataid = bfile.split(':')[-1]
         dat[-1].nodata = nval
         dat[-1].set_transform(transform=dataset.transform)
         dat[-1].crs = crs
@@ -1418,14 +1427,15 @@ def get_aster_hdf(ifile, piter=iter):
         dat[-1].filename = ifile
         dat[-1].units = units
 
-        bmeta = dat[-1].metadata
-        fext = dat[-1].dataid[4:].split()[0]
-        bmeta['WavelengthMin'] = satbands[fext][0]
-        bmeta['WavelengthMax'] = satbands[fext][1]
+        if 'band' in dat[-1].dataid.lower():
+            bmeta = dat[-1].metadata
+            fext = dat[-1].dataid[4:].split()[0]
+            bmeta['WavelengthMin'] = satbands[fext][0]
+            bmeta['WavelengthMax'] = satbands[fext][1]
 
-        if ptype == 'L1T' and 'ImageData' in ifile:
-            dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
-            calctoa = True
+            if ptype == 'L1T' and 'ImageData' in ifile:
+                dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
+                calctoa = True
         dataset.close()
         dataset1.close()
 
@@ -1656,6 +1666,15 @@ def _testfn():
     # ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
     # ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf"
     # ifile = r"C:\Workdata\Remote Sensing\AG100.v003.-23.030.0001.h5"
+    # ifile = r"E:\Workdata\bugs\AST_05_00309232013204629_20211004081945_4263.hdf"
+
+    # ifile = r"E:\Workdata\Remote Sensing\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
+    # ifile = r"E:\Workdata\bugs\AST_08_00306272001204805_20211007060336_20853.hdf"
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+    gtr = dataset.GetGeoTransform()
+
+    # breakpoint()
 
     dat = get_data(ifile)
 
