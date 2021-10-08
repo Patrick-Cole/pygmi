@@ -2490,6 +2490,7 @@ def cut_raster(data, ifile, pprint=print):
 
     shapef = None
     data = trim_raster(data)
+
     return data
 
 
@@ -2691,6 +2692,7 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
                              destination=odata,
                              src_transform=trans0,
                              src_crs=data.crs,
+                             src_nodata=data.nodata,
                              dst_transform=trans,
                              dst_crs=data.crs)
 
@@ -2780,6 +2782,7 @@ def trim_raster(olddata):
         data.data.mask = (data.data.data == data.nodata)
         xmin = data.extent[0] + colstart*data.xdim
         ymax = data.extent[-1] - rowstart*data.ydim
+
         data.set_transform(data.xdim, xmin, data.ydim, ymax)
 
     return olddata
@@ -3137,14 +3140,15 @@ def _testcut():
     """Test Reprojection."""
     import sys
     from pygmi.rsense.iodefs import get_data
+    from pygmi.raster.iodefs import export_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"E:\Workdata\bugs\AST_05_00309232013204629_20211004081945_4263.hdf"
-    sfile = r"E:\Workdata\bugs\AU5_block_larger_utm36N.shp"
+    ifile = r"E:\Workdata\bugs\S2B_MSIL2A_20210913T074609_N0301_R135_T36KTV_20210913T102843.zip"
+    sfile = r"E:\Workdata\bugs\AU5_block_larger_utm36S.shp"
 
     piter = ProgressBarText().iter
 
-    dat = get_data(ifile, piter=piter)
+    dat = get_data(ifile, piter=piter, extscene='Sentinel-2')
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -3164,6 +3168,10 @@ def _testcut():
                extent=DM.outdata['Raster'][0].extent)
     plt.colorbar()
     plt.show()
+
+    # out = lstack(DM.outdata['Raster'])
+
+    breakpoint()
 
 
 def _testprof():
@@ -3199,4 +3207,4 @@ def _testprof():
     plt.show()
 
 if __name__ == "__main__":
-    _testprof()
+    _testcut()
