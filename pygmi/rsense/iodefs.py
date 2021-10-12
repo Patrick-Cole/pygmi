@@ -32,7 +32,6 @@ import zipfile
 import datetime
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
-from osgeo import gdal
 import pandas as pd
 import geopandas as gpd
 from geopandas import GeoDataFrame
@@ -143,7 +142,7 @@ ESUN = [1848, 1549, 1114, 225.4, 86.63, 81.85, 74.85, 66.49, 59.85]
 
 class ImportData():
     """
-    Import Data - Interfaces with GDAL routines.
+    Import Data - Interfaces with rasterio routines.
 
     Attributes
     ----------
@@ -582,30 +581,27 @@ class ImportSentinel5P(QtWidgets.QDialog):
             Dictionary containing metadata.
 
         """
-        dataset = gdal.Open(self.ifile, gdal.GA_ReadOnly)
-        if dataset is None:
-            self.showprocesslog('Problem! Unable to import')
-            self.showprocesslog(os.path.basename(self.ifile))
-            return None
 
-        subdata = dataset.GetSubDatasets()
+        with rasterio.open(self.ifile) as dataset:
+            subdata = dataset.subdatasets
+
         meta = {}
         for i in subdata:
-            tmp = i[1].split()
-            if 'SUPPORT_DATA' in i[0]:
+            tmp = i.split(':')
+            if 'SUPPORT_DATA' in i:
                 continue
-            if 'METADATA' in i[0]:
+            if 'METADATA' in i:
                 continue
-            if 'time_utc' in i[0]:
+            if 'time_utc' in i:
                 continue
-            if 'delta_time' in i[0]:
+            if 'delta_time' in i:
                 continue
-            if 'qa_value' in i[0]:
+            if 'qa_value' in i:
                 continue
-            if 'precision' in i[0]:
+            if 'precision' in i:
                 continue
 
-            tmp = tmp[1].replace('//PRODUCT/', '')
+            tmp = tmp[-1].replace('//PRODUCT/', '')
             tmp = tmp.replace('/PRODUCT/', '')
             tmp = tmp.replace('/', '')
 
@@ -630,15 +626,11 @@ class ImportSentinel5P(QtWidgets.QDialog):
             geopandas dataframe.
 
         """
-        dataset = gdal.Open(meta['latitude'][0], gdal.GA_ReadOnly)
-        rtmp = dataset.GetRasterBand(1)
-        lats = rtmp.ReadAsArray()
-        dataset = None
+        with rasterio.open(meta['latitude']) as dataset:
+            lats = dataset.read(1)
 
-        dataset = gdal.Open(meta['longitude'][0], gdal.GA_ReadOnly)
-        rtmp = dataset.GetRasterBand(1)
-        lons = rtmp.ReadAsArray()
-        dataset = None
+        with rasterio.open(meta['longitude']) as dataset:
+            lons = dataset.read(1)
 
         del meta['latitude']
         del meta['longitude']
@@ -661,12 +653,11 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
         idfile = self.subdata.currentText()
 
-        dfile = meta[idfile][0]
-        dataset = gdal.Open(dfile, gdal.GA_ReadOnly)
-        rtmp = dataset.GetRasterBand(1)
-        dat = rtmp.ReadAsArray()
+        dfile = meta[idfile]
 
-        dataset = None
+        with rasterio.open(dfile) as dataset:
+            dat = dataset.read(1)
+
         dat1 = dat.flatten()
 
         if mask.shape != dat1.shape:
@@ -687,12 +678,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
 
         gdf = GeoDataFrame(df.drop(['lon', 'lat'], axis=1),
                            geometry=[Point(xy) for xy in zip(df.lon, df.lat)])
-
-        # tmp = os.path.join(idir, os.path.basename(ifile).split('T')[0])
-        # tmp = tmp + '_' + idfile + '.shp'
-        # tmp = tmp.replace('//PRODUCT/', '')
-        # tmp = tmp.replace('/PRODUCT/', '')
-        # tmp = tmp.replace('/', '')
 
         gdf = gdf.set_crs("EPSG:4326")
 
@@ -839,7 +824,7 @@ def calculate_toa(dat, showprocesslog=print):
 
 def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
     """
-    Load a raster dataset off the disk using the GDAL libraries.
+    Load a raster dataset off the disk using the rasterio libraries.
 
     It returns the data in a PyGMI data object.
 
@@ -1656,6 +1641,25 @@ def get_aster_ged_bin(ifile):
     return dat
 
 
+def _test5P():
+    """test routine"""
+    import sys
+    import matplotlib.pyplot as plt
+
+    ifile = r"E:\Workdata\PyGMI Test Data\Sentinel-5P\S5P_OFFL_L2__AER_AI_20200522T115244_20200522T133414_13508_01_010302_20200524T014436.nc"
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    tmp = ImportSentinel5P()
+    tmp.ifile = ifile
+    tmp.settings(True)
+
+    tmp.outdata['Vector']['Point'].plot(column='data')
+    plt.show()
+
+
+    breakpoint()
+
+
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
@@ -1671,11 +1675,6 @@ def _testfn():
     # ifile = r"E:\Workdata\Remote Sensing\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
     # ifile = r"E:\Workdata\bugs\AST_08_00306272001204805_20211007060336_20853.hdf"
 
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-    gtr = dataset.GetGeoTransform()
-
-    # breakpoint()
-
     dat = get_data(ifile)
 
     for i in dat:
@@ -1690,4 +1689,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _test5P()

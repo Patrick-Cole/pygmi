@@ -558,12 +558,10 @@ def gmerge(master, slave, xrange=None, yrange=None):
         # gtr0 = data.get_gtr()
         # src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
         # dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
-#
+
         # gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt, gdal.GRA_Bilinear)
 
         # dat.append(gdal_to_dat(dest, data.dataid))
-
-
 
         # dat[-1].data = np.ma.masked_outside(dat[-1].data, 0.1,
         #                                     data.data.max() + 1000)

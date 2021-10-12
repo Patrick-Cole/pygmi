@@ -38,11 +38,9 @@ Blakely, R.J., 1996. Potential Theory in Gravity and Magnetic Applications,
 
 import copy
 import tempfile
-# from math import sqrt
 from PyQt5 import QtWidgets, QtCore
 
 import numpy as np
-# from scipy.linalg import norm
 from numba import jit, prange
 from matplotlib import cm
 import matplotlib as mpl

@@ -1002,8 +1002,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider.setValue(1)
 
         # self.lineclip.setInputMask('00.0')
-        self.lineclipu.setPlaceholderText('Upper Percent Clip (0 Default)')
-        self.lineclipl.setPlaceholderText('Lower Percent Clip (0 Default)')
+        self.lineclipu.setPlaceholderText('% of high values to exclude')
+        self.lineclipl.setPlaceholderText('% of low values to exclude')
         self.btn_saveimg.setAutoDefault(False)
         helpdocs.setAutoDefault(False)
         btn_apply.setAutoDefault(False)
@@ -1019,7 +1019,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.cbox_htype.addItems(['Linear with Percent Clip',
                                   'Histogram Equalization'])
 
-        self.setWindowTitle('Raster Data Interpretation')
+        self.setWindowTitle('Raster Data Display')
 
         v1.addWidget(self.cbox_dtype)
         v1.addWidget(self.labelk)
@@ -1085,61 +1085,99 @@ class PlotInterp(QtWidgets.QDialog):
         None.
 
         """
-        self.change_lclip_lower()
-        self.change_lclip_upper()
-        self.change_dtype()
-
-    def change_lclip_upper(self):
-        """
-        Change the linear clip percentage.
-
-        Returns
-        -------
-        None.
-
-        """
         txt = self.lineclipu.text()
-
         try:
-            clip = float(txt)
+            uclip = float(txt)
         except ValueError:
             if txt == '':
-                clip = 0.0
+                uclip = 0.0
             else:
-                clip = self.mmc.clippercu
-            self.lineclipu.setText(str(clip))
+                uclip = self.mmc.clippercu
+            self.lineclipu.setText(str(uclip))
 
-        if clip < 0.0 or clip >= 100.0:
+        if uclip < 0.0 or uclip >= 100.0:
+            uclip = self.mmc.clippercu
+            self.lineclipu.setText(str(uclip))
+
+        txt = self.lineclipl.text()
+        try:
+            lclip = float(txt)
+        except ValueError:
+            if txt == '':
+                lclip = 0.0
+            else:
+                lclip = self.mmc.clippercl
+            self.lineclipl.setText(str(lclip))
+
+        if lclip < 0.0 or lclip >= 100.0:
+            lclip = self.mmc.clippercl
+            self.lineclipl.setText(str(lclip))
+
+        if (lclip+uclip) >= 100.:
             clip = self.mmc.clippercu
             self.lineclipu.setText(str(clip))
-        self.mmc.clippercu = clip
-
-        # self.change_dtype()
-
-    def change_lclip_lower(self):
-        """
-        Change the linear clip percentage.
-
-        Returns
-        -------
-        None.
-
-        """
-        txt = self.lineclipl.text()
-
-        try:
-            clip = float(txt)
-        except ValueError:
-            if txt == '':
-                clip = 0.0
-            else:
-                clip = self.mmc.clippercl
-            self.lineclipl.setText(str(clip))
-
-        if clip < 0.0 or clip >= 100.0:
             clip = self.mmc.clippercl
             self.lineclipl.setText(str(clip))
-        self.mmc.clippercl = clip
+            return
+
+        self.mmc.clippercu = uclip
+        self.mmc.clippercl = lclip
+
+        # self.change_lclip_lower()
+        # self.change_lclip_upper()
+        self.change_dtype()
+
+    # def change_lclip_upper(self):
+    #     """
+    #     Change the linear clip percentage.
+
+    #     Returns
+    #     -------
+    #     None.
+
+    #     """
+    #     txt = self.lineclipu.text()
+
+    #     try:
+    #         clip = float(txt)
+    #     except ValueError:
+    #         if txt == '':
+    #             clip = 0.0
+    #         else:
+    #             clip = self.mmc.clippercu
+    #         self.lineclipu.setText(str(clip))
+
+    #     if clip < 0.0 or clip >= 100.0:
+    #         clip = self.mmc.clippercu
+    #         self.lineclipu.setText(str(clip))
+    #     self.mmc.clippercu = clip
+
+    #     # self.change_dtype()
+
+    # def change_lclip_lower(self):
+    #     """
+    #     Change the linear clip percentage.
+
+    #     Returns
+    #     -------
+    #     None.
+
+    #     """
+    #     txt = self.lineclipl.text()
+
+    #     try:
+    #         clip = float(txt)
+    #     except ValueError:
+    #         if txt == '':
+    #             clip = 0.0
+    #         else:
+    #             clip = self.mmc.clippercl
+    #         self.lineclipl.setText(str(clip))
+
+    #     if clip < 0.0 or clip >= 100.0:
+    #         clip = self.mmc.clippercl
+    #         self.lineclipl.setText(str(clip))
+    #     self.mmc.clippercl = clip
 
         # self.change_dtype()
 

@@ -2921,7 +2921,7 @@ def gridmatch2(cgrv, rgrv):
 
     rows2, cols2 = data2.data.shape
 
-    dat = data_reproject(data, data2.crs, data2.otransform, rows2, cols2)
+    dat = data_reproject(data, data2.crs, data2.transform, rows2, cols2)
 
     return dat.data
 

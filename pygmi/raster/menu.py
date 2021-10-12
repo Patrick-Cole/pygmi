@@ -127,7 +127,7 @@ class MenuWidget():
         self.menu.addSeparator()
 
         self.action_raster_data_interp = QtWidgets.QAction('Raster Data '
-                                                           'Interpretation')
+                                                           'Display')
         self.menu.addAction(self.action_raster_data_interp)
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
 
@@ -213,7 +213,7 @@ class MenuWidget():
 
     def raster_interp(self):
         """Show raster data."""
-        self.parent.item_insert('Step', 'Raster Data Interpretation',
+        self.parent.item_insert('Step', 'Raster Data Display',
                                 ginterp.PlotInterp)
 
     def cont(self):

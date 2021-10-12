@@ -881,7 +881,8 @@ class AGC(QtWidgets.QDialog):
         for i, datai in enumerate(data):
             self.showprocesslog(datai.dataid+':')
 
-            agcdata = agc(datai.data, self.wsize, atype, piter=self.piter)
+            agcdata = agc(datai.data, self.wsize, atype, nodata=datai.nodata,
+                          piter=self.piter)
             data2.append(copy.deepcopy(datai))
             data2[-1].data = agcdata
             data2[-1].dataid += ' AGC'
@@ -929,7 +930,7 @@ class AGC(QtWidgets.QDialog):
         return projdata
 
 
-def agc(data, wsize, atype='mean', piter=iter):
+def agc(data, wsize, atype='mean', nodata=0, piter=iter):
     """
     AGC for map data, based on code by Gordon Cooper.
 
@@ -948,6 +949,7 @@ def agc(data, wsize, atype='mean', piter=iter):
         Output AGC data
     """
     data = data.copy()-data.min()
+    data = np.abs(data)
     nr, nc = data.shape
 
     weight = np.ones((nr, nc))
@@ -957,13 +959,18 @@ def agc(data, wsize, atype='mean', piter=iter):
         for j in range(w2, nc-w2):
             w = data[i-w2:i+w2+1, j-w2:j+w2+1]
             if atype == 'mean':
-                weight[i, j] = np.mean(np.abs(w))
+                weight[i, j] = np.mean(w)
             elif atype == 'median':
-                weight[i, j] = np.median(np.abs(w))
+                weight[i, j] = np.median(w)
             elif atype == 'rms':
                 weight[i, j] = np.sqrt(np.mean(w**2))
 
+    mask = np.ones((nr, nc), dtype=int)
+    mask[w2:-w2, w2:-w2] = 0
+
     agcdata = data/weight
+    agcdata[mask] = nodata
+    agcdata = np.ma.array(agcdata, mask=mask)
 
     return agcdata
 
@@ -973,13 +980,14 @@ def _test():
     import sys
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
+    from pygmi.misc import getinfo
 
     ifile = r"E:\Workdata\testmag.tif"
+    ifile = r"E:\Workdata\people\mikedentith\perth_surf_win.grd"
 
     piter = ProgressBarText().iter
 
     dat = get_raster(ifile, piter=piter)
-
 
     # datai = dat[0]
     # dh = 10
@@ -1005,11 +1013,14 @@ def _test():
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     V2D = Visibility2d()
+    V2D = AGC()
     V2D.indata['Raster'] = dat
+
+    getinfo()
     V2D.settings()
+    getinfo()
 
     odat = V2D.outdata['Raster']
-
 
     plt.figure(dpi=150)
     plt.imshow(dat[0].data, extent=dat[0].extent)

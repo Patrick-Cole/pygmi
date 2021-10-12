@@ -33,6 +33,7 @@ import numpy as np
 from osgeo import osr, ogr
 import matplotlib.pyplot as plt
 import pandas as pd
+from rasterio.crs import CRS
 
 from pygmi.pfmod.datatypes import LithModel
 import pygmi.pfmod.grvmag3d as grvmag3d
@@ -417,6 +418,14 @@ class ImportMod3D():
 
         # This gets rid of a legacy variable name
         for i in lmod.griddata:
+            if not hasattr(lmod.griddata[i], 'nodata'):
+                lmod.griddata[i].nodata = lmod.griddata[i].nullvalue
+            if not hasattr(lmod.griddata[i], 'crs'):
+                wkt = lmod.griddata[i].wkt
+                if wkt == '' or wkt is None:
+                    lmod.griddata[i].crs = None
+                else:
+                    lmod.griddata[i].crs = CRS.from_wkt(wkt)
             if not hasattr(lmod.griddata[i], 'dataid'):
                 lmod.griddata[i].dataid = ''
             if hasattr(lmod.griddata[i], 'bandid'):
@@ -438,17 +447,20 @@ class ImportMod3D():
                 lmod.griddata[i].set_transform(xdim, xmin, ydim, ymax)
                 del lmod.griddata[i].tlx
                 del lmod.griddata[i].tly
+            elif not hasattr(lmod.griddata[i], 'transform'):
+                ydim = lmod.griddata[i].ydim
+                xdim = lmod.griddata[i].xdim
+                xmin, _, _, ymax = lmod.griddata[i].extent
+                lmod.griddata[i].set_transform(xdim, xmin, ydim, ymax)
 
         crsfin = None
         for i in lmod.griddata:
-            wkt = lmod.griddata[i].crs.wkt
-            if wkt != '' and wkt is not None:
+            if lmod.griddata[i].crs is not None:
                 crsfin = lmod.griddata[i].crs
 
         if crsfin is not None:
             for i in lmod.griddata:
-                wkt = lmod.griddata[i].crs.wkt
-                if wkt == '' or wkt is None:
+                if lmod.griddata[i].crs is None:
                     lmod.griddata[i].crs = crsfin
 
 # Section to load lithologies.
