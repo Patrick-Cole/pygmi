@@ -259,9 +259,15 @@ class LithModel():
             PyGMI raster dataset.
 
         """
+        crs = None
+        for i in self.griddata:
+            if self.griddata[i].crs is not None:
+                crs = self.griddata[i].crs
+
         grid = Data()
         grid.data = data
         grid.set_transform(self.dxy, self.xrange[0], self.dxy, self.yrange[1])
+        grid.crs = crs
 
         return grid
 
