@@ -598,6 +598,9 @@ class ProcFeatures(QtWidgets.QDialog):
 
         # self.combo_sensor = QtWidgets.QComboBox()
         self.cb_ratios = QtWidgets.QComboBox()
+        self.rfiltcheck = QtWidgets.QCheckBox('If the final product is a '
+                                              'ratio, filter out values less '
+                                              'than 1.')
         self.filtercheck = QtWidgets.QCheckBox('Filter Albedo and Vegetation')
         self.tablewidget = QtWidgets.QTableWidget()
 
@@ -627,6 +630,7 @@ class ProcFeatures(QtWidgets.QDialog):
                                                     'Threshold'])
         self.tablewidget.resizeColumnsToContents()
         self.filtercheck.setChecked(True)
+        self.rfiltcheck.setChecked(True)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -639,6 +643,7 @@ class ProcFeatures(QtWidgets.QDialog):
         gridlayout_main.addWidget(lbl_details, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.tablewidget, 2, 1, 1, 1)
         gridlayout_main.addWidget(self.filtercheck, 3, 0, 1, 2)
+        gridlayout_main.addWidget(self.rfiltcheck, 4, 0, 1, 2)
 
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
@@ -828,6 +833,7 @@ class ProcFeatures(QtWidgets.QDialog):
         datfin = []
 
         mineral = self.cb_ratios.currentText()
+        rfilt = self.rfiltcheck.isChecked()
 
         # feature = self.feature
         # ratio = self.ratio
@@ -853,7 +859,7 @@ class ProcFeatures(QtWidgets.QDialog):
 
                 dat = get_raster(ifile)
                 datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
-                                      product, piter=self.piter)
+                                      product, rfilt, piter=self.piter)
 
                 ofile = (os.path.basename(ifile).split('.')[0] + '_' +
                          mineral.replace(' ', '_') + '.tif')
@@ -868,7 +874,7 @@ class ProcFeatures(QtWidgets.QDialog):
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
             datfin = calcfeatures(dat, mineral, self.feature, self.ratio,
-                                  product, piter=self.piter)
+                                  product, rfilt, piter=self.piter)
 
         if datfin[0].data.mask.min() == True:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
@@ -881,7 +887,8 @@ class ProcFeatures(QtWidgets.QDialog):
         return True
 
 
-def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
+def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
+                 piter=iter):
     """
     Calculate feature dataset.
 
@@ -898,6 +905,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
     product : dictionary
         Final hyperspectral products. Each dictionary value, is a list of
         features or ratios with thresholds to be combined.
+    rfilt : bool
+        Flag to decide whether to filter final ratio products less than 1.0
     piter : iter, optional
         Progress bar iterable. The default is iter.
 
@@ -964,7 +973,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
         i2a = tmp[-1]
 
         fdat = np.moveaxis(fdat, 0, -1)
-        # breakpoint()
+
         for i in piter(range(rows)):
             ptmp[i], dtmp[i] = fproc(fdat[i].data, ptmp[i], dtmp[i], i1a, i2a,
                                      xdat)
@@ -998,6 +1007,8 @@ def calcfeatures(dat, mineral, feature, ratio, product, piter=iter):
         label = f'{mineral} depth'
     else:
         label = f'{mineral} ratio'
+        if rfilt is True:
+            datout[datout < 1] = 0
 
     datout = np.ma.masked_equal(datout, 0)
     datfin.append(numpy_to_pygmi(datout, dat[0], label))
@@ -1337,7 +1348,7 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     # ifile = r"C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
-    ifile = r"E:\Workdata\bugs\chi\030_0815-1050_ref_rect_30a_15MNF.hdr"
+    ifile = r"E:\Workdata\Hyperspectral\080_0824-0920_ref_rect_clip.hdr"
 
     xoff = 0
     yoff = 2000
@@ -1358,7 +1369,7 @@ def _testfn():
     # tmp.cb_ratios.setCurrentText('ferric iron')
     tmp.settings()
 
-    dat = tmp.outdata['Raster'][1]
+    dat = tmp.outdata['Raster'][0]
 
     plt.figure(dpi=150)
     plt.imshow(dat.data)
