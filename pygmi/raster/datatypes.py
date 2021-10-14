@@ -192,7 +192,9 @@ class Data():
         else:
             xoff, yoff, _, _ = iraster
 
-        rows, cols = self.data.shape
+        # get rows and cols this way because RGB images have three dims
+        rows = self.data.shape[0]
+        cols = self.data.shape[1]
 
         left = xmin + xoff*xdim
         top = ymax - yoff*ydim
