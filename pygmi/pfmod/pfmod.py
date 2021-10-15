@@ -289,7 +289,7 @@ def _testfn():
     from pygmi.pfmod.iodefs import ImportMod3D
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'C:\Work\Workdata\people\Mpumi\model2.npz'
+    ifile = r"E:\Workdata\modelling\KW2_reversed_hiNRM_physprop.npz"
 
     IO = ImportMod3D()
 

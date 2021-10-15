@@ -526,7 +526,6 @@ def gmerge(master, slave, xrange=None, yrange=None):
 
     xdim = master.xdim
     ydim = master.ydim
-    orig_wkt = master.wkt
 
     xmin = xrange[0]
     xmax = xrange[-1]
@@ -535,41 +534,12 @@ def gmerge(master, slave, xrange=None, yrange=None):
 
     cols = int((xmax - xmin)//xdim)+1
     rows = int((ymax - ymin)//ydim)+1
-    # gtr = (xmin, xdim, 0.0, ymax, 0.0, -ydim)
     otransform = rasterio.Affine(xdim, 0, xmin, 0, -1*ydim, ymax)
 
     dat = []
 
     for data in [master, slave]:
-        # doffset = 0.
-        # data.data = data.data.astype(float)
-        # if data.data.min() <= 0.:
-        #     doffset = data.data.min()-1.
-        #     data.data = data.data - doffset
-        # data.data.set_fill_value(0.)
-        # tmp = data.data.filled()
-        # data.data = np.ma.masked_equal(tmp, 0.)
-        # data.nodata = 0
-
         dat.append(data_reproject(data, data.crs, otransform, rows, cols))
-
-        # drows, dcols = data.data.shape
-
-        # gtr0 = data.get_gtr()
-        # src = data_to_gdal_mem(data, gtr0, orig_wkt, dcols, drows)
-        # dest = data_to_gdal_mem(data, gtr, orig_wkt, cols, rows, True)
-
-        # gdal.ReprojectImage(src, dest, orig_wkt, orig_wkt, gdal.GRA_Bilinear)
-
-        # dat.append(gdal_to_dat(dest, data.dataid))
-
-        # dat[-1].data = np.ma.masked_outside(dat[-1].data, 0.1,
-        #                                     data.data.max() + 1000)
-        # dat[-1].data = dat[-1].data + doffset
-        # dat[-1].data.set_fill_value(1e+20)
-        # tmp = dat[-1].data.filled()
-        # dat[-1].data = np.ma.masked_equal(tmp, 1e+20)
-        # dat[-1].nodata = 1e+20
 
     imask = np.logical_and(dat[0].data.mask, np.logical_not(dat[1].data.mask))
     if imask.size > 1:

@@ -416,8 +416,17 @@ class ImportMod3D():
             for i in lmod.profpics:
                 lmod.profpics[i].data = np.ma.array(lmod.profpics[i].data)
 
-        # This gets rid of a legacy variable name
+        # This gets rid of a legacy variable names and updates to new ones
         for i in lmod.griddata:
+            if not hasattr(lmod.griddata[i], 'units'):
+                lmod.griddata[i].units = ''
+            if not hasattr(lmod.griddata[i], 'isrgb'):
+                lmod.griddata[i].isrgb = False
+            if not hasattr(lmod.griddata[i], 'metadata'):
+                lmod.griddata[i].metadata = {'Cluster': {}, 'Raster': {}}
+            if not hasattr(lmod.griddata[i], 'filename'):
+                lmod.griddata[i].filename = ''
+
             if not hasattr(lmod.griddata[i], 'nodata'):
                 lmod.griddata[i].nodata = lmod.griddata[i].nullvalue
             if not hasattr(lmod.griddata[i], 'crs'):
@@ -1266,3 +1275,50 @@ class MessageCombo(QtWidgets.QDialog):
 
         """
         return self.master.currentText()
+
+
+def _testfn():
+    """Test."""
+    import matplotlib.pyplot as plt
+    from pygmi.misc import getinfo
+    from pygmi.raster.dataprep import lstack
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
+
+    print('Starting')
+    pbar = ProgressBarText()
+
+    ifile = r"E:\Workdata\modelling\small_upper.npz"
+    ofile = r"C:\Workdata\hope.tif"
+
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    DM = ImportMod3D()
+    DM.ifile = ifile
+    DM.settings(nodialog=True)
+
+    odata = DM.outdata['Raster']
+
+    for dat in odata:
+        plt.figure(dpi=150)
+        plt.title(dat.dataid)
+        plt.imshow(dat.data, extent=dat.extent)
+        plt.colorbar()
+        plt.show()
+
+    odata2 = lstack(odata)
+
+    for dat in odata:
+        plt.figure(dpi=150)
+        plt.title(dat.dataid)
+        plt.imshow(dat.data, extent=dat.extent)
+        plt.colorbar()
+        plt.show()
+
+
+    breakpoint()
+
+
+if __name__ == "__main__":
+    _testfn()

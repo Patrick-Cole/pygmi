@@ -1374,6 +1374,12 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
     trans = dat[0].transform
     crs = dat[0].crs
 
+    try:
+        nodata = dtype.type(nodata)
+    except OverflowError:
+        print('Invalid nodata for dtype, resetting to 0')
+        nodata = 0
+
     if trans is None:
         trans = rasterio.transform.from_origin(dat[0].extent[0],
                                                dat[0].extent[3],
