@@ -93,7 +93,7 @@ class SatRatios(QtWidgets.QDialog):
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
                                     'Sentinel-2'])
-        self.setratios()
+        # self.setratios()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -133,6 +133,22 @@ class SatRatios(QtWidgets.QDialog):
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
             self.showprocesslog('No Satellite Data')
             return False
+
+        if 'RasterFileList' in self.indata:
+            bfile = os.path.basename(self.indata['RasterFileList'][0])
+        else:
+            bfile = os.path.basename(self.indata['Raster'][0].filename)
+
+        if 'AST_' in bfile and 'hdf' in bfile.lower():
+            self.combo_sensor.setCurrentText('ASTER')
+        elif bfile[:4] in ['LC08']:
+            self.combo_sensor.setCurrentText('Landsat 8 (OLI)')
+        elif bfile[:4] in ['LE07']:
+            self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
+        elif bfile[:4] in ['LT04', 'LT05', 'LM05']:
+            self.combo_sensor.setCurrentText('Landsat 4 and 5 (TM)')
+        else:
+            self.combo_sensor.setCurrentText('Sentinel-2')
 
         if not nodialog:
             tmp = self.exec_()
@@ -245,7 +261,7 @@ class SatRatios(QtWidgets.QDialog):
                 continue
 
             dat = lstack(dat, self.piter, pprint=self.showprocesslog,
-                        commonmask=True)
+                         commonmask=True)
 
             datd = {}
             newmask = None
@@ -279,7 +295,7 @@ class SatRatios(QtWidgets.QDialog):
             for i in self.piter(rlist):
                 self.showprocesslog('Calculating '+i)
                 formula = i.split(' ')[0]
-                formula = re.sub(r'(\d+)', r'Band\1', formula)
+                formula = re.sub(r'B(\d+)', r'Band\1', formula)
                 blist = formula
                 for j in ['/', '*', '+', '-', '(', ')']:
                     blist = blist.replace(j, ' ')
@@ -288,6 +304,8 @@ class SatRatios(QtWidgets.QDialog):
 
                 abort = []
                 for j in blist:
+                    if 'B' not in j:
+                        continue
                     if j not in datd:
                         abort.append(j)
                 if abort:
@@ -316,6 +334,9 @@ class SatRatios(QtWidgets.QDialog):
         """
         Set the available ratios.
 
+        The ratio definitions are for the ASTER satellite. Band 0 refers to
+        an imaginary blue band.
+
         Returns
         -------
         None.
@@ -325,58 +346,59 @@ class SatRatios(QtWidgets.QDialog):
 
         sdict = {}
 
-        sdict['ASTER'] = {'1': '1', '2': '2', '3': '3', '4': '4', '5': '5',
-                          '6': '6', '7': '7', '8': '8', '9': '9', '10': '10',
-                          '11': '11', '12': '12', '13': '13', '14': '14'}
-        sdict['Landsat 8 (OLI)'] = {'0': '2', '1': '3', '2': '4', '3': '5',
-                                    '4': '6', '5': '7'}
-        sdict['Landsat 7 (ETM+)'] = {'0': '1', '1': '2', '2': '3', '3': '4',
-                                     '4': '5', '5': '7'}
+        sdict['ASTER'] = {'B1': 'B1', 'B2': 'B2', 'B3': 'B3', 'B4': 'B4',
+                          'B5': 'B5', 'B6': 'B6', 'B7': 'B7', 'B8': 'B8',
+                          'B9': 'B9', 'B10': 'B10', 'B11': 'B11', 'B12': 'B12',
+                          'B13': 'B13', 'B14': 'B14'}
+        sdict['Landsat 8 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
+                                    'B3': 'B5', 'B4': 'B6', 'B5': 'B7'}
+        sdict['Landsat 7 (ETM+)'] = {'B0': 'B1', 'B1': 'B2', 'B2': 'B3',
+                                     'B3': 'B4', 'B4': 'B5', 'B5': 'B7'}
         sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
-        sdict['Sentinel-2'] = {'0': '2', '1': '3', '2': '4', '3': '8',
-                               '4': '11', '5': '12'}
-
+        sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
+                               'B4': 'B11', 'B5': 'B12'}
         rlist = []
 
         # carbonates/mafic minerals bands
-        rlist += [r'(7+9)/8 carbonate chlorite epidote',
-                  r'(6+9)/(7+8) epidote chlorite amphibole',
-                  r'(6+9)/8 amphibole MgOH',
-                  r'6/8 amphibole',
-                  r'(6+8)/7 dolomite',
-                  r'13/14 carbonate']
+        rlist += [r'(B7+B9)/B8 carbonate chlorite epidote',
+                  r'(B6+B9)/(B7+B8) epidote chlorite amphibole',
+                  r'(B6+B9)/B8 amphibole MgOH',
+                  r'B6/B8 amphibole',
+                  r'(B6+B8)/B7 dolomite',
+                  r'B13/B14 carbonate']
 
         # iron bands (All, but possibly only swir and vnir)
-        rlist += [r'2/1 Ferric Iron Fe3+',
-                  r'2/0 Iron Oxide',
-                  r'5/3+1/2 Ferrous Iron Fe2+',
-                  r'4/5 Laterite or Alteration',
-                  r'4/2 Gossan',
-                  r'5/4 Ferrous Silicates (biotite, chloride, amphibole)',
-                  r'4/3 Ferric Oxides (can be ambiguous)']  # lsat ferrous?
+        rlist += [r'B2/B1 Ferric Iron Fe3+',
+                  r'B2/B0 Iron Oxide',
+                  r'B5/B3+B1/B2 Ferrous Iron Fe2+',
+                  r'B4/B5 Laterite or Alteration',
+                  r'B4/B2 Gossan',
+                  r'B5/B4 Ferrous Silicates (biotite, chloride, amphibole)',
+                  r'B4/B3 Ferric Oxides (can be ambiguous)']  # lsat ferrous?
 
         # silicates bands
-        rlist += [r'(5+7)/6 sericite muscovite illite smectite',
-                  r'(4+6)/5 alunite kaolinite pyrophyllite',
-                  r'5/6 phengitic or host rock',
-                  r'7/6 muscovite',
-                  r'7/5 kaolinite',
-                  r'(5*7)/(6*6) clay']
+        rlist += [r'(B5+B7)/B6 sericite muscovite illite smectite',
+                  r'(B4+B6)/B5 alunite kaolinite pyrophyllite',
+                  r'B5/B6 phengitic or host rock',
+                  r'B7/B6 muscovite',
+                  r'B7/B5 kaolinite',
+                  r'(B5*B7)/(B6*B6) clay']
 
         # silica
-        rlist += [r'14/12 quartz',
-                  r'12/13 basic degree index (gnt cpx epi chl) or SiO2',
-                  r'13/12 SiO2 same as 14/12',
-                  r'(11*11)/(10*12) siliceous rocks',
-                  r'11/10 silica',
-                  r'11/12 silica',
-                  r'13/10 silica']
+        rlist += [r'B14/B12 quartz',
+                  r'B12/B13 basic degree index (gnt cpx epi chl) or SiO2',
+                  r'B13/B12 SiO2 same as B14/B12',
+                  r'(B11*B11)/(B10*B12) siliceous rocks',
+                  r'B11/B10 silica',
+                  r'B11/B12 silica',
+                  r'B13/B10 silica']
 
         # Other
-        rlist += [r'3/2 Vegetation',
-                  r'(3-2)/(3+2) NDVI',
-                  r'(3-4)/(3+4) NDWI/NDMI water in leaves',
-                  r'(1-3)/(1+3) NDWI water bodies ']
+        rlist += [r'B3/B2 Vegetation',
+                  r'(B3-B2)/(B3+B2) NDVI',
+                  r'(B3-B4)/(B3+B4) NDWI/NDMI water in leaves',
+                  r'(B1-B3)/(B1+B3) NDWI water bodies ',
+                  r'2.5*((B3-B2)/(B3+6.0*B2-7.5*B0+1)) EVI']
 
         bandmap = sdict[sensor]
         svalues = set(bandmap.keys())
@@ -384,11 +406,11 @@ class SatRatios(QtWidgets.QDialog):
         for i in rlist:
             formula = i.split(' ')[0]
             lbl = i[i.index(' '):]
-            bands = set(re.findall(r'\d+', formula))
+            bands = set(re.findall(r'B\d+', formula))
             if bands.issubset(svalues):
-                tmp = re.sub(r'(\d+)', r'B\1', formula)
+                tmp = re.sub(r'B(\d+)', r'tmpB\1', formula)
                 for j in svalues:
-                    tmp = tmp.replace('B'+j, bandmap[j])
+                    tmp = tmp.replace('tmp'+j, bandmap[j])
                 rlist2.append(tmp+lbl)
 
         self.lw_ratios.clear()
@@ -528,9 +550,14 @@ def get_sentinel_list(flist):
 
 def _testfn():
     """Test routine."""
+    from pygmi.misc import ProgressBarText
+
+    piter = ProgressBarText().iter
     # ifile = r'C:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
     ifile = r"E:\Workdata\Remote Sensing\Landsat\LM05_L1TP_171078_19840629_20180410_01_T2.tar.gz"
-    dat = iodefs.get_data(ifile)
+    ifile = r"E:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    extscene = 'Sentinel-2'
+    dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
