@@ -1040,6 +1040,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
         return None
 
     files = glob.glob(ifile[:-7]+'*[0-9].tif')
+    files += glob.glob(ifile[:-7]+'*ST_QA.tif')
 
     showprocesslog('Importing Landsat data...')
 
@@ -1048,12 +1049,15 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     for ifile2 in piter(files):
         if 'B6_VCID' in ifile2:
             fext = ifile2[-12:-4]
+        elif 'ST_QA' in ifile2:
+            fext = 'LST'
+            nval = -9999
         elif ifile2[-6].isdigit():
             fext = ifile2[-6:-4]
         else:
             fext = ifile2[-5]
 
-        showprocesslog('Importing Band', fext)
+        showprocesslog('Importing Band '+fext)
 
         dataset = rasterio.open(ifile2)
 
@@ -1078,7 +1082,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
         dat[-1].filename = ifile
 
         bmeta = dat[-1].metadata
-        if satbands is not None:
+        if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
 
@@ -1674,6 +1678,8 @@ def _testfn():
 
     # ifile = r"E:\Workdata\Remote Sensing\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
     # ifile = r"E:\Workdata\bugs\AST_08_00306272001204805_20211007060336_20853.hdf"
+    ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
+
 
     dat = get_data(ifile)
 
@@ -1681,6 +1687,7 @@ def _testfn():
         plt.figure(dpi=150)
         plt.title(i.dataid)
         plt.imshow(i.data, extent=i.extent)
+        plt.colorbar()
         plt.show()
 
     # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
@@ -1689,4 +1696,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _test5P()
+    _testfn()

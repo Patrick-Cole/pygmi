@@ -219,6 +219,10 @@ class SatRatios(QtWidgets.QDialog):
         None.
 
         """
+        evi = None
+        tci = None
+        vci = None
+
         datfin = []
         sensor = self.combo_sensor.currentText()
 
@@ -312,7 +316,22 @@ class SatRatios(QtWidgets.QDialog):
                     self.showprocesslog('Error:'+', '.join(abort)+'missing.')
                     continue
 
-                ratio = ne.evaluate(formula, datd)
+                if formula == 'TCI':
+                    ratio = get_TCI(datd['BandLST'])
+                elif formula == 'VCI':
+                    if evi is None:
+                        self.showprocesslog('Error:'+', need EVI calculated')
+                        continue
+                    ratio = get_VCI(evi)
+                elif formula == 'VHI':
+                    if tci is None or vci is None:
+                        self.showprocesslog('Error:'+', need TCI and VCI '
+                                            'calculated')
+                        continue
+
+                    ratio = get_VHI(tci, vci)
+                else:
+                    ratio = ne.evaluate(formula, datd)
                 ratio = ratio.astype(np.float32)
                 ratio[newmask] = dat[0].nodata
                 ratio = np.ma.array(ratio, mask=newmask,
@@ -322,6 +341,12 @@ class SatRatios(QtWidgets.QDialog):
                 rband.data = ratio
                 rband.dataid = i.replace(r'/', 'div')
                 datfin.append(rband)
+                if 'EVI' in i:
+                    evi = ratio
+                if 'TCI' in i:
+                    tci = ratio
+                if 'VCI' in i:
+                    vci = ratio
             ofile = ofile.split('.')[0] + '_ratio.tif'
             if datfin:
                 self.showprocesslog('Exporting to '+ofile)
@@ -413,6 +438,9 @@ class SatRatios(QtWidgets.QDialog):
                     tmp = tmp.replace('tmp'+j, bandmap[j])
                 rlist2.append(tmp+lbl)
 
+        if 'Landsat' in sensor:
+            rlist2 += ['TCI', 'VCI', 'VHI']
+
         self.lw_ratios.clear()
         self.lw_ratios.addItems(rlist2)
 
@@ -436,6 +464,67 @@ class SatRatios(QtWidgets.QDialog):
                 item.setText('\u2713' + item.text()[1:])
             else:
                 item.setText(' ' + item.text()[1:])
+
+
+def get_TCI(lst):
+    """
+    Calculate TCI
+
+    Parameters
+    ----------
+    lst : numpy array
+        array of land surface temperatures.
+
+    Returns
+    -------
+    ratio : numpy array
+        output TCI.
+
+    """
+    ratio = (lst-lst.min())/lst.ptp()
+
+    return ratio
+
+
+def get_VCI(evi):
+    """
+    Calculate VCI
+
+    Parameters
+    ----------
+    evi : numpy array
+        array of land surface temperatures.
+
+    Returns
+    -------
+    ratio : numpy array
+        output TCI.
+
+    """
+    ratio = (evi-evi.min())/evi.ptp()
+
+    return ratio
+
+
+def get_VHI(tci, vci, alpha=0.5):
+    """
+    Calculate VHI
+
+    Parameters
+    ----------
+    lst : numpy array
+        array of land surface temperatures.
+
+    Returns
+    -------
+    ratio : numpy array
+        output TCI.
+
+    """
+
+    ratio = vci*alpha+tci*(1-alpha)
+    return ratio
+
 
 
 def get_aster_list(flist):
@@ -557,6 +646,10 @@ def _testfn():
     ifile = r"E:\Workdata\Remote Sensing\Landsat\LM05_L1TP_171078_19840629_20180410_01_T2.tar.gz"
     ifile = r"E:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     extscene = 'Sentinel-2'
+
+    ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
+    extscene = None
+
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
