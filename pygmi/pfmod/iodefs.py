@@ -383,6 +383,13 @@ class ImportMod3D():
         lmod.dxy = indict[pre+'dxy']
         lmod.d_z = indict[pre+'d_z']
         lmod.lith_index = indict[pre+'lith_index']
+
+        if pre+'lith_index_grv_old' in indict:
+            lmod.lith_index_grv_old = indict[pre+'lith_index_grv_old']
+
+        if pre+'lith_index_mag_old' in indict:
+            lmod.lith_index_mag_old = indict[pre+'lith_index_mag_old']
+
         lmod.xrange = np.array(indict[pre+'xrange']).tolist()
         lmod.yrange = np.array(indict[pre+'yrange']).tolist()
         lmod.zrange = np.array(indict[pre+'zrange']).tolist()
@@ -403,7 +410,7 @@ class ImportMod3D():
                 lmod.custprofy[i] += lmod.custprofy[i]
 
         lmod.mlut = indict[pre+'mlut'].item()
-        lmod.init_calc_grids()
+        # lmod.init_calc_grids()
 
         lmod.griddata = indict[pre+'griddata'].item()
 
@@ -616,6 +623,9 @@ class ExportMod3D():
         outdict[pre+'profpics'] = self.lmod.profpics
         outdict[pre+'custprofx'] = self.lmod.custprofx
         outdict[pre+'custprofy'] = self.lmod.custprofy
+
+        outdict[pre+'lith_index_grv_old'] = self.lmod.lith_index_grv_old
+        outdict[pre+'lith_index_mag_old'] = self.lmod.lith_index_mag_old
 
 # Section to save lithologies.
         outdict[pre+'lithkeys'] = list(self.lmod.lith_list.keys())

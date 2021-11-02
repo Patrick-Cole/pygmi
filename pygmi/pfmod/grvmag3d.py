@@ -115,8 +115,8 @@ class GravMag():
         self.actioncalculate2.triggered.connect(self.calc_field_mag)
         self.actioncalculate3.triggered.connect(self.calc_field_grav_changes)
         self.actioncalculate4.triggered.connect(self.calc_field_mag_changes)
-        self.actioncalculate3.setEnabled(False)
-        self.actioncalculate4.setEnabled(False)
+        # self.actioncalculate3.setEnabled(False)
+        # self.actioncalculate4.setEnabled(False)
 
     def calc_field_mag(self):
         """

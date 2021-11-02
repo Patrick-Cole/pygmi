@@ -84,6 +84,9 @@ class MextDisplay(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+        buttonbox.button(buttonbox.Cancel).setText('No changes')
+        buttonbox.button(buttonbox.Ok).setText('Apply changes '
+                                               '(reset calculations)')
 
 # Current Models Groupbox
         h_model = QtWidgets.QHBoxLayout()
