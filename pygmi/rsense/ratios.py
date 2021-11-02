@@ -244,6 +244,14 @@ class SatRatios(QtWidgets.QDialog):
         for i in self.lw_ratios.selectedItems():
             rlist.append(i.text()[2:])
 
+        if 'VCI' in rlist:
+            rlist.pop(rlist.index('VCI'))
+            rlist.append('VCI')
+
+        if 'VHI' in rlist:
+            rlist.pop(rlist.index('VHI'))
+            rlist.append('VHI')
+
         for ifile in flist:
             if isinstance(ifile, str):
                 dat = iodefs.get_data(ifile,
@@ -313,7 +321,7 @@ class SatRatios(QtWidgets.QDialog):
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    self.showprocesslog('Error:'+', '.join(abort)+'missing.')
+                    self.showprocesslog('Error:'+' '.join(abort)+'missing.')
                     continue
 
                 if formula == 'TCI':
@@ -524,7 +532,6 @@ def get_VHI(tci, vci, alpha=0.5):
 
     ratio = vci*alpha+tci*(1-alpha)
     return ratio
-
 
 
 def get_aster_list(flist):

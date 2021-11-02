@@ -987,6 +987,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     """
     platform = os.path.basename(ifilet)[2: 4]
     satbands = None
+    lstband = None
 
     if platform == '04' or platform == '05':
         satbands = {'1': [450, 520],
@@ -1040,7 +1041,15 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
         return None
 
     files = glob.glob(ifile[:-7]+'*[0-9].tif')
-    files += glob.glob(ifile[:-7]+'*ST_QA.tif')
+    if glob.glob(ifile[:-7]+'*ST_QA.tif'):
+        if 'LC08' in ifile:
+            lstband = '10'
+        else:
+            lstband = '6'
+        # ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']
+
+        # haslst = True
+        # breakpoint()
 
     showprocesslog('Importing Landsat data...')
 
@@ -1049,16 +1058,15 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     for ifile2 in piter(files):
         if 'B6_VCID' in ifile2:
             fext = ifile2[-12:-4]
-        elif 'ST_QA' in ifile2:
-            fext = 'LST'
-            nval = -9999
         elif ifile2[-6].isdigit():
             fext = ifile2[-6:-4]
         else:
             fext = ifile2[-5]
 
-        showprocesslog('Importing Band '+fext)
+        if fext == lstband:
+            fext = 'LST'
 
+        showprocesslog('Importing Band '+fext)
         dataset = rasterio.open(ifile2)
 
         if dataset is None:
@@ -1074,6 +1082,11 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
         if dat[-1].data.mask.size == 1:
             dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
                                  dat[-1].data.mask)
+
+        if fext == 'LST':
+            showprocesslog('Converting band '+lstband+' to Kelvin. '
+                           'Band renamed as LST')
+            dat[-1].data = dat[-1].data*0.00341802 + 149.0
 
         dat[-1].dataid = 'Band' + fext
         dat[-1].nodata = nval
