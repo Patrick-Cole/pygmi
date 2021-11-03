@@ -952,7 +952,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         modindcheck = lmod.lith_index_grv_old.copy()
 
     if modind.shape != modindcheck.shape:
-        modindcheck = np.ones_like(modind) - 1
+        modindcheck = np.zeros_like(modind) - 1
 
     tmp = (modind == modindcheck)
     modind[tmp] = -1
