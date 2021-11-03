@@ -951,15 +951,22 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     else:
         modindcheck = lmod.lith_index_grv_old.copy()
 
+    if modind.shape != modindcheck.shape:
+        modindcheck = np.ones_like(modind) - 1
+
     tmp = (modind == modindcheck)
-# If modind and modindcheck have different shapes, then tmp == False. The next
-# line checks for that.
-    if not isinstance(tmp, bool):
-        modind[tmp] = -1
-        modindcheck[tmp] = -1
+    modind[tmp] = -1
+    modindcheck[tmp] = -1
+
+    # If modind and modindcheck have different shapes, then tmp == False.
+    # The next line checks for that.
+    # if not isinstance(tmp, bool):
+    #     modind[tmp] = -1
+    #     modindcheck[tmp] = -1
 
     modindmax = modind.max()
     modindcheckmax = modindcheck.max()
+
 #    if np.unique(modind).size == 1:
 #        showtext('No changes to model!')
 #        return None
