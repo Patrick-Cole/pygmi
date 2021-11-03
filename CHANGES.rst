@@ -2,6 +2,39 @@
 Changelog
 =========
 
+v3.2.4.2, 03 November 2021
+--------------------------
+*Bugfix to model saving for changes
+*PyGMI now allows a user to continue from where they left off in 3D calculations
+*Fixed some bugs with new ratio calculations
+*Added VCI, EVI, TCI, VHI to ratios
+*Added EVI calculation for ratios
+*Fixed a bug with 3D model profile resizing.
+*Added code for nodata being wrong type
+*Added code when importing old models, to make grids more compatible
+*Bugfix for RGB images
+*Added option to filter out values less than 1 if final product is a ratio.
+*Fixed bugs caused by rasterio to 3D modelling
+*Fixed a bug with AGC grid boundary.
+*Fixed a bug importing 3D models
+*Changed clip percentage labels
+*Changed raster data interpretation to raster data display.
+*Updated sentinel 5p to rasterio
+*Update to raster cutting using polygons
+*Multiple profiles can be extracted from raster.
+*Sentinel-2 bugfix
+*Fixed some bugs with testing routines
+*Added import of ASTER GED data
+*Update ASTER import
+*Fixed a bug with reprojection when the input data has no projection
+*Updated modis, landsat and sentinel2 to rasterio
+*Changed  Data.nullvalue to Data.nodata
+*Fixed a bug with nodata values in new reprojection tool
+*Updated cut_raster to rasterio
+*Rasterio updates
+*Fixed masking on some ratios
+*Fixed new export to raster projection issue
+
 v3.2.4.1, 20 September 2021
 ---------------------------
 *Fixed a bug where layerstack was not loading properly.
