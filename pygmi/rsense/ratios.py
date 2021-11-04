@@ -81,6 +81,7 @@ class SatRatios(QtWidgets.QDialog):
 
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
+        btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
         label_sensor = QtWidgets.QLabel('Sensor:')
@@ -105,6 +106,7 @@ class SatRatios(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
         gridlayout_main.addWidget(label_ratios, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.lw_ratios, 1, 1, 1, 1)
+        gridlayout_main.addWidget(btn_invert, 2, 0, 1, 2)
 
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
@@ -113,6 +115,7 @@ class SatRatios(QtWidgets.QDialog):
         buttonbox.rejected.connect(self.reject)
         self.lw_ratios.clicked.connect(self.set_selected_ratios)
         self.combo_sensor.currentIndexChanged.connect(self.setratios)
+        btn_invert.clicked.connect(self.invert_selection)
 
     def settings(self, nodialog=False):
         """
@@ -244,6 +247,10 @@ class SatRatios(QtWidgets.QDialog):
         for i in self.lw_ratios.selectedItems():
             rlist.append(i.text()[2:])
 
+        if not rlist:
+            self.showprocesslog('You need to select a ratio to calculate.')
+            return False
+
         if 'VCI' in rlist:
             rlist.pop(rlist.index('VCI'))
             rlist.append('VCI')
@@ -272,8 +279,20 @@ class SatRatios(QtWidgets.QDialog):
             if dat is None:
                 continue
 
-            dat = lstack(dat, self.piter, pprint=self.showprocesslog,
-                         commonmask=True)
+            datsml = []
+            for i in dat:
+                tmp = i.dataid.split()
+                txt = tmp[0]
+
+                if 'Band' not in txt and 'B' in txt:
+                    txt = txt.replace('B', 'Band')
+
+                if 'Band' not in txt and 'LST' not in txt:
+                    continue
+                datsml.append(i)
+
+            dat = lstack(datsml, self.piter, pprint=self.showprocesslog,)
+                         # commonmask=True)
 
             datd = {}
             newmask = None
@@ -296,7 +315,7 @@ class SatRatios(QtWidgets.QDialog):
                 if txt == 'Band8A':
                     txt = 'Band8'
 
-                self.showprocesslog(i.dataid+' mapped to '+txt)
+                # self.showprocesslog(i.dataid+' mapped to '+txt)
                 datd[txt] = i.data
                 if newmask is None:
                     newmask = i.data.mask
@@ -340,21 +359,45 @@ class SatRatios(QtWidgets.QDialog):
                     ratio = get_VHI(tci, vci)
                 else:
                     ratio = ne.evaluate(formula, datd)
+
                 ratio = ratio.astype(np.float32)
                 ratio[newmask] = dat[0].nodata
                 ratio = np.ma.array(ratio, mask=newmask,
                                     fill_value=dat[0].nodata)
+
+                # if 'EVI' in i:
+                #     num = datd['Band8'].data - datd['Band4'].data
+                #     denom = datd['Band8'].data + 6*datd['Band4'].data - 7.5*datd['Band2'].data + 1
+                #     evi2 = 2.5*num/denom
+                #     num = np.ma.array(num, mask=newmask)
+                #     denom = np.ma.array(denom, mask=newmask)
+                #     evi2 = np.ma.array(evi2, mask=newmask)
+                #     print('num', num.min(), num.max())
+                #     print('denom', denom.min(), denom.max())
+                #     print('band8', datd['Band8'].min(), datd['Band8'].max())
+                #     print('band4', datd['Band4'].min(), datd['Band4'].max())
+                #     print('band2', datd['Band2'].min(), datd['Band2'].max())
+
+                #     breakpoint()
+
                 ratio = np.ma.fix_invalid(ratio)
+
+                if 'EVI' in i:
+                    evi = ratio
+                    rmask = ratio.mask | (ratio < -1) | (ratio > 1)
+                    ratio.mask = rmask
+                    evi = ratio
+
                 rband = copy.deepcopy(dat[0])
                 rband.data = ratio
                 rband.dataid = i.replace(r'/', 'div')
                 datfin.append(rband)
-                if 'EVI' in i:
-                    evi = ratio
+
                 if 'TCI' in i:
                     tci = ratio
                 if 'VCI' in i:
                     vci = ratio
+
             ofile = ofile.split('.')[0] + '_ratio.tif'
             if datfin:
                 self.showprocesslog('Exporting to '+ofile)
@@ -446,8 +489,10 @@ class SatRatios(QtWidgets.QDialog):
                     tmp = tmp.replace('tmp'+j, bandmap[j])
                 rlist2.append(tmp+lbl)
 
+        rlist2 += ['VCI']
+
         if 'Landsat' in sensor:
-            rlist2 += ['TCI', 'VCI', 'VHI']
+            rlist2 += ['TCI', 'VHI']
 
         self.lw_ratios.clear()
         self.lw_ratios.addItems(rlist2)
@@ -456,6 +501,21 @@ class SatRatios(QtWidgets.QDialog):
             item = self.lw_ratios.item(i)
             item.setSelected(True)
             item.setText('\u2713 ' + item.text())
+
+    def invert_selection(self):
+        """
+        Invert the selected ratios.
+
+        Returns
+        -------
+        None.
+
+        """
+        for i in range(self.lw_ratios.count()):
+            item = self.lw_ratios.item(i)
+            item.setSelected(not(item.isSelected()))
+
+        self.set_selected_ratios()
 
     def set_selected_ratios(self):
         """
@@ -647,6 +707,7 @@ def get_sentinel_list(flist):
 def _testfn():
     """Test routine."""
     from pygmi.misc import ProgressBarText
+    import matplotlib.pyplot as plt
 
     piter = ProgressBarText().iter
     # ifile = r'C:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
@@ -654,10 +715,56 @@ def _testfn():
     ifile = r"E:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     extscene = 'Sentinel-2'
 
-    ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
-    extscene = None
+    # ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
+    # extscene = None
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
+
+    # dat2 = []
+    # for i in dat:
+    #     if i.dataid[:2] in ['B8', 'B4', 'B2']:
+    #         dat2.append(i)
+
+    # datls = lstack(dat2, piter=piter)
+
+    # for i in datls:
+    #     if 'B8' in i.dataid[:2]:
+    #         band8 = i.data
+    #     if 'B4' in i.dataid[:2]:
+    #         band4 = i.data
+    #     if 'B2' in i.dataid[:2]:
+    #         band2 = i.data
+
+    # num = band8 - band4
+    # denom = band8 + 6*band4 - 7.5*band2 + 1
+
+    # print('num', num.min(), num.max())
+    # print('denom', denom.min(), denom.max())
+    # print('band8', band8.min(), band8.max())
+    # print('band4', band4.min(), band4.max())
+    # print('band2', band2.min(), band2.max())
+
+    # evi = 2.5*num/denom
+
+    # vmin = evi.mean()-evi.std()
+    # vmax = evi.mean()+evi.std()
+
+    # plt.imshow(num)
+    # plt.colorbar()
+    # plt.show()
+
+    # plt.imshow(denom)
+    # plt.colorbar()
+    # plt.show()
+
+    # plt.imshow(evi, vmin=vmin, vmax=vmax)
+    # numplt.colorbar()
+    # plt.show()
+
+    # plt.hist(evi.flatten(), bins=100)
+    # plt.show()
+
+    # breakpoint()
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -672,6 +779,15 @@ def _testfn():
     # SR.indata = IO.outdata
 
     SR.settings()
+
+    dat2 = SR.outdata['Raster']
+    for i in dat+dat2:
+        plt.title(i.dataid)
+        plt.imshow(i.data)
+        plt.colorbar()
+        plt.show()
+
+    breakpoint()
 
 
 if __name__ == "__main__":
