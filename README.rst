@@ -115,9 +115,13 @@ Anaconda users are advised not to use pip since it can break PyQt5. However, two
 
 The process to install is as follows:
 
-   conda create -n pygmi python=3.8
+   conda create -n pygmi
 
    conda activate pygmi
+
+   conda config --add channels conda-forge
+	
+   conda config --set channel_priority strict
 
    conda install pyqt
 
@@ -125,34 +129,34 @@ The process to install is as follows:
 
    conda install scipy
 
+   conda install matplotlib
+   
+   conda install psutil
+
    conda install numexpr
 
-   conda install gdal
-
-   conda install pillow
-
-   conda install matplotlib
-
-   conda install numba
-
    conda install pandas
-
-   conda install scikit-learn
-
-   conda install scikit-image
+   
+   conda install rasterio
 
    conda install geopandas
 
+   conda install numba
+
+   conda install scikit-learn=0.24
+
+   conda install scikit-image
+
    conda install pyopengl
 
-   conda install -c conda-forge segyio
+   conda install segyio
 
-   conda install -c conda-forge simpeg
+   conda install simpeg
 
    pip install mtpy
 
 
-Once this is done, download pygmi, extract it to a directory, and run it from its root directory with the following command:
+Once this is done, download pygmi, extract (unzip) it to a directory, and run it from its root directory with the following command:
 
    python quickstart.py
 
