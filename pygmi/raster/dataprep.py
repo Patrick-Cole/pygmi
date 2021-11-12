@@ -2677,7 +2677,7 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
     if commonmask is True:
         for idat in piter(dat2):
             idat.data.mask = cmask
-            idat.data = np.ma.array(idat.data.filled(), mask=cmask)
+            idat.data = np.ma.array(idat.data.filled(idat.nodata), mask=cmask)
 
     out = check_dataid(dat2)
 
