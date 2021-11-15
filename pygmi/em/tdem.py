@@ -32,7 +32,7 @@ import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
-from pymatsolver import Pardiso
+from pymatsolver import Solver  #  as Pardiso
 import discretize
 from SimPEG import (maps, data_misfit, regularization,
                     optimization, inversion, inverse_problem, directives)
@@ -391,7 +391,7 @@ class TDEM1D(QtWidgets.QDialog):
                                                     timeSteps=timesteps,
                                                     sigmaMap=mapping,
                                                     survey=survey,
-                                                    Solver=Pardiso)
+                                                    Solver=Solver)  # Pardiso)
 
         src = srclist[0]
         wave = []
