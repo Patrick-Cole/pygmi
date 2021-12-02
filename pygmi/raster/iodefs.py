@@ -639,6 +639,9 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     with rasterio.open(ifile) as dataset:
         if dataset is None:
             return None
+
+        # allns = dataset.tag_namespaces()
+
         istruct = dataset.tags(ns='IMAGE_STRUCTURE')
         driver = dataset.driver
 
@@ -651,7 +654,8 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     cols = dataset.width
     rows = dataset.height
     bands = dataset.count
-    nval = dataset.nodata
+    if nval is None:
+        nval = dataset.nodata
     dtype = rasterio.band(dataset, 1).dtype
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
@@ -669,6 +673,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
         for i in piter(range(dataset.count)):
             index = dataset.indexes[i]
             bandid = dataset.descriptions[i]
+
             if bandid == '' or bandid is None:
                 bandid = 'Band '+str(index)+' '+bname
 

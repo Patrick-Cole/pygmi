@@ -39,6 +39,7 @@ class Smooth(QtWidgets.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
         if parent is None:
             self.showprocesslog = print
         else:
