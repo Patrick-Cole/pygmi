@@ -41,7 +41,7 @@ from rasterio.crs import CRS
 from rasterio.warp import calculate_default_transform, reproject
 from rasterio.mask import mask as riomask
 import geopandas as gpd
-from shapely.geometry import LineString
+from shapely.geometry import LineString, Polygon
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
@@ -2437,7 +2437,11 @@ def cut_raster(data, ifile, pprint=print):
                    'projection is the same as the raster dataset')
             return None
 
-        coords = [json.loads(gdf.to_json())['features'][0]['geometry']]
+        # coords = [json.loads(gdf.to_json())['features'][0]['geometry']]
+        # This section convers PolygonZ to Polygon, and takes first polygon.
+        coords = gdf['geometry'].loc[0].exterior.coords
+        coords = [Polygon([[p[0], p[1]] for p in coords])]
+
         dat, trans = riomask(idata.to_mem(), coords, crop=True)
 
         idata.data = np.ma.masked_equal(dat.squeeze(), idata.nodata)
@@ -3093,15 +3097,19 @@ def _testcut():
     """Test Reprojection."""
     import sys
     from pygmi.rsense.iodefs import get_data
-    from pygmi.raster.iodefs import export_raster
+    from pygmi.raster.iodefs import export_raster, get_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"E:\Workdata\bugs\S2B_MSIL2A_20210913T074609_N0301_R135_T36KTV_20210913T102843.zip"
-    sfile = r"E:\Workdata\bugs\AU5_block_larger_utm36S.shp"
+    sfile  = r"C:/Workdata/raster/polygon cut get profile/cut_polygon.shp"
+    ifile = r"C:\Workdata\raster\polygon cut get profile\mag_IGRFcorrected.ers"
+
+    # ifile = r"E:\Workdata\bugs\S2B_MSIL2A_20210913T074609_N0301_R135_T36KTV_20210913T102843.zip"
+    # sfile = r"E:\Workdata\bugs\AU5_block_larger_utm36S.shp"
 
     piter = ProgressBarText().iter
 
-    dat = get_data(ifile, piter=piter, extscene='Sentinel-2')
+    dat = get_raster(ifile)
+    # dat = get_data(ifile, piter=piter, extscene='Sentinel-2')
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
