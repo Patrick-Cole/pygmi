@@ -136,8 +136,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
             cbar = self.figure.colorbar(rdata, format=frm)
             cbar.set_label(data1.units)
 
-        self.axes.set_xlabel('Eastings')
-        self.axes.set_ylabel('Northings')
+        if data1.crs.to_dict()['proj'] == 'longlat':
+            self.axes.set_xlabel('Longitude')
+            self.axes.set_ylabel('Latitude')
+        else:
+            self.axes.set_xlabel('Eastings')
+            self.axes.set_ylabel('Northings')
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)

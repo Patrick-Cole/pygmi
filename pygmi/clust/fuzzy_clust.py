@@ -537,10 +537,12 @@ class FuzzyClust(QtWidgets.QDialog):
 #            gaugetmp.crisplogtxt.Value += '\n'+logtxt
 
         for i in dat_out:
-            i.dataid = 'Fuzzy Cluster: ' + str(i.metadata['Cluster']['no_clusters'])
+            i.dataid = ('Fuzzy Cluster: ' +
+                        str(i.metadata['Cluster']['no_clusters']))
             i.nodata = data[0].nodata
             i.set_transform(transform=data[0].transform)
             i.data += 1
+            i.crs = data[0].crs
 
         self.showprocesslog('Fuzzy Cluster complete' + ' (' + self.cltype +
                             ' ' + self.init_type + ')')

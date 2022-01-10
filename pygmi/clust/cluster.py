@@ -436,6 +436,7 @@ class Cluster(QtWidgets.QDialog):
                 i.dataid = 'Clusters: '+str(int(i.data.max()+1))
             i.nodata = data[0].nodata
             i.set_transform(transform=data[0].transform)
+            i.crs = data[0].crs
 
         self.showprocesslog('Cluster complete' + ' ('+self.cltype + ' ' + ')')
 

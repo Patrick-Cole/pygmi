@@ -100,8 +100,13 @@ class GraphMap(FigureCanvasQTAgg):
                           cmap=cm.get_cmap('jet'))
         axes = self.figure.gca()
 
-        axes.set_xlabel('Eastings')
-        axes.set_ylabel('Northings')
+
+        if dat.crs.to_dict()['proj'] == 'longlat':
+            self.axes.set_xlabel('Longitude')
+            self.axes.set_ylabel('Latitude')
+        else:
+            self.axes.set_xlabel('Eastings')
+            self.axes.set_ylabel('Northings')
 
         axes.xaxis.set_major_formatter(frm)
         axes.yaxis.set_major_formatter(frm)

@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """Import remote sensing data."""
 
+
 import os
 import copy
 import glob
@@ -33,6 +34,7 @@ import datetime
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
+
 import geopandas as gpd
 from geopandas import GeoDataFrame
 from shapely.geometry import Point
@@ -1294,6 +1296,161 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
     return dat
 
 
+def get_aster_hdf_old(ifile, piter=iter):
+    """
+    Get ASTER hdf Data.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+    from osgeo import gdal
+
+    satbands = {'1': [520, 600],
+                '2': [630, 690],
+                '3N': [780, 860],
+                '3B': [780, 860],
+                '4': [1600, 1700],
+                '5': [2145, 2185],
+                '6': [2185, 2225],
+                '7': [2235, 2285],
+                '8': [2295, 2365],
+                '9': [2360, 2430],
+                '10': [8125, 8475],
+                '11': [8475, 8825],
+                '12': [8925, 9275],
+                '13': [10250, 10950],
+                '14': [10950, 11650]}
+
+    ifile = ifile[:]
+
+    if 'AST_07' in ifile:
+        ptype = '07'
+    elif 'AST_L1T' in ifile:
+        ptype = 'L1T'
+    elif 'AST_05' in ifile:
+        ptype = '05'
+    elif 'AST_08' in ifile:
+        ptype = '08'
+    else:
+        return None
+
+    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
+
+    meta = dataset.GetMetadata()
+
+    if ptype == 'L1T':
+        ucc = {'ImageData1': float(meta['INCL1']),
+               'ImageData2': float(meta['INCL2']),
+               'ImageData3N': float(meta['INCL3N']),
+               'ImageData4': float(meta['INCL4']),
+               'ImageData5': float(meta['INCL5']),
+               'ImageData6': float(meta['INCL6']),
+               'ImageData7': float(meta['INCL7']),
+               'ImageData8': float(meta['INCL8']),
+               'ImageData9': float(meta['INCL9']),
+               'ImageData10': float(meta['INCL10']),
+               'ImageData11': float(meta['INCL11']),
+               'ImageData12': float(meta['INCL12']),
+               'ImageData13': float(meta['INCL13']),
+               'ImageData14': float(meta['INCL14'])}
+
+    solarelev = float(meta['SOLARDIRECTION'].split()[1])
+    cdate = meta['CALENDARDATE']
+    if len(cdate) == 8:
+        fmt = '%Y%m%d'
+    else:
+        fmt = '%Y-%m-%d'
+    dte = datetime.datetime.strptime(cdate, fmt)
+    jdate = dte.timetuple().tm_yday
+
+    subdata = dataset.GetSubDatasets()
+    if ptype == '07':
+        subdata = [i for i in subdata if 'SurfaceReflectance' in i[0]]
+        scalefactor = 0.001
+        units = 'Surface Reflectance'
+    elif ptype == '05':
+        subdata = [i for i in subdata if 'SurfaceEmissivity' in i[0]]
+        scalefactor = 0.001
+        units = 'Surface Emissivity'
+    elif ptype == '08':
+        scalefactor = 0.1
+        units = 'Surface Kinetic Temperature'
+    elif ptype == 'L1T':
+        subdata = [i for i in subdata if 'ImageData' in i[0]]
+        scalefactor = 1
+        units = ''
+    else:
+        return None
+
+    dat = []
+    nval = 0
+    calctoa = False
+    for bfile, bandid in piter(subdata):
+        if 'QA' in bfile:
+            continue
+        if ptype == 'L1T' and 'ImageData3B' in bfile:
+            continue
+
+        bandid2 = bandid[bandid.lower().index(']')+1:
+                         bandid.lower().index('(')].strip()
+
+        dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
+
+        tmpds = gdal.AutoCreateWarpedVRT(dataset)
+
+        if tmpds is None:
+            continue
+        dat.append(Data())
+        dat[-1].data = tmpds.ReadAsArray()
+        if ptype == '08':
+            dat[-1].data[dat[-1].data == 2000] = nval
+        dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
+        dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+        if dat[-1].data.mask.size == 1:
+            dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+
+        dat[-1].dataid = bandid2
+        dat[-1].nullvalue = nval
+        # breakpoint()
+        gtr = tmpds.GetGeoTransform()
+        dat[-1].set_transform(xdim=gtr[1], xmin=gtr[0],
+                              ydim=-gtr[5], ymax=gtr[3])
+        # dat[-1].wkt = tmpds.GetProjectionRef()
+        dat[-1].metadata['SolarElev'] = solarelev
+        dat[-1].metadata['JulianDay'] = jdate
+        dat[-1].metadata['CalendarDate'] = cdate
+        dat[-1].metadata['ShortName'] = meta['SHORTNAME']
+        dat[-1].filename = ifile
+        dat[-1].units = units
+
+        bmeta = dat[-1].metadata
+        if satbands is not None:
+            fext = dat[-1].dataid[4:].split()[0]
+            bmeta['WavelengthMin'] = satbands[fext][0]
+            bmeta['WavelengthMax'] = satbands[fext][1]
+
+        if ptype == 'L1T' and 'ImageData' in ifile:
+            dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
+            calctoa = True
+
+    if dat == []:
+        dat = None
+
+    if ptype == 'L1T' and calctoa is True:
+        dat = calculate_toa(dat)
+
+    return dat
+
+
 def get_aster_hdf(ifile, piter=iter):
     """
     Get ASTER hdf Data.
@@ -1341,15 +1498,15 @@ def get_aster_hdf(ifile, piter=iter):
     with rasterio.open(ifile) as dataset:
         meta = dataset.tags()
         subdata = dataset.subdatasets
-        crs = dataset.crs
+        # crs = dataset.crs
 
-    zone = None
-    if crs is None:
-        for i in meta:
-            if 'UTMZONECODE' in i:
-                zone = meta[i]
-        if zone is not None:
-            crs = CRS.from_epsg('326'+zone)
+    # zone = None
+    # if crs is None:
+    #     for i in meta:
+    #         if 'UTMZONECODE' in i:
+    #             zone = meta[i]
+    #     if zone is not None:
+    #         crs1 = CRS.from_epsg('326'+zone)
 
     if ptype == 'L1T':
         ucc = {'ImageData1': float(meta['INCL1']),
@@ -1404,10 +1561,10 @@ def get_aster_hdf(ifile, piter=iter):
             continue
 
         dataset1 = rasterio.open(bfile)
-        if dataset1.transform[1] == 0.0 and dataset1.transform[3] == 0.:
-            dataset = dataset1
-        else:
-            dataset = rasterio.vrt.WarpedVRT(dataset1)
+        dataset = rasterio.vrt.WarpedVRT(dataset1)
+        crs = dataset1.gcps[-1]
+
+        # breakpoint()
 
         dat.append(Data())
         dat[-1].data = dataset.read(1)
@@ -1689,9 +1846,13 @@ def _testfn():
     # ifile = r"C:\Workdata\Remote Sensing\AG100.v003.-23.030.0001.h5"
     # ifile = r"E:\Workdata\bugs\AST_05_00309232013204629_20211004081945_4263.hdf"
 
-    # ifile = r"E:\Workdata\Remote Sensing\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
+    ifile = "C:/Workdata/Remote Sensing/AST_07XT_00307292005085059_20210608060928_376.hdf"
+    ifile = "C:/Workdata/Remote Sensing/ASTER/AST_08_00305212003085056_20180604061050_13463.hdf"
+
+    # ifile = r"c:\Workdata\Remote Sensing\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
+
     # ifile = r"E:\Workdata\bugs\AST_08_00306272001204805_20211007060336_20853.hdf"
-    ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
+    # ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
 
 
     dat = get_data(ifile)

@@ -145,6 +145,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.add_collection(lc)
 
         self.axes.autoscale()
+
         self.axes.set_xlabel('Eastings')
         self.axes.set_ylabel('Northings')
 
@@ -673,8 +674,9 @@ def histcomp(img, nbr_bins=256, perc=5.):
     evalue = bins[eindx]
 
     scnt = perc*(nbr_bins-1)
-    if scnt > sindx:
-        scnt = sindx
+    scnt = min(scnt, sindx)
+    # if scnt > sindx:
+    #     scnt = sindx
 
     ecnt = perc*(nbr_bins-1)
     if ecnt > ((nbr_bins-1)-eindx):

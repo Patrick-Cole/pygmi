@@ -564,6 +564,7 @@ class CrispClust(QtWidgets.QDialog):
             i.dataid = 'Crisp Cluster: '+str(i.metadata['Cluster']['no_clusters'])
             i.nodata = data[0].nodata
             i.set_transform(transform=data[0].transform)
+            i.crs = data[0].crs
 
         self.showprocesslog('Crisp Cluster complete' + ' ('+self.cltype + ' ' +
                             self.init_type+')')
