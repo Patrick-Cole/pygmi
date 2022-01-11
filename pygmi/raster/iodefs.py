@@ -222,14 +222,7 @@ class ImportData():
                              showprocesslog=self.showprocesslog)
 
         if dat is None:
-            if self.filt == 'Surfer grid (v.6) (*.grd)':
-                QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                              'Could not import the surfer 6 '
-                                              'grid. Please make sure it not '
-                                              'another format, such as '
-                                              'Geosoft.',
-                                              QtWidgets.QMessageBox.Ok)
-            elif self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
+            if self.filt == 'Geosoft UNCOMPRESSED grid (*.grd)':
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                               'Could not import the grid. '
                                               'Please make sure it is a '
@@ -238,12 +231,6 @@ class ImportData():
                                               'export your grid to '
                                               'this format using the Geosoft '
                                               'Viewer.',
-                                              QtWidgets.QMessageBox.Ok)
-            elif self.filt == 'hdf (*.hdf)':
-                QtWidgets.QMessageBox.warning(self.parent, 'Error',
-                                              'Could not import the data.'
-                                              'Currently only ASTER and MODIS'
-                                              'are supported.',
                                               QtWidgets.QMessageBox.Ok)
             else:
                 QtWidgets.QMessageBox.warning(self.parent, 'Error',
@@ -1071,7 +1058,7 @@ class ExportData():
                'Geosoft (*.gxf);;'
                'ERDAS Imagine (*.img);;'
                'SAGA binary grid (*.sdat);;'
-               'Surfer grid (v.6) (*.grd);;'
+               'Surfer grid (*.grd);;'
                'ArcInfo ASCII (*.asc);;'
                'ASCII XYZ (*.xyz);;'
                'ArcGIS BIL (*.bil)')
@@ -1094,9 +1081,8 @@ class ExportData():
             self.export_ascii_xyz(data)
         if filt == 'Geosoft (*.gxf)':
             self.export_gxf(data)
-        if filt == 'Surfer grid (v.6) (*.grd)':
+        if filt == 'Surfer grid (*.grd)':
             self.export_surfer(data)
-#            self.export_raster(data, 'GSBG', piter=self.piter)
         if filt == 'ERDAS Imagine (*.img)':
             export_raster(self.ifile, data, 'HFA', piter=self.piter)
         if filt == 'ERMapper (*.ers)':
@@ -1209,26 +1195,32 @@ class ExportData():
             if len(data) > 1:
                 file_out = self.get_filename(k, 'grd')
 
-            fno = open(file_out, 'wb')
+            k.data = k.data.filled(1.701410009187828e+38)
 
-            xmin, xmax, ymin, ymax = k.extent
+            export_raster(file_out, [k], 'GS7BG', piter=self.piter)
 
-            krows, kcols = k.data.shape
-            bintmp = struct.pack('cccchhdddddd', b'D', b'S', b'B', b'B',
-                                 kcols, krows,
-                                 xmin, xmax,
-                                 ymin, ymax,
-                                 np.min(k.data),
-                                 np.max(k.data))
-            fno.write(bintmp)
 
-            ntmp = 1.701410009187828e+38
-            tmp = k.data.astype('f')
-            tmp = tmp.filled(ntmp)
-            tmp = tmp[::-1]
-            fno.write(tmp.tostring())
 
-            fno.close()
+            # fno = open(file_out, 'wb')
+
+            # xmin, xmax, ymin, ymax = k.extent
+
+            # krows, kcols = k.data.shape
+            # bintmp = struct.pack('cccchhdddddd', b'D', b'S', b'B', b'B',
+            #                      kcols, krows,
+            #                      xmin, xmax,
+            #                      ymin, ymax,
+            #                      np.min(k.data),
+            #                      np.max(k.data))
+            # fno.write(bintmp)
+
+            # ntmp = 1.701410009187828e+38
+            # tmp = k.data.astype('f')
+            # tmp = tmp.filled(ntmp)
+            # tmp = tmp[::-1]
+            # fno.write(tmp.tostring())
+
+            # fno.close()
 
     def export_ascii(self, data):
         """
@@ -1340,7 +1332,7 @@ class ExportData():
         return file_out
 
 
-def export_raster(ofile, dat, drv, envimeta='', piter=None):
+def export_raster(ofile, dat, drv, envimeta='', piter=None, compression='NONE'):
     """
     Export to rasterio format.
 
@@ -1419,7 +1411,9 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None):
 
     kwargs = {}
     if drv == 'GTiff':
-        kwargs = {'COMPRESS': 'NONE',
+        kwargs = {'COMPRESS': compression,
+                  # 'PREDICTOR': '2',
+                  'BIGTIFF': 'YES',
                   'INTERLEAVE': 'BAND',
                   'TFW': 'YES',
                   'PROFILE': 'GeoTIFF'}
@@ -1480,31 +1474,53 @@ def _filespeedtest():
     print('Starting')
     pbar = ProgressBarText()
     # ifile = r'E:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
-    ifile = r'C:\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
+    # ifile = r'C:\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
     # ifile = r'C:\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
     # ifile = r"C:\Workdata\testdata.hdr"
     # ifile = r"C:\Workdata\raster\rad_3bands.ers"
-    ofile = r"C:\Workdata\hope.tif"
+    # ofile = r"C:\Workdata\hope.tif"
     # xoff = 0
     # yoff = 0
     # xsize = None
     # ysize = 1000
     # iraster = (xoff, yoff, xsize, ysize)
+
+    ifile = r"C:\Workdata\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
+    ofile = r"C:\Workdata\New_max_22-55_iMNF15_ferriciron_UTM33s_LZW.tif"
+
+    ifile = r"C:/Workdata/testdata.hdr"
+    ofile = r'C:/Workdata/testdata.grd'
+
+
     iraster = None
 
     getinfo('Start')
 
     dataset = get_raster(ifile, piter=pbar.iter, iraster=iraster)
 
-    getinfo('End')
+    k = dataset[0]
+    k.data = k.data.filled(1.701410009187828e+38)
+
+    # breakpoint()
+
+    export_raster(ofile, [k], 'GS7BG', piter=pbar.iter)
+    dataset = get_raster(ofile, piter=pbar.iter, iraster=iraster)
+
 
     plt.figure(dpi=150)
     plt.imshow(dataset[0].data, extent=dataset[0].extent)
     plt.show()
 
+    # export_raster(ofile, dataset, 'GS7BG', piter=pbar.iter)
 
-    export_raster(ofile, dataset, 'ENVI', piter=pbar.iter)
-    breakpoint()
+
+    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='PACKBITS')  # 182s
+    export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='LZW')  # 191
+    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='DEFLATE')
+
+    getinfo('End')
+
+    # breakpoint()
 
 
 if __name__ == "__main__":
