@@ -1053,6 +1053,7 @@ class ExportData():
             return False
 
         ext = ('GeoTiff (*.tif);;'
+               'GeoTiff compressed using ZSTD (*.tif);;'
                'ENVI (*.hdr);;'
                'ERMapper (*.ers);;'
                'Geosoft (*.gxf);;'
@@ -1096,6 +1097,9 @@ class ExportData():
                 export_raster(self.ifile, data, 'SAGA', piter=self.piter)
         if filt == 'GeoTiff (*.tif)':
             export_raster(self.ifile, data, 'GTiff', piter=self.piter)
+        if filt == 'GeoTiff compressed using ZSTD (*.tif)':
+            export_raster(self.ifile, data, 'GTiff', piter=self.piter,
+                          compression='ZSTD')
         if filt == 'ENVI (*.hdr)':
             export_raster(self.ifile, data, 'ENVI', piter=self.piter)
         if filt == 'ArcGIS BIL (*.bil)':
@@ -1413,13 +1417,14 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None, compression='NONE'):
     kwargs = {}
     if drv == 'GTiff':
         kwargs = {'COMPRESS': compression,
-                  'PREDICTOR': '3',
-                  # 'ZLEVEL': '9',
+                  'ZLEVEL': '1',
                   'ZSTD_LEVEL': '1',
                   'BIGTIFF': 'YES',
                   'INTERLEAVE': 'BAND',
                   'TFW': 'YES',
                   'PROFILE': 'GeoTIFF'}
+        if dtype == np.float32 or dtype == np.float64:
+            kwargs['PREDICTOR'] = '3'
 
     with rasterio.open(tmpfile, 'w', driver=drv,
                        width=int(dcols), height=int(drows), count=len(data),
@@ -1489,7 +1494,7 @@ def _filespeedtest():
     # iraster = (xoff, yoff, xsize, ysize)
 
     ifile = r"C:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
-    ofile = r"C:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s_DEFLATE3ZL1.tif"
+    # ofile = r"C:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s_DEFLATE3ZL1.tif"
 
 
     # ifile = r'C:/Workdata/compress/017_0823-1146_ref_rect_BSQ_291div283_194div291_219div303.tif'
@@ -1529,8 +1534,8 @@ def _filespeedtest():
     # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='PACKBITS')  # 182s
     # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='LZW')  # 191, 140 with pred=3
     # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='LZMA')  #
-    export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='DEFLATE')  # 318, 277 PRED 3
-    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='ZSTD')  # 241, 281 pred=3
+    export_raster(ifile[:-4]+'_DEFLATE3ZL1.tiff', dataset, 'GTiff', piter=pbar.iter, compression='DEFLATE')  # 318, 277 PRED 3
+    export_raster(ifile[:-4]+'_ZSTD3ZL1.tiff', dataset, 'GTiff', piter=pbar.iter, compression='ZSTD')  # 241, 281 pred=3
 
     # best is zstd pred 3 zlvl 1
     # then deflade pred 3 zlvl 1
