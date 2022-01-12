@@ -1123,6 +1123,7 @@ class ExportData():
             self.showprocesslog('Band names will be appended to the output '
                                 'filenames since you have a multiple band '
                                 'image')
+            # breakpoint()
 
         file_out = self.ifile.rpartition('.')[0]+'.gxf'
         for k in data:
@@ -1412,7 +1413,9 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None, compression='NONE'):
     kwargs = {}
     if drv == 'GTiff':
         kwargs = {'COMPRESS': compression,
-                  # 'PREDICTOR': '2',
+                  'PREDICTOR': '3',
+                  # 'ZLEVEL': '9',
+                  'ZSTD_LEVEL': '1',
                   'BIGTIFF': 'YES',
                   'INTERLEAVE': 'BAND',
                   'TFW': 'YES',
@@ -1485,11 +1488,16 @@ def _filespeedtest():
     # ysize = 1000
     # iraster = (xoff, yoff, xsize, ysize)
 
-    ifile = r"C:\Workdata\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
-    ofile = r"C:\Workdata\New_max_22-55_iMNF15_ferriciron_UTM33s_LZW.tif"
+    ifile = r"C:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
+    ofile = r"C:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s_DEFLATE3ZL1.tif"
 
-    ifile = r"C:/Workdata/testdata.hdr"
-    ofile = r'C:/Workdata/testdata.grd'
+
+    # ifile = r'C:/Workdata/compress/017_0823-1146_ref_rect_BSQ_291div283_194div291_219div303.tif'
+    # ofile = ifile[:-4]+'_DEFLATE3.tiff'
+
+
+    # ifile = r"C:/Workdata/testdata.hdr"
+    # ofile = r'C:/Workdata/testdata.grd'
 
 
     iraster = None
@@ -1498,25 +1506,35 @@ def _filespeedtest():
 
     dataset = get_raster(ifile, piter=pbar.iter, iraster=iraster)
 
-    k = dataset[0]
-    k.data = k.data.filled(1.701410009187828e+38)
+    # k = dataset[0]
+    # k.data = k.data.filled(1.701410009187828e+38)
 
-    # breakpoint()
-
-    export_raster(ofile, [k], 'GS7BG', piter=pbar.iter)
-    dataset = get_raster(ofile, piter=pbar.iter, iraster=iraster)
+    # export_raster(ofile, [k], 'GS7BG', piter=pbar.iter)
+    # dataset = get_raster(ofile, piter=pbar.iter, iraster=iraster)
 
 
     plt.figure(dpi=150)
     plt.imshow(dataset[0].data, extent=dataset[0].extent)
+    plt.colorbar()
     plt.show()
+
+
+    # for i in dataset:
+    #     i.data = i.data*10000
+    #     i.data = i.data.astype(np.int16)
 
     # export_raster(ofile, dataset, 'GS7BG', piter=pbar.iter)
 
 
     # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='PACKBITS')  # 182s
-    export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='LZW')  # 191
-    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='DEFLATE')
+    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='LZW')  # 191, 140 with pred=3
+    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='LZMA')  #
+    export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='DEFLATE')  # 318, 277 PRED 3
+    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='ZSTD')  # 241, 281 pred=3
+
+    # best is zstd pred 3 zlvl 1
+    # then deflade pred 3 zlvl 1
+
 
     getinfo('End')
 

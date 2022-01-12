@@ -101,7 +101,7 @@ class GraphMap(FigureCanvasQTAgg):
         axes = self.figure.gca()
 
 
-        if dat.crs.to_dict()['proj'] == 'longlat':
+        if 'proj' in data1.crs.to_dict() and data1.crs.to_dict()['proj'] == 'longlat':
             self.axes.set_xlabel('Longitude')
             self.axes.set_ylabel('Latitude')
         else:
