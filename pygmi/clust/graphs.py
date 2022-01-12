@@ -88,7 +88,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # else:
         #     self.axes.figure.colorbar(csp)
 
-        if 'proj' in data1.crs.to_dict() and data1.crs.to_dict()['proj'] == 'longlat':
+        if data1.crs is not None:
+            crs = data1.crs.to_dict()
+        else:
+            crs = {}
+
+        if 'proj' in crs and crs['proj'] == 'longlat':
             self.axes.set_xlabel('Longitude')
             self.axes.set_ylabel('Latitude')
         else:
@@ -183,7 +188,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.colorbar(rdata)
 
-        if 'proj' in data1.crs.to_dict() and data1.crs.to_dict()['proj'] == 'longlat':
+        if data1.crs is not None:
+            crs = data1.crs.to_dict()
+        else:
+            crs = {}
+
+        if 'proj' in crs and crs['proj'] == 'longlat':
             self.axes.set_xlabel('Longitude')
             self.axes.set_ylabel('Latitude')
         else:

@@ -584,7 +584,8 @@ def fftprep(data):
 
     points = np.transpose([x, y])
 
-    zfin = si.griddata(points, z, (x1, y1), method='linear')
+    zfin = si.griddata(points, z, (x1, y1), method='linear', fill_value=0.)
+    # breakpoint()
 
     nr, nc = zfin.shape
     zfin *= tukey(nc)
@@ -668,7 +669,7 @@ def rtp(data, I_deg, D_deg):
     return dat
 
 
-def _testfn():
+def _testfn_rtp():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
     from matplotlib import cm
@@ -697,5 +698,40 @@ def _testfn():
     plt.show()
 
 
+def _testfn():
+    """RTP testing routine."""
+    import matplotlib.pyplot as plt
+    from matplotlib import cm
+    from pygmi.pfmod.grvmag3d import quick_model, calc_field
+    from pygmi.raster.iodefs import get_raster
+
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
+
+# quick model
+    finc = -62.5
+    fdec = -16.75
+
+    ifile = 'C:/Workdata/bugs/detlef/TMI_norm_wdw.tif'
+
+    dat = get_raster(ifile)[0]
+    print(dat.data.shape)
+
+    dat.data = dat.data
+
+# Calculate the field
+
+    magval = dat.data
+    plt.figure(dpi=150)
+    plt.imshow(magval, cmap=cm.get_cmap('jet'))
+    plt.show()
+
+    dat2 = rtp(dat, finc, fdec)
+    plt.figure(dpi=150)
+    plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
+    plt.show()
+
+    # breakpoint()
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn_rtp()

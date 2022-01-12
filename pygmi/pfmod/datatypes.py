@@ -27,6 +27,7 @@
 import numpy as np
 
 from pygmi.raster.datatypes import Data
+from rasterio.crs import CRS
 
 
 class LithModel():
