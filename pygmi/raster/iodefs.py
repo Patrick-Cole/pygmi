@@ -1127,7 +1127,6 @@ class ExportData():
             self.showprocesslog('Band names will be appended to the output '
                                 'filenames since you have a multiple band '
                                 'image')
-            # breakpoint()
 
         file_out = self.ifile.rpartition('.')[0]+'.gxf'
         for k in data:
@@ -1196,11 +1195,13 @@ class ExportData():
                                 'image')
 
         file_out = self.ifile.rpartition('.')[0] + '.grd'
-        for k in data:
+        for k0 in data:
+            k = copy.deepcopy(k0)
             if len(data) > 1:
                 file_out = self.get_filename(k, 'grd')
 
             k.data = k.data.filled(1.701410009187828e+38)
+            k.nodata = 1.701410009187828e+38
 
             export_raster(file_out, [k], 'GS7BG', piter=self.piter)
 
@@ -1329,9 +1330,10 @@ class ExportData():
             Output filename.
 
         """
-        file_band = data.dataid.split('_')[0].strip('"')
+        file_band = data.dataid.strip('"')
         file_band = file_band.replace('/', '')
         file_band = file_band.replace(':', '')
+
         file_out = self.ifile.rpartition('.')[0]+'_'+file_band+'.'+ext
 
         return file_out
