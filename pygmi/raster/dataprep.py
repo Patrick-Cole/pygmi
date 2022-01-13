@@ -292,6 +292,10 @@ class DataLayerStack(QtWidgets.QDialog):
 
         self.acceptall()
 
+        if self.outdata['Raster'] is None:
+            self.outdata = {}
+            return False
+
         return True
 
     def loadproj(self, projdata):
@@ -2632,6 +2636,11 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
     dat2 = []
     cmask = None
     for data in piter(dat):
+
+        if data.crs is None:
+            pprint(f'{data.dataid} has no defined projection. Aborting.')
+            return None
+
         doffset = 0.0
         data.data.set_fill_value(data.nodata)
         data.data = np.ma.array(data.data.filled(), mask=data.data.mask)
