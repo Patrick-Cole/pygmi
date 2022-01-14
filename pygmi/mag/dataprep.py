@@ -209,7 +209,7 @@ def tilt1(data, azi, s):
 
     Parameters
     ----------
-    data : numpy array
+    data : numpy masked array
         matrix of double to be filtered
     azi : float
         directional filter azimuth in degrees from East
@@ -255,6 +255,7 @@ def tilt1(data, azi, s):
     dz = vertical(data, npts, 1)
     t1 = np.ma.arctan(dz/dxtot)
     th = np.real(np.arctanh(np.nan_to_num(dz/dxtot)+(0+0j)))
+
     tdx = np.real(np.ma.arctan(dxtot/abs(dz)))
 
     dx1 = dx*np.cos(azi)+dy*np.sin(azi)  # Standard directional derivative
@@ -276,13 +277,14 @@ def tilt1(data, azi, s):
 
     # Standard tilt angle, hyperbolic tilt angle, 2nd order tilt angle,
     # Tilt Based Directional Derivative, Total Derivative
-    t1 = np.ma.array(t1)
-    th = np.ma.array(th)
-    th.mask = np.ma.getmaskarray(t1)
-    t2 = np.ma.array(t2)
-    t2.mask = np.ma.getmaskarray(t1)
-    ta = np.ma.array(ta)
-    tdx = np.ma.array(tdx)
+
+    # t1 = np.ma.array(t1)
+    # th = np.ma.array(th)
+    # th.mask = np.ma.getmaskarray(t1)
+    # t2 = np.ma.array(t2)
+    # t2.mask = np.ma.getmaskarray(t1)
+    # ta = np.ma.array(ta)
+    # tdx = np.ma.array(tdx)
 
     return t1, th, t2, ta, tdx
 
@@ -715,24 +717,26 @@ def _testfn():
     ifile = 'C:/Workdata/bugs/detlef/TMI_norm_wdw.tif'
 
     dat = get_raster(ifile)[0]
-    print(dat.data.shape)
 
-    dat.data = dat.data
+
+    t1, th, t2, ta, tdx = tilt1(dat.data, 75, 0)
+
+    # breakpoint()
 
 # Calculate the field
 
-    magval = dat.data
-    plt.figure(dpi=150)
-    plt.imshow(magval, cmap=cm.get_cmap('jet'))
-    plt.show()
+    # magval = dat.data
+    # plt.figure(dpi=150)
+    # plt.imshow(magval, cmap=cm.get_cmap('jet'))
+    # plt.show()
 
-    dat2 = rtp(dat, finc, fdec)
-    plt.figure(dpi=150)
-    plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
-    plt.show()
+    # dat2 = rtp(dat, finc, fdec)
+    # plt.figure(dpi=150)
+    # plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
+    # plt.show()
 
     # breakpoint()
 
 
 if __name__ == "__main__":
-    _testfn_rtp()
+    _testfn()

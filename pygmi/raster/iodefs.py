@@ -246,6 +246,11 @@ class ImportData():
 
         self.outdata[output_type] = dat
 
+        if dat[0].crs is None:
+            self.showprocesslog('Warning: Your data has no projection. '
+                                'Please add a projection in the Display/Edit '
+                                'Metadata interface.')
+
         return True
 
     def loadproj(self, projdata):
