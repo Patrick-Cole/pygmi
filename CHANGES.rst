@@ -2,6 +2,22 @@
 Changelog
 =========
 
+v3.2.4.4, 13 January 2022
+-------------------------
+*Minor bug for surfer 7 export
+*Layer stacking will now give an error if input data has no projection.
+*Fixed a bug in RTP where nan were generated in FFT preparation, resulting in no output.
+*ZSTD compression option added for exporting GeoTiffs
+*Surfer 7 export now replaces surfer 6 export.
+*Fixed a bug where ASTER hdf was not correctly retrieving coordinates.
+*Added longitude and latitude labels to plots, where necessary
+*Added code to convert PolygonZ to polygon type when cutting out a raster
+*Get raster now allows the nodata value to be specified
+*Amended f2160 feature
+*Fixed a bug where layer stacking with common mask changed the nodata value in a dataset to 1e+20
+*Added VCU calculation for Sentinel-2
+*Added invert selection to ratio dialog.
+
 v3.2.4.2, 03 November 2021
 --------------------------
 *Bugfix to model saving for changes

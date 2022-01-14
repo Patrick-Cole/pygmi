@@ -34,32 +34,32 @@ PyGMI should still work with Python 3.8.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.9.5
-* discretize 0.7.0
+* python 3.9.8
+* discretize 0.7.1
 * fiona 1.8.20
-* geopandas 0.9.0
-* llvmlite 0.36.0
-* matplotlib 3.4.2
+* geopandas 0.10.2
+* llvmlite 0.37.0
+* matplotlib 3.5.0
 * mtpy 1.1.5
-* numba 0.53.1
+* numba 0.54.1
 * numexpr 2.7.3
-* numpy 1.21.0+mkl
-* pandas 1.2.5
-* pillow 8.2.0
+* numpy 1.21.4+mkl
+* pandas 1.3.4
+* pillow 8.4.0
 * psutil 5.8.0
-* pymatsolver 0.1.3
+* pymatsolver 0.2.0
 * pyopengl 3.1.5
-* pyproj 3.1.0
+* pyproj 3.2.1
 * PyQt5 5.12.3
-* pytest 6.2.4
-* rasterio 1.2.6
+* pytest 6.2.5
+* rasterio 1.2.10
 * requests 2.25.1
-* scikit-image 0.18.2
-* scikit-learn 0.24.2
-* scipy 1.7.0
-* segyio 1.9.6
-* shapely 1.7.1
-* SimPEG 0.15.0
+* scikit-image 0.18.3
+* scikit-learn 1.0.1
+* scipy 1.7.2
+* segyio 1.9.7
+* shapely 1.8.0
+* SimPEG 0.15.2
 
 
 Installation
@@ -143,7 +143,7 @@ The process to install is as follows:
 
    conda install numba
 
-   conda install scikit-learn=0.24
+   conda install scikit-learn=1.0.1
 
    conda install scikit-image
 
