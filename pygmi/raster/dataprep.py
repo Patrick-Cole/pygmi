@@ -1403,7 +1403,10 @@ class Metadata(QtWidgets.QDialog):
                     tmp.dataid = j[0]
                     tmp.set_transform(transform=i.transform)
                     tmp.nodata = i.nodata
-                    tmp.crs = CRS.from_wkt(wkt)
+                    if wkt == 'None':
+                        tmp.crs = None
+                    else:
+                        tmp.crs = CRS.from_wkt(wkt)
                     tmp.units = i.units
                     # if tmp.dataid[-1] == ')':
                     #     tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
