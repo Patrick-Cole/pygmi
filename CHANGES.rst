@@ -2,9 +2,15 @@
 Changelog
 =========
 
+v3.2.4.5, 14 January 2022
+-------------------------
+*Added a warning if data has no projection
+*Fixed a bug where the hyperbolic tilt angle had an invalid mask
+*Fixed a bug where pressing 'OK' in display metadata caused a crash.
+
 v3.2.4.4, 13 January 2022
 -------------------------
-*Minor bug for surfer 7 export
+*Minor bugfix for surfer 7 export
 *Layer stacking will now give an error if input data has no projection.
 *Fixed a bug in RTP where nan were generated in FFT preparation, resulting in no output.
 *ZSTD compression option added for exporting GeoTiffs
