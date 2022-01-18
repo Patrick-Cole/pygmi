@@ -87,7 +87,12 @@ class MenuWidget():
         self.menu3.addAction(self.action_import_modis)
         self.action_import_modis.triggered.connect(self.import_modis)
 
-        self.action_import_ged = QtWidgets.QAction('Import ASTER Global Emissivity Database')
+        self.action_import_hyperion = QtWidgets.QAction('Import Hyperion L1T')
+        self.menu3.addAction(self.action_import_hyperion)
+        self.action_import_hyperion.triggered.connect(self.import_hyperion)
+
+        self.action_import_ged = QtWidgets.QAction('Import ASTER Global '
+                                                   'Emissivity Database')
         self.menu3.addAction(self.action_import_ged)
         self.action_import_ged.triggered.connect(self.import_ged)
 
@@ -204,6 +209,11 @@ class MenuWidget():
         """Import Landsat data."""
         self.parent.item_insert('Io', 'Import Landsat', iodefs.ImportData,
                                 params='Landsat (L*.tar L*.tar.gz L*_MTL.txt);;')
+
+    def import_hyperion(self):
+        """Import Hyperion data."""
+        self.parent.item_insert('Io', 'Import Hyperion L1T', iodefs.ImportData,
+                                params='Hyperion L1T (*.zip);;')
 
     def batch_list(self):
         """Import batch list."""

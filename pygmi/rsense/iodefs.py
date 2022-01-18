@@ -867,6 +867,8 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
         dat = get_modisv6(ifile, piter)
     elif 'AG1' in bfile and 'h5' in bfile.lower():
         dat = get_aster_ged(ifile, piter)
+    elif 'Hyperion' in extscene:
+        dat = get_hyperion(ifile, piter, showprocesslog)
     else:
         dat = None
 
@@ -1111,6 +1113,172 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
         for tfile in piter(tarnames):
             print(tfile)
             os.remove(os.path.join(os.path.dirname(ifile), tfile))
+    print('Import complete')
+    return dat
+
+
+def get_hyperion(ifile, piter=iter, showprocesslog=print):
+    """
+    Get Landsat Data.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+
+    Returns
+    -------
+    out : Data
+        PyGMI raster dataset
+    """
+
+    bandnames = [f'Band {i+1}' for i in range(242)]
+    wavelength = [
+        355.59,  365.76,  375.94,  386.11,  396.29,  406.46,  416.64,  426.82,
+        436.99,  447.17,  457.34,  467.52,  477.69,  487.87,  498.04,  508.22,
+        518.39,  528.57,  538.74,  548.92,  559.09,  569.27,  579.45,  589.62,
+        599.80,  609.97,  620.15,  630.32,  640.50,  650.67,  660.85,  671.02,
+        681.20,  691.37,  701.55,  711.72,  721.90,  732.07,  742.25,  752.43,
+        762.60,  772.78,  782.95,  793.13,  803.30,  813.48,  823.65,  833.83,
+        844.00,  854.18,  864.35,  874.53,  884.70,  894.88,  905.05,  915.23,
+        925.41,  935.58,  945.76,  955.93,  966.11,  976.28,  986.46,  996.63,
+        1006.81, 1016.98, 1027.16, 1037.33, 1047.51, 1057.68,  851.92,  862.01,
+        872.10,  882.19,  892.28,  902.36,  912.45,  922.54,  932.64,  942.73,
+        952.82,  962.91,  972.99,  983.08,  993.17, 1003.30, 1013.30, 1023.40,
+        1033.49, 1043.59, 1053.69, 1063.79, 1073.89, 1083.99, 1094.09, 1104.19,
+        1114.19, 1124.28, 1134.38, 1144.48, 1154.58, 1164.68, 1174.77, 1184.87,
+        1194.97, 1205.07, 1215.17, 1225.17, 1235.27, 1245.36, 1255.46, 1265.56,
+        1275.66, 1285.76, 1295.86, 1305.96, 1316.05, 1326.05, 1336.15, 1346.25,
+        1356.35, 1366.45, 1376.55, 1386.65, 1396.74, 1406.84, 1416.94, 1426.94,
+        1437.04, 1447.14, 1457.23, 1467.33, 1477.43, 1487.53, 1497.63, 1507.73,
+        1517.83, 1527.92, 1537.92, 1548.02, 1558.12, 1568.22, 1578.32, 1588.42,
+        1598.51, 1608.61, 1618.71, 1628.81, 1638.81, 1648.90, 1659.00, 1669.10,
+        1679.20, 1689.30, 1699.40, 1709.50, 1719.60, 1729.70, 1739.70, 1749.79,
+        1759.89, 1769.99, 1780.09, 1790.19, 1800.29, 1810.38, 1820.48, 1830.58,
+        1840.58, 1850.68, 1860.78, 1870.87, 1880.98, 1891.07, 1901.17, 1911.27,
+        1921.37, 1931.47, 1941.57, 1951.57, 1961.66, 1971.76, 1981.86, 1991.96,
+        2002.06, 2012.15, 2022.25, 2032.35, 2042.45, 2052.45, 2062.55, 2072.65,
+        2082.75, 2092.84, 2102.94, 2113.04, 2123.14, 2133.24, 2143.34, 2153.34,
+        2163.43, 2173.53, 2183.63, 2193.73, 2203.83, 2213.93, 2224.03, 2234.12,
+        2244.22, 2254.22, 2264.32, 2274.42, 2284.52, 2294.61, 2304.71, 2314.81,
+        2324.91, 2335.01, 2345.11, 2355.21, 2365.20, 2375.30, 2385.40, 2395.50,
+        2405.60, 2415.70, 2425.80, 2435.89, 2445.99, 2456.09, 2466.09, 2476.19,
+        2486.29, 2496.39, 2506.48, 2516.59, 2526.68, 2536.78, 2546.88, 2556.98,
+        2566.98, 2577.08]
+
+    fwhm = [
+        11.3871, 11.3871, 11.3871, 11.3871, 11.3871, 11.3871, 11.3871, 11.3871,
+        11.3871, 11.3871, 11.3871, 11.3871, 11.3871, 11.3784, 11.3538, 11.3133,
+        11.2580, 11.1907, 11.1119, 11.0245, 10.9321, 10.8368, 10.7407, 10.6482,
+        10.5607, 10.4823, 10.4147, 10.3595, 10.3188, 10.2942, 10.2856, 10.2980,
+        10.3349, 10.3909, 10.4592, 10.5322, 10.6004, 10.6562, 10.6933, 10.7058,
+        10.7276, 10.7907, 10.8833, 10.9938, 11.1044, 11.1980, 11.2600, 11.2824,
+        11.2822, 11.2816, 11.2809, 11.2797, 11.2782, 11.2771, 11.2765, 11.2756,
+        11.2754, 11.2754, 11.2754, 11.2754, 11.2754, 11.2754, 11.2754, 11.2754,
+        11.2754, 11.2754, 11.2754, 11.2754, 11.2754, 11.2754, 11.0457, 11.0457,
+        11.0457, 11.0457, 11.0457, 11.0457, 11.0457, 11.0457, 11.0457, 11.0457,
+        11.0457, 11.0457, 11.0457, 11.0457, 11.0457, 11.0457, 11.0457, 11.0451,
+        11.0423, 11.0372, 11.0302, 11.0218, 11.0122, 11.0013, 10.9871, 10.9732,
+        10.9572, 10.9418, 10.9248, 10.9065, 10.8884, 10.8696, 10.8513, 10.8335,
+        10.8154, 10.7979, 10.7822, 10.7663, 10.7520, 10.7385, 10.7270, 10.7174,
+        10.7091, 10.7022, 10.6970, 10.6946, 10.6937, 10.6949, 10.6996, 10.7058,
+        10.7163, 10.7283, 10.7437, 10.7612, 10.7807, 10.8034, 10.8267, 10.8534,
+        10.8818, 10.9110, 10.9422, 10.9743, 11.0074, 11.0414, 11.0759, 11.1108,
+        11.1461, 11.1811, 11.2156, 11.2496, 11.2826, 11.3146, 11.3460, 11.3753,
+        11.4037, 11.4302, 11.4538, 11.4760, 11.4958, 11.5133, 11.5286, 11.5404,
+        11.5505, 11.5580, 11.5621, 11.5634, 11.5617, 11.5563, 11.5477, 11.5346,
+        11.5193, 11.5002, 11.4789, 11.4548, 11.4279, 11.3994, 11.3688, 11.3366,
+        11.3036, 11.2696, 11.2363, 11.2007, 11.1666, 11.1333, 11.1018, 11.0714,
+        11.0424, 11.0155, 10.9912, 10.9698, 10.9508, 10.9355, 10.9230, 10.9139,
+        10.9083, 10.9069, 10.9057, 10.9013, 10.8951, 10.8854, 10.8740, 10.8591,
+        10.8429, 10.8242, 10.8039, 10.7820, 10.7592, 10.7342, 10.7092, 10.6834,
+        10.6572, 10.6312, 10.6052, 10.5803, 10.5560, 10.5328, 10.5101, 10.4904,
+        10.4722, 10.4552, 10.4408, 10.4285, 10.4197, 10.4129, 10.4088, 10.4077,
+        10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077,
+        10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077,
+        10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077,
+        10.4077, 10.4077]
+
+    # for i in range(242):
+    #     print(bandnames[i], wavelength[i], fwhm[i])
+
+    showprocesslog('Extracting zip...')
+
+    idir = os.path.dirname(ifile)
+    zfile = zipfile.ZipFile(ifile)
+
+    zipnames = zfile.namelist()
+    zfile.extractall(idir)
+    zfile.close()
+
+    zipnames2 = [i for i in zipnames if i[-3:].lower() == 'tif']
+
+    showprocesslog('Importing Hyperion data...')
+
+    nval = 0
+    dat = []
+    for ifile2 in piter(zipnames2):
+        fext = ifile2.split('_')[1]
+        bandno = int(fext[1:])
+
+        # Eliminate bands not illuminated
+        if bandno <= 7 or bandno >= 225:
+            continue
+
+        # Overlap Region
+        if bandno >= 58 and bandno <= 78:
+            continue
+
+        showprocesslog(f'Importing band {bandno}: {wavelength[bandno-1]} nm')
+        dataset = rasterio.open(os.path.join(idir, ifile2))
+
+        if dataset is None:
+            showprocesslog(f'Problem with band {bandno}')
+            continue
+
+        rtmp = dataset.read(1)
+
+        dat.append(Data())
+        dat[-1].data = rtmp
+
+        dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+        dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+        if dat[-1].data.mask.size == 1:
+            dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
+                                 dat[-1].data.mask)
+
+        dat[-1].dataid = f'Band {bandno}: {wavelength[bandno-1]} nm'
+        dat[-1].nodata = nval
+        dat[-1].crs = dataset.crs
+        dat[-1].set_transform(transform=dataset.transform)
+        dat[-1].filename = ifile
+
+        bmeta = {}
+        # if satbands is not None and fext in satbands:
+        bmeta['wavelength'] = wavelength[bandno-1]
+        bmeta['WavelengthMin'] = wavelength[bandno-1]-fwhm[bandno-1]/2
+        bmeta['WavelengthMax'] = wavelength[bandno-1]+fwhm[bandno-1]/2
+
+        dat[-1].metadata.update(bmeta)
+
+        dataset.close()
+
+    if dat == []:
+        dat = None
+
+    showprocesslog('Cleaning Extracted zip files...')
+    for zfile in zipnames:
+        os.remove(os.path.join(idir, zfile))
+
+    # if '.tar' in ifilet:
+    #     showprocesslog('Cleaning Extracted tar files...')
+    #     for tfile in piter(tarnames):
+    #         print(tfile)
+    #         os.remove(os.path.join(os.path.dirname(ifile), tfile))
     print('Import complete')
     return dat
 
@@ -1838,6 +2006,7 @@ def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
 
+    extscene = None
     ifile = r"C:\Workdata\Remote Sensing\Modis\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
     ifile = r"C:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
     ifile = r"C:\Workdata\Remote Sensing\Sentinel-2\S2B_MSIL2A_20201213T081239_N0214_R078_T34JGP_20201213T105149.SAFE\MTD_MSIL2A.xml"
@@ -1855,7 +2024,10 @@ def _testfn():
     # ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
 
 
-    dat = get_data(ifile)
+    ifile = "E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    extscene = 'Hyperion'
+
+    dat = get_data(ifile, extscene = extscene)
 
     for i in dat:
         plt.figure(dpi=150)

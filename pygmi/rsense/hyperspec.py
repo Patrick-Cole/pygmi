@@ -924,7 +924,11 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
     xval = []
     for j in dat:
         dat2.append(j.data)
-        refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
+        # refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
+        refl = float(re.findall(r'[\d\.\d]+', j.dataid)[-1])
+        if refl < 100.:
+            refl = refl * 1000
+        refl = round(refl, 2)
         xval.append(refl)
 
     xval = np.array(xval)
@@ -1343,12 +1347,15 @@ def readsli(ifile):
 
 def _testfn():
     """Test routine."""
+    from pygmi.rsense.iodefs import get_data
+
     pbar = ProgressBarText()
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     # ifile = r"C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
     ifile = r"E:\Workdata\Hyperspectral\080_0824-0920_ref_rect_clip.hdr"
+    ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     xoff = 0
     yoff = 2000
@@ -1360,7 +1367,8 @@ def _testfn():
     iraster = (xoff, yoff, xsize, ysize)
     iraster = None
 
-    data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
+    # data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
+    data = get_data(ifile, extscene='Hyperion')
 
     # data = get_raster(ifile, piter=pbar.iter)
 
