@@ -1344,7 +1344,8 @@ class ExportData():
         return file_out
 
 
-def export_raster(ofile, dat, drv, envimeta='', piter=None, compression='NONE'):
+def export_raster(ofile, dat, drv, envimeta='', piter=None,
+                  compression='NONE'):
     """
     Export to rasterio format.
 

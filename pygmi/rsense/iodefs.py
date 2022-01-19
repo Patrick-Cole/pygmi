@@ -1259,7 +1259,8 @@ def get_hyperion(ifile, piter=iter, showprocesslog=print):
 
         bmeta = {}
         # if satbands is not None and fext in satbands:
-        bmeta['wavelength'] = wavelength[bandno-1]
+
+        dat[-1].metadata['Raster']['wavelength'] = wavelength[bandno-1]
         bmeta['WavelengthMin'] = wavelength[bandno-1]-fwhm[bandno-1]/2
         bmeta['WavelengthMax'] = wavelength[bandno-1]+fwhm[bandno-1]/2
 

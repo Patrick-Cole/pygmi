@@ -1392,14 +1392,14 @@ def _testfn():
 
     tmp = np.histogram(dat.data[dat.data > 0])
 
-    breakpoint()
-
 
 def _testfn2():
     """Test routine."""
+    from pygmi.rsense.iodefs import get_data
     pbar = ProgressBarText()
 
     ifile = r'C:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
+    ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     xoff = 0
     yoff = 2000
@@ -1411,7 +1411,8 @@ def _testfn2():
     iraster = (xoff, yoff, xsize, ysize)
     # iraster = None
 
-    data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
+    # data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
+    data = get_data(ifile, extscene='Hyperion')
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = AnalSpec()
@@ -1568,4 +1569,4 @@ def _testfn3():
 
 if __name__ == "__main__":
     # _testfn3()
-    _testfn()
+    _testfn2()
