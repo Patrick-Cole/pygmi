@@ -47,6 +47,7 @@ import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
+from pygmi.misc import ProgressBarText
 
 
 class DataCut():
@@ -2574,7 +2575,7 @@ def getepsgcodes():
     return pcodes
 
 
-def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
+def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False):
     """
     Merge datasets found in a single PyGMI data object.
 
@@ -2591,6 +2592,9 @@ def lstack(dat, piter=iter, dxy=None, pprint=print, commonmask=False):
     out : PyGMI Data
         data object which stores datasets
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
     if dat[0].isrgb:
         return dat
 

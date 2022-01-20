@@ -43,6 +43,7 @@ from rasterio.crs import CRS
 
 import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
+from pygmi.misc import ProgressBarText
 
 EDIST = {1: 0.98331, 2: 0.9833, 3: 0.9833, 4: 0.9833,
          5: 0.9833, 6: 0.98332, 7: 0.98333, 8: 0.98335,
@@ -879,7 +880,7 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
     return dat
 
 
-def get_modisv6(ifile, piter=iter):
+def get_modisv6(ifile, piter=None):
     """
     Get MODIS v006 data.
 
@@ -895,6 +896,9 @@ def get_modisv6(ifile, piter=iter):
     dat : PyGMI raster Data
         dataset imported
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
     dat = []
     ifile = ifile[:]
 
@@ -971,7 +975,7 @@ def get_modisv6(ifile, piter=iter):
     return dat
 
 
-def get_landsat(ifilet, piter=iter, showprocesslog=print):
+def get_landsat(ifilet, piter=None, showprocesslog=print):
     """
     Get Landsat Data.
 
@@ -989,6 +993,9 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     out : Data
         PyGMI raster dataset
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
     platform = os.path.basename(ifilet)[2: 4]
     satbands = None
     lstband = None
@@ -1102,6 +1109,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
+        bmeta['Raster']['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
 
         dataset.close()
 
@@ -1117,7 +1125,7 @@ def get_landsat(ifilet, piter=iter, showprocesslog=print):
     return dat
 
 
-def get_hyperion(ifile, piter=iter, showprocesslog=print):
+def get_hyperion(ifile, piter=None, showprocesslog=print):
     """
     Get Landsat Data.
 
@@ -1135,8 +1143,10 @@ def get_hyperion(ifile, piter=iter, showprocesslog=print):
     out : Data
         PyGMI raster dataset
     """
+    if piter is None:
+        piter = ProgressBarText().iter
 
-    bandnames = [f'Band {i+1}' for i in range(242)]
+    # bandnames = [f'Band {i+1}' for i in range(242)]
     wavelength = [
         355.59,  365.76,  375.94,  386.11,  396.29,  406.46,  416.64,  426.82,
         436.99,  447.17,  457.34,  467.52,  477.69,  487.87,  498.04,  508.22,
@@ -1284,7 +1294,7 @@ def get_hyperion(ifile, piter=iter, showprocesslog=print):
     return dat
 
 
-def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
+def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
     """
     Get Sentinel-2 Data.
 
@@ -1304,6 +1314,9 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
     dat : PyGMI raster Data
         dataset imported
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
     ifile = ifile[:]
 
     with rasterio.open(ifile) as dataset:
@@ -1331,12 +1344,6 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
                     'central wavelength' not in bname.lower()):
                 continue
 
-            if 'WAVELENGTH' in bmeta and 'BANDWIDTH' in bmeta:
-                wlen = float(bmeta['WAVELENGTH'])
-                bwidth = float(bmeta['BANDWIDTH'])
-                bmeta['WavelengthMin'] = wlen - bwidth/2
-                bmeta['WavelengthMax'] = wlen + bwidth/2
-
             dat.append(Data())
             dat[-1].data = rtmp
             dat[-1].data = np.ma.masked_invalid(dat[-1].data)
@@ -1352,6 +1359,14 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
             dat[-1].set_transform(transform=dataset.transform)
             dat[-1].filename = ifile
             dat[-1].units = 'Reflectance'
+
+            if 'WAVELENGTH' in bmeta and 'BANDWIDTH' in bmeta:
+                wlen = float(bmeta['WAVELENGTH'])
+                bwidth = float(bmeta['BANDWIDTH'])
+                bmeta['WavelengthMin'] = wlen - bwidth/2
+                bmeta['WavelengthMax'] = wlen + bwidth/2
+                dat[-1].metadata['Raster']['wavelength'] = wlen
+
             dat[-1].metadata.update(bmeta)
 
             if 'SOLAR_IRRADIANCE_UNIT' in bmeta:
@@ -1365,7 +1380,7 @@ def get_sentinel2(ifile, piter=iter, showprocesslog=print, extscene=None):
     return dat
 
 
-def get_aster_zip(ifile, piter=iter, showprocesslog=print):
+def get_aster_zip(ifile, piter=None, showprocesslog=print):
     """
     Get ASTER zip Data.
 
@@ -1383,6 +1398,9 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
     dat : PyGMI raster Data
         dataset imported
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
     satbands = {'1': [520, 600],
                 '2': [630, 690],
                 '3N': [780, 860],
@@ -1454,6 +1472,7 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
         fext = dat[-1].dataid[4:]
         bmeta['WavelengthMin'] = satbands[fext][0]
         bmeta['WavelengthMax'] = satbands[fext][1]
+        bmeta['Raster']['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
 
         dataset.close()
         dataset1.close()
@@ -1465,7 +1484,7 @@ def get_aster_zip(ifile, piter=iter, showprocesslog=print):
     return dat
 
 
-def get_aster_hdf_old(ifile, piter=iter):
+def get_aster_hdf(ifile, piter=None):
     """
     Get ASTER hdf Data.
 
@@ -1481,161 +1500,9 @@ def get_aster_hdf_old(ifile, piter=iter):
     dat : PyGMI raster Data
         dataset imported
     """
-    from osgeo import gdal
+    if piter is None:
+        piter = ProgressBarText().iter
 
-    satbands = {'1': [520, 600],
-                '2': [630, 690],
-                '3N': [780, 860],
-                '3B': [780, 860],
-                '4': [1600, 1700],
-                '5': [2145, 2185],
-                '6': [2185, 2225],
-                '7': [2235, 2285],
-                '8': [2295, 2365],
-                '9': [2360, 2430],
-                '10': [8125, 8475],
-                '11': [8475, 8825],
-                '12': [8925, 9275],
-                '13': [10250, 10950],
-                '14': [10950, 11650]}
-
-    ifile = ifile[:]
-
-    if 'AST_07' in ifile:
-        ptype = '07'
-    elif 'AST_L1T' in ifile:
-        ptype = 'L1T'
-    elif 'AST_05' in ifile:
-        ptype = '05'
-    elif 'AST_08' in ifile:
-        ptype = '08'
-    else:
-        return None
-
-    dataset = gdal.Open(ifile, gdal.GA_ReadOnly)
-
-    meta = dataset.GetMetadata()
-
-    if ptype == 'L1T':
-        ucc = {'ImageData1': float(meta['INCL1']),
-               'ImageData2': float(meta['INCL2']),
-               'ImageData3N': float(meta['INCL3N']),
-               'ImageData4': float(meta['INCL4']),
-               'ImageData5': float(meta['INCL5']),
-               'ImageData6': float(meta['INCL6']),
-               'ImageData7': float(meta['INCL7']),
-               'ImageData8': float(meta['INCL8']),
-               'ImageData9': float(meta['INCL9']),
-               'ImageData10': float(meta['INCL10']),
-               'ImageData11': float(meta['INCL11']),
-               'ImageData12': float(meta['INCL12']),
-               'ImageData13': float(meta['INCL13']),
-               'ImageData14': float(meta['INCL14'])}
-
-    solarelev = float(meta['SOLARDIRECTION'].split()[1])
-    cdate = meta['CALENDARDATE']
-    if len(cdate) == 8:
-        fmt = '%Y%m%d'
-    else:
-        fmt = '%Y-%m-%d'
-    dte = datetime.datetime.strptime(cdate, fmt)
-    jdate = dte.timetuple().tm_yday
-
-    subdata = dataset.GetSubDatasets()
-    if ptype == '07':
-        subdata = [i for i in subdata if 'SurfaceReflectance' in i[0]]
-        scalefactor = 0.001
-        units = 'Surface Reflectance'
-    elif ptype == '05':
-        subdata = [i for i in subdata if 'SurfaceEmissivity' in i[0]]
-        scalefactor = 0.001
-        units = 'Surface Emissivity'
-    elif ptype == '08':
-        scalefactor = 0.1
-        units = 'Surface Kinetic Temperature'
-    elif ptype == 'L1T':
-        subdata = [i for i in subdata if 'ImageData' in i[0]]
-        scalefactor = 1
-        units = ''
-    else:
-        return None
-
-    dat = []
-    nval = 0
-    calctoa = False
-    for bfile, bandid in piter(subdata):
-        if 'QA' in bfile:
-            continue
-        if ptype == 'L1T' and 'ImageData3B' in bfile:
-            continue
-
-        bandid2 = bandid[bandid.lower().index(']')+1:
-                         bandid.lower().index('(')].strip()
-
-        dataset = gdal.Open(bfile, gdal.GA_ReadOnly)
-
-        tmpds = gdal.AutoCreateWarpedVRT(dataset)
-
-        if tmpds is None:
-            continue
-        dat.append(Data())
-        dat[-1].data = tmpds.ReadAsArray()
-        if ptype == '08':
-            dat[-1].data[dat[-1].data == 2000] = nval
-        dat[-1].data = np.ma.masked_invalid(dat[-1].data)*scalefactor
-        dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
-        if dat[-1].data.mask.size == 1:
-            dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
-
-        dat[-1].dataid = bandid2
-        dat[-1].nullvalue = nval
-        # breakpoint()
-        gtr = tmpds.GetGeoTransform()
-        dat[-1].set_transform(xdim=gtr[1], xmin=gtr[0],
-                              ydim=-gtr[5], ymax=gtr[3])
-        # dat[-1].wkt = tmpds.GetProjectionRef()
-        dat[-1].metadata['SolarElev'] = solarelev
-        dat[-1].metadata['JulianDay'] = jdate
-        dat[-1].metadata['CalendarDate'] = cdate
-        dat[-1].metadata['ShortName'] = meta['SHORTNAME']
-        dat[-1].filename = ifile
-        dat[-1].units = units
-
-        bmeta = dat[-1].metadata
-        if satbands is not None:
-            fext = dat[-1].dataid[4:].split()[0]
-            bmeta['WavelengthMin'] = satbands[fext][0]
-            bmeta['WavelengthMax'] = satbands[fext][1]
-
-        if ptype == 'L1T' and 'ImageData' in ifile:
-            dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
-            calctoa = True
-
-    if dat == []:
-        dat = None
-
-    if ptype == 'L1T' and calctoa is True:
-        dat = calculate_toa(dat)
-
-    return dat
-
-
-def get_aster_hdf(ifile, piter=iter):
-    """
-    Get ASTER hdf Data.
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-    piter : iter, optional
-        Progress bar iterable. Default is iter
-
-    Returns
-    -------
-    dat : PyGMI raster Data
-        dataset imported
-    """
     satbands = {'1': [520, 600],
                 '2': [630, 690],
                 '3N': [780, 860],
@@ -1760,6 +1627,7 @@ def get_aster_hdf(ifile, piter=iter):
             fext = dat[-1].dataid[4:].split()[0]
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
+            bmeta['Raster']['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
 
             if ptype == 'L1T' and 'ImageData' in ifile:
                 dat[-1].metadata['Gain'] = ucc[ifile[ifile.rindex('ImageData'):]]
@@ -1776,7 +1644,7 @@ def get_aster_hdf(ifile, piter=iter):
     return dat
 
 
-def get_aster_ged(ifile, piter=iter):
+def get_aster_ged(ifile, piter=None):
     """
     Get ASTER GED data.
 
@@ -1790,6 +1658,9 @@ def get_aster_ged(ifile, piter=iter):
     dat : PyGMI raster Data
         dataset imported
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
     dat = []
     ifile = ifile[:]
 

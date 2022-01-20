@@ -114,6 +114,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.spectra = None
         self.refl = 1.
         self.rotate = False
+        self.nodata = 0.
 
     def init_graph(self):
         """
@@ -125,6 +126,7 @@ class GraphMap(FigureCanvasQTAgg):
 
         """
         dat = self.datarr[self.mindx]/self.refl
+        # dat = np.ma.masked_equal(dat, self.nodata)
 
         rows, cols = dat.shape
 
@@ -488,6 +490,28 @@ class AnalSpec(QtWidgets.QDialog):
 
         dat = self.indata['Raster']
 
+        needsmerge = False
+        rows, cols = dat[0].data.shape
+
+        for i in dat:
+            irows, icols = i.data.shape
+            if irows != rows or icols != cols:
+                needsmerge = True
+
+        if needsmerge is True:
+            self.showprocesslog('Error: Your data bands have different sizes. '
+                                'Use Layer Stack to fix this first')
+            return False
+
+        wavelengths = []
+        dat2 = []
+        for i in dat:
+            if 'wavelength' in i.metadata['Raster']:
+                wavelengths.append(i.metadata['Raster']['wavelength'])
+                dat2.append(i)
+
+        dat = [i for _, i in sorted(zip(wavelengths, dat2))]
+
         if 'reflectance_scale_factor' in dat[0].metadata['Raster']:
             self.map.refl = float(dat[0].metadata['Raster']['reflectance_scale_factor'])
 
@@ -501,6 +525,7 @@ class AnalSpec(QtWidgets.QDialog):
             wvl.append(float(j.metadata['Raster']['wavelength']))
 
         self.map.datarr = np.array(dat2)
+        self.map.nodata = dat[0].nodata
         self.map.wvl = np.array(wvl)
         if self.map.wvl.max() < 20:
             self.map.wvl = self.map.wvl*1000.
@@ -1396,23 +1421,30 @@ def _testfn():
 def _testfn2():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
-    pbar = ProgressBarText()
+    from pygmi.raster.dataprep import lstack
 
     ifile = r'C:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
     ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"E:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    # ifile = r"E:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    ifile = r"E:\Workdata\Remote Sensing\AST_07XT_00307292005085059_20210608060928_376.hdf"
+    ifile = r"E:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
 
-    xoff = 0
-    yoff = 2000
-    xsize = None
-    ysize = 1000
-    nodata = 15000
-    nodata = 0
 
-    iraster = (xoff, yoff, xsize, ysize)
+    # xoff = 0
+    # yoff = 2000
+    # xsize = None
+    # ysize = 1000
+    # nodata = 15000
+    # nodata = 0
+
+    # iraster = (xoff, yoff, xsize, ysize)
     # iraster = None
 
-    # data = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
-    data = get_data(ifile, extscene='Hyperion')
+    # data = get_raster(ifile, nval=nodata, iraster=iraster)
+    data = get_data(ifile, extscene='Sentinel-2')
+
+    data = lstack(data)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = AnalSpec()
@@ -1422,8 +1454,6 @@ def _testfn2():
 
 def _testfn3():
     """Test."""
-    pbar = ProgressBarText()
-
     ifile1 = r'C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr'
     ifile2 = r'C:\Workdata\Lithosphere\merge\cut-088-0824_iMNF15.hdr'
     ifile3 = r'C:\Workdata\Lithosphere\merge\cut-089-0824_iMNF15.hdr'
@@ -1435,9 +1465,9 @@ def _testfn3():
     nodata = 0
     iraster = (0, yoff, None, ysize)
 
-    data1 = get_raster(ifile1, nval=nodata, iraster=iraster, piter=pbar.iter)
-    data2 = get_raster(ifile2, nval=nodata, iraster=iraster, piter=pbar.iter)
-    data3 = get_raster(ifile3, nval=nodata, iraster=iraster, piter=pbar.iter)
+    data1 = get_raster(ifile1, nval=nodata, iraster=iraster)
+    data2 = get_raster(ifile2, nval=nodata, iraster=iraster)
+    data3 = get_raster(ifile3, nval=nodata, iraster=iraster)
 
     plt.figure(dpi=150)
     plt.imshow(data1[0].data, extent=data1[0].extent)
@@ -1461,9 +1491,9 @@ def _testfn3():
     iraster = (0, yoff, None, ysize)
     # iraster = None
 
-    data1 = get_raster(ifile1, nval=nodata, iraster=iraster, piter=pbar.iter)
-    data2 = get_raster(ifile2, nval=nodata, iraster=iraster, piter=pbar.iter)
-    data3 = get_raster(ifile3, nval=nodata, iraster=iraster, piter=pbar.iter)
+    data1 = get_raster(ifile1, nval=nodata, iraster=iraster)
+    data2 = get_raster(ifile2, nval=nodata, iraster=iraster)
+    data3 = get_raster(ifile3, nval=nodata, iraster=iraster)
 
     for i in range(2):
         if i == 0:
