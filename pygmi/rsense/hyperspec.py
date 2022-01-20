@@ -115,6 +115,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.refl = 1.
         self.rotate = False
         self.nodata = 0.
+        self.ax1 = None
 
     def init_graph(self):
         """
@@ -132,6 +133,7 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.figure.clf()
         ax1 = self.figure.add_subplot(211)
+        self.ax1 = ax1
 
         ymin = dat.mean()-2*dat.std()
         ymax = dat.mean()+2*dat.std()
@@ -259,7 +261,7 @@ class AnalSpec(QtWidgets.QDialog):
 
         self.canvas.mpl_connect('button_press_event',
                                 self.button_press_callback)
-        self.resize(800, 400)
+        # self.resize(800, 400)
 
     def setupui(self):
         """
@@ -332,8 +334,15 @@ class AnalSpec(QtWidgets.QDialog):
         if event.button != 1:
             return
 
-        ax = self.map.figure.gca()
+        if event.inaxes != self.map.ax1:
+            return
+
+        ax = event.inaxes
+        # ax = self.map.figure.gca()
         if ax.get_navigate_mode() is not None:
+            return
+
+        if ax != self.map.ax1:
             return
 
         self.map.row = int(event.ydata)
@@ -1425,10 +1434,10 @@ def _testfn2():
 
     ifile = r'C:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
     ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    ifile = r"E:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    # ifile = r"E:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
     # ifile = r"E:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    ifile = r"E:\Workdata\Remote Sensing\AST_07XT_00307292005085059_20210608060928_376.hdf"
-    ifile = r"E:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
+    # ifile = r"E:\Workdata\Remote Sensing\AST_07XT_00307292005085059_20210608060928_376.hdf"
+    # ifile = r"E:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
 
 
     # xoff = 0
@@ -1442,7 +1451,7 @@ def _testfn2():
     # iraster = None
 
     # data = get_raster(ifile, nval=nodata, iraster=iraster)
-    data = get_data(ifile, extscene='Sentinel-2')
+    data = get_data(ifile, extscene='Hyperion')
 
     data = lstack(data)
 
