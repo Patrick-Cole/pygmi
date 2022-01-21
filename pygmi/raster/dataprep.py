@@ -536,16 +536,6 @@ class DataMerge(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-        if 'Raster' not in self.indata:
-            self.showprocesslog('No Raster Data.')
-            return False
-
-        for i in self.indata['Raster']:
-            if i.crs is None:
-                self.showprocesslog(f'{i.dataid} has no projection. '
-                                    'Please assign one.')
-                return False
-
         if not nodialog:
             tmp = self.exec_()
             if tmp != 1:
@@ -651,6 +641,11 @@ class DataMerge(QtWidgets.QDialog):
         # Get projection information
         wkt = []
         for i in indata:
+            if i.crs is None:
+                self.showprocesslog(f'{i.dataid} has no projection. '
+                                    'Please assign one.')
+                return False
+
             wkt.append(i.crs.to_wkt())
             nodata = i.nodata
 
@@ -776,6 +771,10 @@ class DataMerge(QtWidgets.QDialog):
         wkt = []
         for ifile in ifiles:
             with rasterio.open(ifile) as dataset:
+                if dataset.crs is None:
+                    self.showprocesslog(f'{ifile} has no projection. '
+                                        'Please assign one.')
+                    return False
                 wkt.append(dataset.crs.wkt)
                 crs = dataset.crs
 
