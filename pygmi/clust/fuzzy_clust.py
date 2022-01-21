@@ -212,6 +212,10 @@ class FuzzyClust(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
         if tst.size > 2:
             self.showprocesslog('Error: Your input datasets have different '

@@ -82,6 +82,7 @@ from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
 # from pygmi.raster.modest_image import imshow
 import pygmi.rsense.features as features
+from pygmi.misc import getinfo
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -126,7 +127,12 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
-        dat = self.datarr[self.mindx]/self.refl
+        getinfo('Start')
+        dat = self.datarr[self.mindx]
+
+        if self.refl != 1.:
+            dat = dat/self.refl
+
         # dat = np.ma.masked_equal(dat, self.nodata)
 
         rows, cols = dat.shape
@@ -138,6 +144,7 @@ class GraphMap(FigureCanvasQTAgg):
         ymin = dat.mean()-2*dat.std()
         ymax = dat.mean()+2*dat.std()
 
+        getinfo('1')
         # if self.rotate is True:
         #     self.csp = imshow(ax1, dat.T, vmin=ymin, vmax=ymax)
         #     rows, cols = cols, rows
@@ -145,11 +152,14 @@ class GraphMap(FigureCanvasQTAgg):
         #     self.csp = imshow(ax1, dat, vmin=ymin, vmax=ymax)
 
         if self.rotate is True:
-            self.csp = ax1.imshow(dat.T, vmin=ymin, vmax=ymax)
+            self.csp = ax1.imshow(dat.T, vmin=ymin, vmax=ymax,
+                                  interpolation='none')
             rows, cols = cols, rows
         else:
-            self.csp = ax1.imshow(dat, vmin=ymin, vmax=ymax)
+            self.csp = ax1.imshow(dat, vmin=ymin, vmax=ymax,
+                                  interpolation='none')
 
+        getinfo('2')
         ax1.set_xlim((0, cols))
         ax1.set_ylim((0, rows))
         ax1.xaxis.set_visible(False)
@@ -159,6 +169,7 @@ class GraphMap(FigureCanvasQTAgg):
         ax1.yaxis.set_major_formatter(frm)
 
         ax1.plot(self.col, self.row, '+w')
+
 
         ax2 = self.figure.add_subplot(212)
         prof = self.datarr[:, self.row, self.col]/self.refl
@@ -172,6 +183,7 @@ class GraphMap(FigureCanvasQTAgg):
             ax2.plot(self.wvl, prof/hull)
         else:
             ax2.plot(self.wvl, prof)
+
 
         ax2.axvline(self.feature[0], ls='--', c='r')
 
@@ -201,6 +213,8 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
+
+        getinfo('end')
 
 
 class AnalSpec(QtWidgets.QDialog):
@@ -1434,7 +1448,7 @@ def _testfn2():
 
     ifile = r'C:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
     ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    # ifile = r"E:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    ifile = r"E:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
     # ifile = r"E:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     # ifile = r"E:\Workdata\Remote Sensing\AST_07XT_00307292005085059_20210608060928_376.hdf"
     # ifile = r"E:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"

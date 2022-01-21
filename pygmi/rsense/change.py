@@ -724,6 +724,7 @@ class SceneViewer(QtWidgets.QDialog):
 
         """
         if 'SceneList' not in self.indata:
+            self.showprocesslog('You need a scene list.')
             return False
 
         self.df = self.indata['SceneList']

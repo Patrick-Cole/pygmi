@@ -278,7 +278,7 @@ class EquationEditor(QtWidgets.QDialog):
         elif 'Raster' in self.indata:
             intype = 'Raster'
         else:
-            self.showprocesslog('No raster data')
+            self.showprocesslog('No raster data.')
             return False
 
         indata = dataprep.lstack(self.indata[intype])

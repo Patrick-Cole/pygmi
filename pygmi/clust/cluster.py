@@ -240,6 +240,10 @@ class Cluster(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
         tst = np.unique([i.data.shape for i in self.indata['Raster']])
 
         if tst.size > 2:

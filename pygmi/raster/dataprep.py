@@ -277,6 +277,10 @@ class DataLayerStack(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
         if not nodialog:
             data = self.indata['Raster'][0]
 
@@ -532,6 +536,16 @@ class DataMerge(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
+        for i in self.indata['Raster']:
+            if i.crs is None:
+                self.showprocesslog(f'{i.dataid} has no projection. '
+                                    'Please assign one.')
+                return False
+
         if not nodialog:
             tmp = self.exec_()
             if tmp != 1:
@@ -918,6 +932,10 @@ class DataReproj(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
         if self.indata['Raster'][0].crs is None:
             self.showprocesslog('Your input data has no projection. '
                                 'Please assign one in the metadata summary.')
@@ -1635,7 +1653,9 @@ class RTP(QtWidgets.QDialog):
 
         """
         tmp = []
+
         if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
             return False
 
         for i in self.indata['Raster']:
@@ -1802,6 +1822,7 @@ class Continuation(QtWidgets.QDialog):
         """
         tmp = []
         if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
             return False
 
         for i in self.indata['Raster']:

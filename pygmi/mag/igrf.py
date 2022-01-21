@@ -247,6 +247,16 @@ class IGRF(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
+        for i in self.indata['Raster']:
+            if i.crs is None:
+                self.showprocesslog(f'{i.dataid} has no projection. '
+                                    'Please assign one.')
+                return False
+
         if self.wkt is None:
             self.wkt = self.indata['Raster'][0].crs.wkt
 

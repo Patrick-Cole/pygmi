@@ -1866,7 +1866,9 @@ class PlotInterp(QtWidgets.QDialog):
             return True
 
         if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
             return False
+
         if self.indata['Raster'][0].isrgb:
             self.showprocesslog('RGB images cannot be used in this module.')
             return False

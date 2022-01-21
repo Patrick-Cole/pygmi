@@ -143,6 +143,7 @@ class ImageSeg(QtWidgets.QDialog):
 
         """
         if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
             return False
 
         data1 = []

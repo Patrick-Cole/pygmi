@@ -147,6 +147,10 @@ class Gradients(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
         if not nodialog:
             temp = self.exec_()
             if temp == 0:
@@ -447,6 +451,10 @@ class Visibility2d(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
         if not nodialog:
             temp = self.exec_()
             if temp == 0:
@@ -862,6 +870,10 @@ class AGC(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
+        if 'Raster' not in self.indata:
+            self.showprocesslog('No Raster Data.')
+            return False
+
         if not nodialog:
             temp = self.exec_()
             if temp == 0:
