@@ -28,7 +28,7 @@ import os
 import numpy as np
 from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
-import pygmi.seis.iodefs as iodefs
+from pygmi.seis import iodefs
 
 
 class DeleteRecord():

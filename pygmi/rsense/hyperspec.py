@@ -71,17 +71,14 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
-# from scipy.optimize import minimize
-# from scipy.interpolate import CubicSpline
 
 from pygmi.misc import frm
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
-# from pygmi.raster.modest_image import imshow
-import pygmi.rsense.features as features
+from pygmi.rsense import features
 from pygmi.misc import getinfo
 
 
@@ -170,7 +167,6 @@ class GraphMap(FigureCanvasQTAgg):
 
         ax1.plot(self.col, self.row, '+w')
 
-
         ax2 = self.figure.add_subplot(212)
         prof = self.datarr[:, self.row, self.col]/self.refl
 
@@ -183,7 +179,6 @@ class GraphMap(FigureCanvasQTAgg):
             ax2.plot(self.wvl, prof/hull)
         else:
             ax2.plot(self.wvl, prof)
-
 
         ax2.axvline(self.feature[0], ls='--', c='r')
 
@@ -561,7 +556,7 @@ class AnalSpec(QtWidgets.QDialog):
         self.combo.addItems(bands)
         self.combo.currentIndexChanged.connect(self.on_combo)
 
-        ftxt = [str(i) for i in self.feature.keys()]
+        ftxt = [str(i) for i in self.feature]
         self.combo_feature.disconnect()
         self.combo_feature.clear()
         self.combo_feature.addItems(ftxt)
@@ -1109,12 +1104,25 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
 
     Parameters
     ----------
-    fdat : TYPE
+    fdat : numpy array
+        DESCRIPTION.
+    ptmp : numpy array
+        DESCRIPTION.
+    dtmp : numpy array
+        DESCRIPTION.
+    i1a : int
+        DESCRIPTION.
+    i2a : int
+        DESCRIPTION.
+    xdat : numpy array
         DESCRIPTION.
 
     Returns
     -------
-    None.
+    ptmp : numpy array
+        DESCRIPTION.
+    dtmp : numpy array
+        DESCRIPTION.
 
     """
     cols, _ = fdat.shape
@@ -1123,14 +1131,10 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
         yval = fdat[j]
         if yval.mean() == 0:
             continue
-        # if True in yval.mask:
-        #     continue
 
         yhull = phull(yval)
         crem = yval/yhull
         imin = crem[i1a:i2a].argmin()
-        # dtmp[j] = 1. - crem[i1a:i2a][imin]
-        # ptmp[j] = xdat[i1a:i2a][imin]
 
         if imin == 0 or imin == (i2a-i1a-1):
             dtmp[j] = 1. - crem[i1a:i2a][imin]
@@ -1140,44 +1144,6 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
 
         ptmp[j] = x
         dtmp[j] = 1. - y
-
-        # if ptmp[j] > 880. and ptmp[j] < 884:
-        #     # fun = CubicSpline(xdat[i1a:i2a], crem[i1a: i2a], bc_type='natural')
-        #     fun = CubicSpline(xdat[i1a:i2a][imin-2:imin+3], crem[i1a:i2a][imin-2: imin+3])
-        #     xxx = np.arange(xdat[i1a:i2a][imin-2], xdat[i1a:i2a][imin+2], 0.1)
-        #     tmp = minimize(fun, xdat[i1a:i2a][imin])
-
-        #     x, y = cubic_calc(xdat[i1a:i2a], crem[i1a:i2a], imin)
-
-        #     plt.figure(dpi=150)
-        #     plt.plot(xdat[i1a:i2a], crem[i1a:i2a], '-+')
-        #     plt.plot(xxx, fun(xxx))
-        #     plt.plot(tmp.x, tmp.fun, 'o')
-        #     plt.plot(x, y, 'k+')
-        #     print(tmp.x, x)
-        #     plt.show()
-
-        #     yval = fdat[j-1]
-        #     yhull = phull(yval)
-        #     crem = yval/yhull
-        #     imin = crem[i1a:i2a].argmin()
-
-        #     x, y = cubic_calc(xdat[i1a:i2a], crem[i1a:i2a], imin)
-
-        #     fun = CubicSpline(xdat[i1a:i2a][imin-2:imin+3], crem[i1a: i2a][imin-2:imin+3])
-        #     xxx = np.arange(xdat[i1a:i2a][imin-2], xdat[i1a:i2a][imin+2], 0.1)
-        #     tmp = minimize(fun, xdat[i1a:i2a][imin])
-
-        #     plt.figure(dpi=150)
-        #     plt.plot(xxx, fun(xxx))
-        #     plt.plot(xdat[i1a:i2a], crem[i1a:i2a], '-+')
-        #     plt.plot(tmp.x, tmp.fun, 'o')
-        #     plt.plot(x, y, 'k+')
-
-        #     plt.show()
-        #     print(tmp.x, x)
-
-        #     breakpoint()
 
     return ptmp, dtmp
 

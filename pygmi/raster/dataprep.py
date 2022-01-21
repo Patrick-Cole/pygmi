@@ -29,7 +29,6 @@ import math
 import os
 import glob
 import copy
-import json
 from collections import Counter
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
@@ -43,11 +42,10 @@ from rasterio.mask import mask as riomask
 import geopandas as gpd
 from shapely.geometry import LineString, Polygon
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
-from pygmi.misc import ProgressBarText
 
 
 class DataCut():
@@ -3133,7 +3131,7 @@ def _testcut():
     """Test Reprojection."""
     import sys
     from pygmi.rsense.iodefs import get_data
-    from pygmi.raster.iodefs import export_raster, get_raster
+    from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
     sfile  = r"C:/Workdata/raster/polygon cut get profile/cut_polygon.shp"

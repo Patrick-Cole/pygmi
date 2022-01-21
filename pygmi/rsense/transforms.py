@@ -37,7 +37,7 @@ import matplotlib.pyplot as plt
 
 from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.misc import ProgressBarText
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 
 
 class MNF(QtWidgets.QDialog):
@@ -511,7 +511,6 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
 
 def _testfn():
     """Test routine."""
-    import matplotlib.pyplot as plt
     from pygmi.rsense.iodefs import get_data
     # import spectral as sp
 
@@ -521,17 +520,14 @@ def _testfn():
     # ifile = r"C:\Workdata\Lithosphere\crash\033_0815-1111_ref_rect.hdr"
 
     ifile = r"E:\Workdata\Remote Sensing\hyperion\Gams_EO1H1760802013198110KF_1T.hdr"
-    ifile = "E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     ncmps = 10
     nodata = 0
     iraster = None
 
     # dat = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
-
     dat = get_data(ifile, extscene = 'Hyperion')
-
-
 
     pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
@@ -578,7 +574,6 @@ def _testfn():
 
 
 def _testfn2():
-    import matplotlib.pyplot as plt
     from matplotlib import rcParams
     # import spectral as sp
 

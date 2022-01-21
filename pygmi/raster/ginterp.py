@@ -49,8 +49,8 @@ import numexpr as ne
 from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 from matplotlib.figure import Figure
-import matplotlib.gridspec as gridspec
-import matplotlib.cm as cm
+from matplotlib import gridspec
+from matplotlib import cm
 import matplotlib.colors as mcolors
 import matplotlib.colorbar as mcolorbar
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -60,9 +60,9 @@ from matplotlib.patches import PathPatch
 from matplotlib.pyplot import colormaps
 from matplotlib.colors import ListedColormap
 
-import pygmi.raster.iodefs as iodefs
-import pygmi.raster.dataprep as dataprep
-import pygmi.menu_default as menu_default
+from pygmi.raster import iodefs
+from pygmi.raster import dataprep
+from pygmi import menu_default
 from pygmi.raster.modest_image import imshow
 
 

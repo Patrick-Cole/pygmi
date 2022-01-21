@@ -28,7 +28,8 @@ import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import numexpr as ne
-import pygmi.raster.dataprep as dataprep
+
+from pygmi.raster import dataprep
 
 
 class EquationEditor(QtWidgets.QDialog):

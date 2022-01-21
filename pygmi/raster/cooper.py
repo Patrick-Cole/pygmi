@@ -34,7 +34,7 @@ import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.misc import ProgressBarText
 
 
@@ -890,7 +890,7 @@ class AGC(QtWidgets.QDialog):
         data = copy.deepcopy(self.indata['Raster'])
         data2 = []
 
-        for i, datai in enumerate(data):
+        for datai in data:
             self.showprocesslog(datai.dataid+':')
 
             agcdata = agc(datai.data, self.wsize, atype, nodata=datai.nodata,
@@ -1009,9 +1009,6 @@ def _test():
     #                                 dh*datai.data.std()/100.,
     #                                 piter)
 
-
-
-
     # dat2 = lstack(dat, piter, 60)
 
     # plt.figure(dpi=150)
@@ -1038,10 +1035,6 @@ def _test():
     plt.imshow(dat[0].data, extent=dat[0].extent)
     plt.imshow(odat[0].data, extent=odat[0].extent)
     plt.show()
-
-
-
-
 
     breakpoint()
 

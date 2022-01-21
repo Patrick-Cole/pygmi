@@ -231,7 +231,7 @@ def _testfn():
     None.
 
     """
-    import pygmi.seis.iodefs as iodefs
+    from pygmi.seis import iodefs
 
     idir = os.path.dirname(os.path.realpath(__file__))
     tfile = os.path.join(idir, r'descriptions.txt')

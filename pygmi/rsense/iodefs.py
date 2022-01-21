@@ -41,7 +41,7 @@ from shapely.geometry import Point
 import rasterio
 from rasterio.crs import CRS
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ProgressBarText
 
@@ -1000,7 +1000,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
     satbands = None
     lstband = None
 
-    if platform == '04' or platform == '05':
+    if platform in ('04', '05'):
         satbands = {'1': [450, 520],
                     '2': [520, 600],
                     '3': [630, 690],
@@ -1894,7 +1894,6 @@ def _testfn():
 
     # ifile = r"E:\Workdata\bugs\AST_08_00306272001204805_20211007060336_20853.hdf"
     # ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
-
 
     ifile = "E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
     extscene = 'Hyperion'

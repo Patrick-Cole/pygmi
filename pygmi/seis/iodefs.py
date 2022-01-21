@@ -31,7 +31,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 import pygmi.seis.datatypes as sdt
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 
 
 def sform(strform, val, tmp, col1, col2=None, nval=-999):

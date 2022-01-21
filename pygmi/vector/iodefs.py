@@ -33,7 +33,7 @@ import numpy as np
 import pandas as pd
 import geopandas as gpd
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.misc import ProgressBarText
 
 

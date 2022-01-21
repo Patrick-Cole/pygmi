@@ -27,7 +27,7 @@
 from PyQt5 import QtWidgets, QtCore
 from scipy import ndimage
 import numpy as np
-import matplotlib.cm as cm
+from matplotlib import cm
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib import collections as mc

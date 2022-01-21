@@ -28,7 +28,6 @@ import warnings
 import numpy as np
 from rasterio.io import MemoryFile
 from rasterio import Affine
-from rasterio.crs import CRS
 
 
 def numpy_to_pygmi(data, pdata=None, dataid=None):

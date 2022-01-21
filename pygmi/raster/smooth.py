@@ -30,7 +30,7 @@ from PyQt5 import QtWidgets
 import numpy as np
 import scipy.signal as ssig
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.misc import ProgressBarText
 
 
@@ -178,13 +178,13 @@ class Smooth(QtWidgets.QDialog):
         if self.radiobutton_2dmean.isChecked():
             for i, _ in enumerate(data):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
-                                                 '2D Mean', data[i].dataid)
+                                                 '2D Mean')
                 data[i].dataid = data[i].dataid+' 2D Mean'
 
         if self.radiobutton_2dmedian.isChecked():
             for i, _ in enumerate(data):
                 data[i].data = self.mov_win_filt(data[i].data, self.fmat,
-                                                 '2D Median', data[i].dataid)
+                                                 '2D Median')
                 data[i].dataid = data[i].dataid+' 2D Median'
 
         if not nodialog:
@@ -385,7 +385,7 @@ class Smooth(QtWidgets.QDialog):
         QtWidgets.QMessageBox.warning(self.parent, title, message,
                                       QtWidgets.QMessageBox.Ok)
 
-    def mov_win_filt(self, dat, fmat, itype, title):
+    def mov_win_filt(self, dat, fmat, itype):
         """
         Apply moving window filter function to data.
 
@@ -397,8 +397,6 @@ class Smooth(QtWidgets.QDialog):
             DESCRIPTION.
         itype : str
             Filter type. Can be '2D Mean' or '2D Median'.
-        title : str
-            Text for reportback function.
 
         Returns
         -------

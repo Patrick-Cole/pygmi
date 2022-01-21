@@ -27,7 +27,6 @@
 import warnings
 import os
 import copy
-import struct
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import rasterio
@@ -658,8 +657,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     if 'INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr']:
         if istruct['INTERLEAVE'] == 'LINE' and iraster is None:
             isbil = True
-            datin = get_bil(ifile, bands, cols, rows, nval, dtype, piter,
-                            showprocesslog)
+            datin = get_bil(ifile, bands, cols, rows, dtype, piter)
 
     with rasterio.open(ifile) as dataset:
         for i in piter(range(dataset.count)):
@@ -745,8 +743,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     return dat
 
 
-def get_bil(ifile, bands, cols, rows, nval, dtype, piter,
-            showprocesslog=print):
+def get_bil(ifile, bands, cols, rows, dtype, piter):
     """
     Get BIL format file.
 
@@ -756,16 +753,20 @@ def get_bil(ifile, bands, cols, rows, nval, dtype, piter,
     ----------
     ifile : str
         filename to import
-    nval : float
-        No data/null value. The default is None.
+    bands : int
+        Number of bands.
+    cols : int
+        Number of columns.
+    rows : int
+        Number of rows.
+    dtype : data type
+        Data type.
     piter : iterable from misc.ProgressBar or misc.ProgressBarText
         progress bar iterable
-    showprocesslog : function, optional
-        Routine to show text messages. The default is print.
 
     Returns
     -------
-    dat : PyGMI raster Data
+    datin : PyGMI raster Data
         dataset imported
 
     """
@@ -777,7 +778,7 @@ def get_bil(ifile, bands, cols, rows, nval, dtype, piter,
     icount = count//10
     datin = []
     dsize = dtype.itemsize
-    for i in piter(range(0, 10)):
+    for _ in piter(range(0, 10)):
         tmp = np.fromfile(ifile, dtype=dtype, sep='', count=icount,
                           offset=offset)
         offset += icount*dsize
@@ -1209,29 +1210,6 @@ class ExportData():
             k.nodata = 1.701410009187828e+38
 
             export_raster(file_out, [k], 'GS7BG', piter=self.piter)
-
-
-
-            # fno = open(file_out, 'wb')
-
-            # xmin, xmax, ymin, ymax = k.extent
-
-            # krows, kcols = k.data.shape
-            # bintmp = struct.pack('cccchhdddddd', b'D', b'S', b'B', b'B',
-            #                      kcols, krows,
-            #                      xmin, xmax,
-            #                      ymin, ymax,
-            #                      np.min(k.data),
-            #                      np.max(k.data))
-            # fno.write(bintmp)
-
-            # ntmp = 1.701410009187828e+38
-            # tmp = k.data.astype('f')
-            # tmp = tmp.filled(ntmp)
-            # tmp = tmp[::-1]
-            # fno.write(tmp.tostring())
-
-            # fno.close()
 
     def export_ascii(self, data):
         """

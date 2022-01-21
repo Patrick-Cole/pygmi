@@ -26,7 +26,7 @@
 
 import datetime
 from pathlib import Path
-import xml.etree.ElementTree as ElementTree
+from xml.etree import ElementTree
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
@@ -1013,7 +1013,7 @@ class SceneViewer(QtWidgets.QDialog):
         xbuf = min(xsize, int(ext[0]))
         ybuf = min(ysize, int(ext[1]))
 
-        gtrnew = (gtr[0]+xoff*dx, xdim, 0, gtr[3]-yoff*dy, 0, -ydim)
+        # gtrnew = (gtr[0]+xoff*dx, xdim, 0, gtr[3]-yoff*dy, 0, -ydim)
 
 ###############################################################################
 

@@ -32,7 +32,7 @@ import matplotlib.path as mplPath
 from osgeo import osr, ogr
 from scipy.interpolate import griddata
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
 from pygmi.raster.datatypes import Data
 from pygmi.vector.minc import minc
@@ -845,7 +845,7 @@ def _testfn():
     """Test routine."""
     import sys
     import matplotlib.pyplot as plt
-    from pygmi.vector.iodefs import ImportLineData, ImportShapeData
+    from pygmi.vector.iodefs import ImportLineData
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 

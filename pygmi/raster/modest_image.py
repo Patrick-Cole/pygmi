@@ -14,10 +14,10 @@ import numexpr as ne
 from scipy import ndimage
 
 from matplotlib import rcParams
-import matplotlib.cm as cm
+from matplotlib import cm
 import matplotlib.image as mi
 import matplotlib.colors as mcolors
-import matplotlib.cbook as cbook
+from matplotlib import cbook
 from matplotlib.transforms import IdentityTransform, Affine2D
 
 IDENTITY_TRANSFORM = IdentityTransform()

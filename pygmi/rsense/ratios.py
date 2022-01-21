@@ -32,8 +32,8 @@ import numexpr as ne
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 
-import pygmi.menu_default as menu_default
-import pygmi.rsense.iodefs as iodefs
+from pygmi import menu_default
+from pygmi.rsense import iodefs
 from pygmi.raster.iodefs import export_raster
 from pygmi.raster.dataprep import lstack
 from pygmi.misc import ProgressBarText
@@ -293,7 +293,7 @@ class SatRatios(QtWidgets.QDialog):
                     continue
                 datsml.append(i)
 
-            dat = lstack(datsml, self.piter, pprint=self.showprocesslog,)
+            dat = lstack(datsml, self.piter, pprint=self.showprocesslog)
                          # commonmask=True)
 
             datd = {}
@@ -708,7 +708,6 @@ def get_sentinel_list(flist):
 
 def _testfn():
     """Test routine."""
-    from pygmi.misc import ProgressBarText
     import matplotlib.pyplot as plt
 
     piter = ProgressBarText().iter

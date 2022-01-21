@@ -46,8 +46,8 @@ import numpy as np
 from matplotlib import rcParams
 from matplotlib import interactive
 import pygmi
-import pygmi.menu_default as menu_default
-import pygmi.misc as misc
+from pygmi import menu_default
+from pygmi import misc
 
 # rcParams['figure.dpi'] = 120
 # rcParams['font.size'] = 6.0
