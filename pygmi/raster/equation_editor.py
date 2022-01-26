@@ -356,6 +356,7 @@ class EquationEditor(QtWidgets.QDialog):
             findat.shape = (1, findat.shape[0], findat.shape[1])
 
         for i, findati in enumerate(findat):
+            findati = findati.astype(indata[i].data.dtype)
             findati[mask] = indata[i].nodata
 
             outdata.append(copy.deepcopy(indata[i]))
