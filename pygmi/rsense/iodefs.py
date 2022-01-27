@@ -1095,10 +1095,14 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
             dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
                                  dat[-1].data.mask)
 
-        if fext == 'LST':
-            showprocesslog('Converting band '+lstband+' to Kelvin. '
-                           'Band renamed as LST')
-            dat[-1].data = dat[-1].data*0.00341802 + 149.0
+        if 'L2SP' in ifile2:
+            if fext == 'LST':
+                showprocesslog('Converting band '+lstband+' to Kelvin. '
+                               'Band renamed as LST')
+                dat[-1].data = dat[-1].data*0.00341802 + 149.0
+            else:
+                showprocesslog('Converting band '+lstband+' to reflectance.')
+                dat[-1].data = dat[-1].data*0.0000275 - 0.2
 
         dat[-1].dataid = 'Band' + fext
         dat[-1].nodata = nval

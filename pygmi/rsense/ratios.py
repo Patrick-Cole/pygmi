@@ -840,8 +840,8 @@ class ConditionIndices(QtWidgets.QDialog):
 
                 if 'EVI' in i:
                     rmask = ratio.mask | (ratio < -1) | (ratio > 1)
-                    ratio.mask = rmask
-                    tmp = copy.copy(dat[0])
+                    ratio.mask = rmask.data
+                    tmp = copy.deepcopy(dat[0])
                     tmp.data = ratio
                     evi.append(tmp)
 
@@ -1030,24 +1030,17 @@ def get_TCI(lst):
     lst2 = []
     for j in lst:
         lst2.append(j.data)
-    lst2 = np.array(lst2)
+    lst2 = np.ma.array(lst2)
 
-    nodata = lst2[0, 0, 0]
-    lstmax = np.ma.masked_equal(lst2.max(0), nodata)
-    lstmin = np.ma.masked_equal(lst2.min(0), nodata)
+    lstmax = lst2.max(0)
+    lstmin = lst2.min(0)
 
     tci = []
     for dat in lst:
         tmp = copy.deepcopy(dat)
-        mask = lstmin.mask
 
         tmp.data = (dat.data-lstmin)/(lstmax-lstmin)
-        tmp.data = tmp.data.filled(1e+20)
-        tmp.data = np.ma.array(tmp.data, mask=mask)
-        tmp.nullvalue = 1e+20
 
-        # fname = dat.filename
-        # year = fname[fname.index('.A')+2:fname.index('.A')+6]
         tmp.dataid = os.path.basename(dat.filename)[:-4]+'_TCI'
         tci.append(tmp)
 
@@ -1072,25 +1065,17 @@ def get_VCI(evi, index):
     evi2 = []
     for j in evi:
         evi2.append(j.data)
-    evi2 = np.array(evi2)
 
-    nodata = evi2[0, 0, 0]
-    evimax = np.ma.masked_equal(evi2.max(0), nodata)
-    evimin = np.ma.masked_equal(evi2.min(0), nodata)
+    evi2 = np.ma.array(evi2)
+
+    evimax = evi2.max(0)
+    evimin = evi2.min(0)
 
     vci = []
     for dat in evi:
         tmp = copy.deepcopy(dat)
-        mask = evimin.mask
 
         tmp.data = (dat.data-evimin)/(evimax-evimin)
-        tmp.data = tmp.data.filled(1e+20)
-        tmp.data = np.ma.array(tmp.data, mask=mask)
-        tmp.nullvalue = 1e+20
-
-        # fname = dat.filename
-        # year = fname[fname.index('.A')+2:fname.index('.A')+6]
-        # tmp.dataid = year+'_VCIevi'
 
         tmp.dataid = os.path.basename(dat.filename)[:-4]+'_VCI_'+index
         vci.append(tmp)
@@ -1116,11 +1101,10 @@ def get_VHI(tci, vci, alpha=0.5):
     vhi = []
     for tci1 in tci:
         for vci1 in vci:
-            if tci1.dataid[:-4] == vci1.dataid[:-4]:
+            if tci1.filename == vci1.filename:
                 tmp = copy.deepcopy(tci1)
-                # mask = tmp.data.mask[:]
                 tmp.data = vci1.data*alpha+tci1.data*(1-alpha)
-                tmp.dataid = tci1.dataid[:-4]+'_VHI'
+                tmp.dataid = os.path.basename(tci1.filename)[:-4]+'_VHI'
 
                 vhi.append(tmp)
 
@@ -1344,7 +1328,16 @@ def _testfn2():
     SR.indata['RasterFileList'] = ifiles
     SR.settings()
 
+    dat = SR.outdata["Raster"]
 
+
+    for i in dat:
+        plt.imshow(i.data, extent=i.extent)
+        plt.colorbar()
+        plt.title(i.dataid)
+        plt.show()
+
+    breakpoint()
 
 if __name__ == "__main__":
     _testfn2()
