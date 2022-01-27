@@ -108,6 +108,10 @@ class MenuWidget():
         self.menu.addAction(self.action_calc_ratios)
         self.action_calc_ratios.triggered.connect(self.calc_ratios)
 
+        self.action_calc_ci = QtWidgets.QAction('Calculate Condition Indices')
+        self.menu.addAction(self.action_calc_ci)
+        self.action_calc_ci.triggered.connect(self.calc_ci)
+
         self.action_mnf = QtWidgets.QAction('MNF Transform')
         self.menu.addAction(self.action_mnf)
         self.action_mnf.triggered.connect(self.mnf)
@@ -159,6 +163,11 @@ class MenuWidget():
         """Calculate Ratios."""
         self.parent.item_insert('Step', 'Calculate Band Ratios',
                                 ratios.SatRatios)
+
+    def calc_ci(self):
+        """Calculate Condition Indices."""
+        self.parent.item_insert('Step', 'Calculate Condition Indices',
+                                ratios.ConditionIndices)
 
     def mnf(self):
         """Calculate MNF."""

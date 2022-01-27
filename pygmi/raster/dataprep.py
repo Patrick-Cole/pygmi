@@ -2694,6 +2694,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False):
         data2.set_transform(transform=trans)
         data2.data = data2.data.astype(data.data.dtype)
         data2.dataid = data.dataid
+        data2.filename = data.filename
 
         dat2.append(data2)
 

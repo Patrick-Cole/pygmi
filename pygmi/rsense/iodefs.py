@@ -1057,6 +1057,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
             lstband = '10'
         else:
             lstband = '6'
+        satbands['LST'] = satbands[lstband]
         # ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']
 
         # haslst = True
