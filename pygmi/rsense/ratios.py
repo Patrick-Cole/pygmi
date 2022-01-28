@@ -838,17 +838,19 @@ class ConditionIndices(QtWidgets.QDialog):
 
                 ratio = np.ma.fix_invalid(ratio)
 
-                if 'EVI' in i:
-                    rmask = ratio.mask | (ratio < -1) | (ratio > 1)
-                    ratio.mask = rmask.data
-                    tmp = copy.deepcopy(dat[0])
-                    tmp.data = ratio
-                    evi.append(tmp)
+                rmask = ratio.mask | (ratio < -1) | (ratio > 1)
+                ratio.mask = rmask.data
+                tmp = copy.deepcopy(dat[0])
+                tmp.data = ratio
+                evi.append(tmp)
 
                 rband = copy.deepcopy(dat[0])
                 rband.data = ratio
                 rband.dataid = i.replace(r'/', 'div')
                 datfin.append(rband)
+
+                print(ifile)
+                print('Index:', index, ratio.min(), ratio.max())
 
         if lst:
             lst = lstack(lst)
