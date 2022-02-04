@@ -739,7 +739,7 @@ class ConditionIndices(QtWidgets.QDialog):
         vhi = []
         lst = []
 
-        datfin = []
+        # datfin = []
 
         flist = self.indata['RasterFileList']
         if 'ASTER' in sensor:
@@ -765,14 +765,18 @@ class ConditionIndices(QtWidgets.QDialog):
             # Prepare for layer stacking
             datsml = []
             for i in dat:
-                tmp = i.dataid.split()
-                txt = tmp[0]
+                txt = i.dataid.split()[0]
 
                 if 'Band' not in txt and 'B' in txt:
                     txt = txt.replace('B', 'Band')
 
                 if 'Band' not in txt and 'LST' not in txt:
                     continue
+
+                i.data = i.data.astype(float)
+                i.data = i.data.filled(1e+20)
+                i.data = np.ma.masked_equal(i.data, 1e+20)
+                i.nodata = 1e+20
                 datsml.append(i)
 
             dat = lstack(datsml, self.piter, pprint=self.showprocesslog)
@@ -832,7 +836,8 @@ class ConditionIndices(QtWidgets.QDialog):
                 ratio = ne.evaluate(formula, datd)
 
                 ratio = ratio.astype(np.float32)
-                ratio[newmask] = dat[0].nodata
+                ratio[newmask] = 1e+20
+                # ratio[newmask] = dat[0].nodata
                 ratio = np.ma.array(ratio, mask=newmask,
                                     fill_value=dat[0].nodata)
 
@@ -842,20 +847,21 @@ class ConditionIndices(QtWidgets.QDialog):
                 ratio.mask = rmask.data
                 tmp = copy.deepcopy(dat[0])
                 tmp.data = ratio
+                tmp.nodata = 1e+20
                 evi.append(tmp)
 
-                rband = copy.deepcopy(dat[0])
-                rband.data = ratio
-                rband.dataid = i.replace(r'/', 'div')
-                datfin.append(rband)
+                # rband = copy.deepcopy(dat[0])
+                # rband.data = ratio
+                # rband.dataid = i.replace(r'/', 'div')
+                # datfin.append(rband)
 
                 print(ifile)
                 print('Index:', index, ratio.min(), ratio.max())
 
         if lst:
-            lst = lstack(lst)
+            lst = lstack(lst, commonmask=True)
         if evi:
-            evi = lstack(evi)
+            evi = lstack(evi, commonmask=True)
 
         ofile = ''
         if 'TCI' in rlist1 or 'VHI' in rlist1 and lst:
@@ -1015,7 +1021,7 @@ def correct_bands(rlist, bfile):
 
 def get_TCI(lst):
     """
-    Calculate TCI
+    Calculate TCI.
 
     Parameters
     ----------
@@ -1028,7 +1034,6 @@ def get_TCI(lst):
         output TCI.
 
     """
-
     lst2 = []
     for j in lst:
         lst2.append(j.data)
@@ -1041,7 +1046,7 @@ def get_TCI(lst):
     for dat in lst:
         tmp = copy.deepcopy(dat)
 
-        tmp.data = (dat.data-lstmin)/(lstmax-lstmin)
+        tmp.data = (lstmax-dat.data)/(lstmax-lstmin)
 
         tmp.dataid = os.path.basename(dat.filename)[:-4]+'_TCI'
         tci.append(tmp)
@@ -1051,7 +1056,7 @@ def get_TCI(lst):
 
 def get_VCI(evi, index):
     """
-    Calculate VCI
+    Calculate VCI.
 
     Parameters
     ----------
@@ -1087,7 +1092,7 @@ def get_VCI(evi, index):
 
 def get_VHI(tci, vci, alpha=0.5):
     """
-    Calculate VHI
+    Calculate VHI.
 
     Parameters
     ----------
@@ -1321,6 +1326,7 @@ def _testfn2():
     import matplotlib.pyplot as plt
 
     ifiles = glob.glob("E:/Workdata/NRF/172-079/*.tar")
+    ifiles = glob.glob(r"C:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
