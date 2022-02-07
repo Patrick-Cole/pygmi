@@ -946,25 +946,26 @@ def get_modisv6(ifile, piter=None):
             offset = 0
 
         rtmp2 = dataset.read(1)
-        rtmp2 = rtmp2.astype(float)
-        mask = (rtmp2 == nval)
-        if nval == 32767:
-            mask = (rtmp2 > 32700)
-        rtmp2 = rtmp2*scale+offset
 
-        if mask is not None:
-            rtmp2[mask] = nval
+        rtmp2 = rtmp2.astype(float)
+        if nval == 32767:
+            mask = (rtmp2 > 32760)
+        else:
+            mask = (rtmp2 == nval)
+
+        rtmp2 = rtmp2*scale+offset
+        rtmp2[mask] = 1e+20
 
         dat.append(Data())
-        dat[-1].data = rtmp2
-        dat[-1].data = np.ma.masked_invalid(dat[-1].data)
-        dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
-        if dat[-1].data.mask.size == 1:
-            dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
-                                 dat[-1].data.mask)
+        dat[-1].data = np.ma.array(rtmp2, mask=mask)
+        # dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+        # dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+        # if dat[-1].data.mask.size == 1:
+        #     dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
+        #                          dat[-1].data.mask)
 
         dat[-1].dataid = bandid
-        dat[-1].nodata = nval
+        dat[-1].nodata = 1e+20
         dat[-1].crs = crs
         dat[-1].set_transform(transform=dataset.transform)
         dat[-1].filename = ifile
@@ -1903,10 +1904,13 @@ def _testfn():
     ifile = "E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
     extscene = 'Hyperion'
 
+    ifile = r"E:\Workdata\bugs\janine\MOD16A2.A2001153.h20v11.006.2017070120816.hdf"
+    extscene = None
+
     dat = get_data(ifile, extscene = extscene)
 
     for i in dat:
-        plt.figure(dpi=150)
+        plt.figure(dpi=300)
         plt.title(i.dataid)
         plt.imshow(i.data, extent=i.extent)
         plt.colorbar()
