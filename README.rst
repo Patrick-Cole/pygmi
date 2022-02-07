@@ -52,6 +52,7 @@ PyGMI is developed and has been tested with the following libraries in order to 
 * pyproj 3.2.1
 * PyQt5 5.12.3
 * pytest 6.2.5
+* pyshp 2.1.3
 * rasterio 1.2.10
 * requests 2.25.1
 * scikit-image 0.18.3
@@ -121,7 +122,7 @@ The process to install is as follows:
 
    conda config --add channels conda-forge
 	
-   conda config --set channel_priority strict
+   conda config --set channel_priority flexible
 
    conda install pyqt
 
@@ -143,7 +144,7 @@ The process to install is as follows:
 
    conda install numba
 
-   conda install scikit-learn=1.0.1
+   conda install scikit-learn
 
    conda install scikit-image
 
@@ -152,6 +153,8 @@ The process to install is as follows:
    conda install segyio
 
    conda install simpeg
+
+   conda install pyshp
 
    pip install mtpy
 
