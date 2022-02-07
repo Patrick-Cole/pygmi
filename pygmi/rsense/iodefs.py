@@ -908,6 +908,8 @@ def get_modisv6(ifile, piter=None):
         subdata = dataset.subdatasets
 
     dat = []
+    lulc = None
+
     for ifile2 in subdata:
         dataset = rasterio.open(ifile2)
 
@@ -946,10 +948,13 @@ def get_modisv6(ifile, piter=None):
             offset = 0
 
         rtmp2 = dataset.read(1)
-
         rtmp2 = rtmp2.astype(float)
+
         if nval == 32767:
             mask = (rtmp2 > 32760)
+            lulc = np.zeros_like(rtmp2)
+            lulc[mask] = rtmp2[mask]-32760
+            lulc = np.ma.masked_equal(lulc, 0)
         else:
             mask = (rtmp2 == nval)
 
@@ -972,6 +977,13 @@ def get_modisv6(ifile, piter=None):
         dat[-1].units = dataset.units[0]
 
         dataset.close()
+
+    if lulc is not None:
+        dat.append(copy.deepcopy(dat[0]))
+        dat[-1].data = lulc
+        dat[-1].dataid = ('LULC: out of earth=7, water=6, barren=5, snow=4, '
+                          'wetland=3, urban=2, unclassifed=1')
+        dat[-1].nodata = 0
 
     return dat
 
@@ -1912,7 +1924,7 @@ def _testfn():
     for i in dat:
         plt.figure(dpi=300)
         plt.title(i.dataid)
-        plt.imshow(i.data, extent=i.extent)
+        plt.imshow(i.data, interpolation='none')
         plt.colorbar()
         plt.show()
 

@@ -724,6 +724,10 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     if aspect is None:
         aspect = rcParams['image.aspect']
     axes.set_aspect(aspect)
+
+    if interpolation is None:
+        interpolation = 'none'
+
     im = ModestImage(axes, cmap=cmap, norm=norm, interpolation=interpolation,
                      origin=origin, extent=extent, filternorm=filternorm,
                      filterrad=filterrad, resample=resample, **kwargs)
