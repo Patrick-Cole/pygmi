@@ -78,15 +78,20 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
+        cmap = cm.viridis
+
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-        self.axes.pcolor(dmat)
+        self.axes.pcolormesh(dmat, cmap=cmap)
         self.axes.axis('scaled')
         self.axes.set_title('Correlation Coefficients')
         for i in range(len(data1)):
             for j in range(len(data1)):
+                ctmp = np.array([1., 1., 1., 0.]) - np.array(cmap(dmat[i, j]))
+                ctmp = np.abs(ctmp)
+                ctmp = ctmp.tolist()
                 self.axes.text(i + .1, j + .4, format(float(dmat[i, j]),
-                                                      '4.2f'))
+                                                      '5.3f'), c=ctmp)
         dat_mat = [i.dataid for i in data1]
         self.axes.set_xticks(np.array(list(range(len(data1)))) + .5)
 
@@ -706,9 +711,14 @@ def corr2d(dat1, dat2):
         array of correlation coefficients
     """
     out = None
+
+    # These next two lines are critical to keep original data safe.
+    dat1 = dat1.copy()
+    dat2 = dat2.copy()
+
     if dat1.shape == dat2.shape:
         # These line are to avoid warnings due to powers of large fill values
-        mask = np.logical_or(dat1.mask, dat1.mask)
+        mask = np.logical_or(dat1.mask, dat2.mask)
         dat1.mask = mask
         dat2.mask = mask
         dat1 = dat1.compressed()
@@ -719,6 +729,41 @@ def corr2d(dat1, dat2):
         numerator = (mdat1 * mdat2).sum()
         denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
         out = numerator / denominator
-        # breakpoint()
 
     return out
+
+
+def _testfn():
+    """Test."""
+    from pygmi.raster.iodefs import get_raster, export_raster
+    import matplotlib.pyplot as plt
+
+    ifile = r"C:/Workdata/LULC/2001_stack_norm.tif"
+
+    data = get_raster(ifile)
+
+    cormat = np.array([[corr2d(i.data, j.data) for j in data] for i in data])
+
+    print(cormat)
+
+    plt.figure(dpi=150)
+    plt.imshow(cormat, cmap='jet')
+    plt.colorbar()
+    plt.show()
+
+    # for i in data:
+    #     vmin = i.data.mean()-2*i.data.std()
+    #     vmax = i.data.mean()+2*i.data.std()
+    #     plt.figure(dpi=150)
+    #     plt.title(i.dataid)
+    #     plt.imshow(i.data, vmin=vmin, vmax=vmax, resample='nearest')
+    #     plt.show()
+
+    # out = corr2d(data[1].data, data[2].data)
+
+    breakpoint()
+
+if __name__ == "__main__":
+    _testfn()
+
+
