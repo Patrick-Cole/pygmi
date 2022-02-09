@@ -2619,6 +2619,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False):
     needsmerge = False
     rows, cols = dat[0].data.shape
 
+    dtypes = []
     for i in dat:
         irows, icols = i.data.shape
         if irows != rows or icols != cols:
@@ -2627,6 +2628,20 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False):
             needsmerge = True
         if commonmask is True:
             needsmerge = True
+        dtypes.append(i.data.dtype)
+
+    dtypes = np.unique(dtypes)
+    dtype = None
+    nodata = None
+    if len(dtypes) > 1:
+        needsmerge = True
+        for i in dtypes:
+            if np.issubdtype(i, np.floating):
+                dtype = np.float64
+                nodata = 1e+20
+            elif dtype is None:
+                dtype = np.int32
+                nodata = 999999
 
     if needsmerge is False:
         dat = copy.deepcopy(dat)
@@ -2661,6 +2676,10 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False):
     dat2 = []
     cmask = None
     for data in piter(dat):
+
+        if dtype is not None:
+            data.data = data.data.astype(dtype)
+            data.nodata = nodata
 
         if data.crs is None:
             pprint(f'{data.dataid} has no defined projection. Aborting.')
@@ -3202,5 +3221,42 @@ def _testprof():
     plt.colorbar()
     plt.show()
 
+
+def _testlstack():
+    from pygmi.raster.iodefs import get_raster, export_raster
+    import matplotlib.pyplot as plt
+
+    idir = r'C:\Workdata\LULC\stack'
+
+    ifiles = glob.glob(os.path.join(idir, '*.tif'))
+
+    dat = []
+    for ifile in ifiles:
+        dat += get_raster(ifile)
+
+    for i in dat:
+        plt.figure(dpi=150)
+        plt.title(i.dataid)
+        plt.imshow(i.data)
+        plt.colorbar()
+        plt.show()
+        print(i.nodata)
+        print(i.data.dtype)
+
+    dat2 = lstack(dat, dxy=30)
+
+    for i in dat2:
+        plt.figure(dpi=150)
+        plt.title(i.dataid)
+        plt.imshow(i.data)
+        plt.colorbar()
+        plt.show()
+        print(i.nodata)
+        print(i.data.dtype)
+
+    ofile = r'C:/Workdata/LULC/2001_stack_norm_pc.tif'
+    export_raster(ofile, dat2, 'GTiff')
+
 if __name__ == "__main__":
-    _testcut()
+    # _testcut()
+    _testlstack()

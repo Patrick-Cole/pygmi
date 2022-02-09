@@ -719,5 +719,6 @@ def corr2d(dat1, dat2):
         numerator = (mdat1 * mdat2).sum()
         denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
         out = numerator / denominator
+        # breakpoint()
 
     return out
