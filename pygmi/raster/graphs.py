@@ -82,7 +82,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-        self.axes.pcolormesh(dmat, cmap=cmap)
+        rdata = self.axes.pcolormesh(dmat, cmap=cmap)
         self.axes.axis('scaled')
         self.axes.set_title('Correlation Coefficients')
         for i in range(len(data1)):
@@ -90,8 +90,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 ctmp = np.array([1., 1., 1., 0.]) - np.array(cmap(dmat[i, j]))
                 ctmp = np.abs(ctmp)
                 ctmp = ctmp.tolist()
-                self.axes.text(i + .1, j + .4, format(float(dmat[i, j]),
-                                                      '5.3f'), c=ctmp)
+
+                if dmat[i, j] < 0.01:
+                    atext = f'{dmat[i, j]:.1e}'
+                else:
+                    atext = f'{dmat[i, j]:.2f}'
+
+                # self.axes.text(i + .1, j + .4, atext, c=ctmp, rotation=45)
+                self.axes.text(i+.5, j+.5, atext, c=ctmp, rotation=45,
+                               ha='center', va='center')
         dat_mat = [i.dataid for i in data1]
         self.axes.set_xticks(np.array(list(range(len(data1)))) + .5)
 
@@ -101,6 +108,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_yticklabels(dat_mat, rotation='horizontal')
         self.axes.set_xlim(0, len(data1))
         self.axes.set_ylim(0, len(data1))
+
+        cbar = self.figure.colorbar(rdata, format=frm)
+        # cbar.set_label('Correlation')
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -323,6 +333,8 @@ class PlotCCoef(QtWidgets.QDialog):
 
         vbl.addWidget(self.mmc)
         vbl.addWidget(mpl_toolbar)
+
+        self.setMinimumSize(600, 600)
 
         self.setFocus()
 
