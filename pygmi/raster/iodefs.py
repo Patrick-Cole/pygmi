@@ -576,7 +576,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             return None
 
     if ext == 'ers':
-        with open(ifile) as f:
+        with open(ifile, encoding='utf-8') as f:
             metadata = f.read()
             if 'STMLO' in metadata:
                 clong = metadata.split('STMLO')[1][:2]
@@ -737,6 +737,16 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 if j in dest:
                     dest[j.lower()] = dest[j]
                     del dest[j]
+
+            if 'fwhm' in dmeta:
+                fwhm = [float(i) for i in dmeta['fwhm'][1:-1].split(',')]
+                dest['fwhm'] = fwhm[index-1]
+
+            if '.raw' in ifile:
+                dmeta['reflectance_scale_factor'] = 10000.
+
+            if 'reflectance scale factor' in dmeta:
+                dmeta['reflectance_scale_factor'] = dmeta['reflectance scale factor']
 
             dat[i].metadata['Raster'] = {**dmeta, **dest}
 
@@ -1373,9 +1383,6 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
                                                dat[0].extent[3],
                                                dat[0].xdim, dat[0].ydim)
 
-    # if crs is None:
-    #     crs = CRS.from_string(dat[0].wkt)
-
     tmp = ofile.rpartition('.')
 
     if drv == 'GTiff':
@@ -1418,6 +1425,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
                        nodata=nodata, **kwargs) as out:
         numbands = len(data)
         wavelength = []
+        fwhm = []
         for i in piter(range(numbands)):
             datai = data[i]
             out.set_band_description(i+1, datai.dataid)
@@ -1436,6 +1444,9 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
                     out.update_tags(i+1, wavelength=str(datai.metadata['Raster']['wavelength']))
                     wavelength.append(datai.metadata['Raster']['wavelength'])
 
+                if 'fwhm' in datai.metadata['Raster']:
+                    fwhm.append(datai.metadata['Raster']['fwhm'])
+
                 if 'reflectance_scale_factor' in datai.metadata['Raster']:
                     out.update_tags(i+1, reflectance_scale_factor=str(datai.metadata['Raster']['reflectance_scale_factor']))
 
@@ -1452,12 +1463,18 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             wout = wout.replace(']', '}')
             wout = wout.replace("'", '')
             wout = 'wavelength = '+wout+'\n'
-        if 'fwhm' in dat[0].metadata['Raster']:
-            wout += 'fwhm = ' + dat[0].metadata['Raster']['fwhm']+'\n'
+        if fwhm:
+            fwhm = str(fwhm)
+            fwhm = fwhm.replace('[', '{')
+            fwhm = fwhm.replace(']', '}')
+            fwhm = fwhm.replace("'", '')
 
-        with open(tmpfile[:-4]+'.hdr', 'a') as myfile:
+            wout += 'fwhm = ' + fwhm+'\n'
+        if 'reflectance_scale_factor' in datai.metadata['Raster']:
+            wout += 'reflectance scale factor = '+ str(datai.metadata['Raster']['reflectance_scale_factor'])+'\n'
+
+        with open(tmpfile[:-4]+'.hdr', 'a', encoding='utf-8') as myfile:
             myfile.write(wout)
-            # myfile.write('data ignore value = ' + str(data[0].nodata)+'\n')
             myfile.write(envimeta)
 
 
