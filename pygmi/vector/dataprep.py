@@ -626,15 +626,14 @@ class DataReproj(QtWidgets.QDialog):
             self.orig_wkt = self.indata['Vector'][firstkey].crs.to_wkt()
 
         if self.orig_wkt is None:
-            indx = self.in_proj.combobox.findText(r'WGS 84 / '
-                                                  r'Geodetic Geographic')
-            self.in_proj.combobox.setCurrentIndex(indx)
+            indx = self.in_proj.combodatum.findText(r'WGS 84')
+            self.in_proj.combodatum.setCurrentIndex(indx)
             self.orig_wkt = self.in_proj.wkt
         else:
             self.in_proj.set_current(self.orig_wkt)
         if self.targ_wkt is None:
-            indx = self.in_proj.combobox.findText(r'WGS 84 / UTM zone 35S')
-            self.out_proj.combobox.setCurrentIndex(indx)
+            indx = self.in_proj.combodatum.findText(r'WGS 84')
+            self.out_proj.combodatum.setCurrentIndex(indx)
             self.targ_wkt = self.out_proj.wkt
         else:
             self.out_proj.set_current(self.targ_wkt)

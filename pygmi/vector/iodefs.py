@@ -131,8 +131,8 @@ class ImportLineData(QtWidgets.QDialog):
             ext = ('Comma Delimited (*.csv);;'
                    'Geosoft XYZ (*.xyz);;'
                    'ASCII XYZ (*.xyz);;'
-                   'Tab Delimited (*.txt);;'
-                   'All Files (*.*)')
+                   'Space Delimited (*.txt);;'
+                   'Tab Delimited (*.txt)')
 
             self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
                 self.parent, 'Open File', '.', ext)
@@ -147,6 +147,8 @@ class ImportLineData(QtWidgets.QDialog):
             gdf = self.get_delimited(',')
         elif self.filt == 'Tab Delimited (*.txt)':
             gdf = self.get_delimited('\t')
+        elif self.filt == 'Space Delimited (*.txt)':
+            gdf = self.get_delimited(' ')
         else:
             return False
 

@@ -1158,6 +1158,7 @@ class GroupProj(QtWidgets.QWidget):
         self.combodatum = QtWidgets.QComboBox()
         self.comboproj = QtWidgets.QComboBox()
         self.label = QtWidgets.QLabel()
+        self.label.setWordWrap(True)
 
         self.gridlayout.addWidget(self.groupbox, 1, 0, 1, 2)
 
@@ -1244,8 +1245,6 @@ class GroupProj(QtWidgets.QWidget):
         None.
 
         """
-        # indx = self.combodatum.currentIndex()
-
         dtxt = self.combodatum.currentText()
         ptxt = self.comboproj.currentText()
 
@@ -1256,20 +1255,19 @@ class GroupProj(QtWidgets.QWidget):
         if not isinstance(self.wkt, str):
             self.wkt = epsgtowkt(self.wkt)
 
-        # srs = osr.SpatialReference()
-        # srs.ImportFromWkt(self.wkt)
-        # srs.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
+        # The next two lines make sure we have spaces after ALL commas.
+        wkttmp = self.wkt.replace(', ', ',')
+        wkttmp = wkttmp.replace(',', ', ')
 
-        # self.label.setText(srs.ExportToPrettyWkt())
-        wkttmp = self.wkt.replace('GEOGCS', '\nGEOGCS')
-        wkttmp = wkttmp.replace('DATUM', '\n   DATUM')
-        wkttmp = wkttmp.replace('SPHEROID', '\n   SPHEROID')
-        wkttmp = wkttmp.replace('AUTHORITY', '\n   AUTHORITY')
-        wkttmp = wkttmp.replace('PRIMEM', '\n   PRIMEM')
-        wkttmp = wkttmp.replace('UNIT', '\n   UNIT')
-        wkttmp = wkttmp.replace('PROJECTION', '\nPROJECTION')
-        wkttmp = wkttmp.replace('PARAMETER', '\n   PARAMETER')
-        wkttmp = wkttmp.replace('AXIS', '\nAXIS')
+        # wkttmp = wkttmp.replace('GEOGCS', '\nGEOGCS')
+        # wkttmp = wkttmp.replace('DATUM', '\n   DATUM')
+        # wkttmp = wkttmp.replace('SPHEROID', '\n   SPHEROID')
+        # wkttmp = wkttmp.replace('AUTHORITY', '\n   AUTHORITY')
+        # wkttmp = wkttmp.replace('PRIMEM', '\n   PRIMEM')
+        # wkttmp = wkttmp.replace('UNIT', '\n   UNIT')
+        # wkttmp = wkttmp.replace('PROJECTION', '\nPROJECTION')
+        # wkttmp = wkttmp.replace('PARAMETER', '\n   PARAMETER')
+        # wkttmp = wkttmp.replace('AXIS', '\nAXIS')
 
         self.label.setText(wkttmp)
 
