@@ -733,8 +733,8 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     # Load in line data
-    filename = r'C:\Work\Workdata\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
-    wfile = r'C:\Work\Workdata\EM\wtimes.txt'
+    filename = r'd:\Work\Workdata\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
+    wfile = r'd:\Work\Workdata\EM\wtimes.txt'
 
     IO = ImportLineData()
     IO.filt = 'Tab Delimited (*.txt)'

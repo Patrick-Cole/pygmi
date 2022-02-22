@@ -1484,28 +1484,28 @@ def _filespeedtest():
     from pygmi.misc import getinfo
     print('Starting')
     pbar = ProgressBarText()
-    # ifile = r'E:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
-    # ifile = r'C:\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
-    # ifile = r'C:\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
-    # ifile = r"C:\Workdata\testdata.hdr"
-    # ifile = r"C:\Workdata\raster\rad_3bands.ers"
-    # ofile = r"C:\Workdata\hope.tif"
+    # ifile = r'd:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
+    # ifile = r'd:\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
+    # ifile = r'd:\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
+    # ifile = r"d:\Workdata\testdata.hdr"
+    # ifile = r"d:\Workdata\raster\rad_3bands.ers"
+    # ofile = r"d:\Workdata\hope.tif"
     # xoff = 0
     # yoff = 0
     # xsize = None
     # ysize = 1000
     # iraster = (xoff, yoff, xsize, ysize)
 
-    ifile = r"C:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
-    # ofile = r"C:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s_DEFLATE3ZL1.tif"
+    ifile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
+    # ofile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s_DEFLATE3ZL1.tif"
 
 
-    # ifile = r'C:/Workdata/compress/017_0823-1146_ref_rect_BSQ_291div283_194div291_219div303.tif'
+    # ifile = r'd:/Workdata/compress/017_0823-1146_ref_rect_BSQ_291div283_194div291_219div303.tif'
     # ofile = ifile[:-4]+'_DEFLATE3.tiff'
 
 
-    # ifile = r"C:/Workdata/testdata.hdr"
-    # ofile = r'C:/Workdata/testdata.grd'
+    # ifile = r"d:/Workdata/testdata.hdr"
+    # ofile = r'd:/Workdata/testdata.grd'
 
 
     iraster = None

@@ -2190,9 +2190,9 @@ def _testfn():
 
 
 
-    # data = iodefs.get_raster(r"C:\Workdata\MagMerge\NC_reg_highres_merge_wgs84dd.tif")
-    # data = iodefs.get_raster(r'c:\WorkData\testdata.hdr')
-    data = iodefs.get_raster(r"E:\Workdata\people\mikedentith\perth_surf_win.grd")
+    # data = iodefs.get_raster(r"d:\Workdata\MagMerge\NC_reg_highres_merge_wgs84dd.tif")
+    # data = iodefs.get_raster(r'd:\WorkData\testdata.hdr')
+    data = iodefs.get_raster(r"d:\Workdata\people\mikedentith\perth_surf_win.grd")
 
     tmp = PlotInterp()
     tmp.indata['Raster'] = data

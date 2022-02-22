@@ -1579,7 +1579,7 @@ def _testfn():
 #    from pygmi.pfmod.iodefs import ImportMod3D
 
 # Import model file
-#    filename = r'C:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
+#    filename = r'd:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
 #    imod = ImportMod3D(None)
 #    imod.ifile = filename
 #    imod.lmod.griddata.clear()

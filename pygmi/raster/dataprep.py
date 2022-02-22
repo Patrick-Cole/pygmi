@@ -2904,7 +2904,7 @@ def _testgrid():
 
     ttt = PTime()
 
-    ifile = r'C:\Work\Workdata\upward\EB_MTEF_Mag_IGRFrem.ers'
+    ifile = r'd:\Work\Workdata\upward\EB_MTEF_Mag_IGRFrem.ers'
     dat = get_raster(ifile)[0]
 
     # z = dat.data
@@ -3066,8 +3066,8 @@ def _testmerge():
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    idir = r'E:\Workdata\bugs\Feat_chlorite_78-114'
-    ofile = r'E:\Workdata\bugs\chlorite_78-114_MNF15.tif'
+    idir = r'd:\Workdata\bugs\Feat_chlorite_78-114'
+    ofile = r'd:\Workdata\bugs\chlorite_78-114_MNF15.tif'
 
     print('Merge')
     DM = DataMerge()
@@ -3111,7 +3111,7 @@ def _testreproj():
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"C:\Workdata\bugs\mag_IGRFrem_hbhk94.ers"
+    ifile = r"d:\Workdata\bugs\mag_IGRFrem_hbhk94.ers"
 
     piter = ProgressBarText().iter
 
@@ -3152,11 +3152,11 @@ def _testcut():
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
-    sfile  = r"C:/Workdata/raster/polygon cut get profile/cut_polygon.shp"
-    ifile = r"C:\Workdata\raster\polygon cut get profile\mag_IGRFcorrected.ers"
+    sfile  = r"d:/Workdata/raster/polygon cut get profile/cut_polygon.shp"
+    ifile = r"d:\Workdata\raster\polygon cut get profile\mag_IGRFcorrected.ers"
 
-    # ifile = r"E:\Workdata\bugs\S2B_MSIL2A_20210913T074609_N0301_R135_T36KTV_20210913T102843.zip"
-    # sfile = r"E:\Workdata\bugs\AU5_block_larger_utm36S.shp"
+    # ifile = r"d:\Workdata\bugs\S2B_MSIL2A_20210913T074609_N0301_R135_T36KTV_20210913T102843.zip"
+    # sfile = r"d:\Workdata\bugs\AU5_block_larger_utm36S.shp"
 
     piter = ProgressBarText().iter
 
@@ -3193,8 +3193,8 @@ def _testprof():
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"E:\Workdata\bugs\Au5_SRTM30_utm36s.tif"
-    sfile = r"E:\Workdata\bugs\Profiles_utm36s.shp"
+    ifile = r"d:\Workdata\bugs\Au5_SRTM30_utm36s.tif"
+    sfile = r"d:\Workdata\bugs\Profiles_utm36s.shp"
 
     piter = ProgressBarText().iter
 
@@ -3224,7 +3224,7 @@ def _testlstack():
     from pygmi.raster.iodefs import get_raster, export_raster
     import matplotlib.pyplot as plt
 
-    idir = r'C:\Workdata\LULC\stack'
+    idir = r'd:\Workdata\LULC\stack'
 
     ifiles = glob.glob(os.path.join(idir, '*.tif'))
 
@@ -3252,7 +3252,7 @@ def _testlstack():
         print(i.nodata)
         print(i.data.dtype)
 
-    ofile = r'C:/Workdata/LULC/2001_stack_norm_pc.tif'
+    ofile = r'd:/Workdata/LULC/2001_stack_norm_pc.tif'
     export_raster(ofile, dat2, 'GTiff')
 
 if __name__ == "__main__":

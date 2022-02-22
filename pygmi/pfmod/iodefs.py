@@ -1298,8 +1298,8 @@ def _testfn():
     print('Starting')
     pbar = ProgressBarText()
 
-    ifile = r"E:\Workdata\modelling\small_upper.npz"
-    ofile = r"C:\Workdata\hope.tif"
+    ifile = r"d:\Workdata\modelling\small_upper.npz"
+    ofile = r"d:\Workdata\hope.tif"
 
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes

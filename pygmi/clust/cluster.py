@@ -461,7 +461,7 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster, export_raster
 
-    ifiles = glob.glob(r'E:\Workdata\bugs\*.tif')
+    ifiles = glob.glob(r'd:\Workdata\bugs\*.tif')
 
     piter = ProgressBarText().iter
 
@@ -491,7 +491,7 @@ def _testfn():
     dat.dataid = 'simple class'
     dat.data = dat2
 
-    # export_raster(r'E:\Workdata\bugs\class2.tif', [dat], 'GTiff')
+    # export_raster(r'd:\Workdata\bugs\class2.tif', [dat], 'GTiff')
 
     breakpoint()
 

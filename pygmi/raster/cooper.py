@@ -994,8 +994,8 @@ def _test():
     import matplotlib.pyplot as plt
     from pygmi.misc import getinfo
 
-    ifile = r"E:\Workdata\testmag.tif"
-    ifile = r"E:\Workdata\people\mikedentith\perth_surf_win.grd"
+    ifile = r"d:\Workdata\testmag.tif"
+    ifile = r"d:\Workdata\people\mikedentith\perth_surf_win.grd"
 
     piter = ProgressBarText().iter
 

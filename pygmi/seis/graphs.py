@@ -908,8 +908,8 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = ImportSeisan()
     tmp.ifile = r'D:\Workdata\seismology\collect1.out'
-    # tmp.ifile = r'C:\Work\Workdata\seismology\march2021\select.out'
-    # tmp.ifile = r'C:\Work\Workdata\seismology\march2021\wadati_err2.out'
+    # tmp.ifile = r'd:\Work\Workdata\seismology\march2021\select.out'
+    # tmp.ifile = r'd:\Work\Workdata\seismology\march2021\wadati_err2.out'
     tmp.settings(True)
 
     data = tmp.outdata['Seis']

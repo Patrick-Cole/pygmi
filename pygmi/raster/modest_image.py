@@ -819,8 +819,8 @@ def main2():
     from IPython import get_ipython
     get_ipython().magic('matplotlib qt5')
 
-    ifile = r'E:\Work\Programming\mpl-modest-image-master\test.tif'
-    ifile = r'c:\workdata\testdata.hdr'
+    ifile = r'd:\Work\Programming\mpl-modest-image-master\test.tif'
+    ifile = r'd:\workdata\testdata.hdr'
 
     pbar = ProgressBarText()
 

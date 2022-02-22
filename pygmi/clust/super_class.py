@@ -1197,11 +1197,11 @@ def _testfn():
 
     piter = ProgressBarText().iter
 
-    ifile = r'E:\Workdata\people\janinetest2\coal_12052020_pan.img'
+    ifile = r'd:\Workdata\people\janinetest2\coal_12052020_pan.img'
 
     data = iodefs.get_raster(ifile, piter=piter)
     # data = iodefs.get_raster(r'D:\Workdata\BV1_17_fx_extracted_image_1.hdr')
-    os.chdir(r'e:\Workdata\people\janinetest2')
+    os.chdir(r'd:\Workdata\people\janinetest2')
 
     tmp = SuperClass(None)
     tmp.indata['Raster'] = data

@@ -848,7 +848,7 @@ def _testfn():
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'C:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+    ifile = r'd:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
 
     # ifile = r'D:\Workdata\vector\linecut\test2.csv'
     # sfile = r'D:\Workdata\vector\linecut\test2_cut_outline.shp'

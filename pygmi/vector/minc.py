@@ -654,15 +654,15 @@ def _testfn():
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    # ifile = r'C:\Workdata\vector\Line Data\Kweneng_mag_flightlines_IGRF.csv'
+    # ifile = r'd:\Workdata\vector\Line Data\Kweneng_mag_flightlines_IGRF.csv'
 
     # IO = ImportLineData()
     # IO.ifile = ifile
     # IO.filt = 'Comma Delimited (*.csv)'
     # IO.settings(True)
 
-    ifile = r'C:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
-    ifile = r"C:\Workdata\MagMerge\data\1_66\Pre_2011\WESTCMAG.XYZ"
+    ifile = r'd:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+    ifile = r"d:\Workdata\MagMerge\data\1_66\Pre_2011\WESTCMAG.XYZ"
     IO = ImportLineData()
     IO.ifile = ifile
     IO.filt = 'Geosoft XYZ (*.xyz)'

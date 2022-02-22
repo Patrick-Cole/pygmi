@@ -335,7 +335,7 @@ def _testfn():
     from mtpy.core.mt import MT
     from mtpy.imaging.plotresponse import PlotResponse
 
-    datadir = r'C:\Work\workdata\MT\\'
+    datadir = r'd:\Work\workdata\MT\\'
     allfiles = glob.glob(datadir+'\\*.edi')
 
     edi_file = allfiles[2]

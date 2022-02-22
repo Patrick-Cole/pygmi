@@ -1915,7 +1915,7 @@ def tonumber(test, alttext=None):
 
 def _testfn_occam():
     """Test routine."""
-    datadir = r'C:\Work\workdata\MT\\'
+    datadir = r'd:\Work\workdata\MT\\'
     edi_file = datadir+r"synth02.edi"
 
     # Create an MT object
@@ -1931,7 +1931,7 @@ def _testfn_occam():
 
 def _testfn():
     """Test routine."""
-    datadir = r'C:\Work\workdata\MT\\'
+    datadir = r'd:\Work\workdata\MT\\'
     allfiles = glob.glob(datadir+'\\*.edi')
 
     for edi_file in allfiles:

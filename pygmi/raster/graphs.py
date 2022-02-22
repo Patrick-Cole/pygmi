@@ -750,7 +750,7 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster, export_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"C:/Workdata/LULC/2001_stack_norm.tif"
+    ifile = r"d:/Workdata/LULC/2001_stack_norm.tif"
 
     data = get_raster(ifile)
 

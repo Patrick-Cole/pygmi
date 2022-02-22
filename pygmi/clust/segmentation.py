@@ -578,7 +578,7 @@ def _testfn():
 
     data = [b1, b2, b3]
 
-    # ifile = r'E:\Workdata\testdata.hdr'
+    # ifile = r'd:\Workdata\testdata.hdr'
 
     # data = iodefs.get_raster(ifile)
 

@@ -1158,9 +1158,9 @@ def get_kml_coords(kml):
 def _testfn():
     """Test routine."""
     import sys
-#    sfile = r'C:\Work\Workdata\change\PlanetaryPolygon.shp'
-    sfile = r'C:\Work\Workdata\change\fl35.shp'
-    pdir = r'C:\Work\Workdata\change\Planet'
+#    sfile = r'd:\Work\Workdata\change\PlanetaryPolygon.shp'
+    sfile = r'd:\Work\Workdata\change\fl35.shp'
+    pdir = r'd:\Work\Workdata\change\Planet'
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -1179,7 +1179,7 @@ def _testanim():
     from matplotlib import rcParams
     # rcParams['axes.formatter.limits'] = [-12, 12]
     # rcParams['axes.formatter.useoffset'] = False
-    wfile = r'C:\Work\Workdata\change\tmp.gif'
+    wfile = r'd:\Work\Workdata\change\tmp.gif'
 
     rcParams['figure.dpi'] = 300
     # rcParams['savefig.dpi'] = 300
@@ -1210,7 +1210,7 @@ def _testanim():
     writer.finish()
 
     # CSL = LoadSceneList(None)
-    # CSL.ifile = r'C:\Work\Workdata\change\Planet\paddock.xlsx'
+    # CSL.ifile = r'd:\Work\Workdata\change\Planet\paddock.xlsx'
     # CSL.settings(True)
 
     # SV = SceneViewer()

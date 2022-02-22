@@ -516,11 +516,11 @@ def _testfn():
 
     pbar = ProgressBarText()
 
-    ifile = r'C:\Workdata\lithosphere\Cut-90-0824-.hdr'
-    # ifile = r"C:\Workdata\Lithosphere\crash\033_0815-1111_ref_rect.hdr"
+    ifile = r'd:\Workdata\lithosphere\Cut-90-0824-.hdr'
+    # ifile = r"d:\Workdata\Lithosphere\crash\033_0815-1111_ref_rect.hdr"
 
-    ifile = r"E:\Workdata\Remote Sensing\hyperion\Gams_EO1H1760802013198110KF_1T.hdr"
-    ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"d:\Workdata\Remote Sensing\hyperion\Gams_EO1H1760802013198110KF_1T.hdr"
+    ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     ncmps = 10
     nodata = 0
@@ -581,7 +581,7 @@ def _testfn2():
 
     pbar = ProgressBarText()
 
-    ifile = r'C:\Workdata\lithosphere\Cut-90-0824-.hdr'
+    ifile = r'd:\Workdata\lithosphere\Cut-90-0824-.hdr'
     ncmps = 10
     nodata = 0
     iraster = None

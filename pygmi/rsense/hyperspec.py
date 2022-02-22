@@ -1367,9 +1367,9 @@ def _testfn():
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    # ifile = r"C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
-    ifile = r"E:\Workdata\Hyperspectral\080_0824-0920_ref_rect_clip.hdr"
-    ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    # ifile = r"d:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
+    ifile = r"d:\Workdata\Hyperspectral\080_0824-0920_ref_rect_clip.hdr"
+    ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     xoff = 0
     yoff = 2000
@@ -1412,12 +1412,12 @@ def _testfn2():
     from pygmi.rsense.iodefs import get_data
     from pygmi.raster.dataprep import lstack
 
-    ifile = r'C:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
-    ifile = r"E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    ifile = r"E:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
-    # ifile = r"E:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    # ifile = r"E:\Workdata\Remote Sensing\AST_07XT_00307292005085059_20210608060928_376.hdf"
-    # ifile = r"E:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
+    ifile = r'd:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
+    ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"d:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    # ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    # ifile = r"d:\Workdata\Remote Sensing\AST_07XT_00307292005085059_20210608060928_376.hdf"
+    # ifile = r"d:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
 
 
     # xoff = 0
@@ -1443,9 +1443,9 @@ def _testfn2():
 
 def _testfn3():
     """Test."""
-    ifile1 = r'C:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr'
-    ifile2 = r'C:\Workdata\Lithosphere\merge\cut-088-0824_iMNF15.hdr'
-    ifile3 = r'C:\Workdata\Lithosphere\merge\cut-089-0824_iMNF15.hdr'
+    ifile1 = r'd:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr'
+    ifile2 = r'd:\Workdata\Lithosphere\merge\cut-088-0824_iMNF15.hdr'
+    ifile3 = r'd:\Workdata\Lithosphere\merge\cut-089-0824_iMNF15.hdr'
 
     feat = 18
 

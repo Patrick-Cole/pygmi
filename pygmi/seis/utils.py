@@ -241,7 +241,7 @@ def _testfn():
 
     masterlist = tmp.split('\n')
 
-    ifile = r'C:\WorkData\seismology\2000to2018.out'
+    ifile = r'd:\WorkData\seismology\2000to2018.out'
 
     IO = iodefs.ImportSeisan(None)
     IO.settings(ifile)

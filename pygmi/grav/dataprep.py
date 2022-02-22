@@ -555,11 +555,11 @@ def _testfn():
     """Test routine."""
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    grvfile = r'C:\Work\Workdata\gravity\skeifontein 2018.txt'
-    gpsfile = r'C:\Work\Workdata\gravity\skei_dgps.csv'
+    grvfile = r'd:\Work\Workdata\gravity\skeifontein 2018.txt'
+    gpsfile = r'd:\Work\Workdata\gravity\skei_dgps.csv'
 
-    # grvfile = r'C:\Work\Workdata\gravity\Laxeygarvity until2511.txt'
-    # gpsfile = r'C:\Work\Workdata\gravity\laxey.dgps.csv'
+    # grvfile = r'd:\Work\Workdata\gravity\Laxeygarvity until2511.txt'
+    # gpsfile = r'd:\Work\Workdata\gravity\laxey.dgps.csv'
 
 # Import Data
     IO = iodefs.ImportCG5(None)

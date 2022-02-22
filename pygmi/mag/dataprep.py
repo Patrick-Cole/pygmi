@@ -719,7 +719,7 @@ def _testfn():
     finc = -62.5
     fdec = -16.75
 
-    ifile = 'C:/Workdata/bugs/detlef/TMI_norm_wdw.tif'
+    ifile = 'd:/Workdata/bugs/detlef/TMI_norm_wdw.tif'
 
     dat = get_raster(ifile)[0]
 

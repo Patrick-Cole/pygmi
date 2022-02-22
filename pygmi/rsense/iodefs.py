@@ -1878,7 +1878,7 @@ def _test5P():
     import sys
     import matplotlib.pyplot as plt
 
-    ifile = r"E:\Workdata\PyGMI Test Data\Sentinel-5P\S5P_OFFL_L2__AER_AI_20200522T115244_20200522T133414_13508_01_010302_20200524T014436.nc"
+    ifile = r"d:\Workdata\PyGMI Test Data\Sentinel-5P\S5P_OFFL_L2__AER_AI_20200522T115244_20200522T133414_13508_01_010302_20200524T014436.nc"
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     tmp = ImportSentinel5P()
@@ -1897,26 +1897,26 @@ def _testfn():
     import matplotlib.pyplot as plt
 
     extscene = None
-    ifile = r"C:\Workdata\Remote Sensing\Modis\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
-    ifile = r"C:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
-    ifile = r"C:\Workdata\Remote Sensing\Sentinel-2\S2B_MSIL2A_20201213T081239_N0214_R078_T34JGP_20201213T105149.SAFE\MTD_MSIL2A.xml"
-    # ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
-    # ifile = r"C:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf"
-    # ifile = r"C:\Workdata\Remote Sensing\AG100.v003.-23.030.0001.h5"
-    # ifile = r"E:\Workdata\bugs\AST_05_00309232013204629_20211004081945_4263.hdf"
+    ifile = r"d:\Workdata\Remote Sensing\Modis\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
+    ifile = r"d:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2B_MSIL2A_20201213T081239_N0214_R078_T34JGP_20201213T105149.SAFE\MTD_MSIL2A.xml"
+    # ifile = r"d:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
+    # ifile = r"d:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf"
+    # ifile = r"d:\Workdata\Remote Sensing\AG100.v003.-23.030.0001.h5"
+    # ifile = r"d:\Workdata\bugs\AST_05_00309232013204629_20211004081945_4263.hdf"
 
-    ifile = "C:/Workdata/Remote Sensing/AST_07XT_00307292005085059_20210608060928_376.hdf"
-    ifile = "C:/Workdata/Remote Sensing/ASTER/AST_08_00305212003085056_20180604061050_13463.hdf"
+    ifile = "d:/Workdata/Remote Sensing/AST_07XT_00307292005085059_20210608060928_376.hdf"
+    ifile = "d:/Workdata/Remote Sensing/ASTER/AST_08_00305212003085056_20180604061050_13463.hdf"
 
-    # ifile = r"c:\Workdata\Remote Sensing\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
+    # ifile = r"d:\Workdata\Remote Sensing\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
 
-    # ifile = r"E:\Workdata\bugs\AST_08_00306272001204805_20211007060336_20853.hdf"
-    # ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
+    # ifile = r"d:\Workdata\bugs\AST_08_00306272001204805_20211007060336_20853.hdf"
+    # ifile = r"d:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
 
-    ifile = "E:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = "d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
     extscene = 'Hyperion'
 
-    ifile = r"E:\Workdata\bugs\janine\MOD16A2.A2001153.h20v11.006.2017070120816.hdf"
+    ifile = r"d:\Workdata\bugs\janine\MOD16A2.A2001153.h20v11.006.2017070120816.hdf"
     extscene = None
 
     dat = get_data(ifile, extscene = extscene)
@@ -1928,7 +1928,7 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
-    # ifile = r'C:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
+    # ifile = r'd:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
     # dat = get_modisv6(ifile)
     breakpoint()
 

@@ -1236,16 +1236,16 @@ def _testfn():
     import matplotlib.pyplot as plt
 
     piter = ProgressBarText().iter
-    # ifile = r'C:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
-    ifile = r"E:\Workdata\Remote Sensing\Landsat\LM05_L1TP_171078_19840629_20180410_01_T2.tar.gz"
-    ifile = r"E:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    # ifile = r'd:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
+    ifile = r"d:\Workdata\Remote Sensing\Landsat\LM05_L1TP_171078_19840629_20180410_01_T2.tar.gz"
+    ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     extscene = 'Sentinel-2'
 
 
-    ifile = r"E:\Workdata\Remote Sensing\ASTER\test\AST_07XT_00311172002085850_20220121015142_25162.hdf"
+    ifile = r"d:\Workdata\Remote Sensing\ASTER\test\AST_07XT_00311172002085850_20220121015142_25162.hdf"
     extscene = None
 
-    # ifile = r"E:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
+    # ifile = r"d:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
     # extscene = None
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
@@ -1298,7 +1298,7 @@ def _testfn():
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    # idir = r'C:\Work\Workdata\Sentinel-2'
+    # idir = r'd:\Work\Workdata\Sentinel-2'
 
     SR = SatRatios()
     SR.indata['Raster'] = dat  # single file only
@@ -1325,12 +1325,12 @@ def _testfn2():
     import glob
     import matplotlib.pyplot as plt
 
-    ifiles = glob.glob("E:/Workdata/NRF/172-079/*.tar")
-    ifiles = glob.glob(r"C:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
+    ifiles = glob.glob("d:/Workdata/NRF/172-079/*.tar")
+    ifiles = glob.glob(r"d:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    # idir = r'C:\Work\Workdata\Sentinel-2'
+    # idir = r'd:\Work\Workdata\Sentinel-2'
 
     SR = ConditionIndices()
     SR.indata['RasterFileList'] = ifiles
