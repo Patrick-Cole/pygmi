@@ -266,7 +266,7 @@ class MextDisplay(QtWidgets.QDialog):
         d_z = self.dsb_zcell.value()
 
         self.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
-                          pbar=self.pbar)
+                          pbar=self.pbar, usedtm=True)
 
         self.update_vals()
 
