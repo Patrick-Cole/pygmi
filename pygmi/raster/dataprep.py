@@ -2591,7 +2591,8 @@ def getepsgcodes():
     return pcodes
 
 
-def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False):
+def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
+           masterid=None):
     """
     Merge datasets found in a single PyGMI data object.
 
@@ -2647,20 +2648,24 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False):
         return dat
 
     pprint('Merging data...')
-
-    data = dat[0]
-    dxy0 = min(data.xdim, data.ydim)
-    if dxy is None:
-        for data in dat:
-            dxy = min(dxy0, data.xdim, data.ydim)
-
-    xmin0, xmax0, ymin0, ymax0 = data.extent
-    for data in dat:
+    if masterid is not None:
+        data = dat[masterid]
         xmin, xmax, ymin, ymax = data.extent
-        xmin = min(xmin, xmin0)
-        xmax = max(xmax, xmax0)
-        ymin = min(ymin, ymin0)
-        ymax = max(ymax, ymax0)
+        dxy = min(data.xdim, data.ydim)
+    else:
+        data = dat[0]
+        dxy0 = min(data.xdim, data.ydim)
+        if dxy is None:
+            for data in dat:
+                dxy = min(dxy0, data.xdim, data.ydim)
+
+        xmin0, xmax0, ymin0, ymax0 = data.extent
+        for data in dat:
+            xmin, xmax, ymin, ymax = data.extent
+            xmin = min(xmin, xmin0)
+            xmax = max(xmax, xmax0)
+            ymin = min(ymin, ymin0)
+            ymax = max(ymax, ymax0)
 
     cols = int((xmax - xmin)/dxy)
     rows = int((ymax - ymin)/dxy)
@@ -2680,8 +2685,14 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False):
             data.nodata = nodata
 
         if data.crs is None:
-            pprint(f'{data.dataid} has no defined projection. Aborting.')
-            return None
+            pprint(f'{data.dataid} has no defined projection. '
+                   'Assigning local.')
+
+            data.crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                                       'AUTHORITY["EPSG","9001"]],'
+                                       'AXIS["Easting",EAST],'
+                                       'AXIS["Northing",NORTH]]')
+            # return None
 
         doffset = 0.0
         data.data.set_fill_value(data.nodata)

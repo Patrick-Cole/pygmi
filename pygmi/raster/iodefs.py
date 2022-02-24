@@ -1497,6 +1497,7 @@ def _filespeedtest():
     # iraster = (xoff, yoff, xsize, ysize)
 
     ifile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
+    ifile = r"d:\Downloads\caldefo_o_unwrap_goldstein64_OrbAdj_FlatEarth-defo_raw11_ref20210226_dep20210322.pix"
     # ofile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s_DEFLATE3ZL1.tif"
 
 
@@ -1513,6 +1514,8 @@ def _filespeedtest():
     getinfo('Start')
 
     dataset = get_raster(ifile, piter=pbar.iter, iraster=iraster)
+
+    breakpoint()
 
     # k = dataset[0]
     # k.data = k.data.filled(1.701410009187828e+38)
