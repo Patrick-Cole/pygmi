@@ -1426,6 +1426,13 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
         numbands = len(data)
         wavelength = []
         fwhm = []
+
+        # cov = []
+        # for idata in data:
+        #     cov.append(idata.data.flatten())
+        # cov = np.ma.array(cov)
+        # cov = np.ma.cov(cov)
+
         for i in piter(range(numbands)):
             datai = data[i]
             out.set_band_description(i+1, datai.dataid)
@@ -1438,6 +1445,18 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             # rtmp.GetStatistics(False, True)
 
             out.write(dtmp, i+1)
+
+            # icov = str(cov[i])[1:-1].replace(' ', ', ')
+            # out.update_tags(i+1, STATISTICS_COVARIANCES=icov)
+            out.update_tags(i+1, STATISTICS_EXCLUDEDVALUES='')
+            out.update_tags(i+1, STATISTICS_MAXIMUM=datai.data.max())
+            out.update_tags(i+1, STATISTICS_MEAN=datai.data.mean())
+            # out.update_tags(i+1, STATISTICS_MEDIAN=np.ma.median(datai.data))
+            out.update_tags(i+1, STATISTICS_MINIMUM=datai.data.min())
+            out.update_tags(i+1, STATISTICS_SKIPFACTORX=1)
+            out.update_tags(i+1, STATISTICS_SKIPFACTORY=1)
+            out.update_tags(i+1, STATISTICS_STDDEV=datai.data.std())
+
 
             if 'Raster' in datai.metadata:
                 if 'wavelength' in datai.metadata['Raster']:
@@ -1477,6 +1496,43 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             myfile.write(wout)
             myfile.write(envimeta)
 
+def cov2d(dat1, dat2):
+    """
+    Calculate the 2D correlation.
+
+    Parameters
+    ----------
+    dat1 : numpy array
+        dataset 1 for use in correlation calculation.
+    dat2 : numpy array
+        dataset 2 for use in correlation calculation.
+
+    Returns
+    -------
+    out : numpy array
+        array of correlation coefficients
+    """
+    out = None
+
+    # These next two lines are critical to keep original data safe.
+    dat1 = dat1.copy()
+    dat2 = dat2.copy()
+
+    if dat1.shape == dat2.shape:
+        # These line are to avoid warnings due to powers of large fill values
+        mask = np.logical_or(dat1.mask, dat2.mask)
+        dat1.mask = mask
+        dat2.mask = mask
+        dat1 = dat1.compressed()
+        dat2 = dat2.compressed()
+
+        mdat1 = dat1 - dat1.mean()
+        mdat2 = dat2 - dat2.mean()
+        numerator = (mdat1 * mdat2).sum()
+        # denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
+        # out = numerator / denominator
+
+    return numerator
 
 def _filespeedtest():
     """Test."""
@@ -1500,6 +1556,8 @@ def _filespeedtest():
     ifile = r"d:\Downloads\caldefo_o_unwrap_goldstein64_OrbAdj_FlatEarth-defo_raw11_ref20210226_dep20210322.pix"
     # ofile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s_DEFLATE3ZL1.tif"
 
+    ifile = r"C:\WorkProjects\Script6c_disp\disp_data.tif"
+
 
     # ifile = r'd:/Workdata/compress/017_0823-1146_ref_rect_BSQ_291div283_194div291_219div303.tif'
     # ofile = ifile[:-4]+'_DEFLATE3.tiff'
@@ -1513,22 +1571,21 @@ def _filespeedtest():
 
     getinfo('Start')
 
-    dataset = get_raster(ifile, piter=pbar.iter, iraster=iraster)
+    dataset = get_raster(ifile, iraster=iraster)
 
-    breakpoint()
+    ofile = ifile[:-4]+'_hope.tif'
+    export_raster(ofile, dataset, 'GTiff')
 
     # k = dataset[0]
     # k.data = k.data.filled(1.701410009187828e+38)
 
-    # export_raster(ofile, [k], 'GS7BG', piter=pbar.iter)
-    # dataset = get_raster(ofile, piter=pbar.iter, iraster=iraster)
+    # export_raster(ofile, [k], 'GS7BG')
+    # dataset = get_raster(ofile, iraster=iraster)
 
-
-    plt.figure(dpi=150)
-    plt.imshow(dataset[0].data, extent=dataset[0].extent)
-    plt.colorbar()
-    plt.show()
-
+    # plt.figure(dpi=150)
+    # plt.imshow(dataset[0].data, extent=dataset[0].extent)
+    # plt.colorbar()
+    # plt.show()
 
     # for i in dataset:
     #     i.data = i.data*10000
@@ -1536,12 +1593,11 @@ def _filespeedtest():
 
     # export_raster(ofile, dataset, 'GS7BG', piter=pbar.iter)
 
-
-    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='PACKBITS')  # 182s
-    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='LZW')  # 191, 140 with pred=3
-    # export_raster(ofile, dataset, 'GTiff', piter=pbar.iter, compression='LZMA')  #
-    export_raster(ifile[:-4]+'_DEFLATE3ZL1.tiff', dataset, 'GTiff', piter=pbar.iter, compression='DEFLATE')  # 318, 277 PRED 3
-    export_raster(ifile[:-4]+'_ZSTD3ZL1.tiff', dataset, 'GTiff', piter=pbar.iter, compression='ZSTD')  # 241, 281 pred=3
+    # export_raster(ofile, dataset, 'GTiff', compression='PACKBITS')  # 182s
+    # export_raster(ofile, dataset, 'GTiff', compression='LZW')  # 191, 140 with pred=3
+    # export_raster(ofile, dataset, 'GTiff', compression='LZMA')  #
+    # export_raster(ifile[:-4]+'_DEFLATE3ZL1.tiff', dataset, 'GTiff', compression='DEFLATE')  # 318, 277 PRED 3
+    # export_raster(ifile[:-4]+'_ZSTD3ZL1.tiff', dataset, 'GTiff', compression='ZSTD')  # 241, 281 pred=3
 
     # best is zstd pred 3 zlvl 1
     # then deflade pred 3 zlvl 1
