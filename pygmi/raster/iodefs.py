@@ -1496,43 +1496,6 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             myfile.write(wout)
             myfile.write(envimeta)
 
-def cov2d(dat1, dat2):
-    """
-    Calculate the 2D correlation.
-
-    Parameters
-    ----------
-    dat1 : numpy array
-        dataset 1 for use in correlation calculation.
-    dat2 : numpy array
-        dataset 2 for use in correlation calculation.
-
-    Returns
-    -------
-    out : numpy array
-        array of correlation coefficients
-    """
-    out = None
-
-    # These next two lines are critical to keep original data safe.
-    dat1 = dat1.copy()
-    dat2 = dat2.copy()
-
-    if dat1.shape == dat2.shape:
-        # These line are to avoid warnings due to powers of large fill values
-        mask = np.logical_or(dat1.mask, dat2.mask)
-        dat1.mask = mask
-        dat2.mask = mask
-        dat1 = dat1.compressed()
-        dat2 = dat2.compressed()
-
-        mdat1 = dat1 - dat1.mean()
-        mdat2 = dat2 - dat2.mean()
-        numerator = (mdat1 * mdat2).sum()
-        # denominator = np.sqrt((mdat1 ** 2).sum() * (mdat2 ** 2).sum())
-        # out = numerator / denominator
-
-    return numerator
 
 def _filespeedtest():
     """Test."""

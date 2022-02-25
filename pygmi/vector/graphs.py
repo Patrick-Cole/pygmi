@@ -380,7 +380,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             if uselabels:
                 textang = np.rad2deg(ang[0])
-                ax1.text(x[0], y[0], line, rotation=textang)
+                ax1.text(x[0], y[0], line[0], rotation=textang)
             ax1.plot(x, y, 'c')
             ax1.plot(qx, qy, 'k')
 
