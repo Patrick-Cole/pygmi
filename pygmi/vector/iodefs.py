@@ -198,6 +198,7 @@ class ImportLineData(QtWidgets.QDialog):
 
         gdf['pygmiX'] = gdf[xcol]
         gdf['pygmiY'] = gdf[ycol]
+
         gdf['line'] = gdf['line'].astype(str)
 
         if 'Line' not in self.outdata:
@@ -331,24 +332,28 @@ class ImportLineData(QtWidgets.QDialog):
             Pandas dataframe.
 
         """
-        with open(self.ifile, encoding='utf-8') as fno:
-            head = fno.readline()
-            tmp = fno.read()
+        # with open(self.ifile, encoding='utf-8') as fno:
+        #     head = fno.readline()
+        #     tmp = fno.read()
 
-        head = head.split(delimiter)
-        head = [i.lower() for i in head]
-        tmp = tmp.lower()
+        # head = head.split(delimiter)
+        # head = [i.lower() for i in head]
+        # tmp = tmp.lower()
 
-        dtype = {}
-        dtype['names'] = head
-        dtype['formats'] = ['f4']*len(head)
+        # dtype = {}
+        # dtype['names'] = head
+        # dtype['formats'] = ['f4']*len(head)
 
-        tmp = tmp.split('\n')
-        tmp2 = np.genfromtxt(tmp, names=head, delimiter=delimiter, dtype=None,
-                             encoding=None)
-        gdf = pd.DataFrame(tmp2)
+        # tmp = tmp.split('\n')
+        # tmp2 = np.genfromtxt(tmp, names=head, delimiter=delimiter, dtype=None,
+        #                      encoding=None)
+        # gdf = pd.DataFrame(tmp2)
 
-        if 'line' not in head:
+        gdf = pd.read_csv(self.ifile, delimiter=delimiter, index_col=False)
+
+        gdf.columns = gdf.columns.str.lower()
+
+        if 'line' not in gdf.columns:
             gdf['line'] = 'None'
 
         return gdf
