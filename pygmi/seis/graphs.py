@@ -939,7 +939,7 @@ def _testfn2():
 
     ifile = r'D:\Workdata\seismology\april2021\mulplt.wav'
 
-    with open(ifile) as pntfile:
+    with open(ifile, encoding='utf-8') as pntfile:
         ltmp = pntfile.read()
 
     ltmp = ltmp.split('\n')

@@ -351,7 +351,7 @@ class ImportCG5(QtWidgets.QDialog):
 
         os.chdir(os.path.dirname(filename))
 
-        with open(filename) as fno:
+        with open(filename, encoding='utf-8') as fno:
             tmp = fno.readlines()
 
         data = []

@@ -341,7 +341,7 @@ def savetable(ofile, bands, cols, data):
     None.
 
     """
-    fobj = open(ofile, 'a')
+    fobj = open(ofile, 'a', encoding='utf-8')
 
     htmp = cols[0]
     for i in cols[1:]:

@@ -204,7 +204,7 @@ class SIMP():
 
 # Open output files
         ofile = ifile[:-3]+'err'
-        self.ofile = open(ofile, 'w')
+        self.ofile = open(ofile, 'w', encoding='utf-8')
 
         self.showprocesslog('Error File: '+ofile)
 
@@ -1068,7 +1068,7 @@ def read_ifile(ifile):
 
     """
     # Read entire file
-    with open(ifile) as inputf:
+    with open(ifile, encoding='utf-8') as inputf:
         idata = inputf.read()
 
 # Fix bad characters

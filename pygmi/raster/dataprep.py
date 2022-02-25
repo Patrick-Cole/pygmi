@@ -2512,7 +2512,8 @@ def getepsgcodes():
         Dictionary of codes per projection in WKT format.
 
     """
-    with open(os.path.join(os.path.dirname(__file__), 'gcs.csv')) as dfile:
+    with open(os.path.join(os.path.dirname(__file__), 'gcs.csv'),
+              encoding='utf-8') as dfile:
         dlines = dfile.readlines()
 
     dlines = dlines[1:]
@@ -2524,7 +2525,8 @@ def getepsgcodes():
 
         dcodes[tmp[1]] = int(tmp[0])
 
-    with open(os.path.join(os.path.dirname(__file__), 'pcs.csv')) as pfile:
+    with open(os.path.join(os.path.dirname(__file__), 'pcs.csv'),
+              encoding='utf-8') as pfile:
         plines = pfile.readlines()
 
     pcodes = {}

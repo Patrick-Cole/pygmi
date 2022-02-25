@@ -293,7 +293,7 @@ class BIRRP(QtWidgets.QDialog):
         if filename == '':
             return
 
-        with open(filename) as ifile:
+        with open(filename, encoding='utf-8') as ifile:
             data = ifile.read()
 
         data = data.replace('\n', ' ')
@@ -439,7 +439,7 @@ class BIRRP(QtWidgets.QDialog):
         jmode = self.jmode.currentIndex()
         nar = int(self.nar.text())
 
-        with open(filename, 'w+') as ofile:
+        with open(filename, 'w+', encoding='utf-8') as ofile:
             ofile.write('0\n')  # ilev == 0
             ofile.write(str(self.nout.currentIndex()+2)+'\n')
             ofile.write(str(self.ninp.currentIndex()+2)+'\n')

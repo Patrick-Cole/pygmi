@@ -64,12 +64,12 @@ def main():
     print('Sample Scale:', samplescale)
     print('Power:', power)
 
-    with open(ifile+'.ecs') as fnr:
+    with open(ifile+'.ecs', encoding='utf-8') as fnr:
         tmp = fnr.read()
 
     scale = float(tmp.split('Scale=')[1].split('\n')[0])
 
-    with open(ifile+'.blk') as fnr:
+    with open(ifile+'.blk', encoding='utf-8') as fnr:
         tmp = fnr.read()
 
     tmp = tmp.splitlines()[6]
@@ -82,7 +82,7 @@ def main():
     strikep = float(tmp[5])*scale
     striken = float(tmp[6])*scale
 
-    with open(ifile+'.mag') as fnr:
+    with open(ifile+'.mag', encoding='utf-8') as fnr:
         tmp = fnr.read()
 
     tmp = tmp.splitlines()[2]

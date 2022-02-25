@@ -175,7 +175,7 @@ class ImportMod3D():
         None.
 
         """
-        with open(filename) as fno:
+        with open(filename, encoding='utf-8') as fno:
             tmp = fno.readlines()
 
         while tmp[0][0] == '#':

@@ -411,8 +411,8 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
 
         ctrans = osr.CoordinateTransformation(orig, targ)
 
-    with open(os.path.join(os.path.dirname(__file__),
-                           'IGRF13.cof')) as mdf:
+    with open(os.path.join(os.path.dirname(__file__), 'IGRF13.cof'),
+              encoding='utf-8') as mdf:
         modbuff = mdf.readlines()
     fileline = -1                            # First line will be 1
     model = []

@@ -124,8 +124,8 @@ class DeleteRecord():
         self.showprocesslog('Input Filename: '+ifile)
         self.showprocesslog('Output Filename: '+ofile)
 
-        outputf = open(ofile, 'w')
-        inputf = open(ifile)
+        outputf = open(ofile, 'w', encoding='utf-8')
+        inputf = open(ifile, encoding='utf-8')
 
         skey = QtWidgets.QInputDialog.getText(
             self.parent, 'Delete Criteria',

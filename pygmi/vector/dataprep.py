@@ -718,7 +718,7 @@ def cut_point(data, ifile):
     data : Data
         PyGMI Dataset
     """
-    shapef = ogr.Open(ifile)
+    shapef = ogr.Open(ifile, encoding='utf-8')
     if shapef is None:
         return None
     lyr = shapef.GetLayer()

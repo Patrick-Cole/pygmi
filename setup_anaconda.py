@@ -34,7 +34,7 @@ setup(name='pygmi',
       version=PVER,
 
       description='Python Geoscience Modelling and Interpretation',
-      long_description=open('README.rst').read(),
+      long_description=open('README.rst', encoding='utf-8').read(),
 
       url=HOMEPAGE,
       download_url=BASE_URL+'/archive/pygmi-' + PVER + '.tar.gz',

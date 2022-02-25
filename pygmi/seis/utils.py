@@ -191,7 +191,7 @@ class CorrectDescriptions(QtWidgets.QDialog):
 
         """
         filename = self.textfile.text()
-        with open(filename) as fno:
+        with open(filename, encoding='utf-8') as fno:
             tmp = fno.read()
 
         masterlist = tmp.split('\n')
@@ -236,7 +236,7 @@ def _testfn():
     idir = os.path.dirname(os.path.realpath(__file__))
     tfile = os.path.join(idir, r'descriptions.txt')
 
-    with open(tfile) as fno:
+    with open(tfile, encoding='utf-8') as fno:
         tmp = fno.read()
 
     masterlist = tmp.split('\n')

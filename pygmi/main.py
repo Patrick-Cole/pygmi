@@ -997,7 +997,7 @@ class MainWidget(QtWidgets.QMainWindow):
         if ifile == '':
             return False
 
-        with open(ifile, 'r') as fromdisk:
+        with open(ifile, 'r', encoding='utf-8') as fromdisk:
             ilist = json.load(fromdisk)
 
         ditems = {}
@@ -1081,7 +1081,7 @@ class MainWidget(QtWidgets.QMainWindow):
                 ilist[str(item)] = {'my_start_item': sname,
                                     'my_end_item': ename}
 
-        with open(ofile, 'w') as todisk:
+        with open(ofile, 'w', encoding='utf-8') as todisk:
             json.dump(ilist, todisk, indent=4)
         return True
 

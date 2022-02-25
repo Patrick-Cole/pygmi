@@ -263,7 +263,7 @@ class ImportLineData(QtWidgets.QDialog):
             Pandas dataframe.
 
         """
-        with open(self.ifile) as fno:
+        with open(self.ifile, encoding='utf-8') as fno:
             tmp = fno.read()
 
         chktxt = tmp[:tmp.index('\n')].lower()
@@ -331,7 +331,7 @@ class ImportLineData(QtWidgets.QDialog):
             Pandas dataframe.
 
         """
-        with open(self.ifile) as fno:
+        with open(self.ifile, encoding='utf-8') as fno:
             head = fno.readline()
             tmp = fno.read()
 

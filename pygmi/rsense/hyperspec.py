@@ -475,7 +475,7 @@ class AnalSpec(QtWidgets.QDialog):
         sdata['traylen'] = self.dsb_traylen.value()
         sdata['depthmarkers'] = self.depthmarkers
 
-        with open(ofile, 'w') as todisk:
+        with open(ofile, 'w', encoding='utf-8') as todisk:
             json.dump(sdata, todisk, indent=4)
 
         self.lbl_info.setText('Save complete.')
@@ -1288,7 +1288,7 @@ def readsli(ifile):
     spectra : dictionary
         Dictionary of spectra with wavelengths and reflectances.
     """
-    with open(ifile[:-4]+'.hdr') as file:
+    with open(ifile[:-4]+'.hdr', encoding='utf-8') as file:
         hdr = file.read()
 
     hdr = hdr.split('\n')

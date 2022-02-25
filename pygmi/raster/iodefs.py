@@ -463,7 +463,7 @@ def get_ascii(ifile):
     """
     isESRI = False
 
-    with open(ifile, 'r') as afile:
+    with open(ifile, 'r', encoding='utf-8') as afile:
         adata = afile.read()
 
     adata = adata.split()
@@ -486,7 +486,7 @@ def get_ascii(ifile):
             ulymap = ulymap - ydim/2
         adata = adata[12:]
     else:
-        with open(ifile[:-3]+'hdr', 'r') as hfile:
+        with open(ifile[:-3]+'hdr', 'r', encoding='utf-8') as hfile:
             tmp = hfile.readlines()
 
         xdim = float(tmp[0].split()[-1])
@@ -1149,7 +1149,7 @@ class ExportData():
             if len(data) > 1:
                 file_out = self.get_filename(k, 'gxf')
 
-            fno = open(file_out, 'w')
+            fno = open(file_out, 'w', encoding='utf-8')
 
             xmin = k.extent[0]
             ymin = k.extent[2]
@@ -1244,7 +1244,7 @@ class ExportData():
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'asc')
-            fno = open(file_out, 'w')
+            fno = open(file_out, 'w', encoding='utf-8')
 
             extent = k.extent
             xmin = extent[0]
@@ -1291,7 +1291,7 @@ class ExportData():
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'xyz')
-            fno = open(file_out, 'w')
+            fno = open(file_out, 'w', encoding='utf-8')
 
             tmp = k.data.filled(k.nodata)
 

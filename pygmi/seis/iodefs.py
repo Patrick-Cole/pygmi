@@ -147,7 +147,7 @@ class ImportSeisan():
         idir = os.path.dirname(os.path.realpath(__file__))
         self.tfile = os.path.join(idir, r'descriptions.txt')
 
-        with open(self.tfile) as inp:
+        with open(self.tfile, encoding='utf-8') as inp:
             self.rnames = inp.read()
 
         self.rnames = self.rnames.split('\n')
@@ -178,7 +178,7 @@ class ImportSeisan():
 
         os.chdir(os.path.dirname(self.ifile))
 
-        with open(self.ifile) as pntfile:
+        with open(self.ifile, encoding='utf-8') as pntfile:
             ltmp = pntfile.readlines()
 
         if len(ltmp[0]) < 80:
@@ -315,7 +315,7 @@ class ImportSeisan():
                 self.showprocesslog('Error: Problem with file')
                 self.showprocesslog('Process stopping, please see errors '
                                     'in '+self.ifile+'.log')
-            fout = open(self.ifile+'.log', 'w')
+            fout = open(self.ifile+'.log', 'w', encoding='utf-8')
             for i in file_errors:
                 fout.write(i[0]+'\n')
                 fout.write(i[1]+'\n')
@@ -847,7 +847,7 @@ class ImportGenericFPS():
 
         dlim = ','
 
-        with open(self.ifile) as pntfile:
+        with open(self.ifile, encoding='utf-8') as pntfile:
             ltmp = pntfile.readline()
 
         isheader = any(c.isalpha() for c in ltmp)
@@ -972,7 +972,7 @@ class ExportSeisan():
 
         os.chdir(os.path.dirname(filename))
 
-        self.fobj = open(filename, 'w')
+        self.fobj = open(filename, 'w', encoding='utf-8')
 
         for i in data:
             self.write_record_type_1(i)
@@ -1478,7 +1478,7 @@ class ExportCSV():
             return
         os.chdir(os.path.dirname(filename))
 
-        self.fobj = open(filename, 'w')
+        self.fobj = open(filename, 'w', encoding='utf-8')
 
         headi = ('last_action_done, date_time_of_last_action, operator, '
                  'status, id, new_id_created, id_locked, ')
