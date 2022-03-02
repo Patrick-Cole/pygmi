@@ -469,15 +469,20 @@ class ImportMod3D():
                 xmin, _, _, ymax = lmod.griddata[i].extent
                 lmod.griddata[i].set_transform(xdim, xmin, ydim, ymax)
 
-        crsfin = None
+        # crsfin = None
+        crsfin = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                                 'AUTHORITY["EPSG","9001"]],'
+                                 'AXIS["Easting",EAST],'
+                                 'AXIS["Northing",NORTH]]')
+
         for i in lmod.griddata:
             if lmod.griddata[i].crs is not None:
                 crsfin = lmod.griddata[i].crs
 
-        if crsfin is not None:
-            for i in lmod.griddata:
-                if lmod.griddata[i].crs is None:
-                    lmod.griddata[i].crs = crsfin
+        # if crsfin is not None:
+        for i in lmod.griddata:
+            if lmod.griddata[i].crs is None:
+                lmod.griddata[i].crs = crsfin
 
 # Section to load lithologies.
         lmod.lith_list['Background'] = grvmag3d.GeoData(self.parent)

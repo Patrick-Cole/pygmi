@@ -524,6 +524,11 @@ def get_ascii(ifile):
 
     dat[i].set_transform(xdim, xmin, ydim, ymax)
 
+    dat[i].crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                                 'AUTHORITY["EPSG","9001"]],'
+                                 'AXIS["Easting",EAST],'
+                                 'AXIS["Northing",NORTH]]')
+
     return dat
 
 
@@ -651,7 +656,12 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
     else:
-        crs = None
+        showprocesslog('Warning: Your data does not have a projection. '
+                       'Assigning local coordinate system.')
+        crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                              'AUTHORITY["EPSG","9001"]],'
+                              'AXIS["Easting",EAST],'
+                              'AXIS["Northing",NORTH]]')
 
     isbil = False
     if 'INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr']:
@@ -917,6 +927,10 @@ def get_geopak(hfile):
     dat[i].set_transform(dx, xmin, dy, ymax)
 
     dat[i].filename = hfile
+    dat[i].crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                                 'AUTHORITY["EPSG","9001"]],'
+                                 'AXIS["Easting",EAST],'
+                                 'AXIS["Northing",NORTH]]')
 
     return dat
 
@@ -1001,6 +1015,11 @@ def get_geosoft(hfile):
 
     dat[i].set_transform(dx, xmin, dy, ymax)
     dat[i].filename = hfile
+
+    dat[i].crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                                 'AUTHORITY["EPSG","9001"]],'
+                                 'AXIS["Easting",EAST],'
+                                 'AXIS["Northing",NORTH]]')
 
     return dat
 
