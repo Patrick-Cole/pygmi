@@ -284,9 +284,14 @@ class ProcessData(QtWidgets.QDialog):
             x2 = xp1[filt].values/60.
             dcor2 = fp[filt]
             drifttime = (x2[-1]-x2[0])
-            driftrate = (dcor2[-1]-dcor2[0])/drifttime
-            self.showprocesslog(f'Day {iday+1} drift: {driftrate:.3e} '
-                                f'mGal/min over {drifttime:.3f} minutes.')
+            if drifttime == 0.:
+                self.showprocesslog(f'Day {iday+1} drift: Only one reading, '
+                                    'no drift result possible.')
+
+            else:
+                driftrate = (dcor2[-1]-dcor2[0])/drifttime
+                self.showprocesslog(f'Day {iday+1} drift: {driftrate:.3e} '
+                                    f'mGal/min over {drifttime:.3f} minutes.')
             dday.append(iday+1+x2[-1]/1440)
             drate.append(driftrate)
             dtime.append(drifttime)
