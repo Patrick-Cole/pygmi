@@ -287,6 +287,7 @@ class ProcessData(QtWidgets.QDialog):
             if drifttime == 0.:
                 self.showprocesslog(f'Day {iday+1} drift: Only one reading, '
                                     'no drift result possible.')
+                driftrate = np.nan
 
             else:
                 driftrate = (dcor2[-1]-dcor2[0])/drifttime
