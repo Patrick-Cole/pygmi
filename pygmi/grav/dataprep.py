@@ -229,7 +229,7 @@ class ProcessData(QtWidgets.QDialog):
 
         """
         pdat = self.indata['Line']['Gravity']
-#        pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
+        pdat.sort_values(by=['DECTIMEDATE'], inplace=True)
 
         basethres = float(self.basethres.text())
         kstat = self.knownstat.text()
@@ -250,14 +250,20 @@ class ProcessData(QtWidgets.QDialog):
         driftdat = tmp[tmp['STATION'] != kstat]
         pdat = pdat[pdat['STATION'] < basethres]
 
-#        x = pdat['DECTIMEDATE'].values
-#        xp1 = driftdat['DECTIMEDATE'].values
+        if tmp.STATION.unique()[0] == kstat and tmp.STATION.unique().size == 1:
+            driftdat = tmp[tmp['STATION'] == kstat]
+
+        # x = pdat['DECTIMEDATE'].values
+        # xp1 = driftdat['DECTIMEDATE'].values
         xp1 = driftdat['TIME'].apply(time_convert)
 
         fp = driftdat['GRAV'].values
 
-        x = pdat.index.values
-        xp = driftdat.index.values
+        # x = pdat.index.values
+        # xp = driftdat.index.values
+
+        x = pdat['DECTIMEDATE'].values
+        xp = driftdat['DECTIMEDATE'].values
 
         dcor = np.interp(x, xp, fp)
 
@@ -335,7 +341,8 @@ class ProcessData(QtWidgets.QDialog):
         gSB = spherical_bouguer(h, dens)
 
 # Bouguer Anomaly
-        gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
+        gba = gobs - gT + gATM - gHC - gSB
+        # gba = gobs - gT + gATM + gHC - gSB
 
         pdat = pdat.assign(dcor=dcor)
         pdat = pdat.assign(gobs_drift=gobs)
@@ -373,6 +380,7 @@ class ProcessData(QtWidgets.QDialog):
 
         kstat = float(self.knownstat.text())
         if kstat not in pdat['STATION'].values:
+            breakpoint()
             txt = ('Invalid base station number.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           txt, QtWidgets.QMessageBox.Ok)
@@ -382,6 +390,9 @@ class ProcessData(QtWidgets.QDialog):
         tmp = pdat[pdat['STATION'] > basethres]
         kbasevals = tmp[tmp['STATION'] == kstat]
         abasevals = tmp[tmp['STATION'] != kstat]
+
+        if tmp.STATION.unique()[0] == kstat and tmp.STATION.unique().size == 1:
+            abasevals = kbasevals
 
         x = abasevals['DECTIMEDATE']
         grv = abasevals['GRAV']
@@ -561,14 +572,23 @@ def _testfn():
     """Test routine."""
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    grvfile = r'd:\Work\Workdata\gravity\skeifontein 2018.txt'
-    gpsfile = r'd:\Work\Workdata\gravity\skei_dgps.csv'
+    grvfile = r'd:\Workdata\gravity\skeifontein 2018.txt'
+    gpsfile = r'd:\Workdata\gravity\skei_dgps.csv'
+    kbase = '88888'
+    bthres = '10000'
+
 
     # grvfile = r'd:\Work\Workdata\gravity\Laxeygarvity until2511.txt'
     # gpsfile = r'd:\Work\Workdata\gravity\laxey.dgps.csv'
 
+    grvfile = r"D:\Workdata\bugs\grav\Combined_Profile1_Processed.txt"
+    gpsfile = r"D:/Workdata/bugs/grav/GPS profil 1 lat lon.csv"
+    kbase = '111111'
+    bthres = '100000'
+
 # Import Data
     IO = iodefs.ImportCG5(None)
+    IO.basethres.setText(bthres)
     IO.get_cg5(grvfile)
     IO.get_gps(gpsfile)
     IO.settings(True)
@@ -576,21 +596,31 @@ def _testfn():
 # Process Data
     PD = ProcessData()
     PD.indata = IO.outdata
-    PD.knownstat.setText('88888.0')
-    PD.knownbase.setText('978864.74')
+    PD.basethres.setText(bthres)
+    PD.knownstat.setText(kbase)
+    PD.knownbase.setText('978794.53')
     PD.calcbase()
 
-    PD.settings(False)
+    PD.settings(True)
 
     datout = PD.outdata['Line']
 
     gdf = datout['Gravity']
 
-    gdf = gdf[(gdf.STATION > 4470) & (gdf.STATION < 4472)]
-#    gdf = gdf[(gdf.STATION > 2213) & (gdf.STATION < 2900)]
+    # gdf = gdf[(gdf.STATION > 4470) & (gdf.STATION < 4472)]
 
-    plt.plot(gdf.longitude, gdf.latitude, '.')
-    plt.show()
+    # plt.plot(gdf.longitude, gdf.latitude, '.')
+    # plt.show()
+
+    for i in ['GRAV', 'gobs_drift', 'BOUGUER', 'dcor', 'elevation',
+              'gT', 'gATM', 'gHC', 'gSB']:
+        plt.title(i)
+        gdf[i].plot()
+        plt.show()
+
+        # gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
+
+    breakpoint()
 
 
 if __name__ == "__main__":

@@ -539,7 +539,8 @@ def gmerge(master, slave, xrange=None, yrange=None):
     dat = []
 
     for data in [master, slave]:
-        dat.append(data_reproject(data, data.crs, otransform, rows, cols))
+        dat.append(data_reproject(data, data.crs, data.crs, otransform,
+                                  rows, cols))
 
     imask = np.logical_and(dat[0].data.mask, np.logical_not(dat[1].data.mask))
     if imask.size > 1:

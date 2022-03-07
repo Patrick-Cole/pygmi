@@ -908,7 +908,8 @@ class DataReproj(QtWidgets.QDialog):
                 src_crs, dst_crs, src_width, src_height, *data.bounds)
 
 # Work out the boundaries of the new dataset in the target projection
-            data2 = data_reproject(data, dst_crs, transform, height, width)
+            data2 = data_reproject(data, src_crs, dst_crs, transform,
+                                   height, width)
 
             dat.append(data2)
 
@@ -1944,7 +1945,7 @@ def redistribute_vertices(geom, distance):
         raise ValueError('unhandled geometry %s', (geom.geom_type,))
 
 
-def data_reproject(data, ocrs, otransform, orows, ocolumns):
+def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
     """
     Reproject dataset.
 
@@ -1952,6 +1953,8 @@ def data_reproject(data, ocrs, otransform, orows, ocolumns):
     ----------
     data : PyGMI Data
         PyGMI dataset.
+    icrs : CRS
+        input crs.
     ocrs : CRS
         output crs.
     otransform : Affine
@@ -1971,7 +1974,7 @@ def data_reproject(data, ocrs, otransform, orows, ocolumns):
     odata, _ = reproject(source=data.data,
                          destination=odata,
                          src_transform=data.transform,
-                         src_crs=data.crs,
+                         src_crs=icrs,
                          dst_transform=otransform,
                          dst_crs=ocrs,
                          src_nodata=data.nodata)

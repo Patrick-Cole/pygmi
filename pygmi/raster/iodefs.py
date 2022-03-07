@@ -186,6 +186,7 @@ class ImportData():
                    'Geosoft UNCOMPRESSED grid (*.grd);;'
                    'Geosoft (*.gxf);;'
                    'GeoTiff (*.tif *.tiff);;'
+                   'GMT netCDF grid (*.grd);;'
                    'PCI Geomatics Database File (*.pix);;'
                    'SAGA binary grid (*.sdat);;'
                    'Surfer grid (*.grd);;'
@@ -533,7 +534,7 @@ def get_ascii(ifile):
 
 
 def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
-               iraster=None):
+               iraster=None, driver=None):
     """
     Get raster dataset.
 
@@ -632,20 +633,21 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                                   'AXIS["Northing",NORTH]]')
 
     dmeta = {}
-    with rasterio.open(ifile) as dataset:
+    with rasterio.open(ifile, driver=driver) as dataset:
         if dataset is None:
             return None
 
         # allns = dataset.tag_namespaces()
 
+        gmeta = dataset.tags()
         istruct = dataset.tags(ns='IMAGE_STRUCTURE')
         driver = dataset.driver
 
         if driver == 'ENVI':
             dmeta = dataset.tags(ns='ENVI')
 
-        if custom_wkt == '' and dataset.crs is not None:
-            custom_wkt = dataset.crs.to_wkt()
+    if custom_wkt == '' and dataset.crs is not None:
+        custom_wkt = dataset.crs.to_wkt()
 
     cols = dataset.width
     rows = dataset.height
@@ -738,6 +740,22 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             dat[i].filename = filename
             dat[i].units = unit
             dat[i].transform = dataset.transform
+
+            if driver == 'netCDF' and dataset.crs is None:
+                if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:
+                    xrng = gmeta['x#actual_range']
+                    xrng = xrng.strip('}{').split(',')
+                    xrng = [float(i) for i in xrng]
+                    xmin = min(xrng)
+                    xdim = (xrng[1]-xrng[0])/cols
+
+                    yrng = gmeta['y#actual_range']
+                    yrng = yrng.strip('}{').split(',')
+                    yrng = [float(i) for i in yrng]
+                    ymin = min(yrng)
+                    ydim = (yrng[1]-yrng[0])/rows
+                    dat[i].set_transform(xdim, xmin, ydim, ymin)
+
             dat[i].crs = crs
             dat[i].xdim, dat[i].ydim = dataset.res
             dat[i].meta = dataset.meta
@@ -1548,6 +1566,8 @@ def _filespeedtest():
     # ifile = r"d:/Workdata/testdata.hdr"
     # ofile = r'd:/Workdata/testdata.grd'
 
+    ifile = r"D:\Workdata\people\rahul\gravity_final.grd"
+    ifile = r"D:\Workdata\people\rahul\grav.grd"
 
     iraster = None
 
@@ -1555,8 +1575,8 @@ def _filespeedtest():
 
     dataset = get_raster(ifile, iraster=iraster)
 
-    ofile = ifile[:-4]+'_hope.tif'
-    export_raster(ofile, dataset, 'GTiff')
+    # ofile = ifile[:-4]+'_hope.tif'
+    # export_raster(ofile, dataset, 'GTiff')
 
     # k = dataset[0]
     # k.data = k.data.filled(1.701410009187828e+38)
@@ -1564,10 +1584,10 @@ def _filespeedtest():
     # export_raster(ofile, [k], 'GS7BG')
     # dataset = get_raster(ofile, iraster=iraster)
 
-    # plt.figure(dpi=150)
-    # plt.imshow(dataset[0].data, extent=dataset[0].extent)
-    # plt.colorbar()
-    # plt.show()
+    plt.figure(dpi=150)
+    plt.imshow(dataset[0].data, extent=dataset[0].extent)
+    plt.colorbar()
+    plt.show()
 
     # for i in dataset:
     #     i.data = i.data*10000
@@ -1587,7 +1607,7 @@ def _filespeedtest():
 
     getinfo('End')
 
-    # breakpoint()
+    breakpoint()
 
 
 if __name__ == "__main__":

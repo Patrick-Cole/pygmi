@@ -260,7 +260,7 @@ class ImportCG5(QtWidgets.QDialog):
         dtest = dfmerge.duplicated(['LINE', 'STATION'])
         dlist = dfmerge[['LINE', 'STATION']].loc[dtest]
         dlist = dlist[~dlist.duplicated()]
-        dlist = dlist[dlist.STATION < 10000]
+        dlist = dlist[dlist.STATION < float(self.basethres.text())]
 
         if dlist.size > 0:
             self.showprocesslog('Warning, the following are duplicated:')
@@ -421,7 +421,7 @@ class ImportCG5(QtWidgets.QDialog):
             elif 'lat' in tmp.lower():
                 yind = i
             elif ('elev' in tmp.lower() or 'alt' in tmp.lower() or
-                  'height' in tmp.lower()):
+                  'height' in tmp.lower() or tmp.lower() == 'z'):
                 zind = i
             elif 'stat' in tmp.lower():
                 sind = i
