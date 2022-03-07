@@ -615,7 +615,9 @@ def _testfn():
     for i in ['GRAV', 'gobs_drift', 'BOUGUER', 'dcor', 'elevation',
               'gT', 'gATM', 'gHC', 'gSB']:
         plt.title(i)
-        gdf[i].plot()
+
+        plt.plot(gdf.x, gdf[i])
+        # gdf[i].plot()
         plt.show()
 
         # gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
