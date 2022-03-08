@@ -859,7 +859,7 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
         dat = get_aster_hdf(ifile, piter)
     elif 'AST_' in bfile and 'zip' in bfile.lower():
         dat = get_aster_zip(ifile, piter, showprocesslog)
-    elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']:
+    elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09']:
         dat = get_landsat(ifile, piter, showprocesslog)
     elif ('.xml' in bfile and '.SAFE' in ifile) or 'Sentinel-2' in extscene:
         dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
@@ -1032,7 +1032,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
                     '7': [2090, 2350],
                     '8': [520, 900]}
 
-    if platform == '08':
+    if platform in ('08', '09'):
         satbands = {'1': [430, 450],
                     '2': [450, 510],
                     '3': [530, 590],
@@ -1066,7 +1066,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
 
     files = glob.glob(ifile[:-7]+'*[0-9].tif')
     if glob.glob(ifile[:-7]+'*ST_QA.tif'):
-        if 'LC08' in ifile:
+        if 'LC08' in ifile or 'LC09' in ifile:
             lstband = '10'
         else:
             lstband = '6'
@@ -1918,6 +1918,9 @@ def _testfn():
 
     ifile = r"d:\Workdata\bugs\janine\MOD16A2.A2001153.h20v11.006.2017070120816.hdf"
     extscene = None
+
+    ifile = r"D:\Workdata\Remote Sensing\Landsat\LC09_L1TP_173080_20211110_20220119_02_T1.tar"
+
 
     dat = get_data(ifile, extscene = extscene)
 

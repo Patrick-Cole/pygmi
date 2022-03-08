@@ -66,7 +66,7 @@ class MenuWidget():
         self.menu3.addAction(self.action_import_aster)
         self.action_import_aster.triggered.connect(self.import_aster)
 
-        self.action_import_landsat = QtWidgets.QAction('Import Landsat 4 to 8')
+        self.action_import_landsat = QtWidgets.QAction('Import Landsat 4 to 9')
         self.menu3.addAction(self.action_import_landsat)
         self.action_import_landsat.triggered.connect(self.import_landsat)
 
