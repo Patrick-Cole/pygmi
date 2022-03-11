@@ -27,6 +27,8 @@ A routine interfacing wito the SimPEG inversion library for magnetic
 inversion.
 """
 
+import sys
+from contextlib import redirect_stdout
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
 import scipy.interpolate as si
@@ -36,15 +38,13 @@ from SimPEG.utils import surface2ind_topo,  model_builder
 from SimPEG import (maps, data, inverse_problem, data_misfit,
                     regularization, optimization, directives,
                     inversion)
-import matplotlib.pyplot as plt
 import sklearn.cluster as skc
-from sklearn.metrics import calinski_harabasz_score
-import sklearn.preprocessing as skp
 
 from pygmi import menu_default
 from pygmi.misc import ProgressBarText, ProgressBar
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.raster.dataprep import lstack
+from pygmi.pfmod.grvmag3d import quick_model
 
 
 class MagInvert(QtWidgets.QDialog):
@@ -54,10 +54,12 @@ class MagInvert(QtWidgets.QDialog):
         super().__init__(parent)
         self.parent = parent
         self.lmod1 = LithModel()
+        self.lmod2 = LithModel()
         self.pbar = ProgressBar()
         self.inraster = {}
         self.indata = {}
         self.outdata = {}
+        self.tmp = []
 
         if parent is None:
             self.showprocesslog = print
@@ -65,6 +67,12 @@ class MagInvert(QtWidgets.QDialog):
         else:
             self.showprocesslog = parent.showprocesslog
             self.piter = parent.pbar.iter
+
+        if parent is None:
+            self.stdout = sys.stdout
+        else:
+            self.stdout = self.parent.stdio_redirect
+
 
         self.combo_model = QtWidgets.QComboBox()
         self.combo_other = QtWidgets.QComboBox()
@@ -273,7 +281,7 @@ class MagInvert(QtWidgets.QDialog):
         hlayout.addWidget(buttonbox)
 
 # Assign to main layout
-        verticallayout.addLayout(h_model)
+        # verticallayout.addLayout(h_model)
         verticallayout.addWidget(gb_data_info)
         verticallayout.addWidget(gb_gen_prop)
         verticallayout.addWidget(gb_extent)
@@ -442,7 +450,7 @@ class MagInvert(QtWidgets.QDialog):
 
         """
         ctxt = str(self.combo_dataset.currentText())
-        if ctxt not in ('None', u''):
+        if ctxt not in ('None', ''):
             curgrid = self.inraster[ctxt]
 
             crows, ccols = curgrid.data.shape
@@ -470,10 +478,23 @@ class MagInvert(QtWidgets.QDialog):
         None.
 
         """
+
+        # cols = 40
+        # rows = 40
+        # layers = 15
+        # utlx = -80
+        # utly = 90
+        # utlz = 0
+        # dxy = 5.
+        # d_z = 5.
+        # mht = 1.
+
+        # self.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht)
+
     # Extent Parameters
-        self.dsb_utlx.setValue(0.0)
-        self.dsb_utly.setValue(0.0)
-        self.dsb_utlz.setValue(0.0)
+        self.dsb_utlx.setValue(self.lmod1.xrange[0])
+        self.dsb_utly.setValue(self.lmod1.yrange[-1])
+        self.dsb_utlz.setValue(self.lmod1.zrange[-1])
         self.dsb_xextent.setValue(self.lmod1.numx*self.lmod1.dxy)
         self.dsb_yextent.setValue(self.lmod1.numy*self.lmod1.dxy)
         self.dsb_zextent.setValue(self.lmod1.numz*self.lmod1.d_z)
@@ -482,6 +503,11 @@ class MagInvert(QtWidgets.QDialog):
         self.sb_cols.setValue(self.lmod1.numx)
         self.sb_rows.setValue(self.lmod1.numy)
         self.sb_layers.setValue(self.lmod1.numz)
+
+        # self.dsb_mht.setValue(mht)
+        # self.dsb_hdec.setValue(0)
+        # self.dsb_hint.setValue(50000)
+        # self.dsb_hinc.setValue(90)
 
     def upd_layers(self):
         """
@@ -711,29 +737,20 @@ class MagInvert(QtWidgets.QDialog):
 
         self.acceptall()
 
+        self.outdata['Model3D'] = [self.lmod2]
+        return True
+
     def acceptall(self):
         """
         Accept All.
+
+        Based on the SimPEG example.
 
         Returns
         -------
         None.
 
         """
-        # dxy = self.lmod1.dxy
-
-        # xxx = np.arange(self.lmod1.xrange[0], self.lmod1.xrange[1],
-        #                 dxy)
-        # yyy = np.arange(self.lmod1.yrange[0], self.lmod1.yrange[1],
-        #                 dxy)
-
-        # xy = np.meshgrid(xxx, yyy[::-1])
-        # z = np.zeros_like(xy[0])+self.dsb_mht.value()
-
-        # receiver_locations = np.transpose([xy[0].flatten(),
-        #                                    xy[1].flatten(),
-        #                                    z.flatten()])
-
         dat = [self.lmod1.griddata['Magnetic Dataset'],
                self.lmod1.griddata['DTM Dataset']]
 
@@ -742,14 +759,10 @@ class MagInvert(QtWidgets.QDialog):
         mag = dat[0]
         dtm = dat[1]
 
-        plt.imshow(dat[0].data)
-        plt.show()
-        plt.imshow(dat[1].data)
-        plt.show()
-
         dobs = mag.data.flatten()
 
         xmin, xmax, ymin, ymax = mag.extent
+
         xdim = mag.xdim
         ydim = mag.ydim
 
@@ -763,27 +776,9 @@ class MagInvert(QtWidgets.QDialog):
                                            xy[1].flatten(),
                                            z.flatten()])
 
-        # dtm = self.lmod1.griddata['DTM Dataset']
-        # xrange = dtm.extent[:2]
-        # yrange = dtm.extent[2:]
-
-        # xxx = np.arange(xrange[0], xrange[1], dtm.xdim)
-        # yyy = np.arange(yrange[0], yrange[1], dtm.ydim)
-
-        # xy = np.meshgrid(xxx, yyy[::-1])
-        # z = dtm.data.flatten()
-
         topo_xyz = np.transpose([xy[0].flatten(),
                                  xy[1].flatten(),
                                  dtm.data.flatten()])
-
-        # dir_path = r'd:\Work\Programming\MagInv\magnetics'
-        # topo_filename = dir_path + "\\magnetics_topo.txt"
-        # data_filename = dir_path + "\\magnetics_data.obs"
-        # topo_xyz1 = np.loadtxt(str(topo_filename))
-        # dobs1a = np.loadtxt(str(data_filename))
-        # receiver_locations1 = dobs1a[:, 0:3]
-        # dobs1 = dobs1a[:, -1]
 
         # Assign Uncertainty
         maximum_anomaly = np.max(np.abs(dobs))
@@ -812,7 +807,25 @@ class MagInvert(QtWidgets.QDialog):
         hx = [(dhxy, 5, -1.3), (dhxy, self.lmod1.numx), (dhxy, 5, 1.3)]
         hy = [(dhxy, 5, -1.3), (dhxy, self.lmod1.numy), (dhxy, 5, 1.3)]
         hz = [(dh, 5, -1.3), (dh, self.lmod1.numz)]
-        mesh = TensorMesh([hx, hy, hz], "CCN")
+
+        x0 = xmin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
+        y0 = ymin-(np.sum([dhxy*1.3**(i+1) for i in range(5)])+5)
+        z0 = -(dh*self.lmod1.numz)-(np.sum([dh*1.3**(i+1) for i in range(5)]))
+
+        mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
+
+        # hx = [(dhxy, self.lmod1.numx)]
+        # hy = [(dhxy, self.lmod1.numy)]
+        # hz = [(dh, self.lmod1.numz)]
+
+        # x0 = xmin-5
+        # y0 = ymin-5
+        # z0 = -dh*self.lmod1.numz
+
+        # mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
+        # mesh = TensorMesh([hx, hy, hz], "CCN")
+
+        # breakpoint()
 
         # Starting/Reference Model and Mapping on Tensor Mesh
         background_susceptibility = 1e-4
@@ -853,7 +866,15 @@ class MagInvert(QtWidgets.QDialog):
 
         # Running the Inversion
         inv = inversion.BaseInversion(inv_prob, directives_list)
-        recovered_model = inv.run(starting_model)
+        # recovered_model = inv.run(starting_model)
+
+        try:
+            with redirect_stdout(self.stdout):
+                recovered_model = inv.run(starting_model)
+        except Exception as e:
+            QtWidgets.QMessageBox.warning(self.parent, 'Error', str(e),
+                                          QtWidgets.QMessageBox.Ok)
+            return
 
         ##############################################################
         # Recreate True Model
@@ -876,39 +897,82 @@ class MagInvert(QtWidgets.QDialog):
 
         r2 = soln_map * recovered_model
         r2.shape = (mesh.nCz, mesh.nCy, mesh.nCx)
-
         r2 = r2[::-1]
 
         r3 = r2[:-5, 5:-5, 5:-5]
-
         r3 = np.ma.masked_invalid(r3)
-        # breakpoint()
         # X = skp.StandardScaler().fit_transform(r3.flatten())
 
         X = r3.compressed().reshape(-1, 1)
 
         # cfit = skc.KMeans(n_clusters=i, tol=self.tol, max_iter=self.max_iter).fit(X)
-        cfit = skc.KMeans(n_clusters=2).fit(X)
+        cfit = skc.KMeans(n_clusters=5).fit(X)
 
         zout = cfit.labels_
-
         r3[~r3.mask] = zout
 
-        r4 = np.moveaxis(r3, [0,1,2], [2, 1, 0])
+        r4 = np.moveaxis(r3, [0, 1, 2], [2, 1, 0])
         r4 = r4.filled(-1)
-        self.lmod1.lith_index = r4
 
-        breakpoint()
+        cnt = cfit.labels_.max()+1
+        susc = [0.]*cnt
+        inputliths = ['']*cnt
+        dens = [2.67]*cnt
+        for i2 in range(cnt):
+            susc[i2] = X[cfit.labels_ == i2].mean()
+            inputliths[i2] = str(susc[i2])
+            print(i2, susc[i2])
 
+        bsusc = np.min(susc)
+        bindx = np.nonzero(susc == bsusc)[0][0]
+
+        if bindx != 0:
+            r4[r4 == bindx] = 999
+            r4[r4 == 0] = bindx
+            r4[r4 == 999] = 0
+
+            susc[bindx] = susc[0]
+            inputliths[bindx] = inputliths[0]
+
+        susc = susc[1:]
+        inputliths = inputliths[1:]
+
+        tlx = self.dsb_utlx.value()
+        tly = self.dsb_utly.value()
+        tlz = self.dsb_utlz.value()
+
+        mht = self.dsb_mht.value()
+
+        dxy = self.dsb_xycell.value()
+        numx = self.sb_cols.value()
+        numy = self.sb_rows.value()
+        numz = self.sb_layers.value()
+        d_z = self.dsb_zcell.value()
+
+        self.lmod2 = quick_model(numx, numy, numz, dxy, d_z, tlx, tly, tlz,
+                                 mht, finc=inclination, fdec=declination,
+                                 inputliths=inputliths, susc=susc, dens=dens,
+                                 hintn=strength)
+
+        self.lmod2.lith_list['Background'].susc = bsusc
+        # self.lmod1.lith_index = r4[:, :, ::-1].astype(int)
+        self.lmod2.lith_index = r4.astype(int)
+        self.lmod2.name = 'Internal Inverted Model'
+        self.lmod2.griddata = self.lmod1.griddata
 
 
 def _testfn():
     """Main."""
     # Plot Recovered Model
-    import sys
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
     import matplotlib as mpl
+
+    # from pygmi.pfmod.mvis3d import Mod3dDisplay
+    from pygmi.pfmod.pfmod import MainWidget
+
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
 
     mfile = r"d:\Workdata\MagInv\mag.tif"
     dfile = r"d:\Workdata\MagInv\dem.tif"
@@ -922,9 +986,6 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     DM = MagInvert()
-
-    # DM.lmod1.dxy = 10
-    # DM.lmod1.d_z = 20
     DM.indata['Raster'] = mdat+ddat
 
     for i in DM.indata['Raster']:
@@ -940,8 +1001,9 @@ def _testfn():
     utlz = 0
     dxy = 5.
     d_z = 5.
+    mht = 1.
 
-    DM.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z)
+    DM.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht)
 
     DM.update_combos()
     DM.combo_dtm.setCurrentText('dem')
@@ -950,18 +1012,18 @@ def _testfn():
 
     DM.choose_dtm()
 
-    DM.dsb_mht.setValue(1)
+    DM.dsb_mht.setValue(mht)
     DM.dsb_hdec.setValue(0)
     DM.dsb_hint.setValue(50000)
     DM.dsb_hinc.setValue(90)
 
     DM.settings(True)
 
-    maps, mesh, ind_active, recovered_model, true_model = DM.tmp
+    maps1, mesh, ind_active, recovered_model, true_model = DM.tmp
 
     # Plot True Model
     fig = plt.figure(figsize=(9, 4), dpi=150)
-    plotting_map = maps.InjectActiveCells(mesh, ind_active, np.nan)
+    plotting_map = maps1.InjectActiveCells(mesh, ind_active, np.nan)
 
     ax1 = fig.add_axes([0.08, 0.1, 0.75, 0.8])
     mesh.plotSlice(
@@ -985,7 +1047,7 @@ def _testfn():
 
     # Plot recovered model
     fig = plt.figure(figsize=(9, 4), dpi=150)
-    plotting_map = maps.InjectActiveCells(mesh, ind_active, np.nan)
+    plotting_map = maps1.InjectActiveCells(mesh, ind_active, np.nan)
 
     ax1 = fig.add_axes([0.08, 0.1, 0.75, 0.8])
     mesh.plotSlice(
@@ -1007,17 +1069,156 @@ def _testfn():
     cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
+    # r2 = plotting_map * recovered_model
+    # r2.shape = (mesh.nCz, mesh.nCy, mesh.nCx)
 
-    r2 = plotting_map * recovered_model
-    r2.shape = (mesh.nCz, mesh.nCy, mesh.nCx)
+    # r2 = r2[::-1]
+    # r2 = r2[:-5]
 
-    r2 = r2[::-1]
+    # plt.imshow(r2[:, r2.shape[1]//2])
+    # plt.show()
 
-    plt.imshow(r2[:, r2.shape[1]//2])
+    # 3D Display
+    # tmp = Mod3dDisplay()
+    # tmp.indata = DM.outdata
+    # tmp.run()
+    # tmp.exec_()
+
+    get_ipython().run_line_magic('matplotlib', 'Qt5')
+
+    tmp = MainWidget()
+    tmp.indata = DM.outdata
+    tmp.settings()
+
+
+def _testfn2():
+    """Main."""
+    # Plot Recovered Model
+    import copy
+    # import sys
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.pfmod.pfmod import MainWidget
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    mfile = r"d:\Workdata\MagInv\pcmag.tif"
+
+    mdat = get_raster(mfile)
+    ddat = copy.deepcopy(mdat)
+    ddat[0].data = ddat[0].data * 0.
+
+    mfile = r"d:\Workdata\MagInv\pcmagdem.tif"
+    dfile = r"d:\Workdata\MagInv\pcdem.tif"
+
+    mdat = get_raster(mfile)
+    ddat = get_raster(dfile)
+
+    mdat[0].dataid = 'mag'
+    ddat[0].dataid = 'dem'
+
+    DM = MagInvert()
+    DM.indata['Raster'] = mdat+ddat
+
+    for i in DM.indata['Raster']:
+        DM.inraster[i.dataid] = i
+    if 'Model3D' in DM.indata:
+        DM.lmod1 = DM.indata['Model3D'][0]
+
+    cols = 50
+    rows = 40
+    layers = 25
+    utlx = 0
+    utly = 0
+    utlz = 0
+    dxy = 100.
+    d_z = 100.
+    mht = 100.
+
+    cols = 50
+    rows = 40
+    layers = 20
+    utlx = 0
+    utly = 0
+    utlz = 58.11
+    dxy = 100.
+    d_z = 100.
+    mht = 100.
+
+    DM.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht)
+
+    DM.update_combos()
+    DM.combo_dtm.setCurrentText('dem')
+    DM.combo_mag.setCurrentText('mag')
+    DM.combo_dataset.setCurrentText('mag')
+
+    DM.choose_dtm()
+
+    DM.dsb_mht.setValue(mht)
+    # DM.dsb_hdec.setValue(0)
+    # DM.dsb_hint.setValue(50000)
+    # DM.dsb_hinc.setValue(90)
+
+    DM.settings(True)
+
+    maps1, mesh, ind_active, recovered_model, true_model = DM.tmp
+
+    # Plot True Model
+    fig = plt.figure(figsize=(9, 4), dpi=150)
+    plotting_map = maps1.InjectActiveCells(mesh, ind_active, np.nan)
+
+    ax1 = fig.add_axes([0.08, 0.1, 0.75, 0.8])
+    mesh.plotSlice(
+        plotting_map * true_model,
+        normal="Y",
+        ax=ax1,
+        ind=int(mesh.nCy / 2),
+        grid=True,
+        clim=(np.min(true_model), np.max(true_model)),
+        pcolorOpts={"cmap": "viridis"},
+    )
+    ax1.set_title("Model slice at y = 0 m")
+
+    ax2 = fig.add_axes([0.85, 0.1, 0.05, 0.8])
+    norm = mpl.colors.Normalize(vmin=np.min(true_model),
+                                vmax=np.max(true_model))
+    cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
+                                     cmap=mpl.cm.viridis, format="%.1e")
+    cbar.set_label("SI", rotation=270, labelpad=15, size=12)
     plt.show()
 
-    breakpoint()
+    # Plot recovered model
+    fig = plt.figure(figsize=(9, 4), dpi=150)
+    plotting_map = maps1.InjectActiveCells(mesh, ind_active, np.nan)
 
+    ax1 = fig.add_axes([0.08, 0.1, 0.75, 0.8])
+    mesh.plotSlice(
+        plotting_map * recovered_model,
+        normal="Y",
+        ax=ax1,
+        ind=int(mesh.nCy / 2),
+        grid=True,
+        clim=(np.min(recovered_model), np.max(recovered_model)),
+        pcolorOpts={"cmap": "viridis"},
+    )
+    ax1.set_title("Model slice at y = 0 m")
+
+    ax2 = fig.add_axes([0.85, 0.1, 0.05, 0.8])
+    norm = mpl.colors.Normalize(vmin=np.min(recovered_model),
+                                vmax=np.max(recovered_model))
+    cbar = mpl.colorbar.ColorbarBase(ax2, norm=norm, orientation="vertical",
+                                     cmap=mpl.cm.viridis, format="%.1e")
+    cbar.set_label("SI", rotation=270, labelpad=15, size=12)
+    plt.show()
+
+    get_ipython().run_line_magic('matplotlib', 'Qt5')
+
+    tmp = MainWidget()
+    tmp.indata = DM.outdata
+    tmp.settings()
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()

@@ -25,10 +25,11 @@
 """Potential Field Modelling menus."""
 
 from PyQt5 import QtWidgets
-import pygmi.pfmod.pfmod as pfmod
-import pygmi.pfmod.cubes as mvis3d
-import pygmi.pfmod.iodefs as iodefs
-import pygmi.pfmod.misc as misc
+from pygmi.pfmod import pfmod
+from pygmi.pfmod import mvis3d
+from pygmi.pfmod import iodefs
+from pygmi.pfmod import misc
+from pygmi.pfmod import pfinvert
 
 
 class MenuWidget():
@@ -68,6 +69,12 @@ class MenuWidget():
         self.menu.addAction(self.action_merge_mod3d)
         self.action_merge_mod3d.triggered.connect(self.merge_mod3d)
 
+        self.menu.addSeparator()
+
+        self.action_maginv = QtWidgets.QAction('3D Magnetic Inversion')
+        self.menu.addAction(self.action_maginv)
+        self.action_maginv.triggered.connect(self.maginv)
+
 # Context Menu
         context_menu['Model3D'].addSeparator()
 
@@ -87,6 +94,11 @@ class MenuWidget():
         """Voxel modelling of data."""
         self.parent.item_insert('Step', 'Potential Field Modelling',
                                 pfmod.MainWidget)
+
+    def maginv(self):
+        """Voxel inversion of data."""
+        self.parent.item_insert('Step', '3D Magnetic Inversion',
+                                pfinvert.MagInvert)
 
     def mod3d(self):
         """3D display of data."""

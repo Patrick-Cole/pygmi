@@ -1264,6 +1264,7 @@ def quick_model(numx=50, numy=40, numz=5, dxy=100., d_z=100.,
     clrtmp = cm.get_cmap('jet')(clrtmp)[:, :-1]
     clrtmp *= 255
     clrtmp = clrtmp.astype(int)
+    clrtmp = clrtmp.tolist()
 
     for i in inputliths:
         j += 1

@@ -1808,7 +1808,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if i == -1:
                 ctmp = [0, 0, 0, 0]
             else:
-                ctmp = np.array(mlut[i]+[255])/255.
+                ctmp = np.array(list(mlut[i])+[255])/255.
 
             tmp[dat[::-1] == i] = ctmp
 

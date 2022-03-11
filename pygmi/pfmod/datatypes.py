@@ -107,6 +107,7 @@ class LithModel():
         self.gregional = 0.
         self.dataid = '3D Model'
         self.tmpfiles = None
+        self.name = None
         # Next line calls a function to update the variables above.
         self.update(50, 40, 5, 0., 0., 0., 100., 100., 100., 0.)
 

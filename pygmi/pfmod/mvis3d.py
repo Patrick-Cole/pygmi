@@ -345,10 +345,13 @@ class Mod3dDisplay(QtWidgets.QDialog):
                 continue
             if self.corners[lno] == []:
                 continue
-            if lno in self.sliths:
-                clrtmp = lut[lno].tolist()+[1.]
-            else:
-                clrtmp = lut[lno].tolist()+[self.opac]
+            try:
+                if lno in self.sliths:
+                    clrtmp = lut[lno].tolist()+[1.]
+                else:
+                    clrtmp = lut[lno].tolist()+[self.opac]
+            except:
+                breakpoint()
 
             clr = np.append(clr,
                             np.zeros([self.corners[lno].shape[0], 4])+clrtmp)

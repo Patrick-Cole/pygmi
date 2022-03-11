@@ -36,9 +36,9 @@ import pandas as pd
 from rasterio.crs import CRS
 
 from pygmi.pfmod.datatypes import LithModel
-import pygmi.pfmod.grvmag3d as grvmag3d
-import pygmi.pfmod.cubes as mvis3d
-import pygmi.menu_default as menu_default
+from pygmi.pfmod import grvmag3d
+from pygmi.pfmod import mvis3d
+from pygmi import menu_default
 import pygmi.raster.dataprep as dp
 from pygmi.misc import ProgressBarText
 # This is necessary for loading npz files, since I moved the location of
