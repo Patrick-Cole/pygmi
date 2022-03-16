@@ -1,5 +1,5 @@
 # -----------------------------------------------------------------------------
-# Name:        cubes.py (part of PyGMI)
+# Name:        mvid3d.py (part of PyGMI)
 #
 # Author:      Patrick Cole
 # E-Mail:      pcole@geoscience.org.za

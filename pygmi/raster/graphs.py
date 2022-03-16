@@ -274,7 +274,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_hist(self, data1, ylog):
         """
-        Update the hiostogram plot.
+        Update the histogram plot.
 
         Parameters
         ----------

@@ -23,7 +23,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
 """
-A routine interfacing wito the SimPEG inversion library for magnetic
+A routine interfacing with the SimPEG inversion library for magnetic
 inversion.
 """
 
@@ -113,7 +113,7 @@ class MagInvert(QtWidgets.QDialog):
 
         """
         self.setWindowTitle('Inverse Modelling Parameters')
-        helpdocs = menu_default.HelpButton('pygmi.pfmod.mext')
+        helpdocs = menu_default.HelpButton('pygmi.pfmod.minv')
 
         verticallayout = QtWidgets.QVBoxLayout(self)
         hlayout = QtWidgets.QHBoxLayout()
@@ -962,7 +962,7 @@ class MagInvert(QtWidgets.QDialog):
 
 
 def _testfn():
-    """Main."""
+    """Test Function."""
     # Plot Recovered Model
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
@@ -1092,7 +1092,7 @@ def _testfn():
 
 
 def _testfn2():
-    """Main."""
+    """Test Function."""
     # Plot Recovered Model
     import copy
     # import sys

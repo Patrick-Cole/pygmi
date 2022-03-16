@@ -239,7 +239,7 @@ class seisan_4():
     15      I1      Weighting Indicator (1-4) 0 or blank= full weight, 1=75%,
     -               2=50%, 3=25%, 4=0%, 9: no weight, use difference time
     -               (e.g. P-S).
-    16              Free or flag A to indicate automartic pick, removed when
+    16              Free or flag A to indicate automatic pick, removed when
     -               picking
     17      A1      First Motion    C, D
     18              Note: Currently 15 to 18 can also be used for phase

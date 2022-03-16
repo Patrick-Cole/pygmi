@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<body>
+		<h1>3D Magnetic Inversion</h1>
+		<p>This dialog sets up the parameters for 3D magnetic inversion.</p>
+		<p>The Dataset Information section associates connected raster datasets with the either DTM or magnetic data.</p>
+		<p>The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.</p>
+		<h2>Dataset Information</h2>
+		<p>This is used to define the data connected to the modelling module. The data is either connected manually or will be embedded withing a 3D model file.</p>
+		<ul>
+			<li>DTM Dataset - This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study. </li>
+			<li>Magnetic Dataset - This is the magnetic data to be modelled.</li>
+		</ul>
+		<h2>General Properties</h2>
+		<ul>
+			<li>Height of observation - Magnetic - This is the magnetic sensor height.</li>
+			<li>Magnetic Field Intensity - This is the intensity of the magnetic field at the time of the survey. You can get this from <a href="http://www.ngdc.noaa.gov/geomag-web/#igrfwmm">NOAA</a>.</li>
+			<li>Magnetic Inclination - This is the inclination of the magnetic field at the time of the survey. You can get this from <a href="http://www.ngdc.noaa.gov/geomag-web/#igrfwmm">NOAA</a>.</li>
+			<li>Magnetic Declination - This is the declination of the magnetic field at the time of the survey. You can get this from <a href="http://www.ngdc.noaa.gov/geomag-web/#igrfwmm">NOAA</a>.</li>
+		</ul>
+		<h2>Model Extent Properties</h2>
+		<p>The model extents control the area size and depth of your model, as well as its resolution. Typically one of your datasets are used to fill in most of the fields automatically. Because the DTM is compulsory to the modelling, this is normally the default choice.</p>
+		<ul>
+			<li>Get Study Area from following Dataset - Usually the DTM dataset is chosen, but it can be any of your datasets. </li>
+			<li>Upper Top Left X Coordinate - This is the north-west corner X coordinate of your model in meters.</li>
+			<li>Upper Top Left Y Coordinate - This is the north-west corner Y coordinate of your model in meters.</li>
+			<li>Upper Top Left Z Coordinate - This is the north-west corner Z coordinate of your model in meters above sea level.</li>
+			<li>Total X Extent - the distance from east to west in the model.</li>
+			<li>Total Y Extent - the distance from north to south in the model.</li>
+			<li>Total Z Extent - the depth range of the model.</li>
+			<li>X and Y Cell Size - the width of each model cube in the x and y direction.</li>
+			<li>Z Cell Size - the height of each model cube in z direction.</li>
+			<li>Number of Columns (X Direction) - This is calculated automatically from extents and cell sizes.</li>
+			<li>Number of Rows (Y Direction) - This is calculated automatically from extents and cell sizes.</li>
+			<li>Number of Layers (Z Direction) - This is calculated automatically from extents and cell sizes.</li>
+		</ul>
+		<h2>Tips</h2>
+		<ul>
+			<li>Start with a low resolution model to get a general model in place first. 20x20x20 should be fine, since any bigger will get slow to model.</li>
+			<li>Once your low resolution model is complete, you can increase the model's resolution to a better resolution. Please note that bigger than 100x100x100 will cause calculations to become very slow (unless you have lots of memory).</li>
+		</ul>
+	</body>
+</html>
