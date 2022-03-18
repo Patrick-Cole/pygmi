@@ -27,13 +27,16 @@
 
 import os
 import copy
+import xml.etree.ElementTree as ET
 import glob
+import math
 import tarfile
 import zipfile
 import datetime
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
+from collections import defaultdict
 
 import geopandas as gpd
 from geopandas import GeoDataFrame
@@ -825,7 +828,7 @@ def calculate_toa(dat, showprocesslog=print):
     return out
 
 
-def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
+def get_data(ifile, piter=None, showprocesslog=print, extscene=None):
     """
     Load a raster dataset off the disk using the rasterio libraries.
 
@@ -870,6 +873,8 @@ def get_data(ifile, piter=iter, showprocesslog=print, extscene=None):
         dat = get_aster_ged(ifile, piter)
     elif 'Hyperion' in extscene:
         dat = get_hyperion(ifile, piter, showprocesslog)
+    elif 'WorldView' in extscene:
+        dat = get_worldview(ifile, piter, showprocesslog)
     else:
         dat = None
 
@@ -1139,6 +1144,186 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
         for tfile in piter(tarnames):
             print(tfile)
             os.remove(os.path.join(os.path.dirname(ifile), tfile))
+    print('Import complete')
+    return dat
+
+
+def get_worldview(ifilet, piter=None, showprocesslog=print):
+    """
+    Get WorldView Data.
+
+    Parameters
+    ----------
+    ifilet : str
+        filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is iter
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+
+    Returns
+    -------
+    out : Data
+        PyGMI raster dataset
+    """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    dtree = etree_to_dict(ET.parse(ifilet).getroot())
+
+    platform = dtree['isd']['TIL']['BANDID']
+    til = dtree['isd']['TIL']
+    satid = dtree['isd']['IMD']['IMAGE']['SATID']
+
+    satbands = None
+    lstband = None
+
+    if platform == 'P':
+        satbands = {'1': [450, 800]}
+        bnum2name = {0, 'BAND_P'}
+
+    if platform == 'Multi':
+        satbands = {'1': [400, 450],
+                    '2': [450, 510],
+                    '3': [510, 580],
+                    '4': [585, 625],
+                    '5': [630, 690],
+                    '6': [705, 745],
+                    '7': [770, 895],
+                    '8': [860, 1040]}
+
+        bnum2name = {0: 'BAND_C',
+                     1: 'BAND_B',
+                     2: 'BAND_G',
+                     3: 'BAND_Y',
+                     4: 'BAND_R',
+                     5: 'BAND_RE',
+                     6: 'BAND_N',
+                     7: 'BAND_N2'}
+
+    if satid == 'WV03':
+        Esun = {'BAND_P': 1574.41,
+                'BAND_C': 1757.89,
+                'BAND_B': 2004.61,
+                'BAND_G': 1830.18,
+                'BAND_Y': 1712.07,
+                'BAND_R': 1535.33,
+                'BAND_RE': 1348.08,
+                'BAND_N': 1055.94,
+                'BAND_N2': 858.77}
+    elif satid == 'WV02':
+        Esun = {'BAND_P': 1580.8140,
+                'BAND_C': 1758.2229,
+                'BAND_B': 1974.2416,
+                'BAND_G': 1856.4104,
+                'BAND_Y': 1738.4791,
+                'BAND_R': 1559.4555,
+                'BAND_RE': 1342.0695,
+                'BAND_N': 1069.7302,
+                'BAND_N2': 861.2866}
+
+    idir = os.path.dirname(ifilet)
+
+    showprocesslog('Importing WorldView tiles...')
+
+    rmax = int(dtree['isd']['IMD']['NUMROWS'])
+    cmax = int(dtree['isd']['IMD']['NUMCOLUMNS'])
+
+    xmin = float(dtree['isd']['IMD']['MAP_PROJECTED_PRODUCT']['ORIGINX'])
+    ymax = float(dtree['isd']['IMD']['MAP_PROJECTED_PRODUCT']['ORIGINY'])
+    xdim = float(dtree['isd']['IMD']['MAP_PROJECTED_PRODUCT']['COLSPACING'])
+    ydim = float(dtree['isd']['IMD']['MAP_PROJECTED_PRODUCT']['ROWSPACING'])
+
+    dat = []
+    nval = 0
+    for i in range(len(satbands)):
+        fext = str(i+1)
+        dat.append(Data())
+        dat[-1].data = np.zeros((rmax, cmax))
+        dat[-1].dataid = f'Band {i+1}'
+        dat[-1].nodata = nval
+        dat[-1].set_transform(xdim, xmin, ydim, ymax)
+
+        bmeta = dat[-1].metadata
+        if satbands is not None and fext in satbands:
+            bmeta['WavelengthMin'] = satbands[fext][0]
+            bmeta['WavelengthMax'] = satbands[fext][1]
+        bmeta['Raster']['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
+
+    for tile in dtree['isd']['TIL']['TILE']:
+        ifile = os.path.join(idir, tile['FILENAME'])
+
+        rmin = int(tile['ULROWOFFSET'])
+        rmax = int(tile['LRROWOFFSET'])
+        cmin = int(tile['ULCOLOFFSET'])
+        cmax = int(tile['LRCOLOFFSET'])
+
+        showprocesslog('Importing '+tile['FILENAME'])
+        dataset = rasterio.open(ifile)
+
+        for i in piter(dataset.indexes):
+            rtmp = dataset.read(i)
+            bmeta = dataset.tags(i)
+            dat[i-1].data[rmin:rmax+1, cmin:cmax+1] = rtmp
+            dat[i-1].crs = dataset.crs
+        dataset.close()
+
+    showprocesslog('Calculating radiance and reflectance...')
+    indx = -1
+    for i in piter(dat):
+        indx += 1
+        i.data = np.ma.masked_invalid(i.data)
+        i.data.mask = i.data.mask | (i.data == nval)
+        if i.data.mask.size == 1:
+            i.data.mask = (np.ma.make_mask_none(i.data.shape) +
+                           i.data.mask)
+
+        scale = float(dtree['isd']['IMD'][bnum2name[indx]]['ABSCALFACTOR'])
+        bwidth= float(dtree['isd']['IMD'][bnum2name[indx]]['EFFECTIVEBANDWIDTH'])
+
+        i.data = i.data * scale / bwidth
+        i.data = i.data.astype(np.float32)
+
+        date = dtree['isd']['IMD']['IMAGE']['FIRSTLINETIME']
+
+        date = '2009-10-08T18:51:00.000000Z'
+
+        year = int(date[:4])
+        month = int(date[5:7])
+        day = int(date[8:10])
+        hour = int(date[11:13])
+        minute = int(date[14:16])
+        sec = float(date[17:-1])
+
+        UT = hour + minute/60. + sec/3600.
+
+        # Julian day
+
+        if month in (1, 2):
+            year -= 1
+            month += 12
+
+        A = int(year/100.)
+        B = 2 - A + int(A/4.)
+
+        JD = int(365.25*(year+4716))+int(30.6001*(month+1))+day+UT/24.+B-1524.5
+
+        D = JD - 2451545.0
+        g = np.deg2rad(357.529 + 0.98560028 * D)
+
+        dES = 1.00014 - 0.01671*np.cos(g) - 0.00014*np.cos(2*g)
+
+        szenith = 90. - float(dtree['isd']['IMD']['IMAGE']['MEANSUNEL'])
+        szenith = np.deg2rad(szenith)
+
+        i.data = (i.data * dES**2 * np.pi /
+                  (Esun[bnum2name[indx]] * np.cos(szenith)))
+
+        # breakpoint()
+
+    if dat == []:
+        dat = None
+
     print('Import complete')
     return dat
 
@@ -1873,6 +2058,46 @@ def get_aster_ged_bin(ifile):
     return dat
 
 
+def etree_to_dict(t):
+    """
+    Elementree to dictionary.
+
+    From K3--rnc: https://stackoverflow.com/questions/7684333/converting-xml-to-dictionary-using-elementtree
+
+    Parameters
+    ----------
+    t : Elementtree
+        Root.
+
+    Returns
+    -------
+    d : dictionary
+        DESCRIPTION.
+
+    """
+
+    d = {t.tag: {} if t.attrib else None}
+    children = list(t)
+    if children:
+        dd = defaultdict(list)
+        for dc in map(etree_to_dict, children):
+            for k, v in dc.items():
+                dd[k].append(v)
+        d = {t.tag: {k: v[0] if len(v) == 1 else v
+                     for k, v in dd.items()}}
+    if t.attrib:
+        d[t.tag].update(('@' + k, v)
+                        for k, v in t.attrib.items())
+    if t.text:
+        text = t.text.strip()
+        if children or t.attrib:
+            if text:
+                d[t.tag]['#text'] = text
+        else:
+            d[t.tag] = text
+    return d
+
+
 def _test5P():
     """test routine"""
     import sys
@@ -1921,8 +2146,12 @@ def _testfn():
 
     ifile = r"D:\Workdata\Remote Sensing\Landsat\LC09_L1TP_173080_20211110_20220119_02_T1.tar"
 
+    ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
+    extscene = 'WorldView'
 
     dat = get_data(ifile, extscene = extscene)
+
+    breakpoint()
 
     for i in dat:
         plt.figure(dpi=300)

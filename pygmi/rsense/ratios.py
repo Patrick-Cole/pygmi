@@ -93,7 +93,7 @@ class SatRatios(QtWidgets.QDialog):
                                     'Landsat 8 (OLI)',
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
-                                    'Sentinel-2'])
+                                    'Sentinel-2', 'WorldView'])
         # self.setratios()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -253,14 +253,6 @@ class SatRatios(QtWidgets.QDialog):
             self.showprocesslog('You need to select a ratio to calculate.')
             return False
 
-        # if 'VCI' in rlist:
-        #     rlist.pop(rlist.index('VCI'))
-        #     rlist.append('VCI')
-
-        # if 'VHI' in rlist:
-        #     rlist.pop(rlist.index('VHI'))
-        #     rlist.append('VHI')
-
         for ifile in flist:
             if isinstance(ifile, str):
                 dat = iodefs.get_data(ifile,
@@ -317,7 +309,6 @@ class SatRatios(QtWidgets.QDialog):
                 if txt == 'Band8A':
                     txt = 'Band8'
 
-                # self.showprocesslog(i.dataid+' mapped to '+txt)
                 datd[txt] = i.data
                 if newmask is None:
                     newmask = i.data.mask
@@ -345,21 +336,6 @@ class SatRatios(QtWidgets.QDialog):
                     self.showprocesslog('Error:'+' '.join(abort)+'missing.')
                     continue
 
-                # if formula == 'TCI':
-                #     ratio = get_TCI(datd['BandLST'])
-                # elif formula == 'VCI':
-                #     if evi is None:
-                #         self.showprocesslog('Error:'+', need EVI calculated')
-                #         continue
-                #     ratio = get_VCI(evi)
-                # elif formula == 'VHI':
-                #     if tci is None or vci is None:
-                #         self.showprocesslog('Error:'+', need TCI and VCI '
-                #                             'calculated')
-                #         continue
-
-                #     ratio = get_VHI(tci, vci)
-                # else:
                 ratio = ne.evaluate(formula, datd)
 
                 ratio = ratio.astype(np.float32)
@@ -367,38 +343,12 @@ class SatRatios(QtWidgets.QDialog):
                 ratio = np.ma.array(ratio, mask=newmask,
                                     fill_value=dat[0].nodata)
 
-                # if 'EVI' in i:
-                #     num = datd['Band8'].data - datd['Band4'].data
-                #     denom = datd['Band8'].data + 6*datd['Band4'].data - 7.5*datd['Band2'].data + 1
-                #     evi2 = 2.5*num/denom
-                #     num = np.ma.array(num, mask=newmask)
-                #     denom = np.ma.array(denom, mask=newmask)
-                #     evi2 = np.ma.array(evi2, mask=newmask)
-                #     print('num', num.min(), num.max())
-                #     print('denom', denom.min(), denom.max())
-                #     print('band8', datd['Band8'].min(), datd['Band8'].max())
-                #     print('band4', datd['Band4'].min(), datd['Band4'].max())
-                #     print('band2', datd['Band2'].min(), datd['Band2'].max())
-
-                #     breakpoint()
-
                 ratio = np.ma.fix_invalid(ratio)
-
-                # if 'EVI' in i:
-                #     evi = ratio
-                #     rmask = ratio.mask | (ratio < -1) | (ratio > 1)
-                #     ratio.mask = rmask
-                #     evi = ratio
 
                 rband = copy.deepcopy(dat[0])
                 rband.data = ratio
                 rband.dataid = i.replace(r'/', 'div')
                 datfin.append(rband)
-
-                # if 'TCI' in i:
-                #     tci = ratio
-                # if 'VCI' in i:
-                #     vci = ratio
 
             ofile = ofile.split('.')[0] + '_ratio.tif'
             if datfin:
@@ -435,6 +385,10 @@ class SatRatios(QtWidgets.QDialog):
         sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
         sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
                                'B4': 'B11', 'B5': 'B12'}
+        sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',}
+                              # 'B4': 'B11', 'B5': 'B13', 'B6': 'B14',
+                              # 'B7': 'B15', 'B8': 'B16'}
+
         rlist = []
 
         # carbonates/mafic minerals bands
@@ -567,7 +521,9 @@ class ConditionIndices(QtWidgets.QDialog):
 
         self.combo_index = QtWidgets.QComboBox()
         self.lw_ratios = QtWidgets.QListWidget()
-        self.label_sensor = QtWidgets.QLabel('Sensor:')
+        self.combo_sensor = QtWidgets.QComboBox()
+
+        # self.label_sensor = QtWidgets.QLabel('Sensor:')
 
         self.setupui()
 
@@ -586,6 +542,7 @@ class ConditionIndices(QtWidgets.QDialog):
         helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
         label_index = QtWidgets.QLabel('Index:')
         label_ratios = QtWidgets.QLabel('Condition Indices:')
+        label_sensor = QtWidgets.QLabel('Sensor:')
 
         self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
 
@@ -593,13 +550,20 @@ class ConditionIndices(QtWidgets.QDialog):
                                    'NDVI',
                                    'MSAVI2'])
 
+        self.combo_sensor.addItems(['ASTER',
+                                    'Landsat 8 (OLI)',
+                                    'Landsat 7 (ETM+)',
+                                    'Landsat 4 and 5 (TM)',
+                                    'Sentinel-2', 'WorldView'])
+
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
         self.setWindowTitle('Condition Indices Calculations')
 
-        gridlayout_main.addWidget(self.label_sensor, 0, 0, 1, 2)
+        gridlayout_main.addWidget(label_sensor, 0, 0, 1, 2)
+        gridlayout_main.addWidget(self.combo_sensor, 0, 1, 1, 1)
         gridlayout_main.addWidget(label_index, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.combo_index, 1, 1, 1, 1)
         gridlayout_main.addWidget(label_ratios, 2, 0, 1, 1)
@@ -639,11 +603,15 @@ class ConditionIndices(QtWidgets.QDialog):
         self.bfile = bfile[:4]
 
         if 'AST_' in bfile and 'hdf' in bfile.lower():
-            self.label_sensor.setText('Sensor: ASTER')
-        elif bfile[:4] in ['LC08', 'LE07', 'LT04', 'LT05']:
-            self.label_sensor.setText('Sensor: Landsat')
+            self.combo_sensor.setCurrentText('ASTER')
+        elif bfile[:4] in ['LC08']:
+            self.combo_sensor.setCurrentText('Landsat 8 (OLI)')
+        elif bfile[:4] in ['LE07']:
+            self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
+        elif bfile[:4] in ['LT04', 'LT05']:
+            self.combo_sensor.setCurrentText('Landsat 4 and 5 (TM)')
         else:
-            self.label_sensor.setText('Sensor: Sentinel-2')
+            self.combo_sensor.setCurrentText('Sentinel-2')
 
         self.setratios()
 
@@ -717,7 +685,7 @@ class ConditionIndices(QtWidgets.QDialog):
 
         """
         index = self.combo_index.currentText()
-        sensor = self.label_sensor.text()
+        sensor = self.combo_sensor.currentText()
 
         rlist1 = []
         for i in self.lw_ratios.selectedItems():
@@ -731,7 +699,7 @@ class ConditionIndices(QtWidgets.QDialog):
         elif 'VCI' in rlist1 and 'MSAVI2' in index:
             rlist += [r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2']
 
-        rlist = correct_bands(rlist, self.bfile)
+        rlist = correct_bands(rlist, sensor)
 
         evi = []
         tci = []
@@ -740,17 +708,30 @@ class ConditionIndices(QtWidgets.QDialog):
         lst = []
 
         # datfin = []
+        if 'RasterFileList' in self.indata:
+            flist = self.indata['RasterFileList']
+            if sensor == 'ASTER':
+                flist = get_aster_list(flist)
+            elif 'Landsat' in sensor:
+                flist = get_landsat_list(flist, sensor)
+            elif 'Sentinel-2' in sensor:
+                flist = get_sentinel_list(flist)
+            if not flist:
+                self.showprocesslog('Could not find '+sensor+' data')
+                return False
+        else:
+            flist = [self.indata['Raster']]
 
-        flist = self.indata['RasterFileList']
-        if 'ASTER' in sensor:
-            flist = get_aster_list(flist)
-        elif 'Landsat' in sensor:
-            flist = get_landsat_list(flist, sensor, True)
-        elif 'Sentinel-2' in sensor:
-            flist = get_sentinel_list(flist)
-        if not flist:
-            self.showprocesslog('Could not find '+sensor+' data')
-            return False
+        # flist = self.indata['RasterFileList']
+        # if 'ASTER' in sensor:
+        #     flist = get_aster_list(flist)
+        # elif 'Landsat' in sensor:
+        #     flist = get_landsat_list(flist, sensor, True)
+        # elif 'Sentinel-2' in sensor:
+        #     flist = get_sentinel_list(flist)
+        # if not flist:
+        #     self.showprocesslog('Could not find '+sensor+' data')
+        #     return False
 
         if not rlist:
             self.showprocesslog('You need to select a ratio to calculate.')
@@ -900,7 +881,7 @@ class ConditionIndices(QtWidgets.QDialog):
         None.
 
         """
-        sensor = self.label_sensor.text()
+        sensor = self.combo_sensor.currentText()
 
         rlist = ['VCI']
 
@@ -960,7 +941,7 @@ class ConditionIndices(QtWidgets.QDialog):
                 item.setText(' ' + item.text()[1:])
 
 
-def correct_bands(rlist, bfile):
+def correct_bands(rlist, sensor):
     """
     Correct the band designations.
 
@@ -980,14 +961,16 @@ def correct_bands(rlist, bfile):
         List of converted ratios.
 
     """
-    if 'AST_' in bfile and 'hdf' in bfile.lower():
-        sensor = 'ASTER'
-    elif bfile[:4] in ['LC08']:
-        sensor = 'Landsat 8 (OLI)'
-    elif bfile[:4] in ['LE07']:
-        sensor = 'Landsat 7 (ETM+)'
-    elif bfile[:4] in ['LT04', 'LT05']:
-        sensor = 'Landsat 4 and 5 (TM)'
+    # if 'AST_' in bfile and 'hdf' in bfile.lower():
+    #     sensor = 'ASTER'
+    # elif bfile[:4] in ['LC08']:
+    #     sensor = 'Landsat 8 (OLI)'
+    # elif bfile[:4] in ['LE07']:
+    #     sensor = 'Landsat 7 (ETM+)'
+    # elif bfile[:4] in ['LT04', 'LT05']:
+    #     sensor = 'Landsat 4 and 5 (TM)'
+    # else:
+    #     sensor = 'Sentinel-2'
 
     sdict = {}
 
@@ -1002,6 +985,10 @@ def correct_bands(rlist, bfile):
     sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
     sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
                            'B4': 'B11', 'B5': 'B12'}
+
+    sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',}
+                          # 'B4': 'B11', 'B5': 'B13', 'B6': 'B14', 'B7': 'B15',
+                          # 'B8': 'B16'}
 
     bandmap = sdict[sensor]
     svalues = set(bandmap.keys())
@@ -1245,69 +1232,13 @@ def _testfn():
     ifile = r"d:\Workdata\Remote Sensing\ASTER\test\AST_07XT_00311172002085850_20220121015142_25162.hdf"
     extscene = None
 
-    # ifile = r"d:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
-    # extscene = None
-
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
-
-    # dat2 = []
-    # for i in dat:
-    #     if i.dataid[:2] in ['B8', 'B4', 'B2']:
-    #         dat2.append(i)
-
-    # datls = lstack(dat2, piter=piter)
-
-    # for i in datls:
-    #     if 'B8' in i.dataid[:2]:
-    #         band8 = i.data
-    #     if 'B4' in i.dataid[:2]:
-    #         band4 = i.data
-    #     if 'B2' in i.dataid[:2]:
-    #         band2 = i.data
-
-    # num = band8 - band4
-    # denom = band8 + 6*band4 - 7.5*band2 + 1
-
-    # print('num', num.min(), num.max())
-    # print('denom', denom.min(), denom.max())
-    # print('band8', band8.min(), band8.max())
-    # print('band4', band4.min(), band4.max())
-    # print('band2', band2.min(), band2.max())
-
-    # evi = 2.5*num/denom
-
-    # vmin = evi.mean()-evi.std()
-    # vmax = evi.mean()+evi.std()
-
-    # plt.imshow(num)
-    # plt.colorbar()
-    # plt.show()
-
-    # plt.imshow(denom)
-    # plt.colorbar()
-    # plt.show()
-
-    # plt.imshow(evi, vmin=vmin, vmax=vmax)
-    # numplt.colorbar()
-    # plt.show()
-
-    # plt.hist(evi.flatten(), bins=100)
-    # plt.show()
-
-    # breakpoint()
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    # idir = r'd:\Work\Workdata\Sentinel-2'
 
     SR = SatRatios()
     SR.indata['Raster'] = dat  # single file only
-
-    # IO = iodefs.ImportBatch()
-    # IO.idir = idir
-    # IO.settings(True)
-    # SR.indata = IO.outdata
-
     SR.settings()
 
     dat2 = SR.outdata['Raster']
@@ -1330,14 +1261,11 @@ def _testfn2():
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    # idir = r'd:\Work\Workdata\Sentinel-2'
-
     SR = ConditionIndices()
     SR.indata['RasterFileList'] = ifiles
     SR.settings()
 
     dat = SR.outdata["Raster"]
-
 
     for i in dat:
         plt.imshow(i.data, extent=i.extent)
@@ -1347,5 +1275,24 @@ def _testfn2():
 
     breakpoint()
 
+
+def _testfn3():
+    """Test Function"""
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL.tif"
+
+    dat = get_raster(ifile)
+
+    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    SR = SatRatios()
+    SR.indata['Raster'] = dat  # single file only
+
+    SR.settings()
+
+    breakpoint()
+
+
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()

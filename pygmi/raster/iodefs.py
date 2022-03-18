@@ -1569,6 +1569,9 @@ def _filespeedtest():
     ifile = r"D:\Workdata\people\rahul\gravity_final.grd"
     ifile = r"D:\Workdata\people\rahul\grav.grd"
 
+
+    ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS_R1C1-014568829030_01_P001.TIF"
+
     iraster = None
 
     getinfo('Start')

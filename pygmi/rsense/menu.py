@@ -91,6 +91,10 @@ class MenuWidget():
         self.menu3.addAction(self.action_import_hyperion)
         self.action_import_hyperion.triggered.connect(self.import_hyperion)
 
+        self.action_import_wv = QtWidgets.QAction('Import WorldView Tiles')
+        self.menu3.addAction(self.action_import_wv)
+        self.action_import_wv.triggered.connect(self.import_wv)
+
         self.action_import_ged = QtWidgets.QAction('Import ASTER Global '
                                                    'Emissivity Database')
         self.menu3.addAction(self.action_import_ged)
@@ -223,6 +227,11 @@ class MenuWidget():
         """Import Hyperion data."""
         self.parent.item_insert('Io', 'Import Hyperion L1T', iodefs.ImportData,
                                 params='Hyperion L1T (*.zip);;')
+
+    def import_wv(self):
+        """Import WorldView data."""
+        self.parent.item_insert('Io', 'Import WorldView', iodefs.ImportData,
+                                params='WorldView (*.xml);;')
 
     def batch_list(self):
         """Import batch list."""
