@@ -338,7 +338,7 @@ class SatRatios(QtWidgets.QDialog):
 
                 newmask = datd[blist[0]].mask
                 for j in blist:
-                    newmask = (newmask | datd[blist[j]].mask)
+                    newmask = (newmask | datd[j].mask)
 
                 ratio = ne.evaluate(formula, datd)
 
