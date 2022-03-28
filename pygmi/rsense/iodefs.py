@@ -828,7 +828,8 @@ def calculate_toa(dat, showprocesslog=print):
     return out
 
 
-def get_data(ifile, piter=None, showprocesslog=print, extscene=None):
+def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
+             alldata=False):
     """
     Load a raster dataset off the disk using the rasterio libraries.
 
@@ -863,7 +864,7 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None):
     elif 'AST_' in bfile and 'zip' in bfile.lower():
         dat = get_aster_zip(ifile, piter, showprocesslog)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09']:
-        dat = get_landsat(ifile, piter, showprocesslog)
+        dat = get_landsat(ifile, piter, showprocesslog, alldata=alldata)
     elif ('.xml' in bfile and '.SAFE' in ifile) or 'Sentinel-2' in extscene:
         dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
     elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
@@ -993,7 +994,7 @@ def get_modisv6(ifile, piter=None):
     return dat
 
 
-def get_landsat(ifilet, piter=None, showprocesslog=print):
+def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
     """
     Get Landsat Data.
 
@@ -1019,36 +1020,36 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
     lstband = None
 
     if platform in ('04', '05'):
-        satbands = {'1': [450, 520],
-                    '2': [520, 600],
-                    '3': [630, 690],
-                    '4': [760, 900],
-                    '5': [1550, 1750],
-                    '6': [10400, 12500],
-                    '7': [2080, 2350]}
+        satbands = {'B1': [450, 520],
+                    'B2': [520, 600],
+                    'B3': [630, 690],
+                    'B4': [760, 900],
+                    'B5': [1550, 1750],
+                    'B6': [10400, 12500],
+                    'B7': [2080, 2350]}
 
     if platform == '07':
-        satbands = {'1': [450, 520],
-                    '2': [520, 600],
-                    '3': [630, 690],
-                    '4': [770, 900],
-                    '5': [1550, 1750],
-                    '6': [10400, 12500],
-                    '7': [2090, 2350],
-                    '8': [520, 900]}
+        satbands = {'B1': [450, 520],
+                    'B2': [520, 600],
+                    'B3': [630, 690],
+                    'B4': [770, 900],
+                    'B5': [1550, 1750],
+                    'B6': [10400, 12500],
+                    'B7': [2090, 2350],
+                    'B8': [520, 900]}
 
     if platform in ('08', '09'):
-        satbands = {'1': [430, 450],
-                    '2': [450, 510],
-                    '3': [530, 590],
-                    '4': [640, 670],
-                    '5': [850, 880],
-                    '6': [1570, 1650],
-                    '7': [2110, 2290],
-                    '8': [500, 680],
-                    '9': [1360, 1380],
-                    '10': [1060, 11190],
-                    '11': [11500, 12510]}
+        satbands = {'B1': [430, 450],
+                    'B2': [450, 510],
+                    'B3': [530, 590],
+                    'B4': [640, 670],
+                    'B5': [850, 880],
+                    'B6': [1570, 1650],
+                    'B7': [2110, 2290],
+                    'B8': [500, 680],
+                    'B9': [1360, 1380],
+                    'B10': [1060, 11190],
+                    'B11': [11500, 12510]}
 
     idir = os.path.dirname(ifilet)
 
@@ -1069,29 +1070,42 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
         showprocesslog('Input needs to be tar.gz or _MTL.txt')
         return None
 
-    files = glob.glob(ifile[:-7]+'*[0-9].tif')
+    if alldata is True:
+        files = glob.glob(ifile[:-7]+'*.tif')
+    else:
+        files = glob.glob(ifile[:-7]+'*[0-9].tif')
+
     if glob.glob(ifile[:-7]+'*ST_QA.tif'):
         if 'LC08' in ifile or 'LC09' in ifile:
-            lstband = '10'
+            lstband = 'B10'
         else:
-            lstband = '6'
+            lstband = 'B6'
         satbands['LST'] = satbands[lstband]
-        # ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']
 
+        # ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']
         # haslst = True
-        # breakpoint()
 
     showprocesslog('Importing Landsat data...')
 
+    bnamelen = len(ifile[:-7])
     nval = 0
     dat = []
     for ifile2 in piter(files):
-        if 'B6_VCID' in ifile2:
-            fext = ifile2[-12:-4]
-        elif ifile2[-6].isdigit():
-            fext = ifile2[-6:-4]
-        else:
-            fext = ifile2[-5]
+        fext = ifile2[bnamelen:-4]
+        fext = fext.upper().replace('BAND', 'B')
+        fext = fext.replace('SR_B', 'B')
+        fext = fext.replace('ST_B', 'B')
+
+        # if 'B6_VCID' in ifile2:
+        #     fext = ifile2[-12:-4]
+        # else:
+        #     fext = ifile2[:-4].split('_')[-1]
+        #     fext = fext.upper().replace('BAND', 'B')
+
+        # elif ifile2[-6].isdigit():
+        #     fext = ifile2[-6:-4]
+        # else:
+        #     fext = ifile2[-5]
 
         if fext == lstband:
             fext = 'LST'
@@ -1108,6 +1122,17 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
         dat.append(Data())
         dat[-1].data = rtmp
         dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+
+        nval = 0
+        if fext in ['QA_PIXEL', 'SR_QA_AEROSOL']:
+            nval = 1
+        if fext in ['ST_CDIST', 'ST_QA']:
+            nval = -9999
+        if fext in ['ST_TRAD', 'ST_URAD', 'ST_DRAD']:
+            nval = -9999
+        if fext in ['ST_ATRAN', 'ST_EMIS', 'ST_EMSD']:
+            nval = -9999
+
         dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
         if dat[-1].data.mask.size == 1:
             dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
@@ -1118,11 +1143,17 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
                 showprocesslog('Converting band '+lstband+' to Kelvin. '
                                'Band renamed as LST')
                 dat[-1].data = dat[-1].data*0.00341802 + 149.0
-            else:
+            if fext in satbands.keys():
                 showprocesslog('Converting band '+lstband+' to reflectance.')
                 dat[-1].data = dat[-1].data*0.0000275 - 0.2
+            if fext in ['ST_CDIST', 'ST_QA']:
+                dat[-1].data = dat[-1].data*0.01
+            if fext in ['ST_TRAD', 'ST_URAD', 'ST_DRAD']:
+                dat[-1].data = dat[-1].data*0.001
+            if fext in ['ST_ATRAN', 'ST_EMIS', 'ST_EMSD']:
+                dat[-1].data = dat[-1].data*0.0001
 
-        dat[-1].dataid = 'Band' + fext
+        dat[-1].dataid = fext
         dat[-1].nodata = nval
         dat[-1].crs = dataset.crs
         dat[-1].set_transform(transform=dataset.transform)
@@ -1132,7 +1163,8 @@ def get_landsat(ifilet, piter=None, showprocesslog=print):
         if satbands is not None and fext in satbands:
             bmeta['WavelengthMin'] = satbands[fext][0]
             bmeta['WavelengthMax'] = satbands[fext][1]
-        bmeta['Raster']['wavelength'] = (satbands[fext][1]+satbands[fext][1])/2
+            bmeta['Raster']['wavelength'] = (satbands[fext][1] +
+                                             satbands[fext][1])/2
 
         dataset.close()
 

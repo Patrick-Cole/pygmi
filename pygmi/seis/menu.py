@@ -26,7 +26,6 @@
 
 from PyQt5 import QtWidgets
 
-from pygmi.seis import scan_imp
 from pygmi.seis import del_rec
 from pygmi.seis import iodefs
 from pygmi.seis import beachball
@@ -120,11 +119,6 @@ class MenuWidget():
         """Create Beachballs from Fault Plane Solutions."""
         self.parent.item_insert('Step', 'Fault Plane Solutions',
                                 beachball.BeachBall)
-
-    def import_scans(self):
-        """Import scanned records."""
-        self.parent.item_insert('Io', 'Import Scanned Bulletins',
-                                scan_imp.SIMP)
 
     def import_seisan(self):
         """Import Seisan."""

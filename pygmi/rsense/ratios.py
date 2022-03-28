@@ -310,10 +310,10 @@ class SatRatios(QtWidgets.QDialog):
                     txt = 'Band8'
 
                 datd[txt] = i.data
-                if newmask is None:
-                    newmask = i.data.mask
-                else:
-                    newmask = (newmask | i.data.mask)
+                # if newmask is None:
+                #     newmask = i.data.mask
+                # else:
+                #     newmask = (newmask | i.data.mask)
 
             datfin = []
             for i in self.piter(rlist):
@@ -335,6 +335,10 @@ class SatRatios(QtWidgets.QDialog):
                 if abort:
                     self.showprocesslog('Error:'+' '.join(abort)+'missing.')
                     continue
+
+                newmask = datd[blist[0]].mask
+                for j in blist:
+                    newmask = (newmask | datd[blist[j]].mask)
 
                 ratio = ne.evaluate(formula, datd)
 
@@ -1279,8 +1283,10 @@ def _testfn2():
 def _testfn3():
     """Test Function"""
     from pygmi.raster.iodefs import get_raster
+    import matplotlib.pyplot as plt
 
     ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL.tif"
+    ifile = r"C:\WorkProjects\Sentinel-2_Winter\clip_S2A_MSIL2A_20160828T080012_T35JML.tif"
 
     dat = get_raster(ifile)
 
@@ -1290,6 +1296,13 @@ def _testfn3():
     SR.indata['Raster'] = dat  # single file only
 
     SR.settings()
+
+    dat = SR.outdata['Raster']
+
+    plt.title(dat[0].dataid)
+    plt.imshow(dat[0].data)
+    plt.colorbar()
+    plt.show()
 
     breakpoint()
 
