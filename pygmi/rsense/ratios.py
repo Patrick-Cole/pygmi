@@ -325,6 +325,7 @@ class SatRatios(QtWidgets.QDialog):
                     blist = blist.replace(j, ' ')
                 blist = blist.split()
                 blist = list(set(blist))
+                blist = [i for i in blist if 'Band' in i]
 
                 abort = []
                 for j in blist:
@@ -807,6 +808,7 @@ class ConditionIndices(QtWidgets.QDialog):
                     blist = blist.replace(j, ' ')
                 blist = blist.split()
                 blist = list(set(blist))
+                blist = [i for i in blist if 'Band' in i]
 
                 abort = []
                 for j in blist:
@@ -1285,10 +1287,14 @@ def _testfn3():
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL.tif"
-    ifile = r"C:\WorkProjects\Sentinel-2_Winter\clip_S2A_MSIL2A_20160828T080012_T35JML.tif"
+    # ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL.tif"
+    # ifile = r"C:\WorkProjects\Sentinel-2_Winter\clip_S2A_MSIL2A_20160828T080012_T35JML.tif"
+    # dat = get_raster(ifile)
 
-    dat = get_raster(ifile)
+    ifile = r"C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    extscene = 'Sentinel-2'
+    dat = iodefs.get_data(ifile, extscene=extscene)
+
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -1297,10 +1303,31 @@ def _testfn3():
 
     SR.settings()
 
-    dat = SR.outdata['Raster']
+
+    plt.title(dat[2].dataid)
+    plt.imshow(dat[2].data)
+    plt.colorbar()
+    plt.show()
 
     plt.title(dat[0].dataid)
     plt.imshow(dat[0].data)
+    plt.colorbar()
+    plt.show()
+
+    plt.title(dat[3].dataid)
+    plt.imshow(dat[3].data)
+    plt.colorbar()
+    plt.show()
+
+
+    b8 = dat[3].data
+    b4 = dat[0].data
+    b2 = dat[2].data
+
+    dat2 = SR.outdata['Raster']
+
+    plt.title(dat2[0].dataid)
+    plt.imshow(dat2[0].data, vmin=0, vmax=1)
     plt.colorbar()
     plt.show()
 

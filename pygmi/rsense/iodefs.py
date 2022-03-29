@@ -1143,14 +1143,14 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
                 showprocesslog('Converting band '+lstband+' to Kelvin. '
                                'Band renamed as LST')
                 dat[-1].data = dat[-1].data*0.00341802 + 149.0
-            if fext in satbands.keys():
-                showprocesslog('Converting band '+lstband+' to reflectance.')
+            elif fext in satbands.keys():
+                showprocesslog('Converting band '+fext+' to reflectance.')
                 dat[-1].data = dat[-1].data*0.0000275 - 0.2
-            if fext in ['ST_CDIST', 'ST_QA']:
+            elif fext in ['ST_CDIST', 'ST_QA']:
                 dat[-1].data = dat[-1].data*0.01
-            if fext in ['ST_TRAD', 'ST_URAD', 'ST_DRAD']:
+            elif fext in ['ST_TRAD', 'ST_URAD', 'ST_DRAD']:
                 dat[-1].data = dat[-1].data*0.001
-            if fext in ['ST_ATRAN', 'ST_EMIS', 'ST_EMSD']:
+            elif fext in ['ST_ATRAN', 'ST_EMIS', 'ST_EMSD']:
                 dat[-1].data = dat[-1].data*0.0001
 
         dat[-1].dataid = fext
@@ -2178,8 +2178,10 @@ def _testfn():
 
     ifile = r"D:\Workdata\Remote Sensing\Landsat\LC09_L1TP_173080_20211110_20220119_02_T1.tar"
 
-    ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
-    extscene = 'WorldView'
+    ifile = r"C:/Workdata/Remote Sensing/Landsat/LE07_L2SP_169076_20000822_20200917_02_T1.tar"
+
+    # ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
+    # extscene = 'WorldView'
 
     dat = get_data(ifile, extscene = extscene)
 
