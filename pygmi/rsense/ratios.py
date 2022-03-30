@@ -240,8 +240,10 @@ class SatRatios(QtWidgets.QDialog):
             elif 'Sentinel-2' in sensor:
                 flist = get_sentinel_list(flist)
             if not flist:
-                self.showprocesslog('Could not find '+sensor+' data')
-                return False
+                self.showprocesslog('Warning: This might not be ' + sensor +
+                                    ' data. Will attempt to do calculation '
+                                    'anyway.')
+                flist = self.indata['RasterFileList']
         else:
             flist = [self.indata['Raster']]
 
