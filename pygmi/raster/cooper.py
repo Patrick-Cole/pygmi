@@ -962,20 +962,21 @@ def agc(data, wsize, atype='mean', nodata=0, piter=iter):
     """
     data = data.copy()-data.min()
     data = np.abs(data)
+    data = data.astype(float)
     nr, nc = data.shape
 
-    weight = np.ones((nr, nc))
+    weight = np.ma.ones((nr, nc))
     w2 = int(np.floor(wsize/2))
 
     for i in piter(range(w2, nr-w2)):
         for j in range(w2, nc-w2):
             w = data[i-w2:i+w2+1, j-w2:j+w2+1]
             if atype == 'mean':
-                weight[i, j] = np.mean(w)
+                weight[i, j] = np.ma.mean(w)
             elif atype == 'median':
-                weight[i, j] = np.median(w)
+                weight[i, j] = np.ma.median(w)
             elif atype == 'rms':
-                weight[i, j] = np.sqrt(np.mean(w**2))
+                weight[i, j] = np.ma.sqrt(np.ma.mean(w**2))
 
     mask = np.ones((nr, nc), dtype=int)
     mask[w2:-w2, w2:-w2] = 0
