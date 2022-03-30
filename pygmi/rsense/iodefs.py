@@ -46,6 +46,7 @@ from rasterio.crs import CRS
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
+from pygmi.raster.iodefs import get_raster
 from pygmi.misc import ProgressBarText
 
 EDIST = {1: 0.98331, 2: 0.9833, 3: 0.9833, 4: 0.9833,
@@ -877,7 +878,7 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
     elif 'WorldView' in extscene:
         dat = get_worldview(ifile, piter, showprocesslog)
     else:
-        dat = None
+        dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog)
 
     if dat is not None:
         for i in dat:

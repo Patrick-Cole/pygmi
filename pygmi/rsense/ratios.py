@@ -285,8 +285,7 @@ class SatRatios(QtWidgets.QDialog):
                     continue
                 datsml.append(i)
 
-            dat = lstack(datsml, self.piter, pprint=self.showprocesslog)
-            # commonmask=True)
+            dat = lstack(datsml, piter=self.piter, pprint=self.showprocesslog)
 
             datd = {}
             newmask = None
@@ -310,10 +309,6 @@ class SatRatios(QtWidgets.QDialog):
                     txt = 'Band8'
 
                 datd[txt] = i.data
-                # if newmask is None:
-                #     newmask = i.data.mask
-                # else:
-                #     newmask = (newmask | i.data.mask)
 
             datfin = []
             for i in self.piter(rlist):
@@ -581,7 +576,7 @@ class ConditionIndices(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.lw_ratios.clicked.connect(self.set_selected_ratios)
-        # self.combo_index.currentIndexChanged.connect(self.setratios)
+        self.combo_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
 
     def settings(self, nodialog=False):
@@ -696,6 +691,11 @@ class ConditionIndices(QtWidgets.QDialog):
         for i in self.lw_ratios.selectedItems():
             rlist1.append(i.text()[2:])
 
+        if not rlist1:
+            self.showprocesslog('You need to select a condition index to '
+                                'calculate.')
+            return False
+
         rlist = []
         if 'VCI' in rlist1 and 'EVI' in index:
             rlist += [r'2.5*((B3-B2)/(B3+6.0*B2-7.5*B0+1)) EVI']
@@ -712,7 +712,6 @@ class ConditionIndices(QtWidgets.QDialog):
         vhi = []
         lst = []
 
-        # datfin = []
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
             if sensor == 'ASTER':
@@ -722,28 +721,16 @@ class ConditionIndices(QtWidgets.QDialog):
             elif 'Sentinel-2' in sensor:
                 flist = get_sentinel_list(flist)
             if not flist:
-                self.showprocesslog('Could not find '+sensor+' data')
-                return False
+                self.showprocesslog('Warning: This might not be ' + sensor +
+                                    ' data. Will attempt to do calculation '
+                                    'anyway.')
+                flist = self.indata['RasterFileList']
         else:
             flist = [self.indata['Raster']]
 
-        # flist = self.indata['RasterFileList']
-        # if 'ASTER' in sensor:
-        #     flist = get_aster_list(flist)
-        # elif 'Landsat' in sensor:
-        #     flist = get_landsat_list(flist, sensor, True)
-        # elif 'Sentinel-2' in sensor:
-        #     flist = get_sentinel_list(flist)
-        # if not flist:
-        #     self.showprocesslog('Could not find '+sensor+' data')
-        #     return False
-
-        if not rlist:
-            self.showprocesslog('You need to select a ratio to calculate.')
-            return False
-
         for ifile in flist:
-            dat = iodefs.get_data(ifile, showprocesslog=self.showprocesslog)
+            dat = iodefs.get_data(ifile, piter=self.piter,
+                                  showprocesslog=self.showprocesslog)
 
             if dat is None:
                 continue
@@ -765,7 +752,7 @@ class ConditionIndices(QtWidgets.QDialog):
                 i.nodata = 1e+20
                 datsml.append(i)
 
-            dat = lstack(datsml, self.piter, pprint=self.showprocesslog)
+            dat = lstack(datsml, piter=self.piter, pprint=self.showprocesslog)
 
             # Correct band names
             datd = {}
@@ -790,10 +777,6 @@ class ConditionIndices(QtWidgets.QDialog):
                     txt = 'Band8'
 
                 datd[txt] = i.data
-                if newmask is None:
-                    newmask = i.data.mask
-                else:
-                    newmask = (newmask | i.data.mask)
 
                 if 'LST' in txt:
                     lst.append(i)
@@ -820,35 +803,31 @@ class ConditionIndices(QtWidgets.QDialog):
                     self.showprocesslog('Error:'+' '.join(abort)+'missing.')
                     continue
 
+                newmask = datd[blist[0]].mask
+                for j in blist:
+                    newmask = (newmask | datd[j].mask)
+
                 ratio = ne.evaluate(formula, datd)
 
+                newmask = newmask | (ratio < -1) | (ratio > 1)
                 ratio = ratio.astype(np.float32)
                 ratio[newmask] = 1e+20
-                # ratio[newmask] = dat[0].nodata
                 ratio = np.ma.array(ratio, mask=newmask,
-                                    fill_value=dat[0].nodata)
+                                    fill_value=1e+20)
 
                 ratio = np.ma.fix_invalid(ratio)
 
-                rmask = ratio.mask | (ratio < -1) | (ratio > 1)
-                ratio.mask = rmask.data
                 tmp = copy.deepcopy(dat[0])
                 tmp.data = ratio
                 tmp.nodata = 1e+20
                 evi.append(tmp)
 
-                # rband = copy.deepcopy(dat[0])
-                # rband.data = ratio
-                # rband.dataid = i.replace(r'/', 'div')
-                # datfin.append(rband)
-
-                print(ifile)
-                print('Index:', index, ratio.min(), ratio.max())
-
         if lst:
-            lst = lstack(lst, commonmask=True)
+            lst = lstack(lst, piter=self.piter, pprint=self.showprocesslog,
+                         commonmask=True)
         if evi:
-            evi = lstack(evi, commonmask=True)
+            evi = lstack(evi, piter=self.piter, pprint=self.showprocesslog,
+                         commonmask=True)
 
         ofile = ''
         if 'TCI' in rlist1 or 'VHI' in rlist1 and lst:
@@ -869,8 +848,8 @@ class ConditionIndices(QtWidgets.QDialog):
         ofile = os.path.join(os.path.dirname(ifile),  'CI'+ofile+'.tif')
 
         if datfin:
-            self.showprocesslog('Exporting to '+ofile)
-            export_raster(ofile, datfin, 'GTiff', piter=self.piter)
+            # self.showprocesslog('Exporting to '+ofile)
+            # export_raster(ofile, datfin, 'GTiff', piter=self.piter)
             self.outdata['Raster'] = datfin
 
         return True
@@ -933,10 +912,10 @@ class ConditionIndices(QtWidgets.QDialog):
             item = self.lw_ratios.item(i)
             idict[item.text()[2:]] = i
 
-        if currentitem.text()[2:] == 'VHI':
+        if currentitem.text()[2:] == 'VHI' and currentitem.isSelected():
             for i in range(self.lw_ratios.count()):
                 self.lw_ratios.item(i).setSelected(currentitem.isSelected())
-        elif not currentitem.isSelected():
+        elif not currentitem.isSelected() and 'VHI' in idict:
             self.lw_ratios.item(idict['VHI']).setSelected(False)
 
         for i in range(self.lw_ratios.count()):
@@ -1217,7 +1196,7 @@ def get_sentinel_list(flist):
 
     flist2 = []
     for i in flist:
-        if '.SAFE' not in i:
+        if '.SAFE' not in i or 'S2A' not in i:
             continue
         flist2.append(i)
 
@@ -1237,6 +1216,8 @@ def _testfn():
 
     ifile = r"d:\Workdata\Remote Sensing\ASTER\test\AST_07XT_00311172002085850_20220121015142_25162.hdf"
     extscene = None
+
+
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
@@ -1264,6 +1245,7 @@ def _testfn2():
 
     ifiles = glob.glob("d:/Workdata/NRF/172-079/*.tar")
     ifiles = glob.glob(r"d:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
+    ifiles = glob.glob(r"C:\WorkProjects\Test\*.tif")
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -1274,6 +1256,7 @@ def _testfn2():
     dat = SR.outdata["Raster"]
 
     for i in dat:
+        plt.figure(dpi=200)
         plt.imshow(i.data, extent=i.extent)
         plt.colorbar()
         plt.title(i.dataid)
@@ -1335,4 +1318,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn3()
+    _testfn2()
