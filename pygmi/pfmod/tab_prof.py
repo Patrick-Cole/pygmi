@@ -478,7 +478,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         if 'Borehole' not in self.parent.indata:
             return
 
-        if self.parent.indata['Raster'][0].wkt == '':
+        if self.parent.indata['Raster'][0].crs.wkt == '':
             return
 
         data = self.parent.indata['Borehole']
@@ -488,7 +488,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         targ = osr.SpatialReference()
-        targ.ImportFromWkt(self.parent.indata['Raster'][0].wkt)
+        targ.ImportFromWkt(self.parent.indata['Raster'][0].crs.wkt)
         targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
         prj = osr.CoordinateTransformation(orig, targ)

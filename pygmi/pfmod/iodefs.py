@@ -737,7 +737,7 @@ class ExportMod3D():
         zrng = np.array(self.lmod.zrange, dtype=float)
 
         if 'Raster' in self.indata:
-            wkt = self.indata['Raster'][0].wkt
+            wkt = self.indata['Raster'][0].crs.wkt
         else:
             wkt = ''
         prjkmz = Exportkmz(wkt)
@@ -1091,7 +1091,7 @@ class ExportMod3D():
         zrng = np.array(self.lmod.zrange, dtype=float)
 
         if 'Raster' in self.indata:
-            wkt = self.indata['Raster'][0].wkt
+            wkt = self.indata['Raster'][0].crs.wkt
         else:
             wkt = ''
         prjkmz = Exportkmz(wkt)
