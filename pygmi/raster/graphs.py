@@ -187,8 +187,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-        x = data1.copy()
-        y = data2.copy()
+        x = data1.data.copy()
+        y = data2.data.copy()
 
         msk = np.logical_or(x.mask, y.mask)
         x.mask = msk
@@ -209,6 +209,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
+
+        self.axes.set_xlabel(data1.units)
+        self.axes.set_ylabel(data2.units)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -577,9 +580,9 @@ class PlotScatter(QtWidgets.QDialog):
         i = self.combobox1.currentIndex()
         j = self.combobox2.currentIndex()
 
-        x = data[i].data
-        y = data[j].data
-        if x.mask.shape != y.mask.shape:
+        x = data[i]
+        y = data[j]
+        if x.data.shape != y.data.shape:
             QtWidgets.QMessageBox.warning(self, 'Warning',
                                           'Different size input datasets. '
                                           'Merge and resample your input data '
