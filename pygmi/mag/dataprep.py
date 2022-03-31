@@ -269,11 +269,14 @@ def tilt1(data, azi, s):
 
     # 2nd order Tilt angle
 
-    ts = t1
+    # ts = t1
     if s < 3:
         s = 3
     se = np.ones([s, s])/(s*s)
-    ts = signal.convolve2d(t1, se, 'same')
+    # ts = signal.convolve2d(t1, se, 'same')
+    ts = signal.convolve2d(t1.filled(t1.mean()), se, 'same')
+    ts = np.ma.array(ts, mask = t1.mask)
+
     [dxs, dys] = np.gradient(ts)
     dzs = vertical(ts, npts, 1)
     dxtots = np.ma.sqrt(dxs*dxs+dys*dys)
@@ -720,6 +723,7 @@ def _testfn():
     fdec = -16.75
 
     ifile = 'd:/Workdata/bugs/detlef/TMI_norm_wdw.tif'
+    ifile = r'C:/Workdata/raster/ER Mapper/magmicrolevel.PD.ers'
 
     dat = get_raster(ifile)[0]
 
@@ -727,6 +731,17 @@ def _testfn():
     t1, th, t2, ta, tdx = tilt1(dat.data, 75, 0)
 
     # breakpoint()
+
+    plt.figure(dpi=150)
+    plt.imshow(t2)
+    plt.colorbar()
+    plt.show()
+
+    plt.figure(dpi=150)
+    plt.imshow(t1)
+    plt.colorbar()
+    plt.show()
+
 
 # Calculate the field
 
