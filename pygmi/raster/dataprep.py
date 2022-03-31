@@ -288,6 +288,7 @@ class DataLayerStack(QtWidgets.QDialog):
                     self.dxy = min(dxy0, data.xdim, data.ydim)
 
             self.dsb_dxy.setValue(self.dxy)
+            self.dxy_change()
 
             tmp = self.exec_()
             if tmp != 1:
