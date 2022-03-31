@@ -1,4 +1,0 @@
-"""
-Exploration Seismics Routines
-"""
-
