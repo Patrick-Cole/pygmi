@@ -418,7 +418,7 @@ class Visibility2d(QtWidgets.QDialog):
         self.sb_dh.setMinimum(1)
         self.sb_dh.setMaximum(10000)
         self.sb_wsize.setPrefix('')
-        self.sb_wsize.setMinimum(3)
+        self.sb_wsize.setMinimum(5)
         self.sb_wsize.setMaximum(100000)
         self.sb_wsize.setSingleStep(2)
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -980,9 +980,11 @@ def agc(data, wsize, atype='mean', nodata=0, piter=iter):
 
     mask = np.ones((nr, nc), dtype=int)
     mask[w2:-w2, w2:-w2] = 0
+    mask = data.mask | mask
 
     agcdata = data/weight
-    agcdata[mask] = nodata
+    agcdata.mask = mask
+    agcdata = agcdata.filled(nodata)
     agcdata = np.ma.array(agcdata, mask=mask)
 
     return agcdata
@@ -997,33 +999,19 @@ def _test():
 
     ifile = r"d:\Workdata\testmag.tif"
     ifile = r"d:\Workdata\people\mikedentith\perth_surf_win.grd"
+    ifile = r'C:/Workdata/raster/ER Mapper/magmicrolevel.PD.ers'
 
     piter = ProgressBarText().iter
 
     dat = get_raster(ifile, piter=piter)
 
-    # datai = dat[0]
-    # dh = 10
-    # wsize = 11
-
-    # vtot, vstd, vsum = visibility2d(datai.data, wsize,
-    #                                 dh*datai.data.std()/100.,
-    #                                 piter)
-
-    # dat2 = lstack(dat, piter, 60)
-
-    # plt.figure(dpi=150)
-    # plt.imshow(dat[1].data, extent=dat[1].extent)
-    # plt.show()
-
-    # plt.figure(dpi=150)
-    # plt.imshow(dat2[1].data, extent=dat2[1].extent)
-    # plt.show()
+    dat[0].data = dat[0].data.filled(1e+20)
+    dat[0].data = np.ma.masked_equal(dat[0].data, 1e+20)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     V2D = Visibility2d()
-    V2D = AGC()
+    # V2D = AGC()
     V2D.indata['Raster'] = dat
 
     getinfo()
@@ -1032,10 +1020,14 @@ def _test():
 
     odat = V2D.outdata['Raster']
 
-    plt.figure(dpi=150)
-    plt.imshow(dat[0].data, extent=dat[0].extent)
-    plt.imshow(odat[0].data, extent=odat[0].extent)
-    plt.show()
+
+    for idat in odat:
+        plt.figure(dpi=150)
+        # plt.imshow(dat[0].data, extent=dat[0].extent)
+        plt.title(idat.dataid)
+        plt.imshow(idat.data, extent=idat.extent)
+        plt.colorbar()
+        plt.show()
 
     breakpoint()
 
