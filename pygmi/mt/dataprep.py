@@ -479,7 +479,7 @@ class StaticShiftEDI(QtWidgets.QDialog):
 
         if self.checkbox.isChecked():
             for i in self.data:
-                i = self.combobox1.currentText()
+                # i = self.combobox1.currentText()
                 self.data[i].Z = self.data[i].remove_static_shift(ssx, ssy)
         else:
             i = self.combobox1.currentText()
