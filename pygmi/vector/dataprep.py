@@ -31,6 +31,7 @@ import numpy as np
 import matplotlib.path as mplPath
 from osgeo import osr, ogr
 from scipy.interpolate import griddata
+from scipy.ndimage import distance_transform_edt
 
 from pygmi import menu_default
 from pygmi.raster.dataprep import GroupProj
@@ -223,8 +224,8 @@ class DataGrid(QtWidgets.QDialog):
         self.grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                    'Minimum Curvature'])
 
-        self.label_bdist.hide()
-        self.bdist.hide()
+        # self.label_bdist.hide()
+        # self.bdist.hide()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -250,7 +251,7 @@ class DataGrid(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.dsb_dxy.textChanged.connect(self.dxy_change)
-        self.grid_method.currentIndexChanged.connect(self.grid_method_change)
+        # self.grid_method.currentIndexChanged.connect(self.grid_method_change)
 
     def dxy_change(self):
         """
@@ -455,12 +456,16 @@ class DataGrid(QtWidgets.QDialog):
 
             if method == 'Nearest Neighbour':
                 gdat = griddata(points, z, (xxx, yyy), method='nearest')
+                gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
             elif method == 'Linear':
                 gdat = griddata(points, z, (xxx, yyy), method='linear',
                                 fill_value=nullvalue)
+                gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
             elif method == 'Cubic':
                 gdat = griddata(points, z, (xxx, yyy), method='cubic',
                                 fill_value=nullvalue)
+                gdat = blanking(gdat, x, y, bdist, extent, dxy, nullvalue)
+
             gdat = gdat[::-1]
         gdat = np.ma.masked_equal(gdat, nullvalue)
 
@@ -840,6 +845,50 @@ def quickgrid(x, y, z, dxy, numits=4, showprocesslog=print):
     return newz
 
 
+def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
+    """
+    Blanks area further than a defined number of cells from input data.
+
+    Parameters
+    ----------
+    gdat : numpy array
+        grid data to blank.
+    x : numpy array
+        x coordinates.
+    y : numpy array
+        y coordinates.
+    bdist : int
+        Blanking distance in units for cell.
+    extent : list
+        extent of grid.
+    dxy : float
+        Cell size.
+
+    Returns
+    -------
+    mask : numpy array
+        Mask to be used for blanking.
+
+    """
+
+    mask = np.zeros_like(gdat)
+
+    points = np.transpose([x, y])
+
+    for xy in points:
+        col = int((xy[0]-extent[0])/dxy)
+        row = int((xy[1]-extent[2])/dxy)
+
+        mask[row, col] = 1
+
+    dist = distance_transform_edt(np.logical_not(mask))
+    mask = (dist > bdist)
+
+    gdat[mask] = nullvalue
+
+    return gdat
+
+
 def _testfn():
     """Test routine."""
     import sys
@@ -848,7 +897,8 @@ def _testfn():
 
     APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r'd:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+    ifile = r'c:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+    ifile = r'C:/Workdata/raster/Testing/SPECARCHIVE.XYZ'
 
     # ifile = r'D:\Workdata\vector\linecut\test2.csv'
     # sfile = r'D:\Workdata\vector\linecut\test2_cut_outline.shp'
