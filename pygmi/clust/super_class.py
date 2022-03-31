@@ -844,6 +844,8 @@ class SuperClass(QtWidgets.QDialog):
         coords = list(self.df.loc[0, 'geometry'].exterior.coords)
         self.map.polyi.new_poly(coords)
 
+        self.update_class_polys()
+
         return True
 
     def save_shape(self):
