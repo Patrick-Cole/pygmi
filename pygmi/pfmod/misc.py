@@ -282,7 +282,7 @@ class MergeMod3D(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        self.pbar = self.parent.pbar
+        # self.pbar = self.parent.pbar
 
         self.master = QtWidgets.QComboBox()
         self.slave = QtWidgets.QComboBox()
@@ -447,13 +447,15 @@ class MergeMod3D(QtWidgets.QDialog):
         self.outdata['Raster'] = []
 
         for i in datmaster.griddata:
-            if (i in ('DTM Dataset', 'Magnetic Dataset',
-                      'Gravity Dataset', 'Study Area Dataset',
-                      'Gravity Regional')):
+            if i in ('DTM Dataset', 'Magnetic Dataset',
+                     'Gravity Dataset', 'Study Area Dataset',
+                     'Gravity Regional'):
                 if i in datslave.griddata:
                     datmaster.griddata[i] = gmerge(datmaster.griddata[i],
                                                    datslave.griddata[i],
                                                    xrange, yrange)
+                self.outdata['Raster'].append(datmaster.griddata[i])
+            if i == 'Other':
                 self.outdata['Raster'].append(datmaster.griddata[i])
 
         datmaster.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z,
@@ -548,3 +550,35 @@ def gmerge(master, slave, xrange=None, yrange=None):
         dat[0].data.mask[imask] = False
 
     return dat[0]
+
+
+def _testfn():
+    """Test routine."""
+    import sys
+    from pygmi.pfmod.iodefs import ImportMod3D
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
+    ifile2 = r"D:\Workdata\modelling\mergetest\3dmodel_test2.npz"
+
+    IO1 = ImportMod3D()
+    IO1.ifile = ifile
+    IO1.settings(True)
+
+    IO2 = ImportMod3D()
+    IO2.ifile = ifile2
+    IO2.settings(True)
+
+    data = {'Model3D': IO1.outdata['Model3D']+IO2.outdata['Model3D'],
+            'Raster': IO1.outdata['Raster']+IO2.outdata['Raster']}
+
+    MM = MergeMod3D()
+    MM.indata = data
+    MM.settings(True)
+
+    for i in MM.outdata['Raster']:
+        print(i.dataid)
+
+
+if __name__ == "__main__":
+    _testfn()

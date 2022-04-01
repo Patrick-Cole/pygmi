@@ -287,17 +287,32 @@ def _testfn():
     """Test routine."""
     import sys
     from pygmi.pfmod.iodefs import ImportMod3D
+    from pygmi.pfmod.misc import MergeMod3D
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    ifile = r"d:\Workdata\modelling\KW2_reversed_hiNRM_physprop.npz"
+    ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
+    ifile2 = r"D:\Workdata\modelling\mergetest\3dmodel_test2.npz"
 
-    IO = ImportMod3D()
+    IO1 = ImportMod3D()
+    IO1.ifile = ifile
+    IO1.settings(True)
 
-    IO.ifile = ifile
-    IO.settings(True)
+    IO2 = ImportMod3D()
+    IO2.ifile = ifile2
+    IO2.settings(True)
+
+    data = {'Model3D': IO1.outdata['Model3D']+IO2.outdata['Model3D'],
+            'Raster': IO1.outdata['Raster']+IO2.outdata['Raster']}
+
+    MM = MergeMod3D()
+    MM.indata = data
+    MM.settings(True)
+
+    for i in MM.outdata['Raster']:
+        print(i.dataid)
 
     PF = MainWidget()
-    PF.indata = IO.outdata
+    PF.indata = MM.outdata
     PF.settings()
 
     app.exec_()
