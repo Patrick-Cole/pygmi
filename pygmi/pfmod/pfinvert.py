@@ -754,12 +754,12 @@ class MagInvert(QtWidgets.QDialog):
         dat = [self.lmod1.griddata['Magnetic Dataset'],
                self.lmod1.griddata['DTM Dataset']]
 
-        dat = lstack(dat, masterid=0)
+        dat = lstack(dat, masterid=0, commonmask=True)
 
         mag = dat[0]
         dtm = dat[1]
 
-        dobs = mag.data.flatten()
+        dobs = mag.data.compressed()
 
         xmin, xmax, ymin, ymax = mag.extent
 
@@ -772,13 +772,13 @@ class MagInvert(QtWidgets.QDialog):
         xy = np.meshgrid(xxx, yyy[::-1])
         z = dtm.data + self.dsb_mht.value()
 
-        receiver_locations = np.transpose([xy[0].flatten(),
-                                           xy[1].flatten(),
-                                           z.flatten()])
+        xxx = xy[0][~mag.data.mask]
+        yyy = xy[1][~mag.data.mask]
+        z = z.compressed()
 
-        topo_xyz = np.transpose([xy[0].flatten(),
-                                 xy[1].flatten(),
-                                 dtm.data.flatten()])
+        receiver_locations = np.transpose([xxx, yyy, z])
+
+        topo_xyz = np.transpose([xxx, yyy, dtm.data.compressed()])
 
         # Assign Uncertainty
         maximum_anomaly = np.max(np.abs(dobs))
@@ -1105,14 +1105,18 @@ def _testfn2():
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    mfile = r"d:\Workdata\MagInv\pcmag.tif"
+    # mfile = r"d:\Workdata\MagInv\pcmag.tif"
 
-    mdat = get_raster(mfile)
-    ddat = copy.deepcopy(mdat)
-    ddat[0].data = ddat[0].data * 0.
+    # mdat = get_raster(mfile)
+    # ddat = copy.deepcopy(mdat)
+    # ddat[0].data = ddat[0].data * 0.
 
     mfile = r"d:\Workdata\MagInv\pcmagdem.tif"
     dfile = r"d:\Workdata\MagInv\pcdem.tif"
+
+    mfile = r"D:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
+    dfile = r"D:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
+
 
     mdat = get_raster(mfile)
     ddat = get_raster(dfile)
