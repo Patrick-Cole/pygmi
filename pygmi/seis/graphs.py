@@ -80,6 +80,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
+        self.axes = self.figure.add_subplot(111)  # , projection=ccrs.PlateCarree())
+
+        if len(datd) == 0:
+            self.figure.canvas.draw()
+            return
 
         x = np.ma.masked_invalid(datd['1_longitude'])
         y = np.ma.masked_invalid(datd['1_latitude'])
@@ -89,7 +94,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ymin = y.min()-0.5
         ymax = y.max()+0.5
 
-        self.axes = self.figure.add_subplot(111)  # , projection=ccrs.PlateCarree())
         self.axes.set_xlim(xmin, xmax)
         self.axes.set_ylim(ymin, ymax)
 
@@ -186,6 +190,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+
+        if len(data1) == 0 or len(data2) == 0:
+            self.figure.canvas.draw()
+            return
+
         x = np.ma.masked_invalid(data1)
         y = np.ma.masked_invalid(data2)
 
@@ -219,6 +228,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_ylabel(ylbl, fontsize=8)
         self.axes.set_xticks(np.arange(x.min(), x.max()+1))
 
+        for tick in self.axes.get_xticklabels():
+            tick.set_rotation(90)
+
         cbar = self.figure.colorbar(hbin[3])
         cbar.set_label('Number of Events')
 
@@ -251,6 +263,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+        if len(data1) == 0:
+            self.figure.canvas.draw()
+            return
 
         dattmp = np.array(data1)
         dattmp = dattmp[~np.isnan(dattmp)]
@@ -266,6 +281,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if rng is not None:
             self.axes.set_xlim(rng[0], rng[1])
             self.axes.set_xticks(np.arange(int(rng[0]+1), int(rng[1])+1))
+
+        for tick in self.axes.get_xticklabels():
+            tick.set_rotation(90)
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -289,6 +307,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+        if len(data1a) == 0:
+            self.figure.canvas.draw()
+            return
+
         data1 = np.ma.masked_invalid(data1a)
         data1 = data1.compressed()
 
@@ -358,6 +380,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+        if len(data1) == 0:
+            self.figure.canvas.draw()
+            return
 
         pid = np.array(data1['4_phase_id'])
         tres = np.array(data1['4_travel_time_residual'])
@@ -403,6 +428,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+        if len(dat) == 0:
+            self.figure.canvas.draw()
+            return
 
         A = {}
         T = {}
@@ -485,6 +513,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
+        if len(dat) == 0:
+            self.figure.canvas.draw()
+            return
 
         VPS = []
         for event in dat:
@@ -834,6 +865,11 @@ def import_for_plots(dat):
 
     """
     datd = {}
+
+    # Next 3 lines are so that certain plots don't break
+    datd['1_ML'] = []
+    datd['1_ML_year'] = []
+    datd['1_ML_time'] = []
 
     for event in dat:
         if '1' not in event:

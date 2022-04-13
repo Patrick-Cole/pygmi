@@ -766,8 +766,17 @@ class MagInvert(QtWidgets.QDialog):
         xdim = mag.xdim
         ydim = mag.ydim
 
-        xxx = np.arange(xmin, xmax, xdim) + xdim/2
-        yyy = np.arange(ymin, ymax, ydim) + ydim/2
+        rows, cols = mag.data.shape
+
+        xxx = np.linspace(xmin, xmax, cols, False) + xdim/2
+        yyy = np.linspace(ymin, ymax, rows, False) + ydim/2
+
+        # xxx = np.arange(xmin, xmax, xdim) + xdim/2
+        # yyy = np.arange(ymin, ymax, ydim) + ydim/2
+
+        # # Get rid of the extra values due to round off error
+        # xxx = xxx[xxx < xmax]
+        # yyy = yyy[yyy < ymax]
 
         xy = np.meshgrid(xxx, yyy[::-1])
         z = dtm.data + self.dsb_mht.value()
@@ -1111,12 +1120,14 @@ def _testfn2():
     # ddat = copy.deepcopy(mdat)
     # ddat[0].data = ddat[0].data * 0.
 
-    mfile = r"d:\Workdata\MagInv\pcmagdem.tif"
-    dfile = r"d:\Workdata\MagInv\pcdem.tif"
+    mfile = r"c:\Workdata\MagInv\pcmagdem.tif"
+    dfile = r"c:\Workdata\MagInv\pcdem.tif"
 
-    mfile = r"D:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
-    dfile = r"D:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
+    mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
+    dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
 
+    # mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_TMA_utm35s.tif"
+    # dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_SRTM90m_utm35s.tif"
 
     mdat = get_raster(mfile)
     ddat = get_raster(dfile)
