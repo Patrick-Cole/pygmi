@@ -882,6 +882,8 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
 
     if dat is not None:
         for i in dat:
+            if i.dataid is None:
+                i.dataid = ''
             i.dataid = i.dataid.replace(',', ' ')
 
     return dat
@@ -937,6 +939,9 @@ def get_modisv6(ifile, piter=None):
         meta = dataset.tags()
         bandid = dataset.descriptions[0]
         nval = dataset.nodata
+
+        if bandid is None and ':' in ifile2:
+            bandid = ifile2[ifile2.rindex(':')+1:]
 
         if 'scale_factor' in meta:
             scale = float(meta['scale_factor'])
@@ -2183,10 +2188,11 @@ def _testfn():
 
     # ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
     # extscene = 'WorldView'
+    ifile = r'C:/Workdata/Remote Sensing/Modis/MOD14A2.A2006225.h20v11.006.2015121021043.hdf'
+    # ifile = r'C:/Workdata/Remote Sensing/Modis/MCD64A1.A2014213.h20v11.006.2017014002623.hdf'
+
 
     dat = get_data(ifile, extscene = extscene)
-
-    breakpoint()
 
     for i in dat:
         plt.figure(dpi=300)

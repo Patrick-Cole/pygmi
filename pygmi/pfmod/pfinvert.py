@@ -1120,14 +1120,14 @@ def _testfn2():
     # ddat = copy.deepcopy(mdat)
     # ddat[0].data = ddat[0].data * 0.
 
-    mfile = r"d:\Workdata\MagInv\pcmagdem.tif"
-    dfile = r"d:\Workdata\MagInv\pcdem.tif"
+    mfile = r"c:\Workdata\MagInv\pcmagdem.tif"
+    dfile = r"c:\Workdata\MagInv\pcdem.tif"
 
-    mfile = r"D:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
-    dfile = r"D:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
+    mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
+    dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
 
-    # mfile = r"D:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_TMA_utm35s.tif"
-    # dfile = r"D:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_SRTM90m_utm35s.tif"
+    # mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_TMA_utm35s.tif"
+    # dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_SRTM90m_utm35s.tif"
 
     mdat = get_raster(mfile)
     ddat = get_raster(dfile)
