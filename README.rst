@@ -34,34 +34,30 @@ PyGMI should still work with Python 3.8.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.9.8
-* discretize 0.7.1
+* python 3.9.10
+* discretize 0.7.2
 * fiona 1.8.20
 * geopandas 0.10.2
-* llvmlite 0.37.0
-* matplotlib 3.5.0
+* llvmlite 0.38.0
+* matplotlib 3.5.1
 * mtpy 1.1.5
-* numba 0.54.1
-* numexpr 2.7.3
-* numpy 1.21.4+mkl
-* pandas 1.3.4
-* pillow 8.4.0
-* psutil 5.8.0
+* numba 0.55.0
+* numexpr 2.8.1
+* numpy 1.21.5+mkl
+* pandas 1.4.0
+* pillow 9.0.0
+* psutil 5.9.0
 * pymatsolver 0.2.0
 * pyopengl 3.1.5
-* pyproj 3.2.1
-* PyQt5 5.12.3
+* PyQt5 5.15.1
 * pytest 6.2.5
-* pyshp 2.1.3
 * rasterio 1.2.10
-* requests 2.25.1
-* scikit-image 0.18.3
-* scikit-learn 1.0.1
-* scipy 1.7.2
-* segyio 1.9.7
+* scikit-image 0.19.1
+* scikit-learn 1.0.2
+* scipy 1.7.3
 * shapely 1.8.0
-* SimPEG 0.15.2
-
+* SimPEG 0.16.0
+* sphinx 4.4.0
 
 Installation
 ------------
@@ -121,7 +117,7 @@ The process to install is as follows:
    conda activate pygmi
 
    conda config --add channels conda-forge
-	
+
    conda config --set channel_priority flexible
 
    conda install pyqt
@@ -131,13 +127,13 @@ The process to install is as follows:
    conda install scipy
 
    conda install matplotlib
-   
+
    conda install psutil
 
    conda install numexpr
 
    conda install pandas
-   
+
    conda install rasterio
 
    conda install geopandas

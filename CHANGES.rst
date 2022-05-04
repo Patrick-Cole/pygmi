@@ -2,6 +2,69 @@
 Changelog
 =========
 
+v3.2.5.2, 22 April 2022
+-----------------------
+*Fixed a nodata value problem with magnetic inversion.
+*Fixed the import of some MODIS data types
+*Fixed a crash which occurs in seismology QA, when no data is found.
+*Changed the x labels to vertical orientation, to fit more in.
+*Bugfix to remove nodata from inversion.
+*Fixed a bug where 'Other' datasets were not included in a model merge, causing a crash
+*Fixed a bug where static shift was incorrectly applied when applying to all stations
+*Fixed bad reference to wkt in pfmod
+*Fixed a bug where null values could cause artifacts for second order tilt angle
+*Exploration seismics viewer removed.
+*All classes are now shown after loading a shapefile for supervised classification.
+*Gridding will now apply a blanking distance for all methods.
+*Fixed a bug causing a crash when using cut vector
+*Fixed bug where rows and columns displayed were zero on startup, with some data.
+*Hexbin plot will add data units, if defined.
+*Visibility now accepts windows from 5 an up only.
+*AGC has some null value issues fixed.
+*Batch file import and related condition index and ratio calculations now support  normal raster imports
+*Landsat import bugfix.
+*Ratio bugfix
+*Masks will be taken only from bands used in ratio
+*Added support for WV-3 and WV-2 tile import, as well as in ratios.
+*Updated Magnetic inversion.
+*Added magnetic inversion via the SimPEG library
+*Added support for Landsat 9.
+*Fixed a bug causing supervised classification to crash
+*Gravity processing will now calculate drift based on datetime, and not on the order found in CG-5 file.
+*GMT import now added to raster file imports
+*Reproject will use specified input projection, as opposed to what was defined in the input data.
+*Give more information for gravity drift
+*A local projection is now assigned to datasets without a projection, to avoid errors later.
+*Fixed a bug displaying too much information on Line Map.
+*Data export now adds statistics for ease of use in ArcGIS
+*Fixed misinterpretation of unicode strings in line data.
+*Added encoding to open statements
+*Layer stacking (API) now allows a master dataset to which all other layers are clipped.
+*Modelling will not correctly use the dem
+*Added space delimited text files
+*Fixed a bug causing vector reprojection to crash.
+*Long projection information will now wrap correctly
+*ENVI data import now correctly stores fwhm information
+*Correlation graph now has a color bar and improved numbering
+*2d correlation coefficient will now corrected take into account layers with differing mask.
+*Text will use complementary colors.
+*Layer stacking will us a common data type when data types of input bands are mixed.
+*Raster image display defaults to no interpolation to avoid incorrect interpolation of null values.
+*Modis import now import LULC layer.
+*Modis import update
+*Condition index now used a common mask between datasets, to avoid edge effects.
+*A null value of 1e=20 is also enforced.
+*Landsat level 2 science product images now convert DN to reflectance.
+*Condition indices have been moved to a new module, and the calculation has been corrected.
+*Equation editor now ensures that the output data type is the same as the input data type.
+*Bugfix - fixed a bug where the ratio list was not displaying on startup.
+*Updated error messages where no raster datasets are connected to a module or where there is no projection.
+*Bug fixed where analyze spectra could tried to create spectra outside of the image.
+*ASTER, Landsat and Sentinel-2 now store wavelength information properly
+*Analyze spectra will sort spectra beforehand, and advise stacking when necessary
+*Corrected wavelengths on hyperion import
+*Added support for Hyperion L1T data
+
 v3.2.4.5, 14 January 2022
 -------------------------
 *Added a warning if data has no projection
