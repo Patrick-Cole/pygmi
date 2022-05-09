@@ -387,7 +387,7 @@ class SatRatios(QtWidgets.QDialog):
         sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
         sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
                                'B4': 'B11', 'B5': 'B12'}
-        sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',}
+        sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7'}
                               # 'B4': 'B11', 'B5': 'B13', 'B6': 'B14',
                               # 'B7': 'B15', 'B8': 'B16'}
 
@@ -434,6 +434,12 @@ class SatRatios(QtWidgets.QDialog):
                   r'(B1-B3)/(B1+B3) NDWI water bodies ',
                   r'2.5*((B3-B2)/(B3+6.0*B2-7.5*B0+1)) EVI',
                   r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2']
+
+        # Colour composite
+
+        rlist += [r'B5/B3 Used in colour composites',
+                  r'B4/B0 Used in colour composites',
+                  r'B5/B1 Used in colour composites']
 
         bandmap = sdict[sensor]
         svalues = set(bandmap.keys())
@@ -1210,16 +1216,16 @@ def _testfn():
     import matplotlib.pyplot as plt
 
     piter = ProgressBarText().iter
-    # ifile = r'd:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
-    ifile = r"d:\Workdata\Remote Sensing\Landsat\LM05_L1TP_171078_19840629_20180410_01_T2.tar.gz"
-    ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    extscene = 'Sentinel-2'
 
-
-    ifile = r"d:\Workdata\Remote Sensing\ASTER\test\AST_07XT_00311172002085850_20220121015142_25162.hdf"
     extscene = None
 
+    # ifile = r'd:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
+    # ifile = r"d:\Workdata\Remote Sensing\Landsat\LM05_L1TP_171078_19840629_20180410_01_T2.tar.gz"
+    ifile = r"D:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    # ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    # extscene = 'Sentinel-2'
 
+    # ifile = r"d:\Workdata\Remote Sensing\ASTER\test\AST_07XT_00311172002085850_20220121015142_25162.hdf"
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
@@ -1364,4 +1370,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn4()
+    _testfn()
