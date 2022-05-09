@@ -397,6 +397,9 @@ class DataMerge(QtWidgets.QDialog):
                                              'at overlap')
         self.rb_max = QtWidgets.QRadioButton('Max - copy pixel wise maximum '
                                              'at overlap')
+        self.rb_mean = QtWidgets.QRadioButton('Mean - shift last file to mean '
+                                              'overlap value and copy over '
+                                              'first file at overlap.')
         # self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.idirlist = QtWidgets.QLineEdit('')
@@ -442,6 +445,7 @@ class DataMerge(QtWidgets.QDialog):
         gl_merge_method.addWidget(self.rb_last)
         gl_merge_method.addWidget(self.rb_min)
         gl_merge_method.addWidget(self.rb_max)
+        gl_merge_method.addWidget(self.rb_mean)
 
         gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
@@ -460,6 +464,7 @@ class DataMerge(QtWidgets.QDialog):
         self.rb_last.clicked.connect(self.method_change)
         self.rb_min.clicked.connect(self.method_change)
         self.rb_max.clicked.connect(self.method_change)
+        self.rb_mean.clicked.connect(self.method_change)
 
     def method_change(self):
         """
@@ -478,6 +483,8 @@ class DataMerge(QtWidgets.QDialog):
             self.method = merge_min
         if self.rb_max.isChecked():
             self.method = merge_max
+        if self.rb_mean.isChecked():
+            self.method = merge_mean
 
     def shiftchanged(self):
         """
@@ -1992,6 +1999,50 @@ def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
     data2.nodata = data.nodata
 
     return data2
+
+
+def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
+              roff=None, coff=None):
+    """
+    Custom merge for rasterio, taking minimum value.
+
+    Parameters
+    ----------
+    merged_data : numpy array
+        Old data.
+    new_data : numpy array
+        New data to merge to old data.
+    merged_mask : float
+        Old mask.
+    new_mask : float
+        New mask.
+    index : int, optional
+        index of the current dataset within the merged dataset collection.
+        The default is None.
+    roff : int, optional
+        row offset in base array. The default is None.
+    coff : int, optional
+        col offset in base array. The default is None.
+
+    Returns
+    -------
+    None.
+
+    """
+    tmp = np.logical_and(~merged_mask, ~new_mask)
+
+    tmp1 = new_data.copy()
+
+    if True in tmp:
+        tmp1 = tmp1 - new_data[tmp].mean()
+        # tmp1 = tmp1 * merged_data[tmp].std() / new_data[tmp].std()
+        tmp1 = tmp1 + merged_data[tmp].mean()
+
+    # tmp1 = merged_data.copy()
+    # tmp1[~new_mask] = new_data[~new_mask]
+    # tmp1[tmp] = np.minimum(merged_data[tmp], new_data[tmp])
+
+    merged_data[:] = tmp1
 
 
 def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,

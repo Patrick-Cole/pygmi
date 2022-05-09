@@ -1319,5 +1319,49 @@ def _testfn3():
     breakpoint()
 
 
+def _testfn4():
+    """Test routine."""
+    import glob
+    import matplotlib.pyplot as plt
+    from pygmi.raster.dataprep import DataMerge
+
+    ifiles = glob.glob(r"C:\WorkProjects\ratios\*.zip")
+    # ifiles = glob.glob(r"C:\WorkProjects\ratios\merge*.tif")
+
+    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    # SR = SatRatios()
+    # SR.indata['RasterFileList'] = ifiles
+    # SR.settings()
+
+    # dat = SR.outdata['Raster']
+
+    ifiles = glob.glob(r"C:\WorkProjects\ratios\*.tif")
+
+    dat = []
+    for ifile in ifiles:
+        dat += iodefs.get_data(ifile)
+
+    # dat[1].data = dat[1].data-dat[1].data.mean() + dat[0].data.mean()
+    # dat[1].data = dat[1].data*dat[0].data.std()/dat[1].data.std()
+
+    DM = DataMerge()
+    DM.indata['Raster'] = dat
+    DM.settings()
+
+    dat += DM.outdata['Raster']
+
+    vmin = dat[0].data.mean() - dat[0].data.std()
+    vmax = dat[0].data.mean() + dat[0].data.std()
+
+    for i in dat:
+        plt.title(i.dataid)
+        plt.imshow(i.data, extent=i.extent, vmin=vmin, vmax=vmax)
+        plt.colorbar()
+        plt.show()
+
+    breakpoint()
+
+
 if __name__ == "__main__":
-    _testfn2()
+    _testfn4()
