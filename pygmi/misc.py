@@ -280,7 +280,11 @@ class ProgressBarText():
         percent = f'{perc:.{self.decimals}f}'
         filledlength = int(self.length*iteration//self.total)
         pbar = self.fill*filledlength + '-'*(self.length - filledlength)
-        print(f'\r{self.prefix} |{pbar}| {percent}% {suffix}', end='\r')
+        pbar = f'\r{self.prefix} |{pbar}| {percent}% {suffix}'
+        # This next line prevents a unicode error which occurs in windows
+        # consoles
+        pbar = str(pbar.encode('utf-8'))
+        print(pbar, end='\r')
         # Print New Line on Complete
         if iteration == self.total:
             print()

@@ -887,8 +887,10 @@ class PlotInterp(QtWidgets.QDialog):
         super().__init__(parent)
         if parent is None:
             self.showprocesslog = print
+            self.piter = iter
         else:
             self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
 
         self.indata = {}
         self.outdata = {}
@@ -1743,7 +1745,7 @@ class PlotInterp(QtWidgets.QDialog):
         newimg[2].dataid = btext
         newimg[3].dataid = 'Alpha'
 
-        iodefs.export_raster(str(filename), newimg, 'GTiff')
+        iodefs.export_raster(str(filename), newimg, 'GTiff', piter=self.piter)
 
 # Section for colorbars
         if 'Ternary' not in dtype:
