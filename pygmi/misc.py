@@ -216,8 +216,9 @@ class ProgressBarText():
         self.otime = 0
         self.total = 100
         self.decimals = 1
-        self.length = 50
-        self.fill = '█'
+        self.length = 40
+        # self.fill = '█'
+        self.fill = '#'
         self.prefix = 'Progress:'
 
     def iter(self, iterable):
@@ -283,7 +284,7 @@ class ProgressBarText():
         pbar = f'\r{self.prefix} |{pbar}| {percent}% {suffix}'
         # This next line prevents a unicode error which occurs in windows
         # consoles
-        pbar = str(pbar.encode('utf-8'))
+        # pbar = str(pbar.encode('utf-8'))
         print(pbar, end='\r')
         # Print New Line on Complete
         if iteration == self.total:

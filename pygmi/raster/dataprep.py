@@ -40,7 +40,7 @@ from rasterio.crs import CRS
 from rasterio.warp import calculate_default_transform, reproject
 from rasterio.mask import mask as riomask
 import geopandas as gpd
-from shapely.geometry import LineString, Polygon
+from shapely.geometry import LineString, Polygon, box
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
@@ -2002,7 +2002,7 @@ def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
 
 
 def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
-              roff=None, coff=None):
+               roff=None, coff=None):
     """
     Custom merge for rasterio, taking minimum value.
 
@@ -2499,10 +2499,20 @@ def cut_raster(data, ifile, pprint=print):
     gdf = gdf[gdf.geometry != None]
 
     if gdf.geom_type.iloc[0] == 'MultiPolygon':
-        pprint('You have a MultiPolygon. Only the first Polygon of the '
-               'MultiPolygon will be used.')
-        breakpoint()
-        gdf.geometry.iloc[0] = gdf.geometry[0].geoms[0]
+        pprint('You have a MultiPolygon. Only the first overlapping Polygon '
+               'of the MultiPolygon will be used.')
+        poly = gdf['geometry'].iloc[0]
+        tmp = poly.geoms[0]
+
+        dext = list(data[0].bounds)
+        dpoly = box(dext[0], dext[1], dext[2], dext[3])
+
+        for i in list(poly.geoms):
+            if i.overlaps(dpoly):
+                tmp = i
+                break
+
+        gdf.geometry.iloc[0] = tmp
 
     if gdf.geom_type.iloc[0] != 'Polygon':
         pprint('You need a polygon in that shape file')
@@ -2520,6 +2530,7 @@ def cut_raster(data, ifile, pprint=print):
             pprint('The shapefile is not in the same area as the raster '
                    'dataset. Please check its coordinates and make sure its '
                    'projection is the same as the raster dataset')
+            breakpoint()
             return None
 
         # coords = [json.loads(gdf.to_json())['features'][0]['geometry']]
@@ -3332,6 +3343,7 @@ def _testlstack():
 
     ofile = r'd:/Workdata/LULC/2001_stack_norm_pc.tif'
     export_raster(ofile, dat2, 'GTiff')
+
 
 if __name__ == "__main__":
     _testcut()
