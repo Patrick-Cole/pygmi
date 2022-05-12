@@ -2498,6 +2498,12 @@ def cut_raster(data, ifile, pprint=print):
 
     gdf = gdf[gdf.geometry != None]
 
+    if gdf.geom_type.iloc[0] == 'MultiPolygon':
+        pprint('You have a MultiPolygon. Only the first Polygon of the '
+               'MultiPolygon will be used.')
+        breakpoint()
+        gdf.geometry.iloc[0] = gdf.geometry[0].geoms[0]
+
     if gdf.geom_type.iloc[0] != 'Polygon':
         pprint('You need a polygon in that shape file')
         return None
@@ -3223,6 +3229,10 @@ def _testcut():
     sfile  = r"d:/Workdata/raster/polygon cut get profile/cut_polygon.shp"
     ifile = r"d:\Workdata\raster\polygon cut get profile\mag_IGRFcorrected.ers"
 
+    sfile = r"D:\Workdata\Janine\rsa_outline_utm35s.shp"
+    ifile = r"D:\Workdata\Janine\oneband.tif"
+
+
     # ifile = r"d:\Workdata\bugs\S2B_MSIL2A_20210913T074609_N0301_R135_T36KTV_20210913T102843.zip"
     # sfile = r"d:\Workdata\bugs\AU5_block_larger_utm36S.shp"
 
@@ -3324,5 +3334,5 @@ def _testlstack():
     export_raster(ofile, dat2, 'GTiff')
 
 if __name__ == "__main__":
-    # _testcut()
-    _testlstack()
+    _testcut()
+    # _testlstack()

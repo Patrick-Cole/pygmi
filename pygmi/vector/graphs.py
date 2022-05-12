@@ -436,6 +436,17 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.axes.autoscale()
             self.axes.axis('equal')
 
+        elif 'MultiPolygon' in data:
+            tmp = []
+            for j in data['MultiPolygon'].geometry:
+                for i in list(j.geoms):
+                    tmp.append(np.array(i.exterior.coords[:])[:, :2].tolist())
+
+            lcol = mc.LineCollection(tmp)
+            self.axes.add_collection(lcol)
+            self.axes.autoscale()
+            self.axes.axis('equal')
+
         elif 'Point' in data:
             if col != '':
                 self.axes.scatter(data['Point'].geometry.x,
