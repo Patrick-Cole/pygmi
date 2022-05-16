@@ -439,7 +439,8 @@ class SatRatios(QtWidgets.QDialog):
 
         rlist += [r'B5/B3 Used in colour composites',
                   r'B4/B0 Used in colour composites',
-                  r'B5/B1 Used in colour composites']
+                  r'B5/B1 Used in colour composites',
+                  r'B4/B7 Used in colour composites']
 
         bandmap = sdict[sensor]
         svalues = set(bandmap.keys())

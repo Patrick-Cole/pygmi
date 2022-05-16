@@ -321,7 +321,7 @@ class ImportBatch():
         for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
             rasterdat += glob.glob(os.path.join(self.idir, ftype))
 
-        sendat = []
+        sendat = glob.glob(self.idir+'//S2?_*.zip')
         sendir = [f.path for f in os.scandir(self.idir) if f.is_dir() and
                   'SAFE' in f.path]
         for i in sendir:
