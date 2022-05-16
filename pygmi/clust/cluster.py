@@ -102,7 +102,8 @@ class Cluster(QtWidgets.QDialog):
 
         self.setupui()
 
-        self.combobox_alg.addItems(['k-means', 'DBSCAN', 'Birch'])
+        self.combobox_alg.addItems(['Mini Batch K-Means (fast)', 'K-Means',
+                                    'DBSCAN', 'Birch'])
         self.combobox_alg.currentIndexChanged.connect(self.combo)
         self.combo()
 
@@ -348,7 +349,9 @@ class Cluster(QtWidgets.QDialog):
         None.
 
         """
-        data = copy.deepcopy(self.indata['Raster'])
+
+        # data = copy.deepcopy(self.indata['Raster'])
+        data = self.indata['Raster']
         self.update_vars()
 
         no_clust = range(self.min_cluster, self.max_cluster+1)
@@ -360,18 +363,30 @@ class Cluster(QtWidgets.QDialog):
         for i in data:
             masktmp += ~i.data.mask
         masktmp = ~masktmp
-        for i, _ in enumerate(data):
-            if data[i].nodata != 0.0 and data[i]:
-                self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
-                data[i].data = np.ma.array(data[i].data.filled(0))
 
-            data[i].data.mask = masktmp
-        X = np.array([i.data.compressed() for i in data]).T
-        Xorig = X.copy()
+        X = []
+        for band in data:
+            tmp = copy.deepcopy(band)
+            tmp.data.mask = masktmp
+            X.append(tmp.data.compressed())
+            del tmp
+        X = np.transpose(X)
+
+        # for i, _ in enumerate(data):
+        #     if data[i].nodata != 0.0 and data[i]:
+        #         self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
+        #         data[i].data = np.ma.array(data[i].data.filled(0))
+
+        #     data[i].data.mask = masktmp
+        # X = np.array([i.data.compressed() for i in data]).T
+
+        # Xorig = X.copy()
 
         if self.radiobutton_sscale.isChecked():
+            self.showprocesslog('Applying standard scaling')
             X = skp.StandardScaler().fit_transform(X)
         elif self.radiobutton_rscale.isChecked():
+            self.showprocesslog('Applying robust scaling')
             X = skp.RobustScaler().fit_transform(X)
 
         dat_out = []
@@ -381,11 +396,14 @@ class Cluster(QtWidgets.QDialog):
             elif i > no_clust[0]:
                 continue
 
-            if self.cltype == 'k-means':
+            if self.cltype == 'Mini Batch K-Means (fast)':
+                cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
+                                           max_iter=self.max_iter,
+                                           batch_size=2048).fit(X)
+            elif self.cltype == 'K-Means':
                 cfit = skc.KMeans(n_clusters=i, tol=self.tol,
                                   max_iter=self.max_iter).fit(X)
-                # cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
-                #                            max_iter=self.max_iter).fit(X)
+
             elif self.cltype == 'DBSCAN':
                 cfit = skc.DBSCAN(eps=self.eps,
                                   min_samples=self.min_samples).fit(X)
@@ -412,8 +430,9 @@ class Cluster(QtWidgets.QDialog):
                 dat_out[-1].metadata['Cluster']['input_type'].append(k.dataid)
 
             zonal = np.ma.masked_all(data[0].data.shape)
-            alpha = (data[0].data.mask == 0)
-            zonal[alpha == 1] = cfit.labels_
+            # alpha = (data[0].data.mask == 0)
+            # zonal[alpha == 1] = cfit.labels_
+            zonal[~masktmp] = cfit.labels_
 
             dat_out[-1].data = zonal
             dat_out[-1].nodata = zonal.fill_value
@@ -423,11 +442,20 @@ class Cluster(QtWidgets.QDialog):
             if cfit.labels_.max() > 0:
                 dat_out[-1].metadata['Cluster']['vrc'] = calinski_harabasz_score(X, cfit.labels_)
 
+
+            # Reloading this hear to save memory. Need unscaled values.
+            X = []
+            for band in data:
+                tmp = copy.deepcopy(band)
+                tmp.data.mask = masktmp
+                X.append(tmp.data.compressed())
+            X = np.transpose(X)
+
             m = []
             s = []
             for i2 in range(cfit.labels_.max()+1):
-                m.append(Xorig[cfit.labels_ == i2].mean(0))
-                s.append(Xorig[cfit.labels_ == i2].std(0))
+                m.append(X[cfit.labels_ == i2].mean(0))
+                s.append(X[cfit.labels_ == i2].std(0))
 
             dat_out[-1].metadata['Cluster']['center'] = np.array(m)
             dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
@@ -496,5 +524,24 @@ def _testfn():
     breakpoint()
 
 
+def _testfn2():
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster, export_raster
+
+    ifile = r"D:\KZN Floods\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004_diff.tif"
+
+    dat = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    print('Merge')
+    DM = Cluster()
+    DM.indata['Raster'] = dat
+    DM.settings(True)
+
+    breakpoint()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
