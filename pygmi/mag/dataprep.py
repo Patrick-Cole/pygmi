@@ -675,6 +675,7 @@ def rtp(data, I_deg, D_deg):
     dat.nodata = data.data.fill_value
     dat.dataid = 'RTP_'+data.dataid
     dat.set_transform(transform=data.transform)
+    dat.crs = data.crs
 
     return dat
 
