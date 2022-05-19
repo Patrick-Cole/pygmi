@@ -29,6 +29,7 @@ import os
 import copy
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+from natsort import natsorted
 import rasterio
 from rasterio.plot import plotting_extent
 from rasterio.windows import Window
@@ -1403,6 +1404,10 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
         dat2 = dat
 
     data = lstack(dat2, piter)
+
+    # Sort in band order.
+    dataid = [i.dataid for i in data]
+    data = [i for _, i in natsorted(zip(dataid, data))]
 
     dtype = data[0].data.dtype
     nodata = dat[0].nodata

@@ -2208,6 +2208,20 @@ def _testfn():
     # dat = get_modisv6(ifile)
     breakpoint()
 
+def _testfn2():
+    """Test routine."""
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import export_raster
+
+    ifiles = glob.glob(r'D:\KZN Floods\*.zip')
+
+    for ifile in ifiles:
+        print(ifile)
+        dat = get_data(ifile)
+        return
+        ofile = ifile[:-4] + '.tif'
+        export_raster(ofile, dat, 'GTiff')
+
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
