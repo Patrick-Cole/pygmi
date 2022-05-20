@@ -1387,6 +1387,8 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
         ENVI metadata. The default is ''.
     piter : ProgressBar.iter/ProgressBarText.iter, optional
         Progressbar iterable from misc. The default is None.
+    compression : str
+        Compression for GeoTiff. Can be None or ZSTD. The default is None.
 
     Returns
     -------

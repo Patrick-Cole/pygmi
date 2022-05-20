@@ -2217,8 +2217,9 @@ def _testfn2():
 
     for ifile in ifiles:
         print(ifile)
-        dat = get_data(ifile)
-        return
+        dat = get_data(ifile, extscene = 'Sentinel-2 Bands Only')
+        for i in dat:
+            i.data = i.data.astype(np.float32)
         ofile = ifile[:-4] + '.tif'
         export_raster(ofile, dat, 'GTiff')
 

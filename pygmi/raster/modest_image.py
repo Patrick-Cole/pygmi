@@ -653,8 +653,8 @@ def norm2(dat, datmin=None, datmax=None):
     datptp = datmax - datmin
     out = np.ma.array(ne.evaluate('(dat-datmin)/datptp'))
     out.mask = np.ma.getmaskarray(dat)
-
-    # breakpoint()
+    out[out < 0] = 0.
+    out[out > 1] = 1.
 
     return out
 

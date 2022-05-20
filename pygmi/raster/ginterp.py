@@ -2190,15 +2190,20 @@ def _testfn():
                                                  '..//..')))
     app = QtWidgets.QApplication(sys.argv)
 
+    ifile = r'd:\WorkData\testdata.hdr'
 
-
-    # data = iodefs.get_raster(r"d:\Workdata\MagMerge\NC_reg_highres_merge_wgs84dd.tif")
-    # data = iodefs.get_raster(r'd:\WorkData\testdata.hdr')
-    data = iodefs.get_raster(r"d:\Workdata\people\mikedentith\perth_surf_win.grd")
+    data = iodefs.get_raster(ifile)
 
     tmp = PlotInterp()
     tmp.indata['Raster'] = data
     tmp.data_init()
+    tmp.cbox_dtype.setCurrentText('RGB Ternary')
+    tmp.cbox_band1.setCurrentIndex(3)
+    tmp.cbox_band2.setCurrentIndex(4)
+    tmp.cbox_band3.setCurrentIndex(5)
+    # tmp.lineclipl.setText('1.')
+    # tmp.lineclipu.setText('1.')
+    tmp.change_lclip()
 
     tmp.settings()
 
