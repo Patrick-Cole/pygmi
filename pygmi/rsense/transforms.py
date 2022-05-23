@@ -36,6 +36,7 @@ import numexpr as ne
 import matplotlib.pyplot as plt
 
 from pygmi.raster.iodefs import get_raster, export_raster
+from pygmi.raster.dataprep import lstack
 from pygmi.misc import ProgressBarText
 from pygmi import menu_default
 
@@ -159,10 +160,19 @@ class MNF(QtWidgets.QDialog):
 
         self.acceptall()
 
+
         if not nodialog and self.ev is not None:
+            if self.cb_fwdonly.isChecked():
+                ncmps = len(indata)
+            else:
+                ncmps = self.sb_comps.value()
+
+            xvals = range(1, ncmps+1)
+
             plt.figure('Explained Variance')
             plt.subplot(1, 1, 1)
-            plt.plot(self.ev)
+            plt.plot(xvals, self.ev)
+            plt.xticks(xvals)
             plt.xlabel('Component')
             plt.ylabel('Explained Variance')
             plt.grid(True)
@@ -285,6 +295,239 @@ class MNF(QtWidgets.QDialog):
         return True
 
 
+class PCA(QtWidgets.QDialog):
+    """
+    Perform PCA Transform.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    indata : dictionary
+        dictionary of input datasets
+    outdata : dictionary
+        dictionary of output datasets
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        if parent is None:
+            self.showprocesslog = print
+            self.piter = ProgressBarText().iter
+
+        else:
+            self.showprocesslog = parent.showprocesslog
+            self.piter = parent.pbar.iter
+
+        self.indata = {}
+        self.outdata = {}
+        self.parent = parent
+        self.ev = None
+
+        self.sb_comps = QtWidgets.QSpinBox()
+        self.cb_fwdonly = QtWidgets.QCheckBox('Forward Transform Only.')
+
+        self.setupui()
+
+        self.resize(500, 350)
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.rsense.pca')
+        lbl_comps = QtWidgets.QLabel('Number of components:')
+
+        self.cb_fwdonly.setChecked(True)
+        # self.sb_comps.setEnabled(False)
+        self.sb_comps.setMaximum(10000)
+        self.sb_comps.setMinimum(1)
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Principal Component Analysis')
+
+        gridlayout_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
+        gridlayout_main.addWidget(lbl_comps, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.sb_comps, 2, 1, 1, 1)
+
+        gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
+
+        self.cb_fwdonly.stateChanged.connect(self.changeoutput)
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+
+    def settings(self, nodialog=False):
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog : bool, optional
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        self.ev = None
+        tmp = []
+        if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
+            self.showprocesslog('No Satellite Data')
+            return False
+
+        if 'Raster' in self.indata:
+            indata = self.indata['Raster']
+            self.sb_comps.setMaximum(len(indata))
+            if len(indata) > 5:
+                self.sb_comps.setValue(5)
+
+        if not nodialog:
+            tmp = self.exec_()
+        else:
+            tmp = 1
+
+        if tmp != 1:
+            return False
+
+        self.acceptall()
+
+        if not nodialog and self.ev is not None:
+            ncmps = self.sb_comps.value()
+            xvals = range(1, ncmps+1)
+
+            plt.figure('Explained Variance')
+            plt.subplot(1, 1, 1)
+            plt.plot(xvals, self.ev)
+            plt.xticks(xvals)
+            plt.xlabel('Component')
+            plt.ylabel('Explained Variance')
+            plt.grid(True)
+            plt.tight_layout()
+
+            if hasattr(plt.get_current_fig_manager(), 'window'):
+                plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
+
+            plt.show()
+
+        return True
+
+    def changeoutput(self):
+        """
+        Change the interface to reflect whether full calculation is needed.
+
+        Returns
+        -------
+        None.
+
+        """
+        uienabled = not self.cb_fwdonly.isChecked()
+        self.sb_comps.setEnabled(uienabled)
+
+    def loadproj(self, projdata):
+        """
+        Load project data into class.
+
+        Parameters
+        ----------
+        projdata : dictionary
+            Project data loaded from JSON project file.
+
+        Returns
+        -------
+        chk : bool
+            A check to see if settings was successfully run.
+
+        """
+        # self.combo_sensor.setCurrentText(projdata['sensor'])
+        # self.setratios()
+
+        # for i in self.lw_ratios.selectedItems():
+        #     if i.text()[2:] not in projdata['ratios']:
+        #         i.setSelected(False)
+        # self.set_selected_ratios()
+
+        return False
+
+    def saveproj(self):
+        """
+        Save project data from class.
+
+        Returns
+        -------
+        projdata : dictionary
+            Project data to be saved to JSON project file.
+
+        """
+        projdata = {}
+        # projdata['sensor'] = self.combo_sensor.currentText()
+
+        # rlist = []
+        # for i in self.lw_ratios.selectedItems():
+        #     rlist.append(i.text()[2:])
+
+        # projdata['ratios'] = rlist
+
+        return projdata
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        Returns
+        -------
+        None.
+
+        """
+        ncmps = self.sb_comps.value()
+        odata = []
+        # if self.cb_fwdonly.isChecked():
+        #     ncmps = None
+
+        if 'RasterFileList' in self.indata:
+            flist = self.indata['RasterFileList']
+            odir = os.path.join(os.path.dirname(flist[0]), 'feature')
+
+            os.makedirs(odir, exist_ok=True)
+            for ifile in flist:
+                self.showprocesslog('Processing '+os.path.basename(ifile))
+
+                dat = get_raster(ifile)
+                odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
+                                          pprint=self.showprocesslog,
+                                          fwdonly=self.cb_fwdonly.isChecked())
+
+                ofile = os.path.basename(ifile).split('.')[0] + '_mnf.tif'
+                ofile = os.path.join(odir, ofile)
+
+                self.showprocesslog('Exporting '+os.path.basename(ofile))
+                export_raster(ofile, odata, 'GTiff', piter=self.piter)
+
+        elif 'Raster' in self.indata:
+            dat = self.indata['Raster']
+            odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
+                                      pprint=self.showprocesslog,
+                                      fwdonly=self.cb_fwdonly.isChecked())
+
+        self.outdata['Raster'] = odata
+        return True
+
+
+
 # @profile
 def get_noise(x2d, mask, noise=''):
     """
@@ -392,6 +635,8 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     x2d = []
     maskall = []
     # dat2 = []
+    dat = lstack(dat, piter=piter)
+
     for j in dat:
         # if j.data.max() == 1:
         #     continue
@@ -507,6 +752,100 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
 #     datall = np.ma.array(datall, mask=maskall)
 
 #     return datall
+
+def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
+    """
+    PCA Calculation.
+
+    Parameters
+    ----------
+    dat : List
+        List of PyGMI Data.
+    ncmps : int or None, optional
+        Number of components to use for filtering. The default is None
+        (meaning all).
+    noisetxt : txt, optional
+        Noise type. Can be 'diagonal', 'hv average' or 'quad'. The default is
+        'hv average'.
+    pprint : function, optional
+        Function for printing text. The default is print.
+    piter : function, optional
+        Iteration function, used for progressbars. The default is iter.
+
+    Returns
+    -------
+    odata : list
+        Output list of PyGMI Data.Can be forward or inverse transformed data.
+    ev : numpy array
+        Explained variance, from PCA.
+
+    """
+    x2d = []
+    maskall = []
+    dat = lstack(dat, piter=piter)
+
+    for j in dat:
+        x2d.append(j.data)
+        maskall.append(j.data.mask)
+
+    maskall = np.moveaxis(maskall, 0, -1)
+    x2d = np.moveaxis(x2d, 0, -1)
+    x2dshape = list(x2d.shape)
+
+    mask = maskall[:, :, 0]
+
+    x2d.shape = (x2d.shape[0]*x2d.shape[1], x2d.shape[2])
+
+    pca = IncrementalPCA(n_components=ncmps)
+
+    iold = 0
+    pprint('Fitting PCA')
+    for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
+        if i == 0:
+            continue
+        pca.partial_fit(x2d[iold: i])
+        iold = i
+
+    pprint('Calculating PCA transform...')
+
+    x2 = np.zeros((x2d.shape[0], pca.n_components_))
+    iold = 0
+    for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
+        if i == 0:
+            continue
+        x2[iold: i] = pca.transform(x2d[iold: i])
+        iold = i
+
+    del x2d
+    ev = pca.explained_variance_
+
+    if fwdonly is False:
+        pprint('Calculating inverse PCA...')
+        # Winv = np.linalg.inv(W)
+        x2 = pca.inverse_transform(x2)
+        # x2 = (Winv @  P.T).T
+        # x2 = np.dot(P, Winv.T)
+        # del P
+    else:
+        x2dshape[-1] = ncmps
+        maskall = maskall[:, :, :ncmps]
+
+    datall = np.zeros(x2dshape, dtype=np.float32)
+    datall[~mask] = x2
+    datall = np.ma.array(datall, mask=maskall)
+
+    del x2
+
+    odata = copy.deepcopy(dat)
+    odata = odata[:ncmps]
+    for j, band in enumerate(odata):
+        band.data = datall[:, :, j]
+        if fwdonly is True:
+            band.dataid = f'PCA {j+1}'
+
+    del datall
+
+    return odata, ev
 
 
 def _testfn():
@@ -629,5 +968,32 @@ def _testfn2():
     return
 
 
+def _testfn3():
+    import sys
+    from matplotlib import rcParams
+    from pygmi.rsense.iodefs import get_data
+
+    rcParams['figure.dpi'] = 150
+
+    pbar = ProgressBarText()
+
+    ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
+    ncmps = 3
+
+    dat = get_data(ifile, extscene='Sentinel-2 Bands Only')
+
+    # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    # tmp = PCA()
+    tmp = MNF()
+    tmp.indata['Raster'] = dat
+    tmp.settings()
+
+
+
+
+
 if __name__ == "__main__":
-    _testfn()
+    # _testfn()
+    _testfn3()

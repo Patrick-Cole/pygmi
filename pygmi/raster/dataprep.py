@@ -2791,6 +2791,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
 
         data2 = Data()
         data2.data = np.ma.masked_equal(odata, data.nodata)
+        data2.data.mask = np.ma.getmaskarray(data2.data)
         data2.nodata = data.nodata
         data2.crs = data.crs
         data2.set_transform(transform=trans)

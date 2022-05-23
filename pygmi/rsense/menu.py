@@ -120,6 +120,9 @@ class MenuWidget():
         self.menu.addAction(self.action_mnf)
         self.action_mnf.triggered.connect(self.mnf)
 
+        self.action_pca = QtWidgets.QAction('PCA Transform')
+        self.menu.addAction(self.action_pca)
+        self.action_pca.triggered.connect(self.pca)
         self.menu.addSeparator()
 
         self.menu4 = self.menu.addMenu('Hyperspectral Imaging')
@@ -177,6 +180,11 @@ class MenuWidget():
         """Calculate MNF."""
         self.parent.item_insert('Step', 'MNF Transform',
                                 transforms.MNF)
+
+    def pca(self):
+        """Calculate PCA."""
+        self.parent.item_insert('Step', 'PCA Transform',
+                                transforms.PCA)
 
     def anal_spec(self):
         """Analyse Spectra."""
