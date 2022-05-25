@@ -868,8 +868,8 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
         dat = get_landsat(ifile, piter, showprocesslog, alldata=alldata)
     elif (('.xml' in bfile and '.SAFE' in ifile) or
           'Sentinel-2' in extscene or
-          ('S2A_' in ifile and 'zip' in ifile) or
-          ('S2B_' in ifile and 'zip' in ifile)):
+          ('S2A_' in bfile and 'zip' in bfile.lower()) or
+          ('S2B_' in bfile and 'zip' in bfile.lower())):
         dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
     elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
           '.006.' in bfile):

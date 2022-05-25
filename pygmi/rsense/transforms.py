@@ -160,7 +160,6 @@ class MNF(QtWidgets.QDialog):
 
         self.acceptall()
 
-
         if not nodialog and self.ev is not None:
             if self.cb_fwdonly.isChecked():
                 ncmps = len(indata)
@@ -794,7 +793,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
 
     mask = maskall[:, :, 0]
 
-    x2d.shape = (x2d.shape[0]*x2d.shape[1], x2d.shape[2])
+    x2d = x2d[~mask]
 
     pca = IncrementalPCA(n_components=ncmps)
 
@@ -821,16 +820,13 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
 
     if fwdonly is False:
         pprint('Calculating inverse PCA...')
-        # Winv = np.linalg.inv(W)
         x2 = pca.inverse_transform(x2)
-        # x2 = (Winv @  P.T).T
-        # x2 = np.dot(P, Winv.T)
-        # del P
     else:
         x2dshape[-1] = ncmps
         maskall = maskall[:, :, :ncmps]
 
     datall = np.zeros(x2dshape, dtype=np.float32)
+
     datall[~mask] = x2
     datall = np.ma.array(datall, mask=maskall)
 
@@ -909,8 +905,6 @@ def _testfn():
         # plt.colorbar()
         # plt.show()
 
-    return
-
 
 def _testfn2():
     from matplotlib import rcParams
@@ -965,28 +959,30 @@ def _testfn2():
     # pmnf = mnf_calc(dat2, maskall, ncmps=ncmps, noisetxt='diagonal')
     # pmnf, ev = mnf_calc(dat, ncmps=None, noisetxt='diagonal')
 
-    return
-
 
 def _testfn3():
     import sys
     from matplotlib import rcParams
     from pygmi.rsense.iodefs import get_data
+    # from pygmi.raster.iodefs import get_data
 
     rcParams['figure.dpi'] = 150
 
     pbar = ProgressBarText()
 
     ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
+    extscene = 'Sentinel-2 Bands Only'
+    # ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
+    # extscene = None
     ncmps = 3
 
-    dat = get_data(ifile, extscene='Sentinel-2 Bands Only')
+    dat = get_data(ifile, extscene=extscene)
 
     # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-    # tmp = PCA()
-    tmp = MNF()
+    tmp = PCA()
+    # tmp = MNF()
     tmp.indata['Raster'] = dat
     tmp.settings()
 
