@@ -99,7 +99,7 @@ class MNF(QtWidgets.QDialog):
         lbl_comps = QtWidgets.QLabel('Number of components:')
 
         self.cb_fwdonly.setChecked(True)
-        self.sb_comps.setEnabled(False)
+        # self.sb_comps.setEnabled(False)
         self.sb_comps.setMaximum(10000)
         self.sb_comps.setMinimum(1)
         self.rb_noise_hv.setChecked(True)
@@ -120,7 +120,7 @@ class MNF(QtWidgets.QDialog):
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
 
-        self.cb_fwdonly.stateChanged.connect(self.changeoutput)
+        # self.cb_fwdonly.stateChanged.connect(self.changeoutput)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -145,10 +145,16 @@ class MNF(QtWidgets.QDialog):
             self.showprocesslog('No Satellite Data')
             return False
 
+        # if 'Raster' in self.indata:
+        #     indata = self.indata['Raster']
+        #     self.sb_comps.setMaximum(len(indata))
+        #     self.sb_comps.setValue(ceil(len(indata)*0.04))
+
         if 'Raster' in self.indata:
             indata = self.indata['Raster']
             self.sb_comps.setMaximum(len(indata))
-            self.sb_comps.setValue(ceil(len(indata)*0.04))
+            if len(indata) > 5:
+                self.sb_comps.setValue(5)
 
         if not nodialog:
             tmp = self.exec_()
@@ -161,11 +167,7 @@ class MNF(QtWidgets.QDialog):
         self.acceptall()
 
         if not nodialog and self.ev is not None:
-            if self.cb_fwdonly.isChecked():
-                ncmps = len(indata)
-            else:
-                ncmps = self.sb_comps.value()
-
+            ncmps = self.sb_comps.value()
             xvals = range(1, ncmps+1)
 
             plt.figure('Explained Variance')
@@ -255,8 +257,8 @@ class MNF(QtWidgets.QDialog):
         """
         ncmps = self.sb_comps.value()
         odata = []
-        if self.cb_fwdonly.isChecked():
-            ncmps = None
+        # if self.cb_fwdonly.isChecked():
+        #     ncmps = None
 
         if self.rb_noise_diag.isChecked():
             noise = 'diagonal'
@@ -276,7 +278,8 @@ class MNF(QtWidgets.QDialog):
                 dat = get_raster(ifile)
                 odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
                                           pprint=self.showprocesslog,
-                                          noisetxt=noise)
+                                          noisetxt=noise,
+                                          fwdonly=self.cb_fwdonly.isChecked())
 
                 ofile = os.path.basename(ifile).split('.')[0] + '_mnf.tif'
                 ofile = os.path.join(odir, ofile)
@@ -288,7 +291,8 @@ class MNF(QtWidgets.QDialog):
             dat = self.indata['Raster']
             odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
                                       pprint=self.showprocesslog,
-                                      noisetxt=noise)
+                                      noisetxt=noise,
+                                      fwdonly=self.cb_fwdonly.isChecked())
 
         self.outdata['Raster'] = odata
         return True
@@ -362,7 +366,7 @@ class PCA(QtWidgets.QDialog):
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
 
-        self.cb_fwdonly.stateChanged.connect(self.changeoutput)
+        # self.cb_fwdonly.stateChanged.connect(self.changeoutput)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -602,8 +606,8 @@ def get_noise(x2d, mask, noise=''):
 
 
 # @profile
-def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
-             piter=iter):
+def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
+             fwdonly=True):
     """
     MNF Calculation.
 
@@ -645,7 +649,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
 
     maskall = np.moveaxis(maskall, 0, -1)
     x2d = np.moveaxis(x2d, 0, -1)
-    x2dshape = x2d.shape
+    x2dshape = list(x2d.shape)
 
     # if x2d.dtype != np.float64:
     #     x2d = x2d.astype(np.float32)
@@ -695,13 +699,16 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     del Pnorm
     ev = pca.explained_variance_
 
-    if ncmps is not None:
+    if fwdonly is False:
         pprint('Calculating inverse MNF...')
         Winv = np.linalg.inv(W)
         P = pca.inverse_transform(x2)
         # x2 = (Winv @  P.T).T
         x2 = np.dot(P, Winv.T)
         del P
+    else:
+        x2dshape[-1] = ncmps
+        maskall = maskall[:, :, :ncmps]
 
     datall = np.zeros(x2dshape, dtype=np.float32)
     datall[~mask] = x2
@@ -710,6 +717,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print,
     del x2
 
     odata = copy.deepcopy(dat)
+    odata = odata[:ncmps]
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
 
@@ -976,18 +984,18 @@ def _testfn3():
     ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
     extscene = None
 
-    ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
+    # ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
 
 
 
     dat = get_data(ifile, extscene=extscene)
-    dat2 = get_data(ifile2, extscene=extscene)
+    # dat2 = get_data(ifile2, extscene=extscene)
 
     # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-    tmp = PCA()
-    # tmp = MNF()
+    # tmp = PCA()
+    tmp = MNF()
     tmp.indata['Raster'] = dat
     tmp.settings()
 
@@ -1000,11 +1008,11 @@ def _testfn3():
         vmin = dat.data.mean()-dat.data.std()*2
         vmax = dat.data.mean()+dat.data.std()*2
         plt.imshow(dat.data, vmin=vmin, vmax=vmax)
-        plt.subplot(122)
-        plt.title(dat2[i].dataid)
-        vmin = dat2[i].data.mean()-dat2[i].data.std()*2
-        vmax = dat2[i].data.mean()+dat2[i].data.std()*2
-        plt.imshow(dat2[i].data, vmin=vmin, vmax=vmax)
+        # plt.subplot(122)
+        # plt.title(dat2[i].dataid)
+        # vmin = dat2[i].data.mean()-dat2[i].data.std()*2
+        # vmax = dat2[i].data.mean()+dat2[i].data.std()*2
+        # plt.imshow(dat2[i].data, vmin=vmin, vmax=vmax)
         plt.show()
 
     breakpoint()
