@@ -1371,7 +1371,7 @@ class ExportData():
 
 
 def export_raster(ofile, dat, drv, envimeta='', piter=None,
-                  compression='NONE'):
+                  compression='NONE', bandsort=True):
     """
     Export to rasterio format.
 
@@ -1408,8 +1408,9 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
     data = lstack(dat2, piter)
 
     # Sort in band order.
-    dataid = [i.dataid for i in data]
-    data = [i for _, i in natsorted(zip(dataid, data))]
+    if bandsort is True:
+        dataid = [i.dataid for i in data]
+        data = [i for _, i in natsorted(zip(dataid, data))]
 
     dtype = data[0].data.dtype
     nodata = dat[0].nodata

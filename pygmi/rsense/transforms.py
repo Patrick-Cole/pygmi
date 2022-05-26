@@ -526,7 +526,6 @@ class PCA(QtWidgets.QDialog):
         return True
 
 
-
 # @profile
 def get_noise(x2d, mask, noise=''):
     """
@@ -796,9 +795,11 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     x2d = x2d[~mask]
 
     pca = IncrementalPCA(n_components=ncmps)
+    # pca = skPCA(n_components=ncmps, svd_solver='full', whiten=True)
 
     iold = 0
     pprint('Fitting PCA')
+    # x2 = pca.fit_transform(x2d)
     for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
         if i == 0:
             continue
@@ -817,6 +818,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
 
     del x2d
     ev = pca.explained_variance_
+    evr = pca.explained_variance_ratio_
 
     if fwdonly is False:
         pprint('Calculating inverse PCA...')
@@ -837,8 +839,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
-            band.dataid = f'PCA {j+1}'
-
+            band.dataid = f'PCA {j+1} Explained Variance Ratio {evr[j]*100:.2f}%'
     del datall
 
     return odata, ev
@@ -970,13 +971,17 @@ def _testfn3():
 
     pbar = ProgressBarText()
 
-    ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
-    extscene = 'Sentinel-2 Bands Only'
-    # ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
-    # extscene = None
-    ncmps = 3
+    # ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
+    # extscene = 'Sentinel-2 Bands Only'
+    ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
+    extscene = None
+
+    ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
+
+
 
     dat = get_data(ifile, extscene=extscene)
+    dat2 = get_data(ifile2, extscene=extscene)
 
     # pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
@@ -985,6 +990,24 @@ def _testfn3():
     # tmp = MNF()
     tmp.indata['Raster'] = dat
     tmp.settings()
+
+    outdat = tmp.outdata['Raster']
+
+    for i, dat in enumerate(outdat):
+
+        plt.subplot(121)
+        plt.title(dat.dataid)
+        vmin = dat.data.mean()-dat.data.std()*2
+        vmax = dat.data.mean()+dat.data.std()*2
+        plt.imshow(dat.data, vmin=vmin, vmax=vmax)
+        plt.subplot(122)
+        plt.title(dat2[i].dataid)
+        vmin = dat2[i].data.mean()-dat2[i].data.std()*2
+        vmax = dat2[i].data.mean()+dat2[i].data.std()*2
+        plt.imshow(dat2[i].data, vmin=vmin, vmax=vmax)
+        plt.show()
+
+    breakpoint()
 
 
 
