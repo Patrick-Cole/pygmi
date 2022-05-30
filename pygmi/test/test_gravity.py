@@ -85,7 +85,7 @@ def test_process_data():
                         -715.6187909466202, -715.6485139794081,
                         -715.5684009646598])
 
-    breakpoint()
+    # breakpoint()
 
     np.testing.assert_array_almost_equal(datout2, boug)
 

@@ -25,6 +25,7 @@
 """Main Clustering set of routines."""
 
 import copy
+import os
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import sklearn.cluster as skc
@@ -397,9 +398,10 @@ class Cluster(QtWidgets.QDialog):
                 continue
 
             if self.cltype == 'Mini Batch K-Means (fast)':
+                bsize = max(os.cpu_count()*256, 1024)
                 cfit = skc.MiniBatchKMeans(n_clusters=i, tol=self.tol,
                                            max_iter=self.max_iter,
-                                           batch_size=2048).fit(X)
+                                           batch_size=bsize).fit(X)
             elif self.cltype == 'K-Means':
                 cfit = skc.KMeans(n_clusters=i, tol=self.tol,
                                   max_iter=self.max_iter).fit(X)
