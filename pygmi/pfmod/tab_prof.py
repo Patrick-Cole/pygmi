@@ -1322,8 +1322,8 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.sb_prof_dir.setValue(pdirval)
         self.sb_prof_dir.valueChanged.connect(self.sprofdir)
 
-        self.sb_profnum.setValue(0.0)
-        self.hs_profnum.setValue(0.0)
+        self.sb_profnum.setValue(0)
+        self.hs_profnum.setValue(0)
         self.hs_sideview.setEnabled(False)
 
         self.sb_layer.setMaximum(self.lmod1.numz-1)
