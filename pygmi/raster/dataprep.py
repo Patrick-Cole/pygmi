@@ -2701,6 +2701,8 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
             needsmerge = True
         if commonmask is True:
             needsmerge = True
+        if i.extent != dat[0].extent:
+            needsmerge = True
         dtypes.append(i.data.dtype)
 
     dtypes = np.unique(dtypes)
