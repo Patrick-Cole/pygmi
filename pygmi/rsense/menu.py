@@ -31,6 +31,7 @@ from pygmi.rsense import iodefs
 from pygmi.rsense import ratios
 from pygmi.rsense import hyperspec
 from pygmi.rsense import transforms
+from pygmi.rsense.landsat_composite import LandsatComposite
 
 
 class MenuWidget():
@@ -116,6 +117,10 @@ class MenuWidget():
         self.menu.addAction(self.action_calc_ci)
         self.action_calc_ci.triggered.connect(self.calc_ci)
 
+        self.action_lsat_comp = QtWidgets.QAction('Calculate Landsat Composite')
+        self.menu.addAction(self.action_lsat_comp)
+        self.action_lsat_comp.triggered.connect(self.lsat_comp)
+
         self.action_mnf = QtWidgets.QAction('MNF Transform')
         self.menu.addAction(self.action_mnf)
         self.action_mnf.triggered.connect(self.mnf)
@@ -175,6 +180,11 @@ class MenuWidget():
         """Calculate Condition Indices."""
         self.parent.item_insert('Step', 'Calculate Condition Indices',
                                 ratios.ConditionIndices)
+
+    def lsat_comp(self):
+        """Calculate Landsat Composite."""
+        self.parent.item_insert('Io', 'Calculate Landsat Composite',
+                                LandsatComposite)
 
     def mnf(self):
         """Calculate MNF."""
