@@ -2,8 +2,10 @@
 Changelog
 =========
 
-v3.2.5.6, 09 June 2022
+v3.2.5.6, 10 June 2022
 ----------------------
+*Added landsat composite
+*Layerstacking now checks extents in addition to rows and columns
 *Bugfix - spinbox setValue now an integer.
 *MNF forward transform now allows custom number of components
 *Band sorting can be disabled for RGB images
@@ -49,6 +51,7 @@ v3.2.5.2, 22 April 2022
 *Added support for WV-3 and WV-2 tile import, as well as in ratios.
 *Updated Magnetic inversion.
 *Added magnetic inversion via the SimPEG library
+
 *Added support for Landsat 9.
 *Fixed a bug causing supervised classification to crash
 *Gravity processing will now calculate drift based on datetime, and not on the order found in CG-5 file.
