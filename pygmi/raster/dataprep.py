@@ -2055,14 +2055,19 @@ def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
     None.
 
     """
-    tmp = np.logical_and(~merged_mask, ~new_mask)
+    mtmp1 = np.logical_and(~merged_mask, ~new_mask)
+    mtmp2 = np.logical_and(~merged_mask, new_mask)
 
     tmp1 = new_data.copy()
 
-    if True in tmp:
-        tmp1 = tmp1 - new_data[tmp].mean()
+    if True in mtmp1:
+        tmp1 = tmp1 - new_data[mtmp1].mean()
         # tmp1 = tmp1 * merged_data[tmp].std() / new_data[tmp].std()
-        tmp1 = tmp1 + merged_data[tmp].mean()
+        tmp1 = tmp1 + merged_data[mtmp1].mean()
+
+    tmp1[mtmp2] = merged_data[mtmp2]
+
+    # breakpoint()
 
     # tmp1 = merged_data.copy()
     # tmp1[~new_mask] = new_data[~new_mask]
@@ -3184,25 +3189,24 @@ def _testmerge():
     ofile = r'd:\Workdata\hope.tif'
 
     print('Merge')
-    for i in range(10):
-        DM = DataMerge()
-        DM.idir = idir
-        # DM.files_diff.setChecked(True)
-        # DM.shift_to_median.setChecked(True)
-        DM.forcetype = np.float32
-        # DM.method = 'max'  # first last min max
-        DM.settings(True)
+    DM = DataMerge()
+    DM.idir = idir
+    DM.files_diff.setChecked(True)
+    # DM.shift_to_median.setChecked(True)
+    DM.forcetype = np.float32
+    # DM.method = 'max'  # first last min max
+    DM.settings()
 
-        dat = DM.outdata['Raster'][0].data
+    dat = DM.outdata['Raster'][0].data
 
-        vmin = dat.mean()-2*dat.std()
-        vmax = dat.mean()+2*dat.std()
+    vmin = dat.mean()-2*dat.std()
+    vmax = dat.mean()+2*dat.std()
 
-        plt.figure(dpi=150)
-        plt.imshow(dat, vmin=vmin, vmax=vmax)
-        plt.colorbar()
-        plt.tight_layout()
-        plt.show()
+    plt.figure(dpi=150)
+    plt.imshow(dat, vmin=vmin, vmax=vmax)
+    plt.colorbar()
+    plt.tight_layout()
+    plt.show()
 
     breakpoint()
 
