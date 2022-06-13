@@ -403,10 +403,11 @@ class DataMerge(QtWidgets.QDialog):
         # self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.idirlist = QtWidgets.QLineEdit('')
-        self.files_diff = QtWidgets.QCheckBox('Check band labels, since band '
-                                              'order may differ, or input '
-                                              'files have different '
-                                              'numbers of bands.')
+        self.files_diff = QtWidgets.QCheckBox('Merge by band labels, '
+                                              'since band order may differ, '
+                                              'or input files have different '
+                                              'numbers of bands or '
+                                              'nodata values.')
         self.shift_to_median = QtWidgets.QCheckBox('Shift bands to median '
                                                    'value before merge. May '
                                                    'allow for cleaner merge '
@@ -666,8 +667,11 @@ class DataMerge(QtWidgets.QDialog):
 
         # Start Merge
         bandlist = []
+        hasfloatdtype = False
         for i in indata:
             bandlist.append(i.dataid)
+            if np.issubdtype(i.data.dtype, np.floating):
+                hasfloatdtype = True
         bandlist = list(set(bandlist))
 
         outdat = []
@@ -708,7 +712,19 @@ class DataMerge(QtWidgets.QDialog):
                 #                            dtype=i.data.dtype,
                 #                            transform=trans)
 
-                raster.write(i.data-mval, 1)
+                if hasfloatdtype:
+                    nodata = 1.0e+20
+                    tmpdat = i.data.astype(float)
+
+                else:
+                    nodata = -99999
+                    tmpdat = i.data.astype(int)
+
+                tmpdat = i.data-mval
+                tmpdat = tmpdat.filled(nodata)
+                tmpdat = np.ma.masked_equal(tmpdat, nodata)
+
+                raster.write(tmpdat, 1)
                 raster.write_mask(~i.data.mask)
                 raster.close()
                 # ifiles.append(raster)
@@ -775,6 +791,7 @@ class DataMerge(QtWidgets.QDialog):
 
         # Get projection information
         wkt = []
+        nodata = []
         for ifile in ifiles:
             with rasterio.open(ifile) as dataset:
                 if dataset.crs is None:
@@ -783,10 +800,19 @@ class DataMerge(QtWidgets.QDialog):
                     return False
                 wkt.append(dataset.crs.wkt)
                 crs = dataset.crs
+                nodata.append(dataset.nodata)
 
         wkt = list(set(wkt))
         if len(wkt) > 1:
             self.showprocesslog('Error: Mismatched input projections')
+            return False
+
+        nodata = list(set(nodata))
+        if len(nodata) > 1:
+            self.showprocesslog('Error: Mismatched nodata values. '
+                                'Try using merge by band labels merge option. '
+                                'Please confirm bands to be merged have the '
+                                'same label.')
             return False
 
         # Get band names and nodata
@@ -3154,32 +3180,31 @@ def _testmerge():
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    idir = r'd:\Workdata\bugs\Feat_chlorite_78-114'
-    ofile = r'd:\Workdata\bugs\chlorite_78-114_MNF15.tif'
+    idir = r'd:\Workdata\bugs'
+    ofile = r'd:\Workdata\hope.tif'
 
     print('Merge')
-    DM = DataMerge()
-    DM.idir = idir
-    DM.files_diff.setChecked(True)
-    DM.shift_to_median.setChecked(True)
-    DM.forcetype = np.float32
-    # DM.method = 'max'  # first last min max
-    DM.settings()
+    for i in range(10):
+        DM = DataMerge()
+        DM.idir = idir
+        # DM.files_diff.setChecked(True)
+        # DM.shift_to_median.setChecked(True)
+        DM.forcetype = np.float32
+        # DM.method = 'max'  # first last min max
+        DM.settings(True)
 
-    # for i in DM.outdata['Raster']:
-    #     if 'wvl' in i.dataid:
-    #         dat = i.data
+        dat = DM.outdata['Raster'][0].data
 
-    # dat.mask = np.logical_or(dat.mask, dat>900)
+        vmin = dat.mean()-2*dat.std()
+        vmax = dat.mean()+2*dat.std()
 
-    # vmin = dat.mean()-2*dat.std()
-    # vmax = dat.mean()+2*dat.std()
+        plt.figure(dpi=150)
+        plt.imshow(dat, vmin=vmin, vmax=vmax)
+        plt.colorbar()
+        plt.tight_layout()
+        plt.show()
 
-    # plt.figure(dpi=150)
-    # plt.imshow(dat, vmin=vmin, vmax=vmax)
-    # plt.colorbar()
-    # plt.tight_layout()
-    # plt.show()
+    breakpoint()
 
     # plt.figure(dpi=150)
     # plt.hist(dat.flatten(), 100)
@@ -3188,9 +3213,9 @@ def _testmerge():
     # plt.imshow(dat.mask)
     # plt.show()
 
-    print('export')
-    dat2 = DM.outdata['Raster']
-    export_raster(ofile, dat2, 'GTiff')
+    # print('export')
+    # dat2 = DM.outdata['Raster']
+    # export_raster(ofile, dat2, 'GTiff')
 
 
 def _testreproj():
@@ -3349,5 +3374,5 @@ def _testlstack():
 
 
 if __name__ == "__main__":
-    _testcut()
-    # _testlstack()
+    # _testcut()
+    _testmerge()
