@@ -146,7 +146,7 @@ The process to install is as follows:
 
    conda install pyopengl
 
-   conda install segyio
+   conda install natsort
 
    conda install simpeg
 
