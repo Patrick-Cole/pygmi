@@ -112,7 +112,7 @@ Anaconda users are advised not to use pip since it can break PyQt5. However, two
 
 The process to install is as follows:
 
-   conda create -n pygmi
+   conda create -n pygmi python=3.10
 
    conda activate pygmi
 
@@ -154,6 +154,7 @@ The process to install is as follows:
 
    pip install mtpy
 
+   conda update --all
 
 Once this is done, download pygmi, extract (unzip) it to a directory, and run it from its root directory with the following command:
 

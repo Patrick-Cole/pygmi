@@ -60,7 +60,6 @@ class MagInvert(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.tmp = []
-        self.numclasses = 5
 
         if parent is None:
             self.showprocesslog = print
@@ -93,6 +92,7 @@ class MagInvert(QtWidgets.QDialog):
         self.sb_cols = QtWidgets.QSpinBox()
         self.sb_rows = QtWidgets.QSpinBox()
         self.sb_layers = QtWidgets.QSpinBox()
+        self.sb_classes = QtWidgets.QSpinBox()
 
         self.dsb_mht = QtWidgets.QDoubleSpinBox()
         self.dsb_hdec = QtWidgets.QDoubleSpinBox()
@@ -151,6 +151,9 @@ class MagInvert(QtWidgets.QDialog):
         self.dsb_hdec.setMinimum(-360.0)
         self.dsb_hdec.setMaximum(360.0)
         self.dsb_hdec.setProperty('value', -21.35)
+        self.sb_classes.setProperty('value', 5)
+        self.sb_classes.setMinimum(2)
+        self.sb_classes.setMaximum(1000)
 
         gb_gen_prop = QtWidgets.QGroupBox('General Properties')
         gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
@@ -218,6 +221,7 @@ class MagInvert(QtWidgets.QDialog):
         lbl10 = QtWidgets.QLabel('Total Z Extent (Depth):')
         lbl5 = QtWidgets.QLabel('X and Y Cell Size:')
         lbl6 = QtWidgets.QLabel('Z Cell Size:')
+        lbl99 = QtWidgets.QLabel('Number of output classes:')
 
         self.dsb_utlx.setMinimum(-999999999.0)
         self.dsb_utlx.setMaximum(999999999.0)
@@ -264,6 +268,7 @@ class MagInvert(QtWidgets.QDialog):
         gl_extent.addWidget(lbl10, 6, 0, 1, 1)
         gl_extent.addWidget(lbl5, 7, 0, 1, 1)
         gl_extent.addWidget(lbl6, 8, 0, 1, 1)
+        gl_extent.addWidget(lbl99, 9, 0, 1, 1)
         gl_extent.addWidget(self.combo_dataset, 0, 1, 1, 1)
         gl_extent.addWidget(self.dsb_utlx, 1, 1, 1, 1)
         gl_extent.addWidget(self.dsb_utly, 2, 1, 1, 1)
@@ -276,6 +281,7 @@ class MagInvert(QtWidgets.QDialog):
         gl_extent.addWidget(self.sb_cols, 1, 2, 1, 1)
         gl_extent.addWidget(self.sb_rows, 2, 2, 1, 1)
         gl_extent.addWidget(self.sb_layers, 3, 2, 1, 1)
+        gl_extent.addWidget(self.sb_classes, 9, 1, 1, 1)
 
         hlayout.addWidget(helpdocs)
         hlayout.addWidget(self.pbar)
@@ -918,7 +924,8 @@ class MagInvert(QtWidgets.QDialog):
         X = r3.compressed().reshape(-1, 1)
 
         # cfit = skc.KMeans(n_clusters=i, tol=self.tol, max_iter=self.max_iter).fit(X)
-        cfit = skc.KMeans(n_clusters=self.numclasses).fit(X)
+        numclasses = self.sb_classes.value()
+        cfit = skc.KMeans(n_clusters=numclasses).fit(X)
 
         zout = cfit.labels_
         r3[~r3.mask] = zout
