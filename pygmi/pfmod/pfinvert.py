@@ -60,6 +60,7 @@ class MagInvert(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.tmp = []
+        self.numclasses = 5
 
         if parent is None:
             self.showprocesslog = print
@@ -141,15 +142,15 @@ class MagInvert(QtWidgets.QDialog):
 
 # General Properties
         self.dsb_mht.setMaximum(999999999.0)
-        self.dsb_mht.setProperty('value', 100.0)
+        self.dsb_mht.setProperty('value', 30.0)
         self.dsb_hint.setMaximum(999999999.0)
-        self.dsb_hint.setProperty('value', 27000.0)
+        self.dsb_hint.setProperty('value', 28923.0)
         self.dsb_hinc.setMinimum(-90.0)
         self.dsb_hinc.setMaximum(90.0)
-        self.dsb_hinc.setProperty('value', -63.0)
+        self.dsb_hinc.setProperty('value', -61.22)
         self.dsb_hdec.setMinimum(-360.0)
         self.dsb_hdec.setMaximum(360.0)
-        self.dsb_hdec.setProperty('value', -17.0)
+        self.dsb_hdec.setProperty('value', -21.35)
 
         gb_gen_prop = QtWidgets.QGroupBox('General Properties')
         gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
@@ -455,6 +456,7 @@ class MagInvert(QtWidgets.QDialog):
 
             crows, ccols = curgrid.data.shape
 
+            dxy = max(curgrid.xdim, curgrid.ydim)
             utlx = curgrid.extent[0]
             utly = curgrid.extent[-1]
             xextent = ccols*curgrid.xdim
@@ -468,6 +470,7 @@ class MagInvert(QtWidgets.QDialog):
             self.dsb_yextent.setValue(yextent)
             self.sb_cols.setValue(int(cols))
             self.sb_rows.setValue(int(rows))
+            self.dsb_xycell.setValue(dxy)
 
     def init(self):
         """
@@ -915,7 +918,7 @@ class MagInvert(QtWidgets.QDialog):
         X = r3.compressed().reshape(-1, 1)
 
         # cfit = skc.KMeans(n_clusters=i, tol=self.tol, max_iter=self.max_iter).fit(X)
-        cfit = skc.KMeans(n_clusters=5).fit(X)
+        cfit = skc.KMeans(n_clusters=self.numclasses).fit(X)
 
         zout = cfit.labels_
         r3[~r3.mask] = zout
