@@ -1433,8 +1433,9 @@ class ProfileDisplay(QtWidgets.QWidget):
             rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data2.xdim+1
             ryyy2 = (dbly-d2bly+self.ryyy*data.ydim)/data2.ydim+1
 
+            pdtmp = data2.data.filled(np.nan)
             tmprng2 = np.linspace(px1, px2, len(rxxx2))
-            tmpprof2 = ndimage.map_coordinates(data2.data[::-1],
+            tmpprof2 = ndimage.map_coordinates(pdtmp[::-1],
                                                [ryyy2-0.5, rxxx2-0.5],
                                                order=1, cval=np.nan)
 

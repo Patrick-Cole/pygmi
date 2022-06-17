@@ -890,9 +890,10 @@ class MagInvert(QtWidgets.QDialog):
             with redirect_stdout(self.stdout):
                 recovered_model = inv.run(starting_model)
         except Exception as e:
-            QtWidgets.QMessageBox.warning(self.parent, 'Error', str(e),
-                                          QtWidgets.QMessageBox.Ok)
-            return
+            self.showprocesslog('Error: '+str(e))
+            # QtWidgets.QMessageBox.warning(self.parent, 'Error', str(e),
+            #                               QtWidgets.QMessageBox.Ok)
+            return False
 
         ##############################################################
         # Recreate True Model
@@ -1244,6 +1245,35 @@ def _testfn2():
     tmp = MainWidget()
     tmp.indata = DM.outdata
     tmp.settings()
+
+
+def _testfn3():
+    """Test Function."""
+    # Plot Recovered Model
+    import copy
+    # import sys
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.pfmod.pfmod import MainWidget
+    from IPython import get_ipython
+    get_ipython().run_line_magic('matplotlib', 'inline')
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    mfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_mag.ers"
+    dfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_dtm.ers"
+
+    mdat = get_raster(mfile)
+    ddat = get_raster(dfile)
+
+    dat = lstack(mdat+ddat, masterid=0, commonmask=True, dxy=600)
+
+    DM = MagInvert()
+    DM.indata['Raster'] = dat
+
+    DM.settings()
+
 
 if __name__ == "__main__":
     _testfn2()

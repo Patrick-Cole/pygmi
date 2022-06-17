@@ -2758,7 +2758,8 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
     if masterid is not None:
         data = dat[masterid]
         xmin, xmax, ymin, ymax = data.extent
-        dxy = min(data.xdim, data.ydim)
+        if dxy is None:
+            dxy = min(data.xdim, data.ydim)
     else:
         data = dat[0]
         dxy0 = min(data.xdim, data.ydim)
