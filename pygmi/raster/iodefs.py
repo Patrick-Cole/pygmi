@@ -700,6 +700,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 xoff, yoff, xsize, ysize = iraster
                 dat[i].data = dataset.read(1, window=Window(xoff, yoff,
                                                             xsize, ysize))
+                showprocesslog('Warning, extents etc not adjusted.')
 
             if dat[i].data.dtype.kind == 'i':
                 if nval is None:

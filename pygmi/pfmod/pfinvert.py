@@ -864,7 +864,12 @@ class MagInvert(QtWidgets.QDialog):
                                     mapping=model_map, mref=starting_model,
                                     gradientType="total", alpha_s=1, alpha_x=1,
                                     alpha_y=1, alpha_z=1)
+        # reg = regularization.Tikhonov(mesh, indActive=ind_active,
+        #                             mapping=model_map, mref=starting_model,
+        #                             alpha_s=1, alpha_x=1,
+        #                             alpha_y=1, alpha_z=1)
         reg.norms = np.c_[0, 2, 2, 2]
+
         opt = optimization.ProjectedGNCG(maxIter=10, lower=0.0, upper=1.0,
                                          maxIterLS=20, maxIterCG=10,
                                          tolCG=1e-3)
@@ -877,6 +882,7 @@ class MagInvert(QtWidgets.QDialog):
                                              max_irls_iterations=30,
                                              coolEpsFact=1.5, beta_tol=1e-2)
         update_jacobi = directives.UpdatePreconditioner()
+
         target_misfit = directives.TargetMisfit(chifact=1)
         sensitivity_weights = directives.UpdateSensitivityWeights(everyIter=False)
         directives_list = [sensitivity_weights, starting_beta, save_iteration,
@@ -1134,8 +1140,8 @@ def _testfn2():
     mfile = r"c:\Workdata\MagInv\pcmagdem.tif"
     dfile = r"c:\Workdata\MagInv\pcdem.tif"
 
-    mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
-    dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
+    # mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\Testing\mag_igrfremoved.tif"
+    # dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\ER Mapper\dtmmicrolevel.PD.ers"
 
     # mfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_TMA_utm35s.tif"
     # dfile = r"c:\Workdata\PyGMI Test Data\Test_Mar2022\Data\VIS_ModelArea_SRTM90m_utm35s.tif"
@@ -1253,7 +1259,6 @@ def _testfn3():
     import copy
     # import sys
     import matplotlib.pyplot as plt
-    import matplotlib as mpl
     from pygmi.raster.iodefs import get_raster
     from pygmi.pfmod.pfmod import MainWidget
     from IPython import get_ipython
@@ -1264,15 +1269,52 @@ def _testfn3():
     mfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_mag.ers"
     dfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_dtm.ers"
 
-    mdat = get_raster(mfile)
-    ddat = get_raster(dfile)
+    iraster = (0,200, 100, 100)
+    # iraster=None
 
+    mdat = get_raster(mfile, iraster=iraster)
+    ddat = get_raster(dfile, iraster=iraster)
+
+    xoff, yoff, xcol, yrow = iraster
+
+    etmp = mdat[0].extent
+    xdim = mdat[0].xdim
+    xmin = etmp[0]+xoff*xdim
+    ydim = mdat[0].ydim
+    ymax = etmp[3]-yoff*ydim
+
+    mdat[0].set_transform(xdim, xmin, ydim, ymax)
+
+    etmp = ddat[0].extent
+    xdim = ddat[0].xdim
+    xmin = etmp[0]+xoff*xdim
+    ydim = ddat[0].ydim
+    ymax = etmp[3]-yoff*ydim
+
+    ddat[0].set_transform(xdim, xmin, ydim, ymax)
+
+    plt.figure(dpi=150)
+    plt.imshow(mdat[0].data)
+    plt.show()
+
+    # dat = lstack(mdat+ddat, dxy=300)
     dat = lstack(mdat+ddat, masterid=0, commonmask=True, dxy=600)
+
+    plt.figure(dpi=150)
+    plt.imshow(dat[0].data)
+    plt.show()
 
     DM = MagInvert()
     DM.indata['Raster'] = dat
 
     DM.settings()
+
+    get_ipython().run_line_magic('matplotlib', 'Qt5')
+
+    tmp = MainWidget()
+    tmp.indata = DM.outdata
+    tmp.settings()
+
 
 
 if __name__ == "__main__":
