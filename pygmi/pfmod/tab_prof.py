@@ -1691,8 +1691,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             if curaxes == self.axes:
                 width *= 10
-            width = np.ceil(width)
-            height = np.ceil(height)
+            width = int(np.ceil(width))
+            height = int(np.ceil(height))
 
             cbit = QtGui.QBitmap(width, height)
             cbit.fill(QtCore.Qt.color1)
