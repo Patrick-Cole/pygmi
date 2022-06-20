@@ -1269,33 +1269,33 @@ def _testfn3():
     mfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_mag.ers"
     dfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_dtm.ers"
 
-    iraster = (0,200, 100, 100)
-    # iraster=None
+    iraster = (0,200, 50, 50)
+    iraster=None
 
     mdat = get_raster(mfile, iraster=iraster)
     ddat = get_raster(dfile, iraster=iraster)
 
-    xoff, yoff, xcol, yrow = iraster
+    # xoff, yoff, xcol, yrow = iraster
 
-    etmp = mdat[0].extent
-    xdim = mdat[0].xdim
-    xmin = etmp[0]+xoff*xdim
-    ydim = mdat[0].ydim
-    ymax = etmp[3]-yoff*ydim
+    # etmp = mdat[0].extent
+    # xdim = mdat[0].xdim
+    # xmin = etmp[0]+xoff*xdim
+    # ydim = mdat[0].ydim
+    # ymax = etmp[3]-yoff*ydim
 
-    mdat[0].set_transform(xdim, xmin, ydim, ymax)
+    # mdat[0].set_transform(xdim, xmin, ydim, ymax)
 
-    etmp = ddat[0].extent
-    xdim = ddat[0].xdim
-    xmin = etmp[0]+xoff*xdim
-    ydim = ddat[0].ydim
-    ymax = etmp[3]-yoff*ydim
+    # etmp = ddat[0].extent
+    # xdim = ddat[0].xdim
+    # xmin = etmp[0]+xoff*xdim
+    # ydim = ddat[0].ydim
+    # ymax = etmp[3]-yoff*ydim
 
-    ddat[0].set_transform(xdim, xmin, ydim, ymax)
+    # ddat[0].set_transform(xdim, xmin, ydim, ymax)
 
-    plt.figure(dpi=150)
-    plt.imshow(mdat[0].data)
-    plt.show()
+    # plt.figure(dpi=150)
+    # plt.imshow(mdat[0].data)
+    # plt.show()
 
     # dat = lstack(mdat+ddat, dxy=300)
     dat = lstack(mdat+ddat, masterid=0, commonmask=True, dxy=600)
@@ -1318,4 +1318,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn3()
