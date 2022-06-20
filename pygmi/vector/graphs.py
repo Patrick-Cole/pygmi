@@ -933,7 +933,7 @@ def histogram(x, y=None, xmin=None, xmax=None, bins=10):
     xmax : float
         Upper value for the bins. The default is None.
     bins : int
-        number of bins. The default is None.
+        number of bins. The default is 10.
 
     Returns
     -------

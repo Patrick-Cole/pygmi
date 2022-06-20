@@ -863,6 +863,8 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
         extent of grid.
     dxy : float
         Cell size.
+    Nullvalue : float
+        Null or nodata value.
 
     Returns
     -------
@@ -870,7 +872,6 @@ def blanking(gdat, x, y, bdist, extent, dxy, nullvalue):
         Mask to be used for blanking.
 
     """
-
     mask = np.zeros_like(gdat)
 
     points = np.transpose([x, y])
@@ -895,7 +896,7 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportLineData
 
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     ifile = r'c:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
     ifile = r'C:/Workdata/raster/Testing/SPECARCHIVE.XYZ'
@@ -925,8 +926,6 @@ def _testfn():
     # DR = DataReproj()
     # DR.indata = IO.outdata
     # DR.settings(True)
-
-    breakpoint()
 
 
 if __name__ == "__main__":

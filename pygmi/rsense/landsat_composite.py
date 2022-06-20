@@ -1,9 +1,28 @@
-"""
-Created on Wed Mar 23 13:14:54 2022
-
-@author: pcole
-"""
-
+# -----------------------------------------------------------------------------
+# Name:        landsat_composite.py (part of PyGMI)
+#
+# Author:      Patrick Cole
+# E-Mail:      pcole@geoscience.org.za
+#
+# Copyright:   (c) 2022 Council for Geoscience
+# Licence:     GPL-3.0
+#
+# This file is part of PyGMI
+#
+# PyGMI is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# PyGMI is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# -----------------------------------------------------------------------------
+"""Calculate Landsat composite scenes."""
 import os
 import copy
 import glob
@@ -125,7 +144,7 @@ class LandsatComposite():
         return projdata
 
 
-def composite(idir, dreq=10, mean=None, pprint=print, piter=ProgressBarText):
+def composite(idir, dreq=10, mean=None, pprint=print, piter=None):
     """
     Create a landsat composite.
 
@@ -135,6 +154,13 @@ def composite(idir, dreq=10, mean=None, pprint=print, piter=ProgressBarText):
         Input directory.
     dreq : int, optional
         Distance to cloud in pixels. The default is 10.
+    mean : float, optional
+        The mean or target day. If not specified, it is calculated
+        automatically. The default is None.
+    pprint : function, optional
+        Function for printing text. The default is print.
+    piter : iter, optional
+        Progress bar iterable. The default is None.
 
     Returns
     -------
@@ -142,6 +168,9 @@ def composite(idir, dreq=10, mean=None, pprint=print, piter=ProgressBarText):
         List of PyGMI Data objects.
 
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
     ifiles = glob.glob(os.path.join(idir, '**/*MTL.txt'), recursive=True)
 
     allday = []
@@ -181,8 +210,8 @@ def composite(idir, dreq=10, mean=None, pprint=print, piter=ProgressBarText):
     datfin = []
 
     del dat1['score']
-    for key in dat1:
-        datfin.append(dat1[key])
+    for key, data in dat1.items():
+        datfin.append(data)
         datfin[-1].dataid = key
 
     pprint(f'Range of days for scenes: {allday}')
@@ -192,8 +221,7 @@ def composite(idir, dreq=10, mean=None, pprint=print, piter=ProgressBarText):
     return datfin
 
 
-def import_and_score(ifile, dreq, mean, std, pprint=print,
-                     piter=ProgressBarText):
+def import_and_score(ifile, dreq, mean, std, pprint=print, piter=None):
     """
     Import data and score it.
 
@@ -201,6 +229,16 @@ def import_and_score(ifile, dreq, mean, std, pprint=print,
     ----------
     ifile : str
         Input filename.
+    dreq : int, optional
+        Distance to cloud in pixels. The default is 10.
+    mean : float
+        The mean or target day.
+    std : float
+        The standard deviation of all days.
+    pprint : function, optional
+        Function for printing text. The default is print.
+    piter : iter, optional
+        Progress bar iterable. The default is None.
 
     Returns
     -------
@@ -208,6 +246,10 @@ def import_and_score(ifile, dreq, mean, std, pprint=print,
         Dictionary of bands imported.
 
     """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+
     bands = [f'B{i+1}' for i in range(11)]
 
     dat = {}
@@ -248,9 +290,9 @@ def import_and_score(ifile, dreq, mean, std, pprint=print,
     pprint(f'Scene day of year: {datday}')
 
     filt = (dat['cdist'].data == 0)
-    for band in dat:
-        dat[band].data[filt] = 0
-        dat[band].data = np.ma.masked_equal(dat[band].data, 0)
+    for band, data in dat.items():
+        data.data[filt] = 0
+        data.data = np.ma.masked_equal(data.data, 0)
 
     del dat['cdist']
 
@@ -263,8 +305,10 @@ def plot_rgb(dat, title='RGB'):
 
     Parameters
     ----------
-    dat : TYPE
-        DESCRIPTION.
+    dat : list
+        List of PyGMI datasets.
+    title : str
+        Title for plot.
 
     Returns
     -------
@@ -281,7 +325,6 @@ def plot_rgb(dat, title='RGB'):
     plt.figure(dpi=150)
     plt.title(title)
     plt.imshow(rgb)
-    # plt.imshow(rgb, extent=dat['B2'].extent)
     plt.show()
 
 
@@ -290,7 +333,6 @@ def _testfn():
     idir = r'C:\WorkProjects\Landsat_Summer'
     ofile = os.path.join(idir, 'landsat_composite.tif')
 
-    # dato = composite_old(idir, 10)
     dat = composite(idir, 10)
     # dat = composite(idir, 10, 87)
 
@@ -303,11 +345,7 @@ def _testfn():
     # print(dato[0].data[4000,4000])
     # print(dat[0].data[4000,4000])
 
-    # breakpoint()
-
     export_raster(ofile, dat, 'GTiff')
-
-    # breakpoint()
 
 
 if __name__ == "__main__":

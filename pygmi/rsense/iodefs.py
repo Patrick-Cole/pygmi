@@ -29,7 +29,6 @@ import os
 import copy
 import xml.etree.ElementTree as ET
 import glob
-import math
 import tarfile
 import zipfile
 import datetime
@@ -588,7 +587,6 @@ class ImportSentinel5P(QtWidgets.QDialog):
             Dictionary containing metadata.
 
         """
-
         with rasterio.open(self.ifile) as dataset:
             subdata = dataset.subdatasets
 
@@ -841,11 +839,15 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
     ifile : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is iter
+        Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
-    extscene : str or None
-        String used currently to give an option to limit bands in Sentinel-2
+    extscene : str or None, optional
+        String used currently to give an option to limit bands in Sentinel-2.
+        The default is None.
+    alldata : bool, optional
+        Used to import all data. Currently used for Landsat. The default is
+        False.
 
     Returns
     -------
@@ -901,7 +903,7 @@ def get_modisv6(ifile, piter=None):
     ifile : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is iter
+        Progress bar iterable. Default is None.
 
     Returns
     -------
@@ -1012,9 +1014,11 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
     ifilet : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is iter
+        Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
+    alldata : bool, optional
+        Used to import all data. The default is False.
 
     Returns
     -------
@@ -1177,7 +1181,7 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
 
         dataset.close()
 
-    if dat == []:
+    if not dat:
         dat = None
 
     if '.tar' in ifilet:
@@ -1198,7 +1202,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
     ifilet : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is iter
+        Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
 
@@ -1213,11 +1217,11 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
     dtree = etree_to_dict(ET.parse(ifilet).getroot())
 
     platform = dtree['isd']['TIL']['BANDID']
-    til = dtree['isd']['TIL']
+    # til = dtree['isd']['TIL']
     satid = dtree['isd']['IMD']['IMAGE']['SATID']
 
     satbands = None
-    lstband = None
+    # lstband = None
 
     if platform == 'P':
         satbands = {'1': [450, 800]}
@@ -1320,7 +1324,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
                            i.data.mask)
 
         scale = float(dtree['isd']['IMD'][bnum2name[indx]]['ABSCALFACTOR'])
-        bwidth= float(dtree['isd']['IMD'][bnum2name[indx]]['EFFECTIVEBANDWIDTH'])
+        bwidth = float(dtree['isd']['IMD'][bnum2name[indx]]['EFFECTIVEBANDWIDTH'])
 
         i.data = i.data * scale / bwidth
         i.data = i.data.astype(np.float32)
@@ -1362,7 +1366,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
 
         # breakpoint()
 
-    if dat == []:
+    if not dat:
         dat = None
 
     print('Import complete')
@@ -1378,7 +1382,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
     ifile : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is iter
+        Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
 
@@ -1463,11 +1467,9 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
     showprocesslog('Extracting zip...')
 
     idir = os.path.dirname(ifile)
-    zfile = zipfile.ZipFile(ifile)
-
-    zipnames = zfile.namelist()
-    zfile.extractall(idir)
-    zfile.close()
+    with zipfile.ZipFile(ifile) as zfile:
+        zipnames = zfile.namelist()
+        zfile.extractall(idir)
 
     zipnames2 = [i for i in zipnames if i[-3:].lower() == 'tif']
 
@@ -1484,7 +1486,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
             continue
 
         # Overlap Region
-        if bandno >= 58 and bandno <= 78:
+        if 58 <= bandno <= 78:
             continue
 
         showprocesslog(f'Importing band {bandno}: {wavelength[bandno-1]} nm')
@@ -1522,7 +1524,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
 
         dataset.close()
 
-    if dat == []:
+    if not dat:
         dat = None
 
     showprocesslog('Cleaning Extracted zip files...')
@@ -1547,7 +1549,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
     ifile : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is iter
+        Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
     extscene : str or None
@@ -1618,7 +1620,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
 
         dataset.close()
 
-    if dat == []:
+    if not dat:
         dat = None
 
     return dat
@@ -1633,7 +1635,7 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print):
     ifile : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is iter
+        Progress bar iterable. Default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
 
@@ -1678,11 +1680,9 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print):
     showprocesslog('Extracting zip...')
 
     idir = os.path.dirname(ifile)
-    zfile = zipfile.ZipFile(ifile)
-
-    zipnames = zfile.namelist()
-    zfile.extractall(idir)
-    zfile.close()
+    with zipfile.ZipFile(ifile) as zfile:
+        zipnames = zfile.namelist()
+        zfile.extractall(idir)
 
     dat = []
     nval = 0
@@ -1737,7 +1737,7 @@ def get_aster_hdf(ifile, piter=None):
     ifile : str
         filename to import
     piter : iter, optional
-        Progress bar iterable. Default is iter
+        Progress bar iterable. Default is None.
 
     Returns
     -------
@@ -1879,7 +1879,7 @@ def get_aster_hdf(ifile, piter=None):
         dataset.close()
         dataset1.close()
 
-    if dat == []:
+    if not dat:
         dat = None
 
     if ptype == 'L1T' and calctoa is True:
@@ -1896,6 +1896,8 @@ def get_aster_ged(ifile, piter=None):
     ----------
     ifile : str
         filename to import
+    piter : iter, optional
+        Progress bar iterable. Default is None
 
     Returns
     -------
@@ -2116,7 +2118,6 @@ def etree_to_dict(t):
         DESCRIPTION.
 
     """
-
     d = {t.tag: {} if t.attrib else None}
     children = list(t)
     if children:
@@ -2140,7 +2141,7 @@ def etree_to_dict(t):
 
 
 def _test5P():
-    """test routine"""
+    """Test routine."""
     import sys
     import matplotlib.pyplot as plt
 
@@ -2155,47 +2156,16 @@ def _test5P():
     plt.show()
 
 
-    breakpoint()
-
-
 def _testfn():
     """Test routine."""
     import matplotlib.pyplot as plt
 
     extscene = None
-    ifile = r"d:\Workdata\Remote Sensing\Modis\MOD16A2.A2013073.h20v11.006.2017101224330.hdf"
-    ifile = r"d:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
-    ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2B_MSIL2A_20201213T081239_N0214_R078_T34JGP_20201213T105149.SAFE\MTD_MSIL2A.xml"
-    # ifile = r"d:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
-    # ifile = r"d:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00305282005083844_20180604061623_15509.hdf"
-    # ifile = r"d:\Workdata\Remote Sensing\AG100.v003.-23.030.0001.h5"
-    # ifile = r"d:\Workdata\bugs\AST_05_00309232013204629_20211004081945_4263.hdf"
 
-    ifile = "d:/Workdata/Remote Sensing/AST_07XT_00307292005085059_20210608060928_376.hdf"
-    ifile = "d:/Workdata/Remote Sensing/ASTER/AST_08_00305212003085056_20180604061050_13463.hdf"
-
-    # ifile = r"d:\Workdata\Remote Sensing\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
-
-    # ifile = r"d:\Workdata\bugs\AST_08_00306272001204805_20211007060336_20853.hdf"
-    # ifile = r"d:\Workdata\Remote Sensing\Landsat\LE07_L2SP_169076_20000822_20200917_02_T1.tar"
-
-    ifile = "d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
+    ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
     extscene = 'Hyperion'
 
-    ifile = r"d:\Workdata\bugs\janine\MOD16A2.A2001153.h20v11.006.2017070120816.hdf"
-    extscene = None
-
-    ifile = r"D:\Workdata\Remote Sensing\Landsat\LC09_L1TP_173080_20211110_20220119_02_T1.tar"
-
-    ifile = r"C:/Workdata/Remote Sensing/Landsat/LE07_L2SP_169076_20000822_20200917_02_T1.tar"
-
-    # ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS-014568829030_01_P001.XML"
-    # extscene = 'WorldView'
-    ifile = r'C:/Workdata/Remote Sensing/Modis/MOD14A2.A2006225.h20v11.006.2015121021043.hdf'
-    # ifile = r'C:/Workdata/Remote Sensing/Modis/MCD64A1.A2014213.h20v11.006.2017014002623.hdf'
-
-
-    dat = get_data(ifile, extscene = extscene)
+    dat = get_data(ifile, extscene=extscene)
 
     for i in dat:
         plt.figure(dpi=300)
@@ -2204,20 +2174,16 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
-    # ifile = r'd:/Work/Workdata/Remote Sensing/Modis/MOD11A2.A2013073.h20v11.006.2016155170529.hdf'
-    # dat = get_modisv6(ifile)
-    breakpoint()
 
 def _testfn2():
     """Test routine."""
-    import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import export_raster
 
     ifiles = glob.glob(r'D:\KZN Floods\*.zip')
 
     for ifile in ifiles:
         print(ifile)
-        dat = get_data(ifile, extscene = 'Sentinel-2 Bands Only')
+        dat = get_data(ifile, extscene='Sentinel-2 Bands Only')
         for i in dat:
             i.data = i.data.astype(np.float32)
         ofile = ifile[:-4] + '.tif'

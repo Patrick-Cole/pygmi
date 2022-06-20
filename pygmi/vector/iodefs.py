@@ -260,7 +260,7 @@ class ImportLineData(QtWidgets.QDialog):
 
         Returns
         -------
-        dat : DataFrame
+        df2 : DataFrame
             Pandas dataframe.
 
         """
@@ -309,9 +309,6 @@ class ImportLineData(QtWidgets.QDialog):
             df1['line'] = line
             dflist.append(df1)
 
-            # if object in list(df1.dtypes[:-1]):
-            #     breakpoint()
-
         # Concat in all df in one go is much faster
         df2 = pd.concat(dflist, ignore_index=True)
 
@@ -332,23 +329,6 @@ class ImportLineData(QtWidgets.QDialog):
             Pandas dataframe.
 
         """
-        # with open(self.ifile, encoding='utf-8') as fno:
-        #     head = fno.readline()
-        #     tmp = fno.read()
-
-        # head = head.split(delimiter)
-        # head = [i.lower() for i in head]
-        # tmp = tmp.lower()
-
-        # dtype = {}
-        # dtype['names'] = head
-        # dtype['formats'] = ['f4']*len(head)
-
-        # tmp = tmp.split('\n')
-        # tmp2 = np.genfromtxt(tmp, names=head, delimiter=delimiter, dtype=None,
-        #                      encoding=None)
-        # gdf = pd.DataFrame(tmp2)
-
         gdf = pd.read_csv(self.ifile, delimiter=delimiter, index_col=False)
 
         gdf.columns = gdf.columns.str.lower()

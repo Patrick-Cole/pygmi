@@ -24,10 +24,8 @@
 # -----------------------------------------------------------------------------
 """Transforms such as PCA and MNF."""
 
-# from memory_profiler import profile
 import os
 import copy
-from math import ceil
 
 import numpy as np
 from PyQt5 import QtWidgets, QtCore
@@ -144,11 +142,6 @@ class MNF(QtWidgets.QDialog):
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
             self.showprocesslog('No Satellite Data')
             return False
-
-        # if 'Raster' in self.indata:
-        #     indata = self.indata['Raster']
-        #     self.sb_comps.setMaximum(len(indata))
-        #     self.sb_comps.setValue(ceil(len(indata)*0.04))
 
         if 'Raster' in self.indata:
             indata = self.indata['Raster']
@@ -625,6 +618,8 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
         Function for printing text. The default is print.
     piter : function, optional
         Iteration function, used for progressbars. The default is iter.
+    fwdonly : bool, optional
+        Option to perform forward calculation only. The default is True.
 
     Returns
     -------
@@ -726,39 +721,6 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     return odata, ev
 
 
-# def mnf_calc2(x2d, maskall, ncmps=7, noisetxt='', pprint=print, piter=iter):
-#     """MNF Filtering Copy."""
-#     dim = x2d.shape[-1]
-#     mask = maskall[:, :, 0]
-#     x = x2d[~mask]
-
-#     pprint('Calculating noise data...')
-#     nevals, nevecs = get_noise(x2d, mask, noisetxt)
-
-#     pprint('Calculating MNF...')
-#     Ln = np.power(nevals, -0.5)
-#     Ln = np.diag(Ln)
-
-#     W = Ln @ nevecs.T
-#     Winv = np.linalg.inv(W)
-
-#     Pnorm = W @ x.T
-
-#     pca = IncrementalPCA(n_components=ncmps)
-#     P = pca.fit_transform(Pnorm.T)
-
-#     pprint('Calculating inverse MNF...')
-#     P = pca.inverse_transform(P)
-
-#     x2 = (Winv @  P.T).T
-
-#     rows, cols = mask.shape
-#     datall = np.zeros([rows, cols, dim])
-#     datall[~mask] = x2
-#     datall = np.ma.array(datall, mask=maskall)
-
-#     return datall
-
 def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     """
     PCA Calculation.
@@ -770,13 +732,12 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     ncmps : int or None, optional
         Number of components to use for filtering. The default is None
         (meaning all).
-    noisetxt : txt, optional
-        Noise type. Can be 'diagonal', 'hv average' or 'quad'. The default is
-        'hv average'.
     pprint : function, optional
         Function for printing text. The default is print.
     piter : function, optional
         Iteration function, used for progressbars. The default is iter.
+    fwdonly : bool, optional
+        Option to perform forward calculation only. The default is True.
 
     Returns
     -------
@@ -861,7 +822,6 @@ def _testfn():
     pbar = ProgressBarText()
 
     ifile = r'd:\Workdata\lithosphere\Cut-90-0824-.hdr'
-    # ifile = r"d:\Workdata\Lithosphere\crash\033_0815-1111_ref_rect.hdr"
 
     ifile = r"d:\Workdata\Remote Sensing\hyperion\Gams_EO1H1760802013198110KF_1T.hdr"
     ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
@@ -986,8 +946,6 @@ def _testfn3():
 
     # ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
 
-
-
     dat = get_data(ifile, extscene=extscene)
     # dat2 = get_data(ifile2, extscene=extscene)
 
@@ -1014,11 +972,6 @@ def _testfn3():
         # vmax = dat2[i].data.mean()+dat2[i].data.std()*2
         # plt.imshow(dat2[i].data, vmin=vmin, vmax=vmax)
         plt.show()
-
-    breakpoint()
-
-
-
 
 
 if __name__ == "__main__":

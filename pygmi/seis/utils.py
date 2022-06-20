@@ -27,7 +27,6 @@
 import difflib
 import os
 from PyQt5 import QtWidgets, QtCore
-# import pygmi.menu_default as menu_default
 
 
 class CorrectDescriptions(QtWidgets.QDialog):
@@ -76,7 +75,7 @@ class CorrectDescriptions(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        # helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        # helpdocs = menu_default.HelpButton('pygmi.seis.utils.cordesc')
         pb_textfile = QtWidgets.QPushButton('Load Description List')
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)

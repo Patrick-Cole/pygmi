@@ -1,4 +1,1 @@
-"""
-Remote Sensing Routines
-"""
-
+"""Remote Sensing Routines."""

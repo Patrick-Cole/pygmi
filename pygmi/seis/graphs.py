@@ -80,7 +80,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         """
         self.figure.clear()
-        self.axes = self.figure.add_subplot(111)  # , projection=ccrs.PlateCarree())
+        self.axes = self.figure.add_subplot(111)
 
         if len(datd) == 0:
             self.figure.canvas.draw()
@@ -440,7 +440,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             for rec in event['4']:
                 if (rec.quality+rec.phase_id).strip() in ['IAML', 'AML',
                                                           'ES', 'E']:
-                    if rec.amplitude is None or rec.epicentral_distance is None:
+                    if (rec.amplitude is None or
+                            rec.epicentral_distance is None):
                         continue
                     ML = (np.log10(rec.amplitude) +
                           1.149*np.log10(rec.epicentral_distance) +
@@ -1004,8 +1005,6 @@ def _testfn2():
         plt.title(comp)
         plt.plot(x, y)
         plt.show()
-
-    breakpoint()
 
 
 if __name__ == "__main__":

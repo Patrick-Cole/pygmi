@@ -62,7 +62,7 @@ setup(name='pygmi',
           'Topic :: Software Development :: Libraries :: Python Modules',
           ],
 
-      keywords='Geophysics Magnetic Gravity Modelling Interpretation',
+      keywords='Geoscience Geophysics Magnetic Gravity Modelling Interpretation',
 
       packages=(find_packages(exclude=['docs'])),
 
@@ -75,6 +75,7 @@ setup(name='pygmi',
                         'numba',
                         'numexpr',
                         'numpy',
+                        'natsort',
                         'pandas',
                         'pillow',
                         'psutil',

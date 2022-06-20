@@ -28,6 +28,7 @@ import os
 import numpy as np
 from PyQt5 import QtWidgets
 import matplotlib.pyplot as plt
+
 from pygmi.seis import iodefs
 
 

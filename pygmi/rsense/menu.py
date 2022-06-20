@@ -117,7 +117,8 @@ class MenuWidget():
         self.menu.addAction(self.action_calc_ci)
         self.action_calc_ci.triggered.connect(self.calc_ci)
 
-        self.action_lsat_comp = QtWidgets.QAction('Calculate Landsat Composite')
+        self.action_lsat_comp = QtWidgets.QAction('Calculate Landsat '
+                                                  'Composite')
         self.menu.addAction(self.action_lsat_comp)
         self.action_lsat_comp.triggered.connect(self.lsat_comp)
 
@@ -216,7 +217,7 @@ class MenuWidget():
                                 params='Sentinel-2 (*.xml *.zip);;')
 
     def import_sentinel2b(self):
-        """Import Sentinel 2 data."""
+        """Import Sentinel 2 data, bands only."""
         self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
                                 params='Sentinel-2 Bands Only (*.xml *.zip);;')
 

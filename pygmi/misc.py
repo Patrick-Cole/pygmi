@@ -24,14 +24,11 @@
 # -----------------------------------------------------------------------------
 """
 Misc is a collection of routines which can be used in PyGMI in general.
-
-ptimer is utility module used to simplify checking how much time has passed
-in a program. It also outputs a message at the point when called.
 """
 
-import psutil
 import types
 import time
+import psutil
 import numpy as np
 from matplotlib import ticker
 from PyQt5 import QtWidgets
@@ -217,7 +214,6 @@ class ProgressBarText():
         self.total = 100
         self.decimals = 1
         self.length = 40
-        # self.fill = '█'
         self.fill = '#'
         self.prefix = 'Progress:'
 
@@ -282,9 +278,6 @@ class ProgressBarText():
         filledlength = int(self.length*iteration//self.total)
         pbar = self.fill*filledlength + '-'*(self.length - filledlength)
         pbar = f'\r{self.prefix} |{pbar}| {percent}% {suffix}'
-        # This next line prevents a unicode error which occurs in windows
-        # consoles
-        # pbar = str(pbar.encode('utf-8'))
         print(pbar, end='\r')
         # Print New Line on Complete
         if iteration == self.total:
@@ -297,8 +290,10 @@ def getinfo(txt=None, reset=False):
 
     Parameters
     ----------
-    txt : TYPE, optional
-        DESCRIPTION. The default is None.
+    txt : str/int/float, optional
+        Descriptor used for headings. The default is None.
+    reset : bool
+        Flag used to reset the time difference to zero.
 
     Returns
     -------

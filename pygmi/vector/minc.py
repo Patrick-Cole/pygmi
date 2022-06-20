@@ -156,7 +156,7 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
             u[iint, jint] = zval
             ufixed[iint, jint] = True
             continue
-        elif (iint > 1 and iint < rows-2 and jint > 1 and jint < cols-2):
+        if 1 < iint < rows-2 and 1 < jint < cols-2:
             coords[key].sort()
             _, _, zval, b = coords[key][0]
             ijxyz.append([iint, jint, zval, b])
@@ -218,14 +218,13 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
         mask = (dist > bdist)
         u = np.ma.array(u, mask=mask)
 
-    # return u, ufixed
     return u
 
 
 @jit(nopython=True)
 def u_normal(u, i, j):
     """
-    Normal minimum curvature smoothing.
+    Minimum curvature smoothing for normal cases.
 
     It is defined as:
 
@@ -513,25 +512,25 @@ def mcurv(u, ufixed):
             if ufixed[i, j] == True:
                 continue
 
-            if i > 1 and i < rows-2 and j > 0 and j < cols-2:
+            if 1 < i < rows-2 and 0 < j < cols-2:
                 u[i, j] = u_normal(u, i, j)
 
-            elif j == 0 and i > 1 and i < rows-2:
+            elif j == 0 and 1 < i < rows-2:
                 u[i, j] = u_edge(u, i)
-            elif j == cols-1 and i > 1 and i < rows-2:
+            elif j == cols-1 and 1 < i < rows-2:
                 u[i, j] = u_edge(u[:, ::-1], i)
-            elif i == 0 and j > 1 and j < cols-2:
+            elif i == 0 and 1 < j < cols-2:
                 u[i, j] = u_edge(u.T, j)
-            elif i == rows-1 and j > 1 and j < cols-2:
+            elif i == rows-1 and 1 < j < cols-2:
                 u[i, j] = u_edge(u.T[:, ::-1], j)
 
-            elif j == 1 and i > 1 and i < rows-2:
+            elif j == 1 and 1 < i < rows-2:
                 u[i, j] = u_one_row_from_edge(u, i)
-            elif j == cols-2 and i > 1 and i < rows-2:
+            elif j == cols-2 and 1 < i < rows-2:
                 u[i, j] = u_one_row_from_edge(u[:, ::-1], i)
-            elif i == 1 and j > 1 and j < cols-2:
+            elif i == 1 and 1 < j < cols-2:
                 u[i, j] = u_one_row_from_edge(u.T, j)
-            elif i == rows-2 and j > 1 and j < cols-2:
+            elif i == rows-2 and 1 < j < cols-2:
                 u[i, j] = u_one_row_from_edge(u.T[:, ::-1], j)
 
             elif i == 0 and j == 0:
@@ -649,20 +648,11 @@ def _testfn():
     from PyQt5 import QtWidgets
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportLineData
-    # from IPython import get_ipython
-    # get_ipython().run_line_magic('matplotlib', 'qt5')
 
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
-    # ifile = r'd:\Workdata\vector\Line Data\Kweneng_mag_flightlines_IGRF.csv'
-
-    # IO = ImportLineData()
-    # IO.ifile = ifile
-    # IO.filt = 'Comma Delimited (*.csv)'
-    # IO.settings(True)
-
-    ifile = r'd:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
-    ifile = r"d:\Workdata\MagMerge\data\1_66\Pre_2011\WESTCMAG.XYZ"
+    ifile = r'c:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
+    # ifile = r"c:\Workdata\MagMerge\data\1_66\Pre_2011\WESTCMAG.XYZ"
     IO = ImportLineData()
     IO.ifile = ifile
     IO.filt = 'Geosoft XYZ (*.xyz)'

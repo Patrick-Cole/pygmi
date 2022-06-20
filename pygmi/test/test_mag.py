@@ -31,7 +31,6 @@ import sys
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from rasterio.crs import CRS
-import pytest
 
 from pygmi.raster.datatypes import Data
 from pygmi.mag import dataprep
@@ -60,6 +59,7 @@ def test_tilt1():
     np.testing.assert_array_equal(t2, t22)
     np.testing.assert_array_equal(ta, ta2)
     np.testing.assert_array_equal(tdx, tdx2)
+
 
 def test_rtp():
     """Test RTP."""
@@ -137,5 +137,4 @@ def test_tilt():
 
 
 if __name__ == "__main__":
-    # pytest.main(['test_mag.py::test_IGRF'])
     test_IGRF()

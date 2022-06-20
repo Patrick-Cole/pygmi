@@ -38,12 +38,10 @@ import matplotlib.animation as manimation
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 
-# import pygmi.menu_default as menu_default
 from pygmi.raster.datatypes import Data
 from pygmi.misc import frm
 from pygmi.raster.ginterp import histcomp, norm255
 from pygmi.misc import ProgressBarText
-# from pygmi.raster.modest_image import imshow
 
 
 class CreateSceneList(QtWidgets.QDialog):
@@ -98,7 +96,7 @@ class CreateSceneList(QtWidgets.QDialog):
         """
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-        # helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        # helpdocs = menu_default.HelpButton('pygmi.rsense.change.cscene')
         pb_shape = QtWidgets.QPushButton('Load shapefile or kml file')
         pb_scene = QtWidgets.QPushButton('Set scene directory')
 
@@ -117,7 +115,7 @@ class CreateSceneList(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.useall, 2, 0, 1, 2)
         gridlayout_main.addWidget(self.isrecursive, 3, 0, 1, 2)
 
-#        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+        # gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)

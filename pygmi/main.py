@@ -45,12 +45,11 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 from matplotlib import rcParams
 from matplotlib import interactive
+
 import pygmi
 from pygmi import menu_default
 from pygmi import misc
 
-# rcParams['figure.dpi'] = 120
-# rcParams['font.size'] = 6.0
 rcParams['axes.formatter.limits'] = [-12, 12]
 rcParams['axes.formatter.useoffset'] = False
 interactive(False)

@@ -30,6 +30,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
 import geopandas as gpd
+
 import pygmi.seis.datatypes as sdt
 from pygmi import menu_default
 
@@ -2246,7 +2247,7 @@ class FilterSeisan(QtWidgets.QDialog):
         Parameters
         ----------
         state : TYPE
-            DESCRIPTION.
+            State of checkbox.
 
         Returns
         -------
@@ -2375,7 +2376,7 @@ class FilterSeisan(QtWidgets.QDialog):
                             datd[newkey].append(tmp[j])
 
         slist = []
-        for event in datd:
+        for event in datd.keys():
             datd[event] = [min(datd[event]), max(datd[event])]
             if isinstance(datd[event][0], str):
                 slist.append(event)
@@ -2543,7 +2544,7 @@ class FilterSeisan(QtWidgets.QDialog):
                 if self.rinc.isChecked() and (testval < minval or
                                               testval > maxval):
                     continue
-                elif not self.rinc.isChecked() and (minval <= testval <= maxval):
+                if not self.rinc.isChecked() and (minval <= testval <= maxval):
                     continue
             else:
                 for j in i[rectype]:
@@ -2559,7 +2560,7 @@ class FilterSeisan(QtWidgets.QDialog):
                     if self.rinc.isChecked() and (testval < minval or
                                                   testval > maxval):
                         break
-                    elif not self.rinc.isChecked() and (minval <= testval <= maxval):
+                    if not self.rinc.isChecked() and (minval <= testval <= maxval):
                         break
                     badrec = False
                 if badrec is True:

@@ -22,41 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-Hyperspectral Interpretation Routines.
-
-1) Spectral Feature Examination
-2) Spectral Interpretation and Processing
-3) Borehole display and interpretation
-
-Spectral feature examination is a GUI which allows for the comparison of
-spectra from the dataset with library spectra.
-
-Must be able to:
-
-1) Zoom into features
-2) Select features and apply settings such as threshold if necessary
-3) Combine multiple features into final filtered result.
-4) Save spectra into a library for feature examination now or later.
-5) Features can be depths, widths, or ratios
-6) Output successful feature combinations into formulae for processing.
-
-Note: feature or ratio x unit is wavelength and not band number.
-
-Spectral Interpretation and processing allows for processing of a scene.
-1) Must have a list of features or filters and thresholds
-2) Must have a 'quick name' dropdown for premade combinations.
-3) Must be able to save a combination
-4) Must be able to import combinations
-
-There should be a library file for features or filters
-There should be a combo file for combinations.
-
-Borehole display and interpretation shows a list of trays and can display core
-as one borehole. It can also allow for manual interpretation as well as
-comparison between existing logs and the core images.
-
-"""
+"""Hyperspectral Interpretation Routines."""
 import json
 import sys
 import re
@@ -1045,7 +1011,7 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
         else:
             if tmp.max() > 1:
                 print('Problem with filter. Max value greater that 1')
-                breakpoint()
+                return datfin
             datout = datout * np.nan_to_num(tmp)
             if datout2 is not None:
                 datout2 = datout2 * np.nan_to_num(tmp)
@@ -1218,12 +1184,12 @@ def cubic_calc(xdat, crem, imin):
             -(c2 + np.sqrt(-3*b2*d2 + c2**2))/(3*d2)]
 
     for i in min1:
-        if x1 < i and i < x2:
+        if x1 < i < x2:
             x = i
             y = a1+b1*x+c1*x**2+d1*x**3
 
     for i in min2:
-        if x2 < i and i < x3:
+        if x2 < i < x3:
             x = i
             y = a2+b2*x+c2*x**2+d2*x**3
 
@@ -1237,7 +1203,7 @@ def phull(sample1):
 
     Parameters
     ----------
-    sample : numpy array
+    sample1 : numpy array
         Sample to create a hull for.
 
     Returns

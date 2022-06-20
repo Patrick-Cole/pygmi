@@ -388,8 +388,6 @@ class SatRatios(QtWidgets.QDialog):
         sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
                                'B4': 'B11', 'B5': 'B12'}
         sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7'}
-                              # 'B4': 'B11', 'B5': 'B13', 'B6': 'B14',
-                              # 'B7': 'B15', 'B8': 'B16'}
 
         rlist = []
 
@@ -479,7 +477,7 @@ class SatRatios(QtWidgets.QDialog):
         """
         for i in range(self.lw_ratios.count()):
             item = self.lw_ratios.item(i)
-            item.setSelected(not(item.isSelected()))
+            item.setSelected(not item.isSelected())
 
         self.set_selected_ratios()
 
@@ -737,9 +735,18 @@ class ConditionIndices(QtWidgets.QDialog):
         else:
             flist = [self.indata['Raster']]
 
+        ifile = ''
         for ifile in flist:
-            dat = iodefs.get_data(ifile, piter=self.piter,
-                                  showprocesslog=self.showprocesslog)
+            if isinstance(ifile, str):
+                dat = iodefs.get_data(ifile,
+                                      showprocesslog=self.showprocesslog,
+                                      piter=self.piter)
+            else:
+                dat = ifile
+                ifile = dat[0].filename
+
+            # dat = iodefs.get_data(ifile, piter=self.piter,
+            #                       showprocesslog=self.showprocesslog)
 
             if dat is None:
                 continue
@@ -854,7 +861,7 @@ class ConditionIndices(QtWidgets.QDialog):
         for i in datfin:
             i.data = i.data.astype(np.float32)
 
-        ofile = os.path.join(os.path.dirname(ifile),  'CI'+ofile+'.tif')
+        ofile = os.path.join(os.path.dirname(ifile), 'CI'+ofile+'.tif')
 
         if datfin:
             # self.showprocesslog('Exporting to '+ofile)
@@ -901,7 +908,7 @@ class ConditionIndices(QtWidgets.QDialog):
         """
         for i in range(self.lw_ratios.count()):
             item = self.lw_ratios.item(i)
-            item.setSelected(not(item.isSelected()))
+            item.setSelected(not item.isSelected())
 
         self.set_selected_ratios()
 
@@ -980,9 +987,7 @@ def correct_bands(rlist, sensor):
     sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
                            'B4': 'B11', 'B5': 'B12'}
 
-    sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',}
-                          # 'B4': 'B11', 'B5': 'B13', 'B6': 'B14', 'B7': 'B15',
-                          # 'B8': 'B16'}
+    sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7'}
 
     bandmap = sdict[sensor]
     svalues = set(bandmap.keys())
@@ -1006,13 +1011,13 @@ def get_TCI(lst):
 
     Parameters
     ----------
-    lst : numpy array
-        array of land surface temperatures.
+    lst : list
+        list of PyGMI datasets - land surface temperatures.
 
     Returns
     -------
-    tci : numpy array
-        output TCI.
+    tci : list
+        output TCI datasets.
 
     """
     lst2 = []
@@ -1041,13 +1046,15 @@ def get_VCI(evi, index):
 
     Parameters
     ----------
-    evi : numpy array
-        array of land surface temperatures.
+    evi : list
+        list of EVI datasets.
+    index : str
+        index for dataid.
 
     Returns
     -------
-    vci : numpy array
-        output VCI.
+    vci : list
+        output VCI datasets.
 
     """
     evi2 = []
@@ -1077,13 +1084,17 @@ def get_VHI(tci, vci, alpha=0.5):
 
     Parameters
     ----------
-    lst : numpy array
-        array of land surface temperatures.
+    tci : list
+        TCI dataset list.
+    vci : list
+        VCI dataset list.
+    alpha : float, optional
+        Weight for proportion of TCI and VCI. The default is 0.5.
 
     Returns
     -------
-    ratio : numpy array
-        output VHI.
+    vhi : list
+        Output VHI datasets.
 
     """
     vhi = []
@@ -1105,12 +1116,13 @@ def get_aster_list(flist):
 
     Parameters
     ----------
-    flist : TYPE
-        DESCRIPTION.
+    flist : list
+        List of filenames.
 
     Returns
     -------
-    None.
+    flist : list
+        List of filenames.
 
     """
     if isinstance(flist[0], list):
@@ -1128,7 +1140,7 @@ def get_aster_list(flist):
             names[adate] = []
         names[adate].append(i)
 
-    for adate in names:
+    for adate in names.keys():
         has_07xt = [True for i in names[adate] if '_07XT_' in i]
         has_07 = [True for i in names[adate] if '_07_' in i]
         if len(has_07xt) > 0 and len(has_07) > 0:
@@ -1147,12 +1159,13 @@ def get_landsat_list(flist, sensor, allsats=False):
 
     Parameters
     ----------
-    flist : TYPE
-        DESCRIPTION.
+    flist : list
+        List of filenames.
 
     Returns
     -------
-    None.
+    flist : list
+        List of filenames.
 
     """
     if isinstance(flist[0], list):
@@ -1190,12 +1203,13 @@ def get_sentinel_list(flist):
 
     Parameters
     ----------
-    flist : TYPE
-        DESCRIPTION.
+    flist : list
+        List of filenames.
 
     Returns
     -------
-    None.
+    flist : list
+        List of filenames.
 
     """
     if isinstance(flist[0], list):
@@ -1220,18 +1234,11 @@ def _testfn():
 
     extscene = None
 
-    # ifile = r'd:\Work\Workdata\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf'
-    # ifile = r"d:\Workdata\Remote Sensing\Landsat\LM05_L1TP_171078_19840629_20180410_01_T2.tar.gz"
     ifile = r"D:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
-    # ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    # extscene = 'Sentinel-2'
-
-    # ifile = r"d:\Workdata\Remote Sensing\ASTER\test\AST_07XT_00311172002085850_20220121015142_25162.hdf"
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     SR = SatRatios()
     SR.indata['Raster'] = dat  # single file only
@@ -1244,8 +1251,6 @@ def _testfn():
         plt.colorbar()
         plt.show()
 
-    breakpoint()
-
 
 def _testfn2():
     """Test routine."""
@@ -1256,7 +1261,7 @@ def _testfn2():
     ifiles = glob.glob(r"d:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
     ifiles = glob.glob(r"C:\WorkProjects\Test\*.tif")
 
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     SR = ConditionIndices()
     SR.indata['RasterFileList'] = ifiles
@@ -1271,30 +1276,21 @@ def _testfn2():
         plt.title(i.dataid)
         plt.show()
 
-    breakpoint()
-
 
 def _testfn3():
-    """Test Function"""
-    from pygmi.raster.iodefs import get_raster
+    """Test Function."""
     import matplotlib.pyplot as plt
-
-    # ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL.tif"
-    # ifile = r"C:\WorkProjects\Sentinel-2_Winter\clip_S2A_MSIL2A_20160828T080012_T35JML.tif"
-    # dat = get_raster(ifile)
 
     ifile = r"C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     extscene = 'Sentinel-2'
     dat = iodefs.get_data(ifile, extscene=extscene)
 
-
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     SR = SatRatios()
     SR.indata['Raster'] = dat  # single file only
 
     SR.settings()
-
 
     plt.title(dat[2].dataid)
     plt.imshow(dat[2].data)
@@ -1311,19 +1307,12 @@ def _testfn3():
     plt.colorbar()
     plt.show()
 
-
-    b8 = dat[3].data
-    b4 = dat[0].data
-    b2 = dat[2].data
-
     dat2 = SR.outdata['Raster']
 
     plt.title(dat2[0].dataid)
     plt.imshow(dat2[0].data, vmin=0, vmax=1)
     plt.colorbar()
     plt.show()
-
-    breakpoint()
 
 
 def _testfn4():
@@ -1333,24 +1322,14 @@ def _testfn4():
     from pygmi.raster.dataprep import DataMerge
 
     ifiles = glob.glob(r"C:\WorkProjects\ratios\*.zip")
-    # ifiles = glob.glob(r"C:\WorkProjects\ratios\merge*.tif")
 
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-
-    # SR = SatRatios()
-    # SR.indata['RasterFileList'] = ifiles
-    # SR.settings()
-
-    # dat = SR.outdata['Raster']
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     ifiles = glob.glob(r"C:\WorkProjects\ratios\*.tif")
 
     dat = []
     for ifile in ifiles:
         dat += iodefs.get_data(ifile)
-
-    # dat[1].data = dat[1].data-dat[1].data.mean() + dat[0].data.mean()
-    # dat[1].data = dat[1].data*dat[0].data.std()/dat[1].data.std()
 
     DM = DataMerge()
     DM.indata['Raster'] = dat
@@ -1366,8 +1345,6 @@ def _testfn4():
         plt.imshow(i.data, extent=i.extent, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
-
-    breakpoint()
 
 
 if __name__ == "__main__":

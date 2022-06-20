@@ -1,6 +1,34 @@
 =========
 Changelog
 =========
+v3.2.5.6, 15 June 2022
+----------------------
+*Magnetic inversion now allows for custom numbers of classes.
+*Bugfix to mean mosaic
+*Fixed bug mosaicing with different nodata and dtype values.
+*Added landsat composite
+*Layerstacking now checks extents in addition to rows and columns
+*Bugfix - spinbox setvalue now an integer.
+*MNF forward transform now allows custom number of components
+*Band sorting can be disabled for RGB images
+*Explained variance ratio added to PCA band names.
+*Pca
+*PCA added .
+*Fixed bug where ternary images were showing strange colors when data was clipped
+*Raster Export will now sort the output bands, so that satellite data is in order.
+*Bugfix, RTP now puts projection into output.
+*Clustering is more memory efficient.
+*Mini batch k-means has been added.
+*New aster ratio added.
+*Sentinel-2 zip files are now accepted in batch processing
+*Cut raster will use first overlapping polygon in a multipolygon
+*Some MultiPolygon support has been added.
+*Fixed a bug which caused a crash if the text progressbar activates in a windows console.
+*Added 7/5, 6/2 and 7/3 Landsat 8 ratios to band ratio tool
+*Sentinel data is now recognized in the batch import by S2A and S2B prefixes.
+*Merge data will now merge based on shifting the last data to the mean overlap value.
+*Version update
+
 
 v3.2.5.6, 10 June 2022
 ----------------------
