@@ -1160,7 +1160,7 @@ def _testfn():
     sfile = r'd:\Work\Workdata\change\fl35.shp'
     pdir = r'd:\Work\Workdata\change\Planet'
 
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     CSL = CreateSceneList(None)
     CSL.isrecursive.setChecked(True)
@@ -1173,17 +1173,10 @@ def _testfn():
 
 def _testanim():
     """Test for animation."""
-    # import sys
-    from matplotlib import rcParams
-    # rcParams['axes.formatter.limits'] = [-12, 12]
-    # rcParams['axes.formatter.useoffset'] = False
     wfile = r'd:\Work\Workdata\change\tmp.gif'
 
-    rcParams['figure.dpi'] = 300
-    # rcParams['savefig.dpi'] = 300
-
-    # APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
-    fig = plt.figure()
+    # app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    fig = plt.figure(dpi=150)
 
     writer = manimation.PillowWriter(fps=4)
     writer.setup(fig, wfile)  # , 100)

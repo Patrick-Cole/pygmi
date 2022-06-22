@@ -141,7 +141,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.gmode = None
         self.argb = [None, None, None]
         self.bgrgb = [None, None, None]
-        self.hhist = [None, None, None]
+        self.hhist = [[], [], []]
         self.hband = [None, None, None, None]
         self.htxt = [None, None, None]
         self.image = None
@@ -2016,13 +2016,13 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
     img : numpy array
         data to compact
     nbr_bins : int
-        number of bins to use in compaction
+        number of bins to use in compaction, default is None
     perc : float
         percentage of histogram to clip. If uperc is not None, then this is
-        the lower percentage
+        the lower percentage, default is 5.
     uperc : float
         upper percentage to clip. If uperc is None, then it is set to the
-        same value as perc
+        same value as perc, default is None
 
     Returns
     -------
@@ -2086,7 +2086,7 @@ def histeq(img, nbr_bins=32768):
     img : numpy array
         input data to be equalised
     nbr_bins : integer
-        number of bins to be used in the calculation
+        number of bins to be used in the calculation, default is 32768
 
     Returns
     -------
@@ -2120,7 +2120,7 @@ def img2rgb(img, cbar=cm.get_cmap('jet')):
     img : numpy array
         array to be converted to rgba image.
     cbar : matplotlib color map
-        colormap to apply to the image
+        colormap to apply to the image, default is jet.
 
     Returns
     -------

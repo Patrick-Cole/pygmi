@@ -134,17 +134,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
 
-        # vstd = 2.5 * data1.data.std()
-        # vmean = data1.data.mean()
-        # vmin = vmean-vstd
-        # vmax = vmean+vstd
-
         rdata = imshow(self.axes, data1.data, extent=data1.extent,
                        cmap=cm.get_cmap(cmap), interpolation='nearest')
-
-        # rdata = self.axes.imshow(data1.data, extent=data1.extent,
-        #                           cmap=cm.get_cmap(cmap), vmin=vmin,
-        #                           vmax=vmax, interpolation='nearest')
 
         if not data1.isrgb:
             rdata.set_clim_std(2.5)
@@ -750,7 +741,7 @@ def corr2d(dat1, dat2):
 
 def _testfn():
     """Test."""
-    from pygmi.raster.iodefs import get_raster, export_raster
+    from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
     ifile = r"d:/Workdata/LULC/2001_stack_norm.tif"
@@ -776,9 +767,6 @@ def _testfn():
 
     # out = corr2d(data[1].data, data[2].data)
 
-    breakpoint()
 
 if __name__ == "__main__":
     _testfn()
-
-

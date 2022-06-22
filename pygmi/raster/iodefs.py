@@ -549,12 +549,14 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     nval : float, optional
         No data/null value. The default is None.
     piter : iterable from misc.ProgressBar or misc.ProgressBarText
-        progress bar iterable
+        progress bar iterable, default is None.
     showprocesslog : function, optional
         Routine to show text messages. The default is print.
     iraster : None or tuple
         Incremental raster import, to import a section of a file. The tuple is
         (xoff, yoff, xsize, ysize)
+    driver : str
+        GDAL raster driver name. The default is None.
 
     Returns
     -------
@@ -848,11 +850,6 @@ def get_geopak(hfile):
 
     Returns
     -------
-    dat : PyGMI raster Data
-        dataset imported
-
-    Returns
-    -------
     dat : PyGMI Data
         PyGMI raster dataset.
 
@@ -969,58 +966,56 @@ def get_geosoft(hfile):
     dat : PyGMI Data
         Dataset imported
     """
-    f = open(hfile, mode='rb')
+    with open(hfile, mode='rb') as f:
 
-    es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
-    sf = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
-    ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol
-    nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow
-    kx = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1
+        es = np.fromfile(f, dtype=np.int32, count=1)[0]  # 4
+        sf = np.fromfile(f, dtype=np.int32, count=1)[0]  # signf
+        ncols = np.fromfile(f, dtype=np.int32, count=1)[0]  # ncol
+        nrows = np.fromfile(f, dtype=np.int32, count=1)[0]  # nrow
+        kx = np.fromfile(f, dtype=np.int32, count=1)[0]  # 1
 
-    dx = np.fromfile(f, dtype=np.float64, count=1)[0]  # dx
-    dy = np.fromfile(f, dtype=np.float64, count=1)[0]  # dy
-    x0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # xllcor
-    y0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # yllcor
-    rot = np.fromfile(f, dtype=np.float64, count=1)[0]  # rot
-    zbase = np.fromfile(f, dtype=np.float64, count=1)[0]  # zbase
-    zmult = np.fromfile(f, dtype=np.float64, count=1)[0]  # zmult
+        dx = np.fromfile(f, dtype=np.float64, count=1)[0]  # dx
+        dy = np.fromfile(f, dtype=np.float64, count=1)[0]  # dy
+        x0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # xllcor
+        y0 = np.fromfile(f, dtype=np.float64, count=1)[0]  # yllcor
+        rot = np.fromfile(f, dtype=np.float64, count=1)[0]  # rot
+        zbase = np.fromfile(f, dtype=np.float64, count=1)[0]  # zbase
+        zmult = np.fromfile(f, dtype=np.float64, count=1)[0]  # zmult
 
-    label = np.fromfile(f, dtype='a48', count=1)[0]
-    mapno = np.fromfile(f, dtype='a16', count=1)[0]
+        label = np.fromfile(f, dtype='a48', count=1)[0]
+        mapno = np.fromfile(f, dtype='a16', count=1)[0]
 
-    proj = np.fromfile(f, dtype=np.int32, count=1)[0]
-    unitx = np.fromfile(f, dtype=np.int32, count=1)[0]
-    unity = np.fromfile(f, dtype=np.int32, count=1)[0]
-    unitz = np.fromfile(f, dtype=np.int32, count=1)[0]
-    nvpts = np.fromfile(f, dtype=np.int32, count=1)[0]
-    izmin = np.fromfile(f, dtype=np.int32, count=1)[0]
-    izmax = np.fromfile(f, dtype=np.int32, count=1)[0]
-    izmed = np.fromfile(f, dtype=np.int32, count=1)[0]
-    izmea = np.fromfile(f, dtype=np.int32, count=1)[0]
+        proj = np.fromfile(f, dtype=np.int32, count=1)[0]
+        unitx = np.fromfile(f, dtype=np.int32, count=1)[0]
+        unity = np.fromfile(f, dtype=np.int32, count=1)[0]
+        unitz = np.fromfile(f, dtype=np.int32, count=1)[0]
+        nvpts = np.fromfile(f, dtype=np.int32, count=1)[0]
+        izmin = np.fromfile(f, dtype=np.int32, count=1)[0]
+        izmax = np.fromfile(f, dtype=np.int32, count=1)[0]
+        izmed = np.fromfile(f, dtype=np.int32, count=1)[0]
+        izmea = np.fromfile(f, dtype=np.int32, count=1)[0]
 
-    zvar = np.fromfile(f, dtype=np.float64, count=1)[0]
+        zvar = np.fromfile(f, dtype=np.float64, count=1)[0]
 
-    prcs = np.fromfile(f, dtype=np.int32, count=1)[0]
+        prcs = np.fromfile(f, dtype=np.int32, count=1)[0]
 
-    temspc = np.fromfile(f, dtype='a324', count=1)[0]
+        temspc = np.fromfile(f, dtype='a324', count=1)[0]
 
-    if es == 2:
-        nval = -32767
-        data = np.fromfile(f, dtype=np.int16, count=nrows*ncols)
+        if es == 2:
+            nval = -32767
+            data = np.fromfile(f, dtype=np.int16, count=nrows*ncols)
 
-    elif es == 4:
-        data = np.fromfile(f, dtype=np.float32, count=nrows*ncols)
-        nval = -1.0E+32
-    else:
-        return None
+        elif es == 4:
+            data = np.fromfile(f, dtype=np.float32, count=nrows*ncols)
+            nval = -1.0E+32
+        else:
+            return None
 
-    data = np.ma.masked_equal(data, nval)
+        data = np.ma.masked_equal(data, nval)
 
-    data = data/zmult + zbase
-    data.shape = (nrows, ncols)
-    data = data[::-1]
-
-    f.close()
+        data = data/zmult + zbase
+        data.shape = (nrows, ncols)
+        data = data[::-1]
 
     dat = []
     dat.append(Data())
@@ -1188,47 +1183,44 @@ class ExportData():
             if len(data) > 1:
                 file_out = self.get_filename(k, 'gxf')
 
-            fno = open(file_out, 'w', encoding='utf-8')
+            with open(file_out, 'w', encoding='utf-8') as fno:
+                xmin = k.extent[0]
+                ymin = k.extent[2]
 
-            xmin = k.extent[0]
-            ymin = k.extent[2]
+                krows, kcols = k.data.shape
 
-            krows, kcols = k.data.shape
+                fno.write('#TITLE\n')
+                fno.write('Export Data')
+                fno.write('\n#POINTS\n')
+                fno.write(str(kcols))
+                fno.write('\n#ROWS\n')
+                fno.write(str(krows))
+                fno.write('\n#PTSEPARATION\n')
+                fno.write(str(k.xdim))
+                fno.write('\n#RWSEPARATION\n')
+                fno.write(str(k.ydim))
+                fno.write('\n#XORIGIN\n')
+                fno.write(str(xmin))
+                fno.write('\n#YORIGIN\n')
+                fno.write(str(ymin))
+                fno.write('\n#SENSE\n')
+                fno.write('1')
+                fno.write('\n#DUMMY\n')
+                fno.write(str(k.nodata))
+                fno.write('\n#GRID\n')
+                tmp = k.data.filled(k.nodata)
 
-            fno.write('#TITLE\n')
-            fno.write('Export Data')
-            fno.write('\n#POINTS\n')
-            fno.write(str(kcols))
-            fno.write('\n#ROWS\n')
-            fno.write(str(krows))
-            fno.write('\n#PTSEPARATION\n')
-            fno.write(str(k.xdim))
-            fno.write('\n#RWSEPARATION\n')
-            fno.write(str(k.ydim))
-            fno.write('\n#XORIGIN\n')
-            fno.write(str(xmin))
-            fno.write('\n#YORIGIN\n')
-            fno.write(str(ymin))
-            fno.write('\n#SENSE\n')
-            fno.write('1')
-            fno.write('\n#DUMMY\n')
-            fno.write(str(k.nodata))
-            fno.write('\n#GRID\n')
-            tmp = k.data.filled(k.nodata)
+                for i in range(k.data.shape[0]-1, -1, -1):
+                    kkk = 0
+    # write only 5 numbers in a row
+                    for j in range(k.data.shape[1]):
+                        if kkk == 5:
+                            kkk = 0
+                        if kkk == 0:
+                            fno.write('\n')
 
-            for i in range(k.data.shape[0]-1, -1, -1):
-                kkk = 0
-# write only 5 numbers in a row
-                for j in range(k.data.shape[1]):
-                    if kkk == 5:
-                        kkk = 0
-                    if kkk == 0:
-                        fno.write('\n')
-
-                    fno.write(str(tmp[i, j]) + '  ')
-                    kkk += 1
-
-            fno.close()
+                        fno.write(str(tmp[i, j]) + '  ')
+                        kkk += 1
 
     def export_surfer(self, data):
         """
@@ -1283,29 +1275,26 @@ class ExportData():
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'asc')
-            fno = open(file_out, 'w', encoding='utf-8')
+            with open(file_out, 'w', encoding='utf-8') as fno:
+                extent = k.extent
+                xmin = extent[0]
+                ymin = extent[2]
+                krows, kcols = k.data.shape
 
-            extent = k.extent
-            xmin = extent[0]
-            ymin = extent[2]
-            krows, kcols = k.data.shape
+                fno.write('ncols \t\t\t' + str(kcols))
+                fno.write('\nnrows \t\t\t' + str(krows))
+                fno.write('\nxllcorner \t\t\t' + str(xmin))
+                fno.write('\nyllcorner \t\t\t' + str(ymin))
+                fno.write('\ncellsize \t\t\t' + str(k.xdim))
+                fno.write('\nnodata_value \t\t' + str(k.nodata))
 
-            fno.write('ncols \t\t\t' + str(kcols))
-            fno.write('\nnrows \t\t\t' + str(krows))
-            fno.write('\nxllcorner \t\t\t' + str(xmin))
-            fno.write('\nyllcorner \t\t\t' + str(ymin))
-            fno.write('\ncellsize \t\t\t' + str(k.xdim))
-            fno.write('\nnodata_value \t\t' + str(k.nodata))
+                tmp = k.data.filled(k.nodata)
+                krows, kcols = k.data.shape
 
-            tmp = k.data.filled(k.nodata)
-            krows, kcols = k.data.shape
-
-            for j in range(krows):
-                fno.write('\n')
-                for i in range(kcols):
-                    fno.write(str(tmp[j, i]) + ' ')
-
-            fno.close()
+                for j in range(krows):
+                    fno.write('\n')
+                    for i in range(kcols):
+                        fno.write(str(tmp[j, i]) + ' ')
 
     def export_ascii_xyz(self, data):
         """
@@ -1330,20 +1319,18 @@ class ExportData():
         for k in data:
             if len(data) > 1:
                 file_out = self.get_filename(k, 'xyz')
-            fno = open(file_out, 'w', encoding='utf-8')
+            with open(file_out, 'w', encoding='utf-8') as fno:
+                tmp = k.data.filled(k.nodata)
 
-            tmp = k.data.filled(k.nodata)
+                xmin = k.extent[0]
+                ymax = k.extent[-1]
+                krows, kcols = k.data.shape
 
-            xmin = k.extent[0]
-            ymax = k.extent[-1]
-            krows, kcols = k.data.shape
-
-            for j in range(krows):
-                for i in range(kcols):
-                    fno.write(str(xmin+i*k.xdim) + ' ' +
-                              str(ymax-j*k.ydim) + ' ' +
-                              str(tmp[j, i]) + '\n')
-            fno.close()
+                for j in range(krows):
+                    for i in range(kcols):
+                        fno.write(str(xmin+i*k.xdim) + ' ' +
+                                  str(ymax-j*k.ydim) + ' ' +
+                                  str(tmp[j, i]) + '\n')
 
     def get_filename(self, data, ext):
         """
@@ -1388,8 +1375,10 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
         ENVI metadata. The default is ''.
     piter : ProgressBar.iter/ProgressBarText.iter, optional
         Progressbar iterable from misc. The default is None.
-    compression : str
+    compression : str, optional
         Compression for GeoTiff. Can be None or ZSTD. The default is None.
+    bandsort : bool, optional
+        sort the bands by dataid. The default is True
 
     Returns
     -------
@@ -1462,7 +1451,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
                   'INTERLEAVE': 'BAND',
                   'TFW': 'YES',
                   'PROFILE': 'GeoTIFF'}
-        if dtype == np.float32 or dtype == np.float64:
+        if dtype in (np.float32, np.float64):
             kwargs['PREDICTOR'] = '3'
 
     with rasterio.open(tmpfile, 'w', driver=drv,
@@ -1503,7 +1492,6 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             out.update_tags(i+1, STATISTICS_SKIPFACTORY=1)
             out.update_tags(i+1, STATISTICS_STDDEV=datai.data.std())
 
-
             if 'Raster' in datai.metadata:
                 if 'wavelength' in datai.metadata['Raster']:
                     out.update_tags(i+1, wavelength=str(datai.metadata['Raster']['wavelength']))
@@ -1536,7 +1524,9 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
 
             wout += 'fwhm = ' + fwhm+'\n'
         if 'reflectance_scale_factor' in datai.metadata['Raster']:
-            wout += 'reflectance scale factor = '+ str(datai.metadata['Raster']['reflectance_scale_factor'])+'\n'
+            wout += ('reflectance scale factor = ' +
+                     str(datai.metadata['Raster']['reflectance_scale_factor'])
+                     + '\n')
 
         with open(tmpfile[:-4]+'.hdr', 'a', encoding='utf-8') as myfile:
             myfile.write(wout)
@@ -1618,8 +1608,6 @@ def _filespeedtest():
 
 
     getinfo('End')
-
-    breakpoint()
 
 
 if __name__ == "__main__":

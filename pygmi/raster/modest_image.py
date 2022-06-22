@@ -45,7 +45,7 @@ class ModestImage(mi.AxesImage):
         self._full_res = None
         self._full_extent = kwargs.get('extent', None)
         self.origin = kwargs.get('origin', 'lower')
-        super(ModestImage, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.invalidate_cache()
 
         # Custom lines for PyGMI
@@ -57,7 +57,7 @@ class ModestImage(mi.AxesImage):
 
     def set_data(self, A):
         """
-
+        Set data.
 
         Parameters
         ----------
@@ -83,8 +83,8 @@ class ModestImage(mi.AxesImage):
 
         if self._A.ndim not in (2, 3):
             raise TypeError("Invalid dimensions for image data")
-        elif (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4) and
-              self.shade is False):
+        if (self._A.ndim == 3 and self._A.shape[-1] not in (3, 4) and
+                self.shade is False):
             raise TypeError("Invalid dimensions for image data")
 
         self.invalidate_cache()
@@ -169,7 +169,7 @@ class ModestImage(mi.AxesImage):
 
         numrows, numcols = self._full_res.shape[:2]
 
-        if col >= 0 and col < numcols and row >= 0 and row < numrows:
+        if 0 <= col < numcols and 0 <= row < numrows:
             # -1 because we are reversing rows.
             z = self._full_res[numrows-row-1, col]
             return z
@@ -318,7 +318,7 @@ class ModestImage(mi.AxesImage):
 
         self._A = colormap
 
-        super(ModestImage, self).draw(renderer, *args, **kwargs)
+        super().draw(renderer, *args, **kwargs)
 
     def draw_ternary(self):
         """
@@ -514,15 +514,20 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
         number of bins to use in compaction
     perc : float
         percentage of histogram to clip. If uperc is not None, then this is
-        the lower percentage
+        the lower percentage, default is 5.
     uperc : float
         upper percentage to clip. If uperc is None, then it is set to the
-        same value as perc
+        same value as perc, default is None.
 
     Returns
     -------
     img2 : numpy array
         compacted array
+    svalue : float
+        Start value
+    evalue : float
+        End value
+
     """
     if uperc is None:
         uperc = perc
@@ -579,7 +584,7 @@ def histeq(img, nbr_bins=32768):
     img : numpy array
         input data to be equalised
     nbr_bins : integer
-        number of bins to be used in the calculation
+        number of bins to be used in the calculation, default is 32768
 
     Returns
     -------
@@ -613,7 +618,7 @@ def img2rgb(img, cbar=cm.get_cmap('jet')):
     img : numpy array
         array to be converted to rgba image.
     cbar : matplotlib color map
-        colormap to apply to the image
+        colormap to apply to the image, default is jet.
 
     Returns
     -------
@@ -640,6 +645,10 @@ def norm2(dat, datmin=None, datmax=None):
     ----------
     dat : numpy array
         array to be normalised
+    datmin : float
+        data mininum, default is None
+    datmax : float
+        data maximum, default is None
 
     Returns
     -------
@@ -681,35 +690,6 @@ def norm255(dat):
     return out
 
 
-def main():
-    """Main."""
-    from time import time
-    import matplotlib.pyplot as plt
-    x, y = np.mgrid[0:2000, 0:2000]
-    data = np.sin(x / 10.) * np.cos(y / 30.)
-
-    f = plt.figure()
-    ax = f.add_subplot(111)
-
-    # try switching between
-    artist = ModestImage(ax, data=data)
-
-    ax.set_aspect('equal')
-    artist.norm.vmin = -1
-    artist.norm.vmax = 1
-
-    ax.add_artist(artist)
-
-    t0 = time()
-    plt.gcf().canvas.draw()
-    t1 = time()
-
-    print("Draw time for %s: %0.1f ms" % (artist.__class__.__name__,
-                                          (t1 - t0) * 1000))
-
-    plt.show()
-
-
 def imshow(axes, X, cmap=None, norm=None, aspect=None,
            interpolation=None, alpha=None, vmin=None, vmax=None,
            origin=None, extent=None, shape=None, filternorm=1,
@@ -720,7 +700,7 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     Unlike matplotlib version, must explicitly specify axes.
     """
     if norm is not None:
-        assert(isinstance(norm, mcolors.Normalize))
+        assert isinstance(norm, mcolors.Normalize)
     if aspect is None:
         aspect = rcParams['image.aspect']
     axes.set_aspect(aspect)
@@ -761,21 +741,40 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
     return im
 
 
-def extract_matched_slices(axes=None, shape=None, extent=None,
+def extract_matched_slices(axes=None, shape=None,
                            transform=IDENTITY_TRANSFORM):
-    """Determine the slice parameters to use, matched to the screen.
-
-    :param ax: Axes object to query. It's extent and pixel size
-               determine the slice parameters
-
-    :param shape: Tuple of the full image shape to slice into. Upper
-               boundaries for slices will be cropped to fit within
-               this shape.
-
-    :rtype: tuple of x0, x1, sx, y0, y1, sy
+    """
+    Determine the slice parameters to use, matched to the screen.
 
     Indexing the full resolution array as array[y0:y1:sy, x0:x1:sx] returns
     a view well-matched to the axes' resolution and extent
+
+    Parameters
+    ----------
+    axes : Axes, optional
+        Axes object to query. It's extent and pixel size determine the slice
+        parameters. The default is None.
+    shape : tuple, optional
+        Tuple of the full image shape to slice into. Upper boundaries for
+        slices will be cropped to fit within this shape. The default is None.
+    transform : rasterio transform, optional
+        Rasterio transform. The default is IDENTITY_TRANSFORM.
+
+    Returns
+    -------
+    x0 : int
+        x minimum.
+    x1 : int
+        x maximum.
+    sx : int
+        x stride.
+    y0 : int
+        y minimum.
+    y1 : int
+        y maximum.
+    sy : int
+        y stride.
+
     """
     # Find extent in display pixels (this gives the resolution we need
     # to sample the array to)
@@ -811,8 +810,8 @@ def extract_matched_slices(axes=None, shape=None, extent=None,
     return x0, x1, sx, y0, y1, sy
 
 
-def main2():
-    """main2."""
+def _testfn():
+    """Test function."""
     from pygmi.raster.iodefs import get_raster
     from pygmi.misc import ProgressBarText
     import matplotlib.pyplot as plt
@@ -846,4 +845,4 @@ def main2():
 
 
 if __name__ == "__main__":
-    main2()
+    _testfn()

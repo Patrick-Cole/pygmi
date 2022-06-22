@@ -249,7 +249,6 @@ def import_and_score(ifile, dreq, mean, std, pprint=print, piter=None):
     if piter is None:
         piter = ProgressBarText().iter
 
-
     bands = [f'B{i+1}' for i in range(11)]
 
     dat = {}
@@ -290,7 +289,7 @@ def import_and_score(ifile, dreq, mean, std, pprint=print, piter=None):
     pprint(f'Scene day of year: {datday}')
 
     filt = (dat['cdist'].data == 0)
-    for band, data in dat.items():
+    for data in dat.values():
         data.data[filt] = 0
         data.data = np.ma.masked_equal(data.data, 0)
 
@@ -334,18 +333,10 @@ def _testfn():
     ofile = os.path.join(idir, 'landsat_composite.tif')
 
     dat = composite(idir, 10)
-    # dat = composite(idir, 10, 87)
 
-    # for i in [dato[0], dat[0]]:
-    #     # plot_rgb(i)
-    #     plt.imshow(i.data[5000:6000, 2000:3000], extent=i.extent)
-    #     plt.colorbar()
-    #     plt.show()
+    plot_rgb(dat)
 
-    # print(dato[0].data[4000,4000])
-    # print(dat[0].data[4000,4000])
-
-    export_raster(ofile, dat, 'GTiff')
+    # export_raster(ofile, dat, 'GTiff')
 
 
 if __name__ == "__main__":

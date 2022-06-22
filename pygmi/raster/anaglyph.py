@@ -225,13 +225,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
             tmp[tmp < 0] = 0.
             tmp[tmp > 1] = 1.
             self.red = cmap(tmp)
-            self.red[:, :, 3] = np.logical_not(self.red1.mask)
+            self.red[:, :, 3] = np.logical_not(np.ma.getmaskarray(self.red1))
 
             tmp = norm2(self.blue1, zmin, zmax)
             tmp[tmp < 0] = 0.
             tmp[tmp > 1] = 1.
             self.blue = cmap(tmp)
-            self.blue[:, :, 3] = np.logical_not(self.blue1.mask)
+            self.blue[:, :, 3] = np.logical_not(np.ma.getmaskarray(self.blue1))
         else:
             alpha = 0
             cell = 100
@@ -704,7 +704,7 @@ def anaglyph(red, blue, atype='dubois'):
         Dataset for red channel.
     blue : numpy array
         Dataset for blue channel.
-    atype : TYPE, optional
+    atype : str, optional
         Anaglyph type. The default is 'dubois'.
 
     Returns

@@ -808,7 +808,8 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
-            band.dataid = f'PCA {j+1} Explained Variance Ratio {evr[j]*100:.2f}%'
+            band.dataid = (f'PCA {j+1} Explained Variance Ratio '
+                           f'{evr[j]*100:.2f}%')
     del datall
 
     return odata, ev
@@ -884,7 +885,6 @@ def _testfn2():
     pbar = ProgressBarText()
 
     ifile = r'd:\Workdata\lithosphere\Cut-90-0824-.hdr'
-    ncmps = 10
     nodata = 0
     iraster = None
 
@@ -937,8 +937,6 @@ def _testfn3():
 
     rcParams['figure.dpi'] = 150
 
-    pbar = ProgressBarText()
-
     # ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
     # extscene = 'Sentinel-2 Bands Only'
     ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
@@ -975,5 +973,4 @@ def _testfn3():
 
 
 if __name__ == "__main__":
-    # _testfn()
     _testfn3()

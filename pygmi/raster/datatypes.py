@@ -113,16 +113,16 @@ class Data():
         array to contain raster data
     extent : tuple
         Extent of data as (left, right, bottom, top)
+    bounds : tuple
+        Bounds of data as (left, bottom, right, top)
     xdim : float
         x-dimension of grid cell
     ydim : float
         y-dimension of grid cell
     dataid : str
         band name or id
-    nullvalue : float
-        grid null or nodata value
-    wkt : str
-        projection information
+    nodata : float
+        grid null or no data value
     units : str
         description of units to be used with color bars
     isrgb : bool
@@ -131,6 +131,10 @@ class Data():
         Miscellaneous metadata for file.
     filename : str
         Filename of file.
+    transform : list of Affine, optional
+        rasterio transform. The default is None.
+    crs : CRS
+        rasterio crs of data
     """
 
     def __init__(self):
@@ -214,7 +218,8 @@ class Data():
 
         Returns
         -------
-        None.
+        raster : MemoryFile
+            rasterio memory file.
 
         """
         raster = MemoryFile().open(driver='GTiff',

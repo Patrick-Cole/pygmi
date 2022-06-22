@@ -168,7 +168,7 @@ class GraphMap(FigureCanvasQTAgg):
         bmax = self.feature[2]
 
         rect = mpatches.Rectangle((bmin, zmin), bmax-bmin, zmax-zmin)
-        rect.set_fc([0, 1, 0])
+        rect.set_facecolor([0, 1, 0])
         rect.set_alpha(0.5)
         ax2.add_patch(rect)
 
@@ -1071,24 +1071,24 @@ def fproc(fdat, ptmp, dtmp, i1a, i2a, xdat):
     Parameters
     ----------
     fdat : numpy array
-        DESCRIPTION.
+        Feature data
     ptmp : numpy array
-        DESCRIPTION.
+        Feature wavelengths.
     dtmp : numpy array
-        DESCRIPTION.
+        Feature depths.
     i1a : int
-        DESCRIPTION.
+        Start index of feature definition.
     i2a : int
-        DESCRIPTION.
+        End Index of feature definition.
     xdat : numpy array
-        DESCRIPTION.
+        Wavelengths of feature definition.
 
     Returns
     -------
     ptmp : numpy array
-        DESCRIPTION.
+        Feature wavelengths.
     dtmp : numpy array
-        DESCRIPTION.
+        Feature depths.
 
     """
     cols, _ = fdat.shape
@@ -1279,7 +1279,7 @@ def readsli(ifile):
         if len(tmp) > 1:
             hdr3[tmp[0].strip()] = tmp[1].strip()
 
-    for i in hdr3:
+    for i in hdr3.keys():
         if i in ['samples', 'lines', 'bands', 'header offset', 'data type']:
             hdr3[i] = int(hdr3[i])
             continue
@@ -1336,8 +1336,6 @@ def _testfn():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
 
-    pbar = ProgressBarText()
-
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     # ifile = r"d:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
@@ -1391,7 +1389,6 @@ def _testfn2():
     # ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
     # ifile = r"d:\Workdata\Remote Sensing\AST_07XT_00307292005085059_20210608060928_376.hdf"
     # ifile = r"d:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
-
 
     # xoff = 0
     # yoff = 2000

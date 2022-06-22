@@ -942,7 +942,7 @@ class AGC(QtWidgets.QDialog):
         return projdata
 
 
-def agc(data, wsize, atype='mean', nodata=0, piter=iter):
+def agc(data, wsize, atype='mean', nodata=0., piter=iter):
     """
     AGC for map data, based on code by Gordon Cooper.
 
@@ -952,8 +952,12 @@ def agc(data, wsize, atype='mean', nodata=0, piter=iter):
         Raster data.
     wsize : int
         Window size, must be odd.
-    atype : str
-        AGC type - can be median or mean.
+    atype : str, optional
+        AGC type - can be median or mean, default is 'mean'.
+    nodata : float, optional
+        no data value, default is 0.
+    piter : iter
+        Progress bar iterable. The default is iter.
 
     Returns
     -------
@@ -990,7 +994,7 @@ def agc(data, wsize, atype='mean', nodata=0, piter=iter):
     return agcdata
 
 
-def _test():
+def _testfn():
     """Test Reprojection."""
     import sys
     from pygmi.raster.iodefs import get_raster
@@ -1029,8 +1033,6 @@ def _test():
         plt.colorbar()
         plt.show()
 
-    breakpoint()
-
 
 if __name__ == "__main__":
-    _test()
+    _testfn()

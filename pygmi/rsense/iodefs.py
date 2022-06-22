@@ -32,11 +32,11 @@ import glob
 import tarfile
 import zipfile
 import datetime
+from collections import defaultdict
+
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
-from collections import defaultdict
-
 import geopandas as gpd
 from geopandas import GeoDataFrame
 from shapely.geometry import Point

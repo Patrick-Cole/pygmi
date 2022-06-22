@@ -1963,7 +1963,6 @@ def redistribute_vertices(geom, distance):
         New geometry.
 
     """
-
     if geom.geom_type == 'LineString':
         num_vert = int(round(geom.length / distance))
         if num_vert == 0:
@@ -1971,12 +1970,11 @@ def redistribute_vertices(geom, distance):
         return LineString(
             [geom.interpolate(float(n) / num_vert, normalized=True)
              for n in range(num_vert + 1)])
-    elif geom.geom_type == 'MultiLineString':
+    if geom.geom_type == 'MultiLineString':
         parts = [redistribute_vertices(part, distance)
                  for part in geom]
         return type(geom)([p for p in parts if not p.is_empty])
-    else:
-        raise ValueError('unhandled geometry %s', (geom.geom_type,))
+    raise ValueError('unhandled geometry %s', (geom.geom_type,))
 
 
 def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
@@ -2030,7 +2028,7 @@ def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
 def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
                roff=None, coff=None):
     """
-    Custom merge for rasterio, taking minimum value.
+    Merge using mean for rasterio, taking minimum value.
 
     Parameters
     ----------
@@ -2079,7 +2077,7 @@ def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
 def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
               roff=None, coff=None):
     """
-    Custom merge for rasterio, taking minimum value.
+    Merge using minimum for rasterio, taking minimum value.
 
     Parameters
     ----------
@@ -2116,7 +2114,7 @@ def merge_min(merged_data, new_data, merged_mask, new_mask, index=None,
 def merge_max(merged_data, new_data, merged_mask, new_mask, index=None,
               roff=None, coff=None):
     """
-    Custom merge for rasterio, taking maximum value.
+    Merge using maximum for rasterio, taking maximum value.
 
     Parameters
     ----------
@@ -2156,14 +2154,19 @@ def fftprep(data):
 
     Parameters
     ----------
-    data : TYPE
-        DESCRIPTION.
-    dxy : TYPE
-        DESCRIPTION.
+    data : PyGMI Data type
+        Input dataset.
 
     Returns
     -------
-    None.
+    zfin : numpy array.
+        Output prepared data.
+    rdiff : int
+        rows divided by 2.
+    cdiff : int
+        columns divided by 2.
+    datamedian : float
+        Median of data.
 
     """
     datamedian = np.ma.median(data.data)
@@ -2249,14 +2252,19 @@ def fft_getkxy(fftmod, xdim, ydim):
 
     Parameters
     ----------
-    fftmod : TYPE
-        DESCRIPTION.
-    dxy : TYPE
-        DESCRIPTION.
+    fftmod : numpy array
+        FFT data.
+    xdim : float
+        cell x dimension.
+    ydim : float
+        cell y dimension.
 
     Returns
     -------
-    None.
+    KX : numpy array
+        x sample frequencies.
+    KY : numpy array
+        y sample frequencies.
 
     """
     ny, nx = fftmod.shape
@@ -2276,14 +2284,12 @@ def verticalp(data, order=1):
     ----------
     data : numpy array
         Input data.
-    npts : int, optional
-        Number of points. The default is None.
-    xint : float, optional
-        X interval. The default is 1.
+    order : float, optional
+        Order. The default is 1.
 
     Returns
     -------
-    dz : numpy array
+    dout : numpy array
         Output data
 
     """
@@ -2511,6 +2517,8 @@ def cut_raster(data, ifile, pprint=print):
         PyGMI Dataset
     ifile : str
         shapefile used to cut data
+    pprint : function, optional
+        Function for printing text. The default is print.
 
     Returns
     -------
@@ -2561,7 +2569,6 @@ def cut_raster(data, ifile, pprint=print):
             pprint('The shapefile is not in the same area as the raster '
                    'dataset. Please check its coordinates and make sure its '
                    'projection is the same as the raster dataset')
-            breakpoint()
             return None
 
         # coords = [json.loads(gdf.to_json())['features'][0]['geometry']]
@@ -2699,7 +2706,7 @@ def getepsgcodes():
 def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
            masterid=None):
     """
-    Merge datasets found in a single PyGMI data object.
+    Layer stack datasets found in a single PyGMI data object.
 
     The aim is to ensure that all datasets have the same number of rows and
     columns.
@@ -2708,11 +2715,22 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
     ----------
     dat : PyGMI Data
         data object which stores datasets
+    piter : iter, optional
+        Progress bar interator. The default is None.
+    dxy : float, optional
+        Cell size. The default is None.
+    pprint : function, optional
+        Print function. The default is print.
+    commonmask : bool, optional
+        Create a common mask for all bands. The default is False.
+    masterid : int, optional
+        ID of master dataset. The default is None.
 
     Returns
     -------
     out : PyGMI Data
         data object which stores datasets
+
     """
     if piter is None:
         piter = ProgressBarText().iter
@@ -3182,7 +3200,7 @@ def _testmerge():
     """Test Merge."""
     import sys
     import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import export_raster
+    # from pygmi.raster.iodefs import export_raster
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -3208,8 +3226,6 @@ def _testmerge():
     plt.colorbar()
     plt.tight_layout()
     plt.show()
-
-    breakpoint()
 
     # plt.figure(dpi=150)
     # plt.hist(dat.flatten(), 100)
@@ -3266,7 +3282,7 @@ def _testreproj():
 def _testcut():
     """Test Reprojection."""
     import sys
-    from pygmi.rsense.iodefs import get_data
+    # from pygmi.rsense.iodefs import get_data
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
@@ -3276,14 +3292,11 @@ def _testcut():
     sfile = r"D:\Workdata\Janine\rsa_outline_utm35s.shp"
     ifile = r"D:\Workdata\Janine\oneband.tif"
 
-
     # ifile = r"d:\Workdata\bugs\S2B_MSIL2A_20210913T074609_N0301_R135_T36KTV_20210913T102843.zip"
     # sfile = r"d:\Workdata\bugs\AU5_block_larger_utm36S.shp"
 
-    piter = ProgressBarText().iter
-
     dat = get_raster(ifile)
-    # dat = get_data(ifile, piter=piter, extscene='Sentinel-2')
+    # dat = get_data(ifile, extscene='Sentinel-2')
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -3305,8 +3318,6 @@ def _testcut():
     plt.show()
 
     # out = lstack(DM.outdata['Raster'])
-
-    breakpoint()
 
 
 def _testprof():
@@ -3379,5 +3390,4 @@ def _testlstack():
 
 
 if __name__ == "__main__":
-    # _testcut()
     _testmerge()
