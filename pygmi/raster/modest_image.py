@@ -2,7 +2,7 @@
 Modest Image.
 
 Modification of Chris Beaumont's mpl-modest-image package to allow the use of
-set_extent.
+set_extent as well as better integration into PyGMI
 
 pcole, 2021  - Bug fix to allow for correct zooming if origin is set to 'upper'
 """
@@ -88,6 +88,33 @@ class ModestImage(mi.AxesImage):
             raise TypeError("Invalid dimensions for image data")
 
         self.invalidate_cache()
+
+    def set_shade(self, doshade, cell=None, theta=None, phi=None, alpha=None):
+        """
+        Set the shade information.
+
+        Parameters
+        ----------
+        doshade : bool
+            Check for whether to shade or not.
+        cell : float, optional
+            Sunshade detail, between 1 and 100. The default is None.
+        theta : float, optional
+            Sun inclination or elevation. The default is None.
+        phi : float, optional
+            Sun declination or azimuth. The default is None.
+        alpha : float, optional
+            Light reflectance, between 0 and 1. The default is None.
+
+        Returns
+        -------
+        None.
+
+        """
+        if doshade is True:
+            self.shade = [cell, theta, phi, alpha]
+        else:
+            self.shape = None
 
     def invalidate_cache(self):
         """

@@ -45,6 +45,7 @@ from numba import jit
 from PIL import Image
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+
 import pygmi.pfmod.misc as misc
 
 

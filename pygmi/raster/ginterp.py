@@ -567,11 +567,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 if i.dataid == self.hband[j]:
                     dat[j] = i.data
 
+        self.image.set_shade(self.shade, self.cell, self.theta, self.phi,
+                             self.alpha)
+
         if self.shade is True:
-            self.image.shade = [self.cell, self.theta, self.phi, self.alpha]
             dat.append(sun)
-        else:
-            self.image.shade = None
 
         dat = np.ma.array(dat)
 
@@ -681,12 +681,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if i.dataid == self.hband[3]:
                 sun = i.data
 
+        self.image.set_shade(self.shade, self.cell, self.theta, self.phi,
+                             self.alpha)
         if self.shade is True:
-            self.image.shade = [self.cell, self.theta, self.phi, self.alpha]
             pseudo = np.ma.stack([pseudo, sun])
             pseudo = np.moveaxis(pseudo, 0, -1)
-        else:
-            self.image.shade = None
 
         self.image.set_data(pseudo)
         self.image._scale_to_res()
@@ -785,7 +784,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             pseudo[:, :, -1] = sun
             self.image.set_data(pseudo)
 
-        self.image.shade = [self.cell, self.theta, self.phi, self.alpha]
+        self.image.set_shade(True, self.cell, self.theta, self.phi, self.alpha)
         self.axes.draw_artist(self.image)
         self.figure.canvas.update()
 

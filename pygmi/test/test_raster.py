@@ -492,4 +492,4 @@ def test_smooth():
 
 
 if __name__ == "__main__":
-    test_histcomp()
+    test_smooth()

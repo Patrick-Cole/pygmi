@@ -543,7 +543,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                         lithfin[j].append(lith[i])
 
             lithlist = []
-            for i in lithfin:
+            for i in lithfin.keys():
                 lithfin[i] = list(set(lithfin[i]))
                 lithfin[i].sort()
                 lithfin[i] = "".join(i+'/' for i in lithfin[i])[:-1]
@@ -873,7 +873,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                         udatad[ref] = []
                     udatad[ref].append(ltmp[zz, self.ipdx1+ixy])
 
-            for i2 in udatad:
+            for i2 in udatad.keys():
                 if 0 in udatad[i2]:
                     zcnt = udatad[i2].count(0)
                     if (zcnt/len(udatad[i2])) <= 0.8:

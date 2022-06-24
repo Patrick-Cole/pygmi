@@ -27,7 +27,6 @@
 import numpy as np
 
 from pygmi.raster.datatypes import Data
-from rasterio.crs import CRS
 
 
 class LithModel():
@@ -52,16 +51,12 @@ class LithModel():
         dimension of cubes in the z direction
     lith_index : numpy array
         3D array of lithological indices.
-    curlayer : int
-        Current layer
     xrange : list
         minimum and maximum x coordinates
     yrange : list
         minimum and maximum y coordinates
     zrange : list
         minimum and maximum z coordinates
-    curprof : int
-        current profile (in x or y direction)
     griddata : dictionary
         dictionary of Data classes with raster data
     custprofx : dictionary
@@ -120,11 +115,6 @@ class LithModel():
         self.onumx = None
         self.onumy = None
         self.onumz = None
-
-        # Obsolete
-#        self.curlayer = None
-#        self.is_ew = True
-#        self.curprof = None
 
     def lithold_to_lith(self, nodtm=False, pbar=None):
         """

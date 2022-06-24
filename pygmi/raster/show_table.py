@@ -281,7 +281,7 @@ class ClusterStats(QtWidgets.QDialog):
 
             for j, _ in enumerate(val):
                 for k, _ in enumerate(val[0]):
-                    val[j][k] = '{:.4f} : {:.4f}'.format(val[j][k], std[j][k])
+                    val[j][k] = f'{val[j][k]:.4f} : {std[j][k]:.4f}'
             self.data.append(val)
 
         data = self.data[0]
@@ -341,19 +341,17 @@ def savetable(ofile, bands, cols, data):
     None.
 
     """
-    fobj = open(ofile, 'a', encoding='utf-8')
+    with open(ofile, 'a', encoding='utf-8') as fobj:
+        htmp = cols[0]
+        for i in cols[1:]:
+            htmp += ',' + i
 
-    htmp = cols[0]
-    for i in cols[1:]:
-        htmp += ',' + i
-
-    for k, _ in enumerate(bands):
-        fobj.write(bands[k]+'\n')
-        fobj.write(htmp+'\n')
-        for i, _ in enumerate(data[k]):
-            rtmp = str(data[k][i][0])
-            for j in range(1, len(data[k][0])):
-                rtmp += ','+str(data[k][i][j])
-            fobj.write(rtmp+'\n')
-        fobj.write('\n')
-    fobj.close()
+        for k, _ in enumerate(bands):
+            fobj.write(bands[k]+'\n')
+            fobj.write(htmp+'\n')
+            for i, _ in enumerate(data[k]):
+                rtmp = str(data[k][i][0])
+                for j in range(1, len(data[k][0])):
+                    rtmp += ','+str(data[k][i][j])
+                fobj.write(rtmp+'\n')
+            fobj.write('\n')

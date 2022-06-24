@@ -132,20 +132,17 @@ class Normalisation(QtWidgets.QDialog):
             for i in data:
                 tmp1 = i.data.min()
                 tmp2 = i.data.max() - i.data.min()
-                tmp3 = 'minmax'
-                i, transform = datacommon(i, tmp1, tmp2, tmp3)
+                i, _ = datacommon(i, tmp1, tmp2)
         elif self.radiobutton_mean.isChecked():
             for i in data:
                 tmp1 = i.data.mean()
                 tmp2 = i.data.std()
-                tmp3 = 'meanstd'
-                i, transform = datacommon(i, tmp1, tmp2, tmp3)
+                i, _ = datacommon(i, tmp1, tmp2)
         elif self.radiobutton_median.isChecked():
             for i in data:
                 tmp1 = np.median(i.data.compressed())
                 tmp2 = np.median(abs(i.data.compressed() - tmp1))
-                tmp3 = 'medmad'
-                i, transform = datacommon(i, tmp1, tmp2, tmp3)
+                i, _ = datacommon(i, tmp1, tmp2)
         elif self.radiobutton_8bit.isChecked():
             for i in data:
                 i.data = histeq(i.data)
@@ -210,7 +207,7 @@ class Normalisation(QtWidgets.QDialog):
         return projdata
 
 
-def datacommon(data, tmp1, tmp2, tmp3):
+def datacommon(data, tmp1, tmp2):
     """
     Variables used in the process routine.
 
@@ -222,8 +219,6 @@ def datacommon(data, tmp1, tmp2, tmp3):
         Parameter 1. Can be min, mean or median.
     tmp2 : float
         Parameter 2. Can be range, std, or mad.
-    tmp3 : str
-        Text label. Can be 'minmax', 'meanstd' or 'medmad'.
 
     Returns
     -------
@@ -244,6 +239,5 @@ def datacommon(data, tmp1, tmp2, tmp3):
         dtmp /= tmp2
 
         data.data = np.ma.array(dtmp, mask=mtmp)
-#        n_norms = len(data.norm)
-#        data.norm[n_norms] = {'type': tmp3, 'transform': transform}
+
     return data, transform

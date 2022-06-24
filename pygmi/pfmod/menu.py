@@ -25,6 +25,7 @@
 """Potential Field Modelling menus."""
 
 from PyQt5 import QtWidgets
+
 from pygmi.pfmod import pfmod
 from pygmi.pfmod import mvis3d
 from pygmi.pfmod import iodefs

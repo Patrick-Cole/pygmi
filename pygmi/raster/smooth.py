@@ -357,7 +357,7 @@ class Smooth(QtWidgets.QDialog):
                     i = 127
                 else:
                     i = int(255*(self.fmat[row, col]-fmin)/frange)
-                ltmp = QtWidgets.QLabel('{:g}'.format(self.fmat[row, col]))
+                ltmp = QtWidgets.QLabel(f'{self.fmat[row, col]:g}')
                 ltmp.setStyleSheet(
                     'Background: rgb' +
                     str((red[i], green[i], blue[i])) + '; Color: rgb' +
@@ -391,16 +391,16 @@ class Smooth(QtWidgets.QDialog):
 
         Parameters
         ----------
-        dat : numpy array.
+        dat : numpy masked array.
             Data for a PyGMI raster dataset.
-        fmat : TYPE
-            DESCRIPTION.
+        fmat : numpy array
+            Filter matrix.
         itype : str
             Filter type. Can be '2D Mean' or '2D Median'.
 
         Returns
         -------
-        out : numpy array
+        out : numpy masked array
             Data for a PyGMI raster dataset.
 
         """
@@ -413,10 +413,8 @@ class Smooth(QtWidgets.QDialog):
         drr = round(rowf/2.0)
         dcc = round(colf/2.0)
 
-        dummy = np.zeros((rowd+rowf-1, cold+colf-1))*np.nan
+        dummy = np.ma.masked_all((rowd+rowf-1, cold+colf-1))
         dummy[drr-1:drr-1+rowd, dcc-1:dcc-1+cold] = dat
-        dummy = np.ma.masked_invalid(dummy)
-        dummy.mask[drr-1:drr-1+rowd, dcc-1:dcc-1+cold] = dat.mask
 
         dummy.data[dummy.mask] = np.nan
         dat = dat.astype(float)
@@ -435,10 +433,12 @@ class Smooth(QtWidgets.QDialog):
             for i in self.piter(range(rowd)):
                 for j in range(cold):
                     tmp1 = dummy[i:i+rowf, j:j+colf][fmat]
-                    if np.isnan(tmp1).min() == False:
+                    if np.any(~np.isnan(tmp1)):  # if any are False
                         out[i, j] = np.nanmedian(tmp1)
 
         out = np.ma.masked_invalid(out)
+        out = np.ma.array(out)
+
         out.shape = out.shape[0:2]
         out.mask[:rowf//2] = True
         out.mask[-rowf//2:] = True
