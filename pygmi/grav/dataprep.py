@@ -28,6 +28,7 @@ import sys
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import matplotlib.pyplot as plt
+
 import pygmi.menu_default as menu_default
 import pygmi.grav.iodefs as iodefs
 

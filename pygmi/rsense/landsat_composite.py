@@ -29,15 +29,16 @@ import glob
 from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.dataprep import lstack
 from pygmi.raster.iodefs import export_raster
 from pygmi.misc import ProgressBarText
+import pygmi.menu_default as menu_default
 
 
-class LandsatComposite():
+class LandsatComposite(QtWidgets.QDialog):
     """
     Landsat Composite Interface.
 
@@ -56,17 +57,62 @@ class LandsatComposite():
     """
 
     def __init__(self, parent=None):
+        super().__init__(parent)
         self.ifile = ''
         self.idir = ''
         self.parent = parent
         self.indata = {}
         self.outdata = {}
+
         if parent is None:
             self.showprocesslog = print
             self.piter = ProgressBarText().iter
         else:
             self.showprocesslog = parent.showprocesslog
             self.piter = parent.pbar.iter
+
+        self.tday = QtWidgets.QSpinBox()
+        self.idirlist = QtWidgets.QLineEdit('')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
+        pb_idirlist = QtWidgets.QPushButton('Batch Directory')
+
+        label_tday = QtWidgets.QLabel('Target Day:')
+
+        self.tday.setMinimum(1)
+        self.tday.setMaximum(366)
+        self.tday.setValue(1)
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle('Landsat Composite')
+
+        gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
+        gridlayout_main.addWidget(label_tday, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.tday, 2, 1, 1, 1)
+        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 1)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        pb_idirlist.pressed.connect(self.get_idir)
+        # self.tday.valueChanged.connect(self.calculate_days)
 
     def settings(self, nodialog=False):
         """
@@ -83,11 +129,16 @@ class LandsatComposite():
             True if successful, False otherwise.
 
         """
-        if not nodialog or self.idir == '':
-            self.idir = QtWidgets.QFileDialog.getExistingDirectory(
-                self.parent, 'Select Directory')
-            if self.idir == '':
+
+        if not nodialog:
+            tmp = self.exec_()
+            if tmp != 1:
                 return False
+
+        if self.idir == '':
+            self.showprocesslog('Error: No input directory')
+            return False
+
         os.chdir(self.idir)
 
         ifiles = glob.glob(os.path.join(self.idir, '**/*MTL.txt'),
@@ -99,12 +150,56 @@ class LandsatComposite():
                                           QtWidgets.QMessageBox.Ok)
             return False
 
+        mean = self.tday.value()
         dat = composite(self.idir, 10, pprint=self.showprocesslog,
-                        piter=self.piter)
+                        piter=self.piter, mean=mean)
 
         self.outdata['Raster'] = dat
 
         return True
+
+    def get_idir(self):
+        """
+        Get the input directory.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.idir = QtWidgets.QFileDialog.getExistingDirectory(
+             self.parent, 'Select Directory')
+
+        self.idirlist.setText(self.idir)
+
+        if self.idir == '':
+            self.idir = None
+            return
+
+        ifiles = glob.glob(os.path.join(self.idir, '**/*MTL.txt'),
+                           recursive=True)
+
+        if not ifiles:
+            self.showprocesslog('Error: No *MTL.txt in the directory.')
+            return
+
+        allday = []
+        for ifile in ifiles:
+            sdate = os.path.basename(ifile).split('_')[3]
+            sdate = datetime.strptime(sdate, '%Y%m%d')
+            datday = sdate.timetuple().tm_yday
+            allday.append(datday)
+            self.showprocesslog(f'Scene name: {os.path.basename(ifile)}')
+            self.showprocesslog(f'Scene day of year: {datday}')
+
+        allday = np.array(allday)
+        mean = int(allday.mean())
+        # std = allday.std()
+
+        self.showprocesslog(f'Mean day: {mean}')
+
+        self.tday.setValue(mean)
+
 
     def loadproj(self, projdata):
         """
@@ -195,7 +290,8 @@ def composite(idir, dreq=10, mean=None, pprint=print, piter=None):
         tmp2 = {}
 
         for band in dat1:
-            tmp1[band], tmp2[band] = lstack([dat1[band], dat2[band]])
+            tmp1[band], tmp2[band] = lstack([dat1[band], dat2[band]],
+                                            pprint=pprint, piter=piter)
 
         filt = (tmp1['score'].data < tmp2['score'].data)
 
@@ -329,14 +425,23 @@ def plot_rgb(dat, title='RGB'):
 
 def _testfn():
     """Test routine."""
+    import sys
     idir = r'C:\WorkProjects\Landsat_Summer'
     ofile = os.path.join(idir, 'landsat_composite.tif')
 
-    dat = composite(idir, 10)
+    # dat = composite(idir, 10)
 
-    plot_rgb(dat)
+    # plot_rgb(dat)
 
     # export_raster(ofile, dat, 'GTiff')
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    gui = LandsatComposite()
+    # gui.idir = idir
+    gui.settings()
+
+
 
 
 if __name__ == "__main__":
