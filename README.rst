@@ -104,11 +104,53 @@ They can be obtained from the `website <http://www.lfd.uci.edu/~gohlke/pythonlib
 
 Linux
 -----
-Linux normally comes with python installed, but the additional libraries will still need to be installed. One convenient option is to install the above libraries through `Anaconda Python <https://www.anaconda.com/>`_.
+Linux normally comes with python installed, but the additional libraries will still need to be installed.
+
+Typically, packages can be installed using pip. The process is as follows:
+
+   sudo apt-get install pip
+   
+   sudo apt-get install gdal-bin
+   
+   sudo apt-get install libgdal-dev
+   
+   pip install pyqt
+
+   pip install numpy
+
+   pip install scipy
+
+   pip install matplotlib
+
+   pip install psutil
+
+   pip install numexpr
+
+   pip install pandas
+
+   pip install rasterio
+
+   pip install geopandas
+
+   pip install numba
+
+   pip install scikit-learn
+
+   pip install scikit-image
+
+   pip install pyopengl
+
+   pip install natsort
+
+   pip install simpeg
+
+   pip install pyshp
+
+   pip install mtpy
 
 Anaconda
 --------
-Anaconda users are advised not to use pip since it can break PyQt5. However, two packages are installed only by pip, so a Conda environment should be created. Note that I installed all packages from the 'defaults' conda channel, except where the command specifies otherwise.
+Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created. 
 
 The process to install is as follows:
 
