@@ -22,10 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""
-A routine interfacing with the SimPEG inversion library for magnetic
-inversion.
-"""
+"""Magnetic inversion using the SimPEG inversion library."""
 
 import sys
 from contextlib import redirect_stdout
@@ -72,7 +69,6 @@ class MagInvert(QtWidgets.QDialog):
             self.stdout = sys.stdout
         else:
             self.stdout = self.parent.stdio_redirect
-
 
         self.combo_model = QtWidgets.QComboBox()
         self.combo_other = QtWidgets.QComboBox()
@@ -487,20 +483,7 @@ class MagInvert(QtWidgets.QDialog):
         None.
 
         """
-
-        # cols = 40
-        # rows = 40
-        # layers = 15
-        # utlx = -80
-        # utly = 90
-        # utlz = 0
-        # dxy = 5.
-        # d_z = 5.
-        # mht = 1.
-
-        # self.lmod1.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, mht)
-
-    # Extent Parameters
+        # Extent Parameters
         self.dsb_utlx.setValue(self.lmod1.xrange[0])
         self.dsb_utly.setValue(self.lmod1.yrange[-1])
         self.dsb_utlz.setValue(self.lmod1.zrange[-1])
@@ -512,11 +495,6 @@ class MagInvert(QtWidgets.QDialog):
         self.sb_cols.setValue(self.lmod1.numx)
         self.sb_rows.setValue(self.lmod1.numy)
         self.sb_layers.setValue(self.lmod1.numz)
-
-        # self.dsb_mht.setValue(mht)
-        # self.dsb_hdec.setValue(0)
-        # self.dsb_hint.setValue(50000)
-        # self.dsb_hinc.setValue(90)
 
     def upd_layers(self):
         """
@@ -716,7 +694,6 @@ class MagInvert(QtWidgets.QDialog):
         None.
 
         """
-
         datatmp = list(set(self.lmod1.griddata.values()))
 
         if 'Raster' not in self.indata:
@@ -744,10 +721,12 @@ class MagInvert(QtWidgets.QDialog):
         if tmp != 1:
             return tmp
 
-        self.acceptall()
+        tmp = self.acceptall()
 
-        self.outdata['Model3D'] = [self.lmod2]
-        return True
+        if tmp is True:
+            self.outdata['Model3D'] = [self.lmod2]
+
+        return tmp
 
     def acceptall(self):
         """
@@ -783,7 +762,7 @@ class MagInvert(QtWidgets.QDialog):
         # xxx = np.arange(xmin, xmax, xdim) + xdim/2
         # yyy = np.arange(ymin, ymax, ydim) + ydim/2
 
-        # # Get rid of the extra values due to round off error
+        # Get rid of the extra values due to round off error
         # xxx = xxx[xxx < xmax]
         # yyy = yyy[yyy < ymax]
 
@@ -926,11 +905,13 @@ class MagInvert(QtWidgets.QDialog):
 
         r3 = r2[:-5, 5:-5, 5:-5]
         r3 = np.ma.masked_invalid(r3)
+        r3 = np.ma.array(r3)
         # X = skp.StandardScaler().fit_transform(r3.flatten())
 
         X = r3.compressed().reshape(-1, 1)
 
-        # cfit = skc.KMeans(n_clusters=i, tol=self.tol, max_iter=self.max_iter).fit(X)
+        # cfit = skc.KMeans(n_clusters=i, tol=self.tol,
+        #                   max_iter=self.max_iter).fit(X)
         numclasses = self.sb_classes.value()
         cfit = skc.KMeans(n_clusters=numclasses).fit(X)
 
@@ -986,15 +967,15 @@ class MagInvert(QtWidgets.QDialog):
         self.lmod2.name = 'Internal Inverted Model'
         self.lmod2.griddata = self.lmod1.griddata
 
+        return True
+
 
 def _testfn():
     """Test Function."""
-    # Plot Recovered Model
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
     import matplotlib as mpl
 
-    # from pygmi.pfmod.mvis3d import Mod3dDisplay
     from pygmi.pfmod.pfmod import MainWidget
 
     from IPython import get_ipython
@@ -1119,9 +1100,6 @@ def _testfn():
 
 def _testfn2():
     """Test Function."""
-    # Plot Recovered Model
-    import copy
-    # import sys
     import matplotlib.pyplot as plt
     import matplotlib as mpl
     from pygmi.raster.iodefs import get_raster
@@ -1255,9 +1233,6 @@ def _testfn2():
 
 def _testfn3():
     """Test Function."""
-    # Plot Recovered Model
-    import copy
-    # import sys
     import matplotlib.pyplot as plt
     from pygmi.raster.iodefs import get_raster
     from pygmi.pfmod.pfmod import MainWidget

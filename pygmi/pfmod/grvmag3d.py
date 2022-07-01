@@ -741,7 +741,6 @@ class GeoData():
         if demag is True:
             m3 = calc_demag(m3, self.susc,
                             np.abs(self.x12[1]-self.x12[0]),
-                            np.abs(self.y12[1]-self.y12[0]),
                             np.abs(self.z12[1]-self.z12[0]))
 
         mt = np.sqrt(m3 @ m3)
@@ -778,7 +777,7 @@ class GeoData():
         self.mlayers = self.mlayers[:-1]-self.mlayers[1:]
 
 
-def calc_demag(mvec, k, dx, dy, dz):
+def calc_demag(mvec, k, dxy, dz):
     """
     Calculate demagnetisation correction.
 
@@ -786,14 +785,12 @@ def calc_demag(mvec, k, dx, dy, dz):
     ----------
     mvec : numpy array
         Body Magnetisation.
-    k : TYPE
-        DESCRIPTION.
-    dx : TYPE
-        DESCRIPTION.
-    dy : TYPE
-        DESCRIPTION.
-    dz : TYPE
-        DESCRIPTION.
+    k : float
+        susceptibility.
+    dxy : float
+        cell width.
+    dz : float
+        cell height.
 
     Returns
     -------
@@ -802,9 +799,10 @@ def calc_demag(mvec, k, dx, dy, dz):
 
     """
     # Y = dy/2
-    t = dx
+    t = dxy  # this was dx
     d = dz
 
+    # These lines below assume dx is not equal to dy.
     # Ndz = 4*np.pi*(2*Y*t/(d*t+2*Y*t+2*Y*d))
     # Ndy = 4*np.pi*(d*t/(d*t+2*Y*t+2*Y*d))
     # Ndx = 4*np.pi*(2*Y*d/(d*t+2*Y*t+2*Y*d))
@@ -1578,32 +1576,31 @@ def dat_extent(dat, axes):
 
 def _testfn():
     """Test routine."""
-#    from pygmi.pfmod.iodefs import ImportMod3D
+    # from pygmi.pfmod.iodefs import ImportMod3D
 
-# Import model file
-#    filename = r'd:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
-#    imod = ImportMod3D(None)
-#    imod.ifile = filename
-#    imod.lmod.griddata.clear()
-#    imod.lmod.lith_list.clear()
-#    indict = np.load(filename)
-#    imod.dict2lmod(indict)
-#    calc_field(imod.lmod, magcalc=True)
+    # Import model file
+    # filename = r'd:\Work\Programming\pygmi\data\Magmodel_Area3_Delph.npz'
+    # imod = ImportMod3D(None)
+    # imod.ifile = filename
+    # imod.lmod.griddata.clear()
+    # imod.lmod.lith_list.clear()
+    # indict = np.load(filename)
+    # imod.dict2lmod(indict)
+    # calc_field(imod.lmod, magcalc=True)
 
-
-# quick model
+    # quick model
     lmod = quick_model(numx=300, numy=300, numz=30)
     lmod.lith_index[:, :, 0] = 1
-#    lmod.lith_index[:, :, 10] = 1
+    # lmod.lith_index[:, :, 10] = 1
     lmod.mht = 100
     calc_field(lmod, magcalc=True)
 
-# Calculate the field
+    # Calculate the field
 
-    magval = lmod.griddata['Calculated Magnetics'].data
+    # magval = lmod.griddata['Calculated Magnetics'].data
 
-#    plt.imshow(magval, cmap=cm.get_cmap('jet'))
-#    plt.show()
+    # plt.imshow(magval, cmap=cm.get_cmap('jet'))
+    # plt.show()
 
 
 if __name__ == "__main__":

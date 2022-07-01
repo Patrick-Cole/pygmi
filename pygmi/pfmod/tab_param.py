@@ -29,7 +29,7 @@ import numpy as np
 
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 
 
 class MergeLith(QtWidgets.QDialog):

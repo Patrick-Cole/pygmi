@@ -34,7 +34,7 @@ from pygmi.pfmod import tab_mext
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import iodefs
 from pygmi.pfmod.datatypes import LithModel
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 import pygmi.misc as pmisc
 
 

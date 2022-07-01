@@ -42,14 +42,14 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from numba import jit
-import pygmi.raster.cooper as cooper
-import pygmi.raster.dataprep as dataprep
-import pygmi.menu_default as menu_default
-import pygmi.misc as misc
 
 from pygmi.raster.datatypes import Data
+from pygmi.raster.cooper import vertical
+from pygmi.raster.dataprep import lstack
+from pygmi.mag.dataprep import rtp
 from pygmi.vector.dataprep import quickgrid
-from pygmi.misc import frm
+from pygmi.misc import frm, ProgressBar
+from pygmi import menu_default
 
 
 class TiltDepth(QtWidgets.QDialog):
@@ -101,7 +101,7 @@ class TiltDepth(QtWidgets.QDialog):
         self.dsb_dec = QtWidgets.QDoubleSpinBox()
         self.btn_apply = QtWidgets.QPushButton('Calculate Tilt Depth')
         self.btn_save = QtWidgets.QPushButton('Save Depths to Text File')
-        self.pbar = misc.ProgressBar()
+        self.pbar = ProgressBar()
 
         self.setupui()
 
@@ -277,7 +277,7 @@ class TiltDepth(QtWidgets.QDialog):
             self.showprocesslog('No Raster Data.')
             return False
 
-        self.indata['Raster'] = dataprep.lstack(self.indata['Raster'])
+        self.indata['Raster'] = lstack(self.indata['Raster'])
 
         data = self.indata['Raster']
         blist = []
@@ -349,7 +349,7 @@ class TiltDepth(QtWidgets.QDialog):
         inc = self.dsb_inc.value()
         dec = self.dsb_dec.value()
 
-        zout = dataprep.rtp(data, inc, dec)
+        zout = rtp(data, inc, dec)
 
     # Tilt
         self.pbar.setValue(1)
@@ -357,7 +357,7 @@ class TiltDepth(QtWidgets.QDialog):
         nr, nc = zout.data.shape
         dy, dx = np.gradient(zout.data)
         dxtot = np.sqrt(dx**2+dy**2)
-        dz = cooper.vertical(zout.data)
+        dz = vertical(zout.data)
         t1 = np.arctan(dz/dxtot)
 
         self.pbar.setValue(2)

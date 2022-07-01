@@ -35,11 +35,11 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
 from matplotlib.patches import Rectangle
-import mtpy.modeling.occam1d as occam1d
+from mtpy.modeling import occam1d
 from mtpy.core.mt import MT
 from mtpy.core.z import Z, Tipper
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 
 
 class Metadata(QtWidgets.QDialog):
@@ -857,8 +857,8 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
@@ -877,8 +877,8 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
@@ -897,8 +897,8 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
@@ -943,8 +943,8 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
@@ -964,16 +964,14 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         return True
 
-    def resize(self, name, canvas=None):
+    def resize(self, event):
         """
         Resize event.
 
         Parameters
         ----------
-        name : TYPE
-            DESCRIPTION.
-        canvas : TYPE, optional
-            DESCRIPTION. The default is None.
+        event : event
+            unused.
 
         Returns
         -------
@@ -1321,8 +1319,8 @@ class MySlider(QtWidgets.QSlider):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
@@ -1340,8 +1338,8 @@ class MySlider(QtWidgets.QSlider):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
@@ -1378,7 +1376,7 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         res : numpy array, optional
             Resistivities. The default is None.
         title : str or None, optional
-            DESCRIPTION. The default is None.
+            Title text. The default is None.
 
         Returns
         -------
@@ -1508,8 +1506,8 @@ class Occam1D(QtWidgets.QDialog):
         label5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
         label6 = QtWidgets.QLabel('Resistivity Error Floor (%):')
         label7 = QtWidgets.QLabel('Phase Error Floor (degrees):')
-        label7a = QtWidgets.QLabel(r'Remove Resistivity/Phase values out of'
-                                   r' 1st/3rd Quadrant (True/False):')
+        # label7a = QtWidgets.QLabel(r'Remove Resistivity/Phase values out of'
+        #                            r' 1st/3rd Quadrant (True/False):')
         label8 = QtWidgets.QLabel('Height of air layer:')
         label9 = QtWidgets.QLabel('Bottom of model:')
         label10 = QtWidgets.QLabel('Depth of target to investigate:')

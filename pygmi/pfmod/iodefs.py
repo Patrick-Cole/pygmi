@@ -285,9 +285,9 @@ class ImportMod3D():
         names = ['x', 'y', 'z', 'label']
         try:
             if filename.find('.csv') > -1:
-                df1 = pd.read_csv(filename, delimiter=',', names=names)
+                df1 = pd.read_csv(filename, sep=',', names=names)
             else:
-                df1 = pd.read_csv(filename, delimeter=' ', names=names)
+                df1 = pd.read_csv(filename, sep=' ', names=names)
         except:
             self.showprocesslog('Unable to import file')
             return
@@ -449,10 +449,10 @@ class ImportMod3D():
                     lmod.griddata[i].dataid = lmod.griddata[i].bandid
                 del lmod.griddata[i].bandid
             if not hasattr(lmod.griddata[i], 'extent'):
-                if lmod.griddata[i].data.ndim == 2:
-                    rows, cols = lmod.griddata[i].data.shape
-                elif lmod.griddata[i].data.ndim == 3:
-                    rows, cols, _ = lmod.griddata[i].data.shape
+                # if lmod.griddata[i].data.ndim == 2:
+                #     rows, cols = lmod.griddata[i].data.shape
+                # elif lmod.griddata[i].data.ndim == 3:
+                #     rows, cols, _ = lmod.griddata[i].data.shape
 
                 xmin = lmod.griddata[i].tlx
                 ymax = lmod.griddata[i].tly
@@ -1019,56 +1019,55 @@ class ExportMod3D():
                 '  </scene>\r\n'
                 '</COLLADA>')
 
-        zfile = zipfile.ZipFile(filename, 'w')
-        for i, _ in enumerate(modeldae):
-            zfile.writestr('models\\mod3d'+str(i)+'.dae', modeldae[i])
+        with zipfile.ZipFile(filename, 'w') as zfile:
+            for i, modeldaei in enumerate(modeldae):
+                zfile.writestr('models\\mod3d'+str(i)+'.dae', modeldaei)
 
-        for i in self.lmod.griddata:
-            x_1, x_2, y_1, y_2 = self.lmod.griddata[i].extent
+            for i in self.lmod.griddata:
+                x_1, x_2, y_1, y_2 = self.lmod.griddata[i].extent
 
-            res = prj.TransformPoint(x_1, y_1)
-            lonwest, latsouth = res[0], res[1]
-            res = prj.TransformPoint(x_2, y_2)
-            loneast, latnorth = res[0], res[1]
+                res = prj.TransformPoint(x_1, y_1)
+                lonwest, latsouth = res[0], res[1]
+                res = prj.TransformPoint(x_2, y_2)
+                loneast, latnorth = res[0], res[1]
+
+                dockml += (
+                    '    <GroundOverlay>\r\n'
+                    '        <name>' + i + '</name>\r\n'
+                    '        <description></description>\r\n'
+                    '        <Icon>\r\n'
+                    '            <href>models/' + i + '.png</href>\r\n'
+                    '        </Icon>\r\n'
+                    '        <LatLonBox>\r\n'
+                    '            <north>' + str(latnorth) + '</north>\r\n'
+                    '            <south>' + str(latsouth) + '</south>\r\n'
+                    '            <east>' + str(loneast) + '</east>\r\n'
+                    '            <west>' + str(lonwest) + '</west>\r\n'
+                    '            <rotation>0.0</rotation>\r\n'
+                    '        </LatLonBox>\r\n'
+                    '    </GroundOverlay>\r\n')
+
+                fig = plt.figure('tmp930', frameon=False)
+                ax1 = plt.Axes(fig, [0., 0., 1., 1.])
+                ax1.set_axis_off()
+                fig.add_axes(ax1)
+
+                plt.imshow(self.lmod.griddata[i].data,
+                           extent=(lonwest, loneast, latsouth, latnorth),
+                           aspect='auto',
+                           interpolation='nearest')
+                plt.savefig('tmp930.png')
+
+                zfile.write('tmp930.png', 'models\\'+i+'.png')
+                os.remove('tmp930.png')
 
             dockml += (
-                '    <GroundOverlay>\r\n'
-                '        <name>' + i + '</name>\r\n'
-                '        <description></description>\r\n'
-                '        <Icon>\r\n'
-                '            <href>models/' + i + '.png</href>\r\n'
-                '        </Icon>\r\n'
-                '        <LatLonBox>\r\n'
-                '            <north>' + str(latnorth) + '</north>\r\n'
-                '            <south>' + str(latsouth) + '</south>\r\n'
-                '            <east>' + str(loneast) + '</east>\r\n'
-                '            <west>' + str(lonwest) + '</west>\r\n'
-                '            <rotation>0.0</rotation>\r\n'
-                '        </LatLonBox>\r\n'
-                '    </GroundOverlay>\r\n')
+                '  </Folder>\r\n'
+                '  \r\n'
+                '  </kml>')
 
-            fig = plt.figure('tmp930', frameon=False)
-            ax1 = plt.Axes(fig, [0., 0., 1., 1.])
-            ax1.set_axis_off()
-            fig.add_axes(ax1)
+            zfile.writestr('doc.kml', dockml)
 
-            plt.imshow(self.lmod.griddata[i].data,
-                       extent=(lonwest, loneast, latsouth, latnorth),
-                       aspect='auto',
-                       interpolation='nearest')
-            plt.savefig('tmp930.png')
-
-            zfile.write('tmp930.png', 'models\\'+i+'.png')
-            os.remove('tmp930.png')
-
-        dockml += (
-            '  </Folder>\r\n'
-            '  \r\n'
-            '  </kml>')
-
-        zfile.writestr('doc.kml', dockml)
-
-        zfile.close()
         self.showprocesslog('kmz export complete!')
 
     def mod3dtoshp(self):
@@ -1294,18 +1293,12 @@ class MessageCombo(QtWidgets.QDialog):
 
 def _testfn():
     """Test."""
-    import matplotlib.pyplot as plt
-    from pygmi.misc import getinfo
-    from pygmi.raster.dataprep import lstack
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
     print('Starting')
-    pbar = ProgressBarText()
 
     ifile = r"d:\Workdata\modelling\small_upper.npz"
-    ofile = r"d:\Workdata\hope.tif"
-
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -1321,18 +1314,6 @@ def _testfn():
         plt.imshow(dat.data, extent=dat.extent)
         plt.colorbar()
         plt.show()
-
-    odata2 = lstack(odata)
-
-    for dat in odata:
-        plt.figure(dpi=150)
-        plt.title(dat.dataid)
-        plt.imshow(dat.data, extent=dat.extent)
-        plt.colorbar()
-        plt.show()
-
-
-    breakpoint()
 
 
 if __name__ == "__main__":

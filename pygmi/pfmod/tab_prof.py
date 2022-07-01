@@ -29,7 +29,7 @@ import os
 import random
 from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
-import scipy.ndimage as ndimage
+from scipy import ndimage
 from scipy import interpolate
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
@@ -41,7 +41,7 @@ import pygmi.raster.iodefs as ir
 
 from pygmi.pfmod import grvmag3d
 from pygmi.pfmod import misc
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.raster.dataprep import data_reproject
 from pygmi.raster.iodefs import get_raster
 from pygmi.misc import frm
@@ -736,8 +736,7 @@ class ProfileDisplay(QtWidgets.QWidget):
                     k_2 = int((regz - zt[jgrd, igrd])/d_z)
 
 #                    k_2 = int((regz-fgrid(jmod, imod))/d_z)
-                    if k_2 < 0:
-                        k_2 = 0
+                    k_2 = max(k_2, 0)
                     lfilt = self.lmod1.lith_index[i, j, k_2:] != -1
                     ufilt = self.lmod1.lith_index[i, j, :k_2] != -1
                     if lowerb != -999:
@@ -1404,7 +1403,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         if self.pscale_type == 'custmax':
             extent = [self.plot_custmin, self.plot_custmax]
-        elif self.pscale_type == 'calcmax' or self.pscale_type == 'allmax':
+        elif self.pscale_type in ('calcmax', 'allmax'):
             extent = [data.data.min()+regtmp, data.data.max()+regtmp]
         elif tmpprof.size > 0:
             extent = [tmpprof.min(), tmpprof.max()]
@@ -1605,8 +1604,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            Event variable.
 
         Returns
         -------
@@ -1629,7 +1628,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
+        event : event
             Unused.
 
         Returns
@@ -1645,8 +1644,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            Event variable.
 
         Returns
         -------
@@ -1767,10 +1766,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         None.
 
         """
-        if xdata < 0:
-            xdata = 0
-        if ydata < 0:
-            ydata = 0
+        xdata = max(xdata, 0)
+        ydata = max(ydata, 0)
 
         hwidth = self.mywidth/2
         xstart = max(0, xdata-hwidth)
@@ -1794,12 +1791,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         dat : numpy array
-            DESCRIPTION.
+            Input data.
 
         Returns
         -------
         tmp : numpy array
-            DESCRIPTION.
+            dat grid.
 
         """
         mlut = self.lmod1.mlut
@@ -1823,7 +1820,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
+        event : event
             Unused.
 
         Returns
@@ -2156,8 +2153,8 @@ class MySlider(QtWidgets.QSlider):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            Event variable.
 
         Returns
         -------
@@ -2177,8 +2174,8 @@ class MySlider(QtWidgets.QSlider):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            Event variable.
 
         Returns
         -------
@@ -2540,8 +2537,8 @@ class GaugeWidget(QtWidgets.QDial):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            Event variable.
 
         Returns
         -------

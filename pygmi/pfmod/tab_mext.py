@@ -28,7 +28,7 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import scipy.interpolate as si
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 import pygmi.misc as pmisc
 
 

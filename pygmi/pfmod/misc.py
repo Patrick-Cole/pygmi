@@ -29,7 +29,7 @@ from PyQt5 import QtWidgets, QtCore, QtGui
 import numpy as np
 import rasterio
 
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.raster.dataprep import data_reproject
 
 
@@ -556,6 +556,7 @@ def _testfn():
     """Test routine."""
     import sys
     from pygmi.pfmod.iodefs import ImportMod3D
+
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"

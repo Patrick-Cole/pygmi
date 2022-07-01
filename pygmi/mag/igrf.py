@@ -63,7 +63,7 @@ import numpy as np
 from osgeo import osr
 
 import pygmi.raster.dataprep as dp
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.misc import ProgressBarText
 
 
@@ -293,7 +293,7 @@ class IGRF(QtWidgets.QDialog):
                 dxy = min(i.xdim, i.ydim)
 
         data = dp.lstack(data, dxy=dxy, piter=self.piter,
-                        pprint=self.showprocesslog)
+                         pprint=self.showprocesslog)
 
         for i in data:
             if i.dataid == self.combobox_mag.currentText():
@@ -370,14 +370,31 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
 
     Parameters
     ----------
-    nodialog : bool, optional
-        Run settings without a dialog. The default is False.
+    data : PyGMI data
+        Input magnetic data.
+    sdate : Date
+        Survey date.
+    alt : float, optional
+        Sensor clearance. The default is 100.
+    wkt : str, optional
+        wkt projection. The default is None.
+    igrfonly : bool, optional
+        Output IGRF only. The default is True.
+    piter : iter, optional
+        Progress bar iterator. The default is iter.
+    pprint : print, optional
+        Print routine. The default is print.
 
     Returns
     -------
-    bool
-        True if successful, False otherwise.
-
+    outdata : PyGMI data
+        Output data.
+    fmean : float
+        Total intensity mean.
+    imean : float
+        Inclination mean.
+    dmean : float
+        Declination mean.
     """
     MAXDEG = 13
     MAXCOEFF = (MAXDEG*(MAXDEG+2)+1)
@@ -572,7 +589,8 @@ def getshc(file, iflag, strec, nmax_of_gh, igh, gh):
 
     Returns
     -------
-    None.
+    gh : numpy array
+        Schmidt quasi-normal internal spherical harmonic coefficients.
     """
     ii = -1
     cnt = 0
@@ -632,6 +650,9 @@ def extrapsh(date, dte1, nmax1, nmax2, igh, gh):
     -------
     nmax : int
         maximum degree and order of resulting model
+    gh  : numpy array
+        Schmidt quasi-normal internal spherical harmonic coefficients of
+        base model and rate-of-change model
     """
     factor = date - dte1
     if nmax1 == nmax2:
@@ -694,6 +715,10 @@ def interpsh(date, dte1, nmax1, dte2, nmax2, igh, gh):
     -------
     nmax : int
         maximum degree and order of resulting model
+    gh : numpy array
+        Schmidt quasi-normal internal spherical harmonic coefficients of
+        earlier model and internal model
+
     """
     factor = (date - dte1) / (dte2 - dte1)
     if nmax1 == nmax2:
@@ -755,7 +780,13 @@ def shval3(igdgc, flat, flon, elev, nmax, igh, gh):
 
     Returns
     -------
-    None.
+    x : float
+        Northward component (NED)
+    y : float
+        Eastward component (NED)
+    z : float
+        Vertically downward component (NED)
+
     """
     sl = np.zeros(14)
     cl = np.zeros(14)
@@ -901,7 +932,14 @@ def dihf(x, y, z):
 
     Returns
     -------
-    None.
+    h : float
+        Horizontal Intensity
+    f : float
+        Total Intensity
+    i : float
+        Inclination
+    d : float
+        Declination
 
     """
     sn = 0.0001

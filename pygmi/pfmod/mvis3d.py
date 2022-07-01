@@ -46,7 +46,7 @@ from PIL import Image
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 
-import pygmi.pfmod.misc as misc
+from pygmi.pfmod import misc
 
 
 class Mod3dDisplay(QtWidgets.QDialog):
@@ -346,13 +346,10 @@ class Mod3dDisplay(QtWidgets.QDialog):
                 continue
             if self.corners[lno] == []:
                 continue
-            try:
-                if lno in self.sliths:
-                    clrtmp = lut[lno].tolist()+[1.]
-                else:
-                    clrtmp = lut[lno].tolist()+[self.opac]
-            except:
-                breakpoint()
+            if lno in self.sliths:
+                clrtmp = lut[lno].tolist()+[1.]
+            else:
+                clrtmp = lut[lno].tolist()+[self.opac]
 
             clr = np.append(clr,
                             np.zeros([self.corners[lno].shape[0], 4])+clrtmp)
@@ -1702,7 +1699,7 @@ def sub2ind(msize, row, col, layer):
     Returns
     -------
     tmp : numpy array
-        DESCRIPTION.
+        Index returned.
 
     """
     nrows, ncols, _ = msize

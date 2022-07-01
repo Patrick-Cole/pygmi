@@ -29,8 +29,8 @@ from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from scipy.signal import tukey
 import scipy.interpolate as si
-import scipy.signal as signal
-import pygmi.menu_default as menu_default
+from scipy import signal
+from pygmi import menu_default
 
 from pygmi.raster.datatypes import Data
 from pygmi.misc import ProgressBarText
@@ -270,12 +270,11 @@ def tilt1(data, azi, s):
     # 2nd order Tilt angle
 
     # ts = t1
-    if s < 3:
-        s = 3
+    s = max(s, 3)
     se = np.ones([s, s])/(s*s)
     # ts = signal.convolve2d(t1, se, 'same')
     ts = signal.convolve2d(t1.filled(t1.mean()), se, 'same')
-    ts = np.ma.array(ts, mask = t1.mask)
+    ts = np.ma.array(ts, mask=t1.mask)
 
     [dxs, dys] = np.gradient(ts)
     dzs = vertical(ts, npts, 1)
@@ -333,6 +332,8 @@ def vertical(data, npts=None, xint=1, order=1):
         Number of points. The default is None.
     xint : float, optional
         X interval. The default is 1.
+    order : int
+        Order of derivative. The default is 1.
 
     Returns
     -------
@@ -550,18 +551,23 @@ class RTP(QtWidgets.QDialog):
 
 def fftprep(data):
     """
-    FFT preparation.
+    FFT Preparation.
 
     Parameters
     ----------
-    data : TYPE
-        DESCRIPTION.
-    dxy : TYPE
-        DESCRIPTION.
+    data : numpy array
+        Input dataset.
 
     Returns
     -------
-    None.
+    zfin : numpy array.
+        Output prepared data.
+    rdiff : int
+        rows divided by 2.
+    cdiff : int
+        columns divided by 2.
+    datamedian : float
+        Median of data.
 
     """
     datamedian = np.ma.median(data.data)
@@ -610,14 +616,19 @@ def fft_getkxy(fftmod, xdim, ydim):
 
     Parameters
     ----------
-    fftmod : TYPE
-        DESCRIPTION.
-    dxy : TYPE
-        DESCRIPTION.
+    fftmod : numpy array
+        FFT data.
+    xdim : float
+        cell x dimension.
+    ydim : float
+        cell y dimension.
 
     Returns
     -------
-    None.
+    KX : numpy array
+        x sample frequencies.
+    KY : numpy array
+        y sample frequencies.
 
     """
     ny, nx = fftmod.shape
@@ -654,7 +665,7 @@ def rtp(data, I_deg, D_deg):
     ndat, rdiff, cdiff, datamedian = fftprep(data)
     fftmod = np.fft.fft2(ndat)
 
-    ny, nx = fftmod.shape
+    # ny, nx = fftmod.shape
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
     I = np.deg2rad(I_deg)
@@ -712,26 +723,17 @@ def _testfn_rtp():
 def _testfn():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
-    from matplotlib import cm
-    from pygmi.pfmod.grvmag3d import quick_model, calc_field
     from pygmi.raster.iodefs import get_raster
 
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
-
-# quick model
-    finc = -62.5
-    fdec = -16.75
 
     ifile = 'd:/Workdata/bugs/detlef/TMI_norm_wdw.tif'
     ifile = r'C:/Workdata/raster/ER Mapper/magmicrolevel.PD.ers'
 
     dat = get_raster(ifile)[0]
 
-
     t1, th, t2, ta, tdx = tilt1(dat.data, 75, 0)
-
-    # breakpoint()
 
     plt.figure(dpi=150)
     plt.imshow(t2)
@@ -742,21 +744,6 @@ def _testfn():
     plt.imshow(t1)
     plt.colorbar()
     plt.show()
-
-
-# Calculate the field
-
-    # magval = dat.data
-    # plt.figure(dpi=150)
-    # plt.imshow(magval, cmap=cm.get_cmap('jet'))
-    # plt.show()
-
-    # dat2 = rtp(dat, finc, fdec)
-    # plt.figure(dpi=150)
-    # plt.imshow(dat2.data, cmap=cm.get_cmap('jet'))
-    # plt.show()
-
-    # breakpoint()
 
 
 if __name__ == "__main__":

@@ -96,8 +96,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
@@ -116,8 +116,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
@@ -145,8 +145,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         Parameters
         ----------
-        event : TYPE
-            DESCRIPTION.
+        event : event
+            event variable.
 
         Returns
         -------
