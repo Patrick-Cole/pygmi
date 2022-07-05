@@ -1,8 +1,14 @@
 =========
 Changelog
 =========
-v3.2.5.6, 15 June 2022
+v3.2.5.7, 5 July 2022
 ----------------------
+*Landsat composite now allows for the target date to be manually set.
+*Small updates to code and comments.
+*Inversion tests
+*Bugfix for cursor width and height not being integers
+*Observed data minimum is now correct in pfmod, if null values are present.
+*In lstack, if masterid is True, and dxy is not null, dxy value will now be used.
 *Magnetic inversion now allows for custom numbers of classes.
 *Bugfix to mean mosaic
 *Fixed bug mosaicing with different nodata and dtype values.
@@ -12,7 +18,6 @@ v3.2.5.6, 15 June 2022
 *MNF forward transform now allows custom number of components
 *Band sorting can be disabled for RGB images
 *Explained variance ratio added to PCA band names.
-*Pca
 *PCA added .
 *Fixed bug where ternary images were showing strange colors when data was clipped
 *Raster Export will now sort the output bands, so that satellite data is in order.
