@@ -64,7 +64,7 @@ setup(name='pygmi',
 
       keywords='Geoscience Geophysics Magnetic Gravity Modelling Interpretation',
 
-      packages=(find_packages(exclude=['docs'])),
+      packages=(find_packages(exclude=['docs', 'pygmi.cgs'])),
 
       install_requires=['discretize',
                         'fiona',

@@ -114,7 +114,9 @@ Typically, packages can be installed using pip. The process is as follows:
    
    sudo apt-get install libgdal-dev
    
-   pip install pyqt
+   pip install cython
+   
+   pip install pyqt5
 
    pip install numpy
 
@@ -128,7 +130,7 @@ Typically, packages can be installed using pip. The process is as follows:
 
    pip install pandas
 
-   pip install rasterio
+   pip install rasterio==1.3b3
 
    pip install geopandas
 
