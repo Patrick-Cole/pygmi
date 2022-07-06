@@ -31,7 +31,6 @@ import numpy as np
 
 from pygmi.raster.datatypes import Data
 from pygmi.clust import var_ratio as vr
-from pygmi.clust import xie_beni as xb
 from pygmi.misc import ProgressBarText
 
 
@@ -343,11 +342,11 @@ class FuzzyClust(QtWidgets.QDialog):
         for i in data:
             masktmp += ~i.data.mask
         masktmp = ~masktmp
-        for i, _ in enumerate(data):
-            if data[i].nodata != 0.0:
-                self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
-                data[i].data = np.ma.array(data[i].data.filled(0))
-            data[i].data.mask = masktmp
+        for datai in data:
+            if datai.nodata != 0.0:
+                self.showprocesslog('Setting '+datai.dataid+' nodata to 0.')
+                datai.data = np.ma.array(datai.data.filled(0))
+            datai.data.mask = masktmp
 
 # #############################################################################
 
@@ -725,19 +724,19 @@ class FuzzyClust(QtWidgets.QDialog):
                     uuu = uprev  # use memberships and
                     cent = cent_prev  # centers od the previous iteration
     #  eliminate last value for objective function and
-    #                obj_fcn[i]=[]
+    #                obj_fcn[i] = []
                     obj_fcn = np.delete(obj_fcn, np.s_[i::])
                     edist = dist_prev
-    #             [max_v,idx]=max(U)
-    #             vrc=var_ratio(data, idx, cent, edist)
+    #             [max_v,idx] = max(U)
+    #             vrc = var_ratio(data, idx, cent, edist)
     #             nce=(-1*(sum(sum(U.*log10(U)))/length(U(1,:))))/ \
     #              log10(length(U(:,1)))
-    #             xbi=xie_beni(data, expo, uuu, cent, edist)
+    #             xbi = xie_beni(data, expo, uuu, cent, edist)
                     break  # terminate
     # if improvement less than given termination threshold
-                elif (obj_fcn[i-1]-obj_fcn[i])/obj_fcn[i-1] < term_thresh/100:
-                    # vrc=var_ratio(data, idx, cent, edist)
-                    # nce=(-1*(sum(sum(U.*log10(U)))/length(U(1,:))))/ \
+                if (obj_fcn[i-1]-obj_fcn[i])/obj_fcn[i-1] < term_thresh/100:
+                    # vrc = var_ratio(data, idx, cent, edist)
+                    # nce = (-1*(sum(sum(U.*log10(U)))/length(U(1,:))))/ \
                     #   log10(length(U(:,1)))
                     # xbi = xie_beni(data, expo, uuu, cent, edist)
                     break  # terminate
@@ -749,7 +748,7 @@ class FuzzyClust(QtWidgets.QDialog):
         vrc = vr.var_ratio(data, idx, cent, edist)
         nce = (-1.0 * (np.sum(uuu * np.log10(uuu)) / np.shape(uuu)[1]) /
                np.log10(np.shape(uuu)[0]))
-        xbi = xb.xie_beni(data, expo, uuu, cent, edist)
+        xbi = xie_beni(data, expo, uuu, cent, edist)
     #    close(hh)
         return uuu, cent, obj_fcn, vrc, nce, xbi
 
@@ -894,3 +893,69 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
         ddd[ddd == np.inf] = np.random.normal() * 1e-10  # solve break
 
     return ddd
+
+
+def xie_beni(data, expo, uuu, center, edist):
+    """
+    Xie Beni.
+
+    Calculates the Xie-Beni index
+    accepts missing values when given as nan elements in the data base)
+    min xbi is optimal
+
+    Parameters
+    ----------
+    data : numpy array
+        input dataset
+    expo : float
+    uuu : numpy array
+        membership matrix (FCM) or cluster index values (k-means)
+    center : numpy array
+        cluster centers
+    edist : numpy array
+
+    Returns
+    -------
+    xbi : numpy array
+        xie beni index
+
+    """
+    if edist.size == 0:  # calc euclidian distances if no distances are
+        #                  provided
+        for k in range(center.shape[0]):  # no of clusters
+            # squared distance of all data values to the k-th cluster,
+            # contains nan for missing values
+            dummy = np.dot(data - np.ones(np.size(data, 1), 1),
+                           center[k] ** 2).T
+            # put in zero distances for all missing values, now all nans are
+            # replaced by zeros.
+            dummy[np.isnan(dummy) == 1] = 0
+            # calc distance matrix from dat points to centres
+            # (equals distfcm_mv.m)
+            edist[k] = np.sqrt(np.sum(dummy))
+
+    m_f = uuu ** expo
+    # equal to objective function without spatial constraints
+    numerator = np.sum((edist ** 2) * m_f)
+
+    min_cdist = np.inf  # set minimal centre distance to infinity
+#    cnt = 0
+    cdist = []
+    for i in range(center.shape[0]):  # no of clusters
+        dummy_cent = center
+        # eliminate the i th row from center
+        dummy_cent = np.delete(dummy_cent, i, 0)
+        # no of cluster minus one row
+        for j in range(dummy_cent.shape[0]):
+            #            cnt += 1
+            # calc squared distance between the selected two clustercentrs,
+            # incl. nan if center values are nan
+            cdist.append((center[i] - dummy_cent[j]) ** 2)
+    cdist = np.array(cdist)
+# mv=nanmin(cdist)
+# dummy_mv=ones(cnt,1)*mv
+# cdist(isnan(cdist(:))==1)=dummy_mv(isnan(cdist(:))==1)
+    cdist1 = np.sum(cdist, 1)
+    min_cdist = cdist1.min()
+    xbi = numerator / (data.shape[0] * min_cdist)
+    return xbi

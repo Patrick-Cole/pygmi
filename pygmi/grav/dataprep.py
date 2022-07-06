@@ -22,15 +22,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""A set of Data Preparation routines."""
+"""A set of data processing routines for gravity."""
 
 import sys
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import matplotlib.pyplot as plt
 
-import pygmi.menu_default as menu_default
-import pygmi.grav.iodefs as iodefs
+from pygmi import menu_default
+from pygmi.grav import iodefs
 
 
 class ProcessData(QtWidgets.QDialog):
@@ -381,7 +381,7 @@ class ProcessData(QtWidgets.QDialog):
 
         kstat = float(self.knownstat.text())
         if kstat not in pdat['STATION'].values:
-            breakpoint()
+            # breakpoint()
             txt = ('Invalid base station number.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           txt, QtWidgets.QMessageBox.Ok)
@@ -571,13 +571,12 @@ def time_convert(x):
 
 def _testfn():
     """Test routine."""
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
     grvfile = r'd:\Workdata\gravity\skeifontein 2018.txt'
     gpsfile = r'd:\Workdata\gravity\skei_dgps.csv'
     kbase = '88888'
     bthres = '10000'
-
 
     # grvfile = r'd:\Work\Workdata\gravity\Laxeygarvity until2511.txt'
     # gpsfile = r'd:\Work\Workdata\gravity\laxey.dgps.csv'
@@ -623,7 +622,7 @@ def _testfn():
 
         # gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
 
-    breakpoint()
+    # breakpoint()
 
 
 if __name__ == "__main__":

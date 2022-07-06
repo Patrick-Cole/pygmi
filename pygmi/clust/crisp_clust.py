@@ -331,11 +331,11 @@ class CrispClust(QtWidgets.QDialog):
         for i in data:
             masktmp += ~i.data.mask
         masktmp = ~masktmp
-        for i, _ in enumerate(data):
-            if data[i].nodata != 0.0:
-                self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
-                data[i].data = np.ma.array(data[i].data.filled(0))
-            data[i].data.mask = masktmp
+        for datai in data:
+            if datai.nodata != 0.0:
+                self.showprocesslog('Setting '+datai.dataid+' nodata to 0.')
+                datai.data = np.ma.array(datai.data.filled(0))
+            datai.data.mask = masktmp
 
 # #############################################################################
 
@@ -561,16 +561,17 @@ class CrispClust(QtWidgets.QDialog):
 #            dat_out[cnt].denorm_center_stdlow = den_cent_std1
 #            dat_out[cnt].iterations = clobj_fcn.size
 
-            self.log = ('Crisp Cluster complete' + ' (' + self.cltype + ' ' +
+            self.log = ('Crisp Cluster complete (' + self.cltype + ' ' +
                         self.init_type+')')
 
         for i in dat_out:
-            i.dataid = 'Crisp Cluster: '+str(i.metadata['Cluster']['no_clusters'])
+            i.dataid = ('Crisp Cluster: ' +
+                        str(i.metadata['Cluster']['no_clusters']))
             i.nodata = data[0].nodata
             i.set_transform(transform=data[0].transform)
             i.crs = data[0].crs
 
-        self.showprocesslog('Crisp Cluster complete' + ' ('+self.cltype + ' ' +
+        self.showprocesslog('Crisp Cluster complete ('+self.cltype + ' ' +
                             self.init_type+')')
 
         for i in dat_out:
@@ -696,9 +697,8 @@ class CrispClust(QtWidgets.QDialog):
             else:
                 obj_fcn_dif = 100 * ((obj_fcn_prev-obj_fcn[i]) / obj_fcn[i])
 
-            self.showprocesslog('Iteration: ' + str(i) + ' Threshold: ' +
-                                str(term_thresh) + ' Current: ' +
-                                '{:.2e}'.format(obj_fcn_dif), True)
+            self.showprocesslog(f'Iteration: {i} Threshold: {term_thresh})'
+                                f' Current: {obj_fcn_dif:.2e}', True)
     # if no termination threshold provided, ignore this and do all iterations
             if term_thresh > 0:
                 # if the improvement between the last two iterations was less
@@ -713,7 +713,7 @@ class CrispClust(QtWidgets.QDialog):
                     else:
                         # changed from i-1 to i for w-means
                         obj_fcn = np.delete(obj_fcn, np.s_[i::])
-                        # vrc=vr.var_ratio(data, idx, cent, edist)
+                        # vrc = vr.var_ratio(data, idx, cent, edist)
                     break  # and stop the clustering right now
             obj_fcn_prev = obj_fcn[i]
         vrc = vr.var_ratio(data, idx, cent, edist)
@@ -738,9 +738,9 @@ def gcentroids(data, index, no_clust, mindist):
     Returns
     -------
     centroids : numpy array
-        DESC
+        Centroids
     index : numpy array
-        DESC
+        Index
 
     """
 #    no_samples=data.shape[0]

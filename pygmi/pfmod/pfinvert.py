@@ -863,7 +863,8 @@ class MagInvert(QtWidgets.QDialog):
         update_jacobi = directives.UpdatePreconditioner()
 
         target_misfit = directives.TargetMisfit(chifact=1)
-        sensitivity_weights = directives.UpdateSensitivityWeights(everyIter=False)
+        sensitivity_weights = directives.UpdateSensitivityWeights(
+            everyIter=False)
         directives_list = [sensitivity_weights, starting_beta, save_iteration,
                            update_IRLS, update_jacobi]
 
@@ -900,7 +901,9 @@ class MagInvert(QtWidgets.QDialog):
         soln_map = maps.InjectActiveCells(mesh, ind_active, np.nan)
 
         r2 = soln_map * recovered_model
-        r2.shape = (mesh.nCz, mesh.nCy, mesh.nCx)
+        r2.shape = (mesh.shape_cells[2],
+                    mesh.shape_cells[1],
+                    mesh.shape_cells[0])
         r2 = r2[::-1]
 
         r3 = r2[:-5, 5:-5, 5:-5]
@@ -1033,14 +1036,14 @@ def _testfn():
     plotting_map = maps1.InjectActiveCells(mesh, ind_active, np.nan)
 
     ax1 = fig.add_axes([0.08, 0.1, 0.75, 0.8])
-    mesh.plotSlice(
+    mesh.plot_slice(
         plotting_map * true_model,
         normal="Y",
         ax=ax1,
-        ind=int(mesh.nCy / 2),
+        ind=int(mesh.shape_cells[1] / 2),
         grid=True,
         clim=(np.min(true_model), np.max(true_model)),
-        pcolorOpts={"cmap": "viridis"},
+        pcolor_opts={"cmap": "viridis"},
     )
     ax1.set_title("Model slice at y = 0 m")
 
@@ -1057,14 +1060,14 @@ def _testfn():
     plotting_map = maps1.InjectActiveCells(mesh, ind_active, np.nan)
 
     ax1 = fig.add_axes([0.08, 0.1, 0.75, 0.8])
-    mesh.plotSlice(
+    mesh.plot_slice(
         plotting_map * recovered_model,
         normal="Y",
         ax=ax1,
-        ind=int(mesh.nCy / 2),
+        ind=int(mesh.shape_cells[1] / 2),
         grid=True,
         clim=(np.min(recovered_model), np.max(recovered_model)),
-        pcolorOpts={"cmap": "viridis"},
+        pcolor_opts={"cmap": "viridis"},
     )
     ax1.set_title("Model slice at y = 0 m")
 
@@ -1077,7 +1080,7 @@ def _testfn():
     plt.show()
 
     # r2 = plotting_map * recovered_model
-    # r2.shape = (mesh.nCz, mesh.nCy, mesh.nCx)
+    # r2.shape = (mesh.shape_cells[2], mesh.shape_cells[1], mesh.shape_cells[0])
 
     # r2 = r2[::-1]
     # r2 = r2[:-5]
@@ -1181,14 +1184,14 @@ def _testfn2():
     plotting_map = maps1.InjectActiveCells(mesh, ind_active, np.nan)
 
     ax1 = fig.add_axes([0.08, 0.1, 0.75, 0.8])
-    mesh.plotSlice(
+    mesh.plot_slice(
         plotting_map * true_model,
         normal="Y",
         ax=ax1,
-        ind=int(mesh.nCy / 2),
+        ind=int(mesh.shape_cells[1] / 2),
         grid=True,
         clim=(np.min(true_model), np.max(true_model)),
-        pcolorOpts={"cmap": "viridis"},
+        pcolor_opts={"cmap": "viridis"},
     )
     ax1.set_title("Model slice at y = 0 m")
 
@@ -1205,14 +1208,14 @@ def _testfn2():
     plotting_map = maps1.InjectActiveCells(mesh, ind_active, np.nan)
 
     ax1 = fig.add_axes([0.08, 0.1, 0.75, 0.8])
-    mesh.plotSlice(
+    mesh.plot_slice(
         plotting_map * recovered_model,
         normal="Y",
         ax=ax1,
-        ind=int(mesh.nCy / 2),
+        ind=int(mesh.shape_cells[1] / 2),
         grid=True,
         clim=(np.min(recovered_model), np.max(recovered_model)),
-        pcolorOpts={"cmap": "viridis"},
+        pcolor_opts={"cmap": "viridis"},
     )
     ax1.set_title("Model slice at y = 0 m")
 
@@ -1244,8 +1247,8 @@ def _testfn3():
     mfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_mag.ers"
     dfile = r"C:/WorkProjects/ST-0000 Eswatini/Model/Usu_dtm.ers"
 
-    iraster = (0,200, 50, 50)
-    iraster=None
+    iraster = (0, 200, 50, 50)
+    iraster = None
 
     mdat = get_raster(mfile, iraster=iraster)
     ddat = get_raster(dfile, iraster=iraster)
@@ -1291,6 +1294,5 @@ def _testfn3():
     tmp.settings()
 
 
-
 if __name__ == "__main__":
-    _testfn3()
+    _testfn()

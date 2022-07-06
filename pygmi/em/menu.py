@@ -45,10 +45,8 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-#        self.parent.add_to_context('MT - EDI')
-#        context_menu = self.parent.context_menu
 
-# Normal menus
+        # Normal menus
         self.menu = QtWidgets.QMenu('EM')
         parent.menubar.addAction(self.menu.menuAction())
 

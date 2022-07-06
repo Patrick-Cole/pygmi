@@ -30,7 +30,8 @@ import skimage
 import sklearn.preprocessing as skp
 from numba import jit
 from PyQt5 import QtWidgets, QtCore, QtGui
-import pygmi.menu_default as menu_default
+
+from pygmi import menu_default
 
 
 class ImageSeg(QtWidgets.QDialog):
@@ -295,8 +296,8 @@ class ImageSeg(QtWidgets.QDialog):
 
         self.showprocesslog('merging...')
 
-        omap = self.segment2(omap, olist, slist, mlist, nlist, bands,
-                             doshape, wcompact, wcolor, scale)
+        omap = self._segment2(omap, olist, slist, mlist, nlist, bands,
+                              doshape, wcompact, wcolor, scale)
 
         self.showprocesslog('renumbering...')
         tmp = np.unique(omap)
@@ -306,23 +307,23 @@ class ImageSeg(QtWidgets.QDialog):
 
         return omap.astype(int)
 
-    def segment2(self, omap, olist, slist, mlist, nlist, bands, doshape,
-                 wcompact, wcolor, scale):
+    def _segment2(self, omap, olist, slist, mlist, nlist, bands, doshape,
+                  wcompact, wcolor, scale):
         """
         Segment Part 2.
 
         Parameters
         ----------
         omap : numpy array
-            DESCRIPTION.
+            output data from segment1.
         olist : dictionary
-            DESCRIPTION.
+            olist from segment1.
         slist : dictionary
-            DESCRIPTION.
+            slist from segment1.
         mlist : dictionary
-            DESCRIPTION.
+            mlist from segment1.
         nlist : dictionary
-            DESCRIPTION.
+            nlist from segment1.
         bands : int
             Number of bands in data.
         doshape : bool, optional
@@ -338,7 +339,7 @@ class ImageSeg(QtWidgets.QDialog):
         Returns
         -------
         omap : TYPE
-            DESCRIPTION.
+            output data.
 
         """
         wband = np.ones(bands)/bands
@@ -549,7 +550,6 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.raster.datatypes import Data
     from pygmi.misc import PTime
-    from pygmi.raster import iodefs
     from matplotlib import rcParams
 
     rcParams['figure.dpi'] = 300

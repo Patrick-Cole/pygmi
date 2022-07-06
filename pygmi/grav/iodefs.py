@@ -28,7 +28,8 @@ import os
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 import pandas as pd
-import pygmi.menu_default as menu_default
+
+from pygmi import menu_default
 
 
 class ImportCG5(QtWidgets.QDialog):

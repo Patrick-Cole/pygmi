@@ -27,21 +27,20 @@
 import sys
 import os
 import copy
+from contextlib import redirect_stdout
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5 import NavigationToolbar2QT
-from pymatsolver import Solver  #  as Pardiso
 import discretize
 from SimPEG import (maps, data_misfit, regularization,
                     optimization, inversion, inverse_problem, directives)
 from SimPEG.electromagnetics import time_domain
 import SimPEG.data as Sdata
-import pygmi.menu_default as menu_default
 
+from pygmi import menu_default
 from pygmi.misc import QLabelVStack
-from contextlib import redirect_stdout
 
 
 class MyMplCanvas2(FigureCanvasQTAgg):
@@ -326,17 +325,17 @@ class TDEM1D(QtWidgets.QDialog):
         # cs, ncx, ncz, npad = 1., 10., 10., 20
         hx = [(cs, ncx), (cs, npad, padrate)]
         hz = [(cs, npad, -padrate), (cs, ncz*2), (cs, npad, padrate)]
-        mesh = discretize.CylMesh([hx, 1, hz], '00C')
+        mesh = discretize.CylindricalMesh([hx, 1, hz], '00C')
 
         # Step2: Set a SurjectVertical1D mapping
         # Note: this sets our inversion model as 1D log conductivity
         # below subsurface
 
-        active = mesh.vectorCCz < 0.
+        active = mesh.cell_centers_z < 0.
         actmap = maps.InjectActiveCells(mesh, active, np.log(1e-8),
-                                        nC=mesh.nCz)
+                                        nC=mesh.shape_cells[2])
         mapping = maps.ExpMap(mesh) * maps.SurjectVertical1D(mesh) * actmap
-        sigma = np.ones(mesh.nCz) * sig_air
+        sigma = np.ones(mesh.shape_cells[2]) * sig_air
         sigma[active] = sig_half
 
         # Initial and reference model
@@ -357,8 +356,8 @@ class TDEM1D(QtWidgets.QDialog):
         # Note: we are Using theoretical VTEM waveform,
         # but effectively fits SkyTEM waveform
 
-        dbdt_z = time_domain.Rx.Point_dbdt(locs=rxloc, times=times,
-                                           orientation=rxori)  # vertical db_dt
+        dbdt_z = time_domain.Rx.PointMagneticFluxTimeDerivative(
+            locations=rxloc, times=times, orientation=rxori)  # vertical db_dt
         rxlist = [dbdt_z]  # list of receivers
 
         wform = self.update_wave()
@@ -368,13 +367,13 @@ class TDEM1D(QtWidgets.QDialog):
                                                     N=loopturns,
                                                     mu=mu,
                                                     current=loopcurrent,
-                                                    loc=srcloc,
+                                                    location=srcloc,
                                                     radius=radius,
                                                     orientation=txori,
                                                     waveform=wform)]
         elif stype == 'MagDipole':
             srclist = [time_domain.Src.MagDipole(rxlist,
-                                                 loc=srcloc,
+                                                 location=srcloc,
                                                  mu=mu,
                                                  orientation=txori,
                                                  waveform=wform)]
@@ -388,10 +387,9 @@ class TDEM1D(QtWidgets.QDialog):
 
         survey = time_domain.Survey(srclist)
         sim = time_domain.Simulation3DElectricField(mesh,
-                                                    timeSteps=timesteps,
+                                                    time_steps=timesteps,
                                                     sigmaMap=mapping,
-                                                    survey=survey,
-                                                    Solver=Solver)  # Pardiso)
+                                                    survey=survey)
 
         src = srclist[0]
         wave = []
@@ -410,7 +408,7 @@ class TDEM1D(QtWidgets.QDialog):
         dmisfit = data_misfit.L2DataMisfit(data=data, simulation=sim)
 
         # Regularization
-        regmesh = discretize.TensorMesh([mesh.hz[mapping.maps[-1].indActive]])
+        regmesh = discretize.TensorMesh([mesh.h[2][mapping.maps[-1].indActive]])
         # reg = regularization.Simple(regmesh, mapping=maps.IdentityMap(regmesh))
         # reg.alpha_s = 1e-2
         # reg.alpha_x = 1.
@@ -443,19 +441,18 @@ class TDEM1D(QtWidgets.QDialog):
                                           QtWidgets.QMessageBox.Ok)
             return
 
-        dpred_sky = invprob.dpred
+        dpred_sky = np.array(invprob.dpred)
 
         sigma = np.repeat(np.exp(mopt_sky), 2, axis=0)
-        z = np.repeat(mesh.vectorCCz[active][1:], 2, axis=0)
-        z = np.r_[mesh.vectorCCz[active][0], z, mesh.vectorCCz[active][-1]]
+        z = np.repeat(mesh.cell_centers_z[active][1:], 2, axis=0)
+        z = np.r_[mesh.cell_centers_z[active][0], z,
+                  mesh.cell_centers_z[active][-1]]
 
         times_off = ((times - offtime)*1e6)
         zobs = dobs_sky/txarea
         zpred = -dpred_sky/txarea
 
         self.mmc.update_line(sigma, z, times_off, zobs, zpred)
-
-#        self.outdata['Line'] = self.data
 
     def change_source(self):
         """
@@ -532,17 +529,17 @@ class TDEM1D(QtWidgets.QDialog):
         wtype = self.combowtype.currentText()
 
         if wtype == 'VTEMWaveform':
-            wform = time_domain.sources.VTEMWaveform(offTime=offtime,
-                                                     peakTime=peaktime)
+            wform = time_domain.sources.VTEMWaveform(off_time=offtime,
+                                                     peak_time=peaktime)
         elif wtype == 'TrapezoidWaveform':
             wform = time_domain.sources.TrapezoidWaveform(ramp_on=rampon,
                                                           ramp_off=rampoff)
         elif wtype == 'TriangularWaveform':
-            wform = time_domain.sources.TriangularWaveform(peakTime=peaktime,
-                                                           offTime=offtime)
+            wform = time_domain.sources.TriangularWaveform(peak_time=peaktime,
+                                                           off_time=offtime)
         elif wtype == 'QuarterSineRampOnWaveform':
-            wform = time_domain.sources.QuarterSineRampOnWaveform(ramp_on=rampon,
-                                                                  ramp_off=rampoff)
+            wform = time_domain.sources.QuarterSineRampOnWaveform(
+                ramp_on=rampon, ramp_off=rampoff)
         elif wtype == 'HalfSineWaveform':
             wform = time_domain.sources.HalfSineWaveform(ramp_on=rampon,
                                                          ramp_off=rampoff)
@@ -628,7 +625,6 @@ class TDEM1D(QtWidgets.QDialog):
 
         cnames = list(self.data.columns[filt])
 
-#        cnames = list(self.data.data.values())[0].dtype.names
         self.combobalt.addItems(cnames)
         for i, tmp in enumerate(cnames):
             tmp = tmp.lower()
@@ -640,17 +636,11 @@ class TDEM1D(QtWidgets.QDialog):
         lines = list(self.data.line.unique().astype(str))
         self.comboline.addItems(lines)
 
-#        for i in self.data.data:
-#            self.comboline.addItem(i)
-#        fid = self.data.fid.values.astype(str)
-
         self.comboline.setCurrentIndex(0)
         line = self.comboline.currentText()
 
         fid = self.data.fid[self.data.line.astype(str) == line].values.astype(str)
         self.combofid.addItems(fid)
-
-#        self.combofid.addItems(self.data.data[line]['fid'].astype(str))
 
         self.comboline.currentIndexChanged.connect(self.change_line)
 
@@ -658,8 +648,6 @@ class TDEM1D(QtWidgets.QDialog):
 
         if tmp != 1:
             return False
-
-#        self.acceptall()
 
         return True
 
@@ -733,8 +721,8 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     # Load in line data
-    filename = r'd:\Work\Workdata\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
-    wfile = r'd:\Work\Workdata\EM\wtimes.txt'
+    filename = r'd:\Workdata\EM\SK655CS_Bookpurnong_ZX_HM_TxInc_newDTM.txt'
+    wfile = r'd:\Workdata\EM\wtimes.txt'
 
     IO = ImportLineData()
     IO.filt = 'Tab Delimited (*.txt)'

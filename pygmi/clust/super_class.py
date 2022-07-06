@@ -356,9 +356,7 @@ class PolygonInteractor(QtCore.QObject):
                 self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
                                         [(event.xdata, event.ydata)] +
                                         list(self.poly.xy[i + 1:]))
-            # self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
-            #                         [(event.xdata, event.ydata)] +
-            #                         list(self.poly.xy[i + 1:]))
+
             self.line.set_data(list(zip(*self.poly.xy)))
 
             self.canvas.restore_region(self.background)
@@ -564,7 +562,7 @@ class SuperClass(QtWidgets.QDialog):
         loadshape.clicked.connect(self.load_shape)
         saveshape.clicked.connect(self.save_shape)
         calcmetrics.clicked.connect(self.calc_metrics)
-#        self.tablewidget.cellChanged.connect(self.ontablechange)
+
         self.tablewidget.currentItemChanged.connect(self.onrowchange)
         self.tablewidget.cellChanged.connect(self.oncellchange)
         self.combo_class.currentIndexChanged.connect(self.class_change)
@@ -613,7 +611,7 @@ class SuperClass(QtWidgets.QDialog):
         if self.df is None:
             return
 
-        classifier, lbls, _, X_test, y_test, tlbls = self.init_classifier()
+        classifier, _, _, X_test, y_test, tlbls = self.init_classifier()
 
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
@@ -651,8 +649,8 @@ class SuperClass(QtWidgets.QDialog):
 
         Parameters
         ----------
-        xycoords : TYPE, optional
-            DESCRIPTION. The default is None.
+        xycoords : numpy array, optional
+            x, y coordinates. The default is None.
 
         Returns
         -------
@@ -700,10 +698,10 @@ class SuperClass(QtWidgets.QDialog):
 
         Parameters
         ----------
-        current : TYPE
-            DESCRIPTION.
-        previous : TYPE
-            DESCRIPTION.
+        current : QTableWidgetItem
+            current item.
+        previous : QTableWidgetItem
+            previous item.
 
         Returns
         -------
@@ -723,24 +721,6 @@ class SuperClass(QtWidgets.QDialog):
         self.update_class_polys()
 
         self.map.polyi.new_poly(coords)
-
-    def ontablechange(self, row, column):
-        """
-        Entry on table changes.
-
-        Parameters
-        ----------
-        row : TYPE
-            DESCRIPTION.
-        column : TYPE
-            DESCRIPTION.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.showprocesslog(row, column)
 
     def on_apoly(self):
         """
@@ -1029,6 +1009,8 @@ class SuperClass(QtWidgets.QDialog):
             X test dataset.
         y_test : numpy array
             Y test dataset.
+        tlbls : numpy array
+            Class labels.
 
         """
         ctext = self.combo_class.currentText()
@@ -1091,9 +1073,6 @@ class SuperClass(QtWidgets.QDialog):
             self.showprocesslog('Error: You need at least two classes')
             # return False
 
-        # Encoding categorical data
-        # labelencoder = LabelEncoder()
-        # y = labelencoder.fit_transform(y)
         X_train, X_test, y_train, y_test = train_test_split(x, y, stratify=y)
 
         classifier.fit(X_train, y_train)
@@ -1135,7 +1114,7 @@ class SuperClass(QtWidgets.QDialog):
 
         [p.remove() for p in reversed(axes.patches)]
 
-        for index, row in self.df.iterrows():
+        for _, row in self.df.iterrows():
             if row['geometry'] is None:
                 return
             crds = np.array(row['geometry'].exterior.coords)
@@ -1194,14 +1173,12 @@ def _testfn():
     sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                  '..//..')))
     from pygmi.raster import iodefs
-    from pygmi.misc import ProgressBarText
-    app = QtWidgets.QApplication(sys.argv)
 
-    piter = ProgressBarText().iter
+    app = QtWidgets.QApplication(sys.argv)
 
     ifile = r'd:\Workdata\people\janinetest2\coal_12052020_pan.img'
 
-    data = iodefs.get_raster(ifile, piter=piter)
+    data = iodefs.get_raster(ifile)
     # data = iodefs.get_raster(r'D:\Workdata\BV1_17_fx_extracted_image_1.hdr')
     os.chdir(r'd:\Workdata\people\janinetest2')
 

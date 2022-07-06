@@ -33,7 +33,7 @@ from sklearn.metrics import calinski_harabasz_score
 import sklearn.preprocessing as skp
 
 from pygmi.raster.datatypes import Data
-import pygmi.menu_default as menu_default
+from pygmi import menu_default
 from pygmi.misc import ProgressBarText
 
 
@@ -350,7 +350,6 @@ class Cluster(QtWidgets.QDialog):
         None.
 
         """
-
         # data = copy.deepcopy(self.indata['Raster'])
         data = self.indata['Raster']
         self.update_vars()
@@ -419,7 +418,7 @@ class Cluster(QtWidgets.QDialog):
                                     'Please change settings.')
 
                 return False
-            elif cfit.labels_.max() < 0 and self.cltype == 'DBSCAN':
+            if cfit.labels_.max() < 0 and self.cltype == 'DBSCAN':
                 self.showprocesslog('Could not find any clusters. '
                                     'Please change settings.')
 
@@ -443,7 +442,6 @@ class Cluster(QtWidgets.QDialog):
             dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
             if cfit.labels_.max() > 0:
                 dat_out[-1].metadata['Cluster']['vrc'] = calinski_harabasz_score(X, cfit.labels_)
-
 
             # Reloading this hear to save memory. Need unscaled values.
             X = []
@@ -489,7 +487,7 @@ def _testfn():
     import sys
     import glob
     import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster, export_raster
+    from pygmi.raster.iodefs import get_raster
 
     ifiles = glob.glob(r'd:\Workdata\bugs\*.tif')
 
@@ -521,15 +519,10 @@ def _testfn():
     dat.dataid = 'simple class'
     dat.data = dat2
 
-    # export_raster(r'd:\Workdata\bugs\class2.tif', [dat], 'GTiff')
-
-    breakpoint()
-
 
 def _testfn2():
     import sys
-    import matplotlib.pyplot as plt
-    from pygmi.raster.iodefs import get_raster, export_raster
+    from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\KZN Floods\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004_diff.tif"
 
@@ -541,8 +534,6 @@ def _testfn2():
     DM = Cluster()
     DM.indata['Raster'] = dat
     DM.settings(True)
-
-    breakpoint()
 
 
 if __name__ == "__main__":
