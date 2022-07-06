@@ -95,10 +95,9 @@ setup(name='pygmi',
                         'setuptools'],
 
       package_data={'pygmi': ['raster/*.cof', 'helpdocs/*.html',
-                              'bholes/images/*.svg',
-                              'helpdocs/*.png', 'images/*.png', 'bholes/*.xlsx'
+                              'helpdocs/*.png', 'images/*.png',
                               'images/*.emf', 'images/*.ico']},
 
-      entry_points={'gui_scripts': ['pygmi = pygmi:main']},  # test this, might need to be pygmi.main:main
+      entry_points={'gui_scripts': ['pygmi = pygmi:main']},
 
       zip_safe=False)
