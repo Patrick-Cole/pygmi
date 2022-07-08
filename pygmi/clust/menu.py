@@ -113,7 +113,7 @@ class MenuWidget():
         context_menu['Cluster'].addAction(self.action_show_objvrcncexbigraphs)
         self.action_show_objvrcncexbigraphs.triggered.connect(self.show_vrc_etc)
 
-        self.action_export_data = QtWidgets.QAction('Export Data')
+        self.action_export_data = QtWidgets.QAction('Export Class Data')
         context_menu['Cluster'].addAction(self.action_export_data)
         self.action_export_data.triggered.connect(self.export_data)
 

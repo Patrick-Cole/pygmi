@@ -1446,11 +1446,12 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
     if drv == 'GTiff':
         kwargs = {'COMPRESS': compression,
                   'ZLEVEL': '1',
-                  'ZSTD_LEVEL': '1',
                   'BIGTIFF': 'YES',
                   'INTERLEAVE': 'BAND',
                   'TFW': 'YES',
                   'PROFILE': 'GeoTIFF'}
+        if compression == 'ZSTD':
+            kwargs['ZSTD_LEVEL'] = '1'
         if dtype in (np.float32, np.float64):
             kwargs['PREDICTOR'] = '3'
 
