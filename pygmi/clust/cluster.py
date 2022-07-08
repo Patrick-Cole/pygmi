@@ -208,7 +208,7 @@ class Cluster(QtWidgets.QDialog):
             self.label_minsamples.show()
             self.spinbox_minsamples.show()
             self.doublespinbox_eps.show()
-        elif i == 'k-means':
+        elif i in ['K-Means', 'Mini Batch K-Means (fast)']:
             self.label_minclusters.show()
             self.spinbox_minclusters.show()
             self.label_maxclusters.show()
@@ -260,12 +260,12 @@ class Cluster(QtWidgets.QDialog):
             temp = self.exec_()
             if temp == 0:
                 return False
-
-            self.parent.process_is_active()
+            if self.parent is not None:
+                self.parent.process_is_active()
 
         flag = self.run()
 
-        if not nodialog:
+        if not nodialog and self.parent is not None:
             self.parent.process_is_active(False)
             self.parent.pbar.to_max()
         return flag
@@ -410,6 +410,7 @@ class Cluster(QtWidgets.QDialog):
                                   min_samples=self.min_samples).fit(X)
 
             elif self.cltype == 'Birch':
+                X = np.ascontiguousarray(X)  # Birch gave an error without this
                 cfit = skc.Birch(n_clusters=i, threshold=self.bthres,
                                  branching_factor=self.branchfac).fit(X)
 
@@ -524,7 +525,7 @@ def _testfn2():
     import sys
     from pygmi.raster.iodefs import get_raster
 
-    ifile = r"D:\KZN Floods\S2B_MSIL2A_20220329T073609_N0400_R092_T36JTM_20220329T104004_diff.tif"
+    ifile = r"D:\Workdata\testdata.hdr"
 
     dat = get_raster(ifile)
 
@@ -533,7 +534,7 @@ def _testfn2():
     print('Merge')
     DM = Cluster()
     DM.indata['Raster'] = dat
-    DM.settings(True)
+    DM.settings()
 
 
 if __name__ == "__main__":
