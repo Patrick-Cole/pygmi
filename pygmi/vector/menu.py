@@ -84,10 +84,6 @@ class MenuWidget():
 # Context menus
         context_menu['Line'].addSeparator()
 
-        self.action_export_line = QtWidgets.QAction('Export Line Data')
-        context_menu['Line'].addAction(self.action_export_line)
-        self.action_export_line.triggered.connect(self.export_line)
-
         self.action_show_line_data = QtWidgets.QAction('Show Line Data'
                                                        ' Profile')
         context_menu['Line'].addAction(self.action_show_line_data)
@@ -101,11 +97,11 @@ class MenuWidget():
         context_menu['Line'].addAction(self.action_show_point_data2)
         self.action_show_point_data2.triggered.connect(self.show_point_map)
 
-        context_menu['Vector'].addSeparator()
+        self.action_export_line = QtWidgets.QAction('Export Line Data')
+        context_menu['Line'].addAction(self.action_export_line)
+        self.action_export_line.triggered.connect(self.export_line)
 
-        self.action_export_shape = QtWidgets.QAction('Export Shape Data')
-        context_menu['Vector'].addAction(self.action_export_shape)
-        self.action_export_shape.triggered.connect(self.export_shape)
+        context_menu['Vector'].addSeparator()
 
         self.action_show_vector_data = QtWidgets.QAction('Show Vector Data')
         context_menu['Vector'].addAction(self.action_show_vector_data)
@@ -114,6 +110,10 @@ class MenuWidget():
         self.action_show_rose_diagram = QtWidgets.QAction('Show Rose Diagram')
         context_menu['Vector'].addAction(self.action_show_rose_diagram)
         self.action_show_rose_diagram.triggered.connect(self.show_rose_diagram)
+
+        self.action_export_shape = QtWidgets.QAction('Export Shape Data')
+        context_menu['Vector'].addAction(self.action_export_shape)
+        self.action_export_shape.triggered.connect(self.export_shape)
 
     def grid(self):
         """Grid datasets."""

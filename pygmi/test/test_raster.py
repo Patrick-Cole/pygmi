@@ -59,6 +59,23 @@ def test_dratio():
     np.testing.assert_array_equal(dat, dat2)
 
 
+def test_thgrad():
+    """test th grad."""
+    datin = [[1, 2], [1, 2]]
+    dat2 = [[0.1, 0.1], [0.1, 0.1]]
+    dat = cooper.thgrad(datin, 10, 10)
+    np.testing.assert_array_equal(dat, dat2)
+
+
+def test_vertical():
+    """test vertical derivative."""
+    datin = np.array([[1, 2], [1, 2]])
+    dat2 = np.array([[-0.90757121,  0.90757121],
+                     [-0.90757121,  0.90757121]])
+    dat = cooper.vertical(datin, 10)
+    np.testing.assert_array_almost_equal(dat, dat2)
+
+
 def test_viz():
     """test visibility."""
     datin = np.ma.array([[1, 2], [1, 2]])
@@ -491,5 +508,59 @@ def test_smooth():
     np.testing.assert_array_almost_equal(datout2, datout)
 
 
+def test_agc():
+    """Tests for AGC."""
+    datin = Data()
+    datin.data = np.ma.ones([7, 7])
+    datin.data[2:-2, 2:-2] = 2
+
+    tmp = cooper.AGC(None)
+    tmp.indata = {'Raster': [datin]}
+
+    tmp.sb_wsize.setValue(3)
+
+    tmp.rb_mean.setChecked(True)
+    tmp.settings(True)
+    datout2 = tmp.outdata['Raster'][0].data.data
+
+    datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
+                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
+                       [1e+20, 0, 2.25, 1.50, 2.25, 0, 1e+20],
+                       [1e+20, 0, 1.50, 1, 1.50, 0, 1e+20],
+                       [1e+20, 0, 2.25, 1.50, 2.25, 0, 1e+20],
+                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
+                       [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+
+    np.testing.assert_array_almost_equal(datout2, datout)
+
+    tmp.rb_median.setChecked(True)
+    tmp.settings(True)
+    datout2 = tmp.outdata['Raster'][0].data.data
+
+    datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
+                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
+                       [1e+20, 0, 1, 1, 1, 0, 1e+20],
+                       [1e+20, 0, 1, 1, 1, 0, 1e+20],
+                       [1e+20, 0, 1, 1, 1, 0, 1e+20],
+                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
+                       [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+
+    np.testing.assert_array_almost_equal(datout2, datout)
+
+    tmp.rb_rms.setChecked(True)
+    tmp.settings(True)
+    datout2 = tmp.outdata['Raster'][0].data.data
+
+    datout = np.array([[1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20],
+                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
+                       [1e+20, 0, 1.5, 1.22474487, 1.5, 0, 1e+20],
+                       [1e+20, 0, 1.22474487, 1, 1.22474487, 0, 1e+20],
+                       [1e+20, 0, 1.5, 1.22474487, 1.5, 0, 1e+20],
+                       [1e+20, 0, 0, 0, 0, 0, 1e+20],
+                       [1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20, 1e+20]])
+
+    np.testing.assert_array_almost_equal(datout2, datout)
+
+
 if __name__ == "__main__":
-    test_smooth()
+    test_vertical()

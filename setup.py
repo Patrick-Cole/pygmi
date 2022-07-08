@@ -37,7 +37,7 @@ setup(name='pygmi',
       long_description=open('README.rst', encoding='utf-8').read(),
 
       url=HOMEPAGE,
-      download_url=BASE_URL+'/archive/pygmi-' + PVER + '.tar.gz',
+      download_url=BASE_URL+'/releases',
 
       author='Patrick Cole',
       author_email='pcole@geoscience.org.za',

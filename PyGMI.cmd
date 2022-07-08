@@ -9,7 +9,8 @@ echo If you do have any errors, you can send the message to:
 echo pcole@geoscience.org.za
 echo.
 echo Loading PyGMI...
-.\python\python.exe quickstart.py > err.log 2>&1
+call ".\python\scripts\env.bat"
+python.exe quickstart.py > err.log 2>&1
 echo.
 echo Latest Errors and Messages:
 type err.log

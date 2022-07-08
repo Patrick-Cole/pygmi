@@ -67,8 +67,7 @@ class Gradients(QtWidgets.QDialog):
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.azi = 45.
-        self.elev = 45.
+        self.azi = 45
         self.order = 1
         if parent is not None:
             self.piter = self.parent.pbar.iter

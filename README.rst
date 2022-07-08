@@ -109,50 +109,20 @@ Linux normally comes with python installed, but the additional libraries will st
 Typically, packages can be installed using pip. The process is as follows:
 
    sudo apt-get install pip
-   
+
    sudo apt-get install gdal-bin
-   
+
    sudo apt-get install libgdal-dev
-   
+
    pip install cython
-   
-   pip install pyqt5
 
    pip install numpy
 
-   pip install scipy
-
-   pip install matplotlib
-
-   pip install psutil
-
-   pip install numexpr
-
-   pip install pandas
-
-   pip install rasterio==1.3b3
-
-   pip install geopandas
-
-   pip install numba
-
-   pip install scikit-learn
-
-   pip install scikit-image
-
-   pip install pyopengl
-
-   pip install natsort
-
-   pip install simpeg
-
-   pip install pyshp
-
-   pip install mtpy
+   pip install pygmi
 
 Anaconda
 --------
-Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created. 
+Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created.
 
 The process to install is as follows:
 
@@ -203,11 +173,3 @@ The process to install is as follows:
 Once this is done, download pygmi, extract (unzip) it to a directory, and run it from its root directory with the following command:
 
    python quickstart.py
-
-Alternatively, if you satisfy the requirements, you can run the following command from within the extracted directory:
-
-   python setup_anaconda.py install
-
-Running pygmi can be now done at the command prompt as follows:
-
-   pygmi

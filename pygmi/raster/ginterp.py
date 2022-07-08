@@ -612,8 +612,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     self.fullhist is True and
                     self.htype != 'Histogram Equalization'):
                 self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
-                                                  ec='none',
-                                                  range=(lclip[i], uclip[i]))
+                                                  ec='none')
+                # self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
+                #                                   ec='none',
+                #                                   range=(lclip[i], uclip[i]))
                 self.clipvall[i] = self.argb[i].axvline(lclip[i], ls='--')
                 self.clipvalu[i] = self.argb[i].axvline(uclip[i], ls='--')
 
@@ -2198,9 +2200,9 @@ def _testfn():
     tmp.indata['Raster'] = data
     tmp.data_init()
     tmp.cbox_dtype.setCurrentText('RGB Ternary')
-    tmp.cbox_band1.setCurrentIndex(3)
-    tmp.cbox_band2.setCurrentIndex(4)
-    tmp.cbox_band3.setCurrentIndex(5)
+    tmp.cbox_band1.setCurrentIndex(4)
+    tmp.cbox_band2.setCurrentIndex(5)
+    tmp.cbox_band3.setCurrentIndex(6)
     # tmp.lineclipl.setText('1.')
     # tmp.lineclipu.setText('1.')
     tmp.change_lclip()

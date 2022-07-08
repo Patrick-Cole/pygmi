@@ -29,6 +29,8 @@ This routine is used as a convenience function, typically if you do NOT
 formally install PyGMI as a library and prefer to run it from within the
 default extracted directory structure.
 """
+import sys
+
 from pygmi.main import main
 # import warnings
 
@@ -36,4 +38,8 @@ from pygmi.main import main
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) == 2 and 'true' in sys.argv[1].lower():
+        nocgs = True
+    else:
+        nocgs = False
+    main(nocgs=nocgs)
