@@ -828,6 +828,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
     def __init__(self, parent=None):
         fig = Figure()
+
         self.axes = fig.add_subplot(111)
         self.line = None
         self.ind = None
@@ -848,8 +849,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
                                        self.button_release_callback)
         self.figure.canvas.mpl_connect('motion_notify_event',
                                        self.motion_notify_callback)
-        self.figure.canvas.mpl_connect('resize_event',
-                                       self.resize)
+        self.figure.canvas.mpl_connect('resize_event', self.revent)
 
     def button_press_callback(self, event):
         """
@@ -964,7 +964,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         return True
 
-    def resize(self, event):
+    def revent(self, width):
         """
         Resize event.
 
@@ -1913,7 +1913,7 @@ def tonumber(test, alttext=None):
 
 def _testfn_occam():
     """Test routine."""
-    datadir = r'd:\Work\workdata\MT\\'
+    datadir = r'd:\workdata\MT\\'
     edi_file = datadir+r"synth02.edi"
 
     # Create an MT object
@@ -1923,6 +1923,7 @@ def _testfn_occam():
 
     app = QtWidgets.QApplication(sys.argv)
     test = Occam1D(None)
+    # test = EditEDI()
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()
 
@@ -1945,4 +1946,4 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_occam()

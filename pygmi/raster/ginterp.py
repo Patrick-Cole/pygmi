@@ -185,8 +185,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         FigureCanvasQTAgg.updateGeometry(self)
 
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
-        self.cid = self.figure.canvas.mpl_connect('resize_event',
-                                                  self.revent)
+        self.cid = self.figure.canvas.mpl_connect('resize_event', self.revent)
         # self.zid = self.figure.canvas.mpl_connect('button_release_event',
         #                                           self.zevent)
 
@@ -284,8 +283,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.update_graph()
         # self.figure.canvas.draw()
 
-        self.cid = self.figure.canvas.mpl_connect('resize_event',
-                                                  self.revent)
+        self.cid = self.figure.canvas.mpl_connect('resize_event', self.revent)
 
     def move(self, event):
         """
