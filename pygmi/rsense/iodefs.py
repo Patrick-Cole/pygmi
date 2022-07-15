@@ -42,6 +42,7 @@ from geopandas import GeoDataFrame
 from shapely.geometry import Point
 import rasterio
 from rasterio.crs import CRS
+from natsort import natsorted
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
@@ -891,6 +892,11 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
                 i.dataid = ''
             i.dataid = i.dataid.replace(',', ' ')
 
+        # Sort in band order.
+        dataid = [i.dataid for i in dat]
+        dorder = [i for _, i in natsorted(zip(dataid, range(len(dataid))))]
+        dat = [dat[i] for i in dorder]
+
     return dat
 
 
@@ -1583,7 +1589,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
 
         for i in piter(dataset.indexes):
             rtmp = dataset.read(i)
-            bname = dataset.descriptions[i-1]
+            bname = dataset.descriptions[i-1]+f' ({dataset.transform[0]}m)'
             bmeta = dataset.tags(i)
 
             if ('Sentinel-2 Bands Only' in extscene and
@@ -2165,9 +2171,26 @@ def _testfn():
     ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
     extscene = 'Hyperion'
 
+    ifile = r'C:/Workdata/Remote Sensing/ASTER/AST_07XT_00304132006083806_20180608052447_30254.hdf'
+    ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
+    extscene = 'None'
+
     dat = get_data(ifile, extscene=extscene)
 
-    for i in dat:
+
+
+    dataid = [i.dataid for i in dat]
+
+    print(dataid)
+
+    breakpoint()
+
+        # dorder = [i for _, i in natsorted(zip(dataid, range(len(dataid))))]
+        # dat = [dat[i] for i in dorder]
+
+
+
+    for i in dat[:1]:
         plt.figure(dpi=300)
         plt.title(i.dataid)
         plt.imshow(i.data, interpolation='none')
@@ -2191,4 +2214,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
