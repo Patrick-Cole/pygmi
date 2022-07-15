@@ -39,8 +39,7 @@ from OpenGL import GL
 from OpenGL import GLU
 from OpenGL import GLUT
 from OpenGL.arrays import vbo
-from scipy.ndimage.interpolation import zoom
-import scipy.ndimage.filters as sf
+from scipy.ndimage import zoom, convolve
 from numba import jit
 from PIL import Image
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -98,6 +97,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.label = QtWidgets.QLabel()
         self.label2 = QtWidgets.QLabel()
         self.pb_save = QtWidgets.QPushButton('Save to Image File (JPG or PNG)')
+        self.pb_resetlight = QtWidgets.QPushButton('Reset Light')
         self.pb_refresh = QtWidgets.QPushButton('Refresh Model')
         self.checkbox_smooth = QtWidgets.QCheckBox('Smooth Model')
         self.checkbox_ortho = QtWidgets.QCheckBox('Orthographic Projection')
@@ -147,6 +147,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
         verticallayout.addWidget(self.lw_3dmod_defs)
         verticallayout.addWidget(QtWidgets.QLabel('Light Position:'))
         verticallayout.addWidget(self.msc)
+        verticallayout.addWidget(self.pb_resetlight)
         verticallayout.addWidget(self.checkbox_smooth)
         verticallayout.addWidget(self.checkbox_ortho)
         verticallayout.addWidget(self.checkbox_axis)
@@ -162,10 +163,11 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.vslider_3dmodel.sliderReleased.connect(self.mod3d_vs)
         self.pb_save.clicked.connect(self.save)
         self.pb_refresh.clicked.connect(self.run)
+        self.pb_resetlight.clicked.connect(self.resetlight)
         self.checkbox_smooth.stateChanged.connect(self.update_plot)
         self.checkbox_ortho.stateChanged.connect(self.update_model2)
         self.checkbox_axis.stateChanged.connect(self.update_model2)
-        self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
+        self.msc.figure.canvas.mpl_connect('button_press_event', self.sunclick)
 
     def save(self):
         """
@@ -284,9 +286,31 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.zmult = 1.0 + perc*xy_z_ratio
         self.update_model2()
 
-    def move(self, event):
+    def resetlight(self):
         """
-        Move event is used to track changes to the sunshading.
+        Reset light to the current model position.
+
+        Returns
+        -------
+        None.
+
+        """
+        xdata, ydata = self.msc.sun.get_data()
+
+        phi = -xdata
+        theta = np.pi/2.-ydata
+
+        x = np.cos(phi)
+        y = -np.sin(phi)
+        z = np.sin(theta)
+
+        self.glwidget.setlightdir(x, y, z)
+        self.glwidget.init_object()
+        self.glwidget.updateGL()
+
+    def sunclick(self, event):
+        """
+        Sunclick event is used to track changes to the sunshading.
 
         Parameters
         ----------
@@ -305,17 +329,16 @@ class Mod3dDisplay(QtWidgets.QDialog):
             y = -np.sin(phi)
             z = np.sin(theta)
 
-#            self.showprocesslog(x, y, z)
-
             self.glwidget.setlightdir(x, y, z)
             self.glwidget.init_object()
             self.glwidget.updateGL()
-#            self.update_model2()
-#            phi = -event.xdata
-#            theta = np.pi/2. - np.arccos(event.ydata)
-#            self.mmc.phi = phi
-#            self.mmc.theta = theta
-#            self.mmc.update_graph()
+
+            # self.update_model2()
+            # phi = -event.xdata
+            # theta = np.pi/2. - np.arccos(event.ydata)
+            # self.mmc.phi = phi
+            # self.mmc.theta = theta
+            # self.mmc.update_graph()
 
     def update_color(self):
         """
@@ -344,7 +367,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
         for lno in liths:
             if lno not in lcheck:
                 continue
-            if self.corners[lno] == []:
+            if len(self.corners[lno]) == 0:
                 continue
             if lno in self.sliths:
                 clrtmp = lut[lno].tolist()+[1.]
@@ -390,6 +413,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
             return False
 
         self.show()
+
         misc.update_lith_lw(self.lmod1, self.lw_3dmod_defs)
         for i in range(self.lw_3dmod_defs.count()-1, -1, -1):
             if self.lw_3dmod_defs.item(i).text() == 'Background':
@@ -397,17 +421,18 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
         for i in range(self.lw_3dmod_defs.count()):
             item = self.lw_3dmod_defs.item(i)
-#            item.setFlags(item.flags() |QtCore.Qt.ItemIsUserCheckable)
+            # item.setFlags(item.flags() |QtCore.Qt.ItemIsUserCheckable)
             item.setSelected(True)
             item.setText('\u2713 ' + item.text())
-#            item.setCheckState(QtCore.Qt.Checked)
+            # item.setCheckState(QtCore.Qt.Checked)
 
         self.update_plot()
+
         return True
 
     def update_plot(self):
         """
-        Update 3D Model.
+        Update 3D model.
 
         Returns
         -------
@@ -422,7 +447,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
                        self.lmod1.zrange[0]]
         self.gdata = self.lmod1.lith_index[::1, ::1, ::-1]
 
-#     update colors
+    # update colors
         i = self.lw_3dmod_defs.findItems('*', QtCore.Qt.MatchWildcard)
         itxt = [j.text()[2:] for j in i]
         itmp = []
@@ -514,6 +539,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
         for lno in liths:
             tmppval += 1
             self.pbar.setValue(tmppval)
+            QtWidgets.QApplication.processEvents()
+
             if lno not in lcheck:
                 continue
             if not issmooth:
@@ -600,7 +627,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
                 cc[cc != lno] = 0
                 cc[cc == lno] = 1
 
-                cc = sf.convolve(cc, cci)/cci.size
+                cc = convolve(cc, cci)/cci.size
 
 # shrink cc to match only visible lithology? Origin offset would need to be
 # checked.
@@ -612,8 +639,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
                 if vtx.size == 0:
                     self.lmod1.update_lith_list_reverse()
-#                    lithtext = self.lmod1.lith_list_reverse[lno]
-#                    self.showprocesslog(lithtext)
+                    # lithtext = self.lmod1.lith_list_reverse[lno]
+                    # self.showprocesslog(lithtext)
 
                     self.faces[lno] = []
                     self.corners[lno] = []
@@ -878,7 +905,7 @@ class GLWidget(QtOpenGL.QGLWidget):
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glDepthMask(GL.GL_TRUE)
         GL.glDepthFunc(GL.GL_LEQUAL)
-#        GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
+        # GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
 
         GL.glEnable(GL.GL_CULL_FACE)
 
@@ -1331,7 +1358,7 @@ def calc_norms(faces, vtx):
     None.
 
     """
-#    nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
+    # nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
     nrm = np.zeros(vtx.shape, dtype=np.float64)
     tris = vtx[faces]
     n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] -
@@ -2115,5 +2142,24 @@ def _testfn():
     sys.exit(app.exec_())
 
 
+def _testfn2():
+    """Test function."""
+    from pygmi.pfmod.iodefs import ImportMod3D
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    ifile = r'C:/Workdata/modelling/Magmodel_Upper22km_AveAll_diapir_withDeepDens_newdens.npz'
+
+    IM = ImportMod3D()
+    IM.ifile = ifile
+    IM.settings(True)
+
+    M3D = Mod3dDisplay()
+    M3D.indata = IM.outdata
+    M3D.data_init()
+    M3D.run()
+    M3D.exec_()
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
