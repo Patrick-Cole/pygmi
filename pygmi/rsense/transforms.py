@@ -693,6 +693,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
 
     del Pnorm
     ev = pca.explained_variance_
+    evr = pca.explained_variance_ratio_
 
     if fwdonly is False:
         pprint('Calculating inverse MNF...')
@@ -712,9 +713,13 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     del x2
 
     odata = copy.deepcopy(dat)
-    odata = odata[:ncmps]
+    if fwdonly:
+        odata = odata[:ncmps]
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
+        if fwdonly is True:
+            band.dataid = (f'MNF {j+1} Explained Variance Ratio '
+                           f'{evr[j]*100:.2f}%')
 
     del datall
 
@@ -804,7 +809,8 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     del x2
 
     odata = copy.deepcopy(dat)
-    odata = odata[:ncmps]
+    if fwdonly:
+        odata = odata[:ncmps]
     for j, band in enumerate(odata):
         band.data = datall[:, :, j]
         if fwdonly is True:
@@ -941,6 +947,8 @@ def _testfn3():
     # extscene = 'Sentinel-2 Bands Only'
     ifile = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_stack.tif'
     extscene = None
+
+    ifile = r'C:/Workdata/Remote Sensing/Landsat/LC09_L1TP_173080_20211110_20220119_02_T1.tar'
 
     # ifile2 = r'C:/Workdata/Remote Sensing/ASTER/PCA Test/AST_05_07XT_20060807_7016_pca.tif'
 
