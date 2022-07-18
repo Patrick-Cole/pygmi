@@ -36,6 +36,7 @@ from collections import defaultdict
 
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
+import numexpr as ne
 import pandas as pd
 import geopandas as gpd
 from geopandas import GeoDataFrame
@@ -1193,9 +1194,8 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
     if '.tar' in ifilet:
         showprocesslog('Cleaning Extracted tar files...')
         for tfile in piter(tarnames):
-            print(tfile)
             os.remove(os.path.join(os.path.dirname(ifile), tfile))
-    print('Import complete')
+    showprocesslog('Import complete')
     return dat
 
 
@@ -1222,6 +1222,11 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
 
     dtree = etree_to_dict(ET.parse(ifilet).getroot())
 
+    if 'isd' not in dtree:
+        showprocesslog('Wrong xml file. Please choose the xml file in the '
+                       'PAN or MUL directory')
+        return None
+
     platform = dtree['isd']['TIL']['BANDID']
     # til = dtree['isd']['TIL']
     satid = dtree['isd']['IMD']['IMAGE']['SATID']
@@ -1231,7 +1236,7 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
 
     if platform == 'P':
         satbands = {'1': [450, 800]}
-        bnum2name = {0, 'BAND_P'}
+        bnum2name = {0: 'BAND_P'}
 
     if platform == 'Multi':
         satbands = {'1': [400, 450],
@@ -1317,22 +1322,27 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
             bmeta = dataset.tags(i)
             dat[i-1].data[rmin:rmax+1, cmin:cmax+1] = rtmp
             dat[i-1].crs = dataset.crs
+            dat[i-1].filename = ifile
         dataset.close()
 
     showprocesslog('Calculating radiance and reflectance...')
     indx = -1
     for i in piter(dat):
         indx += 1
-        i.data = np.ma.masked_invalid(i.data)
-        i.data.mask = i.data.mask | (i.data == nval)
-        if i.data.mask.size == 1:
-            i.data.mask = (np.ma.make_mask_none(i.data.shape) +
-                           i.data.mask)
+        mask = (i.data == nval)
+        # i.data = np.ma.masked_invalid(i.data)
+        # i.data.mask = i.data.mask | (i.data == nval)
+        # if i.data.mask.size == 1:
+        #     i.data.mask = (np.ma.make_mask_none(i.data.shape) +
+        #                    i.data.mask)
 
         scale = float(dtree['isd']['IMD'][bnum2name[indx]]['ABSCALFACTOR'])
         bwidth = float(dtree['isd']['IMD'][bnum2name[indx]]['EFFECTIVEBANDWIDTH'])
 
-        i.data = i.data * scale / bwidth
+        # from pygmi.misc import getinfo
+
+        # i.data = ne.evaluate('idata*(scale*bwidth)')
+        # i.data = i.data * scale / bwidth
         i.data = i.data.astype(np.float32)
 
         date = dtree['isd']['IMD']['IMAGE']['FIRSTLINETIME']
@@ -1367,15 +1377,17 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
         szenith = 90. - float(dtree['isd']['IMD']['IMAGE']['MEANSUNEL'])
         szenith = np.deg2rad(szenith)
 
-        i.data = (i.data * dES**2 * np.pi /
-                  (Esun[bnum2name[indx]] * np.cos(szenith)))
+        tmp = dES**2 * np.pi / (Esun[bnum2name[indx]] * np.cos(szenith))
+        tmp = tmp * scale / bwidth
+        idata = i.data
+        i.data = ne.evaluate('idata * tmp')
 
-        # breakpoint()
+        i.data = np.ma.array(i.data, mask=mask)
 
     if not dat:
         dat = None
 
-    print('Import complete')
+    showprocesslog('Import complete')
     return dat
 
 
@@ -1467,9 +1479,6 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
         10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077, 10.4077,
         10.4077, 10.4077]
 
-    # for i in range(242):
-    #     print(bandnames[i], wavelength[i], fwhm[i])
-
     showprocesslog('Extracting zip...')
 
     idir = os.path.dirname(ifile)
@@ -1537,12 +1546,7 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
     for zfile in zipnames:
         os.remove(os.path.join(idir, zfile))
 
-    # if '.tar' in ifilet:
-    #     showprocesslog('Cleaning Extracted tar files...')
-    #     for tfile in piter(tarnames):
-    #         print(tfile)
-    #         os.remove(os.path.join(os.path.dirname(ifile), tfile))
-    print('Import complete')
+    showprocesslog('Import complete')
     return dat
 
 
@@ -2176,19 +2180,6 @@ def _testfn():
     extscene = 'None'
 
     dat = get_data(ifile, extscene=extscene)
-
-
-
-    dataid = [i.dataid for i in dat]
-
-    print(dataid)
-
-    breakpoint()
-
-        # dorder = [i for _, i in natsorted(zip(dataid, range(len(dataid))))]
-        # dat = [dat[i] for i in dorder]
-
-
 
     for i in dat[:1]:
         plt.figure(dpi=300)

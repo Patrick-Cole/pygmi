@@ -90,7 +90,7 @@ class SatRatios(QtWidgets.QDialog):
         self.lw_ratios.setSelectionMode(self.lw_ratios.MultiSelection)
 
         self.combo_sensor.addItems(['ASTER',
-                                    'Landsat 8 (OLI)',
+                                    'Landsat 8 and 9 (OLI)',
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
                                     'Sentinel-2', 'WorldView'])
@@ -144,8 +144,8 @@ class SatRatios(QtWidgets.QDialog):
 
         if 'AST_' in bfile and 'hdf' in bfile.lower():
             self.combo_sensor.setCurrentText('ASTER')
-        elif bfile[:4] in ['LC08']:
-            self.combo_sensor.setCurrentText('Landsat 8 (OLI)')
+        elif bfile[:4] in ['LC08', 'LC09']:
+            self.combo_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
         elif bfile[:4] in ['LE07']:
             self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
         elif bfile[:4] in ['LT04', 'LT05']:
@@ -224,10 +224,6 @@ class SatRatios(QtWidgets.QDialog):
         None.
 
         """
-        # evi = None
-        # tci = None
-        # vci = None
-
         datfin = []
         sensor = self.combo_sensor.currentText()
 
@@ -380,8 +376,8 @@ class SatRatios(QtWidgets.QDialog):
                           'B5': 'B5', 'B6': 'B6', 'B7': 'B7', 'B8': 'B8',
                           'B9': 'B9', 'B10': 'B10', 'B11': 'B11', 'B12': 'B12',
                           'B13': 'B13', 'B14': 'B14'}
-        sdict['Landsat 8 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
-                                    'B3': 'B5', 'B4': 'B6', 'B5': 'B7'}
+        sdict['Landsat 8 and 9 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
+                                          'B3': 'B5', 'B4': 'B6', 'B5': 'B7'}
         sdict['Landsat 7 (ETM+)'] = {'B0': 'B1', 'B1': 'B2', 'B2': 'B3',
                                      'B3': 'B4', 'B4': 'B5', 'B5': 'B7'}
         sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
@@ -558,7 +554,7 @@ class ConditionIndices(QtWidgets.QDialog):
                                    'MSAVI2'])
 
         self.combo_sensor.addItems(['ASTER',
-                                    'Landsat 8 (OLI)',
+                                    'Landsat 8 and 9 (OLI)',
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
                                     'Sentinel-2', 'WorldView'])
@@ -611,8 +607,8 @@ class ConditionIndices(QtWidgets.QDialog):
 
         if 'AST_' in bfile and 'hdf' in bfile.lower():
             self.combo_sensor.setCurrentText('ASTER')
-        elif bfile[:4] in ['LC08']:
-            self.combo_sensor.setCurrentText('Landsat 8 (OLI)')
+        elif bfile[:4] in ['LC08', 'LC09']:
+            self.combo_sensor.setCurrentText('Landsat 8 and 9 (OLI)')
         elif bfile[:4] in ['LE07']:
             self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
         elif bfile[:4] in ['LT04', 'LT05']:
@@ -846,10 +842,10 @@ class ConditionIndices(QtWidgets.QDialog):
                          commonmask=True)
 
         ofile = ''
-        if 'TCI' in rlist1 or 'VHI' in rlist1 and lst:
+        if ('TCI' in rlist1 or 'VHI' in rlist1) and lst:
             tci = get_TCI(lst)
             ofile += '_TCI'
-        if 'VCI' in rlist1 or 'VHI' in rlist1 and evi:
+        if ('VCI' in rlist1 or 'VHI' in rlist1) and evi:
             vci = get_VCI(evi, index)
             ofile += '_VCI_'+index
         if 'VHI' in rlist1 and tci and vci:
@@ -979,8 +975,8 @@ def correct_bands(rlist, sensor):
                       'B5': 'B5', 'B6': 'B6', 'B7': 'B7', 'B8': 'B8',
                       'B9': 'B9', 'B10': 'B10', 'B11': 'B11', 'B12': 'B12',
                       'B13': 'B13', 'B14': 'B14'}
-    sdict['Landsat 8 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
-                                'B3': 'B5', 'B4': 'B6', 'B5': 'B7'}
+    sdict['Landsat 8 and 9 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
+                                      'B3': 'B5', 'B4': 'B6', 'B5': 'B7'}
     sdict['Landsat 7 (ETM+)'] = {'B0': 'B1', 'B1': 'B2', 'B2': 'B3',
                                  'B3': 'B4', 'B4': 'B5', 'B5': 'B7'}
     sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
@@ -1020,7 +1016,9 @@ def get_TCI(lst):
         output TCI datasets.
 
     """
+    tci = []
     lst2 = []
+
     for j in lst:
         lst2.append(j.data)
     lst2 = np.ma.array(lst2)
@@ -1028,7 +1026,6 @@ def get_TCI(lst):
     lstmax = lst2.max(0)
     lstmin = lst2.min(0)
 
-    tci = []
     for dat in lst:
         tmp = copy.deepcopy(dat)
 
@@ -1170,15 +1167,15 @@ def get_landsat_list(flist, sensor, allsats=False):
     """
     if isinstance(flist[0], list):
         bfile = os.path.basename(flist[0][0].filename)
-        if bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08']:
+        if bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']:
             return flist
         return []
 
     if allsats is True:
-        fid = ['LT04', 'LT05', 'LE07', 'LC08']
+        fid = ['LT04', 'LT05', 'LE07', 'LC08', 'LC09']
 
-    elif sensor == 'Landsat 8 (OLI)':
-        fid = ['LC08']
+    elif sensor == 'Landsat 8 and 9 (OLI)':
+        fid = ['LC08', 'LC09']
     elif sensor == 'Landsat 7 (ETM+)':
         fid = ['LE07']
     elif sensor == 'Landsat 4 and 5 (TM)':
@@ -1260,6 +1257,9 @@ def _testfn2():
     ifiles = glob.glob("d:/Workdata/NRF/172-079/*.tar")
     ifiles = glob.glob(r"d:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
     ifiles = glob.glob(r"C:\WorkProjects\Test\*.tif")
+
+    ifiles = glob.glob(r"c:\Workdata\Remote Sensing\Landsat\*.gz")
+
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
 
@@ -1348,4 +1348,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
