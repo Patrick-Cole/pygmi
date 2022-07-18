@@ -681,8 +681,6 @@ class MainWidget(QtWidgets.QMainWindow):
 
         self.textbrowser_datainfo.setSizePolicy(sizepolicy)
         self.textbrowser_processlog.setSizePolicy(sizepolicy)
-        self.textbrowser_processlog.setStyleSheet(
-            '* { background-color: rgb(255, 255, 255); }')
 
         self.grid_layout.addWidget(self.graphics_view, 0, 0, 4, 2)
         self.grid_layout.addWidget(self.textbrowser_datainfo, 1, 2, 1, 1)
@@ -975,11 +973,11 @@ class MainWidget(QtWidgets.QMainWindow):
         """
         if isactive:
             self.textbrowser_processlog.setStyleSheet(
-                '* { background-color: rgba(255, 0, 0, 127); }')
+                'QTextBrowser { background-color: rgba(255, 0, 0, 127); }')
             self.pbar.setValue(0)
         else:
             self.textbrowser_processlog.setStyleSheet(
-                '* { background-color: rgb(255, 255, 255); }')
+                'QTextBrowser { background-color: rgb(255, 255, 255); }')
 
     def load(self):
         """
