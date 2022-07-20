@@ -123,7 +123,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
     alpha : float
         how much incident light is reflected (0 to 1)
     kval : float
-        k value for cmyk mode
+        k value for CMYK mode
     """
 
     def __init__(self, parent=None):
@@ -910,7 +910,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.lineclipu = QtWidgets.QLineEdit()
         self.lineclipl = QtWidgets.QLineEdit()
         self.cbox_cbar = QtWidgets.QComboBox(self)
-        self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # cmyK
+        self.kslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # CMYK
         self.sslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)  # sunshade
         self.aslider = QtWidgets.QSlider(QtCore.Qt.Horizontal)
         self.label4 = QtWidgets.QLabel('Sunshade Data:')
@@ -2119,7 +2119,7 @@ def img2rgb(img, cbar=cm.get_cmap('jet')):
     img : numpy array
         array to be converted to rgba image.
     cbar : matplotlib colour map
-        colourmap to apply to the image, default is jet.
+        colormap to apply to the image, default is jet.
 
     Returns
     -------

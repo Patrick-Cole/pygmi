@@ -617,7 +617,7 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     pprint : function, optional
         Function for printing text. The default is print.
     piter : function, optional
-        Iteration function, used for progressbars. The default is iter.
+        Iteration function, used for progress bars. The default is iter.
     fwdonly : bool, optional
         Option to perform forward calculation only. The default is True.
 
@@ -740,7 +740,7 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     pprint : function, optional
         Function for printing text. The default is print.
     piter : function, optional
-        Iteration function, used for progressbars. The default is iter.
+        Iteration function, used for progress bars. The default is iter.
     fwdonly : bool, optional
         Option to perform forward calculation only. The default is True.
 

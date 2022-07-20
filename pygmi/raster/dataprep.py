@@ -1777,7 +1777,7 @@ def redistribute_vertices(geom, distance):
     geom : shapely geometry
         Geometry from geopandas.
     distance : float
-        samping distance.
+        sampling distance.
 
     Raises
     ------
@@ -2493,7 +2493,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
     dat : PyGMI Data
         data object which stores datasets
     piter : iter, optional
-        Progress bar interator. The default is None.
+        Progress bar iterator. The default is None.
     dxy : float, optional
         Cell size. The default is None.
     pprint : function, optional

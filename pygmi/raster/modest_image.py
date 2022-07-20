@@ -673,7 +673,7 @@ def norm2(dat, datmin=None, datmax=None):
     dat : numpy array
         array to be normalised
     datmin : float
-        data mininum, default is None
+        data minimum, default is None
     datmax : float
         data maximum, default is None
 
