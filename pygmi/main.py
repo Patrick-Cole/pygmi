@@ -69,7 +69,7 @@ class Arrow(QtWidgets.QGraphicsLineItem):
         Starting DiagramItem object. This will send information to my_end_item
     my_end_item : DiagramItem
         End DiagramItem object. This will get information from my_start_item
-    my_color : QtCore color (default is QtCore.Qt.black)
+    my_color : QtCore colour (default is QtCore.Qt.black)
         Color
     """
 
@@ -318,7 +318,7 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         Mouse double click event.
 
         This event is used to activate an item. It does this by calling the
-        settings() method of the item. The event also changes the color of the
+        settings() method of the item. The event also changes the colour of the
         item to reflect whether it is busy working.
         """
         self.setBrush(QtGui.QColor(255, 0, 0, 127))
@@ -964,7 +964,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
     def process_is_active(self, isactive=True):
         """
-        Change process log color when a process is active.
+        Change process log colour when a process is active.
 
         Parameters
         ----------

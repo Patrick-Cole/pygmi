@@ -222,11 +222,13 @@ class GravMag():
         Calculate magnetic and gravity regional.
 
         Calculates a gravity and magnetic regional value based on a single
-        solid lithology model. This gets used in tab_param. The principle is
-        that the maximum value for a solid model with fixed extents and depth,
-        using the most COMMON lithology, would be the MAXIMUM AVERAGE value for
-        any model which we would do. Therefore the regional is simply:
-        REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
+        solid lithology model. The principle is that the maximum value for a
+        solid model with fixed extents and depth, using the most COMMON
+        lithology, would be the MAXIMUM AVERAGE value for any model which we
+        would do. Therefore the regional is simply:
+
+            REGIONAL = OBS GRAVITY MEAN - CALC GRAVITY MAX
+
         This routine calculates the last term.
 
         Returns

@@ -799,7 +799,7 @@ class ExportMod3D():
         lato = str(latsouth)
         lono = str(lonwest)
 
-# update colors
+        # update colours
         self.lmod.update_lith_list_reverse()
 
         dockml = (
@@ -1124,7 +1124,7 @@ class ExportMod3D():
 
         driver = ogr.GetDriverByName('ESRI Shapefile')
 
-# update colors
+        # update colours
         self.lmod.update_lith_list_reverse()
 
         mvis_3d.update_for_kmz()

@@ -342,7 +342,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
     def update_color(self):
         """
-        Update color only.
+        Update colour only.
 
         Returns
         -------
@@ -1412,7 +1412,7 @@ def MarchingCubes(x, y, z, c, iso, showprocesslog=print):
     of the resulting triangulated mesh. The orientation of the triangles is
     chosen such that the normals point from the higher values to the lower
     values. Optional arguments COLORS ans COLS can be used to produce
-    interpolated mesh face colors. For usage, see Matlab's isosurface.m.
+    interpolated mesh face colours. For usage, see Matlab's isosurface.m.
     To avoid Out of Memory errors when matrix C is large, convert matrices
     X,Y,Z and C from doubles (Matlab default) to singles (32-bit floats).
 

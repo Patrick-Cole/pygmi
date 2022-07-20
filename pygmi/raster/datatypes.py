@@ -124,7 +124,7 @@ class Data():
     nodata : float
         grid null or no data value
     units : str
-        description of units to be used with color bars
+        description of units to be used with colour bars
     isrgb : bool
         Flag to signify an RGB image.
     metadata : dictionary

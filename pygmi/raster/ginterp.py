@@ -30,7 +30,7 @@ display of raster data in a variety of modes, as well as the export of that
 display to GeoTiff format.
 
 Currently the following is supported
- * Pseudo Color - data mapped to a color map
+ * Pseudo Colour - data mapped to a colour map
  * Contours with solid contours
  * RGB ternary images
  * CMYK ternary images
@@ -76,15 +76,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
         string indicating the histogram stretch to apply to the data
     hstype : str
         string indicating the histogram stretch to apply to the sun data
-    cbar : matplotlib color map
-        color map to be used for pseudo color bars
+    cbar : matplotlib colour map
+        colour map to be used for pseudo colour bars
     data : list
-        list of PyGMI raster data objects - used for color images
+        list of PyGMI raster data objects - used for colour images
     sdata : list
         list of PyGMI raster data objects - used for shaded images
     gmode : str
         string containing the graphics mode - Contour, Ternary, Sunshade,
-        Single Color Map.
+        Single Colour Map.
     argb : list
         list of matplotlib subplots. There are up to three.
     hhist : list
@@ -277,7 +277,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.image = imshow(self.axes, tmp, origin='upper',
                             extent=(x_1, x_2, y_1, y_2))
 
-        # This line prevents imshow from generating color values on the
+        # This line prevents imshow from generating colour values on the
         # toolbar
         self.image.format_cursor_data = lambda x: ""
         self.update_graph()
@@ -319,7 +319,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                         row = int((itly - event.ydata)/i.ydim)
                         zval[j] = i.data[row, col]
 
-            if self.gmode == 'Single Color Map':
+            if self.gmode == 'Single Colour Map':
                 bnum = self.update_hist_single(zval[0])
                 self.figure.canvas.restore_region(self.bbox_hist_red)
                 self.argb[0].draw_artist(self.htxt[0])
@@ -414,7 +414,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.bgrgb[1] = self.figure.canvas.copy_from_bbox(self.argb[1].bbox)
         self.bgrgb[2] = self.figure.canvas.copy_from_bbox(self.argb[2].bbox)
 
-        if self.gmode == 'Single Color Map':
+        if self.gmode == 'Single Colour Map':
             self.update_single_color_map()
 
         if self.gmode == 'Contour':
@@ -471,7 +471,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_hist_single(self, zval=None, hno=0):
         """
-        Update the color on a single histogram.
+        Update the colour on a single histogram.
 
         Parameters
         ----------
@@ -664,7 +664,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     def update_single_color_map(self):
         """
-        Update the single color map.
+        Update the single colour map.
 
         Returns
         -------
@@ -916,7 +916,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.label4 = QtWidgets.QLabel('Sunshade Data:')
         self.labels = QtWidgets.QLabel('Sunshade Detail')
         self.labela = QtWidgets.QLabel('Light Reflectance')
-        self.labelc = QtWidgets.QLabel('Color Bar:')
+        self.labelc = QtWidgets.QLabel('Colour Bar:')
         self.labelk = QtWidgets.QLabel('K value:')
         self.gbox_sun = QtWidgets.QGroupBox('Sunshading')
 
@@ -928,7 +928,7 @@ class PlotInterp(QtWidgets.QDialog):
         # self.change_cbar()
         self.setFocus()
 
-        self.mmc.gmode = 'Single Color Map'
+        self.mmc.gmode = 'Single Colour Map'
         self.mmc.argb[0].set_visible(True)
         self.mmc.argb[1].set_visible(False)
         self.mmc.argb[2].set_visible(False)
@@ -1015,8 +1015,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.cbox_cbar.addItem('viridis')
         self.cbox_cbar.addItem('terrain')
         self.cbox_cbar.addItems(tmp)
-        self.cbox_dtype.addItems(['Single Color Map', 'Contour', 'RGB Ternary',
-                                  'CMY Ternary'])
+        self.cbox_dtype.addItems(['Single Colour Map', 'Contour',
+                                  'RGB Ternary', 'CMY Ternary'])
         self.cbox_htype.addItems(['Linear with Percent Clip',
                                   'Histogram Equalization'])
 
@@ -1197,7 +1197,7 @@ class PlotInterp(QtWidgets.QDialog):
 
     def change_cbar(self):
         """
-        Change the color map for the color bar.
+        Change the colour map for the colour bar.
 
         Returns
         -------
@@ -1224,7 +1224,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.cbox_band1.show()
         self.mmc.fullhist = self.chk_histtype.isChecked()
 
-        if txt == 'Single Color Map':
+        if txt == 'Single Colour Map':
             # self.slabel.hide()
             self.labelc.show()
             self.labelk.hide()
@@ -1598,7 +1598,7 @@ class PlotInterp(QtWidgets.QDialog):
         clippercl = self.mmc.clippercl
         clippercu = self.mmc.clippercu
 
-        if dtype == 'Single Color Map':
+        if dtype == 'Single Colour Map':
 
             for i in self.mmc.data:
                 if i.dataid == self.mmc.hband[0]:
@@ -2076,7 +2076,7 @@ def histeq(img, nbr_bins=32768):
     """
     Histogram Equalization.
 
-    Equalizes the histogram to colors. This allows for seeing as much data as
+    Equalizes the histogram to colours. This allows for seeing as much data as
     possible in the image, at the expense of knowing the real value of the
     data at a point. It bins the data equally - flattening the distribution.
 
@@ -2112,14 +2112,14 @@ def img2rgb(img, cbar=cm.get_cmap('jet')):
     """
     Image to RGB.
 
-    convert image to 4 channel rgba color image.
+    convert image to 4 channel rgba colour image.
 
     Parameters
     ----------
     img : numpy array
         array to be converted to rgba image.
-    cbar : matplotlib color map
-        colormap to apply to the image, default is jet.
+    cbar : matplotlib colour map
+        colourmap to apply to the image, default is jet.
 
     Returns
     -------

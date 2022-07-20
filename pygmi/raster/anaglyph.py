@@ -372,7 +372,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         vbl_left.addWidget(self.combobox1)
         vbl_left.addWidget(QtWidgets.QLabel('Type:'))
         vbl_left.addWidget(self.combobox2)
-        vbl_left.addWidget(QtWidgets.QLabel('Color Bar:'))
+        vbl_left.addWidget(QtWidgets.QLabel('Colour Bar:'))
         vbl_left.addWidget(self.cbox_cbar)
         vbl_left.addWidget(QtWidgets.QLabel('Scale (1-30):'))
         vbl_left.addWidget(self.slider_scale)
@@ -424,7 +424,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
 
     def change_colors(self):
         """
-        Update color bar.
+        Update colour bar.
 
         Returns
         -------
@@ -538,7 +538,7 @@ def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
     Returns
     -------
     colormap : numpy array
-        Output color mapped array (MxNx4).
+        Output colour mapped array (MxNx4).
 
     """
     mask = np.ma.getmaskarray(data)
@@ -696,7 +696,7 @@ def histcomp(img, nbr_bins=256, perc=5.):
 
 def anaglyph(red, blue, atype='dubois'):
     """
-    Color Anaglyph.
+    Colour Anaglyph.
 
     Parameters
     ----------

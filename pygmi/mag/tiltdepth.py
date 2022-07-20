@@ -116,7 +116,7 @@ class TiltDepth(QtWidgets.QDialog):
         """
         helpdocs = menu_default.HelpButton('pygmi.raster.tiltdepth')
         label2 = QtWidgets.QLabel('Band to perform Tilt Depth:')
-        labelc = QtWidgets.QLabel('Color Bar:')
+        labelc = QtWidgets.QLabel('Colour Bar:')
         label_inc = QtWidgets.QLabel('Inclination of Magnetic Field:')
         label_dec = QtWidgets.QLabel('Declination of Magnetic Field:')
 
@@ -195,7 +195,7 @@ class TiltDepth(QtWidgets.QDialog):
 
     def change_cbar(self):
         """
-        Change the color map for the color bar.
+        Change the colour map for the colour bar.
 
         Returns
         -------

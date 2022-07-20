@@ -602,7 +602,7 @@ def histeq(img, nbr_bins=32768):
     """
     Histogram Equalization.
 
-    Equalizes the histogram to colors. This allows for seeing as much data as
+    Equalizes the histogram to colours. This allows for seeing as much data as
     possible in the image, at the expense of knowing the real value of the
     data at a point. It bins the data equally - flattening the distribution.
 
@@ -638,13 +638,13 @@ def img2rgb(img, cbar=cm.get_cmap('jet')):
     """
     Image to RGB.
 
-    convert image to 4 channel rgba color image.
+    convert image to 4 channel rgba colour image.
 
     Parameters
     ----------
     img : numpy array
         array to be converted to rgba image.
-    cbar : matplotlib color map
+    cbar : matplotlib colour map
         colormap to apply to the image, default is jet.
 
     Returns

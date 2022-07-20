@@ -86,7 +86,7 @@ class ImageSeg(QtWidgets.QDialog):
         helpdocs = menu_default.HelpButton('pygmi.clust.segmentation')
 
         lbl_wcompact = QtWidgets.QLabel('Compactness weight')
-        lbl_wcolor = QtWidgets.QLabel('Color weight')
+        lbl_wcolor = QtWidgets.QLabel('Colour weight')
         lbl_scale = QtWidgets.QLabel('Maximum allowable cost function')
         lbl_eps = QtWidgets.QLabel('DBSCAN eps')
 
@@ -257,7 +257,7 @@ class ImageSeg(QtWidgets.QDialog):
         scale : TYPE, optional
             Scale. The default is 500.
         wcolor : float, optional
-            Color weight. The default is 0.5.
+            Colour weight. The default is 0.5.
         wcompact : float, optional
             Compactness weight. The default is 0.5.
         doshape : bool, optional
@@ -331,7 +331,7 @@ class ImageSeg(QtWidgets.QDialog):
         wcompact : float, optional
             Compactness weight. The default is 0.5.
         wcolor : float, optional
-            Color weight. The default is 0.5.
+            Colour weight. The default is 0.5.
         scale : TYPE, optional
             Scale. The default is 500.
 

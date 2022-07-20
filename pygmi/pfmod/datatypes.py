@@ -38,7 +38,7 @@ class LithModel():
     Attributes
     ----------
     mlut : dictionary
-        color table for lithologies
+        colour table for lithologies
     numx : int
         number of columns per layer in model
     numy : int):

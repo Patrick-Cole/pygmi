@@ -397,7 +397,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         data : dictionary
-            Geopandas data in a dictionary.
+            GeoPandas data in a dictionary.
         col : str
             Label for column to extract.
 
@@ -469,7 +469,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Parameters
         ----------
         data : dictionary
-            Geopandas data in a dictionary. It should be 'LineString'
+            GeoPandas data in a dictionary. It should be 'LineString'
         rtype : int
             Rose diagram type. Can be either 0 or 1.
         nbins : int, optional

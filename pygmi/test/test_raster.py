@@ -60,7 +60,7 @@ def test_dratio():
 
 
 def test_thgrad():
-    """test th grad."""
+    """test total horizontal gradient."""
     datin = [[1, 2], [1, 2]]
     dat2 = [[0.1, 0.1], [0.1, 0.1]]
     dat = cooper.thgrad(datin, 10, 10)

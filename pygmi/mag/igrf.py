@@ -348,7 +348,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
     alt : float, optional
         Sensor clearance. The default is 100.
     wkt : str, optional
-        wkt projection. The default is None.
+        WKT projection. The default is None.
     igrfonly : bool, optional
         Output IGRF only. The default is True.
     piter : iter, optional

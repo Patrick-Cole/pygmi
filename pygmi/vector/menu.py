@@ -76,7 +76,7 @@ class MenuWidget():
 
         self.menufile.addSeparator()
 
-        self.action_grid = QtWidgets.QAction('Grid Point Data')
+        self.action_grid = QtWidgets.QAction('Dataset Gridding')
         self.menufile.addAction(self.action_grid)
         self.action_grid.triggered.connect(self.grid)
 
@@ -117,7 +117,7 @@ class MenuWidget():
 
     def grid(self):
         """Grid datasets."""
-        self.parent.item_insert('Step', 'Grid Point Data', dataprep.DataGrid)
+        self.parent.item_insert('Step', 'Dataset Gridding', dataprep.DataGrid)
 
     def cut_data(self):
         """Cut point data."""
