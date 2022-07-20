@@ -165,8 +165,6 @@ class IGRF(QtWidgets.QDialog):
 
         self.setupui()
 
-        self.ctrans = None
-
     def setupui(self):
         """
         Set up UI.
@@ -206,31 +204,6 @@ class IGRF(QtWidgets.QDialog):
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
-
-    def acceptall(self):
-        """
-        Accept option.
-
-        Returns
-        -------
-        None.
-
-        """
-        orig_wkt = self.proj.wkt
-
-        orig = osr.SpatialReference()
-        orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        if orig_wkt == '':
-            orig.SetWellKnownGeogCS('WGS84')
-        else:
-            orig.ImportFromWkt(orig_wkt)
-
-        targ = osr.SpatialReference()
-        targ.SetWellKnownGeogCS('WGS84')
-        targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-        self.ctrans = osr.CoordinateTransformation(orig, targ)
 
     def settings(self, nodialog=False):
         """
@@ -284,8 +257,6 @@ class IGRF(QtWidgets.QDialog):
             if tmp == 0:
                 return False
 
-        self.acceptall()
-
         i = self.combobox_mag.currentIndex()
 
         for i in data:
@@ -313,7 +284,7 @@ class IGRF(QtWidgets.QDialog):
         bname = 'Magnetic Data: IGRF Corrected '
         bname = bname + f'F:{fmean:.2f} I:{imean:.2f} D:{dmean:.2f}'
 
-        self.outdata['Raster'] = odata  # copy.deepcopy(self.indata['Raster'])
+        self.outdata['Raster'] = odata
 
         self.outdata['Raster'].append(copy.deepcopy(maggrid))
         self.outdata['Raster'][-1].data -= odata[0].data
@@ -969,3 +940,24 @@ def dihf(x, y, z):
                     d = 2.0 * atan2(argument, argument2)
 
     return h, f, i, d
+
+
+def _testfn():
+    """Test routine."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
+
+    ifile = r'C:/Workdata/testdata.hdr'
+
+    dat = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+
+    igrf = IGRF()
+    igrf.indata['Raster'] = dat
+    igrf.settings()
+
+
+
+if __name__ == "__main__":
+    _testfn()
