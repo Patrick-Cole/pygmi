@@ -1,8 +1,29 @@
 =========
 Changelog
 =========
-v3.2.5.7, 5 July 2022
+v3.2.5.9, 21 July 2022
 ----------------------
+*Updates to help files.
+*Fixed spelling mistakes.
+*Removed redundant code.
+*Bugfix, scrollbars now match on main interface.
+*Bugfix, MNF forward transform bands now labelled correctly.
+*MNF and PCA will now output correct number of bands on inverse transform.
+*Band ratios and condition indices now includes Landsat 9 data.
+*Worldview Pan tile import bug fixed.
+*Worldview data import sped up.
+*Bugfix for crash when no land surface temperature data in condition indices.
+*Satellite import now sorts bands
+*Sentinel-2 import states band resolution to avoid duplicate band names.
+*Added a button to reset the light, so light direction is reset to new rotation.
+*MT edit EDI no longer crashes due to an error in the resize event.
+*Fixed a bug where Birch cluster analysis needed c-contiguous arrays.
+*Fixed a bug where some data entry points disappeared.
+*Crash in gradients fixed.
+*Ternary images can now display full histograms.
+*AGC test added
+*Thgrad test added
+*Vertical test added.
 *Landsat composite now allows for the target date to be manually set.
 *Small updates to code and comments.
 *Inversion tests
@@ -12,13 +33,13 @@ v3.2.5.7, 5 July 2022
 *Magnetic inversion now allows for custom numbers of classes.
 *Bugfix to mean mosaic
 *Fixed bug mosaicing with different nodata and dtype values.
-*Added landsat composite
-*Layerstacking now checks extents in addition to rows and columns
+*Added Landsat composite
+*Layer stacking now checks extents in addition to rows and columns
 *Bugfix - spinbox setvalue now an integer.
 *MNF forward transform now allows custom number of components
 *Band sorting can be disabled for RGB images
 *Explained variance ratio added to PCA band names.
-*PCA added .
+*PCA added
 *Fixed bug where ternary images were showing strange colors when data was clipped
 *Raster Export will now sort the output bands, so that satellite data is in order.
 *Bugfix, RTP now puts projection into output.
@@ -32,8 +53,6 @@ v3.2.5.7, 5 July 2022
 *Added 7/5, 6/2 and 7/3 Landsat 8 ratios to band ratio tool
 *Sentinel data is now recognized in the batch import by S2A and S2B prefixes.
 *Merge data will now merge based on shifting the last data to the mean overlap value.
-*Version update
-
 
 v3.2.5.6, 10 June 2022
 ----------------------
