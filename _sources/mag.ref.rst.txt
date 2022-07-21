@@ -1,7 +1,8 @@
 References
 ----------
- Cooper,G.R.J.,Cowan, D.R.  2006. Enhancing potential field data using filters based on the local phase. Computers and Geosciences,32, p.1585-1591 
-
+ Cooper, G. R. J., & Cowan, D. R. (2006). Enhancing potential field data using filters based on the local phase. Computers & Geosciences, 32(10), 1585–1591. https://doi.org/10.1016/j.cageo.2006.02.016
+ 
  IGRF Code (Accessed 28 March, 2014, http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html), originally written in FORTRAN, was developed using subroutines written by A. Zunde (USGS), S.R.C. Malin & D.R. Barraclough (Institute of Geological Sciences, United Kingdom). Translated into C by Craig H. Shaffer. Rewritten by David Owens and maintained by: Stefan Maus (NOAA)
  
- Salem et al., 2007, Leading Edge, Dec,p1502-5
+ Salem, A., Williams, S., Fairhead, J. D., Ravat, D., & Smith, R. (2007). Tilt-depth method: A simple depth estimation method using first-order magnetic derivatives. The Leading Edge, 26(12), 1502. https://doi.org/10.1190/1.2821934
+ 

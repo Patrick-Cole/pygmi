@@ -52,14 +52,6 @@ pygmi.seis.menu module
    :undoc-members:
    :show-inheritance:
 
-pygmi.seis.scan\_imp module
----------------------------
-
-.. automodule:: pygmi.seis.scan_imp
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pygmi.seis.utils module
 -----------------------
 

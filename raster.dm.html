@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Raster Analysis: Description of Modules &#8212; PyGMI 3.2.4 documentation</title>
+    <title>Raster Analysis: Description of Modules &#8212; PyGMI 3.2.5.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -85,22 +86,22 @@
           <div class="body" role="main">
             
   <section id="raster-analysis-description-of-modules">
-<h1>Raster Analysis: Description of Modules<a class="headerlink" href="#raster-analysis-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<h1>Raster Analysis: Description of Modules<a class="headerlink" href="#raster-analysis-description-of-modules" title="Permalink to this heading">¶</a></h1>
 <section id="import-raster">
-<h2>Import Raster<a class="headerlink" href="#import-raster" title="Permalink to this headline">¶</a></h2>
+<h2>Import Raster<a class="headerlink" href="#import-raster" title="Permalink to this heading">¶</a></h2>
 <p>This module imports raster data using the GDAL library, including ENVI, ER Mapper, GeoTIFF, Geosoft GXF and Surfer. It is possible to connect multiple imports to another module, thereby creating a ‘merged’ dataset. Please note that satellite image imports take place in the remote sensing menu.</p>
 </section>
 <section id="import-rgb-image">
-<h2>Import RGB Image<a class="headerlink" href="#import-rgb-image" title="Permalink to this headline">¶</a></h2>
+<h2>Import RGB Image<a class="headerlink" href="#import-rgb-image" title="Permalink to this heading">¶</a></h2>
 <p>This module will import 3 band tiff images for display in PyGMI as an RGB image.</p>
 </section>
 <section id="equation-editor">
-<h2>Equation Editor<a class="headerlink" href="#equation-editor" title="Permalink to this headline">¶</a></h2>
+<h2>Equation Editor<a class="headerlink" href="#equation-editor" title="Permalink to this heading">¶</a></h2>
 <p>The equation editor allows for script operations to be performed on either single or multiple bands of data. It makes use of the powerful <strong>numexpr</strong> library for the scripting.</p>
 <p>Use the variables iall, i1, i2 etc in formulas. The combo box on the interface shows which band is assigned to each variable.</p>
 <img alt="_images/rastereq.png" src="_images/rastereq.png" />
 <section id="examples">
-<h3>Examples:<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h3>
+<h3>Examples:<a class="headerlink" href="#examples" title="Permalink to this heading">¶</a></h3>
 <p>Sum:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">i1</span> <span class="o">+</span> <span class="mi">1000</span>
 </pre></div>
@@ -111,7 +112,7 @@
 </div>
 </section>
 <section id="commands">
-<h3>Commands:<a class="headerlink" href="#commands" title="Permalink to this headline">¶</a></h3>
+<h3>Commands:<a class="headerlink" href="#commands" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Logical operators: &amp;, | , ~</p></li>
 <li><p>Comparison operators: &lt;;, &lt;=, ==, !=, &gt;=, &gt;</p></li>
@@ -126,15 +127,15 @@ number2 otherwise.</p></li>
 </section>
 </section>
 <section id="smoothing-filters">
-<h2>Smoothing Filters<a class="headerlink" href="#smoothing-filters" title="Permalink to this headline">¶</a></h2>
+<h2>Smoothing Filters<a class="headerlink" href="#smoothing-filters" title="Permalink to this heading">¶</a></h2>
 <p>The smoothing filters work by passing a matrix which contains the filter over your raster dataset. The filter type, filter shape and the filter size can all be specified.</p>
 <img alt="_images/rastersmooth.png" src="_images/rastersmooth.png" />
 <section id="filter-type">
-<h3>Filter Type<a class="headerlink" href="#filter-type" title="Permalink to this headline">¶</a></h3>
+<h3>Filter Type<a class="headerlink" href="#filter-type" title="Permalink to this heading">¶</a></h3>
 <p>This can be either 2D median or 2D mean. Note that your choice of filter may affect the number of filter shape options you have.</p>
 </section>
 <section id="filter-shape">
-<h3>Filter Shape<a class="headerlink" href="#filter-shape" title="Permalink to this headline">¶</a></h3>
+<h3>Filter Shape<a class="headerlink" href="#filter-shape" title="Permalink to this heading">¶</a></h3>
 <ul class="simple">
 <li><p>Box window - this is a regular square matrix with constant values applied to your dataset.</p></li>
 <li><p>Disk window - this applies a disk of constant values to your dataset</p></li>
@@ -142,7 +143,7 @@ number2 otherwise.</p></li>
 </ul>
 </section>
 <section id="filter-size">
-<h3>Filter Size<a class="headerlink" href="#filter-size" title="Permalink to this headline">¶</a></h3>
+<h3>Filter Size<a class="headerlink" href="#filter-size" title="Permalink to this heading">¶</a></h3>
 <p>The options here are dependant on the option chosen in filter shape. They are as follows:</p>
 <ul class="simple">
 <li><p>X and Y for the Box window - this is the number of rows and columns which will make up the box window</p></li>
@@ -151,8 +152,20 @@ number2 otherwise.</p></li>
 </ul>
 </section>
 </section>
+<section id="automatic-gain-control">
+<h2>Automatic Gain Control<a class="headerlink" href="#automatic-gain-control" title="Permalink to this heading">¶</a></h2>
+<p>This calculates the AGC relating to your data.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Window Size - This is an odd number specifying the size of window (in units of pixels in both x and y directions) to pass over your data.</p></li>
+<li><p>Mean - Calculates and AGC using mean values.</p></li>
+<li><p>Median - Calculates and AGC using median values.</p></li>
+<li><p>RMS - Calculates and AGC using rms values.</p></li>
+</ul>
+<img alt="_images/rasteragc.png" src="_images/rasteragc.png" />
+</section>
 <section id="normalisation-scaling">
-<h2>Normalisation/Scaling<a class="headerlink" href="#normalisation-scaling" title="Permalink to this headline">¶</a></h2>
+<h2>Normalisation/Scaling<a class="headerlink" href="#normalisation-scaling" title="Permalink to this heading">¶</a></h2>
 <p>Normalisation and scaling are the process of scaling your data to some predetermined range. It is often between 0 and 1, but can be according to a model. Normalisation and scaling are often used when comparing different types of data in routines such as cluster analysis.</p>
 <p>Options:</p>
 <ul class="simple">
@@ -164,7 +177,7 @@ number2 otherwise.</p></li>
 <img alt="_images/rasternorm.png" src="_images/rasternorm.png" />
 </section>
 <section id="gradient-calculation">
-<h2>Gradient Calculation<a class="headerlink" href="#gradient-calculation" title="Permalink to this headline">¶</a></h2>
+<h2>Gradient Calculation<a class="headerlink" href="#gradient-calculation" title="Permalink to this heading">¶</a></h2>
 <p>The gradient calculation calculates the derivative of the data in the azimuth specified. It allows for the calculation of a conventional horizontal derivative, a derivative ratio (ratio of x and y derivatives) and a vertical derivative. Based on (Cooper and Cowan 2007).</p>
 <p>Options:</p>
 <ul class="simple">
@@ -174,7 +187,7 @@ number2 otherwise.</p></li>
 <img alt="_images/rastergrad.png" src="_images/rastergrad.png" />
 </section>
 <section id="visibility-calculation">
-<h2>Visibility Calculation<a class="headerlink" href="#visibility-calculation" title="Permalink to this headline">¶</a></h2>
+<h2>Visibility Calculation<a class="headerlink" href="#visibility-calculation" title="Permalink to this heading">¶</a></h2>
 <p>This calculates various visibility measures relating to your data (Cooper 2005). The measures are Total Visibility, Visibility Variation and Visibility Vector Resultant.</p>
 <p>Options:</p>
 <ul class="simple">
@@ -184,7 +197,7 @@ number2 otherwise.</p></li>
 <img alt="_images/rastervis.png" src="_images/rastervis.png" />
 </section>
 <section id="continuation">
-<h2>Continuation<a class="headerlink" href="#continuation" title="Permalink to this headline">¶</a></h2>
+<h2>Continuation<a class="headerlink" href="#continuation" title="Permalink to this heading">¶</a></h2>
 <p>This is an upward and downward continuation for Magnetic and Gravity data. Upward continuation is performed using the standard FFT transform, while downward continuation used a Taylor expansion for extra stability.</p>
 <p>The input is a raster dataset.</p>
 <p>Options:</p>
@@ -195,67 +208,105 @@ number2 otherwise.</p></li>
 </ul>
 <img alt="_images/rastercont.png" src="_images/rastercont.png" />
 </section>
-<section id="data-merge-and-resampling">
-<h2>Data Merge and Resampling<a class="headerlink" href="#data-merge-and-resampling" title="Permalink to this headline">¶</a></h2>
+<section id="layer-stack-and-resampling">
+<h2>Layer Stack and Resampling<a class="headerlink" href="#layer-stack-and-resampling" title="Permalink to this heading">¶</a></h2>
 <p>This will allow datasets to be merged and resampled to a common cell size. It can also be used for a single dataset to be resampled. The resulting rows and columns of the new grid are displayed.</p>
 <p>Options:</p>
 <ul class="simple">
 <li><p>Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).</p></li>
+<li><p>Common mask for all bands - This option forces the nodata areas to be the same on all bands.</p></li>
+</ul>
+<img alt="_images/layerstack.png" src="_images/layerstack.png" />
+</section>
+<section id="dataset-merge">
+<h2>Dataset Merge<a class="headerlink" href="#dataset-merge" title="Permalink to this heading">¶</a></h2>
+<p>This will allow datasets to be merged or mosaiced. The input is a directory which contains ONLY data to be merged. Two merging modes are possible.</p>
+<p>If all files to be merged have the same number of bands, in the same order (band name is not checked) then a fast merge will result. This is the default. Alternatively, the user can merge files with different numbers of bands, and only bands with common names will be merged. This option is slower. If files being merged have z values which are offset, the user can select to shift the bands to their respective mean value prior to merge to minimise this. In this case the slower merge will result.</p>
+<p>Options:</p>
+<ul class="simple">
+<li><p>Batch directory - location of files to be merged.</p></li>
+<li><p>Merge by band labels, since band order may differ, or input files have different numbers of bands. - unchecked by default.</p></li>
+<li><p>Shift bands to mean value before merge. May allow for cleaner merge if datasets are offset - unchecked by default.</p></li>
 </ul>
 <img alt="_images/rastermerge.png" src="_images/rastermerge.png" />
+<section id="merge-method">
+<h3>Merge Method<a class="headerlink" href="#merge-method" title="Permalink to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>First - copy first file over last file at overlap.</p></li>
+<li><p>Last - copy last file over first file at overlap.</p></li>
+<li><p>Min - copy pixel wise minimum at overlap.</p></li>
+<li><p>Max - copy pixel wise maximum at overlap.</p></li>
+<li><p>Mean - shift last file to mean overlap value and copy over first file at overlap.</p></li>
+</ul>
+</section>
 </section>
 <section id="dataset-reprojection">
-<h2>Dataset Reprojection<a class="headerlink" href="#dataset-reprojection" title="Permalink to this headline">¶</a></h2>
+<h2>Dataset Reprojection<a class="headerlink" href="#dataset-reprojection" title="Permalink to this heading">¶</a></h2>
 <p>This is a versatile routine allowing for the reprojecting of a dataset between two projections. All projections are obtained from EPSG codes.</p>
 <p>Options:</p>
-<p>The options are the same for both input and output projections. The choice of projection is obtained through a drop box. The first part of the entry on the drop box shows the datum, and the last part shows the projection.</p>
-<p>Should you wish to project to or from degrees, the entry will be Datum / Geodetic Geographic, where Datum is your local datum of choice.</p>
+<p>The options are the same for both input and output projections. The choice of projection is obtained through drop boxes.</p>
 <img alt="_images/rasterreproj.png" src="_images/rasterreproj.png" />
 </section>
 <section id="cut-raster-using-polygon">
-<h2>Cut Raster Using Polygon<a class="headerlink" href="#cut-raster-using-polygon" title="Permalink to this headline">¶</a></h2>
+<h2>Cut Raster Using Polygon<a class="headerlink" href="#cut-raster-using-polygon" title="Permalink to this heading">¶</a></h2>
 <p>This tool provides a quick way to cut out raster data, using a shape file as the boundary for the cut, and a larger raster file to cut from. You will need to prepare the shape file in another package first.</p>
 </section>
 <section id="extract-profile-from-raster">
-<h2>Extract Profile from Raster<a class="headerlink" href="#extract-profile-from-raster" title="Permalink to this headline">¶</a></h2>
+<h2>Extract Profile from Raster<a class="headerlink" href="#extract-profile-from-raster" title="Permalink to this heading">¶</a></h2>
 <p>This tool provides a quick way to extract a 1D profile from a raster dataset, using a shape file for the coordinates of the profile. You will need to prepare the shape file in another package first. Profiles can be exported or displayed via the context menu.</p>
 </section>
-<section id="raster-data-interpretation">
-<h2>Raster Data Interpretation<a class="headerlink" href="#raster-data-interpretation" title="Permalink to this headline">¶</a></h2>
+<section id="raster-data-display">
+<h2>Raster Data Display<a class="headerlink" href="#raster-data-display" title="Permalink to this heading">¶</a></h2>
 <p>This allows for the display of data in a variety of ways common to most image processing packages. The resultant dataset can then be exported as a GeoTIFF for vector interpretation in a GIS package. Each display type is discussed below.</p>
 <img alt="_images/rasterinterp.png" src="_images/rasterinterp.png" />
+<section id="display-type">
+<h3>Display Type<a class="headerlink" href="#display-type" title="Permalink to this heading">¶</a></h3>
 <section id="single-colour-map">
-<h3>Single Colour Map<a class="headerlink" href="#single-colour-map" title="Permalink to this headline">¶</a></h3>
+<h4><em>Single Colour Map</em><a class="headerlink" href="#single-colour-map" title="Permalink to this heading">¶</a></h4>
 <p>This displays a single band of data by mapping its values to a colour map or colour table.</p>
-<ul class="simple">
-<li><p>Data bands - the band to be displayed is chosen here.</p></li>
-<li><p>Histogram Stretch - The choice of how to map the data is chosen here. The options are ‘Linear’ (data is unchanged), ‘95% linear, 5% compact’ (compacts 5% of the outliers of the data)and ‘Histogram Equalisation’ (gives all colours the same amount of data samples, so that maximum change is seen in the map)</p></li>
-<li><p>Colour Bar - Here you can choose the colour bar to map the colours with.</p></li>
-</ul>
 </section>
 <section id="contour">
-<h3>Contour<a class="headerlink" href="#contour" title="Permalink to this headline">¶</a></h3>
+<h4><em>Contour</em><a class="headerlink" href="#contour" title="Permalink to this heading">¶</a></h4>
 <p>This has the same options as the single colour map, but displays the data using contours instead.</p>
 </section>
 <section id="rgb-ternary">
-<h3>RGB Ternary<a class="headerlink" href="#rgb-ternary" title="Permalink to this headline">¶</a></h3>
+<h4><em>RGB Ternary</em><a class="headerlink" href="#rgb-ternary" title="Permalink to this heading">¶</a></h4>
 <p>This option displays three bands, one red, one green and one blue. Because of this, no colour map can be chosen, and now three bands must be chosen. Histogram stretch is the same as for previous sections.</p>
 </section>
 <section id="cmy-ternary">
-<h3>CMY Ternary<a class="headerlink" href="#cmy-ternary" title="Permalink to this headline">¶</a></h3>
+<h4><em>CMY Ternary</em><a class="headerlink" href="#cmy-ternary" title="Permalink to this heading">¶</a></h4>
 <p>This option displays three bands, one cyan, one magenta and one yellow. As before, no colour map can be chosen, and now three bands must be chosen. Histogram stretch is the same as for previous sections.</p>
 </section>
-<section id="sunshade">
-<h3>Sunshade<a class="headerlink" href="#sunshade" title="Permalink to this headline">¶</a></h3>
-<p>This option applies a sunshade algorithm to the data. Two bands are chosen, the first is the colour and the second is the sunshade band. A Histogram stretch for each band can be chosen. A colour bar can be chosen for the colour band. The shader used is Blinn’s formula (Horn, 1981)</p>
+</section>
+<section id="data-bands">
+<h3>Data Bands<a class="headerlink" href="#data-bands" title="Permalink to this heading">¶</a></h3>
+<p>The bands to be used in the main display are selected here.</p>
+</section>
+<section id="histogram-stretch">
+<h3>Histogram Stretch<a class="headerlink" href="#histogram-stretch" title="Permalink to this heading">¶</a></h3>
+<p>The choice of how to map the data is chosen here. The options are:</p>
 <ul class="simple">
+<li><p>Linear with percent clip.</p></li>
+<li><p>Histogram Equalisation (gives all colours the same amount of data samples, so that maximum change is seen in the map).</p></li>
+<li><p>Full histogram with clip lines (this is an option to see the full histogram, even after percent clipping.</p></li>
+</ul>
+</section>
+<section id="colour-bar">
+<h3>Colour Bar<a class="headerlink" href="#colour-bar" title="Permalink to this heading">¶</a></h3>
+<p>Here you can choose the colour bar to map the colours with.</p>
+</section>
+<section id="sunshading">
+<h3>Sunshading<a class="headerlink" href="#sunshading" title="Permalink to this heading">¶</a></h3>
+<p>This option applies a sunshade algorithm to the data. The shader used is Blinn’s formula (Horn, 1981)</p>
+<ul class="simple">
+<li><p>Sunshade data - this is the band to use for sunshading</p></li>
 <li><p>Sun Angle - This is chosen by clicking on a small circular map. A blue dot denotes the sun’s azimuth and elevation.</p></li>
 <li><p>Sunshade Detail - controls how much sunshade detail is present. Decrease this to increase the detail.</p></li>
 <li><p>Light Reflectance - controls the light reflectance of the surface.</p></li>
 </ul>
 </section>
 <section id="save-geotiff">
-<h3>Save GeoTIFF<a class="headerlink" href="#save-geotiff" title="Permalink to this headline">¶</a></h3>
+<h3>Save GeoTIFF<a class="headerlink" href="#save-geotiff" title="Permalink to this heading">¶</a></h3>
 <p>Use this to save your final maps as a GeoTIFF. This will also save two colour bars (one vertical and one horizontal) or a ternary colour bar. The size of the colour bar relates to how big you wish it to be on the paper map.</p>
 </section>
 </section>
@@ -309,9 +360,8 @@ number2 otherwise.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
@@ -352,12 +402,12 @@ number2 otherwise.</p></li>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -371,10 +421,10 @@ number2 otherwise.</p></li>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021 Council for Geoscience.
+      &copy;2022 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

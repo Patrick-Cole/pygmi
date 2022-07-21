@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Potential Field Modelling &#8212; PyGMI 3.2.4 documentation</title>
+    <title>Potential Field Modelling &#8212; PyGMI 3.2.5.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -85,15 +86,15 @@
           <div class="body" role="main">
             
   <section id="potential-field-modelling">
-<h1>Potential Field Modelling<a class="headerlink" href="#potential-field-modelling" title="Permalink to this headline">¶</a></h1>
+<h1>Potential Field Modelling<a class="headerlink" href="#potential-field-modelling" title="Permalink to this heading">¶</a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this heading">¶</a></h2>
 <p>Potential field modelling within PyGMI is performed on voxels, forming a 3D
 model. The model is displayed using a context menu for the corresponding
 module.</p>
 </section>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pfmod.cm.html">Potential Field Modelling: Context Menu</a><ul>
@@ -105,27 +106,35 @@ module.</p>
 <li class="toctree-l2"><a class="reference internal" href="pfmod.dm.html#import-3d-model">Import 3D Model</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pfmod.dm.html#merge-3d-models">Merge 3D Models</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pfmod.dm.html#model-creation-and-editing">Model Creation and Editing</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#model-extents-parameters">Model Extents Parameters</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#current-model">Current Model</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#dataset-information">Dataset Information</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#model-extent-properties">Model Extent Properties</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#tips">Tips</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#model-extent-parameters">Model Extent Parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#current-model"><em>Current Model</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#dataset-information"><em>Dataset Information</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#model-extent-properties"><em>Model Extent Properties</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#tips"><em>Tips</em></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#editor">Editor</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#options">Options</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#calculations">Calculations</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#id1">Tips</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#top-toolbar"><em>Top Toolbar</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#editor-options"><em>Editor Options</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#calculations"><em>Calculations</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#ranged-copy"><em>Ranged Copy</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#id1"><em>Tips</em></a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#ranged-copy">Ranged Copy</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#geophysical-parameters">Geophysical Parameters</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#general-properties">General Properties</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#lithological-properties">Lithological Properties</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#general-properties"><em>General Properties</em></a></li>
+<li class="toctree-l4"><a class="reference internal" href="pfmod.dm.html#lithological-properties"><em>Lithological Properties</em></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#lithology-notes">Lithology Notes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#regional-test">Regional Test</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pfmod.dm.html#d-magnetic-inversion">3D Magnetic Inversion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#id2">Dataset Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#id3">General Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#id4">Model Extent Properties</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pfmod.dm.html#id5">Tips</a></li>
 </ul>
 </li>
 </ul>
@@ -184,9 +193,8 @@ module.</p>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Potential Field Modelling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
@@ -225,12 +233,12 @@ module.</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -244,10 +252,10 @@ module.</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021 Council for Geoscience.
+      &copy;2022 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

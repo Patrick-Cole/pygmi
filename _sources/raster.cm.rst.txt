@@ -102,7 +102,6 @@ step in order to exclude bands of information which are too similar.
 
 .. image:: _images/raster2dcorr.png
 
-
 Export Data
 -----------
 This exports the raster data into a variety of raster formats, including ENVI,

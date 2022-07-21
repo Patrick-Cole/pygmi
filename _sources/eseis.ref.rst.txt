@@ -1,3 +1,0 @@
-References
-----------
-https://github.com/equinor/segyio (Accessed 4 August 2020)

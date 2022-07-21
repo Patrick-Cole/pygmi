@@ -27,6 +27,10 @@ This is a simple map showing points with their values in colours.
 
 .. image:: _images/vectorpointmap.png
 
+Show Vector Data
+----------------
+This is a simple viewer for vector data.
+
 Show Rose Diagrams
 ------------------
 This module calculates and displays rose diagrams. It needs as input shapefile data which has been imported into PyGMI. The user can specify how features are defined, either one angle per feature defined by the start and end point of the feature, or an angle per segment in the feature. The number of angles in the rose diagram can be set as well. A map of the features colour coded is also displayed. Equal area rose diagrams can also be produced.

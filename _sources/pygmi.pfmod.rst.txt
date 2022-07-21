@@ -4,14 +4,6 @@ pygmi.pfmod package
 Submodules
 ----------
 
-pygmi.pfmod.cubes module
-------------------------
-
-.. automodule:: pygmi.pfmod.cubes
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 pygmi.pfmod.datatypes module
 ----------------------------
 
@@ -48,6 +40,22 @@ pygmi.pfmod.misc module
 -----------------------
 
 .. automodule:: pygmi.pfmod.misc
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.pfmod.mvis3d module
+-------------------------
+
+.. automodule:: pygmi.pfmod.mvis3d
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+pygmi.pfmod.pfinvert module
+---------------------------
+
+.. automodule:: pygmi.pfmod.pfinvert
    :members:
    :undoc-members:
    :show-inheritance:

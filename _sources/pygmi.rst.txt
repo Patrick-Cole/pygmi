@@ -9,7 +9,6 @@ Subpackages
 
    pygmi.clust
    pygmi.em
-   pygmi.eseis
    pygmi.grav
    pygmi.mag
    pygmi.mt

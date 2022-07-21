@@ -1,2 +1,4 @@
 References
 ----------
+
+Briggs, I. C., 1974, Machine contouring using minimum curvature, Geophysics vol. 39, No. 1, pp. 39-48

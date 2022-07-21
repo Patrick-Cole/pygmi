@@ -24,9 +24,8 @@ Contents:
    vector
    cluster
    em
-   eseis
-   mag
    gravity
+   mag
    mt
    pfmod
    rsense

@@ -10,6 +10,8 @@ Options:
 * Smoothing Matrix - an odd matrix used to smooth the data
 * Azimuth - This is the direction of the tilt angle, in degrees from east. It is used in the tilt based directional derivative.
 
+.. image:: _images/tiltangle.png
+
 Reduction to the Pole
 ---------------------
 This is a reduction to the pole routine for Magnetic data. The input is a raster dataset.
@@ -20,15 +22,15 @@ Options:
 * Inclination - Magnetic inclination at the date of the survey.
 * Declination - Magnetic declination at the date of the survey.
 
+.. image:: _images/rtp.png
+
 Calculate IGRF Corrected Data
 -----------------------------
 This calculates IGRF corrected version of the magnetic data. It requires, as input, a magnetic dataset for an area as well as a digital elevation model. Since the IGRF correction relates to latitude and longitude, the projection of the input dataset is required. The IGRF corrected is a translated version of the correction supplied at: http://www.ngdc.noaa.gov/IAGA/vmod/igrf.html
 
 Input Projection
 ^^^^^^^^^^^^^^^^
-The choice of projection is obtained through a drop box. The first part of the entry on the drop box shows the datum, and the last part shows the projection.
-
-Should you wish choose degrees, the entry will be Datum / Geodetic Geographic, where Datum is your local datum of choice.
+The choice of projection is obtained through drop boxes.
 
 IGRF Options
 ^^^^^^^^^^^^
@@ -36,6 +38,8 @@ IGRF Options
 * Date - This is the survey date. The IGRF field changes depending on when the magnetic data was collected, so the survey date must be taken into account.
 * Digital Elevation Model - raster grid of the terrain in height above sea level.
 * Magnetic Data - raster grid of the magnetic data to be corrected.
+
+.. image:: _images/igrf.png
 
 Tilt Depth Interpretation
 -------------------------
@@ -48,9 +52,12 @@ What is important to note is that this technique works best with data which has 
 The results can be output to a text file, with columns x, y, id and depth. In this case, id refers to a contour id where the tilt angle is equal to zero.
 
 Options:
+
 * Band to perform tilt depth - this should be magnetic data
 * Colour Bar - colours used to display the tilt angle data.
 * Inclination of Magnetic Field - inclination of the field at the location and date of survey.
 * Declination of Magnetic Field - declination of the field at the location and date of survey.
-* Recalculate Tilt Depth - used to recalculate after changing inclination or declination.
+* Calculate Tilt Depth - used to recalculate after changing inclination or declination.
+* Save depths to text file.
 
+.. image:: _images/tiltdepth.png

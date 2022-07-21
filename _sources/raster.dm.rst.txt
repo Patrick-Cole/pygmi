@@ -65,6 +65,19 @@ The options here are dependant on the option chosen in filter shape. They are as
 * Radius in samples for the Disk window - this creates a disk of the specified radius. The disk will have 2*radius rows and columns
 * Standard Deviation for the Gaussian Window - this creates the Gaussian box window where the values have the standard deviation specified.
 
+Automatic Gain Control
+----------------------
+This calculates the AGC relating to your data.
+
+Options:
+
+* Window Size - This is an odd number specifying the size of window (in units of pixels in both x and y directions) to pass over your data.
+* Mean - Calculates and AGC using mean values.
+* Median - Calculates and AGC using median values.
+* RMS - Calculates and AGC using rms values.
+
+.. image:: _images/rasteragc.png
+
 Normalisation/Scaling
 ---------------------
 Normalisation and scaling are the process of scaling your data to some predetermined range. It is often between 0 and 1, but can be according to a model. Normalisation and scaling are often used when comparing different types of data in routines such as cluster analysis.
@@ -114,15 +127,40 @@ Options:
 
 .. image:: _images/rastercont.png
 
-Data Merge and Resampling
--------------------------
+Layer Stack and Resampling
+--------------------------
 This will allow datasets to be merged and resampled to a common cell size. It can also be used for a single dataset to be resampled. The resulting rows and columns of the new grid are displayed.
 
 Options:
 
 * Cell size - This represents the size of a square raster grid cell, in the units of the grid (normally meters).
+* Common mask for all bands - This option forces the nodata areas to be the same on all bands.
+
+.. image:: _images/layerstack.png
+
+Dataset Merge
+-------------
+
+This will allow datasets to be merged or mosaiced. The input is a directory which contains ONLY data to be merged. Two merging modes are possible.
+
+If all files to be merged have the same number of bands, in the same order (band name is not checked) then a fast merge will result. This is the default. Alternatively, the user can merge files with different numbers of bands, and only bands with common names will be merged. This option is slower. If files being merged have z values which are offset, the user can select to shift the bands to their respective mean value prior to merge to minimise this. In this case the slower merge will result.
+
+Options:
+
+* Batch directory - location of files to be merged.
+* Merge by band labels, since band order may differ, or input files have different numbers of bands. - unchecked by default.
+* Shift bands to mean value before merge. May allow for cleaner merge if datasets are offset - unchecked by default.
 
 .. image:: _images/rastermerge.png
+
+Merge Method
+^^^^^^^^^^^^
+
+* First - copy first file over last file at overlap.
+* Last - copy last file over first file at overlap.
+* Min - copy pixel wise minimum at overlap.
+* Max - copy pixel wise maximum at overlap.
+* Mean - shift last file to mean overlap value and copy over first file at overlap.
 
 Dataset Reprojection
 --------------------
@@ -130,9 +168,7 @@ This is a versatile routine allowing for the reprojecting of a dataset between t
 
 Options:
 
-The options are the same for both input and output projections. The choice of projection is obtained through a drop box. The first part of the entry on the drop box shows the datum, and the last part shows the projection.
-
-Should you wish to project to or from degrees, the entry will be Datum / Geodetic Geographic, where Datum is your local datum of choice.
+The options are the same for both input and output projections. The choice of projection is obtained through drop boxes.
 
 .. image:: _images/rasterreproj.png
 
@@ -144,37 +180,52 @@ Extract Profile from Raster
 ---------------------------
 This tool provides a quick way to extract a 1D profile from a raster dataset, using a shape file for the coordinates of the profile. You will need to prepare the shape file in another package first. Profiles can be exported or displayed via the context menu.
 
-
-Raster Data Interpretation
---------------------------
+Raster Data Display
+-------------------
 This allows for the display of data in a variety of ways common to most image processing packages. The resultant dataset can then be exported as a GeoTIFF for vector interpretation in a GIS package. Each display type is discussed below.
 
 .. image:: _images/rasterinterp.png
 
-Single Colour Map
-^^^^^^^^^^^^^^^^^
+Display Type
+^^^^^^^^^^^^
+
+*Single Colour Map*
+~~~~~~~~~~~~~~~~~~~
 This displays a single band of data by mapping its values to a colour map or colour table.
 
-* Data bands - the band to be displayed is chosen here.
-* Histogram Stretch - The choice of how to map the data is chosen here. The options are 'Linear' (data is unchanged), '95% linear, 5% compact' (compacts 5% of the outliers of the data)and 'Histogram Equalisation' (gives all colours the same amount of data samples, so that maximum change is seen in the map)
-* Colour Bar - Here you can choose the colour bar to map the colours with.
-
-Contour
-^^^^^^^
+*Contour*
+~~~~~~~~~
 This has the same options as the single colour map, but displays the data using contours instead.
 
-RGB Ternary
-^^^^^^^^^^^
+*RGB Ternary*
+~~~~~~~~~~~~~
 This option displays three bands, one red, one green and one blue. Because of this, no colour map can be chosen, and now three bands must be chosen. Histogram stretch is the same as for previous sections.
 
-CMY Ternary
-^^^^^^^^^^^
+*CMY Ternary*
+~~~~~~~~~~~~~
 This option displays three bands, one cyan, one magenta and one yellow. As before, no colour map can be chosen, and now three bands must be chosen. Histogram stretch is the same as for previous sections.
 
-Sunshade
-^^^^^^^^
-This option applies a sunshade algorithm to the data. Two bands are chosen, the first is the colour and the second is the sunshade band. A Histogram stretch for each band can be chosen. A colour bar can be chosen for the colour band. The shader used is Blinn’s formula (Horn, 1981)
+Data Bands
+^^^^^^^^^^
+The bands to be used in the main display are selected here.
 
+Histogram Stretch
+^^^^^^^^^^^^^^^^^
+The choice of how to map the data is chosen here. The options are:
+
+* Linear with percent clip.
+* Histogram Equalisation (gives all colours the same amount of data samples, so that maximum change is seen in the map).
+* Full histogram with clip lines (this is an option to see the full histogram, even after percent clipping.
+
+Colour Bar
+^^^^^^^^^^
+Here you can choose the colour bar to map the colours with.
+
+Sunshading
+^^^^^^^^^^
+This option applies a sunshade algorithm to the data. The shader used is Blinn’s formula (Horn, 1981)
+
+* Sunshade data - this is the band to use for sunshading
 * Sun Angle - This is chosen by clicking on a small circular map. A blue dot denotes the sun's azimuth and elevation.
 * Sunshade Detail - controls how much sunshade detail is present. Decrease this to increase the detail.
 * Light Reflectance - controls the light reflectance of the surface.

@@ -33,6 +33,6 @@ The following graphs are produced:
 
 .. image:: _images/clustshowgraphs.png
 
-Export Data
------------
+Export Class Data
+-----------------
 This exports the output cluster data in a variety of different formats for use in other software.

@@ -4,3 +4,7 @@ References
  Singh, B., Guptasarma, D., 2001. New method for fast computation of gravity and magnetic anomalies from arbitrary polyhedra. Geophysics 66, 521-526.
 
  Blakely, R.J., Potential Theory in Gravity and Magnetic Applications (1996), pp 200-201
+ 
+ Cockett, Rowan, Seogi Kang, Lindsey J. Heagy, Adam Pidlisecky, and Douglas W. Oldenburg. "SimPEG: An Open Source Framework for Simulation and Gradient Based Parameter Estimation in Geophysical Applications" Computers & Geosciences, September 2015. doi:10.1016/j.cageo.2015.09.015.
+
+ Lindsey J. Heagy, Rowan Cockett, Seogi Kang, Gudni K. Rosenkjaer, Douglas W. Oldenburg. "A framework for simulation and inversion in electromagnetics" Computers & Geosciences, September 2017. doi:10.1016/j.cageo.2017.06.018

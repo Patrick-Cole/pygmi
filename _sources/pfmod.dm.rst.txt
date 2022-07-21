@@ -3,9 +3,7 @@ Potential Field Modelling: Description of Modules
 
 Import 3D Model
 ---------------
-This model imported model created in PyGMI. The models use the Numpy .npz
-format. Each .npz file will contain the voxel model, along with raster datasets
-associated with that model.
+This model imported model created in PyGMI. The models use the Numpy .npz format. Each .npz file will contain the voxel model, along with raster datasets associated with that model.
 
 Merge 3D Models
 ---------------
@@ -13,7 +11,7 @@ The merge 3D models tool allows for the merging of two 3D models into one single
 
 It makes the following important assumptions:
 
-There are only TWO input models.
+* There are only TWO input models.
 * If two lithologies have the same name, they are the same and settings from the Master are to be used.
 * If a lithology is in the Slave model, and not in the Master, it is copied into the Master.
 * If the Master and Slave dataset do not align, the slave is modified to fit the Master
@@ -27,26 +25,22 @@ Options:
 
 Model Creation and Editing
 --------------------------
-This module is the potential field modelling section of PyGMI. The output from
-here is a voxel model which can be displayed in 3D using the right-click
-context menu on a green module. The module comprises a series of Tabs, which
-are described below. The actual calculation of the magnetic and gravity field
-data is based on the work by Blakely (1996).
+This module is the potential field modelling section of PyGMI. The output from here is a voxel model which can be displayed in 3D using the right-click context menu on a green module. The module comprises a series of Tabs, which are described below. The actual calculation of the magnetic and gravity field data is based on the work by Blakely (1996).
 
-Model Extents Parameters
-^^^^^^^^^^^^^^^^^^^^^^^^
+Model Extent Parameters
+^^^^^^^^^^^^^^^^^^^^^^^
 This dialog sets up the extents of the model. The Current Models section displays the imported models. The current model is the model being edited. The regional model is a model used to apply a regional correction to field calculations.
 
 The Dataset Information section associates connected raster datasets with the either DTM, magnetic data, gravity data or gravity regional data. If you are modelling actual data, this module will insist on DTM data. If nothing else, DTM data can be obtained from the SRTM archives.
 
 The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.
 
-Current Model
-~~~~~~~~~~~~~
-* Current Model - This only applies if you are importing a 3D model. It is the current model which you are working on.
+*Current Model*
+~~~~~~~~~~~~~~~
+This only applies if you are importing a 3D model. It is the current model which you are working on.
 
-Dataset Information
-~~~~~~~~~~~~~~~~~~~
+*Dataset Information*
+~~~~~~~~~~~~~~~~~~~~~
 This is used to define the data connected to the modelling module. The data is either connected manually or will be embedded withing a 3D model file.
 
 * DTM Dataset - This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study. If you are modelling actual data, this is compulsory. If nothing is available, download the SRTM data from NASA. It is not necessary if you are merely doing a theoretical model of, say, a dyke.
@@ -55,8 +49,8 @@ This is used to define the data connected to the modelling module. The data is e
 * Gravity Regional Dataset - This is a gravity regional dataset used to apply a regional correction to the gravity data.
 * Other - This option can be used to add an additional layer for comparison purposes - for example a GeoTIFF of the geological map.
 
-Model Extent Properties
-~~~~~~~~~~~~~~~~~~~~~~~
+*Model Extent Properties*
+~~~~~~~~~~~~~~~~~~~~~~~~~
 The model extents control the area size and depth of your model, as well as its resolution. Typically one of your datasets are used to fill in most of the fields automatically. Because the DTM is compulsory to the modelling, this is normally the default choice.
 
 * Get Study Area from following Dataset - Usually the DTM dataset is chosen, but it can be any of your datasets.
@@ -72,8 +66,8 @@ The model extents control the area size and depth of your model, as well as its 
 * Number of Rows (Y Direction) - This is calculated automatically from extents and cell sizes.
 * Number of Layers (Z Direction) - This is calculated automatically from extents and cell sizes.
 
-Tips
-~~~~
+*Tips*
+~~~~~~
 * Start with a low resolution model to get a general model in place first. 20x20x20 should be fine, since any bigger will get slow to model.
 * Once your low resolution model is complete, you can increase the model's resolution to a better resolution. Please note that bigger than 100x100x100 will cause calculations to become very slow (unless you have lots of memory).
 
@@ -87,8 +81,23 @@ The profile view allows for the voxel model to be edited from the side. Simply s
 
 The display of magnetic data or gravity data is changed upon calculation of either data type.
 
-Options
-~~~~~~~
+*Top Toolbar*
+~~~~~~~~~~~~~
+This toolbar gives a number of options to modify the model parameters, or perform calculations. The options are as follows:
+
+* Model Extent Parameters - options for setting the dimensions and location of the model, as well as the datasets.
+* Geophysical Parameters - parameters for gravity and magnetic modelling are set here.
+* Lithology Notes - simple interface to store lithology notes.
+* Editor - this is an option to minimise or maximise the main editor interface.
+* Regional Test - A test of field decay to see if the dimensions of the model are large enough.
+* Calculate Gravity (All) - all lithologies and voxels are recalculated for gravity data.
+* Calculate Magnetics (All) - all lithologies and voxels are recalculated for magnetic data.
+* Calculate Gravity (Changes Only) - only changes lithologies are used for recalculations.
+* Calculate Gravity (Changes Only) - only changes lithologies are used for recalculations.
+* Save Model - Convenience option to save the model from within the interface.
+
+*Editor Options*
+~~~~~~~~~~~~~~~~
 * Profile Type - allows for standard profiles, or custom profiles with beginning and endpoint defined by the user.
 * Profile Orientation- allows for the selection of the profile direction.
 * Profile - allows for the selection of the profile being modelled. A slider provides convenient setting of this parameter.
@@ -104,25 +113,12 @@ Options
 * View Gravity Profile - used to select the gravity data for the profile.
 * Import borehole logs - used to import borehole logs (imported from the borehole menu, and connected to the modelling module)
 
-Calculations
-~~~~~~~~~~~~
+*Calculations*
+~~~~~~~~~~~~~~
 Calculations can be done by choosing one of two options from the menu bar at the top of the program:
 
-* Regional Test - This is used to display a graph showing the regional decay of your model. It is a fast way to see if either your model extents are large enough, or how the calculated field would fall off near the end of your model.
-* Calculate Gravity (All) - This calculates the gravity at the gravity height specified in the Geophysical Parameters Tab.
-* Calculate Magnetics (All)- This is used if you want Magnetic data. The height chosen is the magnetic height.
-* Calculate Gravity (Changes Only)- This calculates only the changes to the gravity since the last calculation.
-* Calculate Magnetics (Changes Only)- This calculates only the changes to the magnetic data since the last calculation.
-* Save Model - Convenience option to save the model from within the interface.
-
-Tips
-~~~~
-The ranged copy function can be very useful in getting a starting model going. Draw in your basic lithology boundary and copy it over a range of applicable depths.
-
-.. image:: _images/pfmodedit.png
-
-Ranged Copy
-^^^^^^^^^^^
+*Ranged Copy*
+~~~~~~~~~~~~~
 The ranged copy tool allows for the copying of a lithology from one layer or profile, across a range of other layers or profiles.
 
 The tool allows for the user selecting which other lithologies to overwrite.
@@ -137,12 +133,18 @@ Options:
 
 .. image:: _images/pfmodrange.png
 
+*Tips*
+~~~~~~
+The ranged copy function can be very useful in getting a starting model going. Draw in your basic lithology boundary and copy it over a range of applicable depths.
+
+.. image:: _images/pfmodedit.png
+
 Geophysical Parameters
 ^^^^^^^^^^^^^^^^^^^^^^
 This dialog allows for setting all the geophysical parameters for your model. Some are general - such as survey parameters associated with the data, while others are specific to each lithology being modelled.
 
-General Properties
-~~~~~~~~~~~~~~~~~~
+*General Properties*
+~~~~~~~~~~~~~~~~~~~~
 * Gravity Regional - Gravity data needs to have a regional subtracted so that the theoretical and measured anomalies coincide. PyGMI allows you to enter this correction here.
 * Height of observation - Gravity - This is the gravity sensor height.
 * Height of observation - Magnetic - This is the gravity sensor height.
@@ -150,8 +152,8 @@ General Properties
 * Magnetic Inclination - This is the inclination of the magnetic field at the time of the survey. You can get this from NOAA.
 * Magnetic Declination - This is the declination of the magnetic field at the time of the survey. You can get this from NOAA.
 
-Lithological Properties
-~~~~~~~~~~~~~~~~~~~~~~~
+*Lithological Properties*
+~~~~~~~~~~~~~~~~~~~~~~~~~
 PyGMI sets up geophysical properties on a lithology basis, and not on a body by body basis.
 
 Lithological Definitions List:
@@ -188,3 +190,51 @@ Regional Test
 In magnetic and gravity modelling, the calculated field will decay past the edges of the model. 2.5D modelling deals with this problem by adding a strike parameter where the body is automatically extended perpendicular to the profile by a constant amount. This is not the case in 3D modelling. For this reason, it is important to pad the edge of the model to ensure that the calculated field remains accurate. The regional test shows the rate of decay using one of your lithologies, to give an indication of whether your model is affected by this decay.
 
 .. image:: _images/pfmodregtest.png
+
+3D Magnetic Inversion
+---------------------
+This dialog sets up the parameters for 3D magnetic inversion, which uses the SimPEG library. The Dataset Information section associates connected raster datasets with the either DTM or magnetic data. Data are output as a number of classes, in line with the lithology principle which PyGMI uses. The output from inversion can therefore be directly input into the modelling module.
+
+The Model Extent Properties section sets up the model extents - by default from an associated DTM. Of importance are the X, Y and Z cell sizes. This determines the number of rows, columns and layers in the model. As a rule of thumb, models bigger than 100x100x100 may be slow, although this will depend on the hardware available.
+
+Dataset Information
+^^^^^^^^^^^^^^^^^^^
+This is used to define the data connected to the modelling module. The data is either connected manually or will be embedded withing a 3D model file.
+
+* DTM Dataset - This is a Digital Terrain Model or Digital Elevation Model (DEM) of your area of study.
+* Magnetic Dataset - This is the magnetic data to be modelled.
+
+General Properties
+^^^^^^^^^^^^^^^^^^
+These general properties are important for the inversion. If they are incorrect, or if there is extensive remanence in the are, the inversion results may be poor.
+
+* Height of observation - Magnetic - This is the magnetic sensor height.
+* Magnetic Field Intensity - This is the intensity of the magnetic field at the time of the survey. You can get this from NOAA.
+* Magnetic Inclination - This is the inclination of the magnetic field at the time of the survey. You can get this from NOAA.
+* Magnetic Declination - This is the declination of the magnetic field at the time of the survey. You can get this from NOAA.
+
+Model Extent Properties
+^^^^^^^^^^^^^^^^^^^^^^^
+The model extents control the area size and depth of your model, as well as its resolution. Typically one of your datasets are used to fill in most of the fields automatically. Because the DTM is compulsory to the modelling, this is normally the default choice.
+
+* Get Study Area from following Dataset - Usually the DTM dataset is chosen, but it can be any of your datasets.
+* Upper Top Left X Coordinate - This is the north-west corner X coordinate of your model in meters.
+* Upper Top Left Y Coordinate - This is the north-west corner Y coordinate of your model in meters.
+* Upper Top Left Z Coordinate - This is the north-west corner Z coordinate of your model in meters above sea level.
+* Total X Extent - the distance from east to west in the model.
+* Total Y Extent - the distance from north to south in the model.
+* Total Z Extent - the depth range of the model.
+* X and Y Cell Size - the width of each model cube in the x and y direction.
+* Z Cell Size - the height of each model cube in z direction.
+* Number of output classes.
+* Number of Columns (X Direction) - This is calculated automatically from extents and cell sizes.
+* Number of Rows (Y Direction) - This is calculated automatically from extents and cell sizes.
+* Number of Layers (Z Direction) - This is calculated automatically from extents and cell sizes.
+
+Tips
+^^^^
+Start with a low resolution model to get a general model in place first. 20x20x20 should be fine, since any bigger will get slow to model.
+
+Once your low resolution model is complete, you can increase the model's resolution to a better resolution. Please note that bigger than 100x100x100 will cause calculations to become very slow (unless you have lots of memory).
+
+.. image:: _images/pfmodinvmag.png

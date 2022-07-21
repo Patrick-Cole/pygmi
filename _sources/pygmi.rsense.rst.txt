@@ -36,6 +36,14 @@ pygmi.rsense.iodefs module
    :undoc-members:
    :show-inheritance:
 
+pygmi.rsense.landsat\_composite module
+--------------------------------------
+
+.. automodule:: pygmi.rsense.landsat_composite
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 pygmi.rsense.menu module
 ------------------------
 

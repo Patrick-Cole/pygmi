@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Seismology: Description of Modules &#8212; PyGMI 3.2.4 documentation</title>
+    <title>Seismology: Description of Modules &#8212; PyGMI 3.2.5.7 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -85,18 +86,18 @@
           <div class="body" role="main">
             
   <section id="seismology-description-of-modules">
-<h1>Seismology: Description of Modules<a class="headerlink" href="#seismology-description-of-modules" title="Permalink to this headline">¶</a></h1>
+<h1>Seismology: Description of Modules<a class="headerlink" href="#seismology-description-of-modules" title="Permalink to this heading">¶</a></h1>
 <section id="import-seisan-data">
-<h2>Import SEISAN Data<a class="headerlink" href="#import-seisan-data" title="Permalink to this headline">¶</a></h2>
+<h2>Import SEISAN Data<a class="headerlink" href="#import-seisan-data" title="Permalink to this heading">¶</a></h2>
 <p>Imports SEISAN data stored in the NORDIC format.</p>
 </section>
 <section id="correct-seisan-type-3-descriptions">
-<h2>Correct SEISAN Type 3 Descriptions<a class="headerlink" href="#correct-seisan-type-3-descriptions" title="Permalink to this headline">¶</a></h2>
+<h2>Correct SEISAN Type 3 Descriptions<a class="headerlink" href="#correct-seisan-type-3-descriptions" title="Permalink to this heading">¶</a></h2>
 <p>The SEISAN type 3 line is a flexible line which is currently in use by the CGS to store bulletin region information. Through the course of the history of assembling an earthquake catalogue, spelling mistakes can occur. The purpose of the tool is to compare the type 3 lines with an existing list of descriptions, and correct where necessary.</p>
 <p>The user must only provide the location of a text file containing a list of descriptions to be used.</p>
 </section>
 <section id="filter-seisan-data">
-<h2>Filter SEISAN data<a class="headerlink" href="#filter-seisan-data" title="Permalink to this headline">¶</a></h2>
+<h2>Filter SEISAN data<a class="headerlink" href="#filter-seisan-data" title="Permalink to this heading">¶</a></h2>
 <p>Here, the SEISAN catalogue can be filtered to select relevant portions for later examination. The user can specify the following:</p>
 <ul class="simple">
 <li><p>Distance indicator - this can be any combination of local, regional or distant events.</p></li>
@@ -108,7 +109,7 @@
 <img alt="_images/seisfilter.png" src="_images/seisfilter.png" />
 </section>
 <section id="import-generic-fps">
-<h2>Import Generic FPS<a class="headerlink" href="#import-generic-fps" title="Permalink to this headline">¶</a></h2>
+<h2>Import Generic FPS<a class="headerlink" href="#import-generic-fps" title="Permalink to this heading">¶</a></h2>
 <p>Imports generic fault plane solutions stored in an ASCII file. This is stored
 in a csv file. The format is as follows:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Longitude</span><span class="p">,</span> <span class="n">Latitude</span><span class="p">,</span> <span class="n">Strike</span><span class="p">,</span> <span class="n">Dip</span><span class="p">,</span> <span class="n">Rake</span><span class="p">,</span> <span class="n">Magnitude</span>
@@ -116,7 +117,7 @@ in a csv file. The format is as follows:</p>
 </div>
 </section>
 <section id="fault-plane-solutions">
-<h2>Fault Plane Solutions<a class="headerlink" href="#fault-plane-solutions" title="Permalink to this headline">¶</a></h2>
+<h2>Fault Plane Solutions<a class="headerlink" href="#fault-plane-solutions" title="Permalink to this heading">¶</a></h2>
 <p>This module allows for the display of fault plane solutions as beachball plots.
 The beachball plots can be exported to shapefiles. Note that two shapefiles are
 exported - one for the actual beachballs and one for a boundary of the
@@ -132,7 +133,7 @@ at <a class="reference external" href="http://www.ceri.memphis.edu/people/olboyd
 <img alt="_images/seisfps.png" src="_images/seisfps.png" />
 </section>
 <section id="remove-quarry-events">
-<h2>Remove Quarry Events<a class="headerlink" href="#remove-quarry-events" title="Permalink to this headline">¶</a></h2>
+<h2>Remove Quarry Events<a class="headerlink" href="#remove-quarry-events" title="Permalink to this heading">¶</a></h2>
 <p>This script allows for the removal of quarry events from seismology data. It is
 based on the paper by Wiemer and Baer (2000)</p>
 </section>
@@ -186,9 +187,8 @@ based on the paper by Wiemer and Baer (2000)</p>
 <li class="toctree-l2"><a class="reference internal" href="vector.html">Vector Data Analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cluster.html">Classification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="em.html">Electromagnetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="eseis.html">Exploration Seismics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gravity.html">Gravity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mag.html">Magnetics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="mt.html">Magnetotellurics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pfmod.html">Potential Field Modelling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="rsense.html">Remote Sensing</a></li>
@@ -229,12 +229,12 @@ based on the paper by Wiemer and Baer (2000)</p>
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
 
 
 
@@ -248,10 +248,10 @@ based on the paper by Wiemer and Baer (2000)</p>
       <div class="clearer"></div>
     </div>
     <div class="footer">
-      &copy;2021 Council for Geoscience.
+      &copy;2022 Council for Geoscience.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 4.0.2</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 5.0.2</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

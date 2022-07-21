@@ -1,8 +1,6 @@
 Remote Sensing: Description of Modules
 ======================================
 
-This section is out of date and will be updated in the future
-
 Import Data
 -----------
 This is a menu with submenus enabling the importing of remote sensing data
@@ -11,13 +9,17 @@ Import ASTER
 ^^^^^^^^^^^^
 ASTER data can be imported here. Note that it is the data as obtained from https://earthdata.nasa.gov. It can either be in .hdf format or imported as a zip file containing GeoTIFF images.
 
-Import Landsat 4 to Landsat 8
+Import Landsat 4 to Landsat 9
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 Landsat data can be imported here. Note that it is the data as obtained from https://earthexplorer.usgs.gov. It can either be in L*.tar.gz format or extracted, with a _MTL.txt and GeoTIFF files.
 
 Import Sentinel 2
 ^^^^^^^^^^^^^^^^^
 Sentinel 2 data can be imported here. Note that it is the data as obtained from https://earthexplorer.usgs.gov. It is the extracted directory, with an appropriate xml file (e.g. MTD_MSIL2A.xml).
+
+Import Sentinel 2 (Bands Only)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Sentinel 2 data can be imported here. Note this is a convenience function which excludes the QAQC bands.
 
 Import Sentinel 5-P
 ^^^^^^^^^^^^^^^^^^^
@@ -35,15 +37,47 @@ Import MODIS v6
 ^^^^^^^^^^^^^^^
 MODIS data can be imported here.
 
+Import Hyperion L1T
+^^^^^^^^^^^^^^^^^^^
+Hyperion data can be imported here.
+
+Import WorldView Tiles
+^^^^^^^^^^^^^^^^^^^^^^
+WorldView Tile data can be imported here. The tiles will be merged into a single dataset.
+
+Import ASTER Global Emissivity Database
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ASTER emissivity data can be imported here.
+
 Create Batch List
 ^^^^^^^^^^^^^^^^^
-This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it does not actually import any data. It merely creates a list within PyGMI. The user must select a directory as input.
+This option allows the user to flag a directory of remote sensing data for use in other remote sensing modules that support batch processing. Note that it does not actually import any data. It merely creates a file list within PyGMI. The user must select a directory as input.
 
 Calculate Band Ratios
 ---------------------
-This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to GeoTIFF format with the suffix **_ratio.tif**
+This module allows the user to calculate ratios from a list of standard ratios found in the literature (Kalinowski and Oliver, 2004, Van der Meer et al 2014). It takes as input either a standard import of remote sensing data, or input from a batch list. The user must select the relevant satellite and confirm which ratios are needed. Ratios are automatically exported to current directory in GeoTIFF format with the suffix **_ratio.tif**
+
+Options:
+
+* Sensor - satellite sensor to base ratios on.
+* Ratios - selection for ratios available for the chosen sensor.
+* Invert selection - convenience button to invert the condition indices selection.
 
 .. image:: _images/rsenseratio.png
+
+Calculate Condition Indices
+---------------------------
+This module allows the user to calculate condition indices such as TCI, VCI and VHI using indexes such as EVI, NDVI and MSAVI2. It requires as input two or more datasets over the same area, defined as a batch file list.
+
+Options:
+
+* Sensor - this is the satellite sensor being used. Depending on the sensor, different indices will result.
+* Index - This can be EVI, NDVI or MSAVI2
+* Condition Indices - A list of indices to calculate
+* Invert selection - convenience button to invert the condition indices selection.
+
+.. image:: _images/rsensecind.png
+
 
 Hyperspectral Imaging
 ---------------------
@@ -105,7 +139,4 @@ This is the viewer for the change data. It allows scenes to be displayed with a 
 * Update scene list file - used to update or save to a new scene list file. Scenes flagged for use are captured in this file.
 
 .. image:: _images/rsenseviewchange.png
-
-
-
 

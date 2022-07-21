@@ -3,8 +3,7 @@ Raster Data Analysis
 
 Introduction
 ------------
-The Raster Menu is a where operations on raster or grid data reside. Here,
-gridded data can be imported, filtered and displayed.
+The Raster Menu is a where operations on raster or grid data reside. Here, gridded data can be imported, filtered and displayed.
 
 Subpackages
 -----------
