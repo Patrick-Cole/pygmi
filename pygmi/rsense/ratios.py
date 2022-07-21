@@ -542,7 +542,7 @@ class ConditionIndices(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         btn_invert = QtWidgets.QPushButton('Invert Selection')
         buttonbox = QtWidgets.QDialogButtonBox()
-        helpdocs = menu_default.HelpButton('pygmi.rsense.ratios')
+        helpdocs = menu_default.HelpButton('pygmi.rsense.cind')
         label_index = QtWidgets.QLabel('Index:')
         label_ratios = QtWidgets.QLabel('Condition Indices:')
         label_sensor = QtWidgets.QLabel('Sensor:')
@@ -1255,10 +1255,10 @@ def _testfn2():
     import matplotlib.pyplot as plt
 
     ifiles = glob.glob("d:/Workdata/NRF/172-079/*.tar")
-    ifiles = glob.glob(r"d:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
-    ifiles = glob.glob(r"C:\WorkProjects\Test\*.tif")
+    # ifiles = glob.glob(r"d:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
+    # ifiles = glob.glob(r"C:\WorkProjects\Test\*.tif")
 
-    ifiles = glob.glob(r"c:\Workdata\Remote Sensing\Landsat\*.gz")
+    # ifiles = glob.glob(r"c:\Workdata\Remote Sensing\Landsat\*.gz")
 
 
     app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes

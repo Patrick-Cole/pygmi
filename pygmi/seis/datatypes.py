@@ -141,7 +141,7 @@ class seisan_2():
     -                    H = Earthquake was heard
     26    a1      Unusual events (PDE type)
     -                    L = Liquefaction
-    -                    G = Geysir/fumerol
+    -                    G = Geyser/fumarole
     -                    S = Landslides/Avalanches
     -                    B = Sand blows
     -                    C = Cracking in the ground (not normal faulting).
@@ -151,7 +151,7 @@ class seisan_2():
     27            Free
     28-29 i2      Max Intensity
     30    a1      Max Intensity qualifier
-    -                    (+ or - indicating more precicely the intensity)
+    -                    (+ or - indicating more precisely the intensity)
     31-32 a2      Intensity scale (ISC type definitions)
     -                    MM = Modified Mercalli
     -                    RF = Rossi Forel
@@ -163,7 +163,8 @@ class seisan_2():
     41-47 f7.2    Macroseismic longitude (Decimal)
     48            Free
     49-51 f3.1    Macroseismic magnitude
-    52    a1      Type of magnitudeI = Magnitude based on maximum Intensity.
+    52    a1      Type of magnitude
+    -                    I = Magnitude based on maximum Intensity.
     -                    A = Magnitude based on felt area.
     -                    R = Magnitude based on radius of felt area.
     -                    * = Magnitude calculated by use of special formulas

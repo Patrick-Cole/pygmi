@@ -167,11 +167,20 @@ class GraphMap(FigureCanvasQTAgg):
 
 
 class PolygonInteractor(QtCore.QObject):
-    """Polygon Interactor."""
+    """
+    Polygon Interactor for the supervised classification tool.
+
+    Parameters
+    ----------
+        showverts : bool
+        epsilon : int
+        polyi_changed : signal
+
+    """
 
     showverts = True
-    epsilon = 5  # max pixel distance to count as a vertex hit
-    polyi_changed = QtCore.pyqtSignal(list)
+    epsilon = 5
+    polyi_changed = QtCore.pyqtSignal(list)  #: polygon changed signal.
 
     def __init__(self, axtmp, pntxy):
         super().__init__()

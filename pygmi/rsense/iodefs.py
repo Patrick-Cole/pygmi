@@ -2113,7 +2113,7 @@ def get_aster_ged_bin(ifile):
 
 def etree_to_dict(t):
     """
-    Elementree to dictionary.
+    Convert an ElementTree to dictionary.
 
     From K3--rnc: https://stackoverflow.com/questions/7684333/converting-xml-to-dictionary-using-elementtree
 

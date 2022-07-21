@@ -241,7 +241,7 @@ class LandsatComposite(QtWidgets.QDialog):
 
 def composite(idir, dreq=10, mean=None, pprint=print, piter=None):
     """
-    Create a landsat composite.
+    Create a Landsat composite.
 
     Parameters
     ----------
