@@ -1,7 +1,7 @@
 Overview
 ========
 
-PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity and other datasets.
+PyGMI stands for Python Geoscience Modelling and Interpretation. It is a modelling and interpretation suite aimed at magnetic, gravity, remote sensing and other datasets.
 
 PyGMI is developed at the `Council for Geoscience <http://www.geoscience.org.za>`_ (Geological Survey of South Africa).
 
@@ -30,34 +30,34 @@ Requirements
 ------------
 PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.9 on Windows.
 
-PyGMI should still work with Python 3.8.
+PyGMI should still work with Python 3.8 and Python 3.9.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* python 3.9.10
-* discretize 0.7.2
-* fiona 1.8.20
-* geopandas 0.10.2
-* llvmlite 0.38.0
-* matplotlib 3.5.1
+* python 3.10.4
+* discretize 0.8.0
+* fiona 1.8.21
+* geopandas 0.11.0
+* llvmlite 0.38.1
+* matplotlib 3.5.2
 * mtpy 1.1.5
-* numba 0.55.0
-* numexpr 2.8.1
-* numpy 1.21.5+mkl
-* pandas 1.4.0
-* pillow 9.0.0
-* psutil 5.9.0
-* pymatsolver 0.2.0
-* pyopengl 3.1.5
-* PyQt5 5.15.1
-* pytest 6.2.5
-* rasterio 1.2.10
-* scikit-image 0.19.1
-* scikit-learn 1.0.2
-* scipy 1.7.3
-* shapely 1.8.0
-* SimPEG 0.16.0
-* sphinx 4.4.0
+* natsort 8.1.0
+* numba 0.55.2
+* numexpr 2.8.3
+* numpy 1.22.4
+* pandas 1.4.3
+* pillow 9.2.0
+* psutil 5.9.1
+* pyopengl 3.1.6
+* PyQt5 5.15.7
+* pytest 7.1.2
+* rasterio 1.3.0
+* scikit-image 0.19.3
+* scikit-learn 1.1.1
+* scipy 1.8.1
+* shapely 1.8.2
+* SimPEG 0.17.0
+* sphinx 5.0.2
 
 Installation
 ------------
@@ -67,7 +67,7 @@ The easiest way to install pygmi if you are working in a python environment is t
 
    pip install pygmi
 
-This will download pygmi from PyPI and install it within your python repository. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below.
+This will download pygmi from PyPI and install it within your python repository. Depending on your operating system, and which libraries you already have installed, you may need to follow instructions in sections below. Please note the use of pip when installing PyGMI may cause Anaconda installations to break. Anaconda users should follow the instructions below.
 
 Alternatively, if you satisfy the requirements, you can download pygmi either from Github or PyPI, extract it and run the following command from within the extracted directory:
 
@@ -99,6 +99,8 @@ Examples of binaries you may need to get are:
 * numba
 * llvmlite
 * GDAL
+* discretize
+* fiona
 
 They can be obtained from the `website <http://www.lfd.uci.edu/~gohlke/pythonlibs/>`_ by Christoph Gohlke.
 
