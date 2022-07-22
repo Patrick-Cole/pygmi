@@ -3,6 +3,7 @@ Changelog
 =========
 v3.2.5.9, 21 July 2022
 ----------------------
+*Removed GeoTIFF ZSTD export due to library issues.
 *Updates to help files.
 *Fixed spelling mistakes.
 *Removed redundant code.
