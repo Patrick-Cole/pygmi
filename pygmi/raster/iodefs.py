@@ -1103,7 +1103,7 @@ class ExportData():
             return False
 
         ext = ('GeoTiff (*.tif);;'
-               'GeoTiff compressed using ZSTD (*.tif);;'
+               # 'GeoTiff compressed using ZSTD (*.tif);;'
                'ENVI (*.hdr);;'
                'ERMapper (*.ers);;'
                'Geosoft (*.gxf);;'
