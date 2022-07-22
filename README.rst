@@ -28,7 +28,7 @@ If you have any comments or queries, you can contact the author either through `
 
 Requirements
 ------------
-PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.9 on Windows.
+PyGMI will run on both Windows and Linux. It should be noted that the main development is done in Python 3.10 on Windows.
 
 PyGMI should still work with Python 3.8 and Python 3.9.
 
