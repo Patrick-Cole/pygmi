@@ -2191,16 +2191,18 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
 
     ifile = r'd:\WorkData\testdata.hdr'
-
     data = iodefs.get_raster(ifile)
+
+    # ifile = r"D:\Workdata\WGS84 Block A Total field Magnetics VD1.grd"
+    # data = iodefs.get_geosoft(ifile)
 
     tmp = PlotInterp()
     tmp.indata['Raster'] = data
     tmp.data_init()
-    tmp.cbox_dtype.setCurrentText('RGB Ternary')
-    tmp.cbox_band1.setCurrentIndex(4)
-    tmp.cbox_band2.setCurrentIndex(5)
-    tmp.cbox_band3.setCurrentIndex(6)
+    # tmp.cbox_dtype.setCurrentText('RGB Ternary')
+    # tmp.cbox_band1.setCurrentIndex(4)
+    # tmp.cbox_band2.setCurrentIndex(5)
+    # tmp.cbox_band3.setCurrentIndex(6)
     # tmp.lineclipl.setText('1.')
     # tmp.lineclipu.setText('1.')
     tmp.change_lclip()

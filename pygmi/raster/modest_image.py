@@ -114,7 +114,7 @@ class ModestImage(mi.AxesImage):
         if doshade is True:
             self.shade = [cell, theta, phi, alpha]
         else:
-            self.shape = None
+            self.shade = None
 
     def invalidate_cache(self):
         """
