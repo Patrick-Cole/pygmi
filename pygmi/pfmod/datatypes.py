@@ -226,8 +226,6 @@ class LithModel():
                 if ycrd2 == grows:
                     ycrd2 = grows-1
 
-#                if (ycrd2 >= 0 and xcrd2 >= 0 and ycrd2 < grows and
-#                        xcrd2 < gcols):
                 if (0 <= ycrd2 < grows and 0 <= xcrd2 < gcols):
                     alt = curgrid.data.data[ycrd2, xcrd2]
                     if (curgrid.data.mask[ycrd2, xcrd2] or

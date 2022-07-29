@@ -54,7 +54,6 @@ class MergeLith(QtWidgets.QDialog):
         """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-#        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
         label_1 = QtWidgets.QLabel('Master Lithology')
         label_2 = QtWidgets.QLabel('Lithologies To Merge')
@@ -70,7 +69,6 @@ class MergeLith(QtWidgets.QDialog):
         gridlayout.addWidget(self.lw_lithmaster, 0, 1, 1, 1)
         gridlayout.addWidget(label_2, 1, 0, 1, 1)
         gridlayout.addWidget(self.lw_lithmerge, 1, 1, 1, 1)
-#        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 2, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
@@ -106,7 +104,6 @@ class LithNotes(QtWidgets.QDialog):
         """
         gridlayout = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
-#        helpdocs = menu_default.HelpButton('pygmi.pfmod.misc.rangedcopy')
 
         label_1 = QtWidgets.QLabel('Lithology Code')
         label_2 = QtWidgets.QLabel('Notes')
@@ -134,7 +131,6 @@ class LithNotes(QtWidgets.QDialog):
         gridlayout.addWidget(self.lithcode, 1, 1, 1, 1)
         gridlayout.addWidget(label_2, 2, 0, 1, 1)
         gridlayout.addWidget(self.notes, 2, 1, 1, 1)
-#        gridlayout.addWidget(helpdocs, 2, 0, 1, 1)
         gridlayout.addWidget(buttonbox, 3, 1, 1, 1)
 
         self.lw_param_defs.currentItemChanged.connect(self.lw_index_change)
@@ -197,7 +193,7 @@ class LithNotes(QtWidgets.QDialog):
         """
         self.lmod1 = self.parent.lmod1
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
-# Need this to init the first values.
+        # Need this to init the first values.
         self.codelist = {}
         self.noteslist = {}
         for i in self.lmod1.lith_list:
@@ -271,7 +267,7 @@ class ParamDisplay(QtWidgets.QDialog):
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-# General Properties
+        # General Properties
         gb_gen_prop = QtWidgets.QGroupBox('General Properties')
         gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
 
@@ -284,7 +280,6 @@ class ParamDisplay(QtWidgets.QDialog):
 
         gl_gen_prop.addWidget(label_1, 0, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_gregional, 0, 1, 1, 1)
-#        gl_gen_prop.addWidget(self.pb_autoregional, 1, 0, 1, 2)
         gl_gen_prop.addWidget(label_2, 2, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_ght, 2, 1, 1, 1)
         gl_gen_prop.addWidget(label_3, 3, 0, 1, 1)
@@ -296,7 +291,7 @@ class ParamDisplay(QtWidgets.QDialog):
         gl_gen_prop.addWidget(label_6, 6, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
-# Lithological Properties
+        # Lithological Properties
         gb_lith_prop = QtWidgets.QGroupBox('Lithological Properties')
         gl_lith_prop = QtWidgets.QGridLayout(gb_lith_prop)
 
@@ -463,7 +458,7 @@ class ParamDisplay(QtWidgets.QDialog):
             col = QtWidgets.QColorDialog.getColor(parent=self.parent)
             lmod.mlut[lithn.lith_index] = [col.red(), col.green(), col.blue()]
 
-# setup list widgets
+        # setup list widgets
         misc.update_lith_lw(self.lmod1, self.lw_param_defs)
 
         if defnum == 0:
@@ -520,7 +515,6 @@ class ParamDisplay(QtWidgets.QDialog):
             lith.modified = True
         self.showtext('Geophysical properties applied.')
 
-#        self.apply_lith()
         self.accept()
 
     def change_rmi(self):
@@ -679,23 +673,23 @@ class ParamDisplay(QtWidgets.QDialog):
         None.
 
         """
-    # Magetic Parameters
+        # Magetic Parameters
         self.dsb_hdec.setValue(-17.5)
         self.dsb_hinc.setValue(-62.9)
         self.dsb_hint.setValue(28464.0)
         self.dsb_mht.setValue(100.0)
         self.dsb_susc.setValue(0.01)
 
-    # Remanence Parameters
+        # Remanence Parameters
         self.dsb_minc.setValue(-62.9)
         self.dsb_mdec.setValue(-17.5)
 
-    # Gravity Parameters
+        # Gravity Parameters
         self.dsb_ght.setValue(0.0)
         self.dsb_density.setValue(2.75)
         self.dsb_gregional.setValue(0.0)
 
-    # Body Parameters
+        # Body Parameters
         self.dsb_mdec.setValue(0.0)
         self.dsb_minc.setValue(0.0)
 

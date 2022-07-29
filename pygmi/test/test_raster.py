@@ -116,19 +116,6 @@ def test_trimraster():
     np.testing.assert_array_equal(dat[0].data, dat2)
 
 
-# def test_quickgrid():
-#     """test quick grid."""
-#     dat2 = [[1, 1],
-#             [2, 1.3333333333333333]]
-
-#     x = np.array([1, 2, 1])
-#     y = np.array([1, 1, 2])
-#     z = np.array([1, 1, 2])
-
-#     dat = dataprep.quickgrid(x, y, z, 1)
-#     np.testing.assert_array_equal(dat, dat2)
-
-
 def test_equation():
     """tests equation editor."""
     datin = Data()
@@ -210,11 +197,6 @@ def test_histcomp():
                         [0, 1, 2, 1],
                         [0, 1, 2, 1],
                         [0, 1, 2, 1]])
-
-    # dat2 = [[0.0, 1.0, 1.9921875, 1.0],
-    #         [0.0, 1.0, 1.9921875, 1.0],
-    #         [0.0, 1.0, 1.9921875, 1.0],
-    #         [0.0, 1.0, 1.9921875, 1.0]]
 
     dat2 = [[0.0, 1.0, 2., 1.0],
             [0.0, 1.0, 2., 1.0],

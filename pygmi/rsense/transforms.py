@@ -97,7 +97,6 @@ class MNF(QtWidgets.QDialog):
         lbl_comps = QtWidgets.QLabel('Number of components:')
 
         self.cb_fwdonly.setChecked(True)
-        # self.sb_comps.setEnabled(False)
         self.sb_comps.setMaximum(10000)
         self.sb_comps.setMinimum(1)
         self.rb_noise_hv.setChecked(True)
@@ -118,7 +117,6 @@ class MNF(QtWidgets.QDialog):
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
 
-        # self.cb_fwdonly.stateChanged.connect(self.changeoutput)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -206,14 +204,6 @@ class MNF(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-        # self.combo_sensor.setCurrentText(projdata['sensor'])
-        # self.setratios()
-
-        # for i in self.lw_ratios.selectedItems():
-        #     if i.text()[2:] not in projdata['ratios']:
-        #         i.setSelected(False)
-        # self.set_selected_ratios()
-
         return False
 
     def saveproj(self):
@@ -227,13 +217,6 @@ class MNF(QtWidgets.QDialog):
 
         """
         projdata = {}
-        # projdata['sensor'] = self.combo_sensor.currentText()
-
-        # rlist = []
-        # for i in self.lw_ratios.selectedItems():
-        #     rlist.append(i.text()[2:])
-
-        # projdata['ratios'] = rlist
 
         return projdata
 
@@ -250,8 +233,6 @@ class MNF(QtWidgets.QDialog):
         """
         ncmps = self.sb_comps.value()
         odata = []
-        # if self.cb_fwdonly.isChecked():
-        #     ncmps = None
 
         if self.rb_noise_diag.isChecked():
             noise = 'diagonal'
@@ -342,7 +323,6 @@ class PCA(QtWidgets.QDialog):
         lbl_comps = QtWidgets.QLabel('Number of components:')
 
         self.cb_fwdonly.setChecked(True)
-        # self.sb_comps.setEnabled(False)
         self.sb_comps.setMaximum(10000)
         self.sb_comps.setMinimum(1)
 
@@ -359,7 +339,6 @@ class PCA(QtWidgets.QDialog):
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
 
-        # self.cb_fwdonly.stateChanged.connect(self.changeoutput)
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
 
@@ -447,14 +426,6 @@ class PCA(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-        # self.combo_sensor.setCurrentText(projdata['sensor'])
-        # self.setratios()
-
-        # for i in self.lw_ratios.selectedItems():
-        #     if i.text()[2:] not in projdata['ratios']:
-        #         i.setSelected(False)
-        # self.set_selected_ratios()
-
         return False
 
     def saveproj(self):
@@ -468,13 +439,6 @@ class PCA(QtWidgets.QDialog):
 
         """
         projdata = {}
-        # projdata['sensor'] = self.combo_sensor.currentText()
-
-        # rlist = []
-        # for i in self.lw_ratios.selectedItems():
-        #     rlist.append(i.text()[2:])
-
-        # projdata['ratios'] = rlist
 
         return projdata
 
@@ -491,8 +455,6 @@ class PCA(QtWidgets.QDialog):
         """
         ncmps = self.sb_comps.value()
         odata = []
-        # if self.cb_fwdonly.isChecked():
-        #     ncmps = None
 
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
@@ -523,7 +485,6 @@ class PCA(QtWidgets.QDialog):
         return True
 
 
-# @profile
 def get_noise(x2d, mask, noise=''):
     """
     Calculate noise dataset from original data.
@@ -598,7 +559,6 @@ def get_noise(x2d, mask, noise=''):
     return nevals, nevecs
 
 
-# @profile
 def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
              fwdonly=True):
     """
@@ -631,28 +591,15 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     """
     x2d = []
     maskall = []
-    # dat2 = []
     dat = lstack(dat, piter=piter)
 
     for j in dat:
-        # if j.data.max() == 1:
-        #     continue
-        # print(j.dataid, j.data.min(), j.data.max())
-        # dat2.append(j)
         x2d.append(j.data)
         maskall.append(j.data.mask)
 
     maskall = np.moveaxis(maskall, 0, -1)
     x2d = np.moveaxis(x2d, 0, -1)
     x2dshape = list(x2d.shape)
-
-    # if x2d.dtype != np.float64:
-    #     x2d = x2d.astype(np.float32)
-
-    # if x2d.dtype == np.uint16 or x2d.dtype == np.uint8:
-    #     x2d = x2d.astype(np.int32)
-    # elif x2d.dtype == np.uint32 or x2d.dtype == np.uint64:
-    #     x2d = x2d.astype(np.int64)
 
     mask = maskall[:, :, 0]
 
@@ -663,7 +610,6 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
     Ln = np.power(nevals, -0.5)
     Ln = np.diag(Ln)
 
-    # W = Ln @ nevecs.T
     W = np.dot(Ln, nevecs.T)
 
     x = x2d[~mask]
@@ -699,7 +645,6 @@ def mnf_calc(dat, ncmps=None, noisetxt='hv average', pprint=print, piter=iter,
         pprint('Calculating inverse MNF...')
         Winv = np.linalg.inv(W)
         P = pca.inverse_transform(x2)
-        # x2 = (Winv @  P.T).T
         x2 = np.dot(P, Winv.T)
         del P
     else:
@@ -769,11 +714,9 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     x2d = x2d[~mask]
 
     pca = IncrementalPCA(n_components=ncmps)
-    # pca = skPCA(n_components=ncmps, svd_solver='full', whiten=True)
 
     iold = 0
     pprint('Fitting PCA')
-    # x2 = pca.fit_transform(x2d)
     for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
         if i == 0:
             continue
@@ -824,38 +767,16 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
 def _testfn():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
-    # import spectral as sp
 
     pbar = ProgressBarText()
 
-    ifile = r'd:\Workdata\lithosphere\Cut-90-0824-.hdr'
-
-    ifile = r"d:\Workdata\Remote Sensing\hyperion\Gams_EO1H1760802013198110KF_1T.hdr"
     ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
     ncmps = 10
-    nodata = 0
-    iraster = None
 
-    # dat = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
-    dat = get_data(ifile, extscene = 'Hyperion')
+    dat = get_data(ifile, extscene='Hyperion')
 
     pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
-
-    # dat2 = []
-    # maskall = []
-    # for j in dat:
-    #     dat2.append(j.data.astype(float))
-    #     mask = j.data.mask
-    #     maskall.append(mask)
-
-    # maskall = np.moveaxis(maskall, 0, -1)
-    # dat2 = np.moveaxis(dat2, 0, -1)
-
-    # signal = sp.calc_stats(dat2)
-    # noise = sp.noise_from_diffs(dat2)
-    # mnfr = sp.mnf(signal, noise)
-    # denoised = mnfr.denoise(dat2, num=ncmps)
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
@@ -869,17 +790,9 @@ def _testfn():
 
         plt.figure(dpi=150)
         plt.title('New MNF denoised band'+str(i))
-        # plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
         plt.imshow(pmnf[i].data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
-
-        # plt.figure(dpi=150)
-        # plt.title('SPy MNF denoised band'+str(i))
-        # plt.imshow(np.ma.array(denoised[:, :, i], mask=mask), vmin=vmin,
-        #             vmax=vmax)
-        # plt.colorbar()
-        # plt.show()
 
 
 def _testfn2():

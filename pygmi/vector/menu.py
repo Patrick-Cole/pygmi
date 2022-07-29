@@ -80,8 +80,7 @@ class MenuWidget():
         self.menufile.addAction(self.action_grid)
         self.action_grid.triggered.connect(self.grid)
 
-
-# Context menus
+        # Context menus
         context_menu['Line'].addSeparator()
 
         self.action_show_line_data = QtWidgets.QAction('Show Line Data'

@@ -89,24 +89,18 @@ class MextDisplay(QtWidgets.QDialog):
         buttonbox.button(buttonbox.Ok).setText('Apply changes '
                                                '(reset calculations)')
 
-# Current Models Groupbox
+        # Current Models Groupbox
         h_model = QtWidgets.QHBoxLayout()
-
-#        gb_model = QtWidgets.QGroupBox('Current Models')
-#        gl_model = QtWidgets.QGridLayout(gb_model)
 
         lbl1_model = QtWidgets.QLabel('Current Model:')
 
         self.combo_model.addItems(['None'])
         self.combo_model.setSizePolicy(sizepolicy)
 
-#        gl_model.addWidget(lbl1_model, 0, 0, 1, 1)
-#        gl_model.addWidget(self.combo_model, 0, 1, 1, 1)
-
         h_model.addWidget(lbl1_model)
         h_model.addWidget(self.combo_model)
 
-# Data Information Groupbox
+        # Data Information Groupbox
         gb_data_info = QtWidgets.QGroupBox('Dataset Information')
         gl_data_info = QtWidgets.QGridLayout(gb_data_info)
 
@@ -137,7 +131,7 @@ class MextDisplay(QtWidgets.QDialog):
         gl_data_info.addWidget(self.combo_reggrv, 3, 1, 1, 1)
         gl_data_info.addWidget(self.combo_other, 4, 1, 1, 1)
 
-# Data Extents Groupbox
+        # Data Extents Groupbox
         gb_extent = QtWidgets.QGroupBox('Model Extent Properties')
         gl_extent = QtWidgets.QGridLayout(gb_extent)
 
@@ -215,15 +209,14 @@ class MextDisplay(QtWidgets.QDialog):
         hlayout.addWidget(self.pbar)
         hlayout.addWidget(buttonbox)
 
-# Assign to main layout
+        # Assign to main layout
 
-#        verticallayout.addWidget(gb_model)
         verticallayout.addLayout(h_model)
         verticallayout.addWidget(gb_data_info)
         verticallayout.addWidget(gb_extent)
         verticallayout.addLayout(hlayout)
 
-# Link functions
+        # Link functions
         self.dsb_xycell.valueChanged.connect(self.xycell)
         self.dsb_zcell.valueChanged.connect(self.zcell)
         self.dsb_utlx.valueChanged.connect(self.upd_layers)
@@ -273,7 +266,6 @@ class MextDisplay(QtWidgets.QDialog):
 
         # This line is to avoid duplicates since study area and dtm are often
         # the same dataset
-        # tmp = [i for i in set(self.lmod1.griddata.values())]
         tmp = list(set(self.lmod1.griddata.values()))
         self.parent.outdata['Raster'] = tmp
         self.showtext('Changes applied.')
@@ -415,7 +407,7 @@ class MextDisplay(QtWidgets.QDialog):
         None.
 
         """
-    # Extent Parameters
+        # Extent Parameters
         self.dsb_utlx.setValue(0.0)
         self.dsb_utly.setValue(0.0)
         self.dsb_utlz.setValue(0.0)
@@ -628,7 +620,6 @@ class MextDisplay(QtWidgets.QDialog):
         """
         self.update_model_combos()
         self.choose_model()
-#        self.choose_regional()
         self.update_vals()
         self.update_combos()
 

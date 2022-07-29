@@ -97,13 +97,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_xlim(xmin, xmax)
         self.axes.set_ylim(ymin, ymax)
 
-#        extent = [xmin, xmax, ymax, ymin]
-#        request = cimgt.GoogleTiles(style='satellite')
-#        self.axes.set_extent(extent, crs=ccrs.PlateCarree())
-
-#        self.axes.add_image(request, 6)
-#        self.axes.gridlines(draw_labels=True)
-
         for dat in dats:
             if 'E' not in dat:
                 continue
@@ -154,9 +147,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                           width=demaj, height=demin,
                           angle=ang, color='black')
             ell.set_facecolor('none')
-            #    ell.set_edgecolor('black')
 
-#            self.axes.add_artist(ell)
             self.ellipses.append(ell.get_verts())
             self.axes.add_artist(ell)
 
@@ -221,9 +212,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if np.unique(y).size < bins[1]:
             bins = (bins[0], np.unique(y).size)
 
-#        hbin = self.axes.hexbin(x, y, gridsize=50, mincnt=1)
         hbin = self.axes.hist2d(x, y, bins=bins, cmin=1, range=rng)
-#        self.axes.axis([xmin, xmax, ymin, ymax])
         self.axes.set_xlabel(xlbl, fontsize=8)
         self.axes.set_ylabel(ylbl, fontsize=8)
         self.axes.set_xticks(np.arange(x.min(), x.max()+1))
@@ -525,7 +514,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             for rec in event['4']:
                 if rec.weighting_indicator == 9:
                     continue
-                # breakpoint()
                 time = rec.hour*3600+rec.minutes*60+rec.seconds
                 if rec.phase_id == 'P   ':
                     P[rec.station_name] = time
@@ -702,7 +690,6 @@ class PlotQC(GraphWindow):
             self.mmc.update_hist(self.datd['1_number_of_stations_used'],
                                  i, bins=bins, rng=(bmin, bmax))
 
-            # self.mmc.update_hist(self.datd['1_number_of_stations_used'], i)
         elif i == 'RMS of time residuals':
             rts = np.array(self.datd['1_rms_of_time_residuals'])
             self.mmc.update_hist(rts, i)
@@ -821,7 +808,6 @@ class PlotQC(GraphWindow):
         # create the layer
         layer = data_source.CreateLayer('Fault Plane Solution', srs,
                                         ogr.wkbPolygon)
-#        layer.CreateField(ogr.FieldDefn('Strike', ogr.OFTReal))
 
         # Calculate BeachBall
         indata = self.mmc.ellipses
@@ -835,8 +821,6 @@ class PlotQC(GraphWindow):
             poly.AddGeometry(outring)
 
             feature = ogr.Feature(layer.GetLayerDefn())
-
-#            feature.SetField('Strike', np1[0])
 
             feature.SetGeometry(poly)
             # Create the feature in the layer (shapefile)
@@ -942,11 +926,9 @@ def _testfn():
     import sys
     from pygmi.seis.iodefs import ImportSeisan
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = r'D:\Workdata\seismology\collect1.out'
-    # tmp.ifile = r'd:\Work\Workdata\seismology\march2021\select.out'
-    # tmp.ifile = r'd:\Work\Workdata\seismology\march2021\wadati_err2.out'
     tmp.settings(True)
 
     data = tmp.outdata['Seis']
@@ -967,7 +949,7 @@ def _testfn2():
 
     ifile = r'D:\Workdata\seismology\april2021\collect.out'
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSeisan()
     tmp.ifile = ifile
     tmp.settings(True)

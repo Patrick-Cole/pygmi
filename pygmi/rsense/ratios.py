@@ -94,8 +94,6 @@ class SatRatios(QtWidgets.QDialog):
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
                                     'Sentinel-2', 'WorldView'])
-        # self.setratios()
-
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
@@ -449,11 +447,6 @@ class SatRatios(QtWidgets.QDialog):
                     tmp = tmp.replace('tmp'+j, bandmap[j])
                 rlist2.append(tmp+lbl)
 
-        # rlist2 += ['VCI']
-
-        # if 'Landsat' in sensor:
-        #     rlist2 += ['TCI', 'VHI']
-
         self.lw_ratios.clear()
         self.lw_ratios.addItems(rlist2)
 
@@ -525,8 +518,6 @@ class ConditionIndices(QtWidgets.QDialog):
         self.combo_index = QtWidgets.QComboBox()
         self.lw_ratios = QtWidgets.QListWidget()
         self.combo_sensor = QtWidgets.QComboBox()
-
-        # self.label_sensor = QtWidgets.QLabel('Sensor:')
 
         self.setupui()
 
@@ -741,9 +732,6 @@ class ConditionIndices(QtWidgets.QDialog):
                 dat = ifile
                 ifile = dat[0].filename
 
-            # dat = iodefs.get_data(ifile, piter=self.piter,
-            #                       showprocesslog=self.showprocesslog)
-
             if dat is None:
                 continue
 
@@ -860,8 +848,6 @@ class ConditionIndices(QtWidgets.QDialog):
         ofile = os.path.join(os.path.dirname(ifile), 'CI'+ofile+'.tif')
 
         if datfin:
-            # self.showprocesslog('Exporting to '+ofile)
-            # export_raster(ofile, datfin, 'GTiff', piter=self.piter)
             self.outdata['Raster'] = datfin
 
         return True
@@ -958,17 +944,6 @@ def correct_bands(rlist, sensor):
         List of converted ratios.
 
     """
-    # if 'AST_' in bfile and 'hdf' in bfile.lower():
-    #     sensor = 'ASTER'
-    # elif bfile[:4] in ['LC08']:
-    #     sensor = 'Landsat 8 (OLI)'
-    # elif bfile[:4] in ['LE07']:
-    #     sensor = 'Landsat 7 (ETM+)'
-    # elif bfile[:4] in ['LT04', 'LT05']:
-    #     sensor = 'Landsat 4 and 5 (TM)'
-    # else:
-    #     sensor = 'Sentinel-2'
-
     sdict = {}
 
     sdict['ASTER'] = {'B1': 'B1', 'B2': 'B2', 'B3': 'B3', 'B4': 'B4',
@@ -1235,10 +1210,10 @@ def _testfn():
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     SR = SatRatios()
-    SR.indata['Raster'] = dat  # single file only
+    SR.indata['Raster'] = dat
     SR.settings()
 
     dat2 = SR.outdata['Raster']
@@ -1255,13 +1230,8 @@ def _testfn2():
     import matplotlib.pyplot as plt
 
     ifiles = glob.glob("d:/Workdata/NRF/172-079/*.tar")
-    # ifiles = glob.glob(r"d:\Workdata\Remote Sensing\Landsat\VHI\*.tar")
-    # ifiles = glob.glob(r"C:\WorkProjects\Test\*.tif")
 
-    # ifiles = glob.glob(r"c:\Workdata\Remote Sensing\Landsat\*.gz")
-
-
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     SR = ConditionIndices()
     SR.indata['RasterFileList'] = ifiles
@@ -1285,7 +1255,7 @@ def _testfn3():
     extscene = 'Sentinel-2'
     dat = iodefs.get_data(ifile, extscene=extscene)
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     SR = SatRatios()
     SR.indata['Raster'] = dat  # single file only
@@ -1323,7 +1293,7 @@ def _testfn4():
 
     ifiles = glob.glob(r"C:\WorkProjects\ratios\*.zip")
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     ifiles = glob.glob(r"C:\WorkProjects\ratios\*.tif")
 

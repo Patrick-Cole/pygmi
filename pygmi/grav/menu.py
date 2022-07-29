@@ -47,7 +47,7 @@ class MenuWidget():
 
         self.parent = parent
 
-# Normal menus
+        # Normal menus
         self.menu = QtWidgets.QMenu('Gravity')
         parent.menubar.addAction(self.menu.menuAction())
 

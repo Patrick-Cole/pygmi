@@ -94,9 +94,8 @@ class ImportMod3D():
             if self.ifile == '':
                 return False
         os.chdir(os.path.dirname(self.ifile))
-        # self.parent.modelfilename = self.ifile.rpartition('.')[0]
 
-# Reset Variables
+        # Reset Variables
         self.lmod.griddata.clear()
         self.lmod.lith_list.clear()
 
@@ -326,7 +325,7 @@ class ImportMod3D():
         lmod.numy = int(np.ptp(lmod.yrange)/lmod.dxy+1)
         lmod.numz = int(np.ptp(lmod.zrange)/lmod.d_z+1)
 
-    # Section to load lithologies.
+        # Section to load lithologies.
         lindx = 0
         for itxt in labelu:
             lindx += 1
@@ -349,7 +348,6 @@ class ImportMod3D():
         for i, xi in enumerate(x):
             col = int((xi-lmod.xrange[0])/lmod.dxy)
             row = int((y[i]-lmod.yrange[0])/lmod.dxy)
-            # row = int((lmod.yrange[1]-y[i])/lmod.dxy)
             layer = int((lmod.zrange[1]-z[i])/lmod.d_z)
             lmod.lith_index[col, row, layer] = \
                 lmod.lith_list[label[i]].lith_index
@@ -410,7 +408,6 @@ class ImportMod3D():
                 lmod.custprofy[i] += lmod.custprofy[i]
 
         lmod.mlut = indict[pre+'mlut'].item()
-        # lmod.init_calc_grids()
 
         lmod.griddata = indict[pre+'griddata'].item()
 
@@ -449,11 +446,6 @@ class ImportMod3D():
                     lmod.griddata[i].dataid = lmod.griddata[i].bandid
                 del lmod.griddata[i].bandid
             if not hasattr(lmod.griddata[i], 'extent'):
-                # if lmod.griddata[i].data.ndim == 2:
-                #     rows, cols = lmod.griddata[i].data.shape
-                # elif lmod.griddata[i].data.ndim == 3:
-                #     rows, cols, _ = lmod.griddata[i].data.shape
-
                 xmin = lmod.griddata[i].tlx
                 ymax = lmod.griddata[i].tly
 
@@ -469,7 +461,6 @@ class ImportMod3D():
                 xmin, _, _, ymax = lmod.griddata[i].extent
                 lmod.griddata[i].set_transform(xdim, xmin, ydim, ymax)
 
-        # crsfin = None
         crsfin = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
                                  'AUTHORITY["EPSG","9001"]],'
                                  'AXIS["Easting",EAST],'
@@ -479,12 +470,11 @@ class ImportMod3D():
             if lmod.griddata[i].crs is not None:
                 crsfin = lmod.griddata[i].crs
 
-        # if crsfin is not None:
         for i in lmod.griddata:
             if lmod.griddata[i].crs is None:
                 lmod.griddata[i].crs = crsfin
 
-# Section to load lithologies.
+        # Section to load lithologies.
         lmod.lith_list['Background'] = grvmag3d.GeoData(self.parent)
 
         for itxt in lithkeys:
@@ -580,14 +570,14 @@ class ExportMod3D():
         None.
 
         """
-# Open file
+        # Open file
         filename = self.ifile
 
-# Construct output dictionary
+        # Construct output dictionary
         outdict = {}
         outdict = self.lmod2dict(outdict)
 
-# Save data
+        # Save data
         try:
             np.savez_compressed(filename, **outdict)
             self.showprocesslog('Model save complete!')
@@ -632,7 +622,7 @@ class ExportMod3D():
         outdict[pre+'lith_index_grv_old'] = self.lmod.lith_index_grv_old
         outdict[pre+'lith_index_mag_old'] = self.lmod.lith_index_mag_old
 
-# Section to save lithologies.
+        # Section to save lithologies.
         outdict[pre+'lithkeys'] = list(self.lmod.lith_list.keys())
 
         for i in self.lmod.lith_list.items():
@@ -770,12 +760,12 @@ class ExportMod3D():
         res = prj.TransformPoint(xrng[1], yrng[1])
         loneast, latnorth = res[0], res[1]
 
-# Get Save Name
+        # Get Save Name
         filename = self.ifile
 
         self.showprocesslog('kmz export starting...')
 
-# Move to 3d model tab to update the model stuff
+        # Move to 3d model tab to update the model stuff
         self.showprocesslog('updating 3d model...')
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
@@ -1103,7 +1093,7 @@ class ExportMod3D():
 
         self.showprocesslog('shapefile export starting...')
 
-# Move to 3d model tab to update the model stuff
+        # Move to 3d model tab to update the model stuff
         if smooth is True:
             self.showprocesslog('updating and smoothing 3d model...')
         else:
@@ -1165,7 +1155,7 @@ class ExportMod3D():
                 ring1.AddPoint(tmp[2, 0], tmp[2, 1], tmp[2, 2])
                 ring1.AddPoint(tmp[0, 0], tmp[0, 1], tmp[0, 2])
 
-            # Create polygon #1
+                # Create polygon #1
                 poly1 = ogr.Geometry(ogr.wkbPolygon25D)
                 poly1.AddGeometry(ring1)
                 multipolygon.AddGeometry(poly1)
@@ -1300,7 +1290,7 @@ def _testfn():
 
     ifile = r"d:\Workdata\modelling\small_upper.npz"
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     DM = ImportMod3D()
     DM.ifile = ifile

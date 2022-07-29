@@ -251,8 +251,6 @@ def tilt1(data, azi, s):
     azi = azi*dtr
 
     dy, dx = np.gradient(data)
-#    dx = dx.astype(np.float64)
-#    dy = dy.astype(np.float64)
     dxtot = np.ma.sqrt(dx*dx+dy*dy)
     nmax = np.max([nr, nc])
     npts = int(2**nextpow2(nmax))
@@ -269,10 +267,8 @@ def tilt1(data, azi, s):
 
     # 2nd order Tilt angle
 
-    # ts = t1
     s = max(s, 3)
     se = np.ones([s, s])/(s*s)
-    # ts = signal.convolve2d(t1, se, 'same')
     ts = signal.convolve2d(t1.filled(t1.mean()), se, 'same')
     ts = np.ma.array(ts, mask=t1.mask)
 
@@ -283,14 +279,6 @@ def tilt1(data, azi, s):
 
     # Standard tilt angle, hyperbolic tilt angle, 2nd order tilt angle,
     # Tilt Based Directional Derivative, Total Derivative
-
-    # t1 = np.ma.array(t1)
-    # th = np.ma.array(th)
-    # th.mask = np.ma.getmaskarray(t1)
-    # t2 = np.ma.array(t2)
-    # t2.mask = np.ma.getmaskarray(t1)
-    # ta = np.ma.array(ta)
-    # tdx = np.ma.array(tdx)
 
     return t1, th, t2, ta, tdx
 
@@ -601,7 +589,6 @@ def fftprep(data):
     points = np.transpose([x, y])
 
     zfin = si.griddata(points, z, (x1, y1), method='linear', fill_value=0.)
-    # breakpoint()
 
     nr, nc = zfin.shape
     zfin *= tukey(nc)
@@ -665,7 +652,6 @@ def rtp(data, I_deg, D_deg):
     ndat, rdiff, cdiff, datamedian = fftprep(data)
     fftmod = np.fft.fft2(ndat)
 
-    # ny, nx = fftmod.shape
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
     I = np.deg2rad(I_deg)
@@ -699,17 +685,16 @@ def _testfn_rtp():
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-# quick model
+    # quick model
     finc = -57
     fdec = 50
 
     lmod = quick_model(numx=300, numy=300, numz=30, finc=finc, fdec=fdec)
     lmod.lith_index[100:200, 100:200, 0:10] = 1
-#    lmod.lith_index[:, :, 10] = 1
     lmod.mht = 100
     calc_field(lmod, magcalc=True)
 
-# Calculate the field
+    # Calculate the field
 
     magval = lmod.griddata['Calculated Magnetics'].data
     plt.imshow(magval, cmap=cm.get_cmap('jet'))

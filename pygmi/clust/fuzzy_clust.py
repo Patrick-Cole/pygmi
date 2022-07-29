@@ -424,12 +424,10 @@ class FuzzyClust(QtWidgets.QDialog):
                 dat_in1 = dat_in
                 smtmp = np.zeros([i, dat_in.shape[1]])
                 for k in range(dat_in.shape[1]):
-                    # this is same as matlab sortrows
-                    # dat_in1[dat_in1[:, k].argsort()]
                     for j in range(i):
                         smtmp[j, k] = np.median(dat_in1[idx[j]:idx[j + 1], k])
                 startmdat = {i: smtmp}
-                startmfix = {i: np.array([])}  # inserted 'np.array'
+                startmfix = {i: np.array([])}
                 del dat_in1
 
                 clu, clcent, clobj_fcn, clvrc, clnce, clxbi = self.fuzzy_means(
@@ -471,7 +469,7 @@ class FuzzyClust(QtWidgets.QDialog):
                         clvrc = clvrc1
                         startmdat = {i: startm1dat[i]}
 
-            clalp = np.array(clu).max(0)  # 0 means row wise max?
+            clalp = np.array(clu).max(0)
             clidx = np.array(clu).argmax(0)
             clalp = clalp - (1.0 / clcent.shape[0])
             clalp = clalp / clalp.max()
@@ -487,10 +485,6 @@ class FuzzyClust(QtWidgets.QDialog):
 
             cent_std = np.array([np.std(dat_in[clidx == k], 0)
                                  for k in range(i)])
-
-#            den_cent = clcent
-#            den_cent_std = np.array(cent_std, copy=True)
-#            den_cent_std1 = np.array(cent_std, copy=True)
 
             if de_norm == 1:
                 pass
@@ -514,30 +508,6 @@ class FuzzyClust(QtWidgets.QDialog):
             dat_out[cnt].metadata['Cluster']['nce'] = clnce
             dat_out[cnt].metadata['Cluster']['xbi'] = clxbi
             dat_out[cnt].metadata['Cluster']['obj_fcn'] = clobj_fcn
-
-#            dat_out[cnt].type = self.type
-#            dat_out[cnt].algorithm = cltype
-#            dat_out[cnt].initialization = init_type
-#            dat_out[cnt].init_mod = startmdat[i]
-#            dat_out[cnt].init_constrains = startmfix[i]
-#            dat_out[cnt].runs = no_runs
-#            dat_out[cnt].max_iterations = max_iter
-#            dat_out[cnt].denormalize = de_norm
-#            dat_out[cnt].term_threshold = term_thresh
-#            dat_out[cnt].shape_constrain = cov_constr
-#            dat_out[cnt].zonal = zonal
-#            dat_out[cnt].alpha = alpha
-#            dat_out[cnt].memdat = np.ma.array(dat_out[cnt].memdat)
-#            dat_out[cnt].memdat.mask = dat_out[cnt].alpha.mask
-#            dat_out[cnt].xxx = data[0].xxx
-#            dat_out[cnt].yyy = data[0].yyy
-#            dat_out[cnt].denorm_center = den_cent
-#            dat_out[cnt].denorm_center_stdup = den_cent_std
-#            dat_out[cnt].denorm_center_stdlow = den_cent_std1
-#            dat_out[cnt].iterations = clobj_fcn.size
-#            dat_out[cnt].fuzziness_exp = expo
-
-#            gaugetmp.crisplogtxt.Value += '\n'+logtxt
 
         for i in dat_out:
             i.dataid = ('Fuzzy Cluster: ' +
@@ -629,75 +599,58 @@ class FuzzyClust(QtWidgets.QDialog):
         if cltype == 'Gath-Geva':
             cltype = 'gg'
 
-    # [no_samples, data_types] = size(data)  [no of data points,
-#            no of data types]
         no_samples = data.shape[0]
         data_types = data.shape[1]
 
         uuu = []  # dummy definition of membership matrix
 
-    # if neither initial centers nor initial meberships are provided -> random
-    # guess
+        # if neither initial centers nor initial meberships are provided ->
+        # random guess
         if init.size == 0:
             xmins = np.minimum(data, 1)
             xmaxs = np.maximum(data, 1)
-# initial guess of centroids
+            # initial guess of centroids
             cent = np.random.uniform(xmins[np.zeros(no_clust, int), :],
                                      xmaxs[np.zeros(no_clust, int), :])
-    # GK and det clustering require center and memberships for distance
-    # calculation: here initial guess for uuu assuming spherically shaped
-    # clusters
-    #        if strcmp('DET',cltype) == 1 | strcmp('det',cltype) == 1 | \
-    #          strcmp('GK',cltype) == 1 | strcmp('gk',cltype) == 1 | \
-    #          strcmp('GG',cltype) == 1 | strcmp('gg',cltype) == 1
-    # calc distances of each data point to each cluster centre assuming
-    # spherical clusters
+            # GK and det clustering require center and memberships for distance
+            # calculation: here initial guess for uuu assuming spherically
+            # shaped clusters
+            # calc distances of each data point to each cluster centre assuming
+            # spherical clusters
             edist = self.fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
             tmp = edist ** (-2 / (expo - 1))  # calc new U, suppose expo != 1
             uuu = tmp / (np.ones([no_clust, 1]) * np.sum(tmp, 0))
             m_f = uuu ** expo   # m_f matrix after exponential modification
-    # if center matrix is provided
+        # if center matrix is provided
         elif init.shape[0] == no_clust and init.shape[1] == data_types:
             cent = init
-    #  if strcmp('DET',cltype) == 1 | strcmp('det',cltype) == 1 | \
-    #      strcmp('GK',cltype) == 1 | strcmp('gk',cltype) == 1 | \
-    #      strcmp('GG',cltype) == 1 | strcmp('gg',cltype) == 1
-    # calc distances of each data point to each cluster centre assuming
-    # spherical clusters
+            # calc distances of each data point to each cluster centre assuming
+            # spherical clusters
             edist = fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
             tmp = edist ** (-2.0 / (expo - 1))  # calc new U, suppose expo != 1
             uuu = tmp / (np.ones([no_clust, 1]) * np.sum(tmp, 0))
             m_f = uuu ** expo  # MF matrix after exponential modification
-    # if membership matrix is provided
+
+        # if membership matrix is provided
         elif init.shape[0] == no_clust and init.shape[1] == no_samples:
             if init[init < 0].size > 0:  # check for negative memberships
                 self.showprocesslog('No negative memberships allowed!')
-    # scale given memberships to a column sum of unity
+                # scale given memberships to a column sum of unity
             uuu = init / (np.ones([no_clust, 1]) * init.sum())
-    # MF matrix after exponential modification
+            # MF matrix after exponential modification
             m_f = uuu ** expo
-    # new inital center matrix based on the given membership
+            # new inital center matrix based on the given membership
             cent = m_f * data / ((np.ones([np.size(data, 2), 1]) *
                                   (m_f.T).sum()).T)
-    # calc distances of each data point to each cluster centre assuming
-    # spherical clusters
+            # calc distances of each data point to each cluster centre assuming
+            # spherical clusters
             edist = fuzzy_dist(cent, data, [], [], 'fcm', cov_constr)
 
-    #    cent_orig = cent
         centfix = abs(centfix)
 
-    # only need to sum once in python
-    # initial size of objective function
-    #    obj_fcn_initial = np.sum((edist**2)*m_f)
-    #    obj_fcn_prev = obj_fcn_initial
-        obj_fcn = np.zeros(maxit)  # This is new - we must initialise this.
+        obj_fcn = np.zeros(maxit)
 
-#    hh = waitbar(0,['No. of clusters: ',
-#    num2unicode(info(1)),'/[',num2unicode(info(2)),
-#     ' ',num2unicode(info(3)),'] Run: ',num2unicode(info(4)),'/',
-#    num2unicode(info(5))])
         for i in self.piter(range(maxit)):  # loop over all iterations
-            # waitbar(i/maxit,hh)
             cent_prev = cent  # store result of last iteration
             uprev = uuu
             dist_prev = edist
@@ -705,7 +658,7 @@ class FuzzyClust(QtWidgets.QDialog):
                 # calc new centers
                 cent = np.dot(m_f, data) / ((np.ones([data.shape[1], 1]) *
                                              np.sum(m_f, 1)).T)
-    # calc distances of each data point to each cluster centre
+            # calc distances of each data point to each cluster centre
             edist = fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr)
             tmp = edist ** (-2 / (expo - 1))  # calc new uuu, suppose expo != 1
             uuu = tmp / np.sum(tmp, 0)
@@ -719,37 +672,24 @@ class FuzzyClust(QtWidgets.QDialog):
                                                          obj_fcn[i - 1])),
                                     True)
 
-    # if objective function has increased
+                # if objective function has increased
                 if obj_fcn[i] > obj_fcn[i - 1]:
                     uuu = uprev  # use memberships and
                     cent = cent_prev  # centers od the previous iteration
-    #  eliminate last value for objective function and
-    #                obj_fcn[i] = []
+                    #  eliminate last value for objective function and
                     obj_fcn = np.delete(obj_fcn, np.s_[i::])
                     edist = dist_prev
-    #             [max_v,idx] = max(U)
-    #             vrc = var_ratio(data, idx, cent, edist)
-    #             nce=(-1*(sum(sum(U.*log10(U)))/length(U(1,:))))/ \
-    #              log10(length(U(:,1)))
-    #             xbi = xie_beni(data, expo, uuu, cent, edist)
                     break  # terminate
-    # if improvement less than given termination threshold
+                # if improvement less than given termination threshold
                 if (obj_fcn[i-1]-obj_fcn[i])/obj_fcn[i-1] < term_thresh/100:
-                    # vrc = var_ratio(data, idx, cent, edist)
-                    # nce = (-1*(sum(sum(U.*log10(U)))/length(U(1,:))))/ \
-                    #   log10(length(U(:,1)))
-                    # xbi = xie_beni(data, expo, uuu, cent, edist)
                     break  # terminate
-    #        obj_fcn_prev = obj_fcn[i]
 
-#    [max_v,idx] = max(U)
-    #    max_v = np.max(uuu, 0)
         idx = np.argmax(uuu, 0)
         vrc = vr.var_ratio(data, idx, cent, edist)
         nce = (-1.0 * (np.sum(uuu * np.log10(uuu)) / np.shape(uuu)[1]) /
                np.log10(np.shape(uuu)[0]))
         xbi = xie_beni(data, expo, uuu, cent, edist)
-    #    close(hh)
+
         return uuu, cent, obj_fcn, vrc, nce, xbi
 
 
@@ -779,13 +719,12 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
         Output data.
 
     """
-#        maxnumexp = np.log(np.finfo(np.float64).max)
     no_samples = data.shape[0]
     no_datasets = data.shape[1]
     no_cent = cent.shape[0]
     ddd = np.zeros([cent.shape[0], no_samples])
 
-# FCM
+    # FCM
     if cltype in ('FCM', 'fcm'):
         for j in range(no_cent):
             ddd[j, :] = np.sqrt(np.sum(((data - np.ones([no_samples, 1]) *
@@ -798,9 +737,9 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             # difference between each sample attribute to the corresponding
             # attribute of the j-th cluster
             dcent = data - np.ones([no_samples, 1]) * cent[j]
+            # Covar of the j-th cluster
             aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
-                         dcent / np.sum(m_f[j], 0))  # Covar of the j-th
-#                                                          cluster
+                         dcent / np.sum(m_f[j], 0))
 
             # constrain covariance matrix if badly conditioned
             if np.linalg.cond(aaa) > 1e10:
@@ -824,7 +763,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             dcent = data - np.ones([no_samples, 1]) * cent[j]
             dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
         ddd = np.sqrt(np.array(dtmp))
-# GK
+    # GK
     elif cltype in ['GK', 'gk']:
         m_f = uuu ** expo
         dtmp = []
@@ -836,7 +775,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             aaa = np.dot(np.ones([no_datasets, 1]) * m_f[j] * dcent.T,
                          dcent / np.sum(m_f[j], 0))
             aaa0 = np.eye(no_datasets)
-        # if cov_constr>0, this enforces not to elongated ellipsoids -->
+            # if cov_constr>0, this enforces not to elongated ellipsoids -->
             # avoid the needle-like cluster
             aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
             # constrain covariance matrix if badly conditioned
@@ -846,12 +785,11 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
                 e_d[1e10 * e_d < edmax] = edmax / 1e10
                 aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
                              np.linalg.inv(e_v))
-        # GK Code
+            # GK Code
             mmm = np.linalg.det(aaa)**(1.0/no_datasets)*np.linalg.pinv(aaa)
             dtmp.append(np.sum(np.dot(dcent, mmm) * dcent, 1).T)
-            # d[j,:] = np.sum((dcent*M*dcent),2).T
         ddd = np.sqrt(np.array(dtmp))
-# GG
+    # GG
     elif cltype in ['GG', 'gg']:
         m_f = uuu ** expo
         dtmp = []
@@ -862,7 +800,7 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
             # Covariance of the j-th cluster
             aaa = np.dot(m_f[j] * dcent.T, dcent / np.sum(m_f[j], 0))
             aaa0 = np.eye(no_datasets)
-        # if cov_constr>0, this enforces not to elongated ellipsoids -->
+            # if cov_constr>0, this enforces not to elongated ellipsoids -->
             # avoid the needle-like cluster
             aaa = (1.0-cov_constr)*aaa + cov_constr*(aaa0/no_samples)
 
@@ -873,20 +811,17 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
                 e_d[1e10 * e_d < edmax] = edmax / 1e10
                 aaa = np.dot(np.dot(e_v, (e_d * np.eye(no_datasets))),
                              np.linalg.inv(e_v))
-        # GG code
+            # GG code
             ppp = 1.0 / no_samples * np.sum(m_f[j])
 
             t_1 = np.linalg.det(aaa)**0.5/ppp
             t_4 = np.linalg.pinv(aaa)
             t_5 = np.dot(dcent, t_4) * dcent * 0.5
-            # t_6[t_6 > maxnumexp] = maxnumexp
             t_7 = np.exp(t_5)
             t_9 = t_1 * t_7
             t_10 = np.sum(t_9, 1).T
             dtmp.append(t_10)
-            # dtmp.append(np.sum((np.linalg.det(aaa)) ** 0.5 / ppp *
-            #             np.exp(np.dot(dcent, np.linalg.pinv(aaa)) *
-            #                   dcent * 0.5), 1).T)
+
         ddd = np.sqrt(np.array(dtmp))
     ddd[ddd == 0] = 1e-10  # avoid, that a data point equals a cluster center
     if (ddd == np.inf).max() == True:
@@ -939,7 +874,6 @@ def xie_beni(data, expo, uuu, center, edist):
     numerator = np.sum((edist ** 2) * m_f)
 
     min_cdist = np.inf  # set minimal centre distance to infinity
-#    cnt = 0
     cdist = []
     for i in range(center.shape[0]):  # no of clusters
         dummy_cent = center
@@ -947,14 +881,10 @@ def xie_beni(data, expo, uuu, center, edist):
         dummy_cent = np.delete(dummy_cent, i, 0)
         # no of cluster minus one row
         for j in range(dummy_cent.shape[0]):
-            #            cnt += 1
             # calc squared distance between the selected two clustercentrs,
             # incl. nan if center values are nan
             cdist.append((center[i] - dummy_cent[j]) ** 2)
     cdist = np.array(cdist)
-# mv=nanmin(cdist)
-# dummy_mv=ones(cnt,1)*mv
-# cdist(isnan(cdist(:))==1)=dummy_mv(isnan(cdist(:))==1)
     cdist1 = np.sum(cdist, 1)
     min_cdist = cdist1.min()
     xbi = numerator / (data.shape[0] * min_cdist)

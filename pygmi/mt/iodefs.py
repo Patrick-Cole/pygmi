@@ -320,7 +320,7 @@ class ExportEDI():
 
         self.showprocesslog('Export Data Busy...')
 
-    # Pop up save dialog box
+        # Pop up save dialog box
         if ext == 'edi':
             self.export_edi(data)
 
@@ -348,7 +348,5 @@ class ExportEDI():
             dat[i].write_mt_file(save_dir=savepath,
                                  fn_basename=basename+'_'+i,
                                  file_type='edi',
-                                 # new_Z_obj=new_Z_obj,
-                                 # new_Tipper_obj=new_Tipper_obj,
                                  longitude_format='LONG',
                                  latlon_format='dd')

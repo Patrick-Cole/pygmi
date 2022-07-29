@@ -2095,7 +2095,6 @@ class ExportSummary():
             geom = gpd.points_from_xy(df.Longitude, df.Latitude)
             gdf = gpd.GeoDataFrame(df, geometry=geom)
             gdf = gdf.set_crs("EPSG:4326")
-            # breakpoint()
             gdf.to_file(filename)
 
 
@@ -2192,7 +2191,6 @@ class FilterSeisan(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datagrid')
-        # label_dind = QtWidgets.QLabel('Distance Indicator:')
         label_rectype = QtWidgets.QLabel('Record Type:')
         label_recdesc = QtWidgets.QLabel('Description:')
         label_from = QtWidgets.QLabel('From')

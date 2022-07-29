@@ -322,8 +322,6 @@ class TiltDepth(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
-
         return projdata
 
     def tiltdepth(self, data):
@@ -345,13 +343,13 @@ class TiltDepth(QtWidgets.QDialog):
         self.pbar.setValue(0)
         self.pbar.setMaximum(4)
 
-    # RTP
+        # RTP
         inc = self.dsb_inc.value()
         dec = self.dsb_dec.value()
 
         zout = rtp(data, inc, dec)
 
-    # Tilt
+        # Tilt
         self.pbar.setValue(1)
 
         nr, nc = zout.data.shape
@@ -363,7 +361,7 @@ class TiltDepth(QtWidgets.QDialog):
         self.pbar.setValue(2)
         # A negative number implies we are straddling 0
 
-    # Contour tilt
+        # Contour tilt
         x = zout.extent[0] + np.arange(nc)*zout.xdim+zout.xdim/2
         y = zout.extent[-1] - np.arange(nr)*zout.ydim-zout.ydim/2
 

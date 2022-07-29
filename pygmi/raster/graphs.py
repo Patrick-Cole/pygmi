@@ -96,7 +96,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 else:
                     atext = f'{dmat[i, j]:.2f}'
 
-                # self.axes.text(i + .1, j + .4, atext, c=ctmp, rotation=45)
                 self.axes.text(i+.5, j+.5, atext, c=ctmp, rotation=45,
                                ha='center', va='center')
         dat_mat = [i.dataid for i in data1]
@@ -110,7 +109,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.set_ylim(0, len(data1))
 
         cbar = self.figure.colorbar(rdata, format=frm)
-        # cbar.set_label('Correlation')
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
@@ -756,16 +754,6 @@ def _testfn():
     plt.imshow(cormat, cmap='jet')
     plt.colorbar()
     plt.show()
-
-    # for i in data:
-    #     vmin = i.data.mean()-2*i.data.std()
-    #     vmax = i.data.mean()+2*i.data.std()
-    #     plt.figure(dpi=150)
-    #     plt.title(i.dataid)
-    #     plt.imshow(i.data, vmin=vmin, vmax=vmax, resample='nearest')
-    #     plt.show()
-
-    # out = corr2d(data[1].data, data[2].data)
 
 
 if __name__ == "__main__":

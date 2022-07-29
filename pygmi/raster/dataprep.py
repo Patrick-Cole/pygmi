@@ -69,7 +69,6 @@ class DataCut():
 
     def __init__(self, parent=None):
         self.ifile = ''
-        # self.pbar = parent.pbar
         self.parent = parent
         self.indata = {}
         self.outdata = {}
@@ -97,7 +96,6 @@ class DataCut():
         """
         if 'Raster' in self.indata:
             data = self.indata['Raster']
-            # data = copy.deepcopy(self.indata['Raster'])
         else:
             self.showprocesslog('No raster data')
             return False
@@ -114,7 +112,6 @@ class DataCut():
         if data is None:
             return False
 
-        # self.pbar.to_max()
         self.outdata['Raster'] = data
 
         return True
@@ -400,7 +397,6 @@ class DataMerge(QtWidgets.QDialog):
         self.rb_mean = QtWidgets.QRadioButton('Mean - shift last file to mean '
                                               'overlap value and copy over '
                                               'first file at overlap.')
-        # self.cmask = QtWidgets.QCheckBox('Common mask for all bands')
 
         self.idirlist = QtWidgets.QLineEdit('')
         self.files_diff = QtWidgets.QCheckBox('Merge by band labels, '
@@ -662,7 +658,6 @@ class DataMerge(QtWidgets.QDialog):
             self.showprocesslog('Error: Mismatched input projections')
             return False
 
-        # wkt = wkt[0]
         crs = indata[0].crs
 
         # Start Merge
@@ -706,12 +701,6 @@ class DataMerge(QtWidgets.QDialog):
                                        dtype=i.data.dtype,
                                        transform=trans)
 
-                # raster = MemoryFile().open(driver='GTiff',
-                #                            height=i.data.shape[0],
-                #                            width=i.data.shape[1], count=1,
-                #                            dtype=i.data.dtype,
-                #                            transform=trans)
-
                 if hasfloatdtype:
                     nodata = 1.0e+20
                     tmpdat = i.data.astype(float)
@@ -727,7 +716,6 @@ class DataMerge(QtWidgets.QDialog):
                 raster.write(tmpdat, 1)
                 raster.write_mask(~i.data.mask)
                 raster.close()
-                # ifiles.append(raster)
                 ifiles.append(tmpfile)
 
             if len(ifiles) < 2:
@@ -763,7 +751,6 @@ class DataMerge(QtWidgets.QDialog):
             Success of routine.
 
         """
-        # indata = []
         ifiles = []
         if 'Raster' in self.indata:
             for i in self.indata['Raster']:
@@ -927,13 +914,13 @@ class DataReproj(QtWidgets.QDialog):
             self.showprocesslog('Unknown Projection. Could not reproject')
             return
 
-# Input stuff
+        # Input stuff
         src_crs = CRS.from_wkt(self.in_proj.wkt)
 
-# Output stuff
+        # Output stuff
         dst_crs = CRS.from_wkt(self.out_proj.wkt)
 
-# Now create virtual dataset
+        # Now create virtual dataset
         dat = []
         for data in self.piter(self.indata['Raster']):
             src_height, src_width = data.data.shape
@@ -941,7 +928,7 @@ class DataReproj(QtWidgets.QDialog):
             transform, width, height = calculate_default_transform(
                 src_crs, dst_crs, src_width, src_height, *data.bounds)
 
-# Work out the boundaries of the new dataset in the target projection
+            # Work out the boundaries of the new dataset in target projection
             data2 = data_reproject(data, src_crs, dst_crs, transform,
                                    height, width)
 
@@ -1294,16 +1281,6 @@ class GroupProj(QtWidgets.QWidget):
         wkttmp = self.wkt.replace(', ', ',')
         wkttmp = wkttmp.replace(',', ', ')
 
-        # wkttmp = wkttmp.replace('GEOGCS', '\nGEOGCS')
-        # wkttmp = wkttmp.replace('DATUM', '\n   DATUM')
-        # wkttmp = wkttmp.replace('SPHEROID', '\n   SPHEROID')
-        # wkttmp = wkttmp.replace('AUTHORITY', '\n   AUTHORITY')
-        # wkttmp = wkttmp.replace('PRIMEM', '\n   PRIMEM')
-        # wkttmp = wkttmp.replace('UNIT', '\n   UNIT')
-        # wkttmp = wkttmp.replace('PROJECTION', '\nPROJECTION')
-        # wkttmp = wkttmp.replace('PARAMETER', '\n   PARAMETER')
-        # wkttmp = wkttmp.replace('AXIS', '\nAXIS')
-
         self.label.setText(wkttmp)
 
 
@@ -1457,10 +1434,6 @@ class Metadata(QtWidgets.QDialog):
                     else:
                         tmp.crs = CRS.from_wkt(wkt)
                     tmp.units = i.units
-                    # if tmp.dataid[-1] == ')':
-                    #     tmp.dataid = tmp.dataid[:tmp.dataid.rfind(' (')]
-                    # if i.units != '':
-                    #     tmp.dataid += ' ('+i.units+')'
                     tmp.data.mask = (tmp.data.data == i.nodata)
 
     def rename_id(self):
@@ -1887,16 +1860,9 @@ def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
 
     if True in mtmp1:
         tmp1 = tmp1 - new_data[mtmp1].mean()
-        # tmp1 = tmp1 * merged_data[tmp].std() / new_data[tmp].std()
         tmp1 = tmp1 + merged_data[mtmp1].mean()
 
     tmp1[mtmp2] = merged_data[mtmp2]
-
-    # breakpoint()
-
-    # tmp1 = merged_data.copy()
-    # tmp1[~new_mask] = new_data[~new_mask]
-    # tmp1[tmp] = np.minimum(merged_data[tmp], new_data[tmp])
 
     merged_data[:] = tmp1
 
@@ -2002,31 +1968,6 @@ def fftprep(data):
     nr, nc = data.data.shape
     cdiff = nc//2
     rdiff = nr//2
-
-    # # Section to pad data
-
-    # nr, nc = data.data.shape
-
-    # z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))-999
-    # x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
-    # z1[rdiff:-rdiff, cdiff:-cdiff] = ndat.filled(-999)
-
-    # z1[0] = 0
-    # z1[-1] = 0
-    # z1[:, 0] = 0
-    # z1[:, -1] = 0
-
-    # x = x1.flatten()
-    # y = y1.flatten()
-    # z = z1.flatten()
-
-    # x = x[z != -999]
-    # y = y[z != -999]
-    # z = z[z != -999]
-
-    # points = np.transpose([x, y])
-
-    # zfin = si.griddata(points, z, (x1, y1), method='nearest')
 
     z1 = np.zeros((nr+2*rdiff, nc+2*cdiff))+np.nan
     x1, y1 = np.mgrid[0: nr+2*rdiff, 0: nc+2*cdiff]
@@ -2157,10 +2098,7 @@ def fftcont(data, h):
     xdim = data.xdim
     ydim = data.ydim
 
-    # self.showprocesslog('Preparing for FFT...')
     ndat, rdiff, cdiff, datamedian = fftprep(data)
-
-    # self.showprocesslog('Continuing data...')
 
     fftmod = np.fft.fft2(ndat)
 
@@ -2348,7 +2286,6 @@ def cut_raster(data, ifile, pprint=print):
                    'projection is the same as the raster dataset')
             return None
 
-        # coords = [json.loads(gdf.to_json())['features'][0]['geometry']]
         # This section convers PolygonZ to Polygon, and takes first polygon.
         coords = gdf['geometry'].loc[0].exterior.coords
         coords = [Polygon([[p[0], p[1]] for p in coords])]
@@ -2377,14 +2314,6 @@ def epsgtowkt(epsg):
         WKT description.
 
     """
-    # orig = osr.SpatialReference()
-    # orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
-
-    # err = orig.ImportFromEPSG(int(epsg))
-    # if err != 0:
-    #     return 'Unknown'
-    # out = orig.ExportToWkt()
-
     out = CRS.from_epsg(int(epsg)).to_wkt()
     return out
 
@@ -2595,7 +2524,6 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
                                        'AUTHORITY["EPSG","9001"]],'
                                        'AXIS["Easting",EAST],'
                                        'AXIS["Northing",NORTH]]')
-            # return None
 
         doffset = 0.0
         data.data.set_fill_value(data.nodata)
@@ -2723,7 +2651,7 @@ def _testdown():
     dxy = 1
     magcalc = True
 
-# quick model
+    # quick model
     lmod = quick_model(numx=100, numy=100, numz=10, dxy=dxy, d_z=1)
     lmod.lith_index[45:55, :, 1] = 1
     lmod.lith_index[45:50, :, 0] = 1
@@ -2736,7 +2664,7 @@ def _testdown():
     else:
         z = lmod.griddata['Calculated Gravity']
 
-# Calculate the field
+    # Calculate the field
     lmod = quick_model(numx=100, numy=100, numz=10, dxy=dxy, d_z=1)
     lmod.lith_index[45:55, :, 1] = 1
     lmod.lith_index[45:50, :, 0] = 1
@@ -2750,25 +2678,20 @@ def _testdown():
         downz0 = lmod.griddata['Calculated Gravity']
 
     downz0, z = z, downz0
-    # h = -h
 
     dz = verticalp(z, order=1)
     dz2 = verticalp(z, order=2)
     dz3 = verticalp(z, order=3)
 
-# normal downward
+    # normal downward
     zdownn = fftcont(z, h)
 
-# downward, taylor
+    # downward, taylor
     h = -h
     zdown = (z.data + h*dz + h**2*dz2/math.factorial(2) +
              h**3*dz3/math.factorial(3))
 
-# Plotting
-    # plt.plot(dz3[50])
-    # plt.show()
-
-#    plt.plot(z[50], 'r-.')
+    # Plotting
     plt.plot(downz0.data[50], 'r.')
     # plt.plot(zdown.data[50], 'b')
     plt.plot(zdownn.data[50], 'k')
@@ -2793,7 +2716,6 @@ def _testgrid():
     ifile = r'd:\Work\Workdata\upward\EB_MTEF_Mag_IGRFrem.ers'
     dat = get_raster(ifile)[0]
 
-    # z = dat.data
     nr, nc = dat.data.shape
 
     datamedian = np.ma.median(dat.data)
@@ -2858,26 +2780,6 @@ def _testfft():
 
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-    # ifile = r'D:\Workdata\geothermal\bushveld.hdr'
-    # dat = get_raster(ifile)[0]
-
-    # finc = -63.4
-    # fdec = -16.25
-    # # quick model
-    # plt.imshow(dat.data, cmap=cm.get_cmap('jet'), vmin=-1000, vmax=1000)
-    # plt.colorbar()
-    # plt.show()
-
-    # dat2 = rtp(dat, finc, fdec)
-    # dat2.data -= np.ma.median(dat2.data)
-
-    # plt.imshow(dat2.data, cmap=cm.get_cmap('jet'), vmin=-500, vmax=500)
-    # plt.colorbar()
-    # plt.show()
-
-    # ofile = r'D:\Workdata\geothermal\bushveldrtp.hdr'
-    # export_raster(ofile, [dat2], 'ENVI')
-
     ifile = r'D:\Workdata\geothermal\bushveldrtp.hdr'
     data = get_raster(ifile)[0]
 
@@ -2896,9 +2798,7 @@ def _testfft():
     ndat = data.data - datamedian
 
     fftmod = np.fft.fft2(ndat)
-    # fftmod = np.fft.fftshift(fftmod)
 
-    # ny, nx = fftmod.shape
     KX, KY = fft_getkxy(fftmod, xdim, ydim)
 
     vmin = fftmod.real.mean()-2*fftmod.real.std()
@@ -2931,29 +2831,15 @@ def _testfft():
     plt.yscale('log')
     plt.show()
 
-    # I = np.deg2rad(I_deg)
-    # D = np.deg2rad(D_deg)
-    # alpha = np.arctan2(KY, KX)
-
-    # filt = 1/(np.sin(I)+1j*np.cos(I)*np.sin(D+alpha))**2
-
-    # zout = np.real(np.fft.ifft2(fftmod*filt))
-    # zout = zout[rdiff:-rdiff, cdiff:-cdiff]
-    # zout = zout + datamedian
-
-    # zout[data.data.mask] = data.data.fill_value
-
 
 def _testmerge():
     """Test Merge."""
     import sys
     import matplotlib.pyplot as plt
-    # from pygmi.raster.iodefs import export_raster
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     idir = r'd:\Workdata\bugs'
-    ofile = r'd:\Workdata\hope.tif'
 
     print('Merge')
     DM = DataMerge()
@@ -2975,17 +2861,6 @@ def _testmerge():
     plt.tight_layout()
     plt.show()
 
-    # plt.figure(dpi=150)
-    # plt.hist(dat.flatten(), 100)
-    # plt.show()
-
-    # plt.imshow(dat.mask)
-    # plt.show()
-
-    # print('export')
-    # dat2 = DM.outdata['Raster']
-    # export_raster(ofile, dat2, 'GTiff')
-
 
 def _testreproj():
     """Test Reprojection."""
@@ -2998,17 +2873,8 @@ def _testreproj():
     piter = ProgressBarText().iter
 
     dat = get_raster(ifile, piter=piter)
-    # dat2 = lstack(dat, piter, 60)
 
-    # plt.figure(dpi=150)
-    # plt.imshow(dat[1].data, extent=dat[1].extent)
-    # plt.show()
-
-    # plt.figure(dpi=150)
-    # plt.imshow(dat2[1].data, extent=dat2[1].extent)
-    # plt.show()
-
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     DM = DataReproj()
     DM.indata['Raster'] = dat
@@ -3030,7 +2896,6 @@ def _testreproj():
 def _testcut():
     """Test Reprojection."""
     import sys
-    # from pygmi.rsense.iodefs import get_data
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
@@ -3040,13 +2905,9 @@ def _testcut():
     sfile = r"D:\Workdata\Janine\rsa_outline_utm35s.shp"
     ifile = r"D:\Workdata\Janine\oneband.tif"
 
-    # ifile = r"d:\Workdata\bugs\S2B_MSIL2A_20210913T074609_N0301_R135_T36KTV_20210913T102843.zip"
-    # sfile = r"d:\Workdata\bugs\AU5_block_larger_utm36S.shp"
-
     dat = get_raster(ifile)
-    # dat = get_data(ifile, extscene='Sentinel-2')
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     DM = DataCut()
     DM.indata['Raster'] = dat
@@ -3065,8 +2926,6 @@ def _testcut():
     plt.colorbar()
     plt.show()
 
-    # out = lstack(DM.outdata['Raster'])
-
 
 def _testprof():
     """Test Reprojection."""
@@ -3081,7 +2940,7 @@ def _testprof():
 
     dat = get_raster(ifile, piter=piter)
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     DM = GetProf()
     DM.indata['Raster'] = dat

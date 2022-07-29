@@ -444,9 +444,6 @@ class ExportShapeData():
             data.to_file(filename, driver='GeoJSON')
         else:
             data.to_file(filename)
-#        dfall = data.drop(['pygmiX', 'pygmiY'], axis=1)
-
-#        dfall.to_csv(filename, index=False)
 
         self.showprocesslog('Export completed')
 

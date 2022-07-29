@@ -186,10 +186,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
         self.cid = self.figure.canvas.mpl_connect('resize_event', self.revent)
-        # self.zid = self.figure.canvas.mpl_connect('button_release_event',
-        #                                           self.zevent)
 
-    # sun shading stuff
+        # sun shading stuff
         self.pinit = None
         self.qinit = None
         self.phi = -np.pi/4.
@@ -197,28 +195,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.cell = 100.
         self.alpha = .0
 
-    # cmyk stuff
+        # cmyk stuff
         self.kval = 0.01
-
-    # def zevent(self, event):
-    #     """
-    #     Event check for zooming.
-
-    #     Parameters
-    #     ----------
-    #     event : TYPE
-    #         DESCRIPTION.
-
-    #     Returns
-    #     -------
-    #     None.
-
-    #     """
-    #     nmode = event.inaxes.get_navigate_mode()
-
-        # if nmode == 'ZOOM' and self.gmode == 'Contour':
-        #     self.init_graph()
-        #     print(111)
 
     def revent(self, event):
         """
@@ -270,9 +248,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
-        # self.image = self.axes.imshow(self.data[0].data, origin='upper',
-        #                               extent=(x_1, x_2, y_1, y_2))
-
         tmp = np.ma.array([[np.nan]])
         self.image = imshow(self.axes, tmp, origin='upper',
                             extent=(x_1, x_2, y_1, y_2))
@@ -281,7 +256,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # toolbar
         self.image.format_cursor_data = lambda x: ""
         self.update_graph()
-        # self.figure.canvas.draw()
 
         self.cid = self.figure.canvas.mpl_connect('resize_event', self.revent)
 
@@ -305,7 +279,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if event.inaxes == self.axes:
             if self.flagresize is True:
                 self.flagresize = False
-                # self.init_graph()
 
                 self.update_graph()
 
@@ -360,19 +333,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if i.dataid == self.hband[0]:
                 dat = i.data.copy()
 
-        # self.image.set_data(dat)
-        # self.image._scale_to_res()
-        # dat = self.image._A
-
-        # x1, x2, y1, y2 = self.image.get_extent()
-
         if self.htype == 'Histogram Equalization':
             dat = histeq(dat)
         elif self.clippercl > 0. or self.clippercu > 0.:
             dat, _, _ = histcomp(dat, perc=self.clippercl,
                                  uperc=self.clippercu)
-
-        # self.image.set_data(dat)
 
         xdim = (x2-x1)/dat.data.shape[1]/2
         ydim = (y2-y1)/dat.data.shape[0]/2
@@ -491,7 +456,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         binave = np.arange(0, 1, 1/(bins.size-2))
 
         if hno == 0:
-            # bincol = self.cbar(binave)
             bincol = self.newcmp(binave)
         else:
             bincol = cm.get_cmap('gray')(binave)
@@ -611,9 +575,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     self.htype != 'Histogram Equalization'):
                 self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
                                                   ec='none')
-                # self.hhist[i] = self.argb[i].hist(hdata.compressed(), 50,
-                #                                   ec='none',
-                #                                   range=(lclip[i], uclip[i]))
                 self.clipvall[i] = self.argb[i].axvline(lclip[i], ls='--')
                 self.clipvalu[i] = self.argb[i].axvline(uclip[i], ls='--')
 
@@ -846,7 +807,6 @@ class MySunCanvas(FigureCanvasQTAgg):
 
         """
         self.axes.clear()
-        # self.axes.xaxis.set_tick_params(labelsize=8)
         self.axes.tick_params(labelleft=False, labelright=False)
         self.axes.set_autoscaley_on(False)
         self.axes.set_rmax(1.0)
@@ -925,7 +885,6 @@ class PlotInterp(QtWidgets.QDialog):
         txt = str(self.cbox_cbar.currentText())
         self.mmc.cbar = cm.get_cmap(txt)
 
-        # self.change_cbar()
         self.setFocus()
 
         self.mmc.gmode = 'Single Colour Map'
@@ -1002,7 +961,6 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider.setMaximum(100)
         self.kslider.setValue(1)
 
-        # self.lineclip.setInputMask('00.0')
         self.lineclipu.setPlaceholderText('% of high values to exclude')
         self.lineclipl.setPlaceholderText('% of low values to exclude')
         self.btn_saveimg.setAutoDefault(False)
@@ -1067,11 +1025,8 @@ class PlotInterp(QtWidgets.QDialog):
         self.kslider.sliderReleased.connect(self.change_kval)
         self.msc.figure.canvas.mpl_connect('button_press_event', self.move)
         self.btn_saveimg.clicked.connect(self.save_img)
-        # self.gbox_sun.clicked.connect(self.change_dtype)
         self.gbox_sun.clicked.connect(self.change_sun_checkbox)
         btn_apply.clicked.connect(self.change_lclip)
-        # self.lineclipu.returnPressed.connect(self.change_lclip_upper)
-        # self.lineclipl.returnPressed.connect(self.change_lclip_lower)
         self.chk_histtype.clicked.connect(self.change_dtype)
 
         if self.parent is not None:
@@ -1124,63 +1079,7 @@ class PlotInterp(QtWidgets.QDialog):
         self.mmc.clippercu = uclip
         self.mmc.clippercl = lclip
 
-        # self.change_lclip_lower()
-        # self.change_lclip_upper()
         self.change_dtype()
-
-    # def change_lclip_upper(self):
-    #     """
-    #     Change the linear clip percentage.
-
-    #     Returns
-    #     -------
-    #     None.
-
-    #     """
-    #     txt = self.lineclipu.text()
-
-    #     try:
-    #         clip = float(txt)
-    #     except ValueError:
-    #         if txt == '':
-    #             clip = 0.0
-    #         else:
-    #             clip = self.mmc.clippercu
-    #         self.lineclipu.setText(str(clip))
-
-    #     if clip < 0.0 or clip >= 100.0:
-    #         clip = self.mmc.clippercu
-    #         self.lineclipu.setText(str(clip))
-    #     self.mmc.clippercu = clip
-
-    #     # self.change_dtype()
-
-    # def change_lclip_lower(self):
-    #     """
-    #     Change the linear clip percentage.
-
-    #     Returns
-    #     -------
-    #     None.
-
-    #     """
-    #     txt = self.lineclipl.text()
-
-    #     try:
-    #         clip = float(txt)
-    #     except ValueError:
-    #         if txt == '':
-    #             clip = 0.0
-    #         else:
-    #             clip = self.mmc.clippercl
-    #         self.lineclipl.setText(str(clip))
-
-    #     if clip < 0.0 or clip >= 100.0:
-    #         clip = self.mmc.clippercl
-    #         self.lineclipl.setText(str(clip))
-    #     self.mmc.clippercl = clip
-
-        # self.change_dtype()
 
     def change_blue(self):
         """
@@ -1225,7 +1124,6 @@ class PlotInterp(QtWidgets.QDialog):
         self.mmc.fullhist = self.chk_histtype.isChecked()
 
         if txt == 'Single Colour Map':
-            # self.slabel.hide()
             self.labelc.show()
             self.labelk.hide()
             self.cbox_band2.hide()
@@ -1280,7 +1178,6 @@ class PlotInterp(QtWidgets.QDialog):
             self.mmc.cell = self.sslider.value()
             self.mmc.alpha = float(self.aslider.value())/100.
             self.mmc.shade = True
-            # self.cbox_bands.setCurrentText(self.cbox_band1.currentText())
             self.msc.init_graph()
         else:
             self.msc.hide()
@@ -1747,13 +1644,13 @@ class PlotInterp(QtWidgets.QDialog):
         iodefs.export_raster(str(filename), newimg, 'GTiff', piter=self.piter,
                              bandsort=False)
 
-# Section for colorbars
+        # Section for colorbars
         if 'Ternary' not in dtype:
             txt = str(self.cbox_cbar.currentText())
             cmap = cm.get_cmap(txt)
             norm = mcolors.Normalize(vmin=cmin, vmax=cmax)
 
-# Horizontal Bar
+            # Horizontal Bar
             fig = Figure()
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(blen)
@@ -1768,7 +1665,7 @@ class PlotInterp(QtWidgets.QDialog):
             fname = filename[:-4]+'_hcbar.png'
             canvas.print_figure(fname, dpi=300)
 
-# Vertical Bar
+            # Vertical Bar
             fig = Figure()
             canvas = FigureCanvasQTAgg(fig)
             fig.set_figwidth(bwid+1)
@@ -1915,8 +1812,6 @@ class PlotInterp(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
-
         return projdata
 
 
@@ -1947,7 +1842,7 @@ def aspect2(data):
     dzdx = ne.evaluate('dzdx/8.')
     dzdy = ne.evaluate('dzdy/8.')
 
-# Aspect Section
+    # Aspect Section
     pi = np.pi
     adeg = ne.evaluate('90-arctan2(dzdy, -dzdx)*180./pi')
     adeg = np.ma.masked_invalid(adeg)
@@ -2035,26 +1930,8 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
         nbr_bins = max(img.shape)
         nbr_bins = max(nbr_bins, 256)
 
-# get image histogram
+    # get image histogram
     imask = np.ma.getmaskarray(img)
-    # tmp = img.compressed()
-    # imhist, bins = np.histogram(tmp, nbr_bins)
-
-    # cdf = imhist.cumsum()  # cumulative distribution function
-    # if cdf[-1] == 0:
-    #     return img
-    # cdf = cdf / float(cdf[-1])  # normalize
-
-    # perc = perc/100.
-    # uperc = uperc/100.
-
-    # sindx = np.arange(nbr_bins)[cdf > perc][0]
-    # if cdf[0] > (1-uperc):
-    #     eindx = 1
-    # else:
-    #     eindx = np.arange(nbr_bins)[cdf < (1-uperc)][-1]+1
-    # svalue = bins[sindx]
-    # evalue = bins[eindx]
 
     svalue, evalue = np.percentile(img.compressed(), (perc, 100-uperc))
 
@@ -2193,18 +2070,9 @@ def _testfn():
     ifile = r'd:\WorkData\testdata.hdr'
     data = iodefs.get_raster(ifile)
 
-    # ifile = r"D:\Workdata\WGS84 Block A Total field Magnetics VD1.grd"
-    # data = iodefs.get_geosoft(ifile)
-
     tmp = PlotInterp()
     tmp.indata['Raster'] = data
     tmp.data_init()
-    # tmp.cbox_dtype.setCurrentText('RGB Ternary')
-    # tmp.cbox_band1.setCurrentIndex(4)
-    # tmp.cbox_band2.setCurrentIndex(5)
-    # tmp.cbox_band3.setCurrentIndex(6)
-    # tmp.lineclipl.setText('1.')
-    # tmp.lineclipu.setText('1.')
     tmp.change_lclip()
 
     tmp.settings()

@@ -52,16 +52,11 @@ class MenuWidget():
         self.parent = parent
         self.parent.add_to_context('Remote Sensing')
 
-# Normal menus
+        # Normal menus
         self.menu = QtWidgets.QMenu('Remote Sensing')
         parent.menubar.addAction(self.menu.menuAction())
 
         self.menu3 = self.menu.addMenu('Import Data')
-
-        # self.action_import_ged = QtWidgets.QAction('Import ASTER Global '
-        #                                            'Emissivity Data')
-        # self.menu3.addAction(self.action_import_ged)
-        # self.action_import_ged.triggered.connect(self.import_ged)
 
         self.action_import_aster = QtWidgets.QAction('Import ASTER')
         self.menu3.addAction(self.action_import_aster)

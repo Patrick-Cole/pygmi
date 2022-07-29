@@ -54,13 +54,12 @@ def var_ratio(data, uuu, center, dist_orig):
     if uuu.ndim == 1:   # check whether fuzzy or crisp info is given
         crisp = uuu
     else:
-        # alp = uuu.max(0)
         crisp = uuu.argmin(0)
 
-# sum of squared dist between cluster cent
-# calc the overall mean for each data type considering the entire data set
+    # sum of squared dist between cluster cent
+    # calc the overall mean for each data type considering the entire data set
     m_all = np.nanmean(data)
-# squared dist of cluster centres from overall mean
+    # squared dist of cluster centres from overall mean
     dis_cent = (center - (np.ones([center.shape[0], 1]) * m_all)) ** 2
     dis_cent = np.sum(dis_cent, 1)
 
@@ -81,9 +80,9 @@ def var_ratio(data, uuu, center, dist_orig):
 
         icd += np.sum(edist)
 
-# normalize squared sum by no of clusters minus one
+    # normalize squared sum by no of clusters minus one
     numerator = np.sum(dis_cent) / (center.shape[0] - 1)
-# normalization on number of data and number of clusters
+    # normalization on number of data and number of clusters
     denom = icd / (data.shape[0] - center.shape[0])
     vrc = numerator / denom
 

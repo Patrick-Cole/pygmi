@@ -56,7 +56,7 @@ class MenuWidget():
         self.parent.add_to_context('Cluster')
         context_menu = self.parent.context_menu
 
-# Normal menus
+        # Normal menus
         self.menuclustering = QtWidgets.QMenu('Classification')
         parent.menubar.addAction(self.menuclustering.menuAction())
 

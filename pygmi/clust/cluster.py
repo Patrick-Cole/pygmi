@@ -350,7 +350,6 @@ class Cluster(QtWidgets.QDialog):
         None.
 
         """
-        # data = copy.deepcopy(self.indata['Raster'])
         data = self.indata['Raster']
         self.update_vars()
 
@@ -358,7 +357,7 @@ class Cluster(QtWidgets.QDialog):
 
         self.showprocesslog('Cluster analysis started')
 
-# Section to deal with different bands having different null values.
+        # Section to deal with different bands having different null values.
         masktmp = ~data[0].data.mask
         for i in data:
             masktmp += ~i.data.mask
@@ -371,16 +370,6 @@ class Cluster(QtWidgets.QDialog):
             X.append(tmp.data.compressed())
             del tmp
         X = np.transpose(X)
-
-        # for i, _ in enumerate(data):
-        #     if data[i].nodata != 0.0 and data[i]:
-        #         self.showprocesslog('Setting '+data[i].dataid+' nodata to 0.')
-        #         data[i].data = np.ma.array(data[i].data.filled(0))
-
-        #     data[i].data.mask = masktmp
-        # X = np.array([i.data.compressed() for i in data]).T
-
-        # Xorig = X.copy()
 
         if self.radiobutton_sscale.isChecked():
             self.showprocesslog('Applying standard scaling')
@@ -432,8 +421,6 @@ class Cluster(QtWidgets.QDialog):
                 dat_out[-1].metadata['Cluster']['input_type'].append(k.dataid)
 
             zonal = np.ma.masked_all(data[0].data.shape)
-            # alpha = (data[0].data.mask == 0)
-            # zonal[alpha == 1] = cfit.labels_
             zonal[~masktmp] = cfit.labels_
 
             dat_out[-1].data = zonal
@@ -505,7 +492,7 @@ def _testfn():
                 dat2.append(i)
                 print(i.data.mask.min())
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     print('Merge')
     DM = Cluster()
@@ -529,7 +516,7 @@ def _testfn2():
 
     dat = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     print('Merge')
     DM = Cluster()

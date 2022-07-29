@@ -231,7 +231,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.clear()
 
         self.axes = self.figure.add_subplot(111, label='Profile')
-        # self.axes.ticklabel_format(useOffset=False, style='plain')
 
         self.axes.set_title('Profile')
         self.axes.set_xlabel('Distance')
@@ -240,7 +239,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
 
-        # self.figure.tight_layout()
         self.figure.canvas.draw()
         self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
 
@@ -273,7 +271,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax1 = self.figure.add_subplot(111, label='Map')
         ax1.ticklabel_format(style='plain')
 
-#        ax1.set_title(data1.dataid)
         self.axes = ax1
         self.axes.tick_params(axis='x', rotation=90)
         self.axes.tick_params(axis='y', rotation=0)
@@ -285,10 +282,8 @@ class MyMplCanvas(FigureCanvasQTAgg):
             scat = ax1.scatter(xdata, ydata, c=zdata, cmap=cm.get_cmap('jet'))
         else:
             return
-#            scat = ax1.scatter(xdata, ydata)
 
         self.figure.colorbar(scat, ax=ax1, format=frm)
-#        data.plot(ival, cmap=jet, ax=ax1)
 
         self.axes.xaxis.set_major_formatter(frm)
         self.axes.yaxis.set_major_formatter(frm)
@@ -541,7 +536,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             if equal is True:
                 radii = .01*radii.max()*np.sqrt(100*radii/radii.max())
 
-            xtheta = theta[:-1]  # +(theta[1]-theta[0])/2
+            xtheta = theta[:-1]
             bcols2 = bcols[(xtheta/bwidth).astype(int)]
             ax1.bar(xtheta, radii, width=bwidth, color=bcols2)
             ax1.bar(xtheta+np.pi, radii, width=bwidth, color=bcols2)
@@ -873,12 +868,8 @@ class PlotVector(GraphWindow):
         None.
 
         """
-#        key = list(self.indata['Vector'].keys())[0]
         data = self.indata['Vector']
-#        data = data.dropna()
         i = self.combobox1.currentText()
-
-#        self.mmc.update_map(data.pygmiX, data.pygmiY, data[i])
 
         self.mmc.update_vector(data, i)
 

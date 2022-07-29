@@ -58,7 +58,7 @@ class MenuWidget():
         self.parent.add_to_context('inRaster')
         context_menu = self.parent.context_menu
 
-# Normal menus
+        # Normal menus
         self.menu = QtWidgets.QMenu('Raster')
         parent.menubar.addAction(self.menu.menuAction())
 
@@ -131,7 +131,7 @@ class MenuWidget():
         self.menu.addAction(self.action_raster_data_interp)
         self.action_raster_data_interp.triggered.connect(self.raster_interp)
 
-# Context menus
+        # Context menus
         context_menu['inRaster'].addSeparator()
 
         self.action_bandselect = QtWidgets.QAction('Select Input Raster Bands')

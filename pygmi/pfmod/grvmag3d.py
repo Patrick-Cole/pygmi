@@ -74,7 +74,6 @@ class GravMag():
         else:
             self.pbars = None
         self.oldlithindex = None
-#        self.mfname = self.parent.modelfilename
         self.tmpfiles = {}
 
         self.actionregionaltest = QtWidgets.QAction('Regional\nTest')
@@ -115,8 +114,6 @@ class GravMag():
         self.actioncalculate2.triggered.connect(self.calc_field_mag)
         self.actioncalculate3.triggered.connect(self.calc_field_grav_changes)
         self.actioncalculate4.triggered.connect(self.calc_field_mag_changes)
-        # self.actioncalculate3.setEnabled(False)
-        # self.actioncalculate4.setEnabled(False)
 
     def calc_field_mag(self):
         """
@@ -321,9 +318,7 @@ class GravMag():
         mint = (magtmp.std()*4)/10.
         if magtmp.ptp() > 0:
             csrange = np.arange(mmin, mmax, mint)
-#            cns = plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
             plt.contour(magtmp, levels=csrange, colors='b', extent=etmp)
-#            plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal', format=frm)
         cbar.set_label('nT')
 
@@ -338,8 +333,6 @@ class GravMag():
         if grvtmp.ptp() > 0:
             csrange = np.arange(mmin, mmax, mint)
             plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
-#            cns = plt.contour(grvtmp, levels=csrange, colors='y', extent=etmp)
-#            plt.clabel(cns, inline=1, fontsize=10)
         cbar = plt.colorbar(ims, orientation='horizontal', format=frm)
         cbar.set_label('mGal')
         plt.tight_layout()
@@ -945,7 +938,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
     tmpfiles = {}
 
-# model index
+    # model index
     modind = lmod.lith_index.copy()
     if magcalc:
         modindcheck = lmod.lith_index_mag_old.copy()
@@ -968,20 +961,15 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     modindmax = modind.max()
     modindcheckmax = modindcheck.max()
 
-#    if np.unique(modind).size == 1:
-#        showtext('No changes to model!')
-#        return None
-
     if False not in tmp:
         showtext('No changes to model!')
         return None
 
-# get height corrections
+    # get height corrections
     tmp = np.copy(lmod.lith_index)
     tmp[tmp > -1] = 0
     hcor = np.abs(tmp.sum(2))
 
-#    if np.unique(modindcheck).size == 1 and np.unique(modindcheck)[0] == -1:
     for mlist in lmod.lith_list.items():
         mijk = mlist[1].lith_index
         if mijk not in modind and mijk not in modindcheck:
@@ -1005,7 +993,7 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
 
     QtCore.QCoreApplication.processEvents()
 
-# Get mlayers and glayers with correct rho and netmagn
+    # Get mlayers and glayers with correct rho and netmagn
 
     if pbars is not None:
         pbars.resetsub(maximum=(len(lmod.lith_list)-1))
@@ -1069,7 +1057,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
     mgvalin = mgvalin[::-1]
     mgvalin = np.ma.array(mgvalin)
 
-#    if np.unique(modindcheck).size > 1:
     if modindcheckmax > -1:
         if magcalc:
             mgvalin += lmod.griddata['Calculated Magnetics'].data
@@ -1107,7 +1094,6 @@ def calc_field(lmod, pbars=None, showtext=None, parent=None,
         lmod.griddata['Gravity Residual'].dataid = 'Gravity Residual'
 
     if parent is not None:
-        # tmp = [i for i in set(lmod.griddata.values())]
         tmp = list(set(lmod.griddata.values()))
         parent.outdata['Raster'] = tmp
     showtext('Calculation Finished')

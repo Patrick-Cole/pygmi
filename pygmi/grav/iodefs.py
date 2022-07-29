@@ -132,9 +132,6 @@ class ImportCG5(QtWidgets.QDialog):
         gridlayout_main.addWidget(label_bthres, 7, 0, 1, 1)
         gridlayout_main.addWidget(self.basethres, 7, 1, 1, 1)
 
-#        gridlayout_main.addWidget(label_nodata, 2, 0, 1, 1)
-#        gridlayout_main.addWidget(self.nodata, 2, 1, 1, 1)
-
         gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 8, 1, 1, 3)
 
@@ -230,20 +227,9 @@ class ImportCG5(QtWidgets.QDialog):
                                             downcast='float')
 
         # Merge data
-#        self.df_cg5.sort_values(by=['LINE', 'STATION'], inplace=True)
-#        self.df_gps.sort_values(by=['line', 'station'], inplace=True)
-
         dfmerge = pd.merge(self.df_cg5, self.df_gps,
                            left_on=['LINE', 'STATION'],
                            right_on=['line', 'station'], how='left')
-
-#        dfmerge = pd.merge_asof(self.df_cg5, self.df_gps,
-#                                left_on=['STATION'],
-#                                right_on=['station'],
-#                                left_by=['LINE'],
-#                                right_by=['line'],
-#                                direction='forward',
-#                                tolerance=0.9)
 
         # eliminate ordinary stations (not base stations) without coordinates
         filt = dfmerge['STATION'] < float(self.basethres.text())
@@ -323,9 +309,6 @@ class ImportCG5(QtWidgets.QDialog):
         projdata['gpsfile'] = self.gpsfile.text()
         projdata['basethres'] = self.basethres.text()
 
-
-#        projdata['ftype'] = '2D Mean'
-
         return projdata
 
     def get_cg5(self, filename=''):
@@ -402,7 +385,6 @@ class ImportCG5(QtWidgets.QDialog):
         os.chdir(os.path.dirname(filename))
 
         df2 = pd.read_csv(filename)
-#        df2.columns = map(str.lower, df2.columns)
         df2.columns = df2.columns.str.lower()
 
         self.df_gps = df2

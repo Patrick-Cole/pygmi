@@ -115,7 +115,6 @@ class CreateSceneList(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.useall, 2, 0, 1, 2)
         gridlayout_main.addWidget(self.isrecursive, 3, 0, 1, 2)
 
-        # gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
@@ -456,7 +455,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 return
 
             self.writer = manimation.PillowWriter(fps=4)
-            self.writer.setup(self.fig, wfile)  # , 100)
+            self.writer.setup(self.fig, wfile)
         else:
             self.writer.finish()
 
@@ -497,7 +496,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         extent = dat[self.bands[0]].extent
 
-        # self.im1 = imshow(self.ax1, dtmp, extent=extent)
         self.im1 = self.ax1.imshow(dtmp, extent=extent)
         self.ax1.plot(points[:, 0], points[:, 1])
         self.cbar = None
@@ -546,10 +544,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 self.cbar.remove()
                 self.cbar = None
 
-            # rtmp1 = dat[self.bands[2]].data
-            # rtmp2 = dat[self.bands[1]].data
-            # rtmp3 = dat[self.bands[0]].data
-
             mask = (dat[self.bands[2]].data == 0.)
             red = np.ma.array(dat[self.bands[2]].data, mask=mask)
             green = np.ma.array(dat[self.bands[1]].data, mask=mask)
@@ -567,23 +561,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             green[mask] = 0
             blue[mask] = 0
 
-            # rtmp1 = (rtmp1-rtmp1.min())
-            # rtmp2 = (rtmp2-rtmp2.min())
-            # rtmp3 = (rtmp3-rtmp3.min())
-
-            # if rtmp1.ptp() != 0.:
-            #     rtmp1 = rtmp1/rtmp1.ptp()
-            # if rtmp2.ptp() != 0.:
-            #     rtmp2 = rtmp2/rtmp2.ptp()
-            # if rtmp3.ptp() != 0.:
-            #     rtmp3 = rtmp3/rtmp3.ptp()
-
-            alpha = ~mask  # np.logical_not(red == 0.)
+            alpha = ~mask
             alpha = alpha*255
 
             dtmp = np.array([red, green, blue, alpha])
             dtmp = np.moveaxis(dtmp, 0, 2)
-            # dtmp = dtmp*255
             dtmp = dtmp.astype(np.uint8)
             self.im1.set_clim(0, 255)
 
@@ -652,7 +634,6 @@ class SceneViewer(QtWidgets.QDialog):
 
         self.pbar = QtWidgets.QProgressBar()
 
-        # self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
         self.setWindowTitle("View Change Data")
 
         self.file_menu = QtWidgets.QMenu('&File', self)
@@ -773,8 +754,6 @@ class SceneViewer(QtWidgets.QDialog):
 
         """
         projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
 
         return projdata
 
@@ -984,7 +963,6 @@ class SceneViewer(QtWidgets.QDialog):
         dxlim = (gtr[0], gtr[0]+gtr[1]*cols)
         dylim = (gtr[3]+gtr[5]*rows, gtr[3])
 
-###############################################################################
         axes = self.canvas.ax1
 
         if firstrun is True:
@@ -1010,10 +988,6 @@ class SceneViewer(QtWidgets.QDialog):
 
         xbuf = min(xsize, int(ext[0]))
         ybuf = min(ysize, int(ext[1]))
-
-        # gtrnew = (gtr[0]+xoff*dx, xdim, 0, gtr[3]-yoff*dy, 0, -ydim)
-
-###############################################################################
 
         for i in range(dataset.RasterCount):
 
@@ -1046,7 +1020,6 @@ class SceneViewer(QtWidgets.QDialog):
             dat.nodata = nval
             dat.xdim = xdim
             dat.ydim = ydim
-            # dat.extent_from_gtr(gtrnew)
             dat.wkt = dataset.GetProjection()
             datall[i+1] = dat
 
@@ -1156,11 +1129,10 @@ def get_kml_coords(kml):
 def _testfn():
     """Test routine."""
     import sys
-#    sfile = r'd:\Work\Workdata\change\PlanetaryPolygon.shp'
     sfile = r'd:\Work\Workdata\change\fl35.shp'
     pdir = r'd:\Work\Workdata\change\Planet'
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     CSL = CreateSceneList(None)
     CSL.isrecursive.setChecked(True)
@@ -1175,38 +1147,20 @@ def _testanim():
     """Test for animation."""
     wfile = r'd:\Work\Workdata\change\tmp.gif'
 
-    # app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
     fig = plt.figure(dpi=150)
 
     writer = manimation.PillowWriter(fps=4)
-    writer.setup(fig, wfile)  # , 100)
+    writer.setup(fig, wfile)
 
     tmp = np.random.rand(100, 100)
     im = plt.imshow(tmp)
     for i in range(20):
         red = np.random.rand(100, 100)
-        # green = np.random.rand(100, 100)
-        # blue = np.random.rand(100, 100)
-        # alpha = np.logical_not(red == 0.)
-        # dtmp = np.array([red, green, blue, alpha])
-        # dtmp = np.moveaxis(dtmp, 0, 2)
-        # dtmp = dtmp*255
-        # dtmp = dtmp.astype(np.uint8)
-        # im.set_clim(0, 255)
-
         im.set_data(red)
         fig.suptitle(str(i))
         writer.grab_frame()
     plt.show()
     writer.finish()
-
-    # CSL = LoadSceneList(None)
-    # CSL.ifile = r'd:\Work\Workdata\change\Planet\paddock.xlsx'
-    # CSL.settings(True)
-
-    # SV = SceneViewer()
-    # SV.indata = CSL.outdata
-    # SV.settings()
 
 
 if __name__ == "__main__":

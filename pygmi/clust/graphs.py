@@ -76,8 +76,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         cdat = data1.data
         csp = imshow(self.axes, cdat, cmap=cm.get_cmap('jet'),
                      extent=data1.extent)
-        # csp = self.axes.imshow(cdat, cmap=cm.get_cmap('jet'),
-        #                        extent=data1.extent)
+
         vals = np.unique(cdat)
         vals = vals.compressed()
         bnds = (vals - 0.5).tolist() + [vals.max() + .5]
@@ -85,8 +84,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if len(vals) > 1:
             self.axes.figure.colorbar(csp, boundaries=bnds, values=vals,
                                       ticks=vals)
-        # else:
-        #     self.axes.figure.colorbar(csp)
 
         if data1.crs is not None:
             crs = data1.crs.to_dict()

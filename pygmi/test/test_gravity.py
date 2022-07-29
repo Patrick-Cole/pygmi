@@ -45,13 +45,13 @@ def test_process_data():
     grvfile = os.path.join(idir, r'testdata\GravityCG5.txt')
     gpsfile = os.path.join(idir, r'testdata\GravityDGPS.csv')
 
-# Import Data
+    # Import Data
     IO = iodefs.ImportCG5(None)
     IO.get_cg5(grvfile)
     IO.get_gps(gpsfile)
     IO.settings(True)
 
-# Process Data
+    # Process Data
     PD = dataprep.ProcessData()
     PD.indata = IO.outdata
     PD.settings(True)

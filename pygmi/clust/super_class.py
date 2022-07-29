@@ -91,11 +91,7 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.figure.clf()
         self.subplot = self.figure.add_subplot(111)
-        # self.subplot.get_xaxis().set_visible(False)
-        # self.subplot.get_yaxis().set_visible(False)
 
-        # self.csp = self.subplot.imshow(dat.data, extent=dat.extent,
-        #                                cmap=cm.get_cmap('jet'))
         self.csp = imshow(self.subplot, dat.data, extent=dat.extent,
                           cmap=cm.get_cmap('jet'))
         axes = self.figure.gca()
@@ -163,7 +159,6 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.csp.changed()
         self.figure.canvas.draw()
-#        self.polyi.draw_callback()
 
 
 class PolygonInteractor(QtCore.QObject):
@@ -332,7 +327,6 @@ class PolygonInteractor(QtCore.QObject):
             xys = self.poly.get_transform().transform(self.poly.xy)
             ptmp = self.poly.get_transform().transform([event.xdata,
                                                         event.ydata])
-#            ptmp = event.x, event.y  # display coords
 
             if len(xys) == 1:
                 self.poly.xy = np.array(
@@ -672,7 +666,6 @@ class SuperClass(QtWidgets.QDialog):
 
         self.df.loc[row] = None
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
-#        self.df.loc[row, 'kappa'] = self.tablewidget.item(row, 1).text()
 
         xycoords = self.map.polyi.poly.xy
         if xycoords.size < 8:
@@ -758,7 +751,6 @@ class SuperClass(QtWidgets.QDialog):
 
         self.df.loc[row] = None
         self.df.loc[row, 'class'] = self.tablewidget.item(row, 0).text()
-#        self.df.loc[row, 'kappa'] = self.tablewidget.item(row, 1).text()
         self.df.loc[row, 'geometry'] = Polygon([])
 
         self.tablewidget.selectRow(row)
@@ -925,8 +917,6 @@ class SuperClass(QtWidgets.QDialog):
         dat_out[-1].metadata['Cluster']['no_clusters'] = i
         dat_out[-1].metadata['Cluster']['center'] = np.zeros([i, len(data)])
         dat_out[-1].metadata['Cluster']['center_std'] = np.zeros([i, len(data)])
-        # if cfit.labels_.max() > 0:
-        #     dat_out[-1].metadata['Cluster']['vrc'] = skm.calinski_harabasz_score(X, cfit.labels_)
 
         m = []
         s = []
@@ -936,8 +926,6 @@ class SuperClass(QtWidgets.QDialog):
 
         dat_out[-1].metadata['Cluster']['center'] = np.array(m)
         dat_out[-1].metadata['Cluster']['center_std'] = np.array(s)
-
-        # self.log = ('Cluster complete' + ' (' + self.cltype+')')
 
         dat_out[-1].crs = data[0].crs
         dat_out[-1].dataid = 'Clusters: '+str(dat_out[-1].metadata['Cluster']['no_clusters'])
@@ -977,7 +965,6 @@ class SuperClass(QtWidgets.QDialog):
         self.DTcriterion.setCurrentText(projdata['DTcriterion'])
         self.RFcriterion.setCurrentText(projdata['RFcriterion'])
         self.SVCkernel.setCurrentText(projdata['SVCkernel'])
-#        self.df.read_json(projdata['classes'])
 
         return False
 
@@ -998,7 +985,6 @@ class SuperClass(QtWidgets.QDialog):
         projdata['DTcriterion'] = self.DTcriterion.currentText()
         projdata['RFcriterion'] = self.RFcriterion.currentText()
         projdata['SVCkernel'] = self.SVCkernel.currentText()
-#        projdata['classes'] = self.df.to_json()
 
         return projdata
 
@@ -1040,7 +1026,6 @@ class SuperClass(QtWidgets.QDialog):
         rows, cols = self.map.data[0].data.shape
         masks = {}
         for _, row in self.df.iterrows():
-            # pixels = list(row['geometry'].exterior.coords)
             pixels = np.array(row['geometry'].exterior.coords)
             pixels[:, 0] = pixels[:, 0]-self.map.data[0].extent[0]
             pixels[:, 0] /= self.map.data[0].xdim
@@ -1080,7 +1065,6 @@ class SuperClass(QtWidgets.QDialog):
 
         if len(lbls) < 2:
             self.showprocesslog('Error: You need at least two classes')
-            # return False
 
         X_train, X_test, y_train, y_test = train_test_split(x, y, stratify=y)
 
@@ -1188,7 +1172,6 @@ def _testfn():
     ifile = r'd:\Workdata\people\janinetest2\coal_12052020_pan.img'
 
     data = iodefs.get_raster(ifile)
-    # data = iodefs.get_raster(r'D:\Workdata\BV1_17_fx_extracted_image_1.hdr')
     os.chdir(r'd:\Workdata\people\janinetest2')
 
     tmp = SuperClass(None)

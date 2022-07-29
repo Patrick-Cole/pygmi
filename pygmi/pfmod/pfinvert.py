@@ -94,8 +94,6 @@ class MagInvert(QtWidgets.QDialog):
         self.dsb_hdec = QtWidgets.QDoubleSpinBox()
         self.dsb_hint = QtWidgets.QDoubleSpinBox()
         self.dsb_hinc = QtWidgets.QDoubleSpinBox()
-        # self.dsb_ght = QtWidgets.QDoubleSpinBox()
-        # self.dsb_gregional = QtWidgets.QDoubleSpinBox()
 
         self.setupui()
         self.init()
@@ -121,10 +119,9 @@ class MagInvert(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
-        # buttonbox.button(buttonbox.Cancel).setText('No changes')
         buttonbox.button(buttonbox.Ok).setText('Run Inversion')
 
-# Current Models Groupbox
+        # Current Models Groupbox
         h_model = QtWidgets.QHBoxLayout()
 
         lbl1_model = QtWidgets.QLabel('Current Model:')
@@ -135,8 +132,7 @@ class MagInvert(QtWidgets.QDialog):
         h_model.addWidget(lbl1_model)
         h_model.addWidget(self.combo_model)
 
-
-# General Properties
+        # General Properties
         self.dsb_mht.setMaximum(999999999.0)
         self.dsb_mht.setProperty('value', 30.0)
         self.dsb_hint.setMaximum(999999999.0)
@@ -154,17 +150,11 @@ class MagInvert(QtWidgets.QDialog):
         gb_gen_prop = QtWidgets.QGroupBox('General Properties')
         gl_gen_prop = QtWidgets.QGridLayout(gb_gen_prop)
 
-        # label_1 = QtWidgets.QLabel('Gravity Regional (mGal)')
-        # label_2 = QtWidgets.QLabel('Height of observation - Gravity')
         label_3 = QtWidgets.QLabel('Height of observation - Magnetic')
         label_4 = QtWidgets.QLabel('Magnetic Field Intensity (nT)')
         label_5 = QtWidgets.QLabel('Magnetic Inclination')
         label_6 = QtWidgets.QLabel('Magnetic Declination')
 
-        # gl_gen_prop.addWidget(label_1, 0, 0, 1, 1)
-        # gl_gen_prop.addWidget(self.dsb_gregional, 0, 1, 1, 1)
-        # gl_gen_prop.addWidget(label_2, 2, 0, 1, 1)
-        # gl_gen_prop.addWidget(self.dsb_ght, 2, 1, 1, 1)
         gl_gen_prop.addWidget(label_3, 3, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_mht, 3, 1, 1, 1)
         gl_gen_prop.addWidget(label_4, 4, 0, 1, 1)
@@ -174,7 +164,7 @@ class MagInvert(QtWidgets.QDialog):
         gl_gen_prop.addWidget(label_6, 6, 0, 1, 1)
         gl_gen_prop.addWidget(self.dsb_hdec, 6, 1, 1, 1)
 
-# Data Information Groupbox
+        # Data Information Groupbox
         gb_data_info = QtWidgets.QGroupBox('Dataset Information')
         gl_data_info = QtWidgets.QGridLayout(gb_data_info)
 
@@ -191,18 +181,10 @@ class MagInvert(QtWidgets.QDialog):
         gl_data_info.addWidget(QtWidgets.QLabel('DTM Dataset:'), 0, 0, 1, 1)
         gl_data_info.addWidget(QtWidgets.QLabel('Magnetic Dataset:'),
                                1, 0, 1, 1)
-        # gl_data_info.addWidget(QtWidgets.QLabel('Gravity Dataset:'),
-        #                        2, 0, 1, 1)
-        # gl_data_info.addWidget(QtWidgets.QLabel('Gravity Regional Dataset:'),
-        #                        3, 0, 1, 1)
-        # gl_data_info.addWidget(QtWidgets.QLabel('Other:'), 4, 0, 1, 1)
         gl_data_info.addWidget(self.combo_dtm, 0, 1, 1, 1)
         gl_data_info.addWidget(self.combo_mag, 1, 1, 1, 1)
-        # gl_data_info.addWidget(self.combo_grv, 2, 1, 1, 1)
-        # gl_data_info.addWidget(self.combo_reggrv, 3, 1, 1, 1)
-        # gl_data_info.addWidget(self.combo_other, 4, 1, 1, 1)
 
-# Data Extents Groupbox
+        # Data Extents Groupbox
         gb_extent = QtWidgets.QGroupBox('Model Extent Properties')
         gl_extent = QtWidgets.QGridLayout(gb_extent)
 
@@ -283,14 +265,13 @@ class MagInvert(QtWidgets.QDialog):
         hlayout.addWidget(self.pbar)
         hlayout.addWidget(buttonbox)
 
-# Assign to main layout
-        # verticallayout.addLayout(h_model)
+        # Assign to main layout
         verticallayout.addWidget(gb_data_info)
         verticallayout.addWidget(gb_gen_prop)
         verticallayout.addWidget(gb_extent)
         verticallayout.addLayout(hlayout)
 
-# Link functions
+        # Link functions
         self.dsb_xycell.valueChanged.connect(self.xycell)
         self.dsb_zcell.valueChanged.connect(self.zcell)
         self.dsb_utlx.valueChanged.connect(self.upd_layers)
@@ -319,10 +300,7 @@ class MagInvert(QtWidgets.QDialog):
 
         self.choose_combo(self.combo_dtm, 'DTM Dataset')
         self.choose_combo(self.combo_mag, 'Magnetic Dataset')
-        # self.choose_combo(self.combo_grv, 'Gravity Dataset')
-        # self.choose_combo(self.combo_reggrv, 'Gravity Regional')
         self.choose_combo(self.combo_dataset, 'Study Area Dataset')
-        # self.choose_combo(self.combo_other, 'Other')
 
         cols = self.sb_cols.value()
         rows = self.sb_rows.value()
@@ -340,7 +318,6 @@ class MagInvert(QtWidgets.QDialog):
 
         # This line is to avoid duplicates since study area and dtm are often
         # the same dataset
-        # tmp = [i for i in set(self.lmod1.griddata.values())]
         tmp = list(set(self.lmod1.griddata.values()))
         self.outdata['Raster'] = tmp
         self.showprocesslog('Changes applied.')
@@ -707,7 +684,6 @@ class MagInvert(QtWidgets.QDialog):
 
         self.update_model_combos()
         self.choose_model()
-#        self.choose_regional()
         self.update_vals()
 
         self.choose_dtm()
@@ -822,8 +798,6 @@ class MagInvert(QtWidgets.QDialog):
         # mesh = TensorMesh([hx, hy, hz], [x0, y0, z0])
         # mesh = TensorMesh([hx, hy, hz], "CCN")
 
-        # breakpoint()
-
         # Starting/Reference Model and Mapping on Tensor Mesh
         background_susceptibility = 1e-4
         ind_active = surface2ind_topo(mesh, topo_xyz)
@@ -870,21 +844,16 @@ class MagInvert(QtWidgets.QDialog):
 
         # Running the Inversion
         inv = inversion.BaseInversion(inv_prob, directives_list)
-        # recovered_model = inv.run(starting_model)
 
         try:
             with redirect_stdout(self.stdout):
                 recovered_model = inv.run(starting_model)
         except Exception as e:
             self.showprocesslog('Error: '+str(e))
-            # QtWidgets.QMessageBox.warning(self.parent, 'Error', str(e),
-            #                               QtWidgets.QMessageBox.Ok)
             return False
 
-        ##############################################################
         # Recreate True Model
         # -------------------
-        #
 
         background_susceptibility = 0.0001
         sphere_susceptibility = 0.01
@@ -965,7 +934,6 @@ class MagInvert(QtWidgets.QDialog):
                                  hintn=strength)
 
         self.lmod2.lith_list['Background'].susc = bsusc
-        # self.lmod1.lith_index = r4[:, :, ::-1].astype(int)
         self.lmod2.lith_index = r4.astype(int)
         self.lmod2.name = 'Internal Inverted Model'
         self.lmod2.griddata = self.lmod1.griddata
@@ -993,7 +961,7 @@ def _testfn():
     mdat[0].dataid = 'mag'
     ddat[0].dataid = 'dem'
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     DM = MagInvert()
     DM.indata['Raster'] = mdat+ddat
@@ -1110,7 +1078,7 @@ def _testfn2():
     from IPython import get_ipython
     get_ipython().run_line_magic('matplotlib', 'inline')
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     # mfile = r"d:\Workdata\MagInv\pcmag.tif"
 

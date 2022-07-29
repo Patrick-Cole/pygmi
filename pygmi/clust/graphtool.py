@@ -146,7 +146,7 @@ class GraphHist(FigureCanvasQTAgg):
         # setup 1d histograms
         self.setup_hist()
 
-# Compressed eliminates the masked values so that hist
+        # Compressed eliminates the masked values so that hist
         xymahist = self.get_hist(50)
 
         self.axscatter.get_xaxis().set_visible(False)
@@ -516,7 +516,6 @@ class PolygonInteractor(QtCore.QObject):
             xys = self.poly.get_transform().transform(self.poly.xy)
             ptmp = self.poly.get_transform().transform([event.xdata,
                                                         event.ydata])
-#            ptmp = event.x, event.y  # display coords
 
             if len(xys) == 1:
                 self.poly.xy = np.array(
@@ -551,9 +550,6 @@ class PolygonInteractor(QtCore.QObject):
                                         [(event.xdata, event.ydata)] +
                                         list(self.poly.xy[i + 1:]))
 
-            # self.poly.xy = np.array(list(self.poly.xy[:i + 1]) +
-            #                         [(event.xdata, event.ydata)] +
-            #                         list(self.poly.xy[i + 1:]))
             self.line.set_data(list(zip(*self.poly.xy)))
 
             self.canvas.restore_region(self.background)
@@ -916,8 +912,6 @@ class ScatterPlot(QtWidgets.QDialog):
 
         """
         projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
 
         return projdata
 

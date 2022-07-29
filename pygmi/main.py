@@ -368,7 +368,6 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             method.
 
         """
-        # self.update_indata()
         if self.my_class.indata == {} and self.is_import is False:
             QtWidgets.QMessageBox.warning(self.parent, 'Warning',
                                           ' You need to connect data first!',
@@ -603,28 +602,12 @@ class MainWidget(QtWidgets.QMainWindow):
                 onerror=lambda x: None):
             menus.append(modname)
 
-        # menus.pop(menus.index('pygmi.em.menu'))
         if nocgs is True and 'pygmi.cgs.menu' in menus:
             menus.pop(menus.index('pygmi.cgs.menu'))
         raster_menu = menus.pop(menus.index('pygmi.raster.menu'))
         vector_menu = menus.pop(menus.index('pygmi.vector.menu'))
         menus = [raster_menu, vector_menu]+menus
         menus = [i for i in menus if 'menu' in i[-5:]]
-
-        # menus = [
-        #          'pygmi.raster.menu',
-        #          'pygmi.em.menu',
-        #          'pygmi.vector.menu',
-        #          'pygmi.bholes.menu',
-        #          'pygmi.clust.menu',
-        #          'pygmi.eseis.menu',
-        #          'pygmi.grav.menu',
-        #          'pygmi.mag.menu',
-        #          'pygmi.mt.menu',
-        #          'pygmi.pfmod.menu',
-        #          'pygmi.rsense.menu',
-        #          'pygmi.seis.menu',
-        #          ]
 
         start = Startup(len(menus)+1)
         start.update()
@@ -648,7 +631,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.view = self.graphics_view
         self.view.setScene(self.scene)
 
-# Menus
+        # Menus
         self.action_run.triggered.connect(self.run)
         self.action_pointer.triggered.connect(self.pointer)
         self.action_linepointer.triggered.connect(self.linepointer)
@@ -657,7 +640,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.action_send_to_back.triggered.connect(self.send_to_back)
         self.action_help.triggered.connect(self.help_docs)
 
-# Start of Functions
+    # Start of Functions
     def setupui(self):
         """
         Set up UI.
@@ -874,19 +857,19 @@ class MainWidget(QtWidgets.QMainWindow):
                 item_name += ':\n'+ifile
             item_color = QtGui.QColor(0, 255, 0, 127)
 
-# Do text first, since this determines size of polygon
+        # Do text first, since this determines size of polygon
         text_item = QtWidgets.QGraphicsTextItem()
         text_item.setPlainText(item_name)
         text_item.setFont(self.scene.my_font)
         text_item.setZValue(1000.0)
         text_item.setDefaultTextColor(self.scene.my_text_color)
 
-# Rectangle for text label
+        # Rectangle for text label
         rect_item = QtWidgets.QGraphicsRectItem(text_item.boundingRect())
         rect_item.setZValue(500.0)
         rect_item.setBrush(self.scene.my_item_color)
 
-# Actual polygon item
+        # Actual polygon item
         text_width = text_item.boundingRect().width()
         item.np_poly *= 1.5*text_width/item.np_poly[:, 0].ptp()
         item.np_poly[:, 0] += (text_item.boundingRect().left() -
@@ -901,10 +884,10 @@ class MainWidget(QtWidgets.QMainWindow):
         item.setPolygon(item.my_polygon)
         item.setBrush(item_color)
 
-# Menu Stuff
+        # Menu Stuff
         item.context_menu = self.context_menu
 
-# Add item to scene and merge
+        # Add item to scene and merge
         self.scene.addItem(item)
 
         xxyy = self.view.mapToScene(self.view.width()//2,
@@ -914,7 +897,7 @@ class MainWidget(QtWidgets.QMainWindow):
         text_item.setParentItem(item)
         rect_item.setParentItem(item)
 
-# Enable moving
+        # Enable moving
         self.scene.my_mode = 'MoveItem'
         return item
 
@@ -1010,7 +993,7 @@ class MainWidget(QtWidgets.QMainWindow):
             my_class = my_class.rsplit('.', 1)
 
             class_name = getattr(sys.modules[my_class[0]], my_class[1])
-            # class_name = class_name(self)
+
             item_name = item['my_class_name']
             item_type = item['diagram_type']
 
@@ -1128,7 +1111,6 @@ class MainWidget(QtWidgets.QMainWindow):
             if not i.is_import:
                 i.my_class.indata = {}
                 i.my_class.outdata = {}
-                # i.setBrush(self.scene.my_item_color)
 
         # Update data
         while ilist:
@@ -1322,11 +1304,7 @@ class EmittingStream(QtCore.QObject):
 def main(nocgs=False):
     """Entry point for the PyGMI software."""
     app = QtWidgets.QApplication(sys.argv)
-    # The try statement is because this command is only available for qt>=5.10
-    try:
-        app.setAttribute(QtCore.Qt.AA_DisableWindowContextHelpButton)
-    except AttributeError:
-        pass
+    app.setAttribute(QtCore.Qt.AA_DisableWindowContextHelpButton)
 
     screen_resolution = app.desktop().screenGeometry()
     width, height = screen_resolution.width(), screen_resolution.height()
@@ -1343,12 +1321,10 @@ def main(nocgs=False):
     wid.show()
     wid.activateWindow()
 
-    try:
-        __IPYTHON__
-    except NameError:
-        sys.exit(app.exec_())
-    else:
+    if hasattr(__builtins__, '__IPYTHON__'):
         app.exec_()
+    else:
+        sys.exit(app.exec_())
 
 
 if __name__ == "__main__":

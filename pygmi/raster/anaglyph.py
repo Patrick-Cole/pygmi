@@ -299,14 +299,12 @@ class PlotAnaglyph(QtWidgets.QDialog):
         sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum,
                                            QtWidgets.QSizePolicy.Minimum)
 
-
-# Define Layouts
+        # Define Layouts
         hbl = QtWidgets.QHBoxLayout(self)  # self is where layout is assigned
         vbl_left = QtWidgets.QVBoxLayout()
         vbl_right = QtWidgets.QVBoxLayout()
 
-
-# Define Widgets
+        # Define Widgets
         self.mmc = MyMplCanvas(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
         self.combobox1 = QtWidgets.QComboBox()
@@ -320,7 +318,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.slider_angle = QtWidgets.QSlider()
         self.slider_cnt = QtWidgets.QSlider()
 
-# Size policies
+        # Size policies
         self.combobox1.setSizePolicy(sizepolicy)
         self.combobox2.setSizePolicy(sizepolicy)
         self.cbox_cbar.setSizePolicy(sizepolicy)
@@ -332,7 +330,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.slider_angle.setSizePolicy(sizepolicy)
         self.slider_cnt.setSizePolicy(sizepolicy)
 
-# Configure Widgets
+        # Configure Widgets
         self.combobox2.addItem('Dubois (Red-Green)')
         self.combobox2.addItem('Green-Magenta')
         self.combobox2.addItem('Amber-Blue')
@@ -342,8 +340,6 @@ class PlotAnaglyph(QtWidgets.QDialog):
 
         maps = sorted(m for m in colormaps() if not
                       m.startswith(('spectral', 'Vega', 'jet')))
-        # maps = sorted(m for m in cm.cmap_d.keys() if not
-        #               m.startswith(('spectral', 'Vega', 'jet')))
 
         self.cbox_cbar.addItem('jet')
         self.cbox_cbar.addItems(maps)
@@ -364,7 +360,7 @@ class PlotAnaglyph(QtWidgets.QDialog):
         self.slider_angle.setTickPosition(QtWidgets.QSlider.TicksAbove)
         self.slider_angle.setValue(10)
 
-# Add widgets to layout
+        # Add widgets to layout
         vbl_left.addWidget(self.doimage)
         vbl_left.addWidget(self.docontour)
         vbl_left.addWidget(self.slider_cnt)
@@ -379,7 +375,6 @@ class PlotAnaglyph(QtWidgets.QDialog):
         vbl_left.addWidget(QtWidgets.QLabel('Image Angle (1-20):'))
         vbl_left.addWidget(self.slider_angle)
         vbl_left.addWidget(self.doshade)
-#        vbl_left.addStretch()
         vbl_right.addWidget(self.mmc)
         vbl_right.addWidget(mpl_toolbar)
         hbl.addLayout(vbl_left)
@@ -459,8 +454,6 @@ class PlotAnaglyph(QtWidgets.QDialog):
 
         """
         self.docontour.setChecked(True)
-#        self.slider_scale.setValue(3)
-#        self.slider_angle.setValue(5)
 
         i = self.combobox1.currentIndex()
         scale = self.slider_scale.value()
@@ -546,7 +539,6 @@ def sunshade(data, azim=-np.pi/4., elev=np.pi/4., alpha=1, cell=100,
     sunshader = currentshader(data, cell, elev, azim, alpha)
     snorm = norm2(sunshader)
     pnorm = np.uint8(norm2(histcomp(data))*255)
-    # pnorm = uint8(norm2(data)*255)
 
     colormap = cmap(pnorm)
     colormap[:, :, 0] = colormap[:, :, 0]*snorm
@@ -618,12 +610,12 @@ def currentshader(data, cell, theta, phi, alpha):
     pinit = dzdx
     qinit = dzdy
 
-# Update cell
+    # Update cell
     p = pinit/cell
     q = qinit/cell
     sqrt_1p2q2 = np.sqrt(1+p**2+q**2)
 
-# Update angle
+    # Update angle
     cosg2 = np.cos(theta/2)
     p0 = -np.cos(phi)*np.tan(theta)
     q0 = -np.sin(phi)*np.tan(theta)
@@ -675,8 +667,6 @@ def histcomp(img, nbr_bins=256, perc=5.):
 
     scnt = perc*(nbr_bins-1)
     scnt = min(scnt, sindx)
-    # if scnt > sindx:
-    #     scnt = sindx
 
     ecnt = perc*(nbr_bins-1)
     if ecnt > ((nbr_bins-1)-eindx):

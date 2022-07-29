@@ -193,13 +193,6 @@ def minc(x, y, z, dxy, showprocesslog=print, extent=None, bdist=None,
         errstd = errdiff1.std()*2.5
         errdiff = np.sum(errdiff1)/(rows*cols)
         showprocesslog(f'Solution Error: {errdiff:.5f}')
-        # print(iters, ufixed.sum())
-
-        # plt.figure(dpi=300)
-        # plt.imshow(ufixed)
-        # plt.grid(True)
-        # plt.colorbar()
-        # plt.show()
 
         if errdiff > errold:
             u = uold
@@ -613,9 +606,6 @@ def morg(x2, y2, z2, extent, dxy, rows, cols):
         if iint < 0 or jint < 0 or iint >= rows-1 or jint >= cols-1:
             continue
 
-        # e5 = i-iint
-        # n5 = j-jint
-
         n5 = i-iint
         e5 = j-jint
 
@@ -649,10 +639,10 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportLineData
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     ifile = r'c:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
-    # ifile = r"c:\Workdata\MagMerge\data\1_66\Pre_2011\WESTCMAG.XYZ"
+
     IO = ImportLineData()
     IO.ifile = ifile
     IO.filt = 'Geosoft XYZ (*.xyz)'
@@ -660,54 +650,24 @@ def _testfn():
 
     dat = IO.outdata['Line']
 
-    # filt = dat[ifile].line.str.contains('line')
-    # dat[ifile] = dat[ifile][filt]
-
-    # dat[ifile] = dat[ifile].dropna()
-
     x = dat[ifile]['pygmiX'].to_numpy()
     y = dat[ifile]['pygmiY'].to_numpy()
     z = dat[ifile]['Column 8'].to_numpy()
 
-    # x = dat[ifile]['X'].to_numpy()
-    # y = dat[ifile]['Y'].to_numpy()
-    # z = dat[ifile]['MAGMICROLEVEL'].to_numpy()
     dxy = 125
 
-    # extent = None
     extent = np.array([x.min(), x.max(), y.min(), y.max()])
 
-    # extent = [-22100, -20000, -2655000, -2652000]
-    # extent = [-19000, -14000, -2639000, -2634000]
-
-    # odat, err = minc(x, y, z, dxy, extent=extent, bdist=4)
     odat = minc(x, y, z, dxy, extent=extent, bdist=4)
-
-    # extent = np.array([x.min(), x.max(), y.min(), y.max()])
-    # filt = ((x > extent[0]) & (x < extent[1]) &
-    #         (y > extent[2]) & (y < extent[3]))
-
-    # x = x[filt]
-    # y = y[filt]
-    # z = z[filt]
 
     vmin = odat.mean()-2*odat.std()
     vmax = odat.mean()+2*odat.std()
 
-    # vmin = 27500
-    # vmax = 30500
-
     plt.figure(dpi=150)
     plt.imshow(odat, extent=extent, vmin=vmin, vmax=vmax)
-    # plt.plot(x, y, 'k.', markersize=0.5)
     plt.colorbar()
     plt.show()
 
-    # plt.figure(dpi=150)
-    # plt.imshow(err, extent=extent)
-    # plt.show()
-
-    # breakpoint()
 
 
 if __name__ == "__main__":

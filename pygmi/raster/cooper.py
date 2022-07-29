@@ -477,9 +477,6 @@ class Visibility2d(QtWidgets.QDialog):
             xmin, ymax = datai.transform*(buff, buff)
             xdim = datai.transform[0]
             ydim = abs(datai.transform[4])
-            # xmin = datai.transform[2] + xdim*(self.wsize-1)/2
-            # ymax = datai.transform[5] - ydim*(self.wsize-1)/2
-            # breakpoint()
 
             data2.append(copy.deepcopy(datai))
             data2.append(copy.deepcopy(datai))
@@ -1011,10 +1008,9 @@ def _testfn():
     dat[0].data = dat[0].data.filled(1e+20)
     dat[0].data = np.ma.masked_equal(dat[0].data, 1e+20)
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     V2D = Visibility2d()
-    # V2D = AGC()
     V2D.indata['Raster'] = dat
 
     getinfo()
@@ -1023,10 +1019,8 @@ def _testfn():
 
     odat = V2D.outdata['Raster']
 
-
     for idat in odat:
         plt.figure(dpi=150)
-        # plt.imshow(dat[0].data, extent=dat[0].extent)
         plt.title(idat.dataid)
         plt.imshow(idat.data, extent=idat.extent)
         plt.colorbar()

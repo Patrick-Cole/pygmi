@@ -92,7 +92,7 @@ class Mod3dDisplay(QtWidgets.QDialog):
         self.opac = 0.0
         self.cust_z = None
 
-# Back to normal stuff
+        # Back to normal stuff
         self.lw_3dmod_defs = QtWidgets.QListWidget()
         self.label = QtWidgets.QLabel()
         self.label2 = QtWidgets.QLabel()
@@ -333,13 +333,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
             self.glwidget.init_object()
             self.glwidget.updateGL()
 
-            # self.update_model2()
-            # phi = -event.xdata
-            # theta = np.pi/2. - np.arccos(event.ydata)
-            # self.mmc.phi = phi
-            # self.mmc.theta = theta
-            # self.mmc.update_graph()
-
     def update_color(self):
         """
         Update colour only.
@@ -421,10 +414,8 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
         for i in range(self.lw_3dmod_defs.count()):
             item = self.lw_3dmod_defs.item(i)
-            # item.setFlags(item.flags() |QtCore.Qt.ItemIsUserCheckable)
             item.setSelected(True)
             item.setText('\u2713 ' + item.text())
-            # item.setCheckState(QtCore.Qt.Checked)
 
         self.update_plot()
 
@@ -441,13 +432,13 @@ class Mod3dDisplay(QtWidgets.QDialog):
         """
         QtWidgets.QApplication.processEvents()
 
-    # Update 3D model
+        # Update 3D model
         self.spacing = [self.lmod1.dxy, self.lmod1.dxy, self.lmod1.d_z]
         self.origin = [self.lmod1.xrange[0], self.lmod1.yrange[0],
                        self.lmod1.zrange[0]]
         self.gdata = self.lmod1.lith_index[::1, ::1, ::-1]
 
-    # update colors
+        # update colors
         i = self.lw_3dmod_defs.findItems('*', QtCore.Qt.MatchWildcard)
         itxt = [j.text()[2:] for j in i]
         itmp = []
@@ -639,8 +630,6 @@ class Mod3dDisplay(QtWidgets.QDialog):
 
                 if vtx.size == 0:
                     self.lmod1.update_lith_list_reverse()
-                    # lithtext = self.lmod1.lith_list_reverse[lno]
-                    # self.showprocesslog(lithtext)
 
                     self.faces[lno] = []
                     self.corners[lno] = []
@@ -899,13 +888,12 @@ class GLWidget(QtOpenGL.QGLWidget):
         self.qglClearColor(ctmp)
         self.initGeometry()
 
-# Blend allows transparency
+        # Blend allows transparency
         GL.glEnable(GL.GL_ALPHA_TEST)
         GL.glAlphaFunc(GL.GL_GREATER, 0.1)
         GL.glEnable(GL.GL_DEPTH_TEST)
         GL.glDepthMask(GL.GL_TRUE)
         GL.glDepthFunc(GL.GL_LEQUAL)
-        # GL.glPolygonMode(GL.GL_FRONT_AND_BACK, GL.GL_LINE)
 
         GL.glEnable(GL.GL_CULL_FACE)
 
@@ -1358,7 +1346,6 @@ def calc_norms(faces, vtx):
     None.
 
     """
-    # nrm = np.zeros(vtx.shape, dtype=vtx.dtype)
     nrm = np.zeros(vtx.shape, dtype=np.float64)
     tris = vtx[faces]
     n = np.cross(tris[::, 1] - tris[::, 0], tris[::, 2] -

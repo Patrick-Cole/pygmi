@@ -554,11 +554,9 @@ def _testfn():
 
     rcParams['figure.dpi'] = 300
 
-    APP = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     data1 = skimage.data.coffee()  # 400x600 48.5 secs
-
-    # data1 = data1[:, :300]  # 26
 
     plt.imshow(data1)
     plt.axis('off')
@@ -578,14 +576,9 @@ def _testfn():
 
     data = [b1, b2, b3]
 
-    # ifile = r'd:\Workdata\testdata.hdr'
-
-    # data = iodefs.get_raster(ifile)
-
     ttt = PTime()
     IS = ImageSeg()
     IS.indata = {'Raster': data}
-    # IS.settings(True)
     IS.settings()
     ttt.since_last_call()
 
@@ -595,55 +588,6 @@ def _testfn():
     plt.axis('off')
     plt.show()
 
-    # means = []
-    # for i in range(odata.data.max()+1):
-    #     tmp = data1[odata.data==i]
-    #     means.append(tmp.mean(0))
-
-    # means = np.array(means)
-    # means = skp.StandardScaler().fit_transform(means)
-
-    # dbout = DBSCAN(eps=0.15).fit_predict(means)
-
-    # data2 = odata.data.copy()
-
-    # newmax = dbout.max()+1
-    # for i, val in enumerate(dbout):
-    #     filt = (odata.data==i)
-    #     if val == -1:
-    #         data2[filt] = newmax
-    #         newmax += 1
-    #         continue
-    #     data2[filt] = val
-
-    # plt.imshow(data2, cmap='inferno')
-    # plt.colorbar()
-    # plt.show()
-
-    # omap = segment1(data1, scale=scale, wcolor=wcolor,
-    #                 wcompact=wcompact, doshape=doshape)
-
-    # plt.figure(figsize=(8, 8))
-    # plt.imshow(omap)
-    # plt.show()
-
-#    xall = []
-#    yall = []
-#    for shp, _ in rasterio.features.shapes(omap):
-#        for crds in shp['coordinates']:
-#            x = np.array(crds)[:, 0]
-#            y = np.array(crds)[:, 1]
-#            xall.append(x)
-#            yall.append(y)
-#
-#    plt.figure(figsize=(8, 8))
-#    for i, _ in enumerate(xall):
-#        plt.plot(xall[i], yall[i], 'k')
-#    plt.imshow(data1)
-#    plt.show()
-
 
 if __name__ == "__main__":
     _testfn()
-
-    print('Finished!')

@@ -239,13 +239,13 @@ class ProcessData(QtWidgets.QDialog):
         else:
             kstat = float(kstat)
 
-# Make sure there are no local base stations before the known base
+        # Make sure there are no local base stations before the known base
         if kstat in pdat['STATION']:
             tmp = (pdat['STATION'] == kstat)
             itmp = np.nonzero(tmp)[0][0]
             pdat = pdat[itmp:]
 
-# Drift Correction, to abs base value
+        # Drift Correction, to abs base value
         tmp = pdat[pdat['STATION'] >= basethres]
 
         driftdat = tmp[tmp['STATION'] != kstat]
@@ -254,14 +254,9 @@ class ProcessData(QtWidgets.QDialog):
         if tmp.STATION.unique()[0] == kstat and tmp.STATION.unique().size == 1:
             driftdat = tmp[tmp['STATION'] == kstat]
 
-        # x = pdat['DECTIMEDATE'].values
-        # xp1 = driftdat['DECTIMEDATE'].values
         xp1 = driftdat['TIME'].apply(time_convert)
 
         fp = driftdat['GRAV'].values
-
-        # x = pdat.index.values
-        # xp = driftdat.index.values
 
         x = pdat['DECTIMEDATE'].values
         xp = driftdat['DECTIMEDATE'].values
@@ -321,29 +316,26 @@ class ProcessData(QtWidgets.QDialog):
             plt.ylabel('mGal/min')
             plt.grid(True)
             plt.plot(dday, drate, '.-')
-            # plt.xticks(range(1, ix[-1]+2, 1))
             plt.tight_layout()
 
             plt.get_current_fig_manager().window.setWindowIcon(self.parent.windowIcon())
             plt.show()
 
         gobs = pdat['GRAV'] - dcor + float(self.absbase.text())
-###################################################################
 
-# Variables used
+        # Variables used
         lat = np.deg2rad(pdat.latitude)
         h = pdat['elevation']  # This is the ellipsoidal (gps) height
         dens = float(self.density.text())
 
-# Corrections
+        # Corrections
         gT = theoretical_gravity(lat)
         gATM = atmospheric_correction(h)
         gHC = height_correction(lat, h)
         gSB = spherical_bouguer(h, dens)
 
-# Bouguer Anomaly
+        # Bouguer Anomaly
         gba = gobs - gT + gATM - gHC - gSB
-        # gba = gobs - gT + gATM + gHC - gSB
 
         pdat = pdat.assign(dcor=dcor)
         pdat = pdat.assign(gobs_drift=gobs)
@@ -381,13 +373,12 @@ class ProcessData(QtWidgets.QDialog):
 
         kstat = float(self.knownstat.text())
         if kstat not in pdat['STATION'].values:
-            # breakpoint()
             txt = ('Invalid base station number.')
             QtWidgets.QMessageBox.warning(self.parent, 'Error',
                                           txt, QtWidgets.QMessageBox.Ok)
             return
 
-# Drift Correction, to abs base value
+        # Drift Correction, to abs base value
         tmp = pdat[pdat['STATION'] > basethres]
         kbasevals = tmp[tmp['STATION'] == kstat]
         abasevals = tmp[tmp['STATION'] != kstat]
@@ -571,29 +562,26 @@ def time_convert(x):
 
 def _testfn():
     """Test routine."""
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     grvfile = r'd:\Workdata\gravity\skeifontein 2018.txt'
     gpsfile = r'd:\Workdata\gravity\skei_dgps.csv'
     kbase = '88888'
     bthres = '10000'
 
-    # grvfile = r'd:\Work\Workdata\gravity\Laxeygarvity until2511.txt'
-    # gpsfile = r'd:\Work\Workdata\gravity\laxey.dgps.csv'
-
     grvfile = r"D:\Workdata\bugs\grav\Combined_Profile1_Processed.txt"
     gpsfile = r"D:/Workdata/bugs/grav/GPS profil 1 lat lon.csv"
     kbase = '111111'
     bthres = '100000'
 
-# Import Data
+    # Import Data
     IO = iodefs.ImportCG5(None)
     IO.basethres.setText(bthres)
     IO.get_cg5(grvfile)
     IO.get_gps(gpsfile)
     IO.settings(True)
 
-# Process Data
+    # Process Data
     PD = ProcessData()
     PD.indata = IO.outdata
     PD.basethres.setText(bthres)
@@ -607,25 +595,13 @@ def _testfn():
 
     gdf = datout['Gravity']
 
-    # gdf = gdf[(gdf.STATION > 4470) & (gdf.STATION < 4472)]
-
-    # plt.plot(gdf.longitude, gdf.latitude, '.')
-    # plt.show()
-
     for i in ['GRAV', 'gobs_drift', 'BOUGUER', 'dcor', 'elevation',
               'gT', 'gATM', 'gHC', 'gSB']:
         plt.title(i)
 
         plt.plot(gdf.x, gdf[i])
-        # gdf[i].plot()
         plt.show()
-
-        # gba = gobs - gT + gATM - gHC - gSB  # add or subtract atm
-
-    # breakpoint()
 
 
 if __name__ == "__main__":
     _testfn()
-
-    print('Finished!')

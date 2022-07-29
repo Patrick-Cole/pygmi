@@ -33,7 +33,6 @@ from PyQt5 import QtWidgets, QtCore
 
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.dataprep import lstack
-from pygmi.raster.iodefs import export_raster
 from pygmi.misc import ProgressBarText
 import pygmi.menu_default as menu_default
 
@@ -112,7 +111,6 @@ class LandsatComposite(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         pb_idirlist.pressed.connect(self.get_idir)
-        # self.tday.valueChanged.connect(self.calculate_days)
 
     def settings(self, nodialog=False):
         """
@@ -129,7 +127,6 @@ class LandsatComposite(QtWidgets.QDialog):
             True if successful, False otherwise.
 
         """
-
         if not nodialog:
             tmp = self.exec_()
             if tmp != 1:
@@ -194,12 +191,10 @@ class LandsatComposite(QtWidgets.QDialog):
 
         allday = np.array(allday)
         mean = int(allday.mean())
-        # std = allday.std()
 
         self.showprocesslog(f'Mean day: {mean}')
 
         self.tday.setValue(mean)
-
 
     def loadproj(self, projdata):
         """
@@ -360,7 +355,6 @@ def import_and_score(ifile, dreq, mean, std, pprint=print, piter=None):
     del tmp
 
     # CDist calculations
-    # dmin = dat['cdist'].data.min()
     dmin = 0
 
     cdist2 = dat['cdist'].data.copy()
@@ -426,22 +420,14 @@ def plot_rgb(dat, title='RGB'):
 def _testfn():
     """Test routine."""
     import sys
+
     idir = r'C:\WorkProjects\Landsat_Summer'
-    ofile = os.path.join(idir, 'landsat_composite.tif')
 
-    # dat = composite(idir, 10)
-
-    # plot_rgb(dat)
-
-    # export_raster(ofile, dat, 'GTiff')
-
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     gui = LandsatComposite()
-    # gui.idir = idir
+    gui.idir = idir
     gui.settings()
-
-
 
 
 if __name__ == "__main__":

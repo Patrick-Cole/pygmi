@@ -50,7 +50,7 @@ class MenuWidget():
         self.parent.add_to_context('Raster')
         self.parent.add_to_context('inRaster')
 
-# Normal menus
+        # Normal menus
         self.menu = QtWidgets.QMenu('Magnetics')
         parent.menubar.addAction(self.menu.menuAction())
 
@@ -69,8 +69,6 @@ class MenuWidget():
         self.action_depth_susc = QtWidgets.QAction('Tilt Depth Interpretation')
         self.menu.addAction(self.action_depth_susc)
         self.action_depth_susc.triggered.connect(self.depth_susc)
-
-# Context menus
 
     def depth_susc(self):
         """Depth and Susceptibility calculations."""

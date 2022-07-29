@@ -339,13 +339,7 @@ class CrispClust(QtWidgets.QDialog):
 
 # #############################################################################
 
-#        dat_in = np.array([i.data.flatten() for i in data]).T
         dat_in = np.array([i.data.compressed() for i in data]).T
-
-#        dat_in = dat_in[dat_in != None]
-
-#        dat_in = np.array([[x for x in data[i].data.flatten() if x != None]
-#              for i in range(len(data))]).T
 
         if self.radiobutton_manual.isChecked() is True:
             ext = ('ASCII matrix (*.txt);;'
@@ -412,11 +406,8 @@ class CrispClust(QtWidgets.QDialog):
                 self.showprocesslog('Initial guess: data driven')
                 no_samp = dat_in.shape[0]
                 dno_samp = no_samp/i
-#                idx=1
-#                idx=[[idx,(j-1)*dno_samp] for j in range(2,i+1)]
                 idx = np.arange(0, no_samp+dno_samp, dno_samp)
                 idx[0] = 1
-#                idx=np.array([idx,no_samp])
                 startmdat = {i: np.zeros([i, dat_in.shape[1]])}
                 dat_in1 = dat_in
                 smtmp = np.zeros([i, dat_in.shape[1]])
@@ -463,7 +454,6 @@ class CrispClust(QtWidgets.QDialog):
                         clvrc = clvrc1
                         startmdat = {i: startm1dat[i]}
 
-#            zonal = np.zeros(data[0].data.shape)-9999.0
             zonal = np.ma.masked_all(data[0].data.shape)
 
             alpha = (data[0].data.mask == 0)
@@ -472,94 +462,17 @@ class CrispClust(QtWidgets.QDialog):
             cent_std = np.array([np.std(dat_in[clidx == k], 0)
                                  for k in range(i)])
 
-#            den_cent = clcent
-#            den_cent_std = np.array(cent_std, copy=True)
-#            den_cent_std1 = np.array(cent_std, copy=True)
-            if de_norm is True:
-                pass
-#                for k, _ in enumerate(data):
-#                    if np.size(data[k].norm) > 0:
-#                        nnorm = len(data[k].norm)
-#                        for j in range(nnorm, 0, -1):
-#                            if data[k].norm[j-1]['type'] == 'minmax':
-#                                den_cent[:, k] = (
-#                                    den_cent[:, k] *
-#                                    (data[k].norm[j-1]['transform'][1, 1] -
-#                                     data[k].norm[j-1]['transform'][0, 1]) +
-#                                    data[k].norm[j-1]['transform'][0, 1])
-#                                den_cent_std[:, k] = (
-#                                    den_cent_std[:, k] *
-#                                    (data[k].norm[j-1]['transform'][1, 1] -
-#                                     data[k].norm[j-1]['transform'][0, 1]) +
-#                                    data[k].norm[j-1]['transform'][0, 1])
-#                                den_cent_std1[:, k] = (
-#                                    den_cent_std1[:, k] *
-#                                    (data[k].norm[j-1]['transform'][1, 1] -
-#                                     data[k].norm[j-1]['transform'][0, 1]) +
-#                                    data[k].norm[j-1]['transform'][0, 1])
-#                            elif (data[k].norm[j-1]['type'] == 'meanstd' or
-#                                  data[k].norm[j-1]['type'] == 'medmad'):
-#                                den_cent[:, k] = (
-#                                    den_cent[:, k] *
-#                                    data[k].norm[j-1]['transform'][1, 1] +
-#                                    data[k].norm[j-1]['transform'][0, 1])
-#                                den_cent_std[:, k] = (
-#                                    den_cent_std[:, k] *
-#                                    data[k].norm[j-1]['transform'][1, 1] +
-#                                    data[k].norm[j-1]['transform'][0, 1])
-#                                den_cent_std1[:, k] = (
-#                                    den_cent_std1[:, k] *
-#                                    data[k].norm[j-1]['transform'][1, 1] +
-#                                    data[k].norm[j-1]['transform'][0, 1])
-#                            elif data[k].norm[j-1]['type'] == 'histeq':
-#                                den_cent[:, k] = np.interp(
-#                                    den_cent[:, k],
-#                                    data[k].norm[j-1]['transform'][:, 0],
-#                                    data[k].norm[j-1]['transform'][:, 1])
-#                                den_cent_std[:, k] = np.interp(
-#                                    (den_cent[:, k] + den_cent_std[:, k]),
-#                                    data[k].norm[j-1]['transform'][:, 0],
-#                                    data[k].norm[j-1]['transform'][:, 1])
-#                                den_cent_std1[:, k] = np.interp(
-#                                    (den_cent[:, k] - den_cent_std1[:, k]),
-#                                    data[k].norm[j-1]['transform'][:, 0],
-#                                    data[k].norm[j-1]['transform'][:, 1])
-#            else:
-#                den_cent = np.array([])
-#                den_cent_std = np.array([])
-#                den_cent_std1 = np.array([])
             dat_out[cnt].metadata['Cluster']['input_type'] = []
             for k in data:
                 dat_out[cnt].metadata['Cluster']['input_type'].append(k.dataid)
-#                dat_out[cnt].proc_history.append(k.proc)
 
             dat_out[cnt].data = zonal
-#            dat_out[cnt].data.mask = masktmp
             dat_out[cnt].nodata = zonal.fill_value
             dat_out[cnt].metadata['Cluster']['no_clusters'] = i
             dat_out[cnt].metadata['Cluster']['center'] = clcent
             dat_out[cnt].metadata['Cluster']['center_std'] = cent_std
             dat_out[cnt].metadata['Cluster']['obj_fcn'] = clobj_fcn
             dat_out[cnt].metadata['Cluster']['vrc'] = clvrc
-
-#            dat_out[cnt].type = self.type
-#            dat_out[cnt].algorithm = cltype
-#            dat_out[cnt].initialization = init_type
-#            dat_out[cnt].init_mod = startmdat[i]
-#            dat_out[cnt].init_constrains = startmfix[i]
-#            dat_out[cnt].runs = no_runs
-#            dat_out[cnt].max_iterations = max_iter
-#            dat_out[cnt].denormalize = de_norm
-#            dat_out[cnt].term_threshold = term_thresh
-#            dat_out[cnt].shape_constrain = cov_constr
-#            dat_out[cnt].zonal = zonal
-#            dat_out[cnt].alpha = alpha
-#            dat_out[cnt].xxx = data[0].xxx
-#            dat_out[cnt].yyy = data[0].yyy
-#            dat_out[cnt].denorm_center = den_cent
-#            dat_out[cnt].denorm_center_stdup = den_cent_std
-#            dat_out[cnt].denorm_center_stdlow = den_cent_std1
-#            dat_out[cnt].iterations = clobj_fcn.size
 
             self.log = ('Crisp Cluster complete (' + self.cltype + ' ' +
                         self.init_type+')')
@@ -652,16 +565,17 @@ class CrispClust(QtWidgets.QDialog):
         cent_orig = cent
         centfix = np.abs(centfix)
 
-# calculate euclidian distance for initial classification
+        # calculate euclidian distance for initial classification
         onetmp = np.ones([no_samples, 1], int)  # trying this for speed?
+
+        # initial distance --> Euclidian
         edist = np.array([np.sqrt(np.sum(((data-onetmp*cent[j])**2), 1))
-                          for j in range(no_clust)])  # initial distance -->
-#                                                      Euclidian
+                          for j in range(no_clust)])
 
         mindist = edist.min(0)  # 0 means row wise minimum
         idx = edist.argmin(0)
 
-    # initial size of objective function
+        # initial size of objective function
         obj_fcn_initial = np.sum(mindist**2)
         obj_fcn_prev = obj_fcn_initial
         obj_fcn = np.zeros(maxit)  # This is new - we must initialise this.
@@ -670,9 +584,9 @@ class CrispClust(QtWidgets.QDialog):
             cent_prev = cent  # store result of last iteration
             idx_prev = idx
             dist_prev = edist
-    # calc new cluster centre positions
+            # calc new cluster centre positions
             cent, idx = gcentroids(data, idx, no_clust, mindist)
-    # constrain the cluster center positions to keep it in  the given interval
+            # constrain the cluster center positions to keep it in  the given interval
             if centfix.size > 0:
                 # constrain the center positions within the given limits
                 cent_idx = cent > (cent_orig+centfix)
@@ -682,14 +596,14 @@ class CrispClust(QtWidgets.QDialog):
                 cent[cent_idx == 1] = (cent_orig(cent_idx == 1) -
                                        centfix(cent_idx == 1))
 
-    # calc new cluster centre distances
+            # calc new cluster centre distances
             edist = gdist(data, cent, idx, no_clust, cltype, cov_constr)
-    # get new index values for each data point and the distance from each
-    # sample to its cluster center
+            # get new index values for each data point and the distance from each
+            # sample to its cluster center
             mindist = edist.min(0)
             idx = edist.argmin(0)
 
-    # calc new objective function size
+            # calc new objective function size
             obj_fcn[i] = np.sum(mindist**2)
 
             if obj_fcn[i] == 0:
@@ -699,7 +613,7 @@ class CrispClust(QtWidgets.QDialog):
 
             self.showprocesslog(f'Iteration: {i} Threshold: {term_thresh})'
                                 f' Current: {obj_fcn_dif:.2e}', True)
-    # if no termination threshold provided, ignore this and do all iterations
+            # if no termination threshold provided, ignore this and do all iterations
             if term_thresh > 0:
                 # if the improvement between the last two iterations was less
                 # than a defined threshold in percent
@@ -713,7 +627,6 @@ class CrispClust(QtWidgets.QDialog):
                     else:
                         # changed from i-1 to i for w-means
                         obj_fcn = np.delete(obj_fcn, np.s_[i::])
-                        # vrc = vr.var_ratio(data, idx, cent, edist)
                     break  # and stop the clustering right now
             obj_fcn_prev = obj_fcn[i]
         vrc = vr.var_ratio(data, idx, cent, edist)
@@ -743,7 +656,6 @@ def gcentroids(data, index, no_clust, mindist):
         Index
 
     """
-#    no_samples=data.shape[0]
     no_datatypes = data.shape[1]
     centroids = np.tile(np.nan, (no_clust, no_datatypes))
     for j in range(no_clust):
@@ -811,8 +723,6 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
                            dcent/np.sum(mod_idx))
             # constrain covariance matrix if badly conditioned
             if np.linalg.cond(mat_a) > 1e10:
-                # warning([' Badly conditionend covariance matrix \
-                # (cond. number > 1e10) of cluster ',num2unicode(j)]);
                 ed1, ev1 = np.linalg.eig(mat_a)
                 edmax = np.max(ed1)
                 ed1[1e10*ed1 < edmax] = edmax/1e10
@@ -852,8 +762,6 @@ def gdist(data, center, index, no_clust, cltype, cov_constr):
 # constrain covariance matrix if badly conditioned and cluster contains
 # more than 1 sample
             if np.linalg.cond(mat_a) > 1e10 and np.sum(mod_idx) > 1:
-                # warning([' Badly conditionend covariance matrix '+
-                #   '(cond. number > 1e10) of cluster ',num2unicode(j)])
                 ed1, ev1 = np.linalg.eig(mat_a)
                 edmax = np.max(ed1)
                 ed1[1e10*ed1 < edmax] = edmax/1e10

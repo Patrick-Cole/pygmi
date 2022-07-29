@@ -740,7 +740,6 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             dat[i].bounds = dataset.bounds
             dat[i].dataid = bandid
             dat[i].nodata = nval
-            # dat[i].wkt = custom_wkt
             dat[i].filename = filename
             dat[i].units = unit
             dat[i].transform = dataset.transform
@@ -910,17 +909,17 @@ def get_geopak(hfile):
     gbase = header[3]
     x0 = header[4]
     y0 = header[5]
-#    rotation = header[6]
+    # rotation = header[6]
     nval = header[7]
-#    mapscale = header[8]
+    # mapscale = header[8]
     dx = header[9]
     dy = header[10]
-#    inches_per_unit = header[11]
-#    xoffset = header[12]
-#    yoffset = header[13]
-#    hver = header[14]
-#    zmax = header[22]
-#    zmin = header[23]
+    # inches_per_unit = header[11]
+    # xoffset = header[12]
+    # yoffset = header[13]
+    # hver = header[14]
+    # zmax = header[22]
+    # zmin = header[23]
 
     data = np.frombuffer(fnew, dtype=np.int16, count=(nrows*ncols), offset=128)
 
@@ -1103,7 +1102,6 @@ class ExportData():
             return False
 
         ext = ('GeoTiff (*.tif);;'
-               # 'GeoTiff compressed using ZSTD (*.tif);;'
                'ENVI (*.hdr);;'
                'ERMapper (*.ers);;'
                'Geosoft (*.gxf);;'
@@ -1125,7 +1123,7 @@ class ExportData():
 
         self.showprocesslog('Export Data Busy...')
 
-    # Pop up save dialog box
+        # Pop up save dialog box
         if filt == 'ArcInfo ASCII (*.asc)':
             self.export_ascii(data)
         if filt == 'ASCII XYZ (*.xyz)':
@@ -1212,7 +1210,7 @@ class ExportData():
 
                 for i in range(k.data.shape[0]-1, -1, -1):
                     kkk = 0
-    # write only 5 numbers in a row
+                    # write only 5 numbers in a row
                     for j in range(k.data.shape[1]):
                         if kkk == 5:
                             kkk = 0
@@ -1463,31 +1461,19 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
         wavelength = []
         fwhm = []
 
-        # cov = []
-        # for idata in data:
-        #     cov.append(idata.data.flatten())
-        # cov = np.ma.array(cov)
-        # cov = np.ma.cov(cov)
-
         for i in piter(range(numbands)):
             datai = data[i]
             out.set_band_description(i+1, datai.dataid)
-            # rtmp.SetDescription(datai.dataid)
-            # rtmp.SetMetadataItem('BandName', datai.dataid)
 
             dtmp = np.ma.array(datai.data)
             dtmp.set_fill_value(datai.nodata)
             dtmp = dtmp.filled()
-            # rtmp.GetStatistics(False, True)
 
             out.write(dtmp, i+1)
 
-            # icov = str(cov[i])[1:-1].replace(' ', ', ')
-            # out.update_tags(i+1, STATISTICS_COVARIANCES=icov)
             out.update_tags(i+1, STATISTICS_EXCLUDEDVALUES='')
             out.update_tags(i+1, STATISTICS_MAXIMUM=datai.data.max())
             out.update_tags(i+1, STATISTICS_MEAN=datai.data.mean())
-            # out.update_tags(i+1, STATISTICS_MEDIAN=np.ma.median(datai.data))
             out.update_tags(i+1, STATISTICS_MINIMUM=datai.data.min())
             out.update_tags(i+1, STATISTICS_SKIPFACTORX=1)
             out.update_tags(i+1, STATISTICS_SKIPFACTORY=1)
@@ -1539,36 +1525,10 @@ def _filespeedtest():
     import matplotlib.pyplot as plt
     from pygmi.misc import getinfo
     print('Starting')
-    pbar = ProgressBarText()
-    # ifile = r'd:\WorkData\Richtersveld\Reprocessed\RSarea_Hyper.dat'
-    # ifile = r'd:\WorkData\Hyperspectral\056_0818-1125_ref_rect.dat'
-    # ifile = r'd:\WorkData\Hyperspectral\056_0818-1125_ref_rect_BSQ.dat'
-    # ifile = r"d:\Workdata\testdata.hdr"
-    # ifile = r"d:\Workdata\raster\rad_3bands.ers"
-    # ofile = r"d:\Workdata\hope.tif"
-    # xoff = 0
-    # yoff = 0
-    # xsize = None
-    # ysize = 1000
-    # iraster = (xoff, yoff, xsize, ysize)
 
     ifile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s.tif"
     ifile = r"d:\Downloads\caldefo_o_unwrap_goldstein64_OrbAdj_FlatEarth-defo_raw11_ref20210226_dep20210322.pix"
-    # ofile = r"d:\Workdata\compress\New_max_22-55_iMNF15_ferriciron_UTM33s_DEFLATE3ZL1.tif"
-
     ifile = r"C:\WorkProjects\Script6c_disp\disp_data.tif"
-
-
-    # ifile = r'd:/Workdata/compress/017_0823-1146_ref_rect_BSQ_291div283_194div291_219div303.tif'
-    # ofile = ifile[:-4]+'_DEFLATE3.tiff'
-
-
-    # ifile = r"d:/Workdata/testdata.hdr"
-    # ofile = r'd:/Workdata/testdata.grd'
-
-    ifile = r"D:\Workdata\people\rahul\gravity_final.grd"
-    ifile = r"D:\Workdata\people\rahul\grav.grd"
-
 
     ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS_R1C1-014568829030_01_P001.TIF"
 
@@ -1577,15 +1537,6 @@ def _filespeedtest():
     getinfo('Start')
 
     dataset = get_raster(ifile, iraster=iraster)
-
-    # ofile = ifile[:-4]+'_hope.tif'
-    # export_raster(ofile, dataset, 'GTiff')
-
-    # k = dataset[0]
-    # k.data = k.data.filled(1.701410009187828e+38)
-
-    # export_raster(ofile, [k], 'GS7BG')
-    # dataset = get_raster(ofile, iraster=iraster)
 
     plt.figure(dpi=150)
     plt.imshow(dataset[0].data, extent=dataset[0].extent)
@@ -1596,8 +1547,6 @@ def _filespeedtest():
     #     i.data = i.data*10000
     #     i.data = i.data.astype(np.int16)
 
-    # export_raster(ofile, dataset, 'GS7BG', piter=pbar.iter)
-
     # export_raster(ofile, dataset, 'GTiff', compression='PACKBITS')  # 182s
     # export_raster(ofile, dataset, 'GTiff', compression='LZW')  # 191, 140 with pred=3
     # export_raster(ofile, dataset, 'GTiff', compression='LZMA')  #
@@ -1606,7 +1555,6 @@ def _filespeedtest():
 
     # best is zstd pred 3 zlvl 1
     # then deflade pred 3 zlvl 1
-
 
     getinfo('End')
 

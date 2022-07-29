@@ -235,7 +235,6 @@ class IGRF(QtWidgets.QDialog):
 
         self.proj.set_current(self.wkt)
 
-        # data = dp.lstack(self.indata['Raster'])
         data = self.indata['Raster']
 
         self.combobox_dtm.clear()
@@ -246,10 +245,6 @@ class IGRF(QtWidgets.QDialog):
 
         if len(data) > 1:
             self.combobox_dtm.setCurrentIndex(1)
-            # nodialog = False
-            # QtWidgets.QMessageBox.warning(self.parent, 'Warning',
-            #                               'Please confirm raster bands.',
-            #                               QtWidgets.QMessageBox.Ok)
 
         if not nodialog:
             tmp = self.exec_()
@@ -328,8 +323,6 @@ class IGRF(QtWidgets.QDialog):
         projdata['wkt'] = self.proj.wkt
         projdata['alt'] = self.dsb_alt.value()
         projdata['date'] = self.dateedit.date().toString()
-        # projdata['dtm'] = self.combobox_dtm.currentText()
-        # projdata['mag'] = self.combobox_mag.currentText()
 
         return projdata
 
@@ -371,16 +364,6 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
     MAXCOEFF = (MAXDEG*(MAXDEG+2)+1)
 
     gh = np.zeros([4, MAXCOEFF])
-    # decl = 0
-    # fint = 0
-    # hint = 0
-    # incl = 0
-    # x = 0
-    # y = 0
-    # z = 0
-
-    # if wkt is None:
-    #     wkt = data.crs.wkt
 
     if wkt is not None:
         orig_wkt = wkt
@@ -413,7 +396,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
     altmin = []
     altmax = []
     irec_pos = []
-# First model will be 0
+    # First model will be 0
     for i in modbuff:
         fileline += 1  # On new line
         if i[:3] == '   ':
@@ -429,7 +412,6 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
             altmax.append(float(i2[8]))
             irec_pos.append(fileline)
 
-    # dxy = min(data.xdim, data.ydim)
     altgrid = data.data.flatten() * 0.001  # in km
 
     maxyr = max(yrmax)
@@ -483,7 +465,7 @@ def calc_igrf(data, sdate, alt=100, wkt=None, igrfonly=True, piter=iter,
 
         alt = altgrid[i]
 
-# Do the first calculations
+        # Do the first calculations
         x, y, z = shval3(igdgc, latitude, longitude, alt, nmax, 3, gh)
         _, fint, incl, decl = dihf(x, y, z)
 
@@ -951,12 +933,11 @@ def _testfn():
 
     dat = get_raster(ifile)
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     igrf = IGRF()
     igrf.indata['Raster'] = dat
     igrf.settings()
-
 
 
 if __name__ == "__main__":

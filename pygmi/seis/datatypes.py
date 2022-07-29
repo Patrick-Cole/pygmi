@@ -543,7 +543,7 @@ class seisan_I():
         self.new_id_created = ' '
         self.id_locked = ' '
         self.dataid = ''
-# This is used in a type 3 line
+        # This is used in a type 3 line
         self.region = ''
 
 

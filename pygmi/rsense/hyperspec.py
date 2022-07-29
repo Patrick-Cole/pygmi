@@ -45,7 +45,6 @@ from pygmi.misc import ProgressBarText
 from pygmi.raster.datatypes import numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
 from pygmi.rsense import features
-from pygmi.misc import getinfo
 
 
 class GraphMap(FigureCanvasQTAgg):
@@ -90,13 +89,10 @@ class GraphMap(FigureCanvasQTAgg):
         None.
 
         """
-        getinfo('Start')
         dat = self.datarr[self.mindx]
 
         if self.refl != 1.:
             dat = dat/self.refl
-
-        # dat = np.ma.masked_equal(dat, self.nodata)
 
         rows, cols = dat.shape
 
@@ -107,13 +103,6 @@ class GraphMap(FigureCanvasQTAgg):
         ymin = dat.mean()-2*dat.std()
         ymax = dat.mean()+2*dat.std()
 
-        getinfo('1')
-        # if self.rotate is True:
-        #     self.csp = imshow(ax1, dat.T, vmin=ymin, vmax=ymax)
-        #     rows, cols = cols, rows
-        # else:
-        #     self.csp = imshow(ax1, dat, vmin=ymin, vmax=ymax)
-
         if self.rotate is True:
             self.csp = ax1.imshow(dat.T, vmin=ymin, vmax=ymax,
                                   interpolation='none')
@@ -122,7 +111,6 @@ class GraphMap(FigureCanvasQTAgg):
             self.csp = ax1.imshow(dat, vmin=ymin, vmax=ymax,
                                   interpolation='none')
 
-        getinfo('2')
         ax1.set_xlim((0, cols))
         ax1.set_ylim((0, rows))
         ax1.xaxis.set_visible(False)
@@ -174,8 +162,6 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.figure.tight_layout()
         self.figure.canvas.draw()
-
-        getinfo('end')
 
 
 class AnalSpec(QtWidgets.QDialog):
@@ -236,7 +222,6 @@ class AnalSpec(QtWidgets.QDialog):
 
         self.canvas.mpl_connect('button_press_event',
                                 self.button_press_callback)
-        # self.resize(800, 400)
 
     def setupui(self):
         """
@@ -274,7 +259,6 @@ class AnalSpec(QtWidgets.QDialog):
         grid_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
 
         grid_main.addWidget(self.group_info, 5, 1, 8, 2)
-        # grid_main.addWidget(self.pb_save, 9, 1, 1, 2)
 
         grid_main.addWidget(self.map, 0, 0, 10, 1)
         grid_main.addWidget(self.mpl_toolbar, 11, 0)
@@ -313,7 +297,6 @@ class AnalSpec(QtWidgets.QDialog):
             return
 
         ax = event.inaxes
-        # ax = self.map.figure.gca()
         if ax.get_navigate_mode() is not None:
             return
 
@@ -409,7 +392,6 @@ class AnalSpec(QtWidgets.QDialog):
 
         """
         self.map.mindx = self.combo.currentIndex()
-        # self.map.currentmark = self.combo_dmark.currentText()
         self.map.init_graph()
 
     def rotate_view(self):
@@ -553,8 +535,6 @@ class AnalSpec(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-        # self.combo_class.setCurrentText(projdata['combo_class'])
-
         return False
 
     def saveproj(self):
@@ -568,8 +548,6 @@ class AnalSpec(QtWidgets.QDialog):
 
         """
         projdata = {}
-
-        # projdata['combo_class'] = self.combo_class.currentText()
 
         return projdata
 
@@ -605,7 +583,6 @@ class ProcFeatures(QtWidgets.QDialog):
         self.ratio = {}
         self.feature = None
 
-        # self.combo_sensor = QtWidgets.QComboBox()
         self.cb_ratios = QtWidgets.QComboBox()
         self.rfiltcheck = QtWidgets.QCheckBox('If the final product is a '
                                               'ratio, filter out values less '
@@ -629,7 +606,6 @@ class ProcFeatures(QtWidgets.QDialog):
         gridlayout_main = QtWidgets.QGridLayout(self)
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.rsense.pfeat')
-        # label_sensor = QtWidgets.QLabel('Sensor:')
         lbl_ratios = QtWidgets.QLabel('Product:')
         lbl_details = QtWidgets.QLabel('Details:')
 
@@ -797,14 +773,6 @@ class ProcFeatures(QtWidgets.QDialog):
             A check to see if settings was successfully run.
 
         """
-        # self.combo_sensor.setCurrentText(projdata['sensor'])
-        # self.setratios()
-
-        # for i in self.lw_ratios.selectedItems():
-        #     if i.text()[2:] not in projdata['ratios']:
-        #         i.setSelected(False)
-        # self.set_selected_ratios()
-
         return False
 
     def saveproj(self):
@@ -818,13 +786,6 @@ class ProcFeatures(QtWidgets.QDialog):
 
         """
         projdata = {}
-        # projdata['sensor'] = self.combo_sensor.currentText()
-
-        # rlist = []
-        # for i in self.lw_ratios.selectedItems():
-        #     rlist.append(i.text()[2:])
-
-        # projdata['ratios'] = rlist
 
         return projdata
 
@@ -844,8 +805,6 @@ class ProcFeatures(QtWidgets.QDialog):
         mineral = self.cb_ratios.currentText()
         rfilt = self.rfiltcheck.isChecked()
 
-        # feature = self.feature
-        # ratio = self.ratio
         product = self.product
 
         try:
@@ -933,7 +892,6 @@ def calcfeatures(dat, mineral, feature, ratio, product, rfilt=True,
     xval = []
     for j in dat:
         dat2.append(j.data)
-        # refl = round(float(re.findall(r'[\d\.\d]+', j.dataid)[-1])*1000, 2)
         refl = float(re.findall(r'[\d\.\d]+', j.dataid)[-1])
         if refl < 100.:
             refl = refl * 1000
@@ -1136,11 +1094,6 @@ def cubic_calc(xdat, crem, imin):
         y value at minimum.
 
     """
-    # if imin == 0 or imin == (i2a-i1a-1):
-    #     dtmp[j] = 1. - crem[i1a:i2a][imin]
-    #     ptmp[j] = xdat[i1a:i2a][imin]
-    #     continue
-
     x1 = xdat[imin-1]
     x2 = xdat[imin]
     x3 = xdat[imin+1]
@@ -1336,9 +1289,8 @@ def _testfn():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
-    # ifile = r"d:\Workdata\Lithosphere\merge\cut-087-0824_iMNF15.hdr"
     ifile = r"d:\Workdata\Hyperspectral\080_0824-0920_ref_rect_clip.hdr"
     ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
 
@@ -1385,27 +1337,12 @@ def _testfn2():
 
     ifile = r'd:\Workdata\Hyperspectral\071_0818-0932_ref_rect_BSQ.hdr'
     ifile = r"c:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
-    # ifile = r"d:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
-    # ifile = r"d:\Workdata\Remote Sensing\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
-    # ifile = r"d:\Workdata\Remote Sensing\AST_07XT_00307292005085059_20210608060928_376.hdf"
-    # ifile = r"d:\Workdata\Remote Sensing\ASTER\old\AST_07XT_00309042002082052_20200518021740_29313.zip"
 
-    # xoff = 0
-    # yoff = 2000
-    # xsize = None
-    # ysize = 1000
-    # nodata = 15000
-    # nodata = 0
-
-    # iraster = (xoff, yoff, xsize, ysize)
-    # iraster = None
-
-    # data = get_raster(ifile, nval=nodata, iraster=iraster)
     data = get_data(ifile, extscene='Hyperion')
 
     data = lstack(data)
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
     tmp = AnalSpec()
     tmp.indata['Raster'] = data
     tmp.settings()
@@ -1448,7 +1385,6 @@ def _testfn3():
     ysize = 1
     nodata = 0
     iraster = (0, yoff, None, ysize)
-    # iraster = None
 
     data1 = get_raster(ifile1, nval=nodata, iraster=iraster)
     data2 = get_raster(ifile2, nval=nodata, iraster=iraster)
@@ -1496,8 +1432,6 @@ def _testfn3():
         xdat = []
         fdat.append(dat1[:, 0, i1])
         fdat.append(dat2[:, 0, i2])
-        # xdat.append(xval1)
-        # xdat.append(xval2)
         xdat = xval1
 
         fdat = np.array(fdat)
@@ -1553,9 +1487,6 @@ def _testfn3():
         plt.vlines(xxx, ymin, ymax, 'k')
         plt.show()
 
-    # breakpoint()
-
 
 if __name__ == "__main__":
-    # _testfn3()
     _testfn2()

@@ -315,7 +315,6 @@ class ImportBatch():
 
         zipdat = glob.glob(self.idir+'//AST*.zip')
         hdfdat = glob.glob(self.idir+'//AST*.hdf')
-#        tifdat = glob.glob(directory+'//AST*.tif')
         targzdat = glob.glob(self.idir+'//L*.tar*')
         mtldat = glob.glob(self.idir+'//L*MTL.txt')
         rasterdat = []
@@ -345,11 +344,6 @@ class ImportBatch():
         dat.extend(zipdat)
         dat.extend(sendat)
         dat.extend(rasterdat)
-
-        # for i in tifdat:
-        #     if i[:i.rindex('_')]+'_MTL.txt' in mtldat:
-        #         continue
-        #     dat.append(i)
 
         output_type = 'RasterFileList'
         self.outdata[output_type] = dat
@@ -987,11 +981,6 @@ def get_modisv6(ifile, piter=None):
 
         dat.append(Data())
         dat[-1].data = np.ma.array(rtmp2, mask=mask)
-        # dat[-1].data = np.ma.masked_invalid(dat[-1].data)
-        # dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
-        # if dat[-1].data.mask.size == 1:
-        #     dat[-1].data.mask = (np.ma.make_mask_none(dat[-1].data.shape) +
-        #                          dat[-1].data.mask)
 
         dat[-1].dataid = bandid
         dat[-1].nodata = 1e+20
@@ -1102,9 +1091,6 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
             lstband = 'B6'
         satbands['LST'] = satbands[lstband]
 
-        # ['LT04', 'LT05', 'LE07', 'LC08', 'LM05']
-        # haslst = True
-
     showprocesslog('Importing Landsat data...')
 
     bnamelen = len(ifile[:-7])
@@ -1115,17 +1101,6 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
         fext = fext.upper().replace('BAND', 'B')
         fext = fext.replace('SR_B', 'B')
         fext = fext.replace('ST_B', 'B')
-
-        # if 'B6_VCID' in ifile2:
-        #     fext = ifile2[-12:-4]
-        # else:
-        #     fext = ifile2[:-4].split('_')[-1]
-        #     fext = fext.upper().replace('BAND', 'B')
-
-        # elif ifile2[-6].isdigit():
-        #     fext = ifile2[-6:-4]
-        # else:
-        #     fext = ifile2[-5]
 
         if fext == lstband:
             fext = 'LST'
@@ -1228,11 +1203,9 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
         return None
 
     platform = dtree['isd']['TIL']['BANDID']
-    # til = dtree['isd']['TIL']
     satid = dtree['isd']['IMD']['IMAGE']['SATID']
 
     satbands = None
-    # lstband = None
 
     if platform == 'P':
         satbands = {'1': [450, 800]}
@@ -1330,19 +1303,10 @@ def get_worldview(ifilet, piter=None, showprocesslog=print):
     for i in piter(dat):
         indx += 1
         mask = (i.data == nval)
-        # i.data = np.ma.masked_invalid(i.data)
-        # i.data.mask = i.data.mask | (i.data == nval)
-        # if i.data.mask.size == 1:
-        #     i.data.mask = (np.ma.make_mask_none(i.data.shape) +
-        #                    i.data.mask)
 
         scale = float(dtree['isd']['IMD'][bnum2name[indx]]['ABSCALFACTOR'])
         bwidth = float(dtree['isd']['IMD'][bnum2name[indx]]['EFFECTIVEBANDWIDTH'])
 
-        # from pygmi.misc import getinfo
-
-        # i.data = ne.evaluate('idata*(scale*bwidth)')
-        # i.data = i.data * scale / bwidth
         i.data = i.data.astype(np.float32)
 
         date = dtree['isd']['IMD']['IMAGE']['FIRSTLINETIME']
@@ -1412,7 +1376,6 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
     if piter is None:
         piter = ProgressBarText().iter
 
-    # bandnames = [f'Band {i+1}' for i in range(242)]
     wavelength = [
         355.59,  365.76,  375.94,  386.11,  396.29,  406.46,  416.64,  426.82,
         436.99,  447.17,  457.34,  467.52,  477.69,  487.87,  498.04,  508.22,
@@ -1682,8 +1645,6 @@ def get_aster_zip(ifile, piter=None, showprocesslog=print):
     elif 'AST_08' in ifile:
         scalefactor = 0.1
         units = 'Surface Kinetic Temperature'
-    # elif 'AST_09' in ifile:
-    #     scalefactor = None
     else:
         return None
 
@@ -1788,15 +1749,6 @@ def get_aster_hdf(ifile, piter=None):
     with rasterio.open(ifile) as dataset:
         meta = dataset.tags()
         subdata = dataset.subdatasets
-        # crs = dataset.crs
-
-    # zone = None
-    # if crs is None:
-    #     for i in meta:
-    #         if 'UTMZONECODE' in i:
-    #             zone = meta[i]
-    #     if zone is not None:
-    #         crs1 = CRS.from_epsg('326'+zone)
 
     if ptype == 'L1T':
         ucc = {'ImageData1': float(meta['INCL1']),
@@ -1853,8 +1805,6 @@ def get_aster_hdf(ifile, piter=None):
         dataset1 = rasterio.open(bfile)
         dataset = rasterio.vrt.WarpedVRT(dataset1)
         crs = dataset1.gcps[-1]
-
-        # breakpoint()
 
         dat.append(Data())
         dat[-1].data = dataset.read(1)
@@ -1921,9 +1871,7 @@ def get_aster_ged(ifile, piter=None):
     ifile = ifile[:]
 
     with rasterio.open(ifile) as dataset:
-        # meta = dataset.tags()
         subdata = dataset.subdatasets
-        # crs = dataset.crs
 
     i = -1
     for ifile2 in subdata:
@@ -2157,7 +2105,7 @@ def _test5P():
 
     ifile = r"d:\Workdata\PyGMI Test Data\Sentinel-5P\S5P_OFFL_L2__AER_AI_20200522T115244_20200522T133414_13508_01_010302_20200524T014436.nc"
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
     tmp = ImportSentinel5P()
     tmp.ifile = ifile
     tmp.settings(True)

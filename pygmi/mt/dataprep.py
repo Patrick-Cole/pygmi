@@ -203,7 +203,6 @@ class Metadata(QtWidgets.QDialog):
             if self.dsb_utmy.text() != 'None':
                 odata.north = float(self.dsb_utmy.text())
             odata.elev = float(self.dsb_elev.text())
-#            odata.utm_zone = float(self.dsb_utmzone.text())
             odata.rotation_angle = float(self.dsb_rot.text())
         except ValueError:
             self.showprocesslog('Value error - abandoning changes')
@@ -479,7 +478,6 @@ class StaticShiftEDI(QtWidgets.QDialog):
 
         if self.checkbox.isChecked():
             for i in self.data:
-                # i = self.combobox1.currentText()
                 self.data[i].Z = self.data[i].remove_static_shift(ssx, ssy)
         else:
             i = self.combobox1.currentText()
@@ -1011,7 +1009,6 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         ax1 = self.figure.add_subplot(211, label='Profile')
         ax1.grid(True, 'both')
 
-#        ax1 = self.figure.add_subplot(3, 1, 1)
         ax1.set_title(ival)
         self.axes = ax1
         x = 1/data1.Z.freq
@@ -1059,7 +1056,6 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         ax2.grid(True, 'both')
 
         self.axes2 = ax2
-#        ax2.set_title('Normalised stacked graphs')
 
         ax2.errorbar(x, pha1, yerr=pha1_err, label=label3,
                      ls=' ', marker='.', mfc='b', mec='b', ecolor='b')
@@ -1297,8 +1293,6 @@ class EditEDI(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
-
         return projdata
 
 
@@ -1506,8 +1500,6 @@ class Occam1D(QtWidgets.QDialog):
         label5 = QtWidgets.QLabel('Phase Errorbar (Data or %):')
         label6 = QtWidgets.QLabel('Resistivity Error Floor (%):')
         label7 = QtWidgets.QLabel('Phase Error Floor (degrees):')
-        # label7a = QtWidgets.QLabel(r'Remove Resistivity/Phase values out of'
-        #                            r' 1st/3rd Quadrant (True/False):')
         label8 = QtWidgets.QLabel('Height of air layer:')
         label9 = QtWidgets.QLabel('Bottom of model:')
         label10 = QtWidgets.QLabel('Depth of target to investigate:')
@@ -1682,8 +1674,6 @@ class Occam1D(QtWidgets.QDialog):
         self.mmc.figure.clear()
         self.mmc.figure.set_facecolor('r')
         self.mmc.figure.suptitle('Busy, please wait...', fontsize=14, y=0.5)
-#        ax = self.mmc.figure.gca()
-#        ax.text(0.5, 0.5, 'Busy, please wait...')
         self.mmc.figure.canvas.draw()
         QtWidgets.QApplication.processEvents()
 
@@ -1923,7 +1913,6 @@ def _testfn_occam():
 
     app = QtWidgets.QApplication(sys.argv)
     test = Occam1D(None)
-    # test = EditEDI()
     test.indata['MT - EDI'] = {'SYNTH02': mt_obj}
     test.settings()
 
@@ -1934,7 +1923,6 @@ def _testfn():
     allfiles = glob.glob(datadir+'\\*.edi')
 
     for edi_file in allfiles:
-        # Create an MT object
         mt_obj = MT(edi_file)
 
     print('loading complete')

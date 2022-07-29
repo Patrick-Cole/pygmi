@@ -26,7 +26,6 @@
 
 from PyQt5 import QtWidgets, QtCore
 
-# Other dependancies
 from pygmi.pfmod import misc
 from pygmi.pfmod import tab_prof
 from pygmi.pfmod import tab_param
@@ -55,11 +54,9 @@ class MainWidget(QtWidgets.QMainWindow):
         self.parent = parent
         self.lmod1 = LithModel()  # actual model
 
-# General
+        # General
         self.txtmsg = ''
-        # self.modelfilename = r'./tmp'
 
-        # self.toolbar = QtWidgets.QToolBar()
         self.toolbardock = QtWidgets.QToolBar()
         self.statusbar = QtWidgets.QStatusBar()
 
@@ -77,7 +74,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.lithnotes = tab_param.LithNotes(self)
         self.profile = tab_prof.ProfileDisplay(self)
 
-# Toolbars
+        # Toolbars
         self.action_mext = QtWidgets.QAction('Model\nExtent\nParameters')
         self.toolbardock.addAction(self.action_mext)
         self.action_mext.triggered.connect(self.mext.tab_activate)
@@ -90,7 +87,7 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbardock.addAction(self.action_lnotes)
         self.action_lnotes.triggered.connect(self.lithnotes.tab_activate)
 
-# Dock Widgets
+        # Dock Widgets
         dock = QtWidgets.QDockWidget('Editor')
         dock.setWidget(self.profile)
         self.addDockWidget(QtCore.Qt.TopDockWidgetArea, dock)
@@ -118,13 +115,8 @@ class MainWidget(QtWidgets.QMainWindow):
         self.setStatusBar(self.statusbar)
         self.setCentralWidget(centralwidget)
 
-#        self.toolbar.setStyleSheet('QToolBar{spacing:10px;}')
-#        self.addToolBar(QtCore.Qt.TopToolBarArea, self.toolbar)
-#        self.addToolBarBreak()
         self.addToolBar(self.toolbardock)
         self.textbrowser.setFrameShape(QtWidgets.QFrame.StyledPanel)
-#        self.toolbar.setMovable(True)
-#        self.toolbar.setToolButtonStyle(QtCore.Qt.ToolButtonIconOnly)
         self.toolbardock.addAction(self.actionsave)
 
         self.setWindowTitle('Potential Field Modelling')
@@ -237,8 +229,6 @@ class MainWidget(QtWidgets.QMainWindow):
 
         """
         projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
 
         return projdata
 

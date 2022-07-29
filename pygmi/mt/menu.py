@@ -51,7 +51,7 @@ class MenuWidget():
         self.parent.add_to_context('MT - EDI')
         context_menu = self.parent.context_menu
 
-# Normal menus
+        # Normal menus
         self.menumt = QtWidgets.QMenu('MT')
         parent.menubar.addAction(self.menumt.menuAction())
 
@@ -92,7 +92,7 @@ class MenuWidget():
         self.menumt.addAction(self.action_occam1d)
         self.action_occam1d.triggered.connect(self.occam1d)
 
-# Context menus
+        # Context menus
         context_menu['MT - EDI'].addSeparator()
 
         self.action_metadata = QtWidgets.QAction('Display/Edit Metadata')

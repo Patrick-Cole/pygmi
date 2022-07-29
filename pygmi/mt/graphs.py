@@ -190,7 +190,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         ax1 = self.figure.add_subplot(411, label='Profile')
 
-        # ax1.set_title(ival)
         self.axes = ax1
         x = 1/data1.Z.freq
 
@@ -255,8 +254,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax3.plot(x, data1.Tipper.mag_real, 'b.', label='real')
         ax3.plot(x, data1.Tipper.mag_imag, 'r.', label='imaginary')
 
-        # ax3.set_ylim(-180., 180.)
-
         ax3.set_xscale('log')
         ax3.set_yscale('linear')
         ax3.legend(loc='upper left')
@@ -267,7 +264,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax4 = self.figure.add_subplot(414, sharex=ax1)
         ax4.plot(x, data1.Tipper.angle_real, 'b.', label='real')
         ax4.plot(x, data1.Tipper.angle_imag, 'r.', label='imaginary')
-        # ax4.set_ylim(-180., 180.)
 
         ax4.set_xscale('log')
         ax4.set_yscale('linear')
@@ -363,11 +359,7 @@ def _testfn():
 
     ax1 = plt.gca()
     for i in range(num):
-        # tx0 = np.log10(x[i])
-        # tx1 = txr[i]*np.log10(x[i])
-
         plt.arrow(x10[i], 0, txr[i], tyr[i])
-        # print(tx0[i], 0, tx1[i], tyr[i])
 
     plt.tight_layout()
     plt.grid(True)
@@ -391,8 +383,6 @@ def _testfn():
 
     for i in range(num):
         tx0 = (np.log(x[i])-np.log(ax))/(np.log(bx)-np.log(ax))
-        # tx1 = txr[i]*tx0
-        # tx1 = (txr[i]*np.log(x[i])-np.log(ax))/(np.log(bx)-np.log(ax))
 
         plt.arrow(tx0, ty0, 2*txr[i], 2*tyr[i], transform=ax1.transAxes)
 

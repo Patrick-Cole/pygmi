@@ -87,7 +87,7 @@ class CorrectDescriptions(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.textfile, 0, 0, 1, 1)
         gridlayout_main.addWidget(pb_textfile, 0, 1, 1, 1)
 
-#        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
+        # gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 5, 1, 1, 3)
 
         buttonbox.accepted.connect(self.accept)
@@ -173,8 +173,6 @@ class CorrectDescriptions(QtWidgets.QDialog):
 
         """
         projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
 
         return projdata
 

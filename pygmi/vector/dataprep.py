@@ -218,14 +218,8 @@ class DataGrid(QtWidgets.QDialog):
         self.dsb_dxy.setValidator(val)
         self.dsb_null.setValidator(val)
 
-        # self.grid_method.addItems(['Quick Grid', 'Nearest Neighbour',
-        #                            'Linear', 'Cubic', 'Minimum Curvature'])
-
         self.grid_method.addItems(['Nearest Neighbour', 'Linear', 'Cubic',
                                    'Minimum Curvature'])
-
-        # self.label_bdist.hide()
-        # self.bdist.hide()
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -251,7 +245,6 @@ class DataGrid(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         self.dsb_dxy.textChanged.connect(self.dxy_change)
-        # self.grid_method.currentIndexChanged.connect(self.grid_method_change)
 
     def dxy_change(self):
         """
@@ -469,7 +462,7 @@ class DataGrid(QtWidgets.QDialog):
             gdat = gdat[::-1]
         gdat = np.ma.masked_equal(gdat, nullvalue)
 
-# Create dataset
+        # Create dataset
         dat = Data()
         dat.data = gdat
         dat.nodata = nullvalue
@@ -573,21 +566,21 @@ class DataReproj(QtWidgets.QDialog):
         key = list(self.indata['Line'].keys())[0]
         data = self.indata['Line'][key]
 
-# Input stuff
+        # Input stuff
         orig_wkt = self.in_proj.wkt
 
         orig = osr.SpatialReference()
         orig.ImportFromWkt(orig_wkt)
         orig.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
-# Output stuff
+        # Output stuff
         targ_wkt = self.out_proj.wkt
 
         targ = osr.SpatialReference()
         targ.ImportFromWkt(targ_wkt)
         targ.SetAxisMappingStrategy(osr.OAMS_TRADITIONAL_GIS_ORDER)
 
-# Set transformation
+        # Set transformation
         ctrans = osr.CoordinateTransformation(orig, targ)
 
         dd = np.transpose([data.pygmiX, data.pygmiY])
@@ -642,13 +635,6 @@ class DataReproj(QtWidgets.QDialog):
             self.targ_wkt = self.out_proj.wkt
         else:
             self.out_proj.set_current(self.targ_wkt)
-
-#        iwkt = self.in_proj.epsg_proj['WGS 84 / Geodetic Geographic'].wkt
-#        indx = self.in_proj.combobox.findText('WGS 84 / Geodetic Geographic')
-#        self.in_proj.combobox.setCurrentIndex(indx)
-
-#        indx = self.in_proj.combobox.findText('WGS 84 / UTM zone 35S')
-#        self.out_proj.combobox.setCurrentIndex(indx)
 
         if not nodialog:
             tmp = self.exec_()
@@ -896,23 +882,15 @@ def _testfn():
     import matplotlib.pyplot as plt
     from pygmi.vector.iodefs import ImportLineData
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     ifile = r'c:\Workdata\vector\Line Data\MAGARCHIVE.XYZ'
     ifile = r'C:/Workdata/raster/Testing/SPECARCHIVE.XYZ'
 
-    # ifile = r'D:\Workdata\vector\linecut\test2.csv'
-    # sfile = r'D:\Workdata\vector\linecut\test2_cut_outline.shp'
-
     IO = ImportLineData()
     IO.ifile = ifile
-    # IO.filt = 'Comma Delimited (*.csv)'
     IO.filt = 'Geosoft XYZ (*.xyz)'
     IO.settings(True)
-
-    # line = list(IO.outdata['Line'].values())
-    # plt.plot(line[0].x, line[0].y)
-    # plt.show()
 
     DG = DataGrid()
     DG.indata = IO.outdata
@@ -922,10 +900,6 @@ def _testfn():
 
     plt.imshow(dat)
     plt.show()
-
-    # DR = DataReproj()
-    # DR.indata = IO.outdata
-    # DR.settings(True)
 
 
 if __name__ == "__main__":

@@ -102,8 +102,6 @@ class DeleteRecord():
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
-
         return projdata
 
     def delrec(self, ifile):
@@ -148,7 +146,7 @@ class DeleteRecord():
 
         outputf.writelines(odata)  # Insert a blank line
 
-# Close files
+        # Close files
         inputf.close()
         outputf.close()
 
@@ -199,7 +197,6 @@ class Quarry():
         alist = []
         for i in data:
             if '1' in i:
-                # alist.append(i['1'])
                 alist.append(i)
 
         if not alist:
@@ -208,7 +205,6 @@ class Quarry():
 
         self.events = alist
 
-        # data = self.calcrq2()
         data = self.calcrq2b()
         if data is not None:
             self.outdata['Seis'] = data
@@ -246,8 +242,6 @@ class Quarry():
         """
         projdata = {}
 
-        # projdata['ftype'] = '2D Mean'
-
         return projdata
 
     def calcrq2(self):
@@ -277,7 +271,6 @@ class Quarry():
 
         day = self.day
         ehour = np.array(hour)
-        # ehourall = ehour.copy()
         hour = np.logical_and(ehour >= day[0], ehour <= day[1])
 
         lon = np.array(lon)
@@ -294,10 +287,8 @@ class Quarry():
         nrange = list(range(nmin, nmax+nstep, nstep))
         rperc = self.randrq(nmax, nstep, nrange, day)
 
-        # self.showprocesslog('Calculating clusters')
-
-        # # use DBscan to identify cluster centers and numbers of clusters.
-        # # eps is max distance between samples
+        # use DBscan to identify cluster centers and numbers of clusters.
+        # eps is max distance between samples
 
         # X = np.transpose([lon, lat])
         # db = DBSCAN(eps=0.01, min_samples=10).fit(X)
@@ -317,7 +308,6 @@ class Quarry():
 
         while stayinloop:
             lls = np.transpose([lat, lon])
-            # lls2 = lls[hour]
             cnt = lls.shape[0]
             nd = []
             rstot = []
@@ -356,20 +346,12 @@ class Quarry():
                 hour = np.delete(hour, rstot[maxel])
                 ehour = np.delete(ehour, rstot[maxel])
                 newevents = np.delete(newevents, rstot[maxel])
-#                maxel = np.nonzero(hour)[0][maxel]
             else:
                 stayinloop = False
             stayinloop = False
 
         self.showprocesslog('Completed!')
 
-        # plt.hist(ehourall, 24)
-        # plt.show()
-
-        # plt.hist(ehour, 24)
-        # plt.show()
-
-        # return newevents.tolist()
         return newevents
 
     def calcrq2b(self):
@@ -382,7 +364,6 @@ class Quarry():
             New events
 
         """
-#        ttt = PTime()
         self.showprocesslog('Working...')
 
         hour = []
@@ -402,7 +383,6 @@ class Quarry():
         day = self.day
 
         ehour = np.array(hour)
-        # ehourall = ehour.copy()
         hour = np.logical_and(ehour >= day[0], ehour <= day[1])
 
         lon = np.array(lon)
@@ -414,7 +394,6 @@ class Quarry():
 
         # rperc = self.randrqb(N, day, ehourall.shape[0])
         rperc = 3.0
-        # rperc = 1.97435897
 
         self.showprocesslog('Calculating Rq values')
 
@@ -448,11 +427,6 @@ class Quarry():
 
         rstot = np.array(rstot, dtype=object)
 
-        # plt.xlabel('R')
-        # plt.ylabel('Event Counts')
-        # plt.hist(rq[nn != 0.00001], 50)
-        # plt.show()
-
         filt = (rq-rperc) > 0
 
         rstot2 = []
@@ -467,20 +441,7 @@ class Quarry():
         ehour = np.delete(ehour, maxel)
         newevents = np.delete(newevents, maxel)
 
-        # ttt.since_last_call('Total')
         self.showprocesslog('Completed!')
-
-        # self.showprocesslog('New total number of events: '+str(ehour.size))
-
-        # plt.xlabel('Hours')
-        # plt.ylabel('Event Counts')
-        # plt.hist(ehourall, 24)
-        # plt.show()
-
-        # plt.xlabel('Hours')
-        # plt.ylabel('Event Counts')
-        # plt.hist(ehour, 24)
-        # plt.show()
 
         return newevents.tolist()
 
@@ -507,7 +468,6 @@ class Quarry():
         """
         rperc = [1.97435897, 1.64253394, 1.46153846, 1.41025641, 1.35737179,
                  1.3234714, 1.28444936, 1.26923077]
-        # rperc[0] = 2.5
 
         self.showprocesslog('Calculating random Rq values for calibration')
         rperc = []
@@ -550,51 +510,28 @@ class Quarry():
 
         """
         self.showprocesslog('Calculating random Rq values for calibration')
-        # nd = 0
         elist = [50, 100, 150, 200]
-        # elist = [150]
 
         for N in elist:
             rqmean = []
             for ld in range(1, 24):
                 day = (0, ld)
-                # ld = day[1]-day[0]
                 ln = 24-ld
 
                 ln_over_ld = ln/ld
 
-                # self.showprocesslog(str(N))
-
-                # self.showprocesslog('random '+str(N)+' dat hours '+str(ld))
-
                 tmp = np.random.rand(1000000, N)
                 tmp *= 24
-
-                # tmp2 = tmp.flatten()[:num]
-                # plt.title('random '+str(N)+' dat hours '+str(ld))
-                # plt.hist(tmp2, 24)
-                # plt.show()
 
                 tmp = np.logical_and(tmp >= day[0], tmp <= day[1])
 
                 nd = tmp.sum(1)
                 nn = (N-nd).astype(float)
 
-                # nd = nd[nn!=0]
-                # nn = nn[nn!=0]
-
-                # nn[nn == 0] = 0.00001
-
-                # rq = (nd*ln)/(nn*ld)
-                # rq = ln_over_ld*nd/nn
                 rq = nd/nn
                 rperc = np.percentile(rq, 99)
                 rperc = rperc*ln_over_ld
 
-                # self.showprocesslog(rperc)
-                # self.showprocesslog(np.mean(rq))
-                # rqmean.append(np.mean(rq))
-                # rqmean.append(np.median(rq))
                 rqmean.append(rperc)
 
             plt.plot(rqmean)
@@ -647,18 +584,12 @@ def import_for_plots(ifile, dind='R'):
                     if newkey not in datd:
                         datd[newkey] = []
                     datd[newkey].append(tmp[j])
-# Custom
+                    # Custom
                     if 'type_of_magnitude' in j:
                         newkey = '1_M'+tmp[j]
                         if newkey not in datd:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j.split('_of_')[1]])
-
-                        # time = tmp['hour']+tmp['minutes']/60.+tmp['seconds']/3600.
-                        # newkey = '1_M'+tmp[j]+'_time'
-                        # if newkey not in datd:
-                        #     datd[newkey] = []
-                        # datd[newkey].append(time)
 
                         newkey = '1_M'+tmp[j]+'_year'
                         if newkey not in datd:

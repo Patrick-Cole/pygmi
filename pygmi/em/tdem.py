@@ -141,9 +141,6 @@ class TDEM1D(QtWidgets.QDialog):
         self.setWindowTitle('TDEM 1D Inversion')
         helpdocs = menu_default.HelpButton('pygmi.em.tdem1d')
 
-        # sizepolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed,
-        #                                    QtWidgets.QSizePolicy.Fixed)
-
         vbl = QtWidgets.QVBoxLayout()
         hbl = QtWidgets.QHBoxLayout(self)
         gbl = QtWidgets.QGridLayout()
@@ -680,8 +677,6 @@ class TDEM1D(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
-
         return projdata
 
 
@@ -739,7 +734,6 @@ def _testfn():
 
     tmp.indata = IO.outdata
 
-    # os.environ['KMP_WARNINGS'] ='0'
     tmp.settings(True)
 
 

@@ -85,7 +85,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.hs_overview = MySlider()
         self.hs_sideview = MySlider()
         self.combo_overview = QtWidgets.QComboBox()
-#        self.label_sideview = QtWidgets.QLabel('None')
         self.combo_proftype = QtWidgets.QComboBox()
 
         self.sb_layer = QtWidgets.QSpinBox()
@@ -169,7 +168,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.sb_profile_linethick.setMaximum(1000)
         self.sb_profile_linethick.setPrefix('Line Thickness: ')
 
-# Set groupboxes and layouts
+        # Set groupboxes and layouts
         gridlayout = QtWidgets.QGridLayout(self)
 
         hl_proftype = QtWidgets.QHBoxLayout()
@@ -191,7 +190,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         hl_pics = QtWidgets.QHBoxLayout()
         hl_pics.addWidget(self.combo_overview)
         hl_pics.addWidget(self.hs_overview)
-#        hl_pics.addWidget(self.label_sideview)
         hl_pics.addWidget(self.hs_sideview)
 
         self.gb_cprof = QtWidgets.QGroupBox('Custom Profile')
@@ -226,7 +224,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         gridlayout.addLayout(vl_plots, 0, 0, 8, 1)
         gridlayout.addLayout(vl_tools, 0, 1, 8, 1)
 
-    # Buttons etc
+        # Buttons etc
         self.sb_profile_linethick.valueChanged.connect(self.setwidth)
         self.lw_prof_defs.currentItemChanged.connect(self.change_defs)
         self.hs_profnum.valueChanged.connect(self.hprofnum)
@@ -355,7 +353,6 @@ class ProfileDisplay(QtWidgets.QWidget):
             self.hs_sideview.setEnabled(False)
             self.prof_dir()
             self.cproflim = None
-#            self.sprofnum()
         else:
             self.gb_dir.setHidden(True)
             self.gb_cprof.setHidden(False)
@@ -669,7 +666,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         tmp = dtmp.settings()
         if tmp is False:
             return
-#        curgrid = dtmp.outdata['Raster'][0].data[::-1]
         curgrid = dtmp.outdata['Raster'][0]
 
         self.pbar.setValue(100)
@@ -696,11 +692,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         regz = self.lmod1.zrange[1]
         d_z = self.lmod1.d_z
 
-#        gxrng = np.array([tlx+i*d_x for i in range(cols)])
-#        gyrng = np.array([(tly-(rows-1)*d_y)+i*d_y for i in range(rows)])
-
-# This section gets rid of null values quickly
-#        xt, yt = np.meshgrid(gxrng, gyrng)
+        # This section gets rid of null values quickly
         zt = curgrid.data.data
 
         if isdepths is True:
@@ -712,13 +704,7 @@ class ProfileDisplay(QtWidgets.QWidget):
 
         msk = np.logical_not(np.logical_or(curgrid.data.mask, np.isnan(zt)))
 
-#        zt = zt[msk]
-#        xy1 = np.transpose([xt[msk], yt[msk]])
-#        xy2 = np.transpose([xt, yt])
-#        newgrid = np.transpose(si.griddata(xy1, zt, xy2, 'nearest'))
-
-# Back to splines
-#        fgrid = si.RectBivariateSpline(gyrng, gxrng, newgrid)
+        # Back to splines
 
         for i in range(self.lmod1.numx):
             for j in range(self.lmod1.numy):
@@ -728,14 +714,12 @@ class ProfileDisplay(QtWidgets.QWidget):
                 igrd = int((imod-tlx)/d_x)
                 jgrd = int((tly-jmod)/d_y)
 
-#                if igrd >= 0 and jgrd >= 0 and igrd < cols and jgrd < rows:
                 if 0 <= igrd < cols and 0 <= jgrd < rows:
                     if not msk[jgrd, igrd]:
                         continue
 
                     k_2 = int((regz - zt[jgrd, igrd])/d_z)
 
-#                    k_2 = int((regz-fgrid(jmod, imod))/d_z)
                     k_2 = max(k_2, 0)
                     lfilt = self.lmod1.lith_index[i, j, k_2:] != -1
                     ufilt = self.lmod1.lith_index[i, j, :k_2] != -1
@@ -747,7 +731,6 @@ class ProfileDisplay(QtWidgets.QWidget):
         gtmp = self.get_model()
         self.mmc.init_grid(gtmp)
         self.mmc.init_grid_top()
-#        self.mmc.figure.canvas.draw()
 
     def rcopy(self):
         """
@@ -1375,7 +1358,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         None.
 
         """
-# Display the calculated profile
+        # Display the calculated profile
         if self.viewmagnetics:
             data = self.lmod1.griddata['Calculated Magnetics']
             self.mmc.ptitle = 'Magnetic Intensity: '
@@ -1410,7 +1393,7 @@ class ProfileDisplay(QtWidgets.QWidget):
         else:
             extent = [data.data.min()+regtmp, data.data.max()+regtmp]
 
-# Load in observed data - if there is any
+        # Load in observed data - if there is any
         data2 = None
         tmprng2 = None
         tmpprof2 = None
@@ -1549,14 +1532,14 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.crd = None
         self.myparent = parent
 
-# Events
+        # Events
         self.figure.canvas.mpl_connect('motion_notify_event', self.move)
         self.figure.canvas.mpl_connect('button_press_event', self.button_press)
         self.figure.canvas.mpl_connect('button_release_event',
                                        self.button_release)
         self.figure.canvas.mpl_connect('resize_event', self.on_resize)
 
-# Initial Images
+        # Initial Images
         self.paxes = fig.add_subplot(222)
         self.paxes.yaxis.set_label_text('mGal')
         self.paxes.ticklabel_format(useOffset=False)
@@ -1567,7 +1550,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(224, sharex=self.paxes)
         self.axes.xaxis.set_label_text(self.xlabel)
         self.axes.yaxis.set_label_text('Altitude (m)')
-#        self.axes.callbacks.connect('xlim_changed', self.paxes_lim_update)
 
         self.laxes = fig.add_subplot(121)
 
@@ -1616,7 +1598,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
             return
 
         nmode = event.inaxes.get_navigate_mode()
-#        nmode = self.figure.canvas.toolbar._active
         if event.button == 1 and nmode is None:
             self.press = True
             self.newline = True
@@ -1660,7 +1641,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if curaxes == self.axes:
             mdata = self.mdata
             xptp = self.lmod1.xrange[1]-self.lmod1.xrange[0]
-#            xmin = self.lmod1.xrange[0]
             xmin = 0
 
             dx = self.myparent.pdxy
@@ -1708,8 +1688,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
                 rrr = np.sqrt((self.xold-xdata)**2+(self.yold-ydata)**2)
                 steps = int(rrr)+1
-#                steps = int(max(abs(self.xold-xdata),
-#                                abs(self.yold-ydata)))+1
                 xxx = np.linspace(self.xold, xdata, steps)
                 yyy = np.linspace(self.yold, ydata, steps)
 
@@ -1740,7 +1718,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
                 self.lmod1.lith_index[:, :, curlayer] = mdata.T
                 self.lmdata = mdata
                 self.mdata = self.myparent.get_model()
-                # self.mdata = self.lmod1.lith_index[xxx, yyy, ::-1].T
 
             self.slide_grid(self.mdata)
             self.slide_grid_top()
@@ -1970,7 +1947,6 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         if dat2 is not None:
             self.ims2.set_visible(True)
-#            self.ims2.set_alpha(self.opac)
 
         self.axes.draw_artist(self.ims)
         self.axes.draw_artist(self.ims2)
@@ -2741,7 +2717,7 @@ class ImportPicture(QtWidgets.QDialog):
         x2 = self.dsb_x2.value()
         y1 = self.dsb_y1.value()
         y2 = self.dsb_y2.value()
-        zmin = self.dsb_zmin.value()
+        # zmin = self.dsb_zmin.value()
         zmax = self.dsb_zmax.value()
 
         # Check if the profile is within the model area
@@ -2807,11 +2783,6 @@ class ImportPicture(QtWidgets.QDialog):
 
         imptext = self.importfile.text()
         if imptext != '':
-            # x1a = self.dsb_x1.value()
-            # x2a = self.dsb_x2.value()
-            # y1a = self.dsb_y1.value()
-            # y2a = self.dsb_y2.value()
-
             dat = get_raster(imptext, showprocesslog=self.showprocesslog)
 
             if dat is None:
@@ -2827,12 +2798,11 @@ class ImportPicture(QtWidgets.QDialog):
             dat.isrgb = True
 
             ra = np.sqrt((x1a-x1)**2+(y1a-y1)**2)
-            rb = np.sqrt((x2a-x1)**2+(y2a-y1)**2)
-            xdim = (rb-ra)/dat.shape[1]
-            ydim = (zmax-zmin)/dat.shape[0]
+            # rb = np.sqrt((x2a-x1)**2+(y2a-y1)**2)
+            # xdim = (rb-ra)/dat.shape[1]
+            # ydim = (zmax-zmin)/dat.shape[0]
 
             dat.set_transform(dat.xdim, ra, dat.ydim, zmax)
-            # dat.extent = (ra, rb, zmin, zmax)
             self.lmod.profpics[curline] = dat
 
         return curline
@@ -2865,8 +2835,6 @@ class ImportPicture(QtWidgets.QDialog):
 
         """
         projdata = {}
-
-#        projdata['ftype'] = '2D Mean'
 
         return projdata
 

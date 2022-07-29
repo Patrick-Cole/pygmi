@@ -282,7 +282,6 @@ class MergeMod3D(QtWidgets.QDialog):
         self.indata = {}
         self.outdata = {}
         self.parent = parent
-        # self.pbar = self.parent.pbar
 
         self.master = QtWidgets.QComboBox()
         self.slave = QtWidgets.QComboBox()
@@ -392,8 +391,6 @@ class MergeMod3D(QtWidgets.QDialog):
         """
         projdata = {}
 
-#        projdata['ftype'] = '2D Mean'
-
         return projdata
 
     def acceptall(self):
@@ -490,7 +487,6 @@ class MergeMod3D(QtWidgets.QDialog):
         datmaster.mlut = newmlut
         datmaster.lith_index[datmaster.lith_index == 0] = \
             datslave.lith_index[datmaster.lith_index == 0]
-#        datmaster.lith_index[datmaster.lith_index > 9000] -= 9000
 
         for lith in datslave.lith_list:
             if lith not in datmaster.lith_list:
@@ -557,7 +553,7 @@ def _testfn():
     import sys
     from pygmi.pfmod.iodefs import ImportMod3D
 
-    app = QtWidgets.QApplication(sys.argv)  # Necessary to test Qt Classes
+    app = QtWidgets.QApplication(sys.argv)
 
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
     ifile2 = r"D:\Workdata\modelling\mergetest\3dmodel_test2.npz"

@@ -52,7 +52,7 @@ class MenuWidget():
         self.parent.add_to_context('Model3D')
         context_menu = self.parent.context_menu
 
-# Normal menus
+        # Normal menus
         self.menu = QtWidgets.QMenu('Potential Field Modelling')
         parent.menubar.addAction(self.menu.menuAction())
 
@@ -76,7 +76,7 @@ class MenuWidget():
         self.menu.addAction(self.action_maginv)
         self.action_maginv.triggered.connect(self.maginv)
 
-# Context Menu
+        # Context Menu
         context_menu['Model3D'].addSeparator()
 
         self.action_mod3d = QtWidgets.QAction('3D Model Display')

@@ -82,7 +82,7 @@ class MenuWidget():
         self.menu.addAction(self.action_quarry)
         self.action_quarry.triggered.connect(self.quarry)
 
-# Context menus
+        # Context menus
 
         context_menu['Seis'].addSeparator()
 

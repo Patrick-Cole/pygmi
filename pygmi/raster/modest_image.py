@@ -182,14 +182,6 @@ class ModestImage(mi.AxesImage):
         x = event.xdata
         y = event.ydata
 
-        # if self._full_extent is None:
-        #     col = int(x + 0.5)
-        #     row = int(y + 0.5)
-        # else:
-        #     col, row = self._world2pixel.transform((x, y))
-        #     col = int(col + 0.5)
-        #     row = int(row + 0.5)
-
         col, row = self._world2pixel.transform((x, y))
         col = int(col + 0.5)
         row = int(row + 0.5)
@@ -315,7 +307,6 @@ class ModestImage(mi.AxesImage):
                                                               (xmax, ymax)]).ravel()
 
         mi.AxesImage.set_extent(self, [xmin, xmax, ymin, ymax])
-        # self.set_extent([xmin, xmax, ymin, ymax])
 
         # Finally, we cache the current settings to avoid re-computing similar
         # arrays in future.
@@ -470,7 +461,7 @@ def aspect2(data):
     dzdx = ne.evaluate('dzdx/8.')
     dzdy = ne.evaluate('dzdy/8.')
 
-# Aspect Section
+    # Aspect Section
     pi = np.pi
     adeg = ne.evaluate('90-arctan2(dzdy, -dzdx)*180./pi')
     adeg = np.ma.masked_invalid(adeg)
@@ -563,7 +554,7 @@ def histcomp(img, nbr_bins=None, perc=5., uperc=None):
         nbr_bins = max(img.shape)
         nbr_bins = max(nbr_bins, 256)
 
-# get image histogram
+    # get image histogram
     imask = np.ma.getmaskarray(img)
     tmp = img.compressed()
     imhist, bins = np.histogram(tmp, nbr_bins)
@@ -749,8 +740,6 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
         # image does not already have clipping set, clip to axes patch
         im.set_clip_path(axes.patch)
 
-    # if norm is None and shape is None:
-    #    im.set_clim(vmin, vmax)
     if vmin is not None or vmax is not None:
         im.set_clim(vmin, vmax)
     elif norm is None:
@@ -810,7 +799,6 @@ def extract_matched_slices(axes=None, shape=None,
 
     # Find the extent of the axes in 'world' coordinates
     xlim, ylim = axes.get_xlim(), axes.get_ylim()
-    # breakpoint()
 
     # Transform the limits to pixel coordinates
     ind0 = transform.transform([min(xlim), min(ylim)])
