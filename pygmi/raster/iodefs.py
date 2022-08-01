@@ -144,12 +144,27 @@ class ImportData():
         input file name. Used in main.py
     """
 
-    def __init__(self, parent=None):
-        self.ifile = ''
+    def __init__(self, parent=None, ifile='', filt='', listimport=''):
+        # if 'ifile' in kwargs:
+        #     self.ifile = kwargs['ifile']
+        # else:
+        #     self.ifile = ''
+        # if 'filt' in kwargs:
+        #     self.filt = kwargs['ifile']
+        # else:
+        #     self.filt = ''
+        # if 'listimport' in kwargs:
+        #     self.listimport = kwargs['listimport']
+        # else:
+        #     self.listimport = False
+
+        self.ifile = ifile
+        self.filt = filt
+        self.listimport = listimport
         self.parent = parent
         self.indata = {}
         self.outdata = {}
-        self.filt = ''
+
         if parent is None:
             self.showprocesslog = print
             self.piter = ProgressBarText().iter
@@ -172,7 +187,7 @@ class ImportData():
             True if successful, False otherwise.
 
         """
-        if not nodialog:
+        if not nodialog and not self.listimport:
             ext = ('Common formats (*.ers *.hdr *.tif *.tiff *.sdat *.img '
                    '*.pix *.bil);;'
                    'ArcGIS BIL (*.bil);;'
@@ -193,10 +208,19 @@ class ImportData():
                    'Surfer grid (*.grd);;'
                    )
 
-            self.ifile, self.filt = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, 'Open File', '.', ext)
-            if self.ifile == '':
+            ifilelist, self.filt = QtWidgets.QFileDialog.getOpenFileNames(
+                self.parent, 'Open File(s)', '.', ext)
+            if not ifilelist:
                 return False
+
+            self.ifile = ifilelist.pop(0)
+
+            for ifile in ifilelist:
+                self.parent.item_insert('Io', 'Import Raster Data', ImportData,
+                                        ifile=ifile, filt=self.filt,
+                                        listimport=True)
+        else:
+            self.listimport = False
 
         os.chdir(os.path.dirname(self.ifile))
 

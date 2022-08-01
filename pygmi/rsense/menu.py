@@ -209,43 +209,43 @@ class MenuWidget():
     def import_sentinel2(self):
         """Import Sentinel 2 data."""
         self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
-                                params='Sentinel-2 (*.xml *.zip);;')
+                                extscene='Sentinel-2 (*.xml *.zip);;')
 
     def import_sentinel2b(self):
         """Import Sentinel 2 data, bands only."""
         self.parent.item_insert('Io', 'Import Sentinel-2', iodefs.ImportData,
-                                params='Sentinel-2 Bands Only (*.xml *.zip);;')
+                                extscene='Sentinel-2 Bands Only (*.xml *.zip);;')
 
     def import_modis(self):
         """Import MODIS data."""
         self.parent.item_insert('Io', 'Import MODIS v6', iodefs.ImportData,
-                                params='MODIS (*.hdf);;')
+                                extscene='MODIS (*.hdf);;')
 
     def import_aster(self):
         """Import ASTER HDF data."""
         self.parent.item_insert('Io', 'Import ASTER', iodefs.ImportData,
-                                params='ASTER (AST*.hdf AST*.zip);;')
+                                extscene='ASTER (AST*.hdf AST*.zip);;')
 
     def import_ged(self):
         """Import HDF data."""
         self.parent.item_insert('Io', 'Import ASTER Global Emissivity Data',
                                 iodefs.ImportData,
-                                params='h5 (*.h5);;')
+                                extscene='h5 (*.h5);;')
 
     def import_landsat(self):
         """Import Landsat data."""
         self.parent.item_insert('Io', 'Import Landsat', iodefs.ImportData,
-                                params='Landsat (L*.tar L*.tar.gz L*_MTL.txt);;')
+                                extscene='Landsat (L*.tar L*.tar.gz L*_MTL.txt);;')
 
     def import_hyperion(self):
         """Import Hyperion data."""
         self.parent.item_insert('Io', 'Import Hyperion L1T', iodefs.ImportData,
-                                params='Hyperion L1T (*.zip);;')
+                                extscene='Hyperion L1T (*.zip);;')
 
     def import_wv(self):
         """Import WorldView data."""
         self.parent.item_insert('Io', 'Import WorldView', iodefs.ImportData,
-                                params='WorldView (*.xml);;')
+                                extscene='WorldView (*.xml);;')
 
     def batch_list(self):
         """Import batch list."""
