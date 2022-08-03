@@ -2127,6 +2127,17 @@ def _testfn():
     ifile = r'C:/Workdata/Remote Sensing/Sentinel-2/S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip'
     extscene = 'None'
 
+
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00302282018211606_20180814024609_27608.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00303132017211557_20180814030139_5621.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_05_00304252015211611_20180814030239_6200.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052446_30254.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_07XT_00304132006083806_20180608052447_30254.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_08_00305212003085056_20180604061050_13463.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_08_00305212003085104_20180604061050_13460.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_L1T_00301282006085546_20150512232823_66673.hdf"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\AST_L1T_00301302006084446_20150513000407_37833.hdf"
+
     dat = get_data(ifile, extscene=extscene)
 
     for i in dat[:1]:

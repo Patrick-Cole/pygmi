@@ -828,10 +828,6 @@ class MainWidget(QtWidgets.QMainWindow):
         item : DiagramItem
             Return a DiagramItem object
         """
-        # if params is None:
-        #     class_name_active = class_name(self)
-        # else:
-        #     class_name_active = class_name(self, params)
         class_name_active = class_name(self, **kwargs)
 
         item = DiagramItem(item_type, self.scene.my_item_menu,
