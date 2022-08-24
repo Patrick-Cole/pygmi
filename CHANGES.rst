@@ -1,6 +1,13 @@
 =========
 Changelog
 =========
+
+v3.2.5.12, 24 August 2022
+-------------------------
+*Fixed a bug where gravity profiles exported has incorrect values.
+*Raster import can now import multiple files at once.
+*Fixed a bug where a crash occurred when sun shading was deselected.
+
 v3.2.5.9, 21 July 2022
 ----------------------
 *Removed GeoTIFF ZSTD export due to library issues.
