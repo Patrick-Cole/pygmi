@@ -617,20 +617,29 @@ class ProfileDisplay(QtWidgets.QWidget):
             data = self.lmod1.griddata['Calculated Gravity']
 
             for i in self.lmod1.griddata:
-                data1 = self.lmod1.griddata[i]
                 if i in ('Study Area Dataset', 'Gravity Residual',
                          'Magnetic Residual'):
                     continue
+
+                data1 = copy.deepcopy(self.lmod1.griddata[i])
                 if 'Calculated Gravity' in i:
                     data1.data = data1.data + self.lmod1.gregional
 
                 dtlx = data.extent[0]
                 d2tlx = data1.extent[0]
-                dtly = data.extent[-1]
-                d2tly = data1.extent[-1]
+                # dtly = data.extent[-1]
+                # d2tly = data1.extent[-1]
 
-                rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data1.xdim
-                ryyy2 = (d2tly-dtly+self.ryyy*data.ydim)/data1.ydim
+                dbly = data.extent[-2]
+                d2bly = data1.extent[-2]
+
+                if 'Calculated' in i:
+                    rxxx2 = self.rxxx
+                    ryyy2 = self.ryyy
+                else:
+                    rxxx2 = (dtlx-d2tlx+self.rxxx*data.xdim)/data1.xdim + 1
+                    # ryyy2 = (d2tly-dtly+self.ryyy*data.ydim)/data1.ydim + 1
+                    ryyy2 = (dbly-d2bly+self.ryyy*data.ydim)/data1.ydim + 1
 
                 tmp = data1.data.filled(np.nan)
                 data2[i] = ndimage.map_coordinates(tmp[::-1],
@@ -642,7 +651,8 @@ class ProfileDisplay(QtWidgets.QWidget):
                 dfall = pd.DataFrame(data2)
             else:
                 dtmp = pd.DataFrame(data2)
-                dfall = dfall.append(dtmp)
+                # dfall = dfall.append(dtmp)
+                dfall = pd.concat([dfall, dtmp])
 
         dfall = dfall.dropna(thresh=4)
         dfall.to_csv(filename, index=False)
@@ -2308,8 +2318,21 @@ class PlotScale(QtWidgets.QDialog):
         vl_scale.addWidget(self.dsb_axis_custmax)
         vl_scale.addWidget(self.buttonbox)
 
+        self.dsb_axis_custmax.valueChanged.connect(self.custom)
+        self.dsb_axis_custmin.valueChanged.connect(self.custom)
         self.buttonbox.accepted.connect(self.accept)
         self.buttonbox.rejected.connect(self.reject)
+
+    def custom(self):
+        """
+        Set custom radiobutton when limits are changed.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.rb_axis_custmax.setChecked(True)
 
 
 class RangedCopy(QtWidgets.QDialog):
