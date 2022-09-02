@@ -510,18 +510,77 @@ def _testfn():
 
 def _testfn2():
     import sys
+    import matplotlib.pyplot as plt
+    from scipy.spatial.distance import cdist
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\Workdata\testdata.hdr"
 
     dat = get_raster(ifile)
 
+    dat2 = []
+    for i in dat:
+        if i.dataid in ['k: 1', 'th: 1', 'u: 1']:
+            dat2.append(i)
+
     app = QtWidgets.QApplication(sys.argv)
 
-    print('Merge')
     DM = Cluster()
-    DM.indata['Raster'] = dat
+    DM.indata['Raster'] = dat2
+    DM.spinbox_maxclusters.setProperty('value', 9)
+
     DM.settings()
+
+    cdata = DM.outdata['Cluster']
+
+    centers = {}
+    for dat in cdata:
+        num = dat.metadata['Cluster']['no_clusters']
+        centers[num] = dat.metadata['Cluster']['center']
+
+    icenter = sorted(list(centers.keys()))
+
+    master = icenter[-1]
+    dist = {}
+    measure = 'euclidean'
+
+    for j in icenter:
+        dist[j] = np.argmin(cdist(centers[master], centers[j], measure), 0)
+        dist[j] = dist[j] + 1
+
+    cdata2 = []
+    for dat in cdata:
+        cdata2.append(np.zeros_like(dat.data))
+        cnum = dat.metadata['Cluster']['no_clusters']
+        for i in range(cnum):
+            cdata2[-1][dat.data == i+1] = dist[cnum][i]
+        cdata2[-1] = np.ma.masked_equal(cdata2[-1], 0)
+
+    # for dat in cdata2:
+    #     plt.figure(dpi=150)
+    #     num = np.ma.unique(dat).compressed().size
+    #     plt.title(f'Clusters: {num}')
+    #     plt.imshow(dat)
+    #     plt.show()
+
+    # plt.figure(dpi=150)
+    # for dat in cdata2:
+    #     num = np.ma.unique(dat).compressed().size
+    #     plt.title(f'Clusters: {num}')
+    #     plt.imshow(dat, alpha=0.25)
+
+    # plt.show()
+
+    mdata = np.ma.mean(cdata2, 0)
+    plt.figure(dpi=150)
+    plt.imshow(mdata)
+    plt.colorbar()
+    plt.show()
+
+
+
+
+    # breakpoint()
 
 
 if __name__ == "__main__":
