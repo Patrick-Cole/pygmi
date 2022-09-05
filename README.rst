@@ -167,6 +167,8 @@ The process to install is as follows:
    conda install simpeg
 
    conda install pyshp
+   
+   conda install natsort
 
    pip install mtpy
 
