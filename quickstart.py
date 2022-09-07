@@ -36,6 +36,8 @@ from pygmi.main import main
 
 # warnings.simplefilter("default")
 
+#useful regex for find: \.(?!py)
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 2 and 'true' in sys.argv[1].lower():
