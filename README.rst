@@ -168,8 +168,6 @@ The process to install is as follows:
 
    conda install pyshp
    
-   conda install natsort
-
    pip install mtpy
 
    conda update --all
