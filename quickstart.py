@@ -36,7 +36,7 @@ from pygmi.main import main
 
 # warnings.simplefilter("default")
 
-#useful regex for find: \.(?!py)
+# useful regex for find: \.(?!py)
 
 
 if __name__ == "__main__":

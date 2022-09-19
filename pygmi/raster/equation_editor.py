@@ -117,6 +117,10 @@ class EquationEditor(QtWidgets.QDialog):
                '<h2>Examples</h2>'
                '<p>Sum:</p>'
                '<pre>    i1 + 1000</pre>'
+               '<p>Mean (can be any number of arguments):</p>'
+               '<pre>    mean(i0, i1, i2) or mean(iall)</pre>'
+               '<p>Standard Deviation (can be any number of arguments):</p>'
+               '<pre>    std(i0, i1, i2) or std(iall)</pre>'
                '<p>Mosaic two bands into one:</p>'
                '<pre>    mosaic(i0, i1)</pre>'
                '<p>Threshold between values 1 and 98, substituting -999 as a '
@@ -189,6 +193,96 @@ class EquationEditor(QtWidgets.QDialog):
         neweq = neweq.replace('nodata', str(indata[0].nodata))
 
         return neweq
+
+    def mean(self, eq, localdict):
+        """
+        Get mean pixel value of all input bands.
+
+        Parameters
+        ----------
+        eq : str
+            Equation with std command.
+        localdict : dictionary
+            Dictionary of data.
+
+        Returns
+        -------
+        findat : numpy array
+            Output array.
+
+        """
+        idx = eq.index('mean(')+5
+        eq2 = eq[idx:]
+        idx = eq2.index(')')
+        eq2 = eq2[:idx]
+        eq2 = eq2.replace(' ', '')
+        eq3 = eq2.split(',')
+
+        stack = []
+        mask = None
+        for i in localdict:
+            if i not in eq3:
+                continue
+            if mask is None:
+                mask = localdict[i].mask
+            else:
+                mask = np.logical_and(mask, localdict[i].mask)
+
+            if i == 'iall':
+                stack.append(localdict[i])
+            else:
+                stack.append([localdict[i]])
+
+        stack = np.ma.vstack(stack)
+        findat = np.ma.mean(stack, 0)
+        findat.mask = mask
+
+        return findat
+
+    def std(self, eq, localdict):
+        """
+        Get std dev pixel value of all input bands.
+
+        Parameters
+        ----------
+        eq : str
+            Equation with std command.
+        localdict : dictionary
+            Dictionary of data.
+
+        Returns
+        -------
+        findat : numpy array
+            Output array.
+
+        """
+        idx = eq.index('std(')+4
+        eq2 = eq[idx:]
+        idx = eq2.index(')')
+        eq2 = eq2[:idx]
+        eq2 = eq2.replace(' ', '')
+        eq3 = eq2.split(',')
+
+        stack = []
+        mask = None
+        for i in localdict:
+            if i not in eq3:
+                continue
+            if mask is None:
+                mask = localdict[i].mask
+            else:
+                mask = np.logical_and(mask, localdict[i].mask)
+
+            if i == 'iall':
+                stack.append(localdict[i])
+            else:
+                stack.append([localdict[i]])
+
+        stack = np.ma.vstack(stack)
+        findat = np.ma.std(stack, 0)
+        findat.mask = mask
+
+        return findat
 
     def mosaic(self, eq, localdict):
         """
@@ -322,25 +416,26 @@ class EquationEditor(QtWidgets.QDialog):
 
         if 'mosaic' in neweq:
             findat = self.mosaic(neweq, localdict)
-            if findat is None:
-                QtWidgets.QMessageBox.warning(
-                    self.parent, 'Error',
-                    'Nothing processed! '
-                    'Your equation most likely had an error.',
-                    QtWidgets.QMessageBox.Ok)
-                return False
             mask = findat.mask
-
+        elif 'mean' in neweq:
+            findat = self.mean(neweq, localdict)
+            mask = findat.mask
+        elif 'std' in neweq:
+            findat = self.std(neweq, localdict)
+            mask = findat.mask
         else:
             try:
                 findat = ne.evaluate(neweq, localdict)
             except Exception:
-                QtWidgets.QMessageBox.warning(
-                    self.parent, 'Error',
-                    'Nothing processed! '
-                    'Your equation most likely had an error.',
-                    QtWidgets.QMessageBox.Ok)
-                return False
+                findat = None
+
+        if findat is None:
+            QtWidgets.QMessageBox.warning(
+                self.parent, 'Error',
+                'Nothing processed! '
+                'Your equation most likely had an error.',
+                QtWidgets.QMessageBox.Ok)
+            return False
 
         outdata = []
 
@@ -441,3 +536,33 @@ def hmode(data):
     mode2 = (mmax-mmin)/2 + mmin
 
     return mode2
+
+
+def _test():
+    """Test."""
+    import sys
+    import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import get_raster
+    print('Starting')
+
+    ifile = r"C:\Workdata\testdata.hdr"
+
+    dat = get_raster(ifile)
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    EE = EquationEditor()
+    EE.indata['Raster'] = dat
+
+    EE.settings()
+
+
+    out = EE.outdata['Raster']
+
+    plt.figure(dpi=150)
+    plt.imshow(out[0].data)
+    plt.show()
+
+
+if __name__ == "__main__":
+    _test()
