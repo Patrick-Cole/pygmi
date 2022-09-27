@@ -301,9 +301,6 @@ class SatRatios(QtWidgets.QDialog):
                 if txt == 'Band3N':
                     txt = 'Band3'
 
-                if txt == 'Band8A':
-                    txt = 'Band8'
-
                 datd[txt] = i.data
 
             datfin = []
@@ -332,7 +329,15 @@ class SatRatios(QtWidgets.QDialog):
                 for j in blist:
                     newmask = (newmask | datd[j].mask)
 
-                ratio = ne.evaluate(formula, datd)
+                if len(formula.split(r'/')) == 2:
+                    f1, f2 = formula.split(r'/')
+                    a1 = ne.evaluate(f1, datd)
+                    a2 = ne.evaluate(f2, datd)
+
+                    a2[np.isclose(a2, 0.)] = 0.
+                    ratio = a1/a2
+                else:
+                    ratio = ne.evaluate(formula, datd)
 
                 ratio = ratio.astype(np.float32)
                 ratio[newmask] = dat[0].nodata
@@ -367,21 +372,6 @@ class SatRatios(QtWidgets.QDialog):
 
         """
         sensor = self.combo_sensor.currentText()
-
-        sdict = {}
-
-        sdict['ASTER'] = {'B1': 'B1', 'B2': 'B2', 'B3': 'B3', 'B4': 'B4',
-                          'B5': 'B5', 'B6': 'B6', 'B7': 'B7', 'B8': 'B8',
-                          'B9': 'B9', 'B10': 'B10', 'B11': 'B11', 'B12': 'B12',
-                          'B13': 'B13', 'B14': 'B14'}
-        sdict['Landsat 8 and 9 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
-                                          'B3': 'B5', 'B4': 'B6', 'B5': 'B7'}
-        sdict['Landsat 7 (ETM+)'] = {'B0': 'B1', 'B1': 'B2', 'B2': 'B3',
-                                     'B3': 'B4', 'B4': 'B5', 'B5': 'B7'}
-        sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
-        sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
-                               'B4': 'B11', 'B5': 'B12'}
-        sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7'}
 
         rlist = []
 
@@ -424,8 +414,9 @@ class SatRatios(QtWidgets.QDialog):
                   r'(B3-B2)/(B3+B2) NDVI',
                   r'(B3-B4)/(B3+B4) NDWI/NDMI water in leaves',
                   r'(B1-B3)/(B1+B3) NDWI water bodies ',
-                  r'2.5*((B3-B2)/(B3+6.0*B2-7.5*B0+1)) EVI',
-                  r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2']
+                  r'2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI',
+                  r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2',
+                  r'(B3A-B4+B5)/(B3A+B4-B5) NMDI']
 
         # Colour composite
 
@@ -434,18 +425,7 @@ class SatRatios(QtWidgets.QDialog):
                   r'B5/B1 Used in colour composites',
                   r'B4/B7 Used in colour composites']
 
-        bandmap = sdict[sensor]
-        svalues = set(bandmap.keys())
-        rlist2 = []
-        for i in rlist:
-            formula = i.split(' ')[0]
-            lbl = i[i.index(' '):]
-            bands = set(re.findall(r'B\d+', formula))
-            if bands.issubset(svalues):
-                tmp = re.sub(r'B(\d+)', r'tmpB\1', formula)
-                for j in svalues:
-                    tmp = tmp.replace('tmp'+j, bandmap[j])
-                rlist2.append(tmp+lbl)
+        rlist2 = correct_bands(rlist, sensor)
 
         self.lw_ratios.clear()
         self.lw_ratios.addItems(rlist2)
@@ -692,7 +672,7 @@ class ConditionIndices(QtWidgets.QDialog):
 
         rlist = []
         if 'VCI' in rlist1 and 'EVI' in index:
-            rlist += [r'2.5*((B3-B2)/(B3+6.0*B2-7.5*B0+1)) EVI']
+            rlist += [r'2.5*(B3-B2)/(B3+6.0*B2-7.5*B0+1) EVI']
         elif 'VCI' in rlist1 and 'NDVI' in index:
             rlist += [r'(B3-B2)/(B3+B2) NDVI']
         elif 'VCI' in rlist1 and 'MSAVI2' in index:
@@ -773,9 +753,6 @@ class ConditionIndices(QtWidgets.QDialog):
                 if txt == 'Band3N':
                     txt = 'Band3'
 
-                if txt == 'Band8A':
-                    txt = 'Band8'
-
                 datd[txt] = i.data
 
                 if 'LST' in txt:
@@ -807,7 +784,17 @@ class ConditionIndices(QtWidgets.QDialog):
                 for j in blist:
                     newmask = (newmask | datd[j].mask)
 
-                ratio = ne.evaluate(formula, datd)
+                if len(formula.split(r'/')) == 2:
+                    f1, f2 = formula.split(r'/')
+                    a1 = ne.evaluate(f1, datd)
+                    a2 = ne.evaluate(f2, datd)
+
+                    a2[np.isclose(a2, 0.)] = 0.
+                    ratio = a1/a2
+                else:
+                    ratio = ne.evaluate(formula, datd)
+
+                # ratio = ne.evaluate(formula, datd)
 
                 newmask = newmask | (ratio < -1) | (ratio > 1)
                 ratio = ratio.astype(np.float32)
@@ -854,10 +841,7 @@ class ConditionIndices(QtWidgets.QDialog):
 
     def setratios(self):
         """
-        Set the available ratios.
-
-        The ratio definitions are for the ASTER satellite. Band 0 refers to
-        an imaginary blue band.
+        Set the available indices.
 
         Returns
         -------
@@ -949,16 +933,18 @@ def correct_bands(rlist, sensor):
     sdict['ASTER'] = {'B1': 'B1', 'B2': 'B2', 'B3': 'B3', 'B4': 'B4',
                       'B5': 'B5', 'B6': 'B6', 'B7': 'B7', 'B8': 'B8',
                       'B9': 'B9', 'B10': 'B10', 'B11': 'B11', 'B12': 'B12',
-                      'B13': 'B13', 'B14': 'B14'}
+                      'B13': 'B13', 'B14': 'B14', 'B3A': 'B3'}
     sdict['Landsat 8 and 9 (OLI)'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4',
-                                      'B3': 'B5', 'B4': 'B6', 'B5': 'B7'}
+                                      'B3': 'B5', 'B4': 'B6', 'B5': 'B7',
+                                      'B3A': 'B5'}
     sdict['Landsat 7 (ETM+)'] = {'B0': 'B1', 'B1': 'B2', 'B2': 'B3',
-                                 'B3': 'B4', 'B4': 'B5', 'B5': 'B7'}
+                                 'B3': 'B4', 'B4': 'B5', 'B5': 'B7',
+                                 'B3A': 'B4'}
     sdict['Landsat 4 and 5 (TM)'] = sdict['Landsat 7 (ETM+)']
     sdict['Sentinel-2'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B4', 'B3': 'B8',
-                           'B4': 'B11', 'B5': 'B12'}
-
-    sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7'}
+                           'B4': 'B11', 'B5': 'B12', 'B3A': 'B8A'}
+    sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',
+                          'B3A': 'B7'}
 
     bandmap = sdict[sensor]
     svalues = set(bandmap.keys())
@@ -1206,7 +1192,7 @@ def _testfn():
 
     extscene = None
 
-    ifile = r"D:\Workdata\Remote Sensing\Landsat\LC08_L1TP_176080_20190820_20190903_01_T1.tar.gz"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
@@ -1217,9 +1203,12 @@ def _testfn():
     SR.settings()
 
     dat2 = SR.outdata['Raster']
-    for i in dat+dat2:
+    for i in dat2:
+        plt.figure(dpi=150)
         plt.title(i.dataid)
-        plt.imshow(i.data)
+        vmin = i.data.mean()-2*i.data.std()
+        vmax = i.data.mean()+2*i.data.std()
+        plt.imshow(i.data, vmin=vmin, vmax=vmax)
         plt.colorbar()
         plt.show()
 
@@ -1229,7 +1218,7 @@ def _testfn2():
     import glob
     import matplotlib.pyplot as plt
 
-    ifiles = glob.glob("d:/Workdata/NRF/172-079/*.tar")
+    ifiles = glob.glob(r'C:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1245,6 +1234,8 @@ def _testfn2():
         plt.colorbar()
         plt.title(i.dataid)
         plt.show()
+
+    breakpoint()
 
 
 def _testfn3():
