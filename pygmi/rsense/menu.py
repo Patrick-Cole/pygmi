@@ -50,7 +50,8 @@ class MenuWidget():
     def __init__(self, parent=None):
 
         self.parent = parent
-        self.parent.add_to_context('Remote Sensing')
+        self.parent.add_to_context('RasterFileList')
+        context_menu = self.parent.context_menu
 
         # Normal menus
         self.menu = QtWidgets.QMenu('Remote Sensing')
@@ -151,6 +152,17 @@ class MenuWidget():
         self.action_data_viewer = QtWidgets.QAction('View Change Data')
         self.menu2.addAction(self.action_data_viewer)
         self.action_data_viewer.triggered.connect(self.view_change)
+
+        # Context menus
+        context_menu['RasterFileList'].addSeparator()
+
+        self.action_exportlist = QtWidgets.QAction('Export Raster File List')
+        context_menu['RasterFileList'].addAction(self.action_exportlist)
+        self.action_exportlist.triggered.connect(self.exportlist)
+
+    def exportlist(self):
+        """Export Raster File List."""
+        self.parent.launch_context_item(iodefs.ExportBatch)
 
     def create_scene(self):
         """Create Scene."""

@@ -33,6 +33,7 @@ import tarfile
 import zipfile
 import datetime
 from collections import defaultdict
+import warnings
 
 from PyQt5 import QtWidgets, QtCore
 import numpy as np
@@ -47,8 +48,11 @@ from natsort import natsorted
 
 from pygmi import menu_default
 from pygmi.raster.datatypes import Data
-from pygmi.raster.iodefs import get_raster
+from pygmi.raster.iodefs import get_raster, export_raster
 from pygmi.misc import ProgressBarText
+
+warnings.filterwarnings("ignore",
+                        category=rasterio.errors.NotGeoreferencedWarning)
 
 EDIST = {1: 0.98331, 2: 0.9833, 3: 0.9833, 4: 0.9833,
          5: 0.9833, 6: 0.98332, 7: 0.98333, 8: 0.98335,
@@ -771,6 +775,203 @@ class ImportShapeData():
         projdata['ifile'] = self.ifile
 
         return projdata
+
+
+class ExportBatch(QtWidgets.QDialog):
+    """
+    Export Raster File List.
+
+    Attributes
+    ----------
+    parent : parent
+        reference to the parent routine
+    outdata : dictionary
+        dictionary of output datasets
+    ifile : str
+        input file name. Used in main.py
+    """
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+
+        self.ifile = ''
+
+        if parent is None:
+            self.piter = ProgressBarText().iter
+            self.showprocesslog = print
+            self.process_is_active = print
+        else:
+            self.piter = parent.pbar.iter
+            self.showprocesslog = parent.showprocesslog
+            self.process_is_active = parent.process_is_active
+
+        self.parent = parent
+        self.indata = {}
+        self.outdata = {}
+
+        self.ofilt = QtWidgets.QComboBox()
+        self.odir = QtWidgets.QLineEdit('')
+        self.red = QtWidgets.QComboBox()
+        self.green = QtWidgets.QComboBox()
+        self.blue = QtWidgets.QComboBox()
+        self.ternary = QtWidgets.QCheckBox('Ternary Export')
+
+        self.setupui()
+
+    def setupui(self):
+        """
+        Set up UI.
+
+        Returns
+        -------
+        None.
+
+        """
+        gridlayout_main = QtWidgets.QGridLayout(self)
+        buttonbox = QtWidgets.QDialogButtonBox()
+        helpdocs = menu_default.HelpButton('pygmi.grav.iodefs.importpointdata')
+        label_ofilt = QtWidgets.QLabel('Output Format:')
+        label_red = QtWidgets.QLabel('Red Band:')
+        label_green = QtWidgets.QLabel('Green Band:')
+        label_blue = QtWidgets.QLabel('Blue Band:')
+        pb_odir = QtWidgets.QPushButton('Output Directory')
+
+        ext = ('GeoTiff', 'ENVI', 'ERMapper', 'ERDAS Imagine')
+
+        self.ofilt.addItems(ext)
+
+        self.ternary.setChecked(False)
+        self.red.setEnabled(False)
+        self.green.setEnabled(False)
+        self.blue.setEnabled(False)
+
+        buttonbox.setOrientation(QtCore.Qt.Horizontal)
+        buttonbox.setCenterButtons(True)
+        buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
+
+        self.setWindowTitle(r'Export File List')
+
+        gridlayout_main.addWidget(self.odir, 0, 0, 1, 1)
+        gridlayout_main.addWidget(pb_odir, 0, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_ofilt, 1, 0, 1, 1)
+        gridlayout_main.addWidget(self.ofilt, 1, 1, 1, 1)
+
+        gridlayout_main.addWidget(self.ternary, 2, 0, 1, 2)
+
+        gridlayout_main.addWidget(label_red, 3, 0, 1, 1)
+        gridlayout_main.addWidget(self.red, 3, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_green, 4, 0, 1, 1)
+        gridlayout_main.addWidget(self.green, 4, 1, 1, 1)
+
+        gridlayout_main.addWidget(label_blue, 5, 0, 1, 1)
+        gridlayout_main.addWidget(self.blue, 5, 1, 1, 1)
+
+
+        gridlayout_main.addWidget(helpdocs, 8, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 8, 1, 1, 3)
+
+        buttonbox.accepted.connect(self.accept)
+        buttonbox.rejected.connect(self.reject)
+        pb_odir.pressed.connect(self.get_odir)
+        self.ternary.clicked.connect(self.click_ternary)
+
+    def click_ternary(self):
+        """
+        Click ternary event.
+
+        Returns
+        -------
+        None.
+
+        """
+        if self.ternary.isChecked():
+            self.red.setEnabled(True)
+            self.green.setEnabled(True)
+            self.blue.setEnabled(True)
+        else:
+            self.red.setEnabled(False)
+            self.green.setEnabled(False)
+            self.blue.setEnabled(False)
+
+    def run(self):
+        """
+        Run.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        self.process_is_active(True)
+
+        if 'RasterFileList' not in self.indata:
+            self.showprocesslog('No raster file list')
+            self.process_is_active(False)
+            return False
+
+        ifile = self.indata['RasterFileList'][0]
+        dat = get_data(ifile, piter=self.piter,
+                       showprocesslog=self.showprocesslog,
+                       extscene='Bands Only')
+
+        bnames = [i.dataid for i in dat]
+
+        if 'Explained Variance Ratio' in bnames[0]:
+            bnames = [i.split('Explained Variance Ratio')[0] for i in bnames]
+
+        self.red.addItems(bnames)
+        self.green.addItems(bnames)
+        self.blue.addItems(bnames)
+
+        tmp = self.exec_()
+
+        if tmp != 1 or self.odir.text() == '':
+            return False
+
+        filt = self.ofilt.currentText()
+        odir = self.odir.text()
+
+        if self.ternary.isChecked():
+            tnames = [self.red.currentText(),
+                      self.green.currentText(),
+                      self.blue.currentText()]
+        else:
+            tnames = None
+
+        self.showprocesslog('Export Data Busy...')
+
+        export_batch(self.indata, odir, filt, tnames, piter=self.piter,
+                     showprocesslog=self.showprocesslog)
+
+        self.showprocesslog('Export Data Finished!')
+        self.process_is_active(False)
+        return True
+
+    def get_odir(self, odir=''):
+        """
+        Get output directory.
+
+        Parameters
+        ----------
+        odir : str, optional
+            Output directory submitted for testing. The default is ''.
+
+        Returns
+        -------
+        None.
+
+        """
+        if odir == '':
+            odir = QtWidgets.QFileDialog.getExistingDirectory(
+                self.parent, 'Select Output Directory')
+
+            if odir == '':
+                return
+
+        self.odir.setText(odir)
 
 
 def calculate_toa(dat, showprocesslog=print):
@@ -1559,7 +1760,7 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
             bname = dataset.descriptions[i-1]+f' ({dataset.transform[0]}m)'
             bmeta = dataset.tags(i)
 
-            if ('Sentinel-2 Bands Only' in extscene and
+            if ('Bands Only' in extscene and
                     'central wavelength' not in bname.lower()):
                 continue
 
@@ -2098,6 +2299,70 @@ def etree_to_dict(t):
     return d
 
 
+def export_batch(indata, odir, filt, tnames=None, piter=None,
+                 showprocesslog=print):
+    """
+    Export a batch of files directly from satellite format to disk.
+
+    Parameters
+    ----------
+    indata : dictionary
+        Dictionary containing 'RasterFileList' as one of its keys.
+    odir : str
+        Output Directory.
+    filt : str
+        type of file to export.
+    tnames : list, optional
+        list of band names to import, in order. the default is None.
+    piter : iter, optional
+        Progress bar iterable. Default is None.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+
+    Returns
+    -------
+    None.
+
+    """
+    if 'RasterFileList' not in indata:
+        showprocesslog('You need a raster file list')
+        return
+
+    ifiles = indata['RasterFileList']
+
+    filt2gdal = {'GeoTiff': 'GTiff',
+                 'ENVI': 'ENVI',
+                 'ERMapper': 'ERS',
+                 'ERDAS Imagine': 'HFA'}
+
+    ofilt = filt2gdal[filt]
+
+    os.makedirs(odir, exist_ok=True)
+
+    for ifile in ifiles:
+        showprocesslog('Processing '+os.path.basename(ifile))
+
+        dat = get_data(ifile, piter=piter,
+                       showprocesslog=showprocesslog,
+                       extscene='Bands Only')
+        ofile = os.path.join(odir, os.path.basename(ifile))
+        ofile = ofile[:-4]+'.tif'
+
+        odat = []
+        if tnames is not None:
+            for i in tnames:
+                for j in dat:
+                    if i in j.dataid:
+                        odat.append(j)
+                        break
+            ofile = ofile[:-4]+'_tern.tif'
+        else:
+            odat = dat
+
+        showprocesslog('Exporting '+os.path.basename(ofile))
+        export_raster(ofile, odat, ofilt, piter=piter)
+
+
 def _test5P():
     """Test routine."""
     import sys
@@ -2163,5 +2428,27 @@ def _testfn2():
         export_raster(ofile, dat, 'GTiff')
 
 
+def _testfn3():
+    """Test routine."""
+    import sys
+
+    idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\MNF'
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    tmp1 = ImportBatch()
+    tmp1.idir = idir
+    tmp1.settings(True)
+
+    dat = tmp1.outdata
+
+    tmp2 = ExportBatch()
+    tmp2.indata = dat
+    tmp2.run()
+
+
+    # export_batch(dat, odir, '', piter=ProgressBarText().iter)
+
+
 if __name__ == "__main__":
-    _testfn()
+    _testfn3()

@@ -39,6 +39,9 @@ from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import lstack
 from pygmi.misc import ProgressBarText
 
+warnings.filterwarnings("ignore",
+                        category=rasterio.errors.NotGeoreferencedWarning)
+
 
 class ComboBoxBasic(QtWidgets.QDialog):
     """
@@ -559,7 +562,7 @@ def get_ascii(ifile):
 
 
 def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
-               iraster=None, driver=None):
+               iraster=None, driver=None, bounds=None):
     """
     Get raster dataset.
 
@@ -682,6 +685,18 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     if nval is None:
         nval = dataset.nodata
     dtype = rasterio.band(dataset, 1).dtype
+
+    if bounds is not None:
+        xdim, ydim = dataset.res
+        xmin, ymin, xmax, ymax = dataset.bounds
+        xmin1, ymin1, xmax1, ymax1 = bounds
+        xoff = max(0, (xmin1-xmin)//xdim)
+        yoff = max(0, (ymax-ymax1)//ydim)
+        xsize = min((xmax1-xmin1)//xdim, (xmax-xmin1)//xdim)
+        ysize = min((ymax1-ymin1)//ydim, (ymax-ymin1)//ydim)
+
+        iraster = (xoff, yoff, xsize, ysize)
+
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
     else:

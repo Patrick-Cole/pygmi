@@ -299,10 +299,11 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         """
         self.scene().clearSelection()
         self.setSelected(True)
-        exclude = ['GenFPS', 'SceneList', 'RasterFileList']
+        exclude = ['GenFPS', 'SceneList']
 
         tmp = self.context_menu['Basic'].actions()
-        if 'Raster' in self.my_class.indata:
+        if ('Raster' in self.my_class.indata and
+                'RasterFileList' not in self.my_class.indata):
             tmp += self.context_menu['inRaster'].actions()
 
         tmplist = list(self.my_class.outdata.keys())

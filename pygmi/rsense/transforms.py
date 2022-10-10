@@ -34,6 +34,7 @@ import numexpr as ne
 import matplotlib.pyplot as plt
 
 from pygmi.raster.iodefs import get_raster, export_raster
+from pygmi.rsense.iodefs import get_data
 from pygmi.raster.dataprep import lstack
 from pygmi.misc import ProgressBarText
 from pygmi import menu_default
@@ -243,13 +244,15 @@ class MNF(QtWidgets.QDialog):
 
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
-            odir = os.path.join(os.path.dirname(flist[0]), 'feature')
+            odir = os.path.join(os.path.dirname(flist[0]), 'MNF')
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
                 self.showprocesslog('Processing '+os.path.basename(ifile))
 
-                dat = get_raster(ifile)
+                dat = get_data(ifile, piter=self.piter,
+                               showprocesslog=self.showprocesslog,
+                               extscene='Bands Only')
                 odata, self.ev = mnf_calc(dat, ncmps, piter=self.piter,
                                           pprint=self.showprocesslog,
                                           noisetxt=noise,
@@ -458,18 +461,20 @@ class PCA(QtWidgets.QDialog):
 
         if 'RasterFileList' in self.indata:
             flist = self.indata['RasterFileList']
-            odir = os.path.join(os.path.dirname(flist[0]), 'feature')
+            odir = os.path.join(os.path.dirname(flist[0]), 'PCA')
 
             os.makedirs(odir, exist_ok=True)
             for ifile in flist:
                 self.showprocesslog('Processing '+os.path.basename(ifile))
 
-                dat = get_raster(ifile)
+                dat = get_data(ifile, piter=self.piter,
+                               showprocesslog=self.showprocesslog,
+                               extscene='Bands Only')
                 odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
                                           pprint=self.showprocesslog,
                                           fwdonly=self.cb_fwdonly.isChecked())
 
-                ofile = os.path.basename(ifile).split('.')[0] + '_mnf.tif'
+                ofile = os.path.basename(ifile).split('.')[0] + '_pca.tif'
                 ofile = os.path.join(odir, ofile)
 
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
@@ -796,59 +801,6 @@ def _testfn():
 
 
 def _testfn2():
-    from matplotlib import rcParams
-    # import spectral as sp
-
-    rcParams['figure.dpi'] = 300
-
-    pbar = ProgressBarText()
-
-    ifile = r'd:\Workdata\lithosphere\Cut-90-0824-.hdr'
-    nodata = 0
-    iraster = None
-
-    dat = get_raster(ifile, nval=nodata, iraster=iraster, piter=pbar.iter)
-
-    dat2 = []
-    maskall = []
-    for j in dat:
-        dat2.append(j.data.astype(float))
-        mask = j.data.mask
-        maskall.append(mask)
-
-    maskall = np.moveaxis(maskall, 0, -1)
-    dat2 = np.moveaxis(dat2, 0, -1)
-
-    # signal = sp.calc_stats(dat2)
-    # noise = sp.noise_from_diffs(dat2)
-    # mnfr = sp.mnf(signal, noise)
-    # denoised = mnfr.denoise(dat2, num=ncmps)
-    # scov = noise.cov
-
-    for i in ['diagonal', 'hv average', '']:
-        noise, maskp = get_noise(dat2, mask=mask, noise=i)
-
-        n2 = np.zeros(maskp.shape+(dat2.shape[-1],))
-        n2[maskp] = noise
-        n2 = np.ma.array(n2[:, :, 0], mask=~maskp)
-
-        vmin = n2.mean()-2*n2.std()
-        vmax = n2.mean()+2*n2.std()
-        plt.title(i)
-        plt.grid(True)
-        plt.imshow(n2[600:800, 600:800], vmin=vmin, vmax=vmax)
-        plt.colorbar()
-        plt.show()
-        plt.hist(n2.flatten(), 50)
-        plt.show()
-        plt.plot(n2[600])
-        plt.show()
-
-    # pmnf = mnf_calc(dat2, maskall, ncmps=ncmps, noisetxt='diagonal')
-    # pmnf, ev = mnf_calc(dat, ncmps=None, noisetxt='diagonal')
-
-
-def _testfn3():
     import sys
     from matplotlib import rcParams
     from pygmi.rsense.iodefs import get_data
@@ -891,6 +843,29 @@ def _testfn3():
         # vmax = dat2[i].data.mean()+dat2[i].data.std()*2
         # plt.imshow(dat2[i].data, vmin=vmin, vmax=vmax)
         plt.show()
+
+
+def _testfn3():
+    import sys
+    from matplotlib import rcParams
+    from pygmi.rsense.iodefs import ImportBatch
+
+    rcParams['figure.dpi'] = 150
+
+    idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger'
+
+    app = QtWidgets.QApplication(sys.argv)
+
+    tmp1 = ImportBatch()
+    tmp1.idir = idir
+    tmp1.settings(True)
+
+    dat = tmp1.outdata
+
+    # tmp2 = PCA()
+    tmp2 = MNF()
+    tmp2.indata = dat
+    tmp2.settings()
 
 
 if __name__ == "__main__":

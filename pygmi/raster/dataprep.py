@@ -280,9 +280,9 @@ class DataLayerStack(QtWidgets.QDialog):
             data = self.indata['Raster'][0]
 
             if self.dxy is None:
-                dxy0 = min(data.xdim, data.ydim)
+                self.dxy = min(data.xdim, data.ydim)
                 for data in self.indata['Raster']:
-                    self.dxy = min(dxy0, data.xdim, data.ydim)
+                    self.dxy = min(self.dxy, data.xdim, data.ydim)
 
             self.dsb_dxy.setValue(self.dxy)
             self.dxy_change()
@@ -2286,7 +2286,7 @@ def cut_raster(data, ifile, pprint=print):
                    'projection is the same as the raster dataset')
             return None
 
-        # This section convers PolygonZ to Polygon, and takes first polygon.
+        # This section converts PolygonZ to Polygon, and takes first polygon.
         coords = gdf['geometry'].loc[0].exterior.coords
         coords = [Polygon([[p[0], p[1]] for p in coords])]
 
@@ -2486,10 +2486,11 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
             dxy = min(data.xdim, data.ydim)
     else:
         data = dat[0]
-        dxy0 = min(data.xdim, data.ydim)
+
         if dxy is None:
+            dxy = min(data.xdim, data.ydim)
             for data in dat:
-                dxy = min(dxy0, data.xdim, data.ydim)
+                dxy = min(dxy, data.xdim, data.ydim)
 
         xmin0, xmax0, ymin0, ymax0 = data.extent
         for data in dat:
@@ -2638,6 +2639,83 @@ def trim_raster(olddata):
         data.set_transform(data.xdim, xmin, data.ydim, ymax)
 
     return olddata
+
+def cut_raster_basic(data, ifile, pprint=print):
+    """Cuts a raster dataset.
+
+    Cut a raster dataset using a shapefile.
+
+    Parameters
+    ----------
+    data : Data
+        PyGMI Dataset
+    ifile : str
+        shapefile used to cut data
+    pprint : function, optional
+        Function for printing text. The default is print.
+
+    Returns
+    -------
+    data : Data
+        PyGMI Dataset
+    """
+    data = copy.deepcopy(data)
+
+    try:
+        gdf = gpd.read_file(ifile)
+    except:
+        pprint('There was a problem importing the shapefile. Please make '
+               'sure you have at all the individual files which make up '
+               'the shapefile.')
+        return None
+
+    gdf = gdf[gdf.geometry != None]
+
+    if gdf.geom_type.iloc[0] == 'MultiPolygon':
+        pprint('You have a MultiPolygon. Only the first overlapping Polygon '
+               'of the MultiPolygon will be used.')
+        poly = gdf['geometry'].iloc[0]
+        tmp = poly.geoms[0]
+
+        dext = list(data[0].bounds)
+        dpoly = box(dext[0], dext[1], dext[2], dext[3])
+
+        for i in list(poly.geoms):
+            if i.overlaps(dpoly):
+                tmp = i
+                break
+
+        gdf.geometry.iloc[0] = tmp
+
+    if gdf.geom_type.iloc[0] != 'Polygon':
+        pprint('You need a polygon in that shape file')
+        return None
+
+    for idata in data:
+        # Convert the layer extent to image pixel coordinates
+        poly = gdf['geometry'].iloc[0]
+        dext = idata.bounds
+        lext = poly.bounds
+
+        if ((dext[0] > lext[2]) or (dext[2] < lext[0]) or
+                (dext[1] > lext[3]) or (dext[3] < lext[1])):
+
+            pprint('The shapefile is not in the same area as the raster '
+                   'dataset. Please check its coordinates and make sure its '
+                   'projection is the same as the raster dataset')
+            return None
+
+        # This section convers PolygonZ to Polygon, and takes first polygon.
+        coords = gdf['geometry'].loc[0].exterior.coords
+        coords = [Polygon([[p[0], p[1]] for p in coords])]
+
+        dat, trans = riomask(idata.to_mem(), coords, crop=True)
+
+        idata.data = np.ma.masked_equal(dat.squeeze(), idata.nodata)
+
+        idata.set_transform(transform=trans)
+
+    return data
 
 
 def _testdown():
@@ -2995,6 +3073,53 @@ def _testlstack():
     ofile = r'd:/Workdata/LULC/2001_stack_norm_pc.tif'
     export_raster(ofile, dat2, 'GTiff')
 
+def _testcut2():
+    """Test Reprojection."""
+    import sys
+    from pygmi.raster.iodefs import get_raster
+    import matplotlib.pyplot as plt
+
+    sfile  = r"D:\hypercut\shape\Areas_utm33s_west.shp"
+    ifilt = r"D:\hypercut\*.hdr"
+
+    pprint = print
+
+    ifiles = glob.glob(ifilt)
+
+    for ifile in ifiles:
+        # dat = get_raster(ifile)
+
+        gdf = gpd.read_file(sfile)
+
+        gdf = gdf[gdf.geometry != None]
+
+        if gdf.geom_type.iloc[0] == 'MultiPolygon':
+            pprint('You have a MultiPolygon. Only the first Polygon '
+                   'of the MultiPolygon will be used.')
+            poly = gdf['geometry'].iloc[0]
+            tmp = poly.geoms[0]
+
+            # dext = list(data[0].bounds)
+            # dpoly = box(dext[0], dext[1], dext[2], dext[3])
+
+            # for i in list(poly.geoms):
+            #     if i.overlaps(dpoly):
+            #         tmp = i
+            #         break
+
+            gdf.geometry.iloc[0] = tmp
+
+        if gdf.geom_type.iloc[0] != 'Polygon':
+            pprint('You need a polygon in that shape file')
+            return None
+
+        bounds = gdf.geometry.iloc[0].bounds
+
+        dat = get_raster(ifile, bounds=bounds)
+
+        plt.imshow(dat[0].data, extent=dat[0].extent)
+        plt.show()
+        breakpoint()
 
 if __name__ == "__main__":
-    _testmerge()
+    _testcut2()
