@@ -690,12 +690,37 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
         xdim, ydim = dataset.res
         xmin, ymin, xmax, ymax = dataset.bounds
         xmin1, ymin1, xmax1, ymax1 = bounds
-        xoff = max(0, (xmin1-xmin)//xdim)
-        yoff = max(0, (ymax-ymax1)//ydim)
-        xsize = min((xmax1-xmin1)//xdim, (xmax-xmin1)//xdim)
-        ysize = min((ymax1-ymin1)//ydim, (ymax-ymin1)//ydim)
+
+        if xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin:
+            showprocesslog('Warning: No data in polygon.')
+            return None
+
+        xmin2 = max(xmin, xmin1)
+        ymin2 = max(ymin, ymin1)
+        xmax2 = min(xmax, xmax1)
+        ymax2 = min(ymax, ymax1)
+
+        xoff = int((xmin2-xmin)//xdim)
+        yoff = int((ymax-ymax2)//ydim)
+
+        xsize = int((xmax2-xmin2)//xdim)
+        ysize = int((ymax2-ymin2)//xdim)
 
         iraster = (xoff, yoff, xsize, ysize)
+        newbounds = (xmin+xoff*xdim,
+                     ymax-yoff*ydim-ysize*ydim,
+                     xmin+xoff*xdim+xsize*xdim,
+                     ymax-yoff*ydim)
+    elif iraster is not None:
+        xdim, ydim = dataset.res
+        xmin, ymin, xmax, ymax = dataset.bounds
+        xoff, yoff, xsize, ysize = iraster
+        newbounds = (xmin+xoff*xdim,
+                     ymax-yoff*ydim-ysize*ydim,
+                     xmin+xoff*xdim+xsize*xdim,
+                     ymax-yoff*ydim)
+    else:
+        newbounds = None
 
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
@@ -741,7 +766,6 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 xoff, yoff, xsize, ysize = iraster
                 dat[i].data = dataset.read(1, window=Window(xoff, yoff,
                                                             xsize, ysize))
-                showprocesslog('Warning, extents etc not adjusted.')
 
             if dat[i].data.dtype.kind == 'i':
                 if nval is None:
@@ -775,8 +799,13 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
                                 (dat[i].data == nval))
 
-            dat[i].extent = plotting_extent(dataset)
-            dat[i].bounds = dataset.bounds
+            if newbounds is not None:
+                dat[i].bounds = newbounds
+                dat[i].extent = (newbounds[0], newbounds[2],
+                                 newbounds[1], newbounds[3])
+            else:
+                dat[i].extent = plotting_extent(dataset)
+                dat[i].bounds = dataset.bounds
             dat[i].dataid = bandid
             dat[i].nodata = nval
             dat[i].filename = filename

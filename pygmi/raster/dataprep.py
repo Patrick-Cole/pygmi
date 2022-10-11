@@ -3076,19 +3076,18 @@ def _testlstack():
 def _testcut2():
     """Test Reprojection."""
     import sys
-    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.iodefs import get_raster, export_raster
     import matplotlib.pyplot as plt
 
     sfile  = r"D:\hypercut\shape\Areas_utm33s_west.shp"
     ifilt = r"D:\hypercut\*.hdr"
+    odir = r"D:\hypercut\cut"
 
     pprint = print
 
     ifiles = glob.glob(ifilt)
 
     for ifile in ifiles:
-        # dat = get_raster(ifile)
-
         gdf = gpd.read_file(sfile)
 
         gdf = gdf[gdf.geometry != None]
@@ -3117,9 +3116,13 @@ def _testcut2():
 
         dat = get_raster(ifile, bounds=bounds)
 
+        ofile = os.path.join(odir, os.path.basename(ifile))
+        ofile = ofile[:-4]+'.tif'
+        export_raster(ofile, dat, 'GTiff')
+
         plt.imshow(dat[0].data, extent=dat[0].extent)
         plt.show()
-        breakpoint()
+        # breakpoint()
 
 if __name__ == "__main__":
     _testcut2()
