@@ -99,7 +99,7 @@ class LandsatComposite(QtWidgets.QDialog):
         buttonbox.setCenterButtons(True)
         buttonbox.setStandardButtons(buttonbox.Cancel | buttonbox.Ok)
 
-        self.setWindowTitle('Landsat Composite')
+        self.setWindowTitle('Landsat Temporal Composite')
 
         gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)

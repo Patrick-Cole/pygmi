@@ -114,7 +114,7 @@ class MenuWidget():
         self.action_calc_ci.triggered.connect(self.calc_ci)
 
         self.action_lsat_comp = QtWidgets.QAction('Calculate Landsat '
-                                                  'Composite')
+                                                  'Temporal Composite')
         self.menu.addAction(self.action_lsat_comp)
         self.action_lsat_comp.triggered.connect(self.lsat_comp)
 
@@ -191,7 +191,7 @@ class MenuWidget():
 
     def lsat_comp(self):
         """Calculate Landsat Composite."""
-        self.parent.item_insert('Io', 'Calculate Landsat Composite',
+        self.parent.item_insert('Io', 'Calculate Landsat Temporal Composite',
                                 LandsatComposite)
 
     def mnf(self):
