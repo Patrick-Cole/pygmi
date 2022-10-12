@@ -3120,7 +3120,7 @@ def _testnewnull():
     """Test New null data assignment."""
     from pygmi.raster.iodefs import get_raster, export_raster
 
-    ifilt = r"D:\hypercut\nocut\*.hdr"
+    ifilt = r"D:\hypercut\*.hdr"
     odir = r"D:\hypercut\out"
 
     ifiles = glob.glob(ifilt)
@@ -3137,5 +3137,8 @@ def _testnewnull():
         # break
 
 
+def batch_reproject():
+
 if __name__ == "__main__":
+    # _testcut2()
     _testnewnull()

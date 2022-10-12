@@ -1070,6 +1070,8 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
           ('S2A_' in bfile and 'zip' in bfile.lower()) or
           ('S2B_' in bfile and 'zip' in bfile.lower())):
         dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
+        if dat is None and '.tar' not in ifile:
+            dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog)
     elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
           '.006.' in bfile):
         dat = get_modisv6(ifile, piter)
@@ -1277,7 +1279,8 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
     elif '_MTL.txt' in ifilet:
         ifile = ifilet
     else:
-        showprocesslog('Input needs to be tar.gz or _MTL.txt')
+        showprocesslog('Input needs to be tar.gz or _MTL.txt for Landsat. '
+                       'Trying regular import')
         return None
 
     if alldata is True:
