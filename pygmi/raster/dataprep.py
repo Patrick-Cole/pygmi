@@ -3138,6 +3138,9 @@ def _testnewnull():
 
 
 def batch_reproject():
+    """Batch reprojection"""
+
+    idir = r''
 
 if __name__ == "__main__":
     # _testcut2()
