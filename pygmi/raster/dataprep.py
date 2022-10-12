@@ -3079,7 +3079,7 @@ def _testcut2():
     from pygmi.raster.iodefs import get_raster, export_raster
     import matplotlib.pyplot as plt
 
-    sfile  = r"D:\hypercut\shape\Areas_utm33s_west.shp"
+    sfile  = r"D:\hypercut\shape\Areas_utm33s_east.shp"
     ifilt = r"D:\hypercut\*.hdr"
     odir = r"D:\hypercut\cut"
 
@@ -3098,14 +3098,6 @@ def _testcut2():
             poly = gdf['geometry'].iloc[0]
             tmp = poly.geoms[0]
 
-            # dext = list(data[0].bounds)
-            # dpoly = box(dext[0], dext[1], dext[2], dext[3])
-
-            # for i in list(poly.geoms):
-            #     if i.overlaps(dpoly):
-            #         tmp = i
-            #         break
-
             gdf.geometry.iloc[0] = tmp
 
         if gdf.geom_type.iloc[0] != 'Polygon':
@@ -3116,13 +3108,34 @@ def _testcut2():
 
         dat = get_raster(ifile, bounds=bounds)
 
+        if dat is None:
+            continue
+
         ofile = os.path.join(odir, os.path.basename(ifile))
         ofile = ofile[:-4]+'.tif'
         export_raster(ofile, dat, 'GTiff')
 
-        plt.imshow(dat[0].data, extent=dat[0].extent)
-        plt.show()
-        # breakpoint()
+
+def _testnewnull():
+    """Test New null data assignment."""
+    from pygmi.raster.iodefs import get_raster, export_raster
+
+    ifilt = r"D:\hypercut\nocut\*.hdr"
+    odir = r"D:\hypercut\out"
+
+    ifiles = glob.glob(ifilt)
+
+    for ifile in ifiles:
+        dat = get_raster(ifile)
+        for idat in dat:
+            idat.nodata = 0
+            # idat.data = np.ma.masked_equal(idat.data, 0)
+
+        ofile = os.path.join(odir, os.path.basename(ifile))
+        ofile = ofile[:-4]+'.tif'
+        export_raster(ofile, dat, 'GTiff')
+        # break
+
 
 if __name__ == "__main__":
-    _testcut2()
+    _testnewnull()

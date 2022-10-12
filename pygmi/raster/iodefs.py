@@ -722,6 +722,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     else:
         newbounds = None
 
+    # breakpoint()
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
     else:
@@ -800,17 +801,18 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                                 (dat[i].data == nval))
 
             if newbounds is not None:
-                dat[i].bounds = newbounds
-                dat[i].extent = (newbounds[0], newbounds[2],
-                                 newbounds[1], newbounds[3])
+                xmin, _, _, ymax = newbounds
+                xdim, ydim = dataset.res
+                dat[i].set_transform(xdim, xmin, ydim, ymax, iraster=iraster)
             else:
-                dat[i].extent = plotting_extent(dataset)
-                dat[i].bounds = dataset.bounds
+                # dat[i].extent = plotting_extent(dataset)
+                # dat[i].bounds = dataset.bounds
+                dat[i].set_transform(transform=dataset.transform)
+
             dat[i].dataid = bandid
             dat[i].nodata = nval
             dat[i].filename = filename
             dat[i].units = unit
-            dat[i].transform = dataset.transform
 
             if driver == 'netCDF' and dataset.crs is None:
                 if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:
@@ -828,7 +830,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                     dat[i].set_transform(xdim, xmin, ydim, ymin)
 
             dat[i].crs = crs
-            dat[i].xdim, dat[i].ydim = dataset.res
+            # dat[i].xdim, dat[i].ydim = dataset.res
             dat[i].meta = dataset.meta
 
             dest = dataset.tags(index)

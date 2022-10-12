@@ -322,7 +322,7 @@ class SatRatios(QtWidgets.QDialog):
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    self.showprocesslog('Error:'+' '.join(abort)+'missing.')
+                    self.showprocesslog('Error: '+' '.join(abort)+' missing.')
                     continue
 
                 newmask = datd[blist[0]].mask
@@ -777,7 +777,7 @@ class ConditionIndices(QtWidgets.QDialog):
                     if j not in datd:
                         abort.append(j)
                 if abort:
-                    self.showprocesslog('Error:'+' '.join(abort)+'missing.')
+                    self.showprocesslog('Error: '+' '.join(abort)+' missing.')
                     continue
 
                 newmask = datd[blist[0]].mask
@@ -947,14 +947,15 @@ def correct_bands(rlist, sensor):
                           'B3A': 'B7'}
 
     bandmap = sdict[sensor]
-    svalues = set(bandmap.keys())
+    # Sort the keys so we do long names like B3A first
+    svalues = set(sorted(bandmap.keys(), key=lambda el: len(el))[::-1])
     rlist2 = []
     for i in rlist:
         formula = i.split(' ')[0]
         lbl = i[i.index(' '):]
-        bands = set(re.findall(r'B\d+', formula))
+        bands = set(re.findall(r'B\d+\w?', formula))
         if bands.issubset(svalues):
-            tmp = re.sub(r'B(\d+)', r'tmpB\1', formula)
+            tmp = re.sub(r'B(\d+\w?)', r'tmpB\1', formula)
             for j in svalues:
                 tmp = tmp.replace('tmp'+j, bandmap[j])
             rlist2.append(tmp+lbl)
@@ -1193,6 +1194,8 @@ def _testfn():
     extscene = None
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Sentinel-2\S2A_MSIL2A_20210305T075811_N0214_R035_T35JML_20210305T103519.zip"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
+
 
     dat = iodefs.get_data(ifile, extscene=extscene, piter=piter)
 
@@ -1309,4 +1312,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn2()
+    _testfn()
