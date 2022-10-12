@@ -1065,13 +1065,13 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
         dat = get_aster_zip(ifile, piter, showprocesslog)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09']:
         dat = get_landsat(ifile, piter, showprocesslog, alldata=alldata)
+        if dat is None and '.tar' not in ifile:
+            dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog)
     elif (('.xml' in bfile and '.SAFE' in ifile) or
           'Sentinel-2' in extscene or
           ('S2A_' in bfile and 'zip' in bfile.lower()) or
           ('S2B_' in bfile and 'zip' in bfile.lower())):
         dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
-        if dat is None and '.tar' not in ifile:
-            dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog)
     elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
           '.006.' in bfile):
         dat = get_modisv6(ifile, piter)
