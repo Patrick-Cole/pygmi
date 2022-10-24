@@ -37,7 +37,7 @@ from rasterio.crs import CRS
 
 from pygmi.raster.datatypes import Data
 from pygmi.raster.dataprep import lstack
-from pygmi.misc import ProgressBarText
+from pygmi.misc import ProgressBarText, getinfo
 
 warnings.filterwarnings("ignore",
                         category=rasterio.errors.NotGeoreferencedWarning)
@@ -561,8 +561,205 @@ def get_ascii(ifile):
     return dat
 
 
+def get_raster_meta(ifile, nval=None, piter=None, showprocesslog=print,
+                    driver=None):
+    """
+    Get raster dataset metadata.
+
+    This function loads a raster dataset metadata off the disk using the
+    rasterio libraries. It returns the data in a PyGMI data object.
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    nval : float, optional
+        No data/null value. The default is None.
+    piter : iterable from misc.ProgressBar or misc.ProgressBarText
+        progress bar iterable, default is None.
+    showprocesslog : function, optional
+        Routine to show text messages. The default is print.
+    driver : str
+        GDAL raster driver name. The default is None.
+
+    Returns
+    -------
+    dat : PyGMI raster Data
+        dataset imported
+    """
+    if piter is None:
+        piter = ProgressBarText().iter
+
+    dat = []
+    bname = os.path.basename(ifile).rpartition('.')[0]
+    ext = ifile[-3:]
+    custom_wkt = ''
+    filename = ifile
+
+    # Envi Case
+    if ext == 'hdr':
+        ifile = ifile[:-4]
+        if os.path.exists(ifile+'.dat'):
+            ifile = ifile+'.dat'
+        elif os.path.exists(ifile+'.raw'):
+            ifile = ifile+'.raw'
+        elif os.path.exists(ifile+'.img'):
+            ifile = ifile+'.img'
+        elif not os.path.exists(ifile):
+            return None
+
+    if ext == 'ers':
+        with open(ifile, encoding='utf-8') as f:
+            metadata = f.read()
+            if 'STMLO' in metadata:
+                clong = metadata.split('STMLO')[1][:2]
+
+                if 'CAPE' in metadata:
+                    custom_wkt = ('PROJCS["Cape / TM'+clong+'",'
+                                  'GEOGCS["Cape",'
+                                  'DATUM["Cape",'
+                                  'SPHEROID["Clarke 1880 (Arc)",'
+                                  '6378249.145,293.4663077,'
+                                  'AUTHORITY["EPSG","7013"]],'
+                                  'AUTHORITY["EPSG","6222"]],'
+                                  'PRIMEM["Greenwich",0,'
+                                  'AUTHORITY["EPSG","8901"]],'
+                                  'UNIT["degree",0.0174532925199433,'
+                                  'AUTHORITY["EPSG","9122"]],'
+                                  'AUTHORITY["EPSG","4222"]],'
+                                  'PROJECTION["Transverse_Mercator"],'
+                                  'PARAMETER["latitude_of_origin",0],'
+                                  'PARAMETER["central_meridian",'+clong+'],'
+                                  'PARAMETER["scale_factor",1],'
+                                  'PARAMETER["false_easting",0],'
+                                  'PARAMETER["false_northing",0],'
+                                  'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+                                  'AXIS["Easting",EAST],'
+                                  'AXIS["Northing",NORTH]]')
+
+                elif 'WGS84' in metadata:
+                    custom_wkt = ('PROJCS["Hartebeesthoek94 / TM'+clong+'",'
+                                  'GEOGCS["Hartebeesthoek94",'
+                                  'DATUM["Hartebeesthoek94",'
+                                  'SPHEROID["WGS 84",6378137,298.257223563,'
+                                  'AUTHORITY["EPSG","7030"]],'
+                                  'AUTHORITY["EPSG","6148"]],'
+                                  'PRIMEM["Greenwich",0,'
+                                  'AUTHORITY["EPSG","8901"]],'
+                                  'UNIT["degree",0.0174532925199433,'
+                                  'AUTHORITY["EPSG","9122"]],'
+                                  'AUTHORITY["EPSG","4148"]],'
+                                  'PROJECTION["Transverse_Mercator"],'
+                                  'PARAMETER["latitude_of_origin",0],'
+                                  'PARAMETER["central_meridian",'+clong+'],'
+                                  'PARAMETER["scale_factor",1],'
+                                  'PARAMETER["false_easting",0],'
+                                  'PARAMETER["false_northing",0],'
+                                  'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
+                                  'AXIS["Easting",EAST],'
+                                  'AXIS["Northing",NORTH]]')
+
+    dmeta = {}
+    with rasterio.open(ifile, driver=driver) as dataset:
+        if dataset is None:
+            return None
+
+        gmeta = dataset.tags()
+        driver = dataset.driver
+
+        if driver == 'ENVI':
+            dmeta = dataset.tags(ns='ENVI')
+
+    if custom_wkt == '' and dataset.crs is not None:
+        custom_wkt = dataset.crs.to_wkt()
+
+    cols = dataset.width
+    rows = dataset.height
+    if nval is None:
+        nval = dataset.nodata
+
+    if custom_wkt != '':
+        crs = CRS.from_string(custom_wkt)
+    else:
+        showprocesslog('Warning: Your data does not have a projection. '
+                       'Assigning local coordinate system.')
+        crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                              'AUTHORITY["EPSG","9001"]],'
+                              'AXIS["Easting",EAST],'
+                              'AXIS["Northing",NORTH]]')
+
+    with rasterio.open(ifile) as dataset:
+        for i in piter(range(dataset.count)):
+            index = dataset.indexes[i]
+            bandid = dataset.descriptions[i]
+
+            if bandid == '' or bandid is None:
+                bandid = 'Band '+str(index)+' '+bname
+
+            unit = dataset.units[i]
+            if unit is None:
+                unit = ''
+            if unit.lower() == 'micrometers':
+                dat[i].units = 'μm'
+            elif unit.lower() == 'nanometers':
+                dat[i].units = 'nm'
+
+            if nval is None:
+                nval = dataset.nodata
+
+            dat.append(Data())
+
+            if nval is None:
+                nval = 1e+20
+            nval = float(nval)
+
+            dat[i].set_transform(transform=dataset.transform)
+            dat[i].dataid = bandid
+            dat[i].nodata = nval
+            dat[i].filename = filename
+            dat[i].units = unit
+
+            if driver == 'netCDF' and dataset.crs is None:
+                if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:
+                    xrng = gmeta['x#actual_range']
+                    xrng = xrng.strip('}{').split(',')
+                    xrng = [float(i) for i in xrng]
+                    xmin = min(xrng)
+                    xdim = (xrng[1]-xrng[0])/cols
+
+                    yrng = gmeta['y#actual_range']
+                    yrng = yrng.strip('}{').split(',')
+                    yrng = [float(i) for i in yrng]
+                    ymin = min(yrng)
+                    ydim = (yrng[1]-yrng[0])/rows
+                    dat[i].set_transform(xdim, xmin, ydim, ymin)
+
+            dat[i].crs = crs
+            dat[i].meta = dataset.meta
+
+            dest = dataset.tags(index)
+            for j in ['Wavelength', 'WAVELENGTH']:
+                if j in dest:
+                    dest[j.lower()] = dest[j]
+                    del dest[j]
+
+            if 'fwhm' in dmeta:
+                fwhm = [float(i) for i in dmeta['fwhm'][1:-1].split(',')]
+                dest['fwhm'] = fwhm[index-1]
+
+            if '.raw' in ifile:
+                dmeta['reflectance_scale_factor'] = 10000.
+
+            if 'reflectance scale factor' in dmeta:
+                dmeta['reflectance_scale_factor'] = dmeta['reflectance scale factor']
+
+            dat[i].metadata['Raster'] = {**dmeta, **dest}
+
+    return dat
+
+
 def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
-               iraster=None, driver=None, bounds=None):
+               iraster=None, driver=None, bounds=None, dataid=None):
     """
     Get raster dataset.
 
@@ -722,7 +919,6 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     else:
         newbounds = None
 
-    # breakpoint()
     if custom_wkt != '':
         crs = CRS.from_string(custom_wkt)
     else:
@@ -734,7 +930,8 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                               'AXIS["Northing",NORTH]]')
 
     isbil = False
-    if 'INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr']:
+    if ('INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr'] and
+            dataid is not None):
         if istruct['INTERLEAVE'] == 'LINE' and iraster is None:
             isbil = True
             datin = get_bil(ifile, bands, cols, rows, dtype, piter)
@@ -746,6 +943,9 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
 
             if bandid == '' or bandid is None:
                 bandid = 'Band '+str(index)+' '+bname
+
+            if dataid is not None and bandid != dataid:
+                continue
 
             unit = dataset.units[i]
             if unit is None:
@@ -760,20 +960,20 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
 
             dat.append(Data())
             if isbil is True:
-                dat[i].data = datin[i]
+                dat[-1].data = datin[i]
             elif iraster is None:
-                dat[i].data = dataset.read(index)
+                dat[-1].data = dataset.read(index)
             else:
                 xoff, yoff, xsize, ysize = iraster
-                dat[i].data = dataset.read(1, window=Window(xoff, yoff,
-                                                            xsize, ysize))
+                dat[-1].data = dataset.read(1, window=Window(xoff, yoff,
+                                                             xsize, ysize))
 
-            if dat[i].data.dtype.kind == 'i':
+            if dat[-1].data.dtype.kind == 'i':
                 if nval is None:
                     nval = 999999
                     showprocesslog('Adjusting null value to '+str(nval))
                 nval = int(nval)
-            elif dat[i].data.dtype.kind == 'u':
+            elif dat[-1].data.dtype.kind == 'u':
                 if nval is None:
                     nval = 0
                     showprocesslog('Adjusting null value to '+str(nval))
@@ -782,37 +982,35 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 if nval is None:
                     nval = 1e+20
                 nval = float(nval)
-                if nval not in dat[i].data and np.isclose(dat[i].data.min(),
-                                                          nval):
-                    nval = dat[i].data.min()
+                if nval not in dat[-1].data and np.isclose(dat[-1].data.min(),
+                                                           nval):
+                    nval = dat[-1].data.min()
                     showprocesslog('Adjusting null value to '+str(nval))
-                if nval not in dat[i].data and np.isclose(dat[i].data.max(),
-                                                          nval):
-                    nval = dat[i].data.max()
+                if nval not in dat[-1].data and np.isclose(dat[-1].data.max(),
+                                                           nval):
+                    nval = dat[-1].data.max()
                     showprocesslog('Adjusting null value to '+str(nval))
 
             if ext == 'ers' and nval == -1.0e+32:
-                dat[i].data[dat[i].data <= nval] = -1.0e+32
+                dat[-1].data[dat[-1].data <= nval] = -1.0e+32
 
     # Note that because the data is stored in a masked array, the array ends up
     # being double the size that it was on the disk.
-            dat[i].data = np.ma.masked_invalid(dat[i].data)
-            dat[i].data.mask = (np.ma.getmaskarray(dat[i].data) |
-                                (dat[i].data == nval))
+            dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+            dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data) |
+                                 (dat[-1].data == nval))
 
             if newbounds is not None:
                 xmin, _, _, ymax = newbounds
                 xdim, ydim = dataset.res
-                dat[i].set_transform(xdim, xmin, ydim, ymax, iraster=iraster)
+                dat[-1].set_transform(xdim, xmin, ydim, ymax, iraster=iraster)
             else:
-                # dat[i].extent = plotting_extent(dataset)
-                # dat[i].bounds = dataset.bounds
-                dat[i].set_transform(transform=dataset.transform)
+                dat[-1].set_transform(transform=dataset.transform)
 
-            dat[i].dataid = bandid
-            dat[i].nodata = nval
-            dat[i].filename = filename
-            dat[i].units = unit
+            dat[-1].dataid = bandid
+            dat[-1].nodata = nval
+            dat[-1].filename = filename
+            dat[-1].units = unit
 
             if driver == 'netCDF' and dataset.crs is None:
                 if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:
@@ -827,11 +1025,11 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                     yrng = [float(i) for i in yrng]
                     ymin = min(yrng)
                     ydim = (yrng[1]-yrng[0])/rows
-                    dat[i].set_transform(xdim, xmin, ydim, ymin)
+                    dat[-1].set_transform(xdim, xmin, ydim, ymin)
 
-            dat[i].crs = crs
+            dat[-1].crs = crs
             # dat[i].xdim, dat[i].ydim = dataset.res
-            dat[i].meta = dataset.meta
+            dat[-1].meta = dataset.meta
 
             dest = dataset.tags(index)
             for j in ['Wavelength', 'WAVELENGTH']:
@@ -849,7 +1047,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             if 'reflectance scale factor' in dmeta:
                 dmeta['reflectance_scale_factor'] = dmeta['reflectance scale factor']
 
-            dat[i].metadata['Raster'] = {**dmeta, **dest}
+            dat[-1].metadata['Raster'] = {**dmeta, **dest}
 
     return dat
 
@@ -1427,7 +1625,7 @@ class ExportData():
 
 
 def export_raster(ofile, dat, drv, envimeta='', piter=None,
-                  compression='NONE', bandsort=True):
+                  compression='NONE', bandsort=True, pprint=print):
     """
     Export to rasterio format.
 
@@ -1453,6 +1651,7 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
     None.
 
     """
+    # getinfo('Start of Export')
     if piter is None:
         piter = ProgressBarText().iter
 
@@ -1462,8 +1661,11 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             dat2.append(dat[i])
     else:
         dat2 = dat
+    # getinfo('dat2')
 
-    data = lstack(dat2, piter)
+    data = lstack(dat2, piter, nodeepcopy=True)
+
+    # getinfo('data')
 
     # Sort in band order.
     if bandsort is True:
@@ -1533,13 +1735,19 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
 
         for i in piter(range(numbands)):
             datai = data[i]
+            # getinfo('datai')
+
             out.set_band_description(i+1, datai.dataid)
 
             dtmp = np.ma.array(datai.data)
             dtmp.set_fill_value(datai.nodata)
             dtmp = dtmp.filled()
+            # getinfo('dtmp')
 
             out.write(dtmp, i+1)
+
+            del dtmp
+            # getinfo('del dtmp')
 
             out.update_tags(i+1, STATISTICS_EXCLUDEDVALUES='')
             out.update_tags(i+1, STATISTICS_MAXIMUM=datai.data.max())
@@ -1547,7 +1755,10 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             out.update_tags(i+1, STATISTICS_MINIMUM=datai.data.min())
             out.update_tags(i+1, STATISTICS_SKIPFACTORX=1)
             out.update_tags(i+1, STATISTICS_SKIPFACTORY=1)
-            out.update_tags(i+1, STATISTICS_STDDEV=datai.data.std())
+            try:
+                out.update_tags(i+1, STATISTICS_STDDEV=datai.data.std())
+            except MemoryError:
+                pprint('Unable to calculate std deviation. Not enough memory')
 
             if 'Raster' in datai.metadata:
                 if 'wavelength' in datai.metadata['Raster']:

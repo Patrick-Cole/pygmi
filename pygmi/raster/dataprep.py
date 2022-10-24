@@ -622,6 +622,166 @@ class DataMerge(QtWidgets.QDialog):
         # The next line is only to avoid circular dependancies with merge
         # function.
 
+        from pygmi.raster.iodefs import get_raster, get_raster_meta
+
+        indata = []
+        if 'Raster' in self.indata:
+            for i in self.indata['Raster']:
+                indata.append(i)
+
+        if self.idir is not None:
+            ifiles = []
+            for ftype in ['*.tif', '*.hdr', '*.img', '*.ers']:
+                ifiles += glob.glob(os.path.join(self.idir, ftype))
+
+            for ifile in self.piter(ifiles):
+                indata += get_raster_meta(ifile, piter=iter)
+
+        if indata is None:
+            self.showprocesslog('No input datasets')
+            return False
+
+        # Get projection information
+        wkt = []
+        crs = []
+        for i in indata:
+            if i.crs is None:
+                self.showprocesslog(f'{i.dataid} has no projection. '
+                                    'Please assign one.')
+                return False
+
+            wkt.append(i.crs.to_wkt())
+            crs.append(i.crs)
+            nodata = i.nodata
+
+        wkt, iwkt, numwkt = np.unique(wkt, return_index=True,
+                                      return_counts=True)
+        if len(wkt) > 1:
+            self.showprocesslog('Error: Mismatched input projections. '
+                                'Selecting most common projection')
+
+            crs = crs[iwkt[numwkt == numwkt.max()][0]]
+        else:
+            crs = indata[0].crs
+
+        # Start Merge
+        bandlist = []
+        # hasfloatdtype = False
+        for i in indata:
+            bandlist.append(i.dataid)
+            # if np.issubdtype(i.data.dtype, np.floating):
+            #     hasfloatdtype = True
+        bandlist = list(set(bandlist))
+
+        outdat = []
+        for dataid in bandlist:
+            self.showprocesslog('Extracting '+dataid+'...')
+            ifiles = []
+            for i in self.piter(indata):
+                if i.dataid != dataid:
+                    continue
+
+                # print(os.path.basename(i.filename))
+                i2 = get_raster(i.filename, piter=iter, dataid=i.dataid)[0]
+
+                if i2.crs != crs:
+                    src_height, src_width = i2.data.shape
+
+                    transform, width, height = calculate_default_transform(
+                        i2.crs, crs, src_width, src_height, *i2.bounds)
+
+                    i2 = data_reproject(i2, i2.crs, crs, transform, height,
+                                        width)
+
+                if self.forcetype is not None:
+                    i2.data = i2.data.astype(self.forcetype)
+
+                if self.shift_to_median.isChecked():
+                    mval = np.ma.median(i.data)
+                else:
+                    mval = 0
+
+                trans = rasterio.transform.from_origin(i2.extent[0],
+                                                       i2.extent[3],
+                                                       i2.xdim, i2.ydim)
+
+                # tmpfile = os.path.join(r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\temp",
+                #                        os.path.basename(i.filename))
+                tmpfile = os.path.join(tempfile.gettempdir(),
+                                        os.path.basename(i.filename))
+                tmpfile = tmpfile[:-4]+'_'+i2.dataid+'.tif'
+                tmpfile = tmpfile.replace('*', 'mult')
+                tmpfile = tmpfile.replace(r'/', 'div')
+
+                raster = rasterio.open(tmpfile, 'w', driver='GTiff',
+                                       height=i2.data.shape[0],
+                                       width=i2.data.shape[1], count=1,
+                                       dtype=i2.data.dtype,
+                                       transform=trans)
+
+                if np.issubdtype(i2.data.dtype, np.floating):
+                    nodata = 1.0e+20
+                    # tmpdat = i2.data.astype(float)
+
+                else:
+                    nodata = -99999
+                    # tmpdat = i2.data.astype(int)
+
+                tmpdat = i2.data-mval
+                tmpdat = tmpdat.filled(nodata)
+                tmpdat = np.ma.masked_equal(tmpdat, nodata)
+
+                # breakpoint()
+                raster.write(tmpdat, 1)
+                raster.write_mask(~np.ma.getmaskarray(i2.data))
+
+                raster.close()
+                ifiles.append(tmpfile)
+                del i2
+
+            if len(ifiles) < 2:
+                self.showprocesslog('Too few bands of name '+dataid)
+
+            self.showprocesslog('Merging '+dataid+'...')
+
+            with rasterio.Env(CPL_DEBUG=True):
+                mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
+                                                      method=self.method)
+
+            for j in ifiles:
+                if os.path.exists(j):
+                    os.remove(j)
+                if os.path.exists(j+'.msk'):
+                    os.remove(j+'.msk')
+
+            mosaic = mosaic.squeeze()
+            mosaic = np.ma.masked_equal(mosaic, nodata)
+            mosaic = mosaic + mval
+            outdat.append(numpy_to_pygmi(mosaic, dataid=dataid))
+            outdat[-1].set_transform(transform=otrans)
+            outdat[-1].crs = crs
+            outdat[-1].nodata = nodata
+            break
+
+        self.outdata['Raster'] = outdat
+
+        return True
+
+    def merge_different_old(self):
+        """
+        Merge files with different numbers of bands and/or band order.
+
+        This uses more memory, but is flexible.
+
+        Returns
+        -------
+        bool
+            Success of routine.
+
+        """
+        # The next line is only to avoid circular dependancies with merge
+        # function.
+
         from pygmi.raster.iodefs import get_raster
 
         indata = []
@@ -2410,7 +2570,7 @@ def getepsgcodes():
 
 
 def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
-           masterid=None):
+           masterid=None, nodeepcopy=False):
     """
     Layer stack datasets found in a single PyGMI data object.
 
@@ -2474,7 +2634,8 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
                 nodata = 999999
 
     if needsmerge is False:
-        dat = copy.deepcopy(dat)
+        if not nodeepcopy:
+            dat = copy.deepcopy(dat)
         dat = check_dataid(dat)
         return dat
 
@@ -2914,30 +3075,39 @@ def _testmerge():
     """Test Merge."""
     import sys
     import matplotlib.pyplot as plt
+    from pygmi.raster.iodefs import export_raster
 
     app = QtWidgets.QApplication(sys.argv)
 
-    idir = r'd:\Workdata\bugs'
+    idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
 
-    print('Merge')
     DM = DataMerge()
     DM.idir = idir
+    DM.idirlist.setText(idir)
+
     DM.files_diff.setChecked(True)
     # DM.shift_to_median.setChecked(True)
     DM.forcetype = np.float32
     # DM.method = 'max'  # first last min max
     DM.settings()
 
-    dat = DM.outdata['Raster'][0].data
+    dat = DM.outdata['Raster']
 
-    vmin = dat.mean()-2*dat.std()
-    vmax = dat.mean()+2*dat.std()
+    del DM
 
-    plt.figure(dpi=150)
-    plt.imshow(dat, vmin=vmin, vmax=vmax)
-    plt.colorbar()
-    plt.tight_layout()
-    plt.show()
+    ofile = idir+'_A4.tif'
+
+    export_raster(ofile, dat, 'GTiff')
+
+
+    # vmin = dat.mean()-2*dat.std()
+    # vmax = dat.mean()+2*dat.std()
+
+    # plt.figure(dpi=150)
+    # plt.imshow(dat, vmin=vmin, vmax=vmax)
+    # plt.colorbar()
+    # plt.tight_layout()
+    # plt.show()
 
 
 def _testreproj():
@@ -2946,7 +3116,7 @@ def _testreproj():
     from pygmi.raster.iodefs import get_raster
     import matplotlib.pyplot as plt
 
-    ifile = r"d:\Workdata\bugs\mag_IGRFrem_hbhk94.ers"
+    ifile = r""
 
     piter = ProgressBarText().iter
 
@@ -3138,10 +3308,9 @@ def _testnewnull():
 
 
 def batch_reproject():
-    """Batch reprojection"""
-
+    """Batch reprojection."""
     idir = r''
 
+
 if __name__ == "__main__":
-    # _testcut2()
-    _testnewnull()
+    _testmerge()
