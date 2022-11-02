@@ -836,7 +836,8 @@ class ExportBatch(QtWidgets.QDialog):
         label_blue = QtWidgets.QLabel('Blue Band:')
         pb_odir = QtWidgets.QPushButton('Output Directory')
 
-        ext = ('GeoTiff', 'ENVI', 'ERMapper', 'ERDAS Imagine')
+        ext = ('GeoTiff compressed using ZSTD', 'GeoTiff', 'ENVI', 'ERMapper',
+               'ERDAS Imagine')
 
         self.ofilt.addItems(ext)
 
@@ -915,7 +916,7 @@ class ExportBatch(QtWidgets.QDialog):
         ifile = self.indata['RasterFileList'][0]
         dat = get_data(ifile, piter=self.piter,
                        showprocesslog=self.showprocesslog,
-                       extscene='Bands Only')
+                       extscene='Bands Only', metaonly=True)
 
         bnames = [i.dataid for i in dat]
 
@@ -1025,7 +1026,7 @@ def calculate_toa(dat, showprocesslog=print):
 
 
 def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
-             alldata=False):
+             alldata=False, tnames=None, metaonly=False):
     """
     Load a raster dataset off the disk using the rasterio libraries.
 
@@ -1045,6 +1046,8 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
     alldata : bool, optional
         Used to import all data. Currently used for Landsat. The default is
         False.
+    tnames : list, optional
+        list of band names to import, in order. the default is None.
 
     Returns
     -------
@@ -1064,14 +1067,17 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
     elif 'AST_' in bfile and 'zip' in bfile.lower():
         dat = get_aster_zip(ifile, piter, showprocesslog)
     elif bfile[:4] in ['LT04', 'LT05', 'LE07', 'LC08', 'LM05', 'LC09']:
-        dat = get_landsat(ifile, piter, showprocesslog, alldata=alldata)
+        dat = get_landsat(ifile, piter, showprocesslog, alldata=alldata,
+                          tnames=tnames)
         if dat is None and '.tar' not in ifile:
-            dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog)
+            dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog,
+                             tnames=tnames)
     elif (('.xml' in bfile and '.SAFE' in ifile) or
           'Sentinel-2' in extscene or
           ('S2A_' in bfile and 'zip' in bfile.lower()) or
           ('S2B_' in bfile and 'zip' in bfile.lower())):
-        dat = get_sentinel2(ifile, piter, showprocesslog, extscene)
+        dat = get_sentinel2(ifile, piter, showprocesslog, extscene, tnames,
+                            metaonly)
     elif (('MOD' in bfile or 'MCD' in bfile) and 'hdf' in bfile.lower() and
           '.006.' in bfile):
         dat = get_modisv6(ifile, piter)
@@ -1082,7 +1088,8 @@ def get_data(ifile, piter=None, showprocesslog=print, extscene=None,
     elif 'WorldView' in extscene:
         dat = get_worldview(ifile, piter, showprocesslog)
     else:
-        dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog)
+        dat = get_raster(ifile, piter=piter, showprocesslog=showprocesslog,
+                         tnames=tnames, metaonly=metaonly)
 
     if dat is not None:
         for i in dat:
@@ -1204,7 +1211,8 @@ def get_modisv6(ifile, piter=None):
     return dat
 
 
-def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
+def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False,
+                tnames=None):
     """
     Get Landsat Data.
 
@@ -1308,6 +1316,9 @@ def get_landsat(ifilet, piter=None, showprocesslog=print, alldata=False):
 
         if fext == lstband:
             fext = 'LST'
+
+        if tnames is not None and fext.replace(',', ' ') not in tnames:
+            continue
 
         showprocesslog('Importing Band '+fext)
         dataset = rasterio.open(ifile2)
@@ -1717,7 +1728,8 @@ def get_hyperion(ifile, piter=None, showprocesslog=print):
     return dat
 
 
-def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
+def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None,
+                  tnames=None, metaonly=False):
     """
     Get Sentinel-2 Data.
 
@@ -1731,6 +1743,8 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
         Routine to show text messages. The default is print.
     extscene : str or None
         String used currently to give an option to limit bands in Sentinel-2
+    tnames : list, optional
+        list of band names to import, in order. the default is None.
 
     Returns
     -------
@@ -1759,7 +1773,6 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
             continue
 
         for i in piter(dataset.indexes):
-            rtmp = dataset.read(i)
             bname = dataset.descriptions[i-1]+f' ({dataset.transform[0]}m)'
             bmeta = dataset.tags(i)
 
@@ -1767,14 +1780,22 @@ def get_sentinel2(ifile, piter=None, showprocesslog=print, extscene=None):
                     'central wavelength' not in bname.lower()):
                 continue
 
+            bname = bname.replace(',', ' ')
+            if tnames is not None and bname not in tnames:
+                continue
+
             dat.append(Data())
-            dat[-1].data = rtmp
-            dat[-1].data = np.ma.masked_invalid(dat[-1].data)
-            dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
-            if dat[-1].data.mask.size == 1:
-                dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
-            dat[-1].data = dat[-1].data.astype(float)
-            dat[-1].data = dat[-1].data / 10000.
+
+            if not metaonly:
+                rtmp = dataset.read(i)
+
+                dat[-1].data = rtmp
+                dat[-1].data = np.ma.masked_invalid(dat[-1].data)
+                dat[-1].data.mask = dat[-1].data.mask | (dat[-1].data == nval)
+                if dat[-1].data.mask.size == 1:
+                    dat[-1].mask = np.ma.getmaskarray(dat[-1].data)
+                dat[-1].data = dat[-1].data.astype(float)
+                dat[-1].data = dat[-1].data / 10000.
 
             dat[-1].dataid = bname
             dat[-1].nodata = nval
@@ -2333,23 +2354,34 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
 
     ifiles = indata['RasterFileList']
 
-    filt2gdal = {'GeoTiff': 'GTiff',
+    filt2gdal = {'GeoTiff compressed using ZSTD': 'GTiff',
+                 'GeoTiff': 'GTiff',
                  'ENVI': 'ENVI',
                  'ERMapper': 'ERS',
                  'ERDAS Imagine': 'HFA'}
 
+    compression = 'NONE'
     ofilt = filt2gdal[filt]
+    if filt == 'GeoTiff compressed using ZSTD':
+        compression = 'ZSTD'
 
     os.makedirs(odir, exist_ok=True)
 
     for ifile in ifiles:
         showprocesslog('Processing '+os.path.basename(ifile))
-
-        dat = get_data(ifile, piter=piter,
-                       showprocesslog=showprocesslog,
-                       extscene='Bands Only')
         ofile = os.path.join(odir, os.path.basename(ifile))
         ofile = ofile[:-4]+'.tif'
+
+        if tnames is not None:
+            ofile = ofile[:-4]+'_tern.tif'
+
+        if os.path.exists(ofile):
+            showprocesslog('Output file exists, skipping')
+            continue
+
+        dat = get_data(ifile, piter=piter,
+                       showprocesslog=showprocesslog, tnames=tnames,
+                       extscene='Bands Only')
 
         odat = []
         if tnames is not None:
@@ -2358,12 +2390,11 @@ def export_batch(indata, odir, filt, tnames=None, piter=None,
                     if i in j.dataid:
                         odat.append(j)
                         break
-            ofile = ofile[:-4]+'_tern.tif'
         else:
             odat = dat
 
         showprocesslog('Exporting '+os.path.basename(ofile))
-        export_raster(ofile, odat, ofilt, piter=piter)
+        export_raster(ofile, odat, ofilt, piter=piter, compression=compression)
 
 
 def _test5P():
@@ -2435,7 +2466,8 @@ def _testfn3():
     """Test routine."""
     import sys
 
-    idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\MNF'
+    idir = r'c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full'
+    odir = r'd:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\12_8_3'
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -2447,6 +2479,7 @@ def _testfn3():
 
     tmp2 = ExportBatch()
     tmp2.indata = dat
+    tmp2.odir.setText(odir)
     tmp2.run()
 
 

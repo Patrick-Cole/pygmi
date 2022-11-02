@@ -399,6 +399,7 @@ class DataMerge(QtWidgets.QDialog):
                                               'first file at overlap.')
 
         self.idirlist = QtWidgets.QLineEdit('')
+        self.sfile = QtWidgets.QLineEdit('')
         self.files_diff = QtWidgets.QCheckBox('Merge by band labels, '
                                               'since band order may differ, '
                                               'or input files have different '
@@ -408,6 +409,9 @@ class DataMerge(QtWidgets.QDialog):
                                                    'value before merge. May '
                                                    'allow for cleaner merge '
                                                    'if datasets are offset.')
+
+        self.bands_to_files = QtWidgets.QCheckBox('Save each band separately '
+                                                  'in a "merge" subdirectory.')
         self.forcetype = None
         self.setupui()
 
@@ -424,6 +428,7 @@ class DataMerge(QtWidgets.QDialog):
         buttonbox = QtWidgets.QDialogButtonBox()
         helpdocs = menu_default.HelpButton('pygmi.raster.dataprep.datamerge')
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
+        pb_sfile = QtWidgets.QPushButton('Shapefile for boundary (optional)')
 
         self.files_diff.setChecked(False)
         self.shift_to_median.setChecked(False)
@@ -446,15 +451,19 @@ class DataMerge(QtWidgets.QDialog):
 
         gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
-        gridlayout_main.addWidget(self.files_diff, 2, 0, 1, 2)
-        gridlayout_main.addWidget(self.shift_to_median, 3, 0, 1, 2)
-        gridlayout_main.addWidget(gb_merge_method, 4, 0, 1, 2)
-        gridlayout_main.addWidget(helpdocs, 5, 0, 1, 1)
-        gridlayout_main.addWidget(buttonbox, 5, 1, 1, 1)
+        gridlayout_main.addWidget(pb_sfile, 2, 0, 1, 1)
+        gridlayout_main.addWidget(self.sfile, 2, 1, 1, 1)
+        gridlayout_main.addWidget(self.files_diff, 3, 0, 1, 2)
+        gridlayout_main.addWidget(self.shift_to_median, 4, 0, 1, 2)
+        gridlayout_main.addWidget(gb_merge_method, 5, 0, 1, 2)
+        gridlayout_main.addWidget(self.bands_to_files, 6, 0, 1, 2)
+        gridlayout_main.addWidget(helpdocs, 7, 0, 1, 1)
+        gridlayout_main.addWidget(buttonbox, 7, 1, 1, 1)
 
         buttonbox.accepted.connect(self.accept)
         buttonbox.rejected.connect(self.reject)
         pb_idirlist.pressed.connect(self.get_idir)
+        pb_sfile.pressed.connect(self.get_sfile)
         self.shift_to_median.stateChanged.connect(self.shiftchanged)
         self.files_diff.stateChanged.connect(self.filesdiffchanged)
         self.rb_first.clicked.connect(self.method_change)
@@ -506,6 +515,9 @@ class DataMerge(QtWidgets.QDialog):
         """
         if not self.files_diff.isChecked():
             self.shift_to_median.setChecked(False)
+            self.bands_to_files.hide()
+        else:
+            self.bands_to_files.show()
 
     def get_idir(self):
         """
@@ -523,6 +535,25 @@ class DataMerge(QtWidgets.QDialog):
 
         if self.idir == '':
             self.idir = None
+
+    def get_sfile(self):
+        """
+        Get the input shapefile.
+
+        Returns
+        -------
+        None.
+
+        """
+        ext = ('ESRI Shapefile (*.shp);;')
+
+        sfile, _ = QtWidgets.QFileDialog.getOpenFileName(
+            self.parent, 'Open File', '.', ext)
+
+        if not sfile:
+            return False
+
+        self.sfile.setText(sfile)
 
     def settings(self, nodialog=False):
         """
@@ -622,7 +653,7 @@ class DataMerge(QtWidgets.QDialog):
         # The next line is only to avoid circular dependancies with merge
         # function.
 
-        from pygmi.raster.iodefs import get_raster, get_raster_meta
+        from pygmi.raster.iodefs import get_raster, export_raster
 
         indata = []
         if 'Raster' in self.indata:
@@ -635,7 +666,7 @@ class DataMerge(QtWidgets.QDialog):
                 ifiles += glob.glob(os.path.join(self.idir, ftype))
 
             for ifile in self.piter(ifiles):
-                indata += get_raster_meta(ifile, piter=iter)
+                indata += get_raster(ifile, piter=iter, metaonly=True)
 
         if indata is None:
             self.showprocesslog('No input datasets')
@@ -664,6 +695,8 @@ class DataMerge(QtWidgets.QDialog):
         else:
             crs = indata[0].crs
 
+        bounds = get_shape_bounds(self.sfile.text(), crs, self.showprocesslog)
+
         # Start Merge
         bandlist = []
         # hasfloatdtype = False
@@ -675,14 +708,29 @@ class DataMerge(QtWidgets.QDialog):
 
         outdat = []
         for dataid in bandlist:
+            if 'B11' not in dataid:
+                continue
+
             self.showprocesslog('Extracting '+dataid+'...')
             ifiles = []
+
             for i in self.piter(indata):
                 if i.dataid != dataid:
                     continue
 
+                # bounds = get_shape_bounds(self.sfile.text(), i.crs,
+                #                           self.showprocesslog)
+
                 # print(os.path.basename(i.filename))
-                i2 = get_raster(i.filename, piter=iter, dataid=i.dataid)[0]
+
+                i2 = get_raster(i.filename, piter=iter, dataid=i.dataid)  # ,
+                                # bounds=bounds)
+                if i2 is None:
+                    continue
+                else:
+                    i2 = i2[0]
+
+                # i2.data = i2.data.astype(float)
 
                 if i2.crs != crs:
                     src_height, src_width = i2.data.shape
@@ -705,10 +753,8 @@ class DataMerge(QtWidgets.QDialog):
                                                        i2.extent[3],
                                                        i2.xdim, i2.ydim)
 
-                # tmpfile = os.path.join(r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\temp",
-                #                        os.path.basename(i.filename))
                 tmpfile = os.path.join(tempfile.gettempdir(),
-                                        os.path.basename(i.filename))
+                                       os.path.basename(i.filename))
                 tmpfile = tmpfile[:-4]+'_'+i2.dataid+'.tif'
                 tmpfile = tmpfile.replace('*', 'mult')
                 tmpfile = tmpfile.replace(r'/', 'div')
@@ -731,7 +777,6 @@ class DataMerge(QtWidgets.QDialog):
                 tmpdat = tmpdat.filled(nodata)
                 tmpdat = np.ma.masked_equal(tmpdat, nodata)
 
-                # breakpoint()
                 raster.write(tmpdat, 1)
                 raster.write_mask(~np.ma.getmaskarray(i2.data))
 
@@ -746,7 +791,8 @@ class DataMerge(QtWidgets.QDialog):
 
             with rasterio.Env(CPL_DEBUG=True):
                 mosaic, otrans = rasterio.merge.merge(ifiles, nodata=nodata,
-                                                      method=self.method)
+                                                      method=self.method,
+                                                      bounds=bounds)
 
             for j in ifiles:
                 if os.path.exists(j):
@@ -761,7 +807,26 @@ class DataMerge(QtWidgets.QDialog):
             outdat[-1].set_transform(transform=otrans)
             outdat[-1].crs = crs
             outdat[-1].nodata = nodata
-            break
+
+            if self.bands_to_files.isChecked():
+                odir = os.path.join(self.idir, 'merge')
+                os.makedirs(odir, exist_ok=True)
+                ofile = outdat[-1].dataid+'.tif'
+                ofile = ofile.replace(' ', '_')
+                ofile = ofile.replace(',', '_')
+                ofile = os.path.join(odir, ofile)
+                export_raster(ofile, outdat, 'GTiff', compression='ZSTD')
+                del outdat
+                del mosaic
+                outdat = []
+            # import matplotlib.pyplot as plt
+            # vmin = mosaic.mean()-2*mosaic.std()
+            # vmax = mosaic.mean()+2*mosaic.std()
+            # plt.figure(dpi=150)
+            # plt.title(dataid)
+            # plt.imshow(mosaic, vmin=vmin, vmax=vmax, extent=outdat[-1].extent)
+            # plt.colorbar()
+            # plt.show()
 
         self.outdata['Raster'] = outdat
 
@@ -2016,6 +2081,8 @@ def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
     mtmp1 = np.logical_and(~merged_mask, ~new_mask)
     mtmp2 = np.logical_and(~merged_mask, new_mask)
 
+    # breakpoint()
+
     tmp1 = new_data.copy()
 
     if True in mtmp1:
@@ -2734,7 +2801,7 @@ def lstack(dat, piter=None, dxy=None, pprint=print, commonmask=False,
                                     mask=dat2[-1].data.mask)
 
         data.data = data.data + doffset
-
+        # breakpoint()
     if commonmask is True:
         for idat in piter(dat2):
             idat.data.mask = cmask
@@ -2878,6 +2945,51 @@ def cut_raster_basic(data, ifile, pprint=print):
 
     return data
 
+
+def get_shape_bounds(sfile, crs=None, pprint=print):
+    """
+    Get bounds from a shape file.
+
+    Parameters
+    ----------
+    sfile : str
+        Filename for shapefile.
+    crs : rasterio CRS
+        target crs for shapefile
+    pprint : TYPE, optional
+        Print. The default is print.
+
+    Returns
+    -------
+    bounds : list
+        Rasterio bounds.
+
+    """
+    if sfile == '' or sfile is None:
+        return None
+
+    gdf = gpd.read_file(sfile)
+
+    gdf = gdf[gdf.geometry != None]
+
+    if crs is not None:
+        gdf =  gdf.to_crs(crs)
+
+    if gdf.geom_type.iloc[0] == 'MultiPolygon':
+        pprint('You have a MultiPolygon. Only the first Polygon '
+               'of the MultiPolygon will be used.')
+        poly = gdf['geometry'].iloc[0]
+        tmp = poly.geoms[0]
+
+        gdf.geometry.iloc[0] = tmp
+
+    if gdf.geom_type.iloc[0] != 'Polygon':
+        pprint('You need a polygon in that shape file')
+        return None
+
+    bounds = gdf.geometry.iloc[0].bounds
+
+    return bounds
 
 def _testdown():
     """Continuation testing routine."""
@@ -3079,11 +3191,15 @@ def _testmerge():
 
     app = QtWidgets.QApplication(sys.argv)
 
-    idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
+    idir = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
+    idir = r"c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full"
+    # idir = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\test"
+    sfile = r"D:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
 
     DM = DataMerge()
     DM.idir = idir
     DM.idirlist.setText(idir)
+    DM.sfile.setText(sfile)
 
     DM.files_diff.setChecked(True)
     # DM.shift_to_median.setChecked(True)
@@ -3095,10 +3211,9 @@ def _testmerge():
 
     del DM
 
-    ofile = idir+'_A4.tif'
+    # ofile = idir+'.tif'
 
-    export_raster(ofile, dat, 'GTiff')
-
+    # export_raster(ofile, dat, 'GTiff', compression='ZSTD')
 
     # vmin = dat.mean()-2*dat.std()
     # vmax = dat.mean()+2*dat.std()
@@ -3306,10 +3421,6 @@ def _testnewnull():
         export_raster(ofile, dat, 'GTiff')
         # break
 
-
-def batch_reproject():
-    """Batch reprojection."""
-    idir = r''
 
 
 if __name__ == "__main__":
