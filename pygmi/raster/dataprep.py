@@ -703,18 +703,13 @@ class DataMerge(QtWidgets.QDialog):
 
         # Start Merge
         bandlist = []
-        # hasfloatdtype = False
         for i in indata:
             bandlist.append(i.dataid)
-            # if np.issubdtype(i.data.dtype, np.floating):
-            #     hasfloatdtype = True
+
         bandlist = list(set(bandlist))
 
         outdat = []
         for dataid in bandlist:
-            if 'B11' not in dataid:
-                continue
-
             self.showprocesslog('Extracting '+dataid+'...')
             ifiles = []
 
@@ -722,19 +717,12 @@ class DataMerge(QtWidgets.QDialog):
                 if i.dataid != dataid:
                     continue
 
-                # bounds = get_shape_bounds(self.sfile.text(), i.crs,
-                #                           self.showprocesslog)
+                i2 = get_raster(i.filename, piter=iter, dataid=i.dataid)
 
-                # print(os.path.basename(i.filename))
-
-                i2 = get_raster(i.filename, piter=iter, dataid=i.dataid)  # ,
-                                # bounds=bounds)
                 if i2 is None:
                     continue
                 else:
                     i2 = i2[0]
-
-                # i2.data = i2.data.astype(float)
 
                 if i2.crs != crs:
                     src_height, src_width = i2.data.shape
@@ -759,9 +747,14 @@ class DataMerge(QtWidgets.QDialog):
 
                 tmpfile = os.path.join(tempfile.gettempdir(),
                                        os.path.basename(i.filename))
-                tmpfile = tmpfile[:-4]+'_'+i2.dataid+'.tif'
-                tmpfile = tmpfile.replace('*', 'mult')
-                tmpfile = tmpfile.replace(r'/', 'div')
+
+                tmpid = i2.dataid
+                tmpid = tmpid.replace(' ', '_')
+                tmpid = tmpid.replace(',', '_')
+                tmpid = tmpid.replace('*', 'mult')
+                tmpid = tmpid.replace(r'/', 'div')
+
+                tmpfile = tmpfile[:-4]+'_'+tmpid+'.tif'
 
                 raster = rasterio.open(tmpfile, 'w', driver='GTiff',
                                        height=i2.data.shape[0],
@@ -771,11 +764,8 @@ class DataMerge(QtWidgets.QDialog):
 
                 if np.issubdtype(i2.data.dtype, np.floating):
                     nodata = 1.0e+20
-                    # tmpdat = i2.data.astype(float)
-
                 else:
                     nodata = -99999
-                    # tmpdat = i2.data.astype(int)
 
                 tmpdat = i2.data-mval
                 tmpdat = tmpdat.filled(nodata)
@@ -790,6 +780,7 @@ class DataMerge(QtWidgets.QDialog):
 
             if len(ifiles) < 2:
                 self.showprocesslog('Too few bands of name '+dataid)
+                continue
 
             self.showprocesslog('Merging '+dataid+'...')
 
@@ -818,6 +809,7 @@ class DataMerge(QtWidgets.QDialog):
                 ofile = outdat[-1].dataid+'.tif'
                 ofile = ofile.replace(' ', '_')
                 ofile = ofile.replace(',', '_')
+                ofile = ofile.replace('*', 'mult')
                 ofile = os.path.join(odir, ofile)
                 export_raster(ofile, outdat, 'GTiff', compression='ZSTD')
 
