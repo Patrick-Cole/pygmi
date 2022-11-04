@@ -820,18 +820,19 @@ class DataMerge(QtWidgets.QDialog):
                 ofile = ofile.replace(',', '_')
                 ofile = os.path.join(odir, ofile)
                 export_raster(ofile, outdat, 'GTiff', compression='ZSTD')
+
+                # import matplotlib.pyplot as plt
+                # vmin = mosaic.mean()-2*mosaic.std()
+                # vmax = mosaic.mean()+2*mosaic.std()
+                # plt.figure(dpi=150)
+                # plt.title(dataid)
+                # plt.imshow(mosaic, vmin=vmin, vmax=vmax, extent=outdat[-1].extent)
+                # plt.colorbar()
+                # plt.show()
+
                 del outdat
                 del mosaic
                 outdat = []
-
-            import matplotlib.pyplot as plt
-            vmin = mosaic.mean()-2*mosaic.std()
-            vmax = mosaic.mean()+2*mosaic.std()
-            plt.figure(dpi=150)
-            plt.title(dataid)
-            plt.imshow(mosaic, vmin=vmin, vmax=vmax, extent=outdat[-1].extent)
-            plt.colorbar()
-            plt.show()
 
         self.outdata['Raster'] = outdat
 
