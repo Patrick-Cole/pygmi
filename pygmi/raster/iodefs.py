@@ -759,7 +759,8 @@ def get_raster_meta(ifile, nval=None, piter=None, showprocesslog=print,
 
 
 def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
-               iraster=None, driver=None, bounds=None, dataid=None):
+               iraster=None, driver=None, bounds=None, dataid=None,
+               tnames=None, metaonly=False):
     """
     Get raster dataset.
 
@@ -931,7 +932,7 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
 
     isbil = False
     if ('INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr'] and
-            dataid is not None):
+            dataid is not None and metaonly is False):
         if istruct['INTERLEAVE'] == 'LINE' and iraster is None:
             isbil = True
             datin = get_bil(ifile, bands, cols, rows, dtype, piter)
@@ -947,6 +948,9 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
             if dataid is not None and bandid != dataid:
                 continue
 
+            if tnames is not None and bandid not in tnames:
+                continue
+
             unit = dataset.units[i]
             if unit is None:
                 unit = ''
@@ -959,14 +963,14 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                 nval = dataset.nodata
 
             dat.append(Data())
-            if isbil is True:
+            if isbil is True and metaonly is False:
                 dat[-1].data = datin[i]
-            elif iraster is None:
+            elif iraster is None and metaonly is False:
                 dat[-1].data = dataset.read(index)
-            else:
+            elif metaonly is False:
                 xoff, yoff, xsize, ysize = iraster
-                dat[-1].data = dataset.read(1, window=Window(xoff, yoff,
-                                                             xsize, ysize))
+                dat[-1].data = dataset.read(index, window=Window(xoff, yoff,
+                                                                 xsize, ysize))
 
             if dat[-1].data.dtype.kind == 'i':
                 if nval is None:
@@ -1370,6 +1374,7 @@ class ExportData():
             return False
 
         ext = ('GeoTiff (*.tif);;'
+               'GeoTiff compressed using ZSTD (*.tif);;'
                'ENVI (*.hdr);;'
                'ERMapper (*.ers);;'
                'Geosoft (*.gxf);;'
@@ -1651,7 +1656,6 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
     None.
 
     """
-    # getinfo('Start of Export')
     if piter is None:
         piter = ProgressBarText().iter
 
@@ -1661,11 +1665,8 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
             dat2.append(dat[i])
     else:
         dat2 = dat
-    # getinfo('dat2')
 
     data = lstack(dat2, piter, nodeepcopy=True)
-
-    # getinfo('data')
 
     # Sort in band order.
     if bandsort is True:
@@ -1673,9 +1674,9 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
         data = [i for _, i in natsorted(zip(dataid, data))]
 
     dtype = data[0].data.dtype
-    nodata = dat[0].nodata
-    trans = dat[0].transform
-    crs = dat[0].crs
+    nodata = data[0].nodata
+    trans = data[0].transform
+    crs = data[0].crs
 
     try:
         nodata = dtype.type(nodata)
@@ -1684,9 +1685,9 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
         nodata = 0
 
     if trans is None:
-        trans = rasterio.transform.from_origin(dat[0].extent[0],
-                                               dat[0].extent[3],
-                                               dat[0].xdim, dat[0].ydim)
+        trans = rasterio.transform.from_origin(data[0].extent[0],
+                                               data[0].extent[3],
+                                               data[0].xdim, data[0].ydim)
 
     tmp = ofile.rpartition('.')
 
@@ -1735,19 +1736,16 @@ def export_raster(ofile, dat, drv, envimeta='', piter=None,
 
         for i in piter(range(numbands)):
             datai = data[i]
-            # getinfo('datai')
 
             out.set_band_description(i+1, datai.dataid)
 
             dtmp = np.ma.array(datai.data)
             dtmp.set_fill_value(datai.nodata)
             dtmp = dtmp.filled()
-            # getinfo('dtmp')
 
             out.write(dtmp, i+1)
 
             del dtmp
-            # getinfo('del dtmp')
 
             out.update_tags(i+1, STATISTICS_EXCLUDEDVALUES='')
             out.update_tags(i+1, STATISTICS_MAXIMUM=datai.data.max())
