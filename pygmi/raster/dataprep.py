@@ -3219,7 +3219,6 @@ def _testmerge():
 
     # export_raster(ofile, dat, 'GTiff', compression='ZSTD')
 
-
 def _testreproj():
     """Test Reprojection."""
     import sys
