@@ -3345,6 +3345,7 @@ def _testlstack():
     ofile = r'd:/Workdata/LULC/2001_stack_norm_pc.tif'
     export_raster(ofile, dat2, 'GTiff')
 
+
 def _testcut2():
     """Test Reprojection."""
     import sys
@@ -3360,6 +3361,7 @@ def _testcut2():
     ifiles = glob.glob(ifilt)
 
     for ifile in ifiles:
+        print(ifile)
         gdf = gpd.read_file(sfile)
 
         gdf = gdf[gdf.geometry != None]
@@ -3387,8 +3389,8 @@ def _testcut2():
             idat.nodata = 0
 
         ofile = os.path.join(odir, os.path.basename(ifile))
-        ofile = ofile[:-4]+'.tif'
-        export_raster(ofile, dat, 'GTiff')
+        ofile = ofile[:-4]+'new.tif'
+        export_raster(ofile, dat, 'GTiff', bandsort=False)
 
 
 def _testnewnull():
@@ -3396,11 +3398,12 @@ def _testnewnull():
     from pygmi.raster.iodefs import get_raster, export_raster
 
     ifilt = r"D:\hypercut\*.hdr"
-    odir = r"D:\hypercut\out"
+    odir = r"D:\hypercut\cut"
 
     ifiles = glob.glob(ifilt)
 
     for ifile in ifiles:
+        print(ifile)
         dat = get_raster(ifile)
         for idat in dat:
             idat.nodata = 0
@@ -3408,10 +3411,10 @@ def _testnewnull():
 
         ofile = os.path.join(odir, os.path.basename(ifile))
         ofile = ofile[:-4]+'.tif'
-        export_raster(ofile, dat, 'GTiff')
+        export_raster(ofile, dat, 'GTiff', bandsort=False)
         # break
 
 
 
 if __name__ == "__main__":
-    _testmerge()
+    _testnewnull()

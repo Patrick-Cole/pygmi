@@ -561,203 +561,6 @@ def get_ascii(ifile):
     return dat
 
 
-def get_raster_meta(ifile, nval=None, piter=None, showprocesslog=print,
-                    driver=None):
-    """
-    Get raster dataset metadata.
-
-    This function loads a raster dataset metadata off the disk using the
-    rasterio libraries. It returns the data in a PyGMI data object.
-
-    Parameters
-    ----------
-    ifile : str
-        filename to import
-    nval : float, optional
-        No data/null value. The default is None.
-    piter : iterable from misc.ProgressBar or misc.ProgressBarText
-        progress bar iterable, default is None.
-    showprocesslog : function, optional
-        Routine to show text messages. The default is print.
-    driver : str
-        GDAL raster driver name. The default is None.
-
-    Returns
-    -------
-    dat : PyGMI raster Data
-        dataset imported
-    """
-    if piter is None:
-        piter = ProgressBarText().iter
-
-    dat = []
-    bname = os.path.basename(ifile).rpartition('.')[0]
-    ext = ifile[-3:]
-    custom_wkt = ''
-    filename = ifile
-
-    # Envi Case
-    if ext == 'hdr':
-        ifile = ifile[:-4]
-        if os.path.exists(ifile+'.dat'):
-            ifile = ifile+'.dat'
-        elif os.path.exists(ifile+'.raw'):
-            ifile = ifile+'.raw'
-        elif os.path.exists(ifile+'.img'):
-            ifile = ifile+'.img'
-        elif not os.path.exists(ifile):
-            return None
-
-    if ext == 'ers':
-        with open(ifile, encoding='utf-8') as f:
-            metadata = f.read()
-            if 'STMLO' in metadata:
-                clong = metadata.split('STMLO')[1][:2]
-
-                if 'CAPE' in metadata:
-                    custom_wkt = ('PROJCS["Cape / TM'+clong+'",'
-                                  'GEOGCS["Cape",'
-                                  'DATUM["Cape",'
-                                  'SPHEROID["Clarke 1880 (Arc)",'
-                                  '6378249.145,293.4663077,'
-                                  'AUTHORITY["EPSG","7013"]],'
-                                  'AUTHORITY["EPSG","6222"]],'
-                                  'PRIMEM["Greenwich",0,'
-                                  'AUTHORITY["EPSG","8901"]],'
-                                  'UNIT["degree",0.0174532925199433,'
-                                  'AUTHORITY["EPSG","9122"]],'
-                                  'AUTHORITY["EPSG","4222"]],'
-                                  'PROJECTION["Transverse_Mercator"],'
-                                  'PARAMETER["latitude_of_origin",0],'
-                                  'PARAMETER["central_meridian",'+clong+'],'
-                                  'PARAMETER["scale_factor",1],'
-                                  'PARAMETER["false_easting",0],'
-                                  'PARAMETER["false_northing",0],'
-                                  'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
-                                  'AXIS["Easting",EAST],'
-                                  'AXIS["Northing",NORTH]]')
-
-                elif 'WGS84' in metadata:
-                    custom_wkt = ('PROJCS["Hartebeesthoek94 / TM'+clong+'",'
-                                  'GEOGCS["Hartebeesthoek94",'
-                                  'DATUM["Hartebeesthoek94",'
-                                  'SPHEROID["WGS 84",6378137,298.257223563,'
-                                  'AUTHORITY["EPSG","7030"]],'
-                                  'AUTHORITY["EPSG","6148"]],'
-                                  'PRIMEM["Greenwich",0,'
-                                  'AUTHORITY["EPSG","8901"]],'
-                                  'UNIT["degree",0.0174532925199433,'
-                                  'AUTHORITY["EPSG","9122"]],'
-                                  'AUTHORITY["EPSG","4148"]],'
-                                  'PROJECTION["Transverse_Mercator"],'
-                                  'PARAMETER["latitude_of_origin",0],'
-                                  'PARAMETER["central_meridian",'+clong+'],'
-                                  'PARAMETER["scale_factor",1],'
-                                  'PARAMETER["false_easting",0],'
-                                  'PARAMETER["false_northing",0],'
-                                  'UNIT["metre",1,AUTHORITY["EPSG","9001"]],'
-                                  'AXIS["Easting",EAST],'
-                                  'AXIS["Northing",NORTH]]')
-
-    dmeta = {}
-    with rasterio.open(ifile, driver=driver) as dataset:
-        if dataset is None:
-            return None
-
-        gmeta = dataset.tags()
-        driver = dataset.driver
-
-        if driver == 'ENVI':
-            dmeta = dataset.tags(ns='ENVI')
-
-    if custom_wkt == '' and dataset.crs is not None:
-        custom_wkt = dataset.crs.to_wkt()
-
-    cols = dataset.width
-    rows = dataset.height
-    if nval is None:
-        nval = dataset.nodata
-
-    if custom_wkt != '':
-        crs = CRS.from_string(custom_wkt)
-    else:
-        showprocesslog('Warning: Your data does not have a projection. '
-                       'Assigning local coordinate system.')
-        crs = CRS.from_string('LOCAL_CS["Arbitrary",UNIT["metre",1,'
-                              'AUTHORITY["EPSG","9001"]],'
-                              'AXIS["Easting",EAST],'
-                              'AXIS["Northing",NORTH]]')
-
-    with rasterio.open(ifile) as dataset:
-        for i in piter(range(dataset.count)):
-            index = dataset.indexes[i]
-            bandid = dataset.descriptions[i]
-
-            if bandid == '' or bandid is None:
-                bandid = 'Band '+str(index)+' '+bname
-
-            unit = dataset.units[i]
-            if unit is None:
-                unit = ''
-            if unit.lower() == 'micrometers':
-                dat[i].units = 'μm'
-            elif unit.lower() == 'nanometers':
-                dat[i].units = 'nm'
-
-            if nval is None:
-                nval = dataset.nodata
-
-            dat.append(Data())
-
-            if nval is None:
-                nval = 1e+20
-            nval = float(nval)
-
-            dat[i].set_transform(transform=dataset.transform)
-            dat[i].dataid = bandid
-            dat[i].nodata = nval
-            dat[i].filename = filename
-            dat[i].units = unit
-
-            if driver == 'netCDF' and dataset.crs is None:
-                if 'x#actual_range' in gmeta and 'y#actual_range' in gmeta:
-                    xrng = gmeta['x#actual_range']
-                    xrng = xrng.strip('}{').split(',')
-                    xrng = [float(i) for i in xrng]
-                    xmin = min(xrng)
-                    xdim = (xrng[1]-xrng[0])/cols
-
-                    yrng = gmeta['y#actual_range']
-                    yrng = yrng.strip('}{').split(',')
-                    yrng = [float(i) for i in yrng]
-                    ymin = min(yrng)
-                    ydim = (yrng[1]-yrng[0])/rows
-                    dat[i].set_transform(xdim, xmin, ydim, ymin)
-
-            dat[i].crs = crs
-            dat[i].meta = dataset.meta
-
-            dest = dataset.tags(index)
-            for j in ['Wavelength', 'WAVELENGTH']:
-                if j in dest:
-                    dest[j.lower()] = dest[j]
-                    del dest[j]
-
-            if 'fwhm' in dmeta:
-                fwhm = [float(i) for i in dmeta['fwhm'][1:-1].split(',')]
-                dest['fwhm'] = fwhm[index-1]
-
-            if '.raw' in ifile:
-                dmeta['reflectance_scale_factor'] = 10000.
-
-            if 'reflectance scale factor' in dmeta:
-                dmeta['reflectance_scale_factor'] = dmeta['reflectance scale factor']
-
-            dat[i].metadata['Raster'] = {**dmeta, **dest}
-
-    return dat
-
-
 def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                iraster=None, driver=None, bounds=None, dataid=None,
                tnames=None, metaonly=False):
@@ -932,10 +735,10 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
 
     isbil = False
     if ('INTERLEAVE' in istruct and driver in ['ENVI', 'ERS', 'EHdr'] and
-            dataid is not None and metaonly is False):
-        if istruct['INTERLEAVE'] == 'LINE' and iraster is None:
+            dataid is None and metaonly is False):
+        if istruct['INTERLEAVE'] == 'LINE':
             isbil = True
-            datin = get_bil(ifile, bands, cols, rows, dtype, piter)
+            datin = get_bil(ifile, bands, cols, rows, dtype, piter, iraster)
 
     with rasterio.open(ifile) as dataset:
         for i in piter(range(dataset.count)):
@@ -1056,7 +859,72 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
     return dat
 
 
-def get_bil(ifile, bands, cols, rows, dtype, piter):
+def get_bil(ifile, bands, cols, rows, dtype, piter, iraster=None):
+    """
+    Get BIL format file.
+
+    This routine is called from get_raster
+
+    Parameters
+    ----------
+    ifile : str
+        filename to import
+    bands : int
+        Number of bands.
+    cols : int
+        Number of columns.
+    rows : int
+        Number of rows.
+    dtype : data type
+        Data type.
+    piter : iterable from misc.ProgressBar or misc.ProgressBarText
+        progress bar iterable
+
+    Returns
+    -------
+    datin : PyGMI raster Data
+        dataset imported
+
+    """
+    if iraster is not None:
+        xoff, yoff, xsize, ysize = iraster
+    else:
+        xoff = 0
+        yoff = 0
+        ysize = rows
+        xsize = cols
+
+    dtype = np.dtype(dtype)
+    dsize = dtype.itemsize
+
+    count = bands*cols*ysize
+    offset = yoff*dsize
+
+    icount = count//10
+    datin = []
+    for _ in piter(range(0, 10)):
+        tmp = np.fromfile(ifile, dtype=dtype, sep='', count=icount,
+                          offset=offset)
+        offset += icount*dsize
+        datin.append(tmp)
+
+    extra = int(count-offset/dsize)
+    if extra > 0:
+        tmp = np.fromfile(ifile, dtype=dtype, sep='', count=extra,
+                          offset=offset)
+        datin.append(tmp)
+
+    datin = np.concatenate(datin)
+    datin.shape = (ysize, bands, cols)
+    datin = np.swapaxes(datin, 0, 1)
+
+    if iraster is not None:
+        datin = datin[:, :, xoff:xoff+xsize]
+
+    return datin
+
+
+def get_bil_old(ifile, bands, cols, rows, dtype, piter, iraster=None):
     """
     Get BIL format file.
 
@@ -1107,7 +975,12 @@ def get_bil(ifile, bands, cols, rows, dtype, piter):
     datin.shape = (rows, bands, cols)
     datin = np.swapaxes(datin, 0, 1)
 
+    if iraster is not None:
+        xoff, yoff, xsize, ysize = iraster
+        datin = datin[:, yoff:yoff+ysize, xoff:xoff+xsize]
+
     return datin
+
 
 
 def get_geopak(hfile):

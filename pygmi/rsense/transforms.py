@@ -769,6 +769,99 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     return odata, ev
 
 
+def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
+    """
+    PCA Calculation with using list of files in common fit.
+
+    Parameters
+    ----------
+    dat : List
+        List of PyGMI Data.
+    ncmps : int or None, optional
+        Number of components to use for filtering. The default is None
+        (meaning all).
+    pprint : function, optional
+        Function for printing text. The default is print.
+    piter : function, optional
+        Iteration function, used for progress bars. The default is iter.
+    fwdonly : bool, optional
+        Option to perform forward calculation only. The default is True.
+
+    Returns
+    -------
+    odata : list
+        Output list of PyGMI Data.Can be forward or inverse transformed data.
+    ev : numpy array
+        Explained variance, from PCA.
+
+    """
+    x2d = []
+    maskall = []
+    dat = lstack(dat, piter=piter)
+
+    for j in dat:
+        x2d.append(j.data)
+        maskall.append(j.data.mask)
+
+    maskall = np.moveaxis(maskall, 0, -1)
+    x2d = np.moveaxis(x2d, 0, -1)
+    x2dshape = list(x2d.shape)
+
+    mask = maskall[:, :, 0]
+
+    x2d = x2d[~mask]
+
+    pca = IncrementalPCA(n_components=ncmps)
+
+    iold = 0
+    pprint('Fitting PCA')
+    for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
+        if i == 0:
+            continue
+        pca.partial_fit(x2d[iold: i])
+        iold = i
+
+    pprint('Calculating PCA transform...')
+
+    x2 = np.zeros((x2d.shape[0], pca.n_components_))
+    iold = 0
+    for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
+        if i == 0:
+            continue
+        x2[iold: i] = pca.transform(x2d[iold: i])
+        iold = i
+
+    del x2d
+    ev = pca.explained_variance_
+    evr = pca.explained_variance_ratio_
+
+    if fwdonly is False:
+        pprint('Calculating inverse PCA...')
+        x2 = pca.inverse_transform(x2)
+    else:
+        x2dshape[-1] = ncmps
+        maskall = maskall[:, :, :ncmps]
+
+    datall = np.zeros(x2dshape, dtype=np.float32)
+
+    datall[~mask] = x2
+    datall = np.ma.array(datall, mask=maskall)
+
+    del x2
+
+    odata = copy.deepcopy(dat)
+    if fwdonly:
+        odata = odata[:ncmps]
+    for j, band in enumerate(odata):
+        band.data = datall[:, :, j]
+        if fwdonly is True:
+            band.dataid = (f'PCA {j+1} Explained Variance Ratio '
+                           f'{evr[j]*100:.2f}%')
+    del datall
+
+    return odata, ev
+
+
 def _testfn():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
@@ -862,8 +955,8 @@ def _testfn3():
 
     dat = tmp1.outdata
 
-    # tmp2 = PCA()
-    tmp2 = MNF()
+    tmp2 = PCA()
+    # tmp2 = MNF()
     tmp2.indata = dat
     tmp2.settings()
 

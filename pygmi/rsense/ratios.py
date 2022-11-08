@@ -528,6 +528,7 @@ class ConditionIndices(QtWidgets.QDialog):
                                     'Landsat 8 and 9 (OLI)',
                                     'Landsat 7 (ETM+)',
                                     'Landsat 4 and 5 (TM)',
+                                    'Landsat (All)',
                                     'Sentinel-2', 'WorldView'])
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
@@ -584,6 +585,9 @@ class ConditionIndices(QtWidgets.QDialog):
             self.combo_sensor.setCurrentText('Landsat 7 (ETM+)')
         elif bfile[:4] in ['LT04', 'LT05']:
             self.combo_sensor.setCurrentText('Landsat 4 and 5 (TM)')
+        elif ('LT04' in bfile or 'LT05' in bfile or 'LE07' in bfile or
+              'LC08' in bfile or 'LC09' in bfile):
+            self.combo_sensor.setCurrentText('Landsat (All)')
         else:
             self.combo_sensor.setCurrentText('Sentinel-2')
 
@@ -678,7 +682,7 @@ class ConditionIndices(QtWidgets.QDialog):
         elif 'VCI' in rlist1 and 'MSAVI2' in index:
             rlist += [r'0.5*(2*B3+1-sqrt((2*B3+1)**2-8*(B3-B2))) MSAVI2']
 
-        rlist = correct_bands(rlist, sensor)
+        # rlist = correct_bands(rlist, sensor)
 
         evi = []
         tci = []
@@ -759,7 +763,10 @@ class ConditionIndices(QtWidgets.QDialog):
                     lst.append(i)
 
             # Calculate ratios
-            for i in self.piter(rlist):
+            bfile = os.path.basename(ifile)
+            for i2 in self.piter(rlist):
+                i = correct_bands([i2], sensor, bfile)[0]
+
                 self.showprocesslog('Calculating '+i)
                 formula = i.split(' ')[0]
                 formula = re.sub(r'B(\d+)', r'Band\1', formula)
@@ -908,7 +915,7 @@ class ConditionIndices(QtWidgets.QDialog):
                 item.setText(' ' + item.text()[1:])
 
 
-def correct_bands(rlist, sensor):
+def correct_bands(rlist, sensor, bfile=None):
     """
     Correct the band designations.
 
@@ -945,6 +952,14 @@ def correct_bands(rlist, sensor):
                            'B4': 'B11', 'B5': 'B12', 'B3A': 'B8A'}
     sdict['WorldView'] = {'B0': 'B2', 'B1': 'B3', 'B2': 'B5', 'B3': 'B7',
                           'B3A': 'B7'}
+
+    if sensor == 'Landsat (All)':
+        if 'LC09' in bfile or 'LC08' in bfile:
+            sensor = 'Landsat 8 and 9 (OLI)'
+        elif 'LE07' in bfile:
+            sensor = 'Landsat 7 (ETM+)'
+        else:
+            sensor = 'Landsat 4 and 5 (TM)'
 
     bandmap = sdict[sensor]
     # Sort the keys so we do long names like B3A first
@@ -1221,7 +1236,9 @@ def _testfn2():
     import glob
     import matplotlib.pyplot as plt
 
-    ifiles = glob.glob(r'C:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
+    ifiles = glob.glob(r'D:\VHI\*.tif')
+
+    # ifiles = glob.glob(r'C:\Workdata\PyGMI Test Data\Remote Sensing\ConditionIndex\*.tar')
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -1312,4 +1329,4 @@ def _testfn4():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
