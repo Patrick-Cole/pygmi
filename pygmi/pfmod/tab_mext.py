@@ -388,8 +388,8 @@ class MextDisplay(QtWidgets.QDialog):
             utly = curgrid.extent[-1]
             xextent = ccols*curgrid.xdim
             yextent = crows*curgrid.ydim
-            cols = xextent/self.dsb_xycell.value()
-            rows = yextent/self.dsb_xycell.value()
+            cols = int(xextent/self.dsb_xycell.value())
+            rows = int(yextent/self.dsb_xycell.value())
 
             self.dsb_utlx.setValue(utlx)
             self.dsb_utly.setValue(utly)
