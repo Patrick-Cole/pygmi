@@ -2093,7 +2093,6 @@ def merge_median(merged_data, new_data, merged_mask, new_mask, index=None,
     None.
 
     """
-
     merged_data = np.ma.array(merged_data, mask=merged_mask)
     new_data = np.ma.array(new_data, mask=new_mask)
 
@@ -2110,27 +2109,27 @@ def merge_median(merged_data, new_data, merged_mask, new_mask, index=None,
 
     tmp1[mtmp2] = merged_data[mtmp2]
 
-    import matplotlib.pyplot as plt
+    # import matplotlib.pyplot as plt
 
-    plt.figure(dpi=150)
-    plt.suptitle(f'{roff} {coff}')
-    plt.subplot(221)
-    plt.title('merged_data')
-    plt.imshow(merged_data[0], vmin=0.5, vmax=3.0)
-    plt.colorbar()
+    # plt.figure(dpi=150)
+    # plt.suptitle(f'{roff} {coff}')
+    # plt.subplot(221)
+    # plt.title('merged_data')
+    # plt.imshow(merged_data[0], vmin=0.5, vmax=3.0, interpolation='nearest')
+    # plt.colorbar()
 
-    plt.subplot(222)
-    plt.title('new_data')
-    plt.imshow(new_data[0], vmin=0.5, vmax=3.0)
-    plt.colorbar()
-    plt.tight_layout()
+    # plt.subplot(222)
+    # plt.title('new_data')
+    # plt.imshow(new_data[0], vmin=0.5, vmax=3.0, interpolation='nearest')
+    # plt.colorbar()
+    # plt.tight_layout()
 
-    plt.subplot(223)
-    plt.title('tmp1')
-    plt.imshow(tmp1[0], vmin=0.5, vmax=3.0)
-    plt.colorbar()
-    plt.tight_layout()
-    plt.show()
+    # plt.subplot(223)
+    # plt.title('tmp1')
+    # plt.imshow(tmp1[0], vmin=0.5, vmax=3.0, interpolation='nearest')
+    # plt.colorbar()
+    # plt.tight_layout()
+    # plt.show()
 
     merged_data[:] = tmp1
 
@@ -3233,14 +3232,14 @@ def _testmerge():
 
     # idir = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
     # idir = r"c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full"
-    idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios2"
+    idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios"
     # idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\PCA'
     sfile = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
 
     DM = DataMerge()
     DM.idir = idir
     DM.idirlist.setText(idir)
-    # DM.sfile.setText(sfile)
+    DM.sfile.setText(sfile)
 
     DM.files_diff.setChecked(True)
     # DM.shift_to_median.setChecked(True)
