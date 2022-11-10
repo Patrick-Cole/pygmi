@@ -711,8 +711,8 @@ class DataMerge(QtWidgets.QDialog):
 
         outdat = []
         for dataid in bandlist:
-            if 'B4divB2' not in dataid:
-                continue
+            # if 'B4divB2' not in dataid:
+            #     continue
             self.showprocesslog('Extracting '+dataid+'...')
 
             if self.bands_to_files.isChecked():
@@ -3233,7 +3233,7 @@ def _testmerge():
 
     # idir = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
     # idir = r"c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full"
-    idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios"
+    idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios2"
     # idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\PCA'
     sfile = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
 
@@ -3494,4 +3494,4 @@ def _testlower():
 
 
 if __name__ == "__main__":
-    _testlower()
+    _testmerge()
