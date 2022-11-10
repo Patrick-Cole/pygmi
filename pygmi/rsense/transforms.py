@@ -33,7 +33,7 @@ from sklearn.decomposition import IncrementalPCA
 import numexpr as ne
 import matplotlib.pyplot as plt
 
-from pygmi.raster.iodefs import get_raster, export_raster
+from pygmi.raster.iodefs import export_raster
 from pygmi.rsense.iodefs import get_data
 from pygmi.raster.dataprep import lstack
 from pygmi.misc import ProgressBarText
@@ -306,6 +306,7 @@ class PCA(QtWidgets.QDialog):
 
         self.sb_comps = QtWidgets.QSpinBox()
         self.cb_fwdonly = QtWidgets.QCheckBox('Forward Transform Only.')
+        self.cb_fitlist = QtWidgets.QCheckBox('Fit PCA to all files.')
 
         self.setupui()
 
@@ -326,6 +327,8 @@ class PCA(QtWidgets.QDialog):
         lbl_comps = QtWidgets.QLabel('Number of components:')
 
         self.cb_fwdonly.setChecked(True)
+        self.cb_fitlist.setChecked(True)
+        self.cb_fitlist.setVisible(False)
         self.sb_comps.setMaximum(10000)
         self.sb_comps.setMinimum(1)
 
@@ -338,6 +341,7 @@ class PCA(QtWidgets.QDialog):
         gridlayout_main.addWidget(self.cb_fwdonly, 1, 0, 1, 2)
         gridlayout_main.addWidget(lbl_comps, 2, 0, 1, 1)
         gridlayout_main.addWidget(self.sb_comps, 2, 1, 1, 1)
+        gridlayout_main.addWidget(self.cb_fitlist, 3, 0, 1, 2)
 
         gridlayout_main.addWidget(helpdocs, 6, 0, 1, 1)
         gridlayout_main.addWidget(buttonbox, 6, 1, 1, 3)
@@ -365,6 +369,9 @@ class PCA(QtWidgets.QDialog):
         if 'Raster' not in self.indata and 'RasterFileList' not in self.indata:
             self.showprocesslog('No Satellite Data')
             return False
+
+        if 'RasterFileList' in self.indata:
+            self.cb_fitlist.setVisible(True)
 
         if 'Raster' in self.indata:
             indata = self.indata['Raster']
@@ -457,9 +464,12 @@ class PCA(QtWidgets.QDialog):
 
         """
         ncmps = self.sb_comps.value()
+        fitlist = self.cb_fitlist.isChecked()
+        fwdonly = self.cb_fwdonly.isChecked()
+
         odata = []
 
-        if 'RasterFileList' in self.indata:
+        if 'RasterFileList' in self.indata and fitlist is False:
             flist = self.indata['RasterFileList']
             odir = os.path.join(os.path.dirname(flist[0]), 'PCA')
 
@@ -472,13 +482,19 @@ class PCA(QtWidgets.QDialog):
                                extscene='Bands Only')
                 odata, self.ev = pca_calc(dat, ncmps, piter=self.piter,
                                           pprint=self.showprocesslog,
-                                          fwdonly=self.cb_fwdonly.isChecked())
+                                          fwdonly=fwdonly)
 
                 ofile = os.path.basename(ifile).split('.')[0] + '_pca.tif'
                 ofile = os.path.join(odir, ofile)
 
                 self.showprocesslog('Exporting '+os.path.basename(ofile))
                 export_raster(ofile, odata, 'GTiff', piter=self.piter)
+
+        elif 'RasterFileList' in self.indata and fitlist is True:
+            flist = self.indata['RasterFileList']
+            odata, self.ev = pca_calc_fitlist(flist, ncmps, piter=self.piter,
+                                              pprint=self.showprocesslog,
+                                              fwdonly=fwdonly)
 
         elif 'Raster' in self.indata:
             dat = self.indata['Raster']
@@ -769,7 +785,8 @@ def pca_calc(dat, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
     return odata, ev
 
 
-def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter, fwdonly=True):
+def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
+                     fwdonly=True):
     """
     PCA Calculation with using list of files in common fit.
 
@@ -795,77 +812,109 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter, fwdonly=True)
         Explained variance, from PCA.
 
     """
-    x2d = []
-    maskall = []
-    dat = lstack(dat, piter=piter)
+    odir = os.path.join(os.path.dirname(flist[0]), 'PCA')
+    os.makedirs(odir, exist_ok=True)
 
-    for j in dat:
-        x2d.append(j.data)
-        maskall.append(j.data.mask)
+    for ifile in flist:
+        pprint('Fitting '+os.path.basename(ifile))
 
-    maskall = np.moveaxis(maskall, 0, -1)
-    x2d = np.moveaxis(x2d, 0, -1)
-    x2dshape = list(x2d.shape)
+        dat = get_data(ifile, piter=piter, showprocesslog=pprint,
+                       extscene='Bands Only')
 
-    mask = maskall[:, :, 0]
+        x2d = []
+        maskall = []
+        dat = lstack(dat, piter=piter)
 
-    x2d = x2d[~mask]
+        for j in dat:
+            x2d.append(j.data)
+            maskall.append(j.data.mask)
 
-    pca = IncrementalPCA(n_components=ncmps)
+        maskall = np.moveaxis(maskall, 0, -1)
+        x2d = np.moveaxis(x2d, 0, -1)
+        x2dshape = list(x2d.shape)
 
-    iold = 0
-    pprint('Fitting PCA')
-    for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
-        if i == 0:
-            continue
-        pca.partial_fit(x2d[iold: i])
-        iold = i
+        mask = maskall[:, :, 0]
 
-    pprint('Calculating PCA transform...')
+        x2d = x2d[~mask]
 
-    x2 = np.zeros((x2d.shape[0], pca.n_components_))
-    iold = 0
-    for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
-        if i == 0:
-            continue
-        x2[iold: i] = pca.transform(x2d[iold: i])
-        iold = i
+        pca = IncrementalPCA(n_components=ncmps)
 
-    del x2d
-    ev = pca.explained_variance_
-    evr = pca.explained_variance_ratio_
+        iold = 0
+        for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
+            if i == 0:
+                continue
+            pca.partial_fit(x2d[iold: i])
+            iold = i
 
-    if fwdonly is False:
-        pprint('Calculating inverse PCA...')
-        x2 = pca.inverse_transform(x2)
-    else:
-        x2dshape[-1] = ncmps
-        maskall = maskall[:, :, :ncmps]
+    for ifile in flist:
+        pprint('Transforming '+os.path.basename(ifile))
 
-    datall = np.zeros(x2dshape, dtype=np.float32)
+        dat = get_data(ifile, piter=piter, showprocesslog=pprint,
+                       extscene='Bands Only')
 
-    datall[~mask] = x2
-    datall = np.ma.array(datall, mask=maskall)
+        x2d = []
+        maskall = []
+        dat = lstack(dat, piter=piter)
 
-    del x2
+        for j in dat:
+            x2d.append(j.data)
+            maskall.append(j.data.mask)
 
-    odata = copy.deepcopy(dat)
-    if fwdonly:
-        odata = odata[:ncmps]
-    for j, band in enumerate(odata):
-        band.data = datall[:, :, j]
-        if fwdonly is True:
-            band.dataid = (f'PCA {j+1} Explained Variance Ratio '
-                           f'{evr[j]*100:.2f}%')
-    del datall
+        maskall = np.moveaxis(maskall, 0, -1)
+        x2d = np.moveaxis(x2d, 0, -1)
+        x2dshape = list(x2d.shape)
+
+        mask = maskall[:, :, 0]
+
+        x2d = x2d[~mask]
+
+        x2 = np.zeros((x2d.shape[0], pca.n_components_))
+        iold = 0
+        for i in piter(np.linspace(0, x2d.shape[0], 20, dtype=int)):
+            if i == 0:
+                continue
+            x2[iold: i] = pca.transform(x2d[iold: i])
+            iold = i
+
+        del x2d
+        ev = pca.explained_variance_
+        evr = pca.explained_variance_ratio_
+
+        if fwdonly is False:
+            pprint('Calculating inverse PCA...')
+            x2 = pca.inverse_transform(x2)
+        else:
+            x2dshape[-1] = ncmps
+            maskall = maskall[:, :, :ncmps]
+
+        datall = np.zeros(x2dshape, dtype=np.float32)
+
+        datall[~mask] = x2
+        datall = np.ma.array(datall, mask=maskall)
+
+        del x2
+
+        odata = copy.deepcopy(dat)
+        if fwdonly:
+            odata = odata[:ncmps]
+        for j, band in enumerate(odata):
+            band.data = datall[:, :, j]
+            if fwdonly is True:
+                band.dataid = (f'PCA {j+1} Explained Variance Ratio '
+                               f'{evr[j]*100:.2f}%')
+        del datall
+
+        ofile = os.path.basename(ifile).split('.')[0] + '_pca.tif'
+        ofile = os.path.join(odir, ofile)
+
+        pprint('Exporting '+os.path.basename(ofile))
+        export_raster(ofile, odata, 'GTiff', piter=piter, compression='ZSTD')
 
     return odata, ev
 
 
 def _testfn():
     """Test routine."""
-    from pygmi.rsense.iodefs import get_data
-
     pbar = ProgressBarText()
 
     ifile = r"d:\Workdata\Remote Sensing\hyperion\EO1H1760802013198110KF_1T.ZIP"
@@ -874,7 +923,7 @@ def _testfn():
 
     dat = get_data(ifile, extscene='Hyperion')
 
-    pmnf, ev = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
+    pmnf, _ = mnf_calc(dat, ncmps=ncmps, noisetxt='', piter=pbar.iter)
 
     for i in [0, 5, 10, 13, 14, 15, 20, 25]:
         vmax = dat[i].data.max()
@@ -896,8 +945,6 @@ def _testfn():
 def _testfn2():
     import sys
     from matplotlib import rcParams
-    from pygmi.rsense.iodefs import get_data
-    # from pygmi.raster.iodefs import get_data
 
     rcParams['figure.dpi'] = 150
 
@@ -945,7 +992,7 @@ def _testfn3():
 
     rcParams['figure.dpi'] = 150
 
-    idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger'
+    idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full'
 
     app = QtWidgets.QApplication(sys.argv)
 

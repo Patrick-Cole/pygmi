@@ -385,7 +385,7 @@ class DataMerge(QtWidgets.QDialog):
         self.outdata = {}
         self.parent = parent
         self.idir = None
-        self.method = 'first'
+        self.method = merge_median
         self.rb_first = QtWidgets.QRadioButton('First - copy first file over '
                                                'last file at overlap.')
         self.rb_last = QtWidgets.QRadioButton('Last - copy last file over '
@@ -394,9 +394,10 @@ class DataMerge(QtWidgets.QDialog):
                                              'at overlap')
         self.rb_max = QtWidgets.QRadioButton('Max - copy pixel wise maximum '
                                              'at overlap')
-        self.rb_mean = QtWidgets.QRadioButton('Mean - shift last file to mean '
-                                              'overlap value and copy over '
-                                              'first file at overlap.')
+        self.rb_median = QtWidgets.QRadioButton('Median - shift last file to '
+                                                'median '
+                                                'overlap value and copy over '
+                                                'first file at overlap.')
 
         self.idirlist = QtWidgets.QLineEdit('')
         self.sfile = QtWidgets.QLineEdit('')
@@ -432,7 +433,7 @@ class DataMerge(QtWidgets.QDialog):
 
         self.files_diff.setChecked(False)
         self.shift_to_median.setChecked(False)
-        self.rb_first.setChecked(True)
+        self.rb_median.setChecked(True)
 
         buttonbox.setOrientation(QtCore.Qt.Horizontal)
         buttonbox.setCenterButtons(True)
@@ -443,11 +444,11 @@ class DataMerge(QtWidgets.QDialog):
         gb_merge_method = QtWidgets.QGroupBox('Merge method')
         gl_merge_method = QtWidgets.QVBoxLayout(gb_merge_method)
 
+        gl_merge_method.addWidget(self.rb_median)
         gl_merge_method.addWidget(self.rb_first)
         gl_merge_method.addWidget(self.rb_last)
         gl_merge_method.addWidget(self.rb_min)
         gl_merge_method.addWidget(self.rb_max)
-        gl_merge_method.addWidget(self.rb_mean)
 
         gridlayout_main.addWidget(pb_idirlist, 1, 0, 1, 1)
         gridlayout_main.addWidget(self.idirlist, 1, 1, 1, 1)
@@ -470,7 +471,7 @@ class DataMerge(QtWidgets.QDialog):
         self.rb_last.clicked.connect(self.method_change)
         self.rb_min.clicked.connect(self.method_change)
         self.rb_max.clicked.connect(self.method_change)
-        self.rb_mean.clicked.connect(self.method_change)
+        self.rb_median.clicked.connect(self.method_change)
 
     def method_change(self):
         """
@@ -489,8 +490,8 @@ class DataMerge(QtWidgets.QDialog):
             self.method = merge_min
         if self.rb_max.isChecked():
             self.method = merge_max
-        if self.rb_mean.isChecked():
-            self.method = merge_mean
+        if self.rb_median.isChecked():
+            self.method = merge_median
 
     def shiftchanged(self):
         """
@@ -710,7 +711,23 @@ class DataMerge(QtWidgets.QDialog):
 
         outdat = []
         for dataid in bandlist:
+            if 'B4divB2' not in dataid:
+                continue
             self.showprocesslog('Extracting '+dataid+'...')
+
+            if self.bands_to_files.isChecked():
+                odir = os.path.join(self.idir, 'merge')
+                os.makedirs(odir, exist_ok=True)
+                ofile = dataid+'.tif'
+                ofile = ofile.replace(' ', '_')
+                ofile = ofile.replace(',', '_')
+                ofile = ofile.replace('*', 'mult')
+                ofile = os.path.join(odir, ofile)
+
+                if os.path.exists(ofile):
+                    self.showprocesslog('Output file exists, skipping.')
+                    continue
+
             ifiles = []
 
             for i in self.piter(indata):
@@ -804,13 +821,13 @@ class DataMerge(QtWidgets.QDialog):
             outdat[-1].nodata = nodata
 
             if self.bands_to_files.isChecked():
-                odir = os.path.join(self.idir, 'merge')
-                os.makedirs(odir, exist_ok=True)
-                ofile = outdat[-1].dataid+'.tif'
-                ofile = ofile.replace(' ', '_')
-                ofile = ofile.replace(',', '_')
-                ofile = ofile.replace('*', 'mult')
-                ofile = os.path.join(odir, ofile)
+                # odir = os.path.join(self.idir, 'merge')
+                # os.makedirs(odir, exist_ok=True)
+                # ofile = dataid+'.tif'
+                # ofile = ofile.replace(' ', '_')
+                # ofile = ofile.replace(',', '_')
+                # ofile = ofile.replace('*', 'mult')
+                # ofile = os.path.join(odir, ofile)
                 export_raster(ofile, outdat, 'GTiff', compression='ZSTD')
 
                 # import matplotlib.pyplot as plt
@@ -2048,10 +2065,10 @@ def data_reproject(data, icrs, ocrs, otransform, orows, ocolumns):
     return data2
 
 
-def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
-               roff=None, coff=None):
+def merge_median(merged_data, new_data, merged_mask, new_mask, index=None,
+                 roff=None, coff=None):
     """
-    Merge using mean for rasterio, taking minimum value.
+    Merge using median for rasterio, taking minimum value.
 
     Parameters
     ----------
@@ -2076,18 +2093,44 @@ def merge_mean(merged_data, new_data, merged_mask, new_mask, index=None,
     None.
 
     """
+
+    merged_data = np.ma.array(merged_data, mask=merged_mask)
+    new_data = np.ma.array(new_data, mask=new_mask)
+
     mtmp1 = np.logical_and(~merged_mask, ~new_mask)
     mtmp2 = np.logical_and(~merged_mask, new_mask)
-
-    # breakpoint()
 
     tmp1 = new_data.copy()
 
     if True in mtmp1:
-        tmp1 = tmp1 - new_data[mtmp1].mean()
-        tmp1 = tmp1 + merged_data[mtmp1].mean()
+        tmp1 = tmp1 - np.ma.median(new_data[mtmp1])
+        tmp1 = tmp1 + np.ma.median(merged_data[mtmp1])
+        # tmp1 = tmp1 - new_data[mtmp1].mean()
+        # tmp1 = tmp1 + merged_data[mtmp1].mean()
 
     tmp1[mtmp2] = merged_data[mtmp2]
+
+    import matplotlib.pyplot as plt
+
+    plt.figure(dpi=150)
+    plt.suptitle(f'{roff} {coff}')
+    plt.subplot(221)
+    plt.title('merged_data')
+    plt.imshow(merged_data[0], vmin=0.5, vmax=3.0)
+    plt.colorbar()
+
+    plt.subplot(222)
+    plt.title('new_data')
+    plt.imshow(new_data[0], vmin=0.5, vmax=3.0)
+    plt.colorbar()
+    plt.tight_layout()
+
+    plt.subplot(223)
+    plt.title('tmp1')
+    plt.imshow(tmp1[0], vmin=0.5, vmax=3.0)
+    plt.colorbar()
+    plt.tight_layout()
+    plt.show()
 
     merged_data[:] = tmp1
 
@@ -2503,8 +2546,8 @@ def cut_raster(data, ifile, pprint=print):
         dext = idata.bounds
         lext = poly.bounds
 
-        if ((dext[0] > lext[2]) or (dext[2] < lext[0]) or
-                (dext[1] > lext[3]) or (dext[3] < lext[1])):
+        if ((dext[0] > lext[2]) or (dext[2] < lext[0])
+                or (dext[1] > lext[3]) or (dext[3] < lext[1])):
 
             pprint('The shapefile is not in the same area as the raster '
                    'dataset. Please check its coordinates and make sure its '
@@ -3191,12 +3234,13 @@ def _testmerge():
     # idir = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
     # idir = r"c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full"
     idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios"
+    # idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\PCA'
     sfile = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
 
     DM = DataMerge()
     DM.idir = idir
     DM.idirlist.setText(idir)
-    DM.sfile.setText(sfile)
+    # DM.sfile.setText(sfile)
 
     DM.files_diff.setChecked(True)
     # DM.shift_to_median.setChecked(True)
@@ -3415,6 +3459,39 @@ def _testnewnull():
         # break
 
 
+def _testlower():
+    """Plot out files in a directory."""
+    import matplotlib.pyplot as plt
+    from pygmi.raster.modest_image import imshow
+    from pygmi.raster.iodefs import get_raster
+    from pygmi.raster.iodefs import export_raster
+
+    ifilt = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios\*.tif"
+    odir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios2"
+    dataid = 'B4divB2 Iron Oxide'
+
+    ifiles = glob.glob(ifilt)
+
+    for ifile in ifiles:
+        print(ifile)
+        dat = get_raster(ifile, dataid=dataid)
+        dat = lstack(dat, dxy=20)
+
+        ofile = os.path.join(odir, os.path.basename(ifile))
+        export_raster(ofile, dat, 'GTiff', compression='ZSTD')
+
+        # for i in dat:
+        #     plt.figure(dpi=150)
+        #     plt.title(os.path.basename(i.filename)+": "+i.dataid)
+
+        #     vstd = i.data.std()
+        #     vmean = i.data.mean()
+        #     vmin = vmean-2*vstd
+        #     vmax = vmean+2*vstd
+        #     imshow(plt.gca,i.data, vmin=vmin, vmax=vmax, interpolation='nearest')
+        #     plt.colorbar()
+        #     plt.show()
+
 
 if __name__ == "__main__":
-    _testnewnull()
+    _testlower()

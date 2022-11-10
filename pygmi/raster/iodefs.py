@@ -776,36 +776,40 @@ def get_raster(ifile, nval=None, piter=None, showprocesslog=print,
                                                                  xsize, ysize))
 
             if dat[-1].data.dtype.kind == 'i':
-                if nval is None:
+                if nval is None or np.isnan(nval):
                     nval = 999999
-                    showprocesslog('Adjusting null value to '+str(nval))
+                    # showprocesslog(f'Adjusting null value to {nval}')
                 nval = int(nval)
             elif dat[-1].data.dtype.kind == 'u':
-                if nval is None:
+                if nval is None or np.isnan(nval):
                     nval = 0
-                    showprocesslog('Adjusting null value to '+str(nval))
+                    # showprocesslog(f'Adjusting null value to {nval}')
                 nval = int(nval)
             else:
-                if nval is None:
+                if nval is None or np.isnan(nval):
                     nval = 1e+20
                 nval = float(nval)
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.min(),
                                                            nval):
                     nval = dat[-1].data.min()
-                    showprocesslog('Adjusting null value to '+str(nval))
                 if nval not in dat[-1].data and np.isclose(dat[-1].data.max(),
                                                            nval):
                     nval = dat[-1].data.max()
-                    showprocesslog('Adjusting null value to '+str(nval))
+                # showprocesslog(f'Adjusting null value to {nval}')
 
             if ext == 'ers' and nval == -1.0e+32:
                 dat[-1].data[dat[-1].data <= nval] = -1.0e+32
 
     # Note that because the data is stored in a masked array, the array ends up
     # being double the size that it was on the disk.
+
             dat[-1].data = np.ma.masked_invalid(dat[-1].data)
-            dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data) |
-                                 (dat[-1].data == nval))
+            dat[-1].data = dat[-1].data.filled(nval)
+            dat[-1].data = np.ma.masked_equal(dat[-1].data, nval)
+            dat[-1].data.set_fill_value(nval)
+
+            # dat[-1].data.mask = (np.ma.getmaskarray(dat[-1].data) |
+            #                      (dat[-1].data == nval))
 
             if newbounds is not None:
                 xmin, _, _, ymax = newbounds
@@ -1683,6 +1687,8 @@ def _filespeedtest():
     ifile = r"C:\WorkProjects\Script6c_disp\disp_data.tif"
 
     ifile = r"D:\Workdata\Remote Sensing\wv2\014568829030_01_P001_MUL\16MAY28083210-M3DS_R1C1-014568829030_01_P001.TIF"
+    ifile = r"D:\Sanral\Potchefstroom_VD_2020_2021JuneDec_stack.hdr"
+
 
     iraster = None
 
@@ -1690,10 +1696,12 @@ def _filespeedtest():
 
     dataset = get_raster(ifile, iraster=iraster)
 
-    plt.figure(dpi=150)
-    plt.imshow(dataset[0].data, extent=dataset[0].extent)
-    plt.colorbar()
-    plt.show()
+    # breakpoint()
+
+    # plt.figure(dpi=150)
+    # plt.imshow(dataset[0].data, extent=dataset[0].extent)
+    # plt.colorbar()
+    # plt.show()
 
     # for i in dataset:
     #     i.data = i.data*10000
