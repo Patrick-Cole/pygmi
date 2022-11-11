@@ -827,7 +827,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
 
         for j in dat:
             x2d.append(j.data)
-            maskall.append(j.data.mask)
+            maskall.append(np.ma.getmaskarray(j.data))
 
         maskall = np.moveaxis(maskall, 0, -1)
         x2d = np.moveaxis(x2d, 0, -1)
@@ -858,7 +858,7 @@ def pca_calc_fitlist(flist, ncmps=None,  pprint=print, piter=iter,
 
         for j in dat:
             x2d.append(j.data)
-            maskall.append(j.data.mask)
+            maskall.append(np.ma.getmaskarray(j.data))
 
         maskall = np.moveaxis(maskall, 0, -1)
         x2d = np.moveaxis(x2d, 0, -1)
@@ -992,7 +992,7 @@ def _testfn3():
 
     rcParams['figure.dpi'] = 150
 
-    idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full'
+    idir = r'c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full'
 
     app = QtWidgets.QApplication(sys.argv)
 
