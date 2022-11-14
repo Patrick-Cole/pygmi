@@ -3460,7 +3460,7 @@ def _testnewnull():
 
 
 def _testlower():
-    """Plot out files in a directory."""
+    """Lowers resolution."""
     import matplotlib.pyplot as plt
     from pygmi.raster.modest_image import imshow
     from pygmi.raster.iodefs import get_raster
@@ -3479,18 +3479,6 @@ def _testlower():
 
         ofile = os.path.join(odir, os.path.basename(ifile))
         export_raster(ofile, dat, 'GTiff', compression='ZSTD')
-
-        # for i in dat:
-        #     plt.figure(dpi=150)
-        #     plt.title(os.path.basename(i.filename)+": "+i.dataid)
-
-        #     vstd = i.data.std()
-        #     vmean = i.data.mean()
-        #     vmin = vmean-2*vstd
-        #     vmax = vmean+2*vstd
-        #     imshow(plt.gca,i.data, vmin=vmin, vmax=vmax, interpolation='nearest')
-        #     plt.colorbar()
-        #     plt.show()
 
 
 if __name__ == "__main__":

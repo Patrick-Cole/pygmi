@@ -2486,5 +2486,19 @@ def _testfn3():
     # export_batch(dat, odir, '', piter=ProgressBarText().iter)
 
 
+def _testfindbadfiles():
+    """Find bad files."""
+    ifilt = r"\\172.16.7.17\Minerals_Energy\Remote_Sensing\Niger\ASTER\ASTER_band_ratios\Single_images\*.tif"
+
+    ifiles = glob.glob(ifilt)
+
+    for ifile in ifiles:
+        try:
+            file = rasterio.open(ifile, driver='GTiff')
+            file.close()
+        except:
+            print(os.path.basename(ifile)+ ' is bad.')
+
+
 if __name__ == "__main__":
-    _testfn3()
+    _testfindbadfiles()
