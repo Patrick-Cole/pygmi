@@ -508,27 +508,45 @@ class MextDisplay(QtWidgets.QDialog):
             lkeys = list(self.lmod1.griddata.keys())
             if 'DTM Dataset' in lkeys:
                 tmp = self.lmod1.griddata['DTM Dataset'].dataid
-                self.combo_dtm.setCurrentIndex(gkeys.index(tmp))
+                if tmp in gkeys:
+                    self.combo_dtm.setCurrentIndex(gkeys.index(tmp))
+                else:
+                    del self.lmod1.griddata['DTM Dataset']
 
             if 'Magnetic Dataset' in lkeys:
                 tmp = self.lmod1.griddata['Magnetic Dataset'].dataid
-                self.combo_mag.setCurrentIndex(gkeys.index(tmp))
+                if tmp in gkeys:
+                    self.combo_mag.setCurrentIndex(gkeys.index(tmp))
+                else:
+                    del self.lmod1.griddata['Magnetic Dataset']
 
             if 'Gravity Dataset' in lkeys:
                 tmp = self.lmod1.griddata['Gravity Dataset'].dataid
-                self.combo_grv.setCurrentIndex(gkeys.index(tmp))
+                if tmp in gkeys:
+                    self.combo_grv.setCurrentIndex(gkeys.index(tmp))
+                else:
+                    del self.lmod1.griddata['Gravity Dataset']
 
             if 'Gravity Regional' in lkeys:
                 tmp = self.lmod1.griddata['Gravity Regional'].dataid
-                self.combo_reggrv.setCurrentIndex(gkeys.index(tmp))
+                if tmp in gkeys:
+                    self.combo_reggrv.setCurrentIndex(gkeys.index(tmp))
+                else:
+                    del self.lmod1.griddata['Gravity Regional']
 
             if 'Study Area Dataset' in lkeys:
                 tmp = self.lmod1.griddata['Study Area Dataset'].dataid
-                self.combo_dataset.setCurrentIndex(gkeys.index(tmp))
+                if tmp in gkeys:
+                    self.combo_dataset.setCurrentIndex(gkeys.index(tmp))
+                else:
+                    del self.lmod1.griddata['Study Area Dataset']
 
             if 'Other' in lkeys:
                 tmp = self.lmod1.griddata['Other'].dataid
-                self.combo_other.setCurrentIndex(gkeys.index(tmp))
+                if tmp in gkeys:
+                    self.combo_other.setCurrentIndex(gkeys.index(tmp))
+                else:
+                    del self.lmod1.griddata['Other']
 
         self.combo_dataset.currentIndexChanged.connect(self.get_area)
 
