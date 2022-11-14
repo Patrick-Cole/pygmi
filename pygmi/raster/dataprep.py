@@ -3232,9 +3232,10 @@ def _testmerge():
 
     # idir = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
     # idir = r"c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full"
-    idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios"
+    # idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios"
+    idir = r"C:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\PCA"
     # idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\PCA'
-    sfile = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
+    sfile = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
 
     DM = DataMerge()
     DM.idir = idir
