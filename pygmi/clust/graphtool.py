@@ -157,6 +157,7 @@ class GraphHist(FigureCanvasQTAgg):
                                          aspect='auto')
 
         self.csp.set_clim(xymahist.min(), xymahist.max())
+        self.csp.set_clim(xymahist.min(), xymahist.max())
         self.csp.changed()
         self.figure.canvas.draw()
 
@@ -247,6 +248,7 @@ class GraphHist(FigureCanvasQTAgg):
             return
 
         self.csp.set_data(xymahist.T)
+        self.csp.set_clim(xymahist.min(), xymahist.max())
         self.csp.set_clim(xymahist.min(), xymahist.max())
         self.csp.changed()
         self.figure.canvas.draw()
@@ -342,6 +344,7 @@ class GraphMap(FigureCanvasQTAgg):
             cdat = self.cdata[mtmp[1] - 1].data
             self.csp.set_data(cdat)
             self.csp.set_clim(cdat.min(), cdat.max())
+            self.csp.set_clim(cdat.min(), cdat.max())
             vals = np.unique(cdat)
             vals = vals.compressed()
             bnds = (vals - 0.5).tolist() + [vals.max() + .5]
@@ -351,6 +354,7 @@ class GraphMap(FigureCanvasQTAgg):
                                              values=vals, ticks=vals)
         else:
             self.csp.set_data(dat.data)
+            self.csp.set_clim(dat.data.min(), dat.data.max())
             self.csp.set_clim(dat.data.min(), dat.data.max())
 
             self.subplot.figure.colorbar(self.csp)

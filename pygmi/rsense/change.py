@@ -528,6 +528,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             nir = nir.astype(float)
             dtmp = (green-nir)/(green+nir)
             self.im1.set_clim(-1, 1)
+            self.im1.set_clim(-1, 1)
             self.im1.set_cmap(plt.cm.get_cmap('PiYG_r'))
         elif self.manip == 'NDVI':
             if self.cbar is None:
@@ -537,6 +538,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             red = red.astype(float)
             nir = nir.astype(float)
             dtmp = (nir-red)/(nir+red)
+            self.im1.set_clim(-1, 1)
             self.im1.set_clim(-1, 1)
             self.im1.set_cmap(plt.cm.get_cmap('PiYG'))
         else:
@@ -567,6 +569,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             dtmp = np.array([red, green, blue, alpha])
             dtmp = np.moveaxis(dtmp, 0, 2)
             dtmp = dtmp.astype(np.uint8)
+            self.im1.set_clim(0, 255)
             self.im1.set_clim(0, 255)
 
         self.im1.set_data(dtmp)

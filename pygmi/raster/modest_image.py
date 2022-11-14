@@ -325,6 +325,7 @@ class ModestImage(mi.AxesImage):
                 'Ternary' not in self.rgbmode):
             self._A = norm2(histeq(self._A))
             self.set_clim(0, 1)
+            self.set_clim(0, 1)
 
         if 'Ternary' in self.rgbmode:
             colormap = self.draw_ternary()
@@ -431,6 +432,7 @@ class ModestImage(mi.AxesImage):
         vmin = vmean - mult*vstd
         vmax = vmean + mult*vstd
 
+        self.set_clim(vmin, vmax)
         self.set_clim(vmin, vmax)
 
 
@@ -741,6 +743,7 @@ def imshow(axes, X, cmap=None, norm=None, aspect=None,
         im.set_clip_path(axes.patch)
 
     if vmin is not None or vmax is not None:
+        im.set_clim(vmin, vmax)
         im.set_clim(vmin, vmax)
     elif norm is None:
         im.autoscale_None()

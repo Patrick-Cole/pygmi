@@ -672,6 +672,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.image.cmap = self.cbar
         self.image.set_clim(lclip, uclip)
+        self.image.set_clim(lclip, uclip)
 
         self.newcmp = self.cbar
         if ((self.clippercu > 0. or self.clippercl > 0.) and

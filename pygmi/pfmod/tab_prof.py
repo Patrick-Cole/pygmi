@@ -1855,6 +1855,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.ims2.set_data(dat2.data)
             self.ims2.set_extent(dat2.extent)
             self.ims2.set_clim(dat2.data.min(), dat2.data.max())
+            self.ims2.set_clim(dat2.data.min(), dat2.data.max())
         else:
             self.ims.set_alpha(1.0)
 
@@ -1906,7 +1907,22 @@ class MyMplCanvas(FigureCanvasQTAgg):
             dat2 = self.lmod1.griddata[str(dat2)]
             self.lims2.set_data(dat2.data)
             self.lims2.set_extent(dat2.extent)
-            self.lims2.set_clim(dat2.data.min(), dat2.data.max())
+
+            # vmin = dat2.data.min()
+            # vmax = dat2.data.max()
+
+            vstd = dat2.data.std()
+            vmean = dat2.data.mean()
+            vmin = vmean - 2.5 * vstd
+            vmax = vmean + 2.5 * vstd
+
+            # The next two lines must be called twice. Otherwize,
+            # depending on the previous limits, either vmin or vmax is changed,
+            # to ensure they are less or greater than the previous limits.
+
+            self.lims2.set_clim(vmin, vmax)
+            self.lims2.set_clim(vmin, vmax)
+
             self.colbar.ax.set_xlabel(dat2.units)
 
         left, right = self.lmod1.xrange

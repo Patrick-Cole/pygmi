@@ -153,8 +153,10 @@ class GraphMap(FigureCanvasQTAgg):
             cdat = self.cdata[mtmp[1] - 1].data
             self.csp.set_data(cdat)
             self.csp.set_clim(cdat.min(), cdat.max())
+            self.csp.set_clim(cdat.min(), cdat.max())
         else:
             self.csp.set_data(dat.data)
+            self.csp.set_clim(dat.data.min(), dat.data.max())
             self.csp.set_clim(dat.data.min(), dat.data.max())
 
         self.csp.changed()
