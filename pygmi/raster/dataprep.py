@@ -414,6 +414,7 @@ class DataMerge(QtWidgets.QDialog):
         self.bands_to_files = QtWidgets.QCheckBox('Save each band separately '
                                                   'in a "merge" subdirectory.')
         self.forcetype = None
+        self.singleband = False
         self.setupui()
 
     def setupui(self):
@@ -431,7 +432,7 @@ class DataMerge(QtWidgets.QDialog):
         pb_idirlist = QtWidgets.QPushButton('Batch Directory')
         pb_sfile = QtWidgets.QPushButton('Shapefile for boundary (optional)')
 
-        self.files_diff.setChecked(False)
+        self.files_diff.setChecked(True)
         self.shift_to_median.setChecked(False)
         self.rb_median.setChecked(True)
 
@@ -656,6 +657,7 @@ class DataMerge(QtWidgets.QDialog):
 
         from pygmi.raster.iodefs import get_raster, export_raster
 
+
         indata = []
         if 'Raster' in self.indata:
             for i in self.indata['Raster']:
@@ -709,10 +711,11 @@ class DataMerge(QtWidgets.QDialog):
 
         bandlist = list(set(bandlist))
 
+        if self.singleband is True:
+            bandlist = ['Band_1']
+
         outdat = []
         for dataid in bandlist:
-            # if 'B4divB2' not in dataid:
-            #     continue
             self.showprocesslog('Extracting '+dataid+'...')
 
             if self.bands_to_files.isChecked():
@@ -731,7 +734,7 @@ class DataMerge(QtWidgets.QDialog):
             ifiles = []
 
             for i in self.piter(indata):
-                if i.dataid != dataid:
+                if i.dataid != dataid and self.singleband is False:
                     continue
 
                 i2 = get_raster(i.filename, piter=iter, dataid=i.dataid)
@@ -754,9 +757,12 @@ class DataMerge(QtWidgets.QDialog):
                     i2.data = i2.data.astype(self.forcetype)
 
                 if self.shift_to_median.isChecked():
-                    mval = np.ma.median(i.data)
+                    mval = np.ma.median(i2.data)
                 else:
                     mval = 0
+
+                if self.singleband is True:
+                    i2.dataid = 'Band_1'
 
                 trans = rasterio.transform.from_origin(i2.extent[0],
                                                        i2.extent[3],
@@ -785,6 +791,7 @@ class DataMerge(QtWidgets.QDialog):
                     nodata = -99999
 
                 tmpdat = i2.data-mval
+                # breakpoint()
                 tmpdat = tmpdat.filled(nodata)
                 tmpdat = np.ma.masked_equal(tmpdat, nodata)
 
@@ -3230,31 +3237,40 @@ def _testmerge():
 
     app = QtWidgets.QApplication(sys.argv)
 
+    sfile = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
+
     # idir = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\4_7_5"
     # idir = r"c:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\full"
     # idir = r"e:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\ratios"
-    idir = r"C:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\PCA"
+    idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\sentinel_2\ratios_single_band_small_test"
     # idir = r'E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\PCA'
-    sfile = r"d:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\shapefiles\Agadez_block.shp"
 
-    DM = DataMerge()
-    DM.idir = idir
-    DM.idirlist.setText(idir)
-    DM.sfile.setText(sfile)
+    # idir = r"E:\WorkProjects\ST-2022-1355 Onshore Mapping\Niger\Landsat_9\PCA"
+    # ifilt = r"E:/WorkProjects/ST-2022-1355 Onshore Mapping/Niger/Landsat_9/RGB*/"
 
-    DM.files_diff.setChecked(True)
-    # DM.shift_to_median.setChecked(True)
-    DM.forcetype = np.float32
-    # DM.method = 'max'  # first last min max
-    DM.settings()
+    # idirs = glob.glob(ifilt)
+    idirs = [idir]
 
-    dat = DM.outdata['Raster']
+    for idir in idirs:
+        print(idir)
+        DM = DataMerge()
+        DM.idir = idir
+        DM.idirlist.setText(idir)
+        DM.sfile.setText(sfile)
+        # DM.singleband = True
 
-    del DM
+        DM.forcetype = np.float32
+        DM.settings()
 
-    # ofile = idir+'.tif'
+        dat = DM.outdata['Raster']
 
-    # export_raster(ofile, dat, 'GTiff', compression='ZSTD')
+        del DM
+
+        if dat:
+            ofile = idir+'.tif'
+            export_raster(ofile, dat, 'GTiff', compression='ZSTD')
+            del dat
+
 
 def _testreproj():
     """Test Reprojection."""
